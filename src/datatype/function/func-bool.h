@@ -12,8 +12,8 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC-BOOL_H_INCLUDED
-#define FUNC-BOOL_H_INCLUDED
+#ifndef FUNC_BOOL_H_INCLUDED
+#define FUNC_BOOL_H_INCLUDED
 
 #include "func-generic.h"
 #include <wctype.h>
@@ -289,4 +289,4 @@ public:
 
 
 
-#endif // FUNC-BOOL_H_INCLUDED
+#endif // FUNC_BOOL_H_INCLUDED

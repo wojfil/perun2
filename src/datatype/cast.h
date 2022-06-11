@@ -25,7 +25,7 @@ struct Cast : Generator<T2>
 {
 public:
    Cast (Generator<T1>* b) : base(b) { };
-   ~Cast() {
+   ~Cast() override {
       delete base;
    }
 

@@ -16,10 +16,10 @@
 #define COM_H
 
 
-// a command can run
 struct Command
 {
    virtual void run() = 0;
+   virtual ~Command() { };
 };
 
 struct C_DoNothing : Command

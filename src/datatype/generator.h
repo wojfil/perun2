@@ -23,6 +23,7 @@ template <typename T>
 struct Generator
 {
    virtual T getValue() = 0;
+   virtual ~Generator() { };
 };
 
 

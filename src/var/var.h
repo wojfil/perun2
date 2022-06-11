@@ -25,7 +25,7 @@ struct Variable : Generator<T>
 public:
    Variable<T>() {};
    Variable<T>(T val) : value(val) {};
-   ~Variable<T>() {};
+   ~Variable<T>() override {};
 
    T getValue() override {
       return value;

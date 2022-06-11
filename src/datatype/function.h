@@ -1,0 +1,52 @@
+/*
+    This file is part of Uroboros.
+    Uroboros is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Uroboros is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef FUNCTION_H
+#define FUNCTION_H
+
+#include "../tokens.h"
+#include "generator.h"
+
+
+_boo isPossibleFunction(const Tokens& tks);
+static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
+
+Generator<_boo>* boolFunction(const Tokens& tks);
+static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word);
+
+Generator<_num>* numberFunction(const Tokens& tks);
+static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word);
+static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word);
+
+Generator<_per>* periodFunction(const Tokens& tks);
+
+Generator<_str>* stringFunction(const Tokens& tks);
+static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word);
+static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word);
+
+Generator<_tim>* timeFunction(const Tokens& tks);
+static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word);
+
+static void functionArgNumberException(const _int& argNumber, const Token& word);
+static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word);
+static _str ordinalNumber(const _int& number);
+
+Generator<_list>* listFunction(const Tokens& tks);
+Generator<_nlist>* numListFunction(const Tokens& tks);
+
+static void checkFunctionAttribute(const Token& word);
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks);
+
+
+#endif /* FUNCTION_H */

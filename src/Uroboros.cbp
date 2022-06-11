@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Uroboros" />
+		<Option platforms="Windows;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/Uroboros" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c17" />
+					<Add option="-g" />
+					<Add option="-std=c++17" />
+				</Compiler>
+				<Linker>
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add option="-municode" />
+					<Add option="-unicode" />
+					<Add option="-lole32" />
+					<Add option="-loleaut32" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/Uroboros" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fomit-frame-pointer" />
+					<Add option="-std=c17" />
+					<Add option="-std=c++17" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add option="-municode" />
+					<Add option="-unicode" />
+					<Add option="-lole32" />
+					<Add option="-loleaut32" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c17" />
+			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Linker>
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-static" />
+			<Add option="-municode" />
+			<Add option="-unicode" />
+			<Add option="-lole32" />
+			<Add option="-loleaut32" />
+		</Linker>
+		<Unit filename="attr-memory.cpp" />
+		<Unit filename="attr-memory.h" />
+		<Unit filename="attribute.cpp" />
+		<Unit filename="attribute.h" />
+		<Unit filename="brackets.cpp" />
+		<Unit filename="brackets.h" />
+		<Unit filename="command/aggregate.cpp" />
+		<Unit filename="command/aggregate.h" />
+		<Unit filename="command/com-arg.cpp" />
+		<Unit filename="command/com-arg.h" />
+		<Unit filename="command/com-condition.cpp" />
+		<Unit filename="command/com-condition.h" />
+		<Unit filename="command/com-core-aggr.cpp" />
+		<Unit filename="command/com-core-aggr.h" />
+		<Unit filename="command/com-core.cpp" />
+		<Unit filename="command/com-core.h" />
+		<Unit filename="command/com-create.cpp" />
+		<Unit filename="command/com-create.h" />
+		<Unit filename="command/com-misc.cpp" />
+		<Unit filename="command/com-misc.h" />
+		<Unit filename="command/com-parse-kw.cpp" />
+		<Unit filename="command/com-parse-kw.h" />
+		<Unit filename="command/com-parse-unit.cpp" />
+		<Unit filename="command/com-parse-unit.h" />
+		<Unit filename="command/com-parse.cpp" />
+		<Unit filename="command/com-parse.h" />
+		<Unit filename="command/com-struct.cpp" />
+		<Unit filename="command/com-struct.h" />
+		<Unit filename="command/com-var.cpp" />
+		<Unit filename="command/com-var.h" />
+		<Unit filename="command/com.cpp" />
+		<Unit filename="command/com.h" />
+		<Unit filename="datatype/cast.cpp" />
+		<Unit filename="datatype/cast.h" />
+		<Unit filename="datatype/datatype.h" />
+		<Unit filename="datatype/def-gen.h" />
+		<Unit filename="datatype/def-var.cpp" />
+		<Unit filename="datatype/def-var.h" />
+		<Unit filename="datatype/definition.cpp" />
+		<Unit filename="datatype/definition.h" />
+		<Unit filename="datatype/exp-element.h" />
+		<Unit filename="datatype/function.cpp" />
+		<Unit filename="datatype/function.h" />
+		<Unit filename="datatype/function/func-aggr.cpp" />
+		<Unit filename="datatype/function/func-aggr.h" />
+		<Unit filename="datatype/function/func-attr.cpp" />
+		<Unit filename="datatype/function/func-attr.h" />
+		<Unit filename="datatype/function/func-bool.cpp" />
+		<Unit filename="datatype/function/func-bool.h" />
+		<Unit filename="datatype/function/func-generic.h" />
+		<Unit filename="datatype/function/func-list.cpp" />
+		<Unit filename="datatype/function/func-list.h" />
+		<Unit filename="datatype/function/func-number.cpp" />
+		<Unit filename="datatype/function/func-number.h" />
+		<Unit filename="datatype/function/func-string.cpp" />
+		<Unit filename="datatype/function/func-string.h" />
+		<Unit filename="datatype/function/func-time.cpp" />
+		<Unit filename="datatype/function/func-time.h" />
+		<Unit filename="datatype/generator.cpp" />
+		<Unit filename="datatype/generator.h" />
+		<Unit filename="datatype/generator/gen-bool-compare.cpp" />
+		<Unit filename="datatype/generator/gen-bool-compare.h" />
+		<Unit filename="datatype/generator/gen-bool.cpp" />
+		<Unit filename="datatype/generator/gen-bool.h" />
+		<Unit filename="datatype/generator/gen-definition.cpp" />
+		<Unit filename="datatype/generator/gen-definition.h" />
+		<Unit filename="datatype/generator/gen-generic.h" />
+		<Unit filename="datatype/generator/gen-list.cpp" />
+		<Unit filename="datatype/generator/gen-list.h" />
+		<Unit filename="datatype/generator/gen-number.cpp" />
+		<Unit filename="datatype/generator/gen-number.h" />
+		<Unit filename="datatype/generator/gen-numlist.cpp" />
+		<Unit filename="datatype/generator/gen-numlist.h" />
+		<Unit filename="datatype/generator/gen-os.cpp" />
+		<Unit filename="datatype/generator/gen-os.h" />
+		<Unit filename="datatype/generator/gen-period.cpp" />
+		<Unit filename="datatype/generator/gen-period.h" />
+		<Unit filename="datatype/generator/gen-string.cpp" />
+		<Unit filename="datatype/generator/gen-string.h" />
+		<Unit filename="datatype/generator/gen-time.cpp" />
+		<Unit filename="datatype/generator/gen-time.h" />
+		<Unit filename="datatype/generator/gen-timlist.cpp" />
+		<Unit filename="datatype/generator/gen-timlist.h" />
+		<Unit filename="datatype/generator/like.cpp" />
+		<Unit filename="datatype/generator/like.h" />
+		<Unit filename="datatype/number.cpp" />
+		<Unit filename="datatype/number.h" />
+		<Unit filename="datatype/order.cpp" />
+		<Unit filename="datatype/order.h" />
+		<Unit filename="datatype/parse-gen.cpp" />
+		<Unit filename="datatype/parse-gen.h" />
+		<Unit filename="datatype/parse/parse-bool.cpp" />
+		<Unit filename="datatype/parse/parse-bool.h" />
+		<Unit filename="datatype/parse/parse-definition.cpp" />
+		<Unit filename="datatype/parse/parse-definition.h" />
+		<Unit filename="datatype/parse/parse-generic.cpp" />
+		<Unit filename="datatype/parse/parse-generic.h" />
+		<Unit filename="datatype/parse/parse-list.cpp" />
+		<Unit filename="datatype/parse/parse-list.h" />
+		<Unit filename="datatype/parse/parse-number.cpp" />
+		<Unit filename="datatype/parse/parse-number.h" />
+		<Unit filename="datatype/parse/parse-numlist.cpp" />
+		<Unit filename="datatype/parse/parse-numlist.h" />
+		<Unit filename="datatype/parse/parse-period.cpp" />
+		<Unit filename="datatype/parse/parse-period.h" />
+		<Unit filename="datatype/parse/parse-string.cpp" />
+		<Unit filename="datatype/parse/parse-string.h" />
+		<Unit filename="datatype/parse/parse-time.cpp" />
+		<Unit filename="datatype/parse/parse-time.h" />
+		<Unit filename="datatype/parse/parse-timlist.cpp" />
+		<Unit filename="datatype/parse/parse-timlist.h" />
+		<Unit filename="datatype/period.cpp" />
+		<Unit filename="datatype/period.h" />
+		<Unit filename="datatype/primitives.cpp" />
+		<Unit filename="datatype/primitives.h" />
+		<Unit filename="datatype/time.cpp" />
+		<Unit filename="datatype/time.h" />
+		<Unit filename="exception.cpp" />
+		<Unit filename="exception.h" />
+		<Unit filename="hash.cpp" />
+		<Unit filename="hash.h" />
+		<Unit filename="keyword.cpp" />
+		<Unit filename="keyword.h" />
+		<Unit filename="lexer.cpp" />
+		<Unit filename="lexer.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="os.cpp" />
+		<Unit filename="os.h" />
+		<Unit filename="print.cpp" />
+		<Unit filename="print.h" />
+		<Unit filename="token.cpp" />
+		<Unit filename="token.h" />
+		<Unit filename="tokens.cpp" />
+		<Unit filename="tokens.h" />
+		<Unit filename="uroboros.cpp" />
+		<Unit filename="uroboros.h" />
+		<Unit filename="util.cpp" />
+		<Unit filename="util.h" />
+		<Unit filename="var/var-group.cpp" />
+		<Unit filename="var/var-group.h" />
+		<Unit filename="var/var-inner.cpp" />
+		<Unit filename="var/var-inner.h" />
+		<Unit filename="var/var-runtime.cpp" />
+		<Unit filename="var/var-runtime.h" />
+		<Unit filename="var/var.cpp" />
+		<Unit filename="var/var.h" />
+		<Unit filename="wndres.o" />
+		<Unit filename="wndres.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

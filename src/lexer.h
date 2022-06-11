@@ -1,0 +1,32 @@
+/*
+    This file is part of Uroboros.
+    Uroboros is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Uroboros is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef LEXER_H
+#define LEXER_H
+
+#include "tokens.h"
+
+
+std::vector<Token> tokenize(const _str &code);
+static Token wordToken(_str& str, _int& line);
+inline _boo isSymbol(const _char& ch);
+_boo isNewLine(const _char& ch);
+inline _boo isAllowedInWord(const _char& ch);
+inline void bigNumberException(const _str& str, const _int& line);
+inline _ndouble stringToDouble(const _str& str);
+_nint getSuffixMultiplier(const _char& c1, const _char& c2);
+void invalidCharException(const _char& ch, const _int& line);
+
+
+#endif /* LEXER_H */

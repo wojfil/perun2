@@ -1,0 +1,325 @@
+/*
+    This file is part of Uroboros.
+    Uroboros is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Uroboros is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "parse-gen.h"
+#include "../lexer.h"
+#include "../brackets.h"
+#include "../hash.h"
+#include "function.h"
+
+
+Tokens prepareForGen(const Tokens& tks)
+{
+   // check if all opened brackets are closed within the sequence
+   checkBrackets(tks);
+
+   // look for a special kind of syntax errors: forbidden keywords
+   checkKeywords(tks);
+
+   // create a modificable copy of the sequence
+   Tokens tks2(tks);
+
+   // trim encircling brackets as long as
+   // they are here and the sequence is long enough
+   while (tks2.getLength() >= 2) {
+      const Token& f = tks2.first();
+      const Token& l = tks2.last();
+
+      if (f.type == Token::t_Symbol && f.type == Token::t_Symbol
+         && f.value.c == L'(' && l.value.c == L')') {
+
+         _int lvl = 0;
+         _boo b = true;
+         const _int end = tks2.getEnd();
+
+         for (_int i = tks2.getStart(); b && i <= end; i++) {
+            const Token& t = tks2.listAt(i);
+            if (t.type == Token::t_Symbol) {
+               switch (t.value.c) {
+                  case L'(': {
+                     lvl++;
+                     break;
+                  }
+                  case L')': {
+                     lvl--;
+                     if (lvl == 0 && i != tks2.getEnd())
+                     {
+                        b = false;
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+
+         if (b) {
+            tks2.trimBoth();
+         }
+         else {
+            break;
+         }
+      }
+      else {
+         break;
+      }
+   }
+
+   // look for a common error
+   // somebody calls a non-existent variable
+   if (tks2.getLength() == 1) {
+      const Token& f = tks2.first();
+      if (f.type == Token::t_Word) {
+         if (f.value.h1 != HASH_VAR_THIS && !variableExists(f)) {
+            throw SyntaxException(
+               L"variable '" + f.originString + L"' does not exist or is unreachable here", f.line);
+         }
+      }
+   }
+
+   // look for adjacent ++ and -- inside an expression
+   _char pch = L' ';
+   const _int start = tks2.getStart();
+   const _int end = tks2.getEnd() - 1;
+   for (_int i = start; i <= end; i++) {
+      const Token& t = tks2.listAt(i);
+      if (t.type == Token::t_Symbol) {
+         const _char& ch = t.value.c;
+         if (pch == L'+' && ch == L'+') {
+            if (i == start) {
+               throw SyntaxException(
+                  L"expression cannot start with incrementation signs ++", t.line);
+
+            }
+            else {
+               throw SyntaxException(
+                  L"incrementation signs ++ cannot appear inside an expression", t.line);
+            }
+         }
+         else if (pch == L'-' && ch == L'-') {
+            if (i == start) {
+               throw SyntaxException(
+                  L"expression cannot start with decrementation signs --", t.line);
+            }
+            else {
+               throw SyntaxException(
+                  L"decrementation signs -- cannot appear inside an expression", t.line);
+            }
+         }
+         pch = ch;
+      }
+      else {
+         pch = L' ';
+      }
+   }
+
+   return tks2;
+}
+
+void checkKeywords(const Tokens& tks)
+{
+   const _int end = tks.getEnd();
+
+   for (_int i = tks.getStart(); i <= end; i++) {
+      const Token& t = tks.listAt(i);
+
+      if (t.type == Token::t_Keyword && isExpForbiddenKeyword(t)) {
+         throw SyntaxException(L"expected ; before keyword '" + t.originString + L"'", t.line);
+      }
+   }
+}
+
+_boo isExpForbiddenKeyword(const Token& tk)
+{
+   if (tk.isCommandKeyword()) {
+      return true;
+   }
+   switch (tk.value.k) {
+      case Keyword::kw_Force:
+      case Keyword::kw_Stack:
+         return true;
+      default:
+         return false;
+   }
+}
+
+Generator<_boo>* boolGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // data type "bool" does not contain any default casting
+   // so let us go straight to parsing
+
+   return parseBool(tns2);
+}
+
+Generator<_num>* numberGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // cast from "bool" to "Number"
+   Generator<_boo>* boo = parseBool(tns2);
+   if (boo != nullptr) {
+      return new Cast_B_N(boo);
+   }
+
+   return parseNumber(tns2);
+}
+
+Generator<_str>* stringGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // cast from "bool" to "string"
+   Generator<_boo>* boo = parseBool(tns2);
+   if (boo != nullptr) {
+      return new Cast_B_S(boo);
+   }
+
+   // cast from "number" to "string"
+   Generator<_num>* num = parseNumber(tns2);
+   if (num != nullptr) {
+      return new Cast_N_S(num);
+   }
+
+   // cast from "time" to "string"
+   Generator<_tim>* tim = parseTime(tns2);
+   if (tim != nullptr) {
+      return new Cast_T_S(tim);
+   }
+
+   // cast from "period" to "string"
+   Generator<_per>* per = parsePeriod(tns2);
+   if (per != nullptr) {
+      return new Cast_P_S(per);
+   }
+
+   return parseString(tns2);
+}
+
+Generator<_nlist>* numListGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // cast from "bool" to "numList"
+   Generator<_boo>* boo = parseBool(tns2);
+   if (boo != nullptr) {
+      return new Cast_B_NL(boo);
+   }
+
+   // cast from "Number" to "numList"
+   Generator<_num>* num = parseNumber(tns2);
+   if (num != nullptr) {
+      return new Cast_N_NL(num);
+   }
+
+   return parseNumList(tns2);
+}
+
+Generator<_tlist>* timListGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // cast from "Time" to "timList"
+   Generator<_tim>* tim = parseTime(tns2);
+   if (tim != nullptr) {
+      return new Cast_T_TL(tim);
+   }
+
+   return parseTimList(tns2);
+}
+
+Generator<_list>* listGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // cast from "bool" to "list"
+   Generator<_boo>* boo = parseBool(tns2);
+   if (boo != nullptr) {
+      return new Cast_B_L(boo);
+   }
+
+   // cast from "number" to "list"
+   Generator<_num>* num = parseNumber(tns2);
+   if (num != nullptr) {
+      return new Cast_N_L(num);
+   }
+
+   // cast from "time" to "list"
+   Generator<_tim>* tim = parseTime(tns2);
+   if (tim != nullptr) {
+      return new Cast_T_L(tim);
+   }
+
+   // cast from "period" to "list"
+   Generator<_per>* per = parsePeriod(tns2);
+   if (per != nullptr) {
+      return new Cast_P_L(per);
+   }
+
+   // cast from "numList" to "list"
+   Generator<_nlist>* nlis = parseNumList(tns2);
+   if (nlis != nullptr) {
+      return new Cast_NL_L(nlis);
+   }
+
+   // cast from "timList" to "list"
+   Generator<_tlist>* tlis = parseTimList(tns2);
+   if (tlis != nullptr) {
+      return new Cast_TL_L(tlis);
+   }
+
+   // cast from "string" to "list"
+   Generator<_str>* str = parseString(tns2);
+   if (str != nullptr) {
+      return new Cast_S_L(str);
+   }
+
+   // cast from "definition" to "list"
+   _def* def = parseDefinition(tns2);
+   if (def != nullptr) {
+      return new Cast_D_L(def);
+   }
+
+   return parseList(tns2);
+}
+
+Generator<_tim>* timeGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // data type "time" does not contain any default casting
+   // so let us go straight to parsing
+
+   return parseTime(tns2);
+}
+
+Generator<_per>* periodGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // data type "period" does not contain any default casting
+   // so let us go straight to parsing
+
+   return parsePeriod(tns2);
+}
+
+_def* definitionGenerator(const Tokens& tns)
+{
+   const Tokens tns2 = prepareForGen(tns);
+
+   // data type "period" does not contain any default casting
+   // so let us go straight to parsing
+
+   return parseDefinition(tns2);
+}

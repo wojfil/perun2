@@ -1,0 +1,3 @@
+force copy 'bin\Release\uroboros.exe'
+  to 'f:\'
+  as 'uro.exe'

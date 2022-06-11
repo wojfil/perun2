@@ -1,0 +1,2 @@
+run 'windres wndres.rc wndres.o';
+delete 'bin\Release\uroboros.exe';

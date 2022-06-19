@@ -87,8 +87,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def != nullptr) {
+      _def* def;
+      if (parse(args[0], def)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -97,11 +97,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          return new F_AnyDef(def);
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list == nullptr) {
-         functionArgException(1, L"list", word);
-      }
-      else {
+      Generator<_list>* list;
+      if (parse(args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -109,21 +106,24 @@ Generator<_boo>* boolFunction(const Tokens& tks)
 
          return new F_Exist(list);
       }
+      else {
+         functionArgException(1, L"list", word);
+      }
    }
    else if (name == HASH_FUNC_ANY) {
       if (len == 0) {
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
          delete str;
          throw SyntaxException(L"the argument of function '" + word.originString
             + L"' cannot be resolved to a collection", word.line);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def != nullptr) {
+      _def* def;
+      if (parse(args[0], def)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -131,8 +131,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          return new F_AnyDef(def);
       }
 
-      Generator<_tlist>* tlist = timListGenerator(args[0]);
-      if (tlist != nullptr) {
+      Generator<_tlist>* tlist;
+      if (parse(args[0], tlist)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -140,8 +140,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          return new F_Any<_tim>(tlist);
       }
 
-      Generator<_nlist>* nlist = numListGenerator(args[0]);
-      if (nlist != nullptr) {
+      Generator<_nlist>* nlist;
+      if (parse(args[0], nlist)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -149,11 +149,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          return new F_Any<_num>(nlist);
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list == nullptr) {
-         functionArgException(1, L"list", word);
-      }
-      else {
+      Generator<_list>* list;
+      if (parse(args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -161,21 +158,24 @@ Generator<_boo>* boolFunction(const Tokens& tks)
 
          return new F_Any<_str>(list);
       }
+      else {
+         functionArgException(1, L"list", word);
+      }
    }
    else if (name == HASH_FUNC_ANYINSIDE) {
       if (len == 0) {
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str1 = stringGenerator(args[0]);
-      if (str1 != nullptr) {
+      Generator<_str>* str1;
+      if (parse(args[0], str1)) {
          delete str1;
          throw SyntaxException(L"first argument of function '" + word.originString
             + L"' cannot be resolved to a collection", word.line);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def == nullptr) {
+      _def* def;
+      if (!parse(args[0], def)) {
          functionArgException(1, L"definition", word);
       }
 
@@ -190,97 +190,83 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[1]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (parse(args[1], str)) {
+         return new F_AnyInside(def, str);
+      }
+      else {
          delete def;
          functionArgException(2, L"string", word);
       }
-      else {
-         return new F_AnyInside(def, str);
-      }
    }
    else if (name == HASH_FUNC_CONTAINS) {
-      if (len <= 1) {
+      if (len != 2) {
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
-         Generator<_str>* str2 = stringGenerator(args[1]);
-         if (str2 == nullptr) {
-            functionArgException(2, L"string", word);
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
+         Generator<_str>* str2;
+         if (parse(args[1], str2)) {
+            return new F_ContainsStr(str, str2);
          }
          else {
-            return new F_ContainsStr(str, str2);
+            delete str;
+            functionArgException(2, L"string", word);
          }
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def != nullptr) {
-         checkInOperatorCommaAmbiguity(word, args[0]);
-         Generator<_str>* str2 = stringGenerator(args[1]);
-         if (str2 == nullptr) {
+      checkInOperatorCommaAmbiguity(word, args[0]);
+
+      _def* def;
+      if (parse(args[0], def)) {
+         Generator<_str>* str2;
+         if (parse(args[1], str2)) {
+            return new F_ContainsDef(def, str2);
+         }
+         else {
             delete def;
             functionArgException(2, L"string", word);
          }
-         else {
-            if (len != 2) {
-               functionArgNumberException(len, word);
-            }
-            return new F_ContainsDef(def, str2);
-         }
       }
 
-      Generator<_tlist>* tlist = timListGenerator(args[0]);
-      if (tlist != nullptr) {
-         checkInOperatorCommaAmbiguity(word, args[0]);
-         Generator<_tim>* tim2 = timeGenerator(args[1]);
-         if (tim2 == nullptr) {
+      Generator<_tlist>* tlist;
+      if (parse(args[0], tlist)) {
+         Generator<_tim>* tim2;
+         if (parse(args[1], tim2)) {
+            return new F_ContainsCol<_tim>(tlist, tim2);
+         }
+         else {
             delete tlist;
             functionArgException(2, L"time", word);
          }
-         else {
-            if (len != 2) {
-               functionArgNumberException(len, word);
-            }
-            return new F_ContainsCol<_tim>(tlist, tim2);
-         }
       }
 
-      Generator<_nlist>* nlist = numListGenerator(args[0]);
-      if (nlist != nullptr) {
-         checkInOperatorCommaAmbiguity(word, args[0]);
-         Generator<_num>* num2 = numberGenerator(args[1]);
-         if (num2 == nullptr) {
+      Generator<_nlist>* nlist;
+      if (parse(args[0], nlist)) {
+         Generator<_num>* num2;
+         if (parse(args[1], num2)) {
+            return new F_ContainsCol<_num>(nlist, num2);
+         }
+         else {
             delete nlist;
             functionArgException(2, L"number", word);
          }
-         else {
-            if (len != 2) {
-               functionArgNumberException(len, word);
-            }
-            return new F_ContainsCol<_num>(nlist, num2);
-         }
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list == nullptr) {
-         checkInOperatorCommaAmbiguity(word, args[0]);
-         functionArgException(1, L"list", word);
-         throw SyntaxException(L"first argument of function '" + word.originString + L"' cannot be resolved to a string nor any collection", word.line);
-      }
-      else {
-         Generator<_str>* str2 = stringGenerator(args[1]);
-         if (str2 == nullptr) {
+      Generator<_list>* list;
+      if (parse(args[0], list)) {
+         Generator<_str>* str2;
+         if (parse(args[1], str2)) {
+            return new F_ContainsCol<_str>(list, str2);
+         }
+         else {
             delete list;
             functionArgException(2, L"string", word);
          }
-         else {
-            if (len != 2) {
-               functionArgNumberException(len, word);
-            }
-            return new F_ContainsCol<_str>(list, str2);
-         }
+      }
+      else {
+         throw SyntaxException(L"first argument of function '" + word.originString + L"' cannot be resolved to a string nor any collection", word.line);
       }
    }
    else if (name == HASH_FUNC_EXISTSINSIDE) {
@@ -288,8 +274,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str  = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 
@@ -298,13 +284,13 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          return new F_ExistsInside(str, new GeneratorRef<_str>(&g_this_s));
       }
 
-      Generator<_str>* str2 = stringGenerator(args[1]);
-      if (str2 == nullptr) {
-         delete str;
-         functionArgException(2, L"string", word);
+      Generator<_str>* str2;
+      if (parse(args[1], str2)) {
+         return new F_ExistsInside(str, str2);
       }
       else {
-         return new F_ExistsInside(str, str2);
+         delete str;
+         functionArgException(2, L"string", word);
       }
    }
    else if (name == HASH_FUNC_EXISTINSIDE) {
@@ -312,8 +298,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def != nullptr) {
+      _def* def;
+      if (parse(args[0], def)) {
          if (len == 1) {
             checkFunctionAttribute(word);
             return new F_AnyInside(def, new GeneratorRef<_str>(&g_this_s));
@@ -323,18 +309,19 @@ Generator<_boo>* boolFunction(const Tokens& tks)
             if (len > 2) {
                functionArgNumberException(len, word);
             }
-            Generator<_str>* str2 = stringGenerator(args[1]);
-            if (str2 == nullptr) {
-               functionArgException(2, L"string", word);
+
+            Generator<_str>* str2;
+            if (parse(args[1], str2)) {
+               return new F_AnyInside(def, str2);
             }
             else {
-               return new F_AnyInside(def, str2);
+               functionArgException(2, L"string", word);
             }
          }
       }
 
-      Generator<_list>* list  = listGenerator(args[0]);
-      if (list == nullptr) {
+      Generator<_list>* list;
+      if (!parse(args[0], list)) {
          functionArgException(1, L"list", word);
       }
 
@@ -348,13 +335,13 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str2 = stringGenerator(args[1]);
-      if (str2 == nullptr) {
-         delete list;
-         functionArgException(2, L"string", word);
+      Generator<_str>* str2;
+      if (parse(args[1], str2)) {
+         return new F_ExistInside(list, str2);
       }
       else {
-         return new F_ExistInside(list, str2);
+         delete list;
+         functionArgException(2, L"string", word);
       }
    }
    else if (name == HASH_FUNC_STARTSWITH) {
@@ -362,8 +349,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 
@@ -387,9 +374,6 @@ Generator<_boo>* boolFunction(const Tokens& tks)
             case Token::t_Number: {
                const _str conv = f.value.n.toString();
                switch (conv.size()) {
-                  case 0: {
-                     return new Constant<_boo>(true);
-                  }
                   case 1: {
                      const _char ch = conv[0];
                      return new F_StartsWithChar(str, ch);
@@ -402,20 +386,21 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          }
       }
 
-      Generator<_str>* str2 = stringGenerator(args[1]);
-      if (str2 == nullptr) {
+      Generator<_str>* str2;
+      if (parse(args[1], str2)) {
+         return new F_StartsWith(str, str2);
+      }
+      else {
          functionArgException(2, L"string", word);
       }
-
-      return new F_StartsWith(str, str2);
    }
    else if (name == HASH_FUNC_ENDSWITH) {
       if (len != 2) {
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 
@@ -439,9 +424,6 @@ Generator<_boo>* boolFunction(const Tokens& tks)
             case Token::t_Number: {
                const _str conv = f.value.n.toString();
                switch (conv.size()) {
-                  case 0: {
-                     return new Constant<_boo>(true);
-                  }
                   case 1: {
                      const _char ch = conv[0];
                      return new F_EndsWithChar(str, ch);
@@ -454,8 +436,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          }
       }
 
-      Generator<_str>* str2 = stringGenerator(args[1]);
-      if (str2 == nullptr) {
+      Generator<_str>* str2;
+      if (!parse(args[1], str2)) {
          functionArgException(2, L"string", word);
       }
 
@@ -467,9 +449,10 @@ Generator<_boo>* boolFunction(const Tokens& tks)
 
 static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word)
 {
-   Generator<_str>* arg1 = stringGenerator(tks);
-   if (arg1 == nullptr)
+   Generator<_str>* arg1;
+   if (!parse(tks, arg1)) {
       functionArgException(1, L"string", word);
+   }
 
    const _size& name = word.value.h1;
 
@@ -525,28 +508,29 @@ Generator<_num>* numberFunction(const Tokens& tks)
       if (len != 1)
          functionArgNumberException(len, word);
 
-      Generator<_str>* arg1 = stringGenerator(args[0]);
-      if (arg1 == nullptr) {
+      Generator<_str>* arg1;
+      if (parse(args[0], arg1)) {
+         return new F_Length(arg1);
+      }
+      else {
          throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string. "
             L"If you want to count elements in a collection, use function 'count' instead", word.line);
       }
-      else
-         return new F_Length(arg1);
    }
    else if (name == HASH_FUNC_FROMBINARY || name == HASH_FUNC_FROMHEX) {
       if (len != 1)
          functionArgNumberException(len, word);
 
-      Generator<_str>* arg1 = stringGenerator(args[0]);
+      Generator<_str>* arg1;
 
-      if (arg1 == nullptr) {
-         functionArgException(1, L"string", word);
-      }
-      else {
+      if (parse(args[0], arg1)) {
          if (name == HASH_FUNC_FROMBINARY)
             return new F_FromBinary(arg1);
          else
             return new F_FromHex(arg1);
+      }
+      else {
+         functionArgException(1, L"string", word);
       }
    }
    else if (name == HASH_VAR_SIZE) {
@@ -554,16 +538,16 @@ Generator<_num>* numberFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
          if (len != 1) {
             functionArgNumberException(len, word);
          }
          return new F_Size(str);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def != nullptr) {
+      _def* def;
+      if (parse(args[0], def)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -571,28 +555,29 @@ Generator<_num>* numberFunction(const Tokens& tks)
          return new F_SizeDefinition(def);
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list == nullptr) {
-         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string nor a list. ", word.line);
-      }
-      else {
+      Generator<_list>* list;
+      if (parse(args[0], list)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
          }
          return new F_SizeList(list);
       }
+      else {
+         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string nor a list", word.line);
+      }
    }
    else if (name == HASH_FUNC_NUMBER) {
       if (len != 1)
          functionArgNumberException(len, word);
 
-      Generator<_str>* arg1 = stringGenerator(args[0]);
-      if (arg1 == nullptr) {
-         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string. ", word.line);
-      }
-      else
+      Generator<_str>* arg1;
+      if (parse(args[0], arg1)) {
          return new F_Number(arg1);
+      }
+      else {
+         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string", word.line);
+      }
    }
    else if (name == HASH_FUNC_COUNT) {
       if (len == 0) {
@@ -606,17 +591,17 @@ Generator<_num>* numberFunction(const Tokens& tks)
 
       for (_size i = 0; i < len; i++) {
          const Tokens& tks = args[i];
-         Generator<_str>* str = stringGenerator(tks);
-         if (str != nullptr) {
+         Generator<_str>* str;
+         if (parse(tks, str)) {
             delete str;
 
             throw SyntaxException(ordinalNumber(i + 1)
-               + L" argument of the function '" + word.originString + L"' "
-               L"is not a collection", word.line);
+               + L" argument of the function '" + word.originString
+               + L"' is not a collection", word.line);
          }
 
-         Generator<_tlist>* tlist = timListGenerator(tks);
-         if (tlist != nullptr) {
+         Generator<_tlist>* tlist;
+         if (parse(tks, tlist)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i]);
             }
@@ -624,8 +609,8 @@ Generator<_num>* numberFunction(const Tokens& tks)
             continue;
          }
 
-         Generator<_nlist>* nlist = numListGenerator(tks);
-         if (nlist != nullptr) {
+         Generator<_nlist>* nlist;
+         if (parse(tks, nlist)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i]);
             }
@@ -633,8 +618,8 @@ Generator<_num>* numberFunction(const Tokens& tks)
             continue;
          }
 
-         _def* def = definitionGenerator(tks);
-         if (def != nullptr) {
+         _def* def;
+         if (parse(tks, def)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i]);
             }
@@ -642,8 +627,8 @@ Generator<_num>* numberFunction(const Tokens& tks)
             continue;
          }
 
-         Generator<_list>* list = listGenerator(tks);
-         if (list != nullptr) {
+         Generator<_list>* list;
+         if (parse(tks, list)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i]);
             }
@@ -705,8 +690,8 @@ Generator<_num>* numberFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def == nullptr) {
+      _def* def;
+      if (!parse(args[0], def)) {
          functionArgException(1, L"definition", word);
       }
 
@@ -720,25 +705,26 @@ Generator<_num>* numberFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[1]);
-      if (str == nullptr) {
-         delete def;
-         functionArgException(2, L"string", word);
+      Generator<_str>* str;
+      if (parse(args[1], str)) {
+         return new F_CountInside(def, str);
       }
       else {
-         return new F_CountInside(def, str);
+         delete def;
+         functionArgException(2, L"string", word);
       }
    }
    else if (name == HASH_FUNC_POWER) {
       if (len != 2)
          functionArgNumberException(len, word);
 
-      Generator<_num>* arg1 = numberGenerator(args[0]);
-      if (arg1 == nullptr)
+      Generator<_num>* arg1;
+      if (!parse(args[0], arg1)) {
          functionArgException(1, L"number", word);
+      }
 
-      Generator<_num>* arg2 = numberGenerator(args[1]);
-      if (arg2 == nullptr) {
+      Generator<_num>* arg2;
+      if (!parse(args[1], arg2)) {
          delete arg1;
          functionArgException(2, L"number", word);
       }
@@ -758,16 +744,16 @@ Generator<_num>* numberFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
          delete str;
 
          throw SyntaxException(L"function '" + word.originString
             + L"' can only take a collection of values as an argument", word.line);
       }
 
-      Generator<_nlist>* nlist = numListGenerator(args[0]);
-      if (nlist != nullptr) {
+      Generator<_nlist>* nlist;
+      if (parse(args[0], nlist)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -790,13 +776,13 @@ Generator<_num>* numberFunction(const Tokens& tks)
          return new F_Random();
       }
 
-      Generator<_num>* num = numberGenerator(args[0]);
-      if (num != nullptr) {
+      Generator<_num>* num;
+      if (parse(args[0], num)) {
          return new F_RandomNumber(num);
       }
 
-      Generator<_nlist>* nlist = numListGenerator(args[0]);
-      if (nlist != nullptr) {
+      Generator<_nlist>* nlist;
+      if (parse(args[0], nlist)) {
          return new F_RandomElement<_num>(nlist);
       }
    }
@@ -806,26 +792,27 @@ Generator<_num>* numberFunction(const Tokens& tks)
 
 static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word)
 {
-   Generator<_num>* arg1 = numberGenerator(tks);
-   if (arg1 == nullptr)
+   Generator<_num>* arg;
+   if (!parse(tks, arg)) {
       functionArgException(1, L"number", word);
+   }
 
    const _size& name = word.value.h1;
 
    if (name == HASH_FUNC_ABSOLUTE)
-      return new F_Absolute(arg1);
+      return new F_Absolute(arg);
    else if (name == HASH_FUNC_CEIL)
-      return new F_Ceil(arg1);
+      return new F_Ceil(arg);
    else if (name == HASH_FUNC_FLOOR)
-      return new F_Floor(arg1);
+      return new F_Floor(arg);
    else if (name == HASH_FUNC_ROUND)
-      return new F_Round(arg1);
+      return new F_Round(arg);
    else if (name == HASH_FUNC_SIGN)
-      return new F_Sign(arg1);
+      return new F_Sign(arg);
    else if (name == HASH_FUNC_SQRT)
-      return new F_Sqrt(arg1);
+      return new F_Sqrt(arg);
    else if (name == HASH_FUNC_TRUNCATE)
-      return new F_Truncate(arg1);
+      return new F_Truncate(arg);
    else
       return nullptr;
 }
@@ -834,32 +821,30 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
 {
    const _size& name = word.value.h1;
 
-   std::vector<Generator<_num>*>* singles =
-      new std::vector<Generator<_num>*>();
-   std::vector<Generator<_nlist>*>* multis =
-      new std::vector<Generator<_nlist>*>();
+   std::vector<Generator<_num>*>* singles = new std::vector<Generator<_num>*>();
+   std::vector<Generator<_nlist>*>* multis = new std::vector<Generator<_nlist>*>();
 
    const _size len = args.size();
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = args[i];
 
-      Generator<_num>* num = numberGenerator(tks);
-      if (num != nullptr) {
+      Generator<_num>* num;
+      if (parse(tks, num)) {
          singles->push_back(num);
       }
       else {
-         Generator<_nlist>* nlist = numListGenerator(tks);
-         if (nlist == nullptr) {
+         Generator<_nlist>* nlist;
+         if (parse(tks, nlist)) {
+            multis->push_back(nlist);
+         }
+         else {
             deleteVectorPtr(singles);
             deleteVectorPtr(multis);
 
             throw SyntaxException(ordinalNumber(i + 1)
                + L" argument of aggregate function '" + word.originString
                + L"' cannot be resolved to a number nor a numeric list", word.line);
-         }
-         else {
-            multis->push_back(nlist);
          }
       }
    }
@@ -889,12 +874,12 @@ Generator<_per>* periodFunction(const Tokens& tks)
       if (len != 1)
          functionArgNumberException(len, word);
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
-         functionArgException(1, L"string", word);
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
+         return new F_Lifetime(str);
       }
       else {
-         return new F_Lifetime(str);
+         functionArgException(1, L"string", word);
       }
    }
 
@@ -930,13 +915,13 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 
-      Generator<_num>* num = numberGenerator(args[1]);
-      if (num == nullptr) {
+      Generator<_num>* num;
+      if (!parse(args[1], num)) {
          delete str;
          functionArgException(2, L"number", word);
       }
@@ -955,19 +940,19 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str1 = stringGenerator(args[0]);
-      if (str1 == nullptr) {
+      Generator<_str>* str1;
+      if (!parse(args[0], str1)) {
          functionArgException(1, L"string", word);
       }
 
-      Generator<_str>* str2 = stringGenerator(args[1]);
-      if (str2 == nullptr) {
+      Generator<_str>* str2;
+      if (!parse(args[1], str2)) {
          delete str1;
          functionArgException(2, L"string", word);
       }
 
-      Generator<_str>* str3 = stringGenerator(args[2]);
-      if (str3 == nullptr) {
+      Generator<_str>* str3;
+      if (!parse(args[2], str3)) {
          delete str1;
          delete str2;
          functionArgException(3, L"string", word);
@@ -981,13 +966,13 @@ Generator<_str>* stringFunction(const Tokens& tks)
             L" two or three arguments", word.line);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 
-      Generator<_num>* num = numberGenerator(args[1]);
-      if (num == nullptr) {
+      Generator<_num>* num;
+      if (!parse(args[1], num)) {
          delete str;
          functionArgException(2, L"number", word);
       }
@@ -996,8 +981,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          return new F_Substring_2(str, num);
       }
 
-      Generator<_num>* num2 = numberGenerator(args[2]);
-      if (num2 == nullptr) {
+      Generator<_num>* num2;
+      if (!parse(args[2], num2)) {
          delete str;
          delete num;
          functionArgException(3, L"number", word);
@@ -1013,24 +998,24 @@ Generator<_str>* stringFunction(const Tokens& tks)
       std::vector<Generator<_str>*>* values = new std::vector<Generator<_str>*>();
 
       for (_size i = 0; i < len; i++) {
-         Generator<_str>* str = stringGenerator(args[i]);
-         if (str != nullptr) {
+         Generator<_str>* str;
+         if (parse(args[i], str)) {
             values->push_back(str);
             continue;
          }
 
-         Generator<_list>* list = listGenerator(args[i]);
-         if (list == nullptr) {
-            deleteVectorPtr(values);
-
-            throw SyntaxException(ordinalNumber(i + 1)
-               + L" argument of the function '" + word.originString + L"' cannot be resolved to any data type", word.line);
-         }
-         else {
+         Generator<_list>* list;
+         if (parse(args[i], list)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i]);
             }
             values->push_back(new F_ConcatenateUnit(list));
+         }
+         else {
+            deleteVectorPtr(values);
+
+            throw SyntaxException(ordinalNumber(i + 1)
+               + L" argument of the function '" + word.originString + L"' cannot be resolved to any data type", word.line);
          }
       }
 
@@ -1041,16 +1026,16 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
          delete str;
 
          throw SyntaxException(L"function '" + word.originString
             + L"' can only take a collection of values as an argument", word.line);
       }
 
-      _def* def = definitionGenerator(args[0]);
-      if (def != nullptr) {
+      _def* def;
+      if (parse(args[0], def)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -1064,8 +1049,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          }
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list != nullptr) {
+      Generator<_list>* list;
+      if (parse(args[0], list)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -1092,8 +1077,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          std::vector<Generator<_str>*>* values = new std::vector<Generator<_str>*>();
 
          for (_size i = 0; i < len; i++) {
-            Generator<_str>* str = stringGenerator(args[i]);
-            if (str == nullptr) {
+            Generator<_str>* str;
+            if (!parse(args[i], str)) {
                deleteVectorPtr(values);
                functionArgException(i + 1, L"string", word);
             }
@@ -1104,8 +1089,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          return new F_Path_Multi(values);
       }
       else {
-         Generator<_str>* str1 = stringGenerator(args[0]);
-         if (str1 == nullptr) {
+         Generator<_str>* str1;
+         if (!parse(args[0], str1)) {
             functionArgException(1, L"string", word);
          }
 
@@ -1113,8 +1098,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
             return new F_Path(str1);
          }
 
-         Generator<_str>* str2 = stringGenerator(args[1]);
-         if (str2 == nullptr) {
+         Generator<_str>* str2;
+         if (!parse(args[1], str2)) {
             delete str1;
             functionArgException(2, L"string", word);
          }
@@ -1123,8 +1108,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
             return new F_Path_2(str1, str2);
          }
 
-         Generator<_str>* str3 = stringGenerator(args[2]);
-         if (str3 == nullptr) {
+         Generator<_str>* str3;
+         if (!parse(args[2], str3)) {
             delete str1;
             delete str2;
             functionArgException(3, L"string", word);
@@ -1134,8 +1119,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
             return new F_Path_3(str1, str2, str3);
          }
 
-         Generator<_str>* str4 = stringGenerator(args[3]);
-         if (str4 == nullptr) {
+         Generator<_str>* str4;
+         if (!parse(args[3], str4)) {
             delete str1;
             delete str2;
             delete str3;
@@ -1150,23 +1135,23 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_boo>* boo = boolGenerator(args[0]);
-      if (boo != nullptr) {
+      Generator<_boo>* boo;
+      if (parse(args[0], boo)) {
          return new F_String_B(boo);
       }
 
-      Generator<_num>* num = numberGenerator(args[0]);
-      if (num != nullptr) {
+      Generator<_num>* num;
+      if (parse(args[0], num)) {
          return new F_String_N(num);
       }
 
-      Generator<_tim>* tim = timeGenerator(args[0]);
-      if (tim != nullptr) {
+      Generator<_tim>* tim;
+      if (parse(args[0], tim)) {
          return new F_String_T(tim);
       }
 
-      Generator<_per>* per = periodGenerator(args[0]);
-      if (per != nullptr) {
+      Generator<_per>* per;
+      if (parse(args[0], per)) {
          return new F_String_P(per);
       }
 
@@ -1178,11 +1163,9 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_num>* num = numberGenerator(args[0]);
-      if (num == nullptr) {
-         functionArgException(1, L"number", word);
-      }
-      else {
+      Generator<_num>* num;
+
+      if (parse(args[0], num)) {
          if (name == HASH_FUNC_ROMAN)
             return new F_Roman(num);
          else if (name == HASH_FUNC_BINARY)
@@ -1190,14 +1173,17 @@ Generator<_str>* stringFunction(const Tokens& tks)
          else if (name == HASH_FUNC_HEX)
             return new F_Hex(num);
       }
+      else {
+         functionArgException(1, L"number", word);
+      }
    }
    else if (name == HASH_FUNC_MONTHNAME) {
       if (len != 1) {
          functionArgNumberException(len, word);
       }
 
-      Generator<_num>* num = numberGenerator(args[0]);
-      if (num != nullptr) {
+      Generator<_num>* num;
+      if (parse(args[0], num)) {
          return new F_MonthName(num);
       }
       else {
@@ -1209,8 +1195,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_num>* num = numberGenerator(args[0]);
-      if (num != nullptr) {
+      Generator<_num>* num;
+      if (parse(args[0], num)) {
          return new F_WeekDayName(num);
       }
       else {
@@ -1222,16 +1208,16 @@ Generator<_str>* stringFunction(const Tokens& tks)
          return nullptr;
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
          if (len > 1) {
             functionArgNumberException(len, word);
          }
          return new F_RandomChar(str);
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list != nullptr) {
+      Generator<_list>* list;
+      if (parse(args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -1248,8 +1234,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_list>* list = listGenerator(args[0]);
-      if (list == nullptr) {
+      Generator<_list>* list;
+      if (!parse(args[0], list)) {
          functionArgException(1, L"list", word);
       }
 
@@ -1264,8 +1250,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[1]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[1], str)) {
          functionArgException(2, L"string", word);
       }
 
@@ -1277,12 +1263,13 @@ Generator<_str>* stringFunction(const Tokens& tks)
 
 static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word)
 {
-   Generator<_str>* arg1 = stringGenerator(args[0]);
-   if (arg1 == nullptr)
+   Generator<_str>* arg1;
+   if (!parse(args[0], arg1)) {
       functionArgException(1, L"string", word);
+   }
 
-   Generator<_str>* arg2 = stringGenerator(args[1]);
-   if (arg2 == nullptr) {
+   Generator<_str>* arg2;
+   if (!parse(args[1], arg2)) {
       delete arg1;
       functionArgException(2, L"string", word);
    }
@@ -1299,8 +1286,8 @@ static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, co
 
 static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word)
 {
-   Generator<_str>* arg1 = stringGenerator(tks);
-   if (arg1 == nullptr) {
+   Generator<_str>* arg1;
+   if (!parse(tks, arg1)) {
       functionArgException(1, L"string", word);
    }
 
@@ -1361,9 +1348,10 @@ Generator<_tim>* timeFunction(const Tokens& tks)
       if (len != 1)
          functionArgNumberException(len, word);
 
-      Generator<_str>* arg1 = stringGenerator(args[0]);
-      if (arg1 == nullptr)
+      Generator<_str>* arg1;
+      if (!parse(args[0], arg1)) {
          functionArgException(1, L"string", word);
+      }
 
       if (name == HASH_VAR_ACCESS)
          return new F_Access(arg1);
@@ -1379,18 +1367,19 @@ Generator<_tim>* timeFunction(const Tokens& tks)
       if (len != 3)
          functionArgNumberException(len, word);
 
-      Generator<_num>* arg1 = numberGenerator(args[0]);
-      if (arg1 == nullptr)
+      Generator<_num>* arg1;
+      if (!parse(args[0], arg1)) {
          functionArgException(1, L"number", word);
+      }
 
-      Generator<_num>* arg2 = numberGenerator(args[1]);
-      if (arg2 == nullptr) {
+      Generator<_num>* arg2;
+      if (!parse(args[1], arg2)) {
          delete arg1;
          functionArgException(2, L"number", word);
       }
 
-      Generator<_num>* arg3 = numberGenerator(args[2]);
-      if (arg3 == nullptr) {
+      Generator<_num>* arg3;
+      if (!parse(args[2], arg3)) {
          delete arg1;
          delete arg2;
          functionArgException(3, L"number", word);
@@ -1403,12 +1392,13 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_num>* arg1 = numberGenerator(args[0]);
-      if (arg1 == nullptr)
+      Generator<_num>* arg1;
+      if (!parse(args[0], arg1)) {
          functionArgException(1, L"number", word);
+      }
 
-      Generator<_num>* arg2 = numberGenerator(args[1]);
-      if (arg2 == nullptr) {
+      Generator<_num>* arg2;
+      if (!parse(args[1], arg2)) {
          delete arg1;
          functionArgException(2, L"number", word);
       }
@@ -1417,8 +1407,8 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          return new F_Time_2(arg1, arg2);
       }
 
-      Generator<_num>* arg3 = numberGenerator(args[2]);
-      if (arg3 == nullptr) {
+      Generator<_num>* arg3;
+      if (!parse(args[2], arg3)) {
          delete arg1;
          delete arg2;
          functionArgException(3, L"number", word);
@@ -1428,16 +1418,16 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          return new F_Time_3(arg1, arg2, arg3);
       }
 
-      Generator<_num>* arg4 = numberGenerator(args[3]);
-      if (arg4 == nullptr) {
+      Generator<_num>* arg4;
+      if (!parse(args[3], arg4)) {
          delete arg1;
          delete arg2;
          delete arg3;
          functionArgException(4, L"number", word);
       }
 
-      Generator<_num>* arg5 = numberGenerator(args[4]);
-      if (arg5 == nullptr) {
+      Generator<_num>* arg5;
+      if (!parse(args[4], arg5)) {
          delete arg1;
          delete arg2;
          delete arg3;
@@ -1449,8 +1439,8 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          return new F_Time_5(arg1, arg2, arg3, arg4, arg5);
       }
 
-      Generator<_num>* arg6 = numberGenerator(args[5]);
-      if (arg6 == nullptr) {
+      Generator<_num>* arg6;
+      if (!parse(args[5], arg6)) {
          delete arg1;
          delete arg2;
          delete arg3;
@@ -1466,16 +1456,16 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(args[0], str)) {
          delete str;
 
          throw SyntaxException(L"function '" + word.originString
             + L"' can only take a collection of values as an argument", word.line);
       }
 
-      Generator<_tlist>* tlist = timListGenerator(args[0]);
-      if (tlist != nullptr) {
+      Generator<_tlist>* tlist;
+      if (parse(args[0], tlist)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0]);
             functionArgNumberException(len, word);
@@ -1498,8 +1488,8 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          return nullptr;
       }
 
-      Generator<_tlist>* tlist = timListGenerator(args[0]);
-      if (tlist != nullptr) {
+      Generator<_tlist>* tlist;
+      if (parse(args[0], tlist)) {
          return new F_RandomElement<_tim>(tlist);
       }
    }
@@ -1509,8 +1499,8 @@ Generator<_tim>* timeFunction(const Tokens& tks)
 
 static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word)
 {
-   Generator<_num>* arg1 = numberGenerator(tks);
-   if (arg1 == nullptr) {
+   Generator<_num>* arg1;
+   if (!parse(tks, arg1)) {
       functionArgException(1, L"number", word);
    }
 
@@ -1586,8 +1576,8 @@ Generator<_list>* listFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 
@@ -1601,13 +1591,13 @@ Generator<_list>* listFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str1 = stringGenerator(args[0]);
-      if (str1 == nullptr) {
+      Generator<_str>* str1;
+      if (!parse(args[0], str1)) {
          functionArgException(1, L"string", word);
       }
 
-      Generator<_str>* str2 = stringGenerator(args[1]);
-      if (str2 == nullptr) {
+      Generator<_str>* str2;
+      if (!parse(args[1], str2)) {
          delete str1;
          functionArgException(2, L"string", word);
       }
@@ -1631,8 +1621,8 @@ Generator<_nlist>* numListFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str = stringGenerator(args[0]);
-      if (str == nullptr) {
+      Generator<_str>* str;
+      if (!parse(args[0], str)) {
          functionArgException(1, L"string", word);
       }
 

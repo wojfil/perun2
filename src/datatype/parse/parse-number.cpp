@@ -13,16 +13,17 @@
 */
 
 #include "parse-number.h"
+#include "parse-generic.h"
 #include "../function.h"
 #include "../generator/gen-number.h"
 #include "../generator/gen-generic.h"
+#include "../parse-gen.h"
 #include "../../brackets.h"
 #include "../../hash.h"
 
 
-// in an expression, minus sign can either mean
-// subtraction operation (x-y)   or unary negation (-x)
-// ~ is used internally to distinguish them and means unary negation
+// within an expression, minus sign can either mean subtraction operation (x-y) or unary negation (-x)
+// this sign is used to distinguish them
 const _char UNARY_MINUS = L'~';
 
 
@@ -36,15 +37,16 @@ Generator<_num>* parseNumber(const Tokens& tks)
             return new Constant<_num>(f.value.n);
          }
          case Token::t_Word: {
-            return getVarValueNum(f);
+            Generator<_num>* var;
+            return getVarValue(f, var) ? var : nullptr;
          }
          case Token::t_TwoWords: {
             if (f.value.h1 == HASH_NOTHING) {
                throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
             }
 
-            Generator<_tim>* var = getVarValueTim(f);
-            if (var == nullptr) {
+            Generator<_tim>* var;
+            if (!getVarValue(f, var)) {
                throw SyntaxException(L"time variable from expression '" + f.originString +
                   L"' does not exist or is unreachable here", f.line);
             }
@@ -111,12 +113,13 @@ Generator<_num>* parseNumber(const Tokens& tks)
 
                for (_size i = 0; i < elen; i++) {
                   const Tokens& tkse = elements[i];
-                  Generator<_str>* str = stringGenerator(tkse);
-                  if (str == nullptr) {
-                     throw SyntaxException(L"syntax of an expression is not valid", tkse.first().line);
+                  Generator<_str>* str;
+
+                  if (parse(tkse, str)) {
+                     delete str;
                   }
                   else {
-                     delete str;
+                     throw SyntaxException(L"syntax of an expression is not valid", tkse.first().line);
                   }
                }
             }
@@ -129,32 +132,26 @@ Generator<_num>* parseNumber(const Tokens& tks)
       if (!anyOperator && tks.first().isSymbol(L'-')) {
          Tokens tks2(tks);
          tks2.trimLeft();
-         Generator<_num>* num = numberGenerator(tks2);
-         if (num == nullptr) {
-            Generator<_per>* per = periodGenerator(tks2);
-            if (per == nullptr) {
-               throw SyntaxException(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
-            }
-            else {
-               delete per;
-            }
+         Generator<_num>* num;
+
+         if (parse(tks2, num)) {
+            return new Negation(num);
          }
          else {
-            return new Negation(num);
+            Generator<_per>* per;
+            if (parse(tks2, per)) {
+               delete per;
+            }
+            else {
+               throw SyntaxException(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
+            }
          }
       }
    }
 
-   if (isPossibleListElement(tks)) {
-      Generator<_num>* num = parseListElementIndex(tks);
-      const Token& f = tks.first();
-      Generator<_nlist>* nlist = getVarValueNlist(f);
-      if (nlist == nullptr) {
-         delete num;
-      }
-      else {
-         return new ListElement<_num>(nlist, num);
-      }
+   Generator<_num>* el = parseCollectionElement<_num>(tks);
+   if (el != nullptr) {
+      return el;
    }
 
    if (isPossibleListElementMember(tks)) {
@@ -163,11 +160,8 @@ Generator<_num>* parseNumber(const Tokens& tks)
 
       Generator<_num>* num = parseListElementIndex(tksm);
       const Token& f = tks.first();
-      Generator<_tlist>* tlist = getVarValueTlist(f);
-      if (tlist == nullptr) {
-         delete num;
-      }
-      else {
+      Generator<_tlist>* tlist;
+      if (getVarValue(f, tlist)) {
          const Token& last = tks.last();
          const _size& h = last.value.h2;
 
@@ -190,72 +184,24 @@ Generator<_num>* parseNumber(const Tokens& tks)
          else
             timeVariableMemberException(last);
       }
-   }
-
-   if (isPossibleBinary(tks)) {
-      Generator<_num>* bin = parseNumBinary(tks);
-      if (bin != nullptr) {
-         return bin;
+      else {
+         delete num;
       }
    }
 
-   if (isPossibleTernary(tks)) {
-      Generator<_num>* tern = parseNumTernary(tks);
-      if (tern != nullptr) {
-         return tern;
-      }
+   Generator<_num>* bin = parseBinary<_num>(tks);
+   if (bin != nullptr) {
+      return bin;
+   }
+
+   Generator<_num>* tern = parseTernary<_num>(tks);
+   if (tern != nullptr) {
+      return tern;
    }
 
    return nullptr;
 }
 
-static Generator<_num>* parseNumBinary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   tks.divideBySymbol(L'?', tks1, tks2);
-
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_num>* value = numberGenerator(tks2);
-   if (value == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   return new Binary<_num>(condition, value);
-}
-
-static Generator<_num>* parseNumTernary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
-
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_num>* left = numberGenerator(tks2);
-   if (left == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   Generator<_num>* right = numberGenerator(tks3);
-   if (right == nullptr) {
-      delete condition;
-      delete left;
-      return nullptr;
-   }
-
-   return new Ternary<_num>(condition, left, right);
-}
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
@@ -293,8 +239,8 @@ static Generator<_num>* parseNumExp(const Tokens& tks)
                      sublen = 0;
                   }
                   else {
-                     Generator<_num>* num = numberGenerator(tks2);
-                     if (num != nullptr) {
+                     Generator<_num>* num;
+                     if (parse(tks2, num)) {
                         infList.push_back(new ExpElement<_num>(num));
                         infList.push_back(new ExpElement<_num>(ch));
                         sublen = 0;
@@ -367,14 +313,13 @@ static Generator<_num>* parseNumExp(const Tokens& tks)
          infList.push_back(new ExpElement<_num>(tks2.first().value.n));
       }
       else {
-         Generator<_num>* num = numberGenerator(tks2);
-
-         if (num == nullptr) {
-            deleteVector(infList);
-            return nullptr;
+         Generator<_num>* num;
+         if (parse(tks2, num)) {
+            infList.push_back(new ExpElement<_num>(num));
          }
          else {
-            infList.push_back(new ExpElement<_num>(num));
+            deleteVector(infList);
+            return nullptr;
          }
       }
    }
@@ -483,6 +428,7 @@ static Generator<_num>* numExpIntegrateUnary(
 
             if (e->type == ElementType::et_Constant) {
                const _num value = -(e->constant);
+               // delete e;
                newElement = new ExpElement<_num>(value);
             }
             else {
@@ -551,6 +497,8 @@ static Generator<_num>* numExpTreeMerge(
                   }
                }
 
+               //delete firstElement;
+               //delete secondElement;
                newElement = new ExpElement<_num>(value);
             }
             else {
@@ -627,8 +575,8 @@ static Generator<_num>* numExpTreeMerge2(
                }
             }
 
-            delete first;
-            delete second;
+            //delete first;
+            //delete second;
             first = new Constant<_num>(value);
          }
          else {
@@ -768,4 +716,3 @@ void timeVariableMemberException(const Token& tk)
 {
    throw SyntaxException(L"'" + tk.originString2 + L"' is not a time variable member", tk.line);
 }
-

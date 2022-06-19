@@ -15,18 +15,13 @@
 #ifndef PARSE_NUMLIST_H
 #define PARSE_NUMLIST_H
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
+
 
 Generator<_nlist>* parseNumList(const Tokens& tks);
 
-static Generator<_nlist>* parseNlistBinary(const Tokens& tks);
-static Generator<_nlist>* parseNlistTernary(const Tokens& tks);
 static Generator<_nlist>* parseNumListed(const Tokens& tks);
 Generator<_nlist>* parseNumListConst(const Tokens& tks);
-static Generator<_nlist>* parseListedNums(const std::vector<Tokens>& elements);
-static Generator<_nlist>* parseListedNumLists
-   (const std::vector<Tokens>& elements);
-static Generator<_nlist>* parseNumListFilter(const Tokens& tks);
 
 #endif /* PARSE_NUMLIST_H */
 

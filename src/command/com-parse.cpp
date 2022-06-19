@@ -121,7 +121,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       return com;
    }
 
-   // buuld "times"
+   // build "times"
    Tokens left(tks.list, leftStart, leftLen);
    const Token& leftLast = left.last();
    if (leftLast.isKeyword(Keyword::kw_Times)) {
@@ -135,8 +135,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return nullptr;
       }
 
-      Generator<_num>* num = numberGenerator(left);
-      if (num == nullptr) {
+      Generator<_num>* num;
+      if (!parse(left, num)) {
          throw SyntaxException(
             L"keyword '" + leftLast.originString + L"' is not preceded by a valid number",
             leftLast.line);
@@ -171,8 +171,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          throw SyntaxException(L"structure '" + leftFirst.originString + L"' is empty. It would either never run or cause an infinite loop", leftFirst.line);
       }
 
-      Generator<_boo>* boo = boolGenerator(left);
-      if (boo == nullptr) {
+      Generator<_boo>* boo;
+      if (parse(left, boo)) {
          throw SyntaxException(
             L"keyword '" + leftFirst.originString + L"' is not followed by a valid condition",
             leftFirst.line);
@@ -229,13 +229,13 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return new CS_InsideString(tr, com, attr, aggr, hasMemory);
       }
 
-      Generator<_str>* str = stringGenerator(left);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(left, str)) {
          return new CS_InsideString(str, com, attr, aggr, hasMemory);
       }
 
-      _def* def = definitionGenerator(left);
-      if (def != nullptr) {
+      _def* def;
+      if (parse(left, def)) {
          if (attr->markToEvaluate) {
             return new CS_InsideList(new Cast_D_L(def), com, attr, aggr, hasMemory);
          }
@@ -244,8 +244,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
       }
 
-      Generator<_list>* list = listGenerator(left);
-      if (list == nullptr) {
+      Generator<_list>* list;
+      if (parse(left, list)) {
          throw SyntaxException(L"keyword '" + leftFirst.originString + L"' is not followed by a valid "
             L"declaration of string or list",
             leftFirst.line);
@@ -263,8 +263,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
             leftFirst.line);
       }
 
-      Generator<_boo>* boo = boolGenerator(left);
-      if (boo == nullptr) {
+      Generator<_boo>* boo;
+      if (parse(left, boo)) {
          throw SyntaxException(
             L"keyword '" + leftFirst.originString + L"' is not followed by a valid condition",
             leftFirst.line);
@@ -326,8 +326,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
                leftFirst.line);
          }
 
-         Generator<_boo>* boo = boolGenerator(left);
-         if (boo == nullptr) {
+         Generator<_boo>* boo;
+         if (parse(left, boo)) {
             throw SyntaxException(
             L"keywords '" + leftFirst.originString + L" " + ifToken.originString + L"' are not followed by a valid condition",
                leftFirst.line);
@@ -359,8 +359,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    Tokens right(tks.list, rightStart, rightLen);
 
    // time list loop
-   Generator<_tlist>* tlist = timListGenerator(left);
-   if (tlist != nullptr) {
+   Generator<_tlist>* tlist;
+   if (parse(left, tlist)) {
       g_thisstate = ThisState::ts_Time;
       Aggregate* aggr = new Aggregate();
       addAggregate(aggr);
@@ -376,8 +376,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    }
 
    // number list loop
-   Generator<_nlist>* nlist = numListGenerator(left);
-   if (nlist != nullptr) {
+   Generator<_nlist>* nlist;
+   if (parse(left, nlist)) {
       g_thisstate = ThisState::ts_Number;
       Aggregate* aggr = new Aggregate();
       addAggregate(aggr);
@@ -393,8 +393,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    }
 
    // string loop
-   Generator<_str>* str = stringGenerator(left);
-   if (str != nullptr) {
+   Generator<_str>* str;
+   if (parse(left, str)) {
       const _boo hasMemory = anyAttribute();
       g_thisstate = ThisState::ts_String;
       Attribute* attr = new Attribute();
@@ -414,8 +414,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    }
 
    // definition loop
-   _def* def = definitionGenerator(left);
-   if (def != nullptr) {
+   _def* def;
+   if (parse(left, def)) {
       const _boo hasMemory = anyAttribute();
       g_thisstate = ThisState::ts_String;
       Attribute* attr = new Attribute();
@@ -442,8 +442,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    }
 
    // list loop
-   Generator<_list>* lst = listGenerator(left);
-   if (lst != nullptr) {
+   Generator<_list>* lst;
+   if (parse(left, lst)) {
       const _boo hasMemory = anyAttribute();
       g_thisstate = ThisState::ts_String;
       Attribute* attr = new Attribute();
@@ -640,9 +640,9 @@ static Command* commandMisc(const Tokens& tks)
 
          if (first.type == Token::t_Word) {
             if (tks.getLength() == 3) {
-               ParseVariable<_num>* pv_num = getVarPtrNum(first);
+               ParseVariable<_num>* pv_num;
 
-               if (pv_num == nullptr) {
+               if (!getVarPtr(first, pv_num)) {
                   throw SyntaxException(L"variable '" + first.originString +
                      L"' cannot be " + op, first.line);
                }
@@ -661,9 +661,9 @@ static Command* commandMisc(const Tokens& tks)
 
                if (varSquareBrackets(tks2)) {
                   Generator<_num>* index = parseListElementIndex(tks2);
-                  ParseVariable<_nlist>* pv_nlist = getVarPtrNlist(first);
+                  ParseVariable<_nlist>* pv_nlist;
 
-                  if (pv_nlist == nullptr) {
+                  if (!getVarPtr(first, pv_nlist)) {
                      throw SyntaxException(L"variable '" + first.originString +
                         L"' cannot be " + op, first.line);
                   }
@@ -682,9 +682,9 @@ static Command* commandMisc(const Tokens& tks)
                throw SyntaxException(L"the dot . should be preceded by a time variable name", first.line);
             }
 
-            ParseVariable<_tim>* pv_tim = getVarPtrTim(first);
+            ParseVariable<_tim>* pv_tim;
 
-            if (pv_tim == nullptr) {
+            if (!getVarPtr(first, pv_tim)) {
                throw SyntaxException(L"time variable from expression '" + first.originString
                   + L"' does not exist or is unreachable here", first.line);
             }
@@ -734,18 +734,18 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
    if (left.getLength() > 1) {
       if (varSquareBrackets(left)) {
-         ParseVariable<_list>* pv_list = getVarPtrList(first);
-         ParseVariable<_nlist>* pv_nlist = getVarPtrNlist(first);
-         ParseVariable<_tlist>* pv_tlist = getVarPtrTlist(first);
+         ParseVariable<_list>* pv_list;
+         ParseVariable<_nlist>* pv_nlist;
+         ParseVariable<_tlist>* pv_tlist;
 
-         if (pv_list != nullptr || pv_nlist != nullptr || pv_tlist != nullptr) {
+         if (getVarPtr(first, pv_list) || getVarPtr(first, pv_nlist) || getVarPtr(first, pv_tlist)) {
             throw SyntaxException(L"collection variable '" + first.originString +
                L"' is immutable, so its elements cannot be modified", right.first().line);
          }
 
-         ParseVariable<_str>* pv_str = getVarPtrStr(first);
+         ParseVariable<_str>* pv_str;
 
-         if (pv_str != nullptr) {
+         if (getVarPtr(first, pv_str)) {
             throw SyntaxException(L"operation " + _str(1, sign)
                + L"= cannot be performed on a character from string variable", first.line);
          }
@@ -760,8 +760,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             aro.trimRight();
 
             if (varSquareBrackets(aro)) {
-               ParseVariable<_tlist>* pv_tlist = getVarPtrTlist(first);
-               if (pv_tlist != nullptr) {
+               ParseVariable<_tlist>* pv_tlist;
+               if (getVarPtr(first, pv_tlist)) {
                   throw SyntaxException(L"operation " + _str(1, sign)
                      + L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable", first.line);
                }
@@ -774,11 +774,11 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
    }
 
    if (first.type == Token::t_Word) {
-      ParseVariable<_num>* pv_num = getVarPtrNum(first);
-      if (pv_num != nullptr) {
-         Generator<_num>* num = numberGenerator(right);
+      ParseVariable<_num>* pv_num;
+      if (getVarPtr(first, pv_num)) {
+         Generator<_num>* num;
 
-         if (num == nullptr) {
+         if (!parse(right, num)) {
             throw SyntaxException(L"right side of operator " + _str(1, sign)
                + L"= cannot be resolved to a number", first.line);
          }
@@ -799,16 +799,16 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
       }
 
-      ParseVariable<_per>* pv_per = getVarPtrPer(first);
-      if (pv_per != nullptr) {
+      ParseVariable<_per>* pv_per;
+      if (getVarPtr(first, pv_per)) {
          Variable<_per>* var = pv_per->getVarPtr();
 
          switch (sign) {
             case L'+':
             case L'-': {
-               Generator<_per>* per = periodGenerator(right);
+               Generator<_per>* per;
 
-               if (per == nullptr) {
+               if (!parse(right, per)) {
                   throw SyntaxException(L"right side of operator " + _str(1, sign)
                      + L"= cannot be resolved to a period", first.line);
                }
@@ -827,8 +827,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
       }
 
-      ParseVariable<_tim>* pv_tim = getVarPtrTim(first);
-      if (pv_tim != nullptr) {
+      ParseVariable<_tim>* pv_tim;
+      if (getVarPtr(first, pv_tim)) {
          switch (sign) {
             case L'*':
             case L'/':
@@ -839,9 +839,9 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
 
          Variable<_tim>* var = pv_tim->getVarPtr();
-         Generator<_per>* per = periodGenerator(right);
+         Generator<_per>* per;
 
-         if (per == nullptr) {
+         if (!parse(right, per)) {
             throw SyntaxException(L"right side of operator '" + first.originString + L" " +
                _str(1, sign) + L"=' cannot be resolved to a period", first.line);
          }
@@ -871,8 +871,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
       }
 
-      ParseVariable<_tim>* pv_tim = getVarPtrTim(first);
-      if (pv_tim == nullptr) {
+      ParseVariable<_tim>* pv_tim;
+      if (!getVarPtr(first, pv_tim)) {
          const _size id = first.originString.find_last_of(L".");
 
          throw SyntaxException(L"'" + first.originString.substr(0, id) +
@@ -880,9 +880,9 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             first.line);
       }
 
-      Generator<_num>* num = numberGenerator(right);
+      Generator<_num>* num;
 
-      if (num == nullptr) {
+      if (!parse(right, num)) {
          throw SyntaxException(L"right side of operation '" + first.originString + L"." +
             first.originString2 + L" " + _str(1, sign) +
             L"=' cannot be resolved to a number", first.line);
@@ -923,29 +923,32 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 static Command* commandVarIncrement(const Token& first, const Tokens& tks,
    const _int& line)
 {
-   ParseVariable<_str>* pv_str = getVarPtrStr(first);
-   if (pv_str != nullptr) {
+   ParseVariable<_str>* pv_str;
+   if (getVarPtr(first, pv_str)) {
       Variable<_str>* var = pv_str->getVarPtr();
 
-      Generator<_str>* str = stringGenerator(tks);
-      if (str != nullptr) {
+      Generator<_str>* str;
+      if (parse(tks, str)) {
          return new VarAdd_<_str>(var, str);
       }
 
-      Generator<_list>* list = listGenerator(tks);
-      if (list == nullptr) {
-         throw SyntaxException(L"right side of operator '+=' cannot"
-            L" be resolved to a string", line);
-      }
-      else {
+      Generator<_list>* list;
+      if (parse(tks, list)) {
+         delete list;
          throw SyntaxException(L"variable '" + first.originString +
             L"' can be incremented only by a string", line);
+      }
+      else {
+         throw SyntaxException(L"right side of operator '+=' cannot"
+            L" be resolved to a string", line);
       }
    }
 
    throw SyntaxException(L"variable '" + first.originString +
       L"' cannot be incremented by a value", line);
 }
+
+
 
 static Command* commandVarAssign(const Tokens& left, const Tokens& right)
 {
@@ -962,11 +965,11 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
          le.trimRight();
 
          if (varSquareBrackets(le)) {
-            ParseVariable<_nlist>* pv_nlist = getVarPtrNlist(first);
-            ParseVariable<_tlist>* pv_tlist = getVarPtrTlist(first);
-            ParseVariable<_list>* pv_list = getVarPtrList(first);
+            ParseVariable<_nlist>* pv_nlist;
+            ParseVariable<_tlist>* pv_tlist;
+            ParseVariable<_list>* pv_list;
 
-            if (pv_nlist != nullptr || pv_tlist != nullptr || pv_list != nullptr) {
+            if (getVarPtr(first, pv_nlist) || getVarPtr(first, pv_tlist) || getVarPtr(first, pv_list)) {
                throw SyntaxException(L"collection variable '" + origin +
                   L"' is immutable, so its elements cannot me modified", first.line);
             }
@@ -983,98 +986,98 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
    }
 
    /////
-   // assigne value to an existing variable
+   // assign value to an existing variable
    ////
 
    if (HASH_GROUP_INNERVAR.find(first.value.h1) != HASH_GROUP_INNERVAR.end()) {
       throw SyntaxException(L"variable '" + first.originString + L"' is immutable", first.line);
    }
 
-   ParseVariable<_boo>* pv_boo = getVarPtrBoo(first);
-   if (pv_boo != nullptr && pv_boo->isReachable()) {
-      Generator<_boo>* boo = boolGenerator(right);
-      if (boo == nullptr) {
-         varAssignException(origin, L"bool", right);
-      }
-      else {
+   ParseVariable<_boo>* pv_boo = nullptr;
+   if (getVarPtr(first, pv_boo) && pv_boo->isReachable()) {
+      Generator<_boo>* boo;
+      if (parse(right, boo)) {
          return new VarAssignment<_boo>(pv_boo->getVarPtr(), boo);
       }
+      else {
+         varAssignException(origin, L"bool", right);
+      }
    }
 
-   ParseVariable<_num>* pv_num = getVarPtrNum(first);
-   if (pv_num != nullptr && pv_num->isReachable()) {
-      Generator<_num>* num = numberGenerator(right);
-      if (num == nullptr) {
-         varAssignException(origin, L"number", right);
-      }
-      else {
+   ParseVariable<_num>* pv_num = nullptr;
+   if (getVarPtr(first, pv_num) && pv_num->isReachable()) {
+      Generator<_num>* num;
+      if (parse(right, num)) {
          return new VarAssignment<_num>(pv_num->getVarPtr(), num);
       }
+      else {
+         varAssignException(origin, L"number", right);
+      }
    }
 
-   ParseVariable<_tim>* pv_tim = getVarPtrTim(first);
-   if (pv_tim != nullptr && pv_tim->isReachable()) {
-      Generator<_tim>* tim = timeGenerator(right);
-      if (tim == nullptr) {
-         varAssignException(origin, L"time", right);
-      }
-      else {
+   ParseVariable<_tim>* pv_tim = nullptr;
+   if (getVarPtr(first, pv_tim) && pv_tim->isReachable()) {
+      Generator<_tim>* tim;
+      if (parse(right, tim)) {
          return new VarAssignment<_tim>(pv_tim->getVarPtr(), tim);
       }
+      else {
+         varAssignException(origin, L"time", right);
+      }
    }
 
-   ParseVariable<_per>* pv_per = getVarPtrPer(first);
-   if (pv_per != nullptr && pv_per->isReachable()) {
-      Generator<_per>* per = periodGenerator(right);
-      if (per == nullptr) {
-         varAssignException(origin, L"period", right);
-      }
-      else {
+   ParseVariable<_per>* pv_per = nullptr;
+   if (getVarPtr(first, pv_per) && pv_per->isReachable()) {
+      Generator<_per>* per;
+      if (parse(right, per)) {
          return new VarAssignment<_per>(pv_per->getVarPtr(), per);
       }
+      else {
+         varAssignException(origin, L"period", right);
+      }
    }
 
-   ParseVariable<_str>* pv_str = getVarPtrStr(first);
-   if (pv_str != nullptr && pv_str->isReachable()) {
-      Generator<_str>* str = stringGenerator(right);
-      if (str == nullptr) {
-         varAssignException(origin, L"string", right);
-      }
-      else {
+   ParseVariable<_str>* pv_str = nullptr;
+   if (getVarPtr(first, pv_str) && pv_str->isReachable()) {
+      Generator<_str>* str;
+      if (parse(right, str)) {
          return new VarAssignment<_str>(pv_str->getVarPtr(), str);
       }
+      else {
+         varAssignException(origin, L"string", right);
+      }
    }
 
-   ParseVariable<_nlist>* pv_nlist = getVarPtrNlist(first);
-   if (pv_nlist != nullptr && pv_nlist->isReachable()) {
-      Generator<_nlist>* nlist = numListGenerator(right);
-      if (nlist == nullptr) {
-         varAssignException(origin, L"numeric list", right);
-      }
-      else {
+   ParseVariable<_nlist>* pv_nlist = nullptr;
+   if (getVarPtr(first, pv_nlist) && pv_nlist->isReachable()) {
+      Generator<_nlist>* nlist;
+      if (parse(right, nlist)) {
          return new VarAssignment<_nlist>(pv_nlist->getVarPtr(), nlist);
       }
+      else {
+         varAssignException(origin, L"numeric list", right);
+      }
    }
 
-   ParseVariable<_tlist>* pv_tlist = getVarPtrTlist(first);
-   if (pv_tlist != nullptr && pv_tlist->isReachable()) {
-      Generator<_tlist>* tlist = timListGenerator(right);
-      if (tlist == nullptr) {
-         varAssignException(origin, L"time list", right);
-      }
-      else {
+   ParseVariable<_tlist>* pv_tlist = nullptr;
+   if (getVarPtr(first, pv_tlist) && pv_tlist->isReachable()) {
+      Generator<_tlist>* tlist;
+      if (parse(right, tlist)) {
          return new VarAssignment<_tlist>(pv_tlist->getVarPtr(), tlist);
       }
+      else {
+         varAssignException(origin, L"time list", right);
+      }
    }
 
-   ParseVariable<_list>* pv_list = getVarPtrList(first);
-   if (pv_list != nullptr && pv_list->isReachable()) {
-      Generator<_list>* list = listGenerator(right);
-      if (list == nullptr) {
-         varAssignException(origin, L"list", right);
+   ParseVariable<_list>* pv_list = nullptr;
+   if (getVarPtr(first, pv_list) && pv_list->isReachable()) {
+      Generator<_list>* list;
+      if (parse(right, list)) {
+         return new VarAssignment<_list>(pv_list->getVarPtr(), list);
       }
       else {
-         return new VarAssignment<_list>(pv_list->getVarPtr(), list);
+         varAssignException(origin, L"list", right);
       }
    }
 
@@ -1083,8 +1086,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
    // or "resurrect" an existing variable from somewhere else out of reach
    ////
 
-   Generator<_boo>* boo = boolGenerator(right);
-   if (boo != nullptr) {
+   Generator<_boo>* boo;
+   if (parse(right, boo)) {
       if (pv_boo == nullptr) {
          g_var_boo.insert(std::make_pair(first.value.h1, ParseVariable<_boo>()));
          return new VarAssignment<_boo>(g_var_boo[first.value.h1].getVarPtr(), boo);
@@ -1095,8 +1098,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_num>* num = numberGenerator(right);
-   if (num != nullptr) {
+   Generator<_num>* num;
+   if (parse(right, num)) {
       if (pv_num == nullptr) {
          g_var_num.insert(std::make_pair(first.value.h1, ParseVariable<_num>()));
          return new VarAssignment<_num>(g_var_num[first.value.h1].getVarPtr(), num);
@@ -1107,8 +1110,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_tim>* tim = timeGenerator(right);
-   if (tim != nullptr) {
+   Generator<_tim>* tim;
+   if (parse(right, tim)) {
       if (pv_tim == nullptr) {
          g_var_tim.insert(std::make_pair(first.value.h1, ParseVariable<_tim>()));
          return new VarAssignment<_tim>(g_var_tim[first.value.h1].getVarPtr(), tim);
@@ -1119,8 +1122,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_per>* per = periodGenerator(right);
-   if (per != nullptr) {
+   Generator<_per>* per;
+   if (parse(right, per)) {
       if (pv_per == nullptr) {
          g_var_per.insert(std::make_pair(first.value.h1, ParseVariable<_per>()));
          return new VarAssignment<_per>(g_var_per[first.value.h1].getVarPtr(), per);
@@ -1131,9 +1134,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-
-   Generator<_str>* str = stringGenerator(right);
-   if (str != nullptr) {
+   Generator<_str>* str;
+   if (parse(right, str)) {
       if (pv_str == nullptr) {
          g_var_str.insert(std::make_pair(first.value.h1, ParseVariable<_str>()));
          return new VarAssignment<_str>(g_var_str[first.value.h1].getVarPtr(), str);
@@ -1144,8 +1146,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_nlist>* nlist = numListGenerator(right);
-   if (nlist != nullptr) {
+   Generator<_nlist>* nlist;
+   if (parse(right, nlist)) {
       if (pv_nlist == nullptr) {
          g_var_nlist.insert(std::make_pair(first.value.h1, ParseVariable<_nlist>()));
          return new VarAssignment<_nlist>(g_var_nlist[first.value.h1].getVarPtr(), nlist);
@@ -1156,8 +1158,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_tlist>* tlist = timListGenerator(right);
-   if (tlist != nullptr) {
+   Generator<_tlist>* tlist;
+   if (parse(right, tlist)) {
       if (pv_tlist == nullptr) {
          g_var_tlist.insert(std::make_pair(first.value.h1, ParseVariable<_tlist>()));
          return new VarAssignment<_tlist>(g_var_tlist[first.value.h1].getVarPtr(), tlist);
@@ -1168,8 +1170,8 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_list>* list = listGenerator(right);
-   if (list != nullptr) {
+   Generator<_list>* list;
+   if (parse(right, list)) {
       if (pv_list == nullptr) {
          g_var_list.insert(std::make_pair(first.value.h1, ParseVariable<_list>()));
          return new VarAssignment<_list>(g_var_list[first.value.h1].getVarPtr(), list);
@@ -1214,27 +1216,27 @@ static Command* commandVarAssign_Element(const Tokens& left,
 {
    const Token& first = left.first();
 
-   ParseVariable<_list>* pv_list = getVarPtrList(first);
-   ParseVariable<_nlist>* pv_nlist = getVarPtrNlist(first);
-   ParseVariable<_tlist>* pv_tlist = getVarPtrTlist(first);
+   ParseVariable<_list>* pv_list;
+   ParseVariable<_nlist>* pv_nlist;
+   ParseVariable<_tlist>* pv_tlist;
 
-   if (pv_list != nullptr || pv_nlist != nullptr || pv_tlist != nullptr) {
+   if (getVarPtr(first, pv_list) || getVarPtr(first, pv_nlist) || getVarPtr(first, pv_tlist)) {
       throw SyntaxException(L"collection variable '" + first.originString +
          L"' is immutable, so its elements cannot me modified", first.line);
    }
 
-   ParseVariable<_str>* pv_str = getVarPtrStr(first);
-   if (pv_str != nullptr) {
+   ParseVariable<_str>* pv_str;
+   if (getVarPtr(first, pv_str)) {
       if (pv_str->isReachable()) {
          Generator<_num>* index = parseListElementIndex(left);
-         Generator<_str>* str = stringGenerator(right);
+         Generator<_str>* str;
 
-         if (str == nullptr) {
-            throw SyntaxException(L"new value in character assignment of variable '" + first.originString +
-               L"' cannot be resolved to a string", first.line);
+         if (parse(right, str)) {
+            return new VarCharAssignment(pv_str->getVarPtr(), str, index);
          }
          else {
-            return new VarCharAssignment(pv_str->getVarPtr(), str, index);
+            throw SyntaxException(L"new value in character assignment of variable '" + first.originString +
+               L"' cannot be resolved to a string", first.line);
          }
       }
       else {
@@ -1243,8 +1245,8 @@ static Command* commandVarAssign_Element(const Tokens& left,
       }
    }
 
-   throw SyntaxException(L"variable '" + first.originString +
-      L"' was unexpected before [] brackets. It is probably miswritten", first.line);
+   throw SyntaxException(L"variable '" + first.originString
+      + L"' was not expected before [] brackets", first.line);
 }
 
 static Generator<_num>* parseListElementIndex(const Tokens& tks)
@@ -1252,9 +1254,9 @@ static Generator<_num>* parseListElementIndex(const Tokens& tks)
    Tokens left2(tks);
    left2.trimBoth();
    left2.trimLeft();
-   Generator<_num>* index = numberGenerator(left2);
+   Generator<_num>* index;
 
-   if (index == nullptr) {
+   if (!parse(left2, index)) {
       throw SyntaxException(
         L"content of square brackets [] cannot be resolved to a number",
         tks.second().line);

@@ -23,7 +23,7 @@ std::vector<Aggregate*> g_aggrs;
 
 void setAttribute(const Token& tk)
 {
-   if (!isAttribute(tk)) {
+   if (HASH_GROUP_ATTR.find(tk.value.h1) == HASH_GROUP_ATTR.end()) {
       return;
    }
 
@@ -40,8 +40,8 @@ void setCoreComAttribute(const _str& comName, const _int& line)
    const _size size = g_attrs.size();
 
    if (size == 0) {
-      throw SyntaxException(L"subject of command '" + comName +
-         L"' is undefined here", line);
+      throw SyntaxException(L"the subject of command '" + comName
+        + L"' is undefined here", line);
    }
 
    Attribute* last = g_attrs[size - 1];
@@ -52,8 +52,8 @@ void setCoreComAttribute(const _str& comName, const _int& line)
 
 void attributeException(const Token& tk)
 {
-   throw SyntaxException(L"value of variable '" + tk.originString +
-      L"' is undefined here", tk.line);
+   throw SyntaxException(L"the value of variable '" + tk.originString
+      + L"' is undefined here", tk.line);
 }
 
 void addAttribute(Attribute* attr)
@@ -100,4 +100,3 @@ Aggregate* getLastAggregate()
    const _size len = g_aggrs.size();
    return len == 0 ? nullptr : g_aggrs[len - 1];
 }
-

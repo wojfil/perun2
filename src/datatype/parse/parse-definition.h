@@ -15,12 +15,11 @@
 #ifndef PARSE-DEFINITION_H_INCLUDED
 #define PARSE-DEFINITION_H_INCLUDED
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
 
 
 _def* parseDefinition(const Tokens& tks);
 
-static _def* parseDefinitionFilter(const Tokens& tks);
 static _boo isDefinitionChain(const Tokens& tks);
 static _def* parseDefinitionChain(const Tokens& tks);
 

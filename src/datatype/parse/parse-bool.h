@@ -15,7 +15,8 @@
 #ifndef EXP_PARSE_BOOL_H
 #define EXP_PARSE_BOOL_H
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
+#include "../exp-element.h"
 #include "../generator/gen-bool-compare.h"
 
 
@@ -53,6 +54,5 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
 static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign);
 static CompType prepareComparison(const Tokens& tks, const _char& sign,
    Tokens& left, Tokens& right);
-
 
 #endif /* EXP_PARSE_BOOL_H */

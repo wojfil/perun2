@@ -234,209 +234,225 @@ void varsLevelDown()
    }
 }
 
-GeneratorRef<_boo>* getVarValueBoo(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_boo>*& result)
 {
    if (g_var_boo.find(tk.value.h1) != g_var_boo.end()) {
       ParseVariable<_boo>* pv = &g_var_boo[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_boo>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_boo>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_boo.find(tk.value.h1) != g_ivar_boo.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_boo>(g_ivar_boo[tk.value.h1]);
+      result = new GeneratorRef<_boo>(g_ivar_boo[tk.value.h1]);
+      return true;
    }
    else if (g_svar_boo.find(tk.value.h1) != g_svar_boo.end()) {
-      return new GeneratorRef<_boo>(g_svar_boo[tk.value.h1]);
+      result = new GeneratorRef<_boo>(g_svar_boo[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_per>* getVarValuePer(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_per>*& result)
 {
    if (g_var_per.find(tk.value.h1) != g_var_per.end()) {
       ParseVariable<_per>* pv = &g_var_per[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_per>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_per>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_per.find(tk.value.h1) != g_ivar_per.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_per>(g_ivar_per[tk.value.h1]);
+      result = new GeneratorRef<_per>(g_ivar_per[tk.value.h1]);
+      return true;
    }
    else if (g_svar_per.find(tk.value.h1) != g_svar_per.end()) {
-      return new GeneratorRef<_per>(g_svar_per[tk.value.h1]);
+      result = new GeneratorRef<_per>(g_svar_per[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_tim>* getVarValueTim(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_tim>*& result)
 {
    if (tk.value.h1 == HASH_VAR_THIS) {
-      if (g_thisstate == ThisState::ts_Time)
-         return new GeneratorRef<_tim>(&g_this_t);
+      if (g_thisstate == ThisState::ts_Time) {
+         result = new GeneratorRef<_tim>(&g_this_t);
+         return true;
+      }
       else if (g_thisstate == ThisState::ts_None)
          attributeException(tk);
       else
-         return nullptr;
+         return false;
    }
 
    if (g_var_tim.find(tk.value.h1) != g_var_tim.end()) {
       ParseVariable<_tim>* pv = &g_var_tim[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_tim>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_tim>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_tim.find(tk.value.h1) != g_ivar_tim.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_tim>(g_ivar_tim[tk.value.h1]);
+      result = new GeneratorRef<_tim>(g_ivar_tim[tk.value.h1]);
+      return true;
    }
    else if (g_svar_tim.find(tk.value.h1) != g_svar_tim.end()) {
-      return new GeneratorRef<_tim>(g_svar_tim[tk.value.h1]);
+      result = new GeneratorRef<_tim>(g_svar_tim[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_num>* getVarValueNum(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_num>*& result)
 {
    if (tk.value.h1 == HASH_VAR_THIS) {
-      if (g_thisstate == ThisState::ts_Number)
-         return new GeneratorRef<_num>(&g_this_n);
+      if (g_thisstate == ThisState::ts_Number) {
+         result = new GeneratorRef<_num>(&g_this_n);
+         return true;
+      }
       else if (g_thisstate == ThisState::ts_None)
          attributeException(tk);
       else
-         return nullptr;
+         return false;
    }
 
    if (g_var_num.find(tk.value.h1) != g_var_num.end()) {
       ParseVariable<_num>* pv = &g_var_num[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_num>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_num>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_num.find(tk.value.h1) != g_ivar_num.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_num>(g_ivar_num[tk.value.h1]);
+      result = new GeneratorRef<_num>(g_ivar_num[tk.value.h1]);
+      return true;
    }
    else if (g_svar_num.find(tk.value.h1) != g_svar_num.end()) {
-      return new GeneratorRef<_num>(g_svar_num[tk.value.h1]);
+      result = new GeneratorRef<_num>(g_svar_num[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_str>* getVarValueStr(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_str>*& result)
 {
    if (tk.value.h1 == HASH_VAR_THIS) {
-      if (g_thisstate == ThisState::ts_String)
-         return new GeneratorRef<_str>(&g_this_s);
+      if (g_thisstate == ThisState::ts_String) {
+         result = new GeneratorRef<_str>(&g_this_s);
+         return true;
+      }
       else if (g_thisstate == ThisState::ts_None)
          attributeException(tk);
       else
-         return nullptr;
+         return false;
    }
 
    if (g_var_str.find(tk.value.h1) != g_var_str.end()) {
       ParseVariable<_str>* pv = &g_var_str[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_str>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_str>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_str.find(tk.value.h1) != g_ivar_str.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_str>(g_ivar_str[tk.value.h1]);
+      result = new GeneratorRef<_str>(g_ivar_str[tk.value.h1]);
+      return true;
    }
    else if (g_svar_str.find(tk.value.h1) != g_svar_str.end()) {
-      return new GeneratorRef<_str>(g_svar_str[tk.value.h1]);
+      result = new GeneratorRef<_str>(g_svar_str[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_nlist>* getVarValueNlist(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_nlist>*& result)
 {
    if (g_var_nlist.find(tk.value.h1) != g_var_nlist.end()) {
       ParseVariable<_nlist>* pv = &g_var_nlist[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_nlist>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_nlist>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_nlist.find(tk.value.h1) != g_ivar_nlist.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_nlist>(g_ivar_nlist[tk.value.h1]);
+      result = new GeneratorRef<_nlist>(g_ivar_nlist[tk.value.h1]);
+      return true;
    }
    else if (g_svar_nlist.find(tk.value.h1) != g_svar_nlist.end()) {
-      return new GeneratorRef<_nlist>(g_svar_nlist[tk.value.h1]);
+      result = new GeneratorRef<_nlist>(g_svar_nlist[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_tlist>* getVarValueTlist(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_tlist>*& result)
 {
    if (g_var_tlist.find(tk.value.h1) != g_var_tlist.end()) {
       ParseVariable<_tlist>* pv = &g_var_tlist[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_tlist>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_tlist>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_tlist.find(tk.value.h1) != g_ivar_tlist.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_tlist>(g_ivar_tlist[tk.value.h1]);
+      result = new GeneratorRef<_tlist>(g_ivar_tlist[tk.value.h1]);
+      return true;
    }
    else if (g_svar_tlist.find(tk.value.h1) != g_svar_tlist.end()) {
-      return new GeneratorRef<_tlist>(g_svar_tlist[tk.value.h1]);
+      result = new GeneratorRef<_tlist>(g_svar_tlist[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-_def* getVarValueDef(const Token& tk)
+_boo getVarValue(const Token& tk, _def*& result)
 {
    if (g_svar_def.find(tk.value.h1) != g_svar_def.end()) {
-      return g_svar_def[tk.value.h1]->generate(new LocationReference());
+      result = g_svar_def[tk.value.h1]->generate(new LocationReference());
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-GeneratorRef<_list>* getVarValueList(const Token& tk)
+_boo getVarValue(const Token& tk, Generator<_list>*& result)
 {
    if (g_var_list.find(tk.value.h1) != g_var_list.end()) {
       ParseVariable<_list>* pv = &g_var_list[tk.value.h1];
-      if (pv->isReachable())
-         return new GeneratorRef<_list>(pv->getVarPtr());
+      if (pv->isReachable()) {
+         result = new GeneratorRef<_list>(pv->getVarPtr());
+         return true;
+      }
    }
    else if (g_ivar_list.find(tk.value.h1) != g_ivar_list.end()) {
       setAttribute(tk);
-      return new GeneratorRef<_list>(g_ivar_list[tk.value.h1]);
+      result = new GeneratorRef<_list>(g_ivar_list[tk.value.h1]);
+      return true;
    }
    else if (g_svar_list.find(tk.value.h1) != g_svar_list.end()) {
-      return new GeneratorRef<_list>(g_svar_list[tk.value.h1]);
+      result = new GeneratorRef<_list>(g_svar_list[tk.value.h1]);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-// check if variable exists in any hash map
-/*_boo variableWithNameExists(const Token& tk)
-{
-   const _size& h = tk.value.h1;
-
-   return g_ivar_boo.find(h) != g_ivar_boo.end()
-       || g_svar_boo.find(h) != g_svar_boo.end()
-       || g_ivar_per.find(h) != g_ivar_per.end()
-       || g_svar_per.find(h) != g_svar_per.end()
-       || g_ivar_tim.find(h) != g_ivar_tim.end()
-       || g_svar_tim.find(h) != g_svar_tim.end()
-       || g_ivar_num.find(h) != g_ivar_num.end()
-       || g_svar_num.find(h) != g_svar_num.end()
-       || g_ivar_str.find(h) != g_ivar_str.end()
-       || g_svar_str.find(h) != g_svar_str.end()
-       || g_ivar_nlist.find(h) != g_ivar_nlist.end()
-       || g_svar_nlist.find(h) != g_svar_nlist.end()
-       || g_ivar_tlist.find(h) != g_ivar_tlist.end()
-       || g_svar_tlist.find(h) != g_svar_tlist.end()
-       || g_svar_def.find(h) != g_svar_def.end()
-       || g_ivar_list.find(h) != g_ivar_list.end()
-       || g_svar_list.find(h) != g_svar_list.end();
-}*/
 
 // check if hash of variable exists in any hash map
 _boo variableExists(const Token& tk)
@@ -478,66 +494,90 @@ _boo variableExists(const Token& tk)
        || g_var_list.find(h) != g_var_list.end();
 }
 
-ParseVariable<_boo>* getVarPtrBoo(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_boo>*& result)
 {
-   auto a = g_var_boo.find(tk.value.h1);
-   return a == g_var_boo.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_boo.find(tk.value.h1) == g_var_boo.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_boo.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_per>* getVarPtrPer(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_per>*& result)
 {
-   auto a = g_var_per.find(tk.value.h1);
-   return a == g_var_per.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_per.find(tk.value.h1) == g_var_per.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_per.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_tim>* getVarPtrTim(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_tim>*& result)
 {
-   auto a = g_var_tim.find(tk.value.h1);
-   return a == g_var_tim.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_tim.find(tk.value.h1) == g_var_tim.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_tim.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_num>* getVarPtrNum(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_num>*& result)
 {
-   auto a = g_var_num.find(tk.value.h1);
-   return a == g_var_num.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_num.find(tk.value.h1) == g_var_num.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_num.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_str>* getVarPtrStr(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_str>*& result)
 {
-   auto a = g_var_str.find(tk.value.h1);
-   return a == g_var_str.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_str.find(tk.value.h1) == g_var_str.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_str.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_nlist>* getVarPtrNlist(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_nlist>*& result)
 {
-   auto a = g_var_nlist.find(tk.value.h1);
-   return a == g_var_nlist.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_nlist.find(tk.value.h1) == g_var_nlist.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_nlist.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_tlist>* getVarPtrTlist(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_tlist>*& result)
 {
-   auto a = g_var_tlist.find(tk.value.h1);
-   return a == g_var_tlist.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_tlist.find(tk.value.h1) == g_var_tlist.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_tlist.find(tk.value.h1)->second);
+      return true;
+   }
 }
 
-ParseVariable<_list>* getVarPtrList(const Token& tk)
+_boo getVarPtr(const Token& tk, ParseVariable<_list>*& result)
 {
-   auto a = g_var_list.find(tk.value.h1);
-   return a == g_var_list.end()
-      ? nullptr
-      : &(a->second);
+   if (g_var_list.find(tk.value.h1) == g_var_list.end()) {
+      return false;
+   }
+   else {
+      result = &(g_var_list.find(tk.value.h1)->second);
+      return true;
+   }
 }

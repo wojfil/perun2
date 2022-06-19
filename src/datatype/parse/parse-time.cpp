@@ -13,6 +13,7 @@
 */
 
 #include "parse-time.h"
+#include "parse-generic.h"
 #include "../function.h"
 #include "../generator/gen-time.h"
 #include "../generator/gen-period.h"
@@ -20,6 +21,7 @@
 #include "../../brackets.h"
 #include "../../util.h"
 #include "../../hash.h"
+#include "../parse-gen.h"
 
 
 Generator<_tim>* parseTime(const Tokens& tks)
@@ -34,15 +36,16 @@ Generator<_tim>* parseTime(const Tokens& tks)
       const Token& f = tks.first();
       switch (f.type) {
          case Token::t_Word: {
-            return getVarValueTim(f);
+            Generator<_tim>* var;
+            return getVarValue(f, var) ? var : nullptr;
          }
          case Token::t_TwoWords: {
             if (f.value.h1 == HASH_NOTHING) {
                throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
             }
 
-            Generator<_tim>* var = getVarValueTim(f);
-            if (var == nullptr) {
+            Generator<_tim>* var;
+            if (!getVarValue(f, var)) {
                throw SyntaxException(L"time variable '" + f.originString +
                   L"' does not exist", f.line);
             }
@@ -68,16 +71,16 @@ Generator<_tim>* parseTime(const Tokens& tks)
 
 
       if (hasMinuses || hasPluses) {
-         Generator<_per>* per = periodGenerator(tks);
-         if (per == nullptr) {
+         Generator<_per>* per;
+         if (parse(tks, per)) {
+            delete per;
+            return nullptr;
+         }
+         else {
             Generator<_tim>* exp = parseTimeExp(tks);
             if (exp != nullptr) {
                return exp;
             }
-         }
-         else {
-            delete per;
-            return nullptr;
          }
       }
    }
@@ -89,16 +92,9 @@ Generator<_tim>* parseTime(const Tokens& tks)
       }
    }
 
-   if (isPossibleListElement(tks)) {
-      Generator<_num>* num = parseListElementIndex(tks);
-      const Token& f = tks.first();
-      Generator<_tlist>* tlist = getVarValueTlist(f);
-      if (tlist == nullptr) {
-         delete num;
-      }
-      else {
-         return new ListElement<_tim>(tlist, num);
-      }
+   Generator<_tim>* el = parseCollectionElement<_tim>(tks);
+   if (el != nullptr) {
+      return el;
    }
 
    if (isPossibleListElementMember(tks)) {
@@ -107,11 +103,8 @@ Generator<_tim>* parseTime(const Tokens& tks)
 
       Generator<_num>* num = parseListElementIndex(tksm);
       const Token& f = tks.first();
-      Generator<_tlist>* tlist = getVarValueTlist(f);
-      if (tlist == nullptr) {
-         delete num;
-      }
-      else {
+      Generator<_tlist>* tlist;
+      if (getVarValue(f, tlist)) {
          const Token& last = tks.last();
 
          if (last.value.h2 == HASH_FUNC_DATE)
@@ -119,45 +112,17 @@ Generator<_tim>* parseTime(const Tokens& tks)
          else
             return nullptr;
       }
-   }
-
-
-   if (isPossibleTernary(tks)) {
-      Generator<_tim>* tern = parseTimeTernary(tks);
-      if (tern != nullptr) {
-         return tern;
+      else {
+         delete num;
       }
    }
 
+   Generator<_tim>* tern = parseTernary<_tim>(tks);
+   if (tern != nullptr) {
+      return tern;
+   }
+
    return nullptr;
-}
-
-static Generator<_tim>* parseTimeTernary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
-
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_tim>* left = timeGenerator(tks2);
-   if (left == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   Generator<_tim>* right = timeGenerator(tks3);
-   if (right == nullptr) {
-      delete condition;
-      delete left;
-      return nullptr;
-   }
-
-   return new Ternary<_tim>(condition, left, right);
 }
 
 Generator<_tim>* parseTimeConst(const Tokens& tks)
@@ -335,10 +300,8 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks)
                }
                break;
             }
-            case L'(':
-            case L')':
-            case L'[':
-            case L']': {
+            case L'(': case L')':
+            case L'[': case L']': {
                bi.refresh(t);
                sublen++;
                break;
@@ -378,8 +341,8 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
    _int& numReserve)
 {
-   Generator<_tim>* tim = timeGenerator(tks);
-   if (tim != nullptr) {
+   Generator<_tim>* tim;
+   if (parse(tks, tim)) {
       if (numReserve != 0) {
          delete tim;
          return false;
@@ -427,8 +390,8 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
       return false;
    }
 
-   Generator<_num>* num = numberGenerator(tks);
-   if (num != nullptr) {
+   Generator<_num>* num;
+   if (parse(tks, num)) {
       if (numReserve == 0 && subtract) {
          numReserve = 1;
       }
@@ -439,8 +402,8 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    }
 
    if (numReserve == 0) {
-      Generator<_per>* per = periodGenerator(tks);
-      if (per == nullptr) {
+      Generator<_per>* per;
+      if (!parse(tks, per)) {
          return false;
       }
 
@@ -457,8 +420,8 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
       const _int length = tks.getLength() + numReserve;
       Tokens tks2(tks.list, start, length);
 
-      Generator<_per>* per = periodGenerator(tks2);
-      if (per == nullptr) {
+      Generator<_per>* per;
+      if (!parse(tks2, per)) {
          return false;
       }
 
@@ -470,4 +433,3 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    numReserve = 0;
    return true;
 }
-

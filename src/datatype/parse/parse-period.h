@@ -15,18 +15,16 @@
 #ifndef PARSE_PERIOD_H
 #define PARSE_PERIOD_H
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
+
 
 Generator<_per>* parsePeriod(const Tokens& tks);
 
-static Generator<_per>* parsePeriodBinary(const Tokens& tks);
-static Generator<_per>* parsePeriodTernary(const Tokens& tks);
 static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated);
 static Generator<_per>* parsePeriodUnit(const Tokens& tks);
 static void unitNameException(const _str& name, const Tokens& tks);
 static Generator<_per>* parsePeriodExp(const Tokens& tks);
 static Generator<_per>* parsePeriodExpDiff(const Tokens& tks);
 static Generator<_per>* parseTimeDifference(const Tokens& tks);
-
 
 #endif /* PARSE_PERIOD_H */

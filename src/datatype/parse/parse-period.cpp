@@ -13,6 +13,7 @@
 */
 
 #include "parse-period.h"
+#include "parse-generic.h"
 #include "../generator/gen-generic.h"
 #include "../generator/gen-period.h"
 #include "../generator/gen-time.h"
@@ -20,6 +21,7 @@
 #include "../../util.h"
 #include "../function.h"
 #include "../../hash.h"
+#include "../parse-gen.h"
 
 
 Generator<_per>* parsePeriod(const Tokens& tks)
@@ -29,7 +31,8 @@ Generator<_per>* parsePeriod(const Tokens& tks)
    if (len == 1) {
       const Token& f = tks.first();
       if (f.type == Token::t_Word) {
-         return getVarValuePer(f);
+         Generator<_per>* var;
+         return getVarValue(f, var) ? var : nullptr;
       }
    }
 
@@ -76,8 +79,8 @@ Generator<_per>* parsePeriod(const Tokens& tks)
 
    if (len >= 2 && !hasPluses && !hasMinuses) {
       if (startsWithMinus) {
-         Generator<_per>* per = periodGenerator(tks2);
-         if (per != nullptr) {
+         Generator<_per>* per;
+         if (parse(tks2, per)) {
             return new NegatedPeriod(per);
          }
       }
@@ -90,69 +93,17 @@ Generator<_per>* parsePeriod(const Tokens& tks)
       }
    }
 
-   if (isPossibleBinary(tks)) {
-      Generator<_per>* bin = parsePeriodBinary(tks);
-      if (bin != nullptr) {
-         return bin;
-      }
+   Generator<_per>* bin = parseBinary<_per>(tks);
+   if (bin != nullptr) {
+      return bin;
    }
 
-   if (isPossibleTernary(tks)) {
-      Generator<_per>* tern = parsePeriodTernary(tks);
-      if (tern != nullptr) {
-         return tern;
-      }
+   Generator<_per>* tern = parseTernary<_per>(tks);
+   if (tern != nullptr) {
+      return tern;
    }
 
    return nullptr;
-}
-
-static Generator<_per>* parsePeriodBinary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   tks.divideBySymbol(L'?', tks1, tks2);
-
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_per>* value = periodGenerator(tks2);
-   if (value == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   return new Binary<_per>(condition, value);
-}
-
-static Generator<_per>* parsePeriodTernary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
-
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_per>* left = periodGenerator(tks2);
-   if (left == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   Generator<_per>* right = periodGenerator(tks3);
-   if (right == nullptr) {
-      delete condition;
-      delete left;
-      return nullptr;
-   }
-
-   return new Ternary<_per>(condition, left, right);
 }
 
 static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated)
@@ -211,8 +162,8 @@ static Generator<_per>* parsePeriodUnit(const Tokens& tks)
    Tokens tks2(tks);
    tks2.trimRight();
 
-   Generator<Number>* num = numberGenerator(tks2);
-   if (num == nullptr) {
+   Generator<_num>* num;
+   if (!parse(tks2, num)) {
       return nullptr;
    }
 
@@ -268,7 +219,8 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
 {
    const _int baseLen = tks.getLength();
    if (baseLen == 1) {
-      return periodGenerator(tks);
+      Generator<_per>* per;
+      return parse(tks, per) ? per : nullptr;
    }
 
    _boo minusAwaits = tks.first().isSymbol(L'-');
@@ -279,12 +231,17 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
    }
 
    if (!tks2.containsSymbol(L'-')) {
-      Generator<_per>* gp = periodGenerator(tks2);
-      if (minusAwaits && gp != nullptr) {
-         return new NegatedPeriod(gp);
+      Generator<_per>* gp;
+      if (parse(tks2, gp)) {
+         if (minusAwaits) {
+            return new NegatedPeriod(gp);
+         }
+         else {
+            return gp;
+         }
       }
       else {
-         return gp;
+         return nullptr;
       }
    }
 
@@ -295,19 +252,9 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
    _boo isTime;
    _boo hasFirst = false;
    Generator<_tim>* time = nullptr;
-   Generator<_per>* result = periodGenerator(elements[0]);
+   Generator<_per>* result;
 
-   if (result == nullptr) {
-      time = timeGenerator(elements[0]);
-
-      if (time == nullptr) {
-         return nullptr;
-      }
-      else {
-         isTime = true;
-      }
-   }
-   else {
+   if (parse(elements[0], result)) {
       hasFirst = true;
       isTime = false;
       if (minusAwaits) {
@@ -315,24 +262,21 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
          minusAwaits = false;
       }
    }
+   else {
+      if (parse(elements[0], time)) {
+         isTime = true;
+      }
+      else {
+         return nullptr;
+      }
+   }
 
    for (_size i = 1; i < len; i++) {
       Tokens& el = elements[i];
 
       if (isTime) {
-         Generator<_tim>* time2 = timeGenerator(el);
-         if (time2 == nullptr) {
-            Generator<_per>* per3 = periodGenerator(el);
-            if (per3 == nullptr) {
-               delete time;
-               return nullptr;
-            }
-            else {
-               Generator<_tim>* tim3 = new DecreasedTime(time, per3);
-               time = tim3;
-            }
-         }
-         else {
+         Generator<_tim>* time2;
+         if (parse(el, time2)) {
             Generator<_per>* per = new TimeDifference(time, time2);
 
             if (hasFirst) {
@@ -351,26 +295,36 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
             time = nullptr;
             isTime = false;
          }
-      }
-      else {
-         Generator<_per>* per = periodGenerator(el);
-         if (per == nullptr) {
-            time = timeGenerator(el);
-            if (time == nullptr) {
-               delete result;
-               return nullptr;
+         else {
+            Generator<_per>* per3;
+            if (parse(el, per3)) {
+               Generator<_tim>* tim3 = new DecreasedTime(time, per3);
+               time = tim3;
             }
             else {
-               isTime = true;
+               delete time;
+               return nullptr;
             }
          }
-         else {
+      }
+      else {
+         Generator<_per>* per;
+         if (parse(el, per)) {
             if (minusAwaits) {
                result = new NegatedPeriod(new PeriodSubtraction(result, per));
                minusAwaits = false;
             }
             else {
                result = new PeriodSubtraction(result, per);
+            }
+         }
+         else {
+            if (parse(el, time)) {
+               isTime = true;
+            }
+            else {
+               delete result;
+               return nullptr;
             }
          }
       }
@@ -402,25 +356,25 @@ static Generator<_per>* parseTimeDifference(const Tokens& tks)
       return nullptr;
    }
 
-   Generator<_tim>* tim1 = timeGenerator(left);
-   if (tim1 != nullptr) {
-      Generator<_tim>* tim2 = timeGenerator(right);
-      if (tim2 == nullptr) {
-         delete tim1;
+   Generator<_tim>* tim1;
+   if (parse(left, tim1)) {
+      Generator<_tim>* tim2;
+      if (parse(right, tim2)) {
+         return new TimeDifference(tim1, tim2);
       }
       else {
-         return new TimeDifference(tim1, tim2);
+         delete tim1;
       }
    }
 
-   Generator<_per>* per1 = periodGenerator(left);
-   if (per1 == nullptr) {
+   Generator<_per>* per1;
+   if (!parse(left, per1)) {
       return nullptr;
    }
 
-   Generator<_per>* per2 = periodGenerator(right);
-   if (per2 == nullptr) {
-      delete per2;
+   Generator<_per>* per2;
+   if (!parse(right, per2)) {
+      delete per1;
       return nullptr;
    }
 

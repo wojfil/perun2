@@ -13,6 +13,7 @@
 */
 
 #include "parse-numlist.h"
+#include "parse-generic.h"
 #include "../generator/gen-generic.h"
 #include "../generator/gen-timlist.h"
 #include "../../lexer.h"
@@ -28,23 +29,17 @@ Generator<_tlist>* parseTimList(const Tokens& tks)
 
    if (len == 1) {
       if (first.type == Token::t_Word) {
-         return getVarValueTlist(first);
+         Generator<_tlist>* var;
+         return getVarValue(first, var) ? var : nullptr;
       }
    }
 
+   Generator<_tlist>* filter = parseFilter<Generator<_tlist>*, _tim>(tks, ThisState::ts_Time);
+   if (filter != nullptr) {
+      return filter;
+   }
+
    if (len >= 3) {
-      if (tks.second().isFiltherKeyword()) {
-         if (first.type != Token::t_Word) {
-            throw SyntaxException(L"filter keyword '" + tks.second().originString +
-               L"' should be preceded by a variable name" , first.line);
-         }
-
-         Generator<_tlist>* filter = parseTimListFilter(tks);
-         if (filter != nullptr) {
-            return filter;
-         }
-      }
-
       if (tks.containsSymbol(L',')) {
          Generator<_tlist>* listed = parseTimListed(tks);
          if (listed != nullptr) {
@@ -52,70 +47,18 @@ Generator<_tlist>* parseTimList(const Tokens& tks)
          }
       }
 
-
-      if (isPossibleBinary(tks)) {
-         Generator<_tlist>* bin = parseTimListBinary(tks);
-         if (bin != nullptr) {
-            return bin;
-         }
+      Generator<_tlist>* bin = parseBinary<_tlist>(tks);
+      if (bin != nullptr) {
+         return bin;
       }
 
-      if (isPossibleTernary(tks)) {
-         Generator<_tlist>* tern = parseTimListTernary(tks);
-         if (tern != nullptr) {
-            return tern;
-         }
+      Generator<_tlist>* tern = parseTernary<_tlist>(tks);
+      if (tern != nullptr) {
+         return tern;
       }
    }
 
    return nullptr;
-}
-
-static Generator<_tlist>* parseTimListBinary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   tks.divideBySymbol(L'?', tks1, tks2);
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_tlist>* value = timListGenerator(tks2);
-   if (value == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   return new Binary<_tlist>(condition, value);
-}
-
-static Generator<_tlist>* parseTimListTernary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
-
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_tlist>* left = timListGenerator(tks2);
-   if (left == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   Generator<_tlist>* right = timListGenerator(tks3);
-   if (right == nullptr) {
-      delete condition;
-      delete left;
-      return nullptr;
-   }
-
-   return new Ternary<_tlist>(condition, left, right);
 }
 
 static Generator<_tlist>* parseTimListed(const Tokens& tks)
@@ -128,6 +71,10 @@ static Generator<_tlist>* parseTimListed(const Tokens& tks)
       return cnst;
    }
 
+   // look - I do not use template functions from 'parse-generic.h'
+   // why? because time has a special property - comma can mean
+   // a list separator, or a date and clock separator within one time
+   // so parsing goes a weird way
    Generator<_tlist>* times = parseListedTimes(elements);
    if (times != nullptr) {
       return times;
@@ -171,14 +118,17 @@ static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements)
 {
    const _size len = elements.size();
    _boo isPrev = false;
-   std::vector<Generator<_tim>*>* result =
-      new std::vector<Generator<_tim>*>();
+   std::vector<Generator<_tim>*>* result = new std::vector<Generator<_tim>*>();
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      Generator<_tim>* time = timeGenerator(tks);
+      Generator<_tim>* time;
 
-      if (time == nullptr) {
+      if (parse(tks, time)) {
+         isPrev = true;
+         result->push_back(time);
+      }
+      else {
          if (isPrev) {
             Generator<_tim>*& last = result->back();
             result->pop_back();
@@ -199,10 +149,6 @@ static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements)
             return nullptr;
          }
       }
-      else {
-         isPrev = true;
-         result->push_back(time);
-      }
    }
 
    return new Listed<_tim>(result);
@@ -213,22 +159,25 @@ static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr)
    const _int start = prev.getStart();
    const _int length = prev.getLength() + curr.getLength() + 1;
    const Tokens tks2(curr.list, start, length);
-   return timeGenerator(tks2);
+   Generator<_tim>* tim;
+   return parse(tks2, tim) ? tim : nullptr;
 }
 
-static Generator<_tlist>* parseListedTimLists
-   (const std::vector<Tokens>& elements)
+static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements)
 {
    const _size len = elements.size();
    _boo isPrev = false;
-   std::vector<Generator<_tlist>*>* result =
-      new std::vector<Generator<_tlist>*>();
+   std::vector<Generator<_tlist>*>* result = new std::vector<Generator<_tlist>*>();
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      Generator<_tim>* time = timeGenerator(tks);
+      Generator<_tim>* time;
 
-      if (time == nullptr) {
+      if (parse(tks, time)) {
+         result->push_back(new Cast_T_TL(time));
+         isPrev = true;
+      }
+      else {
          if (isPrev) {
             Generator<_tim>* time2 = timeFromTwoSeqs(elements[i - 1], tks);
 
@@ -242,199 +191,17 @@ static Generator<_tlist>* parseListedTimLists
             }
          }
 
-         Generator<_tlist>* tlist = timListGenerator(tks);
-         if (tlist == nullptr) {
-            deleteVectorPtr(result);
-            return nullptr;
-         }
-         else {
+         Generator<_tlist>* tlist;
+         if (parse(tks, tlist)) {
             result->push_back(tlist);
             isPrev = false;
          }
-      }
-      else {
-         result->push_back(new Cast_T_TL(time));
-         isPrev = true;
+         else {
+            deleteVectorPtr(result);
+            return nullptr;
+         }
       }
    }
 
    return new ListedLists<_tim>(result);
 }
-
-static Generator<_tlist>* parseTimListFilter(const Tokens& tks)
-{
-   const _int start = tks.getStart() + 2;
-   const _int length = tks.getLength() - 2;
-   const Tokens tks2(tks.list, start, length);
-
-   std::vector<Tokens> filters;
-   tks2.splitByFiltherKeywords(filters);
-
-   const Token& f = tks.first();
-   Generator<_tlist>* tlist = getVarValueTlist(f);
-   if (tlist == nullptr) {
-      return nullptr;
-   }
-
-   const _size flength = filters.size();
-   for (_size i = 0; i < flength; i++) {
-      const Tokens& ts = filters[i];
-      const Keyword& kw = ts.first().value.k;
-      Tokens ts2(ts.list, ts.getStart() + 1, ts.getLength() - 1);
-      Generator<_tlist>* prev = tlist;
-
-      switch (kw) {
-         case Keyword::kw_Every:
-         case Keyword::kw_Limit:
-         case Keyword::kw_Skip: {
-            Generator<_num>* num = numberGenerator(ts2);
-            if (num == nullptr) {
-               delete tlist;
-               throw SyntaxException(L"tokens after keyword '" + ts.first().originString +
-                  L"' cannot be resolved to a number", tks.first().line);
-            }
-
-            switch (kw) {
-               case Keyword::kw_Every: {
-                  tlist = new Filter_Every<_tim>(prev, num);
-                  break;
-               }
-               case Keyword::kw_Limit: {
-                  tlist = new Filter_Limit<_tim>(prev, num);
-                  break;
-               }
-               case Keyword::kw_Skip: {
-                  tlist = new Filter_Skip<_tim>(prev, num);
-                  break;
-               }
-            }
-            break;
-         }
-         case Keyword::kw_Where: {
-            const ThisState prevThisState = g_thisstate;
-            g_thisstate = ThisState::ts_Time;
-
-            Generator<_boo>* boo = boolGenerator(ts2);
-            if (boo == nullptr) {
-               delete tlist;
-               g_thisstate = prevThisState;
-               throw SyntaxException(L"tokens after keyword '" + ts.first().originString
-                  + L"' cannot be resolved to a logic condition", tks.first().line);
-            }
-
-            tlist = new Filter_WhereTime(prev, boo);
-            g_thisstate = prevThisState;
-            break;
-         }
-         case Keyword::kw_Order: {
-            const ThisState prevThisState = g_thisstate;
-            g_thisstate = ThisState::ts_Time;
-            const Token& first = ts2.first();
-
-            if (ts2.getLength() == 1 && first.type == Token::t_Keyword) {
-               const Keyword& kw = first.value.k;
-               if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
-                  const _boo desc = kw == Keyword::kw_Desc;
-                  Filter_OrderByTime* order = new Filter_OrderByTime(tlist);
-                  order->addTime(new GeneratorRef<_tim>(&g_this_t), desc);
-                  tlist = order;
-                  break;
-               }
-            }
-
-            if (!first.isKeyword(Keyword::kw_By)) {
-               delete tlist;
-               throw SyntaxException(L"keyword '" + ts.first().originString + L"' has to be followed by a keyword 'by'", first.line);
-            }
-
-            ts2.trimLeft();
-            if (ts2.isEmpty()) {
-               delete tlist;
-               throw SyntaxException(L"declaration of '" + ts.first().originString + L" " + first.originString + L"' filter is empty", first.line);
-            }
-
-            Tokens ts3 = prepareForGen(ts2);
-            if (ts3.isEmpty()) {
-               delete tlist;
-               throw SyntaxException(L"declaration of '" + ts.first().originString + L" " + first.originString + L"' filter is empty", first.line);
-            }
-
-            std::vector<Tokens> units;
-            ts3.splitBySymbol(L',', units);
-            Filter_OrderByTime* order = new Filter_OrderByTime(tlist);
-
-            const _size len = units.size();
-            for (_size i = 0; i < len; i++) {
-               Tokens& un = units[i];
-               const Token& last = un.last();
-               _boo desc = false;
-
-               if (last.type == Token::t_Keyword) {
-                  switch (last.value.k) {
-                     case Keyword::kw_Asc: {
-                        un.trimRight();
-                        if (un.isEmpty()) {
-                           delete order;
-                           throw SyntaxException(L"keyword '" + last.originString + L"' is not preceded by a value declaration", last.line);
-                        }
-                        break;
-                     }
-                     case Keyword::kw_Desc: {
-                        un.trimRight();
-                        desc = true;
-                        if (un.isEmpty()) {
-                           delete order;
-                           throw SyntaxException(L"keyword '" + last.originString + L"' is not preceded by a value declaration", last.line);
-                        }
-                        break;
-                     }
-                  }
-               }
-
-               Generator<_boo>* uboo = boolGenerator(un);
-               if (uboo != nullptr) {
-                  order->addBool(uboo, desc);
-                  continue;
-               }
-
-               Generator<_num>* unum = numberGenerator(un);
-               if (unum != nullptr) {
-                  order->addNumber(unum, desc);
-                  continue;
-               }
-
-               Generator<_per>* uper = periodGenerator(un);
-               if (uper != nullptr) {
-                  order->addPeriod(uper, desc);
-                  continue;
-               }
-
-               Generator<_tim>* utim = timeGenerator(un);
-               if (utim != nullptr) {
-                  order->addTime(utim, desc);
-                  continue;
-               }
-
-               Generator<_str>* ustr = stringGenerator(un);
-               if (ustr == nullptr) {
-                  delete order;
-                  throw SyntaxException(L"value of the '" + ts.first().originString + L" by' unit cannot be resolved to any valid data type", un.first().line);
-               }
-               else {
-                  order->addString(ustr, desc);
-               }
-            }
-
-            tlist = order;
-            g_thisstate = prevThisState;
-            break;
-         }
-         default: {
-            return nullptr;
-         }
-      }
-   }
-
-   return tlist;
-}
-

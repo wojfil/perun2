@@ -27,10 +27,6 @@ struct Generator
 };
 
 
-// reference to a generator
-//   why not use a normal pointer ?
-//   because this struct deliberately doesn't free its memory
-//   when "delete" is called upon it
 template <typename T>
 struct GeneratorRef : Generator<T>
 {

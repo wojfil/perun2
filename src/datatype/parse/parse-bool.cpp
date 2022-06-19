@@ -14,11 +14,15 @@
 
 #include "parse-bool.h"
 #include "parse-list.h"
+#include "parse-generic.h"
 #include "../function.h"
 #include "../generator/gen-bool.h"
 #include "../../brackets.h"
 #include "../../lexer.h"
 #include "../generator/like.h"
+#include "../../var/var-runtime.h"
+#include "../parse-gen.h"
+#include <vector>
 
 
 Generator<_boo>* parseBool(const Tokens& tks)
@@ -37,7 +41,8 @@ Generator<_boo>* parseBool(const Tokens& tks)
             return nullptr;
          }
          case Token::t_Word: {
-            return getVarValueBoo(f);
+            Generator<_boo>* var;
+            return getVarValue(f, var) ? var : nullptr;
          }
          default: {
             return nullptr;
@@ -102,45 +107,16 @@ Generator<_boo>* parseBool(const Tokens& tks)
       }
    }
 
-   if (isPossibleTernary(tks)) {
-      Generator<_boo>* tern = parseBoolTernary(tks);
-      if (tern != nullptr) {
-         return tern;
-      }
+   Generator<_boo>* tern = parseTernary<_boo>(tks);
+   if (tern != nullptr) {
+      return tern;
    }
 
    return nullptr;
 }
 
-static Generator<_boo>* parseBoolTernary(const Tokens& tks)
-{
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
 
-   Generator<_boo>* condition = boolGenerator(tks1);
-   if (condition == nullptr) {
-      return nullptr;
-   }
-
-   Generator<_boo>* left = boolGenerator(tks2);
-   if (left == nullptr) {
-      delete condition;
-      return nullptr;
-   }
-
-   Generator<_boo>* right = boolGenerator(tks3);
-   if (right == nullptr) {
-      delete condition;
-      delete left;
-      return nullptr;
-   }
-
-   return new Ternary<_boo>(condition, left, right);
-}
-
-// build bool expression
+// build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
 static Generator<_boo>* parseBoolExp(const Tokens& tks)
@@ -176,8 +152,8 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks)
                         sublen = 0;
                      }
                      else {
-                        Generator<_boo>* boo = boolGenerator(tks2);
-                        if (boo != nullptr) {
+                        Generator<_boo>* boo;
+                        if (parse(tks2, boo)) {
                            infList.push_back(new ExpElement<_boo>(boo));
                            infList.push_back(new ExpElement<_boo>(ch));
                            sublen = 0;
@@ -236,8 +212,8 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks)
          infList.push_back(new ExpElement<_boo>(boo));
       }
       else {
-         Generator<_boo>* boo = boolGenerator(tks2);
-         if (boo != nullptr) {
+         Generator<_boo>* boo;
+         if (parse(tks2, boo)) {
             infList.push_back(new ExpElement<_boo>(boo));
          }
          else {
@@ -420,7 +396,7 @@ static Generator<_boo>* boolExpTreeMerge(
             }
 
             //delete firstElement;
-            //delete secondElement; this should be deleted
+            //delete secondElement;
             newElement = new ExpElement<_boo>(value);
          }
          else {
@@ -568,6 +544,7 @@ static _char toBoolExpOperator(const Token& tk)
    }
 }
 
+
 static Generator<_boo>* parseIn(const Tokens& tks)
 {
    Tokens left(tks);
@@ -648,16 +625,16 @@ static Generator<_boo>* parseIn(const Tokens& tks)
 static Generator<_boo>* parseInNumList(const bool& negated, const Tokens& left,
    const Tokens& right)
 {
-   Generator<_num>* num = numberGenerator(left);
-   if (num == nullptr) {
+   Generator<_num>* num;
+   if (!parse(left, num)) {
       return nullptr;
    }
 
-   // check whether the right side is a single Number
+   // check if the right side is a single Number
    // in this special case, the whole structure is reduced to
    // a simple comparison "Number == Number" or "Number != Number"
-   Generator<_num>* num2 = numberGenerator(right);
-   if (num2 != nullptr) {
+   Generator<_num>* num2;
+   if (parse(right, num2)) {
       if (negated) {
          return new NotEquals<_num>(num, num2);
       }
@@ -674,14 +651,14 @@ static Generator<_boo>* parseInNumList(const bool& negated, const Tokens& left,
       return negated ? new Not(in) : in;
    }
    else {
-      Generator<_nlist>* nlist = numListGenerator(tks2);
-      if (nlist == nullptr) {
-         delete num;
-         return nullptr;
-      }
-      else {
+      Generator<_nlist>* nlist;
+      if (parse(tks2, nlist)) {
          Generator<_boo>* in = new InList<_num>(num, nlist);
          return negated ? new Not(in) : in;
+      }
+      else {
+         delete num;
+         return nullptr;
       }
    }
 }
@@ -689,16 +666,16 @@ static Generator<_boo>* parseInNumList(const bool& negated, const Tokens& left,
 static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    const Tokens& right)
 {
-   Generator<_tim>* tim = timeGenerator(left);
-   if (tim == nullptr) {
+   Generator<_tim>* tim;
+   if (!parse(left, tim)) {
       return nullptr;
    }
 
-   // check whether the right side is a single Time
+   // check if the right side is a single Time
    // in this special case, the whole structure is reduced to
    // a simple comparison "Time == Time" or "Time != Time"
-   Generator<_tim>* tim2 = timeGenerator(right);
-   if (tim2 != nullptr) {
+   Generator<_tim>* tim2;
+   if (parse(right, tim2)) {
       if (negated) {
          return new NotEquals<_tim>(tim, tim2);
       }
@@ -717,14 +694,14 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
       return negated ? new Not(in) : in;
    }
    else {
-      Generator<_tlist>* tlist = timListGenerator(tks2);
-      if (tlist == nullptr) {
-         delete tim;
-         return nullptr;
-      }
-      else {
+      Generator<_tlist>* tlist;
+      if (parse(tks2, tlist)) {
          Generator<_boo>* in = new InTimeList(tim, tlist);
          return negated ? new Not(in) : in;
+      }
+      else {
+         delete tim;
+         return nullptr;
       }
    }
 
@@ -734,16 +711,16 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
 static Generator<_boo>* parseInList(const bool& negated, const Tokens& left,
    const Tokens& right)
 {
-   Generator<_str>* str = stringGenerator(left);
-   if (str == nullptr) {
+   Generator<_str>* str;
+   if (!parse(left, str)) {
       return nullptr;
    }
 
-   // check whether the right side is a single string
+   // check if the right side is a single string
    // in this special case, the whole structure is reduced to
    // a simple comparison "string == string" or "string != string"
-   Generator<_str>* str2 = stringGenerator(right);
-   if (str2 != nullptr) {
+   Generator<_str>* str2;
+   if (parse(right, str2)) {
       if (negated) {
          return new NotEquals<_str>(str, str2);
       }
@@ -760,14 +737,14 @@ static Generator<_boo>* parseInList(const bool& negated, const Tokens& left,
       return negated ? new Not(in) : in;
    }
    else {
-      Generator<_list>* list = listGenerator(tks2);
-      if (list == nullptr) {
-         delete str;
-         return nullptr;
-      }
-      else {
+      Generator<_list>* list;
+      if (parse(tks2, list)) {
          Generator<_boo>* in = new InList<_str>(str, list);
          return negated ? new Not(in) : in;
+      }
+      else {
+         delete str;
+         return nullptr;
       }
    }
 }
@@ -830,8 +807,8 @@ static Generator<_boo>* parseLike(const Tokens& tks)
       }
    }
 
-   Generator<_str>* value = stringGenerator(left);
-   if (value == nullptr) {
+   Generator<_str>* value;
+   if (!parse(left, value)) {
       return nullptr;
    }
 
@@ -841,7 +818,7 @@ static Generator<_boo>* parseLike(const Tokens& tks)
 
       if (!correctLikePattern(pattern)) {
          throw SyntaxException(L"pattern '" + pattern +
-            L"' is not valid for the 'like' operator. Look at the brackets",
+            L"' is not valid for the 'like' operator",
             firstRight.line);
       }
 
@@ -851,16 +828,16 @@ static Generator<_boo>* parseLike(const Tokens& tks)
          return new LikeConst(value, pattern);
    }
    else {
-      Generator<_str>* pattern = stringGenerator(right);
-      if (pattern == nullptr) {
-         delete value;
-         return nullptr;
-      }
-      else {
+      Generator<_str>* pattern;
+      if (parse(right, pattern)) {
          if (neg)
             return new Not(new Like(value, pattern));
          else
             return new Like(value, pattern);
+      }
+      else {
+         delete value;
+         return nullptr;
       }
    }
 }
@@ -911,12 +888,52 @@ static Generator<_boo>* comparison(Generator<T>* val1,
    };
 }
 
+
+template <typename T>
+Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, const CompType& ct)
+{
+   Generator<T>* v1;
+   Generator<T>* v2;
+   const _boo parsed1 = parse(left, v1);
+   const _boo parsed2 = parse(right, v2);
+   if (parsed1 && parsed2) {
+      switch (ct) {
+         case ct_Equals:
+            return new Equals<T>(v1, v2);
+         case ct_NotEquals:
+            return new NotEquals<T>(v1, v2);
+         case ct_Smaller:
+            return new Smaller<T>(v1, v2);
+         case ct_SmallerEquals:
+            return new SmallerEquals<T>(v1, v2);
+         case ct_Bigger:
+            return new Bigger<T>(v1, v2);
+         case ct_BiggerEquals:
+            return new BiggerEquals<T>(v1, v2);
+         default:
+            return nullptr;
+      };
+      return comparison<T>(v1, v2, ct);
+   }
+
+   if (parsed1) {
+      delete v1;
+   }
+   else if (parsed2) {
+      delete v2;
+   }
+
+   return nullptr;
+}
+
 static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign)
 {
    Tokens left(tks);
    Tokens right(tks);
    CompType ct = prepareComparison(tks, sign, left, right);
 
+   // look for some common errors
+   // and throw precise messages to the user
    if (left.getLength() == 1 && right.getLength() == 1) {
       const Token& t1 = left.first();
       const Token& t2 = right.first();
@@ -970,68 +987,170 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign)
       }
    }
 
-   // try bool comparison
-   Generator<_boo>* boo1 = boolGenerator(left);
-   Generator<_boo>* boo2 = boolGenerator(right);
-   if (boo1 != nullptr && boo2 != nullptr) {
-      return comparison<_boo>(boo1, boo2, ct);
+   // try to parse comparison for every singular data type
+   Generator<_boo>* boo = parseComparisonUnit<_boo>(left, right, ct);
+   if (boo != nullptr) {
+      return boo;
    }
 
-   // try number comparison
-   Generator<_num>* num1 = (boo1 == nullptr)
-      ? numberGenerator(left) : new Cast_B_N(boo1);
-   Generator<_num>* num2 = (boo2 == nullptr)
-      ? numberGenerator(right) : new Cast_B_N(boo2);
-
-   if (num1 != nullptr && num2 != nullptr) {
-      return comparison<_num>(num1, num2, ct);
+   Generator<_boo>* num = parseComparisonUnit<_num>(left, right, ct);
+   if (num != nullptr) {
+      return num;
    }
 
-   if (num1 != nullptr) delete num1;
-   if (num2 != nullptr) delete num2;
-
-   // try period comparison
-   Generator<_per>* per1 = periodGenerator(left);
-   Generator<_per>* per2 = periodGenerator(right);
-   if (per1 != nullptr && per2 != nullptr) {
-      return comparison<_per>(per1, per2, ct);
+   Generator<_boo>* per = parseComparisonUnit<_per>(left, right, ct);
+   if (per != nullptr) {
+      return per;
    }
 
-   if (per1 != nullptr) delete per1;
-   if (per2 != nullptr) delete per2;
-
-   // try time comparison
-   Generator<_tim>* tim1 = timeGenerator(left);
-   Generator<_tim>* tim2 = timeGenerator(right);
-   if (tim1 != nullptr && tim2 != nullptr) {
-      return comparison<_tim>(tim1, tim2, ct);
+   Generator<_boo>* tim = parseComparisonUnit<_tim>(left, right, ct);
+   if (tim != nullptr) {
+      return tim;
+   }
+   Generator<_boo>* str = parseComparisonUnit<_str>(left, right, ct);
+   if (str != nullptr) {
+      return str;
    }
 
-   if (tim1 != nullptr) delete tim1;
-   if (tim2 != nullptr) delete tim2;
-
-   // try string comparison
-   Generator<_str>* str1 = stringGenerator(left);
-   Generator<_str>* str2 = stringGenerator(right);
-   if (str1 != nullptr && str2 != nullptr) {
-      return comparison<_str>(str1, str2, ct);
-   }
-
-   if (str1 != nullptr) delete str1;
-   if (str2 != nullptr) delete str2;
-
-   // camparisons between singlular values have failed, so try comparisons of collections
+   // comparisons between singular values have failed, so try comparisons of collections
    return parseCollectionComparisons(left, right, ct);
+}
+
+Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const CompType& ct, const _boo& reversed)
+{
+   switch (ct) {
+      case ct_Equals:
+         return new DefinitionListEqual(def, list);
+      case ct_NotEquals:
+         return new DefinitionListNotEqual(def, list);
+      default: {
+         if (reversed) {
+            switch(ct) {
+               case ct_Smaller:
+                  return new DefinitionListBigger(def, list);
+               case ct_SmallerEquals:
+                  return new DefinitionListBiggerEquals(def, list);
+               case ct_Bigger:
+                  return new DefinitionListSmaller(def, list);
+               case ct_BiggerEquals:
+                  return new DefinitionListSmallerEquals(def, list);
+            }
+         }
+         else {
+            switch(ct) {
+               case ct_Smaller:
+                  return new DefinitionListSmaller(def, list);
+               case ct_SmallerEquals:
+                  return new DefinitionListSmallerEquals(def, list);
+               case ct_Bigger:
+                  return new DefinitionListBigger(def, list);
+               case ct_BiggerEquals:
+                  return new DefinitionListBiggerEquals(def, list);
+            }
+         }
+      }
+   }
+}
+
+
+template <typename T>
+Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, const CompType& ct)
+{
+   Generator<std::vector<T>>* leftValue;
+   if (parse(left, leftValue)) {
+
+      Generator<std::vector<T>>* rightValue;
+      if (parse(right, rightValue)) {
+         switch(ct) {
+            case ct_Equals:
+               return new CollectionsEqual<T>(leftValue, rightValue);
+            case ct_NotEquals:
+               return new CollectionsNotEqual<T>(leftValue, rightValue);
+            case ct_Smaller:
+               return new CollectionsSmaller<T>(leftValue, rightValue);
+            case ct_SmallerEquals:
+               return new CollectionsSmallerEquals<T>(leftValue, rightValue);
+            case ct_Bigger:
+               return new CollectionsBigger<T>(leftValue, rightValue);
+            case ct_BiggerEquals:
+               return new CollectionsBiggerEquals<T>(leftValue, rightValue);
+         }
+      }
+   }
+
+   return nullptr;
+}
+
+
+template <typename T>
+Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& right, const CompType& ct)
+{
+   Generator<T>* leftValue;
+   if (parse(left, leftValue)) {
+      Generator<std::vector<T>>* rightCollection;
+
+      if (parse(right, rightCollection)) {
+         switch(ct) {
+            case ct_Equals:
+               return new CollectionValueEquals<T>(rightCollection, leftValue);
+            case ct_NotEquals:
+               return new CollectionValueNotEquals<T>(rightCollection, leftValue);
+            case ct_Smaller:
+               return new CollectionValueBigger<T>(rightCollection);
+            case ct_SmallerEquals:
+               return new CollectionValueBiggerEquals<T>(rightCollection);
+            case ct_Bigger:
+               return new CollectionValueSmaller<T>(rightCollection);
+            case ct_BiggerEquals:
+               return new CollectionValueSmallerEquals<T>(rightCollection);
+         }
+      }
+      else {
+         delete leftValue;
+         return nullptr;
+      }
+   }
+
+   Generator<T>* rightValue;
+   if (parse(right, rightValue)) {
+      Generator<std::vector<T>>* leftCollection;
+
+      if (parse(left, leftCollection)) {
+         switch(ct) {
+            case ct_Equals:
+               return new CollectionValueEquals<T>(leftCollection, rightValue);
+            case ct_NotEquals:
+               return new CollectionValueNotEquals<T>(leftCollection, rightValue);
+            case ct_Smaller:
+               return new CollectionValueSmaller<T>(leftCollection);
+            case ct_SmallerEquals:
+               return new CollectionValueSmallerEquals<T>(leftCollection);
+            case ct_Bigger:
+               return new CollectionValueBigger<T>(leftCollection);
+            case ct_BiggerEquals:
+               return new CollectionValueBiggerEquals<T>(leftCollection);
+         }
+      }
+      else {
+         delete rightValue;
+         return nullptr;
+      }
+   }
+
+   return nullptr;
 }
 
 static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
    const Tokens& right, const CompType& ct)
 {
-   _def* leftDef = definitionGenerator(left);
-   _def* rightDef = definitionGenerator(right);
-   const _boo hasLeftDef = (leftDef != nullptr);
-   const _boo hasRightDef = (rightDef != nullptr);
+   _def* leftDef;
+   _def* rightDef;
+   const _boo hasLeftDef = parse(left, leftDef);
+   const _boo hasRightDef = parse(right, rightDef);
 
+   // special case situations
+   // when definition is compared with other data types or with another definition
+   // need optimized solutions
    if (hasLeftDef || hasRightDef) {
       if (hasLeftDef && hasRightDef) {
          switch(ct) {
@@ -1049,271 +1168,47 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
                return new DefinitionsBiggerEquals(leftDef, rightDef);
          }
       }
-      else if (hasLeftDef) {
-         Generator<_list>* rightList = listGenerator(right);
-         if (rightList != nullptr) {
-            switch(ct) {
-               case ct_Equals:
-                  return new DefinitionListEqual(leftDef, rightList);
-               case ct_NotEquals:
-                  return new DefinitionListNotEqual(leftDef, rightList);
-               case ct_Smaller:
-                  return new DefinitionListSmaller(leftDef, rightList);
-               case ct_SmallerEquals:
-                  return new DefinitionListSmallerEquals(leftDef, rightList);
-               case ct_Bigger:
-                  return new DefinitionListBigger(leftDef, rightList);
-               case ct_BiggerEquals:
-                  return new DefinitionListBiggerEquals(leftDef, rightList);
-            }
-         }
+
+      if (hasLeftDef) {
+         Generator<_list>* rightList;
+         return parse(right, rightList)
+            ? comparisonDefList(leftDef, rightList, ct, false)
+            : nullptr;
       }
       else {
-         Generator<_list>* leftList = listGenerator(left);
-         if (leftList != nullptr) {
-            switch(ct) {
-               case ct_Equals:
-                  return new DefinitionListEqual(rightDef, leftList);
-               case ct_NotEquals:
-                  return new DefinitionListNotEqual(rightDef, leftList);
-               case ct_Smaller:
-                  return new DefinitionListBigger(rightDef, leftList);
-               case ct_SmallerEquals:
-                  return new DefinitionListBiggerEquals(rightDef, leftList);
-               case ct_Bigger:
-                  return new DefinitionListSmaller(rightDef, leftList);
-               case ct_BiggerEquals:
-                  return new DefinitionListSmallerEquals(rightDef, leftList);
-            }
-         }
-      }
-   }
-   else {
-      Generator<_tim>* leftTim = timeGenerator(left);
-      if (leftTim !=  nullptr) {
-         Generator<_tlist>* rightTlist = timListGenerator(right);
-         if (rightTlist == nullptr) {
-            delete leftTim;
-            return nullptr;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionValueEquals<_tim>(rightTlist, leftTim);
-               case ct_NotEquals:
-                  return new CollectionValueNotEquals<_tim>(rightTlist, leftTim);
-               case ct_Smaller:
-                  return new CollectionValueBigger<_tim>(rightTlist);
-               case ct_SmallerEquals:
-                  return new CollectionValueBiggerEquals<_tim>(rightTlist);
-               case ct_Bigger:
-                  return new CollectionValueSmaller<_tim>(rightTlist);
-               case ct_BiggerEquals:
-                  return new CollectionValueSmallerEquals<_tim>(rightTlist);
-            }
-         }
-      }
-
-      Generator<_tim>* rightTim = timeGenerator(right);
-      if (rightTim !=  nullptr) {
-         Generator<_tlist>* leftTlist = timListGenerator(left);
-         if (leftTlist == nullptr) {
-            delete rightTim;
-            return nullptr;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionValueEquals<_tim>(leftTlist, rightTim);
-               case ct_NotEquals:
-                  return new CollectionValueNotEquals<_tim>(leftTlist, rightTim);
-               case ct_Smaller:
-                  return new CollectionValueSmaller<_tim>(leftTlist);
-               case ct_SmallerEquals:
-                  return new CollectionValueSmallerEquals<_tim>(leftTlist);
-               case ct_Bigger:
-                  return new CollectionValueBigger<_tim>(leftTlist);
-               case ct_BiggerEquals:
-                  return new CollectionValueBiggerEquals<_tim>(leftTlist);
-            }
-         }
-      }
-
-      Generator<_num>* leftNum = numberGenerator(left);
-      if (leftNum !=  nullptr) {
-         Generator<_nlist>* rightNlist = numListGenerator(right);
-         if (rightNlist == nullptr) {
-            delete leftNum;
-            return nullptr;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionValueEquals<_num>(rightNlist, leftNum);
-               case ct_NotEquals:
-                  return new CollectionValueNotEquals<_num>(rightNlist, leftNum);
-               case ct_Smaller:
-                  return new CollectionValueBigger<_num>(rightNlist);
-               case ct_SmallerEquals:
-                  return new CollectionValueBiggerEquals<_num>(rightNlist);
-               case ct_Bigger:
-                  return new CollectionValueSmaller<_num>(rightNlist);
-               case ct_BiggerEquals:
-                  return new CollectionValueSmallerEquals<_num>(rightNlist);
-            }
-         }
-      }
-
-      Generator<_num>* rightNum = numberGenerator(right);
-      if (rightNum !=  nullptr) {
-         Generator<_nlist>* leftNlist = numListGenerator(left);
-         if (leftNlist == nullptr) {
-            delete rightNum;
-            return nullptr;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionValueEquals<_num>(leftNlist, rightNum);
-               case ct_NotEquals:
-                  return new CollectionValueNotEquals<_num>(leftNlist, rightNum);
-               case ct_Smaller:
-                  return new CollectionValueSmaller<_num>(leftNlist);
-               case ct_SmallerEquals:
-                  return new CollectionValueSmallerEquals<_num>(leftNlist);
-               case ct_Bigger:
-                  return new CollectionValueBigger<_num>(leftNlist);
-               case ct_BiggerEquals:
-                  return new CollectionValueBiggerEquals<_num>(leftNlist);
-            }
-         }
-      }
-
-      Generator<_str>* leftStr = stringGenerator(left);
-      if (leftStr !=  nullptr) {
-         Generator<_list>* rightList = listGenerator(right);
-         if (rightList == nullptr) {
-            delete leftStr;
-            return nullptr;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionValueEquals<_str>(rightList, leftStr);
-               case ct_NotEquals:
-                  return new CollectionValueNotEquals<_str>(rightList, leftStr);
-               case ct_Smaller:
-                  return new CollectionValueBigger<_str>(rightList);
-               case ct_SmallerEquals:
-                  return new CollectionValueBiggerEquals<_str>(rightList);
-               case ct_Bigger:
-                  return new CollectionValueSmaller<_str>(rightList);
-               case ct_BiggerEquals:
-                  return new CollectionValueSmallerEquals<_str>(rightList);
-            }
-         }
-      }
-
-      Generator<_str>* rightStr = stringGenerator(right);
-      if (rightStr !=  nullptr) {
-         Generator<_list>* leftList = listGenerator(left);
-         if (leftList == nullptr) {
-            delete rightStr;
-            return nullptr;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionValueEquals<_str>(leftList, rightStr);
-               case ct_NotEquals:
-                  return new CollectionValueNotEquals<_str>(leftList, rightStr);
-               case ct_Smaller:
-                  return new CollectionValueSmaller<_str>(leftList);
-               case ct_SmallerEquals:
-                  return new CollectionValueSmallerEquals<_str>(leftList);
-               case ct_Bigger:
-                  return new CollectionValueBigger<_str>(leftList);
-               case ct_BiggerEquals:
-                  return new CollectionValueBiggerEquals<_str>(leftList);
-            }
-         }
-      }
-
-      Generator<_tlist>* leftTlist = timListGenerator(left);
-      if (leftTlist !=  nullptr) {
-         Generator<_tlist>* rightTlist = timListGenerator(right);
-         if (rightTlist ==  nullptr) {
-            delete leftTlist;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionsEqual<_tim>(leftTlist, rightTlist);
-               case ct_NotEquals:
-                  return new CollectionsNotEqual<_tim>(leftTlist, rightTlist);
-               case ct_Smaller:
-                  return new CollectionsSmaller<_tim>(leftTlist, rightTlist);
-               case ct_SmallerEquals:
-                  return new CollectionsSmallerEquals<_tim>(leftTlist, rightTlist);
-               case ct_Bigger:
-                  return new CollectionsBigger<_tim>(leftTlist, rightTlist);
-               case ct_BiggerEquals:
-                  return new CollectionsBiggerEquals<_tim>(leftTlist, rightTlist);
-            }
-         }
-      }
-
-      Generator<_nlist>* leftNlist = numListGenerator(left);
-      if (leftNlist !=  nullptr) {
-         Generator<_nlist>* rightNlist = numListGenerator(right);
-         if (rightNlist ==  nullptr) {
-            delete leftNlist;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionsEqual<_num>(leftNlist, rightNlist);
-               case ct_NotEquals:
-                  return new CollectionsNotEqual<_num>(leftNlist, rightNlist);
-               case ct_Smaller:
-                  return new CollectionsSmaller<_num>(leftNlist, rightNlist);
-               case ct_SmallerEquals:
-                  return new CollectionsSmallerEquals<_num>(leftNlist, rightNlist);
-               case ct_Bigger:
-                  return new CollectionsBigger<_num>(leftNlist, rightNlist);
-               case ct_BiggerEquals:
-                  return new CollectionsBiggerEquals<_num>(leftNlist, rightNlist);
-            }
-         }
-      }
-
-      Generator<_list>* leftList = listGenerator(left);
-      if (leftList !=  nullptr) {
-         Generator<_list>* rightList = listGenerator(right);
-         if (rightList ==  nullptr) {
-            delete leftList;
-         }
-         else {
-            switch(ct) {
-               case ct_Equals:
-                  return new CollectionsEqual<_str>(leftList, rightList);
-               case ct_NotEquals:
-                  return new CollectionsNotEqual<_str>(leftList, rightList);
-               case ct_Smaller:
-                  return new CollectionsSmaller<_str>(leftList, rightList);
-               case ct_SmallerEquals:
-                  return new CollectionsSmallerEquals<_str>(leftList, rightList);
-               case ct_Bigger:
-                  return new CollectionsBigger<_str>(leftList, rightList);
-               case ct_BiggerEquals:
-                  return new CollectionsBiggerEquals<_str>(leftList, rightList);
-            }
-         }
+         Generator<_list>* leftList;
+         return parse(left, leftList)
+            ? comparisonDefList(rightDef, leftList, ct, true)
+            : nullptr;
       }
    }
 
+   Generator<_boo>* tim = comparisonCollectionValue<_tim>(left, right, ct);
+   if (tim != nullptr) {
+      return tim;
+   }
 
-   return nullptr;
+   Generator<_boo>* num = comparisonCollectionValue<_num>(left, right, ct);
+   if (num != nullptr) {
+      return num;
+   }
+
+   Generator<_boo>* str = comparisonCollectionValue<_str>(left, right, ct);
+   if (str != nullptr) {
+      return str;
+   }
+
+   Generator<_boo>* tlist = comparisonCollections<_tim>(left, right, ct);
+   if (tlist != nullptr) {
+      return tlist;
+   }
+
+   Generator<_boo>* nlist = comparisonCollections<_num>(left, right, ct);
+   if (nlist != nullptr) {
+      return nlist;
+   }
+
+   return comparisonCollections<_str>(left, right, ct);
 }
 
 static CompType prepareComparison(const Tokens& tks, const _char& sign,

@@ -16,6 +16,11 @@
 #include "../../brackets.h"
 #include "../../lexer.h"
 #include "../../hash.h"
+#include "../generator/gen-definition.h"
+#include "../generator/gen-time.h"
+#include "../generator/gen-numlist.h"
+#include "../generator/gen-timlist.h"
+#include "../generator/gen-list.h"
 #include <cwctype>
 
 
@@ -205,4 +210,121 @@ _boo isPossibleListElementMember(const Tokens& tks)
    }
 
    return true;
+}
+
+
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result)
+{
+   switch (kw) {
+      case Keyword::kw_Every: {
+         result = new Filter_EveryDef(result, num);
+         break;
+      }
+      case Keyword::kw_Limit: {
+         result = new Filter_LimitDef(result, num);
+         break;
+      }
+      case Keyword::kw_Skip: {
+         result = new Filter_SkipDef(result, num);
+         break;
+      }
+   }
+}
+
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result)
+{
+   switch (kw) {
+      case Keyword::kw_Every: {
+         result = new Filter_Every<_num>(result, num);
+         break;
+      }
+      case Keyword::kw_Limit: {
+         result = new Filter_Limit<_num>(result, num);
+         break;
+      }
+      case Keyword::kw_Skip: {
+         result = new Filter_Skip<_num>(result, num);
+         break;
+      }
+   }
+}
+
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result)
+{
+   switch (kw) {
+      case Keyword::kw_Every: {
+         result = new Filter_Every<_tim>(result, num);
+         break;
+      }
+      case Keyword::kw_Limit: {
+         result = new Filter_Limit<_tim>(result, num);
+         break;
+      }
+      case Keyword::kw_Skip: {
+         result = new Filter_Skip<_tim>(result, num);
+         break;
+      }
+   }
+}
+
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result)
+{
+   switch (kw) {
+      case Keyword::kw_Every: {
+         result = new Filter_Every<_str>(result, num);
+         break;
+      }
+      case Keyword::kw_Limit: {
+         result = new Filter_Limit<_str>(result, num);
+         break;
+      }
+      case Keyword::kw_Skip: {
+         result = new Filter_Skip<_str>(result, num);
+         break;
+      }
+   }
+}
+
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result)
+{
+   result = new Filter_WhereNumber(result, boo);
+}
+
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result)
+{
+   result = new Filter_WhereTime(result, boo);
+}
+
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result)
+{
+   result = new Filter_WhereString(result, boo, *attr);
+}
+
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result)
+{
+   result = new Filter_WhereDef(result, boo, attr, hasMemory);
+}
+
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result)
+{
+   order = new Filter_OrderByNumber(result);
+   result = order;
+}
+
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result)
+{
+   order = new Filter_OrderByTime(result);
+   result = order;
+}
+
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result)
+{
+   order = new Filter_OrderByString(result, attr);
+   result = order;
+}
+
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result)
+{
+   order = new Filter_OrderByString(new Cast_D_L(result), attr);
+   result = new OrderByCast(order, attr, hasMemory);
 }

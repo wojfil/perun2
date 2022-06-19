@@ -15,12 +15,11 @@
 #ifndef PARSE_STRING_H
 #define PARSE_STRING_H
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
+
 
 Generator<_str>* parseString(const Tokens& tks);
 
-static Generator<_str>* parseStringBinary(const Tokens& tks);
-static Generator<_str>* parseStringTernary(const Tokens& tks);
 Generator<_str>* parseStringConcat(const Tokens& tks);
 
 #endif /* PARSE_STRING_H */

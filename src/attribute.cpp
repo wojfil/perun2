@@ -23,15 +23,15 @@ Attribute::Attribute()
 
 void Attribute::add(const Token& tk)
 {
-   if (!isAttribute(tk)) {
+   const _size& h = tk.value.h1;
+
+   if (HASH_GROUP_ATTR.find(h) == HASH_GROUP_ATTR.end()) {
       return;
    }
 
    if (value == ATTR_NULL) {
       set(ATTR_PATH);
    }
-
-   const _size& h = tk.value.h1;
 
    if (h == HASH_VAR_DRIVE) {
       set(ATTR_DRIVE);
@@ -97,17 +97,12 @@ void Attribute::setCoreCommandBase()
    this->set(ATTR_PATH);
 }
 
-bool Attribute::has(const _aunit& v) const
+_boo Attribute::has(const _aunit& v) const
 {
    return value & v;
 }
 
-bool Attribute::hasAny() const
+_boo Attribute::hasAny() const
 {
    return value != ATTR_NULL;
-}
-
-bool isAttribute(const Token& tk)
-{
-   return HASH_GROUP_ATTR.find(tk.value.h1) != HASH_GROUP_ATTR.end();
 }

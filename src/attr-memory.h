@@ -64,5 +64,4 @@ private:
 };
 
 
-
 #endif // ATTR_MEMORY_H_INCLUDED

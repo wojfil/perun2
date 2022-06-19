@@ -45,7 +45,7 @@ enum OrderUnitType {
 
 
 template <typename T>
-struct OrderBy
+struct OrderBy : Generator<std::vector<T>>
 {
 public:
    OrderBy(Generator<std::vector<T>>* val) {

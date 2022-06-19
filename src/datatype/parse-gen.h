@@ -22,11 +22,8 @@
 #include "../tokens.h"
 #include "../token.h"
 #include "../util.h"
-#include "../print.h"
 #include "../var/var-runtime.h"
-
 #include "parse/parse-bool.h"
-#include "parse/parse-generic.h"
 #include "parse/parse-list.h"
 #include "parse/parse-number.h"
 #include "parse/parse-numlist.h"
@@ -40,15 +37,14 @@ Tokens prepareForGen(const Tokens& tks);
 void checkKeywords(const Tokens& tks);
 _boo isExpForbiddenKeyword(const Token& tk);
 
-Generator<_boo>* boolGenerator(const Tokens& tns);
-Generator<_num>* numberGenerator(const Tokens& tns);
-Generator<_str>* stringGenerator(const Tokens& tns);
-Generator<_nlist>* numListGenerator(const Tokens& tns);
-Generator<_tlist>* timListGenerator(const Tokens& tns);
-Generator<_list>* listGenerator(const Tokens& tns);
-Generator<_tim>* timeGenerator(const Tokens& tns);
-Generator<_per>* periodGenerator(const Tokens& tns);
-_def* definitionGenerator(const Tokens& tns);
+_boo parse(const Tokens& tns, Generator<_boo>*& result);
+_boo parse(const Tokens& tns, Generator<_num>*& result);
+_boo parse(const Tokens& tns, Generator<_str>*& result);
+_boo parse(const Tokens& tns,Generator<_nlist>*& result);
+_boo parse(const Tokens& tns, Generator<_tlist>*& result);
+_boo parse(const Tokens& tns, Generator<_list>*& result);
+_boo parse(const Tokens& tns, Generator<_tim>*& result);
+_boo parse(const Tokens& tns, Generator<_per>*& result);
+_boo parse(const Tokens& tns, _def*& result);
 
 #endif /* PARSE_GEN_H */
-

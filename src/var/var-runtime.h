@@ -25,7 +25,6 @@
 // these maps contain hashes of variable names
 // and references to them
 // they are only needed for the parsing process
-// runtime uses direct pointers
 
 // user variables:
 extern std::map<_size, ParseVariable<_boo>> g_var_boo;
@@ -63,29 +62,26 @@ void finishVars();
 void varsLevelUp();
 void varsLevelDown();
 
-GeneratorRef<_boo>* getVarValueBoo(const Token& tk);
-GeneratorRef<_per>* getVarValuePer(const Token& tk);
-GeneratorRef<_tim>* getVarValueTim(const Token& tk);
-GeneratorRef<_num>* getVarValueNum(const Token& tk);
-GeneratorRef<_str>* getVarValueStr(const Token& tk);
-GeneratorRef<_nlist>* getVarValueNlist(const Token& tk);
-GeneratorRef<_tlist>* getVarValueTlist(const Token& tk);
-_def* getVarValueDef(const Token& tk);
-GeneratorRef<_list>* getVarValueList(const Token& tk);
+_boo getVarValue(const Token& tk, Generator<_boo>*& result);
+_boo getVarValue(const Token& tk, Generator<_per>*& result);
+_boo getVarValue(const Token& tk, Generator<_tim>*& result);
+_boo getVarValue(const Token& tk, Generator<_num>*& result);
+_boo getVarValue(const Token& tk, Generator<_str>*& result);
+_boo getVarValue(const Token& tk, Generator<_nlist>*& result);
+_boo getVarValue(const Token& tk, Generator<_tlist>*& result);
+_boo getVarValue(const Token& tk, _def*& result);
+_boo getVarValue(const Token& tk, Generator<_list>*& result);
 
 _boo variableExists(const Token& tk);
 
-ParseVariable<_boo>* getVarPtrBoo(const Token& tk);
-ParseVariable<_per>* getVarPtrPer(const Token& tk);
-ParseVariable<_tim>* getVarPtrTim(const Token& tk);
-ParseVariable<_num>* getVarPtrNum(const Token& tk);
-ParseVariable<_str>* getVarPtrStr(const Token& tk);
-ParseVariable<_nlist>* getVarPtrNlist(const Token& tk);
-ParseVariable<_tlist>* getVarPtrTlist(const Token& tk);
-ParseVariable<_list>* getVarPtrList(const Token& tk);
-
-
+_boo getVarPtr(const Token& tk, ParseVariable<_boo>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_per>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_tim>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_num>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_str>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_nlist>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_tlist>*& result);
+_boo getVarPtr(const Token& tk, ParseVariable<_list>*& result);
 
 
 #endif /* VAR_RUNTIME_H */
-

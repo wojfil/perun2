@@ -15,12 +15,12 @@
 #ifndef EXP_PARSE_NUMBER_H
 #define EXP_PARSE_NUMBER_H
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
+#include "../exp-element.h"
+
 
 Generator<_num>* parseNumber(const Tokens& tks);
 
-static Generator<_num>* parseNumBinary(const Tokens& tks);
-static Generator<_num>* parseNumTernary(const Tokens& tks);
 static Generator<_num>* parseNumExp(const Tokens& tks);
 static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList,
    std::vector<ExpElement<_num>*>& pntList);
@@ -37,7 +37,4 @@ static _boo isNumExpOperator(const _char& ch);
 static _boo isNumExpHighPriority(const _char& ch);
 void timeVariableMemberException(const Token& tk);
 
-
-
 #endif /* EXP_PARSE_NUMBER_H */
-

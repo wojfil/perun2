@@ -55,8 +55,8 @@ public:
    void add(const Token& tk);
    void set(const _aunit& v);
    void setCoreCommandBase();
-   bool has(const _aunit& v) const;
-   bool hasAny() const;
+   _boo has(const _aunit& v) const;
+   _boo hasAny() const;
 
    _boo markToRun = false;
    _boo markToEvaluate = false;
@@ -65,7 +65,4 @@ private:
    _aunit value;
 };
 
-bool isAttribute(const Token& tk);
-
 #endif /* ATTRIB_H */
-

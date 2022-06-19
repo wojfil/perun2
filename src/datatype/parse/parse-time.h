@@ -15,11 +15,11 @@
 #ifndef PARSE_TIME_H
 #define PARSE_TIME_H
 
-#include "../parse-gen.h"
+#include "../../tokens.h"
+
 
 Generator<_tim>* parseTime(const Tokens& tks);
 
-static Generator<_tim>* parseTimeTernary(const Tokens& tks);
 Generator<_tim>* parseTimeConst(const Tokens& tks);
 static _tnum monthFromToken(const Token& tk);
 static _tnum tokenToTimeNumber(const Token& tk);
@@ -29,7 +29,6 @@ static void clockUnitException(const _str& unit, const _tnum& value,
    const Token& tk);
 static Generator<_tim>* parseTimeExp(const Tokens& tks);
 static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
-   Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
-   _int& numReserve);
+   Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks, _int& numReserve);
 
 #endif /* PARSE_TIME_H */

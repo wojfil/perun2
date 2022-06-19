@@ -153,173 +153,253 @@ _boo isExpForbiddenKeyword(const Token& tk)
    }
 }
 
-Generator<_boo>* boolGenerator(const Tokens& tns)
+
+_boo parse(const Tokens& tns, Generator<_boo>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // data type "bool" does not contain any default casting
    // so let us go straight to parsing
 
-   return parseBool(tns2);
+   Generator<_boo>* boo = parseBool(tns2);
+   if (boo == nullptr) {
+      return false;
+   }
+   else {
+      result = boo;
+      return true;
+   }
 }
 
-Generator<_num>* numberGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_num>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // cast from "bool" to "Number"
    Generator<_boo>* boo = parseBool(tns2);
    if (boo != nullptr) {
-      return new Cast_B_N(boo);
+      result = new Cast_B_N(boo);
+      return true;
    }
 
-   return parseNumber(tns2);
+   Generator<_num>* num = parseNumber(tns2);
+   if (num == nullptr) {
+      return false;
+   }
+   else {
+      result = num;
+      return true;
+   }
 }
 
-Generator<_str>* stringGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_str>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // cast from "bool" to "string"
    Generator<_boo>* boo = parseBool(tns2);
    if (boo != nullptr) {
-      return new Cast_B_S(boo);
+      result = new Cast_B_S(boo);
+      return true;
    }
 
    // cast from "number" to "string"
    Generator<_num>* num = parseNumber(tns2);
    if (num != nullptr) {
-      return new Cast_N_S(num);
+      result = new Cast_N_S(num);
+      return true;
    }
 
    // cast from "time" to "string"
    Generator<_tim>* tim = parseTime(tns2);
    if (tim != nullptr) {
-      return new Cast_T_S(tim);
+      result = new Cast_T_S(tim);
+      return true;
    }
 
    // cast from "period" to "string"
    Generator<_per>* per = parsePeriod(tns2);
    if (per != nullptr) {
-      return new Cast_P_S(per);
+      result = new Cast_P_S(per);
+      return true;
    }
 
-   return parseString(tns2);
+   Generator<_str>* str = parseString(tns2);
+   if (str == nullptr) {
+      return false;
+   }
+   else {
+      result = str;
+      return true;
+   }
 }
 
-Generator<_nlist>* numListGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_nlist>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // cast from "bool" to "numList"
    Generator<_boo>* boo = parseBool(tns2);
    if (boo != nullptr) {
-      return new Cast_B_NL(boo);
+      result = new Cast_B_NL(boo);
+      return true;
    }
 
    // cast from "Number" to "numList"
    Generator<_num>* num = parseNumber(tns2);
    if (num != nullptr) {
-      return new Cast_N_NL(num);
+      result = new Cast_N_NL(num);
+      return true;
    }
 
-   return parseNumList(tns2);
+   Generator<_nlist>* nlist = parseNumList(tns2);
+   if (nlist == nullptr) {
+      return false;
+   }
+   else {
+      result = nlist;
+      return true;
+   }
 }
 
-Generator<_tlist>* timListGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_tlist>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // cast from "Time" to "timList"
    Generator<_tim>* tim = parseTime(tns2);
    if (tim != nullptr) {
-      return new Cast_T_TL(tim);
+      result = new Cast_T_TL(tim);
+      return true;
    }
 
-   return parseTimList(tns2);
+   Generator<_tlist>* tlist = parseTimList(tns2);
+   if (tlist == nullptr) {
+      return false;
+   }
+   else {
+      result = tlist;
+      return true;
+   }
 }
 
-Generator<_list>* listGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_list>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // cast from "bool" to "list"
    Generator<_boo>* boo = parseBool(tns2);
    if (boo != nullptr) {
-      return new Cast_B_L(boo);
+      result = new Cast_B_L(boo);
+      return true;
    }
 
    // cast from "number" to "list"
    Generator<_num>* num = parseNumber(tns2);
    if (num != nullptr) {
-      return new Cast_N_L(num);
+      result = new Cast_N_L(num);
+      return true;
    }
 
    // cast from "time" to "list"
    Generator<_tim>* tim = parseTime(tns2);
    if (tim != nullptr) {
-      return new Cast_T_L(tim);
+      result = new Cast_T_L(tim);
+      return true;
    }
 
    // cast from "period" to "list"
    Generator<_per>* per = parsePeriod(tns2);
    if (per != nullptr) {
-      return new Cast_P_L(per);
+      result = new Cast_P_L(per);
+      return true;
    }
 
    // cast from "numList" to "list"
    Generator<_nlist>* nlis = parseNumList(tns2);
    if (nlis != nullptr) {
-      return new Cast_NL_L(nlis);
+      result = new Cast_NL_L(nlis);
+      return true;
    }
 
    // cast from "timList" to "list"
    Generator<_tlist>* tlis = parseTimList(tns2);
    if (tlis != nullptr) {
-      return new Cast_TL_L(tlis);
+      result = new Cast_TL_L(tlis);
+      return true;
    }
 
    // cast from "string" to "list"
    Generator<_str>* str = parseString(tns2);
    if (str != nullptr) {
-      return new Cast_S_L(str);
+      result = new Cast_S_L(str);
+      return true;
    }
 
    // cast from "definition" to "list"
    _def* def = parseDefinition(tns2);
    if (def != nullptr) {
-      return new Cast_D_L(def);
+      result = new Cast_D_L(def);
+      return true;
    }
 
-   return parseList(tns2);
+   Generator<_list>* list = parseList(tns2);
+   if (list == nullptr) {
+      return false;
+   }
+   else {
+      result = list;
+      return true;
+   }
 }
 
-Generator<_tim>* timeGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_tim>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // data type "time" does not contain any default casting
    // so let us go straight to parsing
 
-   return parseTime(tns2);
+   Generator<_tim>* tim = parseTime(tns2);
+   if (tim == nullptr) {
+      return false;
+   }
+   else {
+      result = tim;
+      return true;
+   }
 }
 
-Generator<_per>* periodGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, Generator<_per>*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // data type "period" does not contain any default casting
    // so let us go straight to parsing
 
-   return parsePeriod(tns2);
+   Generator<_per>* per = parsePeriod(tns2);
+   if (per == nullptr) {
+      return false;
+   }
+   else {
+      result = per;
+      return true;
+   }
 }
 
-_def* definitionGenerator(const Tokens& tns)
+_boo parse(const Tokens& tns, _def*& result)
 {
    const Tokens tns2 = prepareForGen(tns);
 
    // data type "period" does not contain any default casting
    // so let us go straight to parsing
 
-   return parseDefinition(tns2);
+   _def* def = parseDefinition(tns2);
+   if (def == nullptr) {
+      return false;
+   }
+   else {
+      result = def;
+      return true;
+   }
 }

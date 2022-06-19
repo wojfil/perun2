@@ -322,15 +322,15 @@ _nint getSuffixMultiplier(const _char& c1, const _char& c2)
    }
 
    switch (c1) {
-      case 'k': case 'K':
+      case L'k': case L'K':
          return 1024LL;
-      case 'm': case 'M':
+      case L'm': case L'M':
          return 1048576LL;
-      case 'g': case 'G':
+      case L'g': case L'G':
          return 1073741824LL;
-      case 't': case 'T':
+      case L't': case L'T':
          return 1099511627776LL;
-      case 'p': case 'P':
+      case L'p': case L'P':
          return 114349209288704LL;
       default:
          return -1LL;

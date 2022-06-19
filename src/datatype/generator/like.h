@@ -54,7 +54,7 @@ struct Like : Generator<_boo>
 {
 public:
    Like(Generator<_str>* val, Generator<_str>* pat) : value(val), pattern(pat),
-      comparer(nullptr), hasPrev(false), prevHash(0), prevCorrect(false) { };
+      comparer(nullptr), hasPrev(false), prevHash(0) { };
 
    ~Like() {
       delete value;
@@ -73,7 +73,6 @@ private:
    LikeComparer* comparer;
    _boo hasPrev;
    _size prevHash;
-   _boo prevCorrect;
 };
 
 

@@ -362,12 +362,9 @@ _boo Like::getValue() {
       comparer = parseLikeComparer(pat);
       prevHash = hsh;
       hasPrev = true;
-      prevCorrect = correctLikePattern(pat);
    }
 
-   return prevCorrect
-      ? comparer->compareToPattern(value->getValue())
-      : false;
+   return comparer->compareToPattern(value->getValue());
 };
 
 

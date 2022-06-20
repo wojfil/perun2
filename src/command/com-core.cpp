@@ -42,7 +42,7 @@ void C_Delete::run()
 void C_Drop::run()
 {
    if (g_running) {
-      const _boo s = g_exists.value && os_drop(g_path.value);
+      const _boo s = g_exists.value && os_drop(g_path.value, g_isfile.value);
       g_success.value = s;
 
       if (s) {

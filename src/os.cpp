@@ -700,9 +700,12 @@ _boo os_delete(const _str& path)
 
 _boo os_drop(const _str& path)
 {
-   return os_isFile(path)
-      ? os_dropFile(path)
-      : os_dropDirectory(path);
+   return os_isFile(path) ? os_dropFile(path) : os_dropDirectory(path);
+}
+
+_boo os_drop(const _str& path, const _boo& isFile)
+{
+   return isFile ? os_dropFile(path) : os_dropDirectory(path);
 }
 
 _boo os_dropFile(const _str& path)

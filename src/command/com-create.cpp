@@ -27,7 +27,7 @@ void C_Create::run()
       }
 
       if (g_exists.value) {
-         if (!(forced && os_drop(g_path.value))) {
+         if (!(forced && os_drop(g_path.value, g_isfile.value))) {
             print(L"Failed to create " + getCCName(g_path.value));
             g_success.value = false;
             return;
@@ -131,7 +131,7 @@ void C_CreateFile::run()
       }
 
       if (g_exists.value) {
-         if (!(forced && os_drop(g_path.value))) {
+         if (!(forced && os_drop(g_path.value, g_isfile.value))) {
             print(L"Failed to create file " + getCCName(g_path.value));
             g_success.value = false;
             return;
@@ -204,7 +204,7 @@ void C_CreateDirectory::run()
       }
 
       if (g_exists.value) {
-         if (!(forced && os_drop(g_path.value))) {
+         if (!(forced && os_drop(g_path.value, g_isfile.value))) {
             print(L"Failed to create directory " + getCCName(g_path.value));
             g_success.value = false;
             return;

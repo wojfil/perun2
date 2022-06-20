@@ -73,6 +73,7 @@ _boo os_directoryExists(const _str& path);
    // file system operations:
 _boo os_delete(const _str& path);
 _boo os_drop(const _str& path);
+_boo os_drop(const _str& path, const _boo& isFile);
 _boo os_dropFile(const _str& path);
 _boo os_dropDirectory(const _str& path);
 _boo os_hide(const _str& path);

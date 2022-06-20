@@ -108,7 +108,6 @@ inline void os_escapeQuote(_str& path);
 _str os_join(const _str& path1, const _str& path2);
 _boo os_isAbsolute(const _str& path);
 _boo os_hasExtension(const _str& value);
-inline _str os_getElementType();
 _boo os_isDriveLetter(const _char& ch);
 _boo os_isPath(const _str value);
 

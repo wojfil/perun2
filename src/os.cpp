@@ -1402,11 +1402,6 @@ _boo os_hasExtension(const _str& value)
    return false;
 }
 
-inline _str os_getElementType()
-{
-   return g_isfile.value ? L"file" : L"directory";
-}
-
 _boo os_isDriveLetter(const _char& ch)
 {
    // or just use normal comparisons ch > 'a'  etc

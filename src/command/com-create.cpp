@@ -267,7 +267,7 @@ void C_Create_String::run()
       const _str value = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (value.empty() || os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvaild(value) || !os_directoryExists(dest)) {
          print(L"Failed to create " + getCCNameShort(value));
          g_success.value = false;
          return;
@@ -315,7 +315,7 @@ void C_CreateFile_String::run()
       const _str value = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (value.empty() || os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvaild(value) || !os_directoryExists(dest)) {
          print(L"Failed to create file " + getCCNameShort(value));
          g_success.value = false;
          return;
@@ -350,7 +350,7 @@ void C_CreateDirectory_String::run()
       const _str value = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (value.empty() || os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvaild(value) || !os_directoryExists(dest)) {
          print(L"Failed to create directory " + getCCNameShort(value));
          g_success.value = false;
          return;
@@ -385,7 +385,7 @@ void C_Create_String_Stack::run()
       const _str value = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (value.empty() || os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvaild(value) || !os_directoryExists(dest)) {
          print(L"Failed to create " + getCCNameShort(value));
          g_success.value = false;
          return;
@@ -437,7 +437,7 @@ void C_CreateFile_String_Stack::run()
       const _str value = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (value.empty() || os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvaild(value) || !os_directoryExists(dest)) {
          print(L"Failed to create file " + getCCNameShort(value));
          g_success.value = false;
          return;
@@ -476,7 +476,7 @@ void C_CreateDirectory_String_Stack::run()
       const _str value = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (value.empty() || os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvaild(value) || !os_directoryExists(dest)) {
          print(L"Failed to create directory " + getCCNameShort(value));
          g_success.value = false;
          return;
@@ -526,7 +526,7 @@ void C_Create_List::run()
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
 
-         if (n.empty() || os_isInvaild(n)) {
+         if (os_isInvaild(n)) {
             print(L"Failed to create " + getCCNameShort(n));
             success = false;
          }
@@ -597,7 +597,7 @@ void C_CreateFiles_List::run()
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
 
-         if (n.empty() || os_isInvaild(n)) {
+         if (os_isInvaild(n)) {
             print(L"Failed to create file " + getCCNameShort(n));
             success = false;
          }
@@ -654,7 +654,7 @@ void C_CreateDirectories_List::run()
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
 
-         if (n.empty() || os_isInvaild(n)) {
+         if (os_isInvaild(n)) {
             print(L"Failed to create directory " + getCCNameShort(n));
             success = false;
          }
@@ -711,7 +711,7 @@ void C_Create_List_Stack::run()
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
 
-         if (n.empty() || os_isInvaild(n)) {
+         if (os_isInvaild(n)) {
             print(L"Failed to create " + getCCNameShort(n));
             success = false;
          }
@@ -786,7 +786,7 @@ void C_CreateFiles_List_Stack::run()
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
 
-         if (n.empty() || os_isInvaild(n)) {
+         if (os_isInvaild(n)) {
             print(L"Failed to create file " + getCCNameShort(n));
             success = false;
          }
@@ -847,7 +847,7 @@ void C_CreateDirectories_List_Stack::run()
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
 
-         if (n.empty() || os_isInvaild(n)) {
+         if (os_isInvaild(n)) {
             print(L"Failed to create directory " + getCCNameShort(n));
             success = false;
          }

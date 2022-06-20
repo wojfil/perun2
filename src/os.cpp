@@ -93,7 +93,7 @@ void os_loadAttributes(const Attribute& attr)
 {
    g_trimmed = os_trim(g_this_s.value);
 
-   if (g_trimmed.empty() || os_isInvaild(g_trimmed)) {
+   if (os_isInvaild(g_trimmed)) {
       os_loadAttributes_empty(attr);
       return;
    }
@@ -1249,6 +1249,11 @@ _boo os_process(const _str& proc)
 _boo os_isInvaild(const _str& path)
 {
    const _size length = path.size();
+
+   if (length == 0 || path[length - 1] == L'.') {
+      return true;
+   }
+
    for (_size i = 0; i < length; i++) {
       switch (path[i]) {
          case L'<':

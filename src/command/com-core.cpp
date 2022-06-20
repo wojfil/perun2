@@ -275,7 +275,7 @@ void C_RenameTo::run()
    if (g_running) {
       _str n = os_fullname(os_trim(name->getValue()));
 
-      if (!g_exists.value || n.empty() || os_isInvaild(n)
+      if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(g_path.value) || os_isAbsolute(n)) {
 
          print(L"Failed to rename " + getCCName(g_path.value));
@@ -324,7 +324,7 @@ void C_RenameTo_Stack::run()
    if (g_running) {
       _str& oldPath = g_path.value;
       _str n = os_fullname(os_trim(name->getValue()));
-      if (!g_exists.value || n.empty() || os_isInvaild(n)
+      if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
          print(L"Failed to rename " + getCCName(oldPath));
@@ -393,7 +393,7 @@ void C_MoveTo::run()
       _str& oldPath = g_path.value;
       _str n = os_trim(location->getValue());
 
-      if (!g_exists.value || n.empty() || os_isInvaild(n)
+      if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
 
          print(L"Failed to move " + getCCName(oldPath));
@@ -446,7 +446,7 @@ void C_MoveTo_Stack::run()
       _str& oldPath = g_path.value;
       _str n = os_trim(location->getValue());
 
-      if (!g_exists.value || n.empty() || os_isInvaild(n)
+      if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
 
          print(L"Failed to move " + getCCName(oldPath));
@@ -503,8 +503,8 @@ void C_MoveToAs::run()
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!g_exists.value || fulln.empty() || os_isInvaild(fulln)
-           || os_isInvaild(loc) || loc.empty() || !os_hasParentDirectory(oldPath)) {
+      if (!g_exists.value || os_isInvaild(fulln)
+           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
          print(L"Failed to move " + getCCName(oldPath));
          g_success.value = false;
@@ -561,8 +561,8 @@ void C_MoveToAs_Stack::run()
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!g_exists.value || fulln.empty() || os_isInvaild(fulln)
-          || loc.empty() || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
+      if (!g_exists.value || os_isInvaild(fulln)
+          || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
          print(L"Failed to move " + getCCName(oldPath));
          g_success.value = false;
@@ -636,9 +636,7 @@ void C_DownloadFrom_String::run()
       const _str name = os_trim(element->getValue());
       const _str src = os_trim(location->getValue());
 
-      if (name.empty() || src.empty() || os_isInvaild(name)
-           || os_isInvaild(src) || !os_directoryExists(dest)) {
-
+      if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
          print(L"Failed to download " + getCCName(name));
          g_success.value = false;
          return;
@@ -689,7 +687,7 @@ void C_DownloadFrom_List::run()
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(dest, src);
 
-      if (src.empty() || os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
+      if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          for (_size i = 0; i < len; i++) {
             print(L"Failed to download " + getCCNameShort(os_trim(names[i])));
          }
@@ -703,7 +701,7 @@ void C_DownloadFrom_List::run()
          const _str& n = os_trim(names[i]);
          const _str oldPath = srcLoc + OS_SEPARATOR + n;
 
-         if (n.empty() || os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
+         if (os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
             print(L"Failed to download " + getCCName(oldPath));
             success = false;
          }
@@ -741,7 +739,7 @@ void C_DownloadFrom_Definition::run()
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(g_location.value, src);
 
-      if (src.empty() || os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
+      if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          print(L"Failed to download");
          g_success.value = false;
          return;
@@ -754,7 +752,7 @@ void C_DownloadFrom_Definition::run()
          const _str n = os_trim(elements->getValue());
          const _str oldPath = srcLoc + OS_SEPARATOR + n;
 
-         if (n.empty() || os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
+         if (os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
             print(L"Failed to download " + getCCNameShort(n));
             success = false;
          }
@@ -793,9 +791,7 @@ void C_DownloadFrom_String_Stack::run()
       const _str name = os_trim(element->getValue());
       const _str src = os_trim(location->getValue());
 
-      if (name.empty() || src.empty() || os_isInvaild(name)
-          || os_isInvaild(src) || !os_directoryExists(dest)) {
-
+      if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
          print(L"Failed to download " + getCCNameShort(name));
          g_success.value = false;
          return;
@@ -849,7 +845,7 @@ void C_DownloadFrom_List_Stack::run()
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(dest, src);
 
-      if (src.empty() || os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
+      if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          for (_size i = 0; i < len; i++) {
             print(L"Failed to download " + getCCNameShort(os_trim(names[i])));
          }
@@ -863,7 +859,7 @@ void C_DownloadFrom_List_Stack::run()
          const _str n = os_trim(names[i]);
          const _str oldPath = srcLoc + OS_SEPARATOR + n;
 
-         if (n.empty() || os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
+         if (os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
             print(L"Failed to download " + getCCNameShort(n));
             success = false;
          }
@@ -904,9 +900,7 @@ void C_DownloadFrom_Definition_Stack::run()
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(dest, src);
 
-      if (src.empty() || os_isInvaild(src) || !os_directoryExists(dest)
-          || !os_directoryExists(srcLoc)) {
-
+      if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          print(L"Failed to download");
          g_success.value = false;
          return;
@@ -924,7 +918,7 @@ void C_DownloadFrom_Definition_Stack::run()
          const _str n = os_trim(elements->getValue());
          const _str oldPath = srcLoc + OS_SEPARATOR + n;
 
-         if (n.empty() || os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
+         if (os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
             print(L"Failed to download " + getCCNameShort(n));
             success = false;
          }
@@ -970,7 +964,7 @@ void C_Download_String::run()
       const _str oldElement = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (oldElement.empty() || os_isInvaild(oldElement) || !os_directoryExists(dest) || !os_isPath(oldElement))
+      if (os_isInvaild(oldElement) || !os_directoryExists(dest) || !os_isPath(oldElement))
       {
          print(L"Failed to download " + getCCNameShort(oldElement));
          g_success.value = false;
@@ -1035,7 +1029,7 @@ void C_Download_List::run()
          const _str n = os_trim(oldPaths[i]);
          const _str oldPath = os_join(dest, n);
 
-         if (n.empty() || os_isInvaild(n) || !os_isPath(n) || !os_exists(oldPath)) {
+         if (os_isInvaild(n) || !os_isPath(n) || !os_exists(oldPath)) {
             print(L"Failed to download " + getCCName(oldPath));
             success = false;
             continue;
@@ -1072,7 +1066,7 @@ void C_Download_String_Stack::run()
       const _str oldElement = os_trim(element->getValue());
       const _str& dest = g_location.value;
 
-      if (oldElement.empty() || os_isInvaild(oldElement) || !os_isPath(oldElement) || !os_directoryExists(dest))
+      if (os_isInvaild(oldElement) || !os_isPath(oldElement) || !os_directoryExists(dest))
       {
          print(L"Failed to download " + getCCNameShort(oldElement));
          g_success.value = false;
@@ -1142,7 +1136,7 @@ void C_Download_List_Stack::run()
       for (_size i = 0; g_running && i < len; i++) {
          const _str oldPath = os_trim(oldPaths[i]);
 
-         if (oldPath.empty() || os_isInvaild(oldPath) || !os_isPath(oldPath) || !os_exists(oldPath)) {
+         if (os_isInvaild(oldPath) || !os_isPath(oldPath) || !os_exists(oldPath)) {
             print(L"Failed to download " + getCCName(oldPath));
             success = false;
             continue;
@@ -1185,7 +1179,7 @@ void C_CopyTo::run()
       _str& oldPath = g_path.value;
       _str n = os_trim(location->getValue());
 
-      if (!g_exists.value || n.empty() || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!g_exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          print(L"Failed to copy " + getCCName(oldPath));
          g_success.value = false;
          return;
@@ -1231,7 +1225,7 @@ void C_CopyTo_Stack::run()
       _str& oldPath = g_path.value;
       _str n = os_trim(location->getValue());
 
-      if (!g_exists.value || n.empty() || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!g_exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          print(L"Failed to copy " + getCCName(oldPath));
          g_success.value = false;
          return;
@@ -1281,8 +1275,7 @@ void C_CopyToAs::run()
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!g_exists.value || fulln.empty() || loc.empty()
-          || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
+      if (!g_exists.value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
          print(L"Failed to copy " + getCCName(oldPath));
          g_success.value = false;
@@ -1334,8 +1327,7 @@ void C_CopyToAs_Stack::run()
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!g_exists.value || fulln.empty() || loc.empty()
-          || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
+      if (!g_exists.value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
          print(L"Failed to copy " + getCCName(oldPath));
          g_success.value = false;
@@ -1420,4 +1412,3 @@ _str getCCNameShort(const _str& path)
       ? (L"'" + f + L"\\'")
       : (L"'" + f + L"'");
 }
-

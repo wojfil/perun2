@@ -158,7 +158,7 @@ void logSelectSuccess(const _str& name)
 void C_Copy_String::run()
 {
    const _str n = os_trim(value->getValue());
-   if (n.empty() || os_isInvaild(n)) {
+   if (os_isInvaild(n)) {
       logCopyError(n);
       g_success.value = false;
       return;
@@ -199,7 +199,7 @@ void C_Copy_List::run()
 
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
-      if (n.empty() || os_isInvaild(n)) {
+      if (os_isInvaild(n)) {
          logCopyError(n);
          anyFailure = true;
       }
@@ -235,7 +235,7 @@ void C_Copy_List::run()
 void C_Select_String::run()
 {
    const _str n = os_trim(value->getValue());
-   if (n.empty() || os_isInvaild(n)) {
+   if (os_isInvaild(n)) {
       logSelectError(n);
       g_success.value = false;
       return;
@@ -288,7 +288,7 @@ void C_Select_List::run()
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
 
-      if (n.empty() || os_isInvaild(n)) {
+      if (os_isInvaild(n)) {
          logSelectError(n);
          continue;
       }

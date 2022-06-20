@@ -15,11 +15,11 @@
 #ifndef GEN_BOOL_H
 #define GEN_BOOL_H
 
-#include <algorithm>
 #include "../generator.h"
 #include "../datatype.h"
 #include "gen-generic.h"
 #include "gen-bool-compare.h"
+#include <algorithm>
 
 
 // logic negation:
@@ -65,7 +65,7 @@ struct InList : Generator<_boo>
 {
 public:
    InList<T> (Generator<T>* val, Generator<std::vector<T>>* li)
-      : value(val), list(li), hasPrev(false) { };
+      : value(val), list(li), prevLength(0), prevList(std::vector<T>()) { };
 
    ~InList<T>() {
       delete value;
@@ -73,38 +73,34 @@ public:
    };
 
    _boo getValue() override {
+      const std::vector<T> lst = list->getValue();
 
-      if (hasPrev && prevLength == 0) {
-         return false;
+      if (lst != prevList) {
+         prevList = lst;
+
+         std::sort(prevList.begin(), prevList.end());
+         prevList.erase(std::unique(prevList.begin(), prevList.end()),
+            prevList.end());
+
+         prevLength = prevList.size();
       }
 
-      std::vector<T> lst = list->getValue();
-
-      if (!hasPrev || lst != prevRaw) {
-         prevRaw = lst;
-         prevSorted = lst;
-
-         std::sort(prevSorted.begin(), prevSorted.end());
-         lst.erase(std::unique(prevSorted.begin(), prevSorted.end()),
-            prevSorted.end());
-
-         if (!hasPrev) {
-            hasPrev = true;
+      switch (prevLength) {
+         case 0: {
+            return false;
          }
-
-         prevLength = prevSorted.size();
-      }
-
-      return prevLength == 1
-         ? prevSorted[0] == value->getValue()
-         : std::binary_search(prevSorted.begin(), prevSorted.end(),
+         case 1: {
+            return prevList[0] == value->getValue();
+         }
+         default: {
+            return std::binary_search(prevList.begin(), prevList.end(),
                value->getValue());
+         }
+      }
    };
 
 private:
-   _boo hasPrev;
-   std::vector<T> prevRaw;
-   std::vector<T> prevSorted;
+   std::vector<T> prevList;
    _size prevLength;
 
    Generator<T>* value;

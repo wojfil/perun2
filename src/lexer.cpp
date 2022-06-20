@@ -190,7 +190,7 @@ static Token wordToken(_str& str, _int& line)
       switch (dots) {
          case 0: {
             try {
-               return Token(Number(std::stoll(str)), line);
+               return Token(_num(std::stoll(str)), line);
             }
             catch (...) {
                bigNumberException(str, line);
@@ -198,7 +198,7 @@ static Token wordToken(_str& str, _int& line)
          }
          case 1: {
             try {
-               return Token(Number(stringToDouble(str)), line);
+               return Token(_num(stringToDouble(str)), line);
             }
             catch (...) {
                bigNumberException(str, line);
@@ -240,7 +240,7 @@ static Token wordToken(_str& str, _int& line)
                   if (mult != 0 && i2 / mult != i) {
                      bigNumberException(str, line);
                   }
-                  return Token(Number(i2), line, str);
+                  return Token(_num(i2), line, str, Token::nm_Size);
                }
                catch (...) {
                   bigNumberException(str, line);
@@ -251,7 +251,7 @@ static Token wordToken(_str& str, _int& line)
                   _ndouble d = stringToDouble(str2);
                   d *= mult;
 
-                  return Token(Number(d), line, str);
+                  return Token(_num(d), line, str, Token::nm_Size);
                }
                catch (...) {
                   bigNumberException(str, line);
@@ -265,13 +265,24 @@ static Token wordToken(_str& str, _int& line)
       case 0: {
          _str lower = str;
          toLower(lower);
+         const _size hsh = rawStringHash(lower);
 
-         auto f = KEYWORDS.find(lower);
-         if (f == KEYWORDS.end()) {
-            return Token(rawStringHash(lower), line, str);
+         auto fm = HASH_MAP_MONTHS.find(hsh);
+         if (fm != HASH_MAP_MONTHS.end()) {
+            return Token(_num(fm->second), line, str, Token::nm_Month);
+         }
+
+         auto fw = HASH_MAP_WEEKDAYS.find(hsh);
+         if (fw != HASH_MAP_WEEKDAYS.end()) {
+            return Token(_num(fw->second), line, str, Token::nm_WeekDay);
+         }
+
+         auto fk = KEYWORDS.find(lower);
+         if (fk == KEYWORDS.end()) {
+            return Token(hsh, line, str);
          }
          else {
-            return Token(f->second, line, str);
+            return Token(fk->second, line, str);
          }
       }
       case 1: {

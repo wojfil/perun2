@@ -133,30 +133,47 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    const Token& second = tks.second();
 
    if (len == 2) {
-      if (first.type != Token::t_Word || second.type != Token::t_Number) {
+      if (second.type != Token::t_Number) {
          return nullptr;
       }
 
-      const _tnum month = monthFromToken(first);
+      if (first.type == Token::t_Word) {
+         throw SyntaxException(L"'" + first.originString
+            + L"' is not a valid month name", first.line);
+      }
+
+      if (first.type != Token::t_Number) {
+         return nullptr;
+      }
+
+      const _tnum month = (_tnum)first.value.n.toInt();
       const _tnum year = tokenToTimeNumber(second);
-      return new Constant<_tim>(Time(month, year));
+      return new Constant<_tim>(_tim(month, year));
    }
 
    // tt_Date:
    const Token& third = tks.at(2);
 
-   if (first.type != Token::t_Number || third.type != Token::t_Number
-         || second.type != Token::t_Word) {
+   if (first.type != Token::t_Number || third.type != Token::t_Number) {
+      return nullptr;
+   }
+
+   if (second.type == Token::t_Word) {
+      throw SyntaxException(L"'" + second.originString
+         + L"' is not a valid month name", second.line);
+   }
+
+   if (second.type != Token::t_Number) {
       return nullptr;
    }
 
    const _tnum day = tokenToTimeNumber(first);
-   const _tnum month = monthFromToken(second);
+   const _tnum month = (_tnum)second.value.n.toInt();
    const _tnum year = tokenToTimeNumber(third);
    checkDayCorrectness(day, month, year, first);
 
    if (len == 3) {
-      return new Constant<_tim>(Time(day, month, year));
+      return new Constant<_tim>(_tim(day, month, year));
    }
 
    // tt_ShortClock
@@ -181,7 +198,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    }
 
    if (len == 7) {
-      return new Constant<_tim>(Time(day, month, year, hour, minute));
+      return new Constant<_tim>(_tim(day, month, year, hour, minute));
    }
 
    // tt_Clock:
@@ -195,17 +212,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
       clockUnitException(L"seconds", secs, tks.at(8));
    }
 
-   return new Constant<_tim>(Time(day, month, year, hour, minute, secs));
-}
-
-static _tnum monthFromToken(const Token& tk)
-{
-   if (HASH_GROUP_MONTHS.find(tk.value.h1) == HASH_GROUP_MONTHS.end()) {
-      throw SyntaxException(L"'" + tk.originString + L"' is not a valid month name", tk.line);
-   }
-   else {
-      return HASH_MAP_MONTHS.find(tk.value.h1)->second;
-   }
+   return new Constant<_tim>(_tim(day, month, year, hour, minute, secs));
 }
 
 static _tnum tokenToTimeNumber(const Token& tk)

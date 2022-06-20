@@ -32,9 +32,17 @@ struct Token
       t_TwoWords
    };
 
+   enum NumberMode
+   {
+      nm_Normal = 0,
+      nm_Size,
+      nm_Month,
+      nm_WeekDay
+   };
+
    Token(const _char& v, const _int& li);
    Token(const _num& v, const _int& li);
-   Token(const _num& v, const _int& li, const _str& os);
+   Token(const _num& v, const _int& li, const _str& os, const NumberMode& nm);
    Token(const _str& v, const _int& li);
    Token(const _size& v, const _int& li, const _str& os);
    Token(const Keyword& v, const _int& li, const _str& os);
@@ -52,7 +60,7 @@ struct Token
 
    Type type;
    _int line;
-   struct // unfortunately I cannot make it Union
+   struct
    {
       _char c;
       _num n;
@@ -61,8 +69,9 @@ struct Token
       _size h2; // hash of second word
       Keyword k;
    } value;
-   _str originString;
-   _str originString2; // for time variables
+   _str originString = L"";
+   _str originString2 = L""; // for time variable members only
+   NumberMode mode = NumberMode::nm_Normal;
 };
 
 

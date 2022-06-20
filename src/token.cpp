@@ -21,8 +21,6 @@ Token::Token(const _char& v, const _int& li)
    line = li;
    type = t_Symbol;
    value.c = v;
-   originString = L"";
-   originString2 = L"";
 };
 
 Token::Token(const _num& v, const _int& li)
@@ -30,17 +28,15 @@ Token::Token(const _num& v, const _int& li)
    line = li;
    type = t_Number;
    value.n = v;
-   originString = L"";
-   originString2 = L"";
 }
 
-Token::Token(const _num& v, const _int& li, const _str& os)
+Token::Token(const _num& v, const _int& li, const _str& os, const NumberMode& nm)
 {
    line = li;
    type = t_Number;
    value.n = v;
    originString = os;
-   originString2 = L"";
+   mode = nm;
 }
 
 Token::Token(const _str& v, const _int& li)
@@ -48,8 +44,6 @@ Token::Token(const _str& v, const _int& li)
    line = li;
    type = t_Quotation;
    value.sl = v;
-   originString = L"";
-   originString2 = L"";
 }
 
 Token::Token(const _size& v, const _int& li, const _str& os)
@@ -58,7 +52,6 @@ Token::Token(const _size& v, const _int& li, const _str& os)
    type = t_Word;
    value.h1 = v;
    originString = os;
-   originString2 = L"";
 }
 
 Token::Token(const Keyword& v, const _int& li, const _str& os)
@@ -67,7 +60,6 @@ Token::Token(const Keyword& v, const _int& li, const _str& os)
    type = t_Keyword;
    value.k = v;
    originString = os;
-   originString2 = L"";
 }
 
 Token::Token(const _size& v1, const _size& v2, const _int& li, const _str& os1, const _str& os2)
@@ -187,13 +179,10 @@ _boo Token::isTimeVariable() const
 
 _boo Token::isWeekDay() const
 {
-   return type == Token::t_Word
-      && HASH_GROUP_WEEKDAYS.find(value.h1) != HASH_GROUP_WEEKDAYS.end();
+   return type == Token::t_Number && mode == Token::nm_WeekDay;
 }
 
 _boo Token::isMonth() const
 {
-   return type == Token::t_Word
-      && HASH_GROUP_MONTHS.find(value.h1) != HASH_GROUP_MONTHS.end();
+   return type == Token::t_Number && mode == Token::nm_Month;
 }
-

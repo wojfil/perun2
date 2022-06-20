@@ -103,29 +103,7 @@ void initVars(const _list& args)
       { HASH_VAR_DEPTH, &g_depth }
    };
 
-   g_svar_num =
-   {
-      { HASH_VAR_JANUARY, new Constant<_num>(Number(1LL)) },
-      { HASH_VAR_FEBRUARY, new Constant<_num>(Number(2LL)) },
-      { HASH_VAR_MARCH, new Constant<_num>(Number(3LL)) },
-      { HASH_VAR_APRIL, new Constant<_num>(Number(4LL)) },
-      { HASH_VAR_MAY, new Constant<_num>(Number(5LL)) },
-      { HASH_VAR_JUNE, new Constant<_num>(Number(6LL)) },
-      { HASH_VAR_JULY, new Constant<_num>(Number(7LL)) },
-      { HASH_VAR_AUGUST, new Constant<_num>(Number(8LL)) },
-      { HASH_VAR_SEPTEMBER, new Constant<_num>(Number(9LL)) },
-      { HASH_VAR_OCTOBER, new Constant<_num>(Number(10LL)) },
-      { HASH_VAR_NOVEMBER, new Constant<_num>(Number(11LL)) },
-      { HASH_VAR_DECEMBER, new Constant<_num>(Number(12LL)) },
-
-      { HASH_VAR_MONDAY, new Constant<_num>(Number(1LL)) },
-      { HASH_VAR_TUESDAY, new Constant<_num>(Number(2LL)) },
-      { HASH_VAR_WEDNESDAY, new Constant<_num>(Number(3LL)) },
-      { HASH_VAR_THURSDAY, new Constant<_num>(Number(4LL)) },
-      { HASH_VAR_FRIDAY, new Constant<_num>(Number(5LL)) },
-      { HASH_VAR_SATURDAY, new Constant<_num>(Number(6LL)) },
-      { HASH_VAR_SUNDAY, new Constant<_num>(Number(7LL)) }
-   };
+   g_svar_num = { };
 
    g_svar_list =
    {

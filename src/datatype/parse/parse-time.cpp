@@ -220,8 +220,8 @@ static _tnum tokenToTimeNumber(const Token& tk)
    return toTimeNumber(tk.value.n);
 }
 
-static void checkDayCorrectness(const _tnum day, const _tnum month,
-   const _tnum year, const Token& tk)
+static void checkDayCorrectness(const _tnum& day, const _tnum& month,
+   const _tnum& year, const Token& tk)
 {
    if (day < 1) {
       throw SyntaxException(L"day cannot be smaller than 1", tk.line);

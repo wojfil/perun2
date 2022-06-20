@@ -22,7 +22,7 @@ Generator<_tim>* parseTime(const Tokens& tks);
 
 Generator<_tim>* parseTimeConst(const Tokens& tks);
 static _tnum tokenToTimeNumber(const Token& tk);
-static void checkDayCorrectness(const _tnum day, const _tnum month, const _tnum year, const Token& tk);
+static void checkDayCorrectness(const _tnum& day, const _tnum& month, const _tnum& year, const Token& tk);
 static void clockUnitException(const _str& unit, const _tnum& value, const Token& tk);
 static Generator<_tim>* parseTimeExp(const Tokens& tks);
 static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,

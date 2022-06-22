@@ -82,6 +82,11 @@ _str Time::toString() const
 void Time::addYears(const _tnum& y)
 {
    year += y;
+   if (type != tt_YearMonth && month == FEBRUARY
+       && day == 29 && !isLeapYear(year))
+   {
+      day = 28;
+   }
 }
 
 void Time::addMonths(const _tnum& m)
@@ -90,9 +95,17 @@ void Time::addMonths(const _tnum& m)
    const _tnum y = m / 12;
    month += m2;
    year += y;
+
    if (month > 12) {
       month -= 12;
       year++;
+   }
+
+   if (type != tt_YearMonth && day >= 29) {
+      const _tnum max = daysInMonth(month, year);
+      if (day > max) {
+         day = max;
+      }
    }
 }
 
@@ -108,7 +121,7 @@ void Time::addWeeks(const _tnum& w)
 void Time::addDays(const _tnum& d)
 {
    if (type == tt_YearMonth) {
-      day = 1;
+      day = d < 0 ? 1 : daysInMonth(month, year);
       type = tt_Date;
    }
 

@@ -23,10 +23,10 @@ struct Time
    // time can be defined in 4 ways:
    enum TimeType
    {
-      tt_YearMonth = 0, // contains only month and year
-      tt_Date,          // contains day, month and year
-      tt_ShortClock,    // contains day, month, year, hour, minute
-      tt_Clock          // contains day, month, year, hour, minute, second
+      tt_YearMonth = 0,     // contains month and year
+      tt_Date = 1,          // contains day, month and year
+      tt_ShortClock = 2,    // contains day, month, year, hour, minute
+      tt_Clock = 3          // contains day, month, year, hour, minute, second
    };
 
    Time();

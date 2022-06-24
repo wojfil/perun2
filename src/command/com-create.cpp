@@ -21,14 +21,14 @@ void C_Create::run()
 {
    if (g_running) {
       if (!g_isfile.value && !g_isdirectory.value) {
-         print(L"Failed to create " + getCCName(g_path.value));
+         commandLog(L"Failed to create " + getCCName(g_path.value));
          g_success.value = false;
          return;
       }
 
       if (g_exists.value) {
          if (!(forced && os_drop(g_path.value, g_isfile.value))) {
-            print(L"Failed to create " + getCCName(g_path.value));
+            commandLog(L"Failed to create " + getCCName(g_path.value));
             g_success.value = false;
             return;
          }
@@ -39,11 +39,11 @@ void C_Create::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create file " + getCCName(g_path.value));
+            commandLog(L"Create file " + getCCName(g_path.value));
             os_loadAttributes(*attribute);
          }
          else {
-            print(L"Failed to create file " + getCCName(g_path.value));
+            commandLog(L"Failed to create file " + getCCName(g_path.value));
          }
       }
       else {
@@ -51,11 +51,11 @@ void C_Create::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create directory " + getCCName(g_path.value));
+            commandLog(L"Create directory " + getCCName(g_path.value));
             os_loadAttributes(*attribute);
          }
          else {
-            print(L"Failed to create directory " + getCCName(g_path.value));
+            commandLog(L"Failed to create directory " + getCCName(g_path.value));
          }
       }
    }
@@ -66,7 +66,7 @@ void C_Create_Stack::run()
 {
    if (g_running) {
       if (!g_isfile.value && !g_isdirectory.value) {
-         print(L"Failed to create " + getCCName(g_path.value));
+         commandLog(L"Failed to create " + getCCName(g_path.value));
          g_success.value = false;
          return;
       }
@@ -92,14 +92,14 @@ void C_Create_Stack::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create file " + getCCName(path));
+            commandLog(L"Create file " + getCCName(path));
             if (nameChanged) {
                g_this_s.value = path;
             }
             os_loadAttributes(*attribute);
          }
          else {
-            print(L"Failed to create file " + getCCName(path));
+            commandLog(L"Failed to create file " + getCCName(path));
          }
       }
       else {
@@ -107,14 +107,14 @@ void C_Create_Stack::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create directory " + getCCName(path));
+            commandLog(L"Create directory " + getCCName(path));
             if (nameChanged) {
                g_this_s.value = path;
             }
             os_loadAttributes(*attribute);
          }
          else {
-            print(L"Failed to create directory " + getCCName(path));
+            commandLog(L"Failed to create directory " + getCCName(path));
          }
       }
    }
@@ -125,14 +125,14 @@ void C_CreateFile::run()
 {
    if (g_running) {
       if (!g_isfile.value && !g_isdirectory.value) {
-         print(L"Failed to create file " + getCCName(g_path.value));
+         commandLog(L"Failed to create file " + getCCName(g_path.value));
          g_success.value = false;
          return;
       }
 
       if (g_exists.value) {
          if (!(forced && os_drop(g_path.value, g_isfile.value))) {
-            print(L"Failed to create file " + getCCName(g_path.value));
+            commandLog(L"Failed to create file " + getCCName(g_path.value));
             g_success.value = false;
             return;
          }
@@ -142,11 +142,11 @@ void C_CreateFile::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create file " + getCCName(g_path.value));
+         commandLog(L"Create file " + getCCName(g_path.value));
          os_loadAttributes(*attribute);
       }
       else {
-         print(L"Failed to create file " + getCCName(g_path.value));
+         commandLog(L"Failed to create file " + getCCName(g_path.value));
       }
    }
 }
@@ -156,7 +156,7 @@ void C_CreateFile_Stack::run()
 {
    if (g_running) {
       if (!g_isfile.value && !g_isdirectory.value) {
-         print(L"Failed to create file " + getCCName(g_path.value));
+         commandLog(L"Failed to create file " + getCCName(g_path.value));
          g_success.value = false;
          return;
       }
@@ -181,14 +181,14 @@ void C_CreateFile_Stack::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create file " + getCCName(path));
+         commandLog(L"Create file " + getCCName(path));
          if (nameChanged) {
             g_this_s.value = path;
          }
          os_loadAttributes(*attribute);
       }
       else {
-         print(L"Failed to create file " + getCCName(path));
+         commandLog(L"Failed to create file " + getCCName(path));
       }
    }
 }
@@ -198,14 +198,14 @@ void C_CreateDirectory::run()
 {
    if (g_running) {
       if (!g_isfile.value && !g_isdirectory.value) {
-         print(L"Failed to create directory " + getCCName(g_path.value));
+         commandLog(L"Failed to create directory " + getCCName(g_path.value));
          g_success.value = false;
          return;
       }
 
       if (g_exists.value) {
          if (!(forced && os_drop(g_path.value, g_isfile.value))) {
-            print(L"Failed to create directory " + getCCName(g_path.value));
+            commandLog(L"Failed to create directory " + getCCName(g_path.value));
             g_success.value = false;
             return;
          }
@@ -215,11 +215,11 @@ void C_CreateDirectory::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create directory " + getCCName(g_path.value));
+         commandLog(L"Create directory " + getCCName(g_path.value));
          os_loadAttributes(*attribute);
       }
       else {
-         print(L"Failed to create directory " + getCCName(g_path.value));
+         commandLog(L"Failed to create directory " + getCCName(g_path.value));
       }
    }
 }
@@ -229,7 +229,7 @@ void C_CreateDirectory_Stack::run()
 {
    if (g_running) {
       if (!g_isfile.value && !g_isdirectory.value) {
-         print(L"Failed to create directory " + getCCName(g_path.value));
+         commandLog(L"Failed to create directory " + getCCName(g_path.value));
          g_success.value = false;
          return;
       }
@@ -246,14 +246,14 @@ void C_CreateDirectory_Stack::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create directory " + getCCName(path));
+         commandLog(L"Create directory " + getCCName(path));
          if (nameChanged) {
             g_this_s.value = path;
          }
          os_loadAttributes(*attribute);
       }
       else {
-         print(L"Failed to create directory " + getCCName(path));
+         commandLog(L"Failed to create directory " + getCCName(path));
       }
    }
 }
@@ -268,7 +268,7 @@ void C_Create_String::run()
       const _str& dest = g_location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         print(L"Failed to create " + getCCNameShort(value));
+         commandLog(L"Failed to create " + getCCNameShort(value));
          g_success.value = false;
          return;
       }
@@ -277,7 +277,7 @@ void C_Create_String::run()
 
       if (os_exists(path)) {
          if (!(forced && os_drop(path))) {
-            print(L"Failed to create " + getCCName(path));
+            commandLog(L"Failed to create " + getCCName(path));
             g_success.value = false;
             return;
          }
@@ -288,10 +288,10 @@ void C_Create_String::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create file " + getCCName(path));
+            commandLog(L"Create file " + getCCName(path));
          }
          else {
-            print(L"Failed to create file " + getCCName(path));
+            commandLog(L"Failed to create file " + getCCName(path));
          }
       }
       else {
@@ -299,10 +299,10 @@ void C_Create_String::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create directory " + getCCName(path));
+            commandLog(L"Create directory " + getCCName(path));
          }
          else {
-            print(L"Failed to create directory " + getCCName(path));
+            commandLog(L"Failed to create directory " + getCCName(path));
          }
       }
    }
@@ -316,7 +316,7 @@ void C_CreateFile_String::run()
       const _str& dest = g_location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         print(L"Failed to create file " + getCCNameShort(value));
+         commandLog(L"Failed to create file " + getCCNameShort(value));
          g_success.value = false;
          return;
       }
@@ -325,7 +325,7 @@ void C_CreateFile_String::run()
 
       if (os_exists(path)) {
          if (!(forced && os_drop(path))) {
-            print(L"Failed to create file " + getCCName(path));
+            commandLog(L"Failed to create file " + getCCName(path));
             g_success.value = false;
             return;
          }
@@ -335,10 +335,10 @@ void C_CreateFile_String::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create file " + getCCName(path));
+         commandLog(L"Create file " + getCCName(path));
       }
       else {
-         print(L"Failed to create file " + getCCName(path));
+         commandLog(L"Failed to create file " + getCCName(path));
       }
    }
 }
@@ -351,7 +351,7 @@ void C_CreateDirectory_String::run()
       const _str& dest = g_location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         print(L"Failed to create directory " + getCCNameShort(value));
+         commandLog(L"Failed to create directory " + getCCNameShort(value));
          g_success.value = false;
          return;
       }
@@ -360,7 +360,7 @@ void C_CreateDirectory_String::run()
 
       if (os_exists(path)) {
          if (!(forced && os_drop(path))) {
-            print(L"Failed to create directory " + getCCName(path));
+            commandLog(L"Failed to create directory " + getCCName(path));
             g_success.value = false;
             return;
          }
@@ -370,10 +370,10 @@ void C_CreateDirectory_String::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create directory " + getCCName(path));
+         commandLog(L"Create directory " + getCCName(path));
       }
       else {
-         print(L"Failed to create directory " + getCCName(path));
+         commandLog(L"Failed to create directory " + getCCName(path));
       }
    }
 }
@@ -386,7 +386,7 @@ void C_Create_String_Stack::run()
       const _str& dest = g_location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         print(L"Failed to create " + getCCNameShort(value));
+         commandLog(L"Failed to create " + getCCNameShort(value));
          g_success.value = false;
          return;
       }
@@ -410,10 +410,10 @@ void C_Create_String_Stack::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create file " + getCCName(path));
+            commandLog(L"Create file " + getCCName(path));
          }
          else {
-            print(L"Failed to create file " + getCCName(path));
+            commandLog(L"Failed to create file " + getCCName(path));
          }
       }
       else {
@@ -421,10 +421,10 @@ void C_Create_String_Stack::run()
          g_success.value = s;
 
          if (s) {
-            print(L"Create directory " + getCCName(path));
+            commandLog(L"Create directory " + getCCName(path));
          }
          else {
-            print(L"Failed to create directory " + getCCName(path));
+            commandLog(L"Failed to create directory " + getCCName(path));
          }
       }
    }
@@ -438,7 +438,7 @@ void C_CreateFile_String_Stack::run()
       const _str& dest = g_location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         print(L"Failed to create file " + getCCNameShort(value));
+         commandLog(L"Failed to create file " + getCCNameShort(value));
          g_success.value = false;
          return;
       }
@@ -461,10 +461,10 @@ void C_CreateFile_String_Stack::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create file " + getCCName(path));
+         commandLog(L"Create file " + getCCName(path));
       }
       else {
-         print(L"Failed to create file " + getCCName(path));
+         commandLog(L"Failed to create file " + getCCName(path));
       }
    }
 }
@@ -477,7 +477,7 @@ void C_CreateDirectory_String_Stack::run()
       const _str& dest = g_location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         print(L"Failed to create directory " + getCCNameShort(value));
+         commandLog(L"Failed to create directory " + getCCNameShort(value));
          g_success.value = false;
          return;
       }
@@ -492,10 +492,10 @@ void C_CreateDirectory_String_Stack::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Create directory " + getCCName(path));
+         commandLog(L"Create directory " + getCCName(path));
       }
       else {
-         print(L"Failed to create directory " + getCCName(path));
+         commandLog(L"Failed to create directory " + getCCName(path));
       }
    }
 }
@@ -515,7 +515,7 @@ void C_Create_List::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            print(L"Failed to create " + getCCNameShort(names[i]));
+            commandLog(L"Failed to create " + getCCNameShort(names[i]));
          }
          g_success.value = false;
          return;
@@ -527,7 +527,7 @@ void C_Create_List::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            print(L"Failed to create " + getCCNameShort(n));
+            commandLog(L"Failed to create " + getCCNameShort(n));
             success = false;
          }
          else {
@@ -535,7 +535,7 @@ void C_Create_List::run()
 
             if (os_exists(path)) {
                if (!(forced && os_drop(path))) {
-                  print(L"Failed to create " + getCCName(path));
+                  commandLog(L"Failed to create " + getCCName(path));
                   success = false;
                   continue;
                }
@@ -546,10 +546,10 @@ void C_Create_List::run()
                g_success.value = s;
 
                if (s) {
-                  print(L"Create file " + getCCName(path));
+                  commandLog(L"Create file " + getCCName(path));
                }
                else {
-                  print(L"Failed to create file " + getCCName(path));
+                  commandLog(L"Failed to create file " + getCCName(path));
                   success = false;
                }
             }
@@ -558,10 +558,10 @@ void C_Create_List::run()
                g_success.value = s;
 
                if (s) {
-                  print(L"Create directory " + getCCName(path));
+                  commandLog(L"Create directory " + getCCName(path));
                }
                else {
-                  print(L"Failed to create directory " + getCCName(path));
+                  commandLog(L"Failed to create directory " + getCCName(path));
                   success = false;
                }
             }
@@ -586,7 +586,7 @@ void C_CreateFiles_List::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            print(L"Failed to create file " + getCCNameShort(names[i]));
+            commandLog(L"Failed to create file " + getCCNameShort(names[i]));
          }
          g_success.value = false;
          return;
@@ -598,7 +598,7 @@ void C_CreateFiles_List::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            print(L"Failed to create file " + getCCNameShort(n));
+            commandLog(L"Failed to create file " + getCCNameShort(n));
             success = false;
          }
          else {
@@ -606,7 +606,7 @@ void C_CreateFiles_List::run()
 
             if (os_exists(path)) {
                if (!(forced && os_drop(path))) {
-                  print(L"Failed to create file " + getCCName(path));
+                  commandLog(L"Failed to create file " + getCCName(path));
                   success = false;
                   continue;
                }
@@ -616,10 +616,10 @@ void C_CreateFiles_List::run()
             g_success.value = s;
 
             if (s) {
-               print(L"Create file " + getCCName(path));
+               commandLog(L"Create file " + getCCName(path));
             }
             else {
-               print(L"Failed to create file " + getCCName(path));
+               commandLog(L"Failed to create file " + getCCName(path));
                success = false;
             }
          }
@@ -643,7 +643,7 @@ void C_CreateDirectories_List::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            print(L"Failed to directory " + getCCNameShort(names[i]));
+            commandLog(L"Failed to directory " + getCCNameShort(names[i]));
          }
          g_success.value = false;
          return;
@@ -655,7 +655,7 @@ void C_CreateDirectories_List::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            print(L"Failed to create directory " + getCCNameShort(n));
+            commandLog(L"Failed to create directory " + getCCNameShort(n));
             success = false;
          }
          else {
@@ -663,7 +663,7 @@ void C_CreateDirectories_List::run()
 
             if (os_exists(path)) {
                if (!(forced && os_drop(path))) {
-                  print(L"Failed to create directory " + getCCName(path));
+                  commandLog(L"Failed to create directory " + getCCName(path));
                   success = false;
                   continue;
                }
@@ -673,10 +673,10 @@ void C_CreateDirectories_List::run()
             g_success.value = s;
 
             if (s) {
-               print(L"Create directory " + getCCName(path));
+               commandLog(L"Create directory " + getCCName(path));
             }
             else {
-               print(L"Failed to create directory " + getCCName(path));
+               commandLog(L"Failed to create directory " + getCCName(path));
                success = false;
             }
          }
@@ -700,7 +700,7 @@ void C_Create_List_Stack::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            print(L"Failed to create " + getCCNameShort(names[i]));
+            commandLog(L"Failed to create " + getCCNameShort(names[i]));
          }
          g_success.value = false;
          return;
@@ -712,7 +712,7 @@ void C_Create_List_Stack::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            print(L"Failed to create " + getCCNameShort(n));
+            commandLog(L"Failed to create " + getCCNameShort(n));
             success = false;
          }
          else {
@@ -735,10 +735,10 @@ void C_Create_List_Stack::run()
                g_success.value = s;
 
                if (s) {
-                  print(L"Create file " + getCCName(path));
+                  commandLog(L"Create file " + getCCName(path));
                }
                else {
-                  print(L"Failed to create file " + getCCName(path));
+                  commandLog(L"Failed to create file " + getCCName(path));
                   success = false;
                }
             }
@@ -747,10 +747,10 @@ void C_Create_List_Stack::run()
                g_success.value = s;
 
                if (s) {
-                  print(L"Create directory " + getCCName(path));
+                  commandLog(L"Create directory " + getCCName(path));
                }
                else {
-                  print(L"Failed to create directory " + getCCName(path));
+                  commandLog(L"Failed to create directory " + getCCName(path));
                   success = false;
                }
             }
@@ -775,7 +775,7 @@ void C_CreateFiles_List_Stack::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            print(L"Failed to create file " + getCCNameShort(names[i]));
+            commandLog(L"Failed to create file " + getCCNameShort(names[i]));
          }
          g_success.value = false;
          return;
@@ -787,7 +787,7 @@ void C_CreateFiles_List_Stack::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            print(L"Failed to create file " + getCCNameShort(n));
+            commandLog(L"Failed to create file " + getCCNameShort(n));
             success = false;
          }
          else {
@@ -809,10 +809,10 @@ void C_CreateFiles_List_Stack::run()
             g_success.value = s;
 
             if (s) {
-               print(L"Create file " + getCCName(path));
+               commandLog(L"Create file " + getCCName(path));
             }
             else {
-               print(L"Failed to create file " + getCCName(path));
+               commandLog(L"Failed to create file " + getCCName(path));
                success = false;
             }
          }
@@ -836,7 +836,7 @@ void C_CreateDirectories_List_Stack::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            print(L"Failed to directory " + getCCNameShort(names[i]));
+            commandLog(L"Failed to directory " + getCCNameShort(names[i]));
          }
          g_success.value = false;
          return;
@@ -848,7 +848,7 @@ void C_CreateDirectories_List_Stack::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            print(L"Failed to create directory " + getCCNameShort(n));
+            commandLog(L"Failed to create directory " + getCCNameShort(n));
             success = false;
          }
          else {
@@ -862,10 +862,10 @@ void C_CreateDirectories_List_Stack::run()
             g_success.value = s;
 
             if (s) {
-               print(L"Create directory " + getCCName(path));
+               commandLog(L"Create directory " + getCCName(path));
             }
             else {
-               print(L"Failed to create directory " + getCCName(path));
+               commandLog(L"Failed to create directory " + getCCName(path));
                success = false;
             }
          }

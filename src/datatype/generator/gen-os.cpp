@@ -67,7 +67,7 @@ _boo ElementsAtLocation::hasNext()
 
             switch (element) {
                case ELEM_ALL: {
-                  if (g_noomit || (isDir && value != OS_GIT_DIRECTORY)
+                  if ((g_flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
                      || (!isDir && os_extension(value) != OS_UROEXT))
                   {
                      g_index.value = index;
@@ -78,7 +78,7 @@ _boo ElementsAtLocation::hasNext()
                   break;
                }
                case ELEM_DIRECTORIES: {
-                  if (isDir && (g_noomit || value != OS_GIT_DIRECTORY)) {
+                  if (isDir && ((g_flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
                      g_index.value = index;
                      index++;
                      g_this_s.value = value;
@@ -87,7 +87,7 @@ _boo ElementsAtLocation::hasNext()
                   break;
                }
                case ELEM_FILES: {
-                  if (!isDir && (g_noomit || os_extension(value) != OS_UROEXT)) {
+                  if (!isDir && ((g_flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
                      g_index.value = index;
                      index++;
                      g_this_s.value = value;
@@ -111,7 +111,7 @@ _boo ElementsAtLocation::hasNext()
 
          switch (element) {
             case ELEM_ALL: {
-               if (g_noomit || (isDir && value != OS_GIT_DIRECTORY)
+               if ((g_flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
                   || (!isDir && os_extension(value) != OS_UROEXT))
                {
                   g_index.value = index;
@@ -122,7 +122,7 @@ _boo ElementsAtLocation::hasNext()
                break;
             }
             case ELEM_DIRECTORIES: {
-               if (isDir && (g_noomit || value != OS_GIT_DIRECTORY)) {
+               if (isDir && ((g_flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
                   g_index.value = index;
                   index++;
                   g_this_s.value = value;
@@ -131,7 +131,7 @@ _boo ElementsAtLocation::hasNext()
                break;
             }
             case ELEM_FILES: {
-               if (!isDir && (g_noomit || os_extension(value) != OS_UROEXT)) {
+               if (!isDir && ((g_flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
                   g_index.value = index;
                   index++;
                   g_this_s.value = value;
@@ -215,7 +215,7 @@ _boo RecursiveFiles::hasNext()
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                const _str& v = data.cFileName;
 
-               if (g_noomit || os_extension(v) != OS_UROEXT) {
+               if ((g_flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
                   value = v;
                   g_index.value = index;
                   index++;
@@ -241,7 +241,7 @@ _boo RecursiveFiles::hasNext()
 
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                  if (g_noomit || v != OS_GIT_DIRECTORY) {
+                  if ((g_flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
                      paths.push_back(paths.back() + OS_SEPARATOR_STRING + v);
 
                      if (g_depth.value.isZero()) {
@@ -256,7 +256,7 @@ _boo RecursiveFiles::hasNext()
                   }
                }
                else {
-                  if (g_noomit || os_extension(v) != OS_UROEXT) {
+                  if ((g_flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
                      value = g_depth.value.isZero() ? v : (bases.back() + v);
                      g_index.value = index;
                      index++;
@@ -364,7 +364,7 @@ _boo RecursiveDirectories::hasNext()
             const _str& v = data.cFileName;
 
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                && (g_noomit || v != OS_GIT_DIRECTORY))
+                && ((g_flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
             {
                value = g_depth.value.isMinusOne() ? v : (bases.back() + v);
                paths.push_back(paths.back() + OS_SEPARATOR_STRING + v);

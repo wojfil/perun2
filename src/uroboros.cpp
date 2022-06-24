@@ -23,36 +23,34 @@
 #include "uroboros.h"
 #include "os.h"
 #include "hash.h"
+#include "datatype/math.h"
 
 
-_boo g_running; // application exits this way
-_boo g_process; // another process has been created and we are waiting for its exit
+_boo g_running;
+_boo g_process;
 _boo g_break;
 _boo g_continue;
 int g_exitCode;
-_boo g_noomit;
-_boo g_silent;
-_boo g_guiMode;
+_uint32 g_flags;
+/*
 std::mt19937 g_generator;
-std::uniform_real_distribution<> g_ddist;
+std::uniform_real_distribution<> g_ddist;*/
 PROCESS_INFORMATION g_processInfo;
 
 
 
-void run(const _str& location, const _str& code, const _boo& noomit,
-   const _boo& silent, const _boo& guimode,  const _list& args)
+void run(const _str& location, const _str& code, const _uint32& flags,  const _list& args)
 {
-   g_noomit = noomit;
-   g_silent = silent;
-   g_guiMode = guimode;
+   g_flags = flags;
 
-   init(location, args);
-   runCode(code);
-}
+   initHashes();
+   initVars(args);
+   g_math = new Math();
 
+   g_running = true;
+   g_exitCode = EXITCODE_OK;
+   g_location.value = os_trim(location);
 
-void runCode(const _str& code)
-{
    Command* commands;
 
    // parse code into commands
@@ -64,17 +62,17 @@ void runCode(const _str& code)
    }
    catch (SyntaxException ex) {
       print(ex.getMessage());
-      finish();
       g_exitCode = EXITCODE_SYNTAX_ERROR;
       return;
    }
    catch (...) {
       SyntaxException ex2(L"wrong syntax. No command can be formed of this code", 1);
       print(ex2.getMessage());
-      finish();
       g_exitCode = EXITCODE_SYNTAX_ERROR;
       return;
    }
+
+   g_math->init();
 
    // run commands
    try {
@@ -83,34 +81,9 @@ void runCode(const _str& code)
    catch (UroRuntimeException re) {
       print(re.getMessage());
       delete commands;
-      finish();
       g_exitCode = EXITCODE_RUNTIME_ERROR;
       return;
    }
 
    delete commands;
-   finish();
-}
-
-void init(const _str& location, const _list& args)
-{
-   initHashes();
-   g_running = true;
-   g_process = false;
-   g_break = false;
-   g_continue = false;
-   g_exitCode = EXITCODE_OK;
-   g_location.value = os_trim(location);
-   g_guiMes = 0;
-
-   std::random_device rd;
-   g_generator = std::mt19937(rd());
-   g_ddist = std::uniform_real_distribution<>(0.0L, 1.0L);
-
-   initVars(args);
-}
-
-void finish()
-{
-   finishVars();
 }

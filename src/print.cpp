@@ -21,12 +21,19 @@
 
 _int g_guiMes;
 
+void commandLog(const _str& value)
+{
+   if (!(g_flags & FLAG_SILENT)) {
+      print(value);
+   }
+}
+
 void print(const _str& value)
 {
    std::wcout << value << std::endl;
-   if (g_guiMode) {
+   if (g_flags & FLAG_GUI) {
       // this is ugly solution for a GUI unsolvable bug in Windows
-      // (user interaction sometimes can get frozen while runtime)
+      // (user interaction sometimes gets frozen while runtime)
       // delete this if the bug is solved properly
       g_guiMes++;
       if (g_guiMes == GUIMES_LIMIT) {

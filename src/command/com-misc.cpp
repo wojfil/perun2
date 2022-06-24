@@ -109,7 +109,7 @@ void C_Run::run()
    os_rawTrim(command);
 
    if (command.empty()) {
-      print(L"Failed to run an empty command");
+      commandLog(L"Failed to run an empty command");
       g_success.value = false;
       return;
    }
@@ -118,10 +118,10 @@ void C_Run::run()
    g_success.value = s;
 
    if (s) {
-      print(L"Run '" + command + L"'");
+      commandLog(L"Run '" + command + L"'");
    }
    else {
-      print(L"Failed to run '" + command + L"'");
+      commandLog(L"Failed to run '" + command + L"'");
    }
 
    if (hasAttribute) {
@@ -135,7 +135,7 @@ void C_RunWith::run()
    os_rawTrim(base);
 
    if (!g_exists.value || base.empty()) {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
       g_success.value = false;
       return;
    }
@@ -145,10 +145,10 @@ void C_RunWith::run()
    g_success.value = s;
 
    if (s) {
-      print(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"'");
    }
    else {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
    }
 
    if (hasAttribute) {
@@ -162,7 +162,7 @@ void C_RunWithWithString::run()
    os_rawTrim(base);
 
    if (!g_exists.value || base.empty()) {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
       g_success.value = false;
       return;
    }
@@ -175,10 +175,10 @@ void C_RunWithWithString::run()
    g_success.value = s;
 
    if (s) {
-      print(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"' with '" + rawArg + L"'");
+      commandLog(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"' with '" + rawArg + L"'");
    }
    else {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"' with '" + rawArg + L"'");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"' with '" + rawArg + L"'");
    }
 
    if (hasAttribute) {
@@ -192,7 +192,7 @@ void C_RunWithWith::run()
    os_rawTrim(base);
 
    if (!g_exists.value || base.empty()) {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
       g_success.value = false;
       return;
    }
@@ -206,10 +206,10 @@ void C_RunWithWith::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+         commandLog(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"'");
       }
       else {
-         print(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+         commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
       }
    }
    else {
@@ -230,10 +230,10 @@ void C_RunWithWith::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Run " + logStream.str());
+         commandLog(L"Run " + logStream.str());
       }
       else {
-         print(L"Failed to run " + logStream.str());
+         commandLog(L"Failed to run " + logStream.str());
       }
    }
 
@@ -245,7 +245,7 @@ void C_RunWithWith::run()
 void C_RunWithUroboros::run()
 {
    if (!g_exists.value) {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
       g_success.value = false;
       return;
    }
@@ -255,10 +255,10 @@ void C_RunWithUroboros::run()
    g_success.value = s;
 
    if (s) {
-      print(L"Run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Run " + getCCName(g_trimmed) + L" with Uroboros");
    }
    else {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
    }
 
    if (hasAttribute) {
@@ -269,7 +269,7 @@ void C_RunWithUroboros::run()
 void C_RunWithUroborosWithString::run()
 {
    if (!g_exists.value) {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
       g_success.value = false;
       return;
    }
@@ -282,10 +282,10 @@ void C_RunWithUroborosWithString::run()
    g_success.value = s;
 
    if (s) {
-      print(L"Run " + getCCName(g_trimmed) + L" with Uroboros with '" + rawArg + L"'");
+      commandLog(L"Run " + getCCName(g_trimmed) + L" with Uroboros with '" + rawArg + L"'");
    }
    else {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros with '" + rawArg + L"'");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros with '" + rawArg + L"'");
    }
 
    if (hasAttribute) {
@@ -296,7 +296,7 @@ void C_RunWithUroborosWithString::run()
 void C_RunWithUroborosWith::run()
 {
    if (!g_exists.value) {
-      print(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
       g_success.value = false;
       return;
    }
@@ -310,10 +310,10 @@ void C_RunWithUroborosWith::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Run " + getCCName(g_trimmed) + L" with Uroboros");
+         commandLog(L"Run " + getCCName(g_trimmed) + L" with Uroboros");
       }
       else {
-         print(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+         commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
       }
    }
    else {
@@ -334,10 +334,10 @@ void C_RunWithUroborosWith::run()
       g_success.value = s;
 
       if (s) {
-         print(L"Run " + logStream.str());
+         commandLog(L"Run " + logStream.str());
       }
       else {
-         print(L"Failed to run " + logStream.str());
+         commandLog(L"Failed to run " + logStream.str());
       }
    }
 
@@ -353,7 +353,7 @@ void C_Process::run()
    os_rawTrim(process);
 
    if (process.empty()) {
-      print(L"Failed to start an empty process");
+      commandLog(L"Failed to start an empty process");
       g_success.value = false;
       return;
    }
@@ -362,10 +362,9 @@ void C_Process::run()
    g_success.value = s;
 
    if (s) {
-      print(L"Start process '" + process + L"'");
+      commandLog(L"Start process '" + process + L"'");
    }
    else {
-      print(L"Failed to start process '" + process + L"'");
+      commandLog(L"Failed to start process '" + process + L"'");
    }
 }
-

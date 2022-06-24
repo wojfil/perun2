@@ -20,6 +20,7 @@
 #include "../../util.h"
 #include "../../uroboros.h"
 #include "../../os.h"
+#include "../math.h"
 
 
 _num F_Absolute::getValue()
@@ -407,21 +408,20 @@ _num F_Truncate::getValue()
 
 _num F_Random::getValue()
 {
-   const _ndouble n = g_ddist(g_generator);
-   return _num(n);
+   return g_math->randomDouble();
 }
 
 
 _num F_RandomNumber::getValue()
 {
    _num n = arg1->getValue();
+
    if (n.isDouble) {
-      n.value.d *= g_ddist(g_generator);
+      n.value.d *= g_math->randomDouble();
       return n;
    }
    else {
-      std::uniform_int_distribution<_nint> distribution(0LL, n.value.i - 1LL);
-      return _num(distribution(g_generator));
+      return _num(g_math->randomInt(n.value.i - 1LL));
    }
 }
 
@@ -494,8 +494,3 @@ _num F_FromHex::getValue()
 
    return _num(x);
 }
-
-
-
-
-

@@ -58,7 +58,6 @@ extern std::map<_size, DefinitionGenerator*> g_svar_def;
 extern std::map<_size, Generator<_list>*> g_svar_list;
 
 void initVars(const _list& args);
-void finishVars();
 void varsLevelUp();
 void varsLevelDown();
 

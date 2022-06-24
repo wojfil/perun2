@@ -35,8 +35,6 @@ public:
    Aggregate();
    void set(const _uint32& v);
    void run();
-   void runWithPrint();
-   void runWithoutPrint();
 
    std::set<_str> copyPaths;
    std::map<_str, std::set<_str>> selectPaths;

@@ -28,14 +28,12 @@
 #define VERSION_STR L"1.0.6"
 
 
-_boo main_parseArgs(int* argc, wchar_t** argv[],
-   _boo& noomit, _boo& silent, _boo& guimode, _list& args, _str& location, _str& code);
+_boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _str& location, _str& code);
 
 void main_version();
 void main_docs();
 void main_website();
 void main_help();
-
 
 
 BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
@@ -53,7 +51,6 @@ BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
     }
 }
 
-
 int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
 {
    std::setlocale(LC_CTYPE, "");
@@ -62,28 +59,25 @@ int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
    CoInitializeEx(0, COINIT_MULTITHREADED);
 
    if (argc == 1) {
-      print(L"Command-line error: no input file.");
+      print(L"Command-line error: missing arguments. Run 'uro --help' for command-line rules.");
       return EXITCODE_CLI_ERROR;
    }
 
-   _boo noomit = false;
-   _boo silent = false;
-   _boo guimode = false;
+   _uint32 flags;
    _list args;
    _str location;
    _str code;
 
-   if (main_parseArgs(&argc, &argv, noomit, silent, guimode, args, location, code))
+   if (main_parseArgs(&argc, &argv, flags, args, location, code))
    {
-      run(location, code, noomit, silent, guimode, args);
+      run(location, code, flags, args);
    }
 
    return g_exitCode;
 }
 
 
-_boo main_parseArgs(int* argc, wchar_t** argv[],
-   _boo& noomit, _boo& silent, _boo& guimode, _list& args, _str& location, _str& code)
+_boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _str& location, _str& code)
 {
    _boo options = true;
    _boo nextParseLocation = false;
@@ -104,16 +98,20 @@ _boo main_parseArgs(int* argc, wchar_t** argv[],
                options = false;
                continue;
             }
-            if (arg == L"--version") {
+
+            _str lowerArg = arg;
+            toLower(lowerArg);
+
+            if (lowerArg == L"--version") {
                main_version();
             }
-            else if (arg == L"--docs") {
+            else if (lowerArg == L"--docs") {
                main_docs();
             }
-            else if (arg == L"--website") {
+            else if (lowerArg == L"--website") {
                main_website();
             }
-            else if (arg == L"--help") {
+            else if (lowerArg == L"--help") {
                main_help();
             }
             else {
@@ -134,15 +132,21 @@ _boo main_parseArgs(int* argc, wchar_t** argv[],
                      break;
                   }
                   case L'n': case L'N': {
-                     noomit = true;
+                     if (!(flags & FLAG_NOOMIT)) {
+                        flags |= FLAG_NOOMIT;
+                     }
                      break;
                   }
                   case L's': case L'S': {
-                     silent = true;
+                     if (!(flags & FLAG_SILENT)) {
+                        flags |= FLAG_SILENT;
+                     }
                      break;
                   }
                   case L'g': case L'G': {
-                     guimode = true;
+                     if (!(flags & FLAG_GUI)) {
+                        flags |= FLAG_GUI;
+                     }
                      break;
                   }
                   case L'h': case L'H': {
@@ -163,7 +167,7 @@ _boo main_parseArgs(int* argc, wchar_t** argv[],
       if (nextParseLocation) {
          const _str v = os_trim(arg);
 
-         if (v == L"") {
+         if (v.empty()) {
             continue;
          }
 

@@ -30,6 +30,7 @@
 #include "generator/gen-definition.h"
 #include "../brackets.h"
 #include "../var/var-runtime.h"
+#include "math.h"
 #include <cwctype>
 
 // function parsing could have been done in a more generalized way
@@ -778,11 +779,13 @@ Generator<_num>* numberFunction(const Tokens& tks)
 
       Generator<_num>* num;
       if (parse(args[0], num)) {
+         g_math->setAnyRandomDouble();
          return new F_RandomNumber(num);
       }
 
       Generator<_nlist>* nlist;
       if (parse(args[0], nlist)) {
+         g_math->setAnyRandomDouble();
          return new F_RandomElement<_num>(nlist);
       }
    }

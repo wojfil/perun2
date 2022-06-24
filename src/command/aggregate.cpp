@@ -35,16 +35,6 @@ void Aggregate::set(const _uint32& v)
 
 void Aggregate::run()
 {
-   if (g_silent) {
-      runWithoutPrint();
-   }
-   else {
-      runWithPrint();
-   }
-}
-
-void Aggregate::runWithPrint()
-{
    if (value == 0) {
       return;
    }
@@ -161,94 +151,6 @@ void Aggregate::runWithPrint()
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
                   logCopyError(*it);
                }
-               g_success.value = false;
-            }
-         }
-
-         copyPaths.clear();
-      }
-   }
-}
-
-void Aggregate::runWithoutPrint()
-{
-   if (value == 0) {
-      return;
-   }
-
-   _boo selectFailure = false;
-
-   if (has(AGGR_SELECT)) {
-      if (!invalidSelect.empty()) {
-         invalidSelect.clear();
-      }
-
-      if (failedSelect > 0) {
-         failedSelect = 0;
-      }
-
-      if (!selectPaths.empty()) {
-         _boo anyGoodPath = false;
-         std::set<_str> goodPaths;
-
-         for (const std::pair<_str, std::set<_str>>& pair : selectPaths) {
-            if (!g_running) {
-               break;
-            }
-
-            const _str& parent = pair.first;
-            const std::set<_str>& paths = pair.second;
-
-            if (!os_directoryExists(parent)) {
-               continue;
-            }
-
-            for (auto it = paths.begin(); it != paths.end(); it++) {
-               const _str& path = *it;
-               if (os_exists(path)) {
-                  goodPaths.insert(path);
-                  anyGoodPath = true;
-               }
-            }
-
-            if (anyGoodPath) {
-               selectFailure = !os_select(parent, goodPaths);
-               goodPaths.clear();
-               anyGoodPath = false;
-            }
-            else {
-               selectFailure = true;
-            }
-         }
-
-         selectPaths.clear();
-      }
-   }
-
-   if (has(AGGR_COPY)) {
-      if (!invalidCopy.empty()) {
-         invalidCopy.clear();
-      }
-
-      if (failedCopy > 0) {
-         failedCopy = 0;
-      }
-
-      if (!copyPaths.empty()) {
-         std::set<_str> goodPaths;
-
-         for (auto it = copyPaths.begin(); it != copyPaths.end(); it++) {
-            const _str& path = *it;
-            if (os_exists(path)) {
-               goodPaths.insert(path);
-            }
-         }
-
-         if (!goodPaths.empty()) {
-            if (os_copy(goodPaths)) {
-               g_success.value = !selectFailure;
-            }
-            else {
                g_success.value = false;
             }
          }

@@ -17,6 +17,7 @@
 
 #include "../generator.h"
 #include "../datatype.h"
+#include "../math.h"
 #include "../../uroboros.h"
 
 
@@ -125,19 +126,11 @@ public:
             return value[0];
          }
          default: {
-            std::uniform_int_distribution<> distribution(0, length - 1);
-            const _int n = distribution(g_generator);
-            return value[n];
+            return value[g_math->randomInt(length - 1)];
          }
       }
    }
 };
 
 
-
-
-
-
-
 #endif /* FUNC_GENERIC_H */
-

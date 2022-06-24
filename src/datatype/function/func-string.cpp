@@ -15,6 +15,7 @@
 #include "func-string.h"
 #include "../../lexer.h"
 #include "../../util.h"
+#include "../math.h"
 #include <cwctype>
 #include <algorithm>
 #include <sstream>
@@ -709,9 +710,7 @@ _str F_RandomChar::getValue()
          return value;
       }
       default: {
-         std::uniform_int_distribution<> distribution(0, len - 1);
-         const _int n = distribution(g_generator);
-         return _str(1, value[n]);
+         return _str(1, value[g_math->randomInt(len - 1)]);
       }
    }
 }

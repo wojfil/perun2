@@ -135,22 +135,22 @@ void C_AggrSelect_List::run()
 
 void logCopyError(const _str& name)
 {
-   print(L"Failed to copy " + getCCNameShort(name));
+   commandLog(L"Failed to copy " + getCCNameShort(name));
 }
 
 void logCopySuccess(const _str& name)
 {
-   print(L"Copy " + getCCNameShort(name));
+   commandLog(L"Copy " + getCCNameShort(name));
 }
 
 void logSelectError(const _str& name)
 {
-   print(L"Failed to select " + getCCNameShort(name));
+   commandLog(L"Failed to select " + getCCNameShort(name));
 }
 
 void logSelectSuccess(const _str& name)
 {
-   print(L"Select " + getCCNameShort(name));
+   commandLog(L"Select " + getCCNameShort(name));
 }
 
 

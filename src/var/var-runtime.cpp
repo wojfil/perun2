@@ -143,18 +143,6 @@ void initVars(const _list& args)
    };
 }
 
-void finishVars()
-{
-   deleteMap(g_svar_boo);
-   deleteMap(g_svar_per);
-   deleteMap(g_svar_tim);
-   deleteMap(g_svar_num);
-   deleteMap(g_svar_str);
-   deleteMap(g_svar_nlist);
-   deleteMap(g_svar_tlist);
-   deleteMap(g_svar_def);
-   deleteMap(g_svar_list);
-}
 
 void varsLevelUp()
 {

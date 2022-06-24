@@ -19,6 +19,7 @@
 
 extern _int g_guiMes;
 
+void commandLog(const _str& value);
 void print(const _str& value);
 
 #endif /* PRINT_H */

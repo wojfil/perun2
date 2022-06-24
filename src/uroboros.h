@@ -20,31 +20,26 @@
 #include <random>
 #include <Windows.h>
 
-#define EXITCODE_OK             0
-#define EXITCODE_RUNTIME_ERROR  1
-#define EXITCODE_SYNTAX_ERROR   2
-#define EXITCODE_CLI_ERROR      3
+const int EXITCODE_OK =             0;
+const int EXITCODE_RUNTIME_ERROR =  1;
+const int EXITCODE_SYNTAX_ERROR =   2;
+const int EXITCODE_CLI_ERROR =      3;
 
-extern _boo g_running;
-extern _boo g_process;
+const _uint32 FLAG_NOOMIT =    0b001;
+const _uint32 FLAG_SILENT =    0b010;
+const _uint32 FLAG_GUI =       0b100;
+
+extern _boo g_running; // application exits this way
+extern _boo g_process; // another process has been created and we are waiting for its exit
 extern _boo g_break;
 extern _boo g_continue;
 extern int g_exitCode;
-extern _boo g_noomit;
-extern _boo g_silent;
-extern _boo g_guiMode;
-extern std::mt19937 g_generator;
-extern std::uniform_real_distribution<> g_ddist;
+extern _uint32 g_flags;
+
 extern PROCESS_INFORMATION g_processInfo;
 
 
-void run(const _str& location, const _str& code, const _boo& noomit,
-   const _boo& silent, const _boo& guimode, const _list& args);
+void run(const _str& location, const _str& code, const _uint32& flags, const _list& args);
 
-void runCode(const _str& code);
-
-void init(const _str& location, const _list& args);
-void finish();
 
 #endif /* UROBOROS_H */
-

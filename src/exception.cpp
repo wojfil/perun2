@@ -17,10 +17,10 @@
 
 _str SyntaxException::getMessage()
 {
-   return L"Error at line " + toStr(line) + L": " + message + L".";
+   return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
 _str UroRuntimeException::getMessage()
 {
-   return L"Runtime error: " + message + L".";
+   return str(L"Runtime error: ", message, L".");
 }

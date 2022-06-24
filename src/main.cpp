@@ -28,7 +28,7 @@
 #define VERSION_STR L"1.0.6"
 
 
-_boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _str& location, _str& code);
+_boo main_parseArgs(_int* argc, _char** argv[], _uint32& flags, _list& args, _str& location, _str& code);
 
 void main_version();
 void main_docs();
@@ -51,7 +51,7 @@ BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
     }
 }
 
-int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
+_int wmain(_int argc, _char* argv[], _char *envp[])
 {
    std::setlocale(LC_CTYPE, "");
    SetConsoleCtrlHandler(HandlerRoutine, TRUE);
@@ -59,7 +59,7 @@ int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
    CoInitializeEx(0, COINIT_MULTITHREADED);
 
    if (argc == 1) {
-      print(L"Command-line error: missing arguments. Run 'uro --help' for command-line rules.");
+      print(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
       return EXITCODE_CLI_ERROR;
    }
 
@@ -77,7 +77,7 @@ int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
 }
 
 
-_boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _str& location, _str& code)
+_boo main_parseArgs(_int* argc, _char** argv[], _uint32& flags, _list& args, _str& location, _str& code)
 {
    _boo options = true;
    _boo nextParseLocation = false;
@@ -88,7 +88,7 @@ _boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _s
    _boo d_has = false;
    _str d_value;
 
-   for (int i = 1; i < *argc; i++) {
+   for (_int i = 1; i < *argc; i++) {
       const _str arg = _str((*argv)[i]);
       const _size len = arg.size();
 
@@ -115,7 +115,7 @@ _boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _s
                main_help();
             }
             else {
-               print(L"Command-line error: unknown option '" + arg.substr(2) + L"'.");
+               print(str(L"Command-line error: unknown option '", arg.substr(2), L"'."));
                g_exitCode = EXITCODE_CLI_ERROR;
             }
             return false;
@@ -154,7 +154,7 @@ _boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _s
                      break;
                   }
                   default: {
-                     print(L"Command-line error: unknown option '" + _str(1, arg[j]) + L"'.");
+                     print(str(L"Command-line error: unknown option '", charStr(arg[j]), L"'."));
                      g_exitCode = EXITCODE_CLI_ERROR;
                      return false;
                   }
@@ -207,7 +207,7 @@ _boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _s
             location = d_value;
          }
          else {
-            location = cdLocation + OS_SEPARATOR + d_value;
+            location = str(cdLocation, OS_SEPARATOR_STRING, d_value);
          }
       }
       else {
@@ -216,29 +216,29 @@ _boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _s
    }
    else {
       _str filePath = os_trim(value);
-      if (filePath == L"") {
+      if (filePath.empty()) {
          print(L"Command-line error: no input file.");
          g_exitCode = EXITCODE_CLI_ERROR;
          return false;
       }
 
       if (!os_isAbsolute(filePath)) {
-         filePath = cdLocation + OS_SEPARATOR + filePath;
+         filePath = str(cdLocation, OS_SEPARATOR_STRING, filePath);
       }
 
       if (os_hasExtension(filePath)) {
          if (os_extension(filePath) != OS_UROEXT) {
-            print(L"Command-line error: wrong input file extension. Only '" + OS_UROEXT + L"' is allowed.");
+            print(str(L"Command-line error: wrong input file extension. Only '", OS_UROEXT, L"' is allowed."));
             g_exitCode = EXITCODE_CLI_ERROR;
             return false;
          }
       }
       else {
-         filePath = filePath + OS_DOT_UROEXT;
+         filePath = str(filePath, OS_DOT_UROEXT);
       }
 
       if (!os_exists(filePath)) {
-         print(L"Command-line error: input file '" + os_fullname(filePath) + L"' does not exist.");
+         print(str(L"Command-line error: input file '", os_fullname(filePath), L"' does not exist."));
          g_exitCode = EXITCODE_CLI_ERROR;
          return false;
       }
@@ -259,7 +259,7 @@ _boo main_parseArgs(int* argc, wchar_t** argv[], _uint32& flags, _list& args, _s
             location = d_value;
          }
          else {
-            location = basisLocation + OS_SEPARATOR + d_value;
+            location = str(basisLocation, OS_SEPARATOR_STRING, d_value);
          }
       }
       else {

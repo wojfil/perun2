@@ -20,10 +20,10 @@
 #include <random>
 #include <Windows.h>
 
-const int EXITCODE_OK =             0;
-const int EXITCODE_RUNTIME_ERROR =  1;
-const int EXITCODE_SYNTAX_ERROR =   2;
-const int EXITCODE_CLI_ERROR =      3;
+const _int EXITCODE_OK =             0;
+const _int EXITCODE_RUNTIME_ERROR =  1;
+const _int EXITCODE_SYNTAX_ERROR =   2;
+const _int EXITCODE_CLI_ERROR =      3;
 
 const _uint32 FLAG_NOOMIT =    0b001;
 const _uint32 FLAG_SILENT =    0b010;
@@ -33,7 +33,7 @@ extern _boo g_running; // application exits this way
 extern _boo g_process; // another process has been created and we are waiting for its exit
 extern _boo g_break;
 extern _boo g_continue;
-extern int g_exitCode;
+extern _int g_exitCode;
 extern _uint32 g_flags;
 
 extern PROCESS_INFORMATION g_processInfo;

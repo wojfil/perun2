@@ -30,13 +30,10 @@ _boo g_running;
 _boo g_process;
 _boo g_break;
 _boo g_continue;
-int g_exitCode;
+_int g_exitCode;
 _uint32 g_flags;
-/*
-std::mt19937 g_generator;
-std::uniform_real_distribution<> g_ddist;*/
-PROCESS_INFORMATION g_processInfo;
 
+PROCESS_INFORMATION g_processInfo;
 
 
 void run(const _str& location, const _str& code, const _uint32& flags,  const _list& args)

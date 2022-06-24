@@ -18,6 +18,11 @@
 #include <locale>
 
 
+_str charStr(const _char& ch) {
+   return _str(1, ch);
+}
+
+
 void toLower(_str& value)
 {
    const _size len = value.size();
@@ -46,3 +51,4 @@ void toUpperChar(_char& ch)
 {
    ch = std::toupper(ch, std::locale(""));
 }
+

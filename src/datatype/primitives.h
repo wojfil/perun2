@@ -25,7 +25,6 @@
 #define _str std::wstring
 
 #define _int int32_t
-//#define _uint uint32_t
 #define _uint32 uint32_t
 #define _uint64 uint64_t
 #define _nint int64_t
@@ -34,12 +33,33 @@
 
 
 template<typename T>
-_str toStr(const T &n) {
+_str toStr(const T &n)
+{
     std::wostringstream s;
     s << n;
     return s.str();
 }
 
+
+template<typename... Args>
+_str str(Args... args)
+{
+   _size len = 0;
+   using value_type = std::common_type_t<Args...>;
+   for (auto const &arg : {static_cast<value_type>(args)...}) {
+      len += arg.size();
+   }
+
+   _str result;
+   result.reserve(len);
+   for (auto const &arg : {static_cast<value_type>(args)...}) {
+      result += arg;
+   }
+
+   return result;
+}
+
+_str charStr(const _char& ch);
 void toLower(_str& value);
 void toUpper(_str& value);
 void toLowerChar(_char& ch);

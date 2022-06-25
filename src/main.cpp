@@ -31,12 +31,6 @@
 
 _boo main_parseArgs(_int* argc, _char** argv[], _uint32& flags, _list& args, _str& location, _str& code);
 
-void main_version();
-void main_docs();
-void main_website();
-void main_help();
-
-
 BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
 {
   switch (dwCtrlType) {
@@ -51,6 +45,7 @@ BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
       return FALSE;
     }
 }
+
 
 _int wmain(_int argc, _char* argv[], _char *envp[])
 {
@@ -79,6 +74,39 @@ _int wmain(_int argc, _char* argv[], _char *envp[])
    return g_exitCode;
 }
 
+void main_version()
+{
+   print(L"Uroboros " VERSION_STR);
+}
+
+void main_docs()
+{
+   os_showWebsite(L"https://uroboros-lang.org/docs");
+}
+
+void main_website()
+{
+   os_showWebsite(L"https://uroboros-lang.org");
+}
+
+void main_help()
+{
+   print(L"");
+   print(L"In order to run a script, pass a file name or its path as an argument. Extension is not mandatory.");
+   print(L"By default, working location is the directory where the script is located.");
+   print(L"");
+   print(L"Options:");
+   print(L"  --help       Display this information again.");
+   print(L"  --version    Display interpreter version information.");
+   print(L"  --website    Enter the official Uroboros website.");
+   print(L"  --docs       Enter the official Uroboros documentation.");
+   print(L"  -c           Pass Uroboros code as an argument instead of file name.");
+   print(L"  -d <name>    Set working location to certain value.");
+   print(L"  -h           Set working location to the place where this command was called from.");
+   print(L"  -n           Run in noomit mode (iterate over all file system elements with no exceptions).");
+   print(L"  -s           Run in silent mode (no command log messages).");
+   print(L"  -g           For internal use only. Set up log message communication with GUI.");
+}
 
 _boo main_parseArgs(_int* argc, _char** argv[], _uint32& flags, _list& args, _str& location, _str& code)
 {
@@ -271,38 +299,4 @@ _boo main_parseArgs(_int* argc, _char** argv[], _uint32& flags, _list& args, _st
    }
 
    return true;
-}
-
-void main_version()
-{
-   print(L"Uroboros " VERSION_STR);
-}
-
-void main_docs()
-{
-   os_showWebsite(L"https://uroboros-lang.org/docs");
-}
-
-void main_website()
-{
-   os_showWebsite(L"https://uroboros-lang.org");
-}
-
-void main_help()
-{
-   print(L"");
-   print(L"In order to run a script, pass a file name or its path as an argument. Extension is not mandatory.");
-   print(L"By default, working location is the directory where the script is located.");
-   print(L"");
-   print(L"Options:");
-   print(L"  --help       Display this information again.");
-   print(L"  --version    Display interpreter version information.");
-   print(L"  --website    Enter the official Uroboros website.");
-   print(L"  --docs       Enter the official Uroboros documentation.");
-   print(L"  -c           Pass Uroboros code as an argument instead of file name.");
-   print(L"  -d <name>    Set working location to certain value.");
-   print(L"  -h           Set working location to the place where this command was called from.");
-   print(L"  -n           Run in noomit mode (iterate over all file system elements with no exceptions).");
-   print(L"  -s           Run in silent mode (no command log messages).");
-   print(L"  -g           For internal use only. Set up log message communication with GUI.");
 }

@@ -134,7 +134,7 @@ void checkKeywords(const Tokens& tks)
       const Token& t = tks.listAt(i);
 
       if (t.type == Token::t_Keyword && isExpForbiddenKeyword(t)) {
-         throw SyntaxException(L"expected ; before keyword '" + t.originString + L"'", t.line);
+         throw SyntaxException(str(L"expected ; before keyword '", t.originString, L"'"), t.line);
       }
    }
 }

@@ -14,6 +14,7 @@
 
 #include "com-core.h"
 #include "../uroboros.h"
+#include "../print.h"
 #include "../os.h"
 
 
@@ -28,13 +29,13 @@ void C_Delete::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Delete " + getCCName(g_path.value));
+         commandLog(L"Delete ", getCCName(g_path.value));
          if (hasAttribute) {
             os_loadAttributes(*attribute);
          }
       }
       else {
-         commandLog(L"Failed to delete " + getCCName(g_path.value));
+         commandLog(L"Failed to delete ", getCCName(g_path.value));
       }
    }
 }
@@ -46,13 +47,13 @@ void C_Drop::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Drop " + getCCName(g_path.value));
+         commandLog(L"Drop ", getCCName(g_path.value));
          if (hasAttribute) {
             os_loadAttributes(*attribute);
          }
       }
       else {
-         commandLog(L"Failed to drop " + getCCName(g_path.value));
+         commandLog(L"Failed to drop ", getCCName(g_path.value));
       }
    }
 }
@@ -64,13 +65,13 @@ void C_Hide::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Hide " + getCCName(g_path.value));
+         commandLog(L"Hide ", getCCName(g_path.value));
          if (saveChanges) {
             g_hidden.value = true;
          }
       }
       else {
-         commandLog(L"Failed to hide " + getCCName(g_path.value));
+         commandLog(L"Failed to hide ", getCCName(g_path.value));
       }
    }
 }
@@ -82,13 +83,13 @@ void C_Lock::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Lock " + getCCName(g_path.value));
+         commandLog(L"Lock ", getCCName(g_path.value));
          if (saveChanges) {
             g_readonly.value = true;
          }
       }
       else {
-         commandLog(L"Failed to lock " + getCCName(g_path.value));
+         commandLog(L"Failed to lock ", getCCName(g_path.value));
       }
    }
 }
@@ -100,10 +101,10 @@ void C_Open::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Open " + getCCName(g_path.value));
+         commandLog(L"Open ", getCCName(g_path.value));
       }
       else {
-         commandLog(L"Failed to open " + getCCName(g_path.value));
+         commandLog(L"Failed to open ", getCCName(g_path.value));
       }
    }
 }
@@ -115,13 +116,13 @@ void C_Unlock::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Unlock " + getCCName(g_path.value));
+         commandLog(L"Unlock ", getCCName(g_path.value));
          if (saveChanges) {
             g_readonly.value = false;
          }
       }
       else {
-         commandLog(L"Failed to unlock " + getCCName(g_path.value));
+         commandLog(L"Failed to unlock ", getCCName(g_path.value));
       }
    }
 }
@@ -133,13 +134,13 @@ void C_Unhide::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Unhide " + getCCName(g_path.value));
+         commandLog(L"Unhide ", getCCName(g_path.value));
          if (saveChanges) {
             g_hidden.value = false;
          }
       }
       else {
-         commandLog(L"Failed to unhide " + getCCName(g_path.value));
+         commandLog(L"Failed to unhide ", getCCName(g_path.value));
       }
    }
 }
@@ -150,7 +151,7 @@ void C_OpenWith::run()
       const _str pro = os_trim(program->getValue());
 
       if (!g_exists.value || pro.empty()) {
-         commandLog(L"Failed to open " + getCCName(g_path.value) + L" with " + getCCNameShort(pro));
+         commandLog(L"Failed to open ", getCCName(g_path.value), L" with ", getCCNameShort(pro));
          g_success.value = false;
          return;
       }
@@ -161,22 +162,22 @@ void C_OpenWith::run()
          g_success.value = s;
 
          if (s) {
-            commandLog(L"Open " + getCCName(g_path.value) + L" with " + getCCName(proPath));
+            commandLog(L"Open ", getCCName(g_path.value), L" with ", getCCName(proPath));
          }
          else {
-            commandLog(L"Failed to open " + getCCName(g_path.value) + L" with " + getCCName(proPath));
+            commandLog(L"Failed to open ", getCCName(g_path.value), L" with ", getCCName(proPath));
          }
       }
       else {
-         const _str com = pro + L" " + os_quoteEmbraced(g_path.value);
+         const _str com = str(pro, L" ", os_quoteEmbraced(g_path.value));
          const _boo s = os_openAsCommand(com);
          g_success.value = s;
 
          if (s) {
-            commandLog(L"Open " + getCCName(g_path.value) + L" with '" + pro + L"'");
+            commandLog(L"Open ", getCCName(g_path.value), L" with '", pro, L"'");
          }
          else {
-            commandLog(L"Failed to open " + getCCName(g_path.value) + L" with '" + pro + L"'");
+            commandLog(L"Failed to open ", getCCName(g_path.value), L" with '", pro, L"'");
          }
       }
    }
@@ -191,15 +192,14 @@ void C_ReaccessTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Reaccess " + getCCName(g_path.value) +
-            L" to " + t.toString());
+         commandLog(L"Reaccess ", getCCName(g_path.value), L" to ", t.toString());
 
          if (saveChanges) {
             g_access.value = t;
          }
       }
       else {
-         commandLog(L"Failed to reaccess " + getCCName(g_path.value));
+         commandLog(L"Failed to reaccess ", getCCName(g_path.value));
       }
    }
 }
@@ -213,15 +213,14 @@ void C_RechangeTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Rechange " + getCCName(g_path.value) +
-            L" to " + t.toString());
+         commandLog(L"Rechange ", getCCName(g_path.value), L" to ", t.toString());
 
          if (saveChanges) {
             g_change.value = t;
          }
       }
       else {
-         commandLog(L"Failed to rechange " + getCCName(g_path.value));
+         commandLog(L"Failed to rechange ", getCCName(g_path.value));
       }
    }
 }
@@ -235,15 +234,14 @@ void C_RecreateTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Recreate " + getCCName(g_path.value) +
-            L" to " + t.toString());
+         commandLog(L"Recreate ", getCCName(g_path.value),  L" to ", t.toString());
 
          if (saveChanges) {
             g_creation.value = t;
          }
       }
       else {
-         commandLog(L"Failed to recreate " + getCCName(g_path.value));
+         commandLog(L"Failed to recreate ", getCCName(g_path.value));
       }
    }
 }
@@ -257,15 +255,14 @@ void C_RemodifyTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Remodify " + getCCName(g_path.value) +
-            L" to " + t.toString());
+         commandLog(L"Remodify ", getCCName(g_path.value), L" to ", t.toString());
 
          if (saveChanges) {
             g_modification.value = t;
          }
       }
       else {
-         commandLog(L"Failed to remodify " + getCCName(g_path.value));
+         commandLog(L"Failed to remodify ", getCCName(g_path.value));
       }
    }
 }
@@ -278,7 +275,7 @@ void C_RenameTo::run()
       if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(g_path.value) || os_isAbsolute(n)) {
 
-         commandLog(L"Failed to rename " + getCCName(g_path.value));
+         commandLog(L"Failed to rename ", getCCName(g_path.value));
          g_success.value = false;
          return;
       }
@@ -286,15 +283,15 @@ void C_RenameTo::run()
       const _boo hasExt = g_isfile.value && os_hasExtension(g_path.value);
 
       if (!extensionless && hasExt && !os_hasExtension(n)) {
-         n += L"." + os_extension(g_path.value);
+         n += str(L".", os_extension(g_path.value));
       }
 
       const _str base = os_parent(g_path.value);
-      const _str newPath = base + OS_SEPARATOR + n;
+      const _str newPath = str(base, OS_SEPARATOR_STRING, n);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to rename " + getCCName(g_path.value));
+            commandLog(L"Failed to rename ", getCCName(g_path.value));
             g_success.value = false;
             return;
          }
@@ -304,7 +301,7 @@ void C_RenameTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Rename " + getCCName(g_path.value) + L" to '" + n + L"'");
+         commandLog(L"Rename ", getCCName(g_path.value), L" to '", n, L"'");
 
          if (saveChanges) {
             g_fullname.value = n;
@@ -314,7 +311,7 @@ void C_RenameTo::run()
          }
       }
       else {
-         commandLog(L"Failed to rename " + getCCName(g_path.value));
+         commandLog(L"Failed to rename ", getCCName(g_path.value));
       }
    }
 }
@@ -327,7 +324,7 @@ void C_RenameTo_Stack::run()
       if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
-         commandLog(L"Failed to rename " + getCCName(oldPath));
+         commandLog(L"Failed to rename ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -345,11 +342,11 @@ void C_RenameTo_Stack::run()
          else {
             ex = os_extension(oldPath);
             if (!extensionless) {
-               n += L"." + ex;
+               n += str(L".", ex);
             }
          }
 
-         newPath = parent + OS_SEPARATOR + n;
+         newPath = str(parent, OS_SEPARATOR_STRING, n);
 
          if (os_exists(newPath)) {
             const _str base = os_stackPathBase(newPath);
@@ -364,15 +361,15 @@ void C_RenameTo_Stack::run()
          }
       }
       else {
-         newPath = parent + OS_SEPARATOR + n;
-         const _str newPath = os_stackPath(newPath);
+         newPath = str(parent, OS_SEPARATOR_STRING, n);
+         newPath = os_stackPath(newPath);
          s = os_moveTo(oldPath, newPath);
       }
 
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Rename " + getCCName(g_path.value) + L" to '" + n + L"'");
+         commandLog(L"Rename ", getCCName(g_path.value), L" to '", n, L"'");
 
          if (saveChanges) {
             g_fullname.value = n;
@@ -382,7 +379,7 @@ void C_RenameTo_Stack::run()
          }
       }
       else {
-         commandLog(L"Failed to rename " + getCCName(g_path.value));
+         commandLog(L"Failed to rename ", getCCName(g_path.value));
       }
    }
 }
@@ -396,7 +393,7 @@ void C_MoveTo::run()
       if (!g_exists.value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
 
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -405,19 +402,19 @@ void C_MoveTo::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to move " + getCCName(oldPath));
+            commandLog(L"Failed to move ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
-      const _str newPath = newLoc + OS_SEPARATOR + fulln;
+      const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
       const _boo hasExt = g_isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to move " + getCCName(oldPath));
+            commandLog(L"Failed to move ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -427,7 +424,7 @@ void C_MoveTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Move " + getCCName(oldPath) + L" to " + getCCName(newLoc));
+         commandLog(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
          if (hasAttribute) {
             g_this_s.value = newPath;
@@ -435,7 +432,7 @@ void C_MoveTo::run()
          }
       }
       else {
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -446,10 +443,8 @@ void C_MoveTo_Stack::run()
       _str& oldPath = g_path.value;
       _str n = os_trim(location->getValue());
 
-      if (!g_exists.value || os_isInvaild(n)
-          || !os_hasParentDirectory(oldPath)) {
-
-         commandLog(L"Failed to move " + getCCName(oldPath));
+      if (!g_exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+         commandLog(L"Failed to move ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -458,14 +453,14 @@ void C_MoveTo_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to move " + getCCName(oldPath));
+            commandLog(L"Failed to move ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
-      _str newPath = newLoc + OS_SEPARATOR + fulln;
+      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
       const _boo hasExt = g_isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
@@ -483,7 +478,7 @@ void C_MoveTo_Stack::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Move " + getCCName(oldPath) + L" to " + getCCName(newLoc));
+         commandLog(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
          if (hasAttribute) {
             g_this_s.value = newPath;
@@ -491,7 +486,7 @@ void C_MoveTo_Stack::run()
          }
       }
       else {
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -506,7 +501,7 @@ void C_MoveToAs::run()
       if (!g_exists.value || os_isInvaild(fulln)
            || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -514,24 +509,24 @@ void C_MoveToAs::run()
       const _boo hasExt = g_isfile.value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
-         fulln += L"." + os_extension(oldPath);
+         fulln += str(L".", os_extension(oldPath));
       }
 
       const _str newLoc = os_join(g_location.value, loc);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to move " + getCCName(oldPath));
+            commandLog(L"Failed to move ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
       }
 
-      _str newPath = newLoc + OS_SEPARATOR + fulln;
+      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to move " + getCCName(oldPath));
+            commandLog(L"Failed to move ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -541,7 +536,7 @@ void C_MoveToAs::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Move " + getCCName(oldPath) + L" to " + getCCName(newLoc) + L" as '" + fulln + L"'");
+         commandLog(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
          if (hasAttribute) {
             g_this_s.value = newPath;
@@ -549,7 +544,7 @@ void C_MoveToAs::run()
          }
       }
       else {
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -564,7 +559,7 @@ void C_MoveToAs_Stack::run()
       if (!g_exists.value || os_isInvaild(fulln)
           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -573,7 +568,7 @@ void C_MoveToAs_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to move " + getCCName(oldPath));
+            commandLog(L"Failed to move ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -591,11 +586,11 @@ void C_MoveToAs_Stack::run()
          else {
             ex = os_extension(oldPath);
             if (!extensionless) {
-               fulln += L"." + ex;
+               fulln += str(L".", ex);
             }
          }
 
-         newPath = newLoc + OS_SEPARATOR + fulln;
+         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
          if (os_exists(newPath)) {
             const _str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
@@ -605,7 +600,7 @@ void C_MoveToAs_Stack::run()
          s = os_moveTo(oldPath, newPath);
       }
       else {
-         newPath = newLoc + OS_SEPARATOR + fulln;
+         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
          if (os_exists(newPath)) {
             newPath = os_stackPath(newPath);
             fulln = os_fullname(newPath);
@@ -616,7 +611,7 @@ void C_MoveToAs_Stack::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Move " + getCCName(oldPath) + L" to " + getCCName(newLoc) + L" as '" + fulln + L"'");
+         commandLog(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
          if (hasAttribute) {
             g_this_s.value = newPath;
@@ -624,7 +619,7 @@ void C_MoveToAs_Stack::run()
          }
       }
       else {
-         commandLog(L"Failed to move " + getCCName(oldPath));
+         commandLog(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -637,25 +632,25 @@ void C_DownloadFrom_String::run()
       const _str src = os_trim(location->getValue());
 
       if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to download " + getCCName(name));
+         commandLog(L"Failed to download ", getCCName(name));
          g_success.value = false;
          return;
       }
 
       const _str srcLoc = os_join(dest, src);
-      const _str oldPath = srcLoc + OS_SEPARATOR + name;
+      const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, name);
 
       if (!os_exists(oldPath)) {
-         commandLog(L"Failed to download " + getCCName(name));
+         commandLog(L"Failed to download ", getCCName(name));
          g_success.value = false;
          return;
       }
 
-      const _str newPath = dest + OS_SEPARATOR + name;
+      const _str newPath = str(dest, OS_SEPARATOR_STRING, name);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to download " + getCCName(name));
+            commandLog(L"Failed to download ", getCCName(name));
             g_success.value = false;
             return;
          }
@@ -665,10 +660,10 @@ void C_DownloadFrom_String::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Download " + getCCName(name) + L" from " + getCCName(srcLoc));
+         commandLog(L"Download ", getCCName(name), L" from ", getCCName(srcLoc));
       }
       else {
-         commandLog(L"Failed to download " + getCCName(name));
+         commandLog(L"Failed to download ", getCCName(name));
       }
    }
 }
@@ -689,7 +684,7 @@ void C_DownloadFrom_List::run()
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to download " + getCCNameShort(os_trim(names[i])));
+            commandLog(L"Failed to download ", getCCNameShort(os_trim(names[i])));
          }
          g_success.value = false;
          return;
@@ -699,18 +694,18 @@ void C_DownloadFrom_List::run()
 
       for (_size i = 0; i < len; i++) {
          const _str& n = os_trim(names[i]);
-         const _str oldPath = srcLoc + OS_SEPARATOR + n;
+         const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
-            commandLog(L"Failed to download " + getCCName(oldPath));
+            commandLog(L"Failed to download ", getCCName(oldPath));
             success = false;
          }
          else {
-            const _str newPath = dest + OS_SEPARATOR + n;
+            const _str newPath = str(dest, OS_SEPARATOR_STRING, n);
 
             if (os_exists(newPath)) {
                if (!(forced && os_drop(newPath))) {
-                  commandLog(L"Failed to download " + getCCName(oldPath));
+                  commandLog(L"Failed to download ", getCCName(oldPath));
                   success = false;
                   continue;
                }
@@ -719,10 +714,10 @@ void C_DownloadFrom_List::run()
             const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath));
 
             if (s) {
-               commandLog(L"Download " + getCCName(oldPath) + L" from " + getCCName(srcLoc));
+               commandLog(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(L"Failed to download " + getCCName(oldPath));
+               commandLog(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -750,18 +745,18 @@ void C_DownloadFrom_Definition::run()
 
       while (g_running && elements->hasNext()) {
          const _str n = os_trim(elements->getValue());
-         const _str oldPath = srcLoc + OS_SEPARATOR + n;
+         const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
-            commandLog(L"Failed to download " + getCCNameShort(n));
+            commandLog(L"Failed to download ", getCCNameShort(n));
             success = false;
          }
          else {
-            const _str newPath = dest + OS_SEPARATOR + n;
+            const _str newPath = str(dest, OS_SEPARATOR_STRING, n);
 
             if (os_exists(newPath)) {
                if (!(forced && os_drop(newPath))) {
-                  commandLog(L"Failed to download " + getCCName(oldPath));
+                  commandLog(L"Failed to download ", getCCName(oldPath));
                   success = false;
                   continue;
                }
@@ -770,10 +765,10 @@ void C_DownloadFrom_Definition::run()
             const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath));
 
             if (s) {
-               commandLog(L"Download " + getCCName(oldPath) + L" from " + getCCName(srcLoc));
+               commandLog(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(L"Failed to download " + getCCName(oldPath));
+               commandLog(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -792,21 +787,21 @@ void C_DownloadFrom_String_Stack::run()
       const _str src = os_trim(location->getValue());
 
       if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to download " + getCCNameShort(name));
+         commandLog(L"Failed to download ", getCCNameShort(name));
          g_success.value = false;
          return;
       }
 
       const _str srcLoc = os_join(dest, src);
-      const _str oldPath = srcLoc + OS_SEPARATOR + name;
+      const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, name);
 
       if (!os_exists(oldPath)) {
-         commandLog(L"Failed to download " + getCCName(oldPath));
+         commandLog(L"Failed to download ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
 
-      _str newPath = dest + OS_SEPARATOR + name;
+      _str newPath = str(dest, OS_SEPARATOR_STRING, name);
 
       if (os_exists(newPath)) {
          if (os_isFile(oldPath) && os_hasExtension(oldPath)) {
@@ -823,10 +818,10 @@ void C_DownloadFrom_String_Stack::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Download " + getCCName(oldPath) + L" from " + getCCName(srcLoc));
+         commandLog(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
       }
       else {
-         commandLog(L"Failed to download " + getCCName(oldPath));
+         commandLog(L"Failed to download ", getCCName(oldPath));
       }
    }
 }
@@ -847,7 +842,7 @@ void C_DownloadFrom_List_Stack::run()
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to download " + getCCNameShort(os_trim(names[i])));
+            commandLog(L"Failed to download ", getCCNameShort(os_trim(names[i])));
          }
          g_success.value = false;
          return;
@@ -857,14 +852,14 @@ void C_DownloadFrom_List_Stack::run()
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
-         const _str oldPath = srcLoc + OS_SEPARATOR + n;
+         const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
-            commandLog(L"Failed to download " + getCCNameShort(n));
+            commandLog(L"Failed to download ", getCCNameShort(n));
             success = false;
          }
          else {
-            _str newPath = dest + OS_SEPARATOR + n;
+            _str newPath = str(dest, OS_SEPARATOR_STRING, n);
 
             if (os_exists(newPath)) {
                if (os_isFile(oldPath) && os_hasExtension(oldPath)) {
@@ -880,10 +875,10 @@ void C_DownloadFrom_List_Stack::run()
             const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath));
 
             if (s) {
-               commandLog(L"Download " + getCCName(oldPath) + L" from " + getCCName(srcLoc));
+               commandLog(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(L"Failed to download " + getCCName(oldPath));
+               commandLog(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -916,14 +911,14 @@ void C_DownloadFrom_Definition_Stack::run()
             break;
          }
          const _str n = os_trim(elements->getValue());
-         const _str oldPath = srcLoc + OS_SEPARATOR + n;
+         const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
-            commandLog(L"Failed to download " + getCCNameShort(n));
+            commandLog(L"Failed to download ", getCCNameShort(n));
             success = false;
          }
          else {
-            _str newPath = dest + OS_SEPARATOR + n;
+            _str newPath = str(dest, OS_SEPARATOR_STRING, n);
 
             if (os_exists(newPath)) {
                if (os_isFile(oldPath) && os_hasExtension(oldPath)) {
@@ -944,10 +939,10 @@ void C_DownloadFrom_Definition_Stack::run()
             const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath));
 
             if (s) {
-               commandLog(L"Download " + getCCName(oldPath) + L" from " + getCCName(srcLoc));
+               commandLog(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(L"Failed to download " + getCCName(oldPath));
+               commandLog(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -966,7 +961,7 @@ void C_Download_String::run()
 
       if (os_isInvaild(oldElement) || !os_directoryExists(dest) || !os_isPath(oldElement))
       {
-         commandLog(L"Failed to download " + getCCNameShort(oldElement));
+         commandLog(L"Failed to download ", getCCNameShort(oldElement));
          g_success.value = false;
          return;
       }
@@ -974,16 +969,16 @@ void C_Download_String::run()
       const _str oldPath = os_join(dest, oldElement);
 
       if (!os_exists(oldPath)) {
-         commandLog(L"Failed to download " + getCCName(oldPath));
+         commandLog(L"Failed to download ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
 
-      const _str newPath = dest + OS_SEPARATOR + os_fullname(oldPath);
+      const _str newPath = str(dest, OS_SEPARATOR_STRING, os_fullname(oldPath));
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to download " + getCCName(oldPath));
+            commandLog(L"Failed to download ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -993,10 +988,10 @@ void C_Download_String::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Download " + getCCName(oldPath));
+         commandLog(L"Download ", getCCName(oldPath));
       }
       else {
-         commandLog(L"Failed to download " + getCCName(oldPath));
+         commandLog(L"Failed to download ", getCCName(oldPath));
       }
    }
 }
@@ -1017,7 +1012,7 @@ void C_Download_List::run()
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
             const _str p = os_trim(oldPaths[i]);
-            commandLog(L"Failed to download " + getCCNameShort(p));
+            commandLog(L"Failed to download ", getCCNameShort(p));
          }
          g_success.value = false;
          return;
@@ -1030,16 +1025,16 @@ void C_Download_List::run()
          const _str oldPath = os_join(dest, n);
 
          if (os_isInvaild(n) || !os_isPath(n) || !os_exists(oldPath)) {
-            commandLog(L"Failed to download " + getCCName(oldPath));
+            commandLog(L"Failed to download ", getCCName(oldPath));
             success = false;
             continue;
          }
 
-         const _str newPath = dest + OS_SEPARATOR + os_fullname(oldPath);
+         const _str newPath = str(dest, OS_SEPARATOR_STRING, os_fullname(oldPath));
 
          if (os_exists(newPath)) {
             if (!(forced && os_drop(newPath))) {
-               commandLog(L"Failed to download " + getCCName(oldPath));
+               commandLog(L"Failed to download ", getCCName(oldPath));
                success = false;
                continue;
             }
@@ -1048,10 +1043,10 @@ void C_Download_List::run()
          const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath));
 
          if (s) {
-            commandLog(L"Download " + getCCName(oldPath));
+            commandLog(L"Download ", getCCName(oldPath));
          }
          else {
-            commandLog(L"Failed to download " + getCCName(oldPath));
+            commandLog(L"Failed to download ", getCCName(oldPath));
             success = false;
          }
       }
@@ -1068,7 +1063,7 @@ void C_Download_String_Stack::run()
 
       if (os_isInvaild(oldElement) || !os_isPath(oldElement) || !os_directoryExists(dest))
       {
-         commandLog(L"Failed to download " + getCCNameShort(oldElement));
+         commandLog(L"Failed to download ", getCCNameShort(oldElement));
          g_success.value = false;
          return;
       }
@@ -1076,12 +1071,12 @@ void C_Download_String_Stack::run()
       const _str oldPath = os_join(dest, oldElement);
 
       if (!os_exists(oldPath)) {
-         commandLog(L"Failed to download " + getCCName(oldPath));
+         commandLog(L"Failed to download ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
 
-      _str newPath = dest + OS_SEPARATOR + os_fullname(oldPath);
+      _str newPath = str(dest, OS_SEPARATOR_STRING, os_fullname(oldPath));
 
       if (os_exists(newPath)) {
          if (os_isFile(oldPath) && os_hasExtension(oldPath)) {
@@ -1101,10 +1096,10 @@ void C_Download_String_Stack::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Download " + getCCName(oldPath));
+         commandLog(L"Download ", getCCName(oldPath));
       }
       else {
-         commandLog(L"Failed to download " + getCCName(oldPath));
+         commandLog(L"Failed to download ", getCCName(oldPath));
       }
    }
 }
@@ -1125,7 +1120,7 @@ void C_Download_List_Stack::run()
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
             const _str p = os_trim(oldPaths[i]);
-            commandLog(L"Failed to download " + getCCNameShort(p));
+            commandLog(L"Failed to download ", getCCNameShort(p));
          }
          g_success.value = false;
          return;
@@ -1137,12 +1132,12 @@ void C_Download_List_Stack::run()
          const _str oldPath = os_trim(oldPaths[i]);
 
          if (os_isInvaild(oldPath) || !os_isPath(oldPath) || !os_exists(oldPath)) {
-            commandLog(L"Failed to download " + getCCName(oldPath));
+            commandLog(L"Failed to download ", getCCName(oldPath));
             success = false;
             continue;
          }
 
-         _str newPath = dest + OS_SEPARATOR + os_fullname(oldPath);
+         _str newPath = str(dest, OS_SEPARATOR_STRING, os_fullname(oldPath));
 
          if (os_exists(newPath)) {
             if (os_isFile(oldPath) && os_hasExtension(oldPath)) {
@@ -1161,10 +1156,10 @@ void C_Download_List_Stack::run()
          const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath));
 
          if (s) {
-            commandLog(L"Download " + getCCName(oldPath));
+            commandLog(L"Download ", getCCName(oldPath));
          }
          else {
-            commandLog(L"Failed to download " + getCCName(oldPath));
+            commandLog(L"Failed to download ", getCCName(oldPath));
             success = false;
          }
       }
@@ -1180,7 +1175,7 @@ void C_CopyTo::run()
       _str n = os_trim(location->getValue());
 
       if (!g_exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -1189,19 +1184,19 @@ void C_CopyTo::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to copy " + getCCName(oldPath));
+            commandLog(L"Failed to copy ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
-      const _str newPath = newLoc + OS_SEPARATOR + fulln;
+      const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
       const _boo hasExt = g_isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to copy " + getCCName(oldPath));
+            commandLog(L"Failed to copy ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -1211,10 +1206,10 @@ void C_CopyTo::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Copy " + getCCName(oldPath) + L" to " + getCCName(newLoc));
+         commandLog(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
       }
       else {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1226,7 +1221,7 @@ void C_CopyTo_Stack::run()
       _str n = os_trim(location->getValue());
 
       if (!g_exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -1235,14 +1230,14 @@ void C_CopyTo_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to copy " + getCCName(oldPath));
+            commandLog(L"Failed to copy ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
-      _str newPath = newLoc + OS_SEPARATOR + fulln;
+      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
       const _boo hasExt = g_isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
@@ -1260,10 +1255,10 @@ void C_CopyTo_Stack::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Copy " + getCCName(oldPath) + L" to " + getCCName(newLoc));
+         commandLog(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
       }
       else {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1277,7 +1272,7 @@ void C_CopyToAs::run()
 
       if (!g_exists.value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -1285,24 +1280,24 @@ void C_CopyToAs::run()
       const _boo hasExt = g_isfile.value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
-         fulln += L"." + os_extension(oldPath);
+         fulln += str(L".", os_extension(oldPath));
       }
 
       const _str newLoc = os_join(g_location.value, loc);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to copy " + getCCName(oldPath));
+            commandLog(L"Failed to copy ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
       }
 
-      _str newPath = newLoc + OS_SEPARATOR + fulln;
+      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath))) {
-            commandLog(L"Failed to copy " + getCCName(oldPath));
+            commandLog(L"Failed to copy ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -1312,10 +1307,10 @@ void C_CopyToAs::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Copy " + getCCName(oldPath) + L" to " + getCCName(newLoc) + L" as '" + fulln + L"'");
+         commandLog(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
       }
       else {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1329,7 +1324,7 @@ void C_CopyToAs_Stack::run()
 
       if (!g_exists.value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
          g_success.value = false;
          return;
       }
@@ -1338,7 +1333,7 @@ void C_CopyToAs_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(L"Failed to copy " + getCCName(oldPath));
+            commandLog(L"Failed to copy ", getCCName(oldPath));
             g_success.value = false;
             return;
          }
@@ -1355,11 +1350,11 @@ void C_CopyToAs_Stack::run()
          else {
             ex = os_extension(oldPath);
             if (!extensionless) {
-               fulln += L"." + ex;
+               fulln += str(L".", ex);
             }
          }
 
-         newPath = newLoc + OS_SEPARATOR + fulln;
+         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
          if (os_exists(newPath)) {
             const _str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
@@ -1367,7 +1362,7 @@ void C_CopyToAs_Stack::run()
          }
       }
       else {
-         newPath = newLoc + OS_SEPARATOR + fulln;
+         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
          if (os_exists(newPath)) {
             newPath = os_stackPath(newPath);
             fulln = os_fullname(newPath);
@@ -1378,10 +1373,10 @@ void C_CopyToAs_Stack::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Copy " + getCCName(oldPath) + L" to " + getCCName(newLoc) + L" as '" + fulln + L"'");
+         commandLog(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
       }
       else {
-         commandLog(L"Failed to copy " + getCCName(oldPath));
+         commandLog(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1393,8 +1388,8 @@ _str getCCName(const _str& path)
    }
 
    return os_hasParentDirectory(path) || path.size() != 2
-      ? (L"'" + os_fullname(path) + L"'")
-      : (L"'" + path + L"\\'");
+      ? str(L"'", os_fullname(path), L"'")
+      : str(L"'", path, L"\\'");
 }
 
 _str getCCNameShort(const _str& path)
@@ -1409,6 +1404,6 @@ _str getCCNameShort(const _str& path)
    }
 
    return f.size() == 2 && f[1] == L':' && os_isDriveLetter(f[0])
-      ? (L"'" + f + L"\\'")
-      : (L"'" + f + L"'");
+      ? str(L"'", f, L"\\'")
+      : str(L"'", f, L"'");
 }

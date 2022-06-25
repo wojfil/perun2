@@ -56,7 +56,7 @@ Command* keywordCommands(const Token& word, Tokens& tks,
       case Keyword::kw_Continue:
       case Keyword::kw_Exit: {
          checkUselessFlags(word, line, force, stack);
-         throw SyntaxException(L"command '" + word.originString + L"' cannot be called with an argument", line);
+         throw SyntaxException(str(L"command '", word.originString, L"' cannot be called with an argument"), line);
       }
       case Keyword::kw_Error: {
          checkUselessFlags(word, line, force, stack);
@@ -97,7 +97,7 @@ Command* keywordCommands(const Token& word, Tokens& tks,
       }
    }
 
-   throw SyntaxException(L"command cannot start with a keyword '" + word.originString + L"'", line);
+   throw SyntaxException(str(L"command cannot start with a keyword '", word.originString, L"'"), line);
 }
 
 static Command* kwCommandSimple(const Token& word, Tokens& tks,
@@ -112,9 +112,9 @@ static Command* kwCommandSimple(const Token& word, Tokens& tks,
    Attribute* attr = new Attribute();
    attr->setCoreCommandBase();
 
-   Generator<_str>* str;
-   if (parse(tks, str)) {
-      return new CS_StringComArg(str, coreCommandSimpleNoSave(word), attr, hasMemory);
+   Generator<_str>* str_;
+   if (parse(tks, str_)) {
+      return new CS_StringComArg(str_, coreCommandSimpleNoSave(word), attr, hasMemory);
    }
 
    _def* def;
@@ -127,7 +127,7 @@ static Command* kwCommandSimple(const Token& word, Tokens& tks,
       return new CS_ListComArg(list, coreCommandSimpleNoSave(word), attr, hasMemory);
    }
 
-   throw SyntaxException(L"wrong syntax of command '" + word.originString + L"'", line);
+   throw SyntaxException(str(L"wrong syntax of command '", word.originString, L"'"), line);
 }
 
 static Command* coreCommandSimpleSave(const Token& word)
@@ -177,13 +177,12 @@ static Command* coreCommandSimpleNoSave(const Token& word)
 static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line)
 {
    if (tks.isEmpty()) {
-      throw SyntaxException(L"command '" + word.originString + L" to' is empty",
-         line);
+      throw SyntaxException(str(L"command '", word.originString, L" to' is empty"), line);
    }
 
    if (!tks.containsKeyword(Keyword::kw_To)) {
-      throw SyntaxException(L"command '" + word.originString +
-         L" to' does not contain keyword 'to'", line);
+      throw SyntaxException(str(L"command '", word.originString,
+         L" to' does not contain keyword 'to'"), line);
    }
 
    Tokens left(tks.list);
@@ -191,17 +190,17 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line)
    tks.divideByKeyword(Keyword::kw_To, left, right);
 
    if (right.isEmpty()) {
-      throw SyntaxException(L"command '" + word.originString +
-         L" to' does not contain its time argument", line);
+      throw SyntaxException(str(L"command '", word.originString,
+         L" to' does not contain its time argument"), line);
    }
 
 
    if (left.isEmpty()) {
-      setCoreComAttribute(word.originString + L" to", line);
+      setCoreComAttribute(str(word.originString, L" to"), line);
       Generator<_tim>* tim;
       if (!parse(right, tim)) {
-         throw SyntaxException(L"time argument of command '" + word.originString +
-            L" to' is not valid", line);
+         throw SyntaxException(str(L"time argument of command '", word.originString,
+            L" to' is not valid"), line);
       }
 
       switch (word.value.k) {
@@ -267,16 +266,16 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line)
 
    Generator<_tim>* tim;
    if (!parse(right, tim)) {
-      throw SyntaxException(L"time argument of command '" + word.originString +
-         L" to' is not valid", line);
+      throw SyntaxException(str(L"time argument of command '", word.originString,
+         L" to' is not valid"), line);
    }
 
    g_thisstate = prevThisState;
    retreatAttribute();
 
-   Generator<_str>* str;
-   if (parse(left, str)) {
-      return new CS_StringComArg(str, coreCommandTime(word, tim, false), attr, hasMemory);
+   Generator<_str>* str_;
+   if (parse(left, str_)) {
+      return new CS_StringComArg(str_, coreCommandTime(word, tim, false), attr, hasMemory);
    }
 
    _def* def;
@@ -289,7 +288,7 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line)
       return new CS_ListComArg(list, coreCommandTime(word, tim, false), attr, hasMemory);
    }
 
-   throw SyntaxException(L"wrong syntax of command '" + word.originString + L" to'", line);
+   throw SyntaxException(str(L"wrong syntax of command '", word.originString, L" to'"), line);
 }
 
 static Command* coreCommandTime(const Token& word,
@@ -322,18 +321,18 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line)
       tks.divideByKeyword(Keyword::kw_With, left, right);
 
       if (right.isEmpty()) {
-         throw SyntaxException(L"command '" +word.originString + L" with' does not "
-            L"contain its last argument", line);
+         throw SyntaxException(str(L"command '", word.originString,  L" with' does not "
+            L"contain its last argument"), line);
       }
 
       Generator<_str>* prog;
       if (!parse(right, prog)) {
-         throw SyntaxException(L"last argument of command '" + word.originString + L" with' "
-            L"cannot be resolved to a string", line);
+         throw SyntaxException(str(L"last argument of command '", word.originString, L" with' "
+            L"cannot be resolved to a string"), line);
       }
 
       if (left.isEmpty()) {
-         setCoreComAttribute(word.originString + L" with", line);
+         setCoreComAttribute(str(word.originString, L" with"), line);
          return new C_OpenWith(prog);
       }
       else {
@@ -341,9 +340,9 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line)
          Attribute* attr = new Attribute();
          attr->setCoreCommandBase();
 
-         Generator<_str>* str;
-         if (parse(left, str)) {
-            return new CS_StringComArg(str, new C_OpenWith(prog), attr, hasMemory);
+         Generator<_str>* str_;
+         if (parse(left, str_)) {
+            return new CS_StringComArg(str_, new C_OpenWith(prog), attr, hasMemory);
          }
 
          _def* def;
@@ -357,7 +356,7 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line)
          }
 
          delete prog;
-         throw SyntaxException(L"wrong syntax of command '" + word.originString + L" with'", line);
+         throw SyntaxException(str(L"wrong syntax of command '", word.originString, L" with'"), line);
       }
    }
 
@@ -427,13 +426,13 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack)
 {
    if (tks.isEmpty()) {
-      throw SyntaxException(L"command '" + word.originString + L" to' is empty",
+      throw SyntaxException(str(L"command '", word.originString, L" to' is empty"),
          line);
    }
 
    if (!tks.containsKeyword(Keyword::kw_To)) {
-      throw SyntaxException(L"command '" + word.originString + L" to' "
-         L"does not contain keyword 'to'", line);
+      throw SyntaxException(str(L"command '", word.originString,  L" to' ",
+         L"does not contain keyword 'to'"), line);
    }
 
    Tokens left(tks.list);
@@ -441,8 +440,8 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
    tks.divideByKeyword(Keyword::kw_To, left, right);
 
    if (right.isEmpty()) {
-      throw SyntaxException(L"command '" + word.originString + L" to' "
-         L"does not contain declaration of new name", line);
+      throw SyntaxException(str(L"command '", word.originString, L" to' ",
+         L"does not contain declaration of new name"), line);
    }
 
    _boo extless = false;
@@ -456,11 +455,11 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
    }
 
    if (left.isEmpty()) {
-      setCoreComAttribute(word.originString + L" to", line);
+      setCoreComAttribute(str(word.originString, L" to"), line);
 
       Generator<_str>* newName;
       if (!parse(right, newName)) {
-         throw SyntaxException(L"declaration of new name in command '" + word.originString + L" to' is not valid", line);
+         throw SyntaxException(str(L"declaration of new name in command '", word.originString, L" to' is not valid"), line);
       }
 
       Attribute* lastAttr = getLastAttribute();
@@ -483,19 +482,19 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
 
    Generator<_str>* newName;
    if (!parse(right, newName)) {
-      throw SyntaxException(L"declaration of new name in command '" + word.originString + L" to' is not valid", line);
+      throw SyntaxException(str(L"declaration of new name in command '", word.originString, L" to' is not valid"), line);
    }
 
    g_thisstate = prevThisState;
    retreatAttribute();
 
-   Generator<_str>* str;
-   if (parse(left, str)) {
+   Generator<_str>* str_;
+   if (parse(left, str_)) {
       if (stack)
-         return new CS_StringComArg(str,
+         return new CS_StringComArg(str_,
             new C_RenameTo_Stack(newName, false, extless), attr, hasMemory);
       else
-         return new CS_StringComArg(str,
+         return new CS_StringComArg(str_,
             new C_RenameTo(newName, false, force, extless), attr, hasMemory);
    }
 
@@ -509,7 +508,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
             new C_RenameTo(newName, false, force, extless), attr, hasMemory);
    }
 
-   commandSyntaxException(word.originString + L" to", line);
+   commandSyntaxException(str(word.originString, L" to"), line);
 }
 
 static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
@@ -536,7 +535,7 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
 
       if (fk == HASH_VAR_FILE) {
          if (tks2.isEmpty()) {
-            setCoreComAttribute(word.originString + L" " + f.originString, line);
+            setCoreComAttribute(str(word.originString, L" ", f.originString), line);
             Attribute* lastAttr = getLastAttribute();
 
             if (stack) {
@@ -547,34 +546,38 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
             }
          }
 
-         Generator<_str>* str;
-         if (parse(tks2, str)) {
+         Generator<_str>* str_;
+         if (parse(tks2, str_)) {
             if (stack) {
-               return new C_CreateFile_String_Stack(str);
+               return new C_CreateFile_String_Stack(str_);
             }
             else {
-               return new C_CreateFile_String(str, force);
+               return new C_CreateFile_String(str_, force);
             }
          }
 
-         throw SyntaxException(L"argument of command '" + word.originString + L" " + f.originString + L"' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"the argument of command '", word.originString, L" ", 
+            f.originString, L"' cannot be resolved to a string"), line);
       }
       else if (fk == HASH_VAR_FILES) {
          if (tks2.isEmpty()) {
-            throw SyntaxException(L"command '" + word.originString + L" " + f.originString + L"' needs an argument", line);
+            throw SyntaxException(str(L"command '", word.originString, L" ",
+               f.originString, L"' needs an argument"), line);
          }
 
-         Generator<_str>* str;
-         if (parse(tks2, str)) {
-            delete str;
+         Generator<_str>* str_;
+         if (parse(tks2, str_)) {
+            delete str_;
             const _str sub = f.originString.substr(0, 4);
-            throw SyntaxException(L"write '" + word.originString + L" " + sub + L"' instead of '" + word.originString + L" " + f.originString + L"'", line);
+            throw SyntaxException(str(L"write '", word.originString, L" ", sub, L"' instead of '", 
+               word.originString, L" ", f.originString, L"'"), line);
          }
 
          _def* def;
          if (parse(tks2, def)) {
             delete def;
-            throw SyntaxException(L"command '" + word.originString + L" " + f.originString + L"' cannot be called with a definition argument", line);
+            throw SyntaxException(str(L"command '", word.originString, L" ", f.originString, 
+               L"' cannot be called with a definition argument"), line);
          }
 
          Generator<_list>* list;
@@ -587,11 +590,12 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
             }
          }
 
-         throw SyntaxException(L"wrong syntax of command '" + word.originString + L" " + f.originString + L"'", line);
+         throw SyntaxException(str(L"wrong syntax of command '", 
+            word.originString, L" ", f.originString, L"'"), line);
       }
       else if (fk == HASH_VAR_DIRECTORY) {
          if (tks2.isEmpty()) {
-            setCoreComAttribute(word.originString + L" " + f.originString, line);
+            setCoreComAttribute(str(word.originString, L" ", f.originString), line);
             Attribute* lastAttr = getLastAttribute();
             if (stack) {
                return new C_CreateDirectory_Stack(lastAttr);
@@ -601,34 +605,38 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
             }
          }
 
-         Generator<_str>* str;
-         if (parse(tks2, str)) {
+         Generator<_str>* str_;
+         if (parse(tks2, str_)) {
             if (stack) {
-               return new C_CreateDirectory_String_Stack(str);
+               return new C_CreateDirectory_String_Stack(str_);
             }
             else {
-               return new C_CreateDirectory_String(str, force);
+               return new C_CreateDirectory_String(str_, force);
             }
          }
 
-         throw SyntaxException(L"argument of command '" + word.originString + L" " + f.originString + L"' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"argument of command '", word.originString, L" ", 
+            f.originString, L"' cannot be resolved to a string"), line);
       }
       else if (fk == HASH_VAR_DIRECTORIES) {
          if (tks2.isEmpty()) {
-            throw SyntaxException(L"command '" + word.originString + L" " + f.originString + L"' needs an argument", line);
+            throw SyntaxException(str(L"command '", word.originString, L" ", 
+               f.originString, L"' needs an argument"), line);
          }
 
-         Generator<_str>* str;
-         if (parse(tks2, str)) {
-            delete str;
-            const _str sub = f.originString.substr(0, 8) + L"y";
-            throw SyntaxException(L"write '" + word.originString + L" " + sub + L"' instead of '" + word.originString + L" " + f.originString + L"'", line);
+         Generator<_str>* str_;
+         if (parse(tks2, str_)) {
+            delete str_;
+            const _str sub = str(f.originString.substr(0, 8), L"y");
+            throw SyntaxException(str(L"write '", word.originString, L" ", sub, 
+               L"' instead of '", word.originString, L" ", f.originString, L"'"), line);
          }
 
          _def* def;
          if (parse(tks2, def)) {
             delete def;
-            throw SyntaxException(L"command '" + word.originString + L" " + f.originString + L"' cannot be called with a definition argument", line);
+            throw SyntaxException(str(L"command '", word.originString, L" ", 
+               f.originString, L"' cannot be called with a definition argument"), line);
          }
 
          Generator<_list>* list;
@@ -641,24 +649,26 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
             }
          }
 
-         throw SyntaxException(L"wrong syntax of command '" + word.originString + L" " + f.originString + L"'", line);
+         throw SyntaxException(str(L"wrong syntax of command '", 
+            word.originString, L" ", f.originString, L"'"), line);
       }
    }
 
-   Generator<_str>* str;
-   if (parse(tks, str)) {
+   Generator<_str>* str_;
+   if (parse(tks, str_)) {
       if (stack) {
-         return new C_Create_String_Stack(str);
+         return new C_Create_String_Stack(str_);
       }
       else {
-         return new C_Create_String(str, force);
+         return new C_Create_String(str_, force);
       }
    }
 
    _def* def;
    if (parse(tks, def)) {
       delete def;
-      throw SyntaxException(L"command '" + word.originString + L"' cannot be called with a definition argument", line);
+      throw SyntaxException(str(L"command '", word.originString, 
+         L"' cannot be called with a definition argument"), line);
    }
 
    Generator<_list>* list;
@@ -678,14 +688,15 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack)
 {
    if (tks.isEmpty()) {
-      throw SyntaxException(L"command '" + word.originString + L" to' is empty", line);
+      throw SyntaxException(str(L"command '", word.originString, L" to' is empty"), line);
    }
 
    const _boo hasTo = tks.containsKeyword(Keyword::kw_To);
    const _boo hasAs = tks.containsKeyword(Keyword::kw_As);
 
    if (!hasTo) {
-      throw SyntaxException(L"command '" + word.originString + L" to' cannot be called without keyword 'to'", line);
+      throw SyntaxException(str(L"command '", word.originString, 
+         L" to' cannot be called without keyword 'to'"), line);
    }
 
    Tokens left(tks);
@@ -699,13 +710,13 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
          right.divideByKeyword(Keyword::kw_As, preAs, postAs);
 
          if (preAs.isEmpty()) {
-            throw SyntaxException(L"command '" + word.originString + L" to as' "
+            throw SyntaxException(str(L"command '", word.originString, L" to as' "
                L"does not contain a declaration of new location written between "
-               L"keywords 'to' and 'as'", line);
+               L"keywords 'to' and 'as'"), line);
          }
          if (postAs.isEmpty()) {
-            throw SyntaxException(L"command '" + word.originString + L" to as' "
-               L"does not contain a declaration of new name written after keyword 'as'", line);
+            throw SyntaxException(str(L"command '", word.originString, L" to as' "
+               L"does not contain a declaration of new name written after keyword 'as'"), line);
          }
 
          _boo extless = false;
@@ -714,21 +725,24 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
             extless = true;
             postAs.trimLeft();
             if (postAs.isEmpty()) {
-               throw SyntaxException(L"keyword '" + postAs.first().originString + L"' is not followed by a declaration of new file name", line);
+               throw SyntaxException(str(L"keyword '", postAs.first().originString, 
+                  L"' is not followed by a declaration of new file name"), line);
             }
          }
 
          Generator<_str>* nname;
          if (!parse(postAs, nname)) {
-            throw SyntaxException(L"new name in command '" + word.originString + L" to as' cannot be resolved to a string", line);
+            throw SyntaxException(str(L"new name in command '", word.originString, 
+               L" to as' cannot be resolved to a string"), line);
          }
 
          Generator<_str>* dest;
          if (!parse(preAs, dest)) {
-            throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+            throw SyntaxException(str(L"new location in command '", word.originString, 
+               L" to' cannot be resolved to a string"), line);
          }
 
-         setCoreComAttribute(word.originString + L" to as", line);
+         setCoreComAttribute(str(word.originString, L" to as"), line);
          Attribute* lastAttr = getLastAttribute();
          if (stack) {
             return new C_MoveToAs_Stack(dest, nname, extless, lastAttr);
@@ -739,29 +753,31 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       }
 
       if (right.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" to' lacks declaration of a new location", line);
+         throw SyntaxException(str(L"command '", word.originString, 
+            L" to' lacks declaration of a new location"), line);
       }
 
-      Generator<_str>* str;
-      if (!parse(right, str)) {
-         throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+      Generator<_str>* str_;
+      if (!parse(right, str_)) {
+         throw SyntaxException(str(L"new location in command '", 
+            word.originString, L" to' cannot be resolved to a string"), line);
       }
       else {
-         setCoreComAttribute(word.originString + L" to", line);
+         setCoreComAttribute(str(word.originString, L" to"), line);
          Attribute* lastAttr = getLastAttribute();
          if (stack) {
-            return new C_MoveTo_Stack(str, lastAttr);
+            return new C_MoveTo_Stack(str_, lastAttr);
          }
          else {
-            return new C_MoveTo(str, force, lastAttr);
+            return new C_MoveTo(str_, force, lastAttr);
          }
       }
    }
 
    if (hasAs) {
       if (left.containsKeyword(Keyword::kw_As)) {
-         throw SyntaxException(L"keywords 'to' and 'as' appear in command '"
-            + word.originString + L" to as' in reverse order", line);
+         throw SyntaxException(str(L"keywords 'to' and 'as' appear in command '",
+            word.originString, L" to as' in reverse order"), line);
       }
 
       Tokens preAs(right);
@@ -769,13 +785,13 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       right.divideByKeyword(Keyword::kw_As, preAs, postAs);
 
       if (preAs.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" to as' "
+         throw SyntaxException(str(L"command '", word.originString, L" to as' "
             L"does not contain declaration of a new location written between "
-            L"keywords 'to' and 'as'", line);
+            L"keywords 'to' and 'as'"), line);
       }
       if (postAs.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" to as' "
-            L"does not contain declaration of a new name written after keyword 'as'", line);
+         throw SyntaxException(str(L"command '", word.originString, L" to as' "
+            L"does not contain declaration of a new name written after keyword 'as'"), line);
       }
 
       _boo extless = false;
@@ -784,7 +800,8 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
          extless = true;
          postAs.trimLeft();
          if (postAs.isEmpty()) {
-            throw SyntaxException(L"keyword '" + postAs.first().originString + L"' is not followed by a declaration of a new file name", line);
+            throw SyntaxException(str(L"keyword '", postAs.first().originString, 
+               L"' is not followed by a declaration of a new file name"), line);
          }
       }
 
@@ -797,26 +814,28 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 
       Generator<_str>* nname;
       if (!parse(postAs, nname)) {
-         throw SyntaxException(L"new name in command '" + word.originString + L" to as' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"new name in command '", word.originString, 
+            L" to as' cannot be resolved to a string"), line);
       }
 
       Generator<_str>* dest;
       if (!parse(preAs, dest)) {
          delete nname;
-         throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"new location in command '", word.originString, 
+            L" to' cannot be resolved to a string"), line);
       }
 
       g_thisstate = prevThisState;
       retreatAttribute();
 
-      Generator<_str>* str;
-      if (parse(left, str)) {
+      Generator<_str>* str_;
+      if (parse(left, str_)) {
          if (stack) {
-            return new CS_StringComArg(str,
+            return new CS_StringComArg(str_,
                new C_MoveToAs_Stack(dest, nname, extless), attr, hasMemory);
          }
          else {
-            return new CS_StringComArg(str,
+            return new CS_StringComArg(str_,
                new C_MoveToAs(dest, nname, force, extless), attr, hasMemory);
          }
       }
@@ -847,7 +866,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 
       delete nname;
       delete dest;
-      throw SyntaxException(L"wrong syntax of command '" + word.originString + L" to as'", line);
+      throw SyntaxException(str(L"wrong syntax of command '", word.originString, L" to as'"), line);
    }
 
    const _boo hasMemory = anyAttribute();
@@ -859,20 +878,21 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 
    Generator<_str>* dest;
    if (!parse(right, dest)) {
-      throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+      throw SyntaxException(str(L"new location in command '", word.originString, 
+         L" to' cannot be resolved to a string"), line);
    }
 
    g_thisstate = prevThisState;
    retreatAttribute();
 
-   Generator<_str>* str;
-   if (parse(left, str)) {
+   Generator<_str>* str_;
+   if (parse(left, str_)) {
       if (stack) {
-         return new CS_StringComArg(str,
+         return new CS_StringComArg(str_,
             new C_MoveTo_Stack(dest), attr, hasMemory);
       }
       else {
-         return new CS_StringComArg(str,
+         return new CS_StringComArg(str_,
             new C_MoveTo(dest, force), attr, hasMemory);
       }
    }
@@ -902,7 +922,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
    }
 
    delete dest;
-   throw SyntaxException(L"wrong syntax of command '" + word.originString + L" to'", line);
+   throw SyntaxException(str(L"wrong syntax of command '", word.originString, L" to'"), line);
 }
 
 static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int& line,
@@ -914,25 +934,26 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
       tks.divideByKeyword(Keyword::kw_From, left, right);
 
       if (left.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" from' does not "
-            L"contain a declaration of elements to download", line);
+         throw SyntaxException(str(L"command '", word.originString, L" from' does not "
+            L"contain a declaration of elements to download"), line);
       }
       if (right.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" from' does not "
-            L"contain a declaration of location", line);
+         throw SyntaxException(str(L"command '", word.originString, L" from' does not "
+            L"contain a declaration of location"), line);
       }
 
       Generator<_str>* loc;
       if (!parse(right, loc)) {
-         throw SyntaxException(L"location in command '" + word.originString + L" from' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"location in command '", word.originString, 
+            L" from' cannot be resolved to a string"), line);
       }
 
-      Generator<_str>* str;
-      if (parse(left, str)) {
+      Generator<_str>* str_;
+      if (parse(left, str_)) {
          if (stack)
-            return new C_DownloadFrom_String_Stack(loc, str);
+            return new C_DownloadFrom_String_Stack(loc, str_);
          else
-            return new C_DownloadFrom_String(loc, str, force);
+            return new C_DownloadFrom_String(loc, str_, force);
       }
 
       _def* def;
@@ -952,21 +973,23 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
       }
 
       delete loc;
-      throw SyntaxException(L"wrong syntax of command '" + word.originString + L" from'", line);
+      throw SyntaxException(str(L"wrong syntax of command '", 
+         word.originString, L" from'"), line);
    }
 
-   Generator<_str>* str;
-   if (parse(tks, str)) {
+   Generator<_str>* str_;
+   if (parse(tks, str_)) {
       if (stack)
-         return new C_Download_String_Stack(str);
+         return new C_Download_String_Stack(str_);
       else
-         return new C_Download_String(str, force);
+         return new C_Download_String(str_, force);
    }
 
    _def* def;
    if (parse(tks, def)) {
       delete def;
-      throw SyntaxException(L"the argument of command '" + word.originString + L"' cannot be of type 'definition'", line);
+      throw SyntaxException(str(L"the argument of command '", 
+         word.originString, L"' cannot be of type 'definition'"), line);
    }
 
    Generator<_list>* list;
@@ -977,7 +1000,7 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
          return new C_Download_List(list, force);
    }
 
-   throw SyntaxException(L"wrong syntax of command '" + word.originString + L"'", line);
+   throw SyntaxException(str(L"wrong syntax of command '", word.originString, L"'"), line);
 }
 
 static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
@@ -988,17 +1011,18 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
    if (!hasTo) {
       if (hasAs) {
-         throw SyntaxException(L"command '" + word.originString + L" to as' cannot be called without keyword 'to'", line);
+         throw SyntaxException(str(L"command '", word.originString, 
+            L" to as' cannot be called without keyword 'to'"), line);
       }
 
       if (force) {
-         throw SyntaxException(
-            L"command '" + word.originString + L"' cannot be preceded by a flag 'forced'", line);
+         throw SyntaxException(str(L"command '", word.originString,
+            L"' cannot be preceded by a flag 'forced'"), line);
       }
 
       if (stack) {
-         throw SyntaxException(
-            L"command '" + word.originString + L"' cannot be preceded by a flag 'stack'", line);
+         throw SyntaxException(str(L"command '", word.originString,
+         L"' cannot be preceded by a flag 'stack'"), line);
       }
 
       if (g_aggrs.empty()) {
@@ -1050,13 +1074,13 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
          right.divideByKeyword(Keyword::kw_As, preAs, postAs);
 
          if (preAs.isEmpty()) {
-            throw SyntaxException(L"command '" + word.originString + L" to as' "
+            throw SyntaxException(str(L"command '", word.originString, L" to as' "
                L"does not contain a declaration of new location written between "
-               L"keywords 'to' and 'as'", line);
+               L"keywords 'to' and 'as'"), line);
          }
          if (postAs.isEmpty()) {
-            throw SyntaxException(L"command '" + word.originString + L" to as' "
-               L"does not contain a declaration of new name written after keyword 'as'", line);
+            throw SyntaxException(str(L"command '", word.originString, L" to as' "
+               L"does not contain a declaration of new name written after keyword 'as'"), line);
          }
 
          _boo extless = false;
@@ -1065,21 +1089,24 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
             extless = true;
             postAs.trimLeft();
             if (postAs.isEmpty()) {
-               throw SyntaxException(L"keyword '" + postAs.first().originString + L"' is not followed by a declaration of new file name", line);
+               throw SyntaxException(str(L"keyword '", postAs.first().originString, 
+                  L"' is not followed by a declaration of new file name"), line);
             }
          }
 
          Generator<_str>* nname;
          if (!parse(postAs, nname)) {
-            throw SyntaxException(L"new name in command '" + word.originString + L" to as' cannot be resolved to a string", line);
+            throw SyntaxException(str(L"new name in command '", word.originString, 
+               L" to as' cannot be resolved to a string"), line);
          }
 
          Generator<_str>* dest;
          if (!parse(preAs, dest)) {
-            throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+            throw SyntaxException(str(L"new location in command '", word.originString, 
+               L" to' cannot be resolved to a string"), line);
          }
 
-         setCoreComAttribute(word.originString + L" to as", line);
+         setCoreComAttribute(str(word.originString, L" to as"), line);
          if (stack) {
             return new C_CopyToAs_Stack(dest, nname, true, extless);
          }
@@ -1089,28 +1116,30 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       }
 
       if (right.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" to' lacks a declaration of new location", line);
+         throw SyntaxException(str(L"command '", word.originString, 
+            L" to' lacks a declaration of new location"), line);
       }
 
-      Generator<_str>* str;
-      if (parse(right, str)) {
-         setCoreComAttribute(word.originString + L" to", line);
+      Generator<_str>* str_;
+      if (parse(right, str_)) {
+         setCoreComAttribute(str(word.originString, L" to"), line);
          if (stack) {
-            return new C_CopyTo_Stack(str, true);
+            return new C_CopyTo_Stack(str_, true);
          }
          else {
-            return new C_CopyTo(str, true, force);
+            return new C_CopyTo(str_, true, force);
          }
       }
       else {
-         throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"new location in command '", 
+            word.originString, L" to' cannot be resolved to a string"), line);
       }
    }
 
    if (hasAs) {
       if (left.containsKeyword(Keyword::kw_As)) {
-         throw SyntaxException(L"keywords 'to' and 'as' appear in "
-            L"command '" + word.originString + L" to as' in reverse order", line);
+         throw SyntaxException(str(L"keywords 'to' and 'as' appear in "
+            L"command '", word.originString, L" to as' in reverse order"), line);
       }
 
       Tokens preAs(right);
@@ -1118,13 +1147,13 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       right.divideByKeyword(Keyword::kw_As, preAs, postAs);
 
       if (preAs.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" to as' "
+         throw SyntaxException(str(L"command '", word.originString, L" to as' "
             L"does not contain a declaration of new location written between "
-            L"keywords 'to' and 'as'", line);
+            L"keywords 'to' and 'as'"), line);
       }
       if (postAs.isEmpty()) {
-         throw SyntaxException(L"command '" + word.originString + L" to as' "
-            L"does not contain a declaration of new name written after keyword 'as'", line);
+         throw SyntaxException(str(L"command '", word.originString, L" to as' "
+            L"does not contain a declaration of new name written after keyword 'as'"), line);
       }
 
       _boo extless = false;
@@ -1133,8 +1162,8 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
          extless = true;
          postAs.trimLeft();
          if (postAs.isEmpty()) {
-            throw SyntaxException(L"keyword '" + postAs.first().originString +
-               L"' is not followed by a declaration of new file name", line);
+            throw SyntaxException(str(L"keyword '", postAs.first().originString,
+               L"' is not followed by a declaration of new file name"), line);
          }
       }
 
@@ -1147,26 +1176,28 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
       Generator<_str>* nname;
       if (!parse(postAs, nname)) {
-         throw SyntaxException(L"new name in command '" + word.originString + L" to as' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"new name in command '", word.originString, 
+            L" to as' cannot be resolved to a string"), line);
       }
 
       Generator<_str>* dest;
       if (!parse(preAs, dest)) {
          delete nname;
-         throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+         throw SyntaxException(str(L"new location in command '", word.originString, 
+            L" to' cannot be resolved to a string"), line);
       }
 
       g_thisstate = prevThisState;
       retreatAttribute();
 
-      Generator<_str>* str;
-      if (parse(left, str)) {
+      Generator<_str>* str_;
+      if (parse(left, str_)) {
          if (stack) {
-            return new CS_StringComArg(str,
+            return new CS_StringComArg(str_,
                new C_CopyToAs_Stack(dest, nname, false, extless), attr, hasMemory);
          }
          else {
-            return new CS_StringComArg(str,
+            return new CS_StringComArg(str_,
                new C_CopyToAs(dest, nname, false, force, extless), attr, hasMemory);
          }
       }
@@ -1197,7 +1228,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
       delete nname;
       delete dest;
-      throw SyntaxException(L"wrong syntax of command '" + word.originString + L" to as'", line);
+      throw SyntaxException(str(L"wrong syntax of command '", word.originString, L" to as'"), line);
    }
 
    const _boo hasMemory = anyAttribute();
@@ -1209,20 +1240,21 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
    Generator<_str>* dest;
    if (!parse(right, dest)) {
-      throw SyntaxException(L"new location in command '" + word.originString + L" to' cannot be resolved to a string", line);
+      throw SyntaxException(str(L"new location in command '", word.originString, 
+         L" to' cannot be resolved to a string"), line);
    }
 
    g_thisstate = prevThisState;
    retreatAttribute();
 
-   Generator<_str>* str;
-   if (parse(left, str)) {
+   Generator<_str>* str_;
+   if (parse(left, str_)) {
       if (stack) {
-         return new CS_StringComArg(str,
+         return new CS_StringComArg(str_,
             new C_CopyTo_Stack(dest, false), attr, hasMemory);
       }
       else {
-         return new CS_StringComArg(str,
+         return new CS_StringComArg(str_,
             new C_CopyTo(dest, false, force), attr, hasMemory);
       }
    }
@@ -1252,7 +1284,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    }
 
    delete dest;
-   throw SyntaxException(L"wrong syntax of command '" + word.originString + L" to'", line);
+   throw SyntaxException(str(L"wrong syntax of command '", word.originString, L" to'"), line);
 }
 
 Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _boo& directError)
@@ -1260,8 +1292,8 @@ Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _
    if (tks.isEmpty()) {
       switch (g_thisstate) {
          case ts_None: {
-         throw SyntaxException(L"command '" + word.originString + L"' needs an argument. "
-            L"Value of variable 'this' is undefined here", line);
+         throw SyntaxException(str(L"command '", word.originString, L"' needs an argument. "
+            L"Value of variable 'this' is undefined here"), line);
             break;
          }
          case ts_String: {
@@ -1327,16 +1359,16 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
       tks.divideByKeyword(Keyword::kw_With, left, right);
 
       if (right.isEmpty()) {
-         throw SyntaxException(L"right side of command '" + word.originString + L" with' is empty", line);
+         throw SyntaxException(str(L"right side of command '", word.originString, L" with' is empty"), line);
       }
 
       if (left.isEmpty()) {
          if (right.containsKeyword(Keyword::kw_With)) {
             if (g_thisstate == ts_None) {
-               throw SyntaxException(L"command '" + word.originString + L" with with' needs first argument", line);
+               throw SyntaxException(str(L"command '", word.originString, L" with with' needs first argument"), line);
             }
 
-            setCoreComAttribute(word.originString + L" with with", line);
+            setCoreComAttribute(str(word.originString, L" with with"), line);
             Attribute* lastAttr = getLastAttribute();
 
             Tokens left2(right);
@@ -1344,26 +1376,29 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
             right.divideByKeyword(Keyword::kw_With, left2, right2);
 
             if (left2.isEmpty()) {
-               throw SyntaxException(L"command '" + word.originString + L"' cannot be called with adjacent 'with' keywords", line);
+               throw SyntaxException(str(L"command '", word.originString,
+                  L"' cannot be called with adjacent 'with' keywords"), line);
 
             }
             else if (right2.isEmpty()) {
-               throw SyntaxException(L"command '" + word.originString + L" with with' cannot be called without its last argument", line);
+               throw SyntaxException(str(L"command '", word.originString, 
+                  L" with with' cannot be called without its last argument"), line);
             }
 
             Generator<_str>* exec;
             if (!parse(left2, exec)) {
-               throw SyntaxException(L"second argument of command '" + word.originString + L" with with' cannot be resolved to a string", line);
+               throw SyntaxException(str(L"second argument of command '", word.originString, 
+                  L" with with' cannot be resolved to a string"), line);
             }
 
             if (left2.getLength() == 1) {
                const Token& cf = left2.first();
                if (cf.type == Token::t_Word && cf.value.h1 == HASH_VAR_UROBOROS) {
                   delete exec;
-                  Generator<_str>* str;
+                  Generator<_str>* str_;
 
-                  if (parse(right2, str)) {
-                     return new C_RunWithUroborosWithString(str, lastAttr);
+                  if (parse(right2, str_)) {
+                     return new C_RunWithUroborosWithString(str_, lastAttr);
                   }
                   else {
                      Generator<_list>* list;
@@ -1372,15 +1407,16 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                      }
                      else {
                         delete exec;
-                        throw SyntaxException(L"last argument of command '" + word.originString + L" with Uroboros with' cannot be resolved to a list", line);
+                        throw SyntaxException(str(L"last argument of command '", 
+                           word.originString, L" with Uroboros with' cannot be resolved to a list"), line);
                      }
                   }
                }
             }
 
-            Generator<_str>* str;
-            if (parse(right2, str)) {
-               return new C_RunWithWithString(exec, str, lastAttr);
+            Generator<_str>* str_;
+            if (parse(right2, str_)) {
+               return new C_RunWithWithString(exec, str_, lastAttr);
             }
             else {
                Generator<_list>* list;
@@ -1389,16 +1425,18 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                }
                else {
                   delete exec;
-                  throw SyntaxException(L"last argument of command '" + word.originString + L" with with' cannot be resolved to a list", line);
+                  throw SyntaxException(str(L"last argument of command '", 
+                     word.originString, L" with with' cannot be resolved to a list"), line);
                }
             }
          }
          else {
             if (g_thisstate == ts_None) {
-               throw SyntaxException(L"command '" + word.originString + L" with' needs first argument", line);
+               throw SyntaxException(str(L"command '", word.originString, 
+                  L" with' needs first argument"), line);
             }
 
-            setCoreComAttribute(word.originString + L" with", line);
+            setCoreComAttribute(str(word.originString, L" with"), line);
             Attribute* lastAttr = getLastAttribute();
 
             Generator<_str>* exec;
@@ -1413,7 +1451,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                return new C_RunWith(exec, lastAttr);
             }
             else {
-               throw SyntaxException(L"last argument of command '" + word.originString + L" with' cannot be resolved to a string", line);
+               throw SyntaxException(str(L"last argument of command '", 
+                  word.originString, L" with' cannot be resolved to a string"), line);
             }
          }
       }
@@ -1424,11 +1463,13 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
             right.divideByKeyword(Keyword::kw_With, left2, right2);
 
             if (left2.isEmpty()) {
-               throw SyntaxException(L"command '" + word.originString + L"' cannot be called with adjacent 'with' keywords", line);
+               throw SyntaxException(str(L"command '", word.originString, 
+                  L"' cannot be called with adjacent 'with' keywords"), line);
 
             }
             else if (right2.isEmpty()) {
-               throw SyntaxException(L"command '" + word.originString + L" with with' cannot be called without its last argument", line);
+               throw SyntaxException(str(L"command '", word.originString, 
+                  L" with with' cannot be called without its last argument"), line);
             }
 
             const _boo hasMemory = anyAttribute();
@@ -1441,7 +1482,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
 
             Generator<_str>* exec;
             if (!parse(left2, exec)) {
-               throw SyntaxException(L"second argument of command '" + word.originString + L" with with' cannot be resolved to a string", line);
+               throw SyntaxException(str(L"second argument of command '", word.originString, 
+                  L" with with' cannot be resolved to a string"), line);
             }
 
             Generator<_str>* lastStr;
@@ -1454,9 +1496,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                   if (cf.type == Token::t_Word && cf.value.h1 == HASH_VAR_UROBOROS) {
                      delete exec;
 
-                     Generator<_str>* str;
-                     if (parse(left, str)) {
-                        return new CS_StringComArg(str, new C_RunWithUroborosWithString(lastStr), attr, lastAttr, hasMemory);
+                     Generator<_str>* str_;
+                     if (parse(left, str_)) {
+                        return new CS_StringComArg(str_, new C_RunWithUroborosWithString(lastStr), attr, lastAttr, hasMemory);
                      }
 
                      _def* def;
@@ -1470,13 +1512,14 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                      }
 
                      delete lastStr;
-                     throw SyntaxException(L"first argument of command '" + word.originString + L" with Uroboros with' cannot be resolved to a list", line);
+                     throw SyntaxException(str(L"first argument of command '", word.originString, 
+                        L" with Uroboros with' cannot be resolved to a list"), line);
                   }
                }
 
-               Generator<_str>* str;
-               if (parse(left, str)) {
-                  return new CS_StringComArg(str, new C_RunWithWithString(exec, lastStr), attr, lastAttr, hasMemory);
+               Generator<_str>* str_;
+               if (parse(left, str_)) {
+                  return new CS_StringComArg(str_, new C_RunWithWithString(exec, lastStr), attr, lastAttr, hasMemory);
                }
 
                _def* def;
@@ -1491,7 +1534,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
 
                delete exec;
                delete lastStr;
-               throw SyntaxException(L"first argument of command '" + word.originString + L" with with' cannot be resolved to a list", line);
+               throw SyntaxException(str(L"first argument of command '", word.originString, 
+                  L" with with' cannot be resolved to a list"), line);
             }
             else {
                Generator<_list>* lastList;
@@ -1500,7 +1544,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                   g_thisstate = prevThisState;
                   retreatAttribute();
                   delete exec;
-                  throw SyntaxException(L"last argument of command '" + word.originString + L" with with' cannot be resolved to a list", line);
+                  throw SyntaxException(str(L"last argument of command '", word.originString, 
+                     L" with with' cannot be resolved to a list"), line);
                }
                else {
                   g_thisstate = prevThisState;
@@ -1511,9 +1556,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                      if (cf.type == Token::t_Word && cf.value.h1 == HASH_VAR_UROBOROS) {
                         delete exec;
 
-                        Generator<_str>* str;
-                        if (parse(left, str)) {
-                           return new CS_StringComArg(str, new C_RunWithUroborosWith(lastList), attr, lastAttr, hasMemory);
+                        Generator<_str>* str_;
+                        if (parse(left, str_)) {
+                           return new CS_StringComArg(str_, new C_RunWithUroborosWith(lastList), attr, lastAttr, hasMemory);
                         }
 
                         _def* def;
@@ -1527,13 +1572,14 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                         }
 
                         delete lastList;
-                        throw SyntaxException(L"first argument of command '" + word.originString + L" with Uroboros with' cannot be resolved to a list", line);
+                        throw SyntaxException(str(L"first argument of command '", word.originString, 
+                           L" with Uroboros with' cannot be resolved to a list"), line);
                      }
                   }
 
-                  Generator<_str>* str;
-                  if (parse(left, str)) {
-                     return new CS_StringComArg(str, new C_RunWithWith(exec, lastList), attr, lastAttr, hasMemory);
+                  Generator<_str>* str_;
+                  if (parse(left, str_)) {
+                     return new CS_StringComArg(str_, new C_RunWithWith(exec, lastList), attr, lastAttr, hasMemory);
                   }
 
                   _def* def;
@@ -1548,7 +1594,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
 
                   delete exec;
                   delete lastList;
-                  throw SyntaxException(L"first argument of command '" + word.originString + L" with with' cannot be resolved to a list", line);
+                  throw SyntaxException(str(L"first argument of command '", word.originString, 
+                     L" with with' cannot be resolved to a list"), line);
                }
             }
          }
@@ -1563,7 +1610,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
 
             Generator<_str>* exec;
             if (!parse(right, exec)) {
-               throw SyntaxException(L"last argument of command '" + word.originString + L" with' cannot be resolved to a string", line);
+               throw SyntaxException(str(L"last argument of command '", word.originString, 
+                  L" with' cannot be resolved to a string"), line);
             }
 
             g_thisstate = prevThisState;
@@ -1574,9 +1622,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                if (cf.type == Token::t_Word && cf.value.h1 == HASH_VAR_UROBOROS) {
                   delete exec;
 
-                  Generator<_str>* str;
-                  if (parse(left, str)) {
-                     return new CS_StringComArg(str, new C_RunWithUroboros(), attr, lastAttr, hasMemory);
+                  Generator<_str>* str_;
+                  if (parse(left, str_)) {
+                     return new CS_StringComArg(str_, new C_RunWithUroboros(), attr, lastAttr, hasMemory);
                   }
 
                   _def* def;
@@ -1589,13 +1637,14 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
                      return new CS_ListComArg(list, new C_RunWithUroboros(), attr, lastAttr, hasMemory);
                   }
 
-                  throw SyntaxException(L"first argument of command '" + word.originString + L" with Uroboros' cannot be resolved to a list", line);
+                  throw SyntaxException(str(L"first argument of command '", word.originString, 
+                     L" with Uroboros' cannot be resolved to a list"), line);
                }
             }
 
-            Generator<_str>* str;
-            if (parse(left, str)) {
-               return new CS_StringComArg(str, new C_RunWith(exec), attr, lastAttr, hasMemory);
+            Generator<_str>* str_;
+            if (parse(left, str_)) {
+               return new CS_StringComArg(str_, new C_RunWith(exec), attr, lastAttr, hasMemory);
             }
 
             _def* def;
@@ -1609,7 +1658,8 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line)
             }
 
             delete exec;
-            throw SyntaxException(L"first argument of command '" + word.originString + L" with' cannot be resolved to a list", line);
+            throw SyntaxException(str(L"first argument of command '", word.originString, 
+               L" with' cannot be resolved to a list"), line);
          }
       }
    }
@@ -1636,7 +1686,8 @@ static Command* c_error(const Token& word, const Tokens& tks, const _int& line)
       return new C_ErrorWithExitCode(num);
    }
    else {
-      throw SyntaxException(L"the argument of command '" + word.originString + L"' cannot be resolved to a number", line);
+      throw SyntaxException(str(L"the argument of command '", word.originString, 
+         L"' cannot be resolved to a number"), line);
    }
 }
 
@@ -1645,16 +1696,18 @@ static Command* c_process(const Token& word, const Tokens& tks, const _int& line
    markAttributesToRun();
 
    if (tks.isEmpty()) {
-      throw SyntaxException(L"command '" + word.originString + L"' needs a string argument", line);
+      throw SyntaxException(str(L"command '", word.originString, 
+         L"' needs a string argument"), line);
    }
 
-   Generator<_str>* str;
+   Generator<_str>* str_;
 
-   if (parse(tks, str)) {
-      return new C_Process(str);
+   if (parse(tks, str_)) {
+      return new C_Process(str_);
    }
    else {
-      throw SyntaxException(L"the argument of command '" + word.originString + L"' cannot be resolved to a string", line);
+      throw SyntaxException(str(L"the argument of command '", word.originString, 
+         L"' cannot be resolved to a string"), line);
    }
 }
 
@@ -1662,22 +1715,22 @@ static void checkUselessFlags(const Token& word, const _int& line,
    const bool& force, const bool& stack)
 {
    if (force) {
-      throw SyntaxException(
-        L"keyword '" + word.originString + L"' cannot be preceded by a flag 'forced'", line);
+      throw SyntaxException(str(L"keyword '", word.originString, 
+         L"' cannot be preceded by a flag 'forced'"), line);
    }
 
    if (stack) {
-      throw SyntaxException(
-        L"keyword '" + word.originString + L"' cannot be preceded by a flag 'stack'", line);
+      throw SyntaxException(str(L"keyword '", word.originString, 
+         L"' cannot be preceded by a flag 'stack'"), line);
    }
 }
 
 static void commandSyntaxException(const _str& name, const _int& line)
 {
-   throw SyntaxException(L"wrong syntax of command '" + name + L"'", line);
+   throw SyntaxException(str(L"wrong syntax of command '", name, L"'"), line);
 }
 
 static void commandNoArgException(const _str& name, const _int& line)
 {
-   throw SyntaxException(L"command '" + name + L"' requires an argument", line);
+   throw SyntaxException(str(L"command '", name, L"' requires an argument"), line);
 }

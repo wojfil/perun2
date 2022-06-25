@@ -113,7 +113,7 @@ void initVars(const _list& args)
    };
 
    const _str uroPath = os_uroborosPath();
-   g_urocom = os_quoteEmbraced(uroPath) + L" -s ";
+   g_urocom = str(os_quoteEmbraced(uroPath), L" -s ");
    const _str desktopPath = os_desktopPath();
 
    g_svar_str =

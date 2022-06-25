@@ -169,8 +169,8 @@ void checkLimitBySize(const Tokens& tks)
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
       if (tk.type == Token::t_Number && tk.mode == Token::nm_Size) {
-         throw SyntaxException(L"collection cannot be limited by file size '" + tk.originString +
-            L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition",
+         throw SyntaxException(str(L"collection cannot be limited by file size '", tk.originString,
+            L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition"),
             tk.line);
       }
    }

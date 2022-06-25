@@ -753,7 +753,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft)
 {
    const _str side = isLeft ? L"left" : L"right";
 
-   throw SyntaxException(side + L" side of operator '" + oper.originString + L"' is empty",
+   throw SyntaxException(str(side, L" side of operator '", oper.originString, L"' is empty"),
       oper.line);
 }
 
@@ -762,26 +762,26 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
 {
    if (timeMember == L"year") {
       if (negated) {
-         throw SyntaxException(L"instead of '" + timeVar.originString + L" not in " + toStr(numVar.value.n.value.i)
-            + L"', write '" + timeVar.originString + L".year != "
-            + toStr(numVar.value.n.value.i) + L"'", tks.first().line);
+         throw SyntaxException(str(L"instead of '", timeVar.originString, L" not in ", toStr(numVar.value.n.value.i),
+            L"', write '", timeVar.originString, L".year != ",
+            toStr(numVar.value.n.value.i), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(L"instead of '" + timeVar.originString + L" in " + toStr(numVar.value.n.value.i)
-            + L"', write '" + timeVar.originString + L".year = "
-            + toStr(numVar.value.n.value.i) + L"'", tks.first().line);
+         throw SyntaxException(str(L"instead of '", timeVar.originString, L" in ", toStr(numVar.value.n.value.i),
+            L"', write '", timeVar.originString, L".year = ",
+            toStr(numVar.value.n.value.i), L"'"), tks.first().line);
       }
    }
    else {
       if (negated) {
-         throw SyntaxException(L"instead of '" + timeVar.originString + L" not in " + numVar.originString
-            + L"', write '" + timeVar.originString + L"." + timeMember
-            + L" != " + numVar.originString + L"'", tks.first().line);
+         throw SyntaxException(str(L"instead of '", timeVar.originString, L" not in ", numVar.originString,
+            L"', write '", timeVar.originString, L".", timeMember,
+            L" != ", numVar.originString, L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(L"instead of '" + timeVar.originString + L" in " + numVar.originString
-            + L"', write '" + timeVar.originString + L"." + timeMember
-            + L" = " + numVar.originString + L"'", tks.first().line);
+         throw SyntaxException(str(L"instead of '", timeVar.originString, L" in ", numVar.originString,
+            L"', write '", timeVar.originString, L".", timeMember,
+            L" = ", numVar.originString, L"'"), tks.first().line);
       }
    }
 }
@@ -817,9 +817,8 @@ static Generator<_boo>* parseLike(const Tokens& tks)
       const _str& pattern = firstRight.value.sl;
 
       if (!correctLikePattern(pattern)) {
-         throw SyntaxException(L"pattern '" + pattern +
-            L"' is not valid for the 'like' operator",
-            firstRight.line);
+         throw SyntaxException(str(L"pattern '", pattern,
+            L"' is not valid for the 'like' operator"), firstRight.line);
       }
 
       if (neg)
@@ -950,14 +949,14 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign)
       const _str s = _str(1, sign);
 
       if ((isVar1 && (isWeek2 || isMonth2))) {
-         throw SyntaxException(L"instead of '" + v1 + L" " + s + L" " + v2 +
-            L"', write '" + v1 + L"." + (isWeek2 ? L"weekDay" : L"month")
-            + L" " + s + L" " + v2 + L"'", tks.first().line);
+         throw SyntaxException(str(L"instead of '", v1, L" ", s, L" ", v2,
+            L"', write '", v1, L".", (isWeek2 ? L"weekDay" : L"month"),
+            L" ", s, L" ", v2, L"'"), tks.first().line);
       }
       else if (((isWeek1 || isMonth1)) && isVar2) {
-         throw SyntaxException(L"instead of '" + v1 + L" " + s + L" " + v2 +
-            L"', write '" + v1 + L" " + s + L" " + v2 + L"."
-            + (isWeek1 ? L"weekDay" : L"month") + L"'", tks.first().line);
+         throw SyntaxException(str(L"instead of '", v1, L" ", s, L" ", v2,
+            L"', write '", v1, L" ", s, L" ", v2, L".",
+            (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
       }
 
       const _boo isInteger1 = (t1.type == Token::t_Number) && !t1.value.n.isDouble;
@@ -966,23 +965,23 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign)
       if (isVar1 && isInteger2) {
          const _nint& nm = t2.value.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxException(L"instead of '" + v1 + L" " + s + L" " + toStr(nm)
-               + L"', write '" + v1 + L".year " + s + L" " + toStr(nm) + L"'", tks.first().line);
+            throw SyntaxException(str(L"instead of '", v1, L" ", s, L" ", toStr(nm),
+               L"', write '", v1, L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
          }
          else {
-            throw SyntaxException(L"time variable '" + v1 +
-               L"' cannot be compared with a number", tks.first().line);
+            throw SyntaxException(str(L"time variable '", v1,
+               L"' cannot be compared with a number"), tks.first().line);
          }
       }
       else if (isInteger1 && isVar2) {
          const _nint& nm = t1.value.n.value.i;
          if (nm >= 1950LL && nm <= 2100) {
-            throw SyntaxException(L"instead of '" + toStr(nm) + L" " + s + L" " + v2 +
-               L"', write '" + toStr(nm) + L" " + s + L" " + v2 + L".year'", tks.first().line);
+            throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", v2,
+               L"', write '", toStr(nm), L" ", s, L" ", v2, L".year'"), tks.first().line);
          }
          else {
-            throw SyntaxException(L"time variable '" + v2 +
-               L"' cannot be compared with a number", tks.first().line);
+            throw SyntaxException(str(L"time variable '", v2,
+               L"' cannot be compared with a number"), tks.first().line);
          }
       }
    }
@@ -1219,24 +1218,24 @@ static CompType prepareComparison(const Tokens& tks, const _char& sign,
 
    if (left.isEmpty()) {
       if (right.isEmpty()) {
-         throw SyntaxException(L"both sides of " + _str(1, sign)
-            + L" comparison are empty", tks.first().line);
+         throw SyntaxException(str(L"both sides of ", charStr(sign),
+            L" comparison are empty"), tks.first().line);
       }
       else {
-         throw SyntaxException(L"left side of " + _str(1, sign)
-            + L" comparison is empty", tks.first().line);
+         throw SyntaxException(str(L"left side of ", charStr(sign),
+            L" comparison is empty"), tks.first().line);
       }
    }
 
    if (right.isEmpty()) {
-      throw SyntaxException(L"right side of " + _str(1, sign)
-          + L" comparison is empty", tks.last().line);
+      throw SyntaxException(str(L"right side of ", charStr(sign),
+         L" comparison is empty"), tks.last().line);
    }
 
    if (right.first().isSymbol(L'=')) {
       if (right.getLength() == 1) {
-         throw SyntaxException(L"right side of " + _str(1, sign)
-            + L"= comparison is empty", right.first().line);
+         throw SyntaxException(str(L"right side of ", charStr(sign),
+            L"= comparison is empty"), right.first().line);
       }
 
       right.trimLeft();

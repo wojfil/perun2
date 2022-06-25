@@ -47,8 +47,8 @@ Generator<_num>* parseNumber(const Tokens& tks)
 
             Generator<_tim>* var;
             if (!getVarValue(f, var)) {
-               throw SyntaxException(L"time variable from expression '" + f.originString +
-                  L"' does not exist or is unreachable here", f.line);
+               throw SyntaxException(str(L"time variable from expression '", f.originString,
+                  L"' does not exist or is unreachable here"), f.line);
             }
 
             const _size& h = f.value.h2;
@@ -714,5 +714,6 @@ static _boo isNumExpHighPriority(const _char& ch)
 
 void timeVariableMemberException(const Token& tk)
 {
-   throw SyntaxException(L"'" + tk.originString2 + L"' is not a time variable member", tk.line);
+   throw SyntaxException(str(L"'", tk.originString2, 
+      L"' is not a time variable member"), tk.line);
 }

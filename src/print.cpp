@@ -13,28 +13,28 @@
 */
 
 #include "print.h"
-#include <iostream>
-#include "uroboros.h"
 #include "os.h"
-#define GUIMES_LIMIT 219
-#define GUIMES_TIME 40
 
 _int g_guiMes;
 
 void commandLog(const _str& value)
 {
    if (!(g_flags & FLAG_SILENT)) {
-      print(value);
+      std::wcout << value << L"\n";
+      if (g_flags & FLAG_GUI) {
+         g_guiMes++;
+         if (g_guiMes == GUIMES_LIMIT) {
+            g_guiMes = 0;
+            Sleep(GUIMES_TIME);
+         }
+      }
    }
 }
 
 void print(const _str& value)
 {
-   std::wcout << value << std::endl;
+   std::wcout << value << L"\n";
    if (g_flags & FLAG_GUI) {
-      // this is ugly solution for a GUI unsolvable bug in Windows
-      // (user interaction sometimes gets frozen while runtime)
-      // delete this if the bug is solved properly
       g_guiMes++;
       if (g_guiMes == GUIMES_LIMIT) {
          g_guiMes = 0;

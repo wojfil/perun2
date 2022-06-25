@@ -181,8 +181,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
 
    const Token& first = tks.first();
    if (first.type != Token::t_Word) {
-      throw SyntaxException(L"filter keyword '" + tks.second().originString
-         + L"' should be preceded by a variable name" , first.line);
+      throw SyntaxException(str(L"filter keyword '", tks.second().originString,
+         L"' should be preceded by a variable name") , first.line);
    }
 
    const _int start = tks.getStart() + 2;
@@ -215,8 +215,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
             Generator<_num>* num;
             if (!parse(ts2, num)) {
                delete result;
-               throw SyntaxException(L"tokens after keyword '" + ts.first().originString
-                  + L"' cannot be resolved to a number", tks.first().line);
+               throw SyntaxException(str(L"tokens after keyword '", ts.first().originString,
+                  L"' cannot be resolved to a number"), tks.first().line);
             }
 
             setNumericFilter(kw, num, result);
@@ -236,8 +236,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
             if (!parse(ts2, boo)) {
                delete result;
                g_thisstate = prevThisState;
-               throw SyntaxException(L"tokens after keyword '" + ts.first().originString
-                  + L"' cannot be resolved to a logic condition", tks.first().line);
+               throw SyntaxException(str(L"tokens after keyword '", ts.first().originString,
+                  L"' cannot be resolved to a logic condition"), tks.first().line);
             }
 
             setWhereFilter(boo, attr, hasMemory, result);
@@ -298,22 +298,22 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
 
             if (!first.isKeyword(Keyword::kw_By)) {
                delete result;
-               throw SyntaxException(L"keyword '" + ts.first().originString
-                  + L"' should to be followed by a keyword 'by'", first.line);
+               throw SyntaxException(str(L"keyword '", ts.first().originString,
+                  L"' should to be followed by a keyword 'by'"), first.line);
             }
 
             ts2.trimLeft();
             if (ts2.isEmpty()) {
                delete result;
-               throw SyntaxException(L"declaration of '" + ts.first().originString
-                  + L" " + first.originString + L"' filter is empty", first.line);
+               throw SyntaxException(str(L"declaration of '", ts.first().originString,
+                  L" ", first.originString, L"' filter is empty"), first.line);
             }
 
             Tokens ts3 = prepareForGen(ts2);
             if (ts3.isEmpty()) {
                delete result;
-               throw SyntaxException(L"declaration of '" + ts.first().originString
-                  + L" " + first.originString + L"' filter is empty", first.line);
+               throw SyntaxException(str(L"declaration of '", ts.first().originString,
+                  L" ", first.originString, L"' filter is empty"), first.line);
             }
 
             std::vector<Tokens> units;
@@ -334,8 +334,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
                         un.trimRight();
                         if (un.isEmpty()) {
                            delete order;
-                           throw SyntaxException(L"keyword '" + last.originString
-                              + L"' is not preceded by a value declaration", last.line);
+                           throw SyntaxException(str(L"keyword '", last.originString,
+                              L"' is not preceded by a value declaration"), last.line);
                         }
                         break;
                      }
@@ -344,8 +344,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
                         desc = true;
                         if (un.isEmpty()) {
                            delete order;
-                           throw SyntaxException(L"keyword '" + last.originString
-                              + L"' is not preceded by a value declaration", last.line);
+                           throw SyntaxException(str(L"keyword '", last.originString,
+                              L"' is not preceded by a value declaration"), last.line);
                         }
                         break;
                      }
@@ -382,8 +382,9 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
                }
                else {
                   delete order;
-                  throw SyntaxException(L"value of '" + ts.first().originString + L" by' unit "
-                    L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas", un.first().line);
+                  throw SyntaxException(str(L"value of '", ts.first().originString, L" by' unit "
+                    L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas"), 
+                    un.first().line);
                }
             }
 

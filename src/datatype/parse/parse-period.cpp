@@ -181,8 +181,8 @@ static Generator<_per>* parsePeriodUnit(const Tokens& tks)
 
 static void unitNameException(const _str& name, const Tokens& tks)
 {
-   throw SyntaxException(L"missing letter 's' at the end of the word '"
-       + name + L"'", tks.last().line);
+   throw SyntaxException(str(L"missing letter 's' at the end of the word '",
+      name, L"'"), tks.last().line);
 }
 
 static Generator<_per>* parsePeriodExp(const Tokens& tks)

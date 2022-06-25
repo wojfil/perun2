@@ -99,7 +99,7 @@ void C_Error::run()
 void C_ErrorWithExitCode::run()
 {
    g_running = false;
-   const int code = (int)(exitCode->getValue().toInt());
+   const _int code = (_int)(exitCode->getValue().toInt());
    g_exitCode = code == EXITCODE_OK ? EXITCODE_RUNTIME_ERROR : code;
 }
 
@@ -118,10 +118,10 @@ void C_Run::run()
    g_success.value = s;
 
    if (s) {
-      commandLog(L"Run '" + command + L"'");
+      commandLog(L"Run '", command, L"'");
    }
    else {
-      commandLog(L"Failed to run '" + command + L"'");
+      commandLog(L"Failed to run '", command, L"'");
    }
 
    if (hasAttribute) {
@@ -135,20 +135,20 @@ void C_RunWith::run()
    os_rawTrim(base);
 
    if (!g_exists.value || base.empty()) {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with '", base, L"'");
       g_success.value = false;
       return;
    }
 
-   const _str com = base + L" " + os_quoteEmbraced(g_trimmed);
+   const _str com = str(base, L" ", os_quoteEmbraced(g_trimmed));
    const _boo s = os_run(com);
    g_success.value = s;
 
    if (s) {
-      commandLog(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Run ", getCCName(g_trimmed), L" with '", base, L"'");
    }
    else {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with '", base, L"'");
    }
 
    if (hasAttribute) {
@@ -162,23 +162,23 @@ void C_RunWithWithString::run()
    os_rawTrim(base);
 
    if (!g_exists.value || base.empty()) {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with '", base, L"'");
       g_success.value = false;
       return;
    }
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = base + L" " + os_quoteEmbraced(g_trimmed) + L" " + arg;
+   const _str com = str(base, L" ", os_quoteEmbraced(g_trimmed), L" ", arg);
 
    const _boo s = os_run(com);
    g_success.value = s;
 
    if (s) {
-      commandLog(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"' with '" + rawArg + L"'");
+      commandLog(L"Run ", getCCName(g_trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
    else {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"' with '" + rawArg + L"'");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
 
    if (hasAttribute) {
@@ -192,7 +192,7 @@ void C_RunWithWith::run()
    os_rawTrim(base);
 
    if (!g_exists.value || base.empty()) {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with '", base, L"'");
       g_success.value = false;
       return;
    }
@@ -201,28 +201,28 @@ void C_RunWithWith::run()
    const _size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = base + L" " + os_quoteEmbraced(g_trimmed);
+      const _str com = str(base, L" ", os_quoteEmbraced(g_trimmed));
       const _boo s = os_run(com);
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+         commandLog(L"Run ", getCCName(g_trimmed), L" with '", base, L"'");
       }
       else {
-         commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with '" + base + L"'");
+         commandLog(L"Failed to run ", getCCName(g_trimmed), L" with '", base, L"'");
       }
    }
    else {
       std::wstringstream comStream;
       std::wstringstream logStream;
       const _str& first = rawArgs[0];
-      logStream << getCCName(g_trimmed) + L" with '" + base + L"' with '" + first + L"'";
-      comStream << base + L" " + os_quoteEmbraced(g_trimmed) + L" " + os_makeArg(first);
+      logStream << str(getCCName(g_trimmed), L" with '", base, L"' with '", first, L"'");
+      comStream << str(base, L" ", os_quoteEmbraced(g_trimmed), L" ", os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];
-         logStream << L", '" + a + L"'";
-         comStream << L" " + os_makeArg(a);
+         logStream << str(L", '", a, L"'");
+         comStream << str(L" ", os_makeArg(a));
       }
 
       const _str com = comStream.str();
@@ -230,10 +230,10 @@ void C_RunWithWith::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Run " + logStream.str());
+         commandLog(L"Run ", logStream.str());
       }
       else {
-         commandLog(L"Failed to run " + logStream.str());
+         commandLog(L"Failed to run ", logStream.str());
       }
    }
 
@@ -245,20 +245,20 @@ void C_RunWithWith::run()
 void C_RunWithUroboros::run()
 {
    if (!g_exists.value) {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with Uroboros");
       g_success.value = false;
       return;
    }
 
-   const _str com = g_urocom + os_quoteEmbraced(g_trimmed);
+   const _str com = str(g_urocom, os_quoteEmbraced(g_trimmed));
    const _boo s = os_run(com);
    g_success.value = s;
 
    if (s) {
-      commandLog(L"Run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Run ", getCCName(g_trimmed), L" with Uroboros");
    }
    else {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with Uroboros");
    }
 
    if (hasAttribute) {
@@ -269,23 +269,23 @@ void C_RunWithUroboros::run()
 void C_RunWithUroborosWithString::run()
 {
    if (!g_exists.value) {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with Uroboros");
       g_success.value = false;
       return;
    }
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = g_urocom + os_quoteEmbraced(g_trimmed) + L" " + arg;
+   const _str com = str(g_urocom, os_quoteEmbraced(g_trimmed), L" ", arg);
 
    const _boo s = os_run(com);
    g_success.value = s;
 
    if (s) {
-      commandLog(L"Run " + getCCName(g_trimmed) + L" with Uroboros with '" + rawArg + L"'");
+      commandLog(L"Run ", getCCName(g_trimmed), L" with Uroboros with '", rawArg, L"'");
    }
    else {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros with '" + rawArg + L"'");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with Uroboros with '", rawArg, L"'");
    }
 
    if (hasAttribute) {
@@ -296,7 +296,7 @@ void C_RunWithUroborosWithString::run()
 void C_RunWithUroborosWith::run()
 {
    if (!g_exists.value) {
-      commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+      commandLog(L"Failed to run ", getCCName(g_trimmed), L" with Uroboros");
       g_success.value = false;
       return;
    }
@@ -305,28 +305,28 @@ void C_RunWithUroborosWith::run()
    const _size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = g_urocom + os_quoteEmbraced(g_trimmed);
+      const _str com = str(g_urocom, os_quoteEmbraced(g_trimmed));
       const _boo s = os_run(com);
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Run " + getCCName(g_trimmed) + L" with Uroboros");
+         commandLog(L"Run ", getCCName(g_trimmed), L" with Uroboros");
       }
       else {
-         commandLog(L"Failed to run " + getCCName(g_trimmed) + L" with Uroboros");
+         commandLog(L"Failed to run ", getCCName(g_trimmed), L" with Uroboros");
       }
    }
    else {
       std::wstringstream comStream;
       std::wstringstream logStream;
       const _str& first = rawArgs[0];
-      logStream << getCCName(g_trimmed) + L" with Uroboros with '" + first + L"'";
-      comStream << g_urocom + os_quoteEmbraced(g_trimmed) + L" " + os_makeArg(first);
+      logStream << str(getCCName(g_trimmed), L" with Uroboros with '", first, L"'");
+      comStream << str(g_urocom, os_quoteEmbraced(g_trimmed), L" ", os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];
-         logStream << L", '" + a + L"'";
-         comStream << L" " + os_makeArg(a);
+         logStream << str(L", '", a, L"'");
+         comStream << str(L" ", os_makeArg(a));
       }
 
       const _str com = comStream.str();
@@ -334,10 +334,10 @@ void C_RunWithUroborosWith::run()
       g_success.value = s;
 
       if (s) {
-         commandLog(L"Run " + logStream.str());
+         commandLog(L"Run ", logStream.str());
       }
       else {
-         commandLog(L"Failed to run " + logStream.str());
+         commandLog(L"Failed to run ", logStream.str());
       }
    }
 
@@ -362,9 +362,9 @@ void C_Process::run()
    g_success.value = s;
 
    if (s) {
-      commandLog(L"Start process '" + process + L"'");
+      commandLog(L"Start process '", process, L"'");
    }
    else {
-      commandLog(L"Failed to start process '" + process + L"'");
+      commandLog(L"Failed to start process '", process, L"'");
    }
 }

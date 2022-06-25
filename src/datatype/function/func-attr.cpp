@@ -28,7 +28,7 @@ _str AttrFunction::getPath()
 {
    const _str b = os_trim(value->getValue());
 
-   if (b.empty() || os_isInvaild(b)) {
+   if (os_isInvaild(b)) {
       return L"";
    }
 

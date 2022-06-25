@@ -47,7 +47,7 @@ _boo ElementsAtLocation::hasNext()
    if (first) {
       _str path = os_trim(location->getValue());
       if (os_directoryExists(path)) {
-         path = path + OS_SEPARATOR_ASTERISK;
+         path = str(path, OS_SEPARATOR_ASTERISK);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -197,7 +197,7 @@ _boo RecursiveFiles::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = paths.back() + OS_SEPARATOR_ASTERISK;
+            const _str p = str(paths.back(), OS_SEPARATOR_ASTERISK);
             handles.push_back(FindFirstFile(p.c_str(), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
@@ -242,13 +242,13 @@ _boo RecursiveFiles::hasNext()
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
                   if ((g_flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
-                     paths.push_back(paths.back() + OS_SEPARATOR_STRING + v);
+                     paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                      if (g_depth.value.isZero()) {
-                        bases.push_back(v + OS_SEPARATOR_STRING);
+                        bases.push_back(str(v, OS_SEPARATOR_STRING));
                      }
                      else {
-                        bases.push_back(bases.back() + v + OS_SEPARATOR_STRING);
+                        bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
                      }
 
                      goDeeper = true;
@@ -257,7 +257,7 @@ _boo RecursiveFiles::hasNext()
                }
                else {
                   if ((g_flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
-                     value = g_depth.value.isZero() ? v : (bases.back() + v);
+                     value = g_depth.value.isZero() ? v : str(bases.back(), v);
                      g_index.value = index;
                      index++;
                      g_this_s.value = value;
@@ -332,7 +332,7 @@ _boo RecursiveDirectories::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = paths.back() + OS_SEPARATOR_ASTERISK;
+            const _str p = str(paths.back(), OS_SEPARATOR_ASTERISK);
 
             handles.push_back(FindFirstFile(p.c_str(), &data));
             if (handles.back() == INVALID_HANDLE_VALUE)
@@ -366,14 +366,14 @@ _boo RecursiveDirectories::hasNext()
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 && ((g_flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
             {
-               value = g_depth.value.isMinusOne() ? v : (bases.back() + v);
-               paths.push_back(paths.back() + OS_SEPARATOR_STRING + v);
+               value = g_depth.value.isMinusOne() ? v : str(bases.back(), v);
+               paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                if (g_depth.value.isMinusOne()) {
-                  bases.push_back(v + OS_SEPARATOR_STRING);
+                  bases.push_back(str(v, OS_SEPARATOR_STRING));
                }
                else {
-                  bases.push_back(bases.back() + v + OS_SEPARATOR_STRING);
+                  bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
                }
 
                goDeeper = true;

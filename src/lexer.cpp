@@ -170,12 +170,12 @@ std::vector<Token> tokenize(const _str& code)
    return tokens;
 }
 
-static Token wordToken(_str& str, _int& line)
+static Token wordToken(_str& value, _int& line)
 {
    _int dots = 0;
    _boo nums = true;
 
-   for (const _char &c : str) {
+   for (const _char &c : value) {
       if (!std::iswdigit(c)) {
          if (c == L'.') {
             dots++;
@@ -190,36 +190,35 @@ static Token wordToken(_str& str, _int& line)
       switch (dots) {
          case 0: {
             try {
-               return Token(_num(std::stoll(str)), line);
+               return Token(_num(std::stoll(value)), line);
             }
             catch (...) {
-               bigNumberException(str, line);
+               bigNumberException(value, line);
             }
          }
          case 1: {
             try {
-               return Token(_num(stringToDouble(str)), line);
+               return Token(_num(stringToDouble(value)), line);
             }
             catch (...) {
-               bigNumberException(str, line);
+               bigNumberException(value, line);
             }
          }
          default: {
-            throw SyntaxException(L"number '" + str
-               + L"' contains multiple dots", line);
+            throw SyntaxException(str(L"number '", value, L"' contains multiple dots"), line);
          }
       }
    }
 
-   _int len = str.length();
+   _int len = value.length();
    if (len > 2 && dots <= 1) {
-      _char c1 = str.at(len - 2);
-      _char c2 = str.back();
+      _char c1 = value.at(len - 2);
+      _char c2 = value.back();
       nums = true;
       const _int n = len - 2;
 
       for (_int i = 0; i < n; i++) {
-         _char c = str[i];
+         _char c = value[i];
          if (!std::iswdigit(c) && c != L'.') {
             nums = false;
             break;
@@ -229,32 +228,32 @@ static Token wordToken(_str& str, _int& line)
       if (nums) {
          _nint mult = getSuffixMultiplier(c1, c2);
          if (mult != -1) {
-            _str str2 = str.substr(0, len - 2);
+            _str value2 = value.substr(0, len - 2);
             if (dots == 0) {
                try {
                   // check for number overflow
                   // the number is multiplied by the suffix
                   // and then divided back
-                  _nint i = std::stoll(str2);
+                  _nint i = std::stoll(value2);
                   _nint i2 = i * mult;
                   if (mult != 0 && i2 / mult != i) {
-                     bigNumberException(str, line);
+                     bigNumberException(value, line);
                   }
-                  return Token(_num(i2), line, str, Token::nm_Size);
+                  return Token(_num(i2), line, value, Token::nm_Size);
                }
                catch (...) {
-                  bigNumberException(str, line);
+                  bigNumberException(value, line);
                }
             }
             else {
                try {
-                  _ndouble d = stringToDouble(str2);
+                  _ndouble d = stringToDouble(value2);
                   d *= mult;
 
-                  return Token(_num(d), line, str, Token::nm_Size);
+                  return Token(_num(d), line, value, Token::nm_Size);
                }
                catch (...) {
-                  bigNumberException(str, line);
+                  bigNumberException(value, line);
                }
             }
          }
@@ -263,67 +262,67 @@ static Token wordToken(_str& str, _int& line)
 
    switch (dots) {
       case 0: {
-         _str lower = str;
+         _str lower = value;
          toLower(lower);
          const _size hsh = rawStringHash(lower);
 
          auto fm = HASH_MAP_MONTHS.find(hsh);
          if (fm != HASH_MAP_MONTHS.end()) {
-            return Token(_num(fm->second), line, str, Token::nm_Month);
+            return Token(_num(fm->second), line, value, Token::nm_Month);
          }
 
          auto fw = HASH_MAP_WEEKDAYS.find(hsh);
          if (fw != HASH_MAP_WEEKDAYS.end()) {
-            return Token(_num(fw->second), line, str, Token::nm_WeekDay);
+            return Token(_num(fw->second), line, value, Token::nm_WeekDay);
          }
 
          auto fk = KEYWORDS.find(lower);
          if (fk == KEYWORDS.end()) {
-            return Token(hsh, line, str);
+            return Token(hsh, line, value);
          }
          else {
-            return Token(fk->second, line, str);
+            return Token(fk->second, line, value);
          }
       }
       case 1: {
          _int pnt = 0;
          for (_int i = 0; i < len; i++) {
-            const _char& c = str[i];
+            const _char& c = value[i];
             if (c == L'.') {
                pnt = i;
             }
          }
 
          if (pnt == len - 1) {
-            throw SyntaxException(L"a time variable member was expected after '" + str + L"'", line);
+            throw SyntaxException(str(L"a time variable member was expected after '", value, L"'"), line);
          }
 
-         const _str os1 = str.substr(0, pnt);
-         const _str os2 = str.substr(pnt + 1);
+         const _str os1 = value.substr(0, pnt);
+         const _str os2 = value.substr(pnt + 1);
          const _size h1 = stringHash(os1);
          const _size h2 = stringHash(os2);
 
          return Token(h1, h2, line, os1, os2);
       }
       default: {
-         throw SyntaxException(L"word '" + str + L"' cannot contain multiple dots", line);
+         throw SyntaxException(str(L"word '", value, L"' cannot contain multiple dots"), line);
       }
    }
 
-   return Token(str, line);
+   return Token(value, line);
 }
 
-inline _ndouble stringToDouble(const _str& str)
+inline _ndouble stringToDouble(const _str& value)
 {
-   std::wstringstream ss(str);
+   std::wstringstream ss(value);
    _ndouble n;
    ss >> n;
    return n;
 }
 
-inline void bigNumberException(const _str& str, const _int& line)
+inline void bigNumberException(const _str& value, const _int& line)
 {
-   throw SyntaxException(L"number '" + str + L"' is too big to be stored in the memory", line);
+   throw SyntaxException(str(L"number '", value, L"' is too big to be stored in the memory"), line);
 }
 
 _nint getSuffixMultiplier(const _char& c1, const _char& c2)
@@ -410,7 +409,7 @@ void invalidCharException(const _char& ch, const _int& line)
          throw SyntaxException(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
       }
       default: {
-         throw SyntaxException(L"character '" + _str(1, ch) + L"' is not allowed in Uroboros", line);
+         throw SyntaxException(str(L"character '", charStr(ch), L"' is not allowed in Uroboros"), line);
       }
    }
 }

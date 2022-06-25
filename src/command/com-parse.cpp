@@ -127,8 +127,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    if (leftLast.isKeyword(Keyword::kw_Times)) {
       left.trimRight();
       if (left.isEmpty()) {
-         throw SyntaxException(L"keyword '"+ leftLast.originString + L"' is not preceded by a number",
-            leftLast.line);
+         throw SyntaxException(str(L"keyword '", leftLast.originString, 
+            L"' is not preceded by a number"), leftLast.line);
       }
 
       if (rightLen == 0) {
@@ -137,9 +137,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       Generator<_num>* num;
       if (!parse(left, num)) {
-         throw SyntaxException(
-            L"keyword '" + leftLast.originString + L"' is not preceded by a valid number",
-            leftLast.line);
+         throw SyntaxException(str(L"keyword '", leftLast.originString, 
+            L"' is not preceded by a valid number"), leftLast.line);
       }
 
       Tokens right(tks.list, rightStart, rightLen);
@@ -163,19 +162,19 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    if (leftFirst.isKeyword(Keyword::kw_While)) {
       left.trimLeft();
       if (left.isEmpty()) {
-         throw SyntaxException(L"keyword '" + leftFirst.originString + L"' is not followed by a condition",
-            leftFirst.line);
+         throw SyntaxException(str(L"keyword '", leftFirst.originString, 
+            L"' is not followed by a condition"), leftFirst.line);
       }
 
       if (rightLen == 0) {
-         throw SyntaxException(L"structure '" + leftFirst.originString + L"' is empty. It would either never run or cause an infinite loop", leftFirst.line);
+         throw SyntaxException(str(L"structure '", leftFirst.originString, 
+            L"' is empty. It would either never run or cause an infinite loop"), leftFirst.line);
       }
 
       Generator<_boo>* boo;
       if (parse(left, boo)) {
-         throw SyntaxException(
-            L"keyword '" + leftFirst.originString + L"' is not followed by a valid condition",
-            leftFirst.line);
+         throw SyntaxException(str(L"keyword '", leftFirst.originString, 
+            L"' is not followed by a valid condition"), leftFirst.line);
       }
 
       Tokens right(tks.list, rightStart, rightLen);
@@ -198,11 +197,11 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    if (leftFirst.isKeyword(Keyword::kw_Inside)) {
       left.trimLeft();
       if (left.isEmpty() && g_thisstate != ThisState::ts_String) {
-         throw SyntaxException(L"argumentless structure '" + leftFirst.originString + L"' can be created only inside a loop iterating over strings", leftFirst.line);
+         throw SyntaxException(str(L"argumentless structure '", leftFirst.originString, 
+            L"' can be created only inside a loop iterating over strings"), leftFirst.line);
       }
 
       if (rightLen == 0) {
-         //throw SyntaxException(L"structure '" + leftFirst.originString + L"' is empty", leftFirst.line);
          return nullptr;
       }
 
@@ -229,9 +228,9 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return new CS_InsideString(tr, com, attr, aggr, hasMemory);
       }
 
-      Generator<_str>* str;
-      if (parse(left, str)) {
-         return new CS_InsideString(str, com, attr, aggr, hasMemory);
+      Generator<_str>* str_;
+      if (parse(left, str_)) {
+         return new CS_InsideString(str_, com, attr, aggr, hasMemory);
       }
 
       _def* def;
@@ -246,9 +245,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       Generator<_list>* list;
       if (parse(left, list)) {
-         throw SyntaxException(L"keyword '" + leftFirst.originString + L"' is not followed by a valid "
-            L"declaration of string or list",
-            leftFirst.line);
+         throw SyntaxException(str(L"keyword '", leftFirst.originString, L"' is not followed by a valid "
+            L"declaration of string or list"), leftFirst.line);
       }
       else {
          return new CS_InsideList(list, com, attr, aggr, hasMemory);
@@ -259,14 +257,13 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    if (leftFirst.isKeyword(Keyword::kw_If)) {
       left.trimLeft();
       if (left.isEmpty()) {
-         throw SyntaxException(L"keyword '" + leftFirst.originString + L"' is not followed by a condition",
+         throw SyntaxException(str(L"keyword '", leftFirst.originString, L"' is not followed by a condition"),
             leftFirst.line);
       }
 
       Generator<_boo>* boo;
       if (parse(left, boo)) {
-         throw SyntaxException(
-            L"keyword '" + leftFirst.originString + L"' is not followed by a valid condition",
+         throw SyntaxException(str(L"keyword '", leftFirst.originString, L"' is not followed by a valid condition"),
             leftFirst.line);
       }
 
@@ -313,24 +310,21 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
       else {
          if (!left.first().isKeyword(Keyword::kw_If)) {
-            throw SyntaxException(
-               L"keyword '" + leftFirst.originString + L"' cannot be followed by an expression",
-               leftFirst.line);
+            throw SyntaxException(str(L"keyword '", leftFirst.originString, 
+               L"' cannot be followed by an expression"), leftFirst.line);
          }
          const Token& ifToken = left.first();
          left.trimLeft();
 
          if (left.isEmpty()) {
-            throw SyntaxException(
-               L"keywords '" + leftFirst.originString + L" " + ifToken.originString + L"' are not followed by a condition",
-               leftFirst.line);
+            throw SyntaxException(str(L"keywords '", leftFirst.originString, L" ", 
+               ifToken.originString, L"' are not followed by a condition"), leftFirst.line);
          }
 
          Generator<_boo>* boo;
          if (parse(left, boo)) {
-            throw SyntaxException(
-            L"keywords '" + leftFirst.originString + L" " + ifToken.originString + L"' are not followed by a valid condition",
-               leftFirst.line);
+            throw SyntaxException(str(L"keywords '", leftFirst.originString, L" ", ifToken.originString, 
+               L"' are not followed by a valid condition"), leftFirst.line);
          }
 
          if (rightLen == 0) {
@@ -462,7 +456,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          : new CS_ListLoop(lst, com, attr, aggr, hasMemory);
    }
 
-   throw SyntaxException(L"wrong syntax before { bracket", tks.first().line);
+   throw SyntaxException(L"tokens before { bracket do not form and valid sytax structure", tks.first().line);
 }
 
 static void beforeCommandStruct(CS_If* pntr)
@@ -486,8 +480,8 @@ static Command* command(Tokens& tks)
          case Keyword::kw_Break:
          case Keyword::kw_Continue: {
             if (g_aggrs.empty()) {
-               throw SyntaxException(L"command '" + f.originString
-                  + L"' can be called only inside a loop", f.line);
+               throw SyntaxException(str(L"command '", f.originString,
+                  L"' can be called only inside a loop"), f.line);
             }
             else {
                if (f.value.k == Keyword::kw_Break) {
@@ -516,8 +510,8 @@ static Command* command(Tokens& tks)
             force = true;
 
             if (tks.isEmpty()) {
-               throw SyntaxException(L"command cannot consist of only one keyword: '"
-                  + f2.originString + L"'", f.line);
+               throw SyntaxException(str(L"command cannot consist of only one keyword: '",
+                  f2.originString,L"'"), f.line);
             }
             break;
          }
@@ -526,8 +520,8 @@ static Command* command(Tokens& tks)
             stack = true;
 
             if (tks.isEmpty()) {
-               throw SyntaxException(L"command cannot consist of only one keyword: '"
-                  + f2.originString + L"'", f.line);
+               throw SyntaxException(str(L"command cannot consist of only one keyword: '",
+                  f2.originString,L"'"), f.line);
             }
             break;
          }
@@ -550,12 +544,10 @@ static Command* command(Tokens& tks)
    }
 
    if (force) {
-      throw SyntaxException(
-         L"only a core command can start with a keyword 'force'", f.line);
+      throw SyntaxException(L"only a core command can start with a keyword 'force'", f.line);
    }
    if (stack) {
-      throw SyntaxException(
-         L"only a core command can start with a keyword 'stack'", f.line);
+      throw SyntaxException(L"only a core command can start with a keyword 'stack'", f.line);
    }
 
    Command* misc = commandMisc(tks);
@@ -607,8 +599,8 @@ static Command* commandMisc(const Tokens& tks)
             case L'%': {
                left.trimRight();
                if (left.isEmpty()) {
-                  throw SyntaxException(L"left side of the " + _str(1, ch)
-                     + L"= operator is empty", tks.last().line);
+                  throw SyntaxException(str(L"left side of the ", charStr(ch),
+                     L"= operator is empty"), tks.last().line);
                }
 
                return commandVarChange(left, right, ch);
@@ -643,8 +635,8 @@ static Command* commandMisc(const Tokens& tks)
                ParseVariable<_num>* pv_num;
 
                if (!getVarPtr(first, pv_num)) {
-                  throw SyntaxException(L"variable '" + first.originString +
-                     L"' cannot be " + op, first.line);
+                  throw SyntaxException(str(L"variable '", first.originString,
+                     L"' cannot be ", op), first.line);
                }
 
                if (isIncrement) {
@@ -664,16 +656,16 @@ static Command* commandMisc(const Tokens& tks)
                   ParseVariable<_nlist>* pv_nlist;
 
                   if (!getVarPtr(first, pv_nlist)) {
-                     throw SyntaxException(L"variable '" + first.originString +
-                        L"' cannot be " + op, first.line);
+                     throw SyntaxException(str(L"variable '", first.originString,
+                        L"' cannot be ", op), first.line);
                   }
 
-                  throw SyntaxException(L"an element of variable '" + first.originString +
-                     L"' cannot be " + op + L", because collections in Uroboros are immutable",
+                  throw SyntaxException(str(L"an element of variable '", first.originString,
+                     L"' cannot be ", op, L", because collections in Uroboros are immutable"),
                      first.line);
                }
                else {
-                  throw SyntaxException(L"this structure cannot be " + op, first.line);
+                  throw SyntaxException(str(L"this structure cannot be ", op), first.line);
                }
             }
          }
@@ -685,8 +677,8 @@ static Command* commandMisc(const Tokens& tks)
             ParseVariable<_tim>* pv_tim;
 
             if (!getVarPtr(first, pv_tim)) {
-               throw SyntaxException(L"time variable from expression '" + first.originString
-                  + L"' does not exist or is unreachable here", first.line);
+               throw SyntaxException(str(L"time variable from expression '", first.originString,
+                  L"' does not exist or is unreachable here"), first.line);
             }
 
             const _size& h = first.value.h2;
@@ -705,7 +697,8 @@ static Command* commandMisc(const Tokens& tks)
             else if (h == HASH_PER_SECOND || h == HASH_PER_SECONDS)
                unit = Period::u_Seconds;
             else if (h == HASH_PER_DATE || h == HASH_PER_WEEKDAY) {
-               throw SyntaxException(L"time variable member '" + first.originString2 + L"' cannot be " + op, first.line);
+               throw SyntaxException(str(L"time variable member '", first.originString2, 
+                  L"' cannot be ", op), first.line);
             }
             else {
                timeVariableMemberException(first);
@@ -719,7 +712,7 @@ static Command* commandMisc(const Tokens& tks)
             }
          }
          else {
-            throw SyntaxException(L"only a variable of a singular value type can be " + op, first.line);
+            throw SyntaxException(str(L"only a variable of a singular data type can be ", op), first.line);
          }
       }
    }
@@ -739,18 +732,19 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          ParseVariable<_tlist>* pv_tlist;
 
          if (getVarPtr(first, pv_list) || getVarPtr(first, pv_nlist) || getVarPtr(first, pv_tlist)) {
-            throw SyntaxException(L"collection variable '" + first.originString +
-               L"' is immutable, so its elements cannot be modified", right.first().line);
+            throw SyntaxException(str(L"collection variable '", first.originString,
+               L"' is immutable, so its elements cannot be modified"), right.first().line);
          }
 
          ParseVariable<_str>* pv_str;
 
          if (getVarPtr(first, pv_str)) {
-            throw SyntaxException(L"operation " + _str(1, sign)
-               + L"= cannot be performed on a character from string variable", first.line);
+            throw SyntaxException(str(L"operation ", charStr(sign),
+               L"= cannot be performed on a character from string variable"), first.line);
          }
 
-         throw SyntaxException(first.originString + L" is not a collection variable, which are expected before [] brackets", first.line);
+         throw SyntaxException(str(first.originString, 
+            L" is not a collection variable, which are expected before [] brackets"), first.line);
       }
       else {
          const Token& arom = left.last();
@@ -762,14 +756,14 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             if (varSquareBrackets(aro)) {
                ParseVariable<_tlist>* pv_tlist;
                if (getVarPtr(first, pv_tlist)) {
-                  throw SyntaxException(L"operation " + _str(1, sign)
-                     + L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable", first.line);
+                  throw SyntaxException(str(L"operation ", charStr(sign),
+                     L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable"), first.line);
                }
             }
          }
 
-         throw SyntaxException(L"operator " + _str(1, sign) +
-            L"= should be preceded by a variable name", first.line);
+         throw SyntaxException(str(L"operator ", charStr(sign),
+            L"= should be preceded by a variable name"), first.line);
       }
    }
 
@@ -779,8 +773,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          Generator<_num>* num;
 
          if (!parse(right, num)) {
-            throw SyntaxException(L"right side of operator " + _str(1, sign)
-               + L"= cannot be resolved to a number", first.line);
+            throw SyntaxException(str(L"right side of operator ", charStr(sign),
+               L"= cannot be resolved to a number"), first.line);
          }
 
          Variable<_num>* var = pv_num->getVarPtr();
@@ -809,8 +803,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                Generator<_per>* per;
 
                if (!parse(right, per)) {
-                  throw SyntaxException(L"right side of operator " + _str(1, sign)
-                     + L"= cannot be resolved to a period", first.line);
+                  throw SyntaxException(str(L"right side of operator ", charStr(sign),
+                     L"= cannot be resolved to a period"), first.line);
                }
 
                if (sign == L'+')
@@ -821,8 +815,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             case L'*':
             case L'/':
             case L'%': {
-               throw SyntaxException(L"operation " + _str(1, sign) +
-                  L"= cannot be performed on a period", first.line);
+               throw SyntaxException(str(L"operation ",  charStr(sign),
+                  L"= cannot be performed on a period"), first.line);
             }
          }
       }
@@ -833,8 +827,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             case L'*':
             case L'/':
             case L'%': {
-               throw SyntaxException(L"operation " + _str(1, sign) +
-                  L"= is not valid for a time variable", first.line);
+               throw SyntaxException(str(L"operation ", charStr(sign),
+                  L"= is not valid for a time variable"), first.line);
             }
          }
 
@@ -842,8 +836,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          Generator<_per>* per;
 
          if (!parse(right, per)) {
-            throw SyntaxException(L"right side of operator '" + first.originString + L" " +
-               _str(1, sign) + L"=' cannot be resolved to a period", first.line);
+            throw SyntaxException(str(L"right side of operator '", first.originString, L" ",
+               charStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
 
          if (sign == L'+') {
@@ -858,34 +852,32 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          return commandVarIncrement(first, right, first.line);
       }
 
-      throw SyntaxException(L"'" + first.originString +
-         L"' is neither a numeric, time, nor period variable", first.line);
+      throw SyntaxException(str(L"'", first.originString,
+         L"' is neither a numeric, time, nor period variable"), first.line);
    }
    else if (first.type == Token::t_TwoWords) {
       switch (sign) {
          case L'*':
          case L'/':
          case L'%': {
-            throw SyntaxException(L"operation " + _str(1, sign) +
-               L"= is not valid for a time variable", first.line);
+            throw SyntaxException(str(L"operation ", charStr(sign),
+               L"= is not valid for a time variable"), first.line);
          }
       }
 
       ParseVariable<_tim>* pv_tim;
       if (!getVarPtr(first, pv_tim)) {
-         const _size id = first.originString.find_last_of(L".");
-
-         throw SyntaxException(L"'" + first.originString.substr(0, id) +
-            L"' is not a time variable for " + _str(1, sign) + L"= operation",
+         throw SyntaxException(str(L"'", first.originString,
+            L"' is not a time variable for ", charStr(sign), L"= operation"),
             first.line);
       }
 
       Generator<_num>* num;
 
       if (!parse(right, num)) {
-         throw SyntaxException(L"right side of operation '" + first.originString + L"." +
-            first.originString2 + L" " + _str(1, sign) +
-            L"=' cannot be resolved to a number", first.line);
+         throw SyntaxException(str(L"right side of operation '", first.originString, L".",
+            first.originString2, L" ", charStr(sign),
+            L"=' cannot be resolved to a number"), first.line);
       }
 
       const _size& h = first.value.h2;
@@ -905,15 +897,15 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       else if (h == HASH_PER_SECOND || h == HASH_PER_SECONDS)
          return new VarTimeUnitChange(var, num, Period::u_Seconds, negative);
       else if (h == HASH_PER_DATE || h == HASH_PER_WEEKDAY) {
-         throw SyntaxException(L"value of '" + first.originString2 +
-            L"' time variable member cannot be altered", first.line);
+         throw SyntaxException(str(L"value of '", first.originString2,
+            L"' time variable member cannot be altered"), first.line);
       }
 
       timeVariableMemberException(first);
    }
    else {
-      throw SyntaxException(L"operator " + _str(1, sign) +
-         L"= has to be preceded by a single word, which is a variable name",
+      throw SyntaxException(str(L"operator ", charStr(sign),
+         L"= has to be preceded by a single word, which is a variable name"),
          first.line);
    }
 
@@ -927,16 +919,16 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
    if (getVarPtr(first, pv_str)) {
       Variable<_str>* var = pv_str->getVarPtr();
 
-      Generator<_str>* str;
-      if (parse(tks, str)) {
-         return new VarAdd_<_str>(var, str);
+      Generator<_str>* str_;
+      if (parse(tks, str_)) {
+         return new VarAdd_<_str>(var, str_);
       }
 
       Generator<_list>* list;
       if (parse(tks, list)) {
          delete list;
-         throw SyntaxException(L"variable '" + first.originString +
-            L"' can be incremented only by a string", line);
+         throw SyntaxException(str(L"variable '", first.originString,
+            L"' can be incremented only by a string"), line);
       }
       else {
          throw SyntaxException(L"right side of operator '+=' cannot"
@@ -944,8 +936,8 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
       }
    }
 
-   throw SyntaxException(L"variable '" + first.originString +
-      L"' cannot be incremented by a value", line);
+   throw SyntaxException(str(L"variable '", first.originString,
+      L"' cannot be incremented by a value"), line);
 }
 
 
@@ -970,12 +962,12 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
             ParseVariable<_list>* pv_list;
 
             if (getVarPtr(first, pv_nlist) || getVarPtr(first, pv_tlist) || getVarPtr(first, pv_list)) {
-               throw SyntaxException(L"collection variable '" + origin +
-                  L"' is immutable, so its elements cannot me modified", first.line);
+               throw SyntaxException(str(L"collection variable '", origin,
+                  L"' is immutable, so its elements cannot me modified"), first.line);
             }
             else {
-               throw SyntaxException(L"unknown collection variable '" + origin +
-                  L"'. Collection variables are immutable in Uroboros anyways", first.line);
+               throw SyntaxException(str(L"unknown collection variable '", origin,
+                  L"'. Collection variables are immutable in Uroboros anyways"), first.line);
             }
          }
       }
@@ -990,7 +982,7 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
    ////
 
    if (HASH_GROUP_INNERVAR.find(first.value.h1) != HASH_GROUP_INNERVAR.end()) {
-      throw SyntaxException(L"variable '" + first.originString + L"' is immutable", first.line);
+      throw SyntaxException(str(L"variable '", first.originString, L"' is immutable"), first.line);
    }
 
    ParseVariable<_boo>* pv_boo = nullptr;
@@ -1134,15 +1126,15 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   Generator<_str>* str;
-   if (parse(right, str)) {
+   Generator<_str>* str_;
+   if (parse(right, str_)) {
       if (pv_str == nullptr) {
          g_var_str.insert(std::make_pair(first.value.h1, ParseVariable<_str>()));
-         return new VarAssignment<_str>(g_var_str[first.value.h1].getVarPtr(), str);
+         return new VarAssignment<_str>(g_var_str[first.value.h1].getVarPtr(), str_);
       }
       else {
          pv_str->resurrect();
-         return new VarAssignment<_str>(pv_str->getVarPtr(), str);
+         return new VarAssignment<_str>(pv_str->getVarPtr(), str_);
       }
    }
 
@@ -1182,13 +1174,13 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right)
       }
    }
 
-   throw SyntaxException(L"wrong declaration of variable '" + origin + L"'", first.line);
+   throw SyntaxException(str(L"wrong declaration of variable '", origin, L"'"), first.line);
 }
 
 static void varAssignException(const _str& name, const _str& type, const Tokens& tks)
 {
-   throw SyntaxException(L"value assigned to variable '" + name
-      + L"' has to be of " + type + L" type", tks.first().line);
+   throw SyntaxException(str(L"value assigned to variable '", name,
+      L"' has to be of ", type, L" type"), tks.first().line);
 }
 
 static bool varSquareBrackets(const Tokens& tks)
@@ -1221,32 +1213,32 @@ static Command* commandVarAssign_Element(const Tokens& left,
    ParseVariable<_tlist>* pv_tlist;
 
    if (getVarPtr(first, pv_list) || getVarPtr(first, pv_nlist) || getVarPtr(first, pv_tlist)) {
-      throw SyntaxException(L"collection variable '" + first.originString +
-         L"' is immutable, so its elements cannot me modified", first.line);
+      throw SyntaxException(str(L"collection variable '", first.originString,
+         L"' is immutable, so its elements cannot me modified"), first.line);
    }
 
    ParseVariable<_str>* pv_str;
    if (getVarPtr(first, pv_str)) {
       if (pv_str->isReachable()) {
          Generator<_num>* index = parseListElementIndex(left);
-         Generator<_str>* str;
+         Generator<_str>* str_;
 
-         if (parse(right, str)) {
-            return new VarCharAssignment(pv_str->getVarPtr(), str, index);
+         if (parse(right, str_)) {
+            return new VarCharAssignment(pv_str->getVarPtr(), str_, index);
          }
          else {
-            throw SyntaxException(L"new value in character assignment of variable '" + first.originString +
-               L"' cannot be resolved to a string", first.line);
+            throw SyntaxException(str(L"new value in character assignment of variable '", 
+               first.originString, L"' cannot be resolved to a string"), first.line);
          }
       }
       else {
-         throw SyntaxException(L"variable '" + first.originString +
-            L"' is unreachable here", first.line);
+         throw SyntaxException(str(L"variable '", first.originString,
+            L"' is unreachable here"), first.line);
       }
    }
 
-   throw SyntaxException(L"variable '" + first.originString
-      + L"' was not expected before [] brackets", first.line);
+   throw SyntaxException(str(L"variable '", first.originString,
+      L"' was not expected before [] brackets"), first.line);
 }
 
 static Generator<_num>* parseListElementIndex(const Tokens& tks)
@@ -1277,19 +1269,19 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks)
          switch (t.value.k) {
             case Keyword::kw_While:
             case Keyword::kw_Inside: {
-               throw SyntaxException(
-                  L"a semicolon ; is missing before keyword '" + t.originString + L"'", t.line);
+               throw SyntaxException(str(L"a semicolon ; is missing before keyword '", 
+                  t.originString, L"'"), t.line);
             }
             case Keyword::kw_If: {
                if (!(i == start && startsWithElse)) {
-                  throw SyntaxException(
-                     L"a semicolon ; is missing before keyword '" + t.originString + L"'", t.line);
+                  throw SyntaxException(str(L"a semicolon ; is missing before keyword '", 
+                     t.originString, L"'"), t.line);
                }
                break;
             }
             case Keyword::kw_Else: {
-               throw SyntaxException(
-                  L"keyword '" + t.originString + L"' should be preceded by curly brackets {}", t.line);
+               throw SyntaxException(str(L"keyword '", t.originString, 
+                  L"' should be preceded by curly brackets {}"), t.line);
             }
          }
       }

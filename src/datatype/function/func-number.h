@@ -134,6 +134,9 @@ struct F_Power : Func_2<_num, _num>, Generator<_num>
 public:
    F_Power(Generator<_num>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
    _num getValue() override;
+
+private:
+   _num doublePower(const _ndouble& base, const _ndouble& exp);
 };
 
 struct F_Round : Func_1<_num>, Generator<_num>

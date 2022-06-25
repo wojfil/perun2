@@ -116,11 +116,11 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
-         delete str;
-         throw SyntaxException(L"the argument of function '" + word.originString
-            + L"' cannot be resolved to a collection", word.line);
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
+         delete str_;
+         throw SyntaxException(str(L"the argument of function '", word.originString,
+            L"' cannot be resolved to a collection"), word.line);
       }
 
       _def* def;
@@ -171,8 +171,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
       Generator<_str>* str1;
       if (parse(args[0], str1)) {
          delete str1;
-         throw SyntaxException(L"first argument of function '" + word.originString
-            + L"' cannot be resolved to a collection", word.line);
+         throw SyntaxException(str(L"first argument of function '", word.originString,
+            L"' cannot be resolved to a collection"), word.line);
       }
 
       _def* def;
@@ -205,14 +205,14 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
          Generator<_str>* str2;
          if (parse(args[1], str2)) {
-            return new F_ContainsStr(str, str2);
+            return new F_ContainsStr(str_, str2);
          }
          else {
-            delete str;
+            delete str_;
             functionArgException(2, L"string", word);
          }
       }
@@ -267,7 +267,8 @@ Generator<_boo>* boolFunction(const Tokens& tks)
          }
       }
       else {
-         throw SyntaxException(L"first argument of function '" + word.originString + L"' cannot be resolved to a string nor any collection", word.line);
+         throw SyntaxException(str(L"first argument of function '", word.originString,
+            L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
    else if (name == HASH_FUNC_EXISTSINSIDE) {
@@ -514,8 +515,9 @@ Generator<_num>* numberFunction(const Tokens& tks)
          return new F_Length(arg1);
       }
       else {
-         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string. "
-            L"If you want to count elements in a collection, use function 'count' instead", word.line);
+         throw SyntaxException(str(L"the argument of function '", word.originString,
+            L"' cannot be resolved to a string. "
+            L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
       }
    }
    else if (name == HASH_FUNC_FROMBINARY || name == HASH_FUNC_FROMHEX) {
@@ -539,12 +541,12 @@ Generator<_num>* numberFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
          if (len != 1) {
             functionArgNumberException(len, word);
          }
-         return new F_Size(str);
+         return new F_Size(str_);
       }
 
       _def* def;
@@ -565,7 +567,8 @@ Generator<_num>* numberFunction(const Tokens& tks)
          return new F_SizeList(list);
       }
       else {
-         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string nor a list", word.line);
+         throw SyntaxException(str(L"the argument of function '", word.originString,
+            L"' cannot be resolved to a string nor a list"), word.line);
       }
    }
    else if (name == HASH_FUNC_NUMBER) {
@@ -577,12 +580,14 @@ Generator<_num>* numberFunction(const Tokens& tks)
          return new F_Number(arg1);
       }
       else {
-         throw SyntaxException(L"the argument of function '" + word.originString + L"' cannot be resolved to a string", word.line);
+         throw SyntaxException(str(L"the argument of function '", word.originString,
+            L"' cannot be resolved to a string"), word.line);
       }
    }
    else if (name == HASH_FUNC_COUNT) {
       if (len == 0) {
-         throw SyntaxException(L"function '" + word.originString + L"' needs at least one argument", word.line);
+         throw SyntaxException(str(L"function '", word.originString,
+            L"' needs at least one argument"), word.line);
       }
 
       std::vector<Generator<_tlist>*>* tlists = new std::vector<Generator<_tlist>*>();
@@ -592,13 +597,13 @@ Generator<_num>* numberFunction(const Tokens& tks)
 
       for (_size i = 0; i < len; i++) {
          const Tokens& tks = args[i];
-         Generator<_str>* str;
-         if (parse(tks, str)) {
-            delete str;
+         Generator<_str>* str_;
+         if (parse(tks, str_)) {
+            delete str_;
 
-            throw SyntaxException(ordinalNumber(i + 1)
-               + L" argument of the function '" + word.originString
-               + L"' is not a collection", word.line);
+            throw SyntaxException(str(ordinalNumber(i + 1),
+               L" argument of the function '" + word.originString,
+               L"' is not a collection"), word.line);
          }
 
          Generator<_tlist>* tlist;
@@ -642,9 +647,9 @@ Generator<_num>* numberFunction(const Tokens& tks)
          deleteVectorPtr(lists);
          deleteVectorPtr(defs);
 
-         throw SyntaxException(ordinalNumber(i + 1)
-            + L" argument of the function '" + word.originString + L"' "
-              L"is not a collection", word.line);
+         throw SyntaxException(str(ordinalNumber(i + 1),
+              L" argument of the function '", word.originString, L"' "
+              L"is not a collection"), word.line);
       }
 
       const _size tc = tlists->size();
@@ -734,8 +739,8 @@ Generator<_num>* numberFunction(const Tokens& tks)
    }
    else if (HASH_GROUP_AGGRFUNC.find(name) != HASH_GROUP_AGGRFUNC.end()) {
       if (len == 0) {
-         throw SyntaxException(L"aggregate function '" + word.originString
-            + L"' needs at least one argument", word.line);
+         throw SyntaxException(str(L"aggregate function '", word.originString,
+            L"' needs at least one argument"), word.line);
       }
 
       return aggrFunction(args, word);
@@ -745,12 +750,12 @@ Generator<_num>* numberFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
-         delete str;
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
+         delete str_;
 
-         throw SyntaxException(L"function '" + word.originString
-            + L"' can only take a collection of values as an argument", word.line);
+         throw SyntaxException(str(L"function '", word.originString,
+            L"' can only take a collection of values as an argument"), word.line);
       }
 
       Generator<_nlist>* nlist;
@@ -845,9 +850,9 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
             deleteVectorPtr(singles);
             deleteVectorPtr(multis);
 
-            throw SyntaxException(ordinalNumber(i + 1)
-               + L" argument of aggregate function '" + word.originString
-               + L"' cannot be resolved to a number nor a numeric list", word.line);
+            throw SyntaxException(str(ordinalNumber(i + 1),
+               L" argument of aggregate function '", word.originString,
+               L"' cannot be resolved to a number nor a numeric list"), word.line);
          }
       }
    }
@@ -911,7 +916,7 @@ Generator<_str>* stringFunction(const Tokens& tks)
    }
    else if (name == HASH_FUNC_REVERSED) {
       const _str sub = word.originString.substr(0, 7);
-      throw SyntaxException(L"the proper name for this function is '" + sub + L"'", word.line);
+      throw SyntaxException(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
    else if (HASH_GROUP_FUNC_STR_STR_NUM.find(name) != HASH_GROUP_FUNC_STR_STR_NUM.end()) {
       if (len != 2) {
@@ -965,8 +970,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
    }
    else if (name == HASH_FUNC_SUBSTRING) {
       if (len < 2 || len > 3) {
-         throw SyntaxException(L"function '" + word.originString + L"' can only take "
-            L" two or three arguments", word.line);
+         throw SyntaxException(str(L"function '", word.originString, L"' can only take "
+            L" two or three arguments"), word.line);
       }
 
       Generator<_str>* str;
@@ -995,15 +1000,16 @@ Generator<_str>* stringFunction(const Tokens& tks)
    }
    else if (name == HASH_FUNC_CONCATENATE) {
       if (len < 1) {
-         throw SyntaxException(L"function '" + word.originString + L"' needs at least one arguments", word.line);
+         throw SyntaxException(str(L"function '", word.originString,
+            L"' needs at least one arguments"), word.line);
       }
 
       std::vector<Generator<_str>*>* values = new std::vector<Generator<_str>*>();
 
       for (_size i = 0; i < len; i++) {
-         Generator<_str>* str;
-         if (parse(args[i], str)) {
-            values->push_back(str);
+         Generator<_str>* str_;
+         if (parse(args[i], str_)) {
+            values->push_back(str_);
             continue;
          }
 
@@ -1017,8 +1023,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          else {
             deleteVectorPtr(values);
 
-            throw SyntaxException(ordinalNumber(i + 1)
-               + L" argument of the function '" + word.originString + L"' cannot be resolved to any data type", word.line);
+            throw SyntaxException(str(ordinalNumber(i + 1), L" argument of the function '",
+               word.originString, L"' cannot be resolved to any data type"), word.line);
          }
       }
 
@@ -1029,12 +1035,11 @@ Generator<_str>* stringFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
-         delete str;
-
-         throw SyntaxException(L"function '" + word.originString
-            + L"' can only take a collection of values as an argument", word.line);
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
+         delete str_;
+         throw SyntaxException(str(L"function '", word.originString,
+            L"' can only take a collection of values as an argument"), word.line);
       }
 
       _def* def;
@@ -1067,8 +1072,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          }
       }
       else {
-         throw SyntaxException(L"the argument of function '" + word.originString
-            + L"' cannot be resolved to any collection", word.line);
+         throw SyntaxException(str(L"the argument of function '", word.originString,
+            L"' cannot be resolved to any collection"), word.line);
       }
    }
    else if (name == HASH_FUNC_PATH) {
@@ -1158,8 +1163,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          return new F_String_P(per);
       }
 
-      throw SyntaxException(L"the argument of function '"
-         + word.originString + L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead", word.line);
+      throw SyntaxException(str(L"the argument of function '", word.originString,
+        L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
    }
    else if (HASH_GROUP_FUNC_STR_NUM.find(name) != HASH_GROUP_FUNC_STR_NUM.end()) {
       if (len != 1) {
@@ -1211,12 +1216,12 @@ Generator<_str>* stringFunction(const Tokens& tks)
          return nullptr;
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
          if (len > 1) {
             functionArgNumberException(len, word);
          }
-         return new F_RandomChar(str);
+         return new F_RandomChar(str_);
       }
 
       Generator<_list>* list;
@@ -1229,7 +1234,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
          return new F_RandomElement<_str>(list);
       }
       else {
-         throw SyntaxException(L"wrong arguments of function '" + word.originString, word.line);
+         throw SyntaxException(str(L"wrong arguments of function '", word.originString),
+            word.line);
       }
    }
    else if (name == HASH_FUNC_JOIN) {
@@ -1243,8 +1249,8 @@ Generator<_str>* stringFunction(const Tokens& tks)
       }
 
       if (len == 1) {
-         throw SyntaxException(L"function '" + word.originString
-            + L"' cannot be called with one argument. If you want to join multiple strings without a separator, use function 'concatenate' instead", word.line);
+         throw SyntaxException(str(L"function '", word.originString,
+            L"' cannot be called with one argument. If you want to join multiple strings without a separator, use function 'concatenate' instead"), word.line);
       }
 
       checkInOperatorCommaAmbiguity(word, args[0]);
@@ -1459,12 +1465,12 @@ Generator<_tim>* timeFunction(const Tokens& tks)
          functionArgNumberException(len, word);
       }
 
-      Generator<_str>* str;
-      if (parse(args[0], str)) {
-         delete str;
+      Generator<_str>* str_;
+      if (parse(args[0], str_)) {
+         delete str_;
 
-         throw SyntaxException(L"function '" + word.originString
-            + L"' can only take a collection of values as an argument", word.line);
+         throw SyntaxException(str(L"function '", word.originString,
+            L"' can only take a collection of values as an argument"), word.line);
       }
 
       Generator<_tlist>* tlist;
@@ -1520,19 +1526,16 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word)
 }
 
 
-
-
-
 static void functionArgNumberException(const _int& argNumber, const Token& word)
 {
-   throw SyntaxException(L"function '" + word.originString + L"' cannot be called with "
-      + toStr(argNumber) + L" argument" + (argNumber == 1 ? L"" : L"s"), word.line);
+   throw SyntaxException(str(L"function '", word.originString, L"' cannot be called with ",
+      toStr(argNumber), L" argument", (argNumber == 1 ? L"" : L"s")), word.line);
 }
 
 static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word)
 {
-   throw SyntaxException(ordinalNumber(argNumber) + L" argument of function '"
-      + word.originString + L"' cannot be resolved to a " + typeName, word.line);
+   throw SyntaxException(str(ordinalNumber(argNumber), L" argument of function '",
+      word.originString, L"' cannot be resolved to a ", typeName), word.line);
 }
 
 static _str ordinalNumber(const _int& number)
@@ -1550,18 +1553,18 @@ static _str ordinalNumber(const _int& number)
          return L"fifth";
       default: {
          if (number >= 11 && number <= 19) {
-            return toStr(number) + L"th";
+            return str(toStr(number), L"th");
          }
 
          switch (number % 10) {
             case 1:
-               return toStr(number) + L"st";
+               return str(toStr(number), L"st");
             case 2:
-               return toStr(number) + L"nd";
+               return str(toStr(number), L"nd");
             case 3:
-               return toStr(number) + L"rd";
+               return str(toStr(number), L"rd");
             default:
-               return toStr(number) + L"th";
+               return str(toStr(number), L"th");
          }
       }
    }
@@ -1608,7 +1611,8 @@ Generator<_list>* listFunction(const Tokens& tks)
       return new F_Split(str1, str2);
    }
 
-   throw SyntaxException(L"function with name '" + word.originString + L"' does not exist", word.line);
+   throw SyntaxException(str(L"function with name '", word.originString,
+      L"' does not exist"), word.line);
 }
 
 
@@ -1639,8 +1643,8 @@ Generator<_nlist>* numListFunction(const Tokens& tks)
 static void checkFunctionAttribute(const Token& word)
 {
    if (g_attrs.size() == 0 || g_thisstate != ThisState::ts_String) {
-      throw SyntaxException(L"function '" + word.originString
-         + L"' can be called only inside an iteration loop", word.line);
+      throw SyntaxException(str(L"function '", word.originString,
+         L"' can be called only inside an iteration loop"), word.line);
    }
 }
 
@@ -1678,7 +1682,8 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks)
    }
 
    const Token& inToken = tks.listAt(index);
-   throw SyntaxException(L"the right side of the operator '" + inToken.originString
-      + L"' used inside a function '" + word.originString
-      + L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here", word.line);
+   throw SyntaxException(str(L"the right side of the operator '", inToken.originString,
+      L"' used in function '", word.originString,
+      L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
+      word.line);
 }

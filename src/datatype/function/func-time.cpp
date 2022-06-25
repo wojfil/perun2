@@ -47,12 +47,12 @@ _tim F_NewYear::getValue()
 inline void checkMonthRuntime(const _tnum& month)
 {
    if (month < 1) {
-      throw UroRuntimeException(L"months cannot be smaller than 1. Received value: "
-         + toStr(month));
+      throw UroRuntimeException(str(L"months cannot be smaller than 1. Received value: ",
+         toStr(month)));
    }
    else if (month > 12) {
-      throw UroRuntimeException(L"there are only 12 months in a year. Received value: "
-         + toStr(month));
+      throw UroRuntimeException(str(L"there are only 12 months in a year. Received value: ",
+         toStr(month)));
    }
 }
 
@@ -60,46 +60,46 @@ inline void checkDayRuntime(const _tnum& day, const _tnum& month,
    const _tnum& year)
 {
    if (day < 1) {
-      throw UroRuntimeException(L"day cannot be smaller than 1. Received value: "
-         + toStr(day));
+      throw UroRuntimeException(str(L"day cannot be smaller than 1. Received value: ",
+         toStr(day)));
    }
 
    const _tnum expected = daysInMonth(month, year);
    if (day > expected) {
-      throw UroRuntimeException(L"month " + monthToString(month) + L" has only "
-         + toStr(expected) + L" days. Received value: " + toStr(day));
+      throw UroRuntimeException(str(L"month ", monthToString(month), L" has only ",
+         toStr(expected), L" days. Received value: ", toStr(day)));
    }
 }
 
 inline void checkSmallClockRuntime(const _tnum& hour, const _tnum& minute)
 {
    if (hour < 0) {
-      throw UroRuntimeException(L"value of hours cannot be smaller than 0. Received value: "
-         + toStr(hour));
+      throw UroRuntimeException(str(L"value of hours cannot be smaller than 0. Received value: ",
+         toStr(hour)));
    }
    else if (hour >= 24) {
-      throw UroRuntimeException(L"value of hours cannot be greater than 23. Received value: "
-         + toStr(hour));
+      throw UroRuntimeException(str(L"value of hours cannot be greater than 23. Received value: ",
+         toStr(hour)));
    }
    else if (minute < 0) {
-      throw UroRuntimeException(L"value of minutes cannot be smaller than 0. Received value: "
-         + toStr(minute));
+      throw UroRuntimeException(str(L"value of minutes cannot be smaller than 0. Received value: ",
+         toStr(minute)));
    }
    else if (minute >= 60) {
-      throw UroRuntimeException(L"value of minutes cannot be greater than 59. Received value: "
-         + toStr(minute));
+      throw UroRuntimeException(str(L"value of minutes cannot be greater than 59. Received value: ",
+         toStr(minute)));
    }
 }
 
 inline void checkSecondsRuntime(const _tnum& second)
 {
    if (second < 0) {
-      throw UroRuntimeException(L"value of seconds cannot be smaller than 0. Received value: "
-         + toStr(second));
+      throw UroRuntimeException(str(L"value of seconds cannot be smaller than 0. Received value: ",
+         toStr(second)));
    }
    else if (second >= 60) {
-      throw UroRuntimeException(L"value of seconds cannot be greater than 59. Received value: "
-         + toStr(second));
+      throw UroRuntimeException(str(L"value of seconds cannot be greater than 59. Received value: ",
+         toStr(second)));
    }
 }
 

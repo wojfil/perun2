@@ -299,12 +299,10 @@ void Tokens::splitBySymbol(const _char& symbol, std::vector<Tokens>& result) con
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
          if (sublen == 0) {
             if (result.empty()) {
-               throw SyntaxException(L"expression cannot start with a "
-                  + _str(1, symbol) + L" symbol", t.line);
+               throw SyntaxException(str(L"expression cannot start with a ", charStr(symbol), L" symbol"), t.line);
             }
             else {
-               throw SyntaxException(L"adjacent " + _str(1, symbol)
-                  + L" symbols", t.line);
+               throw SyntaxException(str(L"adjacent ", charStr(symbol), L" symbols"), t.line);
             }
          }
 
@@ -319,8 +317,7 @@ void Tokens::splitBySymbol(const _char& symbol, std::vector<Tokens>& result) con
 
    if (sublen == 0) {
       if (!isEmpty()) {
-         throw SyntaxException(L"expression cannot end with a "
-            + _str(1, symbol) + L" symbol", last().line);
+         throw SyntaxException(str(L"expression cannot end with a ", charStr(symbol), L" symbol"), last().line);
       }
    }
    else {
@@ -359,8 +356,8 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
          if (sublen == 0) {
             const Token& prev = listAt(i - 1);
 
-            throw SyntaxException(L"adjacent filter keywords '" + prev.originString +
-               L"' and '" + t.originString + L"'", t.line);
+            throw SyntaxException(str(L"adjacent filter keywords '", prev.originString,
+               L"' and '", t.originString, L"'"), t.line);
          }
 
          result.push_back(Tokens(list, i - sublen - 1, sublen + 1));
@@ -373,8 +370,8 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
    }
 
    if (sublen == 0) {
-      throw SyntaxException(L"expression cannot end with a filter keyword '"
-         + last().originString + L"'", last().line);
+      throw SyntaxException(str(L"expression cannot end with a filter keyword '",
+         last().originString, L"'"), last().line);
    }
    else {
       result.push_back(Tokens(list, end - sublen, sublen + 1));

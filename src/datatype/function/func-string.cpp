@@ -129,7 +129,7 @@ _str F_Fill::getValue()
 
    return len >= min
       ? base
-      : _str(min - len, '0') + base;
+      : str(_str(min - len, '0'), base);
 }
 
 
@@ -236,13 +236,10 @@ _str F_Repeat::getValue()
          return base;
       }
       case 2: {
-         return base + base;
+         return str(base, base);
       }
       case 3: {
-         return base + base + base;
-      }
-      case 4: {
-         return base + base + base + base;
+         return str(base, base, base);
       }
    }
 
@@ -380,7 +377,7 @@ _str F_ConcatenateUnit::getValue()
          return values[0];
       }
       case 2: {
-         return values[0] + values[1];
+         return str(values[0], values[1]);
       }
    }
 
@@ -468,13 +465,13 @@ _str F_Replace::getValue()
                for (_size i = 0; i < len; i++) {
                   if (base[i] == ch) {
                      if (i == 0) {
-                        base = v2 + base.substr(1);
+                        base = str(v2, base.substr(1));
                      }
                      else if (i == len - 1) {
-                        return base.substr(0, len - 1) + v2;
+                        return str(base.substr(0, len - 1), v2);
                      }
                      else {
-                        base = base.substr(0, i) + v2 + base.substr(i + 1);
+                        base = str(base.substr(0, i), v2, base.substr(i + 1));
                      }
 
                      i += len2 - 1;
@@ -762,7 +759,7 @@ _str F_Join::getValue()
          return values[0];
       }
       case 2: {
-         return values[0] + arg2->getValue() + values[1];
+         return str(values[0], arg2->getValue(), values[1]);
       }
       default: {
          const _str separator = arg2->getValue();
@@ -864,14 +861,14 @@ _str F_Binary::getValue()
    }
 
    ss << std::bitset<64>(v);
-   const _str str = ss.str();
-   const _size len = str.size();
+   const _str str_ = ss.str();
+   const _size len = str_.size();
 
    for (_size i = 0; i < len; i++) {
-      if (str[i] != L'0') {
+      if (str_[i] != L'0') {
          return negative
-            ? (L"-" + str.substr(i))
-            : str.substr(i);
+            ? str(L"-", str_.substr(i))
+            : str_.substr(i);
       }
    }
 
@@ -887,7 +884,7 @@ _str F_Hex::getValue()
 
       std::wostringstream oss;
       oss << std::hex << v;
-      return L"-" + oss.str();
+      return str(L"-", oss.str());
    }
 
    std::wostringstream oss;

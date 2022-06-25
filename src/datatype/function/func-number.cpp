@@ -13,14 +13,15 @@
 */
 
 #include "func-number.h"
-#include <math.h>
-#include <sstream>
 #include "../../exception.h"
 #include "func-bool.h"
 #include "../../util.h"
 #include "../../uroboros.h"
 #include "../../os.h"
 #include "../math.h"
+#include <math.h>
+#include <sstream>
+#include <cmath>
 
 
 _num F_Absolute::getValue()
@@ -180,7 +181,8 @@ _num F_Number::getValue()
          return _num(i);
       }
       catch (...) {
-         throw UroRuntimeException(L"number '" + s + L"' is too big to be stored in the memory");
+         throw UroRuntimeException(str(L"number '", s,
+            L"' is too big to be stored in the memory"));
       }
    }
    else {
@@ -212,10 +214,10 @@ _num F_Power::getValue()
    const _num n2 = arg2->getValue();
 
    if (n1.isDouble) {
-      _ndouble base = n1.value.d;
+      const _ndouble& base = n1.value.d;
 
       if (n2.isDouble) {
-         return pow(base, n2.value.d);
+         return doublePower(base, n2.value.d);
       }
       else {
          _nint exp = n2.value.i;
@@ -238,24 +240,45 @@ _num F_Power::getValue()
                return _num(base * base * base);
             }
             case 4LL: {
-               return _num(base * base * base * base);
+               const _ndouble b2 = base * base;
+               return _num(b2 * b2);
             }
          }
 
-         return pow(base, (_ndouble)exp);
+         return doublePower(base, (_ndouble)exp);
       }
    }
    else {
-      long long base = n1.value.i;
+      _nint base = n1.value.i;
 
       if (base == 0LL) {
-         throw UroRuntimeException(L"wrong " // todo
-            + n1.toString());
+         if (n2.isDouble) {
+            if (n2.value.d == 0L) {
+               return _num(1LL);
+            }
+            else if (n2.value.d < 0L) {
+               throw UroRuntimeException(L"result of exponentiation cannot be expressed");
+            }
+            else {
+               return _num(0LL);
+            }
+         }
+         else {
+            if (n2.value.i == 0LL) {
+               return _num(1LL);
+            }
+            else if (n2.value.i <= 0LL) {
+               throw UroRuntimeException(L"result of exponentiation cannot be expressed");
+            }
+            else {
+               return _num(0LL);
+            }
+         }
       }
 
       if (n2.isDouble) {
-         _ndouble exp = n2.value.d;
-         return pow(base, (_ndouble)exp);
+         const _ndouble& exp = n2.value.d;
+         return doublePower((_ndouble)base, exp);
       }
       else {
          _nint exp = n2.value.i;
@@ -278,18 +301,19 @@ _num F_Power::getValue()
                return _num(base * base * base);
             }
             case 4LL: {
-               return _num(base * base * base * base);
+               const _nint b2 = base * base;
+               return _num(b2 * b2);
             }
          }
 
          // if the number is inver
-         bool inv = false;
+         _boo inv = false;
          if (exp < 0LL) {
             exp *= -1LL;
             inv = true;
          }
 
-         bool neg = false;
+         _boo neg = false;
          if (base < 0LL) {
             base *= -1LL;
             neg = (exp % 2LL == 1LL);
@@ -311,12 +335,22 @@ _num F_Power::getValue()
             return _num((neg ? -1L : 1L) / ((_ndouble)result));
          }
          else {
-            return _num(neg ? -result : result);
+            return _num(neg ? (-result) : result);
          }
       }
    }
 }
 
+_num F_Power::doublePower(const _ndouble& base, const _ndouble& exp)
+{
+   const _ndouble v = pow(base, exp);
+
+   if (isnan(v)) {
+      throw UroRuntimeException(L"result of exponentiation cannot be expressed");
+   }
+
+   return _num(v);
+}
 
 _num F_Sqrt::getValue()
 {
@@ -330,8 +364,8 @@ _num F_Sqrt::getValue()
          return _num(1LL);
       }
       else if (n.value.d < 0L) {
-         throw UroRuntimeException(L"square root of a negative number "
-            + n.toString());
+         throw UroRuntimeException(str(L"square root of a negative number ",
+            n.toString()));
       }
 
       return _num(sqrt(n.value.d));
@@ -341,8 +375,8 @@ _num F_Sqrt::getValue()
          return n;
       }
       else if (n.value.i < 0LL) {
-         throw UroRuntimeException(L"square root of a negative number "
-            + n.toString());
+         throw UroRuntimeException(str(L"square root of a negative number ",
+            n.toString()));
       }
 
       // look for perfect squares:
@@ -446,12 +480,14 @@ _num F_FromBinary::getValue()
       negative = true;
       i++;
       if (len > 62) {
-         throw UroRuntimeException(L"number '" + baseString + L"' is too big to be stored in the memory");
+         throw UroRuntimeException(str(L"number '", baseString,
+            L"' is too big to be stored in the memory"));
       }
    }
    else {
       if (len > 63) {
-         throw UroRuntimeException(L"number '" + baseString + L"' is too big to be stored in the memory");
+         throw UroRuntimeException(str(L"number '", baseString,
+            L"' is too big to be stored in the memory"));
       }
    }
 

@@ -42,10 +42,10 @@ _str toStr(const T &n)
 
 
 template<typename... Args>
-_str str(Args... args)
+_str str(Args const&... args)
 {
    _size len = 0;
-   using value_type = std::common_type_t<Args...>;
+   using value_type = std::common_type_t<Args const&...>;
    for (auto const &arg : {static_cast<value_type>(args)...}) {
       len += arg.size();
    }
@@ -58,6 +58,7 @@ _str str(Args... args)
 
    return result;
 }
+
 
 _str charStr(const _char& ch);
 void toLower(_str& value);

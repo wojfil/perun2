@@ -383,7 +383,7 @@ _tim os_creation(const _str& path)
 _str os_drive(const _str& path)
 {
    return os_isAbsolute(path)
-      ? (_str(1, std::towupper(path[0])) + L":")
+      ? str(charStr(std::towupper(path[0])), L":")
       : L"";
 }
 
@@ -418,7 +418,7 @@ _boo os_emptyFile(const WIN32_FILE_ATTRIBUTE_DATA& data)
 _boo os_emptyDirectory(const _str& path)
 {
    WIN32_FIND_DATA data;
-   HANDLE handle = FindFirstFile((path + L"\\*").c_str(), &data);
+   HANDLE handle = FindFirstFile((str(path, L"\\*")).c_str(), &data);
    if (handle == INVALID_HANDLE_VALUE) {
       return true;
    }
@@ -616,7 +616,7 @@ _nint os_sizeDirectory(const _str& path)
    _nint totalSize = 0LL;
    WIN32_FIND_DATA data;
    HANDLE sh = NULL;
-   sh = FindFirstFile((path + OS_SEPARATOR_ASTERISK).c_str(), &data);
+   sh = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
 
    if (sh == INVALID_HANDLE_VALUE) {
       return totalSize;
@@ -629,7 +629,7 @@ _nint os_sizeDirectory(const _str& path)
       }
       if (!os_isBrowsePath(data.cFileName)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(path + OS_SEPARATOR_ASTERISK + data.cFileName);
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_ASTERISK, data.cFileName));
          }
          else {
             totalSize += (_nint)(data.nFileSizeHigh * (MAXDWORD) + data.nFileSizeLow);
@@ -1100,7 +1100,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath)
             continue;
 
          wcscat(FileName, FindFileData.cFileName);
-         const _str np = newPath + OS_SEPARATOR + _str(FileName).substr(length);
+         const _str np = str(newPath, OS_SEPARATOR_STRING, _str(FileName).substr(length));
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
             if (!os_copyToDirectory(FileName, np)) {
@@ -1361,7 +1361,7 @@ _str os_join(const _str& path1, const _str& path2)
 {
    return os_isAbsolute(path2)
       ? path2
-      : (path1 + OS_SEPARATOR + path2);
+      : str(path1, OS_SEPARATOR_STRING, path2);
 }
 
 _boo os_isAbsolute(const _str& path)
@@ -1461,7 +1461,7 @@ _str os_stackPath(const _str& path)
 
    while (g_running && os_exists(newPath))
    {
-      newPath = path + L"(" + toStr(index) + L")";
+      newPath = str(path, L"(", toStr(index),  L")");
       index++;
    }
 
@@ -1475,11 +1475,11 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
    }
 
    _nint index = 2LL;
-   _str newPath = basePath + L"." + extension;
+   _str newPath = str(basePath, L".", extension);
 
    while (g_running && os_exists(newPath))
    {
-      newPath = basePath + L"(" + toStr(index) + L")." + extension;
+      newPath = str(basePath, L"(", toStr(index), L").", extension);
       index++;
    }
 
@@ -1505,12 +1505,12 @@ _str os_stackPathStacked(const _str& path)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = basePath + L"(" + toStr(index) + L")";
+   _str newPath = str(basePath, L"(", toStr(index), L")");
 
    while (g_running && os_exists(newPath))
    {
       index++;
-      newPath = basePath + L"(" + toStr(index) + L")";
+      newPath = str(basePath, L"(", toStr(index), L")");
    }
 
    return newPath;
@@ -1522,12 +1522,12 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = basePath + L"(" + toStr(index) + L")." + extension;
+   _str newPath = str(basePath, L"(", toStr(index), L").", extension);
 
    while (g_running && os_exists(newPath))
    {
       index++;
-      newPath = basePath + L"(" + toStr(index) + L")." + extension;
+      newPath = str(basePath, L"(", toStr(index), L").", extension);
    }
 
    return newPath;
@@ -1726,7 +1726,7 @@ _str os_makeArg(const _str& value)
 
    if (quotes == 0) {
       return anySpace
-         ? (L'"' + value + L'"')
+         ? str(L"\"", value, L"\"")
          : value;
    }
    else {
@@ -1742,7 +1742,7 @@ _str os_makeArg(const _str& value)
       }
 
       return anySpace
-         ? (L'"' + result + L'"')
+         ? str(L"\"", result, L"\"")
          : result;
    }
 }
@@ -1820,6 +1820,6 @@ _str os_quoteEmbraced(const _str& value)
 {
    return value.find(L' ') == _str::npos
       ? value
-      : (L"\"" + value + L"\"");
+      : str(L"\"", value, L"\"");
 }
 

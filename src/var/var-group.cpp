@@ -40,8 +40,8 @@ void setCoreComAttribute(const _str& comName, const _int& line)
    const _size size = g_attrs.size();
 
    if (size == 0) {
-      throw SyntaxException(L"the subject of command '" + comName
-        + L"' is undefined here", line);
+      throw SyntaxException(str(L"the subject of command '", comName,
+         L"' is undefined here"), line);
    }
 
    Attribute* last = g_attrs[size - 1];
@@ -52,8 +52,8 @@ void setCoreComAttribute(const _str& comName, const _int& line)
 
 void attributeException(const Token& tk)
 {
-   throw SyntaxException(L"the value of variable '" + tk.originString
-      + L"' is undefined here", tk.line);
+   throw SyntaxException(str(L"the value of variable '", tk.originString,
+      L"' is undefined here"), tk.line);
 }
 
 void addAttribute(Attribute* attr)

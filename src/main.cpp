@@ -22,6 +22,7 @@
 #include <iostream>
 #include "datatype/primitives.h"
 #include "uroboros.h"
+#include "print.h"
 #include "os.h"
 #include <fcntl.h>
 
@@ -53,6 +54,8 @@ BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
 
 _int wmain(_int argc, _char* argv[], _char *envp[])
 {
+   std::wcin.tie(0);
+   std::wcout.tie(0);
    std::setlocale(LC_CTYPE, "");
    SetConsoleCtrlHandler(HandlerRoutine, TRUE);
    _setmode(_fileno(stdout), _O_U8TEXT);

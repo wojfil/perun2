@@ -46,8 +46,8 @@ Generator<_tim>* parseTime(const Tokens& tks)
 
             Generator<_tim>* var;
             if (!getVarValue(f, var)) {
-               throw SyntaxException(L"time variable '" + f.originString +
-                  L"' does not exist", f.line);
+               throw SyntaxException(str(L"time variable '", f.originString,
+                  L"' does not exist"), f.line);
             }
 
             if (f.value.h2 == HASH_FUNC_DATE)
@@ -138,8 +138,8 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxException(L"'" + first.originString
-            + L"' is not a valid month name", first.line);
+         throw SyntaxException(str(L"'", first.originString,
+            L"' is not a valid month name"), first.line);
       }
 
       if (first.type != Token::t_Number) {
@@ -159,8 +159,8 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxException(L"'" + second.originString
-         + L"' is not a valid month name", second.line);
+      throw SyntaxException(str(L"'", second.originString,
+         L"' is not a valid month name"), second.line);
    }
 
    if (second.type != Token::t_Number) {
@@ -229,16 +229,16 @@ static void checkDayCorrectness(const _tnum& day, const _tnum& month,
 
    const _tnum expected = daysInMonth(month, year);
    if (day > expected) {
-      throw SyntaxException(L"month " + monthToString(month) + L" has only "
-         + toStr(expected) + L" days", tk.line);
+      throw SyntaxException(str(L"month ", monthToString(month), L" has only ",
+         toStr(expected), L" days"), tk.line);
    }
 }
 
 static void clockUnitException(const _str& unit, const _tnum& value,
    const Token& tk)
 {
-   throw SyntaxException(L"value of " + unit + L" (" + toStr(value)
-      + L") went out of range", tk.line);
+   throw SyntaxException(str(L"value of ", unit, L" (", toStr(value),
+      L") went out of range"), tk.line);
 }
 
 static Generator<_tim>* parseTimeExp(const Tokens& tks)

@@ -81,8 +81,8 @@ Tokens prepareForGen(const Tokens& tks)
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
          if (f.value.h1 != HASH_VAR_THIS && !variableExists(f)) {
-            throw SyntaxException(
-               L"variable '" + f.originString + L"' does not exist or is unreachable here", f.line);
+            throw SyntaxException(str(L"variable '", f.originString,
+               L"' does not exist or is unreachable here"), f.line);
          }
       }
    }

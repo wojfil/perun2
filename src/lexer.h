@@ -19,12 +19,12 @@
 
 
 std::vector<Token> tokenize(const _str &code);
-static Token wordToken(_str& str, _int& line);
+static Token wordToken(_str& value, _int& line);
 inline _boo isSymbol(const _char& ch);
 _boo isNewLine(const _char& ch);
 inline _boo isAllowedInWord(const _char& ch);
-inline void bigNumberException(const _str& str, const _int& line);
-inline _ndouble stringToDouble(const _str& str);
+inline void bigNumberException(const _str& value, const _int& line);
+inline _ndouble stringToDouble(const _str& value);
 _nint getSuffixMultiplier(const _char& c1, const _char& c2);
 void invalidCharException(const _char& ch, const _int& line);
 

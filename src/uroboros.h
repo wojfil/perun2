@@ -16,14 +16,17 @@
 #define UROBOROS_H
 
 #include "var/var-runtime.h"
-#include <random>
+#include "arguments.h"
 #include <Windows.h>
+
+#define VERSION_STR L"1.0.6"
 
 const _int EXITCODE_OK =             0;
 const _int EXITCODE_RUNTIME_ERROR =  1;
 const _int EXITCODE_SYNTAX_ERROR =   2;
 const _int EXITCODE_CLI_ERROR =      3;
 
+const _uint32 FLAG_NULL =      0b001;
 const _uint32 FLAG_NOOMIT =    0b001;
 const _uint32 FLAG_SILENT =    0b010;
 const _uint32 FLAG_GUI =       0b100;
@@ -38,7 +41,7 @@ extern _uint32 g_flags;
 extern PROCESS_INFORMATION g_processInfo;
 
 
-void run(const _str& location, const _str& code, const _uint32& flags, const _list& args);
+void run(const Arguments& arguments);
 
 
 #endif /* UROBOROS_H */

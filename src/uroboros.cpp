@@ -37,23 +37,23 @@ _uint32 g_flags;
 PROCESS_INFORMATION g_processInfo;
 
 
-void run(const _str& location, const _str& code, const _uint32& flags,  const _list& args)
+void run(const Arguments& arguments)
 {
-   g_flags = flags;
+   g_flags = arguments.getFlags();
 
    initHashes();
-   initVars(args);
+   initVars(arguments.getArgs());
    g_math = new Math();
 
    g_running = true;
    g_exitCode = EXITCODE_OK;
-   g_location.value = os_trim(location);
+   g_location.value = os_trim(arguments.getLocation());
 
    Command* commands;
 
    // parse code into commands
    try {
-      const std::vector<Token> vec = tokenize(code);
+      const std::vector<Token> vec = tokenize(arguments.getCode());
       Tokens tks(&vec);
       checkBrackets(tks);
       commands = parseCommands(tks);

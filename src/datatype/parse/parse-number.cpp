@@ -428,7 +428,6 @@ static Generator<_num>* numExpIntegrateUnary(
 
             if (e->type == ElementType::et_Constant) {
                const _num value = -(e->constant);
-               // delete e;
                newElement = new ExpElement<_num>(value);
             }
             else {
@@ -497,8 +496,6 @@ static Generator<_num>* numExpTreeMerge(
                   }
                }
 
-               //delete firstElement;
-               //delete secondElement;
                newElement = new ExpElement<_num>(value);
             }
             else {
@@ -575,8 +572,6 @@ static Generator<_num>* numExpTreeMerge2(
                }
             }
 
-            //delete first;
-            //delete second;
             first = new Constant<_num>(value);
          }
          else {
@@ -714,6 +709,6 @@ static _boo isNumExpHighPriority(const _char& ch)
 
 void timeVariableMemberException(const Token& tk)
 {
-   throw SyntaxException(str(L"'", tk.originString2, 
+   throw SyntaxException(str(L"'", tk.originString2,
       L"' is not a time variable member"), tk.line);
 }

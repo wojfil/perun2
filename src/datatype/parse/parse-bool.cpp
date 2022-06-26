@@ -328,7 +328,6 @@ static Generator<_boo>* boolExpIntegrateNegations(
 
             if (e->type == ElementType::et_Constant) {
                const _boo value = !(e->constant);
-               //delete e;
                newElement = new ExpElement<_boo>(value);
             }
             else {
@@ -395,8 +394,6 @@ static Generator<_boo>* boolExpTreeMerge(
                }
             }
 
-            //delete firstElement;
-            //delete secondElement;
             newElement = new ExpElement<_boo>(value);
          }
          else {

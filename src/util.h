@@ -25,7 +25,7 @@
 
 // delete all elements from a vector of pointers
 template <typename T>
-void deleteVector(std::vector<T*> vec)
+void deleteVector(std::vector<T*>& vec)
 {
    for (auto p : vec) {
       delete p;
@@ -36,7 +36,7 @@ void deleteVector(std::vector<T*> vec)
 // delete all elements from a vector of pointers
 // finally, delete the vector itself
 template <typename T>
-void deleteVectorPtr(std::vector<T*>* vec)
+void deleteVectorPtr(std::vector<T*>*& vec)
 {
    for (auto p : *vec) {
       delete p;
@@ -57,7 +57,7 @@ void appendVector(std::vector<T>& dest, const std::vector<T>& source)
 
 // delete all elements from a map of pointers
 template <typename T1, typename T2>
-void deleteMap(std::map<T1, T2*> map)
+void deleteMap(std::map<T1, T2*>& map)
 {
    for (const auto& kv : map) {
       delete kv.second;

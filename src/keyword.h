@@ -87,7 +87,14 @@ enum Keyword
    kw_Error
 };
 
-extern const std::map<_str, Keyword> KEYWORDS;
+
+struct KeywordsData
+{
+public:
+   KeywordsData();
+
+   const std::map<_str, Keyword> KEYWORDS;
+};
 
 
 #endif // KEYWORD_H_INCLUDED

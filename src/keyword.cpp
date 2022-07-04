@@ -14,9 +14,7 @@
 
 #include "keyword.h"
 
-
-extern const std::map<_str, Keyword> KEYWORDS =
-{
+KeywordsData::KeywordsData() : KEYWORDS( {
    // core commands:
    { L"copy", Keyword::kw_Copy },
    { L"create", Keyword::kw_Create },
@@ -80,4 +78,4 @@ extern const std::map<_str, Keyword> KEYWORDS =
    { L"continue", Keyword::kw_Continue },
    { L"exit", Keyword::kw_Exit },
    { L"error", Keyword::kw_Error }
-};
+}) { };

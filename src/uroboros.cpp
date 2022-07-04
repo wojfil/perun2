@@ -30,7 +30,8 @@
 
 Uroboros::Uroboros(const Arguments& args) : arguments(args), hashes(Hashes()), vars(Variables(this)),
    vc(VariablesContext(&this->hashes)), math(Math()), flags(args.getFlags()), running(true), process(false),
-   break_(false), continue_(false), exitCode(EXITCODE_OK), processInfo({}), code(args.getCode()), terminator(Terminator(this)) { };
+   break_(false), continue_(false), exitCode(EXITCODE_OK), processInfo({}), code(args.getCode()),
+   terminator(Terminator(this)), keywordsData(KeywordsData()) { };
 
 
 void Uroboros::run()

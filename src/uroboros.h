@@ -21,6 +21,7 @@
 #include "hash.h"
 #include "datatype/math.h"
 #include "terminator.h"
+#include "keyword.h"
 #include <Windows.h>
 
 #define VERSION_STR L"1.0.6"
@@ -48,6 +49,7 @@ public:
    Variables vars;
    VariablesContext vc;
    Terminator terminator;
+   const KeywordsData keywordsData;
 
    const _uint32 flags;
 

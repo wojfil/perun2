@@ -276,8 +276,8 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
             return Token(_num(fw->second), line, value, Token::nm_WeekDay);
          }
 
-         auto fk = KEYWORDS.find(lower);
-         if (fk == KEYWORDS.end()) {
+         auto fk = uro->keywordsData.KEYWORDS.find(lower);
+         if (fk == uro->keywordsData.KEYWORDS.end()) {
             return Token(hsh, line, value);
          }
          else {

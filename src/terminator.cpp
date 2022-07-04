@@ -15,9 +15,9 @@ _int Terminator::HandlerRoutine(_ulong dwCtrlType)
   switch (dwCtrlType) {
     case CTRL_C_EVENT:
       Terminator::uroboros->running = false;
-      if (Terminator::uroboros->process) {
-         Terminator::uroboros->process = false;
-         TerminateProcess(Terminator::uroboros->processInfo.hProcess, 0);
+      if (Terminator::uroboros->sideProcess.running) {
+         Terminator::uroboros->sideProcess.running = false;
+         TerminateProcess(Terminator::uroboros->sideProcess.info.hProcess, 0);
       }
       return TRUE;
     default:

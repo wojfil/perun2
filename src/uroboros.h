@@ -22,7 +22,7 @@
 #include "datatype/math.h"
 #include "terminator.h"
 #include "keyword.h"
-#include <Windows.h>
+#include "side-process.h"
 
 #define VERSION_STR L"1.0.6"
 
@@ -50,16 +50,15 @@ public:
    VariablesContext vc;
    Terminator terminator;
    const KeywordsData keywordsData;
+   SideProcess sideProcess;
 
    const _uint32 flags;
 
-   _boo running; // application exits this way
-   _boo process; // another process has been created and we are waiting for its exit
+   _boo running; // program exits this way
    _boo break_;
    _boo continue_;
    _int exitCode;
 
-   PROCESS_INFORMATION processInfo;
 
 private:
     const _str code;

@@ -1190,12 +1190,12 @@ _boo os_select(const _str& parent, const std::set<_str>& paths)
 
 _boo os_run(const _str& comm, Uroboros* uro)
 {
-   uro->process = true;
+   uro->sideProcess.running = true;
    STARTUPINFO si;
 
    ZeroMemory(&si, sizeof(si));
    si.cb = sizeof(si);
-   ZeroMemory(&uro->processInfo, sizeof(uro->processInfo));
+   ZeroMemory(&uro->sideProcess.info, sizeof(uro->sideProcess.info));
 
    const _size len = comm.size() + 1;
    _char cmd[len];
@@ -1213,14 +1213,14 @@ _boo os_run(const _str& comm, Uroboros* uro)
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
       loc,
-      &si, &uro->processInfo
+      &si, &uro->sideProcess.info
    );
 
-   WaitForSingleObject(uro->processInfo.hProcess, INFINITE);
+   WaitForSingleObject(uro->sideProcess.info.hProcess, INFINITE);
    DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(uro->processInfo.hProcess, &dwExitCode);
+   ::GetExitCodeProcess(uro->sideProcess.info.hProcess, &dwExitCode);
 
-   uro->process = false;
+   uro->sideProcess.running = false;
    return uro->running && dwExitCode == 0;
 }
 

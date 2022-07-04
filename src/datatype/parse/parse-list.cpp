@@ -23,7 +23,7 @@
 #include "../parse-gen.h"
 
 
-Generator<_list>* parseList (const Tokens& tks)
+Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    const Token& first = tks.first();
@@ -31,36 +31,36 @@ Generator<_list>* parseList (const Tokens& tks)
    if (len == 1) {
       if (first.type == Token::t_Word) {
          Generator<_list>* var;
-         return getVarValue(first, var) ? var : nullptr;
+         return uro->vars.getVarValue(first, var) ? var : nullptr;
       }
    }
 
-   Generator<_list>* filter = parseFilter<Generator<_list>*, _str>(tks, ThisState::ts_String);
+   Generator<_list>* filter = parseFilter<Generator<_list>*, _str>(tks, ThisState::ts_String, uro);
    if (filter != nullptr) {
       return filter;
    }
 
    if (len >= 3) {
       if (tks.containsSymbol(L',')) {
-         Generator<_list>* listed = parseListed(tks);
+         Generator<_list>* listed = parseListed(tks, uro);
          if (listed != nullptr) {
             return listed;
          }
       }
 
-      Generator<_list>* bin = parseBinary<_list>(tks);
+      Generator<_list>* bin = parseBinary<_list>(tks, uro);
       if (bin != nullptr) {
          return bin;
       }
 
-      Generator<_list>* tern = parseTernary<_list>(tks);
+      Generator<_list>* tern = parseTernary<_list>(tks, uro);
       if (tern != nullptr) {
          return tern;
       }
    }
 
    if (isPossibleFunction(tks)) {
-      Generator<_list>* func = listFunction(tks);
+      Generator<_list>* func = listFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -70,9 +70,9 @@ Generator<_list>* parseList (const Tokens& tks)
 }
 
 
-static Generator<_list>* parseListed(const Tokens& tks)
+static Generator<_list>* parseListed(const Tokens& tks, Uroboros* uro)
 {
-   Generator<_list>* cnst = parseListConst(tks);
+   Generator<_list>* cnst = parseListConst(tks, uro);
    if (cnst != nullptr) {
       return cnst;
    }
@@ -80,12 +80,12 @@ static Generator<_list>* parseListed(const Tokens& tks)
    std::vector<Tokens> elements;
    tks.splitBySymbol(L',', elements);
 
-   Generator<_list>* strs = parseListedValues<_str>(elements);
+   Generator<_list>* strs = parseListedValues<_str>(elements, uro);
    if (strs != nullptr) {
       return strs;
    }
 
-   Generator<_list>* lists = parseListedLists<_str>(elements);
+   Generator<_list>* lists = parseListedLists<_str>(elements, uro);
    if (lists != nullptr) {
       return lists;
    }
@@ -93,7 +93,7 @@ static Generator<_list>* parseListed(const Tokens& tks)
    return nullptr;
 }
 
-Generator<_list>* parseListConst(const Tokens& tks)
+Generator<_list>* parseListConst(const Tokens& tks, Uroboros* uro)
 {
    _list list;
    const _int start = tks.getStart();

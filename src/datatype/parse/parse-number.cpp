@@ -27,7 +27,7 @@
 const _char UNARY_MINUS = L'~';
 
 
-Generator<_num>* parseNumber(const Tokens& tks)
+Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    if (len == 1) {
@@ -38,36 +38,38 @@ Generator<_num>* parseNumber(const Tokens& tks)
          }
          case Token::t_Word: {
             Generator<_num>* var;
-            return getVarValue(f, var) ? var : nullptr;
+            return uro->vars.getVarValue(f, var) ? var : nullptr;
          }
          case Token::t_TwoWords: {
-            if (f.value.h1 == HASH_NOTHING) {
+            const Hashes& hs = uro->hashes;
+
+            if (f.value.h1 == hs.HASH_NOTHING) {
                throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
             }
 
             Generator<_tim>* var;
-            if (!getVarValue(f, var)) {
+            if (!uro->vars.getVarValue(f, var)) {
                throw SyntaxException(str(L"time variable from expression '", f.originString,
                   L"' does not exist or is unreachable here"), f.line);
             }
 
             const _size& h = f.value.h2;
 
-            if (h == HASH_PER_YEAR || h == HASH_PER_YEARS)
+            if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
                return new TimeYears(var);
-            else if (h == HASH_PER_MONTH || h == HASH_PER_MONTHS)
+            else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
                return new TimeMonths(var);
-            else if (h == HASH_PER_WEEKDAY)
+            else if (h == hs.HASH_PER_WEEKDAY)
                return new TimeWeekDay(var);
-            else if (h == HASH_PER_DAY || h == HASH_PER_DAYS)
+            else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
                return new TimeDays(var);
-            else if (h == HASH_PER_HOUR || h == HASH_PER_HOURS)
+            else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
                return new TimeHours(var);
-            else if (h == HASH_PER_MINUTE || h == HASH_PER_MINUTES)
+            else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
                return new TimeMinutes(var);
-            else if (h == HASH_PER_SECOND || h == HASH_PER_SECOND)
+            else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECOND)
                return new TimeSeconds(var);
-            else if (h == HASH_PER_DATE)
+            else if (h == hs.HASH_PER_DATE)
                return nullptr;
             else {
                timeVariableMemberException(f);
@@ -80,7 +82,7 @@ Generator<_num>* parseNumber(const Tokens& tks)
    }
 
    if (isPossibleFunction(tks)) {
-      Generator<_num>* func = numberFunction(tks);
+      Generator<_num>* func = numberFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -97,7 +99,7 @@ Generator<_num>* parseNumber(const Tokens& tks)
          if (t.type == Token::t_Symbol && isNumExpOperator(t.value.c) && bi.isBracketFree()
              && !(i == start && t.value.c == L'-'))
          {
-            Generator<_num>* num = parseNumExp(tks);
+            Generator<_num>* num = parseNumExp(tks, uro);
 
             if (num != nullptr) {
                return num;
@@ -115,7 +117,7 @@ Generator<_num>* parseNumber(const Tokens& tks)
                   const Tokens& tkse = elements[i];
                   Generator<_str>* str;
 
-                  if (parse(tkse, str)) {
+                  if (parse(uro, tkse, str)) {
                      delete str;
                   }
                   else {
@@ -134,12 +136,12 @@ Generator<_num>* parseNumber(const Tokens& tks)
          tks2.trimLeft();
          Generator<_num>* num;
 
-         if (parse(tks2, num)) {
+         if (parse(uro, tks2, num)) {
             return new Negation(num);
          }
          else {
             Generator<_per>* per;
-            if (parse(tks2, per)) {
+            if (parse(uro, tks2, per)) {
                delete per;
             }
             else {
@@ -149,37 +151,38 @@ Generator<_num>* parseNumber(const Tokens& tks)
       }
    }
 
-   Generator<_num>* el = parseCollectionElement<_num>(tks);
+   Generator<_num>* el = parseCollectionElement<_num>(tks, uro);
    if (el != nullptr) {
       return el;
    }
 
-   if (isPossibleListElementMember(tks)) {
+   if (isPossibleListElementMember(tks, uro)) {
       Tokens tksm(tks);
       tksm.trimRight();
 
-      Generator<_num>* num = parseListElementIndex(tksm);
+      Generator<_num>* num = parseListElementIndex(tksm, uro);
       const Token& f = tks.first();
       Generator<_tlist>* tlist;
-      if (getVarValue(f, tlist)) {
+      if (uro->vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
          const _size& h = last.value.h2;
+         const Hashes& hs = uro->hashes;
 
-         if (h == HASH_PER_YEAR || h == HASH_PER_YEARS)
+         if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
             return new TimeYearsAtIndex(tlist, num);
-         else if (h == HASH_PER_MONTH || h == HASH_PER_MONTHS)
+         else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
             return new TimeMonthsAtIndex(tlist, num);
-         else if (h == HASH_PER_WEEKDAY)
+         else if (h == hs.HASH_PER_WEEKDAY)
             return new TimeWeekDayAtIndex(tlist, num);
-         else if (h == HASH_PER_DAY || h == HASH_PER_DAYS)
+         else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
             return new TimeDaysAtIndex(tlist, num);
-         else if (h == HASH_PER_HOUR || h == HASH_PER_HOURS)
+         else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
             return new TimeHoursAtIndex(tlist, num);
-         else if (h == HASH_PER_MINUTE || h == HASH_PER_MINUTES)
+         else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
             return new TimeMinutesAtIndex(tlist, num);
-         else if (h == HASH_PER_SECOND || h == HASH_PER_SECONDS)
+         else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECONDS)
             return new TimeSecondsAtIndex(tlist, num);
-         else if (h == HASH_PER_DATE)
+         else if (h == hs.HASH_PER_DATE)
             return nullptr;
          else
             timeVariableMemberException(last);
@@ -189,12 +192,12 @@ Generator<_num>* parseNumber(const Tokens& tks)
       }
    }
 
-   Generator<_num>* bin = parseBinary<_num>(tks);
+   Generator<_num>* bin = parseBinary<_num>(tks, uro);
    if (bin != nullptr) {
       return bin;
    }
 
-   Generator<_num>* tern = parseTernary<_num>(tks);
+   Generator<_num>* tern = parseTernary<_num>(tks, uro);
    if (tern != nullptr) {
       return tern;
    }
@@ -205,7 +208,7 @@ Generator<_num>* parseNumber(const Tokens& tks)
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static Generator<_num>* parseNumExp(const Tokens& tks)
+static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
 {
    std::vector<ExpElement<_num>*> infList; // infix notation list
    const _int start = tks.getStart();
@@ -240,7 +243,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks)
                   }
                   else {
                      Generator<_num>* num;
-                     if (parse(tks2, num)) {
+                     if (parse(uro, tks2, num)) {
                         infList.push_back(new ExpElement<_num>(num));
                         infList.push_back(new ExpElement<_num>(ch));
                         sublen = 0;
@@ -314,7 +317,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks)
       }
       else {
          Generator<_num>* num;
-         if (parse(tks2, num)) {
+         if (parse(uro, tks2, num)) {
             infList.push_back(new ExpElement<_num>(num));
          }
          else {

@@ -16,11 +16,12 @@
 #define PARSE-DEFINITION_H_INCLUDED
 
 #include "../../tokens.h"
+#include "../../uroboros.h"
 
 
-_def* parseDefinition(const Tokens& tks);
+_def* parseDefinition(const Tokens& tks, Uroboros* uro);
 
-static _boo isDefinitionChain(const Tokens& tks);
-static _def* parseDefinitionChain(const Tokens& tks);
+static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro);
+static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro);
 
 #endif // PARSE-DEFINITION_H_INCLUDED

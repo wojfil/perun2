@@ -16,10 +16,11 @@
 #define LEXER_H
 
 #include "tokens.h"
+#include "uroboros.h"
 
 
-std::vector<Token> tokenize(const _str &code);
-static Token wordToken(_str& value, _int& line);
+std::vector<Token> tokenize(const _str &code, Uroboros* uro);
+static Token wordToken(_str& value, _int& line, Uroboros* uro);
 inline _boo isSymbol(const _char& ch);
 _boo isNewLine(const _char& ch);
 inline _boo isAllowedInWord(const _char& ch);

@@ -17,6 +17,7 @@
 
 #include "attribute.h"
 #include "datatype/datatype.h"
+#include "var/var-inner.h"
 
 
 // this struct is a consequence of using struct Attribute in iteration loops with other nested iteration loops
@@ -25,11 +26,12 @@
 struct AttributeMemory
 {
 public:
-   AttributeMemory(Attribute* attr)
-      : attribute(attr), hasAttribute(true) { };
+   AttributeMemory(Attribute* attr, InnerVariables* iv)
+      : attribute(attr), hasAttribute(true), inner(iv) { };
 
-   AttributeMemory()
-      : attribute(nullptr), hasAttribute(false) { };
+   AttributeMemory(InnerVariables* iv)
+      : attribute(nullptr), hasAttribute(false), inner(iv) { };
+
 
    void load();
    void restore() const;
@@ -37,6 +39,7 @@ public:
 private:
    const _boo hasAttribute;
    Attribute* attribute;
+   InnerVariables* inner;
 
    _str prev_trimmed;
    _str prev_path;

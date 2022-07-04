@@ -28,27 +28,27 @@ _list Filter_WhereString::getValue()
    _list result;
    const _size length = values.size();
 
-   const _num prevIndex = g_index.value;
-   const _str prevThis = g_this_s.value;
+   const _num prevIndex = this->inner->index.value;
+   const _str prevThis = this->inner->this_s.value;
 
-   g_index.value = Number(0LL);
+   this->inner->index.value = Number(0LL);
 
    _size index = 0;
-   while (g_running && index != length) {
+   while (this->uroboros->running && index != length) {
       const _str& string = values[index];
-      g_this_s.value = string;
+      this->inner->this_s.value = string;
       os_loadAttributes(attribute);
 
       if (condition->getValue()) {
          result.push_back(string);
       }
 
-      g_index.value++;
+      this->inner->index.value++;
       index++;
    }
 
-   g_index.value = prevIndex;
-   g_this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->this_s.value = prevThis;
 
    return result;
 }
@@ -62,13 +62,13 @@ _list Filter_OrderByString::getValue()
       return list;
    }
 
-   const _num prevIndex = g_index.value;
-   const _str prevThis = g_this_s.value;
+   const _num prevIndex = this->inner->index.value;
+   const _str prevThis = this->inner->this_s.value;
 
    this->quicksort(list, 0, size - 1);
 
-   g_index.value = prevIndex;
-   g_this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->this_s.value = prevThis;
 
    return list;
 }

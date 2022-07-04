@@ -21,6 +21,7 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../../util.h"
+#include "../../var/var.h"
 
 
 template <typename T>
@@ -290,6 +291,20 @@ private:
 };
 
 
+template <typename T>
+struct VarReference : Generator<T>
+{
+public:
+   VarReference(Variable<T>* var) : variable(var) { };
+
+   T getValue() override {
+      return variable->value;
+   }
+
+private:
+   Variable<T>* variable;
+};
+
+
 
 #endif /* GEN_GENERIC_H */
-

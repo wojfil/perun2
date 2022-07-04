@@ -28,7 +28,7 @@ void C_AggrCopy_String::run()
       aggregate->invalidCopy.insert(os_fullname(n));
    }
    else {
-      aggregate->copyPaths.insert(os_join(g_location.value, n));
+      aggregate->copyPaths.insert(os_join(this->inner->location.value, n));
    }
 }
 
@@ -46,7 +46,7 @@ void C_AggrCopy_List::run()
          aggregate->invalidCopy.insert(os_fullname(n));
       }
       else {
-         aggregate->copyPaths.insert(os_join(g_location.value, n));
+         aggregate->copyPaths.insert(os_join(this->inner->location.value, n));
       }
    }
 }
@@ -62,7 +62,7 @@ void C_AggrSelect_String::run()
       aggregate->invalidSelect.insert(os_fullname(n));
    }
    else {
-      const _str path = os_join(g_location.value, n);
+      const _str path = os_join(this->inner->location.value, n);
 
       if (os_hasParentDirectory(path)) {
          const _str parent = os_parent(path);
@@ -100,7 +100,7 @@ void C_AggrSelect_List::run()
          aggregate->invalidSelect.insert(os_fullname(n));
       }
       else {
-         const _str path = os_join(g_location.value, n);
+         const _str path = os_join(this->inner->location.value, n);
 
          if (os_hasParentDirectory(path)) {
             const _str parent = os_parent(path);
@@ -134,24 +134,24 @@ void C_AggrSelect_List::run()
 
 
 
-void logCopyError(const _str& name)
+void logCopyError(Uroboros* uro, const _str& name)
 {
-   commandLog(L"Failed to copy ", getCCNameShort(name));
+   commandLog(uro, L"Failed to copy ", getCCNameShort(name));
 }
 
-void logCopySuccess(const _str& name)
+void logCopySuccess(Uroboros* uro, const _str& name)
 {
-   commandLog(L"Copy ", getCCNameShort(name));
+   commandLog(uro, L"Copy ", getCCNameShort(name));
 }
 
-void logSelectError(const _str& name)
+void logSelectError(Uroboros* uro, const _str& name)
 {
-   commandLog(L"Failed to select ", getCCNameShort(name));
+   commandLog(uro, L"Failed to select ", getCCNameShort(name));
 }
 
-void logSelectSuccess(const _str& name)
+void logSelectSuccess(Uroboros* uro, const _str& name)
 {
-   commandLog(L"Select ", getCCNameShort(name));
+   commandLog(uro, L"Select ", getCCNameShort(name));
 }
 
 
@@ -160,28 +160,28 @@ void C_Copy_String::run()
 {
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
-      logCopyError(n);
-      g_success.value = false;
+      logCopyError(this->uroboros, n);
+      this->inner->success.value = false;
       return;
    }
 
-   const _str path = os_join(g_location.value, n);
+   const _str path = os_join(this->inner->location.value, n);
    if (os_exists(path)) {
       std::set<_str> set;
       set.insert(path);
       const _boo s = os_copy(set);
       if (s) {
-         logCopySuccess(path);
+         logCopySuccess(this->uroboros, path);
       }
       else {
-         logCopyError(path);
+         logCopyError(this->uroboros, path);
       }
-      g_success.value = s;
+      this->inner->success.value = s;
 
    }
    else {
-      logCopyError(path);
-      g_success.value = false;
+      logCopyError(this->uroboros, path);
+      this->inner->success.value = false;
    }
 }
 
@@ -191,7 +191,7 @@ void C_Copy_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      g_success.value = true;
+      this->inner->success.value = true;
       return;
    }
 
@@ -201,16 +201,16 @@ void C_Copy_List::run()
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
       if (os_isInvaild(n)) {
-         logCopyError(n);
+         logCopyError(this->uroboros, n);
          anyFailure = true;
       }
       else {
-         const _str path = os_join(g_location.value, n);
+         const _str path = os_join(this->inner->location.value, n);
          if (os_exists(path)) {
             set.insert(path);
          }
          else {
-            logCopyError(path);
+            logCopyError(this->uroboros, path);
             anyFailure = true;
          }
       }
@@ -222,27 +222,27 @@ void C_Copy_List::run()
 
       for (auto it = set.begin(); it != end; ++it) {
          if (s) {
-            logCopySuccess(*it);
+            logCopySuccess(this->uroboros, *it);
          }
          else {
-            logCopyError(*it);
+            logCopyError(this->uroboros, *it);
          }
       }
    }
 
-   g_success.value = !anyFailure;
+   this->inner->success.value = !anyFailure;
 }
 
 void C_Select_String::run()
 {
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
-      logSelectError(n);
-      g_success.value = false;
+      logSelectError(this->uroboros, n);
+      this->inner->success.value = false;
       return;
    }
 
-   const _str path = os_join(g_location.value, n);
+   const _str path = os_join(this->inner->location.value, n);
    _boo success = false;
 
    if (os_exists(path) && os_hasParentDirectory(path)) {
@@ -254,21 +254,21 @@ void C_Select_String::run()
          success = os_select(parent, set);
 
          if (success) {
-            logSelectSuccess(path);
+            logSelectSuccess(this->uroboros, path);
          }
          else {
-            logSelectError(path);
+            logSelectError(this->uroboros, path);
          }
       }
       else {
-         logSelectError(path);
+         logSelectError(this->uroboros, path);
       }
    }
    else {
-      logSelectError(path);
+      logSelectError(this->uroboros, path);
    }
 
-   g_success.value = success;
+   this->inner->success.value = success;
 }
 
 void C_Select_List::run()
@@ -277,7 +277,7 @@ void C_Select_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      g_success.value = true;
+      this->inner->success.value = true;
       return;
    }
 
@@ -290,20 +290,20 @@ void C_Select_List::run()
       const _str n = os_trim(elements[i]);
 
       if (os_isInvaild(n)) {
-         logSelectError(n);
+         logSelectError(this->uroboros, n);
          continue;
       }
 
-      const _str path = os_join(g_location.value, n);
+      const _str path = os_join(this->inner->location.value, n);
 
       if (!os_exists(path) || !os_hasParentDirectory(path)) {
-         logSelectError(path);
+         logSelectError(this->uroboros, path);
          continue;
       }
 
       const _str parent = os_parent(path);
       if (!os_directoryExists(parent)) {
-         logSelectError(path);
+         logSelectError(this->uroboros, path);
          continue;
       }
 
@@ -331,14 +331,14 @@ void C_Select_List::run()
    }
 
    if (selectPaths.empty()) {
-      g_success.value = false;
+      this->inner->success.value = false;
    }
    else {
       _boo anyFailed = false;
 
       for (auto it = selectPaths.begin(); it != selectPaths.end(); it++)
       {
-         if (!g_running) {
+         if (!this->uroboros->running) {
             break;
          }
 
@@ -350,14 +350,14 @@ void C_Select_List::run()
          const auto end = it->second.end();
          for (auto it2 = it->second.begin(); it2 != end; ++it2) {
             if (success) {
-               logSelectSuccess(*it2);
+               logSelectSuccess(this->uroboros, *it2);
             }
             else {
-               logSelectError(*it2);
+               logSelectError(this->uroboros, *it2);
             }
          }
       }
 
-      g_success.value = !anyFailed;
+      this->inner->success.value = !anyFailed;
    }
 }

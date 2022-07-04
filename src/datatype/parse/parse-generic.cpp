@@ -49,13 +49,13 @@ _boo isPossibleListElement(const Tokens& tks)
    return true;
 }
 
-Generator<_num>* parseListElementIndex(const Tokens& tks)
+Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
    const Tokens tks2(tks.list, start, length);
 
-   Generator<_num>* num = parseNumber(tks2);
+   Generator<_num>* num = parseNumber(tks2, uro);
    if (num == nullptr) {
       throw SyntaxException(
          L"content of square brackets [] cannot be resolved to a number",
@@ -177,7 +177,7 @@ void checkLimitBySize(const Tokens& tks)
 }
 
 
-_boo isPossibleListElementMember(const Tokens& tks)
+_boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro)
 {
    const _size length = tks.getLength();
 
@@ -198,7 +198,7 @@ _boo isPossibleListElementMember(const Tokens& tks)
       return false;
    }
 
-   if (last.value.h1 != HASH_NOTHING) {
+   if (last.value.h1 != uro->hashes.HASH_NOTHING) {
       throw SyntaxException(L"square brackets [] should be followed by a time variable member",
          tks.last().line);
    }
@@ -213,25 +213,25 @@ _boo isPossibleListElementMember(const Tokens& tks)
 }
 
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result)
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result, Uroboros* uro)
 {
    switch (kw) {
       case Keyword::kw_Every: {
-         result = new Filter_EveryDef(result, num);
+         result = new Filter_EveryDef(result, num, uro);
          break;
       }
       case Keyword::kw_Limit: {
-         result = new Filter_LimitDef(result, num);
+         result = new Filter_LimitDef(result, num, uro);
          break;
       }
       case Keyword::kw_Skip: {
-         result = new Filter_SkipDef(result, num);
+         result = new Filter_SkipDef(result, num, uro);
          break;
       }
    }
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result)
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result, Uroboros* uro)
 {
    switch (kw) {
       case Keyword::kw_Every: {
@@ -249,7 +249,7 @@ void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist
    }
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result)
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result, Uroboros* uro)
 {
    switch (kw) {
       case Keyword::kw_Every: {
@@ -267,7 +267,7 @@ void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist
    }
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result)
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result, Uroboros* uro)
 {
    switch (kw) {
       case Keyword::kw_Every: {
@@ -285,46 +285,46 @@ void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>
    }
 }
 
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result)
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result, Uroboros* uro)
 {
-   result = new Filter_WhereNumber(result, boo);
+   result = new Filter_WhereNumber(result, boo, uro);
 }
 
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result)
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result, Uroboros* uro)
 {
-   result = new Filter_WhereTime(result, boo);
+   result = new Filter_WhereTime(result, boo, uro);
 }
 
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result)
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result, Uroboros* uro)
 {
-   result = new Filter_WhereString(result, boo, *attr);
+   result = new Filter_WhereString(result, boo, *attr, uro);
 }
 
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result)
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result, Uroboros* uro)
 {
-   result = new Filter_WhereDef(result, boo, attr, hasMemory);
+   result = new Filter_WhereDef(result, boo, attr, hasMemory, uro);
 }
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result)
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result, Uroboros* uro)
 {
-   order = new Filter_OrderByNumber(result);
+   order = new Filter_OrderByNumber(result, uro);
    result = order;
 }
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result)
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result, Uroboros* uro)
 {
-   order = new Filter_OrderByTime(result);
+   order = new Filter_OrderByTime(result, uro);
    result = order;
 }
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result)
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result, Uroboros* uro)
 {
-   order = new Filter_OrderByString(result, attr);
+   order = new Filter_OrderByString(result, attr, uro);
    result = order;
 }
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result)
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro)
 {
-   order = new Filter_OrderByString(new Cast_D_L(result), attr);
-   result = new OrderByCast(order, attr, hasMemory);
+   order = new Filter_OrderByString(new Cast_D_L(result, uro), attr, uro);
+   result = new OrderByCast(order, attr, hasMemory, uro);
 }

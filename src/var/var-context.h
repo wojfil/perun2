@@ -16,27 +16,40 @@
 #define VAR_GROUP_H_INCLUDED
 
 #include "../attribute.h"
+#include "../hash.h"
 #include "../command/aggregate.h"
 #include "../datatype/datatype.h"
 
 
-extern std::vector<Attribute*> g_attrs;
-extern std::vector<Aggregate*> g_aggrs;
 
+struct VariablesContext
+{
+public:
 
-void setAttribute(const Token& tk);
-void setAttribute(const _size& name);
-void setCoreComAttribute(const _str& comName, const _int& line);
-void attributeException(const Token& tk);
-void addAttribute(Attribute* attr);
-void retreatAttribute();
-_boo anyAttribute();
-Attribute* getLastAttribute();
-void markAttributesToRun();
+   VariablesContext(Hashes* hsh);
 
-void addAggregate(Aggregate* aggr);
-void retreatAggregate();
-Aggregate* getLastAggregate();
+   void setAttribute(const Token& tk);
+   void setAttribute(const _size& name);
+   void setCoreComAttribute(const _str& comName, const _int& line);
+   void attributeException(const Token& tk);
+   void addAttribute(Attribute* attr);
+   void retreatAttribute();
+   _boo anyAttribute();
+   Attribute* getLastAttribute();
+   void markAttributesToRun();
+
+   void addAggregate(Aggregate* aggr);
+   void retreatAggregate();
+   _boo anyAggregate();
+   Aggregate* getLastAggregate();
+
+private:
+
+   Hashes* hashes;
+   std::vector<Attribute*> attrs;
+   std::vector<Aggregate*> aggrs;
+
+};
 
 
 #endif // VAR_GROUP_H_INCLUDED

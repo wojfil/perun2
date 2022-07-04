@@ -18,6 +18,7 @@
 
 #include "generator.h"
 #include "datatype.h"
+#include "../uroboros.h"
 
 
 template <typename T1, typename T2>
@@ -128,13 +129,16 @@ struct Cast_TL_L : Cast<_tlist, _list>
 struct Cast_D_L : Generator<_list>
 {
 public:
-   Cast_D_L(_def* b) : base(b) { };
+   Cast_D_L(_def* b, Uroboros* uro)
+      : base(b), uroboros(uro) { };
+
    ~Cast_D_L() {
       delete base;
    }
    _list getValue() override;
 
 private:
+   Uroboros* uroboros;
    _def* base;
 };
 

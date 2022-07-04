@@ -16,12 +16,13 @@
 #define EXP_PARSE_NUMBER_H
 
 #include "../../tokens.h"
+#include "../../uroboros.h"
 #include "../exp-element.h"
 
 
-Generator<_num>* parseNumber(const Tokens& tks);
+Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro);
 
-static Generator<_num>* parseNumExp(const Tokens& tks);
+static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro);
 static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList,
    std::vector<ExpElement<_num>*>& pntList);
 static Generator<_num>* numExpIntegrateUnary(

@@ -16,11 +16,12 @@
 #define PARSE_LIST_H
 
 #include "../../tokens.h"
+#include "../../uroboros.h"
 
 
-Generator<_list>* parseList(const Tokens& tks);
+Generator<_list>* parseList(const Tokens& tks, Uroboros* uro);
 
-static Generator<_list>* parseListed(const Tokens& tks);
-Generator<_list>* parseListConst(const Tokens& tks);
+static Generator<_list>* parseListed(const Tokens& tks, Uroboros* uro);
+Generator<_list>* parseListConst(const Tokens& tks, Uroboros* uro);
 
 #endif /* PARSE_LIST_H */

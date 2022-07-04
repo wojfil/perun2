@@ -15,18 +15,20 @@
 #ifndef COM_MISC_H
 #define COM_MISC_H
 
-#include "com.h"
+#include "com-listener.h"
 #include "../datatype/datatype.h"
 #include "../datatype/generator.h"
 #include "aggregate.h"
 #include "../attribute.h"
+#include "../uroboros.h"
 #include "../var/var.h"
 
 
 struct C_PrintSingle : Command
 {
 public:
-   C_PrintSingle(Generator<_str>* val) : value(val) { };
+   C_PrintSingle(Generator<_str>* val, Uroboros* uro)
+      : value(val), uroboros(uro) { };
 
    ~C_PrintSingle() {
       delete value;
@@ -35,6 +37,7 @@ public:
    void run() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_str>* value;
 };
 
@@ -42,7 +45,8 @@ private:
 struct C_PrintList : Command
 {
 public:
-   C_PrintList(Generator<_list>* val) : value(val) { };
+   C_PrintList(Generator<_list>* val, Uroboros* uro)
+      : value(val), uroboros(uro) { };
 
    ~C_PrintList() {
       delete value;
@@ -51,6 +55,7 @@ public:
    void run() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_list>* value;
 };
 
@@ -58,7 +63,8 @@ private:
 struct C_PrintDefinition : Command
 {
 public:
-   C_PrintDefinition(_def* val) : value(val) { };
+   C_PrintDefinition(_def* val, Uroboros* uro)
+      : value(val), uroboros(uro) { };
 
    ~C_PrintDefinition() {
       delete value;
@@ -67,6 +73,7 @@ public:
    void run() override;
 
 private:
+   Uroboros* uroboros;
    _def* value;
 };
 
@@ -74,32 +81,47 @@ private:
 struct C_PrintThis_Str : Command
 {
 public:
-   C_PrintThis_Str() { };
+   C_PrintThis_Str(Uroboros* uro)
+      : uroboros(uro), variable(&uro->vars.inner.this_s) { };
    void run() override;
+
+private:
+   Variable<_str>* variable;
+   Uroboros* uroboros;
 };
 
 
 struct C_PrintThis_Num : Command
 {
 public:
-   C_PrintThis_Num() { };
+   C_PrintThis_Num(Uroboros* uro)
+      : uroboros(uro), variable(&uro->vars.inner.this_n) { };
    void run() override;
-};
 
+private:
+   Variable<_num>* variable;
+   Uroboros* uroboros;
+};
 
 
 struct C_PrintThis_Tim : Command
 {
 public:
-   C_PrintThis_Tim() { };
+   C_PrintThis_Tim(Uroboros* uro)
+      : uroboros(uro), variable(&uro->vars.inner.this_t) { };
    void run() override;
+
+private:
+   Variable<_tim>* variable;
+   Uroboros* uroboros;
 };
 
 
 struct C_SleepPeriod : Command
 {
 public:
-   C_SleepPeriod(Generator<_per>* val) : value(val) { };
+   C_SleepPeriod(Generator<_per>* val, Uroboros* uro) 
+      : value(val), uroboros(uro) { };
 
    ~C_SleepPeriod() {
       delete value;
@@ -108,6 +130,7 @@ public:
    void run() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_per>* value;
 };
 
@@ -115,7 +138,8 @@ private:
 struct C_SleepMs : Command
 {
 public:
-   C_SleepMs(Generator<_num>* val) : value(val) { };
+   C_SleepMs(Generator<_num>* val, Uroboros* uro) 
+      : value(val), uroboros(uro) { };
 
    ~C_SleepMs() {
       delete value;
@@ -124,6 +148,7 @@ public:
    void run() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_num>* value;
 };
 
@@ -131,40 +156,56 @@ private:
 struct C_Break : Command
 {
 public:
-   C_Break() { };
+   C_Break(Uroboros* uro)
+      : uroboros(uro) { };
    void run() override;
+
+private:
+   Uroboros* uroboros;
 };
 
 
 struct C_Continue : Command
 {
 public:
-   C_Continue() { };
+   C_Continue(Uroboros* uro)
+      : uroboros(uro) { };
    void run() override;
+
+private:
+   Uroboros* uroboros;
 };
 
 
 struct C_Exit : Command
 {
 public:
-   C_Exit() { };
+   C_Exit(Uroboros* uro)
+      : uroboros(uro) { };
    void run() override;
+
+private:
+   Uroboros* uroboros;
 };
 
 
 struct C_Error : Command
 {
 public:
-   C_Error() { };
+   C_Error(Uroboros* uro)
+      : uroboros(uro) { };
    void run() override;
+
+private:
+   Uroboros* uroboros;
 };
 
 
 struct C_ErrorWithExitCode : Command
 {
 public:
-   C_ErrorWithExitCode(Generator<_num>* code)
-      : exitCode(code) { };
+   C_ErrorWithExitCode(Generator<_num>* code, Uroboros* uro)
+      : exitCode(code), uroboros(uro) { };
 
    ~C_ErrorWithExitCode() {
       delete exitCode;
@@ -173,15 +214,16 @@ public:
    void run() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_num>* exitCode;
 };
 
 
-struct C_Run : Command
+struct C_Run : Command_L
 {
 public:
-   C_Run(Generator<_str>* val, Attribute* attr) : value(val),
-      attribute(attr), hasAttribute(attr != nullptr) { };
+   C_Run(Generator<_str>* val, Attribute* attr, Uroboros* uro)
+      : value(val), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_Run() {
       delete value;
@@ -196,14 +238,14 @@ private:
 };
 
 
-struct C_RunWith : Command
+struct C_RunWith : Command_L
 {
 public:
-   C_RunWith(Generator<_str>* val) : value(val),
-      attribute(nullptr), hasAttribute(false) { };
+   C_RunWith(Generator<_str>* val, Uroboros* uro)
+      : value(val), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWith(Generator<_str>* val, Attribute* attr) : value(val),
-      attribute(attr), hasAttribute(attr != nullptr) { };
+   C_RunWith(Generator<_str>* val, Attribute* attr, Uroboros* uro)
+      : value(val), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWith() {
       delete value;
@@ -218,14 +260,14 @@ private:
 };
 
 
-struct C_RunWithWithString : Command
+struct C_RunWithWithString : Command_L
 {
 public:
-   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg)
-      : value(val), argument(arg), attribute(nullptr), hasAttribute(false) { };
+   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Uroboros* uro)
+      : value(val), argument(arg), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Attribute* attr)
-      : value(val), argument(arg), attribute(attr), hasAttribute(attr != nullptr) { };
+   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Attribute* attr, Uroboros* uro)
+      : value(val), argument(arg), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithWithString() {
       delete value;
@@ -242,14 +284,14 @@ private:
 };
 
 
-struct C_RunWithWith : Command
+struct C_RunWithWith : Command_L
 {
 public:
-   C_RunWithWith(Generator<_str>* val, Generator<_list>* args)
-      : value(val), arguments(args), attribute(nullptr), hasAttribute(false) { };
+   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Uroboros* uro)
+      : value(val), arguments(args), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Attribute* attr)
-      : value(val), arguments(args), attribute(attr), hasAttribute(attr != nullptr) { };
+   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Attribute* attr, Uroboros* uro)
+      : value(val), arguments(args), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithWith() {
       delete value;
@@ -266,11 +308,13 @@ private:
 };
 
 
-struct C_RunWithUroboros : Command
+struct C_RunWithUroboros : Command_L
 {
 public:
-   C_RunWithUroboros() : attribute(nullptr), hasAttribute(false) { };
-   C_RunWithUroboros(Attribute* attr) : attribute(attr), hasAttribute(attr != nullptr) { };
+   C_RunWithUroboros(Uroboros* uro)
+      : attribute(nullptr), hasAttribute(false), Command_L(uro) { };
+   C_RunWithUroboros(Attribute* attr, Uroboros* uro)
+      : attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
@@ -280,14 +324,14 @@ private:
 };
 
 
-struct C_RunWithUroborosWithString : Command
+struct C_RunWithUroborosWithString : Command_L
 {
 public:
-   C_RunWithUroborosWithString(Generator<_str>* arg)
-      : argument(arg), attribute(nullptr), hasAttribute(false) { };
+   C_RunWithUroborosWithString(Generator<_str>* arg, Uroboros* uro)
+      : argument(arg), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWithString(Generator<_str>* arg, Attribute* attr)
-      : argument(arg), attribute(attr), hasAttribute(attr != nullptr) { };
+   C_RunWithUroborosWithString(Generator<_str>* arg, Attribute* attr, Uroboros* uro)
+      : argument(arg), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithUroborosWithString() {
       delete argument;
@@ -302,14 +346,14 @@ private:
 };
 
 
-struct C_RunWithUroborosWith : Command
+struct C_RunWithUroborosWith : Command_L
 {
 public:
-   C_RunWithUroborosWith(Generator<_list>* args)
-      : arguments(args), attribute(nullptr), hasAttribute(false) { };
+   C_RunWithUroborosWith(Generator<_list>* args, Uroboros* uro)
+      : arguments(args), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWith(Generator<_list>* args, Attribute* attr)
-      : arguments(args), attribute(attr), hasAttribute(attr != nullptr) { };
+   C_RunWithUroborosWith(Generator<_list>* args, Attribute* attr, Uroboros* uro)
+      : arguments(args), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithUroborosWith() {
       delete arguments;
@@ -324,10 +368,11 @@ private:
 };
 
 
-struct C_Process : Command
+struct C_Process : Command_L
 {
 public:
-   C_Process(Generator<_str>* val) : value(val) { };
+   C_Process(Generator<_str>* val, Uroboros* uro)
+      : value(val), Command_L(uro) { };
 
    ~C_Process() {
       delete value;

@@ -27,6 +27,7 @@
 #define _int int32_t
 #define _uint32 uint32_t
 #define _uint64 uint64_t
+#define _ulong long unsigned int
 #define _nint int64_t
 #define _ndouble long double
 #define _size std::size_t

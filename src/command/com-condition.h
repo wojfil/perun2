@@ -18,19 +18,20 @@
 #include "com.h"
 #include "../datatype/generator.h"
 #include "../datatype/primitives.h"
-#include <vector>
 #include "../util.h"
+#include "../uroboros.h"
+#include <vector>
 
 
 struct CS_If : Command
 {
 public:
-   CS_If(Generator<_boo>* cond)
+   CS_If(Generator<_boo>* cond, Uroboros* uro)
       : condition(cond), mainCommand(nullptr), elseCommand(nullptr),
         elseIfConditions(std::vector<Generator<_boo>*>()),
         elseIfCommands(std::vector<Command*>()),
         hasMain(false), hasAlternatives(false), hasElse(false),
-        elseIfCount(0) { };
+        elseIfCount(0), uroboros(uro) { };
 
    ~CS_If() {
       delete condition;
@@ -54,6 +55,7 @@ public:
    Command* mainCommand;
 
 private:
+   Uroboros* uroboros;
    Generator<_boo>* condition;
    Command* elseCommand;
    std::vector<Generator<_boo>*> elseIfConditions;

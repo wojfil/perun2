@@ -42,20 +42,20 @@ void CS_If::addElseIf(Generator<_boo>* cond, Command* com)
 
 void CS_If::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       if (condition->getValue()) {
          if (hasMain) {
             mainCommand->run();
          }
       }
       else if (hasAlternatives) {
-         for (_size i = 0; i < elseIfCount && g_running; i++) {
+         for (_size i = 0; i < elseIfCount && this->uroboros->running; i++) {
             if ((elseIfConditions[i])->getValue()) {
                (elseIfCommands[i])->run();
                return;
             }
          }
-         if (g_running && hasElse) {
+         if (this->uroboros->running && hasElse) {
             elseCommand->run();
          }
       }

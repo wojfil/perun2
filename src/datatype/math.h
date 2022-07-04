@@ -4,9 +4,6 @@
 #include "primitives.h"
 #include <random>
 
-struct Math;
-
-extern Math* g_math;
 
 struct Math {
 

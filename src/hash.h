@@ -20,209 +20,217 @@
 #include <set>
 #include <map>
 
+
 _size stringHash(const _str& value);
 _size rawStringHash(const _str& value);
 
-void initHashes();
 
 // prepare hashes for language keywords
 // so, instead of comparing strings, we will compare hashes
+struct Hashes
+{
+public:
 
-extern _size HASH_NOTHING;
+   Hashes();
 
-extern _size HASH_VAR_THIS;
-extern _size HASH_VAR_ACCESS;
-extern _size HASH_VAR_ARCHIVE;
-extern _size HASH_VAR_CHANGE;
-extern _size HASH_VAR_COMPRESSED;
-extern _size HASH_VAR_CREATION;
-extern _size HASH_VAR_DEPTH;
-extern _size HASH_VAR_DRIVE;
-extern _size HASH_VAR_EMPTY;
-extern _size HASH_VAR_ENCRYPTED;
-extern _size HASH_VAR_EXISTS;
-extern _size HASH_VAR_EXTENSION;
-extern _size HASH_VAR_FULLNAME;
-extern _size HASH_VAR_HIDDEN;
-extern _size HASH_VAR_INDEX;
-extern _size HASH_VAR_ISDIRECTORY;
-extern _size HASH_VAR_ISFILE;
-extern _size HASH_VAR_LIFETIME;
-extern _size HASH_VAR_LOCATION;
-extern _size HASH_VAR_MODIFICATION;
-extern _size HASH_VAR_NAME;
-extern _size HASH_VAR_PARENT;
-extern _size HASH_VAR_PATH;
-extern _size HASH_VAR_READONLY;
-extern _size HASH_VAR_SIZE;
-extern _size HASH_VAR_SUCCESS;
+   _size HASH_NOTHING;
 
-extern _size HASH_VAR_NOW;
-extern _size HASH_VAR_TODAY;
-extern _size HASH_VAR_YESTERDAY;
-extern _size HASH_VAR_TOMORROW;
+   _size HASH_VAR_THIS;
+   _size HASH_VAR_ACCESS;
+   _size HASH_VAR_ARCHIVE;
+   _size HASH_VAR_CHANGE;
+   _size HASH_VAR_COMPRESSED;
+   _size HASH_VAR_CREATION;
+   _size HASH_VAR_DEPTH;
+   _size HASH_VAR_DRIVE;
+   _size HASH_VAR_EMPTY;
+   _size HASH_VAR_ENCRYPTED;
+   _size HASH_VAR_EXISTS;
+   _size HASH_VAR_EXTENSION;
+   _size HASH_VAR_FULLNAME;
+   _size HASH_VAR_HIDDEN;
+   _size HASH_VAR_INDEX;
+   _size HASH_VAR_ISDIRECTORY;
+   _size HASH_VAR_ISFILE;
+   _size HASH_VAR_LIFETIME;
+   _size HASH_VAR_LOCATION;
+   _size HASH_VAR_MODIFICATION;
+   _size HASH_VAR_NAME;
+   _size HASH_VAR_PARENT;
+   _size HASH_VAR_PATH;
+   _size HASH_VAR_READONLY;
+   _size HASH_VAR_SIZE;
+   _size HASH_VAR_SUCCESS;
 
-extern _size HASH_VAR_JANUARY;
-extern _size HASH_VAR_FEBRUARY;
-extern _size HASH_VAR_MARCH;
-extern _size HASH_VAR_APRIL;
-extern _size HASH_VAR_MAY;
-extern _size HASH_VAR_JUNE;
-extern _size HASH_VAR_JULY;
-extern _size HASH_VAR_AUGUST;
-extern _size HASH_VAR_SEPTEMBER;
-extern _size HASH_VAR_OCTOBER;
-extern _size HASH_VAR_NOVEMBER;
-extern _size HASH_VAR_DECEMBER;
+   _size HASH_VAR_NOW;
+   _size HASH_VAR_TODAY;
+   _size HASH_VAR_YESTERDAY;
+   _size HASH_VAR_TOMORROW;
 
-extern _size HASH_VAR_MONDAY;
-extern _size HASH_VAR_TUESDAY;
-extern _size HASH_VAR_WEDNESDAY;
-extern _size HASH_VAR_THURSDAY;
-extern _size HASH_VAR_FRIDAY;
-extern _size HASH_VAR_SATURDAY;
-extern _size HASH_VAR_SUNDAY;
+   _size HASH_VAR_JANUARY;
+   _size HASH_VAR_FEBRUARY;
+   _size HASH_VAR_MARCH;
+   _size HASH_VAR_APRIL;
+   _size HASH_VAR_MAY;
+   _size HASH_VAR_JUNE;
+   _size HASH_VAR_JULY;
+   _size HASH_VAR_AUGUST;
+   _size HASH_VAR_SEPTEMBER;
+   _size HASH_VAR_OCTOBER;
+   _size HASH_VAR_NOVEMBER;
+   _size HASH_VAR_DECEMBER;
 
-extern _size HASH_VAR_ALPHABET;
-extern _size HASH_VAR_ASCII;
-extern _size HASH_VAR_ARGUMENTS;
+   _size HASH_VAR_MONDAY;
+   _size HASH_VAR_TUESDAY;
+   _size HASH_VAR_WEDNESDAY;
+   _size HASH_VAR_THURSDAY;
+   _size HASH_VAR_FRIDAY;
+   _size HASH_VAR_SATURDAY;
+   _size HASH_VAR_SUNDAY;
 
-extern _size HASH_VAR_DESKTOP;
-extern _size HASH_VAR_UROBOROS;
+   _size HASH_VAR_ALPHABET;
+   _size HASH_VAR_ASCII;
+   _size HASH_VAR_ARGUMENTS;
 
-extern _size HASH_VAR_ALL;
-extern _size HASH_VAR_DIRECTORIES;
-extern _size HASH_VAR_FILES;
-extern _size HASH_VAR_RECURSIVEFILES;
-extern _size HASH_VAR_RECURSIVEDIRECTORIES;
-extern _size HASH_VAR_FILE;
-extern _size HASH_VAR_DIRECTORY;
+   _size HASH_VAR_DESKTOP;
+   _size HASH_VAR_UROBOROS;
 
-extern _size HASH_PER_YEAR;
-extern _size HASH_PER_MONTH;
-extern _size HASH_PER_WEEK;
-extern _size HASH_PER_DAY;
-extern _size HASH_PER_HOUR;
-extern _size HASH_PER_MINUTE;
-extern _size HASH_PER_SECOND;
+   _size HASH_VAR_ALL;
+   _size HASH_VAR_DIRECTORIES;
+   _size HASH_VAR_FILES;
+   _size HASH_VAR_RECURSIVEFILES;
+   _size HASH_VAR_RECURSIVEDIRECTORIES;
+   _size HASH_VAR_FILE;
+   _size HASH_VAR_DIRECTORY;
 
-extern _size HASH_PER_YEARS;
-extern _size HASH_PER_MONTHS;
-extern _size HASH_PER_WEEKS;
-extern _size HASH_PER_DAYS;
-extern _size HASH_PER_HOURS;
-extern _size HASH_PER_MINUTES;
-extern _size HASH_PER_SECONDS;
+   _size HASH_PER_YEAR;
+   _size HASH_PER_MONTH;
+   _size HASH_PER_WEEK;
+   _size HASH_PER_DAY;
+   _size HASH_PER_HOUR;
+   _size HASH_PER_MINUTE;
+   _size HASH_PER_SECOND;
 
-extern _size HASH_PER_DATE;
-extern _size HASH_PER_WEEKDAY;
+   _size HASH_PER_YEARS;
+   _size HASH_PER_MONTHS;
+   _size HASH_PER_WEEKS;
+   _size HASH_PER_DAYS;
+   _size HASH_PER_HOURS;
+   _size HASH_PER_MINUTES;
+   _size HASH_PER_SECONDS;
 
-extern _size HASH_FUNC_ISLOWER;
-extern _size HASH_FUNC_ISUPPER;
-extern _size HASH_FUNC_ISNUMBER;
-extern _size HASH_FUNC_ISLETTER;
-extern _size HASH_FUNC_ISDIGIT;
-extern _size HASH_FUNC_ISBINARY;
-extern _size HASH_FUNC_ISHEX;
+   _size HASH_PER_DATE;
+   _size HASH_PER_WEEKDAY;
 
-extern _size HASH_FUNC_EXIST;
-extern _size HASH_FUNC_ANY;
-extern _size HASH_FUNC_ANYINSIDE;
-extern _size HASH_FUNC_CONTAINS;
-extern _size HASH_FUNC_EXISTSINSIDE;
-extern _size HASH_FUNC_EXISTINSIDE;
-extern _size HASH_FUNC_STARTSWITH;
-extern _size HASH_FUNC_ENDSWITH;
+   _size HASH_FUNC_ISLOWER;
+   _size HASH_FUNC_ISUPPER;
+   _size HASH_FUNC_ISNUMBER;
+   _size HASH_FUNC_ISLETTER;
+   _size HASH_FUNC_ISDIGIT;
+   _size HASH_FUNC_ISBINARY;
+   _size HASH_FUNC_ISHEX;
 
-extern _size HASH_FUNC_ABSOLUTE;
-extern _size HASH_FUNC_CEIL;
-extern _size HASH_FUNC_FLOOR;
-extern _size HASH_FUNC_ROUND;
-extern _size HASH_FUNC_SIGN;
-extern _size HASH_FUNC_SQRT;
-extern _size HASH_FUNC_TRUNCATE;
+   _size HASH_FUNC_EXIST;
+   _size HASH_FUNC_ANY;
+   _size HASH_FUNC_ANYINSIDE;
+   _size HASH_FUNC_CONTAINS;
+   _size HASH_FUNC_EXISTSINSIDE;
+   _size HASH_FUNC_EXISTINSIDE;
+   _size HASH_FUNC_STARTSWITH;
+   _size HASH_FUNC_ENDSWITH;
 
-extern _size HASH_FUNC_AVERAGE;
-extern _size HASH_FUNC_SUM;
-extern _size HASH_FUNC_MIN;
-extern _size HASH_FUNC_MAX;
-extern _size HASH_FUNC_MEDIAN;
+   _size HASH_FUNC_ABSOLUTE;
+   _size HASH_FUNC_CEIL;
+   _size HASH_FUNC_FLOOR;
+   _size HASH_FUNC_ROUND;
+   _size HASH_FUNC_SIGN;
+   _size HASH_FUNC_SQRT;
+   _size HASH_FUNC_TRUNCATE;
 
-extern _size HASH_FUNC_LENGTH;
-extern _size HASH_FUNC_FROMBINARY;
-extern _size HASH_FUNC_FROMHEX;
-extern _size HASH_FUNC_SIZE;
-extern _size HASH_FUNC_NUMBER;
-extern _size HASH_FUNC_COUNT;
-extern _size HASH_FUNC_COUNTINSIDE;
-extern _size HASH_FUNC_POWER;
+   _size HASH_FUNC_AVERAGE;
+   _size HASH_FUNC_SUM;
+   _size HASH_FUNC_MIN;
+   _size HASH_FUNC_MAX;
+   _size HASH_FUNC_MEDIAN;
 
-extern _size HASH_FUNC_FIRST;
-extern _size HASH_FUNC_LAST;
-extern _size HASH_FUNC_RANDOM;
-extern _size HASH_FUNC_LIFETIME;
+   _size HASH_FUNC_LENGTH;
+   _size HASH_FUNC_FROMBINARY;
+   _size HASH_FUNC_FROMHEX;
+   _size HASH_FUNC_SIZE;
+   _size HASH_FUNC_NUMBER;
+   _size HASH_FUNC_COUNT;
+   _size HASH_FUNC_COUNTINSIDE;
+   _size HASH_FUNC_POWER;
 
-extern _size HASH_FUNC_AFTER;
-extern _size HASH_FUNC_BEFORE;
-extern _size HASH_FUNC_REVERSED;
+   _size HASH_FUNC_FIRST;
+   _size HASH_FUNC_LAST;
+   _size HASH_FUNC_RANDOM;
+   _size HASH_FUNC_LIFETIME;
 
-extern _size HASH_FUNC_DIGITS;
-extern _size HASH_FUNC_LETTERS;
-extern _size HASH_FUNC_LOWER;
-extern _size HASH_FUNC_TRIM;
-extern _size HASH_FUNC_UPPER;
-extern _size HASH_FUNC_REVERSE;
-extern _size HASH_FUNC_AFTERDIGITS;
-extern _size HASH_FUNC_AFTERLETTERS;
-extern _size HASH_FUNC_BEFOREDIGITS;
-extern _size HASH_FUNC_BEFORELETTERS;
-extern _size HASH_FUNC_CAPITALIZE;
+   _size HASH_FUNC_AFTER;
+   _size HASH_FUNC_BEFORE;
+   _size HASH_FUNC_REVERSED;
 
-extern _size HASH_FUNC_REPLACE;
-extern _size HASH_FUNC_SUBSTRING;
-extern _size HASH_FUNC_CONCATENATE;
-extern _size HASH_FUNC_PATH;
-extern _size HASH_FUNC_STRING;
-extern _size HASH_FUNC_MONTHNAME;
-extern _size HASH_FUNC_WEEKDAYNAME;
-extern _size HASH_FUNC_JOIN;
+   _size HASH_FUNC_DIGITS;
+   _size HASH_FUNC_LETTERS;
+   _size HASH_FUNC_LOWER;
+   _size HASH_FUNC_TRIM;
+   _size HASH_FUNC_UPPER;
+   _size HASH_FUNC_REVERSE;
+   _size HASH_FUNC_AFTERDIGITS;
+   _size HASH_FUNC_AFTERLETTERS;
+   _size HASH_FUNC_BEFOREDIGITS;
+   _size HASH_FUNC_BEFORELETTERS;
+   _size HASH_FUNC_CAPITALIZE;
 
-extern _size HASH_FUNC_REPEAT;
-extern _size HASH_FUNC_LEFT;
-extern _size HASH_FUNC_RIGHT;
-extern _size HASH_FUNC_FILL;
+   _size HASH_FUNC_REPLACE;
+   _size HASH_FUNC_SUBSTRING;
+   _size HASH_FUNC_CONCATENATE;
+   _size HASH_FUNC_PATH;
+   _size HASH_FUNC_STRING;
+   _size HASH_FUNC_MONTHNAME;
+   _size HASH_FUNC_WEEKDAYNAME;
+   _size HASH_FUNC_JOIN;
 
-extern _size HASH_FUNC_ROMAN;
-extern _size HASH_FUNC_BINARY;
-extern _size HASH_FUNC_HEX;
+   _size HASH_FUNC_REPEAT;
+   _size HASH_FUNC_LEFT;
+   _size HASH_FUNC_RIGHT;
+   _size HASH_FUNC_FILL;
 
-extern _size HASH_FUNC_CHRISTMAS;
-extern _size HASH_FUNC_EASTER;
-extern _size HASH_FUNC_NEWYEAR;
+   _size HASH_FUNC_ROMAN;
+   _size HASH_FUNC_BINARY;
+   _size HASH_FUNC_HEX;
 
-extern _size HASH_FUNC_DATE;
-extern _size HASH_FUNC_TIME;
-extern _size HASH_FUNC_CHARACTERS;
-extern _size HASH_FUNC_WORDS;
-extern _size HASH_FUNC_SPLIT;
-extern _size HASH_FUNC_NUMBERS;
+   _size HASH_FUNC_CHRISTMAS;
+   _size HASH_FUNC_EASTER;
+   _size HASH_FUNC_NEWYEAR;
 
-extern std::set<_size> HASH_GROUP_MONTHS;
-extern std::set<_size> HASH_GROUP_WEEKDAYS;
-extern std::set<_size> HASH_GROUP_PERIOD_SINGLE;
-extern std::set<_size> HASH_GROUP_PERIOD_MULTI;
-extern std::set<_size> HASH_GROUP_TIME_ATTR;
-extern std::set<_size> HASH_GROUP_ATTR;
-extern std::set<_size> HASH_GROUP_INNERVAR;
-extern std::set<_size> HASH_GROUP_FUNC_BOO_STR;
-extern std::set<_size> HASH_GROUP_FUNC_NUM_NUM;
-extern std::set<_size> HASH_GROUP_AGGRFUNC;
-extern std::set<_size> HASH_GROUP_FUNC_STR_STR;
-extern std::set<_size> HASH_GROUP_FUNC_STR_STR_NUM;
-extern std::set<_size> HASH_GROUP_FUNC_STR_NUM;
-extern std::set<_size> HASH_GROUP_FUNC_TIM_NUM;
-extern std::map<_size, _tnum> HASH_MAP_MONTHS;
-extern std::map<_size, _tnum> HASH_MAP_WEEKDAYS;
-extern std::map<_size, Period::PeriodUnit> HASH_MAP_PERIOD_UNITS;
+   _size HASH_FUNC_DATE;
+   _size HASH_FUNC_TIME;
+   _size HASH_FUNC_CHARACTERS;
+   _size HASH_FUNC_WORDS;
+   _size HASH_FUNC_SPLIT;
+   _size HASH_FUNC_NUMBERS;
+
+   std::set<_size> HASH_GROUP_MONTHS;
+   std::set<_size> HASH_GROUP_WEEKDAYS;
+   std::set<_size> HASH_GROUP_PERIOD_SINGLE;
+   std::set<_size> HASH_GROUP_PERIOD_MULTI;
+   std::set<_size> HASH_GROUP_TIME_ATTR;
+   std::set<_size> HASH_GROUP_ATTR;
+   std::set<_size> HASH_GROUP_INNERVAR;
+   std::set<_size> HASH_GROUP_FUNC_BOO_STR;
+   std::set<_size> HASH_GROUP_FUNC_NUM_NUM;
+   std::set<_size> HASH_GROUP_AGGRFUNC;
+   std::set<_size> HASH_GROUP_FUNC_STR_STR;
+   std::set<_size> HASH_GROUP_FUNC_STR_STR_NUM;
+   std::set<_size> HASH_GROUP_FUNC_STR_NUM;
+   std::set<_size> HASH_GROUP_FUNC_TIM_NUM;
+   std::map<_size, _tnum> HASH_MAP_MONTHS;
+   std::map<_size, _tnum> HASH_MAP_WEEKDAYS;
+   std::map<_size, Period::PeriodUnit> HASH_MAP_PERIOD_UNITS;
+
+};
+
 
 #endif // HASH_H_INCLUDED

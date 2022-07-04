@@ -18,6 +18,7 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../../util.h"
+#include "../../uroboros.h"
 
 
 struct ConcatString : Generator<_str>
@@ -57,19 +58,14 @@ private:
 };
 
 
-struct ThisReference : Generator<_str>
-{
-public:
-   ThisReference() {};
-   _str getValue() override;
-};
-
-
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference() {};
+   LocationReference(Uroboros* uro) : inner(&uro->vars.inner) {};
    _str getValue() override;
+
+private:
+   InnerVariables* inner;
 };
 
 

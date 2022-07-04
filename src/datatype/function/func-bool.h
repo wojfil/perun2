@@ -50,8 +50,8 @@ private:
 struct F_AnyInside : Generator<_boo>
 {
 public:
-   F_AnyInside(_def* def, Generator<_str>* val)
-      : definition(def), value(val) { };
+   F_AnyInside(_def* def, Generator<_str>* val, Uroboros* uro)
+      : definition(def), value(val), inner(&uro->vars.inner) { };
 
    ~F_AnyInside() {
       delete definition;
@@ -61,6 +61,7 @@ public:
    _boo getValue() override;
 
 private:
+   InnerVariables* inner;
    _def* definition;
    Generator<_str>* value;
 };
@@ -119,8 +120,8 @@ public:
 struct F_ContainsDef : Generator<_boo>
 {
 public:
-   F_ContainsDef(_def* def, Generator<_str>* val)
-      : definition(def), value(val) { };
+   F_ContainsDef(_def* def, Generator<_str>* val, Uroboros* uro)
+      : definition(def), value(val), uroboros(uro) { };
 
    ~F_ContainsDef() {
       delete definition;
@@ -130,6 +131,7 @@ public:
    _boo getValue() override;
 
 private:
+   Uroboros* uroboros;
    _def* definition;
    Generator<_str>* value;
 };
@@ -181,16 +183,24 @@ public:
 struct F_ExistsInside : Func_2<_str, _str>, Generator<_boo>
 {
 public:
-   F_ExistsInside(Generator<_str>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
+   F_ExistsInside(Generator<_str>* a1, Generator<_str>* a2, Uroboros* uro)
+      : Func_2(a1, a2), inner(&uro->vars.inner) { };
    _boo getValue() override;
+
+private:
+   InnerVariables* inner;
 };
 
 
 struct F_ExistInside : Func_2<_list, _str>, Generator<_boo>
 {
 public:
-   F_ExistInside(Generator<_list>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
+   F_ExistInside(Generator<_list>* a1, Generator<_str>* a2, Uroboros* uro)
+      : Func_2(a1, a2), inner(&uro->vars.inner) { };
    _boo getValue() override;
+
+private:
+   InnerVariables* inner;
 };
 
 

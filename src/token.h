@@ -53,7 +53,6 @@ struct Token
    _boo isSymbol(const _char& ch) const;
    _boo isKeyword(const Keyword& kw) const;
    _boo isLogicConstant() const;
-   _boo isTimeVariable() const;
    _boo isWeekDay() const;
    _boo isMonth() const;
    friend _boo operator== (const Token& t1, const Token& t2);

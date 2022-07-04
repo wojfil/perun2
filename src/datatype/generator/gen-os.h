@@ -19,6 +19,7 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../def-gen.h"
+#include "../../uroboros.h"
 #include <windows.h>
 
 
@@ -27,23 +28,44 @@ const _uint32 ELEM_DIRECTORIES = 1;
 const _uint32 ELEM_FILES = 2;
 
 
+struct OsDefinition : _def
+{
+public:
+   OsDefinition(Generator<_str>* loc, Uroboros* uro)
+      : first(true), location(loc), uroboros(uro),
+        inner(&uro->vars.inner), flags(uro->flags) { };
+
+protected:
+   _boo first;
+   Generator<_str>* location;
+   Uroboros* uroboros;
+   InnerVariables* inner;
+
+   const _uint32 flags;
+   // just save a copy of flags in the memory
+   // they are constant, so a pointer is unnecessary
+};
+
 
 struct Gen_ElementsAtLocation : DefinitionGenerator
 {
 public:
-   Gen_ElementsAtLocation(const _uint32& el) : element(el) { };
+   Gen_ElementsAtLocation(const _uint32& el, Uroboros* uro)
+      : element(el), uroboros(uro) { };
+
    _def* generate(Generator<_str>* location) override;
 
 private:
+   Uroboros* uroboros;
    const _uint32 element;
 };
 
 
-struct ElementsAtLocation : _def
+struct ElementsAtLocation : OsDefinition
 {
 public:
-   ElementsAtLocation (Generator<_str>* loc, _uint32 elem)
-      : location(loc), element(elem), first(true) {};
+   ElementsAtLocation (Generator<_str>* loc, _uint32 elem, Uroboros* uro)
+      : element(elem), OsDefinition(loc, uro) {};
 
    ~ElementsAtLocation() {
       delete location;
@@ -54,8 +76,6 @@ public:
 
 private:
    const _uint32 element;
-   _boo first;
-   Generator<_str>* location;
    WIN32_FIND_DATA data;
    HANDLE handle;
    _str prevThis;
@@ -68,18 +88,21 @@ private:
 struct Gen_RecursiveFiles : DefinitionGenerator
 {
 public:
-   Gen_RecursiveFiles() { };
+   Gen_RecursiveFiles(Uroboros* uro) : uroboros(uro) { };
 
    _def* generate(Generator<_str>* location) override;
+
+private:
+   Uroboros* uroboros;
 };
 
 
-struct RecursiveFiles : _def
+struct RecursiveFiles : OsDefinition
 {
 public:
-   RecursiveFiles(Generator<_str>* loc)
-      : location(loc), first(true),
-        paths(_list()), bases(_list()), handles(std::vector<HANDLE>()) { };
+   RecursiveFiles(Generator<_str>* loc, Uroboros* uro)
+      : OsDefinition(loc, uro), paths(_list()),
+        bases(_list()), handles(std::vector<HANDLE>()) { };
 
    ~RecursiveFiles();
 
@@ -87,8 +110,6 @@ public:
    _boo hasNext() override;
 
 private:
-   Generator<_str>* location;
-   _boo first;
    _boo goDeeper;
    WIN32_FIND_DATA data;
    std::vector<HANDLE> handles;
@@ -104,17 +125,19 @@ private:
 struct Gen_RecursiveDirectories : DefinitionGenerator
 {
 public:
-   Gen_RecursiveDirectories() { };
+   Gen_RecursiveDirectories(Uroboros* uro) : uroboros(uro) { };
    _def* generate(Generator<_str>* location) override;
+
+private:
+   Uroboros* uroboros;
 };
 
 
-struct RecursiveDirectories : _def
+struct RecursiveDirectories : OsDefinition
 {
 public:
-   RecursiveDirectories(Generator<_str>* loc)
-      : location(loc), first(true),
-        paths(), bases(), handles() { };
+   RecursiveDirectories(Generator<_str>* loc, Uroboros* uro)
+      : OsDefinition(loc, uro), paths(), bases(), handles() { };
 
    ~RecursiveDirectories();
 
@@ -122,8 +145,6 @@ public:
    _boo hasNext() override;
 
 private:
-   Generator<_str>* location;
-   _boo first;
    _boo goDeeper;
    WIN32_FIND_DATA data;
    std::vector<HANDLE> handles;
@@ -134,8 +155,6 @@ private:
    _num prevIndex;
    _num index;
 };
-
-
 
 
 #endif // GEN_OS_H_INCLUDED

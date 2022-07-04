@@ -24,7 +24,7 @@
 #include "../parse-gen.h"
 
 
-Generator<_tim>* parseTime(const Tokens& tks)
+Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -37,20 +37,20 @@ Generator<_tim>* parseTime(const Tokens& tks)
       switch (f.type) {
          case Token::t_Word: {
             Generator<_tim>* var;
-            return getVarValue(f, var) ? var : nullptr;
+            return uro->vars.getVarValue(f, var) ? var : nullptr;
          }
          case Token::t_TwoWords: {
-            if (f.value.h1 == HASH_NOTHING) {
+            if (f.value.h1 == uro->hashes.HASH_NOTHING) {
                throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
             }
 
             Generator<_tim>* var;
-            if (!getVarValue(f, var)) {
+            if (!uro->vars.getVarValue(f, var)) {
                throw SyntaxException(str(L"time variable '", f.originString,
                   L"' does not exist"), f.line);
             }
 
-            if (f.value.h2 == HASH_FUNC_DATE)
+            if (f.value.h2 == uro->hashes.HASH_FUNC_DATE)
                return new TimeDate(var);
             else
                return nullptr;
@@ -72,12 +72,12 @@ Generator<_tim>* parseTime(const Tokens& tks)
 
       if (hasMinuses || hasPluses) {
          Generator<_per>* per;
-         if (parse(tks, per)) {
+         if (parse(uro, tks, per)) {
             delete per;
             return nullptr;
          }
          else {
-            Generator<_tim>* exp = parseTimeExp(tks);
+            Generator<_tim>* exp = parseTimeExp(tks, uro);
             if (exp != nullptr) {
                return exp;
             }
@@ -86,28 +86,28 @@ Generator<_tim>* parseTime(const Tokens& tks)
    }
 
    if (isPossibleFunction(tks)) {
-      Generator<_tim>* func = timeFunction(tks);
+      Generator<_tim>* func = timeFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
 
-   Generator<_tim>* el = parseCollectionElement<_tim>(tks);
+   Generator<_tim>* el = parseCollectionElement<_tim>(tks, uro);
    if (el != nullptr) {
       return el;
    }
 
-   if (isPossibleListElementMember(tks)) {
+   if (isPossibleListElementMember(tks, uro)) {
       Tokens tksm(tks);
       tksm.trimRight();
 
-      Generator<_num>* num = parseListElementIndex(tksm);
+      Generator<_num>* num = parseListElementIndex(tksm, uro);
       const Token& f = tks.first();
       Generator<_tlist>* tlist;
-      if (getVarValue(f, tlist)) {
+      if (uro->vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
 
-         if (last.value.h2 == HASH_FUNC_DATE)
+         if (last.value.h2 == uro->hashes.HASH_FUNC_DATE)
             return new TimeDateAtIndex(tlist, num);
          else
             return nullptr;
@@ -117,7 +117,7 @@ Generator<_tim>* parseTime(const Tokens& tks)
       }
    }
 
-   Generator<_tim>* tern = parseTernary<_tim>(tks);
+   Generator<_tim>* tern = parseTernary<_tim>(tks, uro);
    if (tern != nullptr) {
       return tern;
    }
@@ -241,7 +241,7 @@ static void clockUnitException(const _str& unit, const _tnum& value,
       L") went out of range"), tk.line);
 }
 
-static Generator<_tim>* parseTimeExp(const Tokens& tks)
+static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros* uro)
 {
    Generator<_tim>* prevTim = nullptr;
    Generator<_tim>* time = nullptr;
@@ -272,7 +272,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks)
 
                   const Tokens tks2(tks.list, i - sublen, sublen);
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
-                     prevTim, time, tks2, numReserve)) {
+                     prevTim, time, tks2, numReserve, uro)) {
 
                      deleteTwo(prevTim, time);
                      return nullptr;
@@ -291,7 +291,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks)
                if (bi.isBracketFree() && sublen != 0) {
                   const Tokens tks2(tks.list, i - sublen, sublen);
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
-                     prevTim, time, tks2, numReserve)) {
+                     prevTim, time, tks2, numReserve, uro)) {
 
                      deleteTwo(prevTim, time);
                      return nullptr;
@@ -335,8 +335,8 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks)
 
    const Tokens tks2(tks.list, 1 + end - sublen, sublen);
    if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2,
-      numReserve) || numReserve != 0 || prevTim != nullptr) {
-
+      numReserve, uro) || numReserve != 0 || prevTim != nullptr) 
+   {
       deleteTwo(prevTim, time);
       return nullptr;
    }
@@ -346,10 +346,10 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks)
 
 static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
-   _int& numReserve)
+   _int& numReserve, Uroboros* uro)
 {
    Generator<_tim>* tim;
-   if (parse(tks, tim)) {
+   if (parse(uro, tks, tim)) {
       if (numReserve != 0) {
          delete tim;
          return false;
@@ -398,7 +398,7 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    }
 
    Generator<_num>* num;
-   if (parse(tks, num)) {
+   if (parse(uro, tks, num)) {
       if (numReserve == 0 && subtract) {
          numReserve = 1;
       }
@@ -410,7 +410,7 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
 
    if (numReserve == 0) {
       Generator<_per>* per;
-      if (!parse(tks, per)) {
+      if (!parse(uro, tks, per)) {
          return false;
       }
 
@@ -428,7 +428,7 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
       Tokens tks2(tks.list, start, length);
 
       Generator<_per>* per;
-      if (!parse(tks2, per)) {
+      if (!parse(uro, tks2, per)) {
          return false;
       }
 

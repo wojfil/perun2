@@ -16,71 +16,84 @@
 #define VAR_RUNTIME_H
 
 #include <map>
-#include "var-group.h"
 #include "var.h"
 #include "var-inner.h"
 #include "../datatype/def-var.h"
 #include "../datatype/def-gen.h"
+#include "../hash.h"
+#include "../token.h"
 
-// these maps contain hashes of variable names
-// and references to them
-// they are only needed for the parsing process
 
-// user variables:
-extern std::map<_size, ParseVariable<_boo>> g_var_boo;
-extern std::map<_size, ParseVariable<_per>> g_var_per;
-extern std::map<_size, ParseVariable<_tim>> g_var_tim;
-extern std::map<_size, ParseVariable<_num>> g_var_num;
-extern std::map<_size, ParseVariable<_str>> g_var_str;
-extern std::map<_size, ParseVariable<_nlist>> g_var_nlist;
-extern std::map<_size, ParseVariable<_tlist>> g_var_tlist;
-extern std::map<_size, ParseVariable<_list>> g_var_list;
+struct Uroboros;
 
-// internal variables (unmodifiable by user):
-extern std::map<_size, Variable<_boo>*> g_ivar_boo;
-extern std::map<_size, Variable<_per>*> g_ivar_per;
-extern std::map<_size, Variable<_tim>*> g_ivar_tim;
-extern std::map<_size, Variable<_num>*> g_ivar_num;
-extern std::map<_size, Variable<_str>*> g_ivar_str;
-extern std::map<_size, Variable<_nlist>*> g_ivar_nlist;
-extern std::map<_size, Variable<_tlist>*> g_ivar_tlist;
-extern std::map<_size, Variable<_list>*> g_ivar_list;
+struct Variables
+{
+public:
 
-// special variables:
-extern std::map<_size, Generator<_boo>*> g_svar_boo;
-extern std::map<_size, Generator<_per>*> g_svar_per;
-extern std::map<_size, Generator<_tim>*> g_svar_tim;
-extern std::map<_size, Generator<_num>*> g_svar_num;
-extern std::map<_size, Generator<_str>*> g_svar_str;
-extern std::map<_size, Generator<_nlist>*> g_svar_nlist;
-extern std::map<_size, Generator<_tlist>*> g_svar_tlist;
-extern std::map<_size, DefinitionGenerator*> g_svar_def;
-extern std::map<_size, Generator<_list>*> g_svar_list;
+   Variables(Uroboros* uro);
 
-void initVars(const _list& args);
-void varsLevelUp();
-void varsLevelDown();
+   InnerVariables inner;
 
-_boo getVarValue(const Token& tk, Generator<_boo>*& result);
-_boo getVarValue(const Token& tk, Generator<_per>*& result);
-_boo getVarValue(const Token& tk, Generator<_tim>*& result);
-_boo getVarValue(const Token& tk, Generator<_num>*& result);
-_boo getVarValue(const Token& tk, Generator<_str>*& result);
-_boo getVarValue(const Token& tk, Generator<_nlist>*& result);
-_boo getVarValue(const Token& tk, Generator<_tlist>*& result);
-_boo getVarValue(const Token& tk, _def*& result);
-_boo getVarValue(const Token& tk, Generator<_list>*& result);
+   // user variables:
+   std::map<_size, ParseVariable<_boo>> var_boo;
+   std::map<_size, ParseVariable<_per>> var_per;
+   std::map<_size, ParseVariable<_tim>> var_tim;
+   std::map<_size, ParseVariable<_num>> var_num;
+   std::map<_size, ParseVariable<_str>> var_str;
+   std::map<_size, ParseVariable<_nlist>> var_nlist;
+   std::map<_size, ParseVariable<_tlist>> var_tlist;
+   std::map<_size, ParseVariable<_list>> var_list;
 
-_boo variableExists(const Token& tk);
+   // internal variables (unmodifiable by user):
+   std::map<_size, Variable<_boo>*> ivar_boo;
+   std::map<_size, Variable<_per>*> ivar_per;
+   std::map<_size, Variable<_tim>*> ivar_tim;
+   std::map<_size, Variable<_num>*> ivar_num;
+   std::map<_size, Variable<_str>*> ivar_str;
+   std::map<_size, Variable<_nlist>*> ivar_nlist;
+   std::map<_size, Variable<_tlist>*> ivar_tlist;
+   std::map<_size, Variable<_list>*> ivar_list;
 
-_boo getVarPtr(const Token& tk, ParseVariable<_boo>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_per>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_tim>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_num>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_str>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_nlist>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_tlist>*& result);
-_boo getVarPtr(const Token& tk, ParseVariable<_list>*& result);
+   // special variables:
+   std::map<_size, Generator<_boo>*> svar_boo;
+   std::map<_size, Generator<_per>*> svar_per;
+   std::map<_size, Generator<_tim>*> svar_tim;
+   std::map<_size, Generator<_num>*> svar_num;
+   std::map<_size, Generator<_str>*> svar_str;
+   std::map<_size, Generator<_nlist>*> svar_nlist;
+   std::map<_size, Generator<_tlist>*> svar_tlist;
+   std::map<_size, DefinitionGenerator*> svar_def;
+   std::map<_size, Generator<_list>*> svar_list;
 
+   void initVars(const _list& args);
+   void varsLevelUp();
+   void varsLevelDown();
+
+   _boo getVarValue(const Token& tk, Generator<_boo>*& result);
+   _boo getVarValue(const Token& tk, Generator<_per>*& result);
+   _boo getVarValue(const Token& tk, Generator<_tim>*& result);
+   _boo getVarValue(const Token& tk, Generator<_num>*& result);
+   _boo getVarValue(const Token& tk, Generator<_str>*& result);
+   _boo getVarValue(const Token& tk, Generator<_nlist>*& result);
+   _boo getVarValue(const Token& tk, Generator<_tlist>*& result);
+   _boo getVarValue(const Token& tk, _def*& result);
+   _boo getVarValue(const Token& tk, Generator<_list>*& result);
+
+   _boo variableExists(const Token& tk);
+
+   _boo getVarPtr(const Token& tk, ParseVariable<_boo>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_per>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_tim>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_num>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_str>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_nlist>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_tlist>*& result);
+   _boo getVarPtr(const Token& tk, ParseVariable<_list>*& result);
+
+private:
+   Uroboros* uroboros;
+   Hashes* hashes;
+
+};
 
 #endif /* VAR_RUNTIME_H */

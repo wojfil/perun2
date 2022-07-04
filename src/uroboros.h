@@ -16,7 +16,11 @@
 #define UROBOROS_H
 
 #include "var/var-runtime.h"
+#include "var/var-context.h"
 #include "arguments.h"
+#include "hash.h"
+#include "datatype/math.h"
+#include "terminator.h"
 #include <Windows.h>
 
 #define VERSION_STR L"1.0.6"
@@ -26,22 +30,38 @@ const _int EXITCODE_RUNTIME_ERROR =  1;
 const _int EXITCODE_SYNTAX_ERROR =   2;
 const _int EXITCODE_CLI_ERROR =      3;
 
-const _uint32 FLAG_NULL =      0b001;
+const _uint32 FLAG_NULL =      0b000;
 const _uint32 FLAG_NOOMIT =    0b001;
 const _uint32 FLAG_SILENT =    0b010;
 const _uint32 FLAG_GUI =       0b100;
 
-extern _boo g_running; // application exits this way
-extern _boo g_process; // another process has been created and we are waiting for its exit
-extern _boo g_break;
-extern _boo g_continue;
-extern _int g_exitCode;
-extern _uint32 g_flags;
 
-extern PROCESS_INFORMATION g_processInfo;
+struct Uroboros
+{
+public:
+   Uroboros(const Arguments& args);
+   void run();
 
+   const Arguments arguments;
+   Hashes hashes;
+   Math math;
+   Variables vars;
+   VariablesContext vc;
+   Terminator terminator;
 
-void run(const Arguments& arguments);
+   const _uint32 flags;
 
+   _boo running; // application exits this way
+   _boo process; // another process has been created and we are waiting for its exit
+   _boo break_;
+   _boo continue_;
+   _int exitCode;
+
+   PROCESS_INFORMATION processInfo;
+
+private:
+    const _str code;
+
+};
 
 #endif /* UROBOROS_H */

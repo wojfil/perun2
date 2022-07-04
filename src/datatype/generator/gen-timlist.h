@@ -25,8 +25,8 @@
 struct Filter_WhereTime : Generator<_tlist>
 {
 public:
-   Filter_WhereTime(Generator<_tlist>* li, Generator<_boo>* cond)
-      : list(li), condition(cond) {};
+   Filter_WhereTime(Generator<_tlist>* li, Generator<_boo>* cond, Uroboros* uro)
+      : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner) {};
 
    ~Filter_WhereTime() {
       delete list;
@@ -36,6 +36,8 @@ public:
    _tlist getValue() override;
 
 private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    Generator<_tlist>* list;
    Generator<_boo>* condition;
 };
@@ -44,8 +46,8 @@ private:
 struct Filter_OrderByTime : Generator<_tlist>, OrderBy<_tim>
 {
 public:
-   Filter_OrderByTime(Generator<_tlist>* val)
-      : OrderBy(val) {};
+   Filter_OrderByTime(Generator<_tlist>* val, Uroboros* uro)
+      : OrderBy(val, uro) {};
 
 
    _tlist getValue() override;
@@ -57,12 +59,12 @@ public:
    _boo finalComparison(const OrderUnit<T>* ou, const _num& leftId,
       const _num& rightId, const _tim& left, const _tim& right) const {
 
-      g_index.value = leftId;
-      g_this_t.value = left;
+      this->inner->index.value = leftId;
+      this->inner->this_t.value = left;
       const T leftValue = ou->value->getValue();
 
-      g_index.value = rightId;
-      g_this_t.value = right;
+      this->inner->index.value = rightId;
+      this->inner->this_t.value = right;
       const T rightValue = ou->value->getValue();
 
       return ou->descending
@@ -75,12 +77,12 @@ public:
       const _num& rightId, const _tim& left, const _tim& right,
       _boo& success) const {
 
-      g_index.value = leftId;
-      g_this_t.value = left;
+      this->inner->index.value = leftId;
+      this->inner->this_t.value = left;
       const T leftValue = ou->value->getValue();
 
-      g_index.value = rightId;
-      g_this_t.value = right;
+      this->inner->index.value = rightId;
+      this->inner->this_t.value = right;
       const T rightValue = ou->value->getValue();
 
       if (leftValue == rightValue) {

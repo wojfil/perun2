@@ -16,12 +16,13 @@
 #define VAR_INNER_H_INCLUDED
 
 #include "var.h"
+#include "../datatype/generator.h"
 #include "../datatype/datatype.h"
 #include "../datatype/primitives.h"
 
 
 
-// parsing state of the variable "this"
+// parsing context of the variable "this"
 enum ThisState
 {
    ts_None = 0,
@@ -30,46 +31,53 @@ enum ThisState
    ts_Number
 };
 
+struct InnerVariables
+{
+public:
 
+   InnerVariables();
+   _list getAlphabet();
+   _list getAscii();
 
-extern ThisState g_thisstate;
+   void createThisReference(Generator<_str>*& result);
+   void createThisReference(Generator<_num>*& result);
+   void createThisReference(Generator<_tim>*& result);
 
-// internal variables:
-extern Variable<_tim> g_access;
-extern Variable<_boo> g_archive;
-extern Variable<_tim> g_change;
-extern Variable<_boo> g_compressed;
-extern Variable<_tim> g_creation;
-extern Variable<_num> g_depth;
-extern Variable<_str> g_drive;
-extern Variable<_boo> g_empty;
-extern Variable<_boo> g_encrypted;
-extern Variable<_boo> g_exists;
-extern Variable<_str> g_extension;
-extern Variable<_str> g_fullname;
-extern Variable<_boo> g_hidden;
-extern Variable<_num> g_index;
-extern Variable<_boo> g_isdirectory;
-extern Variable<_boo> g_isfile;
-extern Variable<_per> g_lifetime;
-extern Variable<_str> g_location;
-extern Variable<_tim> g_modification;
-extern Variable<_str> g_name;
-extern Variable<_str> g_parent;
-extern Variable<_str> g_path;
-extern Variable<_boo> g_readonly;
-extern Variable<_num> g_size;
-extern Variable<_num> g_this_n;
-extern Variable<_str> g_this_s;
-extern Variable<_tim> g_this_t;
+   ThisState thisState;
+   Variable<_tim> access;
+   Variable<_boo> archive;
+   Variable<_tim> change;
+   Variable<_boo> compressed;
+   Variable<_tim> creation;
+   Variable<_num> depth;
+   Variable<_str> drive;
+   Variable<_boo> empty;
+   Variable<_boo> encrypted;
+   Variable<_boo> exists;
+   Variable<_str> extension;
+   Variable<_str> fullname;
+   Variable<_boo> hidden;
+   Variable<_num> index;
+   Variable<_boo> isdirectory;
+   Variable<_boo> isfile;
+   Variable<_per> lifetime;
+   Variable<_str> location;
+   Variable<_tim> modification;
+   Variable<_str> name;
+   Variable<_str> parent;
+   Variable<_str> path;
+   Variable<_boo> readonly;
+   Variable<_num> size;
 
-extern Variable<_boo> g_success;
+   Variable<_num> this_n;
+   Variable<_str> this_s;
+   Variable<_tim> this_t;
 
-extern _str g_trimmed;
-extern _str g_urocom;
+   Variable<_boo> success;
 
-_list vinit_getAlphabet();
-_list vinit_getAscii();
+   _str trimmed;
+   _str urocom;
 
+};
 
 #endif // VAR_INNER_H_INCLUDED

@@ -16,6 +16,7 @@
 #define FUNC_NUMBER_H
 
 #include "func-generic.h"
+#include "../../uroboros.h"
 
 
 struct F_Absolute : Func_1<_num>, Generator<_num>
@@ -40,15 +41,17 @@ public:
    F_Count(std::vector<Generator<_tlist>*>* tls,
          std::vector<Generator<_nlist>*>* nls,
          std::vector<Generator<_list>*>* ls,
-         std::vector<_def*>* dfs)
+         std::vector<_def*>* dfs, Uroboros* uro)
       : tlists(tls), nlists(nls), lists(ls), defs(dfs),
          countTlists(tls->size()), countNlists(nls->size()),
-         countLists(ls->size()), countDefs(dfs->size()) { };
+         countLists(ls->size()), countDefs(dfs->size()),
+         uroboros(uro) { };
 
    ~F_Count();
    _num getValue() override;
 
 private:
+   Uroboros* uroboros;
    std::vector<Generator<_tlist>*>* tlists;
    std::vector<Generator<_nlist>*>* nlists;
    std::vector<Generator<_list>*>* lists;
@@ -74,7 +77,9 @@ public:
 struct F_CountUnitDef : Generator<_num>
 {
 public:
-   F_CountUnitDef(_def* def) : definition(def) { };
+   F_CountUnitDef(_def* def, Uroboros* uro) 
+      : definition(def), uroboros(uro) { };
+
    ~F_CountUnitDef() {
       delete definition;
    }
@@ -82,6 +87,7 @@ public:
    _num getValue() override;
 
 private:
+   Uroboros* uroboros;
    _def* definition;
 };
 
@@ -89,8 +95,8 @@ private:
 struct F_CountInside : Generator<_num>
 {
 public:
-   F_CountInside(_def* def, Generator<_str>* val)
-      : definition(def), value(val) { };
+   F_CountInside(_def* def, Generator<_str>* val, Uroboros* uro)
+      : definition(def), value(val), uroboros(uro), inner(&uro->vars.inner) { };
 
    ~F_CountInside() {
       delete definition;
@@ -100,6 +106,8 @@ public:
    _num getValue() override;
 
 private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    _def* definition;
    Generator<_str>* value;
 };
@@ -174,16 +182,26 @@ public:
 struct F_Random : Generator<_num>
 {
 public:
-   F_Random() { };
+   F_Random(Uroboros* uro) 
+      : math(&uro->math) { };
+
    _num getValue() override;
+
+private:
+   Math* math;
 };
 
 
 struct F_RandomNumber : Func_1<_num>, Generator<_num>
 {
 public:
-   F_RandomNumber(Generator<_num>* a1) : Func_1(a1) { };
+   F_RandomNumber(Generator<_num>* a1, Uroboros* uro) 
+      : Func_1(a1), math(&uro->math) { };
+      
    _num getValue() override;
+
+private:
+   Math* math;
 };
 
 

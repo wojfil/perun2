@@ -32,25 +32,25 @@ _boo F_AnyDef::getValue()
 
 _boo F_AnyInside::getValue()
 {
-   const _str& v = os_trim(value->getValue());
+   const _str& v = os_trim(this->value->getValue());
    if (v.empty() || os_isInvaild(v)) {
       return false;
    }
 
-   const _str path = os_join(g_location.value, v);
+   const _str path = os_join(this->inner->location.value, v);
    if (!os_directoryExists(path)) {
       return false;
    }
 
-   const _str prevLoc = g_location.value;
-   g_location.value = path;
+   const _str prevLoc = this->inner->location.value;
+   this->inner->location.value = path;
 
-   const _boo any = definition->hasNext();
+   const _boo any = this->definition->hasNext();
    if (any) {
-      definition->reset();
+      this->definition->reset();
    }
 
-   g_location.value = prevLoc;
+   this->inner->location.value = prevLoc;
    return any;
 }
 
@@ -73,16 +73,16 @@ _boo F_ContainsStr::getValue()
 
 _boo F_ContainsDef::getValue()
 {
-   const _str v = value->getValue();
+   const _str v = this->value->getValue();
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          break;
       }
 
-      if (v == definition->getValue()) {
-         definition->reset();
+      if (v == this->definition->getValue()) {
+         this->definition->reset();
          return true;
       }
    }
@@ -245,7 +245,7 @@ _boo F_ExistsInside::getValue()
       return false;
    }
 
-   const _str base = os_join(g_location.value, p);
+   const _str base = os_join(this->inner->location.value, p);
    if (!os_directoryExists(base)) {
       return false;
    }
@@ -268,7 +268,7 @@ _boo F_ExistInside::getValue()
       return false;
    }
 
-   const _str base = os_join(g_location.value, p);
+   const _str base = os_join(this->inner->location.value, p);
    if (!os_directoryExists(base)) {
       return false;
    }

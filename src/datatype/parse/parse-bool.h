@@ -20,10 +20,10 @@
 #include "../generator/gen-bool-compare.h"
 
 
-Generator<_boo>* parseBool(const Tokens& tks);
+Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro);
 
-static Generator<_boo>* parseBoolTernary(const Tokens& tks);
-static Generator<_boo>* parseBoolExp(const Tokens& tks);
+static Generator<_boo>* parseBoolTernary(const Tokens& tks, Uroboros* uro);
+static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* boolExpTree(
    const std::vector<ExpElement<_boo>*>& infList,
    std::vector<ExpElement<_boo>*>& pntList);
@@ -37,21 +37,21 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList);
 _boo isBoolExpOperator(const Token& tk);
 static _char toBoolExpOperator(const Token& tk);
 
-static Generator<_boo>* parseLike(const Tokens& tks);
-static Generator<_boo>* parseIn(const Tokens& tks);
+static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro);
+static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseInNumList(const bool& negated, const Tokens& left,
-   const Tokens& right);
+   const Tokens& right, Uroboros* uro);
 static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
-   const Tokens& right);
+   const Tokens& right, Uroboros* uro);
 static Generator<_boo>* parseInList(const bool& negated, const Tokens& left,
-   const Tokens& right);
+   const Tokens& right, Uroboros* uro);
 static void emptyOperSideException(const Token& oper, const bool& isLeft);
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
    const _str& timeMember, const _boo& negated, const Tokens& tks);
-static Generator<_boo>* parseComparisons(const Tokens& tks);
+static Generator<_boo>* parseComparisons(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
-   const Tokens& right, const CompType& ct);
-static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign);
+   const Tokens& right, const CompType& ct, Uroboros* uro);
+static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Uroboros* uro);
 static CompType prepareComparison(const Tokens& tks, const _char& sign,
    Tokens& left, Tokens& right);
 

@@ -16,14 +16,16 @@
 #define COM_CREATE_H_INCLUDED
 
 #include "com-core.h"
+#include "com-listener.h"
 #include "../attribute.h"
+#include "../uroboros.h"
 
 
-struct C_Create : Command
+struct C_Create : Command_L
 {
 public:
-   C_Create(const _boo& force, Attribute* attr)
-      : forced(force), attribute(attr) { };
+   C_Create(const _boo& force, Attribute* attr, Uroboros* uro)
+      : forced(force), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
@@ -33,11 +35,11 @@ private:
 };
 
 
-struct C_Create_Stack : Command
+struct C_Create_Stack : Command_L
 {
 public:
-   C_Create_Stack(Attribute* attr)
-      : attribute(attr) { };
+   C_Create_Stack(Attribute* attr, Uroboros* uro)
+      : attribute(attr), Command_L(uro) { };
 
    void run() override;
 
@@ -46,11 +48,11 @@ private:
 };
 
 
-struct C_CreateFile : Command
+struct C_CreateFile : Command_L
 {
 public:
-   C_CreateFile(const _boo& force, Attribute* attr)
-      : forced(force), attribute(attr) { };
+   C_CreateFile(const _boo& force, Attribute* attr, Uroboros* uro)
+      : forced(force), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
@@ -60,11 +62,11 @@ private:
 };
 
 
-struct C_CreateFile_Stack : Command
+struct C_CreateFile_Stack : Command_L
 {
 public:
-   C_CreateFile_Stack(Attribute* attr)
-      : attribute(attr) { };
+   C_CreateFile_Stack(Attribute* attr, Uroboros* uro)
+      : attribute(attr), Command_L(uro) { };
 
    void run() override;
 
@@ -73,11 +75,11 @@ private:
 };
 
 
-struct C_CreateDirectory : Command
+struct C_CreateDirectory : Command_L
 {
 public:
-   C_CreateDirectory(const _boo& force, Attribute* attr)
-      : forced(force), attribute(attr) { };
+   C_CreateDirectory(const _boo& force, Attribute* attr, Uroboros* uro)
+      : forced(force), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
@@ -87,11 +89,11 @@ private:
 };
 
 
-struct C_CreateDirectory_Stack : Command
+struct C_CreateDirectory_Stack : Command_L
 {
 public:
-   C_CreateDirectory_Stack(Attribute* attr)
-      : attribute(attr) { };
+   C_CreateDirectory_Stack(Attribute* attr, Uroboros* uro)
+      : attribute(attr), Command_L(uro) { };
 
    void run() override;
 
@@ -101,11 +103,11 @@ private:
 
 // others:
 
-struct C_Create_String : Command
+struct C_Create_String : Command_L
 {
 public:
-   C_Create_String(Generator<_str>* el, const _boo& forc)
-      : element(el), forced(forc) { };
+   C_Create_String(Generator<_str>* el, const _boo& forc, Uroboros* uro)
+      : element(el), forced(forc), Command_L(uro) { };
 
    ~C_Create_String() {
       delete element;
@@ -119,11 +121,11 @@ private:
 };
 
 
-struct C_CreateFile_String : Command
+struct C_CreateFile_String : Command_L
 {
 public:
-   C_CreateFile_String(Generator<_str>* el, const _boo& forc)
-      : element(el), forced(forc) { };
+   C_CreateFile_String(Generator<_str>* el, const _boo& forc, Uroboros* uro)
+      : element(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateFile_String() {
       delete element;
@@ -137,11 +139,11 @@ private:
 };
 
 
-struct C_CreateDirectory_String : Command
+struct C_CreateDirectory_String : Command_L
 {
 public:
-   C_CreateDirectory_String(Generator<_str>* el, const _boo& forc)
-      : element(el), forced(forc) { };
+   C_CreateDirectory_String(Generator<_str>* el, const _boo& forc, Uroboros* uro)
+      : element(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateDirectory_String() {
       delete element;
@@ -155,11 +157,11 @@ private:
 };
 
 
-struct C_Create_String_Stack : Command
+struct C_Create_String_Stack : Command_L
 {
 public:
-   C_Create_String_Stack (Generator<_str>* el)
-      : element(el) { };
+   C_Create_String_Stack (Generator<_str>* el, Uroboros* uro)
+      : element(el), Command_L(uro) { };
 
    ~C_Create_String_Stack() {
       delete element;
@@ -172,11 +174,11 @@ private:
 };
 
 
-struct C_CreateFile_String_Stack  : Command
+struct C_CreateFile_String_Stack  : Command_L
 {
 public:
-   C_CreateFile_String_Stack (Generator<_str>* el)
-      : element(el) { };
+   C_CreateFile_String_Stack (Generator<_str>* el, Uroboros* uro)
+      : element(el), Command_L(uro) { };
 
    ~C_CreateFile_String_Stack() {
       delete element;
@@ -189,11 +191,11 @@ private:
 };
 
 
-struct C_CreateDirectory_String_Stack  : Command
+struct C_CreateDirectory_String_Stack  : Command_L
 {
 public:
-   C_CreateDirectory_String_Stack (Generator<_str>* el)
-      : element(el) { };
+   C_CreateDirectory_String_Stack (Generator<_str>* el, Uroboros* uro)
+      : element(el), Command_L(uro) { };
 
    ~C_CreateDirectory_String_Stack() {
       delete element;
@@ -209,11 +211,11 @@ private:
 // others multi
 
 
-struct C_Create_List : Command
+struct C_Create_List : Command_L
 {
 public:
-   C_Create_List(Generator<_list>* el, const _boo& forc)
-      : elements(el), forced(forc) { };
+   C_Create_List(Generator<_list>* el, const _boo& forc, Uroboros* uro)
+      : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_Create_List() {
       delete elements;
@@ -227,11 +229,11 @@ private:
 };
 
 
-struct C_CreateFiles_List : Command
+struct C_CreateFiles_List : Command_L
 {
 public:
-   C_CreateFiles_List(Generator<_list>* el, const _boo& forc)
-      : elements(el), forced(forc) { };
+   C_CreateFiles_List(Generator<_list>* el, const _boo& forc, Uroboros* uro)
+      : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateFiles_List() {
       delete elements;
@@ -245,11 +247,11 @@ private:
 };
 
 
-struct C_CreateDirectories_List : Command
+struct C_CreateDirectories_List : Command_L
 {
 public:
-   C_CreateDirectories_List(Generator<_list>* el, const _boo& forc)
-      : elements(el), forced(forc) { };
+   C_CreateDirectories_List(Generator<_list>* el, const _boo& forc, Uroboros* uro)
+      : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateDirectories_List() {
       delete elements;
@@ -263,11 +265,11 @@ private:
 };
 
 
-struct C_Create_List_Stack : Command
+struct C_Create_List_Stack : Command_L
 {
 public:
-   C_Create_List_Stack (Generator<_list>* el)
-      : elements(el) { };
+   C_Create_List_Stack (Generator<_list>* el, Uroboros* uro)
+      : elements(el), Command_L(uro) { };
 
    ~C_Create_List_Stack() {
       delete elements;
@@ -280,11 +282,11 @@ private:
 };
 
 
-struct C_CreateFiles_List_Stack  : Command
+struct C_CreateFiles_List_Stack  : Command_L
 {
 public:
-   C_CreateFiles_List_Stack (Generator<_list>* el)
-      : elements(el) { };
+   C_CreateFiles_List_Stack (Generator<_list>* el, Uroboros* uro)
+      : elements(el), Command_L(uro) { };
 
    ~C_CreateFiles_List_Stack() {
       delete elements;
@@ -297,11 +299,11 @@ private:
 };
 
 
-struct C_CreateDirectories_List_Stack  : Command
+struct C_CreateDirectories_List_Stack  : Command_L
 {
 public:
-   C_CreateDirectories_List_Stack (Generator<_list>* el)
-      : elements(el) { };
+   C_CreateDirectories_List_Stack (Generator<_list>* el, Uroboros* uro)
+      : elements(el), Command_L(uro) { };
 
    ~C_CreateDirectories_List_Stack() {
       delete elements;
@@ -312,8 +314,6 @@ public:
 private:
    Generator<_list>* elements;
 };
-
-
 
 
 

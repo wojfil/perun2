@@ -18,10 +18,12 @@
 #include "generator.h"
 #include "datatype.h"
 #include "../util.h"
+#include "../uroboros.h"
 
 
 template <typename T>
 struct OrderUnit {
+
 public:
    OrderUnit(Generator<T>* val, const _boo desc)
       : value(val), descending(desc) { };
@@ -32,6 +34,8 @@ public:
 
    Generator<T>* value;
    const _boo descending;
+
+//protected:
 };
 
 
@@ -48,10 +52,8 @@ template <typename T>
 struct OrderBy : Generator<std::vector<T>>
 {
 public:
-   OrderBy(Generator<std::vector<T>>* val) {
-      baseValue = val;
-      unitsCount = 0;
-   }
+   OrderBy(Generator<std::vector<T>>* val, Uroboros* uro)
+      : baseValue(val), unitsCount(0), uroboros(uro), inner(&uro->vars.inner)  { }
 
    ~OrderBy() {
       delete baseValue;
@@ -134,6 +136,9 @@ protected:
       const T& left, const T& right) const = 0;
 
 
+   Uroboros* uroboros;
+   InnerVariables* inner;
+
    Generator<std::vector<T>>* baseValue;
    std::vector<OrderUnit<_boo>*> boolUnits;
    std::vector<OrderUnit<_num>*> numberUnits;
@@ -147,9 +152,4 @@ protected:
 };
 
 
-
-
-
-
 #endif /* ORDER_H */
-

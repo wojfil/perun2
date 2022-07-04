@@ -25,7 +25,7 @@
 // meanwhile, omit comments
 // both // singleline
 // and /* multiline */
-std::vector<Token> tokenize(const _str& code)
+std::vector<Token> tokenize(const _str& code, Uroboros* uro)
 {
    enum Mode {
       m_Normal = 0,
@@ -102,7 +102,7 @@ std::vector<Token> tokenize(const _str& code)
             }
             else {
                _str word = code.substr(wpos, wlen);
-               tokens.push_back(wordToken(word, line));
+               tokens.push_back(wordToken(word, line, uro));
                wlen = 0;
                mode = Mode::m_Normal;
 
@@ -161,7 +161,7 @@ std::vector<Token> tokenize(const _str& code)
 
    if (mode == m_Word && wlen != 0) {
       _str word = code.substr(wpos, wlen);
-      tokens.push_back(wordToken(word, line));
+      tokens.push_back(wordToken(word, line, uro));
    }
    else if (mode == m_Quote) {
       throw SyntaxException(L"an opened string literal is not closed", line);
@@ -170,7 +170,7 @@ std::vector<Token> tokenize(const _str& code)
    return tokens;
 }
 
-static Token wordToken(_str& value, _int& line)
+static Token wordToken(_str& value, _int& line, Uroboros* uro)
 {
    _int dots = 0;
    _boo nums = true;
@@ -266,13 +266,13 @@ static Token wordToken(_str& value, _int& line)
          toLower(lower);
          const _size hsh = rawStringHash(lower);
 
-         auto fm = HASH_MAP_MONTHS.find(hsh);
-         if (fm != HASH_MAP_MONTHS.end()) {
+         auto fm = uro->hashes.HASH_MAP_MONTHS.find(hsh);
+         if (fm != uro->hashes.HASH_MAP_MONTHS.end()) {
             return Token(_num(fm->second), line, value, Token::nm_Month);
          }
 
-         auto fw = HASH_MAP_WEEKDAYS.find(hsh);
-         if (fw != HASH_MAP_WEEKDAYS.end()) {
+         auto fw = uro->hashes.HASH_MAP_WEEKDAYS.find(hsh);
+         if (fw != uro->hashes.HASH_MAP_WEEKDAYS.end()) {
             return Token(_num(fw->second), line, value, Token::nm_WeekDay);
          }
 

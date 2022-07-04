@@ -28,7 +28,7 @@
 
 _def* Gen_ElementsAtLocation::generate(Generator<_str>* location)
 {
-   return new ElementsAtLocation(location, element);
+   return new ElementsAtLocation(location, element, this->uroboros);
 }
 
 void ElementsAtLocation::reset()
@@ -36,9 +36,9 @@ void ElementsAtLocation::reset()
    if (!first) {
       first = true;
       FindClose(handle);
-      g_this_s.value = prevThis;
-      g_index.value = prevIndex;
-      g_depth.value = prevDepth;
+      this->inner->this_s.value = prevThis;
+      this->inner->index.value = prevIndex;
+      this->inner->depth.value = prevDepth;
    }
 }
 
@@ -55,42 +55,42 @@ _boo ElementsAtLocation::hasNext()
 
          first = false;
          value = data.cFileName;
-         prevThis = g_this_s.value;
-         prevIndex = g_index.value;
-         prevDepth = g_depth.value;
-         g_depth.value = _num(0LL);
+         prevThis = this->inner->this_s.value;
+         prevIndex = this->inner->index.value;
+         prevDepth = this->inner->depth.value;
+         this->inner->depth.value = _num(0LL);
          index = _num(0LL);
-         g_index.value = index;
+         this->inner->index.value = index;
 
          if (!os_isBrowsePath(value)) {
             const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             switch (element) {
                case ELEM_ALL: {
-                  if ((g_flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
+                  if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
                      || (!isDir && os_extension(value) != OS_UROEXT))
                   {
-                     g_index.value = index;
+                     this->inner->index.value = index;
                      index++;
-                     g_this_s.value = value;
+                     this->inner->this_s.value = value;
                      return true;
                   }
                   break;
                }
                case ELEM_DIRECTORIES: {
-                  if (isDir && ((g_flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
-                     g_index.value = index;
+                  if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
+                     this->inner->index.value = index;
                      index++;
-                     g_this_s.value = value;
+                     this->inner->this_s.value = value;
                      return true;
                   }
                   break;
                }
                case ELEM_FILES: {
-                  if (!isDir && ((g_flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
-                     g_index.value = index;
+                  if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
+                     this->inner->index.value = index;
                      index++;
-                     g_this_s.value = value;
+                     this->inner->this_s.value = value;
                      return true;
                   }
                   break;
@@ -111,30 +111,30 @@ _boo ElementsAtLocation::hasNext()
 
          switch (element) {
             case ELEM_ALL: {
-               if ((g_flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
+               if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
                   || (!isDir && os_extension(value) != OS_UROEXT))
                {
-                  g_index.value = index;
+                  this->inner->index.value = index;
                   index++;
-                  g_this_s.value = value;
+                  this->inner->this_s.value = value;
                   return true;
                }
                break;
             }
             case ELEM_DIRECTORIES: {
-               if (isDir && ((g_flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
-                  g_index.value = index;
+               if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
+                  this->inner->index.value = index;
                   index++;
-                  g_this_s.value = value;
+                  this->inner->this_s.value = value;
                   return true;
                }
                break;
             }
             case ELEM_FILES: {
-               if (!isDir && ((g_flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
-                  g_index.value = index;
+               if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
+                  this->inner->index.value = index;
                   index++;
-                  g_this_s.value = value;
+                  this->inner->this_s.value = value;
                   return true;
                }
                break;
@@ -145,15 +145,15 @@ _boo ElementsAtLocation::hasNext()
 
    first = true;
    FindClose(handle);
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
-   g_depth.value = prevDepth;
+   this->inner->this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->depth.value = prevDepth;
    return false;
 }
 
 _def* Gen_RecursiveFiles::generate(Generator<_str>* location)
 {
-   return new RecursiveFiles(location);
+   return new RecursiveFiles(location, this->uroboros);
 }
 
 RecursiveFiles::~RecursiveFiles() {
@@ -173,9 +173,9 @@ void RecursiveFiles::reset()
          }
          handles.clear();
       }
-      g_depth.value = prevDepth;
-      g_this_s.value = prevThis;
-      g_index.value = prevIndex;
+      this->inner->depth.value = prevDepth;
+      this->inner->this_s.value = prevThis;
+      this->inner->index.value = prevIndex;
    }
 }
 
@@ -183,17 +183,17 @@ _boo RecursiveFiles::hasNext()
 {
    if (first) {
       this->paths.push_back(os_trim(location->getValue()));
-      prevDepth = g_depth.value;
-      g_depth.value = _num(0LL);
+      prevDepth = this->inner->depth.value;
+      this->inner->depth.value = _num(0LL);
       goDeeper = true;
       first = false;
-      prevThis = g_this_s.value;
-      prevIndex = g_index.value;
+      prevThis = this->inner->this_s.value;
+      prevIndex = this->inner->index.value;
       index = _num(0LL);
-      g_index.value = index;
+      this->inner->index.value = index;
    }
 
-   while (g_running) {
+   while (this->uroboros->running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -209,17 +209,17 @@ _boo RecursiveFiles::hasNext()
                }
                else {
                   bases.pop_back();
-                  g_depth.value--;
+                  this->inner->depth.value--;
                }
             }
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                const _str& v = data.cFileName;
 
-               if ((g_flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
+               if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
                   value = v;
-                  g_index.value = index;
+                  this->inner->index.value = index;
                   index++;
-                  g_this_s.value = value;
+                  this->inner->this_s.value = value;
                   return true;
                }
             }
@@ -231,7 +231,7 @@ _boo RecursiveFiles::hasNext()
             }
             else {
                bases.pop_back();
-               g_depth.value--;
+               this->inner->depth.value--;
             }
          }
       }
@@ -241,10 +241,10 @@ _boo RecursiveFiles::hasNext()
 
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                  if ((g_flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
+                  if ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
                      paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
-                     if (g_depth.value.isZero()) {
+                     if (this->inner->depth.value.isZero()) {
                         bases.push_back(str(v, OS_SEPARATOR_STRING));
                      }
                      else {
@@ -252,15 +252,15 @@ _boo RecursiveFiles::hasNext()
                      }
 
                      goDeeper = true;
-                     g_depth.value++;
+                     this->inner->depth.value++;
                   }
                }
                else {
-                  if ((g_flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
-                     value = g_depth.value.isZero() ? v : str(bases.back(), v);
-                     g_index.value = index;
+                  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
+                     value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
+                     this->inner->index.value = index;
                      index++;
-                     g_this_s.value = value;
+                     this->inner->this_s.value = value;
                      return true;
                   }
                }
@@ -276,7 +276,7 @@ _boo RecursiveFiles::hasNext()
             }
             else {
                bases.pop_back();
-               g_depth.value--;
+               this->inner->depth.value--;
             }
          }
       }
@@ -288,7 +288,7 @@ _boo RecursiveFiles::hasNext()
 
 _def* Gen_RecursiveDirectories::generate(Generator<_str>* location)
 {
-   return new RecursiveDirectories(location);
+   return new RecursiveDirectories(location, this->uroboros);
 }
 
 RecursiveDirectories::~RecursiveDirectories() {
@@ -308,9 +308,9 @@ void RecursiveDirectories::reset()
          }
          handles.clear();
       }
-      g_depth.value = prevDepth;
-      g_this_s.value = prevThis;
-      g_index.value = prevIndex;
+      this->inner->depth.value = prevDepth;
+      this->inner->this_s.value = prevThis;
+      this->inner->index.value = prevIndex;
    }
 }
 
@@ -318,17 +318,17 @@ _boo RecursiveDirectories::hasNext()
 {
    if (first) {
       paths.push_back(os_trim(location->getValue()));
-      prevDepth = g_depth.value;
-      g_depth.value = _num(-1LL);
+      prevDepth = this->inner->depth.value;
+      this->inner->depth.value = _num(-1LL);
       goDeeper = true;
       first = false;
-      prevThis = g_this_s.value;
-      prevIndex = g_index.value;
+      prevThis = this->inner->this_s.value;
+      prevIndex = this->inner->index.value;
       index = _num(0LL);
-      g_index.value = index;
+      this->inner->index.value = index;
    }
 
-   while (g_running) {
+   while (this->uroboros->running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -344,7 +344,7 @@ _boo RecursiveDirectories::hasNext()
                }
                else {
                   bases.pop_back();
-                  g_depth.value--;
+                  this->inner->depth.value--;
                }
             }
          }
@@ -355,7 +355,7 @@ _boo RecursiveDirectories::hasNext()
             }
             else {
                bases.pop_back();
-               g_depth.value--;
+               this->inner->depth.value--;
             }
          }
       }
@@ -364,12 +364,12 @@ _boo RecursiveDirectories::hasNext()
             const _str& v = data.cFileName;
 
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                && ((g_flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
+                && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
             {
-               value = g_depth.value.isMinusOne() ? v : str(bases.back(), v);
+               value = this->inner->depth.value.isMinusOne() ? v : str(bases.back(), v);
                paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
-               if (g_depth.value.isMinusOne()) {
+               if (this->inner->depth.value.isMinusOne()) {
                   bases.push_back(str(v, OS_SEPARATOR_STRING));
                }
                else {
@@ -377,10 +377,10 @@ _boo RecursiveDirectories::hasNext()
                }
 
                goDeeper = true;
-               g_depth.value++;
-               g_index.value = index;
+               this->inner->depth.value++;
+               this->inner->index.value = index;
                index++;
-               g_this_s.value = value;
+               this->inner->this_s.value = value;
                return true;
             }
          }
@@ -394,7 +394,7 @@ _boo RecursiveDirectories::hasNext()
             }
             else {
                bases.pop_back();
-               g_depth.value--;
+               this->inner->depth.value--;
             }
          }
       }

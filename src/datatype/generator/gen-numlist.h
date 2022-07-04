@@ -23,8 +23,8 @@
 struct Filter_WhereNumber : Generator<_nlist>
 {
 public:
-   Filter_WhereNumber(Generator<_nlist>* li, Generator<_boo>* cond)
-      : list(li), condition(cond) {};
+   Filter_WhereNumber(Generator<_nlist>* li, Generator<_boo>* cond, Uroboros* uro)
+      : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner) {};
 
    ~Filter_WhereNumber() {
       delete list;
@@ -34,6 +34,8 @@ public:
    _nlist getValue() override;
 
 private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    Generator<_nlist>* list;
    Generator<_boo>* condition;
 };
@@ -42,8 +44,8 @@ private:
 struct Filter_OrderByNumber : Generator<_nlist>, OrderBy<_num>
 {
 public:
-   Filter_OrderByNumber(Generator<_nlist>* val)
-      : OrderBy(val) {};
+   Filter_OrderByNumber(Generator<_nlist>* val, Uroboros* uro)
+      : OrderBy(val, uro) {};
 
 
    _nlist getValue() override;
@@ -55,12 +57,12 @@ public:
    _boo finalComparison(const OrderUnit<T>* ou, const _num& leftId,
       const _num& rightId, const _num& left, const _num& right) const {
 
-      g_index.value = leftId;
-      g_this_n.value = left;
+      this->inner->index.value = leftId;
+      this->inner->this_n.value = left;
       const T leftValue = ou->value->getValue();
 
-      g_index.value = rightId;
-      g_this_n.value = right;
+      this->inner->index.value = rightId;
+      this->inner->this_n.value = right;
       const T rightValue = ou->value->getValue();
 
       return ou->descending
@@ -73,12 +75,12 @@ public:
       const _num& rightId, const _num& left, const _num& right,
       _boo& success) const {
 
-      g_index.value = leftId;
-      g_this_n.value = left;
+      this->inner->index.value = leftId;
+      this->inner->this_n.value = left;
       const T leftValue = ou->value->getValue();
 
-      g_index.value = rightId;
-      g_this_n.value = right;
+      this->inner->index.value = rightId;
+      this->inner->this_n.value = right;
       const T rightValue = ou->value->getValue();
 
       if (leftValue == rightValue) {

@@ -112,7 +112,9 @@ template <typename T>
 struct F_RandomElement : Func_1<std::vector<T>>, Generator<T>
 {
 public:
-   F_RandomElement<T>(Generator<std::vector<T>>* a1) : Func_1<std::vector<T>>(a1) {};
+
+   F_RandomElement<T> (Generator<std::vector<T>>* a1, Uroboros* uro)
+      : Func_1<std::vector<T>>(a1), math(&uro->math) {};
 
    T getValue() override {
       const std::vector<T> value = this->arg1->getValue();
@@ -126,10 +128,14 @@ public:
             return value[0];
          }
          default: {
-            return value[g_math->randomInt(length - 1)];
+            return value[this->math->randomInt(length - 1)];
          }
       }
    }
+
+private:
+
+   Math* math;
 };
 
 

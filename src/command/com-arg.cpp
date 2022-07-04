@@ -21,25 +21,25 @@
 
 void CS_StringComArg::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       if (hasMemory) {
          attrMemory.load();
       }
 
-      prevThis = g_this_s.value;
-      prevIndex = g_index.value;
+      prevThis = this->inner->this_s.value;
+      prevIndex = this->inner->index.value;
 
       const _str val = string->getValue();
-      g_index.value = 0LL;
-      g_this_s.value = val;
+      this->inner->index.value = 0LL;
+      this->inner->this_s.value = val;
 
       if (hasAttribute) {
          os_loadAttributes(*attribute);
       }
       command->run();
 
-      g_this_s.value = prevThis;
-      g_index.value = prevIndex;
+      this->inner->this_s.value = prevThis;
+      this->inner->index.value = prevIndex;
 
       if (hasMemory) {
          attrMemory.restore();
@@ -61,14 +61,14 @@ void CS_ListComArg::run()
       attrMemory.load();
    }
 
-   prevThis = g_this_s.value;
-   prevIndex = g_index.value;
+   prevThis = this->inner->this_s.value;
+   prevIndex = this->inner->index.value;
 
    _size index = 0;
-   g_index.value = 0LL;
+   this->inner->index.value = 0LL;
 
-   while (g_running && index != length) {
-      g_this_s.value = values[index];
+   while (this->uroboros->running && index != length) {
+      this->inner->this_s.value = values[index];
 
       if (hasAttribute) {
          os_loadAttributes(*attribute);
@@ -76,11 +76,11 @@ void CS_ListComArg::run()
 
       command->run();
       index++;
-      g_index.value = _num((_nint)index);
+      this->inner->index.value = _num((_nint)index);
    }
 
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
+   this->inner->this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
 
    if (hasMemory) {
       attrMemory.restore();
@@ -94,19 +94,19 @@ void CS_DefinitionComArg::run()
       attrMemory.load();
    }
 
-   prevThis = g_this_s.value;
-   prevIndex = g_index.value;
+   prevThis = this->inner->this_s.value;
+   prevIndex = this->inner->index.value;
 
-   _size index = 0;
-   g_index.value = 0LL;
+   _nint index = 0LL;
+   this->inner->index.value = 0LL;
 
    while (definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
 
-      g_this_s.value = definition->getValue();
+      this->inner->this_s.value = definition->getValue();
 
       if (hasAttribute) {
          os_loadAttributes(*attribute);
@@ -114,14 +114,13 @@ void CS_DefinitionComArg::run()
 
       command->run();
       index++;
-      g_index.value = _num((_nint)index);
+      this->inner->index.value = _num(index);
    }
 
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
+   this->inner->this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
 
    if (hasMemory) {
       attrMemory.restore();
    }
 }
-

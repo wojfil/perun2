@@ -13,19 +13,24 @@
 */
 
 #include "attribute.h"
-#include "hash.h"
+#include "uroboros.h"
+#include "os.h"
 
 
-Attribute::Attribute()
+
+Attribute::Attribute(Uroboros* uro)
 {
    value = ATTR_NULL;
+   uroboros = uro;
+   inner = &uro->vars.inner;
 }
 
 void Attribute::add(const Token& tk)
 {
    const _size& h = tk.value.h1;
+   const Hashes& hashes = this->uroboros->hashes;
 
-   if (HASH_GROUP_ATTR.find(h) == HASH_GROUP_ATTR.end()) {
+   if (hashes.HASH_GROUP_ATTR.find(h) == hashes.HASH_GROUP_ATTR.end()) {
       return;
    }
 
@@ -33,55 +38,55 @@ void Attribute::add(const Token& tk)
       set(ATTR_PATH);
    }
 
-   if (h == HASH_VAR_DRIVE) {
+   if (h == hashes.HASH_VAR_DRIVE) {
       set(ATTR_DRIVE);
       return;
    }
 
-   if (h != HASH_VAR_PATH && h != HASH_VAR_FULLNAME) {
+   if (h != hashes.HASH_VAR_PATH && h != hashes.HASH_VAR_FULLNAME) {
       set(ATTR_EXISTS);
    }
 
-   if (h == HASH_VAR_ACCESS){
+   if (h == hashes.HASH_VAR_ACCESS){
       set(ATTR_ACCESS);
    }
-   else if (h == HASH_VAR_ARCHIVE)
+   else if (h == hashes.HASH_VAR_ARCHIVE)
       set(ATTR_ARCHIVE);
-   else if (h == HASH_VAR_COMPRESSED)
+   else if (h == hashes.HASH_VAR_COMPRESSED)
       set(ATTR_COMPRESSED);
-   else if (h == HASH_VAR_CREATION)
+   else if (h == hashes.HASH_VAR_CREATION)
       set(ATTR_CREATION);
-   else if (h == HASH_VAR_CHANGE)
+   else if (h == hashes.HASH_VAR_CHANGE)
       set(ATTR_CHANGE);
-   else if (h == HASH_VAR_DRIVE)
+   else if (h == hashes.HASH_VAR_DRIVE)
       set(ATTR_DRIVE);
-   else if (h == HASH_VAR_EMPTY)
+   else if (h == hashes.HASH_VAR_EMPTY)
       set(ATTR_EMPTY);
-   else if (h == HASH_VAR_ENCRYPTED)
+   else if (h == hashes.HASH_VAR_ENCRYPTED)
       set(ATTR_ENCRYPTED);
-   else if (h == HASH_VAR_EXTENSION) {
+   else if (h == hashes.HASH_VAR_EXTENSION) {
       set(ATTR_EXTENSION);
    }
-   else if (h == HASH_VAR_FULLNAME)
+   else if (h == hashes.HASH_VAR_FULLNAME)
       set(ATTR_FULLNAME);
-   else if (h == HASH_VAR_HIDDEN)
+   else if (h == hashes.HASH_VAR_HIDDEN)
       set(ATTR_HIDDEN);
-   else if (h == HASH_VAR_LIFETIME) {
+   else if (h == hashes.HASH_VAR_LIFETIME) {
       set(ATTR_CREATION);
       set(ATTR_MODIFICATION);
       set(ATTR_LIFETIME);
    }
-   else if (h == HASH_VAR_MODIFICATION)
+   else if (h == hashes.HASH_VAR_MODIFICATION)
       set(ATTR_MODIFICATION);
-   else if (h == HASH_VAR_NAME)
+   else if (h == hashes.HASH_VAR_NAME)
       set(ATTR_NAME);
-   else if (h == HASH_VAR_PARENT)
+   else if (h == hashes.HASH_VAR_PARENT)
       set(ATTR_PARENT);
-   else if (h == HASH_VAR_PATH)
+   else if (h == hashes.HASH_VAR_PATH)
       set(ATTR_PATH);
-   else if (h == HASH_VAR_READONLY)
+   else if (h == hashes.HASH_VAR_READONLY)
       set(ATTR_READONLY);
-   else if (h == HASH_VAR_SIZE)
+   else if (h == hashes.HASH_VAR_SIZE)
       set(ATTR_SIZE);
 }
 
@@ -105,4 +110,9 @@ _boo Attribute::has(const _aunit& v) const
 _boo Attribute::hasAny() const
 {
    return value != ATTR_NULL;
+}
+
+void Attribute::run()
+{
+   os_loadAttributes(*this);
 }

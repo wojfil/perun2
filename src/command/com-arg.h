@@ -21,22 +21,30 @@
 #include "../datatype/datatype.h"
 #include "../datatype/generator.h"
 #include "aggregate.h"
+#include "../uroboros.h"
+
+
 
 
 struct IterationLoop : Command
 {
 public:
-   IterationLoop(Command* com)
-      : command(com), hasMemory(false), hasAttribute(false) { };
+   IterationLoop(Command* com, Uroboros* uro)
+      : uroboros(uro), command(com), hasMemory(false), hasAttribute(false),
+        attrMemory(nullptr, nullptr), inner(&uro->vars.inner) { };// attrmem temp
 
-   IterationLoop(Command* com, Attribute* attr, const _boo& hasmem)
-      : command(com), attribute(attr), attrMemory(AttributeMemory(attr)), hasMemory(hasmem), hasAttribute(true) { };
+   IterationLoop(Command* com, Attribute* attr, const _boo& hasmem, Uroboros* uro)
+      : uroboros(uro), command(com), attribute(attr), attrMemory(AttributeMemory(attr, &uro->vars.inner)),
+        hasMemory(hasmem), hasAttribute(true), inner(&uro->vars.inner) { };
 
-   IterationLoop(Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem)
-      : command(com), attribute(attr), attrMemory(AttributeMemory(memAttr)), hasMemory(hasmem), hasAttribute(true) { };
+   IterationLoop(Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : uroboros(uro), command(com), attribute(attr), attrMemory(AttributeMemory(memAttr, &uro->vars.inner)),
+        hasMemory(hasmem), hasAttribute(true), inner(&uro->vars.inner) { };
 
 
 protected:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    Command* command;
    Attribute* attribute;
    AttributeMemory attrMemory;
@@ -51,14 +59,14 @@ protected:
 struct CS_StringComArg : IterationLoop
 {
 public:
-   CS_StringComArg(Generator<_str>* str, Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), string(str) { };
+   CS_StringComArg(Generator<_str>* str, Command* com, Uroboros* uro)
+      : IterationLoop(com, uro), string(str) { };
 
-   CS_StringComArg(Generator<_str>* str, Command* com, Attribute* attr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), string(str) { };
+   CS_StringComArg(Generator<_str>* str, Command* com, Attribute* attr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), string(str) { };
 
-   CS_StringComArg(Generator<_str>* str, Command* com)
-      : IterationLoop(com), string(str) { };
+   CS_StringComArg(Generator<_str>* str, Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), string(str) { };
 
    ~CS_StringComArg() {
       delete string;
@@ -75,14 +83,14 @@ private:
 struct CS_ListComArg : IterationLoop
 {
 public:
-   CS_ListComArg(Generator<_list>* li, Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), list(li) { };
+   CS_ListComArg(Generator<_list>* li, Command* com, Uroboros* uro)
+      : IterationLoop(com, uro), list(li) { };
 
-   CS_ListComArg(Generator<_list>* li, Command* com, Attribute* attr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), list(li) { };
+   CS_ListComArg(Generator<_list>* li, Command* com, Attribute* attr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), list(li) { };
 
-   CS_ListComArg(Generator<_list>* li, Command* com)
-      : IterationLoop(com), list(li) { };
+   CS_ListComArg(Generator<_list>* li, Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), list(li) { };
 
    ~CS_ListComArg() {
       delete list;
@@ -99,14 +107,14 @@ private:
 struct CS_DefinitionComArg : IterationLoop
 {
 public:
-   CS_DefinitionComArg(_def* def, Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), definition(def) { };
+   CS_DefinitionComArg(_def* def, Command* com, Uroboros* uro)
+      : IterationLoop(com, uro), definition(def) { };
 
-   CS_DefinitionComArg(_def* def, Command* com, Attribute* attr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), definition(def) { };
+   CS_DefinitionComArg(_def* def, Command* com, Attribute* attr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), definition(def) { };
 
-   CS_DefinitionComArg(_def* def, Command* com)
-      : IterationLoop(com), definition(def) { };
+   CS_DefinitionComArg(_def* def, Command* com, Attribute* attr, Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(def) { };
 
    ~CS_DefinitionComArg() {
       delete definition;
@@ -118,8 +126,6 @@ public:
 private:
    _def* definition;
 };
-
-
 
 
 #endif // COM-ARG_H_INCLUDED

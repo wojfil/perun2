@@ -51,7 +51,7 @@ _boo Filter_WhereDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
@@ -61,7 +61,7 @@ _boo Filter_WhereDef::hasNext()
       const _boo con = condition->getValue();
 
       if (con) {
-         g_index.value = index;
+         this->inner->index.value = index;
          index++;
          return true;
       }
@@ -86,7 +86,7 @@ _boo Filter_LimitDef::hasNext()
    }
 
    while (counter < limit && definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
@@ -113,13 +113,13 @@ _boo Filter_SkipDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
 
       if (counter == limit) {
-         g_index.value -= _num((_nint)limit);
+         this->inner->index.value -= _num((_nint)limit);
          value = definition->getValue();
          return true;
       }
@@ -147,7 +147,7 @@ _boo Filter_EveryDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
@@ -155,7 +155,7 @@ _boo Filter_EveryDef::hasNext()
       if (counter == limit) {
          counter = 1;
          value = definition->getValue();
-         g_index.value = index;
+         this->inner->index.value = index;
          index++;
          return true;
       }
@@ -187,7 +187,7 @@ void Join_DefStr::reset()
 
 _boo Join_DefStr::hasNext()
 {
-   if (!g_running) {
+   if (!this->uroboros->running) {
       reset();
       return false;
    }
@@ -226,7 +226,7 @@ void Join_StrDef::reset()
 
 _boo Join_StrDef::hasNext()
 {
-   if (!g_running) {
+   if (!this->uroboros->running) {
       reset();
       return false;
    }
@@ -267,7 +267,7 @@ void Join_DefList::reset()
 
 _boo Join_DefList::hasNext()
 {
-   if (!g_running) {
+   if (!this->uroboros->running) {
       reset();
       return false;
    }
@@ -316,7 +316,7 @@ void Join_ListDef::reset()
 
 _boo Join_ListDef::hasNext()
 {
-   if (!g_running) {
+   if (!this->uroboros->running) {
       reset();
       return false;
    }
@@ -375,7 +375,7 @@ void Join_DefDef::reset()
 
 _boo Join_DefDef::hasNext()
 {
-   if (!g_running) {
+   if (!this->uroboros->running) {
       reset();
       return false;
    }
@@ -423,8 +423,8 @@ _boo OrderByCast::hasNext()
          attrMemory.load();
       }
 
-      prevIndex = g_index.value;
-      prevThis = g_this_s.value;
+      prevIndex = this->inner->index.value;
+      prevThis = this->inner->this_s.value;
 
       first = false;
       values = base->getValue();
@@ -433,18 +433,18 @@ _boo OrderByCast::hasNext()
       length = values.size();
    }
 
-   if (g_running && index != length) {
+   if (this->uroboros->running && index != length) {
       value = values[index];
-      g_this_s.value = value;
-      g_index = indexAsNumber;
+      this->inner->this_s.value = value;
+      this->inner->index = indexAsNumber;
       index++;
       indexAsNumber++;
       return true;
    }
 
    first = true;
-   g_index.value = prevIndex;
-   g_this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->this_s.value = prevThis;
 
    if (hasMemory) {
       attrMemory.restore();

@@ -21,6 +21,7 @@
 #include "../exception.h"
 #include "../tokens.h"
 #include "../token.h"
+#include "../uroboros.h"
 #include "../util.h"
 #include "../var/var-runtime.h"
 #include "parse/parse-bool.h"
@@ -33,18 +34,18 @@
 #include "parse/parse-time.h"
 #include "parse/parse-definition.h"
 
-Tokens prepareForGen(const Tokens& tks);
+Tokens prepareForGen(const Tokens& tks, Uroboros* uro);
 void checkKeywords(const Tokens& tks);
 _boo isExpForbiddenKeyword(const Token& tk);
 
-_boo parse(const Tokens& tns, Generator<_boo>*& result);
-_boo parse(const Tokens& tns, Generator<_num>*& result);
-_boo parse(const Tokens& tns, Generator<_str>*& result);
-_boo parse(const Tokens& tns,Generator<_nlist>*& result);
-_boo parse(const Tokens& tns, Generator<_tlist>*& result);
-_boo parse(const Tokens& tns, Generator<_list>*& result);
-_boo parse(const Tokens& tns, Generator<_tim>*& result);
-_boo parse(const Tokens& tns, Generator<_per>*& result);
-_boo parse(const Tokens& tns, _def*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_boo>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_num>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_str>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns,Generator<_nlist>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_tlist>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_list>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_tim>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_per>*& result);
+_boo parse(Uroboros* uro, const Tokens& tns, _def*& result);
 
 #endif /* PARSE_GEN_H */

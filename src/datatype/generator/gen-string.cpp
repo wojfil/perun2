@@ -34,14 +34,9 @@ _str StringBinary::getValue()
       : L"";
 };
 
-_str ThisReference::getValue()
-{
-   return g_this_s.value;
-}
-
 _str LocationReference::getValue()
 {
-   return g_location.value;
+   return this->inner->location.value;
 }
 
 _str CharAtIndex::getValue()
@@ -80,4 +75,3 @@ _str DefinitionElement::getValue()
 
    return L"";
 }
-

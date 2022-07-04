@@ -23,7 +23,7 @@
 #include "../parse-gen.h"
 
 
-_def* parseDefinition(const Tokens& tks)
+_def* parseDefinition(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    const Token& f = tks.first();
@@ -31,18 +31,18 @@ _def* parseDefinition(const Tokens& tks)
    if (len == 1) {
       if (f.type == Token::t_Word) {
          _def* var;
-         return getVarValue(f, var) ? var : nullptr;
+         return uro->vars.getVarValue(f, var) ? var : nullptr;
       }
       return nullptr;
    }
 
-   _def* filter = parseFilter<_def*, _str>(tks, ThisState::ts_String);
+   _def* filter = parseFilter<_def*, _str>(tks, ThisState::ts_String, uro);
    if (filter != nullptr) {
       return filter;
    }
 
-   if (isDefinitionChain(tks)) {
-      _def* chain = parseDefinitionChain(tks);
+   if (isDefinitionChain(tks, uro)) {
+      _def* chain = parseDefinitionChain(tks, uro);
       if (chain != nullptr) {
          return chain;
       }
@@ -52,7 +52,7 @@ _def* parseDefinition(const Tokens& tks)
 }
 
 
-static _boo isDefinitionChain(const Tokens& tks)
+static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro)
 {
    if (!tks.containsSymbol(L',')) {
       return false;
@@ -65,7 +65,7 @@ static _boo isDefinitionChain(const Tokens& tks)
    for (_size i = 0; i < len; i++) {
       Tokens& tk = elements[i];
       _def* def;
-      if (parse(tk, def)) {
+      if (parse(uro, tk, def)) {
          delete def;
          return true;
       }
@@ -79,7 +79,7 @@ static _boo isDefinitionChain(const Tokens& tks)
 
 // for the sake of optimization
 // definition chains are lazy evaluated
-static _def* parseDefinitionChain(const Tokens& tks)
+static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -96,15 +96,15 @@ static _def* parseDefinitionChain(const Tokens& tks)
    Generator<_str>* prevStr;
    Generator<_list>* prevList;
 
-   if (parse(elements[0], prevDef)) {
+   if (parse(uro, elements[0], prevDef)) {
       cl = ChainLink::cl_Definition;
    }
    else {
-      if (parse(elements[0], prevStr)) {
+      if (parse(uro, elements[0], prevStr)) {
          cl = ChainLink::cl_String;
       }
       else {
-         if (parse(elements[0], prevList)) {
+         if (parse(uro, elements[0], prevList)) {
             cl = ChainLink::cl_List;
          }
          else {
@@ -119,21 +119,21 @@ static _def* parseDefinitionChain(const Tokens& tks)
       switch (cl) {
          case cl_Definition: {
             _def* def;
-            if (parse(tk, def)) {
+            if (parse(uro, tk, def)) {
                _def* pdef = prevDef;
-               prevDef = new Join_DefDef(pdef, def);
+               prevDef = new Join_DefDef(pdef, def, uro);
             }
             else {
                Generator<_str>* str;
-               if (parse(tk, str)) {
+               if (parse(uro, tk, str)) {
                   _def* pdef = prevDef;
-                  prevDef = new Join_DefStr(pdef, str);
+                  prevDef = new Join_DefStr(pdef, str, uro);
                }
                else {
                   Generator<_list>* list;
-                  if (parse(tk, list)) {
+                  if (parse(uro, tk, list)) {
                      _def* pdef = prevDef;
-                     prevDef = new Join_DefList(pdef, list);
+                     prevDef = new Join_DefList(pdef, list, uro);
                   }
                   else {
                      delete prevDef;
@@ -146,21 +146,21 @@ static _def* parseDefinitionChain(const Tokens& tks)
          }
          case cl_String: {
             _def* def;
-            if (parse(tk, def)) {
-               prevDef = new Join_StrDef(prevStr, def);
+            if (parse(uro, tk, def)) {
+               prevDef = new Join_StrDef(prevStr, def, uro);
                prevStr = nullptr;
                cl = ChainLink::cl_Definition;
             }
             else {
                Generator<_str>* str;
-               if (parse(tk, str)) {
+               if (parse(uro, tk, str)) {
                   prevList =  new Join_StrStr(prevStr, str);
                   prevStr = nullptr;
                   cl = ChainLink::cl_List;
                }
                else {
                   Generator<_list>* list;
-                  if (parse(tk, list)) {
+                  if (parse(uro, tk, list)) {
                      prevList =  new Join_StrList(prevStr, list);
                      prevStr = nullptr;
                      cl = ChainLink::cl_List;
@@ -176,20 +176,20 @@ static _def* parseDefinitionChain(const Tokens& tks)
          }
          case cl_List: {
             _def* def;
-            if (parse(tk, def)) {
-               prevDef = new Join_ListDef(prevList, def);
+            if (parse(uro, tk, def)) {
+               prevDef = new Join_ListDef(prevList, def, uro);
                prevList = nullptr;
                cl = ChainLink::cl_Definition;
             }
             else {
                Generator<_str>* str;
-               if (parse(tk, str)) {
+               if (parse(uro, tk, str)) {
                   Generator<_list>* plist = prevList;
                   prevList = new Join_ListStr(plist, str);
                }
                else {
                   Generator<_list>* list;
-                  if (parse(tk, list)) {
+                  if (parse(uro, tk, list)) {
                      Generator<_list>* plist = prevList;
                      prevList = new Join_ListList(plist, list);
                   }

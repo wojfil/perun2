@@ -17,28 +17,34 @@
 
 _int g_guiMes;
 
-void commandLog(const _str& value)
+
+void rawPrint(const _str& value)
 {
-   if (!(g_flags & FLAG_SILENT)) {
+   std::wcout << value << L"\n";
+}
+
+void print(const Uroboros* uro,const _str& value)
+{
+   std::wcout << value << L"\n";
+   if (uro->flags & FLAG_GUI) {
+      g_guiMes++;
+      if (g_guiMes == GUIMES_LIMIT) {
+         g_guiMes = 0;
+         Sleep(GUIMES_TIME);
+      }
+   }
+}
+
+void commandLog(const Uroboros* uro,const _str& value)
+{
+   if (!(uro->flags & FLAG_SILENT)) {
       std::wcout << value << L"\n";
-      if (g_flags & FLAG_GUI) {
+      if (uro->flags & FLAG_GUI) {
          g_guiMes++;
          if (g_guiMes == GUIMES_LIMIT) {
             g_guiMes = 0;
             Sleep(GUIMES_TIME);
          }
-      }
-   }
-}
-
-void print(const _str& value)
-{
-   std::wcout << value << L"\n";
-   if (g_flags & FLAG_GUI) {
-      g_guiMes++;
-      if (g_guiMes == GUIMES_LIMIT) {
-         g_guiMes = 0;
-         Sleep(GUIMES_TIME);
       }
    }
 }

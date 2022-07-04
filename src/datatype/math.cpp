@@ -1,8 +1,6 @@
 #include "math.h"
 
 
-Math* g_math;
-
 
 Math::Math() {
    anyRandomDouble = false;

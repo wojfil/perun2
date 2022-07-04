@@ -15,7 +15,7 @@
 #ifndef COM_STRUCT_H
 #define COM_STRUCT_H
 
-#include "com.h"
+#include "com-listener.h"
 #include "../util.h"
 #include "../attribute.h"
 #include "../datatype/datatype.h"
@@ -23,10 +23,11 @@
 #include "com-arg.h"
 
 
-struct CS_Pair : Command
+struct CS_Pair : Command_L
 {
 public:
-   CS_Pair(Command* fst, Command* snd) : first(fst), second(snd){};
+   CS_Pair(Command* fst, Command* snd, Uroboros* uro)
+      : first(fst), second(snd), Command_L(uro) {};
 
    ~CS_Pair() {
       delete first;
@@ -41,11 +42,11 @@ private:
 };
 
 
-struct CS_Block : Command
+struct CS_Block : Command_L
 {
 public:
-   CS_Block(std::vector<Command*> coms) : commands(coms),
-      length(coms.size()) { };
+   CS_Block(std::vector<Command*> coms, Uroboros* uro)
+      : commands(coms), length(coms.size()), Command_L(uro) { };
 
    ~CS_Block() {
       deleteVector(commands);
@@ -59,11 +60,11 @@ private:
 };
 
 
-struct CS_Times : Command
+struct CS_Times : Command_L
 {
 public:
-   CS_Times(Generator<_num>* ts, Command* com, Aggregate* aggr)
-      : aggregate(aggr), times(ts), command(com) { };
+   CS_Times(Generator<_num>* ts, Command* com, Aggregate* aggr, Uroboros* uro)
+      : aggregate(aggr), times(ts), command(com), Command_L(uro)  { };
 
    ~CS_Times() {
       delete times;
@@ -80,11 +81,11 @@ private:
 };
 
 
-struct CS_While : Command
+struct CS_While : Command_L
 {
 public:
-   CS_While(Generator<_boo>* cond, Command* com, Aggregate* aggr)
-      : aggregate(aggr), condition(cond), command(com) { };
+   CS_While(Generator<_boo>* cond, Command* com, Aggregate* aggr, Uroboros* uro)
+      : aggregate(aggr), condition(cond), command(com), Command_L(uro)  { };
 
    ~CS_While() {
       delete condition;
@@ -101,11 +102,11 @@ private:
 };
 
 
-struct CS_TimeLoop : Command
+struct CS_TimeLoop : Command_L
 {
 public:
-   CS_TimeLoop(Generator<_tlist>* tList, Command* com, Aggregate* aggr)
-      : aggregate(aggr), timeList(tList), command(com) { };
+   CS_TimeLoop(Generator<_tlist>* tList, Command* com, Aggregate* aggr, Uroboros* uro)
+      : aggregate(aggr), timeList(tList), command(com), Command_L(uro)  { };
 
    ~CS_TimeLoop() {
       delete timeList;
@@ -122,11 +123,11 @@ private:
 };
 
 
-struct CS_NumberLoop : Command
+struct CS_NumberLoop : Command_L
 {
 public:
-   CS_NumberLoop(Generator<_nlist>* nList, Command* com, Aggregate* aggr)
-      : aggregate(aggr), numberList(nList), command(com) { };
+   CS_NumberLoop(Generator<_nlist>* nList, Command* com, Aggregate* aggr, Uroboros* uro)
+      : aggregate(aggr), numberList(nList), command(com), Command_L(uro)  { };
 
    ~CS_NumberLoop() {
       delete numberList;
@@ -146,11 +147,13 @@ private:
 struct CS_StringLoop : IterationLoop
 {
 public:
-   CS_StringLoop(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), string(str), aggregate(aggr) { };
+   CS_StringLoop(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
+      Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), string(str), aggregate(aggr) { };
 
-   CS_StringLoop(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), string(str), aggregate(aggr) { };
+   CS_StringLoop(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
+      const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), string(str), aggregate(aggr) { };
 
    ~CS_StringLoop() {
       delete string;
@@ -169,11 +172,13 @@ private:
 struct CS_DefinitionLoop : IterationLoop
 {
 public:
-   CS_DefinitionLoop(_def* def, Command* com, Attribute* attr, Aggregate* aggr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), definition(def), aggregate(aggr) { };
+   CS_DefinitionLoop(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
+      Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(def), aggregate(aggr) { };
 
-   CS_DefinitionLoop(_def* def, Command* com, Attribute* attr, Aggregate* aggr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), definition(def), aggregate(aggr) { };
+   CS_DefinitionLoop(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
+      const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), definition(def), aggregate(aggr) { };
 
    ~CS_DefinitionLoop() {
       delete definition;
@@ -192,11 +197,13 @@ private:
 struct CS_ListLoop : IterationLoop
 {
 public:
-   CS_ListLoop(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), list(li), aggregate(aggr) { };
+   CS_ListLoop(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
+      Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), list(li), aggregate(aggr) { };
 
-   CS_ListLoop(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), list(li), aggregate(aggr) { };
+   CS_ListLoop(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
+      const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), list(li), aggregate(aggr) { };
 
    ~CS_ListLoop() {
       delete list;
@@ -215,11 +222,13 @@ private:
 struct CS_InsideString : IterationLoop
 {
 public:
-   CS_InsideString(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), string(str), aggregate(aggr) { };
+   CS_InsideString(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
+      Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), string(str), aggregate(aggr) { };
 
-   CS_InsideString(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), string(str), aggregate(aggr) { };
+   CS_InsideString(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
+      const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), string(str), aggregate(aggr) { };
 
    ~CS_InsideString() {
       delete string;
@@ -239,11 +248,13 @@ private:
 struct CS_InsideDefinition : IterationLoop
 {
 public:
-   CS_InsideDefinition(_def* def, Command* com, Attribute* attr, Aggregate* aggr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), definition(def), aggregate(aggr) { };
+   CS_InsideDefinition(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
+      Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(def), aggregate(aggr) { };
 
-   CS_InsideDefinition(_def* def, Command* com, Attribute* attr, Aggregate* aggr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), definition(def), aggregate(aggr) { };
+   CS_InsideDefinition(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
+      const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), definition(def), aggregate(aggr) { };
 
    ~CS_InsideDefinition() {
       delete definition;
@@ -263,11 +274,13 @@ private:
 struct CS_InsideList : IterationLoop
 {
 public:
-   CS_InsideList(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr, Attribute* memAttr, const _boo& hasmem)
-      : IterationLoop(com, attr, memAttr, hasmem), list(li), aggregate(aggr) { };
+   CS_InsideList(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
+      Attribute* memAttr, const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), list(li), aggregate(aggr) { };
 
-   CS_InsideList(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr, const _boo& hasmem)
-      : IterationLoop(com, attr, hasmem), list(li), aggregate(aggr) { };
+   CS_InsideList(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
+      const _boo& hasmem, Uroboros* uro)
+      : IterationLoop(com, attr, hasmem, uro), list(li), aggregate(aggr) { };
 
    ~CS_InsideList() {
       delete list;

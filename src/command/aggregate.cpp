@@ -19,11 +19,13 @@
 #include "../uroboros.h"
 
 
-Aggregate::Aggregate()
+Aggregate::Aggregate(Uroboros* uro)
 {
    failedCopy = 0;
    failedSelect = 0;
    value = 0;
+   inner = &(uro->vars.inner);
+   uroboros = uro;
 }
 
 void Aggregate::set(const _uint32& v)
@@ -44,16 +46,17 @@ void Aggregate::run()
    if (has(AGGR_SELECT)) {
       if (!invalidSelect.empty()) {
          for (auto it = invalidSelect.begin(); it != invalidSelect.end(); it++) {
-            logSelectError(*it);
+            logSelectError(this->uroboros, *it);
          }
          invalidSelect.clear();
       }
 
       if (failedSelect > 0) {
          for (_uint32 i = 0; i < failedSelect; i++) {
-            logSelectError(L"");
+            logSelectError(this->uroboros, L"");
          }
          failedSelect = 0;
+         selectFailure = true;
       }
 
       if (!selectPaths.empty()) {
@@ -61,16 +64,12 @@ void Aggregate::run()
          std::set<_str> goodPaths;
 
          for (const std::pair<_str, std::set<_str>>& pair : selectPaths) {
-            if (!g_running) {
-               break;
-            }
-
             const _str& parent = pair.first;
             const std::set<_str>& paths = pair.second;
 
             if (!os_directoryExists(parent)) {
                for (auto it = paths.begin(); it != paths.end(); it++) {
-                  logSelectError(*it);
+                  logSelectError(this->uroboros, *it);
                }
                continue;
             }
@@ -82,29 +81,26 @@ void Aggregate::run()
                   anyGoodPath = true;
                }
                else {
-                  logSelectError(path);
+                  logSelectError(this->uroboros, path);
+                  selectFailure = true;
                }
             }
 
             if (anyGoodPath) {
                if (os_select(parent, goodPaths)) {
                   for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                     logSelectSuccess(*it);
+                     logSelectSuccess(this->uroboros, *it);
                   }
-                  selectFailure = false;
                }
                else {
                   for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                     logSelectError(*it);
+                     logSelectError(this->uroboros, *it);
                   }
                   selectFailure = true;
                }
 
                goodPaths.clear();
                anyGoodPath = false;
-            }
-            else {
-               selectFailure = true;
             }
          }
 
@@ -115,14 +111,14 @@ void Aggregate::run()
    if (has(AGGR_COPY)) {
       if (!invalidCopy.empty()) {
          for (auto it = invalidCopy.begin(); it != invalidCopy.end(); it++) {
-            logCopyError(*it);
+            logCopyError(this->uroboros, *it);
          }
          invalidCopy.clear();
       }
 
       if (failedCopy > 0) {
          for (_uint32 i = 0; i < failedCopy; i++) {
-            logCopyError(L"");
+            logCopyError(this->uroboros, L"");
          }
          failedCopy = 0;
       }
@@ -136,27 +132,30 @@ void Aggregate::run()
                goodPaths.insert(path);
             }
             else {
-               logCopyError(path);
+               logCopyError(this->uroboros, path);
             }
          }
 
          if (!goodPaths.empty()) {
             if (os_copy(goodPaths)) {
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                  logCopySuccess(*it);
+                  logCopySuccess(this->uroboros, *it);
                }
-               g_success.value = !selectFailure;
+               this->inner->success.value = !selectFailure;
             }
             else {
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                  logCopyError(*it);
+                  logCopyError(this->uroboros, *it);
                }
-               g_success.value = false;
+               this->inner->success.value = false;
             }
          }
 
          copyPaths.clear();
       }
+   }
+   else {
+      this->inner->success.value = !selectFailure;
    }
 }
 

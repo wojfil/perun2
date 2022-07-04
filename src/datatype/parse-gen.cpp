@@ -19,7 +19,7 @@
 #include "function.h"
 
 
-Tokens prepareForGen(const Tokens& tks)
+Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
 {
    // check if all opened brackets are closed within the sequence
    checkBrackets(tks);
@@ -80,7 +80,7 @@ Tokens prepareForGen(const Tokens& tks)
    if (tks2.getLength() == 1) {
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
-         if (f.value.h1 != HASH_VAR_THIS && !variableExists(f)) {
+         if (f.value.h1 != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
             throw SyntaxException(str(L"variable '", f.originString,
                L"' does not exist or is unreachable here"), f.line);
          }
@@ -154,14 +154,14 @@ _boo isExpForbiddenKeyword(const Token& tk)
 }
 
 
-_boo parse(const Tokens& tns, Generator<_boo>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_boo>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // data type "bool" does not contain any default casting
    // so let us go straight to parsing
 
-   Generator<_boo>* boo = parseBool(tns2);
+   Generator<_boo>* boo = parseBool(tns2, uro);
    if (boo == nullptr) {
       return false;
    }
@@ -171,18 +171,18 @@ _boo parse(const Tokens& tns, Generator<_boo>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_num>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_num>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // cast from "bool" to "Number"
-   Generator<_boo>* boo = parseBool(tns2);
+   Generator<_boo>* boo = parseBool(tns2, uro);
    if (boo != nullptr) {
       result = new Cast_B_N(boo);
       return true;
    }
 
-   Generator<_num>* num = parseNumber(tns2);
+   Generator<_num>* num = parseNumber(tns2, uro);
    if (num == nullptr) {
       return false;
    }
@@ -192,39 +192,39 @@ _boo parse(const Tokens& tns, Generator<_num>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_str>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_str>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // cast from "bool" to "string"
-   Generator<_boo>* boo = parseBool(tns2);
+   Generator<_boo>* boo = parseBool(tns2, uro);
    if (boo != nullptr) {
       result = new Cast_B_S(boo);
       return true;
    }
 
    // cast from "number" to "string"
-   Generator<_num>* num = parseNumber(tns2);
+   Generator<_num>* num = parseNumber(tns2, uro);
    if (num != nullptr) {
       result = new Cast_N_S(num);
       return true;
    }
 
    // cast from "time" to "string"
-   Generator<_tim>* tim = parseTime(tns2);
+   Generator<_tim>* tim = parseTime(tns2, uro);
    if (tim != nullptr) {
       result = new Cast_T_S(tim);
       return true;
    }
 
    // cast from "period" to "string"
-   Generator<_per>* per = parsePeriod(tns2);
+   Generator<_per>* per = parsePeriod(tns2, uro);
    if (per != nullptr) {
       result = new Cast_P_S(per);
       return true;
    }
 
-   Generator<_str>* str = parseString(tns2);
+   Generator<_str>* str = parseString(tns2, uro);
    if (str == nullptr) {
       return false;
    }
@@ -234,25 +234,25 @@ _boo parse(const Tokens& tns, Generator<_str>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_nlist>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_nlist>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // cast from "bool" to "numList"
-   Generator<_boo>* boo = parseBool(tns2);
+   Generator<_boo>* boo = parseBool(tns2, uro);
    if (boo != nullptr) {
       result = new Cast_B_NL(boo);
       return true;
    }
 
    // cast from "Number" to "numList"
-   Generator<_num>* num = parseNumber(tns2);
+   Generator<_num>* num = parseNumber(tns2, uro);
    if (num != nullptr) {
       result = new Cast_N_NL(num);
       return true;
    }
 
-   Generator<_nlist>* nlist = parseNumList(tns2);
+   Generator<_nlist>* nlist = parseNumList(tns2, uro);
    if (nlist == nullptr) {
       return false;
    }
@@ -262,18 +262,18 @@ _boo parse(const Tokens& tns, Generator<_nlist>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_tlist>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_tlist>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // cast from "Time" to "timList"
-   Generator<_tim>* tim = parseTime(tns2);
+   Generator<_tim>* tim = parseTime(tns2, uro);
    if (tim != nullptr) {
       result = new Cast_T_TL(tim);
       return true;
    }
 
-   Generator<_tlist>* tlist = parseTimList(tns2);
+   Generator<_tlist>* tlist = parseTimList(tns2, uro);
    if (tlist == nullptr) {
       return false;
    }
@@ -283,67 +283,67 @@ _boo parse(const Tokens& tns, Generator<_tlist>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_list>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_list>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // cast from "bool" to "list"
-   Generator<_boo>* boo = parseBool(tns2);
+   Generator<_boo>* boo = parseBool(tns2, uro);
    if (boo != nullptr) {
       result = new Cast_B_L(boo);
       return true;
    }
 
    // cast from "number" to "list"
-   Generator<_num>* num = parseNumber(tns2);
+   Generator<_num>* num = parseNumber(tns2, uro);
    if (num != nullptr) {
       result = new Cast_N_L(num);
       return true;
    }
 
    // cast from "time" to "list"
-   Generator<_tim>* tim = parseTime(tns2);
+   Generator<_tim>* tim = parseTime(tns2, uro);
    if (tim != nullptr) {
       result = new Cast_T_L(tim);
       return true;
    }
 
    // cast from "period" to "list"
-   Generator<_per>* per = parsePeriod(tns2);
+   Generator<_per>* per = parsePeriod(tns2, uro);
    if (per != nullptr) {
       result = new Cast_P_L(per);
       return true;
    }
 
    // cast from "numList" to "list"
-   Generator<_nlist>* nlis = parseNumList(tns2);
+   Generator<_nlist>* nlis = parseNumList(tns2, uro);
    if (nlis != nullptr) {
       result = new Cast_NL_L(nlis);
       return true;
    }
 
    // cast from "timList" to "list"
-   Generator<_tlist>* tlis = parseTimList(tns2);
+   Generator<_tlist>* tlis = parseTimList(tns2, uro);
    if (tlis != nullptr) {
       result = new Cast_TL_L(tlis);
       return true;
    }
 
    // cast from "string" to "list"
-   Generator<_str>* str = parseString(tns2);
+   Generator<_str>* str = parseString(tns2, uro);
    if (str != nullptr) {
       result = new Cast_S_L(str);
       return true;
    }
 
    // cast from "definition" to "list"
-   _def* def = parseDefinition(tns2);
+   _def* def = parseDefinition(tns2, uro);
    if (def != nullptr) {
-      result = new Cast_D_L(def);
+      result = new Cast_D_L(def, uro);
       return true;
    }
 
-   Generator<_list>* list = parseList(tns2);
+   Generator<_list>* list = parseList(tns2, uro);
    if (list == nullptr) {
       return false;
    }
@@ -353,14 +353,14 @@ _boo parse(const Tokens& tns, Generator<_list>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_tim>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_tim>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // data type "time" does not contain any default casting
    // so let us go straight to parsing
 
-   Generator<_tim>* tim = parseTime(tns2);
+   Generator<_tim>* tim = parseTime(tns2, uro);
    if (tim == nullptr) {
       return false;
    }
@@ -370,14 +370,14 @@ _boo parse(const Tokens& tns, Generator<_tim>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, Generator<_per>*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, Generator<_per>*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // data type "period" does not contain any default casting
    // so let us go straight to parsing
 
-   Generator<_per>* per = parsePeriod(tns2);
+   Generator<_per>* per = parsePeriod(tns2, uro);
    if (per == nullptr) {
       return false;
    }
@@ -387,14 +387,14 @@ _boo parse(const Tokens& tns, Generator<_per>*& result)
    }
 }
 
-_boo parse(const Tokens& tns, _def*& result)
+_boo parse(Uroboros* uro, const Tokens& tns, _def*& result)
 {
-   const Tokens tns2 = prepareForGen(tns);
+   const Tokens tns2 = prepareForGen(tns, uro);
 
    // data type "period" does not contain any default casting
    // so let us go straight to parsing
 
-   _def* def = parseDefinition(tns2);
+   _def* def = parseDefinition(tns2, uro);
    if (def == nullptr) {
       return false;
    }

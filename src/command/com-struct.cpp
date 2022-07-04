@@ -20,194 +20,194 @@
 
 void CS_Pair::run()
 {
-   if (g_running) {
-      first->run();
+   if (this->uroboros->running) {
+      this->first->run();
    }
-   if (g_running) {
-      second->run();
+   if (this->uroboros->running) {
+      this->second->run();
    }
 }
 
 
 void CS_Block::run()
 {
-   for (_size i = 0; g_running && i < length; i++) {
-      (commands[i])->run();
+   for (_size i = 0; this->uroboros->running && i < this->length; i++) {
+      (this->commands[i])->run();
    }
 }
 
 
 void CS_Times::run()
 {
-   _nint repeats = times->getValue().toInt();
+   _nint repeats = this->times->getValue().toInt();
    if (repeats <= 0LL) {
       return;
    }
 
-   const _num prevIndex = g_index.value;
-   g_index.value = Number(0LL);
+   const _num prevIndex = this->inner->index.value;
+   this->inner->index.value = _num(0LL);
 
-   while (g_running && repeats != 0LL) {
-      command->run();
-      g_index.value++;
+   while (this->uroboros->running && repeats != 0LL) {
+      this->command->run();
+      this->inner->index.value++;
       repeats--;
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
          break;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
          continue;
       }
    }
 
-   aggregate->run();
-   g_index.value = prevIndex;
+   this->aggregate->run();
+   this->inner->index.value = prevIndex;
 }
 
 
 void CS_While::run()
 {
-   const _num prevIndex = g_index.value;
-   g_index.value = Number(0LL);
+   const _num prevIndex = this->inner->index.value;
+   this->inner->index.value = _num(0LL);
 
-   while (g_running && condition->getValue()) {
-      command->run();
-      g_index.value++;
+   while (this->uroboros->running && this->condition->getValue()) {
+      this->command->run();
+      this->inner->index.value++;
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
          break;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
          continue;
       }
    }
 
-   aggregate->run();
-   g_index.value = prevIndex;
+   this->aggregate->run();
+   this->inner->index.value = prevIndex;
 }
 
 
 void CS_TimeLoop::run()
 {
-   const _tlist values = timeList->getValue();
+   const _tlist values = this->timeList->getValue();
    const _size length = values.size();
 
    if (length == 0) {
       return;
    }
 
-   const _num prevIndex = g_index.value;
-   const _tim prevThis = g_this_t.value;
+   const _num prevIndex = this->inner->index.value;
+   const _tim prevThis = this->inner->this_t.value;
 
-   g_index.value = Number(0LL);
+   this->inner->index.value = _num(0LL);
    _size index = 0;
 
-   while (g_running && index != length) {
-      g_this_t.value = values[index];
-      command->run();
-      g_index.value++;
+   while (this->uroboros->running && index != length) {
+      this->inner->this_t.value = values[index];
+      this->command->run();
+      this->inner->index.value++;
       index++;
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
          break;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
          continue;
       }
    }
 
-   aggregate->run();
-   g_index.value = prevIndex;
-   g_this_t.value = prevThis;
+   this->aggregate->run();
+   this->inner->index.value = prevIndex;
+   this->inner->this_t.value = prevThis;
 }
 
 
 void CS_NumberLoop::run()
 {
-   const _nlist values = numberList->getValue();
+   const _nlist values = this->numberList->getValue();
    const _size length = values.size();
 
    if (length == 0) {
       return;
    }
 
-   const _num prevIndex = g_index.value;
-   const _num prevThis = g_this_n.value;
+   const _num prevIndex = this->inner->index.value;
+   const _num prevThis = this->inner->this_n.value;
 
-   g_index.value = Number(0LL);
+   this->inner->index.value = _num(0LL);
 
    _size index = 0;
-   while (g_running && index != length) {
-      g_this_n.value = values[index];
-      command->run();
-      g_index.value++;
+   while (this->uroboros->running && index != length) {
+      this->inner->this_n.value = values[index];
+      this->command->run();
+      this->inner->index.value++;
       index++;
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
          break;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
          continue;
       }
    }
 
-   aggregate->run();
-   g_index.value = prevIndex;
-   g_this_n.value = prevThis;
+   this->aggregate->run();
+   this->inner->index.value = prevIndex;
+   this->inner->this_n.value = prevThis;
 }
 
 
 void CS_StringLoop::run()
 {
-   if (g_running) {
-      if (hasMemory) {
-         attrMemory.load();
+   if (this->uroboros->running) {
+      if (this->hasMemory) {
+         this->attrMemory.load();
       }
 
-      prevThis = g_this_s.value;
-      prevIndex = g_index.value;
+      this->prevThis = this->inner->this_s.value;
+      this->prevIndex = this->inner->index.value;
 
-      const _str val = string->getValue();
-      g_index.value = 0LL;
-      g_this_s.value = val;
+      const _str val = this->string->getValue();
+      this->inner->index.value = 0LL;
+      this->inner->this_s.value = val;
 
-      if (hasAttribute) {
-         os_loadAttributes(*attribute);
+      if (this->hasAttribute) {
+         os_loadAttributes(*this->attribute);
       }
-      command->run();
+      this->command->run();
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
       }
 
-      aggregate->run();
+      this->aggregate->run();
 
-      g_this_s.value = prevThis;
-      g_index.value = prevIndex;
+      this->inner->this_s.value = this->prevThis;
+      this->inner->index.value = this->prevIndex;
 
-      if (hasMemory) {
-         attrMemory.restore();
+      if (this->hasMemory) {
+         this->attrMemory.restore();
       }
    }
 }
@@ -215,151 +215,152 @@ void CS_StringLoop::run()
 
 void CS_DefinitionLoop::run()
 {
-   if (hasMemory) {
-      attrMemory.load();
+   if (this->hasMemory) {
+      this->attrMemory.load();
    }
 
-   prevThis = g_this_s.value;
-   prevIndex = g_index.value;
+   this->prevThis = this->inner->this_s.value;
+   this->prevIndex = this->inner->index.value;
 
    _nint index = 0LL;
-   g_index.value = 0LL;
+   this->inner->index.value = 0LL;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          break;
       }
 
-      g_this_s.value = definition->getValue();
+      this->inner->this_s.value = this->definition->getValue();
 
-      if (hasAttribute) {
-         os_loadAttributes(*attribute);
+      if (this->hasAttribute) {
+         os_loadAttributes(*this->attribute);
       }
 
-      command->run();
+      this->command->run();
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
-         definition->reset();
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
+         this->definition->reset();
          break;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
       }
 
       index++;
-      g_index.value = _num(index);
+      this->inner->index.value = _num(index);
    }
 
-   aggregate->run();
+   this->aggregate->run();
 
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
+   this->inner->this_s.value = this->prevThis;
+   this->inner->index.value = this->prevIndex;
 
-   if (hasMemory) {
-      attrMemory.restore();
+   if (this->hasMemory) {
+      this->attrMemory.restore();
    }
 }
 
 
 void CS_ListLoop::run()
 {
-   const _list values = list->getValue();
+   const _list values = this->list->getValue();
    const _size length = values.size();
 
    if (length == 0) {
       return;
    }
 
-   if (hasMemory) {
-      attrMemory.load();
+   if (this->hasMemory) {
+      this->attrMemory.load();
    }
 
-   prevThis = g_this_s.value;
-   prevIndex = g_index.value;
+   this->prevThis = this->inner->this_s.value;
+   this->prevIndex = this->inner->index.value;
 
    _size index = 0;
-   g_index.value = 0LL;
+   this->inner->index.value = 0LL;
 
-   while (g_running && index != length) {
-      g_this_s.value = values[index];
+   while (this->uroboros->running && index != length) {
+      this->inner->this_s.value = values[index];
 
-      if (hasAttribute) {
-         os_loadAttributes(*attribute);
+      if (this->hasAttribute) {
+         os_loadAttributes(*this->attribute);
       }
 
-      command->run();
+      this->command->run();
       index++;
-      g_index.value = _num((_nint)index);
+      this->inner->index.value = _num((_nint)index);
 
-      if (g_break) {
-         g_running = true;
-         g_break = false;
+      if (this->uroboros->break_) {
+         this->uroboros->running = true;
+         this->uroboros->break_ = false;
          break;
       }
-      else if (g_continue) {
-         g_running = true;
-         g_continue = false;
+      else if (this->uroboros->continue_) {
+         this->uroboros->running = true;
+         this->uroboros->continue_ = false;
          continue;
       }
    }
 
-   aggregate->run();
+   this->aggregate->run();
 
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
+   this->inner->this_s.value = this->prevThis;
+   this->inner->index.value =this-> prevIndex;
 
-   if (hasMemory) {
-      attrMemory.restore();
+   if (this->hasMemory) {
+      this->attrMemory.restore();
    }
 }
 
 
 void CS_InsideString::run()
 {
-   if (g_running) {
-      if (hasMemory) {
-         attrMemory.load();
+   if (this->uroboros->running) {
+      if (this->hasMemory) {
+         this->attrMemory.load();
       }
 
-      const _str val = os_trim(string->getValue());
-      const _str newLocation = os_join(g_location.value, val);
+      const _str val = os_trim(this->string->getValue());
+      const _str newLocation = os_join(this->inner->location.value, val);
 
       if (!val.empty() && os_directoryExists(newLocation)) {
-         prevThis = g_this_s.value;
-         prevIndex = g_index.value;
-         prevLocation = g_location.value;
+         this->prevThis = this->inner->this_s.value;
+         this->prevIndex = this->inner->index.value;
+         this->prevLocation = this->inner->location.value;
 
-         g_this_s.value = newLocation;
-         g_index.value = _num(0LL);
-         g_location.value = newLocation;
+         this->inner->this_s.value = newLocation;
+         this->inner->index.value = _num(0LL);
+         this->inner->location.value = newLocation;
 
-         if (hasAttribute) {
-            os_loadAttributes(*attribute);
-         }
-         command->run();
-
-         if (g_break) {
-            g_running = true;
-            g_break = false;
-         }
-         else if (g_continue) {
-            g_running = true;
-            g_continue = false;
+         if (this->hasAttribute) {
+            os_loadAttributes(*this->attribute);
          }
 
-         aggregate->run();
+         this->command->run();
 
-         g_location.value = prevLocation;
-         g_this_s.value = prevThis;
-         g_index.value = prevIndex;
+         if (this->uroboros->break_) {
+            this->uroboros->running = true;
+            this->uroboros->break_ = false;
+         }
+         else if (this->uroboros->continue_) {
+            this->uroboros->running = true;
+            this->uroboros->continue_ = false;
+         }
+
+         this->aggregate->run();
+
+         this->inner->location.value = this->prevLocation;
+         this->inner->this_s.value = this->prevThis;
+         this->inner->index.value = this->prevIndex;
       }
 
-      if (hasMemory) {
-         attrMemory.restore();
+      if (this->hasMemory) {
+         this->attrMemory.restore();
       }
    }
 }
@@ -367,122 +368,124 @@ void CS_InsideString::run()
 
 void CS_InsideDefinition::run()
 {
-   if (hasMemory) {
-      attrMemory.load();
+   if (this->hasMemory) {
+      this->attrMemory.load();
    }
 
-   prevThis = g_this_s.value;
-   prevIndex = g_index.value;
-   prevLocation = g_location.value;
+   this->prevThis = this->inner->this_s.value;
+   this->prevIndex = this->inner->index.value;
+   this->prevLocation = this->inner->location.value;
 
    _nint index = 0LL;
-   g_index.value = 0LL;
+   this->inner->index.value = 0LL;
 
    while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+      if (!this->uroboros->running) {
+         this->definition->reset();
          break;
       }
 
-      const _str newLocation = os_join(prevLocation, definition->getValue());
+      const _str newLocation = 
+         os_join(this->prevLocation, this->definition->getValue());
 
       if (os_directoryExists(newLocation)) {
-         g_location.value = newLocation;
-         g_this_s.value = newLocation;
+         this->inner->location.value = newLocation;
+         this->inner->this_s.value = newLocation;
 
-         if (hasAttribute) {
-            os_loadAttributes(*attribute);
+         if (this->hasAttribute) {
+            os_loadAttributes(*this->attribute);
          }
-         command->run();
+         
+         this->command->run();
 
-         if (g_break) {
-            g_running = true;
-            g_break = false;
-            definition->reset();
+         if (this->uroboros->break_) {
+            this->uroboros->running = true;
+            this->uroboros->break_ = false;
+            this->definition->reset();
             break;
          }
-         else if (g_continue) {
-            g_running = true;
-            g_continue = false;
+         else if (this->uroboros->continue_) {
+            this->uroboros->running = true;
+            this->uroboros->continue_ = false;
          }
 
          index++;
-         g_index.value = _num(index);
+         this->inner->index.value = _num(index);
       }
 
-      g_location.value = prevLocation;
+      this->inner->location.value = this->prevLocation;
    }
 
-   aggregate->run();
+   this->aggregate->run();
 
-   g_location.value = prevLocation;
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
+   this->inner->location.value = this->prevLocation;
+   this->inner->this_s.value = this->prevThis;
+   this->inner->index.value = this->prevIndex;
 
-   if (hasMemory) {
-      attrMemory.restore();
+   if (this->hasMemory) {
+      this->attrMemory.restore();
    }
 }
 
 
 void CS_InsideList::run()
 {
-   const _list values = list->getValue();
+   const _list values = this->list->getValue();
    const _size length = values.size();
 
    if (length == 0) {
       return;
    }
 
-   if (hasMemory) {
-      attrMemory.load();
+   if (this->hasMemory) {
+      this->attrMemory.load();
    }
 
-   prevThis = g_this_s.value;
-   prevIndex = g_index.value;
-   prevLocation = g_location.value;
+   this->prevThis = this->inner->this_s.value;
+   this->prevIndex = this->inner->index.value;
+   this->prevLocation = this->inner->location.value;
 
    _size index = 0;
    _nint outIndex = 0LL;
-   g_index.value = 0LL;
+   this->inner->index.value = 0LL;
 
-   while (g_running && index != length) {
+   while (this->uroboros->running && index != length) {
       const _str v = os_trim(values[index]);
-      const _str newLocation = os_join(prevLocation, v);
+      const _str newLocation = os_join(this->prevLocation, v);
       if (!v.empty() && os_directoryExists(newLocation)) {
-         g_this_s.value = newLocation;
-         g_location.value = newLocation;
+         this->inner->this_s.value = newLocation;
+         this->inner->location.value = newLocation;
 
-         if (hasAttribute) {
-            os_loadAttributes(*attribute);
+         if (this->hasAttribute) {
+            os_loadAttributes(*this->attribute);
          }
 
-         command->run();
+         this->command->run();
 
-         if (g_break) {
-            g_running = true;
-            g_break = false;
+         if (this->uroboros->break_) {
+            this->uroboros->running = true;
+            this->uroboros->break_ = false;
             break;
          }
-         else if (g_continue) {
-            g_running = true;
-            g_continue = false;
+         else if (this->uroboros->continue_) {
+            this->uroboros->running = true;
+            this->uroboros->continue_ = false;
          }
 
          outIndex++;
-         g_index.value = _num(outIndex);
+         this->inner->index.value = _num(outIndex);
       }
 
       index++;
    }
 
-   aggregate->run();
+   this->aggregate->run();
 
-   g_this_s.value = prevThis;
-   g_index.value = prevIndex;
-   g_location.value = prevLocation;
+   this->inner->this_s.value = this->prevThis;
+   this->inner->index.value = this->prevIndex;
+   this->inner->location.value = this->prevLocation;
 
-   if (hasMemory) {
-      attrMemory.restore();
+   if (this->hasMemory) {
+      this->attrMemory.restore();
    }
 }

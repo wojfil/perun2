@@ -13,43 +13,17 @@
 */
 
 #include "var-inner.h"
+#include "../datatype/generator/gen-generic.h"
 
 
-ThisState g_thisstate;
-Variable<_tim> g_access;
-Variable<_boo> g_archive;
-Variable<_tim> g_change;
-Variable<_boo> g_compressed;
-Variable<_tim> g_creation;
-Variable<_num> g_depth;
-Variable<_str> g_drive;
-Variable<_boo> g_empty;
-Variable<_boo> g_encrypted;
-Variable<_boo> g_exists;
-Variable<_str> g_extension;
-Variable<_str> g_fullname;
-Variable<_boo> g_hidden;
-Variable<_num> g_index;
-Variable<_boo> g_isdirectory;
-Variable<_boo> g_isfile;
-Variable<_per> g_lifetime;
-Variable<_str> g_location;
-Variable<_tim> g_modification;
-Variable<_str> g_name;
-Variable<_str> g_parent;
-Variable<_str> g_path;
-Variable<_boo> g_readonly;
-Variable<_num> g_size;
-Variable<_num> g_this_n;
-Variable<_str> g_this_s;
-Variable<_tim> g_this_t;
+InnerVariables::InnerVariables()
+{
+   this->thisState = ThisState::ts_None;
+   this->trimmed = L"";
+   this->urocom = L"";
+}
 
-Variable<_boo> g_success;
-
-_str g_trimmed;
-_str g_urocom;
-
-_list vinit_getAlphabet()
+_list InnerVariables::getAlphabet()
 {
    _list a(26);
 
@@ -60,7 +34,7 @@ _list vinit_getAlphabet()
    return a;
 }
 
-_list vinit_getAscii()
+_list InnerVariables::getAscii()
 {
    return {
       L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ",
@@ -72,4 +46,19 @@ _list vinit_getAscii()
       L"`", L"a", L"b", L"c", L"d", L"e", L"f", L"g", L"h", L"i", L"j", L"k", L"l", L"m", L"n", L"o",
       L"p", L"q", L"r", L"s", L"t", L"u", L"v", L"w", L"x", L"y", L"z", L"{", L"|", L"}", L"~", L" "
    };
+}
+
+void InnerVariables::createThisReference(Generator<_str>*& result)
+{
+   result = new VarReference<_str>(&this_s);
+}
+
+void InnerVariables::createThisReference(Generator<_num>*& result)
+{
+   result = new VarReference<_num>(&this_n);
+}
+
+void InnerVariables::createThisReference(Generator<_tim>*& result)
+{
+   result = new VarReference<_tim>(&this_t);
 }

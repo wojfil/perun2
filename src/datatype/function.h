@@ -15,37 +15,39 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-#include "../tokens.h"
 #include "generator.h"
+#include "../tokens.h"
+#include "../uroboros.h"
 
 
 _boo isPossibleFunction(const Tokens& tks);
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
+static Generator<_str>* createThisReference(Uroboros* uro);
 
-Generator<_boo>* boolFunction(const Tokens& tks);
-static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word);
+Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro);
+static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word, Uroboros* uro);
 
-Generator<_num>* numberFunction(const Tokens& tks);
-static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word);
-static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word);
+Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro);
+static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word, Uroboros* uro);
+static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word, Uroboros* uro);
 
-Generator<_per>* periodFunction(const Tokens& tks);
+Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro);
 
-Generator<_str>* stringFunction(const Tokens& tks);
-static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word);
-static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word);
+Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro);
+static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word, Uroboros* uro);
+static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word, Uroboros* uro);
 
-Generator<_tim>* timeFunction(const Tokens& tks);
-static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word);
+Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro);
+static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word, Uroboros* uro);
 
 static void functionArgNumberException(const _int& argNumber, const Token& word);
 static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word);
 static _str ordinalNumber(const _int& number);
 
-Generator<_list>* listFunction(const Tokens& tks);
-Generator<_nlist>* numListFunction(const Tokens& tks);
+Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro);
+Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro);
 
-static void checkFunctionAttribute(const Token& word);
+static void checkFunctionAttribute(const Token& word, Uroboros* uro);
 static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks);
 
 

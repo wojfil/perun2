@@ -22,7 +22,7 @@
 #include "../parse-gen.h"
 
 
-Generator<_nlist>* parseNumList(const Tokens& tks)
+Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    const Token& first = tks.first();
@@ -30,36 +30,36 @@ Generator<_nlist>* parseNumList(const Tokens& tks)
    if (len == 1) {
       if (first.type == Token::t_Word) {
          Generator<_nlist>* var;
-         return getVarValue(first, var) ? var : nullptr;
+         return uro->vars.getVarValue(first, var) ? var : nullptr;
       }
    }
 
-   Generator<_nlist>* filter = parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number);
+   Generator<_nlist>* filter = parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number, uro);
    if (filter != nullptr) {
       return filter;
    }
 
    if (len >= 3) {
       if (tks.containsSymbol(L',')) {
-         Generator<_nlist>* nlisted = parseNumListed(tks);
+         Generator<_nlist>* nlisted = parseNumListed(tks, uro);
          if (nlisted != nullptr) {
             return nlisted;
          }
       }
 
-      Generator<_nlist>* bin = parseBinary<_nlist>(tks);
+      Generator<_nlist>* bin = parseBinary<_nlist>(tks, uro);
       if (bin != nullptr) {
          return bin;
       }
 
-      Generator<_nlist>* tern = parseTernary<_nlist>(tks);
+      Generator<_nlist>* tern = parseTernary<_nlist>(tks, uro);
       if (tern != nullptr) {
          return tern;
       }
    }
 
    if (isPossibleFunction(tks)) {
-      Generator<_nlist>* func = numListFunction(tks);
+      Generator<_nlist>* func = numListFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -68,7 +68,7 @@ Generator<_nlist>* parseNumList(const Tokens& tks)
    return nullptr;
 }
 
-static Generator<_nlist>* parseNumListed(const Tokens& tks)
+static Generator<_nlist>* parseNumListed(const Tokens& tks, Uroboros* uro)
 {
    Generator<_nlist>* cnst = parseNumListConst(tks);
    if (cnst != nullptr) {
@@ -78,12 +78,12 @@ static Generator<_nlist>* parseNumListed(const Tokens& tks)
    std::vector<Tokens> elements;
    tks.splitBySymbol(L',', elements);
 
-   Generator<_nlist>* nums = parseListedValues<_num>(elements);
+   Generator<_nlist>* nums = parseListedValues<_num>(elements, uro);
    if (nums != nullptr) {
       return nums;
    }
 
-   Generator<_nlist>* nlists = parseListedLists<_num>(elements);
+   Generator<_nlist>* nlists = parseListedLists<_num>(elements, uro);
    if (nlists != nullptr) {
       return nlists;
    }

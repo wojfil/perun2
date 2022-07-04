@@ -20,43 +20,43 @@
 
 void C_Create::run()
 {
-   if (g_running) {
-      if (!g_isfile.value && !g_isdirectory.value) {
-         commandLog(L"Failed to create ", getCCName(g_path.value));
-         g_success.value = false;
+   if (this->uroboros->running) {
+      if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
+         commandLog(this->uroboros, L"Failed to create ", getCCName(this->inner->path.value));
+         this->inner->success.value = false;
          return;
       }
 
-      if (g_exists.value) {
-         if (!(forced && os_drop(g_path.value, g_isfile.value))) {
-            commandLog(L"Failed to create ", getCCName(g_path.value));
-            g_success.value = false;
+      if (this->inner->exists.value) {
+         if (!(forced && os_drop(this->inner->path.value, this->inner->isfile.value, this->uroboros))) {
+            commandLog(this->uroboros, L"Failed to create ", getCCName(this->inner->path.value));
+            this->inner->success.value = false;
             return;
          }
       }
 
-      if (os_hasExtension(g_path.value)) {
-         const _boo s = os_createFile(g_path.value);
-         g_success.value = s;
+      if (os_hasExtension(this->inner->path.value)) {
+         const _boo s = os_createFile(this->inner->path.value);
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create file ", getCCName(g_path.value));
+            commandLog(this->uroboros, L"Create file ", getCCName(this->inner->path.value));
             os_loadAttributes(*attribute);
          }
          else {
-            commandLog(L"Failed to create file ", getCCName(g_path.value));
+            commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
          }
       }
       else {
-         const _boo s = os_createDirectory(g_path.value);
-         g_success.value = s;
+         const _boo s = os_createDirectory(this->inner->path.value);
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create directory ", getCCName(g_path.value));
+            commandLog(this->uroboros, L"Create directory ", getCCName(this->inner->path.value));
             os_loadAttributes(*attribute);
          }
          else {
-            commandLog(L"Failed to create directory ", getCCName(g_path.value));
+            commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
          }
       }
    }
@@ -65,18 +65,18 @@ void C_Create::run()
 
 void C_Create_Stack::run()
 {
-   if (g_running) {
-      if (!g_isfile.value && !g_isdirectory.value) {
-         commandLog(L"Failed to create ", getCCName(g_path.value));
-         g_success.value = false;
+   if (this->uroboros->running) {
+      if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
+         commandLog(this->uroboros, L"Failed to create ", getCCName(this->inner->path.value));
+         this->inner->success.value = false;
          return;
       }
 
-      _str path = g_path.value;
+      _str path = this->inner->path.value;
       const _boo hasExt = os_hasExtension(path);
       _boo nameChanged = false;
 
-      if (g_exists.value) {
+      if (this->inner->exists.value) {
          nameChanged = true;
          if (hasExt) {
             const _str ex = os_extension(path);
@@ -90,32 +90,32 @@ void C_Create_Stack::run()
 
       if (hasExt) {
          const _boo s = os_createFile(path);
-         g_success.value = s;
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create file ", getCCName(path));
+            commandLog(this->uroboros, L"Create file ", getCCName(path));
             if (nameChanged) {
-               g_this_s.value = path;
+               this->inner->this_s.value = path;
             }
             os_loadAttributes(*attribute);
          }
          else {
-            commandLog(L"Failed to create file ", getCCName(path));
+            commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
          }
       }
       else {
          const _boo s = os_createDirectory(path);
-         g_success.value = s;
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create directory ", getCCName(path));
+            commandLog(this->uroboros, L"Create directory ", getCCName(path));
             if (nameChanged) {
-               g_this_s.value = path;
+               this->inner->this_s.value = path;
             }
             os_loadAttributes(*attribute);
          }
          else {
-            commandLog(L"Failed to create directory ", getCCName(path));
+            commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
          }
       }
    }
@@ -124,30 +124,30 @@ void C_Create_Stack::run()
 
 void C_CreateFile::run()
 {
-   if (g_running) {
-      if (!g_isfile.value && !g_isdirectory.value) {
-         commandLog(L"Failed to create file ", getCCName(g_path.value));
-         g_success.value = false;
+   if (this->uroboros->running) {
+      if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
+         commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
+         this->inner->success.value = false;
          return;
       }
 
-      if (g_exists.value) {
-         if (!(forced && os_drop(g_path.value, g_isfile.value))) {
-            commandLog(L"Failed to create file ", getCCName(g_path.value));
-            g_success.value = false;
+      if (this->inner->exists.value) {
+         if (!(forced && os_drop(this->inner->path.value, this->inner->isfile.value, this->uroboros))) {
+            commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
+            this->inner->success.value = false;
             return;
          }
       }
 
-      const _boo s = os_createFile(g_path.value);
-      g_success.value = s;
+      const _boo s = os_createFile(this->inner->path.value);
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create file ", getCCName(g_path.value));
+         commandLog(this->uroboros, L"Create file ", getCCName(this->inner->path.value));
          os_loadAttributes(*attribute);
       }
       else {
-         commandLog(L"Failed to create file ", getCCName(g_path.value));
+         commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
       }
    }
 }
@@ -155,18 +155,18 @@ void C_CreateFile::run()
 
 void C_CreateFile_Stack::run()
 {
-   if (g_running) {
-      if (!g_isfile.value && !g_isdirectory.value) {
-         commandLog(L"Failed to create file ", getCCName(g_path.value));
-         g_success.value = false;
+   if (this->uroboros->running) {
+      if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
+         commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
+         this->inner->success.value = false;
          return;
       }
 
-      _str path = g_path.value;
+      _str path = this->inner->path.value;
       const _boo hasExt = os_hasExtension(path);
       _boo nameChanged = false;
 
-      if (g_exists.value) {
+      if (this->inner->exists.value) {
          nameChanged = true;
          if (hasExt) {
             const _str ex = os_extension(path);
@@ -179,17 +179,17 @@ void C_CreateFile_Stack::run()
       }
 
       const _boo s = os_createFile(path);
-      g_success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create file ", getCCName(path));
+         commandLog(this->uroboros, L"Create file ", getCCName(path));
          if (nameChanged) {
-            g_this_s.value = path;
+            this->inner->this_s.value = path;
          }
          os_loadAttributes(*attribute);
       }
       else {
-         commandLog(L"Failed to create file ", getCCName(path));
+         commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
       }
    }
 }
@@ -197,30 +197,30 @@ void C_CreateFile_Stack::run()
 
 void C_CreateDirectory::run()
 {
-   if (g_running) {
-      if (!g_isfile.value && !g_isdirectory.value) {
-         commandLog(L"Failed to create directory ", getCCName(g_path.value));
-         g_success.value = false;
+   if (this->uroboros->running) {
+      if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
+         commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
+         this->inner->success.value = false;
          return;
       }
 
-      if (g_exists.value) {
-         if (!(forced && os_drop(g_path.value, g_isfile.value))) {
-            commandLog(L"Failed to create directory ", getCCName(g_path.value));
-            g_success.value = false;
+      if (this->inner->exists.value) {
+         if (!(forced && os_drop(this->inner->path.value, this->inner->isfile.value, this->uroboros))) {
+            commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
+            this->inner->success.value = false;
             return;
          }
       }
 
-      const _boo s = os_createDirectory(g_path.value);
-      g_success.value = s;
+      const _boo s = os_createDirectory(this->inner->path.value);
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create directory ", getCCName(g_path.value));
+         commandLog(this->uroboros, L"Create directory ", getCCName(this->inner->path.value));
          os_loadAttributes(*attribute);
       }
       else {
-         commandLog(L"Failed to create directory ", getCCName(g_path.value));
+         commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
       }
    }
 }
@@ -228,33 +228,33 @@ void C_CreateDirectory::run()
 
 void C_CreateDirectory_Stack::run()
 {
-   if (g_running) {
-      if (!g_isfile.value && !g_isdirectory.value) {
-         commandLog(L"Failed to create directory ", getCCName(g_path.value));
-         g_success.value = false;
+   if (this->uroboros->running) {
+      if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
+         commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
+         this->inner->success.value = false;
          return;
       }
 
-      _str path = g_path.value;
+      _str path = this->inner->path.value;
       _boo nameChanged = false;
 
-      if (g_exists.value) {
+      if (this->inner->exists.value) {
          nameChanged = true;
          path = os_stackPath(path);
       }
 
       const _boo s = os_createDirectory(path);
-      g_success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create directory ", getCCName(path));
+         commandLog(this->uroboros, L"Create directory ", getCCName(path));
          if (nameChanged) {
-            g_this_s.value = path;
+            this->inner->this_s.value = path;
          }
          os_loadAttributes(*attribute);
       }
       else {
-         commandLog(L"Failed to create directory ", getCCName(path));
+         commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
       }
    }
 }
@@ -264,46 +264,46 @@ void C_CreateDirectory_Stack::run()
 
 void C_Create_String::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       const _str value = os_trim(element->getValue());
-      const _str& dest = g_location.value;
+      const _str& dest = this->inner->location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to create ", getCCNameShort(value));
-         g_success.value = false;
+         commandLog(this->uroboros, L"Failed to create ", getCCNameShort(value));
+         this->inner->success.value = false;
          return;
       }
 
       const _str path = os_join(dest, value);
 
       if (os_exists(path)) {
-         if (!(forced && os_drop(path))) {
-            commandLog(L"Failed to create ", getCCName(path));
-            g_success.value = false;
+         if (!(forced && os_drop(path, this->uroboros))) {
+            commandLog(this->uroboros, L"Failed to create ", getCCName(path));
+            this->inner->success.value = false;
             return;
          }
       }
 
       if (os_hasExtension(value)) {
          const _boo s = os_createFile(path);
-         g_success.value = s;
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create file ", getCCName(path));
+            commandLog(this->uroboros, L"Create file ", getCCName(path));
          }
          else {
-            commandLog(L"Failed to create file ", getCCName(path));
+            commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
          }
       }
       else {
          const _boo s = os_createDirectory(path);
-         g_success.value = s;
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create directory ", getCCName(path));
+            commandLog(this->uroboros, L"Create directory ", getCCName(path));
          }
          else {
-            commandLog(L"Failed to create directory ", getCCName(path));
+            commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
          }
       }
    }
@@ -312,34 +312,34 @@ void C_Create_String::run()
 
 void C_CreateFile_String::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       const _str value = os_trim(element->getValue());
-      const _str& dest = g_location.value;
+      const _str& dest = this->inner->location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to create file ", getCCNameShort(value));
-         g_success.value = false;
+         commandLog(this->uroboros, L"Failed to create file ", getCCNameShort(value));
+         this->inner->success.value = false;
          return;
       }
 
       const _str path = os_join(dest, value);
 
       if (os_exists(path)) {
-         if (!(forced && os_drop(path))) {
-            commandLog(L"Failed to create file ", getCCName(path));
-            g_success.value = false;
+         if (!(forced && os_drop(path, this->uroboros))) {
+            commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
+            this->inner->success.value = false;
             return;
          }
       }
 
       const _boo s = os_createFile(path);
-      g_success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create file ", getCCName(path));
+         commandLog(this->uroboros, L"Create file ", getCCName(path));
       }
       else {
-         commandLog(L"Failed to create file ", getCCName(path));
+         commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
       }
    }
 }
@@ -347,34 +347,34 @@ void C_CreateFile_String::run()
 
 void C_CreateDirectory_String::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       const _str value = os_trim(element->getValue());
-      const _str& dest = g_location.value;
+      const _str& dest = this->inner->location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to create directory ", getCCNameShort(value));
-         g_success.value = false;
+         commandLog(this->uroboros, L"Failed to create directory ", getCCNameShort(value));
+         this->inner->success.value = false;
          return;
       }
 
       const _str path = os_join(dest, value);
 
       if (os_exists(path)) {
-         if (!(forced && os_drop(path))) {
-            commandLog(L"Failed to create directory ", getCCName(path));
-            g_success.value = false;
+         if (!(forced && os_drop(path, this->uroboros))) {
+            commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
+            this->inner->success.value = false;
             return;
          }
       }
 
       const _boo s = os_createDirectory(path);
-      g_success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create directory ", getCCName(path));
+         commandLog(this->uroboros, L"Create directory ", getCCName(path));
       }
       else {
-         commandLog(L"Failed to create directory ", getCCName(path));
+         commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
       }
    }
 }
@@ -382,13 +382,13 @@ void C_CreateDirectory_String::run()
 
 void C_Create_String_Stack::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       const _str value = os_trim(element->getValue());
-      const _str& dest = g_location.value;
+      const _str& dest = this->inner->location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to create ", getCCNameShort(value));
-         g_success.value = false;
+         commandLog(this->uroboros, L"Failed to create ", getCCNameShort(value));
+         this->inner->success.value = false;
          return;
       }
 
@@ -408,24 +408,24 @@ void C_Create_String_Stack::run()
 
       if (hasExt) {
          const _boo s = os_createFile(path);
-         g_success.value = s;
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create file ", getCCName(path));
+            commandLog(this->uroboros, L"Create file ", getCCName(path));
          }
          else {
-            commandLog(L"Failed to create file ", getCCName(path));
+            commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
          }
       }
       else {
          const _boo s = os_createDirectory(path);
-         g_success.value = s;
+         this->inner->success.value = s;
 
          if (s) {
-            commandLog(L"Create directory ", getCCName(path));
+            commandLog(this->uroboros, L"Create directory ", getCCName(path));
          }
          else {
-            commandLog(L"Failed to create directory ", getCCName(path));
+            commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
          }
       }
    }
@@ -434,13 +434,13 @@ void C_Create_String_Stack::run()
 
 void C_CreateFile_String_Stack::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       const _str value = os_trim(element->getValue());
-      const _str& dest = g_location.value;
+      const _str& dest = this->inner->location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to create file ", getCCNameShort(value));
-         g_success.value = false;
+         commandLog(this->uroboros, L"Failed to create file ", getCCNameShort(value));
+         this->inner->success.value = false;
          return;
       }
 
@@ -459,13 +459,13 @@ void C_CreateFile_String_Stack::run()
       }
 
       const _boo s = os_createFile(path);
-      g_success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create file ", getCCName(path));
+         commandLog(this->uroboros, L"Create file ", getCCName(path));
       }
       else {
-         commandLog(L"Failed to create file ", getCCName(path));
+         commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
       }
    }
 }
@@ -473,13 +473,13 @@ void C_CreateFile_String_Stack::run()
 
 void C_CreateDirectory_String_Stack::run()
 {
-   if (g_running) {
+   if (this->uroboros->running) {
       const _str value = os_trim(element->getValue());
-      const _str& dest = g_location.value;
+      const _str& dest = this->inner->location.value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
-         commandLog(L"Failed to create directory ", getCCNameShort(value));
-         g_success.value = false;
+         commandLog(this->uroboros, L"Failed to create directory ", getCCNameShort(value));
+         this->inner->success.value = false;
          return;
       }
 
@@ -490,13 +490,13 @@ void C_CreateDirectory_String_Stack::run()
       }
 
       const _boo s = os_createDirectory(path);
-      g_success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(L"Create directory ", getCCName(path));
+         commandLog(this->uroboros, L"Create directory ", getCCName(path));
       }
       else {
-         commandLog(L"Failed to create directory ", getCCName(path));
+         commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
       }
    }
 }
@@ -505,20 +505,20 @@ void C_CreateDirectory_String_Stack::run()
 
 void C_Create_List::run()
 {
-   if (g_running) {
-      const _str& dest = g_location.value;
+   if (this->uroboros->running) {
+      const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         g_success.value = true;
+         this->inner->success.value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to create ", getCCNameShort(names[i]));
+            commandLog(this->uroboros, L"Failed to create ", getCCNameShort(names[i]));
          }
-         g_success.value = false;
+         this->inner->success.value = false;
          return;
       }
 
@@ -528,15 +528,15 @@ void C_Create_List::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            commandLog(L"Failed to create ", getCCNameShort(n));
+            commandLog(this->uroboros, L"Failed to create ", getCCNameShort(n));
             success = false;
          }
          else {
             const _str path = os_join(dest, n);
 
             if (os_exists(path)) {
-               if (!(forced && os_drop(path))) {
-                  commandLog(L"Failed to create ", getCCName(path));
+               if (!(forced && os_drop(path, this->uroboros))) {
+                  commandLog(this->uroboros, L"Failed to create ", getCCName(path));
                   success = false;
                   continue;
                }
@@ -544,52 +544,52 @@ void C_Create_List::run()
 
             if (os_hasExtension(n)) {
                const _boo s = os_createFile(path);
-               g_success.value = s;
+               this->inner->success.value = s;
 
                if (s) {
-                  commandLog(L"Create file ", getCCName(path));
+                  commandLog(this->uroboros, L"Create file ", getCCName(path));
                }
                else {
-                  commandLog(L"Failed to create file ", getCCName(path));
+                  commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
                   success = false;
                }
             }
             else {
                const _boo s = os_createDirectory(path);
-               g_success.value = s;
+               this->inner->success.value = s;
 
                if (s) {
-                  commandLog(L"Create directory ", getCCName(path));
+                  commandLog(this->uroboros, L"Create directory ", getCCName(path));
                }
                else {
-                  commandLog(L"Failed to create directory ", getCCName(path));
+                  commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
                   success = false;
                }
             }
          }
       }
 
-      g_success.value = success;
+      this->inner->success.value = success;
    }
 }
 
 
 void C_CreateFiles_List::run()
 {
-   if (g_running) {
-      const _str& dest = g_location.value;
+   if (this->uroboros->running) {
+      const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         g_success.value = true;
+         this->inner->success.value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to create file ", getCCNameShort(names[i]));
+            commandLog(this->uroboros, L"Failed to create file ", getCCNameShort(names[i]));
          }
-         g_success.value = false;
+         this->inner->success.value = false;
          return;
       }
 
@@ -599,54 +599,54 @@ void C_CreateFiles_List::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            commandLog(L"Failed to create file ", getCCNameShort(n));
+            commandLog(this->uroboros, L"Failed to create file ", getCCNameShort(n));
             success = false;
          }
          else {
             const _str path = os_join(dest, n);
 
             if (os_exists(path)) {
-               if (!(forced && os_drop(path))) {
-                  commandLog(L"Failed to create file ", getCCName(path));
+               if (!(forced && os_drop(path, this->uroboros))) {
+                  commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
                   success = false;
                   continue;
                }
             }
 
             const _boo s = os_createFile(path);
-            g_success.value = s;
+            this->inner->success.value = s;
 
             if (s) {
-               commandLog(L"Create file ", getCCName(path));
+               commandLog(this->uroboros, L"Create file ", getCCName(path));
             }
             else {
-               commandLog(L"Failed to create file ", getCCName(path));
+               commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
                success = false;
             }
          }
       }
 
-      g_success.value = success;
+      this->inner->success.value = success;
    }
 }
 
 
 void C_CreateDirectories_List::run()
 {
-   if (g_running) {
-      const _str& dest = g_location.value;
+   if (this->uroboros->running) {
+      const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         g_success.value = true;
+         this->inner->success.value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to directory ", getCCNameShort(names[i]));
+            commandLog(this->uroboros, L"Failed to directory ", getCCNameShort(names[i]));
          }
-         g_success.value = false;
+         this->inner->success.value = false;
          return;
       }
 
@@ -656,54 +656,54 @@ void C_CreateDirectories_List::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            commandLog(L"Failed to create directory ", getCCNameShort(n));
+            commandLog(this->uroboros, L"Failed to create directory ", getCCNameShort(n));
             success = false;
          }
          else {
             const _str path = os_join(dest, n);
 
             if (os_exists(path)) {
-               if (!(forced && os_drop(path))) {
-                  commandLog(L"Failed to create directory ", getCCName(path));
+               if (!(forced && os_drop(path, this->uroboros))) {
+                  commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
                   success = false;
                   continue;
                }
             }
 
             const _boo s = os_createDirectory(path);
-            g_success.value = s;
+            this->inner->success.value = s;
 
             if (s) {
-               commandLog(L"Create directory ", getCCName(path));
+               commandLog(this->uroboros, L"Create directory ", getCCName(path));
             }
             else {
-               commandLog(L"Failed to create directory ", getCCName(path));
+               commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
                success = false;
             }
          }
       }
 
-      g_success.value = success;
+      this->inner->success.value = success;
    }
 }
 
 
 void C_Create_List_Stack::run()
 {
-   if (g_running) {
-      const _str& dest = g_location.value;
+   if (this->uroboros->running) {
+      const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         g_success.value = true;
+         this->inner->success.value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to create ", getCCNameShort(names[i]));
+            commandLog(this->uroboros, L"Failed to create ", getCCNameShort(names[i]));
          }
-         g_success.value = false;
+         this->inner->success.value = false;
          return;
       }
 
@@ -713,7 +713,7 @@ void C_Create_List_Stack::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            commandLog(L"Failed to create ", getCCNameShort(n));
+            commandLog(this->uroboros, L"Failed to create ", getCCNameShort(n));
             success = false;
          }
          else {
@@ -733,52 +733,52 @@ void C_Create_List_Stack::run()
 
             if (hasExt) {
                const _boo s = os_createFile(path);
-               g_success.value = s;
+               this->inner->success.value = s;
 
                if (s) {
-                  commandLog(L"Create file ", getCCName(path));
+                  commandLog(this->uroboros, L"Create file ", getCCName(path));
                }
                else {
-                  commandLog(L"Failed to create file ", getCCName(path));
+                  commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
                   success = false;
                }
             }
             else {
                const _boo s = os_createDirectory(path);
-               g_success.value = s;
+               this->inner->success.value = s;
 
                if (s) {
-                  commandLog(L"Create directory ", getCCName(path));
+                  commandLog(this->uroboros, L"Create directory ", getCCName(path));
                }
                else {
-                  commandLog(L"Failed to create directory ", getCCName(path));
+                  commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
                   success = false;
                }
             }
          }
       }
 
-      g_success.value = success;
+      this->inner->success.value = success;
    }
 }
 
 
 void C_CreateFiles_List_Stack::run()
 {
-   if (g_running) {
-      const _str& dest = g_location.value;
+   if (this->uroboros->running) {
+      const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         g_success.value = true;
+         this->inner->success.value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to create file ", getCCNameShort(names[i]));
+            commandLog(this->uroboros, L"Failed to create file ", getCCNameShort(names[i]));
          }
-         g_success.value = false;
+         this->inner->success.value = false;
          return;
       }
 
@@ -788,7 +788,7 @@ void C_CreateFiles_List_Stack::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            commandLog(L"Failed to create file ", getCCNameShort(n));
+            commandLog(this->uroboros, L"Failed to create file ", getCCNameShort(n));
             success = false;
          }
          else {
@@ -807,39 +807,39 @@ void C_CreateFiles_List_Stack::run()
             }
 
             const _boo s = os_createFile(path);
-            g_success.value = s;
+            this->inner->success.value = s;
 
             if (s) {
-               commandLog(L"Create file ", getCCName(path));
+               commandLog(this->uroboros, L"Create file ", getCCName(path));
             }
             else {
-               commandLog(L"Failed to create file ", getCCName(path));
+               commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
                success = false;
             }
          }
       }
 
-      g_success.value = success;
+      this->inner->success.value = success;
    }
 }
 
 
 void C_CreateDirectories_List_Stack::run()
 {
-   if (g_running) {
-      const _str& dest = g_location.value;
+   if (this->uroboros->running) {
+      const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         g_success.value = true;
+         this->inner->success.value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(L"Failed to directory ", getCCNameShort(names[i]));
+            commandLog(this->uroboros, L"Failed to directory ", getCCNameShort(names[i]));
          }
-         g_success.value = false;
+         this->inner->success.value = false;
          return;
       }
 
@@ -849,7 +849,7 @@ void C_CreateDirectories_List_Stack::run()
          const _str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
-            commandLog(L"Failed to create directory ", getCCNameShort(n));
+            commandLog(this->uroboros, L"Failed to create directory ", getCCNameShort(n));
             success = false;
          }
          else {
@@ -860,18 +860,18 @@ void C_CreateDirectories_List_Stack::run()
             }
 
             const _boo s = os_createDirectory(path);
-            g_success.value = s;
+            this->inner->success.value = s;
 
             if (s) {
-               commandLog(L"Create directory ", getCCName(path));
+               commandLog(this->uroboros, L"Create directory ", getCCName(path));
             }
             else {
-               commandLog(L"Failed to create directory ", getCCName(path));
+               commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
                success = false;
             }
          }
       }
 
-      g_success.value = success;
+      this->inner->success.value = success;
    }
 }

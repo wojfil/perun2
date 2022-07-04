@@ -36,7 +36,7 @@ _tim os_today();
 _tim os_yesterday();
 _tim os_tomorrow();
 
-void os_sleepForMs(const _nint& ms);
+void os_sleepForMs(const _nint& ms, Uroboros* uro);
 void os_loadAttributes(const Attribute& attr);
 void os_loadAttributes_empty(const Attribute& attr);
 
@@ -62,20 +62,22 @@ _tim os_modification(const _str& path);
 _str os_name(const _str& value);
 _str os_parent(const _str& path);
 _boo os_readonly(const _str& path);
-_nint os_size(const _str& path);
+_nint os_size(const _str& path, Uroboros* uro);
 _nint os_sizeFile(const WIN32_FILE_ATTRIBUTE_DATA& data);
-_nint os_sizeDirectory(const _str& path);
+_nint os_sizeDirectory(const _str& path, Uroboros* uro);
 
 _boo os_exists(const _str& path);
 _boo os_fileExists(const _str& path);
 _boo os_directoryExists(const _str& path);
 
-   // file system operations:
+// file system operations:
+// some of them require pointer to the running Uroboros instance
+// they can be stopped safely by an interruption call during operation
 _boo os_delete(const _str& path);
-_boo os_drop(const _str& path);
-_boo os_drop(const _str& path, const _boo& isFile);
+_boo os_drop(const _str& path, Uroboros* uro);
+_boo os_drop(const _str& path, const _boo& isFile, Uroboros* uro);
 _boo os_dropFile(const _str& path);
-_boo os_dropDirectory(const _str& path);
+_boo os_dropDirectory(const _str& path, Uroboros* uro);
 _boo os_hide(const _str& path);
 _boo os_lock(const _str& path);
 _boo os_open(const _str& path);
@@ -93,15 +95,15 @@ _boo os_createFile(const _str& path);
 _boo os_createDirectory(const _str& path);
 
 _boo os_moveTo(const _str& oldPath, const _str& newPath);
-_boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile);
+_boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile, Uroboros* uro);
 _boo os_copyToFile(const _str& oldPath, const _str& newPath);
-_boo os_copyToDirectory(const _str& oldPath, const _str& newPath);
+_boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro);
 
 _boo os_copy(const std::set<_str>& paths);
 _boo os_select(const _str& parent, const std::set<_str>& paths);
 
-_boo os_run(const _str& comm);
-_boo os_process(const _str& proc);
+_boo os_run(const _str& comm, Uroboros* uro);
+_boo os_process(const _str& proc, Uroboros* uro);
 
 _boo os_isInvaild(const _str& path);
 _str os_trim(_str path);

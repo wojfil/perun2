@@ -20,35 +20,15 @@
 #include <cwctype>
 #include <combaseapi.h>
 #include <iostream>
-#include "datatype/primitives.h"
-#include "uroboros.h"
-#include "arguments.h"
-#include "os.h"
 #include <fcntl.h>
+#include "uroboros.h"
 
 
-BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType)
-{
-  switch (dwCtrlType) {
-    case CTRL_C_EVENT:
-      g_running = false;
-      if (g_process) {
-         g_process = false;
-         TerminateProcess(g_processInfo.hProcess, 0);
-      }
-      return TRUE;
-    default:
-      return FALSE;
-    }
-}
-
-
-void main_init()
+void uroConsoleInit()
 {
    std::wcin.tie(0);
    std::wcout.tie(0);
    std::setlocale(LC_CTYPE, "");
-   SetConsoleCtrlHandler(HandlerRoutine, TRUE);
    _setmode(_fileno(stdout), _O_U8TEXT);
    CoInitializeEx(0, COINIT_MULTITHREADED);
 }
@@ -56,7 +36,7 @@ void main_init()
 
 _int wmain(_int argc, _char* argv[], _char *envp[])
 {
-   main_init();
+   uroConsoleInit();
 
    Arguments arguments(&argc, &argv);
 
@@ -72,6 +52,8 @@ _int wmain(_int argc, _char* argv[], _char *envp[])
       }
    }
 
-   run(arguments);
-   return g_exitCode;
+   Uroboros uroboros(arguments);
+   uroboros.run();
+
+   return uroboros.exitCode;
 }

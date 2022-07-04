@@ -16,16 +16,17 @@
 #define COM_CORE_AGGR_H
 
 #include "com-core.h"
+#include "com-listener.h"
 #include "aggregate.h"
 
 
 
 template <typename T>
-struct C_AggrDelivery
+struct C_AggrDelivery : Command_L
 {
 public:
-   C_AggrDelivery(Aggregate* aggr, Generator<T>* val)
-      : aggregate(aggr), value(val) {};
+   C_AggrDelivery(Aggregate* aggr, Generator<T>* val, Uroboros* uro)
+      : aggregate(aggr), value(val), Command_L(uro) {};
 
    ~C_AggrDelivery() {
       delete value;
@@ -37,57 +38,58 @@ protected:
 };
 
 
-struct C_AggrCopy_String : C_AggrDelivery<_str>, Command
+struct C_AggrCopy_String : C_AggrDelivery<_str>
 {
 public:
-   C_AggrCopy_String(Aggregate* aggr, Generator<_str>* val)
-      : C_AggrDelivery<_str>(aggr, val) {};
+   C_AggrCopy_String(Aggregate* aggr, Generator<_str>* val, Uroboros* uro)
+      : C_AggrDelivery<_str>(aggr, val, uro) {};
 
    void run() override;
 };
 
 
-struct C_AggrCopy_List : C_AggrDelivery<_list>, Command
+struct C_AggrCopy_List : C_AggrDelivery<_list>
 {
 public:
-   C_AggrCopy_List(Aggregate* aggr, Generator<_list>* val)
-      : C_AggrDelivery<_list>(aggr, val) {};
+   C_AggrCopy_List(Aggregate* aggr, Generator<_list>* val, Uroboros* uro)
+      : C_AggrDelivery<_list>(aggr, val, uro) {};
 
    void run() override;
 };
 
 
-struct C_AggrSelect_String : C_AggrDelivery<_str>, Command
+struct C_AggrSelect_String : C_AggrDelivery<_str>
 {
 public:
-   C_AggrSelect_String(Aggregate* aggr, Generator<_str>* val)
-      : C_AggrDelivery<_str>(aggr, val) {};
+   C_AggrSelect_String(Aggregate* aggr, Generator<_str>* val, Uroboros* uro)
+      : C_AggrDelivery<_str>(aggr, val, uro) {};
 
    void run() override;
 };
 
 
-struct C_AggrSelect_List : C_AggrDelivery<_list>, Command
+struct C_AggrSelect_List : C_AggrDelivery<_list>
 {
 public:
-   C_AggrSelect_List(Aggregate* aggr, Generator<_list>* val)
-      : C_AggrDelivery<_list>(aggr, val) {};
+   C_AggrSelect_List(Aggregate* aggr, Generator<_list>* val, Uroboros* uro)
+      : C_AggrDelivery<_list>(aggr, val, uro) {};
 
    void run() override;
 };
 
 
-void logCopyError(const _str& name);
-void logCopySuccess(const _str& name);
-void logSelectError(const _str& name);
-void logSelectSuccess(const _str& name);
+void logCopyError(Uroboros* uro, const _str& name);
+void logCopySuccess(Uroboros* uro, const _str& name);
+void logSelectError(Uroboros* uro, const _str& name);
+void logSelectSuccess(Uroboros* uro, const _str& name);
 
 
 template <typename T>
-struct C_Aggr
+struct C_Aggr : Command_L
 {
 public:
-   C_Aggr(Generator<T>* val) : value(val) {};
+   C_Aggr(Generator<T>* val, Uroboros* uro)
+      : value(val), Command_L(uro) {};
 
    ~C_Aggr() {
       delete value;
@@ -98,34 +100,41 @@ protected:
 };
 
 
-struct C_Copy_String : C_Aggr<_str>, Command
+struct C_Copy_String : C_Aggr<_str>
 {
 public:
-   C_Copy_String(Generator<_str>* val) : C_Aggr<_str>(val) {};
+   C_Copy_String(Generator<_str>* val, Uroboros* uro)
+      : C_Aggr<_str>(val, uro) {};
+
    void run() override;
 };
 
 
-struct C_Copy_List : C_Aggr<_list>, Command
+struct C_Copy_List : C_Aggr<_list>
 {
 public:
-   C_Copy_List(Generator<_list>* val) : C_Aggr<_list>(val) {};
+   C_Copy_List(Generator<_list>* val, Uroboros* uro)
+      : C_Aggr<_list>(val, uro) {};
+
    void run() override;
 };
 
 
-struct C_Select_String : C_Aggr<_str>, Command
+struct C_Select_String : C_Aggr<_str>
 {
 public:
-   C_Select_String(Generator<_str>* val) : C_Aggr<_str>(val) {};
+   C_Select_String(Generator<_str>* val, Uroboros* uro)
+      : C_Aggr<_str>(val, uro) {};
+
    void run() override;
 };
 
 
-struct C_Select_List : C_Aggr<_list>, Command
+struct C_Select_List : C_Aggr<_list>
 {
 public:
-   C_Select_List(Generator<_list>* val) : C_Aggr<_list>(val) {};
+   C_Select_List(Generator<_list>* val, Uroboros* uro)
+      : C_Aggr<_list>(val, uro) {};
    void run() override;
 };
 

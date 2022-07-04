@@ -18,7 +18,7 @@
 #include "datatype/primitives.h"
 #include "token.h"
 
-#define _aunit uint64_t
+#define _aunit _uint64
 
 const _aunit ATTR_NULL =         0b00000000000000000000000000000000;
 const _aunit ATTR_ACCESS =       0b00000000000000000000000000000001;
@@ -45,21 +45,29 @@ const _aunit ATTR_SIZE =         0b00000000000001000000000000000000;
 // for example - creation time, modification time, size and extension
 // instead of reading them one by one
 // all attributes from an expression are joined together and read at once
-// by function os_loadAttributes()
 // this approach introduces a lot of optimization - only one file system call is needed
+
+struct Uroboros;
+struct InnerVariables;
 
 struct Attribute
 {
 public:
-   Attribute();
+   Attribute(Uroboros* uro);
+
    void add(const Token& tk);
    void set(const _aunit& v);
    void setCoreCommandBase();
    _boo has(const _aunit& v) const;
    _boo hasAny() const;
 
+   void run();
+
    _boo markToRun = false;
    _boo markToEvaluate = false;
+
+   Uroboros* uroboros;
+   InnerVariables* inner;
 
 private:
    _aunit value;

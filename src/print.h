@@ -23,13 +23,14 @@
 
 extern _int g_guiMes;
 
-void print(const _str& value);
-void commandLog(const _str& value);
+void rawPrint(const _str& value);
+void print(const Uroboros* uro, const _str& value);
+void commandLog(const Uroboros* uro, const _str& value);
 
 template<typename... Args>
-void commandLog(Args const&... args)
+void commandLog(const Uroboros* uro, Args const&... args)
 {
-   if (!(g_flags & FLAG_SILENT)) {
+   if (!(uro->flags & FLAG_SILENT)) {
       using value_type = std::common_type_t<Args const&...>;
       for (auto const &arg : {static_cast<value_type>(args)...}) {
          std::wcout << arg;
@@ -37,7 +38,7 @@ void commandLog(Args const&... args)
 
       std::wcout << L"\n";
 
-      if (g_flags & FLAG_GUI) {
+      if (uro->flags & FLAG_GUI) {
       // this is ugly solution for a rare bug in Windows GUI
       // (user interaction gets frozen while runtime)
       // delete this if the bug is solved properly

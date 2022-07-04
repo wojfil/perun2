@@ -71,7 +71,7 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint& ms)
+void os_sleepForMs(const _nint& ms, Uroboros* uro)
 {
    if (ms <= 0) {
       return;
@@ -82,7 +82,7 @@ void os_sleepForMs(const _nint& ms)
 
    Sleep(remainder);
 
-   while (g_running && loops != 0LL) {
+   while (uro->running && loops != 0LL) {
       Sleep(OS_SLEEP_UNIT);
       loops--;
    }
@@ -91,9 +91,9 @@ void os_sleepForMs(const _nint& ms)
 // explanation of attributes is in file 'attribute.h'
 void os_loadAttributes(const Attribute& attr)
 {
-   g_trimmed = os_trim(g_this_s.value);
+   attr.inner->trimmed = os_trim(attr.inner->this_s.value);
 
-   if (os_isInvaild(g_trimmed)) {
+   if (os_isInvaild(attr.inner->trimmed)) {
       os_loadAttributes_empty(attr);
       return;
    }
@@ -102,20 +102,20 @@ void os_loadAttributes(const Attribute& attr)
 
    // "drive", "path", "parent" and "fullname" do not require access to the file system
    if (attr.has(ATTR_PATH)) {
-      path = os_join(g_location.value, g_trimmed);
-      g_path.value = path;
+      path = os_join(attr.inner->location.value, attr.inner->trimmed);
+      attr.inner->path.value = path;
    }
 
    if (attr.has(ATTR_FULLNAME)) {
-      g_fullname.value = os_fullname(g_trimmed);
+      attr.inner->fullname.value = os_fullname(attr.inner->trimmed);
    }
 
    if (attr.has(ATTR_PARENT)) {
-      g_parent.value = os_parent(path);
+      attr.inner->parent.value = os_parent(path);
    }
 
    if (attr.has(ATTR_DRIVE)) {
-      g_drive.value = os_drive(path);
+      attr.inner->drive.value = os_drive(path);
    }
 
    if (!attr.has(ATTR_EXISTS)) {
@@ -127,7 +127,7 @@ void os_loadAttributes(const Attribute& attr)
    const _boo gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
    const DWORD& dwAttrib = data.dwFileAttributes;
    const _boo exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
-   g_exists.value = exists;
+   attr.inner->exists.value = exists;
 
    _boo isDir;
    _boo isFile;
@@ -137,30 +137,30 @@ void os_loadAttributes(const Attribute& attr)
       isFile = !isDir;
    }
    else {
-      isFile = os_hasExtension(g_trimmed);
+      isFile = os_hasExtension(attr.inner->trimmed);
       isDir = !isFile;
    }
 
-   g_isfile.value = isFile;
-   g_isdirectory.value = isDir;
+   attr.inner->isfile.value = isFile;
+   attr.inner->isdirectory.value = isDir;
 
 
    if (attr.has(ATTR_ACCESS)) {
-      g_access.value = exists
+      attr.inner->access.value = exists
          ? convertToUroTime(&data.ftLastAccessTime)
          : _tim();
    }
 
    if (attr.has(ATTR_ARCHIVE)) {
-      g_archive.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
+      attr.inner->archive.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
    }
 
    if (attr.has(ATTR_COMPRESSED)) {
-      g_compressed.value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
+      attr.inner->compressed.value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
    }
 
    if (attr.has(ATTR_CREATION)) {
-      g_creation.value = exists
+      attr.inner->creation.value = exists
          ? convertToUroTime(&data.ftCreationTime)
          : _tim();
    }
@@ -168,75 +168,75 @@ void os_loadAttributes(const Attribute& attr)
    const _boo hasMod = attr.has(ATTR_MODIFICATION);
    const _boo hasChange = attr.has(ATTR_CHANGE);
    if (hasMod || hasChange) {
-      _tim time = exists
+      const _tim time = exists
          ? convertToUroTime(&data.ftLastWriteTime)
          : _tim();
 
       if (hasChange) {
-         g_change.value = time;
+         attr.inner->change.value = time;
       }
       if (hasMod) {
-         g_modification.value = time;
+         attr.inner->modification.value = time;
       }
    }
 
    if (attr.has(ATTR_LIFETIME)) {
       if (exists) {
-         g_lifetime.value = g_creation.value < g_modification.value
-            ? (os_now() - g_creation.value)
-            : (os_now() - g_modification.value);
+         attr.inner->lifetime.value = attr.inner->creation.value < attr.inner->modification.value
+            ? (os_now() - attr.inner->creation.value)
+            : (os_now() - attr.inner->modification.value);
       }
       else {
-         g_lifetime.value = _per();
+         attr.inner->lifetime.value = _per();
       }
    }
 
    if (attr.has(ATTR_EMPTY)) {
       if (exists) {
-         g_empty.value = isFile
+         attr.inner->empty.value = isFile
             ? os_emptyFile(data)
             : os_emptyDirectory(path);
       }
       else {
-         g_empty.value = false;
+         attr.inner->empty.value = false;
       }
    }
 
    if (attr.has(ATTR_ENCRYPTED)) {
-      g_encrypted.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
+      attr.inner->encrypted.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
    }
 
    if (attr.has(ATTR_EXTENSION)) {
-      g_extension.value = isFile ? os_extension(g_trimmed) : L"";
+      attr.inner->extension.value = isFile ? os_extension(attr.inner->trimmed) : L"";
    }
 
    if (attr.has(ATTR_HIDDEN)) {
-      g_hidden.value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
+      attr.inner->hidden.value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
    }
 
    if (attr.has(ATTR_NAME)) {
       if (isDir) {
-         g_name.value = os_fullname(g_trimmed);
+         attr.inner->name.value = os_fullname(attr.inner->trimmed);
       }
       else {
-         g_name.value = os_hasExtension(g_trimmed)
-            ? os_name(g_trimmed)
-            : os_fullname(g_trimmed);
+         attr.inner->name.value = os_hasExtension(attr.inner->trimmed)
+            ? os_name(attr.inner->trimmed)
+            : os_fullname(attr.inner->trimmed);
       }
    }
 
    if (attr.has(ATTR_READONLY)) {
-      g_readonly.value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
+      attr.inner->readonly.value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
    }
 
    if (attr.has(ATTR_SIZE)) {
       if (exists) {
-         g_size.value = isFile
+         attr.inner->size.value = isFile
             ? _num(os_sizeFile(data))
-            : _num(os_sizeDirectory(path));
+            : _num(os_sizeDirectory(path, attr.uroboros));
       }
       else {
-         g_size.value = _num(-1LL);
+         attr.inner->size.value = _num(-1LL);
       }
    }
 }
@@ -245,83 +245,83 @@ void os_loadAttributes(const Attribute& attr)
 void os_loadAttributes_empty(const Attribute& attr)
 {
    if (attr.has(ATTR_PATH)) {
-      g_path.value = L"";
+      attr.inner->path.value = L"";
    }
 
    if (attr.has(ATTR_FULLNAME)) {
-      g_fullname.value = L"";
+      attr.inner->fullname.value = L"";
    }
 
    if (attr.has(ATTR_DRIVE)) {
-      g_drive.value = L"";
+      attr.inner->drive.value = L"";
    }
 
    if (!attr.has(ATTR_EXISTS)) {
       return;
    }
 
-   g_exists.value = false;
-   g_isfile.value = false;
-   g_isdirectory.value = false;
+   attr.inner->exists.value = false;
+   attr.inner->isfile.value = false;
+   attr.inner->isdirectory.value = false;
 
    if (attr.has(ATTR_ACCESS)) {
-      g_access.value = _tim();
+      attr.inner->access.value = _tim();
    }
 
    if (attr.has(ATTR_ARCHIVE)) {
-      g_archive.value = false;
+      attr.inner->archive.value = false;
    }
 
    if (attr.has(ATTR_COMPRESSED)) {
-      g_compressed.value = false;
+      attr.inner->compressed.value = false;
    }
 
    if (attr.has(ATTR_CHANGE)) {
-      g_change.value = _tim();
+      attr.inner->change.value = _tim();
    }
 
    if (attr.has(ATTR_CREATION)) {
-      g_creation.value = _tim();
+      attr.inner->creation.value = _tim();
    }
 
    if (attr.has(ATTR_EMPTY)) {
-      g_empty.value = false;
+      attr.inner->empty.value = false;
    }
 
    if (attr.has(ATTR_ENCRYPTED)) {
-      g_encrypted.value = false;
+      attr.inner->encrypted.value = false;
    }
 
    if (attr.has(ATTR_EXTENSION)) {
-      g_extension.value = L"";
+      attr.inner->extension.value = L"";
    }
 
    if (attr.has(ATTR_HIDDEN)) {
-      g_hidden.value = false;
+      attr.inner->hidden.value = false;
    }
 
    if (attr.has(ATTR_LIFETIME)) {
-      g_lifetime.value = _per();
+      attr.inner->lifetime.value = _per();
    }
 
    if (attr.has(ATTR_MODIFICATION)) {
-      g_modification.value = _tim();
+      attr.inner->modification.value = _tim();
    }
 
    if (attr.has(ATTR_NAME)) {
-      g_name.value = L"";
+      attr.inner->name.value = L"";
    }
 
    if (attr.has(ATTR_PARENT)) {
-      g_parent.value = L"";
+      attr.inner->parent.value = L"";
    }
 
    if (attr.has(ATTR_READONLY)) {
-      g_readonly.value = false;
+      attr.inner->readonly.value = false;
    }
 
    if (attr.has(ATTR_SIZE)) {
-      g_size.value = _num(-1LL);
+      attr.inner->size.value = _num(-1LL);
    }
 }
 
@@ -418,7 +418,7 @@ _boo os_emptyFile(const WIN32_FILE_ATTRIBUTE_DATA& data)
 _boo os_emptyDirectory(const _str& path)
 {
    WIN32_FIND_DATA data;
-   HANDLE handle = FindFirstFile((str(path, L"\\*")).c_str(), &data);
+   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
    if (handle == INVALID_HANDLE_VALUE) {
       return true;
    }
@@ -589,7 +589,7 @@ _boo os_readonly(const _str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-_nint os_size(const _str& path)
+_nint os_size(const _str& path, Uroboros* uro)
 {
    WIN32_FILE_ATTRIBUTE_DATA data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
@@ -602,7 +602,7 @@ _nint os_size(const _str& path)
    }
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
-      ? os_sizeDirectory(path)
+      ? os_sizeDirectory(path, uro)
       : os_sizeFile(data);
 }
 
@@ -611,7 +611,7 @@ _nint os_sizeFile(const WIN32_FILE_ATTRIBUTE_DATA& data)
    return bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
 }
 
-_nint os_sizeDirectory(const _str& path)
+_nint os_sizeDirectory(const _str& path, Uroboros* uro)
 {
    _nint totalSize = 0LL;
    WIN32_FIND_DATA data;
@@ -623,13 +623,13 @@ _nint os_sizeDirectory(const _str& path)
    }
 
    do {
-      if (!g_running) {
+      if (!uro->running) {
          FindClose(sh);
          return -1LL;
       }
       if (!os_isBrowsePath(data.cFileName)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_ASTERISK, data.cFileName));
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_ASTERISK, data.cFileName), uro);
          }
          else {
             totalSize += (_nint)(data.nFileSizeHigh * (MAXDWORD) + data.nFileSizeLow);
@@ -698,14 +698,18 @@ _boo os_delete(const _str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-_boo os_drop(const _str& path)
+_boo os_drop(const _str& path, Uroboros* uro)
 {
-   return os_isFile(path) ? os_dropFile(path) : os_dropDirectory(path);
+   return os_isFile(path) 
+      ? os_dropFile(path) 
+      : os_dropDirectory(path, uro);
 }
 
-_boo os_drop(const _str& path, const _boo& isFile)
+_boo os_drop(const _str& path, const _boo& isFile, Uroboros* uro)
 {
-   return isFile ? os_dropFile(path) : os_dropDirectory(path);
+   return isFile 
+      ? os_dropFile(path) 
+      : os_dropDirectory(path, uro);
 }
 
 _boo os_dropFile(const _str& path)
@@ -723,7 +727,7 @@ _boo os_dropFile(const _str& path)
    return false;
 }
 
-_boo os_dropDirectory(const _str& path)
+_boo os_dropDirectory(const _str& path, Uroboros* uro)
 {
    HANDLE hFind;
    WIN32_FIND_DATA FindFileData;
@@ -744,7 +748,7 @@ _boo os_dropDirectory(const _str& path)
    bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!g_running) {
+         if (!uro->running) {
             FindClose(hFind);
             return false;
          }
@@ -754,7 +758,7 @@ _boo os_dropDirectory(const _str& path)
 
          wcscat(FileName,FindFileData.cFileName);
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_dropDirectory(FileName)) {
+            if (!os_dropDirectory(FileName, uro)) {
                FindClose(hFind);
                return false;
             }
@@ -1052,11 +1056,11 @@ _boo os_moveTo(const _str& oldPath, const _str& newPath)
    return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile)
+_boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile, Uroboros* uro)
 {
    return isFile
       ? os_copyToFile(oldPath, newPath)
-      : os_copyToDirectory(oldPath, newPath);
+      : os_copyToDirectory(oldPath, newPath, uro);
 }
 
 _boo os_copyToFile(const _str& oldPath, const _str& newPath)
@@ -1064,7 +1068,7 @@ _boo os_copyToFile(const _str& oldPath, const _str& newPath)
    return CopyFileW(oldPath.c_str(), newPath.c_str(), true) != 0;
 }
 
-_boo os_copyToDirectory(const _str& oldPath, const _str& newPath)
+_boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1091,7 +1095,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath)
    bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!g_running) {
+         if (!uro->running) {
             FindClose(hFind);
             return false;
          }
@@ -1103,7 +1107,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath)
          const _str np = str(newPath, OS_SEPARATOR_STRING, _str(FileName).substr(length));
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_copyToDirectory(FileName, np)) {
+            if (!os_copyToDirectory(FileName, np, uro)) {
                FindClose(hFind);
                return false;
             }
@@ -1184,22 +1188,22 @@ _boo os_select(const _str& parent, const std::set<_str>& paths)
    return hr == S_OK;
 }
 
-_boo os_run(const _str& comm)
+_boo os_run(const _str& comm, Uroboros* uro)
 {
-   g_process = true;
+   uro->process = true;
    STARTUPINFO si;
 
    ZeroMemory(&si, sizeof(si));
    si.cb = sizeof(si);
-   ZeroMemory(&g_processInfo, sizeof(g_processInfo));
+   ZeroMemory(&uro->processInfo, sizeof(uro->processInfo));
 
    const _size len = comm.size() + 1;
    _char cmd[len];
    wcscpy(cmd, comm.c_str());
 
-   const _size lenloc = g_location.value.size() + 1;
+   const _size lenloc = uro->vars.inner.location.value.size() + 1;
    _char loc[lenloc];
-   wcscpy(loc, g_location.value.c_str());
+   wcscpy(loc, uro->vars.inner.location.value.c_str());
 
    CreateProcessW
    (
@@ -1209,18 +1213,18 @@ _boo os_run(const _str& comm)
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
       loc,
-      &si, &g_processInfo
+      &si, &uro->processInfo
    );
 
-   WaitForSingleObject(g_processInfo.hProcess, INFINITE);
+   WaitForSingleObject(uro->processInfo.hProcess, INFINITE);
    DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(g_processInfo.hProcess, &dwExitCode);
+   ::GetExitCodeProcess(uro->processInfo.hProcess, &dwExitCode);
 
-   g_process = false;
-   return g_running && dwExitCode == 0;
+   uro->process = false;
+   return uro->running && dwExitCode == 0;
 }
 
-_boo os_process(const _str& proc)
+_boo os_process(const _str& proc, Uroboros* uro)
 {
    STARTUPINFO si;
    PROCESS_INFORMATION pi;
@@ -1233,9 +1237,9 @@ _boo os_process(const _str& proc)
    _char cmd[len];
    wcscpy(cmd, proc.c_str());
 
-   const _size lenloc = g_location.value.size() + 1;
+   const _size lenloc = uro->vars.inner.location.value.size() + 1;
    _char loc[lenloc];
-   wcscpy(loc, g_location.value.c_str());
+   wcscpy(loc, uro->vars.inner.location.value.c_str());
 
    return CreateProcessW
    (
@@ -1459,7 +1463,7 @@ _str os_stackPath(const _str& path)
    _nint index = 2LL;
    _str newPath = path;
 
-   while (g_running && os_exists(newPath))
+   while (os_exists(newPath))
    {
       newPath = str(path, L"(", toStr(index),  L")");
       index++;
@@ -1477,7 +1481,7 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
    _nint index = 2LL;
    _str newPath = str(basePath, L".", extension);
 
-   while (g_running && os_exists(newPath))
+   while (os_exists(newPath))
    {
       newPath = str(basePath, L"(", toStr(index), L").", extension);
       index++;
@@ -1507,7 +1511,7 @@ _str os_stackPathStacked(const _str& path)
 
    _str newPath = str(basePath, L"(", toStr(index), L")");
 
-   while (g_running && os_exists(newPath))
+   while (os_exists(newPath))
    {
       index++;
       newPath = str(basePath, L"(", toStr(index), L")");
@@ -1524,7 +1528,7 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
 
    _str newPath = str(basePath, L"(", toStr(index), L").", extension);
 
-   while (g_running && os_exists(newPath))
+   while (os_exists(newPath))
    {
       index++;
       newPath = str(basePath, L"(", toStr(index), L").", extension);

@@ -14,72 +14,58 @@
 
 #include <vector>
 #include <cstdlib>
+#include "uroboros.h"
 #include "exception.h"
 #include "command/com-parse.h"
 #include "tokens.h"
 #include "util.h"
 #include "brackets.h"
 #include "lexer.h"
-#include "uroboros.h"
 #include "os.h"
 #include "hash.h"
 #include "print.h"
 #include "datatype/math.h"
+#include "var/var-runtime.h"
 
 
-_boo g_running;
-_boo g_process;
-_boo g_break;
-_boo g_continue;
-_int g_exitCode;
-_uint32 g_flags;
-
-PROCESS_INFORMATION g_processInfo;
+Uroboros::Uroboros(const Arguments& args) : arguments(args), hashes(Hashes()), vars(Variables(this)),
+   vc(VariablesContext(&this->hashes)), math(Math()), flags(args.getFlags()), running(true), process(false),
+   break_(false), continue_(false), exitCode(EXITCODE_OK), processInfo({}), code(args.getCode()), terminator(Terminator(this)) { };
 
 
-void run(const Arguments& arguments)
+void Uroboros::run()
 {
-   g_flags = arguments.getFlags();
-
-   initHashes();
-   initVars(arguments.getArgs());
-   g_math = new Math();
-
-   g_running = true;
-   g_exitCode = EXITCODE_OK;
-   g_location.value = os_trim(arguments.getLocation());
-
    Command* commands;
 
    // parse code into commands
    try {
-      const std::vector<Token> vec = tokenize(arguments.getCode());
+      const std::vector<Token> vec = tokenize(this->code, this);
       Tokens tks(&vec);
       checkBrackets(tks);
-      commands = parseCommands(tks);
+      commands = parseCommands(tks, this);
    }
    catch (SyntaxException ex) {
-      print(ex.getMessage());
-      g_exitCode = EXITCODE_SYNTAX_ERROR;
+      rawPrint(ex.getMessage());
+      this->exitCode = EXITCODE_SYNTAX_ERROR;
       return;
    }
    catch (...) {
       SyntaxException ex2(L"wrong syntax. No command can be formed of this code", 1);
-      print(ex2.getMessage());
-      g_exitCode = EXITCODE_SYNTAX_ERROR;
+      rawPrint(ex2.getMessage());
+      this->exitCode = EXITCODE_SYNTAX_ERROR;
       return;
    }
 
-   g_math->init();
+   this->math.init();
 
    // run commands
    try {
       commands->run();
    }
    catch (UroRuntimeException re) {
-      print(re.getMessage());
+      rawPrint(re.getMessage());
       delete commands;
-      g_exitCode = EXITCODE_RUNTIME_ERROR;
+      this->exitCode = EXITCODE_RUNTIME_ERROR;
       return;
    }
 

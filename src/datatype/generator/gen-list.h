@@ -27,13 +27,16 @@
 struct Filter_WhereString : Generator<_list>
 {
 public:
-   Filter_WhereString(Generator<_list>* li, Generator<_boo>* cond,
-      Attribute attr) : list(li), condition(cond), attribute(attr) {};
+   Filter_WhereString(Generator<_list>* li, Generator<_boo>* cond, Attribute attr, Uroboros* uro) 
+      : list(li), condition(cond), attribute(attr), uroboros(uro), inner(&uro->vars.inner) {};
+
    ~Filter_WhereString();
 
    _list getValue() override;
 
 private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    Generator<_list>* list;
    Generator<_boo>* condition;
    const Attribute attribute;
@@ -43,8 +46,8 @@ private:
 struct Filter_OrderByString : Generator<_list>, OrderBy<_str>
 {
 public:
-   Filter_OrderByString(Generator<_list>* val, Attribute* attr)
-      : OrderBy(val), attribute(attr) {};
+   Filter_OrderByString(Generator<_list>* val, Attribute* attr, Uroboros* uro)
+      : OrderBy(val, uro), attribute(attr) {};
 
 
    _list getValue() override;
@@ -56,13 +59,13 @@ public:
    _boo finalComparison(const OrderUnit<T>* ou, const _num& leftId,
       const _num& rightId, const _str& left, const _str& right) const {
 
-      g_index.value = leftId;
-      g_this_s.value = left;
+      this->inner->index.value = leftId;
+      this->inner->this_s.value = left;
       os_loadAttributes(*attribute);
       const T leftValue = ou->value->getValue();
 
-      g_index.value = rightId;
-      g_this_s.value = right;
+      this->inner->index.value = rightId;
+      this->inner->this_s.value = right;
       os_loadAttributes(*attribute);
       const T rightValue = ou->value->getValue();
 
@@ -76,13 +79,13 @@ public:
       const _num& rightId, const _str& left, const _str& right,
       _boo& success) const {
 
-      g_index.value = leftId;
-      g_this_s.value = left;
+      this->inner->index.value = leftId;
+      this->inner->this_s.value = left;
       os_loadAttributes(*attribute);
       const T leftValue = ou->value->getValue();
 
-      g_index.value = rightId;
-      g_this_s.value = right;
+      this->inner->index.value = rightId;
+      this->inner->this_s.value = right;
       os_loadAttributes(*attribute);
       const T rightValue = ou->value->getValue();
 
@@ -96,6 +99,8 @@ public:
          ? leftValue > rightValue
          : leftValue < rightValue;
    }
+
+private:
 
    Attribute* attribute;
 };

@@ -17,22 +17,26 @@
 
 #include <algorithm>
 #include "gen-list.h"
+#include "gen-os.h"
 #include "../cast.h"
 #include "../../attribute.h"
 #include "../../attr-memory.h"
-#include "gen-os.h"
+#include "../../uroboros.h"
 
 
-struct DefFilter : Definition
+struct DefFilter : _def
 {
 public:
-   DefFilter(_def* def) : first(true), definition(def) {};
+   DefFilter(_def* def, Uroboros* uro) 
+      : first(true), definition(def), uroboros(uro) {};
+
    ~DefFilter() {
       delete definition;
    }
    void reset() override;
 
 protected:
+   Uroboros* uroboros;
    _boo first;
    _def* definition;
 };
@@ -41,9 +45,9 @@ protected:
 struct Filter_WhereDef : DefFilter
 {
 public:
-   Filter_WhereDef(_def* def, Generator<_boo>* cond, Attribute* attr, const _boo& hasMem)
-      : DefFilter(def), condition(cond), attribute(attr), finished(true),
-        hasMemory(hasMem), attrMemory(AttributeMemory(attr)) {};
+   Filter_WhereDef(_def* def, Generator<_boo>* cond, Attribute* attr, const _boo& hasMem, Uroboros* uro)
+      : DefFilter(def, uro), condition(cond), attribute(attr), finished(true), inner(&uro->vars.inner),
+        hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)) {};
 
    ~Filter_WhereDef() {
       delete condition;
@@ -54,6 +58,7 @@ public:
    void reset() override;
 
 private:
+   InnerVariables* inner;
    _boo finished;
    Generator<_boo>* condition;
    Attribute* attribute;
@@ -66,8 +71,8 @@ private:
 struct Filter_LimitDef : DefFilter
 {
 public:
-   Filter_LimitDef(_def* def, Generator<_num>* num)
-      : DefFilter(def), number(num) { };
+   Filter_LimitDef(_def* def, Generator<_num>* num, Uroboros* uro)
+      : DefFilter(def, uro), number(num) { };
 
    ~Filter_LimitDef() {
       delete number;
@@ -85,8 +90,8 @@ private:
 struct Filter_SkipDef : DefFilter
 {
 public:
-   Filter_SkipDef(_def* def, Generator<_num>* num)
-      : DefFilter(def), number(num) { };
+   Filter_SkipDef(_def* def, Generator<_num>* num, Uroboros* uro)
+      : DefFilter(def, uro), number(num), inner(&uro->vars.inner) { };
 
    ~Filter_SkipDef() {
       delete number;
@@ -95,6 +100,7 @@ public:
    _boo hasNext() override;
 
 private:
+   InnerVariables* inner;
    _size counter;
    _size limit;
    Generator<_num>* number;
@@ -104,8 +110,8 @@ private:
 struct Filter_EveryDef : DefFilter
 {
 public:
-   Filter_EveryDef(_def* def, Generator<_num>* num)
-      : DefFilter(def), number(num) { };
+   Filter_EveryDef(_def* def, Generator<_num>* num, Uroboros* uro)
+      : DefFilter(def, uro), number(num), inner(&uro->vars.inner) { };
 
    ~Filter_EveryDef() {
       delete number;
@@ -114,6 +120,7 @@ public:
    _boo hasNext() override;
 
 private:
+   InnerVariables* inner;
    _size counter;
    _size limit;
    Generator<_num>* number;
@@ -121,54 +128,57 @@ private:
 };
 
 
-struct Join_DefStr : Definition
+struct Join_DefStr : _def
 {
 
 public:
-   Join_DefStr(_def* lef, Generator<_str>* rig)
-        : left(lef), right(rig), taken(false) {};
+   Join_DefStr(_def* lef, Generator<_str>* rig, Uroboros* uro)
+        : left(lef), right(rig), taken(false), uroboros(uro) {};
    ~Join_DefStr();
 
    void reset() override;
    _boo hasNext() override;
 
 private:
+   Uroboros* uroboros;
    _def* left;
    Generator<_str>* right;
    _boo taken;
 };
 
 
-struct Join_StrDef : Definition
+struct Join_StrDef : _def
 {
 
 public:
-   Join_StrDef(Generator<_str>* lef, _def* rig)
-        : left(lef), right(rig), first(true) {};
+   Join_StrDef(Generator<_str>* lef, _def* rig, Uroboros* uro)
+        : left(lef), right(rig), first(true), uroboros(uro) {};
    ~Join_StrDef();
 
    void reset() override;
    _boo hasNext() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_str>* left;
    _def* right;
    _boo first;
 };
 
 
-struct Join_DefList : Definition
+struct Join_DefList : _def
 {
 
 public:
-   Join_DefList(_def* lef, Generator<_list>* rig)
-        : left(lef), right(rig), taken(false) {};
+   Join_DefList(_def* lef, Generator<_list>* rig, Uroboros* uro)
+        : left(lef), right(rig), taken(false), uroboros(uro) {};
    ~Join_DefList();
 
    void reset() override;
    _boo hasNext() override;
 
 private:
+   Uroboros* uroboros;
    _def* left;
    Generator<_list>* right;
    _boo taken;
@@ -178,18 +188,19 @@ private:
 };
 
 
-struct Join_ListDef : Definition
+struct Join_ListDef : _def
 {
 
 public:
-   Join_ListDef(Generator<_list>* lef, _def* rig)
-        : left(lef), right(rig), first(true), taken(false) {};
+   Join_ListDef(Generator<_list>* lef, _def* rig, Uroboros* uro)
+        : left(lef), right(rig), first(true), taken(false), uroboros(uro) {};
    ~Join_ListDef();
 
    void reset() override;
    _boo hasNext() override;
 
 private:
+   Uroboros* uroboros;
    Generator<_list>* left;
    _def* right;
    _boo first;
@@ -200,18 +211,19 @@ private:
 };
 
 
-struct Join_DefDef : Definition
+struct Join_DefDef : _def
 {
 
 public:
-   Join_DefDef(_def* lef, _def* rig)
-        : left(lef), right(rig), first(true), taken(false) {};
+   Join_DefDef(_def* lef, _def* rig, Uroboros* uro)
+        : left(lef), right(rig), first(true), taken(false), uroboros(uro) {};
    ~Join_DefDef();
 
    void reset() override;
    _boo hasNext() override;
 
 private:
+   Uroboros* uroboros;
    _def* left;
    _def* right;
    _boo first;
@@ -222,8 +234,9 @@ private:
 struct OrderByCast : _def
 {
 public:
-   OrderByCast(Generator<_list>* b, Attribute* attr, const _boo& hasMem)
-      : base(b), first(true), attribute(attr), hasMemory(hasMem), attrMemory(AttributeMemory(attr)) { };
+   OrderByCast(Generator<_list>* b, Attribute* attr, const _boo& hasMem, Uroboros* uro)
+      : base(b), first(true), attribute(attr), hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)),
+      uroboros(uro), inner(&uro->vars.inner) { };
 
    ~OrderByCast() {
       delete base;
@@ -233,6 +246,8 @@ public:
    _boo hasNext() override;
 
 private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    Generator<_list>* base;
    _list values;
    _size index;

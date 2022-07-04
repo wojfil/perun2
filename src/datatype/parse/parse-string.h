@@ -16,10 +16,11 @@
 #define PARSE_STRING_H
 
 #include "../../tokens.h"
+#include "../../uroboros.h"
 
 
-Generator<_str>* parseString(const Tokens& tks);
+Generator<_str>* parseString(const Tokens& tks, Uroboros* uro);
 
-Generator<_str>* parseStringConcat(const Tokens& tks);
+Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro);
 
 #endif /* PARSE_STRING_H */

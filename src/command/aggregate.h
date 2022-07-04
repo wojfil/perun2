@@ -16,6 +16,7 @@
 #define AGGR_H
 
 #include "../datatype/datatype.h"
+//#include "../uroboros.h"
 #include <set>
 #include <map>
 
@@ -25,14 +26,18 @@ const _uint32 AGGR_SELECT =    0b0000000000000010;
 // commands Select and Copy are different than others
 // they have to be performed on multiple files and directories at once
 // what happens when we call them in a loop?
-// if we select files one by one, then the result will be selection of the last file
+// if we select files one by one, then the result will be selection of the one last file
 // this is what Aggregate is for - it stores files and directories
 // and performs the command once at the loop exit
+
+
+struct Uroboros;
+struct InnerVariables;
 
 struct Aggregate
 {
 public:
-   Aggregate();
+   Aggregate(Uroboros* uro);
    void set(const _uint32& v);
    void run();
 
@@ -44,6 +49,8 @@ public:
    std::set<_str> invalidSelect;
 
 private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
    _uint32 value;
    inline _boo has(const _uint32& v) const;
 };

@@ -9,7 +9,7 @@ Arguments::Arguments(const _str& location, const _str& code)
    this->location = location;
    this->code = code;
    this->args = _list();
-   this->flags = 0;
+   this->flags = FLAG_NULL;
    this->parseState = ArgsParseState::aps_Ok;
 }
 
@@ -31,7 +31,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
    this->parseState = ArgsParseState::aps_Failed;
 
    if ((*argc) == 1) {
-      print(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
+      rawPrint(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
       return;
    }
 
@@ -66,7 +66,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
                cmd_help();
             }
             else {
-               print(str(L"Command-line error: unknown option '", arg.substr(2), L"'."));
+               rawPrint(str(L"Command-line error: unknown option '", arg.substr(2), L"'."));
             }
 
             return;
@@ -105,7 +105,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
                      break;
                   }
                   default: {
-                     print(str(L"Command-line error: unknown option '", charStr(arg[j]), L"'."));
+                     rawPrint(str(L"Command-line error: unknown option '", charStr(arg[j]), L"'."));
                      return;
                   }
                }
@@ -137,12 +137,12 @@ Arguments::Arguments(_int* argc, _char** argv[])
    }
 
    if (nextParseLocation) {
-      print(L"Command-line error: destination directory has not been defined.");
+      rawPrint(L"Command-line error: destination directory has not been defined.");
       return;
    }
 
    if (!hasValue) {
-      print(L"Command-line error: an argument is missing.");
+      rawPrint(L"Command-line error: an argument is missing.");
       return;
    }
 
@@ -165,7 +165,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
    else {
       _str filePath = os_trim(value);
       if (filePath.empty()) {
-         print(L"Command-line error: no input file.");
+         rawPrint(L"Command-line error: no input file.");
          return;
       }
 
@@ -175,7 +175,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
 
       if (os_hasExtension(filePath)) {
          if (os_extension(filePath) != OS_UROEXT) {
-            print(str(L"Command-line error: wrong input file extension. Only '", OS_UROEXT, L"' is allowed."));
+            rawPrint(str(L"Command-line error: wrong input file extension. Only '", OS_UROEXT, L"' is allowed."));
             return;
          }
       }
@@ -184,7 +184,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
       }
 
       if (!os_exists(filePath)) {
-         print(str(L"Command-line error: input file '", os_fullname(filePath), L"' does not exist."));
+         rawPrint(str(L"Command-line error: input file '", os_fullname(filePath), L"' does not exist."));
          return;
       }
 
@@ -192,7 +192,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
       this->code = os_readFile(filePath, result);
 
       if (!result) {
-         print(L"Command-line error: input file cannot be opened.");
+         rawPrint(L"Command-line error: input file cannot be opened.");
          return;
       }
 

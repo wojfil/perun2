@@ -171,12 +171,6 @@ _boo Token::isFiltherKeyword() const
    }
 }
 
-_boo Token::isTimeVariable() const
-{
-   return type == Token::t_Word
-      && HASH_GROUP_TIME_ATTR.find(value.h1) != HASH_GROUP_TIME_ATTR.end();
-}
-
 _boo Token::isWeekDay() const
 {
    return type == Token::t_Number && mode == Token::nm_WeekDay;

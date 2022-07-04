@@ -18,13 +18,13 @@
 #include "../parse-gen.h"
 
 
-Generator<_tlist>* parseTimList(const Tokens& tks);
+Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros* uro);
 
-static Generator<_tlist>* parseTimListed(const Tokens& tks);
+static Generator<_tlist>* parseTimListed(const Tokens& tks, Uroboros* uro);
 Generator<_tlist>* parseTimListConst(const std::vector<Tokens>& elements);
-static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements);
-static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr);
-static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements);
+static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, Uroboros* uro);
+static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, Uroboros* uro);
+static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, Uroboros* uro);
 
 
 #endif /* PARSE_TIMLIST_H */

@@ -24,7 +24,7 @@
 #include "../parse-gen.h"
 
 
-Generator<_per>* parsePeriod(const Tokens& tks)
+Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -32,7 +32,7 @@ Generator<_per>* parsePeriod(const Tokens& tks)
       const Token& f = tks.first();
       if (f.type == Token::t_Word) {
          Generator<_per>* var;
-         return getVarValue(f, var) ? var : nullptr;
+         return uro->vars.getVarValue(f, var) ? var : nullptr;
       }
    }
 
@@ -49,7 +49,7 @@ Generator<_per>* parsePeriod(const Tokens& tks)
    const _boo hasMinuses = tks2.containsSymbol(L'-');
 
    if (len >= 3 && hasPluses || hasMinuses) {
-      Generator<_per>* exp = parsePeriodExp(tks);
+      Generator<_per>* exp = parsePeriodExp(tks, uro);
       if (exp != nullptr) {
          return exp;
       }
@@ -57,7 +57,7 @@ Generator<_per>* parsePeriod(const Tokens& tks)
 
    if (len >= 2 && !hasPluses && !hasMinuses && lastIsWord) {
       if (len == 2) {
-         Generator<_per>* cnst = parsePeriodConst(tks, false);
+         Generator<_per>* cnst = parsePeriodConst(tks, false, uro);
          if (cnst != nullptr) {
             return cnst;
          }
@@ -65,13 +65,13 @@ Generator<_per>* parsePeriod(const Tokens& tks)
       else if (len == 3 && tks.first().isSymbol(L'-')) {
          Tokens tks2(tks);
          tks2.trimLeft();
-         Generator<_per>* ncnst = parsePeriodConst(tks2, true);
+         Generator<_per>* ncnst = parsePeriodConst(tks2, true, uro);
          if (ncnst != nullptr) {
             return ncnst;
          }
       }
 
-      Generator<_per>* unt = parsePeriodUnit(tks);
+      Generator<_per>* unt = parsePeriodUnit(tks, uro);
       if (unt != nullptr) {
          return unt;
       }
@@ -80,25 +80,25 @@ Generator<_per>* parsePeriod(const Tokens& tks)
    if (len >= 2 && !hasPluses && !hasMinuses) {
       if (startsWithMinus) {
          Generator<_per>* per;
-         if (parse(tks2, per)) {
+         if (parse(uro, tks2, per)) {
             return new NegatedPeriod(per);
          }
       }
    }
 
    if (isPossibleFunction(tks)) {
-      Generator<_per>* func = periodFunction(tks);
+      Generator<_per>* func = periodFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
 
-   Generator<_per>* bin = parseBinary<_per>(tks);
+   Generator<_per>* bin = parseBinary<_per>(tks, uro);
    if (bin != nullptr) {
       return bin;
    }
 
-   Generator<_per>* tern = parseTernary<_per>(tks);
+   Generator<_per>* tern = parseTernary<_per>(tks, uro);
    if (tern != nullptr) {
       return tern;
    }
@@ -106,7 +106,7 @@ Generator<_per>* parsePeriod(const Tokens& tks)
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated)
+static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated, Uroboros* uro)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -118,8 +118,10 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated)
    const _size& h = last.value.h1;
    const Number& num = first.value.n;
 
-   if (HASH_GROUP_PERIOD_SINGLE.find(h) != HASH_GROUP_PERIOD_SINGLE.end()) {
-      const Period::PeriodUnit unit = HASH_MAP_PERIOD_UNITS.find(h)->second;
+   if (uro->hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != 
+       uro->hashes.HASH_GROUP_PERIOD_SINGLE.end())
+   {
+      const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
 
       if (num.isDouble) {
          if (num.value.d == 1L) {
@@ -139,8 +141,10 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated)
       }
    }
 
-   if (HASH_GROUP_PERIOD_MULTI.find(h) != HASH_GROUP_PERIOD_MULTI.end()) {
-      const Period::PeriodUnit unit = HASH_MAP_PERIOD_UNITS.find(h)->second;
+   if (uro->hashes.HASH_GROUP_PERIOD_MULTI.find(h) != 
+      uro->hashes.HASH_GROUP_PERIOD_MULTI.end()) 
+   {
+      const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
 
       _tnum v = num.isDouble
          ? (_tnum)num.value.d
@@ -156,23 +160,27 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated)
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodUnit(const Tokens& tks)
+static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros* uro)
 {
    const _size& h = tks.last().value.h1;
    Tokens tks2(tks);
    tks2.trimRight();
 
    Generator<_num>* num;
-   if (!parse(tks2, num)) {
+   if (!parse(uro, tks2, num)) {
       return nullptr;
    }
 
-   if (HASH_GROUP_PERIOD_SINGLE.find(h) != HASH_GROUP_PERIOD_SINGLE.end()) {
+   if (uro->hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != 
+      uro->hashes.HASH_GROUP_PERIOD_SINGLE.end()) 
+   {
       unitNameException(tks.last().originString, tks);
    }
 
-   if (HASH_GROUP_PERIOD_MULTI.find(h) != HASH_GROUP_PERIOD_MULTI.end()) {
-      const Period::PeriodUnit unit = HASH_MAP_PERIOD_UNITS.find(h)->second;
+   if (uro->hashes.HASH_GROUP_PERIOD_MULTI.find(h) != 
+       uro->hashes.HASH_GROUP_PERIOD_MULTI.end()) 
+   {
+      const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
       return new PeriodUnit(num, unit);
    }
 
@@ -185,13 +193,13 @@ static void unitNameException(const _str& name, const Tokens& tks)
       name, L"'"), tks.last().line);
 }
 
-static Generator<_per>* parsePeriodExp(const Tokens& tks)
+static Generator<_per>* parsePeriodExp(const Tokens& tks, Uroboros* uro)
 {
    std::vector<Tokens> elements;
    tks.splitBySymbol(L'+', elements);
    const _size len = elements.size();
 
-   Generator<_per>* result = parsePeriodExpDiff(elements[0]);
+   Generator<_per>* result = parsePeriodExpDiff(elements[0], uro);
    if (result == nullptr) {
       return nullptr;
    }
@@ -202,7 +210,7 @@ static Generator<_per>* parsePeriodExp(const Tokens& tks)
    for (_size i = 1; i < len; i++) {
       Tokens& el = elements[i];
 
-      Generator<_per>* per = parsePeriodExpDiff(el);
+      Generator<_per>* per = parsePeriodExpDiff(el, uro);
       if (per == nullptr) {
          delete result;
          return nullptr;
@@ -215,12 +223,12 @@ static Generator<_per>* parsePeriodExp(const Tokens& tks)
    return result;
 }
 
-static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
+static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
 {
    const _int baseLen = tks.getLength();
    if (baseLen == 1) {
       Generator<_per>* per;
-      return parse(tks, per) ? per : nullptr;
+      return parse(uro, tks, per) ? per : nullptr;
    }
 
    _boo minusAwaits = tks.first().isSymbol(L'-');
@@ -232,7 +240,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
 
    if (!tks2.containsSymbol(L'-')) {
       Generator<_per>* gp;
-      if (parse(tks2, gp)) {
+      if (parse(uro, tks2, gp)) {
          if (minusAwaits) {
             return new NegatedPeriod(gp);
          }
@@ -254,7 +262,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
    Generator<_tim>* time = nullptr;
    Generator<_per>* result;
 
-   if (parse(elements[0], result)) {
+   if (parse(uro, elements[0], result)) {
       hasFirst = true;
       isTime = false;
       if (minusAwaits) {
@@ -263,7 +271,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
       }
    }
    else {
-      if (parse(elements[0], time)) {
+      if (parse(uro, elements[0], time)) {
          isTime = true;
       }
       else {
@@ -276,7 +284,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
 
       if (isTime) {
          Generator<_tim>* time2;
-         if (parse(el, time2)) {
+         if (parse(uro, el, time2)) {
             Generator<_per>* per = new TimeDifference(time, time2);
 
             if (hasFirst) {
@@ -297,7 +305,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
          }
          else {
             Generator<_per>* per3;
-            if (parse(el, per3)) {
+            if (parse(uro, el, per3)) {
                Generator<_tim>* tim3 = new DecreasedTime(time, per3);
                time = tim3;
             }
@@ -309,7 +317,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
       }
       else {
          Generator<_per>* per;
-         if (parse(el, per)) {
+         if (parse(uro, el, per)) {
             if (minusAwaits) {
                result = new NegatedPeriod(new PeriodSubtraction(result, per));
                minusAwaits = false;
@@ -319,7 +327,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
             }
          }
          else {
-            if (parse(el, time)) {
+            if (parse(uro, el, time)) {
                isTime = true;
             }
             else {
@@ -342,7 +350,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks)
    return result;
 }
 
-static Generator<_per>* parseTimeDifference(const Tokens& tks)
+static Generator<_per>* parseTimeDifference(const Tokens& tks, Uroboros* uro)
 {
    Tokens left(tks);
    Tokens right(tks);
@@ -357,9 +365,9 @@ static Generator<_per>* parseTimeDifference(const Tokens& tks)
    }
 
    Generator<_tim>* tim1;
-   if (parse(left, tim1)) {
+   if (parse(uro, left, tim1)) {
       Generator<_tim>* tim2;
-      if (parse(right, tim2)) {
+      if (parse(uro, right, tim2)) {
          return new TimeDifference(tim1, tim2);
       }
       else {
@@ -368,12 +376,12 @@ static Generator<_per>* parseTimeDifference(const Tokens& tks)
    }
 
    Generator<_per>* per1;
-   if (!parse(left, per1)) {
+   if (!parse(uro, left, per1)) {
       return nullptr;
    }
 
    Generator<_per>* per2;
-   if (!parse(right, per2)) {
+   if (!parse(uro, right, per2)) {
       delete per1;
       return nullptr;
    }

@@ -24,7 +24,7 @@
 #include "../parse-gen.h"
 
 
-Generator<_str>* parseString(const Tokens& tks)
+Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    if (len == 1) {
@@ -36,7 +36,7 @@ Generator<_str>* parseString(const Tokens& tks)
          }
          case Token::t_Word: {
             Generator<_str>* var;
-            return getVarValue(f, var) ? var : nullptr;
+            return uro->vars.getVarValue(f, var) ? var : nullptr;
          }
          default: {
             return nullptr;
@@ -45,36 +45,36 @@ Generator<_str>* parseString(const Tokens& tks)
    }
 
    if (isPossibleFunction(tks)) {
-      Generator<_str>* func = stringFunction(tks);
+      Generator<_str>* func = stringFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
    else if (tks.containsSymbol(L'+')) {
-      Generator<_str>* str = parseStringConcat(tks);
+      Generator<_str>* str = parseStringConcat(tks, uro);
       if (str != nullptr) {
          return str;
       }
    }
 
    if (isPossibleListElement(tks)) {
-      Generator<_num>* num = parseListElementIndex(tks);
+      Generator<_num>* num = parseListElementIndex(tks, uro);
       const Token& f = tks.first();
       Generator<_list>* list;
 
-      if (getVarValue(f, list)) {
+      if (uro->vars.getVarValue(f, list)) {
          return new ListElement<_str>(list, num);
       }
       else {
          Generator<_str>* str;
 
-         if (getVarValue(f, str)) {
+         if (uro->vars.getVarValue(f, str)) {
             return new CharAtIndex(str, num);
          }
          else {
             _def* def;
 
-            if (getVarValue(f, def)) {
+            if (uro->vars.getVarValue(f, def)) {
                return new DefinitionElement(def, num);
             }
             else {
@@ -84,12 +84,12 @@ Generator<_str>* parseString(const Tokens& tks)
       }
    }
 
-   Generator<_str>* bin = parseBinary<_str>(tks);
+   Generator<_str>* bin = parseBinary<_str>(tks, uro);
    if (bin != nullptr) {
       return bin;
    }
 
-   Generator<_str>* tern = parseTernary<_str>(tks);
+   Generator<_str>* tern = parseTernary<_str>(tks, uro);
    if (tern != nullptr) {
       return tern;
    }
@@ -102,7 +102,7 @@ Generator<_str>* parseString(const Tokens& tks)
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-Generator<_str>* parseStringConcat(const Tokens& tks)
+Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
 {
    enum PrevType {
       pt_String = 0,
@@ -128,16 +128,16 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
 
       switch (prevType) {
          case pt_String: {
-            if (parse(tks, prevNum)) {
+            if (parse(uro, tks, prevNum)) {
                prevType = pt_Number;
                parsed = true;
             }
             else {
-               if (parse(tks, prevTim)) {
+               if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   parsed = true;
                }
-               else if (parse(tks, prevPer)) {
+               else if (parse(uro, tks, prevPer)) {
                   prevType = pt_Period;
                   parsed = true;
                }
@@ -146,7 +146,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
          }
          case pt_Number: {
             Generator<_num>* num;
-            if (parse(tks, num)) {
+            if (parse(uro, tks, num)) {
                Generator<_num>* add = new Addition(prevNum, num);
                prevNum = add;
                parsed = true;
@@ -154,11 +154,11 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
             else {
                result->push_back(new Cast_N_S(prevNum));
                prevNum = nullptr;
-               if (parse(tks, prevTim)) {
+               if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   parsed = true;
                }
-               else if (parse(tks, prevPer)) {
+               else if (parse(uro, tks, prevPer)) {
                   prevType = pt_Period;
                   parsed = true;
                }
@@ -167,18 +167,18 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
          }
          case pt_Time: {
             Generator<_per>* per;
-            if (parse(tks, per)) {
+            if (parse(uro, tks, per)) {
                Generator<_tim>* incr = new IncreasedTime(prevTim, per);
                prevTim = incr;
                parsed = true;
             }
             else {
                result->push_back(new Cast_T_S(prevTim));
-               if (parse(tks, prevTim)) {
+               if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   parsed = true;
                }
-               else if (parse(tks, prevNum)) {
+               else if (parse(uro, tks, prevNum)) {
                   prevType = pt_Number;
                   parsed = true;
                }
@@ -187,7 +187,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
          }
          case pt_Period: {
             Generator<_per>* per;
-            if (parse(tks, per)) {
+            if (parse(uro, tks, per)) {
                Generator<_per>* add = new PeriodAddition(prevPer, per);
                prevPer = add;
                parsed = true;
@@ -195,11 +195,11 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
             else {
                result->push_back(new Cast_P_S(prevPer));
                prevPer = nullptr;
-               if (parse(tks, prevNum)) {
+               if (parse(uro, tks, prevNum)) {
                   prevType = pt_Number;
                   parsed = true;
                }
-               else if (parse(tks, prevTim)) {
+               else if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   parsed = true;
                }
@@ -212,7 +212,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks)
          prevType = pt_String;
          Generator<_str>* str;
 
-         if (parse(tks, str)) {
+         if (parse(uro, tks, str)) {
             result->push_back(str);
          }
          else {

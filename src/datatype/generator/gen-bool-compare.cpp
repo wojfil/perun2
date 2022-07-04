@@ -25,28 +25,28 @@ DefComparison::~DefComparison()
 _boo DefinitionsEqual::getValue()
 {
    while (true) {
-      if (!g_running) {
-         value1->reset();
-         value2->reset();
+      if (!this->uroboros->running) {
+         this->value1->reset();
+         this->value2->reset();
          break;
       }
 
-      if (value1->hasNext()) {
-         if (value2->hasNext()) {
-            if (value1->getValue() != value2->getValue()) {
-               value1->reset();
-               value2->reset();
+      if (this->value1->hasNext()) {
+         if (this->value2->hasNext()) {
+            if (this->value1->getValue() != this->value2->getValue()) {
+               this->value1->reset();
+               this->value2->reset();
                return false;
             }
          }
          else {
-            value1->reset();
+            this->value1->reset();
             return false;
          }
       }
       else {
-         if (value2->hasNext()) {
-            value2->reset();
+         if (this->value2->hasNext()) {
+            this->value2->reset();
             return false;
          }
          else {
@@ -61,28 +61,28 @@ _boo DefinitionsEqual::getValue()
 _boo DefinitionsNotEqual::getValue()
 {
    while (true) {
-      if (!g_running) {
-         value1->reset();
-         value2->reset();
+      if (!this->uroboros->running) {
+         this->value1->reset();
+         this->value2->reset();
          break;
       }
 
-      if (value1->hasNext()) {
-         if (value2->hasNext()) {
-            if (value1->getValue() != value2->getValue()) {
-               value1->reset();
-               value2->reset();
+      if (this->value1->hasNext()) {
+         if (this->value2->hasNext()) {
+            if (this->value1->getValue() != this->value2->getValue()) {
+               this->value1->reset();
+               this->value2->reset();
                return true;
             }
          }
          else {
-            value1->reset();
+            this->value1->reset();
             return true;
          }
       }
       else {
-         if (value2->hasNext()) {
-            value2->reset();
+         if (this->value2->hasNext()) {
+            this->value2->reset();
             return true;
          }
          else {
@@ -97,21 +97,21 @@ _boo DefinitionsNotEqual::getValue()
 _boo DefinitionsSmaller::getValue()
 {
    while (true) {
-      if (!g_running) {
-         value1->reset();
-         value2->reset();
+      if (!this->uroboros->running) {
+         this->value1->reset();
+         this->value2->reset();
          break;
       }
 
-      if (value1->hasNext()) {
-         if (!value2->hasNext()) {
-            value1->reset();
+      if (this->value1->hasNext()) {
+         if (!this->value2->hasNext()) {
+            this->value1->reset();
             return false; // no more on the right
          }
       }
       else {
-         if (value2->hasNext()) {
-            value2->reset();
+         if (this->value2->hasNext()) {
+            this->value2->reset();
             return true; // no more more on the left
          }
          else {
@@ -126,21 +126,21 @@ _boo DefinitionsSmaller::getValue()
 _boo DefinitionsSmallerEquals::getValue()
 {
    while (true) {
-      if (!g_running) {
-         value1->reset();
-         value2->reset();
+      if (!this->uroboros->running) {
+         this->value1->reset();
+         this->value2->reset();
          break;
       }
 
-      if (value1->hasNext()) {
-         if (!value2->hasNext()) {
-            value1->reset();
+      if (this->value1->hasNext()) {
+         if (!this->value2->hasNext()) {
+            this->value1->reset();
             return false; // no more on the right
          }
       }
       else {
-         if (value2->hasNext()) {
-            value2->reset();
+         if (this->value2->hasNext()) {
+            this->value2->reset();
             return true; // no more more on the left
          }
          else {
@@ -155,21 +155,21 @@ _boo DefinitionsSmallerEquals::getValue()
 _boo DefinitionsBigger::getValue()
 {
    while (true) {
-      if (!g_running) {
-         value1->reset();
-         value2->reset();
+      if (!this->uroboros->running) {
+         this->value1->reset();
+         this->value2->reset();
          break;
       }
 
-      if (value1->hasNext()) {
-         if (!value2->hasNext()) {
-            value1->reset();
+      if (this->value1->hasNext()) {
+         if (!this->value2->hasNext()) {
+            this->value1->reset();
             return true; // no more on the right
          }
       }
       else {
-         if (value2->hasNext()) {
-            value2->reset();
+         if (this->value2->hasNext()) {
+            this->value2->reset();
             return false; // no more more on the left
          }
          else {
@@ -184,21 +184,21 @@ _boo DefinitionsBigger::getValue()
 _boo DefinitionsBiggerEquals::getValue()
 {
    while (true) {
-      if (!g_running) {
-         value1->reset();
-         value2->reset();
+      if (!this->uroboros->running) {
+         this->value1->reset();
+         this->value2->reset();
          break;
       }
 
-      if (value1->hasNext()) {
-         if (!value2->hasNext()) {
-            value1->reset();
+      if (this->value1->hasNext()) {
+         if (!this->value2->hasNext()) {
+            this->value1->reset();
             return true; // no more on the right
          }
       }
       else {
-         if (value2->hasNext()) {
-            value2->reset();
+         if (this->value2->hasNext()) {
+            this->value2->reset();
             return false; // no more more on the left
          }
          else {
@@ -219,12 +219,12 @@ DefListComparison::~DefListComparison()
 
 _boo DefinitionListEqual::getValue()
 {
-   const _list v = list->getValue();
+   const _list v = this->list->getValue();
    const _size len = v.size();
 
    if (len == 0) {
-      if (definition->hasNext()) {
-         definition->reset();
+      if (this->definition->hasNext()) {
+         this->definition->reset();
          return false;
       }
       else {
@@ -234,21 +234,21 @@ _boo DefinitionListEqual::getValue()
 
    _size i = 0;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          break;
       }
 
-      if (definition->getValue() != v[i]) {
-         definition->reset();
+      if (this->definition->getValue() != v[i]) {
+         this->definition->reset();
          return false;
       }
 
       i++;
       if (i == len) {
-         if (definition->hasNext()) {
-            definition->reset();
+         if (this->definition->hasNext()) {
+            this->definition->reset();
             return false;
          }
          else {
@@ -262,12 +262,12 @@ _boo DefinitionListEqual::getValue()
 
 _boo DefinitionListNotEqual::getValue()
 {
-   const _list v = list->getValue();
+   const _list v = this->list->getValue();
    const _size len = v.size();
 
    if (len == 0) {
-      if (definition->hasNext()) {
-         definition->reset();
+      if (this->definition->hasNext()) {
+         this->definition->reset();
          return true;
       }
       else {
@@ -277,21 +277,21 @@ _boo DefinitionListNotEqual::getValue()
 
    _size i = 0;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          break;
       }
 
-      if (definition->getValue() != v[i]) {
-         definition->reset();
+      if (this->definition->getValue() != v[i]) {
+         this->definition->reset();
          return true;
       }
 
       i++;
       if (i == len) {
-         if (definition->hasNext()) {
-            definition->reset();
+         if (this->definition->hasNext()) {
+            this->definition->reset();
             return true;
          }
          else {
@@ -305,7 +305,7 @@ _boo DefinitionListNotEqual::getValue()
 
 _boo DefinitionListSmaller::getValue()
 {
-   const _list v = list->getValue();
+   const _list v = this->list->getValue();
    const _size len = v.size();
 
    if (len == 0) {
@@ -314,15 +314,15 @@ _boo DefinitionListSmaller::getValue()
 
    _size i = 0;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          return false;
       }
 
       i++;
       if (i == len) {
-         definition->reset();
+         this->definition->reset();
          return false;
       }
    }
@@ -332,12 +332,12 @@ _boo DefinitionListSmaller::getValue()
 
 _boo DefinitionListSmallerEquals::getValue()
 {
-   const _list v = list->getValue();
+   const _list v = this->list->getValue();
    const _size len = v.size();
 
    if (len == 0) {
-      if (definition->hasNext()) {
-         definition->reset();
+      if (this->definition->hasNext()) {
+         this->definition->reset();
          return false;
       }
       else {
@@ -347,16 +347,16 @@ _boo DefinitionListSmallerEquals::getValue()
 
    _size i = 0;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          return false;
       }
 
       i++;
       if (i == len) {
-         if (definition->hasNext()) {
-            definition->reset();
+         if (this->definition->hasNext()) {
+            this->definition->reset();
             return false;
          }
          else {
@@ -370,12 +370,12 @@ _boo DefinitionListSmallerEquals::getValue()
 
 _boo DefinitionListBigger::getValue()
 {
-   const _list v = list->getValue();
+   const _list v = this->list->getValue();
    const _size len = v.size();
 
    if (len == 0) {
-      if (definition->hasNext()) {
-         definition->reset();
+      if (this->definition->hasNext()) {
+         this->definition->reset();
          return true;
       }
       else {
@@ -385,16 +385,16 @@ _boo DefinitionListBigger::getValue()
 
    _size i = 0;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          return false;
       }
 
       i++;
       if (i == len) {
-         if (definition->hasNext()) {
-            definition->reset();
+         if (this->definition->hasNext()) {
+            this->definition->reset();
             return true;
          }
          else {
@@ -408,7 +408,7 @@ _boo DefinitionListBigger::getValue()
 
 _boo DefinitionListBiggerEquals::getValue()
 {
-   const _list v = list->getValue();
+   const _list v = this->list->getValue();
    const _size len = v.size();
 
    if (len == 0) {
@@ -417,22 +417,18 @@ _boo DefinitionListBiggerEquals::getValue()
 
    _size i = 0;
 
-   while (definition->hasNext()) {
-      if (!g_running) {
-         definition->reset();
+   while (this->definition->hasNext()) {
+      if (!this->uroboros->running) {
+         this->definition->reset();
          return false;
       }
 
       i++;
       if (i == len) {
-         definition->reset();
+         this->definition->reset();
          return true;
       }
    }
 
    return false;
 }
-
-
-
-

@@ -24,16 +24,17 @@
 #include "../generator/gen-numlist.h"
 #include <vector>
 
+
 _boo isPossibleListElement(const Tokens& tks);
-Generator<_num>* parseListElementIndex(const Tokens& tks);
+Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro);
 _boo isPossibleBinary(const Tokens& tks);
 _boo isPossibleTernary(const Tokens& tks);
 void checkLimitBySize(const Tokens& tks);
-_boo isPossibleListElementMember(const Tokens& tks);
+_boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro);
 
 
 template <typename T>
-Generator<T>* parseTernary(const Tokens& tks)
+Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
 {
    if (!isPossibleTernary(tks)) {
       return nullptr;
@@ -45,18 +46,18 @@ Generator<T>* parseTernary(const Tokens& tks)
    tks.divideForTernary(tks1, tks2, tks3);
 
    Generator<_boo>* condition;
-   if (!parse(tks1, condition)) {
+   if (!parse(uro, tks1, condition)) {
       return nullptr;
    }
 
    Generator<T>* left;
-   if (!parse(tks2, left)) {
+   if (!parse(uro, tks2, left)) {
       delete condition;
       return nullptr;
    }
 
    Generator<T>* right;
-   if (!parse(tks3, right)) {
+   if (!parse(uro, tks3, right)) {
       delete condition;
       delete left;
       return nullptr;
@@ -67,7 +68,7 @@ Generator<T>* parseTernary(const Tokens& tks)
 
 
 template <typename T>
-static Generator<T>* parseBinary(const Tokens& tks)
+static Generator<T>* parseBinary(const Tokens& tks, Uroboros* uro)
 {
    if (!isPossibleBinary(tks)) {
       return nullptr;
@@ -78,12 +79,12 @@ static Generator<T>* parseBinary(const Tokens& tks)
    tks.divideBySymbol(L'?', tks1, tks2);
 
    Generator<_boo>* condition;
-   if (!parse(tks1, condition)) {
+   if (!parse(uro, tks1, condition)) {
       return nullptr;
    }
 
    Generator<T>* value;
-   if (!parse(tks2, value)) {
+   if (!parse(uro, tks2, value)) {
       delete condition;
       return nullptr;
    }
@@ -93,7 +94,7 @@ static Generator<T>* parseBinary(const Tokens& tks)
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements)
+static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements, Uroboros* uro)
 {
    const _size len = elements.size();
    std::vector<Generator<T>*>* result = new std::vector<Generator<T>*>();
@@ -101,7 +102,7 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       Generator<T>* value;
-      if (parse(tks, value)) {
+      if (parse(uro, tks, value)) {
          result->push_back(value);
       }
       else {
@@ -115,7 +116,7 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements)
+static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, Uroboros* uro)
 {
    const _size len = elements.size();
    std::vector<Generator<std::vector<T>>*>* result = new std::vector<Generator<std::vector<T>>*>();
@@ -123,7 +124,7 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       Generator<std::vector<T>>* value;
-      if (parse(tks, value)) {
+      if (parse(uro, tks, value)) {
          result->push_back(value);
       }
       else {
@@ -137,16 +138,16 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
 
 
 template <typename T>
-static Generator<T>* parseCollectionElement(const Tokens& tks)
+static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
 {
    if (!isPossibleListElement(tks)) {
       return nullptr;
    }
 
-   Generator<_num>* num = parseListElementIndex(tks);
+   Generator<_num>* num = parseListElementIndex(tks, uro);
    const Token& f = tks.first();
    Generator<std::vector<T>>* collection;
-   if (getVarValue(f, collection)) {
+   if (uro->vars.getVarValue(f, collection)) {
       return new ListElement<T>(collection, num);
    }
    else {
@@ -155,24 +156,24 @@ static Generator<T>* parseCollectionElement(const Tokens& tks)
    }
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result);
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result);
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result);
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result);
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result, Uroboros* uro);
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result, Uroboros* uro);
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result, Uroboros* uro);
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result, Uroboros* uro);
 
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result);
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result);
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result);
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result);
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result, Uroboros* uro);
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result, Uroboros* uro);
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result, Uroboros* uro);
+void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result, Uroboros* uro);
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result);
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result);
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result);
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result);
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result, Uroboros* uro);
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result, Uroboros* uro);
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result, Uroboros* uro);
+void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro);
 
 
 template <typename T, typename T2>
-static T parseFilter(const Tokens& tks, const ThisState& state)
+static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
 {
    const _int totalLen = tks.getLength();
    if (totalLen < 3 || !tks.second().isFiltherKeyword()) {
@@ -194,7 +195,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
 
    const Token& f = tks.first();
    T result;
-   if (!getVarValue(f, result)) {
+   if (!uro->vars.getVarValue(f, result)) {
       return nullptr;
    }
 
@@ -213,38 +214,38 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
             }
 
             Generator<_num>* num;
-            if (!parse(ts2, num)) {
+            if (!parse(uro, ts2, num)) {
                delete result;
                throw SyntaxException(str(L"tokens after keyword '", ts.first().originString,
                   L"' cannot be resolved to a number"), tks.first().line);
             }
 
-            setNumericFilter(kw, num, result);
+            setNumericFilter(kw, num, result, uro);
             break;
          }
          case Keyword::kw_Where: {
-            const ThisState prevThisState = g_thisstate;
-            g_thisstate = state;
-            const _boo hasMemory = anyAttribute();
-            Attribute* attr = new Attribute();
+            const ThisState prevThisState = uro->vars.inner.thisState;
+            uro->vars.inner.thisState = state;
+            const _boo hasMemory = uro->vc.anyAttribute();
+            Attribute* attr = new Attribute(uro);
 
             if (state == ThisState::ts_String) {
-               addAttribute(attr);
+               uro->vc.addAttribute(attr);
             }
 
             Generator<_boo>* boo;
-            if (!parse(ts2, boo)) {
+            if (!parse(uro, ts2, boo)) {
                delete result;
-               g_thisstate = prevThisState;
+               uro->vars.inner.thisState = prevThisState;
                throw SyntaxException(str(L"tokens after keyword '", ts.first().originString,
                   L"' cannot be resolved to a logic condition"), tks.first().line);
             }
 
-            setWhereFilter(boo, attr, hasMemory, result);
-            g_thisstate = prevThisState;
+            setWhereFilter(boo, attr, hasMemory, result, uro);
+            uro->vars.inner.thisState = prevThisState;
 
             if (state == ThisState::ts_String) {
-               retreatAttribute();
+               uro->vc.retreatAttribute();
             }
             else {
                delete attr;
@@ -252,13 +253,13 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
             break;
          }
          case Keyword::kw_Order: {
-            const ThisState prevThisState = g_thisstate;
-            g_thisstate = state;
-            const _boo hasMemory = anyAttribute();
-            Attribute* attr = new Attribute();
+            const ThisState prevThisState = uro->vars.inner.thisState;
+            uro->vars.inner.thisState = state;
+            const _boo hasMemory = uro->vc.anyAttribute();
+            Attribute* attr = new Attribute(uro);
 
             if (state == ThisState::ts_String) {
-               addAttribute(attr);
+               uro->vc.addAttribute(attr);
             }
 
             const Token& first = ts2.first();
@@ -268,25 +269,31 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
                if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
                   const _boo desc = kw == Keyword::kw_Desc;
                   OrderBy<T2>* order;
-                  setOrderFilter(attr, hasMemory, order, result);
+                  setOrderFilter(attr, hasMemory, order, result, uro);
 
                   switch (state) {
                      case ThisState::ts_String: {
-                        order->addString(new GeneratorRef<_str>(&g_this_s), desc);
+                        Generator<_str>* vr;
+                        uro->vars.inner.createThisReference(vr);
+                        order->addString(vr, desc);
                         break;
                      }
                      case ThisState::ts_Number: {
-                        order->addNumber(new GeneratorRef<_num>(&g_this_n), desc);
+                        Generator<_num>* vr;
+                        uro->vars.inner.createThisReference(vr);
+                        order->addNumber(vr, desc);
                         break;
                      }
                      case ThisState::ts_Time: {
-                        order->addTime(new GeneratorRef<_tim>(&g_this_t), desc);
+                        Generator<_tim>* vr;
+                        uro->vars.inner.createThisReference(vr);
+                        order->addTime(vr, desc);
                         break;
                      }
                   }
 
                   if (state == ThisState::ts_String) {
-                     retreatAttribute();
+                     uro->vc.retreatAttribute();
                   }
                   else {
                      delete attr;
@@ -309,7 +316,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
                   L" ", first.originString, L"' filter is empty"), first.line);
             }
 
-            Tokens ts3 = prepareForGen(ts2);
+            Tokens ts3 = prepareForGen(ts2, uro);
             if (ts3.isEmpty()) {
                delete result;
                throw SyntaxException(str(L"declaration of '", ts.first().originString,
@@ -320,7 +327,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
             ts3.splitBySymbol(L',', units);
 
             OrderBy<T2>* order;
-            setOrderFilter(attr, hasMemory, order, result);
+            setOrderFilter(attr, hasMemory, order, result, uro);
 
             const _size len = units.size();
             for (_size i = 0; i < len; i++) {
@@ -353,44 +360,44 @@ static T parseFilter(const Tokens& tks, const ThisState& state)
                }
 
                Generator<_boo>* uboo;
-               if (parse(un, uboo)) {
+               if (parse(uro, un, uboo)) {
                   order->addBool(uboo, desc);
                   continue;
                }
 
                Generator<_num>* unum;
-               if (parse(un, unum)) {
+               if (parse(uro, un, unum)) {
                   order->addNumber(unum, desc);
                   continue;
                }
 
                Generator<_per>* uper;
-               if (parse(un, uper)) {
+               if (parse(uro, un, uper)) {
                   order->addPeriod(uper, desc);
                   continue;
                }
 
                Generator<_tim>* utim;
-               if (parse(un, utim)) {
+               if (parse(uro, un, utim)) {
                   order->addTime(utim, desc);
                   continue;
                }
 
                Generator<_str>* ustr;
-               if (parse(un, ustr)) {
+               if (parse(uro, un, ustr)) {
                   order->addString(ustr, desc);
                }
                else {
                   delete order;
                   throw SyntaxException(str(L"value of '", ts.first().originString, L" by' unit "
-                    L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas"), 
+                    L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas"),
                     un.first().line);
                }
             }
 
-            g_thisstate = prevThisState;
+            uro->vars.inner.thisState = prevThisState;
             if (state == ThisState::ts_String) {
-               retreatAttribute();
+               uro->vc.retreatAttribute();
             }
             else {
                delete attr;

@@ -22,26 +22,26 @@ _nlist Filter_WhereNumber::getValue()
    _nlist result;
    const _size length = values.size();
 
-   const _num prevIndex = g_index.value;
-   const _num prevThis = g_this_n.value;
+   const _num prevIndex = this->inner->index.value;
+   const _num prevThis = this->inner->this_n.value;
 
-   g_index.value = Number(0LL);
+   this->inner->index.value = _num(0LL);
 
    _size index = 0;
-   while (g_running && index != length) {
+   while (this->uroboros->running && index != length) {
       const _num& number = values[index];
-      g_this_n.value = number;
+      this->inner->this_n.value = number;
 
       if (condition->getValue()) {
          result.push_back(number);
       }
 
-      g_index.value++;
+      this->inner->index.value++;
       index++;
    }
 
-   g_index.value = prevIndex;
-   g_this_n.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->this_n.value = prevThis;
 
    return result;
 }
@@ -55,13 +55,13 @@ _nlist Filter_OrderByNumber::getValue()
       return list;
    }
 
-   const _num prevIndex = g_index.value;
-   const _num prevThis = g_this_n.value;
+   const _num prevIndex = this->inner->index.value;
+   const _num prevThis = this->inner->this_n.value;
 
    this->quicksort(list, 0, size - 1);
 
-   g_index.value = prevIndex;
-   g_this_n.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->this_n.value = prevThis;
 
    return list;
 }

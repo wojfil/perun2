@@ -18,61 +18,61 @@
 
 _num Cast_B_N::getValue()
 {
-   return _num ( base->getValue() ? 1LL : 0LL ) ;
+   return _num ( this->base->getValue() ? 1LL : 0LL ) ;
 };
 
 _nlist Cast_B_NL::getValue()
 {
-   return _nlist { base->getValue() ? 1LL : 0LL };
+   return _nlist { this->base->getValue() ? 1LL : 0LL };
 };
 
 _str Cast_B_S::getValue()
 {
-   return base->getValue() ? L"1" : L"0";
+   return this->base->getValue() ? L"1" : L"0";
 };
 
 _list Cast_B_L::getValue()
 {
-   return _list { base->getValue() ? L"1" : L"0" };
+   return _list { this->base->getValue() ? L"1" : L"0" };
 };
 
 _nlist Cast_N_NL::getValue(){
-   return _nlist { base->getValue() };
+   return _nlist { this->base->getValue() };
 };
 
 _str Cast_N_S::getValue()
 {
-   return base->getValue().toString();
+   return this->base->getValue().toString();
 };
 
 _list Cast_N_L::getValue()
 {
-   return _list { base->getValue().toString() };
+   return _list { this->base->getValue().toString() };
 };
 
 _str Cast_T_S::getValue()
 {
-   return base->getValue().toString();
+   return this->base->getValue().toString();
 };
 
 _list Cast_T_L::getValue()
 {
-   return _list { base->getValue().toString() };
+   return _list { this->base->getValue().toString() };
 };
 
 _str Cast_P_S::getValue()
 {
-   return base->getValue().toString();
+   return this->base->getValue().toString();
 };
 
 _list Cast_P_L::getValue()
 {
-   return _list { base->getValue().toString() };
+   return _list { this->base->getValue().toString() };
 };
 
 _list Cast_NL_L::getValue()
 {
-   const _nlist nums = base->getValue();
+   const _nlist nums = this->base->getValue();
    const _size len = nums.size();
    _list strings(len);
 
@@ -85,17 +85,17 @@ _list Cast_NL_L::getValue()
 
 _list Cast_S_L::getValue()
 {
-   return _list { base->getValue() };
+   return _list { this->base->getValue() };
 };
 
 _tlist Cast_T_TL::getValue()
 {
-   return _tlist { base->getValue() };
+   return _tlist { this->base->getValue() };
 }
 
 _list Cast_TL_L::getValue()
 {
-   const _tlist times = base->getValue();
+   const _tlist times = this->base->getValue();
    const _size len = times.size();
    _list strings(len);
 
@@ -110,13 +110,13 @@ _list Cast_D_L::getValue()
 {
    _list strings;
 
-   while (base->hasNext()) {
-      if (!g_running) {
-         base->reset();
+   while (this->base->hasNext()) {
+      if (!this->uroboros->running) {
+         this->base->reset();
          break;
       }
 
-      strings.push_back(base->getValue());
+      strings.push_back(this->base->getValue());
    }
 
    return strings;

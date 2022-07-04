@@ -88,7 +88,7 @@ _num F_Count::getValue()
          _def*& def = (*defs)[i];
 
          while (def->hasNext()) {
-            if (!g_running) {
+            if (!this->uroboros->running) {
                def->reset();
                break;
             }
@@ -106,7 +106,7 @@ _num F_CountUnitDef::getValue()
    _nint n = 0LL;
 
    while (definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
@@ -124,24 +124,24 @@ _num F_CountInside::getValue()
       return _num(-1LL);
    }
 
-   const _str path = os_join(g_location.value, v);
+   const _str path = os_join(this->inner->location.value, v);
    if (!os_directoryExists(path)) {
       return _num(-1LL);
    }
 
-   const _str prevLoc = g_location.value;
-   g_location.value = path;
+   const _str prevLoc = this->inner->location.value;
+   this->inner->location.value = path;
    _nint n = 0LL;
 
    while (definition->hasNext()) {
-      if (!g_running) {
+      if (!this->uroboros->running) {
          definition->reset();
          break;
       }
       n++;
    }
 
-   g_location.value = prevLoc;
+   this->inner->location.value = prevLoc;
    return _num(n);
 }
 
@@ -442,7 +442,7 @@ _num F_Truncate::getValue()
 
 _num F_Random::getValue()
 {
-   return g_math->randomDouble();
+   return this->math->randomDouble();
 }
 
 
@@ -451,11 +451,11 @@ _num F_RandomNumber::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      n.value.d *= g_math->randomDouble();
+      n.value.d *= this->math->randomDouble();
       return n;
    }
    else {
-      return _num(g_math->randomInt(n.value.i - 1LL));
+      return _num(this->math->randomInt(n.value.i - 1LL));
    }
 }
 

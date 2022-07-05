@@ -21,6 +21,7 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../../util.h"
+#include "../../uroboros.h"
 #include "../../var/var.h"
 
 
@@ -190,6 +191,61 @@ private:
    Generator<std::vector<T>>* list;
    Generator<_num>* index;
 };
+
+
+template <typename T>
+struct Filter_Where : Generator<std::vector<T>>
+{
+public:
+   Filter_Where(Generator<std::vector<T>>* li, Generator<_boo>* cond, Uroboros* uro)
+      : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner),
+        this_(nullptr)
+   {
+      uro->vars.inner.createThisReference(this_);
+   };
+
+   ~Filter_Where() {
+      delete list;
+      delete condition;
+   }
+
+   std::vector<T> getValue() override {
+      const std::vector<T> values = list->getValue();
+      std::vector<T> result;
+      const _size length = values.size();
+
+      const _num prevIndex = this->inner->index.value;
+      const T prevThis = this->this_->value;
+
+      this->inner->index.value = _num(0LL);
+
+      _size index = 0;
+      while (this->uroboros->running && index != length) {
+         const T& unit = values[index];
+         this->this_->value = unit;
+
+         if (condition->getValue()) {
+            result.push_back(unit);
+         }
+
+         this->inner->index.value++;
+         index++;
+      }
+
+      this->inner->index.value = prevIndex;
+      this->this_->value = prevThis;
+
+      return result;
+   }
+
+private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
+   Variable<T>* this_;
+   Generator<std::vector<T>>* list;
+   Generator<_boo>* condition;
+};
+
 
 
 template <typename T>

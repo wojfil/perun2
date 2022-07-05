@@ -273,19 +273,19 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
 
                   switch (state) {
                      case ThisState::ts_String: {
-                        Generator<_str>* vr;
+                        Variable<_str>* vr;
                         uro->vars.inner.createThisReference(vr);
                         order->addString(vr, desc);
                         break;
                      }
                      case ThisState::ts_Number: {
-                        Generator<_num>* vr;
+                        Variable<_num>* vr;
                         uro->vars.inner.createThisReference(vr);
                         order->addNumber(vr, desc);
                         break;
                      }
                      case ThisState::ts_Time: {
-                        Generator<_tim>* vr;
+                        Variable<_tim>* vr;
                         uro->vars.inner.createThisReference(vr);
                         order->addTime(vr, desc);
                         break;

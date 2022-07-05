@@ -395,7 +395,7 @@ static Command* c_select(const Token& word, const Tokens& tks, const _int& line,
       aggr->set(AGGR_SELECT);
 
       if (tks.isEmpty()) {
-         Generator<_str>* str;
+         Variable<_str>* str;
          uro->vars.inner.createThisReference(str);
          return new C_AggrSelect_String(aggr, str, uro);
       }
@@ -1037,7 +1037,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
          aggr->set(AGGR_COPY);
 
          if (tks.isEmpty()) {
-            Generator<_str>* str;
+            Variable<_str>* str;
             uro->vars.inner.createThisReference(str);
             return new C_AggrCopy_String(aggr, str, uro);
          }

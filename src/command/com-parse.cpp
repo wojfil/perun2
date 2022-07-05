@@ -224,7 +224,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       if (left.isEmpty()) {
-         Generator<_str>* tr;
+         Variable<_str>* tr;
          uro->vars.inner.createThisReference(tr);
          return new CS_InsideString(tr, com, attr, aggr, hasMemory, uro);
       }

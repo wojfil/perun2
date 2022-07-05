@@ -16,36 +16,6 @@
 #include "../../uroboros.h"
 
 
-_nlist Filter_WhereNumber::getValue()
-{
-   const _nlist values = list->getValue();
-   _nlist result;
-   const _size length = values.size();
-
-   const _num prevIndex = this->inner->index.value;
-   const _num prevThis = this->inner->this_n.value;
-
-   this->inner->index.value = _num(0LL);
-
-   _size index = 0;
-   while (this->uroboros->running && index != length) {
-      const _num& number = values[index];
-      this->inner->this_n.value = number;
-
-      if (condition->getValue()) {
-         result.push_back(number);
-      }
-
-      this->inner->index.value++;
-      index++;
-   }
-
-   this->inner->index.value = prevIndex;
-   this->inner->this_n.value = prevThis;
-
-   return result;
-}
-
 _nlist Filter_OrderByNumber::getValue()
 {
    _nlist list = baseValue->getValue();

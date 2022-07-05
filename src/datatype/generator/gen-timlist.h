@@ -22,27 +22,6 @@
 
 
 
-struct Filter_WhereTime : Generator<_tlist>
-{
-public:
-   Filter_WhereTime(Generator<_tlist>* li, Generator<_boo>* cond, Uroboros* uro)
-      : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner) {};
-
-   ~Filter_WhereTime() {
-      delete list;
-      delete condition;
-   }
-
-   _tlist getValue() override;
-
-private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
-   Generator<_tlist>* list;
-   Generator<_boo>* condition;
-};
-
-
 struct Filter_OrderByTime : Generator<_tlist>, OrderBy<_tim>
 {
 public:

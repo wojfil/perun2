@@ -181,7 +181,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 
       if (len == 1) {
          checkFunctionAttribute(word, uro);
-         Generator<_str>* ts;
+         Variable<_str>* ts;
          uro->vars.inner.createThisReference(ts);
          return new F_AnyInside(def, ts, uro);
       }
@@ -284,7 +284,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 
       if (len == 1) {
          checkFunctionAttribute(word, uro);
-         Generator<_str>* ts;
+         Variable<_str>* ts;
          uro->vars.inner.createThisReference(ts);
          return new F_ExistsInside(str, ts, uro);
       }
@@ -307,7 +307,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       if (parse(uro, args[0], def)) {
          if (len == 1) {
             checkFunctionAttribute(word, uro);
-            Generator<_str>* ts;
+            Variable<_str>* ts;
             uro->vars.inner.createThisReference(ts);
             return new F_AnyInside(def, ts, uro);
          }
@@ -334,7 +334,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 
       if (len == 1) {
          checkFunctionAttribute(word, uro);
-         Generator<_str>* ts;
+         Variable<_str>* ts;
          uro->vars.inner.createThisReference(ts);
          return new F_ExistInside(list, ts, uro);
       }
@@ -710,7 +710,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
 
       if (len == 1) {
          checkFunctionAttribute(word, uro);
-         Generator<_str>* ts;
+         Variable<_str>* ts;
          uro->vars.inner.createThisReference(ts);
          return new F_CountInside(def, ts, uro);
       }

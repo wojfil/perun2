@@ -39,9 +39,9 @@ public:
    _list getAlphabet();
    _list getAscii();
 
-   void createThisReference(Generator<_str>*& result);
-   void createThisReference(Generator<_num>*& result);
-   void createThisReference(Generator<_tim>*& result);
+   void createThisReference(Variable<_str>*& result);
+   void createThisReference(Variable<_num>*& result);
+   void createThisReference(Variable<_tim>*& result);
 
    ThisState thisState;
    Variable<_tim> access;

@@ -16,36 +16,6 @@
 #include "../../uroboros.h"
 
 
-_tlist Filter_WhereTime::getValue()
-{
-   const _tlist values = list->getValue();
-   _tlist result;
-   const _size length = values.size();
-
-   const _num prevIndex = this->inner->index.value;
-   const _tim prevThis = this->inner->this_t.value;
-
-   this->inner->index.value = Number(0LL);
-
-   _size index = 0;
-   while (this->uroboros->running && index != length) {
-      const _tim& time = values[index];
-      this->inner->this_t.value = time;
-
-      if (condition->getValue()) {
-         result.push_back(time);
-      }
-
-      this->inner->index.value++;
-      index++;
-   }
-
-   this->inner->index.value = prevIndex;
-   this->inner->this_t.value = prevThis;
-
-   return result;
-}
-
 _tlist Filter_OrderByTime::getValue()
 {
    _tlist list = baseValue->getValue();

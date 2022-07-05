@@ -48,17 +48,17 @@ _list InnerVariables::getAscii()
    };
 }
 
-void InnerVariables::createThisReference(Generator<_str>*& result)
+void InnerVariables::createThisReference(Variable<_str>*& result)
 {
-   result = new VarReference<_str>(&this_s);
+   result = &this_s;
 }
 
-void InnerVariables::createThisReference(Generator<_num>*& result)
+void InnerVariables::createThisReference(Variable<_num>*& result)
 {
-   result = new VarReference<_num>(&this_n);
+   result = &this_n;
 }
 
-void InnerVariables::createThisReference(Generator<_tim>*& result)
+void InnerVariables::createThisReference(Variable<_tim>*& result)
 {
-   result = new VarReference<_tim>(&this_t);
+   result = &this_t;
 }

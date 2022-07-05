@@ -287,12 +287,12 @@ void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>
 
 void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result, Uroboros* uro)
 {
-   result = new Filter_WhereNumber(result, boo, uro);
+   result = new Filter_Where<_num>(result, boo, uro);
 }
 
 void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result, Uroboros* uro)
 {
-   result = new Filter_WhereTime(result, boo, uro);
+   result = new Filter_Where<_tim>(result, boo, uro);
 }
 
 void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result, Uroboros* uro)

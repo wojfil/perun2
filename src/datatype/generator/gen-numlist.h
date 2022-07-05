@@ -20,27 +20,6 @@
 #include "../../var/var-runtime.h"
 
 
-struct Filter_WhereNumber : Generator<_nlist>
-{
-public:
-   Filter_WhereNumber(Generator<_nlist>* li, Generator<_boo>* cond, Uroboros* uro)
-      : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner) {};
-
-   ~Filter_WhereNumber() {
-      delete list;
-      delete condition;
-   }
-
-   _nlist getValue() override;
-
-private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
-   Generator<_nlist>* list;
-   Generator<_boo>* condition;
-};
-
-
 struct Filter_OrderByNumber : Generator<_nlist>, OrderBy<_num>
 {
 public:

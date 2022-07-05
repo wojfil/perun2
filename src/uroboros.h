@@ -23,6 +23,7 @@
 #include "terminator.h"
 #include "keyword.h"
 #include "side-process.h"
+#include "literals.h"
 
 #define VERSION_STR L"1.0.6"
 
@@ -51,6 +52,7 @@ public:
    Terminator terminator;
    const KeywordsData keywordsData;
    SideProcess sideProcess;
+   Literals literals;
 
    const _uint32 flags;
 

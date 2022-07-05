@@ -15,8 +15,14 @@ struct Arguments
 {
 public:
 
-   Arguments(const _str& location, const _str& code);
+   // Uroboros arguments parsed from the command-line
    Arguments(_int* argc, _char** argv[]);
+
+   // Uroboros arguments made from code and location
+   Arguments(const _str& loc, const _str& cod);
+
+   // Uroboros arguments made from code, location and flags
+   Arguments(const _str& loc, const _str& cod, const _uint32& fls);
 
    _uint32 getFlags() const;
    _list getArgs() const;

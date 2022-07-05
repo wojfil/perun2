@@ -4,14 +4,13 @@
 #include "os.h"
 
 
-Arguments::Arguments(const _str& location, const _str& code)
-{
-   this->location = location;
-   this->code = code;
-   this->args = _list();
-   this->flags = FLAG_NULL;
-   this->parseState = ArgsParseState::aps_Ok;
-}
+Arguments::Arguments(const _str& loc, const _str& cod)
+   : location(loc), code(cod), args(_list()), flags(FLAG_NULL),
+   parseState(ArgsParseState::aps_Ok) { };
+
+Arguments::Arguments(const _str& loc, const _str& cod, const _uint32& fls)
+   : location(loc), code(cod), args(_list()), flags(fls),
+   parseState(ArgsParseState::aps_Ok) { };
 
 Arguments::Arguments(_int* argc, _char** argv[])
 {

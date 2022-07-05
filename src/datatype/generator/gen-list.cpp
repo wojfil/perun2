@@ -37,7 +37,7 @@ _list Filter_WhereString::getValue()
    while (this->uroboros->running && index != length) {
       const _str& string = values[index];
       this->inner->this_s.value = string;
-      os_loadAttributes(attribute);
+      this->attribute.run();
 
       if (condition->getValue()) {
          result.push_back(string);

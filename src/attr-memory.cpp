@@ -115,7 +115,7 @@ void AttributeMemory::restore() const
    }
 
    if (attribute->markToRun) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
       return;
    }
 

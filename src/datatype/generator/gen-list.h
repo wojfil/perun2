@@ -61,12 +61,12 @@ public:
 
       this->inner->index.value = leftId;
       this->inner->this_s.value = left;
-      os_loadAttributes(*attribute);
+      this->attribute->run();
       const T leftValue = ou->value->getValue();
 
       this->inner->index.value = rightId;
       this->inner->this_s.value = right;
-      os_loadAttributes(*attribute);
+      this->attribute->run();
       const T rightValue = ou->value->getValue();
 
       return ou->descending
@@ -81,12 +81,12 @@ public:
 
       this->inner->index.value = leftId;
       this->inner->this_s.value = left;
-      os_loadAttributes(*attribute);
+      this->attribute->run();
       const T leftValue = ou->value->getValue();
 
       this->inner->index.value = rightId;
       this->inner->this_s.value = right;
-      os_loadAttributes(*attribute);
+      this->attribute->run();
       const T rightValue = ou->value->getValue();
 
       if (leftValue == rightValue) {

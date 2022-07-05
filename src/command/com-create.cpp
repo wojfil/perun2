@@ -41,7 +41,7 @@ void C_Create::run()
 
          if (s) {
             commandLog(this->uroboros, L"Create file ", getCCName(this->inner->path.value));
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
          else {
             commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
@@ -53,7 +53,7 @@ void C_Create::run()
 
          if (s) {
             commandLog(this->uroboros, L"Create directory ", getCCName(this->inner->path.value));
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
          else {
             commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
@@ -97,7 +97,7 @@ void C_Create_Stack::run()
             if (nameChanged) {
                this->inner->this_s.value = path;
             }
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
          else {
             commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
@@ -112,7 +112,7 @@ void C_Create_Stack::run()
             if (nameChanged) {
                this->inner->this_s.value = path;
             }
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
          else {
             commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));
@@ -144,7 +144,7 @@ void C_CreateFile::run()
 
       if (s) {
          commandLog(this->uroboros, L"Create file ", getCCName(this->inner->path.value));
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
       else {
          commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
@@ -186,7 +186,7 @@ void C_CreateFile_Stack::run()
          if (nameChanged) {
             this->inner->this_s.value = path;
          }
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
       else {
          commandLog(this->uroboros, L"Failed to create file ", getCCName(path));
@@ -217,7 +217,7 @@ void C_CreateDirectory::run()
 
       if (s) {
          commandLog(this->uroboros, L"Create directory ", getCCName(this->inner->path.value));
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
       else {
          commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
@@ -251,7 +251,7 @@ void C_CreateDirectory_Stack::run()
          if (nameChanged) {
             this->inner->this_s.value = path;
          }
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
       else {
          commandLog(this->uroboros, L"Failed to create directory ", getCCName(path));

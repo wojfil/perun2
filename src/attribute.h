@@ -61,7 +61,7 @@ public:
    _boo has(const _aunit& v) const;
    _boo hasAny() const;
 
-   void run();
+   void run() const;
 
    _boo markToRun = false;
    _boo markToEvaluate = false;

@@ -112,7 +112,7 @@ _boo Attribute::hasAny() const
    return value != ATTR_NULL;
 }
 
-void Attribute::run()
+void Attribute::run() const
 {
-   os_loadAttributes(*this);
+   os_loadAttributes(this);
 }

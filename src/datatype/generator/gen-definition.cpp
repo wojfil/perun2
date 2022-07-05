@@ -57,7 +57,7 @@ _boo Filter_WhereDef::hasNext()
       }
 
       value = definition->getValue();
-      os_loadAttributes(*attribute);
+      this->attribute->run();
       const _boo con = condition->getValue();
 
       if (con) {

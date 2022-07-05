@@ -34,7 +34,7 @@ void CS_StringComArg::run()
       this->inner->this_s.value = val;
 
       if (hasAttribute) {
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
       command->run();
 
@@ -71,7 +71,7 @@ void CS_ListComArg::run()
       this->inner->this_s.value = values[index];
 
       if (hasAttribute) {
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
 
       command->run();
@@ -109,7 +109,7 @@ void CS_DefinitionComArg::run()
       this->inner->this_s.value = definition->getValue();
 
       if (hasAttribute) {
-         os_loadAttributes(*attribute);
+         this->attribute->run();
       }
 
       command->run();

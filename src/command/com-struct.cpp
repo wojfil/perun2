@@ -188,7 +188,7 @@ void CS_StringLoop::run()
       this->inner->this_s.value = val;
 
       if (this->hasAttribute) {
-         os_loadAttributes(*this->attribute);
+         this->attribute->run();
       }
       this->command->run();
 
@@ -234,7 +234,7 @@ void CS_DefinitionLoop::run()
       this->inner->this_s.value = this->definition->getValue();
 
       if (this->hasAttribute) {
-         os_loadAttributes(*this->attribute);
+         this->attribute->run();
       }
 
       this->command->run();
@@ -288,7 +288,7 @@ void CS_ListLoop::run()
       this->inner->this_s.value = values[index];
 
       if (this->hasAttribute) {
-         os_loadAttributes(*this->attribute);
+         this->attribute->run();
       }
 
       this->command->run();
@@ -338,7 +338,7 @@ void CS_InsideString::run()
          this->inner->location.value = newLocation;
 
          if (this->hasAttribute) {
-            os_loadAttributes(*this->attribute);
+            this->attribute->run();
          }
 
          this->command->run();
@@ -393,7 +393,7 @@ void CS_InsideDefinition::run()
          this->inner->this_s.value = newLocation;
 
          if (this->hasAttribute) {
-            os_loadAttributes(*this->attribute);
+            this->attribute->run();
          }
          
          this->command->run();
@@ -457,7 +457,7 @@ void CS_InsideList::run()
          this->inner->location.value = newLocation;
 
          if (this->hasAttribute) {
-            os_loadAttributes(*this->attribute);
+            this->attribute->run();
          }
 
          this->command->run();

@@ -31,7 +31,7 @@ void C_Delete::run()
       if (s) {
          commandLog(this->uroboros, L"Delete ", getCCName(this->inner->path.value));
          if (hasAttribute) {
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
       }
       else {
@@ -49,7 +49,7 @@ void C_Drop::run()
       if (s) {
          commandLog(this->uroboros, L"Drop ", getCCName(this->inner->path.value));
          if (hasAttribute) {
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
       }
       else {
@@ -428,7 +428,7 @@ void C_MoveTo::run()
 
          if (hasAttribute) {
             this->inner->this_s.value = newPath;
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
       }
       else {
@@ -482,7 +482,7 @@ void C_MoveTo_Stack::run()
 
          if (hasAttribute) {
             this->inner->this_s.value = newPath;
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
       }
       else {
@@ -540,7 +540,7 @@ void C_MoveToAs::run()
 
          if (hasAttribute) {
             this->inner->this_s.value = newPath;
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
       }
       else {
@@ -615,7 +615,7 @@ void C_MoveToAs_Stack::run()
 
          if (hasAttribute) {
             this->inner->this_s.value = newPath;
-            os_loadAttributes(*attribute);
+            this->attribute->run();
          }
       }
       else {

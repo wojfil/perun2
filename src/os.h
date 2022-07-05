@@ -37,8 +37,8 @@ _tim os_yesterday();
 _tim os_tomorrow();
 
 void os_sleepForMs(const _nint& ms, Uroboros* uro);
-void os_loadAttributes(const Attribute& attr);
-void os_loadAttributes_empty(const Attribute& attr);
+void os_loadAttributes(const Attribute* attr);
+void os_loadAttributes_empty(const Attribute* attr);
 
    // file system variables:
 _tim os_access(const _str& path);

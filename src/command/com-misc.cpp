@@ -127,7 +127,7 @@ void C_Run::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 
@@ -154,7 +154,7 @@ void C_RunWith::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 
@@ -184,7 +184,7 @@ void C_RunWithWithString::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 
@@ -240,7 +240,7 @@ void C_RunWithWith::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 
@@ -264,7 +264,7 @@ void C_RunWithUroboros::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 
@@ -291,7 +291,7 @@ void C_RunWithUroborosWithString::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 
@@ -344,7 +344,7 @@ void C_RunWithUroborosWith::run()
    }
 
    if (hasAttribute) {
-      os_loadAttributes(*attribute);
+      this->attribute->run();
    }
 }
 

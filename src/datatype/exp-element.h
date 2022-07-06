@@ -35,13 +35,13 @@ struct ExpElement
 {
 public:
 
-   ExpElement<T> (const T& cnst) : generator(new Constant<T>(cnst)),
-      _hasValue(true), constant(cnst), type(ElementType::et_Constant),
-      _operator(0) {};
-   ExpElement<T> (const _char& op) : generator(nullptr), _hasValue(false),
-      _operator(op), type(ElementType::et_Operator), constant(T()) {};
-   ExpElement<T> (Generator<T>* gen) : generator(gen), _hasValue(true),
-      type(et_Generator), constant(T()), _operator(0) {};
+   ExpElement<T> (const T& cnst, const _int& li)
+      : generator(new Constant<T>(cnst)), _hasValue(true), constant(cnst),
+      type(ElementType::et_Constant), _operator(0), line(li) {};
+   ExpElement<T> (const _char& op, const _int& li) : generator(nullptr), _hasValue(false),
+      _operator(op), type(ElementType::et_Operator), constant(T()), line(li) {};
+   ExpElement<T> (Generator<T>* gen, const _int& li) : generator(gen), _hasValue(true),
+      type(et_Generator), constant(T()), _operator(0), line(li) {};
 
    ~ExpElement<T> () {
       if (_hasValue) {
@@ -59,6 +59,7 @@ public:
    _char _operator;
    const T constant;
    const ElementType type;
+   const _int line;
 
 private:
 

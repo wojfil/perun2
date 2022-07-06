@@ -139,23 +139,24 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro)
             else {
                const _char ch = toBoolExpOperator(t);
                if (sublen == 0) {
-                  infList.push_back(new ExpElement<_boo>(ch));
+                  infList.push_back(new ExpElement<_boo>(ch, t.line));
                }
                else {
                   if (free) {
                      const Tokens tks2(tks.list, i - sublen, sublen);
+                     const _int line = tks2.first().line;
 
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
                         const _boo boo = tks2.first().value.keyword.k == Keyword::kw_True;
-                        infList.push_back(new ExpElement<_boo>(boo));
-                        infList.push_back(new ExpElement<_boo>(ch));
+                        infList.push_back(new ExpElement<_boo>(boo, line));
+                        infList.push_back(new ExpElement<_boo>(ch, line));
                         sublen = 0;
                      }
                      else {
                         Generator<_boo>* boo;
                         if (parse(uro, tks2, boo)) {
-                           infList.push_back(new ExpElement<_boo>(boo));
-                           infList.push_back(new ExpElement<_boo>(ch));
+                           infList.push_back(new ExpElement<_boo>(boo, line));
+                           infList.push_back(new ExpElement<_boo>(ch, line));
                            sublen = 0;
                         }
                         else {
@@ -209,12 +210,12 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro)
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
          const _boo boo = (tks2.first().value.keyword.k == Keyword::kw_True);
-         infList.push_back(new ExpElement<_boo>(boo));
+         infList.push_back(new ExpElement<_boo>(boo, tks2.first().line));
       }
       else {
          Generator<_boo>* boo;
          if (parse(uro, tks2, boo)) {
-            infList.push_back(new ExpElement<_boo>(boo));
+            infList.push_back(new ExpElement<_boo>(boo, tks2.first().line));
          }
          else {
             deleteVector(infList);
@@ -264,7 +265,7 @@ static Generator<_boo>* boolExpTree(
                brackets--;
                if (brackets == 0) {
                   Generator<_boo>* result = boolExpTree(temp, pntList);
-                  ExpElement<_boo>* ee = new ExpElement<_boo>(result);
+                  ExpElement<_boo>* ee = new ExpElement<_boo>(result, e->line);
                   pntList.push_back(ee);
                   temp.resize(0);
                   elements.push_back(ee);
@@ -328,12 +329,12 @@ static Generator<_boo>* boolExpIntegrateNegations(
 
             if (e->type == ElementType::et_Constant) {
                const _boo value = !(e->constant);
-               newElement = new ExpElement<_boo>(value);
+               newElement = new ExpElement<_boo>(value, e->line);
             }
             else {
                Generator<_boo>* n = e->takeValue();
                Generator<_boo>* no = new Not(n);
-               newElement = new ExpElement<_boo>(no);
+               newElement = new ExpElement<_boo>(no, e->line);
             }
 
             pntList.push_back(newElement);
@@ -394,7 +395,7 @@ static Generator<_boo>* boolExpTreeMerge(
                }
             }
 
-            newElement = new ExpElement<_boo>(value);
+            newElement = new ExpElement<_boo>(value, firstElement->line);
          }
          else {
             BinaryOperation<_boo>* bin;
@@ -416,7 +417,7 @@ static Generator<_boo>* boolExpTreeMerge(
                }
             }
 
-            newElement = new ExpElement<_boo>(bin);
+            newElement = new ExpElement<_boo>(bin, firstElement->line);
          }
          pntList.push_back(newElement);
          firstElement = newElement;

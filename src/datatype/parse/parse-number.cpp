@@ -227,25 +227,26 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
                // or unary negation
                const _char ch2 = (ch == L'-' &&
                   (prev || i == start)) ? UNARY_MINUS : ch;
-               infList.push_back(new ExpElement<_num>(ch2));
+               infList.push_back(new ExpElement<_num>(ch2, t.line));
             }
             else {
                if (free) {
                   const Tokens tks2(tks.list, i - sublen, sublen);
+                  const _int line = tks2.first().line;
 
                   if (tks2.getLength() == 1
                      && tks2.first().type == Token::t_Number) {
 
                      const _num num = tks2.first().value.num.n;
-                     infList.push_back(new ExpElement<_num>(num));
-                     infList.push_back(new ExpElement<_num>(ch));
+                     infList.push_back(new ExpElement<_num>(num, line));
+                     infList.push_back(new ExpElement<_num>(ch, line));
                      sublen = 0;
                   }
                   else {
                      Generator<_num>* num;
                      if (parse(uro, tks2, num)) {
-                        infList.push_back(new ExpElement<_num>(num));
-                        infList.push_back(new ExpElement<_num>(ch));
+                        infList.push_back(new ExpElement<_num>(num, line));
+                        infList.push_back(new ExpElement<_num>(ch, line));
                         sublen = 0;
                      }
                      else {
@@ -313,12 +314,12 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
       Tokens tks2(tks.list, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().type == Token::t_Number) {
-         infList.push_back(new ExpElement<_num>(tks2.first().value.num.n));
+         infList.push_back(new ExpElement<_num>(tks2.first().value.num.n, tks2.first().line));
       }
       else {
          Generator<_num>* num;
          if (parse(uro, tks2, num)) {
-            infList.push_back(new ExpElement<_num>(num));
+            infList.push_back(new ExpElement<_num>(num, tks2.first().line));
          }
          else {
             deleteVector(infList);
@@ -367,7 +368,7 @@ static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList
                brackets--;
                if (brackets == 0) {
                   Generator<_num>* result = numExpTree(temp, pntList);
-                  ExpElement<_num>* ee = new ExpElement<_num>(result);
+                  ExpElement<_num>* ee = new ExpElement<_num>(result, e->line);
                   pntList.push_back(ee);
                   temp.resize(0);
                   elements.push_back(ee);
@@ -431,12 +432,12 @@ static Generator<_num>* numExpIntegrateUnary(
 
             if (e->type == ElementType::et_Constant) {
                const _num value = -(e->constant);
-               newElement = new ExpElement<_num>(value);
+               newElement = new ExpElement<_num>(value, e->line);
             }
             else {
                Generator<_num>* n = e->takeValue();
                Generator<_num>* neg = new Negation(n);
-               newElement = new ExpElement<_num>(neg);
+               newElement = new ExpElement<_num>(neg, e->line);
             }
 
             pntList.push_back(newElement);
@@ -480,8 +481,8 @@ static Generator<_num>* numExpTreeMerge(
             if (type == ElementType::et_Constant
                && firstElement->type == ElementType::et_Constant)
             {
-               const _num v1 = firstElement->constant;
-               const _num v2 = secondElement->constant;
+               const _num& v1 = firstElement->constant;
+               const _num& v2 = secondElement->constant;
                _num value;
 
                switch(op) {
@@ -490,16 +491,24 @@ static Generator<_num>* numExpTreeMerge(
                      break;
                   }
                   case L'/': {
+                     if (v2.isZero()) {
+                        throw SyntaxException(L"inevitable division by zero",
+                           secondElement->line);
+                     }
                      value = v1 / v2;
                      break;
                   }
                   case L'%': {
+                     if (v2.isZero()) {
+                        throw SyntaxException(L"inevitable modulo by zero",
+                           secondElement->line);
+                     }
                      value = v1 % v2;
                      break;
                   }
                }
 
-               newElement = new ExpElement<_num>(value);
+               newElement = new ExpElement<_num>(value, firstElement->line);
             }
             else {
                Generator<_num>* first = firstElement->takeValue();
@@ -521,7 +530,7 @@ static Generator<_num>* numExpTreeMerge(
                   }
                }
 
-               newElement = new ExpElement<_num>(bin);
+               newElement = new ExpElement<_num>(bin, firstElement->line);
             }
 
             pntList.push_back(newElement);

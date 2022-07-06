@@ -172,20 +172,20 @@ void Variables::varsLevelDown()
 
 _boo Variables::getVarValue(const Token& tk, Generator<_boo>*& result)
 {
-   if (this->var_boo.find(tk.value.h1) != this->var_boo.end()) {
-      ParseVariable<_boo>* pv = &this->var_boo[tk.value.h1];
+   if (this->var_boo.find(tk.value.word.h) != this->var_boo.end()) {
+      ParseVariable<_boo>* pv = &this->var_boo[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_boo>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_boo.find(tk.value.h1) != this->ivar_boo.end()) {
+   else if (this->ivar_boo.find(tk.value.word.h) != this->ivar_boo.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_boo>(this->ivar_boo[tk.value.h1]);
+      result = new GeneratorRef<_boo>(this->ivar_boo[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_boo.find(tk.value.h1) != this->svar_boo.end()) {
-      result = new GeneratorRef<_boo>(this->svar_boo[tk.value.h1]);
+   else if (this->svar_boo.find(tk.value.word.h) != this->svar_boo.end()) {
+      result = new GeneratorRef<_boo>(this->svar_boo[tk.value.word.h]);
       return true;
    }
 
@@ -194,20 +194,20 @@ _boo Variables::getVarValue(const Token& tk, Generator<_boo>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_per>*& result)
 {
-   if (this->var_per.find(tk.value.h1) != this->var_per.end()) {
-      ParseVariable<_per>* pv = &this->var_per[tk.value.h1];
+   if (this->var_per.find(tk.value.word.h) != this->var_per.end()) {
+      ParseVariable<_per>* pv = &this->var_per[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_per>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_per.find(tk.value.h1) != this->ivar_per.end()) {
+   else if (this->ivar_per.find(tk.value.word.h) != this->ivar_per.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_per>(this->ivar_per[tk.value.h1]);
+      result = new GeneratorRef<_per>(this->ivar_per[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_per.find(tk.value.h1) != this->svar_per.end()) {
-      result = new GeneratorRef<_per>(this->svar_per[tk.value.h1]);
+   else if (this->svar_per.find(tk.value.word.h) != this->svar_per.end()) {
+      result = new GeneratorRef<_per>(this->svar_per[tk.value.word.h]);
       return true;
    }
 
@@ -216,7 +216,7 @@ _boo Variables::getVarValue(const Token& tk, Generator<_per>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 {
-   if (tk.value.h1 == this->hashes->HASH_VAR_THIS) {
+   if (tk.value.word.h == this->hashes->HASH_VAR_THIS) {
       if (this->inner.thisState == ThisState::ts_Time) {
          result = new GeneratorRef<_tim>(&this->inner.this_t);
          return true;
@@ -227,20 +227,20 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
          return false;
    }
 
-   if (this->var_tim.find(tk.value.h1) != this->var_tim.end()) {
-      ParseVariable<_tim>* pv = &this->var_tim[tk.value.h1];
+   if (this->var_tim.find(tk.value.word.h) != this->var_tim.end()) {
+      ParseVariable<_tim>* pv = &this->var_tim[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_tim>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_tim.find(tk.value.h1) != this->ivar_tim.end()) {
+   else if (this->ivar_tim.find(tk.value.word.h) != this->ivar_tim.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_tim>(this->ivar_tim[tk.value.h1]);
+      result = new GeneratorRef<_tim>(this->ivar_tim[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_tim.find(tk.value.h1) != this->svar_tim.end()) {
-      result = new GeneratorRef<_tim>(this->svar_tim[tk.value.h1]);
+   else if (this->svar_tim.find(tk.value.word.h) != this->svar_tim.end()) {
+      result = new GeneratorRef<_tim>(this->svar_tim[tk.value.word.h]);
       return true;
    }
 
@@ -249,7 +249,7 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 {
-   if (tk.value.h1 == this->hashes->HASH_VAR_THIS) {
+   if (tk.value.word.h == this->hashes->HASH_VAR_THIS) {
       if (this->inner.thisState == ThisState::ts_Number) {
          result = new GeneratorRef<_num>(&this->inner.this_n);
          return true;
@@ -260,20 +260,20 @@ _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
          return false;
    }
 
-   if (this->var_num.find(tk.value.h1) != this->var_num.end()) {
-      ParseVariable<_num>* pv = &this->var_num[tk.value.h1];
+   if (this->var_num.find(tk.value.word.h) != this->var_num.end()) {
+      ParseVariable<_num>* pv = &this->var_num[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_num>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_num.find(tk.value.h1) != this->ivar_num.end()) {
+   else if (this->ivar_num.find(tk.value.word.h) != this->ivar_num.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_num>(this->ivar_num[tk.value.h1]);
+      result = new GeneratorRef<_num>(this->ivar_num[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_num.find(tk.value.h1) != this->svar_num.end()) {
-      result = new GeneratorRef<_num>(this->svar_num[tk.value.h1]);
+   else if (this->svar_num.find(tk.value.word.h) != this->svar_num.end()) {
+      result = new GeneratorRef<_num>(this->svar_num[tk.value.word.h]);
       return true;
    }
 
@@ -282,7 +282,7 @@ _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_str>*& result)
 {
-   if (tk.value.h1 == this->hashes->HASH_VAR_THIS) {
+   if (tk.value.word.h == this->hashes->HASH_VAR_THIS) {
       if (this->inner.thisState == ThisState::ts_String) {
          result = new GeneratorRef<_str>(&this->inner.this_s);
          return true;
@@ -293,20 +293,20 @@ _boo Variables::getVarValue(const Token& tk, Generator<_str>*& result)
          return false;
    }
 
-   if (this->var_str.find(tk.value.h1) != this->var_str.end()) {
-      ParseVariable<_str>* pv = &this->var_str[tk.value.h1];
+   if (this->var_str.find(tk.value.word.h) != this->var_str.end()) {
+      ParseVariable<_str>* pv = &this->var_str[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_str>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_str.find(tk.value.h1) != this->ivar_str.end()) {
+   else if (this->ivar_str.find(tk.value.word.h) != this->ivar_str.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_str>(this->ivar_str[tk.value.h1]);
+      result = new GeneratorRef<_str>(this->ivar_str[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_str.find(tk.value.h1) != this->svar_str.end()) {
-      result = new GeneratorRef<_str>(this->svar_str[tk.value.h1]);
+   else if (this->svar_str.find(tk.value.word.h) != this->svar_str.end()) {
+      result = new GeneratorRef<_str>(this->svar_str[tk.value.word.h]);
       return true;
    }
 
@@ -315,20 +315,20 @@ _boo Variables::getVarValue(const Token& tk, Generator<_str>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_nlist>*& result)
 {
-   if (this->var_nlist.find(tk.value.h1) != this->var_nlist.end()) {
-      ParseVariable<_nlist>* pv = &this->var_nlist[tk.value.h1];
+   if (this->var_nlist.find(tk.value.word.h) != this->var_nlist.end()) {
+      ParseVariable<_nlist>* pv = &this->var_nlist[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_nlist>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_nlist.find(tk.value.h1) != this->ivar_nlist.end()) {
+   else if (this->ivar_nlist.find(tk.value.word.h) != this->ivar_nlist.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_nlist>(this->ivar_nlist[tk.value.h1]);
+      result = new GeneratorRef<_nlist>(this->ivar_nlist[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_nlist.find(tk.value.h1) != this->svar_nlist.end()) {
-      result = new GeneratorRef<_nlist>(this->svar_nlist[tk.value.h1]);
+   else if (this->svar_nlist.find(tk.value.word.h) != this->svar_nlist.end()) {
+      result = new GeneratorRef<_nlist>(this->svar_nlist[tk.value.word.h]);
       return true;
    }
 
@@ -337,20 +337,20 @@ _boo Variables::getVarValue(const Token& tk, Generator<_nlist>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_tlist>*& result)
 {
-   if (this->var_tlist.find(tk.value.h1) != this->var_tlist.end()) {
-      ParseVariable<_tlist>* pv = &this->var_tlist[tk.value.h1];
+   if (this->var_tlist.find(tk.value.word.h) != this->var_tlist.end()) {
+      ParseVariable<_tlist>* pv = &this->var_tlist[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_tlist>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_tlist.find(tk.value.h1) != this->ivar_tlist.end()) {
+   else if (this->ivar_tlist.find(tk.value.word.h) != this->ivar_tlist.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_tlist>(this->ivar_tlist[tk.value.h1]);
+      result = new GeneratorRef<_tlist>(this->ivar_tlist[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_tlist.find(tk.value.h1) != this->svar_tlist.end()) {
-      result = new GeneratorRef<_tlist>(this->svar_tlist[tk.value.h1]);
+   else if (this->svar_tlist.find(tk.value.word.h) != this->svar_tlist.end()) {
+      result = new GeneratorRef<_tlist>(this->svar_tlist[tk.value.word.h]);
       return true;
    }
 
@@ -359,8 +359,8 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tlist>*& result)
 
 _boo Variables::getVarValue(const Token& tk, _def*& result)
 {
-   if (this->svar_def.find(tk.value.h1) != this->svar_def.end()) {
-      result = this->svar_def[tk.value.h1]->generate(new LocationReference(this->uroboros));
+   if (this->svar_def.find(tk.value.word.h) != this->svar_def.end()) {
+      result = this->svar_def[tk.value.word.h]->generate(new LocationReference(this->uroboros));
       return true;
    }
 
@@ -369,20 +369,20 @@ _boo Variables::getVarValue(const Token& tk, _def*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_list>*& result)
 {
-   if (this->var_list.find(tk.value.h1) != this->var_list.end()) {
-      ParseVariable<_list>* pv = &this->var_list[tk.value.h1];
+   if (this->var_list.find(tk.value.word.h) != this->var_list.end()) {
+      ParseVariable<_list>* pv = &this->var_list[tk.value.word.h];
       if (pv->isReachable()) {
          result = new GeneratorRef<_list>(pv->getVarPtr());
          return true;
       }
    }
-   else if (this->ivar_list.find(tk.value.h1) != this->ivar_list.end()) {
+   else if (this->ivar_list.find(tk.value.word.h) != this->ivar_list.end()) {
       this->uroboros->vc.setAttribute(tk);
-      result = new GeneratorRef<_list>(this->ivar_list[tk.value.h1]);
+      result = new GeneratorRef<_list>(this->ivar_list[tk.value.word.h]);
       return true;
    }
-   else if (this->svar_list.find(tk.value.h1) != this->svar_list.end()) {
-      result = new GeneratorRef<_list>(this->svar_list[tk.value.h1]);
+   else if (this->svar_list.find(tk.value.word.h) != this->svar_list.end()) {
+      result = new GeneratorRef<_list>(this->svar_list[tk.value.word.h]);
       return true;
    }
 
@@ -393,7 +393,7 @@ _boo Variables::getVarValue(const Token& tk, Generator<_list>*& result)
 // check if hash of variable exists in any hash map
 _boo Variables::variableExists(const Token& tk)
 {
-   const _size& h = tk.value.h1;
+   const _size& h = tk.value.word.h;
 
    return this->ivar_boo.find(h) != this->ivar_boo.end()
        || this->svar_boo.find(h) != this->svar_boo.end()
@@ -432,88 +432,88 @@ _boo Variables::variableExists(const Token& tk)
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_boo>*& result)
 {
-   if (this->var_boo.find(tk.value.h1) == this->var_boo.end()) {
+   if (this->var_boo.find(tk.value.word.h) == this->var_boo.end()) {
       return false;
    }
    else {
-      result = &(this->var_boo.find(tk.value.h1)->second);
+      result = &(this->var_boo.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_per>*& result)
 {
-   if (this->var_per.find(tk.value.h1) == this->var_per.end()) {
+   if (this->var_per.find(tk.value.word.h) == this->var_per.end()) {
       return false;
    }
    else {
-      result = &(this->var_per.find(tk.value.h1)->second);
+      result = &(this->var_per.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_tim>*& result)
 {
-   if (this->var_tim.find(tk.value.h1) == this->var_tim.end()) {
+   if (this->var_tim.find(tk.value.word.h) == this->var_tim.end()) {
       return false;
    }
    else {
-      result = &(this->var_tim.find(tk.value.h1)->second);
+      result = &(this->var_tim.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_num>*& result)
 {
-   if (this->var_num.find(tk.value.h1) == this->var_num.end()) {
+   if (this->var_num.find(tk.value.word.h) == this->var_num.end()) {
       return false;
    }
    else {
-      result = &(this->var_num.find(tk.value.h1)->second);
+      result = &(this->var_num.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_str>*& result)
 {
-   if (this->var_str.find(tk.value.h1) == this->var_str.end()) {
+   if (this->var_str.find(tk.value.word.h) == this->var_str.end()) {
       return false;
    }
    else {
-      result = &(this->var_str.find(tk.value.h1)->second);
+      result = &(this->var_str.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_nlist>*& result)
 {
-   if (this->var_nlist.find(tk.value.h1) == this->var_nlist.end()) {
+   if (this->var_nlist.find(tk.value.word.h) == this->var_nlist.end()) {
       return false;
    }
    else {
-      result = &(this->var_nlist.find(tk.value.h1)->second);
+      result = &(this->var_nlist.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_tlist>*& result)
 {
-   if (this->var_tlist.find(tk.value.h1) == this->var_tlist.end()) {
+   if (this->var_tlist.find(tk.value.word.h) == this->var_tlist.end()) {
       return false;
    }
    else {
-      result = &(this->var_tlist.find(tk.value.h1)->second);
+      result = &(this->var_tlist.find(tk.value.word.h)->second);
       return true;
    }
 }
 
 _boo Variables::getVarPtr(const Token& tk, ParseVariable<_list>*& result)
 {
-   if (this->var_list.find(tk.value.h1) == this->var_list.end()) {
+   if (this->var_list.find(tk.value.word.h) == this->var_list.end()) {
       return false;
    }
    else {
-      result = &(this->var_list.find(tk.value.h1)->second);
+      result = &(this->var_list.find(tk.value.word.h)->second);
       return true;
    }
 }

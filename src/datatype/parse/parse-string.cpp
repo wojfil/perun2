@@ -32,7 +32,7 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
 
       switch(f.type) {
          case Token::t_Quotation: {
-            return new Constant<_str>(f.value.sl);
+            return new Constant<_str>(*f.value.str);
          }
          case Token::t_Word: {
             Generator<_str>* var;

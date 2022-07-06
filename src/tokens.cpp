@@ -148,7 +148,7 @@ _boo Tokens::containsSymbol(const _char& ch) const
       if (t.type != Token::t_Symbol) {
          continue;
       }
-      if (t.value.c == ch && bi.isBracketFree()) {
+      if (t.value.ch == ch && bi.isBracketFree()) {
          return true;
       }
       bi.refresh(t);
@@ -163,7 +163,7 @@ _boo Tokens::containsKeyword(const Keyword& kw) const
 
    for (_int i = start; i <= end; i++){
       const Token& t = listAt(i);
-      if (t.type == Token::t_Keyword && t.value.k == kw && bi.isBracketFree()){
+      if (t.type == Token::t_Keyword && t.value.keyword.k == kw && bi.isBracketFree()) {
          return true;
       }
       bi.refresh(t);
@@ -178,7 +178,7 @@ _boo Tokens::containsFilterKeyword() const
 
    for (_int i = start; i <= end; i++){
       const Token& t = listAt(i);
-      if (t.isFiltherKeyword() && bi.isBracketFree()){
+      if (t.isFiltherKeyword() && bi.isBracketFree()) {
          return true;
       }
       bi.refresh(t);
@@ -193,10 +193,10 @@ _boo Tokens::hasIndependentBrackets() const
 {
    _int lvl = 0;
 
-   for (_int i = start; i <= end; i++){
+   for (_int i = start; i <= end; i++) {
       const Token& t = listAt(i);
       if (t.type == Token::t_Symbol){
-         switch(t.value.c) {
+         switch(t.value.ch) {
             case L'(': {
                lvl++;
                break;
@@ -222,10 +222,10 @@ _boo Tokens::hasIndependentSquareBrackets() const
    _boo first = false;
    _int lvl = 0;
 
-   for (_int i = start; i <= end; i++){
+   for (_int i = start; i <= end; i++) {
       const Token& t = listAt(i);
       if (t.type == Token::t_Symbol){
-         switch(t.value.c) {
+         switch(t.value.ch) {
             case L'[': {
                lvl++;
                if (first && lvl == 1) {
@@ -356,8 +356,8 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
          if (sublen == 0) {
             const Token& prev = listAt(i - 1);
 
-            throw SyntaxException(str(L"adjacent filter keywords '", prev.originString,
-               L"' and '", t.originString, L"'"), t.line);
+            throw SyntaxException(str(L"adjacent filter keywords '", *prev.value.keyword.os,
+               L"' and '", *t.value.keyword.os, L"'"), t.line);
          }
 
          result.push_back(Tokens(list, i - sublen - 1, sublen + 1));
@@ -371,7 +371,7 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
 
    if (sublen == 0) {
       throw SyntaxException(str(L"expression cannot end with a filter keyword '",
-         last().originString, L"'"), last().line);
+         *last().value.keyword.os, L"'"), last().line);
    }
    else {
       result.push_back(Tokens(list, end - sublen, sublen + 1));
@@ -391,13 +391,13 @@ void Tokens::divideForTernary(Tokens& condition, Tokens& left, Tokens& right) co
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
             if (hasPercent) {
-               if (t.value.c == L':') {
+               if (t.value.ch == L':') {
                   loop = false;
                   colonId = i;
                }
             }
             else {
-               if (t.value.c == L'?') {
+               if (t.value.ch == L'?') {
                   hasPercent = true;
                   percentId = i;
                }

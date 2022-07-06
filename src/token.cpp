@@ -13,106 +13,62 @@
 */
 
 #include "token.h"
-#include "hash.h"
+#include "uroboros.h"
 
 
-Token::Token(const _char& v, const _int& li)
+Token::Token(const _char& v, const _int& li, Uroboros* uro)
+   : line(li), type(t_Symbol), value(v) { };
+
+Token::Token(const _num& v, const _int& li, Uroboros* uro)
+   : line(li), type(t_Number), value(v, nullptr, NumberMode::nm_Normal) { };
+
+Token::Token(const _num& v, const _int& li, const _str& os,
+   const NumberMode& nm, Uroboros* uro)
+   : line(li), type(t_Number), value(v, new _str(os), nm)
 {
-   line = li;
-   type = t_Symbol;
-   value.c = v;
+   uro->literals.addValue(value.num.os);
 };
 
-Token::Token(const _num& v, const _int& li)
+Token::Token(const _str& v, const _int& li, Uroboros* uro)
+   : line(li), type(t_Quotation), value(new _str(v))
 {
-   line = li;
-   type = t_Number;
-   value.n = v;
-}
+   uro->literals.addValue(value.str);
+};
 
-Token::Token(const _num& v, const _int& li, const _str& os, const NumberMode& nm)
+Token::Token(const _size& v, const _int& li, const _str& os, Uroboros* uro)
+   : line(li), type(t_Word), value( v, new _str(os) )
 {
-   line = li;
-   type = t_Number;
-   value.n = v;
-   originString = os;
-   mode = nm;
-}
+   uro->literals.addValue(value.word.os);
+};
 
-Token::Token(const _str& v, const _int& li)
+Token::Token(const Keyword& v, const _int& li, const _str& os, Uroboros* uro)
+   : line(li), type(t_Keyword), value( v, new _str(os) )
 {
-   line = li;
-   type = t_Quotation;
-   value.sl = v;
-}
+   uro->literals.addValue(value.keyword.os);
+};
 
-Token::Token(const _size& v, const _int& li, const _str& os)
+Token::Token(const _size& v1, const _size& v2, const _int& li, const _str& os1,
+   const _str& os2, Uroboros* uro)
+   : line(li), type(t_TwoWords), value( v1, v2, new _str(os1), new _str(os2) )
 {
-   line = li;
-   type = t_Word;
-   value.h1 = v;
-   originString = os;
-}
-
-Token::Token(const Keyword& v, const _int& li, const _str& os)
-{
-   line = li;
-   type = t_Keyword;
-   value.k = v;
-   originString = os;
-}
-
-Token::Token(const _size& v1, const _size& v2, const _int& li, const _str& os1, const _str& os2)
-{
-   line = li;
-   type = t_TwoWords;
-   value.h1 = v1;
-   value.h2 = v2;
-   originString = os1;
-   originString2 = os2;
-}
-
-
+   uro->literals.addValue(value.twoWords.os1);
+   uro->literals.addValue(value.twoWords.os2);
+};
 
 _boo Token::isSymbol(const _char& ch) const
 {
-   return type == t_Symbol && value.c == ch;
+   return type == t_Symbol && value.ch == ch;
 }
+
 _boo Token::isKeyword(const Keyword& kw) const
 {
-   return type == t_Keyword && value.k == kw;
+   return type == t_Keyword && value.keyword.k == kw;
 }
 
 _boo Token::isLogicConstant() const
 {
    return type == t_Keyword
-      && (value.k == Keyword::kw_True || value.k == Keyword::kw_False);
-}
-
-_boo operator== (const Token& t1, const Token& t2)
-{
-   if (t1.type != t2.type) {
-      return false;
-   }
-   else {
-      switch (t1.type) {
-         case Token::t_Number:
-            return t1.value.n == t2.value.n;
-         case Token::t_Keyword:
-            return t1.value.k == t2.value.k;
-         case Token::t_Quotation:
-            return t1.value.sl == t2.value.sl;
-         case Token::t_Symbol:
-            return t1.value.c == t2.value.c;
-         case Token::t_TwoWords:
-            return t1.value.h1 == t2.value.h1
-               && t1.value.h2 == t2.value.h2;
-         case Token::t_Word:
-            return t1.value.h1 == t2.value.h1;
-         default:
-            return false;
-      }
-   }
+      && (value.keyword.k == Keyword::kw_True || value.keyword.k == Keyword::kw_False);
 }
 
 _boo Token::isCommandKeyword() const
@@ -121,7 +77,7 @@ _boo Token::isCommandKeyword() const
       return false;
    }
 
-   switch (value.k) {
+   switch (value.keyword.k) {
       case Keyword::kw_Copy:
       case Keyword::kw_Create:
       case Keyword::kw_Delete:
@@ -159,7 +115,7 @@ _boo Token::isFiltherKeyword() const
       return false;
    }
 
-   switch (value.k) {
+   switch (value.keyword.k) {
       case Keyword::kw_Every:
       case Keyword::kw_Limit:
       case Keyword::kw_Order:
@@ -173,10 +129,10 @@ _boo Token::isFiltherKeyword() const
 
 _boo Token::isWeekDay() const
 {
-   return type == Token::t_Number && mode == Token::nm_WeekDay;
+   return type == Token::t_Number && value.num.nm == NumberMode::nm_WeekDay;
 }
 
 _boo Token::isMonth() const
 {
-   return type == Token::t_Number && mode == Token::nm_Month;
+   return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
 }

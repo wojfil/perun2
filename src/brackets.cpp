@@ -19,7 +19,7 @@
 void BracketsInfo::refresh(const Token& tk)
 {
    if (tk.type == Token::t_Symbol) {
-      switch (tk.value.c) {
+      switch (tk.value.ch) {
          case '(':  {
             round++;
             break;
@@ -57,7 +57,7 @@ void checkBrackets(const Tokens& tks)
       const Token& t = tks.listAt(i);
       if (t.type != Token::t_Symbol) { continue; }
 
-      switch(t.value.c)  {
+      switch(t.value.ch)  {
          case '(': {
             lv1++;
             i1 = t.line;

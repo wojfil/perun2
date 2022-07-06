@@ -79,7 +79,7 @@ _boo isPossibleBinary(const Tokens& tks)
    for (i = start; i <= end; i++){
       const Token& t = tks.listAt(i);
 
-      if (bi.isBracketFree() && t.type == Token::t_Symbol && t.value.c == L'?') {
+      if (bi.isBracketFree() && t.type == Token::t_Symbol && t.value.ch == L'?') {
          break;
       }
 
@@ -111,11 +111,11 @@ _boo isPossibleTernary(const Tokens& tks)
    _int percentId = -1;
    _int colonId = -1;
 
-   for (_int i = start; loop && i <= end; i++){
+   for (_int i = start; loop && i <= end; i++) {
       const Token& t = tks.listAt(i);
 
       if (bi.isBracketFree() && t.type == Token::t_Symbol) {
-         switch (t.value.c) {
+         switch (t.value.ch) {
             case L'?': {
                if (percentId == -1) {
                   percentId = i;
@@ -168,8 +168,8 @@ void checkLimitBySize(const Tokens& tks)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
-      if (tk.type == Token::t_Number && tk.mode == Token::nm_Size) {
-         throw SyntaxException(str(L"collection cannot be limited by file size '", tk.originString,
+      if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
+         throw SyntaxException(str(L"collection cannot be limited by file size '", *tk.value.num.os,
             L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition"),
             tk.line);
       }
@@ -198,7 +198,7 @@ _boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro)
       return false;
    }
 
-   if (last.value.h1 != uro->hashes.HASH_NOTHING) {
+   if (last.value.twoWords.h1 != uro->hashes.HASH_NOTHING) {
       throw SyntaxException(L"square brackets [] should be followed by a time variable member",
          tks.last().line);
    }

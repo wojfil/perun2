@@ -51,8 +51,8 @@ _boo isPossibleFunction(const Tokens& tks)
    return f.type == Token::t_Word
        && s.type == Token::t_Symbol
        && l.type == Token::t_Symbol
-       && s.value.c == L'('
-       && l.value.c == L')'
+       && s.value.ch == L'('
+       && l.value.ch == L')'
        && !tks.hasIndependentBrackets();
 }
 
@@ -70,7 +70,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -118,7 +118,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
-         throw SyntaxException(str(L"the argument of function '", word.originString,
+         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
             L"' cannot be resolved to a collection"), word.line);
       }
 
@@ -170,7 +170,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       Generator<_str>* str1;
       if (parse(uro, args[0], str1)) {
          delete str1;
-         throw SyntaxException(str(L"first argument of function '", word.originString,
+         throw SyntaxException(str(L"first argument of function '", *word.value.word.os,
             L"' cannot be resolved to a collection"), word.line);
       }
 
@@ -268,7 +268,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          }
       }
       else {
-         throw SyntaxException(str(L"first argument of function '", word.originString,
+         throw SyntaxException(str(L"first argument of function '", *word.value.word.os,
             L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
@@ -367,21 +367,21 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               switch (f.value.sl.size()) {
+               switch ((*f.value.str).size()) {
                   case 0: {
                      return new Constant<_boo>(true);
                   }
                   case 1: {
-                     const _char ch = (f.value.sl)[0];
+                     const _char ch = (*f.value.str)[0];
                      return new F_StartsWithChar(str, ch);
                   }
                   default: {
-                     return new F_StartsWithConst(str, f.value.sl);
+                     return new F_StartsWithConst(str, *f.value.str);
                   }
                }
             }
             case Token::t_Number: {
-               const _str conv = f.value.n.toString();
+               const _str conv = f.value.num.n.toString();
                switch (conv.size()) {
                   case 1: {
                      const _char ch = conv[0];
@@ -417,21 +417,21 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               switch (f.value.sl.size()) {
+               switch ((*f.value.str).size()) {
                   case 0: {
                      return new Constant<_boo>(true);
                   }
                   case 1: {
-                     const _char ch = (f.value.sl)[0];
+                     const _char ch = (*f.value.str)[0];
                      return new F_EndsWithChar(str, ch);
                   }
                   default: {
-                     return new F_EndsWithConst(str, f.value.sl);
+                     return new F_EndsWithConst(str, *f.value.str);
                   }
                }
             }
             case Token::t_Number: {
-               const _str conv = f.value.n.toString();
+               const _str conv = f.value.num.n.toString();
                switch (conv.size()) {
                   case 1: {
                      const _char ch = conv[0];
@@ -463,7 +463,7 @@ static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word,
       functionArgException(1, L"string", word);
    }
 
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
 
    if (name == uro->hashes.HASH_FUNC_ISLOWER)
       return new F_IsLower(arg1);
@@ -503,7 +503,7 @@ static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word,
 Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -522,7 +522,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          return new F_Length(arg1);
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.originString,
+         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
             L"' cannot be resolved to a string. "
             L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
       }
@@ -574,7 +574,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          return new F_SizeList(list, uro);
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.originString,
+         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
             L"' cannot be resolved to a string nor a list"), word.line);
       }
    }
@@ -587,13 +587,13 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          return new F_Number(arg1);
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.originString,
+         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
             L"' cannot be resolved to a string"), word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_COUNT) {
       if (len == 0) {
-         throw SyntaxException(str(L"function '", word.originString,
+         throw SyntaxException(str(L"function '", *word.value.word.os,
             L"' needs at least one argument"), word.line);
       }
 
@@ -609,7 +609,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
             delete str_;
 
             throw SyntaxException(str(ordinalNumber(i + 1),
-               L" argument of the function '" + word.originString,
+               L" argument of the function '" + *word.value.word.os,
                L"' is not a collection"), word.line);
          }
 
@@ -655,7 +655,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          deleteVectorPtr(defs);
 
          throw SyntaxException(str(ordinalNumber(i + 1),
-              L" argument of the function '", word.originString, L"' "
+              L" argument of the function '", *word.value.word.os, L"' "
               L"is not a collection"), word.line);
       }
 
@@ -748,7 +748,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (uro->hashes.HASH_GROUP_AGGRFUNC.find(name) != uro->hashes.HASH_GROUP_AGGRFUNC.end()) {
       if (len == 0) {
-         throw SyntaxException(str(L"aggregate function '", word.originString,
+         throw SyntaxException(str(L"aggregate function '", *word.value.word.os,
             L"' needs at least one argument"), word.line);
       }
 
@@ -763,7 +763,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       if (parse(uro, args[0], str_)) {
          delete str_;
 
-         throw SyntaxException(str(L"function '", word.originString,
+         throw SyntaxException(str(L"function '", *word.value.word.os,
             L"' can only take a collection of values as an argument"), word.line);
       }
 
@@ -814,7 +814,7 @@ static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& wor
       functionArgException(1, L"number", word);
    }
 
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
 
    if (name == uro->hashes.HASH_FUNC_ABSOLUTE)
       return new F_Absolute(arg);
@@ -836,7 +836,7 @@ static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& wor
 
 static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word, Uroboros* uro)
 {
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
 
    std::vector<Generator<_num>*>* singles = new std::vector<Generator<_num>*>();
    std::vector<Generator<_nlist>*>* multis = new std::vector<Generator<_nlist>*>();
@@ -860,7 +860,7 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
             deleteVectorPtr(multis);
 
             throw SyntaxException(str(ordinalNumber(i + 1),
-               L" argument of aggregate function '", word.originString,
+               L" argument of aggregate function '", *word.value.word.os,
                L"' cannot be resolved to a number nor a numeric list"), word.line);
          }
       }
@@ -883,7 +883,7 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
 Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -906,7 +906,7 @@ Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro)
 Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -924,7 +924,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       return simpleStringFunction(args[0], word, uro);
    }
    else if (name == uro->hashes.HASH_FUNC_REVERSED) {
-      const _str sub = word.originString.substr(0, 7);
+      const _str sub = (*word.value.word.os).substr(0, 7);
       throw SyntaxException(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
    else if (uro->hashes.HASH_GROUP_FUNC_STR_STR_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_STR_NUM.end()) {
@@ -979,7 +979,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_SUBSTRING) {
       if (len < 2 || len > 3) {
-         throw SyntaxException(str(L"function '", word.originString, L"' can only take "
+         throw SyntaxException(str(L"function '", *word.value.word.os, L"' can only take "
             L" two or three arguments"), word.line);
       }
 
@@ -1009,7 +1009,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_CONCATENATE) {
       if (len < 1) {
-         throw SyntaxException(str(L"function '", word.originString,
+         throw SyntaxException(str(L"function '", *word.value.word.os,
             L"' needs at least one arguments"), word.line);
       }
 
@@ -1033,7 +1033,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
             deleteVectorPtr(values);
 
             throw SyntaxException(str(ordinalNumber(i + 1), L" argument of the function '",
-               word.originString, L"' cannot be resolved to any data type"), word.line);
+               *word.value.word.os, L"' cannot be resolved to any data type"), word.line);
          }
       }
 
@@ -1047,7 +1047,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
-         throw SyntaxException(str(L"function '", word.originString,
+         throw SyntaxException(str(L"function '", *word.value.word.os,
             L"' can only take a collection of values as an argument"), word.line);
       }
 
@@ -1081,7 +1081,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          }
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.originString,
+         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
             L"' cannot be resolved to any collection"), word.line);
       }
    }
@@ -1172,7 +1172,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          return new F_String_P(per);
       }
 
-      throw SyntaxException(str(L"the argument of function '", word.originString,
+      throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
         L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
    }
    else if (uro->hashes.HASH_GROUP_FUNC_STR_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_NUM.end()) {
@@ -1243,7 +1243,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          return new F_RandomElement<_str>(list, uro);
       }
       else {
-         throw SyntaxException(str(L"wrong arguments of function '", word.originString),
+         throw SyntaxException(str(L"wrong arguments of function '", *word.value.word.os),
             word.line);
       }
    }
@@ -1258,7 +1258,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       if (len == 1) {
-         throw SyntaxException(str(L"function '", word.originString,
+         throw SyntaxException(str(L"function '", *word.value.word.os,
             L"' cannot be called with one argument. If you want to join multiple strings without a separator, use function 'concatenate' instead"), word.line);
       }
 
@@ -1292,7 +1292,7 @@ static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, co
       functionArgException(2, L"string", word);
    }
 
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
 
    if (name == uro->hashes.HASH_FUNC_AFTER)
       return new F_After(arg1, arg2);
@@ -1309,7 +1309,7 @@ static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& wor
       functionArgException(1, L"string", word);
    }
 
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
 
    if (name == uro->hashes.HASH_FUNC_DIGITS)
       return new F_Digits(arg1);
@@ -1350,7 +1350,7 @@ static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& wor
 Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -1478,7 +1478,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       if (parse(uro, args[0], str_)) {
          delete str_;
 
-         throw SyntaxException(str(L"function '", word.originString,
+         throw SyntaxException(str(L"function '", *word.value.word.os,
             L"' can only take a collection of values as an argument"), word.line);
       }
 
@@ -1522,7 +1522,7 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
       functionArgException(1, L"number", word);
    }
 
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
 
    if (name == uro->hashes.HASH_FUNC_CHRISTMAS)
       return new F_Christmas(arg1);
@@ -1537,14 +1537,14 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
 
 static void functionArgNumberException(const _int& argNumber, const Token& word)
 {
-   throw SyntaxException(str(L"function '", word.originString, L"' cannot be called with ",
+   throw SyntaxException(str(L"function '", *word.value.word.os, L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? L"" : L"s")), word.line);
 }
 
 static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word)
 {
    throw SyntaxException(str(ordinalNumber(argNumber), L" argument of function '",
-      word.originString, L"' cannot be resolved to a ", typeName), word.line);
+      *word.value.word.os, L"' cannot be resolved to a ", typeName), word.line);
 }
 
 static _str ordinalNumber(const _int& number)
@@ -1582,7 +1582,7 @@ static _str ordinalNumber(const _int& number)
 Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -1620,7 +1620,7 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
       return new F_Split(str1, str2);
    }
 
-   throw SyntaxException(str(L"function with name '", word.originString,
+   throw SyntaxException(str(L"function with name '", *word.value.word.os,
       L"' does not exist"), word.line);
 }
 
@@ -1628,7 +1628,7 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
 Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.h1;
+   const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -1652,7 +1652,7 @@ Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
 static void checkFunctionAttribute(const Token& word, Uroboros* uro)
 {
    if (!uro->vc.anyAttribute() || uro->vars.inner.thisState != ThisState::ts_String) {
-      throw SyntaxException(str(L"function '", word.originString,
+      throw SyntaxException(str(L"function '", *word.value.word.os,
          L"' can be called only inside an iteration loop"), word.line);
    }
 }
@@ -1691,8 +1691,8 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks)
    }
 
    const Token& inToken = tks.listAt(index);
-   throw SyntaxException(str(L"the right side of the operator '", inToken.originString,
-      L"' used in function '", word.originString,
+   throw SyntaxException(str(L"the right side of the operator '", *inToken.value.keyword.os,
+      L"' used in function '", *word.value.word.os,
       L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);
 }

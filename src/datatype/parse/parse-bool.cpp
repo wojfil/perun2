@@ -33,7 +33,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
       const Token& f = tks.first();
       switch (f.type) {
          case Token::t_Keyword: {
-            const Keyword& kw = f.value.k;
+            const Keyword& kw = f.value.keyword.k;
             const _boo t = (kw == Keyword::kw_True);
             if (t || kw == Keyword::kw_False) {
                return new Constant<_boo>(t);
@@ -146,7 +146,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro)
                      const Tokens tks2(tks.list, i - sublen, sublen);
 
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-                        const _boo boo = tks2.first().value.k == Keyword::kw_True;
+                        const _boo boo = tks2.first().value.keyword.k == Keyword::kw_True;
                         infList.push_back(new ExpElement<_boo>(boo));
                         infList.push_back(new ExpElement<_boo>(ch));
                         sublen = 0;
@@ -177,7 +177,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro)
       else if (t.type == Token::t_Symbol) {
          sublen++;
 
-         switch (t.value.c) {
+         switch (t.value.ch) {
             case L'(': {
                lv1++;
                break;
@@ -208,7 +208,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro)
       Tokens tks2(tks.list, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-         const _boo boo = (tks2.first().value.k == Keyword::kw_True);
+         const _boo boo = (tks2.first().value.keyword.k == Keyword::kw_True);
          infList.push_back(new ExpElement<_boo>(boo));
       }
       else {
@@ -514,7 +514,7 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
 
 _boo isBoolExpOperator(const Token& tk)
 {
-   switch (tk.value.k) {
+   switch (tk.value.keyword.k) {
       case Keyword::kw_And:
       case Keyword::kw_Or:
       case Keyword::kw_Xor:
@@ -527,7 +527,7 @@ _boo isBoolExpOperator(const Token& tk)
 
 static _char toBoolExpOperator(const Token& tk)
 {
-   switch (tk.value.k) {
+   switch (tk.value.keyword.k) {
       case Keyword::kw_And:
          return L'&';
       case Keyword::kw_Or:
@@ -572,7 +572,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
    const Token& lf = left.first();
 
    if (left.getLength() == 1 && lf.type == Token::t_Word && 
-      uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.h1) != uro->hashes.HASH_GROUP_TIME_ATTR.end()) 
+      uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end()) 
    {
       if (right.containsSymbol(L',')) {
          std::vector<Tokens> elements;
@@ -589,7 +589,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
                   timeInNumberException(left.first(), tf, L"month", neg, left);
                }
 
-               const _boo isInteger = (tf.type == Token::t_Number) && !tf.value.n.isDouble;
+               const _boo isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
                if (isInteger) {
                   timeInNumberException(left.first(), tf, L"year", neg, left);
                }
@@ -605,7 +605,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
             timeInNumberException(left.first(), right.first(), isWeek ? L"weekDay" : L"month", neg, left);
          }
 
-         const _boo isInteger = (rf.type == Token::t_Number) && !rf.value.n.isDouble;
+         const _boo isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
          if (isInteger) {
             timeInNumberException(left.first(), right.first(), L"year", neg, left);
          }
@@ -754,7 +754,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft)
 {
    const _str side = isLeft ? L"left" : L"right";
 
-   throw SyntaxException(str(side, L" side of operator '", oper.originString, L"' is empty"),
+   throw SyntaxException(str(side, L" side of operator '", *oper.value.keyword.os, L"' is empty"),
       oper.line);
 }
 
@@ -763,26 +763,26 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
 {
    if (timeMember == L"year") {
       if (negated) {
-         throw SyntaxException(str(L"instead of '", timeVar.originString, L" not in ", toStr(numVar.value.n.value.i),
-            L"', write '", timeVar.originString, L".year != ",
-            toStr(numVar.value.n.value.i), L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" not in ", toStr(numVar.value.num.n.value.i),
+            L"', write '", *timeVar.value.word.os, L".year != ",
+            toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"instead of '", timeVar.originString, L" in ", toStr(numVar.value.n.value.i),
-            L"', write '", timeVar.originString, L".year = ",
-            toStr(numVar.value.n.value.i), L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" in ", toStr(numVar.value.num.n.value.i),
+            L"', write '", *timeVar.value.word.os, L".year = ",
+            toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
    }
    else {
       if (negated) {
-         throw SyntaxException(str(L"instead of '", timeVar.originString, L" not in ", numVar.originString,
-            L"', write '", timeVar.originString, L".", timeMember,
-            L" != ", numVar.originString, L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" not in ", *numVar.value.word.os,
+            L"', write '", *timeVar.value.word.os, L".", timeMember,
+            L" != ", *numVar.value.word.os, L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"instead of '", timeVar.originString, L" in ", numVar.originString,
-            L"', write '", timeVar.originString, L".", timeMember,
-            L" = ", numVar.originString, L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" in ", *numVar.value.word.os,
+            L"', write '", *timeVar.value.word.os, L".", timeMember,
+            L" = ", *numVar.value.word.os, L"'"), tks.first().line);
       }
    }
 }
@@ -815,7 +815,7 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
 
    const Token& firstRight = right.first();
    if (right.getLength() == 1 && firstRight.type == Token::t_Quotation) {
-      const _str& pattern = firstRight.value.sl;
+      const _str& pattern = *firstRight.value.str;
 
       if (!correctLikePattern(pattern)) {
          throw SyntaxException(str(L"pattern '", pattern,
@@ -850,7 +850,7 @@ static Generator<_boo>* parseComparisons(const Tokens& tks, Uroboros* uro)
    for (_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol && bi.isBracketFree()) {
-         const _char& ch = t.value.c;
+         const _char& ch = t.value.ch;
          switch (ch) {
             case L'<':
             case L'>':
@@ -943,47 +943,47 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Ur
       const _boo isMonth1 = t1.isMonth();
       const _boo isMonth2 = t2.isMonth();
       const _boo isVar1 = t1.type == Token::t_Word && 
-         uro->hashes.HASH_GROUP_TIME_ATTR.find(t1.value.h1) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
+         uro->hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
       const _boo isVar2 = t2.type == Token::t_Word && 
-         uro->hashes.HASH_GROUP_TIME_ATTR.find(t2.value.h1) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
+         uro->hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
 
-      const _str& v1 = t1.originString;
-      const _str& v2 = t2.originString;
+      //const _str& v1 = t1.originString;
+      //const _str& v2 = t2.originString;
       const _str s = _str(1, sign);
 
-      if ((isVar1 && (isWeek2 || isMonth2))) {
-         throw SyntaxException(str(L"instead of '", v1, L" ", s, L" ", v2,
-            L"', write '", v1, L".", (isWeek2 ? L"weekDay" : L"month"),
-            L" ", s, L" ", v2, L"'"), tks.first().line);
+      if (isVar1 && (isWeek2 || isMonth2)) {
+         throw SyntaxException(str(L"instead of '", *t1.value.word.os, L" ", s, L" ", *t2.value.num.os,
+            L"', write '", *t1.value.word.os, L".", (isWeek2 ? L"weekDay" : L"month"),
+            L" ", s, L" ", *t2.value.num.os, L"'"), tks.first().line);
       }
-      else if (((isWeek1 || isMonth1)) && isVar2) {
-         throw SyntaxException(str(L"instead of '", v1, L" ", s, L" ", v2,
-            L"', write '", v1, L" ", s, L" ", v2, L".",
+      else if ((isWeek1 || isMonth1) && isVar2) {
+         throw SyntaxException(str(L"instead of '", *t1.value.num.os, L" ", s, L" ", *t2.value.word.os,
+            L"', write '", *t1.value.num.os, L" ", s, L" ", *t2.value.word.os, L".",
             (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
       }
 
-      const _boo isInteger1 = (t1.type == Token::t_Number) && !t1.value.n.isDouble;
-      const _boo isInteger2 = (t2.type == Token::t_Number) && !t2.value.n.isDouble;
+      const _boo isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
+      const _boo isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
 
       if (isVar1 && isInteger2) {
-         const _nint& nm = t2.value.n.value.i;
+         const _nint& nm = t2.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxException(str(L"instead of '", v1, L" ", s, L" ", toStr(nm),
-               L"', write '", v1, L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
+            throw SyntaxException(str(L"instead of '", *t1.value.word.os, L" ", s, L" ", toStr(nm),
+               L"', write '", *t1.value.word.os, L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
          }
          else {
-            throw SyntaxException(str(L"time variable '", v1,
+            throw SyntaxException(str(L"time variable '", *t1.value.word.os,
                L"' cannot be compared with a number"), tks.first().line);
          }
       }
       else if (isInteger1 && isVar2) {
-         const _nint& nm = t1.value.n.value.i;
+         const _nint& nm = t1.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100) {
-            throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", v2,
-               L"', write '", toStr(nm), L" ", s, L" ", v2, L".year'"), tks.first().line);
+            throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", *t2.value.word.os,
+               L"', write '", toStr(nm), L" ", s, L" ", *t2.value.word.os, L".year'"), tks.first().line);
          }
          else {
-            throw SyntaxException(str(L"time variable '", v2,
+            throw SyntaxException(str(L"time variable '", *t2.value.word.os,
                L"' cannot be compared with a number"), tks.first().line);
          }
       }

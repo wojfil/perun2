@@ -27,7 +27,7 @@ Attribute::Attribute(Uroboros* uro)
 
 void Attribute::add(const Token& tk)
 {
-   const _size& h = tk.value.h1;
+   const _size& h = tk.value.word.h;
    const Hashes& hashes = this->uroboros->hashes;
 
    if (hashes.HASH_GROUP_ATTR.find(h) == hashes.HASH_GROUP_ATTR.end()) {

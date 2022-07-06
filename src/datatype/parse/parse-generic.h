@@ -182,7 +182,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
 
    const Token& first = tks.first();
    if (first.type != Token::t_Word) {
-      throw SyntaxException(str(L"filter keyword '", tks.second().originString,
+      throw SyntaxException(str(L"filter keyword '", *tks.second().value.keyword.os,
          L"' should be preceded by a variable name") , first.line);
    }
 
@@ -202,7 +202,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
    const _size flength = filters.size();
    for (_size i = 0; i < flength; i++) {
       const Tokens& ts = filters[i];
-      const Keyword& kw = ts.first().value.k;
+      const Keyword& kw = ts.first().value.keyword.k;
       Tokens ts2(ts.list, ts.getStart() + 1, ts.getLength() - 1);
 
       switch (kw) {
@@ -216,7 +216,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             Generator<_num>* num;
             if (!parse(uro, ts2, num)) {
                delete result;
-               throw SyntaxException(str(L"tokens after keyword '", ts.first().originString,
+               throw SyntaxException(str(L"tokens after keyword '", *ts.first().value.keyword.os,
                   L"' cannot be resolved to a number"), tks.first().line);
             }
 
@@ -237,7 +237,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             if (!parse(uro, ts2, boo)) {
                delete result;
                uro->vars.inner.thisState = prevThisState;
-               throw SyntaxException(str(L"tokens after keyword '", ts.first().originString,
+               throw SyntaxException(str(L"tokens after keyword '", *ts.first().value.keyword.os,
                   L"' cannot be resolved to a logic condition"), tks.first().line);
             }
 
@@ -265,7 +265,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             const Token& first = ts2.first();
 
             if (ts2.getLength() == 1 && first.type == Token::t_Keyword) {
-               const Keyword& kw = first.value.k;
+               const Keyword& kw = first.value.keyword.k;
                if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
                   const _boo desc = kw == Keyword::kw_Desc;
                   OrderBy<T2>* order;
@@ -305,22 +305,22 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
 
             if (!first.isKeyword(Keyword::kw_By)) {
                delete result;
-               throw SyntaxException(str(L"keyword '", ts.first().originString,
+               throw SyntaxException(str(L"keyword '", *ts.first().value.keyword.os,
                   L"' should to be followed by a keyword 'by'"), first.line);
             }
 
             ts2.trimLeft();
             if (ts2.isEmpty()) {
                delete result;
-               throw SyntaxException(str(L"declaration of '", ts.first().originString,
-                  L" ", first.originString, L"' filter is empty"), first.line);
+               throw SyntaxException(str(L"declaration of '", *ts.first().value.keyword.os,
+                  L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
             }
 
             Tokens ts3 = prepareForGen(ts2, uro);
             if (ts3.isEmpty()) {
                delete result;
-               throw SyntaxException(str(L"declaration of '", ts.first().originString,
-                  L" ", first.originString, L"' filter is empty"), first.line);
+               throw SyntaxException(str(L"declaration of '", *ts.first().value.keyword.os,
+                  L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
             }
 
             std::vector<Tokens> units;
@@ -336,12 +336,12 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                _boo desc = false;
 
                if (last.type == Token::t_Keyword) {
-                  switch (last.value.k) {
+                  switch (last.value.keyword.k) {
                      case Keyword::kw_Asc: {
                         un.trimRight();
                         if (un.isEmpty()) {
                            delete order;
-                           throw SyntaxException(str(L"keyword '", last.originString,
+                           throw SyntaxException(str(L"keyword '", *last.value.keyword.os,
                               L"' is not preceded by a value declaration"), last.line);
                         }
                         break;
@@ -351,7 +351,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                         desc = true;
                         if (un.isEmpty()) {
                            delete order;
-                           throw SyntaxException(str(L"keyword '", last.originString,
+                           throw SyntaxException(str(L"keyword '", *last.value.keyword.os,
                               L"' is not preceded by a value declaration"), last.line);
                         }
                         break;
@@ -389,7 +389,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                }
                else {
                   delete order;
-                  throw SyntaxException(str(L"value of '", ts.first().originString, L" by' unit "
+                  throw SyntaxException(str(L"value of '", *ts.first().value.keyword.os, L" by' unit "
                     L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas"),
                     un.first().line);
                }

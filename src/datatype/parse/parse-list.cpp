@@ -120,11 +120,11 @@ Generator<_list>* parseListConst(const Tokens& tks, Uroboros* uro)
       else {
          switch(t.type) {
             case Token::t_Quotation: {
-               list.push_back(t.value.sl);
+               list.push_back(*t.value.str);
                break;
             }
             case Token::t_Number: {
-               list.push_back(t.value.n.toString());
+               list.push_back(t.value.num.n.toString());
                break;
             }
             default: {

@@ -27,7 +27,7 @@ VariablesContext::VariablesContext(Hashes* hsh)
 
 void VariablesContext::setAttribute(const Token& tk)
 {
-   if (this->hashes->HASH_GROUP_ATTR.find(tk.value.h1) ==
+   if (this->hashes->HASH_GROUP_ATTR.find(tk.value.word.h) ==
        this->hashes->HASH_GROUP_ATTR.end())
    {
       return;
@@ -58,7 +58,7 @@ void VariablesContext::setCoreComAttribute(const _str& comName, const _int& line
 
 void VariablesContext::attributeException(const Token& tk)
 {
-   throw SyntaxException(str(L"the value of variable '", tk.originString,
+   throw SyntaxException(str(L"the value of variable '", *tk.value.word.os,
       L"' is undefined here"), tk.line);
 }
 

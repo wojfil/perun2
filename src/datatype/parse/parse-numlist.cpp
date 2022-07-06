@@ -117,7 +117,7 @@ Generator<_nlist>* parseNumListConst(const Tokens& tks)
       else {
          switch(t.type) {
             case Token::t_Number: {
-               nlist.push_back(t.value.n);
+               nlist.push_back(t.value.num.n);
                break;
             }
             default: {

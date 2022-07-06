@@ -40,17 +40,17 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
             return uro->vars.getVarValue(f, var) ? var : nullptr;
          }
          case Token::t_TwoWords: {
-            if (f.value.h1 == uro->hashes.HASH_NOTHING) {
+            if (f.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
                throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
             }
 
             Generator<_tim>* var;
             if (!uro->vars.getVarValue(f, var)) {
-               throw SyntaxException(str(L"time variable '", f.originString,
+               throw SyntaxException(str(L"time variable '", *f.value.twoWords.os1,
                   L"' does not exist"), f.line);
             }
 
-            if (f.value.h2 == uro->hashes.HASH_FUNC_DATE)
+            if (f.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE)
                return new TimeDate(var);
             else
                return nullptr;
@@ -107,7 +107,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
       if (uro->vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
 
-         if (last.value.h2 == uro->hashes.HASH_FUNC_DATE)
+         if (last.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE)
             return new TimeDateAtIndex(tlist, num);
          else
             return nullptr;
@@ -138,7 +138,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxException(str(L"'", first.originString,
+         throw SyntaxException(str(L"'", *first.value.word.os,
             L"' is not a valid month name"), first.line);
       }
 
@@ -146,7 +146,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
          return nullptr;
       }
 
-      const _tnum month = (_tnum)first.value.n.toInt();
+      const _tnum month = (_tnum)first.value.num.n.toInt();
       const _tnum year = tokenToTimeNumber(second);
       return new Constant<_tim>(_tim(month, year));
    }
@@ -159,7 +159,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxException(str(L"'", second.originString,
+      throw SyntaxException(str(L"'", *second.value.word.os,
          L"' is not a valid month name"), second.line);
    }
 
@@ -168,7 +168,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    }
 
    const _tnum day = tokenToTimeNumber(first);
-   const _tnum month = (_tnum)second.value.n.toInt();
+   const _tnum month = (_tnum)second.value.num.n.toInt();
    const _tnum year = tokenToTimeNumber(third);
    checkDayCorrectness(day, month, year, first);
 
@@ -217,7 +217,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
 
 static _tnum tokenToTimeNumber(const Token& tk)
 {
-   return toTimeNumber(tk.value.n);
+   return toTimeNumber(tk.value.num.n);
 }
 
 static void checkDayCorrectness(const _tnum& day, const _tnum& month,
@@ -256,7 +256,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros* uro)
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         switch (t.value.c) {
+         switch (t.value.ch) {
             case L'+': {
                if (bi.isBracketFree()) {
                   if (sublen == 0) {

@@ -37,8 +37,8 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
       const Token& l = tks2.last();
 
       if (f.type == Token::t_Symbol && f.type == Token::t_Symbol
-         && f.value.c == L'(' && l.value.c == L')') {
-
+         && f.value.ch == L'(' && l.value.ch == L')') 
+      {
          _int lvl = 0;
          _boo b = true;
          const _int end = tks2.getEnd();
@@ -46,7 +46,7 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
          for (_int i = tks2.getStart(); b && i <= end; i++) {
             const Token& t = tks2.listAt(i);
             if (t.type == Token::t_Symbol) {
-               switch (t.value.c) {
+               switch (t.value.ch) {
                   case L'(': {
                      lvl++;
                      break;
@@ -80,8 +80,8 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    if (tks2.getLength() == 1) {
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
-         if (f.value.h1 != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
-            throw SyntaxException(str(L"variable '", f.originString,
+         if (f.value.word.h != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
+            throw SyntaxException(str(L"variable '", *f.value.word.os,
                L"' does not exist or is unreachable here"), f.line);
          }
       }
@@ -94,12 +94,11 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    for (_int i = start; i <= end; i++) {
       const Token& t = tks2.listAt(i);
       if (t.type == Token::t_Symbol) {
-         const _char& ch = t.value.c;
+         const _char& ch = t.value.ch;
          if (pch == L'+' && ch == L'+') {
             if (i == start) {
                throw SyntaxException(
                   L"expression cannot start with incrementation signs ++", t.line);
-
             }
             else {
                throw SyntaxException(
@@ -134,7 +133,7 @@ void checkKeywords(const Tokens& tks)
       const Token& t = tks.listAt(i);
 
       if (t.type == Token::t_Keyword && isExpForbiddenKeyword(t)) {
-         throw SyntaxException(str(L"expected ; before keyword '", t.originString, L"'"), t.line);
+         throw SyntaxException(str(L"expected ; before keyword '", *t.value.keyword.os, L"'"), t.line);
       }
    }
 }
@@ -144,7 +143,7 @@ _boo isExpForbiddenKeyword(const Token& tk)
    if (tk.isCommandKeyword()) {
       return true;
    }
-   switch (tk.value.k) {
+   switch (tk.value.keyword.k) {
       case Keyword::kw_Force:
       case Keyword::kw_Stack:
          return true;

@@ -63,11 +63,11 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                      tokens.pop_back();
                   }
                   else  {
-                     tokens.push_back(Token(c, line));
+                     tokens.push_back(Token(c, line, uro));
                   }
                }
                else  {
-                  tokens.push_back(Token(c, line));
+                  tokens.push_back(Token(c, line, uro));
                }
             }
             else {
@@ -107,7 +107,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                mode = Mode::m_Normal;
 
                if (isSymbol(c)) {
-                  tokens.push_back(Token(c, line));
+                  tokens.push_back(Token(c, line, uro));
                }
                else if (isNewLine(c)) {
                   line++;
@@ -125,7 +125,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          case Mode::m_Quote: {
             if (c == L'\'') {
                const _str word = code.substr(wpos, wlen);
-               tokens.push_back(Token(word, line));
+               tokens.push_back(Token(word, line, uro));
                wpos = i;
                wlen = 0;
                mode = Mode::m_Normal;
@@ -190,7 +190,7 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
       switch (dots) {
          case 0: {
             try {
-               return Token(_num(std::stoll(value)), line);
+               return Token(_num(std::stoll(value)), line, uro);
             }
             catch (...) {
                bigNumberException(value, line);
@@ -198,7 +198,7 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
          }
          case 1: {
             try {
-               return Token(_num(stringToDouble(value)), line);
+               return Token(_num(stringToDouble(value)), line, uro);
             }
             catch (...) {
                bigNumberException(value, line);
@@ -239,7 +239,7 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
                   if (mult != 0 && i2 / mult != i) {
                      bigNumberException(value, line);
                   }
-                  return Token(_num(i2), line, value, Token::nm_Size);
+                  return Token(_num(i2), line, value, NumberMode::nm_Size, uro);
                }
                catch (...) {
                   bigNumberException(value, line);
@@ -250,7 +250,7 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
                   _ndouble d = stringToDouble(value2);
                   d *= mult;
 
-                  return Token(_num(d), line, value, Token::nm_Size);
+                  return Token(_num(d), line, value, NumberMode::nm_Size, uro);
                }
                catch (...) {
                   bigNumberException(value, line);
@@ -268,20 +268,20 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
 
          auto fm = uro->hashes.HASH_MAP_MONTHS.find(hsh);
          if (fm != uro->hashes.HASH_MAP_MONTHS.end()) {
-            return Token(_num(fm->second), line, value, Token::nm_Month);
+            return Token(_num(fm->second), line, value, NumberMode::nm_Month, uro);
          }
 
          auto fw = uro->hashes.HASH_MAP_WEEKDAYS.find(hsh);
          if (fw != uro->hashes.HASH_MAP_WEEKDAYS.end()) {
-            return Token(_num(fw->second), line, value, Token::nm_WeekDay);
+            return Token(_num(fw->second), line, value, NumberMode::nm_WeekDay, uro);
          }
 
          auto fk = uro->keywordsData.KEYWORDS.find(lower);
          if (fk == uro->keywordsData.KEYWORDS.end()) {
-            return Token(hsh, line, value);
+            return Token(hsh, line, value, uro);
          }
          else {
-            return Token(fk->second, line, value);
+            return Token(fk->second, line, value, uro);
          }
       }
       case 1: {
@@ -302,14 +302,14 @@ static Token wordToken(_str& value, _int& line, Uroboros* uro)
          const _size h1 = stringHash(os1);
          const _size h2 = stringHash(os2);
 
-         return Token(h1, h2, line, os1, os2);
+         return Token(h1, h2, line, os1, os2, uro);
       }
       default: {
          throw SyntaxException(str(L"word '", value, L"' cannot contain multiple dots"), line);
       }
    }
 
-   return Token(value, line);
+   return Token(value, line, uro);
 }
 
 inline _ndouble stringToDouble(const _str& value)

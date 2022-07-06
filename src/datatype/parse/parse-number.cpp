@@ -34,7 +34,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
       const Token& f = tks.first();
       switch (f.type) {
          case Token::t_Number: {
-            return new Constant<_num>(f.value.n);
+            return new Constant<_num>(f.value.num.n);
          }
          case Token::t_Word: {
             Generator<_num>* var;
@@ -43,17 +43,17 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
          case Token::t_TwoWords: {
             const Hashes& hs = uro->hashes;
 
-            if (f.value.h1 == hs.HASH_NOTHING) {
+            if (f.value.twoWords.h1 == hs.HASH_NOTHING) {
                throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
             }
 
             Generator<_tim>* var;
             if (!uro->vars.getVarValue(f, var)) {
-               throw SyntaxException(str(L"time variable from expression '", f.originString,
-                  L"' does not exist or is unreachable here"), f.line);
+               throw SyntaxException(str(L"time variable from expression '", *f.value.twoWords.os1,
+                  L".", *f.value.twoWords.os2, L"' does not exist or is unreachable here"), f.line);
             }
 
-            const _size& h = f.value.h2;
+            const _size& h = f.value.twoWords.h2;
 
             if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
                return new TimeYears(var);
@@ -96,8 +96,8 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 
       for (_int i = start; i <= end; i++) {
          const Token& t = tks.listAt(i);
-         if (t.type == Token::t_Symbol && isNumExpOperator(t.value.c) && bi.isBracketFree()
-             && !(i == start && t.value.c == L'-'))
+         if (t.type == Token::t_Symbol && isNumExpOperator(t.value.ch) && bi.isBracketFree()
+             && !(i == start && t.value.ch == L'-'))
          {
             Generator<_num>* num = parseNumExp(tks, uro);
 
@@ -165,7 +165,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
       Generator<_tlist>* tlist;
       if (uro->vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
-         const _size& h = last.value.h2;
+         const _size& h = last.value.twoWords.h2;
          const Hashes& hs = uro->hashes;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
@@ -219,7 +219,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         const _char& ch = t.value.c;
+         const _char& ch = t.value.ch;
          const _boo free = (lv1 == 0) && (lv2 == 0);
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
@@ -236,7 +236,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
                   if (tks2.getLength() == 1
                      && tks2.first().type == Token::t_Number) {
 
-                     const _num num = tks2.first().value.n;
+                     const _num num = tks2.first().value.num.n;
                      infList.push_back(new ExpElement<_num>(num));
                      infList.push_back(new ExpElement<_num>(ch));
                      sublen = 0;
@@ -313,7 +313,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
       Tokens tks2(tks.list, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().type == Token::t_Number) {
-         infList.push_back(new ExpElement<_num>(tks2.first().value.n));
+         infList.push_back(new ExpElement<_num>(tks2.first().value.num.n));
       }
       else {
          Generator<_num>* num;
@@ -712,6 +712,6 @@ static _boo isNumExpHighPriority(const _char& ch)
 
 void timeVariableMemberException(const Token& tk)
 {
-   throw SyntaxException(str(L"'", tk.originString2,
+   throw SyntaxException(str(L"'", *tk.value.twoWords.os2,
       L"' is not a time variable member"), tk.line);
 }

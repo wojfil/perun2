@@ -115,8 +115,8 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
       return nullptr;
    }
 
-   const _size& h = last.value.h1;
-   const Number& num = first.value.n;
+   const _size& h = last.value.word.h;
+   const Number& num = first.value.num.n;
 
    if (uro->hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != 
        uro->hashes.HASH_GROUP_PERIOD_SINGLE.end())
@@ -128,7 +128,7 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
             return new Constant<_per>(Period(negated ? -1 : 1, unit));
          }
          else {
-            unitNameException(last.originString, tks);
+            unitNameException(*last.value.word.os, tks);
          }
       }
       else {
@@ -136,7 +136,7 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
             return new Constant<_per>(Period(negated ? -1 : 1, unit));
          }
          else {
-            unitNameException(last.originString, tks);
+            unitNameException(*last.value.word.os, tks);
          }
       }
    }
@@ -162,7 +162,7 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
 
 static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros* uro)
 {
-   const _size& h = tks.last().value.h1;
+   const _size& h = tks.last().value.word.h;
    Tokens tks2(tks);
    tks2.trimRight();
 
@@ -174,7 +174,7 @@ static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros* uro)
    if (uro->hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != 
       uro->hashes.HASH_GROUP_PERIOD_SINGLE.end()) 
    {
-      unitNameException(tks.last().originString, tks);
+      unitNameException(*tks.last().value.word.os, tks);
    }
 
    if (uro->hashes.HASH_GROUP_PERIOD_MULTI.find(h) != 

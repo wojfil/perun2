@@ -14,13 +14,18 @@
 
 #include "exception.h"
 
+SyntaxException::SyntaxException(const _str& msg, const _int& li)
+   : message(msg), line(li) { };
 
-_str SyntaxException::getMessage()
+UroRuntimeException::UroRuntimeException(const _str& msg)
+   : message(msg) { };
+
+_str SyntaxException::getMessage() const
 {
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
-_str UroRuntimeException::getMessage()
+_str UroRuntimeException::getMessage() const
 {
    return str(L"Runtime error: ", message, L".");
 }

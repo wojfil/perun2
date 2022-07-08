@@ -17,13 +17,12 @@
 
 #include "datatype/primitives.h"
 
+
 class SyntaxException
 {
-
 public:
-   SyntaxException(const _str msg, const _int li) : message(msg), line(li) { }
-
-   _str getMessage();
+   SyntaxException(const _str& msg, const _int& li);
+   _str getMessage() const;
 
 private:
    const _str message;
@@ -32,10 +31,9 @@ private:
 
 class UroRuntimeException
 {
-
 public:
-   UroRuntimeException(const _str msg) : message(msg) { }
-   _str getMessage();
+   UroRuntimeException(const _str& msg);
+   _str getMessage() const;
 
 private:
    const _str message;

@@ -31,53 +31,9 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    if (len == 1) {
-      const Token& f = tks.first();
-      switch (f.type) {
-         case Token::t_Number: {
-            return new Constant<_num>(f.value.num.n);
-         }
-         case Token::t_Word: {
-            Generator<_num>* var;
-            return uro->vars.getVarValue(f, var) ? var : nullptr;
-         }
-         case Token::t_TwoWords: {
-            const Hashes& hs = uro->hashes;
-
-            if (f.value.twoWords.h1 == hs.HASH_NOTHING) {
-               throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
-            }
-
-            Generator<_tim>* var;
-            if (!uro->vars.getVarValue(f, var)) {
-               throw SyntaxException(str(L"time variable from expression '", *f.value.twoWords.os1,
-                  L".", *f.value.twoWords.os2, L"' does not exist or is unreachable here"), f.line);
-            }
-
-            const _size& h = f.value.twoWords.h2;
-
-            if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-               return new TimeYears(var);
-            else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-               return new TimeMonths(var);
-            else if (h == hs.HASH_PER_WEEKDAY)
-               return new TimeWeekDay(var);
-            else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-               return new TimeDays(var);
-            else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-               return new TimeHours(var);
-            else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-               return new TimeMinutes(var);
-            else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECOND)
-               return new TimeSeconds(var);
-            else if (h == hs.HASH_PER_DATE)
-               return nullptr;
-            else {
-               timeVariableMemberException(f);
-            }
-         }
-         default: {
-            return nullptr;
-         }
+      Generator<_num>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
 

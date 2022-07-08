@@ -28,9 +28,9 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
    const Token& first = tks.first();
 
    if (len == 1) {
-      if (first.type == Token::t_Word) {
-         Generator<_nlist>* var;
-         return uro->vars.getVarValue(first, var) ? var : nullptr;
+      Generator<_nlist>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
 

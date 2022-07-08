@@ -28,9 +28,9 @@ Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros* uro)
    const Token& first = tks.first();
 
    if (len == 1) {
-      if (first.type == Token::t_Word) {
-         Generator<_tlist>* var;
-         return uro->vars.getVarValue(first, var) ? var : nullptr;
+      Generator<_tlist>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
 

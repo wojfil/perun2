@@ -28,19 +28,9 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    if (len == 1) {
-      const Token& f = tks.first();
-
-      switch(f.type) {
-         case Token::t_Quotation: {
-            return new Constant<_str>(*f.value.str);
-         }
-         case Token::t_Word: {
-            Generator<_str>* var;
-            return uro->vars.getVarValue(f, var) ? var : nullptr;
-         }
-         default: {
-            return nullptr;
-         }
+      Generator<_str>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
 

@@ -30,23 +30,9 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
    const _size len = tks.getLength();
 
    if (len == 1) {
-      const Token& f = tks.first();
-      switch (f.type) {
-         case Token::t_Keyword: {
-            const Keyword& kw = f.value.keyword.k;
-            const _boo t = (kw == Keyword::kw_True);
-            if (t || kw == Keyword::kw_False) {
-               return new Constant<_boo>(t);
-            }
-            return nullptr;
-         }
-         case Token::t_Word: {
-            Generator<_boo>* var;
-            return uro->vars.getVarValue(f, var) ? var : nullptr;
-         }
-         default: {
-            return nullptr;
-         }
+      Generator<_boo>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
 
@@ -572,8 +558,8 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
 
    const Token& lf = left.first();
 
-   if (left.getLength() == 1 && lf.type == Token::t_Word && 
-      uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end()) 
+   if (left.getLength() == 1 && lf.type == Token::t_Word &&
+      uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end())
    {
       if (right.containsSymbol(L',')) {
          std::vector<Tokens> elements;
@@ -943,9 +929,9 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Ur
       const _boo isWeek2 = t2.isWeekDay();
       const _boo isMonth1 = t1.isMonth();
       const _boo isMonth2 = t2.isMonth();
-      const _boo isVar1 = t1.type == Token::t_Word && 
+      const _boo isVar1 = t1.type == Token::t_Word &&
          uro->hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
-      const _boo isVar2 = t2.type == Token::t_Word && 
+      const _boo isVar2 = t2.type == Token::t_Word &&
          uro->hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
 
       //const _str& v1 = t1.originString;

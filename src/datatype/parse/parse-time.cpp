@@ -33,31 +33,9 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
    }
 
    if (len == 1) {
-      const Token& f = tks.first();
-      switch (f.type) {
-         case Token::t_Word: {
-            Generator<_tim>* var;
-            return uro->vars.getVarValue(f, var) ? var : nullptr;
-         }
-         case Token::t_TwoWords: {
-            if (f.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
-               throw SyntaxException(L"dot . should be preceded by a time variable name", f.line);
-            }
-
-            Generator<_tim>* var;
-            if (!uro->vars.getVarValue(f, var)) {
-               throw SyntaxException(str(L"time variable '", *f.value.twoWords.os1,
-                  L"' does not exist"), f.line);
-            }
-
-            if (f.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE)
-               return new TimeDate(var);
-            else
-               return nullptr;
-         }
-         default: {
-            return nullptr;
-         }
+      Generator<_tim>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
    else if (len >= 2) {
@@ -335,7 +313,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros* uro)
 
    const Tokens tks2(tks.list, 1 + end - sublen, sublen);
    if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2,
-      numReserve, uro) || numReserve != 0 || prevTim != nullptr) 
+      numReserve, uro) || numReserve != 0 || prevTim != nullptr)
    {
       deleteTwo(prevTim, time);
       return nullptr;

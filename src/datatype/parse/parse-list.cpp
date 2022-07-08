@@ -29,9 +29,9 @@ Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
    const Token& first = tks.first();
 
    if (len == 1) {
-      if (first.type == Token::t_Word) {
-         Generator<_list>* var;
-         return uro->vars.getVarValue(first, var) ? var : nullptr;
+      Generator<_list>* unit;
+      if (parseOneToken(uro, tks.first(), unit)) {
+         return unit;
       }
    }
 

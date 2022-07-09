@@ -29,10 +29,9 @@ _def* parseDefinition(const Tokens& tks, Uroboros* uro)
    const Token& f = tks.first();
 
    if (len == 1) {
-      _def* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      _def* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    _def* filter = parseFilter<_def*, _str>(tks, ThisState::ts_String, uro);

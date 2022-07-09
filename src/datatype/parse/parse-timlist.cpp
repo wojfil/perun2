@@ -28,10 +28,9 @@ Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros* uro)
    const Token& first = tks.first();
 
    if (len == 1) {
-      Generator<_tlist>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      Generator<_tlist>* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    Generator<_tlist>* filter = parseFilter<Generator<_tlist>*, _tim>(tks, ThisState::ts_Time, uro);

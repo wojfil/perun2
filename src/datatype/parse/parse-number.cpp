@@ -31,10 +31,9 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
    if (len == 1) {
-      Generator<_num>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      Generator<_num>* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    if (isPossibleFunction(tks)) {

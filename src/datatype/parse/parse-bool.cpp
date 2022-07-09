@@ -30,10 +30,9 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_boo>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      Generator<_boo>* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    const _boo hasFilters = tks.containsFilterKeyword();

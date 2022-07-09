@@ -29,10 +29,9 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_per>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      Generator<_per>* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    if (tks.containsSymbol(L',')) {

@@ -27,11 +27,11 @@
 Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
+
    if (len == 1) {
-      Generator<_str>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      Generator<_str>* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    if (isPossibleFunction(tks)) {

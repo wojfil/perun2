@@ -28,10 +28,9 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
    const Token& first = tks.first();
 
    if (len == 1) {
-      Generator<_nlist>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
-         return unit;
-      }
+      Generator<_nlist>* unit = nullptr;
+      parseOneToken(uro, tks.first(), unit);
+      return unit;
    }
 
    Generator<_nlist>* filter = parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number, uro);

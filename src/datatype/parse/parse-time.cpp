@@ -119,7 +119,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
             L"' is not a valid month name"), first.line);
       }
 
-      if (first.type != Token::t_Number) {
+      if (first.type != Token::t_Number || first.value.num.nm != NumberMode::nm_Month) {
          return nullptr;
       }
 
@@ -140,7 +140,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
          L"' is not a valid month name"), second.line);
    }
 
-   if (second.type != Token::t_Number) {
+   if (second.type != Token::t_Number || second.value.num.nm != NumberMode::nm_Month) {
       return nullptr;
    }
 

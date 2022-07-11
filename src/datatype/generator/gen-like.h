@@ -96,8 +96,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str start;
    _size length;
+   _str start;
 };
 
 
@@ -109,8 +109,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str end;
    _size length;
+   _str end;
 };
 
 
@@ -122,8 +122,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str string;
    _size length;
+   _str string;
 };
 
 
@@ -252,8 +252,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str start;
    _size length;
+   _str start;
 };
 
 
@@ -265,8 +265,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str end;
    _size length;
+   _str end;
 };
 
 
@@ -290,8 +290,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str pattern;
    _size length;
+   _str pattern;
    std::vector<_boo> isUnderscore;
 };
 
@@ -304,8 +304,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str pattern;
    _size length;
+   _str pattern;
    std::vector<_boo> isHash;
 };
 
@@ -318,8 +318,8 @@ public:
    _boo compareToPattern(const _str& value) const override;
 
 private:
-   _str pattern;
    _size length;
+   _str pattern;
    std::vector<_boo> isUnderscore;
    std::vector<_boo> isHash;
 };

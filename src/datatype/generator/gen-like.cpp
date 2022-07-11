@@ -521,10 +521,7 @@ _boo LikeComparer_Default::compareToPattern(const _str& value) const
 
 
 LikeComparer_StartsWith::LikeComparer_StartsWith(const _str& pat)
-{
-   length = pat.size() - 1;
-   start = pat.substr(0, length);
-}
+   : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
 _boo LikeComparer_StartsWith::compareToPattern(const _str& value) const
@@ -544,10 +541,7 @@ _boo LikeComparer_StartsWith::compareToPattern(const _str& value) const
 
 
 LikeComparer_EndsWith::LikeComparer_EndsWith(const _str& pat)
-{
-   length = pat.size() - 1;
-   end = pat.substr(1, length);
-}
+   : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
 _boo LikeComparer_EndsWith::compareToPattern(const _str& value) const
@@ -571,10 +565,7 @@ _boo LikeComparer_EndsWith::compareToPattern(const _str& value) const
 
 
 LikeComparer_Contains::LikeComparer_Contains(const _str& pat)
-{
-   length = pat.size() - 2;
-   string = pat.substr(1, length);
-}
+   : length(pat.size() - 2), string(pat.substr(1, length)) { };
 
 
 _boo LikeComparer_Contains::compareToPattern(const _str& value) const
@@ -694,10 +685,7 @@ _boo LikeComparer_ConstantLength::compareToPattern(const _str& value) const
 
 
 LikeComparer_UnderscorePercent::LikeComparer_UnderscorePercent(const _str& pat)
-{
-   length = pat.size() - 1;
-   start = pat.substr(0, length);
-}
+   : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
 _boo LikeComparer_UnderscorePercent::compareToPattern(const _str& value) const
@@ -717,10 +705,7 @@ _boo LikeComparer_UnderscorePercent::compareToPattern(const _str& value) const
 
 
 LikeComparer_PercentUnderscore::LikeComparer_PercentUnderscore(const _str& pat)
-{
-   length = pat.size() - 1;
-   end = pat.substr(1, length);
-}
+   : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
 _boo LikeComparer_PercentUnderscore::compareToPattern(const _str& value) const
@@ -761,11 +746,8 @@ _boo LikeComparer_OnlyDigits::compareToPattern(const _str& value) const
 
 
 LikeComparer_Field_U::LikeComparer_Field_U(const _str& pat)
+   : pattern(pat), length(pat.size()), isUnderscore(std::vector<_boo>(length))
 {
-   pattern = pat;
-   length = pat.size();
-   isUnderscore = std::vector<_boo>(length);
-
    for (_size i = 0; i < length; i++) {
       isUnderscore[i] = (pat[i] == L'_');
    }
@@ -789,11 +771,8 @@ _boo LikeComparer_Field_U::compareToPattern(const _str& value) const
 
 
 LikeComparer_Field_H::LikeComparer_Field_H(const _str& pat)
+   : pattern(pat), length(pat.size()), isHash(std::vector<_boo>(length))
 {
-   pattern = pat;
-   length = pat.size();
-   isHash = std::vector<_boo>(length);
-
    for (_size i = 0; i < length; i++) {
       isHash[i] = (pat[i] == L'#');
    }
@@ -822,12 +801,9 @@ _boo LikeComparer_Field_H::compareToPattern(const _str& value) const
 
 
 LikeComparer_Field_UH::LikeComparer_Field_UH(const _str& pat)
+   : pattern(pat), length(pat.size()),
+     isUnderscore(std::vector<_boo>(length)), isHash(std::vector<_boo>(length))
 {
-   pattern = pat;
-   length = pat.size();
-   isUnderscore = std::vector<_boo>(length);
-   isHash = std::vector<_boo>(length);
-
    for (_size i = 0; i < length; i++) {
       isUnderscore[i] = (pat[i] == L'_');
       isHash[i] = (pat[i] == L'#');

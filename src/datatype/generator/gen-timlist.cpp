@@ -25,7 +25,7 @@ _tlist Filter_OrderByTime::getValue()
       return list;
    }
 
-   const _num prevIndex = this->inner->index.value;
+   const _numi prevIndex = this->inner->index.value;
    const _tim prevThis = this->inner->this_t.value;
 
    this->quicksort(list, 0, size - 1);
@@ -36,8 +36,8 @@ _tlist Filter_OrderByTime::getValue()
    return list;
 }
 
-_boo Filter_OrderByTime::isSmallerOrEquals(const _num& leftId,
-   const _num& rightId, const _tim& left, const _tim& right) const
+_boo Filter_OrderByTime::isSmallerOrEquals(const _numi& leftId,
+   const _numi& rightId, const _tim& left, const _tim& right) const
 {
    for (_size i = 0; i < unitsCount; i++) {
       const OrderUnitType& unitType = unitsTypes[i];

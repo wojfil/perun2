@@ -46,7 +46,7 @@ private:
    _str prev_fullname;
    _str prev_parent;
    _str prev_drive;
-   _num prev_depth;
+   _numi prev_depth;
    _boo prev_exists;
    _boo prev_isfile;
    _boo prev_isdirectory;

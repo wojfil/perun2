@@ -12,35 +12,14 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATATYPE_H
-#define DATATYPE_H
-
-#include "number-int.h"
-#include "time.h"
-#include "definition.h"
-
-#define _num Number
-#define _numi NumberInt
-#define _tim Time
-#define _per Period
-#define _nlist std::vector<Number>
-#define _tlist std::vector<Time>
-#define _def Definition
-#define _list std::vector<std::wstring>
+#include "gen-ref.h"
 
 
-enum UroDataType
+NumberIntRef::NumberIntRef(Generator<_numi>* val)
+   : value(val) {};
+
+
+_num NumberIntRef::getValue()
 {
-   dt_Bool = 0,
-   dt_Number,
-   dt_Period,
-   dt_Time,
-   dt_String,
-   dt_Definition,
-   dt_TimeList,
-   dt_NumericList,
-   dt_List
-};
-
-
-#endif /* DATATYPE_H */
+   return _num(value->getValue().value.i);
+}

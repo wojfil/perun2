@@ -52,7 +52,7 @@ protected:
    const _boo hasAttribute;
 
    _str prevThis;
-   _num prevIndex;
+   _numi prevIndex;
 };
 
 

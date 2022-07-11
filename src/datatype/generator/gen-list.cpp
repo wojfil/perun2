@@ -26,16 +26,16 @@ _list Filter_WhereString::getValue()
 {
    const _list values = list->getValue();
    _list result;
-   const _size length = values.size();
+   const _numi length = _numi((_nint)values.size());
 
-   const _num prevIndex = this->inner->index.value;
+   const _numi prevIndex = this->inner->index.value;
    const _str prevThis = this->inner->this_s.value;
 
-   this->inner->index.value = Number(0LL);
+   this->inner->index.value.setToZero();
+   _numi index(0LL);
 
-   _size index = 0;
    while (this->uroboros->running && index != length) {
-      const _str& string = values[index];
+      const _str& string = values[index.value.i];
       this->inner->this_s.value = string;
       this->attribute.run();
 
@@ -62,7 +62,7 @@ _list Filter_OrderByString::getValue()
       return list;
    }
 
-   const _num prevIndex = this->inner->index.value;
+   const _numi prevIndex = this->inner->index.value;
    const _str prevThis = this->inner->this_s.value;
 
    this->quicksort(list, 0, size - 1);
@@ -73,8 +73,8 @@ _list Filter_OrderByString::getValue()
    return list;
 }
 
-_boo Filter_OrderByString::isSmallerOrEquals(const _num& leftId,
-   const _num& rightId, const _str& left, const _str& right) const
+_boo Filter_OrderByString::isSmallerOrEquals(const _numi& leftId,
+   const _numi& rightId, const _str& left, const _str& right) const
 {
    for (_size i = 0; i < unitsCount; i++) {
       const OrderUnitType& unitType = unitsTypes[i];

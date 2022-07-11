@@ -117,11 +117,11 @@ protected:
       const _int& end) const
    {
       const T& p = list[end];
-      const _num endId = _num(end);
+      const _numi endId = _numi((_nint)end);
       _int i = start - 1;
 
       for (_int j = start; j <= end - 1; j++){
-         if (/*list[j] <= p*/isSmallerOrEquals(_num(j), endId, list[j], p)) {
+         if (/*list[j] <= p*/isSmallerOrEquals(_numi((_nint)j), endId, list[j], p)) {
             i++;
             std::iter_swap(list.begin() + i, list.begin() + j);
          }
@@ -132,7 +132,7 @@ protected:
       return ip;
    }
 
-   virtual _boo isSmallerOrEquals(const _num& leftId, const _num& rightId,
+   virtual _boo isSmallerOrEquals(const _numi& leftId, const _numi& rightId,
       const T& left, const T& right) const = 0;
 
 

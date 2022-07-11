@@ -49,7 +49,7 @@ public:
    Variable<_tim> change;
    Variable<_boo> compressed;
    Variable<_tim> creation;
-   Variable<_num> depth;
+   Variable<_numi> depth;
    Variable<_str> drive;
    Variable<_boo> empty;
    Variable<_boo> encrypted;
@@ -57,7 +57,7 @@ public:
    Variable<_str> extension;
    Variable<_str> fullname;
    Variable<_boo> hidden;
-   Variable<_num> index;
+   Variable<_numi> index;
    Variable<_boo> isdirectory;
    Variable<_boo> isfile;
    Variable<_per> lifetime;

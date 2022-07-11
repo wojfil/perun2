@@ -58,8 +58,8 @@ _boo ElementsAtLocation::hasNext()
          prevThis = this->inner->this_s.value;
          prevIndex = this->inner->index.value;
          prevDepth = this->inner->depth.value;
-         this->inner->depth.value = _num(0LL);
-         index = _num(0LL);
+         this->inner->depth.value.setToZero();
+         index.setToZero();
          this->inner->index.value = index;
 
          if (!os_isBrowsePath(value)) {
@@ -184,12 +184,12 @@ _boo RecursiveFiles::hasNext()
    if (first) {
       this->paths.push_back(os_trim(location->getValue()));
       prevDepth = this->inner->depth.value;
-      this->inner->depth.value = _num(0LL);
+      this->inner->depth.value.setToZero();
       goDeeper = true;
       first = false;
       prevThis = this->inner->this_s.value;
       prevIndex = this->inner->index.value;
-      index = _num(0LL);
+      index.setToZero();
       this->inner->index.value = index;
    }
 
@@ -319,12 +319,12 @@ _boo RecursiveDirectories::hasNext()
    if (first) {
       paths.push_back(os_trim(location->getValue()));
       prevDepth = this->inner->depth.value;
-      this->inner->depth.value = _num(-1LL);
+      this->inner->depth.value.value.i = -1LL;
       goDeeper = true;
       first = false;
       prevThis = this->inner->this_s.value;
       prevIndex = this->inner->index.value;
-      index = _num(0LL);
+      index.setToZero();
       this->inner->index.value = index;
    }
 
@@ -403,7 +403,3 @@ _boo RecursiveDirectories::hasNext()
    reset();
    return false;
 }
-
-
-
-

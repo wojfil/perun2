@@ -51,13 +51,13 @@ public:
 
 
    _list getValue() override;
-   _boo isSmallerOrEquals(const _num& leftId, const _num& rightId,
+   _boo isSmallerOrEquals(const _numi& leftId, const _numi& rightId,
       const _str& left, const _str& right) const override;
 
 
    template <typename T>
-   _boo finalComparison(const OrderUnit<T>* ou, const _num& leftId,
-      const _num& rightId, const _str& left, const _str& right) const {
+   _boo finalComparison(const OrderUnit<T>* ou, const _numi& leftId,
+      const _numi& rightId, const _str& left, const _str& right) const {
 
       this->inner->index.value = leftId;
       this->inner->this_s.value = left;
@@ -75,8 +75,8 @@ public:
    }
 
    template <typename T>
-   _boo usualComparison(const OrderUnit<T>* ou, const _num& leftId,
-      const _num& rightId, const _str& left, const _str& right,
+   _boo usualComparison(const OrderUnit<T>* ou, const _numi& leftId,
+      const _numi& rightId, const _str& left, const _str& right,
       _boo& success) const {
 
       this->inner->index.value = leftId;

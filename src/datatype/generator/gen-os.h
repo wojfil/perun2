@@ -79,9 +79,9 @@ private:
    WIN32_FIND_DATA data;
    HANDLE handle;
    _str prevThis;
-   _num prevIndex;
-   _num index;
-   _num prevDepth;
+   _numi prevIndex;
+   _numi index;
+   _numi prevDepth;
 };
 
 
@@ -115,10 +115,10 @@ private:
    std::vector<HANDLE> handles;
    _list paths;
    _list bases;
-   _num prevDepth;
+   _numi prevDepth;
    _str prevThis;
-   _num prevIndex;
-   _num index;
+   _numi prevIndex;
+   _numi index;
 };
 
 
@@ -150,10 +150,10 @@ private:
    std::vector<HANDLE> handles;
    _list paths;
    _list bases;
-   _num prevDepth;
+   _numi prevDepth;
    _str prevThis;
-   _num prevIndex;
-   _num index;
+   _numi prevIndex;
+   _numi index;
 };
 
 

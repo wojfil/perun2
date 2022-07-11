@@ -44,8 +44,8 @@ void CS_Times::run()
       return;
    }
 
-   const _num prevIndex = this->inner->index.value;
-   this->inner->index.value = _num(0LL);
+   const _numi prevIndex = this->inner->index.value;
+   this->inner->index.value.setToZero();
 
    while (this->uroboros->running && repeats != 0LL) {
       this->command->run();
@@ -71,8 +71,8 @@ void CS_Times::run()
 
 void CS_While::run()
 {
-   const _num prevIndex = this->inner->index.value;
-   this->inner->index.value = _num(0LL);
+   const _numi prevIndex = this->inner->index.value;
+   this->inner->index.value.setToZero();
 
    while (this->uroboros->running && this->condition->getValue()) {
       this->command->run();
@@ -104,10 +104,10 @@ void CS_TimeLoop::run()
       return;
    }
 
-   const _num prevIndex = this->inner->index.value;
+   const _numi prevIndex = this->inner->index.value;
    const _tim prevThis = this->inner->this_t.value;
 
-   this->inner->index.value = _num(0LL);
+   this->inner->index.value.setToZero();
    _size index = 0;
 
    while (this->uroboros->running && index != length) {
@@ -143,10 +143,10 @@ void CS_NumberLoop::run()
       return;
    }
 
-   const _num prevIndex = this->inner->index.value;
+   const _numi prevIndex = this->inner->index.value;
    const _num prevThis = this->inner->this_n.value;
 
-   this->inner->index.value = _num(0LL);
+   this->inner->index.value.setToZero();
 
    _size index = 0;
    while (this->uroboros->running && index != length) {
@@ -222,7 +222,7 @@ void CS_DefinitionLoop::run()
    this->prevThis = this->inner->this_s.value;
    this->prevIndex = this->inner->index.value;
 
-   _nint index = 0LL;
+   _numi index(0LL);
    this->inner->index.value = 0LL;
 
    while (this->definition->hasNext()) {
@@ -251,7 +251,7 @@ void CS_DefinitionLoop::run()
       }
 
       index++;
-      this->inner->index.value = _num(index);
+      this->inner->index.value = index;
    }
 
    this->aggregate->run();
@@ -268,7 +268,7 @@ void CS_DefinitionLoop::run()
 void CS_ListLoop::run()
 {
    const _list values = this->list->getValue();
-   const _size length = values.size();
+   const _numi length = _numi((_numi)values.size());
 
    if (length == 0) {
       return;
@@ -281,11 +281,11 @@ void CS_ListLoop::run()
    this->prevThis = this->inner->this_s.value;
    this->prevIndex = this->inner->index.value;
 
-   _size index = 0;
-   this->inner->index.value = 0LL;
+   _numi index(0LL);
+   this->inner->index.value.setToZero();
 
    while (this->uroboros->running && index != length) {
-      this->inner->this_s.value = values[index];
+      this->inner->this_s.value = values[index.value.i];
 
       if (this->hasAttribute) {
          this->attribute->run();
@@ -293,7 +293,7 @@ void CS_ListLoop::run()
 
       this->command->run();
       index++;
-      this->inner->index.value = _num((_nint)index);
+      this->inner->index.value = index;
 
       if (this->uroboros->break_) {
          this->uroboros->running = true;
@@ -334,7 +334,7 @@ void CS_InsideString::run()
          this->prevLocation = this->inner->location.value;
 
          this->inner->this_s.value = newLocation;
-         this->inner->index.value = _num(0LL);
+         this->inner->index.value.setToZero();
          this->inner->location.value = newLocation;
 
          if (this->hasAttribute) {
@@ -376,8 +376,8 @@ void CS_InsideDefinition::run()
    this->prevIndex = this->inner->index.value;
    this->prevLocation = this->inner->location.value;
 
-   _nint index = 0LL;
-   this->inner->index.value = 0LL;
+   _numi index(0LL);
+   this->inner->index.value.setToZero();
 
    while (definition->hasNext()) {
       if (!this->uroboros->running) {
@@ -410,7 +410,7 @@ void CS_InsideDefinition::run()
          }
 
          index++;
-         this->inner->index.value = _num(index);
+         this->inner->index.value = index;
       }
 
       this->inner->location.value = this->prevLocation;
@@ -431,9 +431,9 @@ void CS_InsideDefinition::run()
 void CS_InsideList::run()
 {
    const _list values = this->list->getValue();
-   const _size length = values.size();
+   const _numi length = _numi((_nint)values.size());
 
-   if (length == 0) {
+   if (length.value.i == 0) {
       return;
    }
 
@@ -445,12 +445,12 @@ void CS_InsideList::run()
    this->prevIndex = this->inner->index.value;
    this->prevLocation = this->inner->location.value;
 
-   _size index = 0;
+   _numi index(0LL);
    _nint outIndex = 0LL;
    this->inner->index.value = 0LL;
 
    while (this->uroboros->running && index != length) {
-      const _str v = os_trim(values[index]);
+      const _str v = os_trim(values[index.value.i]);
       const _str newLocation = os_join(this->prevLocation, v);
       if (!v.empty() && os_directoryExists(newLocation)) {
          this->inner->this_s.value = newLocation;
@@ -473,7 +473,7 @@ void CS_InsideList::run()
          }
 
          outIndex++;
-         this->inner->index.value = _num(outIndex);
+         this->inner->index.value = outIndex;
       }
 
       index++;

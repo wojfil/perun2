@@ -64,7 +64,7 @@ private:
    Attribute* attribute;
    const _boo hasMemory;
    AttributeMemory attrMemory;
-   _num index;
+   _numi index;
 };
 
 
@@ -124,7 +124,7 @@ private:
    _size counter;
    _size limit;
    Generator<_num>* number;
-   _num index;
+   _numi index;
 };
 
 
@@ -251,13 +251,13 @@ private:
    Generator<_list>* base;
    _list values;
    _size index;
-   _num indexAsNumber;
+   _numi indexAsNumber;
    _size length;
    _boo first;
    Attribute* attribute;
    const _boo hasMemory;
    AttributeMemory attrMemory;
-   _num prevIndex;
+   _numi prevIndex;
    _str prevThis;
 };
 

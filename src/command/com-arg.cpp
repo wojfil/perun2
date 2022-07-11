@@ -30,7 +30,7 @@ void CS_StringComArg::run()
       prevIndex = this->inner->index.value;
 
       const _str val = string->getValue();
-      this->inner->index.value = 0LL;
+      this->inner->index.value.setToZero();
       this->inner->this_s.value = val;
 
       if (hasAttribute) {
@@ -51,9 +51,9 @@ void CS_StringComArg::run()
 void CS_ListComArg::run()
 {
    const _list values = list->getValue();
-   const _size length = values.size();
+   const _numi length = _numi((_nint)values.size());
 
-   if (length == 0) {
+   if (length.value.i == 0LL) {
       return;
    }
 
@@ -64,11 +64,11 @@ void CS_ListComArg::run()
    prevThis = this->inner->this_s.value;
    prevIndex = this->inner->index.value;
 
-   _size index = 0;
-   this->inner->index.value = 0LL;
+   _numi index(0LL);
+   this->inner->index.value.setToZero();
 
    while (this->uroboros->running && index != length) {
-      this->inner->this_s.value = values[index];
+      this->inner->this_s.value = values[index.value.i];
 
       if (hasAttribute) {
          this->attribute->run();
@@ -76,7 +76,7 @@ void CS_ListComArg::run()
 
       command->run();
       index++;
-      this->inner->index.value = _num((_nint)index);
+      this->inner->index.value = index;
    }
 
    this->inner->this_s.value = prevThis;
@@ -97,8 +97,8 @@ void CS_DefinitionComArg::run()
    prevThis = this->inner->this_s.value;
    prevIndex = this->inner->index.value;
 
-   _nint index = 0LL;
-   this->inner->index.value = 0LL;
+   _numi index;
+   this->inner->index.value.setToZero();
 
    while (definition->hasNext()) {
       if (!this->uroboros->running) {
@@ -114,7 +114,7 @@ void CS_DefinitionComArg::run()
 
       command->run();
       index++;
-      this->inner->index.value = _num(index);
+      this->inner->index.value = index;
    }
 
    this->inner->this_s.value = prevThis;

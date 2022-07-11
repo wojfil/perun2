@@ -27,18 +27,4 @@ struct Generator
 };
 
 
-template <typename T>
-struct GeneratorRef : Generator<T>
-{
-public:
-   GeneratorRef(Generator<T>* val) : value(val) {};
-
-   T getValue() override {
-      return value->getValue();
-   }
-
-   Generator<T>* value;
-};
-
-
 #endif /* GENERATOR_H */

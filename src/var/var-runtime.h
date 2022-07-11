@@ -49,6 +49,7 @@ public:
    std::map<_size, Variable<_per>*> ivar_per;
    std::map<_size, Variable<_tim>*> ivar_tim;
    std::map<_size, Variable<_num>*> ivar_num;
+   std::map<_size, Variable<_numi>*> ivar_numi;
    std::map<_size, Variable<_str>*> ivar_str;
    std::map<_size, Variable<_nlist>*> ivar_nlist;
    std::map<_size, Variable<_tlist>*> ivar_tlist;

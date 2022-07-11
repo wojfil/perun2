@@ -212,16 +212,16 @@ public:
    std::vector<T> getValue() override {
       const std::vector<T> values = list->getValue();
       std::vector<T> result;
-      const _size length = values.size();
+      const _numi length = _numi((_nint)values.size());
 
-      const _num prevIndex = this->inner->index.value;
+      const _numi prevIndex = this->inner->index.value;
       const T prevThis = this->this_->value;
 
-      this->inner->index.value = _num(0LL);
+      this->inner->index.value.setToZero();
+      _numi index(0LL);
 
-      _size index = 0;
       while (this->uroboros->running && index != length) {
-         const T& unit = values[index];
+         const T& unit = values[index.value.i];
          this->this_->value = unit;
 
          if (condition->getValue()) {

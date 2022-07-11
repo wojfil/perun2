@@ -17,6 +17,7 @@
 #include "../datatype/generator/gen-time.h"
 #include "../datatype/generator/gen-definition.h"
 #include "../datatype/generator/gen-string.h"
+#include "../datatype/gen-ref.h"
 #include "../exception.h"
 #include "../util.h"
 #include "../os.h"
@@ -28,7 +29,7 @@ Variables::Variables(Uroboros* uro)
    this->uroboros = uro;
    this->hashes = &uro->hashes;
    inner = InnerVariables();
-   inner.depth.value = _num(0LL);
+   inner.depth.value.setToZero();
    inner.location.value = os_trim(uro->arguments.getLocation());
 
    this->ivar_boo =
@@ -69,6 +70,10 @@ Variables::Variables(Uroboros* uro)
    this->ivar_num =
    {
       { this->hashes->HASH_VAR_SIZE, &inner.size },
+   };
+
+   this->ivar_numi =
+   {
       { this->hashes->HASH_VAR_INDEX, &inner.index },
       { this->hashes->HASH_VAR_DEPTH, &inner.depth }
    };
@@ -266,6 +271,11 @@ _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
          return true;
       }
    }
+   else if (this->ivar_numi.find(tk.value.word.h) != this->ivar_numi.end()) {
+      this->uroboros->vc.setAttribute(tk);
+      result = new NumberIntRef(this->ivar_numi[tk.value.word.h]);
+      return true;
+   }
    else if (this->ivar_num.find(tk.value.word.h) != this->ivar_num.end()) {
       this->uroboros->vc.setAttribute(tk);
       result = new GeneratorRef<_num>(this->ivar_num[tk.value.word.h]);
@@ -404,6 +414,7 @@ _boo Variables::variableExists(const Token& tk)
        || this->var_tim.find(h) != this->var_tim.end()
 
        || this->ivar_num.find(h) != this->ivar_num.end()
+       || this->ivar_numi.find(h) != this->ivar_numi.end()
        || this->svar_num.find(h) != this->svar_num.end()
        || this->var_num.find(h) != this->var_num.end()
 

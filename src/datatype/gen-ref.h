@@ -12,35 +12,39 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATATYPE_H
-#define DATATYPE_H
+#ifndef GEN_REF_H_INCLUDED
+#define GEN_REF_H_INCLUDED
 
-#include "number-int.h"
-#include "time.h"
-#include "definition.h"
-
-#define _num Number
-#define _numi NumberInt
-#define _tim Time
-#define _per Period
-#define _nlist std::vector<Number>
-#define _tlist std::vector<Time>
-#define _def Definition
-#define _list std::vector<std::wstring>
+#include "datatype.h"
+#include "generator.h"
 
 
-enum UroDataType
+template <typename T>
+struct GeneratorRef : Generator<T>
 {
-   dt_Bool = 0,
-   dt_Number,
-   dt_Period,
-   dt_Time,
-   dt_String,
-   dt_Definition,
-   dt_TimeList,
-   dt_NumericList,
-   dt_List
+public:
+   GeneratorRef(Generator<T>* val) : value(val) {};
+
+   T getValue() override {
+      return value->getValue();
+   }
+
+private:
+   Generator<T>* value;
 };
 
 
-#endif /* DATATYPE_H */
+// cast generator of int numbers
+// to a generator of numbers
+struct NumberIntRef : Generator<_num>
+{
+public:
+   NumberIntRef(Generator<_numi>* val);
+   _num getValue() override;
+
+private:
+   Generator<_numi>* value;
+};
+
+
+#endif // GEN_REF_H_INCLUDED

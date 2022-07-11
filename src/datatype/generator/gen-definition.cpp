@@ -47,7 +47,7 @@ _boo Filter_WhereDef::hasNext()
       if (hasMemory) {
          attrMemory.load();
       }
-      index = _num(0LL);
+      index.setToZero();
    }
 
    while (definition->hasNext()) {
@@ -119,7 +119,7 @@ _boo Filter_SkipDef::hasNext()
       }
 
       if (counter == limit) {
-         this->inner->index.value -= _num((_nint)limit);
+         this->inner->index.value -= limit;
          value = definition->getValue();
          return true;
       }
@@ -143,7 +143,7 @@ _boo Filter_EveryDef::hasNext()
 
       counter = limit;
       first = false;
-      index = _num(0LL);
+      index.setToZero();
    }
 
    while (definition->hasNext()) {
@@ -429,7 +429,7 @@ _boo OrderByCast::hasNext()
       first = false;
       values = base->getValue();
       index = 0;
-      indexAsNumber = _num(0LL);
+      indexAsNumber.setToZero();
       length = values.size();
    }
 

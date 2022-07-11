@@ -30,6 +30,7 @@ const _char UNARY_MINUS = L'~';
 Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
+
    if (len == 1) {
       Generator<_num>* unit = nullptr;
       parseOneToken(uro, tks.first(), unit);
@@ -59,7 +60,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
             if (num != nullptr) {
                return num;
             }
-            else {
+            else if (!tks.containsComparisonSymbol()) {
                std::vector<Tokens> elements;
                tks.splitBySymbol(L'+', elements);
                const _size elen = elements.size();

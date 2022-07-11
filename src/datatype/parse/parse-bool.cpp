@@ -35,7 +35,10 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
       return unit;
    }
 
-   const _boo hasFilters = tks.containsFilterKeyword();
+   if (tks.containsFilterKeyword()) {
+      return nullptr;
+   }
+
    const _boo possibleBinary = tks.containsSymbol(L'?');
 
    if (isPossibleFunction(tks)) {
@@ -44,7 +47,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
          return func;
       }
    }
-   else if (len >= 2 && !hasFilters && !possibleBinary) {
+   else if (len >= 2 && !possibleBinary) {
       // build numeric expression (but only if sequence has any operator)
       BracketsInfo bi;
       const _int end = tks.getEnd();
@@ -69,26 +72,22 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (!hasFilters) {
-      Generator<_boo>* cmp = parseComparisons(tks, uro);
-      if (cmp != nullptr) {
-         return cmp;
+   Generator<_boo>* cmp = parseComparisons(tks, uro);
+   if (cmp != nullptr) {
+      return cmp;
+   }
+
+   if (tks.containsKeyword(Keyword::kw_In)) {
+      Generator<_boo>* boo = parseIn(tks, uro);
+      if (boo != nullptr) {
+         return boo;
       }
    }
 
-   if (!hasFilters) {
-      if (tks.containsKeyword(Keyword::kw_In)) {
-         Generator<_boo>* boo = parseIn(tks, uro);
-         if (boo != nullptr) {
-            return boo;
-         }
-      }
-
-      if (tks.containsKeyword(Keyword::kw_Like)) {
-         Generator<_boo>* boo = parseLike(tks, uro);
-         if (boo != nullptr) {
-            return boo;
-         }
+   if (tks.containsKeyword(Keyword::kw_Like)) {
+      Generator<_boo>* boo = parseLike(tks, uro);
+      if (boo != nullptr) {
+         return boo;
       }
    }
 

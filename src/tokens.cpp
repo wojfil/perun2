@@ -157,6 +157,30 @@ _boo Tokens::containsSymbol(const _char& ch) const
    return false;
 }
 
+_boo Tokens::containsComparisonSymbol() const
+{
+   BracketsInfo bi;
+
+   for (_int i = start; i <= end; i++){
+      const Token& t = listAt(i);
+
+      if (t.type == Token::t_Symbol && bi.isBracketFree()) {
+         switch (t.value.ch) {
+            case L'<':
+            case L'>':
+            case L'!':
+            case L'=': {
+               return true;
+            }
+         }
+      }
+
+      bi.refresh(t);
+   }
+
+   return false;
+}
+
 _boo Tokens::containsKeyword(const Keyword& kw) const
 {
    BracketsInfo bi;

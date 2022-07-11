@@ -1,7 +1,9 @@
 #include "parse-unit.h"
 #include "../generator/gen-generic.h"
 #include "../generator/gen-number.h"
+#include "../generator/gen-string.h"
 #include "../generator/gen-time.h"
+#include "../generator/gen-os.h"
 #include "parse-number.h"
 
 
@@ -166,6 +168,15 @@ _boo parseOneToken(Uroboros* uro, const Token& tk, _def*& result)
       case Token::t_Word: {
          return uro->vars.getVarValue(tk, result);
       }
+      /*case Token::t_Symbol: {
+         if (tk.value.ch == L'*') {
+            result = new ElementsAtLocation(new LocationReference(uro), ELEM_ALL, uro);
+            return true;
+         }
+         else {
+            return false;
+         }
+      }*/
       default: {
          return false;
       }

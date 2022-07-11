@@ -95,7 +95,6 @@ public:
    _size HASH_VAR_DESKTOP;
    _size HASH_VAR_UROBOROS;
 
-   _size HASH_VAR_ALL;
    _size HASH_VAR_DIRECTORIES;
    _size HASH_VAR_FILES;
    _size HASH_VAR_RECURSIVEFILES;

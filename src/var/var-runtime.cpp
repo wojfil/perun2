@@ -105,7 +105,6 @@ Variables::Variables(Uroboros* uro)
 
    this->svar_def =
    {
-      { this->hashes->HASH_VAR_ALL, new Gen_ElementsAtLocation(ELEM_ALL, uro) },
       { this->hashes->HASH_VAR_DIRECTORIES, new Gen_ElementsAtLocation(ELEM_DIRECTORIES, uro) },
       { this->hashes->HASH_VAR_FILES, new Gen_ElementsAtLocation(ELEM_FILES, uro) },
       { this->hashes->HASH_VAR_RECURSIVEFILES, new Gen_RecursiveFiles(uro) },
@@ -323,7 +322,6 @@ _boo Variables::getVarValue(const Token& tk, Generator<_nlist>*& result)
       }
    }
    else if (this->ivar_nlist.find(tk.value.word.h) != this->ivar_nlist.end()) {
-      this->uroboros->vc.setAttribute(tk);
       result = new GeneratorRef<_nlist>(this->ivar_nlist[tk.value.word.h]);
       return true;
    }
@@ -345,7 +343,6 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tlist>*& result)
       }
    }
    else if (this->ivar_tlist.find(tk.value.word.h) != this->ivar_tlist.end()) {
-      this->uroboros->vc.setAttribute(tk);
       result = new GeneratorRef<_tlist>(this->ivar_tlist[tk.value.word.h]);
       return true;
    }
@@ -377,7 +374,6 @@ _boo Variables::getVarValue(const Token& tk, Generator<_list>*& result)
       }
    }
    else if (this->ivar_list.find(tk.value.word.h) != this->ivar_list.end()) {
-      this->uroboros->vc.setAttribute(tk);
       result = new GeneratorRef<_list>(this->ivar_list[tk.value.word.h]);
       return true;
    }

@@ -97,7 +97,6 @@ Hashes::Hashes()
    this->HASH_VAR_DESKTOP = rawStringHash(L"desktop");
    this->HASH_VAR_UROBOROS = rawStringHash(L"uroboros");
 
-   this->HASH_VAR_ALL = rawStringHash(L"all");
    this->HASH_VAR_DIRECTORIES = rawStringHash(L"directories");
    this->HASH_VAR_FILES = rawStringHash(L"files");
    this->HASH_VAR_RECURSIVEFILES = rawStringHash(L"recursivefiles");

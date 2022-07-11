@@ -47,6 +47,7 @@ public:
    void setRange(_int st, _int ln);
 
    _boo containsSymbol(const _char& ch) const;
+   _boo containsComparisonSymbol() const;
    _boo containsKeyword(const Keyword& kw) const;
    _boo containsFilterKeyword() const;
    _boo hasIndependentBrackets() const;

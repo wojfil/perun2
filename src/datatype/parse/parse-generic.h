@@ -181,10 +181,10 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
    }
 
    const Token& first = tks.first();
-   if (first.type != Token::t_Word) {
+   /*if (first.type != Token::t_Word) {
       throw SyntaxException(str(L"filter keyword '", *tks.second().value.keyword.os,
          L"' should be preceded by a variable name") , first.line);
-   }
+   }*/
 
    const _int start = tks.getStart() + 2;
    const _int length = tks.getLength() - 2;
@@ -195,7 +195,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
 
    const Token& f = tks.first();
    T result;
-   if (!uro->vars.getVarValue(f, result)) {
+   if (!parseOneToken(uro, f, result)) {
       return nullptr;
    }
 

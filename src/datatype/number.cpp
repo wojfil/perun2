@@ -21,13 +21,13 @@
 Number::Number()
    : value(0LL), isDouble(false) { }
 
-Number::Number(_int val)
+Number::Number(const _int& val)
    : value((_nint)val), isDouble(false) { }
 
-Number::Number(_nint val)
+Number::Number(const _nint& val)
    : value(val), isDouble(false) { }
 
-Number::Number(_ndouble val)
+Number::Number(const _ndouble& val)
    : value(val), isDouble(true) { }
 
 

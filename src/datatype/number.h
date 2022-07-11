@@ -31,9 +31,9 @@ union NumberValue
 struct Number
 {
    Number();
-   Number(_int val);
-   Number(_nint val);
-   Number(_ndouble val);
+   Number(const _int& val);
+   Number(const _nint& val);
+   Number(const _ndouble& val);
 
    _str toString() const;
    _nint toInt() const;

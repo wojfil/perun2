@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include <stdio.h>
-#include "../../datatype/generator/like.h"
+#include "../../datatype/generator/gen-like.h"
 
 #include "test-like.h"
 #include "test-in.h"

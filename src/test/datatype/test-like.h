@@ -15,7 +15,7 @@
 #ifndef TEST_LIKE_INCLUDED
 #define TEST_LIKE_INCLUDED
 
-#include "../../datatype/generator/like.h"
+#include "../../datatype/generator/gen-like.h"
 
 void test_like();
 void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _boo& expectedResult);

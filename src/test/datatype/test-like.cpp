@@ -14,7 +14,7 @@
 
 #include "test.h"
 #include "test-like.h"
-#include "../../datatype/generator/like.h"
+#include "../../datatype/generator/gen-like.h"
 #include <iostream>
 
 

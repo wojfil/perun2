@@ -18,6 +18,16 @@
 #include "primitives.h"
 
 
+union NumberValue
+{
+   _nint i;
+   _ndouble d;
+
+   NumberValue(const _nint& i) : i(i) {};
+   NumberValue(const _ndouble& d) : d(d) {};
+};
+
+
 struct Number
 {
    Number();
@@ -55,11 +65,9 @@ struct Number
    bool operator <= (const Number& num) const;
    bool operator >= (const Number& num) const;
 
-   union
-   {
-      _nint i;
-      _ndouble d;
-   } value;
+   // number consists of a value (int or double)
+   // and a boolean flag indicating current state
+   NumberValue value;
    bool isDouble;
 };
 

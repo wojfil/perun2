@@ -18,30 +18,18 @@
 #include "primitives.h"
 
 
-// empty constructor = 0 integer
 Number::Number()
-{
-   value.i = 0LL;
-   isDouble = false;
-}
+   : value(0LL), isDouble(false) { }
 
 Number::Number(_int val)
-{
-   value.i = (_nint)val;
-   isDouble = false;
-}
+   : value((_nint)val), isDouble(false) { }
 
 Number::Number(_nint val)
-{
-   value.i = val;
-   isDouble = false;
-}
+   : value(val), isDouble(false) { }
 
 Number::Number(_ndouble val)
-{
-   value.d = val;
-   isDouble = true;
-}
+   : value(val), isDouble(true) { }
+
 
 // convert a number into string
 // if is double-precision, cut off ending zeros from the fractional part

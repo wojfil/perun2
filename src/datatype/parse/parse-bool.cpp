@@ -19,7 +19,7 @@
 #include "../generator/gen-bool.h"
 #include "../../brackets.h"
 #include "../../lexer.h"
-#include "../generator/like.h"
+#include "../generator/gen-like.h"
 #include "../../var/var-runtime.h"
 #include "../parse-gen.h"
 #include <vector>

@@ -12,8 +12,8 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIKE_H
-#define LIKE_H
+#ifndef GEN_LIKE_H
+#define GEN_LIKE_H
 
 #include "../generator.h"
 #include "../datatype.h"
@@ -352,7 +352,4 @@ private:
 
 
 
-
-
-#endif /* LIKE_H */
-
+#endif /* GEN_LIKE_H */

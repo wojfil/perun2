@@ -12,7 +12,7 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "like.h"
+#include "gen-like.h"
 #include "../../hash.h"
 #include <set>
 #include <cwctype>

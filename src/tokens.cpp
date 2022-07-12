@@ -19,31 +19,16 @@
 
 
 Tokens::Tokens(const std::vector<Token>* li)
-{
-   list = li;
-   start = 0;
-   length = li->size();
-   end = length - 1;
-   parseGuardian = PG_NULL;
-};
+   : list(li), length(li->size()), start(0),
+     end(this->length - 1), parseGuardian(PG_NULL) { };
 
 Tokens::Tokens(const std::vector<Token>* li, _int ln)
-{
-   list = li;
-   length = ln;
-   start = 0;
-   end = length - 1;
-   parseGuardian = PG_NULL;
-};
+   : list(li), length(ln), start(0),
+     end(this->length - 1), parseGuardian(PG_NULL) { };
 
 Tokens::Tokens(const std::vector<Token>* li, _int st, _int ln)
-{
-   list = li;
-   start = st;
-   length = ln;
-   end = start + length - 1;
-   parseGuardian = PG_NULL;
-};
+   : list(li), length(ln), start(st),
+     end(this->start + this->length - 1), parseGuardian(PG_NULL) { };
 
 _int Tokens::getStart() const
 {

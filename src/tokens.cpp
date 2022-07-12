@@ -24,6 +24,7 @@ Tokens::Tokens(const std::vector<Token>* li)
    start = 0;
    length = li->size();
    end = length - 1;
+   parseGuardian = PG_NULL;
 };
 
 Tokens::Tokens(const std::vector<Token>* li, _int ln)
@@ -32,6 +33,7 @@ Tokens::Tokens(const std::vector<Token>* li, _int ln)
    length = ln;
    start = 0;
    end = length - 1;
+   parseGuardian = PG_NULL;
 };
 
 Tokens::Tokens(const std::vector<Token>* li, _int st, _int ln)
@@ -40,6 +42,7 @@ Tokens::Tokens(const std::vector<Token>* li, _int st, _int ln)
    start = st;
    length = ln;
    end = start + length - 1;
+   parseGuardian = PG_NULL;
 };
 
 _int Tokens::getStart() const

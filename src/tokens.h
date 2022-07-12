@@ -18,6 +18,17 @@
 #include "token.h"
 #include <vector>
 
+#define _pgunit _uint64
+
+// Parse Guardians:
+const _pgunit PG_NULL =         0b00000000000000000000000000000000;
+const _pgunit PG_NO_COMMA =     0b00000000000000000000000000000001;
+const _pgunit PG_NO _CMP =      0b00000000000000000000000000000010;
+
+// what are parse guardians for?
+// they provide memory for a sequence of tokens
+// for example, if we checked once that this sequence does not contain any comma
+// then we do not have to do that again - potential parsing possibilities are already narrowed
 
 struct Tokens
 {
@@ -65,6 +76,7 @@ private:
    _int length;
    _int start;
    _int end;
+   _pgunit parseGuardian;
 };
 
 #endif /* TOKENS_H */

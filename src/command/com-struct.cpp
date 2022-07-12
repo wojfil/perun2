@@ -268,7 +268,7 @@ void CS_DefinitionLoop::run()
 void CS_ListLoop::run()
 {
    const _list values = this->list->getValue();
-   const _numi length = _numi((_numi)values.size());
+   const _numi length = _numi((_nint)values.size());
 
    if (length == 0) {
       return;
@@ -385,7 +385,7 @@ void CS_InsideDefinition::run()
          break;
       }
 
-      const _str newLocation = 
+      const _str newLocation =
          os_join(this->prevLocation, this->definition->getValue());
 
       if (os_directoryExists(newLocation)) {
@@ -395,7 +395,7 @@ void CS_InsideDefinition::run()
          if (this->hasAttribute) {
             this->attribute->run();
          }
-         
+
          this->command->run();
 
          if (this->uroboros->break_) {

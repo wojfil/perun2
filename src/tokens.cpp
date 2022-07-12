@@ -26,11 +26,11 @@ Tokens::Tokens(const std::vector<Token>* li)
    : list(li), length(li->size()), start(0),
      end(this->length - 1), guardian(new ParseGuardian()) { };
 
-Tokens::Tokens(const std::vector<Token>* li, _int ln)
+Tokens::Tokens(const std::vector<Token>* li, const _int& ln)
    : list(li), length(ln), start(0),
      end(this->length - 1), guardian(new ParseGuardian()) { };
 
-Tokens::Tokens(const std::vector<Token>* li, _int st, _int ln)
+Tokens::Tokens(const std::vector<Token>* li, const _int& st, const _int& ln)
    : list(li), length(ln), start(st),
      end(this->start + this->length - 1), guardian(new ParseGuardian()) { };
 
@@ -129,7 +129,7 @@ void Tokens::trimFunction()
    }
 };
 
-void Tokens::setRange(_int st, _int ln)
+void Tokens::setRange(const _int& st, const _int& ln)
 {
    start = st;
    length = ln;

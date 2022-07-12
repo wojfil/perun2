@@ -26,8 +26,8 @@ public:
 
    Tokens(const Tokens& tks);
    Tokens(const std::vector<Token>* li);
-   Tokens(const std::vector<Token>* li, _int ln);
-   Tokens(const std::vector<Token>* li, _int st, _int ln);
+   Tokens(const std::vector<Token>* li, const _int& ln);
+   Tokens(const std::vector<Token>* li, const _int& st, const _int& ln);
    ~Tokens();
 
    _int getStart() const;
@@ -45,7 +45,7 @@ public:
    void trimRight();
    void trimBoth();
    void trimFunction();
-   void setRange(_int st, _int ln);
+   void setRange(const _int& st, const _int& ln);
 
    _boo containsSymbol(const _char& ch) const;
    _boo containsComma() const;

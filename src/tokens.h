@@ -16,29 +16,19 @@
 #define TOKENS_H
 
 #include "token.h"
+#include "guardian.h"
 #include <vector>
 
-#define _pgunit _uint64
-
-// Parse Guardians:
-const _pgunit PG_NULL =         0b00000000000000000000000000000000;
-const _pgunit PG_NO_COMMA =     0b00000000000000000000000000000001;
-const _pgunit PG_NO _CMP =      0b00000000000000000000000000000010;
-
-// what are parse guardians for?
-// they provide memory for a sequence of tokens
-// for example, if we checked once that this sequence does not contain any comma
-// then we do not have to do that again - potential parsing possibilities are already narrowed
 
 struct Tokens
 {
 public:
 
-   Tokens(const Tokens& tks)
-      : list(tks.list), start(tks.start), length(tks.length), end(tks.end){};
+   Tokens(const Tokens& tks);
    Tokens(const std::vector<Token>* li);
    Tokens(const std::vector<Token>* li, _int ln);
    Tokens(const std::vector<Token>* li, _int st, _int ln);
+   ~Tokens();
 
    _int getStart() const;
    _int getLength() const;
@@ -58,6 +48,7 @@ public:
    void setRange(_int st, _int ln);
 
    _boo containsSymbol(const _char& ch) const;
+   _boo containsComma() const;
    _boo containsComparisonSymbol() const;
    _boo containsKeyword(const Keyword& kw) const;
    _boo containsFilterKeyword() const;
@@ -76,7 +67,7 @@ private:
    _int length;
    _int start;
    _int end;
-   _pgunit parseGuardian;
+   ParseGuardian* guardian;
 };
 
 #endif /* TOKENS_H */

@@ -18,17 +18,26 @@
 #include "lexer.h"
 
 
+Tokens::Tokens(const Tokens& tks)
+   : list(tks.list), start(tks.start), length(tks.length),
+     end(tks.end), guardian(new ParseGuardian()) { };
+
 Tokens::Tokens(const std::vector<Token>* li)
    : list(li), length(li->size()), start(0),
-     end(this->length - 1), parseGuardian(PG_NULL) { };
+     end(this->length - 1), guardian(new ParseGuardian()) { };
 
 Tokens::Tokens(const std::vector<Token>* li, _int ln)
    : list(li), length(ln), start(0),
-     end(this->length - 1), parseGuardian(PG_NULL) { };
+     end(this->length - 1), guardian(new ParseGuardian()) { };
 
 Tokens::Tokens(const std::vector<Token>* li, _int st, _int ln)
    : list(li), length(ln), start(st),
-     end(this->start + this->length - 1), parseGuardian(PG_NULL) { };
+     end(this->start + this->length - 1), guardian(new ParseGuardian()) { };
+
+Tokens::~Tokens()
+{
+   delete guardian;
+}
 
 _int Tokens::getStart() const
 {
@@ -143,6 +152,18 @@ _boo Tokens::containsSymbol(const _char& ch) const
    }
 
    return false;
+}
+
+_boo Tokens::containsComma() const
+{
+   if (guardian->knows(PG_CNT_COMMA)) {
+      return guardian->protects(PG_CNT_COMMA);
+   }
+
+   const _boo contains = containsSymbol(L',');
+   guardian->set(PG_CNT_COMMA, contains);
+
+   return contains;
 }
 
 _boo Tokens::containsComparisonSymbol() const

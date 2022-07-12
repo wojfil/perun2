@@ -52,7 +52,7 @@ _def* parseDefinition(const Tokens& tks, Uroboros* uro)
 
 static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro)
 {
-   if (!tks.containsSymbol(L',')) {
+   if (!tks.containsComma()) {
       return false;
    }
 

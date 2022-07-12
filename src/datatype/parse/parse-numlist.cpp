@@ -39,7 +39,7 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
    }
 
    if (len >= 3) {
-      if (tks.containsSymbol(L',')) {
+      if (tks.containsComma()) {
          Generator<_nlist>* nlisted = parseNumListed(tks, uro);
          if (nlisted != nullptr) {
             return nlisted;

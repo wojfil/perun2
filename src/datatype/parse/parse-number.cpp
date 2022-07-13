@@ -43,7 +43,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
          return func;
       }
    }
-   else if (len >= 2 && !tks.containsComma()) {
+   else if (len >= 2 && !tks.containsSymbol(PGCS_COMMA)) {
       // build numeric expression (but only if the sequence has any operator)
       BracketsInfo bi;
       const _int end = tks.getEnd();

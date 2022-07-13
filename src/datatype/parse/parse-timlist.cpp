@@ -39,7 +39,7 @@ Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros* uro)
    }
 
    if (len >= 3) {
-      if (tks.containsComma()) {
+      if (tks.containsSymbol(PGCS_COMMA)) {
          Generator<_tlist>* listed = parseTimListed(tks, uro);
          if (listed != nullptr) {
             return listed;

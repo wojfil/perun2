@@ -17,30 +17,51 @@
 
 #include "datatype/primitives.h"
 
-#define _pgunit _uint64
+#define _pgcs_unit _uint32
+#define _pg_unit _uint64
 
-// Parse Guardians:
-const _pgunit PG_NULL =          0b00000000000000000000000000000000;
-const _pgunit PG_CNT_COMMA =     0b00000000000000000000000000000001;
+// Parse Guardian "contains symbol"
+const _pgcs_unit PGCS_NULL =            0b0000000;
+const _pgcs_unit PGCS_QUESTION_MARK =   0b0000001;
+const _pgcs_unit PGCS_COMMA =           0b0000010;
+const _pgcs_unit PGCS_COLON =           0b0000100;
+const _pgcs_unit PGCS_PLUS =            0b0001000;
+const _pgcs_unit PGCS_MINUS =           0b0010000;
+const _pgcs_unit PGCS_EQUALS =          0b0100000;
+
+// usual Parse Guardians:
+const _pg_unit PG_NULL =           0b00000000000000000000000000000000;
+const _pg_unit PG_COMPARISON =     0b00000000000000000000000000000001;
 
 // what are Parse Guardians for?
 // they provide memory for a sequence of tokens
 // for example, if we checked once in the past that certain sequence does not contain any comma
-// then we do not have to do that again - potential parsing possibilities are already narrowed
+// then we do not have to do that again somewhere else
+// parsing possibilities are already narrowed
 
 struct ParseGuardian
 {
 public:
    ParseGuardian();
-   _boo knows(const _pgunit& unit) const;
-   _boo protects(const _pgunit& unit) const;
-   void set(const _pgunit& unit, const _boo& value);
+
+   // todo think of better names for these methods
+   _boo knows(const _pg_unit& unit) const;
+   _boo protects(const _pg_unit& unit) const;
+   void set(const _pg_unit& unit, const _boo& value);
+
+   _boo knowsSymbol(const _pgcs_unit& unit) const;
+   _boo protectsSymbol(const _pgcs_unit& unit) const;
+   void setSymbol(const _pgcs_unit& unit, const _boo& value);
+
+   _char pgcsToChar(const _pgcs_unit& pgcs) const;
 
 private:
-   _pgunit visited;
-   _pgunit protect;
-
+   _pg_unit visited;
+   _pg_unit protect;
+   _pgcs_unit visitedSymbol;
+   _pgcs_unit protectSymbol;
 };
+
 
 
 #endif // GUARDIAN_H_INCLUDED

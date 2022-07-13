@@ -16,23 +16,62 @@
 
 
 ParseGuardian::ParseGuardian()
-   : visited(PG_NULL), protect(PG_NULL) { };
+   : visited(PG_NULL), protect(PG_NULL),
+     visitedSymbol(PGCS_NULL), protectSymbol(PGCS_NULL) { };
 
 
-_boo ParseGuardian::knows(const _pgunit& unit) const
+_boo ParseGuardian::knows(const _pg_unit& unit) const
 {
    return this->visited & unit;
 }
 
-_boo ParseGuardian::protects(const _pgunit& unit) const
+_boo ParseGuardian::protects(const _pg_unit& unit) const
 {
    return this->protect & unit;
 }
 
-void ParseGuardian::set(const _pgunit& unit, const _boo& value)
+void ParseGuardian::set(const _pg_unit& unit, const _boo& value)
 {
    this->visited |= unit;
    if (value) {
       this->protect |= unit;
+   }
+}
+
+_boo ParseGuardian::knowsSymbol(const _pgcs_unit& unit) const
+{
+   return this->visitedSymbol & unit;
+}
+
+_boo ParseGuardian::protectsSymbol(const _pgcs_unit& unit) const
+{
+   return this->protectSymbol & unit;
+}
+
+void ParseGuardian::setSymbol(const _pgcs_unit& unit, const _boo& value)
+{
+   this->visitedSymbol |= unit;
+   if (value) {
+      this->protectSymbol |= unit;
+   }
+}
+
+_char ParseGuardian::pgcsToChar(const _pgcs_unit& pgcs) const
+{
+   switch (pgcs) {
+      case PGCS_QUESTION_MARK:
+         return L'?';
+      case PGCS_COMMA:
+         return L',';
+      case PGCS_COLON:
+         return L':';
+      case PGCS_PLUS:
+         return L'+';
+      case PGCS_MINUS:
+         return L'-';
+      case PGCS_EQUALS:
+         return L'=';
+      default:
+         return L'/0';
    }
 }

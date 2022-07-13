@@ -136,7 +136,7 @@ void Tokens::setRange(const _int& st, const _int& ln)
    end = start + length - 1;
 }
 
-_boo Tokens::containsSymbol(const _char& ch) const
+_boo Tokens::containsChar(const _char& ch) const
 {
    BracketsInfo bi;
 
@@ -154,14 +154,14 @@ _boo Tokens::containsSymbol(const _char& ch) const
    return false;
 }
 
-_boo Tokens::containsComma() const
+_boo Tokens::containsSymbol(const _pgcs_unit& symbol) const
 {
-   if (guardian->knows(PG_CNT_COMMA)) {
-      return guardian->protects(PG_CNT_COMMA);
+   if (guardian->knowsSymbol(symbol)) {
+      return guardian->protectsSymbol(symbol);
    }
 
-   const _boo contains = containsSymbol(L',');
-   guardian->set(PG_CNT_COMMA, contains);
+   const _boo contains = containsChar(guardian->pgcsToChar(symbol));
+   guardian->setSymbol(symbol, contains);
 
    return contains;
 }

@@ -43,8 +43,8 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
          return cnst;
       }
 
-      const _boo hasPluses = tks.containsSymbol(L'+');
-      const _boo hasMinuses = tks.containsSymbol(L'-');
+      const _boo hasPluses = tks.containsSymbol(PGCS_PLUS);
+      const _boo hasMinuses = tks.containsSymbol(PGCS_MINUS);
 
 
       if (hasMinuses || hasPluses) {

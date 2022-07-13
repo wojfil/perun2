@@ -40,7 +40,7 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
          return func;
       }
    }
-   else if (tks.containsSymbol(L'+')) {
+   else if (tks.containsSymbol(PGCS_PLUS)) {
       Generator<_str>* str = parseStringConcat(tks, uro);
       if (str != nullptr) {
          return str;

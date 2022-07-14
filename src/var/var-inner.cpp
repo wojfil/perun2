@@ -13,6 +13,7 @@
 */
 
 #include "var-inner.h"
+#include "../datatype/gen-ref.h"
 #include "../datatype/generator/gen-generic.h"
 
 
@@ -48,17 +49,33 @@ _list InnerVariables::getAscii()
    };
 }
 
-void InnerVariables::createThisReference(Variable<_str>*& result)
+void InnerVariables::createThisRef(Generator<_str>*& result)
+{
+   result = new GeneratorRef<_str>(&this_s);
+}
+
+void InnerVariables::createThisRef(Generator<_num>*& result)
+{
+   result = new GeneratorRef<_num>(&this_n);
+}
+
+void InnerVariables::createThisRef(Generator<_tim>*& result)
+{
+   result = new GeneratorRef<_tim>(&this_t);
+}
+
+void InnerVariables::createThisVarRef(Variable<_str>*& result)
 {
    result = &this_s;
 }
 
-void InnerVariables::createThisReference(Variable<_num>*& result)
+void InnerVariables::createThisVarRef(Variable<_num>*& result)
 {
    result = &this_n;
 }
 
-void InnerVariables::createThisReference(Variable<_tim>*& result)
+void InnerVariables::createThisVarRef(Variable<_tim>*& result)
 {
    result = &this_t;
 }
+

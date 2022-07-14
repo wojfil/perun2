@@ -201,7 +201,7 @@ public:
       : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner),
         this_(nullptr)
    {
-      uro->vars.inner.createThisReference(this_);
+      uro->vars.inner.createThisVarRef(this_);
    };
 
    ~Filter_Where() {

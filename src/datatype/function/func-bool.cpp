@@ -32,8 +32,8 @@ _boo F_AnyDef::getValue()
 
 _boo F_AnyInside::getValue()
 {
-   const _str& v = os_trim(this->value->getValue());
-   if (v.empty() || os_isInvaild(v)) {
+   const _str v = os_trim(this->value->getValue());
+   if (os_isInvaild(v)) {
       return false;
    }
 
@@ -241,7 +241,7 @@ _boo F_EndsWith::getValue()
 _boo F_ExistsInside::getValue()
 {
    const _str p = os_trim(this->arg2->getValue());
-   if (p.empty() || os_isInvaild(p)) {
+   if (os_isInvaild(p)) {
       return false;
    }
 
@@ -252,7 +252,7 @@ _boo F_ExistsInside::getValue()
 
    const _str v = os_trim(this->arg1->getValue());
 
-   if (v.empty() || os_isInvaild(v)) {
+   if (os_isInvaild(v)) {
       return false;
    }
 
@@ -264,7 +264,7 @@ _boo F_ExistsInside::getValue()
 _boo F_ExistInside::getValue()
 {
    const _str p = os_trim(this->arg2->getValue());
-   if (p.empty() || os_isInvaild(p)) {
+   if (os_isInvaild(p)) {
       return false;
    }
 
@@ -282,12 +282,12 @@ _boo F_ExistInside::getValue()
 
    if (len == 1) {
       const _str& v = vs[0];
-      return !v.empty() && !os_isInvaild(v) && os_exists(os_join(base, v));
+      return !os_isInvaild(v) && os_exists(os_join(base, v));
    }
 
    for (_size i = 0; i < len; i++) {
       const _str& v = os_trim(vs[i]);
-      if (v.empty() || os_isInvaild(v)) {
+      if (os_isInvaild(v)) {
           return false;
       }
 

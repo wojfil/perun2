@@ -224,8 +224,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       if (left.isEmpty()) {
-         Variable<_str>* tr;
-         uro->vars.inner.createThisReference(tr);
+         Generator<_str>* tr;
+         uro->vars.inner.createThisRef(tr);
          return new CS_InsideString(tr, com, attr, aggr, hasMemory, uro);
       }
 
@@ -324,7 +324,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
          Generator<_boo>* boo;
          if (parse(uro, left, boo)) {
-            throw SyntaxException(str(L"keywords '", *leftFirst.value.keyword.os, L" ", 
+            throw SyntaxException(str(L"keywords '", *leftFirst.value.keyword.os, L" ",
                *ifToken.value.keyword.os, L"' are not followed by a valid condition"), leftFirst.line);
          }
 
@@ -852,7 +852,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          Generator<_per>* per;
 
          if (!parse(uro, right, per)) {
-            throw SyntaxException(str(L"right side of operator '", *first.value.word.os, 
+            throw SyntaxException(str(L"right side of operator '", *first.value.word.os,
                L" ", charStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
 

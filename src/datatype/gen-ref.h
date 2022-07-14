@@ -31,6 +31,8 @@ public:
 
 private:
    Generator<T>* value;
+   // do not call "delete" here
+   // this struct is a weak reference to a generator
 };
 
 

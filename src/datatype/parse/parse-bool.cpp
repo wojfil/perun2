@@ -427,7 +427,7 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
       }
    }
 
-   // numeric expressions can end with only one symbol: )
+   // bool expressions can end with only one symbol: )
    ExpElement<_boo>* last = infList[len - 1];
    if (last->type == ElementType::et_Operator) {
       if (last->_operator != L')') {

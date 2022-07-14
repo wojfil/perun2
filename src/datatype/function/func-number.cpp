@@ -55,53 +55,7 @@ _num F_Ceil::getValue()
 }
 
 
-F_Count::~F_Count()
-{
-   deleteVectorPtr(tlists);
-   deleteVectorPtr(nlists);
-   deleteVectorPtr(lists);
-   deleteVectorPtr(defs);
-}
-
-
-_num F_Count::getValue()
-{
-   _nint n = 0LL;
-
-   if (countTlists != 0) {
-      for (_size i = 0; i < countTlists; i++) {
-         n += (*tlists)[i]->getValue().size();
-      }
-   }
-   if (countNlists != 0) {
-      for (_size i = 0; i < countNlists; i++) {
-         n += (*nlists)[i]->getValue().size();
-      }
-   }
-   if (countLists != 0) {
-      for (_size i = 0; i < countLists; i++) {
-         n += (*lists)[i]->getValue().size();
-      }
-   }
-   if (countDefs != 0) {
-      for (_size i = 0; i < countDefs; i++) {
-         _def*& def = (*defs)[i];
-
-         while (def->hasNext()) {
-            if (!this->uroboros->running) {
-               def->reset();
-               break;
-            }
-            n++;
-         }
-      }
-   }
-
-   return _num(n);
-}
-
-
-_num F_CountUnitDef::getValue()
+_num F_CountDef::getValue()
 {
    _nint n = 0LL;
 

@@ -35,52 +35,24 @@ public:
 };
 
 
-struct F_Count : Generator<_num>
-{
-public:
-   F_Count(std::vector<Generator<_tlist>*>* tls,
-         std::vector<Generator<_nlist>*>* nls,
-         std::vector<Generator<_list>*>* ls,
-         std::vector<_def*>* dfs, Uroboros* uro)
-      : tlists(tls), nlists(nls), lists(ls), defs(dfs),
-         countTlists(tls->size()), countNlists(nls->size()),
-         countLists(ls->size()), countDefs(dfs->size()),
-         uroboros(uro) { };
-
-   ~F_Count();
-   _num getValue() override;
-
-private:
-   Uroboros* uroboros;
-   std::vector<Generator<_tlist>*>* tlists;
-   std::vector<Generator<_nlist>*>* nlists;
-   std::vector<Generator<_list>*>* lists;
-   std::vector<_def*>* defs;
-   const _size countTlists;
-   const _size countNlists;
-   const _size countLists;
-   const _size countDefs;
-};
-
-
 template <typename T>
-struct F_CountUnit : Func_1<std::vector<T>>, Generator<_num>
+struct F_Count : Func_1<std::vector<T>>, Generator<_num>
 {
 public:
-   F_CountUnit<T>(Generator<std::vector<T>>* a1) : Func_1<std::vector<T>>(a1) { };
+   F_Count<T>(Generator<std::vector<T>>* a1) : Func_1<std::vector<T>>(a1) { };
    _num getValue() override {
-      return Number((_nint) this->arg1->getValue().size());
+      return _num((_nint) this->arg1->getValue().size());
    }
 };
 
 
-struct F_CountUnitDef : Generator<_num>
+struct F_CountDef : Generator<_num>
 {
 public:
-   F_CountUnitDef(_def* def, Uroboros* uro) 
+   F_CountDef(_def* def, Uroboros* uro)
       : definition(def), uroboros(uro) { };
 
-   ~F_CountUnitDef() {
+   ~F_CountDef() {
       delete definition;
    }
 
@@ -182,7 +154,7 @@ public:
 struct F_Random : Generator<_num>
 {
 public:
-   F_Random(Uroboros* uro) 
+   F_Random(Uroboros* uro)
       : math(&uro->math) { };
 
    _num getValue() override;
@@ -195,9 +167,9 @@ private:
 struct F_RandomNumber : Func_1<_num>, Generator<_num>
 {
 public:
-   F_RandomNumber(Generator<_num>* a1, Uroboros* uro) 
+   F_RandomNumber(Generator<_num>* a1, Uroboros* uro)
       : Func_1(a1), math(&uro->math) { };
-      
+
    _num getValue() override;
 
 private:

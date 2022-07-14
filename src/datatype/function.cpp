@@ -592,111 +592,39 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
    }
    else if (name == uro->hashes.HASH_FUNC_COUNT) {
-      if (len == 0) {
-         throw SyntaxException(str(L"function '", *word.value.word.os,
-            L"' needs at least one argument"), word.line);
+      if (len != 1) {
+         functionArgNumberException(len, word);
       }
 
-      std::vector<Generator<_tlist>*>* tlists = new std::vector<Generator<_tlist>*>();
-      std::vector<Generator<_nlist>*>* nlists = new std::vector<Generator<_nlist>*>();
-      std::vector<Generator<_list>*>* lists = new std::vector<Generator<_list>*>();
-      std::vector<_def*>* defs = new std::vector<_def*>();
-
-      for (_size i = 0; i < len; i++) {
-         const Tokens& tks = args[i];
-         Generator<_str>* str_;
-         if (parse(uro, tks, str_)) {
-            delete str_;
-
-            throw SyntaxException(str(ordinalNumber(i + 1),
-               L" argument of the function '" + *word.value.word.os,
-               L"' is not a collection"), word.line);
-         }
-
-         Generator<_tlist>* tlist;
-         if (parse(uro, tks, tlist)) {
-            if (i != len - 1) {
-               checkInOperatorCommaAmbiguity(word, args[i]);
-            }
-            tlists->push_back(tlist);
-            continue;
-         }
-
-         Generator<_nlist>* nlist;
-         if (parse(uro, tks, nlist)) {
-            if (i != len - 1) {
-               checkInOperatorCommaAmbiguity(word, args[i]);
-            }
-            nlists->push_back(nlist);
-            continue;
-         }
-
-         _def* def;
-         if (parse(uro, tks, def)) {
-            if (i != len - 1) {
-               checkInOperatorCommaAmbiguity(word, args[i]);
-            }
-            defs->push_back(def);
-            continue;
-         }
-
-         Generator<_list>* list;
-         if (parse(uro, tks, list)) {
-            if (i != len - 1) {
-               checkInOperatorCommaAmbiguity(word, args[i]);
-            }
-            lists->push_back(list);
-            continue;
-         }
-
-         deleteVectorPtr(tlists);
-         deleteVectorPtr(nlists);
-         deleteVectorPtr(lists);
-         deleteVectorPtr(defs);
-
-         throw SyntaxException(str(ordinalNumber(i + 1),
-              L" argument of the function '", *word.value.word.os, L"' "
-              L"is not a collection"), word.line);
+      Generator<_str>* str_;
+      if (parse(uro, args[0], str_)) {
+         delete str_;
+         throw SyntaxException(str(L"the argument of the function '", *word.value.word.os,
+            L"' is not a collection. If you want to measure length of a string, use function 'length' instead"), word.line);
       }
 
-      const _size tc = tlists->size();
-      const _size nc = nlists->size();
-      const _size lc = lists->size();
-      const _size dc = defs->size();
-      const _size sum = tc + nc + lc + dc;
-
-      if (sum == 1) {
-         Generator<_num>* result;
-
-         if (tc == 1) {
-            Generator<_tlist>* v = (*tlists)[0];
-            tlists->clear();
-            result = new F_CountUnit<_tim>(v);
-         }
-         else if (nc == 1) {
-            Generator<_nlist>* v = (*nlists)[0];
-            nlists->clear();
-            result = new F_CountUnit<_num>(v);
-         }
-         else if (lc == 1) {
-            Generator<_list>* v = (*lists)[0];
-            lists->clear();
-            result = new F_CountUnit<_str>(v);
-         }
-         else if (dc == 1) {
-            _def* v = (*defs)[0];
-            defs->clear();
-            result = new F_CountUnitDef(v, uro);
-         }
-
-         deleteVectorPtr(tlists);
-         deleteVectorPtr(nlists);
-         deleteVectorPtr(lists);
-         deleteVectorPtr(defs);
-         return result;
+      Generator<_tlist>* tlist;
+      if (parse(uro, args[0], tlist)) {
+          return new F_Count<_tim>(tlist);
       }
 
-      return new F_Count(tlists, nlists, lists, defs, uro);
+      Generator<_nlist>* nlist;
+      if (parse(uro, args[0], nlist)) {
+          return new F_Count<_num>(nlist);
+      }
+
+      _def* def;
+      if (parse(uro, args[0], def)) {
+          return new F_CountDef(def, uro);
+      }
+
+      Generator<_list>* list;
+      if (parse(uro, args[0], list)) {
+          return new F_Count<_str>(list);
+      }
+
+      throw SyntaxException(str(L"the argument of the function '",
+         *word.value.word.os, L"' cannot be resolved to any collection"), word.line);
    }
    else if (name == uro->hashes.HASH_FUNC_COUNTINSIDE) {
       if (len == 0) {

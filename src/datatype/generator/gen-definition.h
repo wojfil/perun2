@@ -27,7 +27,7 @@
 struct DefFilter : _def
 {
 public:
-   DefFilter(_def* def, Uroboros* uro) 
+   DefFilter(_def* def, Uroboros* uro)
       : first(true), definition(def), uroboros(uro) {};
 
    ~DefFilter() {
@@ -259,6 +259,55 @@ private:
    AttributeMemory attrMemory;
    _numi prevIndex;
    _str prevThis;
+};
+
+
+// ternary and binary works with Definitions in its own way
+// so instead of using templates from 'gen.generic.h'
+// here are special structs
+
+struct DefTernary : _def
+{
+public:
+   DefTernary(Generator<_boo>* cond, _def* le, _def* ri)
+      : condition(cond), left(le), right(ri), first(true), isLeft(true) {};
+
+   ~DefTernary() {
+      delete condition;
+      delete left;
+      delete right;
+   }
+
+   void reset() override;
+   _boo hasNext() override;
+
+private:
+   Generator<_boo>* condition;
+   _def* left;
+   _def* right;
+   _boo first;
+   _boo isLeft;
+};
+
+
+struct DefBinary : _def
+{
+public:
+   DefBinary(Generator<_boo>* cond, _def* le)
+      : condition(cond), left(le), first(true) {};
+
+   ~DefBinary() {
+      delete condition;
+      delete left;
+   }
+
+   void reset() override;
+   _boo hasNext() override;
+
+private:
+   Generator<_boo>* condition;
+   _def* left;
+   _boo first;
 };
 
 

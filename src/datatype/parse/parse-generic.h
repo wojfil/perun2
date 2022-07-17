@@ -193,9 +193,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
    std::vector<Tokens> filters;
    tks2.splitByFiltherKeywords(filters);
 
-   const Token& f = tks.first();
    T result;
-   if (!parseOneToken(uro, f, result)) {
+   if (!parseOneToken(uro, tks, result)) {
       return nullptr;
    }
 

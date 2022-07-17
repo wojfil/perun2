@@ -31,7 +31,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
 
    if (len == 1) {
       Generator<_boo>* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
 

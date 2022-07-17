@@ -26,11 +26,10 @@
 Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
-   const Token& first = tks.first();
 
    if (len == 1) {
       Generator<_list>* unit;
-      if (parseOneToken(uro, tks.first(), unit)) {
+      if (parseOneToken(uro, tks, unit)) {
          return unit;
       }
    }

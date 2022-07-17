@@ -23,5 +23,7 @@ _def* parseDefinition(const Tokens& tks, Uroboros* uro);
 
 static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro);
 static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro);
+static _def* parseDefTernary(const Tokens& tks, Uroboros* uro);
+static _def* parseDefBinary(const Tokens& tks, Uroboros* uro);
 
 #endif // PARSE-DEFINITION_H_INCLUDED

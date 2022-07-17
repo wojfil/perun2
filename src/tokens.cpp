@@ -19,8 +19,8 @@
 
 
 Tokens::Tokens(const Tokens& tks)
-   : list(tks.list), start(tks.start), length(tks.length),
-     end(tks.end), guardian(new ParseGuardian()) { };
+   : list(tks.list), start(tks.getStart()), length(tks.getLength()),
+     end(tks.getEnd()), guardian(new ParseGuardian()) { };
 
 Tokens::Tokens(const std::vector<Token>* li)
    : list(li), length(li->size()), start(0),

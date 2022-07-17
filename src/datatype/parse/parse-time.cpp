@@ -34,7 +34,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
 
    if (len == 1) {
       Generator<_tim>* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
    else if (len >= 2) {

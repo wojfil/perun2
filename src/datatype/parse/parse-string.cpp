@@ -30,7 +30,7 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
 
    if (len == 1) {
       Generator<_str>* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
 

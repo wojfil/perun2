@@ -33,7 +33,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 
    if (len == 1) {
       Generator<_num>* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
 
@@ -49,6 +49,10 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
       const _int end = tks.getEnd();
       const _int start = tks.getStart();
       _boo anyOperator = false;
+
+      if (tks.first().isSymbol(L'*')) {
+         return nullptr;
+      }
 
       for (_int i = start; i <= end; i++) {
          const Token& t = tks.listAt(i);

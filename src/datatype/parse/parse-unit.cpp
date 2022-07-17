@@ -21,8 +21,10 @@
 #include "parse-number.h"
 
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_boo>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
 {
+   const Token& tk = tks.first();
+
    switch (tk.type) {
       case Token::t_Keyword: {
          switch (tk.value.keyword.k) {
@@ -48,8 +50,10 @@ _boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_boo>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_num>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
 {
+   const Token& tk = tks.first();
+
    switch (tk.type) {
       case Token::t_Number: {
          result = new Constant<_num>(tk.value.num.n);
@@ -101,8 +105,10 @@ _boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_num>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_str>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
 {
+   const Token& tk = tks.first();
+
    switch (tk.type) {
       case Token::t_Number: {
          result = new Constant<_str>(tk.value.num.n.toString());
@@ -121,26 +127,34 @@ _boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_str>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_nlist>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
 {
+   const Token& tk = tks.first();
+
    return tk.type == Token::t_Word
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_tlist>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
 {
+   const Token& tk = tks.first();
+
    return tk.type == Token::t_Word
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_list>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
 {
+   const Token& tk = tks.first();
+
    return tk.type == Token::t_Word
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_tim>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
 {
+   const Token& tk = tks.first();
+
    switch (tk.type) {
       case Token::t_Word: {
          return uro->vars.getVarValue(tk, result);
@@ -170,19 +184,23 @@ _boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_tim>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, Generator<_per>*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
 {
+   const Token& tk = tks.first();
+
    return tk.type == Token::t_Word
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Token& tk, _def*& result)
+_boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
 {
+   const Token& tk = tks.first();
+
    switch (tk.type) {
       case Token::t_Word: {
          return uro->vars.getVarValue(tk, result);
       }
-      /*case Token::t_Symbol: {
+      case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
             result = new ElementsAtLocation(new LocationReference(uro), ELEM_ALL, uro);
             return true;
@@ -190,7 +208,7 @@ _boo parseOneToken(Uroboros* uro, const Token& tk, _def*& result)
          else {
             return false;
          }
-      }*/
+      }
       default: {
          return false;
       }

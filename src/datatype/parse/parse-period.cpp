@@ -30,7 +30,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
 
    if (len == 1) {
       Generator<_per>* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
 
@@ -61,17 +61,17 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
          }
       }
       else if (len == 3 && tks.first().isSymbol(L'-')) {
-         Tokens tks2(tks);
-         tks2.trimLeft();
          Generator<_per>* ncnst = parsePeriodConst(tks2, true, uro);
          if (ncnst != nullptr) {
             return ncnst;
          }
       }
 
-      Generator<_per>* unt = parsePeriodUnit(tks, uro);
-      if (unt != nullptr) {
-         return unt;
+      if (!tks.containsSymbol(PGCS_QUESTION_MARK) && !tks.containsSymbol(PGCS_COLON) && !tks.containsFilterKeyword()) {
+         Generator<_per>* unt = parsePeriodUnit(tks, uro);
+         if (unt != nullptr) {
+            return unt;
+         }
       }
    }
 

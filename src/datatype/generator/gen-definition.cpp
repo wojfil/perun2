@@ -85,8 +85,8 @@ _boo Filter_LimitDef::hasNext()
       first = false;
    }
 
-   while (counter < limit && definition->hasNext()) {
-      if (!this->uroboros->running) {
+   while (definition->hasNext()) {
+      if (!this->uroboros->running || counter >= limit) {
          definition->reset();
          break;
       }
@@ -115,7 +115,6 @@ _boo Filter_SkipDef::hasNext()
    while (definition->hasNext()) {
       if (!this->uroboros->running) {
          definition->reset();
-         break;
       }
 
       if (counter == limit) {
@@ -149,7 +148,6 @@ _boo Filter_EveryDef::hasNext()
    while (definition->hasNext()) {
       if (!this->uroboros->running) {
          definition->reset();
-         break;
       }
 
       if (counter == limit) {
@@ -452,3 +450,70 @@ _boo OrderByCast::hasNext()
 
    return false;
 }
+
+
+void DefTernary::reset()
+{
+   if (!first) {
+      first = true;
+      if (isLeft) {
+         left->reset();
+      }
+      else {
+         right->reset();
+      }
+   }
+}
+
+
+_boo DefTernary::hasNext()
+{
+   if (first) {
+      isLeft = condition->getValue();
+   }
+
+   if (isLeft) {
+      if (left->hasNext()) {
+         value = left->getValue();
+         return true;
+      }
+   }
+   else {
+      if (right->hasNext()) {
+         value = right->getValue();
+         return true;
+      }
+   }
+
+   first = true;
+   return false;
+}
+
+
+void DefBinary::reset()
+{
+   if (!first) {
+      first = true;
+      left->reset();
+   }
+}
+
+
+_boo DefBinary::hasNext()
+{
+   if (first) {
+      if (!condition->getValue()) {
+         return false;
+      }
+      first = false;
+   }
+
+   if (left->hasNext()) {
+      value = left->getValue();
+      return true;
+   }
+
+   first = true;
+   return false;
+}
+

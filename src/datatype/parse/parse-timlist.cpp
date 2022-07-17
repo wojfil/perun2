@@ -25,11 +25,10 @@
 Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
-   const Token& first = tks.first();
 
    if (len == 1) {
       Generator<_tlist>* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
 

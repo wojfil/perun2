@@ -26,11 +26,10 @@
 _def* parseDefinition(const Tokens& tks, Uroboros* uro)
 {
    const _size len = tks.getLength();
-   const Token& f = tks.first();
 
    if (len == 1) {
       _def* unit = nullptr;
-      parseOneToken(uro, tks.first(), unit);
+      parseOneToken(uro, tks, unit);
       return unit;
    }
 
@@ -44,6 +43,16 @@ _def* parseDefinition(const Tokens& tks, Uroboros* uro)
       if (chain != nullptr) {
          return chain;
       }
+   }
+
+   _def* bin = parseDefBinary(tks, uro);
+   if (bin != nullptr) {
+      return bin;
+   }
+
+   _def* tern = parseDefTernary(tks, uro);
+   if (tern != nullptr) {
+      return tern;
    }
 
    return nullptr;
@@ -218,3 +227,62 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
 
    return nullptr;
 }
+
+
+_def* parseDefTernary(const Tokens& tks, Uroboros* uro)
+{
+   if (!isPossibleTernary(tks)) {
+      return nullptr;
+   }
+
+   Tokens tks1(tks);
+   Tokens tks2(tks);
+   Tokens tks3(tks);
+   tks.divideForTernary(tks1, tks2, tks3);
+
+   Generator<_boo>* condition;
+   if (!parse(uro, tks1, condition)) {
+      return nullptr;
+   }
+
+   _def* left;
+   if (!parse(uro, tks2, left)) {
+      delete condition;
+      return nullptr;
+   }
+
+   _def* right;
+   if (!parse(uro, tks3, right)) {
+      delete condition;
+      delete left;
+      return nullptr;
+   }
+
+   return new DefTernary(condition, left, right);
+}
+
+
+static _def* parseDefBinary(const Tokens& tks, Uroboros* uro)
+{
+   if (!isPossibleBinary(tks)) {
+      return nullptr;
+   }
+
+   Tokens tks1(tks);
+   Tokens tks2(tks);
+   tks.divideBySymbol(L'?', tks1, tks2);
+
+   Generator<_boo>* condition;
+   if (!parse(uro, tks1, condition)) {
+      return nullptr;
+   }
+
+   _def* value;
+   if (!parse(uro, tks2, value)) {
+      delete condition;
+      return nullptr;
+   }
+
+   return new DefBinary(condition, value);
+}
+

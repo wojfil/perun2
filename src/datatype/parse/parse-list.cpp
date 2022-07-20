@@ -40,11 +40,9 @@ Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
    }
 
    if (len >= 3) {
-      if (tks.containsSymbol(PGCS_COMMA)) {
-         Generator<_list>* listed = parseListed(tks, uro);
-         if (listed != nullptr) {
-            return listed;
-         }
+      Generator<_list>* listed = parseListed<_str>(tks, uro);
+      if (listed != nullptr) {
+         return listed;
       }
 
       Generator<_list>* bin = parseBinary<_list>(tks, uro);
@@ -66,72 +64,4 @@ Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
    }
 
    return nullptr;
-}
-
-
-static Generator<_list>* parseListed(const Tokens& tks, Uroboros* uro)
-{
-   Generator<_list>* cnst = parseListConst(tks, uro);
-   if (cnst != nullptr) {
-      return cnst;
-   }
-
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L',', elements);
-
-   Generator<_list>* strs = parseListedValues<_str>(elements, uro);
-   if (strs != nullptr) {
-      return strs;
-   }
-
-   Generator<_list>* lists = parseListedLists<_str>(elements, uro);
-   if (lists != nullptr) {
-      return lists;
-   }
-
-   return nullptr;
-}
-
-Generator<_list>* parseListConst(const Tokens& tks, Uroboros* uro)
-{
-   _list list;
-   const _int start = tks.getStart();
-   const _int end = tks.getEnd();
-   const _boo even = (start % 2 == 0);
-
-   // throw special errors if list starts or ends with a comma
-   if (tks.first().isSymbol(L',')) {
-      throw SyntaxException(L"list cannot start with a comma",
-         tks.first().line);
-   }
-   if (tks.last().isSymbol(L',')) {
-      return nullptr;
-   }
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = tks.listAt(i);
-
-      if (even ^ (i % 2 == 0)) {
-         if (!t.isSymbol(L',')) {
-            return nullptr;
-         }
-      }
-      else {
-         switch(t.type) {
-            case Token::t_Quotation: {
-               list.push_back(*t.value.str);
-               break;
-            }
-            case Token::t_Number: {
-               list.push_back(t.value.num.n.toString());
-               break;
-            }
-            default: {
-               return nullptr;
-            }
-         }
-      }
-   }
-
-   return new Constant<_list>(list);
 }

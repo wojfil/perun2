@@ -39,11 +39,7 @@ static _char toBoolExpOperator(const Token& tk);
 
 static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro);
-static Generator<_boo>* parseInNumList(const bool& negated, const Tokens& left,
-   const Tokens& right, Uroboros* uro);
 static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
-   const Tokens& right, Uroboros* uro);
-static Generator<_boo>* parseInList(const bool& negated, const Tokens& left,
    const Tokens& right, Uroboros* uro);
 static void emptyOperSideException(const Token& oper, const bool& isLeft);
 static void timeInNumberException(const Token& timeVar, const Token& numVar,

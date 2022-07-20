@@ -31,6 +31,12 @@ struct Constant : Generator<T>
 public:
    Constant<T> (const T val) : value(val) {};
    T getValue () override { return value; };
+
+   _boo isConstant()
+   {
+      return true;
+   };
+
 private:
    const T value;
 };

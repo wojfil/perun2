@@ -38,11 +38,9 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
    }
 
    if (len >= 3) {
-      if (tks.containsSymbol(PGCS_COMMA)) {
-         Generator<_nlist>* nlisted = parseNumListed(tks, uro);
-         if (nlisted != nullptr) {
-            return nlisted;
-         }
+      Generator<_nlist>* nlisted = parseListed<_num>(tks, uro);
+      if (nlisted != nullptr) {
+         return nlisted;
       }
 
       Generator<_nlist>* bin = parseBinary<_nlist>(tks, uro);
@@ -64,66 +62,4 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
    }
 
    return nullptr;
-}
-
-static Generator<_nlist>* parseNumListed(const Tokens& tks, Uroboros* uro)
-{
-   Generator<_nlist>* cnst = parseNumListConst(tks);
-   if (cnst != nullptr) {
-      return cnst;
-   }
-
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L',', elements);
-
-   Generator<_nlist>* nums = parseListedValues<_num>(elements, uro);
-   if (nums != nullptr) {
-      return nums;
-   }
-
-   Generator<_nlist>* nlists = parseListedLists<_num>(elements, uro);
-   if (nlists != nullptr) {
-      return nlists;
-   }
-
-   return nullptr;
-}
-
-Generator<_nlist>* parseNumListConst(const Tokens& tks)
-{
-   _nlist nlist;
-   const _int start = tks.getStart();
-   const _int end = tks.getEnd();
-   const _boo even = (start % 2 == 0);
-
-   // throw special errors if nlist starts or ends with a comma
-   if (tks.first().isSymbol(L',')) {
-      throw SyntaxException(L"list cannot start with a comma", tks.first().line);
-   }
-   else if (tks.last().isSymbol(L',')) {
-      return nullptr;
-   }
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = tks.listAt(i);
-
-      if (even ^ (i % 2 == 0)) {
-         if (!t.isSymbol(L',')) {
-            return nullptr;
-         }
-      }
-      else {
-         switch(t.type) {
-            case Token::t_Number: {
-               nlist.push_back(t.value.num.n);
-               break;
-            }
-            default: {
-               return nullptr;
-            }
-         }
-      }
-   }
-
-   return new Constant<_nlist>(nlist);
 }

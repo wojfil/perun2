@@ -59,13 +59,14 @@ struct Xor : BinaryOperation<_boo>
 };
 
 
-// IN operator straight from SQL
+// IN operator straight outta SQL
+// right side is variant, so is generated for every call
 template <typename T>
 struct InList : Generator<_boo>
 {
 public:
    InList<T> (Generator<T>* val, Generator<std::vector<T>>* li)
-      : value(val), list(li), prevLength(0), prevList(std::vector<T>()) { };
+      : value(val), list(li) { };
 
    ~InList<T>() {
       delete value;
@@ -73,36 +74,20 @@ public:
    };
 
    _boo getValue() override {
-      const std::vector<T> lst = list->getValue();
+      const std::vector<T> vs = list->getValue();
+      const T v = value->getValue();
+      const _size len = vs.size();
 
-      if (lst != prevList) {
-         prevList = lst;
-
-         std::sort(prevList.begin(), prevList.end());
-         prevList.erase(std::unique(prevList.begin(), prevList.end()),
-            prevList.end());
-
-         prevLength = prevList.size();
-      }
-
-      switch (prevLength) {
-         case 0: {
-            return false;
-         }
-         case 1: {
-            return prevList[0] == value->getValue();
-         }
-         default: {
-            return std::binary_search(prevList.begin(), prevList.end(),
-               value->getValue());
+      for (_size i = 0; i < len; i++) {
+         if (vs[i] == v) {
+            return true;
          }
       }
+
+      return false;
    };
 
 private:
-   std::vector<T> prevList;
-   _size prevLength;
-
    Generator<T>* value;
    Generator<std::vector<T>>* list;
 };
@@ -114,12 +99,11 @@ template <typename T>
 struct InConstList : Generator<_boo>
 {
 public:
-   InConstList<T> (Generator<T>* val, std::vector<T> li)
-      : value(val)
+   InConstList<T> (Generator<T>* val, const std::vector<T>& li)
+      : value(val), list(li)
    {
-      std::sort(li.begin(), li.end());
-      li.erase(std::unique(li.begin(), li.end()), li.end());
-      list = li;
+      std::sort(list.begin(), list.end());
+      list.erase(std::unique(list.begin(), list.end()), list.end());
    };
 
    ~InConstList<T>() {
@@ -158,7 +142,7 @@ private:
 struct InConstTimeList : Generator<_boo>
 {
 public:
-   InConstTimeList(Generator<_tim>* val, _tlist li)
+   InConstTimeList(Generator<_tim>* val, const _tlist& li)
       : value(val), list(li), length(li.size()) { };
 
    ~InConstTimeList() {
@@ -175,4 +159,3 @@ private:
 
 
 #endif /* GEN_BOOL_H */
-

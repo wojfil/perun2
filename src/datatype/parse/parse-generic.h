@@ -19,6 +19,7 @@
 #include "../../util.h"
 #include "../../var/var-runtime.h"
 #include "../order.h"
+#include "../generator/gen-generic.h"
 #include "../generator/gen-list.h"
 #include "../generator/gen-timlist.h"
 #include "../generator/gen-numlist.h"
@@ -34,7 +35,7 @@ _boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro);
 
 
 template <typename T>
-Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
+static Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
 {
    if (!isPossibleTernary(tks)) {
       return nullptr;
@@ -98,12 +99,16 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
 {
    const _size len = elements.size();
    std::vector<Generator<T>*>* result = new std::vector<Generator<T>*>();
+   _boo isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       Generator<T>* value;
       if (parse(uro, tks, value)) {
          result->push_back(value);
+         if (isConstant && !value->isConstant()) {
+            isConstant = false;
+         }
       }
       else {
          deleteVectorPtr(result);
@@ -111,7 +116,15 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
       }
    }
 
-   return new Listed<T>(result);
+   Generator<std::vector<T>>* v = new Listed<T>(result);
+   if (isConstant) {
+      Generator<std::vector<T>>* cnst = new Constant<std::vector<T>>(v->getValue());
+      delete v;
+      return cnst;
+   }
+   else {
+      return v;
+   }
 }
 
 
@@ -119,13 +132,18 @@ template <typename T>
 static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, Uroboros* uro)
 {
    const _size len = elements.size();
-   std::vector<Generator<std::vector<T>>*>* result = new std::vector<Generator<std::vector<T>>*>();
+   std::vector<Generator<std::vector<T>>*>* result
+      = new std::vector<Generator<std::vector<T>>*>();
+   _boo isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       Generator<std::vector<T>>* value;
       if (parse(uro, tks, value)) {
          result->push_back(value);
+         if (isConstant && !value->isConstant()) {
+            isConstant = false;
+         }
       }
       else {
          deleteVectorPtr(result);
@@ -133,7 +151,35 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
       }
    }
 
-   return new ListedLists<T>(result);
+   Generator<std::vector<T>>* v = new ListedLists<T>(result);
+   if (isConstant) {
+      Generator<std::vector<T>>* cnst = new Constant<std::vector<T>>(v->getValue());
+      delete v;
+      return cnst;
+   }
+   else {
+      return v;
+   }
+}
+
+
+template <typename T>
+static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
+{
+   if (!tks.containsSymbol(PGCS_COMMA)) {
+      return nullptr;
+   }
+
+   std::vector<Tokens> elements;
+   tks.splitBySymbol(L',', elements);
+
+   Generator<std::vector<T>>* strs = parseListedValues<T>(elements, uro);
+   if (strs != nullptr) {
+      return strs;
+   }
+
+   Generator<std::vector<T>>* lists = parseListedLists<T>(elements, uro);
+   return lists;
 }
 
 

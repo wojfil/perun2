@@ -21,7 +21,4 @@
 
 Generator<_list>* parseList(const Tokens& tks, Uroboros* uro);
 
-static Generator<_list>* parseListed(const Tokens& tks, Uroboros* uro);
-Generator<_list>* parseListConst(const Tokens& tks, Uroboros* uro);
-
 #endif /* PARSE_LIST_H */

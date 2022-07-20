@@ -15,6 +15,7 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include "primitives.h"
 
 // generator is a structure
 // that generates a new instance of a certain data type
@@ -22,8 +23,19 @@
 template <typename T>
 struct Generator
 {
+public:
+
    virtual T getValue() = 0;
+
    virtual ~Generator() { };
+
+   _boo isConstant()
+   {
+      // artificially implemented simple reflection for parsing
+      // constant generators are detected
+      // and used for optimizations in some situations
+      return false;
+   };
 };
 
 

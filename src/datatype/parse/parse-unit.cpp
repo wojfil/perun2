@@ -200,7 +200,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
       case Token::t_Word: {
          return uro->vars.getVarValue(tk, result);
       }
-      case Token::t_Symbol: {
+      /*case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
             result = new ElementsAtLocation(new LocationReference(uro), ELEM_ALL, uro);
             return true;
@@ -208,7 +208,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
          else {
             return false;
          }
-      }
+      }*/
       default: {
          return false;
       }

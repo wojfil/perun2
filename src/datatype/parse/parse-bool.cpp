@@ -526,6 +526,47 @@ static _char toBoolExpOperator(const Token& tk)
    }
 }
 
+template <typename T>
+static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
+   const Tokens& right, Uroboros* uro)
+{
+   Generator<T>* valLeft;
+   if (!parse(uro, left, valLeft)) {
+      return nullptr;
+   }
+
+   // check if the right side is a single value
+   // in this special case, the whole structure is reduced to
+   // a simple comparison "left == right" or "left != right"
+   Generator<T>* num2;
+   if (parse(uro, right, num2)) {
+      if (negated) {
+         return new NotEquals<T>(valLeft, num2);
+      }
+      else {
+         return new Equals<T>(valLeft, num2);
+      }
+   }
+
+   Generator<std::vector<T>>* valRight;
+
+   if (parse(uro, right, valRight)) {
+      if (valRight->isConstant()) {
+         const std::vector<T> vs = valRight->getValue();
+         delete valRight;
+         Generator<_boo>* in = new InConstList<T>(valLeft, vs);
+         return negated ? new Not(in) : in;
+      }
+      else {
+         Generator<_boo>* in = new InList<T>(valLeft, valRight);
+         return negated ? new Not(in) : in;
+      }
+   }
+   else {
+      delete valLeft;
+      return nullptr;
+   }
+}
 
 static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
 {
@@ -549,7 +590,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
    }
 
    // first: try to build "Number IN NumList"
-   Generator<_boo>* list = parseInNumList(neg, left, right, uro);
+   Generator<_boo>* list = parseIn_Unit<_num>(neg, left, right, uro);
    if (list != nullptr) {
       return list;
    }
@@ -604,50 +645,10 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
    }
 
    // finally: try to build "string IN list"
-   Generator<_boo>* list3 = parseInList(neg, left, right, uro);
+   Generator<_boo>* list3 = parseIn_Unit<_str>(neg, left, right, uro);
    return list3;
 }
 
-static Generator<_boo>* parseInNumList(const bool& negated, const Tokens& left,
-   const Tokens& right, Uroboros* uro)
-{
-   Generator<_num>* num;
-   if (!parse(uro, left, num)) {
-      return nullptr;
-   }
-
-   // check if the right side is a single Number
-   // in this special case, the whole structure is reduced to
-   // a simple comparison "Number == Number" or "Number != Number"
-   Generator<_num>* num2;
-   if (parse(uro, right, num2)) {
-      if (negated) {
-         return new NotEquals<_num>(num, num2);
-      }
-      else {
-         return new Equals<_num>(num, num2);
-      }
-   }
-
-   Tokens tks2 = prepareForGen(right, uro);
-   Generator<_nlist>* cnst = parseNumListConst(tks2);
-   if (cnst != nullptr) {
-      _nlist nlist = cnst->getValue();
-      Generator<_boo>* in = new InConstList<_num>(num, nlist);
-      return negated ? new Not(in) : in;
-   }
-   else {
-      Generator<_nlist>* nlist;
-      if (parse(uro, tks2, nlist)) {
-         Generator<_boo>* in = new InList<_num>(num, nlist);
-         return negated ? new Not(in) : in;
-      }
-      else {
-         delete num;
-         return nullptr;
-      }
-   }
-}
 
 static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    const Tokens& right, Uroboros* uro)
@@ -657,9 +658,6 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
       return nullptr;
    }
 
-   // check if the right side is a single Time
-   // in this special case, the whole structure is reduced to
-   // a simple comparison "Time == Time" or "Time != Time"
    Generator<_tim>* tim2;
    if (parse(uro, right, tim2)) {
       if (negated) {
@@ -670,68 +668,22 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
       }
    }
 
-   Tokens tks2 = prepareForGen(right, uro);
-   std::vector<Tokens> elements;
-   tks2.splitBySymbol(L',', elements);
-   Generator<_tlist>* cnst = parseTimListConst(elements);
-   if (cnst != nullptr) {
-      _tlist tlist = cnst->getValue();
-      Generator<_boo>* in = new InConstTimeList(tim, tlist);
-      return negated ? new Not(in) : in;
-   }
-   else {
-      Generator<_tlist>* tlist;
-      if (parse(uro, tks2, tlist)) {
+   Generator<_tlist>* tlist;
+   if (parse(uro, right, tlist)) {
+      if (tlist->isConstant()) {
+         const _tlist vs = tlist->getValue();
+         delete tlist;
+         Generator<_boo>* in = new InConstTimeList(tim, vs);
+         return negated ? new Not(in) : in;
+      }
+      else {
          Generator<_boo>* in = new InTimeList(tim, tlist);
          return negated ? new Not(in) : in;
       }
-      else {
-         delete tim;
-         return nullptr;
-      }
-   }
-
-   return nullptr;
-}
-
-static Generator<_boo>* parseInList(const bool& negated, const Tokens& left,
-   const Tokens& right, Uroboros* uro)
-{
-   Generator<_str>* str;
-   if (!parse(uro, left, str)) {
-      return nullptr;
-   }
-
-   // check if the right side is a single string
-   // in this special case, the whole structure is reduced to
-   // a simple comparison "string == string" or "string != string"
-   Generator<_str>* str2;
-   if (parse(uro, right, str2)) {
-      if (negated) {
-         return new NotEquals<_str>(str, str2);
-      }
-      else {
-         return new Equals<_str>(str, str2);
-      }
-   }
-
-   Tokens tks2 = prepareForGen(right, uro);
-   Generator<_list>* cnst = parseListConst(tks2, uro);
-   if (cnst != nullptr) {
-      _list list = cnst->getValue();
-      Generator<_boo>* in = new InConstList<_str>(str, list);
-      return negated ? new Not(in) : in;
    }
    else {
-      Generator<_list>* list;
-      if (parse(uro, tks2, list)) {
-         Generator<_boo>* in = new InList<_str>(str, list);
-         return negated ? new Not(in) : in;
-      }
-      else {
-         delete str;
-         return nullptr;
-      }
+      delete tim;
+      return nullptr;
    }
 }
 

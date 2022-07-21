@@ -30,12 +30,15 @@ public:
    _str getCode() const;
    ArgsParseState getParseState() const;
 
+   // to avoid unnecessary duplication of potentially long code
+   // code is public and passed as a reference to the lexer
+   _str code;
+
 private:
 
    _uint32 flags;
    _list args;
    _str location;
-   _str code;
    ArgsParseState parseState;
 };
 

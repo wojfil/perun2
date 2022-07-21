@@ -63,7 +63,6 @@ public:
 
 
 private:
-    const _str code;
 
 };
 

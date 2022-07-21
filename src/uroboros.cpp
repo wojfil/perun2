@@ -30,7 +30,7 @@
 
 Uroboros::Uroboros(const Arguments& args) : arguments(args), hashes(Hashes()), vars(Variables(this)),
    vc(VariablesContext(&this->hashes)), math(Math()), flags(args.getFlags()), running(true),
-   break_(false), continue_(false), exitCode(EXITCODE_OK), code(args.getCode()), sideProcess(SideProcess()),
+   break_(false), continue_(false), exitCode(EXITCODE_OK), sideProcess(SideProcess()),
    terminator(Terminator(this)), keywordsData(KeywordsData()), literals(Literals()) { };
 
 
@@ -40,7 +40,7 @@ void Uroboros::run()
 
    // parse code into commands
    try {
-      const std::vector<Token> vec = tokenize(this->code, this);
+      const std::vector<Token> vec = tokenize(this->arguments.code, this);
       Tokens tks(&vec);
       checkBrackets(tks);
       commands = parseCommands(tks, this);

@@ -120,6 +120,9 @@ private:
 };
 
 
+// Time works quite differently than other data types
+// for example '3 June 2005' equals 'June 2005'
+// so let there be special case structs
 struct InTimeList : Generator<_boo>
 {
 public:
@@ -143,7 +146,7 @@ struct InConstTimeList : Generator<_boo>
 {
 public:
    InConstTimeList(Generator<_tim>* val, const _tlist& li)
-      : value(val), list(li), length(li.size()) { };
+      : value(val), list(sortedAndUniqueTimeList(li)), length(li.size()) { };
 
    ~InConstTimeList() {
       delete value;

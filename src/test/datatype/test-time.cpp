@@ -36,6 +36,16 @@ void test_time()
     testCase_timeShift(12, _tim(21, 11, 2021, 10, 15), _per(23, Period::u_Hours), _tim(22, 11, 2021, 9, 15));
     testCase_timeShift(13, _tim(21, 11, 2021, 10, 15, 16), _per(2, Period::u_Seconds), _tim(21, 11, 2021, 10, 15, 18));
     testCase_timeShift(14, _tim(21, 11, 2021, 10, 15, 0), _per(86340, Period::u_Seconds), _tim(22, 11, 2021, 10, 14, 0));
+	
+	testCase_timeListSortAndUnique(101, { _tim(3, 6, 2000), _tim(2, 6, 2000) }, { _tim(2, 6, 2000), _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(102, { _tim(3, 6, 2000), _tim(2, 7, 2007), _tim(28, 2, 2003) }, { _tim(3, 6, 2000), _tim(28, 2, 2003), _tim(2, 7, 2007) });
+	testCase_timeListSortAndUnique(103, { _tim(3, 6, 2000), _tim(2, 6, 2000), _tim(2, 6, 2000), _tim(3, 6, 2000), _tim(3, 6, 2000) }, { _tim(2, 6, 2000), _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(104, { _tim(3, 6, 2000), _tim(6, 2000) }, { _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(105, { _tim(3, 6, 2000), _tim(3, 6, 2000) }, { _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(106, { _tim(3, 6, 2000) }, { _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(107, { _tim(6, 2000), _tim(3, 6, 2000) }, { _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(108, { _tim(2, 6, 2000), _tim(2, 6, 2000), _tim(3, 6, 2000), _tim(3, 6, 2000) }, { _tim(2, 6, 2000), _tim(3, 6, 2000) });
+	testCase_timeListSortAndUnique(109, { _tim(6, 2000), _tim(3, 6, 2000,15, 16) }, { _tim(6, 2000) });
 }
 
 void testCase_timeShift(const _int& caseId, const _tim& value, const _per& shift, const _tim& expectedResult)
@@ -44,3 +54,10 @@ void testCase_timeShift(const _int& caseId, const _tim& value, const _per& shift
     v += shift;
     VERIFY(v == expectedResult, caseId);
 }
+
+void testCase_timeListSortAndUnique(const _int& caseId, const _tlist& input, const _tlist& expectedResult)
+{
+	const _tlist result = sortedAndUniqueTimeList(input);
+    VERIFY(result == expectedResult, caseId);
+}
+

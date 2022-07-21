@@ -16,17 +16,19 @@
 #define TIME_H
 
 #include "period.h"
+#include <vector>
 
 
 struct Time
 {
-   // time can be defined in 4 ways:
+   // time can be defined in 4 forms:
    enum TimeType
    {
       tt_YearMonth = 0,     // contains month and year
       tt_Date = 1,          // contains day, month and year
       tt_ShortClock = 2,    // contains day, month, year, hour, minute
       tt_Clock = 3          // contains day, month, year, hour, minute, second
+      // these numbers are important and do not delete them
    };
 
    Time();
@@ -94,7 +96,6 @@ inline void decrementMonth(Period& p, const Time& t, const _boo& addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);
-
-
+std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base);
 
 #endif /* TIME_H */

@@ -16,6 +16,7 @@
 #include <vector>
 #include <sstream>
 #include <math.h>
+#include <algorithm>
 
 
 const _tnum FIRST_YEAR = 1601;
@@ -988,4 +989,24 @@ inline void clockTillMidnight(Period& p, const Time& t)
    }
 }
 
+std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base)
+{
+   std::vector<Time> result = base;
+   std::sort(result.begin(), result.end());
+   _size len = result.size();
 
+   for (_size i = 1; i < len; i++) {
+      if (result[i - 1] == result[i]) {
+         if (result[i - 1].type <= result[i].type) {
+            result.erase(result.begin() + i);
+         }
+         else {
+            result.erase(result.begin() + i - 1);
+         }
+         len--;
+         i--;
+      }
+   }
+
+   return result;
+}

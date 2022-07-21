@@ -36,43 +36,21 @@ _boo Xor::getValue() {
 
 
 _boo InTimeList::getValue() {
+   const _tim time = value->getValue();
    const _tlist lst = list->getValue();
    const _size length = lst.size();
 
-   switch (length) {
-      case 0: {
-         return false;
-      }
-      case 1: {
-         return lst[0] == value->getValue();
-      }
-      case 2: {
-         const _tim time = value->getValue();
-         return lst[0] == time
-             || lst[1] == time;
-      }
-      default: {
-         const _tim time = value->getValue();
-         for (_size i = 0; i < length; i++) {
-            if (lst[i] == time) {
-               return true;
-            }
-         }
-         return false;
-      }
-   }
-};
-
-
-_boo InConstTimeList::getValue() {
-   const _tim time = value->getValue();
-
    for (_size i = 0; i < length; i++) {
-      if (list[i] == time) {
+      if (lst[i] == time) {
          return true;
       }
    }
 
    return false;
+};
+
+
+_boo InConstTimeList::getValue() {
+   return std::binary_search(list.begin(), list.end(), value->getValue());
 };
 

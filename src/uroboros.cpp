@@ -31,44 +31,92 @@
 Uroboros::Uroboros(const Arguments& args) : arguments(args), hashes(Hashes()), vars(Variables(this)),
    vc(VariablesContext(&this->hashes)), math(Math()), flags(args.getFlags()), running(true),
    break_(false), continue_(false), exitCode(EXITCODE_OK), sideProcess(SideProcess()),
-   terminator(Terminator(this)), keywordsData(KeywordsData()), literals(Literals()) { };
+   terminator(Terminator(this)), keywordsData(KeywordsData()), literals(Literals()),
+   commands(nullptr), tokens(std::vector<Token>()) { };
 
 
-void Uroboros::run()
+_boo Uroboros::run()
 {
-   Command* commands;
+   return this->uro_tokenize()
+       && this->uro_parse()
+       && this->uro_postParse()
+       && this->uro_runCommands();
+};
 
-   // parse code into commands
+_boo Uroboros::uro_tokenize()
+{
+   this->exitCode = EXITCODE_OK;
+
    try {
-      const std::vector<Token> vec = tokenize(this->arguments.code, this);
-      Tokens tks(&vec);
-      checkBrackets(tks);
-      commands = parseCommands(tks, this);
+      this->tokens = tokenize(this->arguments.code, this);
    }
-   catch (SyntaxException ex) {
+   catch (const SyntaxException& ex) {
       rawPrint(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
-      return;
+      return false;
    }
    catch (...) {
       SyntaxException ex2(L"wrong syntax. No command can be formed of this code", 1);
       rawPrint(ex2.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
-      return;
+      return false;
    }
 
+   return true;
+};
+
+
+_boo Uroboros::uro_parse()
+{
+   try {
+      Tokens tks(&this->tokens);
+      checkBrackets(tks);
+      this->commands = parseCommands(tks, this);
+   }
+   catch (const SyntaxException& ex) {
+      rawPrint(ex.getMessage());
+      this->exitCode = EXITCODE_SYNTAX_ERROR;
+      return false;
+   }
+   catch (...) {
+      SyntaxException ex2(L"wrong syntax. No command can be formed of this code", 1);
+      rawPrint(ex2.getMessage());
+      this->exitCode = EXITCODE_SYNTAX_ERROR;
+      return false;
+   }
+
+   return true;
+};
+
+_boo Uroboros::uro_postParse()
+{
    this->math.init();
 
-   // run commands
+   // this is potential direction of optimizations
+   // next iteration of syntax analysis after successful parsing of commands
+   // 1) variables, that appear only once are incorporated into optimized expressions as constants
+   // 2) If statements, that do not contain any Else/Else If structure are transformed into simpler forms
+   // 3) loops, that do not feature any attribute are also simplified
+   // how to do that? potential solution:
+   // every Command has a method: Command* postParse();
+   // it returns nullptr by default
+   // we can override this method, so the command can return a simplified form of itself if possible
+
+   return true;
+};
+
+_boo Uroboros::uro_runCommands()
+{
    try {
-      commands->run();
+      this->commands->run();
    }
-   catch (UroRuntimeException re) {
+   catch (const UroRuntimeException& re) {
       rawPrint(re.getMessage());
-      delete commands;
+      delete this->commands;
       this->exitCode = EXITCODE_RUNTIME_ERROR;
-      return;
+      return false;
    }
 
-   delete commands;
-}
+   delete this->commands;
+   return true;
+};

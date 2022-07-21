@@ -24,6 +24,7 @@
 #include "keyword.h"
 #include "side-process.h"
 #include "literals.h"
+#include "command/com.h"
 
 #define VERSION_STR L"1.0.6"
 
@@ -42,7 +43,7 @@ struct Uroboros
 {
 public:
    Uroboros(const Arguments& args);
-   void run();
+   _boo run();
 
    const Arguments arguments;
    Hashes hashes;
@@ -53,7 +54,6 @@ public:
    const KeywordsData keywordsData;
    SideProcess sideProcess;
    Literals literals;
-
    const _uint32 flags;
 
    _boo running; // program exits this way
@@ -63,6 +63,13 @@ public:
 
 
 private:
+   Command* commands;
+   std::vector<Token> tokens;
+
+   _boo uro_tokenize();
+   _boo uro_parse();
+   _boo uro_postParse();
+   _boo uro_runCommands();
 
 };
 

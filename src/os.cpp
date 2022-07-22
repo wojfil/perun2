@@ -35,8 +35,6 @@ static const _nint OS_SLEEP_UNIT = 300LL;
 // while sleeping
 // check every 300 ms if the program received an interruption signal
 
-WIN32_FILE_ATTRIBUTE_DATA os_wfadata;
-
 
 _tim os_now()
 {
@@ -886,124 +884,42 @@ _boo os_unlock(const _str& path)
    return true;
 }
 
-_boo os_reaccessTo(const _str& path, const _tim& time)
+
+_boo os_setTime(const _str& path, const _tim& creation,
+   const _tim& access, const _tim& modification)
 {
-   FILETIME ftime;
-   if (!convertToFileTime(time, ftime)) {
+   FILETIME time_c;
+   FILETIME time_a;
+   FILETIME time_m;
+
+   if (!(convertToFileTime(creation, time_c)
+    && convertToFileTime(access, time_a)
+    && convertToFileTime(modification, time_m)))
+   {
       return false;
    }
 
-   HANDLE handle = CreateFileW(path.c_str(),
+   /*HANDLE handle = CreateFileW(path.c_str(),
       FILE_WRITE_ATTRIBUTES,
       FILE_SHARE_READ | FILE_SHARE_WRITE,
       NULL, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS, NULL);
+      FILE_FLAG_BACKUP_SEMANTICS, NULL);*/
+
+
+   /*HANDLE handle = CreateFileW(path.c_str(), GENERIC_WRITE, 0, NULL,
+      CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);*/
+
+   HANDLE handle = CreateFile(path.c_str(),
+      FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE,
+      NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
    if (handle == INVALID_HANDLE_VALUE) {
       return false;
    }
 
-   if (SetFileTime(handle, &os_wfadata.ftCreationTime,
-      &ftime, &os_wfadata.ftLastWriteTime))
-   {
-      os_wfadata.ftLastAccessTime = ftime;
-      CloseHandle(handle);
-      return true;
-   }
-   else {
-      CloseHandle(handle);
-      return false;
-   }
-}
-
-_boo os_rechangeTo(const _str& path, const _tim& time)
-{
-   FILETIME ftime;
-   if (!convertToFileTime(time, ftime)) {
-      return false;
-   }
-
-   HANDLE handle = CreateFileW(path.c_str(),
-      FILE_WRITE_ATTRIBUTES,
-      FILE_SHARE_READ | FILE_SHARE_WRITE,
-      NULL, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS, NULL);
-
-   if (handle == INVALID_HANDLE_VALUE) {
-      return false;
-   }
-
-   if (SetFileTime(handle, &os_wfadata.ftCreationTime,
-      &os_wfadata.ftLastAccessTime, &ftime))
-   {
-      os_wfadata.ftLastWriteTime = ftime;
-      CloseHandle(handle);
-      return true;
-   }
-   else {
-      CloseHandle(handle);
-      return false;
-   }
-}
-
-_boo os_recreateTo(const _str& path, const _tim& time)
-{
-   FILETIME ftime;
-   if (!convertToFileTime(time, ftime)) {
-      return false;
-   }
-
-   HANDLE handle = CreateFileW(path.c_str(),
-      FILE_WRITE_ATTRIBUTES,
-      FILE_SHARE_READ | FILE_SHARE_WRITE,
-      NULL, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS, NULL);
-
-   if (handle == INVALID_HANDLE_VALUE) {
-      return false;
-   }
-
-   if (SetFileTime(handle, &ftime,
-      &os_wfadata.ftLastAccessTime, &os_wfadata.ftLastWriteTime))
-   {
-      os_wfadata.ftCreationTime = ftime;
-      CloseHandle(handle);
-      return true;
-   }
-   else {
-      CloseHandle(handle);
-      return false;
-   }
-}
-
-_boo os_remodifyTo(const _str& path, const _tim& time)
-{
-   FILETIME ftime;
-   if (!convertToFileTime(time, ftime)) {
-      return false;
-   }
-
-   HANDLE handle = CreateFileW(path.c_str(),
-      FILE_WRITE_ATTRIBUTES,
-      FILE_SHARE_READ | FILE_SHARE_WRITE,
-      NULL, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS, NULL);
-
-   if (handle == INVALID_HANDLE_VALUE) {
-      return false;
-   }
-
-   if (SetFileTime(handle, &os_wfadata.ftCreationTime,
-      &os_wfadata.ftLastAccessTime, &ftime))
-   {
-      os_wfadata.ftLastWriteTime = ftime;
-      CloseHandle(handle);
-      return true;
-   }
-   else {
-      CloseHandle(handle);
-      return false;
-   }
+   const _boo result = SetFileTime(handle, &time_c, &time_a, &time_m);
+   CloseHandle(handle);
+   return result;
 }
 
 _boo os_createFile(const _str& path)
@@ -1025,6 +941,12 @@ _boo os_createFile(const _str& path)
       CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
    if (h) {
+      FILETIME ftime;
+
+      if (convertToFileTime(os_now(), ftime)) {
+         SetFileTime(h, &ftime, &ftime, &ftime);
+      }
+
       CloseHandle(h);
       return true;
    }

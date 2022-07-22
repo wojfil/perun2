@@ -199,38 +199,13 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
 
 
    if (left.isEmpty()) {
-      uro->vc.setCoreComAttribute(str(*word.value.keyword.os, L" to"), line);
+      uro->vc.setTimeComAttribute(*word.value.keyword.os, line);
       Generator<_tim>* tim;
       if (!parse(uro, right, tim)) {
          throw SyntaxException(str(L"time argument of command '", *word.value.keyword.os,
             L" to' is not valid"), line);
       }
 
-      switch (word.value.keyword.k) {
-         case Keyword::kw_Reaccess: {
-            Token t(uro->hashes.HASH_VAR_ACCESS, line, L"access", uro);
-            uro->vc.setAttribute(t);
-            break;
-         }
-         case Keyword::kw_Recreate: {
-            Token t(uro->hashes.HASH_VAR_CREATION, line, L"creation", uro);
-            uro->vc.setAttribute(t);
-            break;
-         }
-         case Keyword::kw_Rechange: {
-            Token t(uro->hashes.HASH_VAR_CHANGE, line, L"change", uro);
-            uro->vc.setAttribute(t);
-            break;
-         }
-         case Keyword::kw_Remodify: {
-            Token t(uro->hashes.HASH_VAR_MODIFICATION, line, L"modification", uro);
-            uro->vc.setAttribute(t);
-            break;
-         }
-         default: {
-            break;
-         }
-      }
       return coreCommandTime(word, tim, true, uro);
    }
 
@@ -238,34 +213,8 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = ThisState::ts_String;
    Attribute* attr = new Attribute(uro);
-   attr->setCoreCommandBase();
+   attr->setTimeCommandBase();
    uro->vc.addAttribute(attr);
-
-   switch (word.value.keyword.k) {
-      case Keyword::kw_Reaccess: {
-         Token t(uro->hashes.HASH_VAR_ACCESS, line, L"access", uro);
-         uro->vc.setAttribute(t);
-         break;
-      }
-      case Keyword::kw_Recreate: {
-         Token t(uro->hashes.HASH_VAR_CREATION, line, L"creation", uro);
-         uro->vc.setAttribute(t);
-         break;
-      }
-      case Keyword::kw_Rechange: {
-         Token t(uro->hashes.HASH_VAR_CHANGE, line, L"change", uro);
-         uro->vc.setAttribute(t);
-         break;
-      }
-      case Keyword::kw_Remodify: {
-         Token t(uro->hashes.HASH_VAR_MODIFICATION, line, L"modification", uro);
-         uro->vc.setAttribute(t);
-         break;
-      }
-      default: {
-         break;
-      }
-   }
 
    Generator<_tim>* tim;
    if (!parse(uro, right, tim)) {

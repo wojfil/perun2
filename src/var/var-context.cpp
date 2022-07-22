@@ -56,6 +56,25 @@ void VariablesContext::setCoreComAttribute(const _str& comName, const _int& line
    last->set(ATTR_PATH);
 }
 
+void VariablesContext::setTimeComAttribute(const _str& comName, const _int& line)
+{
+   const _size size = this->attrs.size();
+
+   if (size == 0) {
+      throw SyntaxException(str(L"the subject of command '", comName,
+         L" to' is undefined here"), line);
+   }
+
+   Attribute* last = this->attrs[size - 1];
+   last->set(ATTR_EXISTS);
+   last->set(ATTR_FULLNAME);
+   last->set(ATTR_PATH);
+   last->set(ATTR_ACCESS);
+   last->set(ATTR_CREATION);
+   last->set(ATTR_MODIFICATION);
+   last->set(ATTR_CHANGE);
+}
+
 void VariablesContext::attributeException(const Token& tk)
 {
    throw SyntaxException(str(L"the value of variable '", *tk.value.word.os,

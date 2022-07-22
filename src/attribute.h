@@ -58,6 +58,7 @@ public:
    void add(const Token& tk);
    void set(const _aunit& v);
    void setCoreCommandBase();
+   void setTimeCommandBase();
    _boo has(const _aunit& v) const;
    _boo hasAny() const;
 

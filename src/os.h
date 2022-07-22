@@ -29,7 +29,6 @@ const _str OS_UROEXT = L"uro";
 const _str OS_DOT_UROEXT = L".uro";
 const _str OS_GIT_DIRECTORY = L".git";
 
-extern WIN32_FILE_ATTRIBUTE_DATA os_wfadata;
 
 _tim os_now();
 _tim os_today();
@@ -86,10 +85,8 @@ _boo os_openAsCommand(const _str& command);
 _boo os_unhide(const _str& path);
 _boo os_unlock(const _str& path);
 
-_boo os_reaccessTo(const _str& path, const _tim& time);
-_boo os_rechangeTo(const _str& path, const _tim& time);
-_boo os_recreateTo(const _str& path, const _tim& time);
-_boo os_remodifyTo(const _str& path, const _tim& time);
+_boo os_setTime(const _str& path, const _tim& creation,
+   const _tim& access, const _tim& modification);
 
 _boo os_createFile(const _str& path);
 _boo os_createDirectory(const _str& path);

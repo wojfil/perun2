@@ -29,8 +29,9 @@ public:
    VariablesContext(Hashes* hsh);
 
    void setAttribute(const Token& tk);
-   void setAttribute(const _size& name);
+   //void setAttribute(const _size& name);
    void setCoreComAttribute(const _str& comName, const _int& line);
+   void setTimeComAttribute(const _str& comName, const _int& line);
    void attributeException(const Token& tk);
    void addAttribute(Attribute* attr);
    void retreatAttribute();

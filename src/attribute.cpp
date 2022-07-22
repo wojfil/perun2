@@ -102,6 +102,18 @@ void Attribute::setCoreCommandBase()
    this->set(ATTR_PATH);
 }
 
+void Attribute::setTimeCommandBase()
+{
+   this->set(ATTR_EXISTS);
+   this->set(ATTR_FULLNAME);
+   this->set(ATTR_PATH);
+   this->set(ATTR_ACCESS);
+   this->set(ATTR_CREATION);
+   this->set(ATTR_MODIFICATION);
+   this->set(ATTR_CHANGE);
+}
+
+
 _boo Attribute::has(const _aunit& v) const
 {
    return value & v;

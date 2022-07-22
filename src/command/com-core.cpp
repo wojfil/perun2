@@ -188,10 +188,10 @@ void C_ReaccessTo::run()
    if (this->uroboros->running) {
       _tim t = this->inner->access.value;
       t.setValue(time->getValue());
-      const _boo s = this->inner->exists.value && os_reaccessTo(this->inner->path.value, t);
-      this->inner->success.value = s;
+      this->inner->success.value = this->inner->exists.value
+         && os_setTime(this->inner->path.value, this->inner->creation.value, t, this->inner->modification.value);
 
-      if (s) {
+      if (this->inner->success.value) {
          commandLog(this->uroboros, L"Reaccess ", getCCName(this->inner->path.value), L" to ", t.toString());
 
          if (saveChanges) {
@@ -209,14 +209,15 @@ void C_RechangeTo::run()
    if (this->uroboros->running) {
       _tim t = this->inner->change.value;
       t.setValue(time->getValue());
-      const _boo s = this->inner->exists.value && os_rechangeTo(this->inner->path.value, t);
-      this->inner->success.value = s;
+      this->inner->success.value = this->inner->exists.value
+         && os_setTime(this->inner->path.value, this->inner->creation.value, this->inner->access.value, t);
 
-      if (s) {
+      if (this->inner->success.value) {
          commandLog(this->uroboros, L"Rechange ", getCCName(this->inner->path.value), L" to ", t.toString());
 
          if (saveChanges) {
             this->inner->change.value = t;
+            this->inner->modification.value = t;
          }
       }
       else {
@@ -230,10 +231,10 @@ void C_RecreateTo::run()
    if (this->uroboros->running) {
       _tim t = this->inner->creation.value;
       t.setValue(time->getValue());
-      const _boo s = this->inner->exists.value && os_recreateTo(this->inner->path.value, t);
-      this->inner->success.value = s;
+      this->inner->success.value = this->inner->exists.value
+         && os_setTime(this->inner->path.value, t, this->inner->access.value, this->inner->modification.value);
 
-      if (s) {
+      if (this->inner->success.value) {
          commandLog(this->uroboros, L"Recreate ", getCCName(this->inner->path.value),  L" to ", t.toString());
 
          if (saveChanges) {
@@ -251,14 +252,15 @@ void C_RemodifyTo::run()
    if (this->uroboros->running) {
       _tim t = this->inner->modification.value;
       t.setValue(time->getValue());
-      const _boo s = this->inner->exists.value && os_remodifyTo(this->inner->path.value, t);
-      this->inner->success.value = s;
+      this->inner->success.value = this->inner->exists.value
+         && os_setTime(this->inner->path.value, this->inner->creation.value, this->inner->access.value, t);
 
-      if (s) {
+      if (this->inner->success.value) {
          commandLog(this->uroboros, L"Remodify ", getCCName(this->inner->path.value), L" to ", t.toString());
 
          if (saveChanges) {
             this->inner->modification.value = t;
+            this->inner->change.value = t;
          }
       }
       else {

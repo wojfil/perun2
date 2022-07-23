@@ -41,7 +41,7 @@ Command* parseCommands(const Tokens& tks, Uroboros* uro)
             case L';': {
                if (depth == 0) {
                   if (sublen != 0) {
-                     lockLastIf();
+                     //lockLastIf();
                      Tokens tks2(tks.list, i - sublen, sublen);
                      commands.push_back(command(tks2, uro));
                      sublen = 0;
@@ -172,7 +172,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       Generator<_boo>* boo;
-      if (parse(uro, left, boo)) {
+      if (!parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os,
             L"' is not followed by a valid condition"), leftFirst.line);
       }
@@ -246,11 +246,11 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       Generator<_list>* list;
       if (parse(uro, left, list)) {
-         throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os, L"' is not followed by a valid "
-            L"declaration of string or list"), leftFirst.line);
+         return new CS_InsideList(list, com, attr, aggr, hasMemory, uro);
       }
       else {
-         return new CS_InsideList(list, com, attr, aggr, hasMemory, uro);
+         throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os, L"' is not followed by a valid "
+            L"declaration of string or list"), leftFirst.line);
       }
    }
 
@@ -263,7 +263,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       Generator<_boo>* boo;
-      if (parse(uro, left, boo)) {
+      if (!parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os, L"' is not followed by a valid condition"),
             leftFirst.line);
       }
@@ -323,7 +323,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
 
          Generator<_boo>* boo;
-         if (parse(uro, left, boo)) {
+         if (!parse(uro, left, boo)) {
             throw SyntaxException(str(L"keywords '", *leftFirst.value.keyword.os, L" ",
                *ifToken.value.keyword.os, L"' are not followed by a valid condition"), leftFirst.line);
          }

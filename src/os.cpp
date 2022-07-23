@@ -71,7 +71,7 @@ _tim os_yesterday()
 
 void os_sleepForMs(const _nint& ms, Uroboros* uro)
 {
-   if (ms <= 0) {
+   if (ms <= 0LL) {
       return;
    }
 

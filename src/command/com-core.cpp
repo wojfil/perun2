@@ -169,8 +169,14 @@ void C_OpenWith::run()
          }
       }
       else {
+         if (!os_hasParentDirectory(this->inner->path.value)) {
+            commandLog(this->uroboros, L"Failed to open ", getCCName(this->inner->path.value), L" with '", pro, L"'");
+            this->inner->success.value = false;
+            return;
+         }
+
          const _str com = str(pro, L" ", os_quoteEmbraced(this->inner->path.value));
-         const _boo s = os_openAsCommand(com);
+         const _boo s = os_process(com, os_parent(this->inner->path.value));
          this->inner->success.value = s;
 
          if (s) {

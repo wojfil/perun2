@@ -822,36 +822,14 @@ _boo os_lock(const _str& path)
 
 _boo os_open(const _str& path)
 {
-   return (INT_PTR)ShellExecuteW(0, 0, path.c_str(), 0, 0 , SW_SHOW) > 32;
+   const _str location = os_parent(path);
+   return (INT_PTR)ShellExecuteW(0, 0, path.c_str(), 0, location.c_str() , SW_SHOW) > 32;
 }
 
 _boo os_openWith(const _str& program, const _str& path)
 {
-   return (INT_PTR)ShellExecuteW(NULL, L"open", program.c_str(), path.c_str(), L"", SW_SHOW) > 32;
-}
-
-_boo os_openAsCommand(const _str& command)
-{
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    ZeroMemory(&pi, sizeof(pi));
-
-    const _size len = command.size() + 1;
-    _char cmd[len];
-    wcscpy(cmd, command.c_str());
-
-    return CreateProcessW
-    (
-        NULL,
-        cmd,
-        NULL,NULL,FALSE,
-        CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
-        NULL,NULL,
-        &si, &pi
-    ) != 0;
+   const _str location = os_parent(path);
+   return (INT_PTR)ShellExecuteW(NULL, L"open", program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
 }
 
 _boo os_unhide(const _str& path)
@@ -1146,7 +1124,7 @@ _boo os_run(const _str& comm, Uroboros* uro)
    return uro->running && dwExitCode == 0;
 }
 
-_boo os_process(const _str& proc, Uroboros* uro)
+_boo os_process(const _str& command, const _str& location)
 {
    STARTUPINFO si;
    PROCESS_INFORMATION pi;
@@ -1155,22 +1133,21 @@ _boo os_process(const _str& proc, Uroboros* uro)
    si.cb = sizeof(si);
    ZeroMemory(&pi, sizeof(pi));
 
-   const _size len = proc.size() + 1;
+   const _size len = command.size() + 1;
    _char cmd[len];
-   wcscpy(cmd, proc.c_str());
+   wcscpy(cmd, command.c_str());
 
-   const _size lenloc = uro->vars.inner.location.value.size() + 1;
+   const _size lenloc = location.size() + 1;
    _char loc[lenloc];
-   wcscpy(loc, uro->vars.inner.location.value.c_str());
+   wcscpy(loc, location.c_str());
 
    return CreateProcessW
    (
       NULL,
       cmd,
-      NULL,NULL,FALSE,
+      NULL, NULL, FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
-      NULL,
-      loc,
+      NULL, loc,
       &si, &pi
    ) != 0;
 }

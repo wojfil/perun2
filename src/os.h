@@ -100,7 +100,7 @@ _boo os_copy(const std::set<_str>& paths);
 _boo os_select(const _str& parent, const std::set<_str>& paths);
 
 _boo os_run(const _str& comm, Uroboros* uro);
-_boo os_process(const _str& proc, Uroboros* uro);
+_boo os_process(const _str& command, const _str& location);
 
 _boo os_isInvaild(const _str& path);
 _str os_trim(_str path);

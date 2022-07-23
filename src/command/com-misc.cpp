@@ -360,8 +360,8 @@ void C_Process::run()
       return;
    }
 
-   const _boo s = os_process(process, this->uroboros);
-   this->inner-> success.value = s;
+   const _boo s = os_process(process, this->inner->location.value);
+   this->inner->success.value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Start process '", process, L"'");

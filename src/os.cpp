@@ -239,7 +239,7 @@ void os_loadAttributes(const Attribute* attr)
    }
 }
 
-// attributes of something that does not exist
+// attributes of something, that does cannot exist (empty string, contains not allowed chars, ...)
 void os_loadAttributes_empty(const Attribute* attr)
 {
    if (attr->has(ATTR_PATH)) {

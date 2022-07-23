@@ -1,1 +1,2 @@
-open 'test/datatype/run.bat'
+open 'test/datatype/run.bat';
+run '_runBlackBoxTests.uro' with uroboros;

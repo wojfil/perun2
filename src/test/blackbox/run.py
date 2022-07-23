@@ -1,12 +1,12 @@
 import subprocess
 
-def runTestCase(code, expectedResult):
+def runTestCase(code, expectedOutput):
   cmd = "uro -d res -c \"" + code + "\""
-  output = subprocess.getoutput(cmd)
-  if output != expectedResult:
+  realOutput = subprocess.getoutput(cmd)
+  if realOutput != expectedOutput:
     print("Test failed at running code: " + code)
-    print("  Expected output: " + expectedResult)
-    print("  Received output: " + output)
+    print("  Expected output: " + expectedOutput)
+    print("  Received output: " + realOutput)
     
 def lines(*args):
   return "\n".join(args)

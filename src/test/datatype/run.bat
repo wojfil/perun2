@@ -7,3 +7,4 @@ g++ test-main.cpp test.h test-like.h test-like.cpp test-in.h test-in.cpp ^
  -o test -municode -unicode
  
 test.exe
+pause

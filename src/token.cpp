@@ -35,6 +35,12 @@ Token::Token(const _str& v, const _int& li, Uroboros* uro)
    uro->literals.addValue(value.str);
 };
 
+Token::Token(const _str& v, const _int& id, const _int& li, Uroboros* uro)
+   : line(li), type(t_Pattern), value(new _str(v), id)
+{
+   uro->literals.addValue(value.str);
+};
+
 Token::Token(const _size& v, const _int& li, const _str& os, Uroboros* uro)
    : line(li), type(t_Word), value( v, new _str(os) )
 {

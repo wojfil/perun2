@@ -129,7 +129,15 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          case Mode::m_ALiteral: {
             if (c == L'\'') {
                const _str word = code.substr(wpos, wlen);
-               tokens.push_back(Token(word, line, uro));
+               const _int asteriskId = word.find(L'*');
+
+               if (asteriskId == _str::npos) {
+                  tokens.push_back(Token(word, line, uro));
+               }
+               else {
+                  tokens.push_back(Token(word, asteriskId, line, uro));
+               }
+
                wpos = i;
                wlen = 0;
                mode = Mode::m_Normal;

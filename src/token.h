@@ -45,6 +45,13 @@ union TokenValue
    // string literal
    _str* str;
 
+   // pattern
+   struct
+   {
+      _str* str;
+      _int id; // index of first asterisk
+   } pattern;
+
    // word - variable name, function name
    struct
    {
@@ -73,6 +80,7 @@ union TokenValue
    TokenValue(const _num& n, _str* os, const NumberMode& nm)
       : num({ n, os, nm }) {};
    TokenValue(_str* str) : str(str) {};
+   TokenValue(_str* str, const _int& id) : pattern({ str, id }) {};
    TokenValue(const _size& h, _str* os) : word({ h, os }) {};
    TokenValue(const Keyword& k, _str* os) : keyword({ k, os }) {};
    TokenValue(const _size& h1, const _size& h2, _str* os1, _str* os2)
@@ -91,6 +99,7 @@ public:
       t_Word,
       t_Keyword,
       t_Quotation,
+      t_Pattern,
       t_TwoWords
    };
 
@@ -100,6 +109,7 @@ public:
    Token(const _num& v, const _int& li, const _str& os,
       const NumberMode& nm, Uroboros* uro);
    Token(const _str& v, const _int& li, Uroboros* uro);
+   Token(const _str& v, const _int& id, const _int& li, Uroboros* uro);
    Token(const _size& v, const _int& li, const _str& os, Uroboros* uro);
    Token(const Keyword& v, const _int& li, const _str& os, Uroboros* uro);
    Token(const _size& v1, const _size& v2, const _int& li, const _str& os1,

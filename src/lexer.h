@@ -20,7 +20,7 @@
 
 
 std::vector<Token> tokenize(const _str &code, Uroboros* uro);
-static Token wordToken(_str& value, _int& line, Uroboros* uro);
+static Token wordToken(const _str& value, const _int& line, Uroboros* uro);
 inline _boo isSymbol(const _char& ch);
 _boo isNewLine(const _char& ch);
 inline _boo isAllowedInWord(const _char& ch);

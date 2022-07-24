@@ -30,7 +30,8 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
    enum Mode {
       m_Normal = 0,
       m_Word,
-      m_Quote,
+      m_ALiteral, // apostrophe string literal
+      m_BLiteral, // backtick string literal
       m_SingleComment,
       m_MultiComment
    }; // finite-state machine within function
@@ -48,9 +49,6 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          case Mode::m_Normal: {
             if (c == L'"') {
                throw SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
-            }
-            else if (c == L'`') {
-               throw SyntaxException(L"you should use apostrophes ' instead of backtick characters ` for string literals", line);
             }
             else if (isSymbol(c)) {
                if (i != 0 && prev == L'/') {
@@ -82,9 +80,14 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                else if (c == L'\'') {
                   wpos = i + 1;
                   wlen = 0;
-                  mode = Mode::m_Quote;
+                  mode = Mode::m_ALiteral;
                }
-               else if (c != L' '){
+               else if (c == L'`') {
+                  wpos = i + 1;
+                  wlen = 0;
+                  mode = Mode::m_BLiteral;
+               }
+               else if (c != L' ') {
                   invalidCharException(c, line);
                }
             }
@@ -93,9 +96,6 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          case Mode::m_Word: {
             if (c == L'"') {
                throw SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
-            }
-            else if (c == L'`') {
-               throw SyntaxException(L"you should use apostrophes ' instead of backtick characters ` for string literals", line);
             }
             else if (isAllowedInWord(c)) {
                wlen++;
@@ -114,7 +114,11 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                }
                else if (c == L'\'') {
                   wpos = i + 1;
-                  mode = Mode::m_Quote;
+                  mode = Mode::m_ALiteral;
+               }
+               else if (c == L'`') {
+                  wpos = i + 1;
+                  mode = Mode::m_BLiteral;
                }
                else if (c != L' ') {
                   invalidCharException(c, line);
@@ -122,8 +126,24 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
             }
             break;
          }
-         case Mode::m_Quote: {
+         case Mode::m_ALiteral: {
             if (c == L'\'') {
+               const _str word = code.substr(wpos, wlen);
+               tokens.push_back(Token(word, line, uro));
+               wpos = i;
+               wlen = 0;
+               mode = Mode::m_Normal;
+            }
+            else {
+               wlen++;
+               if (isNewLine(c)) {
+                  line++;
+               }
+            }
+            break;
+         }
+         case Mode::m_BLiteral: {
+            if (c == L'`') {
                const _str word = code.substr(wpos, wlen);
                tokens.push_back(Token(word, line, uro));
                wpos = i;
@@ -159,18 +179,24 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
       prev = c;
    }
 
-   if (mode == m_Word && wlen != 0) {
-      _str word = code.substr(wpos, wlen);
-      tokens.push_back(wordToken(word, line, uro));
-   }
-   else if (mode == m_Quote) {
-      throw SyntaxException(L"an opened string literal is not closed", line);
+   switch (mode) {
+      case m_Word: {
+         if (wlen != 0) {
+            const _str word = code.substr(wpos, wlen);
+            tokens.push_back(wordToken(word, line, uro));
+         }
+         break;
+      }
+      case m_ALiteral:
+      case m_BLiteral: {
+         throw SyntaxException(L"an opened string literal is not closed", line);
+      }
    }
 
    return tokens;
 }
 
-static Token wordToken(_str& value, _int& line, Uroboros* uro)
+static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
 {
    _int dots = 0;
    _boo nums = true;

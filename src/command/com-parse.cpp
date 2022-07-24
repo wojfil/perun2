@@ -295,7 +295,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       if (left.isEmpty()) {
          if (rightLen == 0) {
-            setEmptyElse(leftFirst.line);
+            uro->ifContext.setEmptyElse(leftFirst.line);
             return nullptr;
          }
 
@@ -306,7 +306,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          uro->vars.varsLevelDown();
 
          if (com != nullptr) {
-            setElse(com, leftFirst.line);
+            uro->ifContext.setElse(com, leftFirst.line);
          }
       }
       else {
@@ -329,7 +329,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
 
          if (rightLen == 0) {
-            addElseIf(boo, new C_DoNothing(), leftFirst.line);
+            uro->ifContext.addElseIf(boo, new C_DoNothing(), leftFirst.line);
             return nullptr;
          }
 
@@ -340,7 +340,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          uro->vars.varsLevelDown();
 
          if (com != nullptr) {
-            addElseIf(boo, com, leftFirst.line);
+            uro->ifContext.addElseIf(boo, com, leftFirst.line);
          }
       }
 
@@ -474,13 +474,13 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
 
 static void beforeCommandStruct(CS_If* pntr, Uroboros* uro)
 {
-   addIfParseUnit(pntr);
+   uro->ifContext.addIfParseUnit(pntr);
    uro->vars.varsLevelUp();
 }
 
 static void afterCommandStruct(Uroboros* uro)
 {
-   retreatIfParseUnit();
+   uro->ifContext.retreatIfParseUnit();
    uro->vars.varsLevelDown();
 }
 

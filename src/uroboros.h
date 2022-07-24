@@ -25,6 +25,7 @@
 #include "side-process.h"
 #include "literals.h"
 #include "command/com.h"
+#include "command/com-parse-unit.h"
 
 #define VERSION_STR L"1.0.6"
 
@@ -55,12 +56,12 @@ public:
    SideProcess sideProcess;
    Literals literals;
    const _uint32 flags;
+   IfContext ifContext;
 
-   _boo running; // program exits this way
+   _boo running;
    _boo break_;
    _boo continue_;
    _int exitCode;
-
 
 private:
    Command* commands;

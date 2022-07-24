@@ -15,29 +15,44 @@
 #ifndef COM_PARSE_UNIT_H
 #define COM_PARSE_UNIT_H
 
-#include "com-condition.h"
+#include "../datatype/primitives.h"
+#include "../datatype/generator.h"
+#include "com.h"
+#include <vector>
 
+
+struct CS_If;
 
 struct IfParseUnit
 {
+public:
+
    IfParseUnit(CS_If* pntr): pointer(pntr),
       closed(false), elseClosed(false), locked(true) { };
 
    CS_If* pointer;
-   bool closed;
-   bool elseClosed;
-   bool locked;
+   _boo closed;
+   _boo elseClosed;
+   _boo locked;
 };
 
-extern std::vector<IfParseUnit> g_ifparseunits;
 
-void addIfParseUnit(CS_If* pntr);
-void retreatIfParseUnit();
-void lockLastIf();
-void setElse(Command* com, const _int& line);
-void setEmptyElse(const _int& line);
-void addElseIf(Generator<_boo>* cond, Command* com, const _int& line);
+struct IfContext
+{
+public:
+   IfContext() : units(std::vector<IfParseUnit>()) { };
+
+   void addIfParseUnit(CS_If* pntr);
+   void retreatIfParseUnit();
+   void lockLastIf();
+   void setElse(Command* com, const _int& line);
+   void setEmptyElse(const _int& line);
+   void addElseIf(Generator<_boo>* cond, Command* com, const _int& line);
+
+private:
+   std::vector<IfParseUnit> units;
+
+};
 
 
 #endif /* COM_PARSE_UNIT_H */
-

@@ -21,17 +21,17 @@
 #define _pg_unit _uint64
 
 // Parse Guardian "contains symbol"
-const _pgcs_unit PGCS_NULL =            0b0000000;
-const _pgcs_unit PGCS_QUESTION_MARK =   0b0000001;
-const _pgcs_unit PGCS_COMMA =           0b0000010;
-const _pgcs_unit PGCS_COLON =           0b0000100;
-const _pgcs_unit PGCS_PLUS =            0b0001000;
-const _pgcs_unit PGCS_MINUS =           0b0010000;
-const _pgcs_unit PGCS_EQUALS =          0b0100000;
+inline constexpr _pgcs_unit PGCS_NULL =            0b0000000;
+inline constexpr _pgcs_unit PGCS_QUESTION_MARK =   0b0000001;
+inline constexpr _pgcs_unit PGCS_COMMA =           0b0000010;
+inline constexpr _pgcs_unit PGCS_COLON =           0b0000100;
+inline constexpr _pgcs_unit PGCS_PLUS =            0b0001000;
+inline constexpr _pgcs_unit PGCS_MINUS =           0b0010000;
+inline constexpr _pgcs_unit PGCS_EQUALS =          0b0100000;
 
 // usual Parse Guardians:
-const _pg_unit PG_NULL =           0b00000000000000000000000000000000;
-const _pg_unit PG_COMPARISON =     0b00000000000000000000000000000001;
+inline constexpr _pg_unit PG_NULL =           0b00000000000000000000000000000000;
+inline constexpr _pg_unit PG_COMPARISON =     0b00000000000000000000000000000001;
 
 // what are Parse Guardians for?
 // they provide memory for a sequence of tokens
@@ -44,7 +44,6 @@ struct ParseGuardian
 public:
    ParseGuardian();
 
-   // todo think of better names for these methods
    _boo knows(const _pg_unit& unit) const;
    _boo protects(const _pg_unit& unit) const;
    void set(const _pg_unit& unit, const _boo& value);

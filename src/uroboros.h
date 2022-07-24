@@ -29,15 +29,15 @@
 
 #define VERSION_STR L"1.0.6"
 
-const _int EXITCODE_OK =             0;
-const _int EXITCODE_RUNTIME_ERROR =  1;
-const _int EXITCODE_SYNTAX_ERROR =   2;
-const _int EXITCODE_CLI_ERROR =      3;
+inline constexpr  _int EXITCODE_OK =             0;
+inline constexpr  _int EXITCODE_RUNTIME_ERROR =  1;
+inline constexpr  _int EXITCODE_SYNTAX_ERROR =   2;
+inline constexpr  _int EXITCODE_CLI_ERROR =      3;
 
-const _uint32 FLAG_NULL =      0b000;
-const _uint32 FLAG_NOOMIT =    0b001;
-const _uint32 FLAG_SILENT =    0b010;
-const _uint32 FLAG_GUI =       0b100;
+inline constexpr  _uint32 FLAG_NULL =      0b000;
+inline constexpr  _uint32 FLAG_NOOMIT =    0b001;
+inline constexpr  _uint32 FLAG_SILENT =    0b010;
+inline constexpr  _uint32 FLAG_GUI =       0b100;
 
 
 struct Uroboros

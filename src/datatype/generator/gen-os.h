@@ -23,9 +23,9 @@
 #include <windows.h>
 
 
-const _uint32 ELEM_ALL = 0;
-const _uint32 ELEM_DIRECTORIES = 1;
-const _uint32 ELEM_FILES = 2;
+inline constexpr _uint32 ELEM_ALL = 0;
+inline constexpr _uint32 ELEM_DIRECTORIES = 1;
+inline constexpr _uint32 ELEM_FILES = 2;
 
 
 struct OsDefinition : _def

@@ -352,7 +352,7 @@ _boo LikeConst::getValue() {
 // then just use previous pattern comparer
 _boo Like::getValue() {
    const _str pat = pattern->getValue();
-   const _size hsh = rawStringHash(pat);
+   const _size hsh = stringHash(pat);
 
    if ((!hasPrev) || hsh != prevHash) {
       if (hasPrev) {

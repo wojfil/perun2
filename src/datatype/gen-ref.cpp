@@ -21,5 +21,5 @@ NumberIntRef::NumberIntRef(Generator<_numi>* val)
 
 _num NumberIntRef::getValue()
 {
-   return _num(value->getValue().value.i);
+   return value->getValue();
 }

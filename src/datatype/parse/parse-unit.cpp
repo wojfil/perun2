@@ -203,14 +203,14 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
-            return uro->patternParser.parse(L"*", result);
+            return uro->patternParser.parse(L"*", -1, result);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return uro->patternParser.parse(*tk.value.pattern.str, result);
+         return uro->patternParser.parse(*tk.value.pattern.str, tk.value.pattern.id, result);
       }
       default: {
          return false;

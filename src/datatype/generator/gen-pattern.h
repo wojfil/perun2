@@ -10,7 +10,7 @@ public:
    PatternParser(Uroboros* uro)
       : uroboros(uro), defGenerator(ELEM_NONE, uro) { };
 
-   _boo parse(const _str& pattern, _def*& result) const;
+   _boo parse(const _str& pattern, const _int& asteriskId, _def*& result) const;
 
 private:
    Uroboros* uroboros;

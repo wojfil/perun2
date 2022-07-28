@@ -97,7 +97,7 @@ _boo Uro_All::hasNext()
    if (first) {
       _str path = os_trim(location->getValue());
       if (os_directoryExists(path)) {
-         path = str(path, OS_SEPARATOR_ASTERISK);
+         path = str(path, pattern);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -160,7 +160,7 @@ _boo Uro_Files::hasNext()
    if (first) {
       _str path = os_trim(location->getValue());
       if (os_directoryExists(path)) {
-         path = str(path, OS_SEPARATOR_ASTERISK);
+         path = str(path, pattern);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -219,7 +219,7 @@ _boo Uro_Directories::hasNext()
    if (first) {
       _str path = os_trim(location->getValue());
       if (os_directoryExists(path)) {
-         path = str(path, OS_SEPARATOR_ASTERISK);
+         path = str(path, pattern);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -291,7 +291,7 @@ _boo Uro_RecursiveFiles::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), OS_SEPARATOR_ASTERISK);
+            const _str p = str(paths.back(), pattern);
             handles.push_back(FindFirstFile(p.c_str(), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
@@ -398,7 +398,7 @@ _boo Uro_RecursiveDirectories::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), OS_SEPARATOR_ASTERISK);
+            const _str p = str(paths.back(), pattern);
 
             handles.push_back(FindFirstFile(p.c_str(), &data));
             if (handles.back() == INVALID_HANDLE_VALUE)

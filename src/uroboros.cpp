@@ -32,7 +32,8 @@ Uroboros::Uroboros(const Arguments& args) : arguments(args), hashes(Hashes()), v
    vc(VariablesContext(&this->hashes)), math(Math()), flags(args.getFlags()), running(true),
    break_(false), continue_(false), exitCode(EXITCODE_OK), sideProcess(SideProcess()),
    terminator(Terminator(this)), keywordsData(KeywordsData()), literals(Literals()),
-   commands(nullptr), tokens(std::vector<Token>()), ifContext(IfContext()) { };
+   commands(nullptr), tokens(std::vector<Token>()), ifContext(IfContext()),
+   patternParser(PatternParser(this)) { };
 
 
 _boo Uroboros::run()

@@ -19,7 +19,7 @@
 #include "var.h"
 #include "var-inner.h"
 #include "../datatype/def-var.h"
-#include "../datatype/def-gen.h"
+#include "../datatype/generator/gen-os.h"
 #include "../hash.h"
 #include "../token.h"
 

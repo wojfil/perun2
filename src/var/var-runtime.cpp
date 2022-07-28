@@ -22,6 +22,7 @@
 #include "../util.h"
 #include "../os.h"
 #include "../uroboros.h"
+#include "../terminator.h"
 
 
 Variables::Variables(Uroboros* uro)
@@ -110,10 +111,10 @@ Variables::Variables(Uroboros* uro)
 
    this->svar_def =
    {
-      { this->hashes->HASH_VAR_DIRECTORIES, new Gen_ElementsAtLocation(ELEM_DIRECTORIES, uro) },
-      { this->hashes->HASH_VAR_FILES, new Gen_ElementsAtLocation(ELEM_FILES, uro) },
-      { this->hashes->HASH_VAR_RECURSIVEFILES, new Gen_RecursiveFiles(uro) },
-      { this->hashes->HASH_VAR_RECURSIVEDIRECTORIES, new Gen_RecursiveDirectories(uro) }
+      { this->hashes->HASH_VAR_DIRECTORIES, new DefinitionGenerator(ELEM_DIRECTORIES, uro) },
+      { this->hashes->HASH_VAR_FILES, new DefinitionGenerator(ELEM_FILES, uro) },
+      { this->hashes->HASH_VAR_RECURSIVEFILES, new DefinitionGenerator(ELEM_RECURSIVE_FILES, uro) },
+      { this->hashes->HASH_VAR_RECURSIVEDIRECTORIES, new DefinitionGenerator(ELEM_RECURSIVE_DIRECTORIES, uro) }
    };
 }
 
@@ -367,11 +368,14 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tlist>*& result)
 _boo Variables::getVarValue(const Token& tk, _def*& result)
 {
    if (this->svar_def.find(tk.value.word.h) != this->svar_def.end()) {
-      result = this->svar_def[tk.value.word.h]->generate(new LocationReference(this->uroboros));
+      result = this->svar_def[tk.value.word.h]->generateDefault();
       return true;
    }
 
    return false;
+
+   /*result = new Uro_Files(new LocationReference(Terminator::uroboros), Terminator::uroboros, OS_SEPARATOR_ASTERISK);
+   return true;*/
 }
 
 _boo Variables::getVarValue(const Token& tk, Generator<_list>*& result)

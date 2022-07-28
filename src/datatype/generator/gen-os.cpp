@@ -21,17 +21,48 @@
 #endif
 
 #include "gen-os.h"
+#include "gen-string.h"
 #include "../../uroboros.h"
 #include "../../os.h"
 
 
 
-_def* Gen_ElementsAtLocation::generate(Generator<_str>* location)
+_def* DefinitionGenerator::generateDefault() const
 {
-   return new ElementsAtLocation(location, element, this->uroboros);
+   return this->generatePattern(new LocationReference(this->uroboros),
+      this->element_, OS_SEPARATOR_ASTERISK);
 }
 
-void ElementsAtLocation::reset()
+_def* DefinitionGenerator::generatePattern(Generator<_str>* location,
+   const _uint32& element, const _str& pattern) const
+{
+   switch (element) {
+      case ELEM_ALL: {
+         return new Uro_All(location, this->uroboros, pattern);
+      }
+      case ELEM_DIRECTORIES: {
+         return new Uro_Directories(location, this->uroboros, pattern);
+      }
+      case ELEM_FILES: {
+         return new Uro_Files(location, this->uroboros, pattern);
+      }
+      case ELEM_RECURSIVE_FILES: {
+         return new Uro_RecursiveFiles(location, this->uroboros, pattern);
+      }
+      case ELEM_RECURSIVE_DIRECTORIES: {
+         return new Uro_RecursiveDirectories(location, this->uroboros, pattern);
+      }
+      default: {
+         return nullptr;
+      }
+   }
+}
+
+OsDefinition::OsDefinition(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   : first(true), location(loc), uroboros(uro),
+     inner(&uro->vars.inner), flags(uro->flags), pattern(patt) { };
+
+void OsDefinitionPlain::reset()
 {
    if (!first) {
       first = true;
@@ -42,7 +73,26 @@ void ElementsAtLocation::reset()
    }
 }
 
-_boo ElementsAtLocation::hasNext()
+void OsDefinitionRecursive::reset()
+{
+   if (!first) {
+      first = true;
+      paths.clear();
+      bases.clear();
+      const _size len = handles.size();
+      if (len != 0) {
+         for (_size i = 0; i < len; i++) {
+            FindClose(handles[i]);
+         }
+         handles.clear();
+      }
+      this->inner->depth.value = prevDepth;
+      this->inner->this_s.value = prevThis;
+      this->inner->index.value = prevIndex;
+   }
+}
+
+_boo Uro_All::hasNext()
 {
    if (first) {
       _str path = os_trim(location->getValue());
@@ -65,36 +115,13 @@ _boo ElementsAtLocation::hasNext()
          if (!os_isBrowsePath(value)) {
             const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            switch (element) {
-               case ELEM_ALL: {
-                  if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
-                     || (!isDir && os_extension(value) != OS_UROEXT))
-                  {
-                     this->inner->index.value = index;
-                     index++;
-                     this->inner->this_s.value = value;
-                     return true;
-                  }
-                  break;
-               }
-               case ELEM_DIRECTORIES: {
-                  if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
-                     this->inner->index.value = index;
-                     index++;
-                     this->inner->this_s.value = value;
-                     return true;
-                  }
-                  break;
-               }
-               case ELEM_FILES: {
-                  if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
-                     this->inner->index.value = index;
-                     index++;
-                     this->inner->this_s.value = value;
-                     return true;
-                  }
-                  break;
-               }
+            if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
+               || (!isDir && os_extension(value) != OS_UROEXT))
+            {
+               this->inner->index.value = index;
+               index++;
+               this->inner->this_s.value = value;
+               return true;
             }
          }
       }
@@ -109,36 +136,13 @@ _boo ElementsAtLocation::hasNext()
       if (!os_isBrowsePath(value)) {
          const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         switch (element) {
-            case ELEM_ALL: {
-               if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
-                  || (!isDir && os_extension(value) != OS_UROEXT))
-               {
-                  this->inner->index.value = index;
-                  index++;
-                  this->inner->this_s.value = value;
-                  return true;
-               }
-               break;
-            }
-            case ELEM_DIRECTORIES: {
-               if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
-                  this->inner->index.value = index;
-                  index++;
-                  this->inner->this_s.value = value;
-                  return true;
-               }
-               break;
-            }
-            case ELEM_FILES: {
-               if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
-                  this->inner->index.value = index;
-                  index++;
-                  this->inner->this_s.value = value;
-                  return true;
-               }
-               break;
-            }
+         if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
+            || (!isDir && os_extension(value) != OS_UROEXT))
+         {
+            this->inner->index.value = index;
+            index++;
+            this->inner->this_s.value = value;
+            return true;
          }
       }
    }
@@ -151,35 +155,125 @@ _boo ElementsAtLocation::hasNext()
    return false;
 }
 
-_def* Gen_RecursiveFiles::generate(Generator<_str>* location)
+_boo Uro_Files::hasNext()
 {
-   return new RecursiveFiles(location, this->uroboros);
-}
-
-RecursiveFiles::~RecursiveFiles() {
-   delete location;
-}
-
-void RecursiveFiles::reset()
-{
-   if (!first) {
-      first = true;
-      paths.clear();
-      bases.clear();
-      const _size len = handles.size();
-      if (len != 0) {
-         for (_size i = 0; i < len; i++) {
-            FindClose(handles[i]);
+   if (first) {
+      _str path = os_trim(location->getValue());
+      if (os_directoryExists(path)) {
+         path = str(path, OS_SEPARATOR_ASTERISK);
+         handle = FindFirstFile(path.c_str(), &data);
+         if (handle == INVALID_HANDLE_VALUE) {
+            return false;
          }
-         handles.clear();
+
+         first = false;
+         value = data.cFileName;
+         prevThis = this->inner->this_s.value;
+         prevIndex = this->inner->index.value;
+         prevDepth = this->inner->depth.value;
+         this->inner->depth.value.setToZero();
+         index.setToZero();
+         this->inner->index.value = index;
+
+         if (!os_isBrowsePath(value)) {
+            const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+
+            if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
+               this->inner->index.value = index;
+               index++;
+               this->inner->this_s.value = value;
+               return true;
+            }
+         }
       }
-      this->inner->depth.value = prevDepth;
-      this->inner->this_s.value = prevThis;
-      this->inner->index.value = prevIndex;
+      else {
+         return false;
+      }
    }
+
+   while (FindNextFile(handle, &data)) {
+      value = data.cFileName;
+
+      if (!os_isBrowsePath(value)) {
+         const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+
+         if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
+            this->inner->index.value = index;
+            index++;
+            this->inner->this_s.value = value;
+            return true;
+         }
+      }
+   }
+
+   first = true;
+   FindClose(handle);
+   this->inner->this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->depth.value = prevDepth;
+   return false;
 }
 
-_boo RecursiveFiles::hasNext()
+_boo Uro_Directories::hasNext()
+{
+   if (first) {
+      _str path = os_trim(location->getValue());
+      if (os_directoryExists(path)) {
+         path = str(path, OS_SEPARATOR_ASTERISK);
+         handle = FindFirstFile(path.c_str(), &data);
+         if (handle == INVALID_HANDLE_VALUE) {
+            return false;
+         }
+
+         first = false;
+         value = data.cFileName;
+         prevThis = this->inner->this_s.value;
+         prevIndex = this->inner->index.value;
+         prevDepth = this->inner->depth.value;
+         this->inner->depth.value.setToZero();
+         index.setToZero();
+         this->inner->index.value = index;
+
+         if (!os_isBrowsePath(value)) {
+            const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+
+            if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
+               this->inner->index.value = index;
+               index++;
+               this->inner->this_s.value = value;
+               return true;
+            }
+         }
+      }
+      else {
+         return false;
+      }
+   }
+
+   while (FindNextFile(handle, &data)) {
+      value = data.cFileName;
+
+      if (!os_isBrowsePath(value)) {
+         const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+
+         if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
+            this->inner->index.value = index;
+            index++;
+            this->inner->this_s.value = value;
+            return true;
+         }
+      }
+   }
+
+   first = true;
+   FindClose(handle);
+   this->inner->this_s.value = prevThis;
+   this->inner->index.value = prevIndex;
+   this->inner->depth.value = prevDepth;
+   return false;
+}
+
+_boo Uro_RecursiveFiles::hasNext()
 {
    if (first) {
       this->paths.push_back(os_trim(location->getValue()));
@@ -286,35 +380,7 @@ _boo RecursiveFiles::hasNext()
    return false;
 }
 
-_def* Gen_RecursiveDirectories::generate(Generator<_str>* location)
-{
-   return new RecursiveDirectories(location, this->uroboros);
-}
-
-RecursiveDirectories::~RecursiveDirectories() {
-   delete location;
-}
-
-void RecursiveDirectories::reset()
-{
-   if (!first) {
-      first = true;
-      paths.clear();
-      bases.clear();
-      const _size len = handles.size();
-      if (len != 0) {
-         for (_size i = 0; i < len; i++) {
-            FindClose(handles[i]);
-         }
-         handles.clear();
-      }
-      this->inner->depth.value = prevDepth;
-      this->inner->this_s.value = prevThis;
-      this->inner->index.value = prevIndex;
-   }
-}
-
-_boo RecursiveDirectories::hasNext()
+_boo Uro_RecursiveDirectories::hasNext()
 {
    if (first) {
       paths.push_back(os_trim(location->getValue()));

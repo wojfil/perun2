@@ -26,6 +26,7 @@
 #include "literals.h"
 #include "command/com.h"
 #include "command/com-parse-unit.h"
+#include "datatype/generator/gen-pattern.h"
 
 #define VERSION_STR L"1.0.6"
 
@@ -57,6 +58,7 @@ public:
    Literals literals;
    const _uint32 flags;
    IfContext ifContext;
+   const PatternParser patternParser;
 
    _boo running;
    _boo break_;

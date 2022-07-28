@@ -19,141 +19,140 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../def-gen.h"
-#include "../../uroboros.h"
 #include <windows.h>
 
 
-inline constexpr _uint32 ELEM_ALL = 0;
-inline constexpr _uint32 ELEM_DIRECTORIES = 1;
-inline constexpr _uint32 ELEM_FILES = 2;
+inline constexpr _uint32 ELEM_NONE = 0;
+inline constexpr _uint32 ELEM_ALL = 1;
+inline constexpr _uint32 ELEM_DIRECTORIES = 2;
+inline constexpr _uint32 ELEM_FILES = 3;
+inline constexpr _uint32 ELEM_RECURSIVE_ALL = 4;
+inline constexpr _uint32 ELEM_RECURSIVE_DIRECTORIES = 5;
+inline constexpr _uint32 ELEM_RECURSIVE_FILES = 6;
+
+struct Uroboros;
+struct InnerVariables;
+
+
+struct DefinitionGenerator
+{
+public:
+   DefinitionGenerator(const _uint32& el, Uroboros* uro)
+      : element_(el), uroboros(uro) { };
+
+   _def* generateDefault() const;
+   _def* generatePattern(Generator<_str>* location, const _uint32& element, const _str& pattern) const;
+
+private:
+   Uroboros* uroboros;
+   const _uint32 element_;
+};
 
 
 struct OsDefinition : _def
 {
 public:
-   OsDefinition(Generator<_str>* loc, Uroboros* uro)
-      : first(true), location(loc), uroboros(uro),
-        inner(&uro->vars.inner), flags(uro->flags) { };
+   OsDefinition(Generator<_str>* loc, Uroboros* uro, const _str& patt);
+
+   ~OsDefinition() {
+      delete location;
+   }
 
 protected:
    _boo first;
    Generator<_str>* location;
    Uroboros* uroboros;
    InnerVariables* inner;
+   WIN32_FIND_DATA data;
+   _str prevThis;
+   _numi prevIndex;
+   _numi index;
+   _numi prevDepth;
 
+   const _str pattern;
    const _uint32 flags;
    // just save a copy of flags in the memory
    // they are constant, so a pointer is unnecessary
 };
 
 
-struct Gen_ElementsAtLocation : DefinitionGenerator
+struct OsDefinitionPlain : OsDefinition
 {
 public:
-   Gen_ElementsAtLocation(const _uint32& el, Uroboros* uro)
-      : element(el), uroboros(uro) { };
-
-   _def* generate(Generator<_str>* location) override;
-
-private:
-   Uroboros* uroboros;
-   const _uint32 element;
-};
-
-
-struct ElementsAtLocation : OsDefinition
-{
-public:
-   ElementsAtLocation (Generator<_str>* loc, _uint32 elem, Uroboros* uro)
-      : element(elem), OsDefinition(loc, uro) {};
-
-   ~ElementsAtLocation() {
-      delete location;
-   }
+   OsDefinitionPlain(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinition(loc, uro, patt) { };
 
    void reset() override;
-   _boo hasNext() override;
 
-private:
-   const _uint32 element;
-   WIN32_FIND_DATA data;
+protected:
    HANDLE handle;
-   _str prevThis;
-   _numi prevIndex;
-   _numi index;
-   _numi prevDepth;
 };
 
 
-struct Gen_RecursiveFiles : DefinitionGenerator
+struct OsDefinitionRecursive : OsDefinition
 {
 public:
-   Gen_RecursiveFiles(Uroboros* uro) : uroboros(uro) { };
-
-   _def* generate(Generator<_str>* location) override;
-
-private:
-   Uroboros* uroboros;
-};
-
-
-struct RecursiveFiles : OsDefinition
-{
-public:
-   RecursiveFiles(Generator<_str>* loc, Uroboros* uro)
-      : OsDefinition(loc, uro), paths(_list()),
+   OsDefinitionRecursive(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinition(loc, uro, patt), goDeeper(false), paths(_list()),
         bases(_list()), handles(std::vector<HANDLE>()) { };
 
-   ~RecursiveFiles();
-
    void reset() override;
-   _boo hasNext() override;
 
-private:
+protected:
    _boo goDeeper;
-   WIN32_FIND_DATA data;
    std::vector<HANDLE> handles;
    _list paths;
    _list bases;
-   _numi prevDepth;
-   _str prevThis;
-   _numi prevIndex;
-   _numi index;
 };
 
 
-struct Gen_RecursiveDirectories : DefinitionGenerator
+struct Uro_Files : OsDefinitionPlain
 {
 public:
-   Gen_RecursiveDirectories(Uroboros* uro) : uroboros(uro) { };
-   _def* generate(Generator<_str>* location) override;
+   Uro_Files(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinitionPlain(loc, uro, patt) {};
 
-private:
-   Uroboros* uroboros;
-};
-
-
-struct RecursiveDirectories : OsDefinition
-{
-public:
-   RecursiveDirectories(Generator<_str>* loc, Uroboros* uro)
-      : OsDefinition(loc, uro), paths(), bases(), handles() { };
-
-   ~RecursiveDirectories();
-
-   void reset() override;
    _boo hasNext() override;
+};
 
-private:
-   _boo goDeeper;
-   WIN32_FIND_DATA data;
-   std::vector<HANDLE> handles;
-   _list paths;
-   _list bases;
-   _numi prevDepth;
-   _str prevThis;
-   _numi prevIndex;
-   _numi index;
+
+struct Uro_Directories : OsDefinitionPlain
+{
+public:
+   Uro_Directories(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinitionPlain(loc, uro, patt) {};
+
+   _boo hasNext() override;
+};
+
+
+struct Uro_All : OsDefinitionPlain
+{
+public:
+   Uro_All(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinitionPlain(loc, uro, patt) {};
+
+   _boo hasNext() override;
+};
+
+
+struct Uro_RecursiveFiles : OsDefinitionRecursive
+{
+public:
+   Uro_RecursiveFiles(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinitionRecursive(loc, uro, patt) { };
+
+   _boo hasNext() override;
+};
+
+
+struct Uro_RecursiveDirectories : OsDefinitionRecursive
+{
+public:
+   Uro_RecursiveDirectories(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinitionRecursive(loc, uro, patt) { };
+
+   _boo hasNext() override;
 };
 
 

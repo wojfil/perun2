@@ -31,7 +31,7 @@
 #include <algorithm>
 
 
-static const _nint OS_SLEEP_UNIT = 300LL;
+inline constexpr _nint OS_SLEEP_UNIT = 300LL;
 // while sleeping
 // check every 300 ms if the program received an interruption signal
 

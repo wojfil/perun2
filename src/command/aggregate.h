@@ -20,8 +20,8 @@
 #include <set>
 #include <map>
 
-const _uint32 AGGR_COPY =      0b0000000000000001;
-const _uint32 AGGR_SELECT =    0b0000000000000010;
+inline constexpr _uint32 AGGR_COPY =      0b0000000000000001;
+inline constexpr _uint32 AGGR_SELECT =    0b0000000000000010;
 
 // commands Select and Copy are different than others
 // they have to be performed on multiple files and directories at once

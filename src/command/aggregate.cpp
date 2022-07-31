@@ -20,13 +20,8 @@
 
 
 Aggregate::Aggregate(Uroboros* uro)
-{
-   failedCopy = 0;
-   failedSelect = 0;
-   value = 0;
-   inner = &(uro->vars.inner);
-   uroboros = uro;
-}
+   : failedCopy(0), failedSelect(0), value(AGGR_NULL),
+     inner(&uro->vars.inner), uroboros(uro) { };
 
 void Aggregate::set(const _uint32& v)
 {

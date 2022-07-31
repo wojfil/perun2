@@ -16,12 +16,12 @@
 #define AGGR_H
 
 #include "../datatype/datatype.h"
-//#include "../uroboros.h"
 #include <set>
 #include <map>
 
-inline constexpr _uint32 AGGR_COPY =      0b0000000000000001;
-inline constexpr _uint32 AGGR_SELECT =    0b0000000000000010;
+inline constexpr _uint32 AGGR_NULL =      0b000;
+inline constexpr _uint32 AGGR_COPY =      0b001;
+inline constexpr _uint32 AGGR_SELECT =    0b010;
 
 // commands Select and Copy are different than others
 // they have to be performed on multiple files and directories at once

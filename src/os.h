@@ -24,6 +24,7 @@
 inline constexpr _char OS_SEPARATOR = L'\\';
 const _str OS_SEPARATOR_STRING = L"\\";
 const _str OS_SEPARATOR_ASTERISK = L"\\*";
+const _str OS_SEPARATOR_APOSTROPHE = L"\\'";
 inline constexpr _char OS_WRONG_SEPARATOR = L'/';
 const _str OS_UROEXT = L"uro";
 const _str OS_DOT_UROEXT = L".uro";

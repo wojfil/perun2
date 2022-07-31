@@ -23,18 +23,14 @@
 struct Command_L : Command
 {
 public:
-
    Command_L(Uroboros* uro)
       : uroboros(uro), inner(&(uro->vars.inner)) { };
 
 protected:
-
    Uroboros* uroboros;
    InnerVariables* inner;
 
 };
-
-#define Listeni
 
 
 #endif // COM_LISTENER_H_INCLUDED

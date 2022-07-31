@@ -34,11 +34,18 @@ union TokenValue
    // single symbol
    _char ch;
 
+   // the same symbol repeated multiple times in a row
+   struct
+   {
+      _char ch;
+      _int am; // amount
+   } chars;
+
    // number literal (123), file size (123mb) or time constant (June)
    struct
    {
       _num n;
-      _str* os;
+      _str* os; // os = original appearance of token in the source code
       NumberMode nm;
    } num;
 
@@ -56,7 +63,7 @@ union TokenValue
    struct
    {
       _size h;  // h  = hash of string
-      _str* os; // os = original appearance of token in the source code
+      _str* os;
    } word;
 
    // keyword - important syntax element (print, if, copy...)
@@ -77,6 +84,7 @@ union TokenValue
 
    // constructors:
    TokenValue(const _char& ch) : ch(ch) {};
+   TokenValue(const _char& ch, const _int& am) : chars({ ch, am }) {};
    TokenValue(const _num& n, _str* os, const NumberMode& nm)
       : num({ n, os, nm }) {};
    TokenValue(_str* str) : str(str) {};
@@ -95,6 +103,7 @@ public:
    enum Type
    {
       t_Symbol = 0,
+      t_MultiSymbol,
       t_Number,
       t_Word,
       t_Keyword,
@@ -105,6 +114,7 @@ public:
 
    // constructors:
    Token(const _char& v, const _int& li, Uroboros* uro);
+   Token(const _char& v, const _int& am, const _int& li, Uroboros* uro);
    Token(const _num& v, const _int& li, Uroboros* uro);
    Token(const _num& v, const _int& li, const _str& os,
       const NumberMode& nm, Uroboros* uro);

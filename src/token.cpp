@@ -19,6 +19,9 @@
 Token::Token(const _char& v, const _int& li, Uroboros* uro)
    : line(li), type(t_Symbol), value(v) { };
 
+Token::Token(const _char& v, const _int& am, const _int& li, Uroboros* uro)
+   : line(li), type(t_Symbol), value(v, am) { };
+
 Token::Token(const _num& v, const _int& li, Uroboros* uro)
    : line(li), type(t_Number), value(v, nullptr, NumberMode::nm_Normal) { };
 

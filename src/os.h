@@ -103,7 +103,7 @@ _boo os_run(const _str& comm, Uroboros* uro);
 _boo os_process(const _str& command, const _str& location);
 
 _boo os_isInvaild(const _str& path);
-_str os_trim(_str path);
+_str os_trim(const _str& path);
 inline void os_escapeQuote(_str& path);
 _str os_join(const _str& path1, const _str& path2);
 _boo os_isAbsolute(const _str& path);

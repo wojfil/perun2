@@ -1182,7 +1182,7 @@ _boo os_isInvaild(const _str& path)
    return false;
 }
 
-_str os_trim(_str path)
+_str os_trim(const _str& path)
 {
    const _int len = path.length();
    _int start = 0;
@@ -1208,13 +1208,12 @@ exitStart:
          return L"";
       }
       case 1: {
-         path = path.substr(len - 1, 1);
-         os_escapeQuote(path);
-         return path;
+         _str result = path.substr(len - 1, 1);
+         os_escapeQuote(result);
+         return result;
       }
    }
 
-   _str result;
    _int end = len - 1;
 
    while (end >= 0) {
@@ -1233,23 +1232,22 @@ exitStart:
 
 exitEnd:
 
+   _str result;
+
    if (start == 0) {
-      if (end != len - 1) {
-         path = path.substr(0, end + 1);
-      }
+      result = end == len - 1
+         ? path
+         : path.substr(0, end + 1);
    }
    else {
-      if (end == len - 1) {
-         path = path.substr(start);
-      }
-      else {
-         path = path.substr(start, end - start + 1);
-      }
+      result = end == len - 1
+         ? path.substr(start)
+         : path.substr(start, end - start + 1);
    }
 
-   std::replace(path.begin(),path.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
-   os_escapeQuote(path);
-   return path;
+   std::replace(result.begin(),result.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
+   os_escapeQuote(result);
+   return result;
 }
 
 inline void os_escapeQuote(_str& path)

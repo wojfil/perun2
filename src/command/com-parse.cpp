@@ -629,104 +629,103 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (tks.penultimate().type == Token::t_Symbol
-      && tks.last().type == Token::t_Symbol) {
+   const Token& last = tks.last();
 
+   if (last.type == Token::t_MultiSymbol &&
+       (last.value.chars.ch == L'+' || last.value.chars.ch == L'-'))
+   {
       const _char& c1 = tks.penultimate().value.ch;
       const _char& c2 = tks.last().value.ch;
-      const _boo isIncrement = (c1 == L'+' && c2 == L'+');
-      const _boo isDecrement = (c1 == L'-' && c2 == L'-');
+      const _boo isIncrement = last.value.chars.ch == L'+';
 
-      if (isIncrement || isDecrement) {
-         const _str op = isIncrement
-            ? L"incremented by one"
-            : L"decremented by one";
-         const Token& first = tks.first();
+      const _str op = isIncrement
+         ? L"incremented by one"
+         : L"decremented by one";
+      const Token& first = tks.first();
 
-         if (first.type == Token::t_Word) {
-            if (tks.getLength() == 3) {
-               ParseVariable<_num>* pv_num;
+      if (first.type == Token::t_Word) {
+         if (tks.getLength() == 2) {
+            ParseVariable<_num>* pv_num;
 
-               if (!uro->vars.getVarPtr(first, pv_num)) {
+            if (!uro->vars.getVarPtr(first, pv_num)) {
+               throw SyntaxException(str(L"variable '", *first.value.word.os,
+                  L"' cannot be ", op), first.line);
+            }
+
+            if (isIncrement) {
+               return new VarIncrement(pv_num->getVarPtr());
+            }
+            else {
+               return new VarDecrement(pv_num->getVarPtr());
+            }
+         }
+         else {
+            Tokens tks2(tks);
+            tks2.trimRight();
+            tks2.trimRight();
+
+            if (varSquareBrackets(tks2)) {
+               Generator<_num>* index = parseListElementIndex(tks2, uro);
+               ParseVariable<_nlist>* pv_nlist;
+
+               if (!uro->vars.getVarPtr(first, pv_nlist)) {
                   throw SyntaxException(str(L"variable '", *first.value.word.os,
                      L"' cannot be ", op), first.line);
                }
 
-               if (isIncrement) {
-                  return new VarIncrement(pv_num->getVarPtr());
-               }
-               else {
-                  return new VarDecrement(pv_num->getVarPtr());
-               }
+               throw SyntaxException(str(L"an element of variable '", *first.value.word.os,
+                  L"' cannot be ", op, L", because collections in Uroboros are immutable"),
+                  first.line);
             }
             else {
-               Tokens tks2(tks);
-               tks2.trimRight();
-               tks2.trimRight();
-
-               if (varSquareBrackets(tks2)) {
-                  Generator<_num>* index = parseListElementIndex(tks2, uro);
-                  ParseVariable<_nlist>* pv_nlist;
-
-                  if (!uro->vars.getVarPtr(first, pv_nlist)) {
-                     throw SyntaxException(str(L"variable '", *first.value.word.os,
-                        L"' cannot be ", op), first.line);
-                  }
-
-                  throw SyntaxException(str(L"an element of variable '", *first.value.word.os,
-                     L"' cannot be ", op, L", because collections in Uroboros are immutable"),
-                     first.line);
-               }
-               else {
-                  throw SyntaxException(str(L"this structure cannot be ", op), first.line);
-               }
+               throw SyntaxException(str(L"this structure cannot be ", op), first.line);
             }
          }
-         else if (first.type == Token::t_TwoWords) {
-            if (first.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
-               throw SyntaxException(L"the dot . should be preceded by a time variable name", first.line);
-            }
+      }
+      else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
+         if (first.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
+            throw SyntaxException(L"the dot . should be preceded by a time variable name", first.line);
+         }
 
-            ParseVariable<_tim>* pv_tim;
+         ParseVariable<_tim>* pv_tim;
 
-            if (!uro->vars.getVarPtr(first, pv_tim)) {
-               throw SyntaxException(str(L"time variable from expression '", *first.value.twoWords.os1,
-                  L"' does not exist or is unreachable here"), first.line);
-            }
+         if (!uro->vars.getVarPtr(first, pv_tim)) {
+            throw SyntaxException(str(L"time variable from expression '", *first.value.twoWords.os1,
+               L"' does not exist or is unreachable here"), first.line);
+         }
 
-            const _size& h = first.value.twoWords.h2;
-            Period::PeriodUnit unit;
+         const _size& h = first.value.twoWords.h2;
+         Period::PeriodUnit unit;
 
-            if (h == uro->hashes.HASH_PER_YEAR || h == uro->hashes.HASH_PER_YEARS)
-               unit = Period::u_Years;
-            else if (h == uro->hashes.HASH_PER_MONTH || h == uro->hashes.HASH_PER_MONTHS)
-               unit = Period::u_Months;
-            else if (h == uro->hashes.HASH_PER_DAY || h == uro->hashes.HASH_PER_DAYS)
-               unit = Period::u_Days;
-            else if (h == uro->hashes.HASH_PER_HOUR || h == uro->hashes.HASH_PER_HOURS)
-               unit = Period::u_Hours;
-            else if (h == uro->hashes.HASH_PER_MINUTE || h == uro->hashes.HASH_PER_MINUTES)
-               unit = Period::u_Minutes;
-            else if (h == uro->hashes.HASH_PER_SECOND || h == uro->hashes.HASH_PER_SECONDS)
-               unit = Period::u_Seconds;
-            else if (h == uro->hashes.HASH_PER_DATE || h == uro->hashes.HASH_PER_WEEKDAY) {
-               throw SyntaxException(str(L"time variable member '", *first.value.twoWords.os2,
-                  L"' cannot be ", op), first.line);
-            }
-            else {
-               timeVariableMemberException(first);
-            }
-
-            if (isIncrement) {
-               return new VarTimeUnitIncrement(pv_tim->getVarPtr(), unit);
-            }
-            else {
-               return new VarTimeUnitDecrement(pv_tim->getVarPtr(), unit);
-            }
+         if (h == uro->hashes.HASH_PER_YEAR || h == uro->hashes.HASH_PER_YEARS)
+            unit = Period::u_Years;
+         else if (h == uro->hashes.HASH_PER_MONTH || h == uro->hashes.HASH_PER_MONTHS)
+            unit = Period::u_Months;
+         else if (h == uro->hashes.HASH_PER_DAY || h == uro->hashes.HASH_PER_DAYS)
+            unit = Period::u_Days;
+         else if (h == uro->hashes.HASH_PER_HOUR || h == uro->hashes.HASH_PER_HOURS)
+            unit = Period::u_Hours;
+         else if (h == uro->hashes.HASH_PER_MINUTE || h == uro->hashes.HASH_PER_MINUTES)
+            unit = Period::u_Minutes;
+         else if (h == uro->hashes.HASH_PER_SECOND || h == uro->hashes.HASH_PER_SECONDS)
+            unit = Period::u_Seconds;
+         else if (h == uro->hashes.HASH_PER_DATE || h == uro->hashes.HASH_PER_WEEKDAY) {
+            throw SyntaxException(str(L"time variable member '", *first.value.twoWords.os2,
+               L"' cannot be ", op), first.line);
          }
          else {
-            throw SyntaxException(str(L"only a variable of a singular data type can be ", op), first.line);
+            timeVariableMemberException(first);
          }
+
+         if (isIncrement) {
+            return new VarTimeUnitIncrement(pv_tim->getVarPtr(), unit);
+            }
+         else {
+            return new VarTimeUnitDecrement(pv_tim->getVarPtr(), unit);
+         }
+      }
+      else {
+         throw SyntaxException(str(L"only a variable of a singular data type can be ", op), first.line);
       }
    }
 

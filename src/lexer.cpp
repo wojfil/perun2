@@ -42,6 +42,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
    _char prev = L' ';
    const _size len = code.length();
    _size wpos = 0, wlen = 0;
+   _boo prevSymbol = false;
 
    for (_size i = 0; i < len; i++) {
       const _char& c = code[i];
@@ -55,17 +56,45 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                   if (c == L'*')  {
                      mode = Mode::m_MultiComment;
                      tokens.pop_back();
+                     prevSymbol = false;
                   }
                   else if (c == L'/')  {
                      mode = Mode::m_SingleComment;
                      tokens.pop_back();
+                     prevSymbol = false;
                   }
-                  else  {
-                     tokens.push_back(Token(c, line, uro));
+                  else {
+                     if (prevSymbol) {
+                        if (isDoubleChar(c) && tokens.back().value.ch == c) {
+                           tokens.pop_back();
+                           tokens.push_back(Token(c, 2, line, uro));
+                           prevSymbol = false;
+                        }
+                        else {
+                           tokens.push_back(Token(c, line, uro));
+                        }
+                     }
+                     else {
+                        tokens.push_back(Token(c, line, uro));
+                        prevSymbol = true;
+                     }
                   }
                }
-               else  {
-                  tokens.push_back(Token(c, line, uro));
+               else {
+                  if (prevSymbol) {
+                     if (isDoubleChar(c) && tokens.back().value.ch == c) {
+                        tokens.pop_back();
+                        tokens.push_back(Token(c, 2, line, uro));
+                        prevSymbol = false;
+                     }
+                     else {
+                        tokens.push_back(Token(c, line, uro));
+                     }
+                  }
+                  else {
+                     tokens.push_back(Token(c, line, uro));
+                     prevSymbol = true;
+                  }
                }
             }
             else {
@@ -73,6 +102,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                   wpos = i;
                   wlen = 1;
                   mode = Mode::m_Word;
+                  prevSymbol = false;
                }
                else if (isNewLine(c)) {
                   line++;
@@ -81,11 +111,13 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                   wpos = i + 1;
                   wlen = 0;
                   mode = Mode::m_ALiteral;
+                  prevSymbol = false;
                }
                else if (c == L'`') {
                   wpos = i + 1;
                   wlen = 0;
                   mode = Mode::m_BLiteral;
+                  prevSymbol = false;
                }
                else if (c != L' ') {
                   invalidCharException(c, line);
@@ -101,13 +133,14 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                wlen++;
             }
             else {
-               _str word = code.substr(wpos, wlen);
+               const _str word = code.substr(wpos, wlen);
                tokens.push_back(wordToken(word, line, uro));
                wlen = 0;
                mode = Mode::m_Normal;
 
                if (isSymbol(c)) {
                   tokens.push_back(Token(c, line, uro));
+                  prevSymbol = true;
                }
                else if (isNewLine(c)) {
                   line++;
@@ -423,6 +456,18 @@ inline _boo isAllowedInWord(const _char& ch)
    switch (ch) {
       case L'.':
       case L'_':
+         return true;
+      default:
+         return false;
+   }
+}
+
+inline _boo isDoubleChar(const _char& ch)
+{
+   switch (ch) {
+      case L'+':
+      case L'-':
+      case L'*':
          return true;
       default:
          return false;

@@ -37,7 +37,7 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
       const Token& l = tks2.last();
 
       if (f.type == Token::t_Symbol && f.type == Token::t_Symbol
-         && f.value.ch == L'(' && l.value.ch == L')') 
+         && f.value.ch == L'(' && l.value.ch == L')')
       {
          _int lvl = 0;
          _boo b = true;
@@ -75,8 +75,8 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   // look for a common error
-   // somebody calls a non-existent variable
+   // look for a common error - somebody calls a non-existent variable
+   // also look for adjacent ++ and -- inside an expression
    if (tks2.getLength() == 1) {
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
@@ -88,37 +88,35 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    }
 
    // look for adjacent ++ and -- inside an expression
-   _char pch = L' ';
    const _int start = tks2.getStart();
    const _int end = tks2.getEnd() - 1;
    for (_int i = start; i <= end; i++) {
       const Token& t = tks2.listAt(i);
-      if (t.type == Token::t_Symbol) {
-         const _char& ch = t.value.ch;
-         if (pch == L'+' && ch == L'+') {
-            if (i == start) {
-               throw SyntaxException(
-                  L"expression cannot start with incrementation signs ++", t.line);
+      if (t.type == Token::t_MultiSymbol) {
+         switch (t.value.chars.ch) {
+            case L'+': {
+               if (i == start) {
+                  throw SyntaxException(
+                     L"expression cannot start with incrementation signs ++", t.line);
+               }
+               else {
+                  throw SyntaxException(
+                     L"incrementation signs ++ cannot appear inside an expression", t.line);
+               }
+               break;
             }
-            else {
-               throw SyntaxException(
-                  L"incrementation signs ++ cannot appear inside an expression", t.line);
+            case L'-': {
+               if (i == start) {
+                  throw SyntaxException(
+                     L"expression cannot start with decrementation signs --", t.line);
+               }
+               else {
+                  throw SyntaxException(
+                     L"decrementation signs -- cannot appear inside an expression", t.line);
+               }
+               break;
             }
          }
-         else if (pch == L'-' && ch == L'-') {
-            if (i == start) {
-               throw SyntaxException(
-                  L"expression cannot start with decrementation signs --", t.line);
-            }
-            else {
-               throw SyntaxException(
-                  L"decrementation signs -- cannot appear inside an expression", t.line);
-            }
-         }
-         pch = ch;
-      }
-      else {
-         pch = L' ';
       }
    }
 

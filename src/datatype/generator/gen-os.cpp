@@ -123,6 +123,7 @@ _boo Uro_All::hasNext()
             {
                this->inner->index.value = index;
                index++;
+               this->inner->depth.value.value.i = 0LL;
                this->inner->this_s.value = value;
                return true;
             }
@@ -144,6 +145,7 @@ _boo Uro_All::hasNext()
          {
             this->inner->index.value = index;
             index++;
+            this->inner->depth.value.value.i = 0LL;
             this->inner->this_s.value = value;
             return true;
          }
@@ -184,6 +186,7 @@ _boo Uro_Files::hasNext()
             if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
                this->inner->index.value = index;
                index++;
+               this->inner->depth.value.value.i = 0LL;
                this->inner->this_s.value = value;
                return true;
             }
@@ -203,6 +206,7 @@ _boo Uro_Files::hasNext()
          if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
             this->inner->index.value = index;
             index++;
+            this->inner->depth.value.value.i = 0LL;
             this->inner->this_s.value = value;
             return true;
          }
@@ -243,6 +247,7 @@ _boo Uro_Directories::hasNext()
             if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
                this->inner->index.value = index;
                index++;
+               this->inner->depth.value.value.i = 0LL;
                this->inner->this_s.value = value;
                return true;
             }
@@ -262,6 +267,7 @@ _boo Uro_Directories::hasNext()
          if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
             this->inner->index.value = index;
             index++;
+            this->inner->depth.value.value.i = 0LL;
             this->inner->this_s.value = value;
             return true;
          }

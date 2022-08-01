@@ -26,6 +26,11 @@ _boo PatternParser::parse(const _str& pattern, const _int& asteriskId, _def*& re
          new LocationReference(this->uroboros), ELEM_ALL, OS_SEPARATOR_ASTERISK);
       return true;
    }
+   else if (trimmed == L"**") {
+      result = this->defGenerator.generatePattern(
+         new LocationReference(this->uroboros), ELEM_RECURSIVE_ALL, OS_SEPARATOR_ASTERISK);
+      return true;
+   }
 
    const _size length = trimmed.size();
 

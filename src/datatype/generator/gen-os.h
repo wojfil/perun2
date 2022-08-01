@@ -155,4 +155,14 @@ public:
 };
 
 
+struct Uro_RecursiveAll : OsDefinitionRecursive
+{
+public:
+   Uro_RecursiveAll(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+      : OsDefinitionRecursive(loc, uro, patt) { };
+
+   _boo hasNext() override;
+};
+
+
 #endif // GEN_OS_H_INCLUDED

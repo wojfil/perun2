@@ -201,6 +201,14 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
       case Token::t_Word: {
          return uro->vars.getVarValue(tk, result);
       }
+      case Token::t_MultiSymbol: {
+         if (tk.value.chars.ch == L'*') {
+            return uro->patternParser.parse(L"**", -1, result);
+         }
+         else {
+            return false;
+         }
+      }
       case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
             return uro->patternParser.parse(L"*", -1, result);

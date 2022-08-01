@@ -52,6 +52,9 @@ _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
       case ELEM_RECURSIVE_DIRECTORIES: {
          return new Uro_RecursiveDirectories(location, this->uroboros, pattern);
       }
+      case ELEM_RECURSIVE_ALL: {
+         return new Uro_RecursiveAll(location, this->uroboros, pattern);
+      }
       default: {
          return nullptr;
       }
@@ -349,14 +352,12 @@ _boo Uro_RecursiveFiles::hasNext()
                      this->inner->depth.value++;
                   }
                }
-               else {
-                  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
-                     value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
-                     this->inner->index.value = index;
-                     index++;
-                     this->inner->this_s.value = value;
-                     return true;
-                  }
+               else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
+                  value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
+                  this->inner->index.value = index;
+                  index++;
+                  this->inner->this_s.value = value;
+                  return true;
                }
             }
          }
@@ -449,6 +450,103 @@ _boo Uro_RecursiveDirectories::hasNext()
                this->inner->this_s.value = value;
                return true;
             }
+         }
+         else {
+            FindClose(handles.back());
+            handles.pop_back();
+            paths.pop_back();
+
+            if (paths.empty()) {
+               break;
+            }
+            else {
+               bases.pop_back();
+               this->inner->depth.value--;
+            }
+         }
+      }
+   }
+
+   reset();
+   return false;
+}
+
+_boo Uro_RecursiveAll::hasNext()
+{
+   if (first) {
+      paths.push_back(os_trim(location->getValue()));
+      prevDepth = this->inner->depth.value;
+      this->inner->depth.value.value.i = -1LL;
+      goDeeper = true;
+      first = false;
+      prevThis = this->inner->this_s.value;
+      prevIndex = this->inner->index.value;
+      index.setToZero();
+      this->inner->index.value = index;
+   }
+
+   while (this->uroboros->running) {
+      if (goDeeper) {
+         goDeeper = false;
+         if (os_directoryExists(paths.back())) {
+            const _str p = str(paths.back(), pattern);
+
+            handles.push_back(FindFirstFile(p.c_str(), &data));
+            if (handles.back() == INVALID_HANDLE_VALUE)
+            {
+               handles.pop_back();
+               paths.pop_back();
+               if (paths.empty()) {
+                  break;
+               }
+               else {
+                  bases.pop_back();
+                  this->inner->depth.value--;
+               }
+            }
+         }
+         else {
+            paths.pop_back();
+            if (paths.empty()) {
+               break;
+            }
+            else {
+               bases.pop_back();
+               this->inner->depth.value--;
+            }
+         }
+      }
+      else {
+         if (FindNextFile(handles.back(), &data)) {
+            const _str& v = data.cFileName;
+
+            if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
+            {
+               value = this->inner->depth.value.isMinusOne() ? v : str(bases.back(), v);
+               paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+
+               if (this->inner->depth.value.isMinusOne()) {
+                  bases.push_back(str(v, OS_SEPARATOR_STRING));
+               }
+               else {
+                  bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+               }
+
+               goDeeper = true;
+               this->inner->depth.value++;
+               this->inner->index.value = index;
+               index++;
+               this->inner->this_s.value = value;
+               return true;
+            }
+            /*else if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
+               value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
+               this->inner->index.value = index;
+               index++;
+               this->inner->this_s.value = value;
+               return true;
+            }*/
          }
          else {
             FindClose(handles.back());

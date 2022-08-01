@@ -5,8 +5,8 @@ def runTestCase(code, expectedOutput):
   realOutput = subprocess.getoutput(cmd)
   if realOutput != expectedOutput:
     print("Test failed at running code: " + code)
-    print("  Expected output: " + expectedOutput)
-    print("  Received output: " + realOutput)
+    print("  Expected output: \n" + expectedOutput)
+    print("  Received output: \n" + realOutput)
     
 def lines(*args):
   return "\n".join(args)

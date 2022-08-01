@@ -520,33 +520,47 @@ _boo Uro_RecursiveAll::hasNext()
          if (FindNextFile(handles.back(), &data)) {
             const _str& v = data.cFileName;
 
-            if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
-            {
-               value = this->inner->depth.value.isMinusOne() ? v : str(bases.back(), v);
-               paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+            if (!os_isBrowsePath(v)) {
+               if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                  && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
+               {
+                  if (this->prevFile) {
+                     this->prevFile = false;
+                     this->inner->depth.value--;
+                  }
 
-               if (this->inner->depth.value.isMinusOne()) {
-                  bases.push_back(str(v, OS_SEPARATOR_STRING));
-               }
-               else {
-                  bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
-               }
+                  value = this->inner->depth.value.isMinusOne() ? v : str(bases.back(), v);
+                  paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
-               goDeeper = true;
-               this->inner->depth.value++;
-               this->inner->index.value = index;
-               index++;
-               this->inner->this_s.value = value;
-               return true;
+                  if (this->inner->depth.value.isMinusOne()) {
+                     bases.push_back(str(v, OS_SEPARATOR_STRING));
+                  }
+                  else {
+                     bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                  }
+
+                  goDeeper = true;
+                  this->inner->depth.value++;
+                  this->inner->index.value = index;
+                  index++;
+                  this->inner->this_s.value = value;
+                  return true;
+               }
+               else if ((!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+                  && (this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT)
+               {
+                  if (!this->prevFile) {
+                     this->prevFile = true;
+                     this->inner->depth.value++;
+                  }
+
+                  value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
+                  this->inner->index.value = index;
+                  index++;
+                  this->inner->this_s.value = value;
+                  return true;
+               }
             }
-            /*else if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
-               value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
-               this->inner->index.value = index;
-               index++;
-               this->inner->this_s.value = value;
-               return true;
-            }*/
          }
          else {
             FindClose(handles.back());

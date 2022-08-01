@@ -159,9 +159,12 @@ struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveAll(Generator<_str>* loc, Uroboros* uro, const _str& patt)
-      : OsDefinitionRecursive(loc, uro, patt) { };
+      : OsDefinitionRecursive(loc, uro, patt), prevFile(false) { };
 
    _boo hasNext() override;
+
+private:
+   _boo prevFile;
 };
 
 

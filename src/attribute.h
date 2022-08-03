@@ -48,7 +48,6 @@ inline constexpr _aunit ATTR_SIZE =         0b00000000000001000000000000000000;
 // this approach introduces a lot of optimization - only one file system call is needed
 
 struct Uroboros;
-struct InnerVariables;
 
 struct Attribute
 {
@@ -67,11 +66,9 @@ public:
    _boo markToRun = false;
    _boo markToEvaluate = false;
 
-   Uroboros* uroboros;
-   InnerVariables* inner;
-
 private:
    _aunit value;
+   Uroboros* uroboros;
 };
 
 #endif /* ATTRIB_H */

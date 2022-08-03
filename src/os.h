@@ -30,6 +30,7 @@ const _str OS_UROEXT = L"uro";
 const _str OS_DOT_UROEXT = L".uro";
 const _str OS_GIT_DIRECTORY = L".git";
 
+struct InnerVariables;
 
 _tim os_now();
 _tim os_today();
@@ -37,10 +38,10 @@ _tim os_yesterday();
 _tim os_tomorrow();
 
 void os_sleepForMs(const _nint& ms, Uroboros* uro);
-void os_loadAttributes(const Attribute* attr);
-void os_loadAttributes_empty(const Attribute* attr);
+void os_loadAttributes(const Attribute* attr, Uroboros* uro);
+void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner);
 
-   // file system variables:
+// file system variables:
 _tim os_access(const _str& path);
 _boo os_archive(const _str& path);
 _tim os_change(const _str& path);

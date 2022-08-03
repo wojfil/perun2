@@ -87,12 +87,13 @@ void os_sleepForMs(const _nint& ms, Uroboros* uro)
 }
 
 // explanation of attributes is in file 'attribute.h'
-void os_loadAttributes(const Attribute* attr)
+void os_loadAttributes(const Attribute* attr, Uroboros* uro)
 {
-   attr->inner->trimmed = os_trim(attr->inner->this_s.value);
+   InnerVariables& inner = uro->vars.inner;
+   inner.trimmed = os_trim(inner.this_s.value);
 
-   if (os_isInvaild(attr->inner->trimmed)) {
-      os_loadAttributes_empty(attr);
+   if (os_isInvaild(inner.trimmed)) {
+      os_loadEmptyAttributes(attr, inner);
       return;
    }
 
@@ -100,20 +101,20 @@ void os_loadAttributes(const Attribute* attr)
 
    // "drive", "path", "parent" and "fullname" do not require access to the file system
    if (attr->has(ATTR_PATH)) {
-      path = os_join(attr->inner->location.value, attr->inner->trimmed);
-      attr->inner->path.value = path;
+      path = os_join(inner.location.value, inner.trimmed);
+      inner.path.value = path;
    }
 
    if (attr->has(ATTR_FULLNAME)) {
-      attr->inner->fullname.value = os_fullname(attr->inner->trimmed);
+      inner.fullname.value = os_fullname(inner.trimmed);
    }
 
    if (attr->has(ATTR_PARENT)) {
-      attr->inner->parent.value = os_parent(path);
+      inner.parent.value = os_parent(path);
    }
 
    if (attr->has(ATTR_DRIVE)) {
-      attr->inner->drive.value = os_drive(path);
+      inner.drive.value = os_drive(path);
    }
 
    if (!attr->has(ATTR_EXISTS)) {
@@ -125,7 +126,7 @@ void os_loadAttributes(const Attribute* attr)
    const _boo gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
    const DWORD& dwAttrib = data.dwFileAttributes;
    const _boo exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
-   attr->inner->exists.value = exists;
+   inner.exists.value = exists;
 
    _boo isDir;
    _boo isFile;
@@ -135,30 +136,30 @@ void os_loadAttributes(const Attribute* attr)
       isFile = !isDir;
    }
    else {
-      isFile = os_hasExtension(attr->inner->trimmed);
+      isFile = os_hasExtension(inner.trimmed);
       isDir = !isFile;
    }
 
-   attr->inner->isfile.value = isFile;
-   attr->inner->isdirectory.value = isDir;
+   inner.isfile.value = isFile;
+   inner.isdirectory.value = isDir;
 
 
    if (attr->has(ATTR_ACCESS)) {
-      attr->inner->access.value = exists
+      inner.access.value = exists
          ? convertToUroTime(&data.ftLastAccessTime)
          : _tim();
    }
 
    if (attr->has(ATTR_ARCHIVE)) {
-      attr->inner->archive.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
+      inner.archive.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
    }
 
    if (attr->has(ATTR_COMPRESSED)) {
-      attr->inner->compressed.value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
+      inner.compressed.value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
    }
 
    if (attr->has(ATTR_CREATION)) {
-      attr->inner->creation.value = exists
+      inner.creation.value = exists
          ? convertToUroTime(&data.ftCreationTime)
          : _tim();
    }
@@ -171,155 +172,155 @@ void os_loadAttributes(const Attribute* attr)
          : _tim();
 
       if (hasChange) {
-         attr->inner->change.value = time;
+         inner.change.value = time;
       }
       if (hasMod) {
-         attr->inner->modification.value = time;
+         inner.modification.value = time;
       }
    }
 
    if (attr->has(ATTR_LIFETIME)) {
       if (exists) {
-         attr->inner->lifetime.value = attr->inner->creation.value < attr->inner->modification.value
-            ? (os_now() - attr->inner->creation.value)
-            : (os_now() - attr->inner->modification.value);
+         inner.lifetime.value = inner.creation.value < inner.modification.value
+            ? (os_now() - inner.creation.value)
+            : (os_now() - inner.modification.value);
       }
       else {
-         attr->inner->lifetime.value = _per();
+         inner.lifetime.value = _per();
       }
    }
 
    if (attr->has(ATTR_EMPTY)) {
       if (exists) {
-         attr->inner->empty.value = isFile
+         inner.empty.value = isFile
             ? os_emptyFile(data)
             : os_emptyDirectory(path);
       }
       else {
-         attr->inner->empty.value = false;
+         inner.empty.value = false;
       }
    }
 
    if (attr->has(ATTR_ENCRYPTED)) {
-      attr->inner->encrypted.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
+      inner.encrypted.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
    }
 
    if (attr->has(ATTR_EXTENSION)) {
-      attr->inner->extension.value = isFile ? os_extension(attr->inner->trimmed) : L"";
+      inner.extension.value = isFile ? os_extension(inner.trimmed) : L"";
    }
 
    if (attr->has(ATTR_HIDDEN)) {
-      attr->inner->hidden.value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
+      inner.hidden.value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
    }
 
    if (attr->has(ATTR_NAME)) {
       if (isDir) {
-         attr->inner->name.value = os_fullname(attr->inner->trimmed);
+         inner.name.value = os_fullname(inner.trimmed);
       }
       else {
-         attr->inner->name.value = os_hasExtension(attr->inner->trimmed)
-            ? os_name(attr->inner->trimmed)
-            : os_fullname(attr->inner->trimmed);
+         inner.name.value = os_hasExtension(inner.trimmed)
+            ? os_name(inner.trimmed)
+            : os_fullname(inner.trimmed);
       }
    }
 
    if (attr->has(ATTR_READONLY)) {
-      attr->inner->readonly.value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
+      inner.readonly.value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
    }
 
    if (attr->has(ATTR_SIZE)) {
       if (exists) {
-         attr->inner->size.value = isFile
+         inner.size.value = isFile
             ? _num(os_sizeFile(data))
-            : _num(os_sizeDirectory(path, attr->uroboros));
+            : _num(os_sizeDirectory(path, uro));
       }
       else {
-         attr->inner->size.value = _num(-1LL);
+         inner.size.value = _num(-1LL);
       }
    }
 }
 
-// attributes of something, that does cannot exist (empty string, contains not allowed chars, ...)
-void os_loadAttributes_empty(const Attribute* attr)
+// attributes of something, that cannot exist (empty string, contains not allowed chars, ...)
+void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
 {
    if (attr->has(ATTR_PATH)) {
-      attr->inner->path.value = L"";
+      inner.path.value = L"";
    }
 
    if (attr->has(ATTR_FULLNAME)) {
-      attr->inner->fullname.value = L"";
+      inner.fullname.value = L"";
    }
 
    if (attr->has(ATTR_DRIVE)) {
-      attr->inner->drive.value = L"";
+      inner.drive.value = L"";
    }
 
    if (!attr->has(ATTR_EXISTS)) {
       return;
    }
 
-   attr->inner->exists.value = false;
-   attr->inner->isfile.value = false;
-   attr->inner->isdirectory.value = false;
+   inner.exists.value = false;
+   inner.isfile.value = false;
+   inner.isdirectory.value = false;
 
    if (attr->has(ATTR_ACCESS)) {
-      attr->inner->access.value = _tim();
+      inner.access.value = _tim();
    }
 
    if (attr->has(ATTR_ARCHIVE)) {
-      attr->inner->archive.value = false;
+      inner.archive.value = false;
    }
 
    if (attr->has(ATTR_COMPRESSED)) {
-      attr->inner->compressed.value = false;
+      inner.compressed.value = false;
    }
 
    if (attr->has(ATTR_CHANGE)) {
-      attr->inner->change.value = _tim();
+      inner.change.value = _tim();
    }
 
    if (attr->has(ATTR_CREATION)) {
-      attr->inner->creation.value = _tim();
+      inner.creation.value = _tim();
    }
 
    if (attr->has(ATTR_EMPTY)) {
-      attr->inner->empty.value = false;
+      inner.empty.value = false;
    }
 
    if (attr->has(ATTR_ENCRYPTED)) {
-      attr->inner->encrypted.value = false;
+      inner.encrypted.value = false;
    }
 
    if (attr->has(ATTR_EXTENSION)) {
-      attr->inner->extension.value = L"";
+      inner.extension.value = L"";
    }
 
    if (attr->has(ATTR_HIDDEN)) {
-      attr->inner->hidden.value = false;
+      inner.hidden.value = false;
    }
 
    if (attr->has(ATTR_LIFETIME)) {
-      attr->inner->lifetime.value = _per();
+      inner.lifetime.value = _per();
    }
 
    if (attr->has(ATTR_MODIFICATION)) {
-      attr->inner->modification.value = _tim();
+      inner.modification.value = _tim();
    }
 
    if (attr->has(ATTR_NAME)) {
-      attr->inner->name.value = L"";
+      inner.name.value = L"";
    }
 
    if (attr->has(ATTR_PARENT)) {
-      attr->inner->parent.value = L"";
+      inner.parent.value = L"";
    }
 
    if (attr->has(ATTR_READONLY)) {
-      attr->inner->readonly.value = false;
+      inner.readonly.value = false;
    }
 
    if (attr->has(ATTR_SIZE)) {
-      attr->inner->size.value = _num(-1LL);
+      inner.size.value = _num(-1LL);
    }
 }
 

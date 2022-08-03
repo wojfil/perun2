@@ -17,12 +17,10 @@
 #include "os.h"
 
 
-
 Attribute::Attribute(Uroboros* uro)
 {
    value = ATTR_NULL;
    uroboros = uro;
-   inner = &uro->vars.inner;
 }
 
 void Attribute::add(const Token& tk)
@@ -113,7 +111,6 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-
 _boo Attribute::has(const _aunit& v) const
 {
    return value & v;
@@ -126,5 +123,5 @@ _boo Attribute::hasAny() const
 
 void Attribute::run() const
 {
-   os_loadAttributes(this);
+   os_loadAttributes(this, this->uroboros);
 }

@@ -21,7 +21,6 @@
 #include "../datatype/primitives.h"
 
 
-
 // parsing context of the variable "this"
 enum ThisState
 {
@@ -35,7 +34,7 @@ struct InnerVariables
 {
 public:
 
-   InnerVariables();
+   InnerVariables(const _str& loc, const _str& ucom);
    _list getAlphabet();
    _list getAscii();
 
@@ -46,7 +45,6 @@ public:
    void createThisVarRef(Variable<_str>*& result);
    void createThisVarRef(Variable<_num>*& result);
    void createThisVarRef(Variable<_tim>*& result);
-
 
    ThisState thisState;
    Variable<_tim> access;
@@ -81,8 +79,7 @@ public:
    Variable<_boo> success;
 
    _str trimmed;
-   _str urocom;
-
+   const _str urocom;
 };
 
 #endif // VAR_INNER_H_INCLUDED

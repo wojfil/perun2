@@ -634,8 +634,6 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
    if (last.type == Token::t_MultiSymbol &&
        (last.value.chars.ch == L'+' || last.value.chars.ch == L'-'))
    {
-      const _char& c1 = tks.penultimate().value.ch;
-      const _char& c2 = tks.last().value.ch;
       const _boo isIncrement = last.value.chars.ch == L'+';
 
       const _str op = isIncrement
@@ -955,7 +953,33 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
       L"' cannot be incremented by a value"), line);
 }
 
+template <typename T>
+static _boo makeVarAlteration(Uroboros* uro, const Tokens& tokens, const Token& first,
+   ParseVariable<T>*& varPtr, Command*& result, const _str& dataTypeName)
+{
+   if (uro->vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
+      Generator<T>* value;
+      if (parse(uro, tokens, value)) {
+         result = new VarAssignment<T>(varPtr->getVarPtr(), value);
+         return true;
+      }
+      else {
+         throw SyntaxException(str(L"value assigned to variable '", *first.value.word.os,
+            L"' has to be of ", dataTypeName, L" type"), first.line);
+      }
+   }
 
+   return false;
+}
+
+template <typename T>
+static Command* makeVarAssignment(const Token& token, Uroboros* uro,
+   ParseVariable<T>* varPtr, Generator<T>* valuePtr)
+{
+   VarBundle<T>* bundle;
+   uro->vars.takeBundlePointer(bundle);
+   return bundle->makeVariableAssignment(token, varPtr, valuePtr);
+}
 
 static Command* commandVarAssign(const Tokens& left, const Tokens& right, Uroboros* uro)
 {
@@ -1003,92 +1027,46 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
       throw SyntaxException(str(L"variable '", origin, L"' is immutable"), first.line);
    }
 
+   Command* varAlteration;
+
    ParseVariable<_boo>* pv_boo = nullptr;
-   if (uro->vars.getVarPtr(first, pv_boo) && pv_boo->isReachable()) {
-      Generator<_boo>* boo;
-      if (parse(uro, right, boo)) {
-         return new VarAssignment<_boo>(pv_boo->getVarPtr(), boo);
-      }
-      else {
-         varAssignException(origin, L"bool", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_boo, varAlteration, L"bool")) {
+      return varAlteration;
    }
 
    ParseVariable<_num>* pv_num = nullptr;
-   if (uro->vars.getVarPtr(first, pv_num) && pv_num->isReachable()) {
-      Generator<_num>* num;
-      if (parse(uro, right, num)) {
-         return new VarAssignment<_num>(pv_num->getVarPtr(), num);
-      }
-      else {
-         varAssignException(origin, L"number", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_num, varAlteration, L"number")) {
+      return varAlteration;
    }
 
    ParseVariable<_tim>* pv_tim = nullptr;
-   if (uro->vars.getVarPtr(first, pv_tim) && pv_tim->isReachable()) {
-      Generator<_tim>* tim;
-      if (parse(uro, right, tim)) {
-         return new VarAssignment<_tim>(pv_tim->getVarPtr(), tim);
-      }
-      else {
-         varAssignException(origin, L"time", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_tim, varAlteration, L"time")) {
+      return varAlteration;
    }
 
    ParseVariable<_per>* pv_per = nullptr;
-   if (uro->vars.getVarPtr(first, pv_per) && pv_per->isReachable()) {
-      Generator<_per>* per;
-      if (parse(uro, right, per)) {
-         return new VarAssignment<_per>(pv_per->getVarPtr(), per);
-      }
-      else {
-         varAssignException(origin, L"period", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_per, varAlteration, L"period")) {
+      return varAlteration;
    }
 
    ParseVariable<_str>* pv_str = nullptr;
-   if (uro->vars.getVarPtr(first, pv_str) && pv_str->isReachable()) {
-      Generator<_str>* str;
-      if (parse(uro, right, str)) {
-         return new VarAssignment<_str>(pv_str->getVarPtr(), str);
-      }
-      else {
-         varAssignException(origin, L"string", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_str, varAlteration, L"string")) {
+      return varAlteration;
    }
 
    ParseVariable<_nlist>* pv_nlist = nullptr;
-   if (uro->vars.getVarPtr(first, pv_nlist) && pv_nlist->isReachable()) {
-      Generator<_nlist>* nlist;
-      if (parse(uro, right, nlist)) {
-         return new VarAssignment<_nlist>(pv_nlist->getVarPtr(), nlist);
-      }
-      else {
-         varAssignException(origin, L"numeric list", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_nlist, varAlteration, L"numeric list")) {
+      return varAlteration;
    }
 
    ParseVariable<_tlist>* pv_tlist = nullptr;
-   if (uro->vars.getVarPtr(first, pv_tlist) && pv_tlist->isReachable()) {
-      Generator<_tlist>* tlist;
-      if (parse(uro, right, tlist)) {
-         return new VarAssignment<_tlist>(pv_tlist->getVarPtr(), tlist);
-      }
-      else {
-         varAssignException(origin, L"time list", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_tlist, varAlteration, L"time list")) {
+      return varAlteration;
    }
 
    ParseVariable<_list>* pv_list = nullptr;
-   if (uro->vars.getVarPtr(first, pv_list) && pv_list->isReachable()) {
-      Generator<_list>* list;
-      if (parse(uro, right, list)) {
-         return new VarAssignment<_list>(pv_list->getVarPtr(), list);
-      }
-      else {
-         varAssignException(origin, L"list", right);
-      }
+   if (makeVarAlteration(uro, right, first, pv_list, varAlteration, L"list")) {
+      return varAlteration;
    }
 
    /////
@@ -1098,107 +1076,46 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
 
    Generator<_boo>* boo;
    if (parse(uro, right, boo)) {
-      if (pv_boo == nullptr) {
-         uro->vars.var_boo.insert(std::make_pair(first.value.word.h, ParseVariable<_boo>()));
-         return new VarAssignment<_boo>(uro->vars.var_boo[first.value.word.h].getVarPtr(), boo);
-      }
-      else {
-         pv_boo->resurrect();
-         return new VarAssignment<_boo>(pv_boo->getVarPtr(), boo);
-      }
+      return makeVarAssignment(first, uro, pv_boo, boo);
    }
 
    Generator<_num>* num;
    if (parse(uro, right, num)) {
-      if (pv_num == nullptr) {
-         uro->vars.var_num.insert(std::make_pair(first.value.word.h, ParseVariable<_num>()));
-         return new VarAssignment<_num>(uro->vars.var_num[first.value.word.h].getVarPtr(), num);
-      }
-      else {
-         pv_num->resurrect();
-         return new VarAssignment<_num>(pv_num->getVarPtr(), num);
-      }
+      return makeVarAssignment(first, uro, pv_num, num);
    }
 
    Generator<_tim>* tim;
    if (parse(uro, right, tim)) {
-      if (pv_tim == nullptr) {
-         uro->vars.var_tim.insert(std::make_pair(first.value.word.h, ParseVariable<_tim>()));
-         return new VarAssignment<_tim>(uro->vars.var_tim[first.value.word.h].getVarPtr(), tim);
-      }
-      else {
-         pv_tim->resurrect();
-         return new VarAssignment<_tim>(pv_tim->getVarPtr(), tim);
-      }
+      return makeVarAssignment(first, uro, pv_tim, tim);
    }
 
    Generator<_per>* per;
    if (parse(uro, right, per)) {
-      if (pv_per == nullptr) {
-         uro->vars.var_per.insert(std::make_pair(first.value.word.h, ParseVariable<_per>()));
-         return new VarAssignment<_per>(uro->vars.var_per[first.value.word.h].getVarPtr(), per);
-      }
-      else {
-         pv_per->resurrect();
-         return new VarAssignment<_per>(pv_per->getVarPtr(), per);
-      }
+      return makeVarAssignment(first, uro, pv_per, per);
    }
 
    Generator<_str>* str_;
    if (parse(uro, right, str_)) {
-      if (pv_str == nullptr) {
-         uro->vars.var_str.insert(std::make_pair(first.value.word.h, ParseVariable<_str>()));
-         return new VarAssignment<_str>(uro->vars.var_str[first.value.word.h].getVarPtr(), str_);
-      }
-      else {
-         pv_str->resurrect();
-         return new VarAssignment<_str>(pv_str->getVarPtr(), str_);
-      }
+      return makeVarAssignment(first, uro, pv_str, str_);
    }
 
    Generator<_nlist>* nlist;
    if (parse(uro, right, nlist)) {
-      if (pv_nlist == nullptr) {
-         uro->vars.var_nlist.insert(std::make_pair(first.value.word.h, ParseVariable<_nlist>()));
-         return new VarAssignment<_nlist>(uro->vars.var_nlist[first.value.word.h].getVarPtr(), nlist);
-      }
-      else {
-         pv_nlist->resurrect();
-         return new VarAssignment<_nlist>(pv_nlist->getVarPtr(), nlist);
-      }
+      return makeVarAssignment(first, uro, pv_nlist, nlist);
    }
 
    Generator<_tlist>* tlist;
    if (parse(uro, right, tlist)) {
-      if (pv_tlist == nullptr) {
-         uro->vars.var_tlist.insert(std::make_pair(first.value.word.h, ParseVariable<_tlist>()));
-         return new VarAssignment<_tlist>(uro->vars.var_tlist[first.value.word.h].getVarPtr(), tlist);
-      }
-      else {
-         pv_tlist->resurrect();
-         return new VarAssignment<_tlist>(pv_tlist->getVarPtr(), tlist);
-      }
+      return makeVarAssignment(first, uro, pv_tlist, tlist);
    }
 
    Generator<_list>* list;
    if (parse(uro, right, list)) {
-      if (pv_list == nullptr) {
-         uro->vars.var_list.insert(std::make_pair(first.value.word.h, ParseVariable<_list>()));
-         return new VarAssignment<_list>(uro->vars.var_list[first.value.word.h].getVarPtr(), list);
-      }
-      else {
-         pv_list->resurrect();
-         return new VarAssignment<_list>(pv_list->getVarPtr(), list);
-      }
+      return makeVarAssignment(first, uro, pv_list, list);
    }
 
-   throw SyntaxException(str(L"wrong declaration of variable '", origin, L"'"), first.line);
-}
-
-static void varAssignException(const _str& name, const _str& type, const Tokens& tks)
-{
-   throw SyntaxException(str(L"value assigned to variable '", name,
-      L"' has to be of ", type, L" type"), tks.first().line);
+   throw SyntaxException(str(L"value assigned to variable '", origin,
+      L"' cannot be resolved to any data type"), first.line);
 }
 
 static bool varSquareBrackets(const Tokens& tks)

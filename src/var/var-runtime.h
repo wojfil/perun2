@@ -17,7 +17,9 @@
 
 #include <map>
 #include "var.h"
+#include "var-bundle.h"
 #include "var-inner.h"
+#include "var-context.h"
 #include "../datatype/def-var.h"
 #include "../datatype/generator/gen-os.h"
 #include "../hash.h"
@@ -32,68 +34,67 @@ public:
 
    Variables(Uroboros* uro);
 
+   const _str uroPath;
    InnerVariables inner;
 
-   // user variables:
-   std::map<_size, ParseVariable<_boo>> var_boo;
-   std::map<_size, ParseVariable<_per>> var_per;
-   std::map<_size, ParseVariable<_tim>> var_tim;
-   std::map<_size, ParseVariable<_num>> var_num;
-   std::map<_size, ParseVariable<_str>> var_str;
-   std::map<_size, ParseVariable<_nlist>> var_nlist;
-   std::map<_size, ParseVariable<_tlist>> var_tlist;
-   std::map<_size, ParseVariable<_list>> var_list;
-
-   // internal variables (unmodifiable by user):
-   std::map<_size, Variable<_boo>*> ivar_boo;
-   std::map<_size, Variable<_per>*> ivar_per;
-   std::map<_size, Variable<_tim>*> ivar_tim;
-   std::map<_size, Variable<_num>*> ivar_num;
-   std::map<_size, Variable<_numi>*> ivar_numi;
-   std::map<_size, Variable<_str>*> ivar_str;
-   std::map<_size, Variable<_nlist>*> ivar_nlist;
-   std::map<_size, Variable<_tlist>*> ivar_tlist;
-   std::map<_size, Variable<_list>*> ivar_list;
-
-   // special variables:
-   std::map<_size, Generator<_boo>*> svar_boo;
-   std::map<_size, Generator<_per>*> svar_per;
-   std::map<_size, Generator<_tim>*> svar_tim;
-   std::map<_size, Generator<_num>*> svar_num;
-   std::map<_size, Generator<_str>*> svar_str;
-   std::map<_size, Generator<_nlist>*> svar_nlist;
-   std::map<_size, Generator<_tlist>*> svar_tlist;
-   std::map<_size, DefinitionGenerator*> svar_def;
-   std::map<_size, Generator<_list>*> svar_list;
-
-   void initVars(const _list& args);
    void varsLevelUp();
    void varsLevelDown();
 
-   _boo getVarValue(const Token& tk, Generator<_boo>*& result);
-   _boo getVarValue(const Token& tk, Generator<_per>*& result);
+   // these overloaded methods fit easily into template functions:
+   void takeBundlePointer(VarBundle<_boo>*& bundle);
+   void takeBundlePointer(VarBundle<_per>*& bundle);
+   void takeBundlePointer(VarBundle<_tim>*& bundle);
+   void takeBundlePointer(VarBundle<_num>*& bundle);
+   void takeBundlePointer(VarBundle<_str>*& bundle);
+   void takeBundlePointer(VarBundle<_nlist>*& bundle);
+   void takeBundlePointer(VarBundle<_tlist>*& bundle);
+   void takeBundlePointer(VarBundle<_list>*& bundle);
+
+   // get a reference to variable or 'this'
    _boo getVarValue(const Token& tk, Generator<_tim>*& result);
-   _boo getVarValue(const Token& tk, Generator<_num>*& result);
    _boo getVarValue(const Token& tk, Generator<_str>*& result);
-   _boo getVarValue(const Token& tk, Generator<_nlist>*& result);
-   _boo getVarValue(const Token& tk, Generator<_tlist>*& result);
+   _boo getVarValue(const Token& tk, Generator<_num>*& result);
+
+   // generate new definition
    _boo getVarValue(const Token& tk, _def*& result);
-   _boo getVarValue(const Token& tk, Generator<_list>*& result);
+
+   // usual variable value reference
+   template <typename T>
+   _boo getVarValue(const Token& tk, Generator<T>*& result)
+   {
+      VarBundle<T>* bundle;
+      takeBundlePointer(bundle);
+      return bundle->getValue(this->vc, tk, result);
+   }
 
    _boo variableExists(const Token& tk);
 
-   _boo getVarPtr(const Token& tk, ParseVariable<_boo>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_per>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_tim>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_num>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_str>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_nlist>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_tlist>*& result);
-   _boo getVarPtr(const Token& tk, ParseVariable<_list>*& result);
+   // variable reference for commands, that alter variables
+   template <typename T>
+   _boo getVarPtr(const Token& tk, ParseVariable<T>*& result)
+   {
+      VarBundle<T>* bundle;
+      takeBundlePointer(bundle);
+      return bundle->getVarPtr(tk, result);
+   }
 
 private:
+
    Uroboros* uroboros;
    Hashes* hashes;
+   VariablesContext* vc;
+
+   VarBundle<_boo> boo;
+   VarBundle<_per> per;
+   VarBundle<_tim> tim;
+   VarBundle<_num> num;
+   VarBundle<_str> str_;
+   VarBundle<_nlist> nlist;
+   VarBundle<_tlist> tlist;
+   VarBundle<_list> list;
+
+   std::map<_size, DefinitionGenerator*> defGenerators;
+   std::map<_size, Variable<_numi>*> intVars;
 
 };
 

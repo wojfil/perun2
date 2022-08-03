@@ -17,12 +17,9 @@
 #include "../datatype/generator/gen-generic.h"
 
 
-InnerVariables::InnerVariables()
-{
-   this->thisState = ThisState::ts_None;
-   this->trimmed = L"";
-   this->urocom = L"";
-}
+InnerVariables::InnerVariables(const _str& loc, const _str& ucom)
+   : thisState(ThisState::ts_None), trimmed(L""), urocom(ucom),
+     depth(_numi(0LL)), location(loc) { }
 
 _list InnerVariables::getAlphabet()
 {

@@ -21,7 +21,6 @@
 #include "../datatype/datatype.h"
 
 
-
 struct VariablesContext
 {
 public:
@@ -29,7 +28,6 @@ public:
    VariablesContext(Hashes* hsh);
 
    void setAttribute(const Token& tk);
-   //void setAttribute(const _size& name);
    void setCoreComAttribute(const _str& comName, const _int& line);
    void setTimeComAttribute(const _str& comName, const _int& line);
    void attributeException(const Token& tk);
@@ -51,6 +49,5 @@ private:
    std::vector<Aggregate*> aggrs;
 
 };
-
 
 #endif // VAR_GROUP_H_INCLUDED

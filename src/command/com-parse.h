@@ -42,7 +42,6 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 static Command* commandVarIncrement(const Token& first, const Tokens& tks,
    const _int& line, Uroboros* uro);
 static Command* commandVarAssign(const Tokens& left, const Tokens& right, Uroboros* uro);
-static void varAssignException(const _str& name, const _str& type, const Tokens& tks);
 
 static _boo varSquareBrackets(const Tokens& tks);
 static Command* commandVarAssign_Element(const Tokens& left, const Tokens& right, Uroboros* uro);

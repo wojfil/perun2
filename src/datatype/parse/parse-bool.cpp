@@ -750,32 +750,35 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   const Token& firstRight = right.first();
-   if (right.getLength() == 1 && firstRight.type == Token::t_Quotation) {
-      const _str& pattern = *firstRight.value.str;
+   Generator<_str>* pattern;
+   if (parse(uro, right, pattern)) {
+      if (pattern->isConstant()) {
+         const _str cnst = pattern->getValue();
+         delete pattern;
 
-      if (!correctLikePattern(pattern)) {
-         throw SyntaxException(str(L"pattern '", pattern,
-            L"' is not valid for the 'like' operator"), firstRight.line);
+         if (!correctLikePattern(cnst)) {
+            throw SyntaxException(str(L"pattern '", cnst,
+               L"' is not valid for the 'like' operator"), right.first().line);
+         }
+
+         if (neg) {
+            return new Not(new LikeConst(value, cnst));
+         }
+         else {
+            return new LikeConst(value, cnst);
+         }
       }
 
-      if (neg)
-         return new Not(new LikeConst(value, pattern));
-      else
-         return new LikeConst(value, pattern);
-   }
-   else {
-      Generator<_str>* pattern;
-      if (parse(uro, right, pattern)) {
-         if (neg)
-            return new Not(new Like(value, pattern));
-         else
-            return new Like(value, pattern);
+      if (neg) {
+         return new Not(new Like(value, pattern));
       }
       else {
-         delete value;
-         return nullptr;
+         return new Like(value, pattern);
       }
+   }
+   else {
+      delete value;
+      return nullptr;
    }
 }
 

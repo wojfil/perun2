@@ -1,13 +1,23 @@
 import subprocess
 
+SYNTAX_ERROR_EXIT_CODE = 2
+
+def getCmd(code):
+  return "uro -d res -c \"" + code + "\""
+
 def runTestCase(code, expectedOutput):
-  cmd = "uro -d res -c \"" + code + "\""
-  realOutput = subprocess.getoutput(cmd)
+  realOutput = subprocess.getoutput(getCmd(code))
   if realOutput != expectedOutput:
     print("Test failed at running code: " + code)
     print("  Expected output: \n" + expectedOutput)
     print("  Received output: \n" + realOutput)
     
+#def expectSyntaxError(code):
+  #r = subprocess.run(["ls"])
+  #if r.returncode == SYNTAX_ERROR_EXIT_CODE:
+  #  print("Test failed at expecting syntax error, code: " + code)
+  #  print("  Process exit code: \n" + exit_code)
+  
 def lines(*args):
   return "\n".join(args)
   
@@ -18,6 +28,16 @@ runTestCase("print 'hello world'", "hello world")
 runTestCase(" 'hello world'   ", "hello world")
 runTestCase("print 'hello' + ' ' + 'worlds'", "hello worlds")
 runTestCase("print 2 +2*2", "6")
+runTestCase("print 2 + '5' ", "25")
+runTestCase("print '2' + 75 ", "275")
+runTestCase("print '2' + 75 + 5 ", "280")
+runTestCase("print '2' + 75 days + 5 ", "275 days5")
+runTestCase("print '2' + 75 days + 2 days + 5 ", "277 days5")
+runTestCase("print '2' + 3 august 2010 + 2 ", "23 August 20102")
+runTestCase("print '2' + 3 august 2010 + 2 + 5 ", "23 August 20107")
+runTestCase("print '2' + 3 august 2010 + 2 days ", "25 August 2010")
+runTestCase("print '2' + 3 august 2010 + 2 days + 1 day ", "26 August 2010")
+runTestCase("print '2' + 3 august 2010 + 2 days + 1 day + 16 ", "26 August 201016")
 runTestCase("print 2, 5", lines("2", "5"))
 runTestCase("print 2, 2*25, 1", lines("2", "50", "1"))
 runTestCase("if true {   43} ", "43")
@@ -180,6 +200,16 @@ runTestCase("inside 'modificables' { force create 'existing_empty_dir'}", "Creat
 # runTestCase("inside 'modificables' { remodify 'rainbow.png' to 12 april 2017, 14:12:34 } inside 'modificables' { 'rainbow.png' {print modification }}", \
 # lines("Remodify 'rainbow.png' to 12 April 2017, 14:12:34", "12 April 2017, 14:12:34"))
 # runTestCase("inside 'modificables' { 'a.txt' { print parent(path) = location }}", "1")
+
+
+
+
+
+
+
+
+
+
 
 print ("BLACK-BOX TESTS END")
 print ("All tests have passed successfully if there is no error message above.")

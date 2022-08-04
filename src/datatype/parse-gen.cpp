@@ -19,6 +19,11 @@
 #include "function.h"
 
 
+void negationByExclamationException(const _int& line)
+{
+   throw SyntaxException(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
+}
+
 Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
 {
    // check if all opened brackets are closed within the sequence
@@ -76,7 +81,6 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    }
 
    // look for a common error - somebody calls a non-existent variable
-   // also look for adjacent ++ and -- inside an expression
    if (tks2.getLength() == 1) {
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
@@ -90,8 +94,19 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    // look for adjacent ++ and -- inside an expression
    const _int start = tks2.getStart();
    const _int end = tks2.getEnd() - 1;
+   _boo prevExclamantion = false;
+
+   if (tks2.first().isSymbol(L'!')) {
+      negationByExclamationException(tks2.first().line);
+   }
+
    for (_int i = start; i <= end; i++) {
       const Token& t = tks2.listAt(i);
+
+      if (prevExclamantion && !t.isSymbol(L'=')) {
+         negationByExclamationException(tks2.listAt(i - 1).line);
+      }
+
       if (t.type == Token::t_MultiSymbol) {
          switch (t.value.chars.ch) {
             case L'+': {
@@ -118,6 +133,8 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
             }
          }
       }
+
+      prevExclamantion = t.isSymbol(L'!');
    }
 
    return tks2;

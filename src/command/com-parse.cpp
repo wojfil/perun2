@@ -98,6 +98,20 @@ Command* parseCommands(const Tokens& tks, Uroboros* uro)
    }
 }
 
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks)
+{
+   const _int end = tks.getEnd();
+
+   for (_int i = tks.getStart(); i <= end; i++) {
+      const Token& t = tks.listAt(i);
+
+      if (t.type == Token::t_Keyword && isExpForbiddenKeyword(t)) {
+         throw SyntaxException(str(L"a command-ending semicolon ; was expected somewhere between keyword '",
+            *t.value.keyword.os, L"' and curly brackets {}"), t.line);
+      }
+   }
+}
+
 // can return nullptr
 static Command* commandStruct(const Tokens& tks, const _int& sublen,
    const _int& index, const _int& open, Uroboros* uro)
@@ -121,8 +135,10 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       return com;
    }
 
-   // build "times"
    Tokens left(tks.list, leftStart, leftLen);
+   checkKeywordsBeforeCurlyBrackets(left);
+
+   // build "times"
    const Token& leftLast = left.last();
    if (leftLast.isKeyword(Keyword::kw_Times)) {
       left.trimRight();

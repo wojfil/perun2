@@ -87,6 +87,12 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
+template <typename T>
+void concatParseOutcome(_boo& parsed, _boo& allConstants, Generator<T>* recentValue)
+{
+   parsed = true;
+   allConstants &= recentValue->isConstant();
+}
 
 // parse string cocatenation (by + is separator)
 // if adjacent elements are numbers or periods, sum them
@@ -110,6 +116,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
    Generator<_per>* prevPer = nullptr;
 
    const _size len = elements.size();
+   _boo allConstants = true;
    std::vector<Generator<_str>*>* result = new std::vector<Generator<_str>*>();
 
    for (_size i = 0; i < len; i++) {
@@ -120,16 +127,16 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
          case pt_String: {
             if (parse(uro, tks, prevNum)) {
                prevType = pt_Number;
-               parsed = true;
+               concatParseOutcome(parsed, allConstants, prevNum);
             }
             else {
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevTim);
                }
                else if (parse(uro, tks, prevPer)) {
                   prevType = pt_Period;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevPer);
                }
             }
             break;
@@ -139,18 +146,18 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
             if (parse(uro, tks, num)) {
                Generator<_num>* add = new Addition(prevNum, num);
                prevNum = add;
-               parsed = true;
+               concatParseOutcome(parsed, allConstants, num);
             }
             else {
                result->push_back(new Cast_N_S(prevNum));
                prevNum = nullptr;
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevTim);
                }
                else if (parse(uro, tks, prevPer)) {
                   prevType = pt_Period;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevPer);
                }
             }
             break;
@@ -160,17 +167,17 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
             if (parse(uro, tks, per)) {
                Generator<_tim>* incr = new IncreasedTime(prevTim, per);
                prevTim = incr;
-               parsed = true;
+               concatParseOutcome(parsed, allConstants, per);
             }
             else {
                result->push_back(new Cast_T_S(prevTim));
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevTim);
                }
                else if (parse(uro, tks, prevNum)) {
                   prevType = pt_Number;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevNum);
                }
             }
             break;
@@ -180,18 +187,18 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
             if (parse(uro, tks, per)) {
                Generator<_per>* add = new PeriodAddition(prevPer, per);
                prevPer = add;
-               parsed = true;
+               concatParseOutcome(parsed, allConstants, per);
             }
             else {
                result->push_back(new Cast_P_S(prevPer));
                prevPer = nullptr;
                if (parse(uro, tks, prevNum)) {
                   prevType = pt_Number;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevNum);
                }
                else if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
-                  parsed = true;
+                  concatParseOutcome(parsed, allConstants, prevTim);
                }
             }
             break;
@@ -204,6 +211,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
 
          if (parse(uro, tks, str)) {
             result->push_back(str);
+            allConstants &= str->isConstant();
          }
          else {
             // parsing has failed
@@ -245,5 +253,16 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   return new ConcatString(result);
+   Generator<_str>* concat = new ConcatString(result);
+
+   if (allConstants) {
+      // if all units of string concatenation are constant
+      // just transform the whole structure into one constant value
+      const _str cnst = concat->getValue();
+      delete concat;
+      return new Constant<_str>(cnst);
+   }
+   else {
+      return concat;
+   }
 }

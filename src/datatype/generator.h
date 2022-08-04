@@ -29,7 +29,7 @@ public:
 
    virtual ~Generator() { };
 
-   _boo isConstant()
+   _boo isConstant() const
    {
       // artificially implemented simple reflection for parsing
       // constant generators are detected

@@ -408,7 +408,7 @@ _nint getSuffixMultiplier(const _char& c1, const _char& c2)
       case L't': case L'T':
          return 1099511627776LL;
       case L'p': case L'P':
-         return 114349209288704LL;
+         return 1125899906842624LL;
       default:
          return -1LL;
    }

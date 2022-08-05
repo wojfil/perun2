@@ -22,7 +22,7 @@ Number::Number()
    : value(0LL), isDouble(false) { }
 
 Number::Number(const _int& val)
-   : value((_nint)val), isDouble(false) { }
+   : value(static_cast<_nint>(val)), isDouble(false) { }
 
 Number::Number(const _nint& val)
    : value(val), isDouble(false) { }
@@ -64,7 +64,7 @@ _str Number::toString() const
 _nint Number::toInt() const
 {
    return isDouble
-      ? (_nint)value.d
+      ? static_cast<_nint>(value.d)
       : value.i;
 }
 
@@ -195,7 +195,7 @@ Number& Number::operator /= (const Number& num)
             value.i /= num.value.i;
          }
          else {
-            const _ndouble d = (_ndouble)value.i / (_ndouble)num.value.i;
+            const _ndouble d = static_cast<_ndouble>(value.i) / static_cast<_ndouble>(num.value.i);
             value.d = d;
             isDouble = true;
          }
@@ -365,7 +365,7 @@ Number Number::operator / (const Number& num) const
             return Number(value.i / num.value.i);
          }
          else {
-            const _ndouble d = (_ndouble)value.i / (_ndouble)num.value.i;
+            const _ndouble d = static_cast<_ndouble>(value.i) / static_cast<_ndouble>(num.value.i);
             return Number(d);
          }
       }
@@ -418,9 +418,9 @@ bool Number::operator == (const Number& num) const
       return value.d == num.value.d;
    }
    else if (isDouble && !num.isDouble) {
-      return value.d == (_ndouble)num.value.i;
+      return value.d == static_cast<_ndouble>(num.value.i);
    }
-   return (_ndouble)value.i == num.value.d;
+   return static_cast<_ndouble>(value.i) == num.value.d;
 }
 
 // below are duplicates for the rest of comparisons:
@@ -434,9 +434,9 @@ bool Number::operator != (const Number& num) const
       return value.d != num.value.d;
    }
    else if (isDouble && !num.isDouble) {
-      return value.d != ((_ndouble)num.value.i);
+      return value.d != static_cast<_ndouble>(num.value.i);
    }
-   return ((_ndouble)value.i) != num.value.d;
+   return static_cast<_ndouble>(value.i) != num.value.d;
 }
 
 bool Number::operator < (const Number& num) const

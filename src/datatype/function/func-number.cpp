@@ -46,7 +46,7 @@ _num F_Ceil::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      const _nint val = (_nint) ceil(n.value.d);
+      const _nint val = static_cast<_nint>(ceil(n.value.d));
       n.value.i = val;
       n.isDouble = false;
    }
@@ -105,7 +105,7 @@ _num F_Floor::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      const _nint val = (_nint) floor(n.value.d);
+      const _nint val = static_cast<_nint>(floor(n.value.d));
       n.value.i = val;
       n.isDouble = false;
    }
@@ -116,7 +116,7 @@ _num F_Floor::getValue()
 
 _num F_Length::getValue()
 {
-   return _num((_nint)arg1->getValue().size());
+   return _num(static_cast<_nint>(arg1->getValue().size()));
 }
 
 
@@ -153,7 +153,7 @@ _num F_Round::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      const _nint val = (_nint) round(n.value.d);
+      const _nint val = static_cast<_nint>(round(n.value.d));
       n.value.i = val;
       n.isDouble = false;
    }
@@ -385,7 +385,7 @@ _num F_Truncate::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      const _nint val = (_nint) trunc(n.value.d);
+      const _nint val = static_cast<_nint>(trunc(n.value.d));
       n.value.i = val;
       n.isDouble = false;
    }

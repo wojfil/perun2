@@ -268,7 +268,7 @@ void CS_DefinitionLoop::run()
 void CS_ListLoop::run()
 {
    const _list values = this->list->getValue();
-   const _numi length = _numi((_nint)values.size());
+   const _numi length = _numi(static_cast<_nint>(values.size()));
 
    if (length == 0) {
       return;
@@ -431,7 +431,7 @@ void CS_InsideDefinition::run()
 void CS_InsideList::run()
 {
    const _list values = this->list->getValue();
-   const _numi length = _numi((_nint)values.size());
+   const _numi length = _numi(static_cast<_nint>(values.size()));
 
    if (length.value.i == 0) {
       return;

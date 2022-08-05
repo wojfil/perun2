@@ -275,7 +275,7 @@ _str F_Left::getValue()
    }
 
    const _str value = arg1->getValue();
-   const _nint length = (_nint)value.size();
+   const _nint length = static_cast<_nint>(value.size());
 
    return left >= length
       ? value
@@ -291,7 +291,7 @@ _str F_Right::getValue()
    }
 
    const _str value = arg1->getValue();
-   const _nint length = (_nint)value.size();
+   const _nint length = static_cast<_nint>(value.size());
 
    return right >= length
       ? value
@@ -308,7 +308,7 @@ _str F_Substring_2::getValue()
       return value;
    }
 
-   const _nint length = (_nint)value.size();
+   const _nint length = static_cast<_nint>(value.size());
 
    if (index < 0LL) {
       index *= -1;
@@ -330,7 +330,7 @@ _str F_Substring_3::getValue()
    const _str value = arg1->getValue();
    _nint index = arg2->getValue().toInt();
    _nint index2 = arg3->getValue().toInt();
-   const _nint length = (_nint)value.size();
+   const _nint length = static_cast<_nint>(value.size());
 
    if (index2 <= 0LL) {
       return L"";
@@ -792,9 +792,7 @@ _str F_Join::getValue()
 _str F_Roman::getValue()
 {
    const _num base = arg1->getValue();
-   _nint number = base.isDouble
-      ? (_nint)base.toInt()
-      : base.value.i;
+   _nint number = base.toInt();
 
    if (number == 0LL) {
       return L"N";

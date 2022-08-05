@@ -78,26 +78,26 @@ void Period::init()
 
 _nint Period::toSeconds() const
 {
-   _nint secs = (_nint)seconds;
+   _nint secs = static_cast<_nint>(seconds);
    const _tnum d = days + years_ad + months_ad;
 
    if (years != 0) { // year is 365 days
-      secs += 31536000LL * (_nint)years;
+      secs += 31536000LL * static_cast<_nint>(years);
    }
    if (months != 0) { // month is 30 days
-      secs += 2592000LL * (_nint)months;
+      secs += 2592000LL * static_cast<_nint>(months);
    }
    if (weeks != 0) { // week is 7 days
-      secs += 604800LL * (_nint)weeks;
+      secs += 604800LL * static_cast<_nint>(weeks);
    }
    if (d != 0) {
-      secs += 86400LL * (_nint)d;
+      secs += 86400LL * static_cast<_nint>(d);
    }
    if (hours != 0) {
-      secs += 3600LL * (_nint)hours;
+      secs += 3600LL * static_cast<_nint>(hours);
    }
    if (minutes != 0) {
-      secs += 60LL * (_nint)minutes;
+      secs += 60LL * static_cast<_nint>(minutes);
    }
 
    return secs;
@@ -505,7 +505,7 @@ inline void Period::subtractUnit(const Period& per)
 
 Period& Period::operator *= (const Number& num)
 {
-   const _tnum n = (_tnum)num.toInt();
+   const _tnum n = static_cast<_tnum>(num.toInt());
 
    if (periodType ==  PeriodType::pt_Unit) {
       switch (periodUnit) {
@@ -561,7 +561,7 @@ Period& Period::operator *= (const Number& num)
 
 Period& Period::operator /= (const Number& num)
 {
-   const _tnum n = (_tnum)num.toInt();
+   const _tnum n = static_cast<_tnum>(num.toInt());
 
    if (n == 0) {
       throw UroRuntimeException(L"division by zero");

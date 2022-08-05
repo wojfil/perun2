@@ -123,7 +123,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
          return nullptr;
       }
 
-      const _tnum month = (_tnum)first.value.num.n.toInt();
+      const _tnum month = static_cast<_tnum>(first.value.num.n.toInt());
       const _tnum year = tokenToTimeNumber(second);
       return new Constant<_tim>(_tim(month, year));
    }
@@ -145,7 +145,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    }
 
    const _tnum day = tokenToTimeNumber(first);
-   const _tnum month = (_tnum)second.value.num.n.toInt();
+   const _tnum month = static_cast<_tnum>(second.value.num.n.toInt());
    const _tnum year = tokenToTimeNumber(third);
    checkDayCorrectness(day, month, year, first);
 

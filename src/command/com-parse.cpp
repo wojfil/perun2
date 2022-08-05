@@ -265,6 +265,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return new CS_InsideList(list, com, attr, aggr, hasMemory, uro);
       }
       else {
+         delete com;
          throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os, L"' is not followed by a valid "
             L"declaration of string or list"), leftFirst.line);
       }
@@ -438,7 +439,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          : nullptr;
    }
 
-   throw SyntaxException(L"tokens before { bracket do not form and valid syntax structure", tks.first().line);
+   throw SyntaxException(L"tokens before { bracket do not form any valid syntax structure", tks.first().line);
 }
 
 static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,

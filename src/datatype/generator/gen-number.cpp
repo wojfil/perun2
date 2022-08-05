@@ -40,31 +40,31 @@ _num Modulo::getValue() {
 };
 
 _num TimeYears::getValue() {
-   return Number((_nint)time->getValue().year);
+   return Number(static_cast<_nint>(time->getValue().year));
 };
 
 _num TimeMonths::getValue() {
-   return _num((_nint)time->getValue().month);
+   return _num(static_cast<_nint>(time->getValue().month));
 };
 
 _num TimeWeekDay::getValue() {
-   return _num((_nint)time->getValue().getWeekDay());
+   return _num(static_cast<_nint>(time->getValue().getWeekDay()));
 };
 
 _num TimeDays::getValue() {
-   return _num((_nint)time->getValue().day);
+   return _num(static_cast<_nint>(time->getValue().day));
 };
 
 _num TimeHours::getValue() {
-   return _num((_nint)time->getValue().hour);
+   return _num(static_cast<_nint>(time->getValue().hour));
 };
 
 _num TimeMinutes::getValue() {
-   return _num((_nint)time->getValue().minute);
+   return _num(static_cast<_nint>(time->getValue().minute));
 };
 
 _num TimeSeconds::getValue() {
-   return _num((_nint)time->getValue().second);
+   return _num(static_cast<_nint>(time->getValue().second));
 };
 
 TimeMemberAtIndex::~TimeMemberAtIndex() {

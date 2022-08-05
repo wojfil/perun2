@@ -41,7 +41,7 @@ struct F_Count : Func_1<std::vector<T>>, Generator<_num>
 public:
    F_Count<T>(Generator<std::vector<T>>* a1) : Func_1<std::vector<T>>(a1) { };
    _num getValue() override {
-      return _num((_nint) this->arg1->getValue().size());
+      return _num(static_cast<_nint>(this->arg1->getValue().size()));
    }
 };
 

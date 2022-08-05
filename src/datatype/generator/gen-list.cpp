@@ -26,7 +26,7 @@ _list Filter_WhereString::getValue()
 {
    const _list values = list->getValue();
    _list result;
-   const _numi length = _numi((_nint)values.size());
+   const _numi length = _numi(static_cast<_nint>(values.size()));
 
    const _numi prevIndex = this->inner->index.value;
    const _str prevThis = this->inner->this_s.value;

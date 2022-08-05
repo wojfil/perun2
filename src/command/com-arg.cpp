@@ -51,7 +51,7 @@ void CS_StringComArg::run()
 void CS_ListComArg::run()
 {
    const _list values = list->getValue();
-   const _numi length = _numi((_nint)values.size());
+   const _numi length = _numi(static_cast<_nint>(values.size()));
 
    if (length.value.i == 0LL) {
       return;

@@ -79,9 +79,7 @@ void VarCharAssignment::run()
                   variable->value = variable->value.substr(0, len - 1);
                }
                else {
-                  variable->value =
-                     variable->value.substr(0, n) +
-                     variable->value.substr(n + 1);
+                  variable->value = str(variable->value.substr(0, n), variable->value.substr(n + 1));
                }
             }
             break;
@@ -96,8 +94,7 @@ void VarCharAssignment::run()
                   variable->value = v;
                }
                else {
-                  variable->value = v +
-                     variable->value.substr(1);
+                  variable->value = str(v, variable->value.substr(1));
                }
             }
             else if (n == len - 1) {
@@ -105,14 +102,11 @@ void VarCharAssignment::run()
                   variable->value = v;
                }
                else {
-                  variable->value =
-                     variable->value.substr(0, n) + v;
+                  variable->value = str(variable->value.substr(0, n), v);
                }
             }
             else {
-               variable->value =
-                  variable->value.substr(0, n) + v +
-                  variable->value.substr(n + 1);
+               variable->value = str(variable->value.substr(0, n), v, variable->value.substr(n + 1));
             }
             break;
          }

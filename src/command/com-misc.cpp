@@ -99,7 +99,7 @@ void C_Error::run()
 void C_ErrorWithExitCode::run()
 {
    this->uroboros->running = false;
-   const _int code = (_int)(this->exitCode->getValue().toInt());
+   const _int code = static_cast<_int>(this->exitCode->getValue().toInt());
    this->uroboros->exitCode = (code == EXITCODE_OK)
       ? EXITCODE_RUNTIME_ERROR
       : code;
@@ -112,12 +112,12 @@ void C_Run::run()
 
    if (command.empty()) {
       commandLog(this->uroboros, L"Failed to run an empty command");
-      this->inner-> success.value = false;
+      this->inner->success.value = false;
       return;
    }
 
    const _boo s = os_run(command, this->uroboros);
-   this->inner-> success.value = s;
+   this->inner->success.value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Run '", command, L"'");
@@ -136,21 +136,21 @@ void C_RunWith::run()
    _str base = value->getValue();
    os_rawTrim(base);
 
-   if (!this->inner-> exists.value || base.empty()) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
-      this->inner-> success.value = false;
+   if (!this->inner->exists.value || base.empty()) {
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
+      this->inner->success.value = false;
       return;
    }
 
-   const _str com = str(base, L" ", os_quoteEmbraced(this->inner-> trimmed));
+   const _str com = str(base, L" ", os_quoteEmbraced(this->inner->trimmed));
    const _boo s = os_run(com, this->uroboros);
-   this->inner-> success.value = s;
+   this->inner->success.value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
+      commandLog(this->uroboros, L"Run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
    }
 
    if (hasAttribute) {
@@ -163,24 +163,24 @@ void C_RunWithWithString::run()
    _str base = value->getValue();
    os_rawTrim(base);
 
-   if (!this->inner-> exists.value || base.empty()) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
-      this->inner-> success.value = false;
+   if (!this->inner->exists.value || base.empty()) {
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
+      this->inner->success.value = false;
       return;
    }
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = str(base, L" ", os_quoteEmbraced(this->inner-> trimmed), L" ", arg);
+   const _str com = str(base, L" ", os_quoteEmbraced(this->inner->trimmed), L" ", arg);
 
    const _boo s = os_run(com, this->uroboros);
-   this->inner-> success.value = s;
+   this->inner->success.value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->inner-> trimmed), L" with '", base, L"' with '", rawArg, L"'");
+      commandLog(this->uroboros, L"Run ", getCCName(this->inner->trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with '", base, L"' with '", rawArg, L"'");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
 
    if (hasAttribute) {
@@ -193,9 +193,9 @@ void C_RunWithWith::run()
    _str base = value->getValue();
    os_rawTrim(base);
 
-   if (!this->inner-> exists.value || base.empty()) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
-      this->inner-> success.value = false;
+   if (!this->inner->exists.value || base.empty()) {
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
+      this->inner->success.value = false;
       return;
    }
 
@@ -203,23 +203,23 @@ void C_RunWithWith::run()
    const _size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = str(base, L" ", os_quoteEmbraced(this->inner-> trimmed));
+      const _str com = str(base, L" ", os_quoteEmbraced(this->inner->trimmed));
       const _boo s = os_run(com, this->uroboros);
-      this->inner-> success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
+         commandLog(this->uroboros, L"Run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with '", base, L"'");
+         commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with '", base, L"'");
       }
    }
    else {
       std::wstringstream comStream;
       std::wstringstream logStream;
       const _str& first = rawArgs[0];
-      logStream << str(getCCName(this->inner-> trimmed), L" with '", base, L"' with '", first, L"'");
-      comStream << str(base, L" ", os_quoteEmbraced(this->inner-> trimmed), L" ", os_makeArg(first));
+      logStream << str(getCCName(this->inner->trimmed), L" with '", base, L"' with '", first, L"'");
+      comStream << str(base, L" ", os_quoteEmbraced(this->inner->trimmed), L" ", os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];
@@ -229,7 +229,7 @@ void C_RunWithWith::run()
 
       const _str com = comStream.str();
       const _boo s = os_run(com, this->uroboros);
-      this->inner-> success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Run ", logStream.str());
@@ -246,21 +246,21 @@ void C_RunWithWith::run()
 
 void C_RunWithUroboros::run()
 {
-   if (!this->inner-> exists.value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with Uroboros");
-      this->inner-> success.value = false;
+   if (!this->inner->exists.value) {
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with Uroboros");
+      this->inner->success.value = false;
       return;
    }
 
-   const _str com = str(this->inner-> urocom, os_quoteEmbraced(this->inner-> trimmed));
+   const _str com = str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed));
    const _boo s = os_run(com, this->uroboros);
-   this->inner-> success.value = s;
+   this->inner->success.value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->inner-> trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Run ", getCCName(this->inner->trimmed), L" with Uroboros");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with Uroboros");
    }
 
    if (hasAttribute) {
@@ -270,24 +270,24 @@ void C_RunWithUroboros::run()
 
 void C_RunWithUroborosWithString::run()
 {
-   if (!this->inner-> exists.value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with Uroboros");
-      this->inner-> success.value = false;
+   if (!this->inner->exists.value) {
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with Uroboros");
+      this->inner->success.value = false;
       return;
    }
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = str(this->inner-> urocom, os_quoteEmbraced(this->inner-> trimmed), L" ", arg);
+   const _str com = str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed), L" ", arg);
 
    const _boo s = os_run(com, this->uroboros);
-   this->inner-> success.value = s;
+   this->inner->success.value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->inner-> trimmed), L" with Uroboros with '", rawArg, L"'");
+      commandLog(this->uroboros, L"Run ", getCCName(this->inner->trimmed), L" with Uroboros with '", rawArg, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with Uroboros with '", rawArg, L"'");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with Uroboros with '", rawArg, L"'");
    }
 
    if (hasAttribute) {
@@ -297,9 +297,9 @@ void C_RunWithUroborosWithString::run()
 
 void C_RunWithUroborosWith::run()
 {
-   if (!this->inner-> exists.value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with Uroboros");
-      this->inner-> success.value = false;
+   if (!this->inner->exists.value) {
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with Uroboros");
+      this->inner->success.value = false;
       return;
    }
 
@@ -307,23 +307,23 @@ void C_RunWithUroborosWith::run()
    const _size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = str(this->inner-> urocom, os_quoteEmbraced(this->inner-> trimmed));
+      const _str com = str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed));
       const _boo s = os_run(com, this->uroboros);
-      this->inner-> success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", getCCName(this->inner-> trimmed), L" with Uroboros");
+         commandLog(this->uroboros, L"Run ", getCCName(this->inner->trimmed), L" with Uroboros");
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner-> trimmed), L" with Uroboros");
+         commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner->trimmed), L" with Uroboros");
       }
    }
    else {
       std::wstringstream comStream;
       std::wstringstream logStream;
       const _str& first = rawArgs[0];
-      logStream << str(getCCName(this->inner-> trimmed), L" with Uroboros with '", first, L"'");
-      comStream << str(this->inner-> urocom, os_quoteEmbraced(this->inner-> trimmed), L" ", os_makeArg(first));
+      logStream << str(getCCName(this->inner->trimmed), L" with Uroboros with '", first, L"'");
+      comStream << str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed), L" ", os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];
@@ -333,7 +333,7 @@ void C_RunWithUroborosWith::run()
 
       const _str com = comStream.str();
       const _boo s = os_run(com, this->uroboros);
-      this->inner-> success.value = s;
+      this->inner->success.value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Run ", logStream.str());
@@ -356,7 +356,7 @@ void C_Process::run()
 
    if (process.empty()) {
       commandLog(this->uroboros, L"Failed to start an empty process");
-      this->inner-> success.value = false;
+      this->inner->success.value = false;
       return;
    }
 

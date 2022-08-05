@@ -110,7 +110,7 @@ _list F_Words::getValue()
          return _list();
       }
       case 1: {
-         return std::iswalpha(value[0]) ? _list{value}: _list();
+         return std::iswalpha(value[0]) ? _list{value} : _list();
       }
       case 2: {
          if (std::iswalpha(value[0])) {

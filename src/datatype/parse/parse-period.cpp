@@ -145,8 +145,8 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
       const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
 
       _tnum v = num.isDouble
-         ? (_tnum)num.value.d
-         : (_tnum)num.value.i;
+         ? static_cast<_tnum>(num.value.d)
+         : static_cast<_tnum>(num.value.i);
 
       if (negated) {
          v *= -1;

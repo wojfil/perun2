@@ -18,13 +18,13 @@
 
 _tim F_Christmas::getValue()
 {
-   const _tnum year = (_tnum)(arg1->getValue().toInt());
+   const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
    return _tim(25, 12, year);
 }
 
 _tim F_Easter::getValue()
 {
-   const _tnum year = (_tnum)(arg1->getValue().toInt());
+   const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
 
    const _tnum a = year % 19;
    const _tnum b = year / 100;
@@ -39,7 +39,7 @@ _tim F_Easter::getValue()
 
 _tim F_NewYear::getValue()
 {
-   const _tnum year = (_tnum)(arg1->getValue().toInt());
+   const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
    return _tim(1, 1, year, 0, 0, 0);
 }
 
@@ -106,21 +106,21 @@ inline void checkSecondsRuntime(const _tnum& second)
 
 _tim F_Time_2::getValue()
 {
-   const _tnum v1 = (_tnum)(arg1->getValue().toInt());
+   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
    checkMonthRuntime(v1);
 
-   const _tnum v2 = (_tnum)(arg2->getValue().toInt());
+   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    return _tim(v1, v2);
 }
 
 
 _tim F_Time_3::getValue()
 {
-   const _tnum v2 = (_tnum)(arg2->getValue().toInt());
+   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
 
-   const _tnum v1 = (_tnum)(arg1->getValue().toInt());
-   const _tnum v3 = (_tnum)(arg3->getValue().toInt());
+   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
+   const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
    return _tim(v1, v2, v3);
@@ -129,15 +129,15 @@ _tim F_Time_3::getValue()
 
 _tim F_Time_5::getValue()
 {
-   const _tnum v2 = (_tnum)(arg2->getValue().toInt());
+   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
 
-   const _tnum v1 = (_tnum)(arg1->getValue().toInt());
-   const _tnum v3 = (_tnum)(arg3->getValue().toInt());
+   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
+   const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
-   const _tnum v4 = (_tnum)(arg4->getValue().toInt());
-   const _tnum v5 = (_tnum)(arg5->getValue().toInt());
+   const _tnum v4 = static_cast<_tnum>(arg4->getValue().toInt());
+   const _tnum v5 = static_cast<_tnum>(arg5->getValue().toInt());
    checkSmallClockRuntime(v4, v5);
 
    return _tim(v1, v2, v3, v4, v5);
@@ -146,18 +146,18 @@ _tim F_Time_5::getValue()
 
 _tim F_Time_6::getValue()
 {
-   const _tnum v2 = (_tnum)(arg2->getValue().toInt());
+   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
 
-   const _tnum v1 = (_tnum)(arg1->getValue().toInt());
-   const _tnum v3 = (_tnum)(arg3->getValue().toInt());
+   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
+   const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
-   const _tnum v4 = (_tnum)(arg4->getValue().toInt());
-   const _tnum v5 = (_tnum)(arg5->getValue().toInt());
+   const _tnum v4 = static_cast<_tnum>(arg4->getValue().toInt());
+   const _tnum v5 = static_cast<_tnum>(arg5->getValue().toInt());
    checkSmallClockRuntime(v4, v5);
 
-   const _tnum v6 = (_tnum)(arg6->getValue().toInt());
+   const _tnum v6 = static_cast<_tnum>(arg6->getValue().toInt());
    checkSecondsRuntime(v6);
 
    return _tim(v1, v2, v3, v4, v5, v6);

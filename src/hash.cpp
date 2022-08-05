@@ -32,7 +32,7 @@ _size rawStringHash(const _str& value)
    return std::hash<_str>{}(value);
 }
 
-// this is probably the biggest initializer list you will see in your life
+// prepare data for future hash comparisons
 Hashes::Hashes() :
    HASH_NOTHING(rawStringHash(L"")),
    HASH_VAR_THIS(rawStringHash(L"this")),

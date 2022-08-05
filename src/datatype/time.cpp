@@ -657,7 +657,7 @@ _tnum toTimeNumber(const Number& num)
 {
    return num.isDouble
       ? round(num.value.d)
-      : (_tnum)num.value.i;
+      : static_cast<_tnum>(num.value.i);
 }
 
 _str monthToString(const _tnum& month)

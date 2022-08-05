@@ -25,7 +25,7 @@ template <typename T>
 struct OrderUnit {
 
 public:
-   OrderUnit(Generator<T>* val, const _boo desc)
+   OrderUnit(Generator<T>* val, const _boo& desc)
       : value(val), descending(desc) { };
 
    ~OrderUnit() {
@@ -117,11 +117,11 @@ protected:
       const _int& end) const
    {
       const T& p = list[end];
-      const _numi endId = _numi((_nint)end);
+      const _numi endId = _numi(static_cast<_nint>(end));
       _int i = start - 1;
 
       for (_int j = start; j <= end - 1; j++){
-         if (/*list[j] <= p*/isSmallerOrEquals(_numi((_nint)j), endId, list[j], p)) {
+         if (/*list[j] <= p*/isSmallerOrEquals(_numi(static_cast<_nint>(j)), endId, list[j], p)) {
             i++;
             std::iter_swap(list.begin() + i, list.begin() + j);
          }

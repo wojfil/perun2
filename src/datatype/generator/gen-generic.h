@@ -218,7 +218,7 @@ public:
    std::vector<T> getValue() override {
       const std::vector<T> values = list->getValue();
       std::vector<T> result;
-      const _numi length = _numi((_nint)values.size());
+      const _numi length = _numi(static_cast<_nint>(values.size()));
 
       const _numi prevIndex = this->inner->index.value;
       const T prevThis = this->this_->value;

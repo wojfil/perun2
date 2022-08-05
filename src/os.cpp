@@ -143,7 +143,6 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
    inner.isfile.value = isFile;
    inner.isdirectory.value = isDir;
 
-
    if (attr->has(ATTR_ACCESS)) {
       inner.access.value = exists
          ? convertToUroTime(&data.ftLastAccessTime)
@@ -631,7 +630,7 @@ _nint os_sizeDirectory(const _str& path, Uroboros* uro)
             totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_ASTERISK, data.cFileName), uro);
          }
          else {
-            totalSize += (_nint)(data.nFileSizeHigh * (MAXDWORD) + data.nFileSizeLow);
+            totalSize += static_cast<_nint>(data.nFileSizeHigh * (MAXDWORD) + data.nFileSizeLow);
          }
       }
    } while (FindNextFile(sh, &data));
@@ -734,9 +733,9 @@ _boo os_dropDirectory(const _str& path, Uroboros* uro)
    _char DirPath[MAX_PATH];
    _char FileName[MAX_PATH];
 
-   wcscpy(DirPath,(_char*)path.c_str());
+   wcscpy(DirPath, const_cast<_char*>(path.c_str()));
    wcscat(DirPath, OS_SEPARATOR_ASTERISK.c_str());
-   wcscpy(FileName,(_char*)path.c_str());
+   wcscpy(FileName, const_cast<_char*>(path.c_str()));
    wcscat(FileName, OS_SEPARATOR_STRING.c_str());
 
    hFind = FindFirstFile(DirPath,&FindFileData);
@@ -788,7 +787,7 @@ _boo os_dropDirectory(const _str& path, Uroboros* uro)
    }
    FindClose(hFind);
 
-   return RemoveDirectoryW((_char*)path.c_str()) != 0;
+   return RemoveDirectoryW(const_cast<_char*>(path.c_str())) != 0;
 }
 
 _boo os_hide(const _str& path)
@@ -983,9 +982,9 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
    _char DirPath[MAX_PATH];
    _char FileName[MAX_PATH];
 
-   wcscpy(DirPath,(_char*)oldPath.c_str());
+   wcscpy(DirPath, const_cast<_char*>(oldPath.c_str()));
    wcscat(DirPath, OS_SEPARATOR_ASTERISK.c_str());
-   wcscpy(FileName,(_char*)oldPath.c_str());
+   wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
    wcscat(FileName, &OS_SEPARATOR);
 
    hFind = FindFirstFile(DirPath,&FindFileData);
@@ -1047,12 +1046,12 @@ _boo os_copy(const std::set<_str>& paths)
       totalSize += sizeof(_char) * (it1->size() + 1);
    }
 
-   HDROP hdrop   = (HDROP)GlobalAlloc(GHND, totalSize);
-   DROPFILES* df = (DROPFILES*)GlobalLock(hdrop);
+   HDROP hdrop   = static_cast<HDROP>(GlobalAlloc(GHND, totalSize));
+   DROPFILES* df = static_cast<DROPFILES*>(GlobalLock(hdrop));
    df->pFiles    = sizeof(DROPFILES);
    df->fWide     = true;
 
-   _char* dstStart = (_char*)&df[1];
+   _char* dstStart = (_char*)(&df[1]);
    std::set<_str>::iterator it2;
    for (it2 = paths.begin(); it2 != paths.end(); ++it2) {
       wcscpy(dstStart, it2->c_str());

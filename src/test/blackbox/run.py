@@ -374,6 +374,12 @@ runTestCase("t = 1,2,3,4,5; average(t, t, t), min(t,t,t), max(t,t,t)", lines("3"
 runTestCase("t = 34, 13, -8, 15, -12.4, 124; average(t), min(t), max(t)", lines("27.6", "-12.4", "124"))
 runTestCase("t = 34, 13, -8, 15, -12.4, 124; sum(t), median(t)", lines("165.6", "14"))
 runTestCase("t = 1,2,3,4,5; sum(t, 5), median(6, t, 6), median(6, t, 6, 6)", lines("20", "4", "4.5"))
+runTestCase("print numbers('7')", "7")
+runTestCase("print numbers('56.3')", "56.3")
+runTestCase("print numbers('tr5h7')", lines("5", "7"))
+runTestCase("print numbers('tr5.4 6')", lines("5.4", "6"))
+runTestCase("print numbers('1uu5')", lines("1", "5"))
+runTestCase("print numbers('1uu5.')", lines("1", "5"))
 
 
 

@@ -162,34 +162,13 @@ _list F_Words::getValue()
 }
 
 inline _num F_Numbers::fromChar(const _char& ch)
-{ // todo refactor, I don't have time now
-   switch (ch) {
-      case L'1':
-         return {_num(1LL)};
-      case L'2':
-         return {_num(2LL)};
-      case L'3':
-         return {_num(3LL)};
-      case L'4':
-         return {_num(4LL)};
-      case L'5':
-         return {_num(5LL)};
-      case L'6':
-         return {_num(6LL)};
-      case L'7':
-         return {_num(7LL)};
-      case L'8':
-         return {_num(8LL)};
-      case L'9':
-         return {_num(9LL)};
-      default:
-         return {_num(0LL)};
-   }
+{
+   return _num(static_cast<_nint>(ch - L'0'));
 }
 
 _nlist F_Numbers::getValue()
 {
-   _str value = arg1->getValue();
+   const _str value = arg1->getValue();
    const _size len = value.size();
 
    switch (len) {
@@ -232,7 +211,7 @@ _nlist F_Numbers::getValue()
                            numbers.push_back(_num(ii));
                         }
                         catch (...) {
-                           throw UroRuntimeException(str(L"number '", value.substr(start, sub), 
+                           throw UroRuntimeException(str(L"number '", value.substr(start, sub),
                               L"' cannot be stored in the memory"));
                         }
                      }
@@ -328,7 +307,7 @@ _nlist F_Numbers::getValue()
                      numbers.push_back(_num(ii));
                   }
                   catch (...) {
-                     throw UroRuntimeException(str(L"number '", value.substr(start), 
+                     throw UroRuntimeException(str(L"number '", value.substr(start),
                         L"' cannot stored in the memory"));
                   }
                }

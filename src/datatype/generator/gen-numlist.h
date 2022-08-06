@@ -20,60 +20,6 @@
 #include "../../var/var-runtime.h"
 
 
-struct Filter_OrderByNumber : Generator<_nlist>, OrderBy<_num>
-{
-public:
-   Filter_OrderByNumber(Generator<_nlist>* val, Uroboros* uro)
-      : OrderBy(val, uro) {};
-
-
-   _nlist getValue() override;
-   _boo isSmallerOrEquals(const _numi& leftId, const _numi& rightId,
-      const _num& left, const _num& right) const override;
-
-
-   template <typename T>
-   _boo finalComparison(const OrderUnit<T>* ou, const _numi& leftId,
-      const _numi& rightId, const _num& left, const _num& right) const {
-
-      this->inner->index.value = leftId;
-      this->inner->this_n.value = left;
-      const T leftValue = ou->value->getValue();
-
-      this->inner->index.value = rightId;
-      this->inner->this_n.value = right;
-      const T rightValue = ou->value->getValue();
-
-      return ou->descending
-         ? leftValue >= rightValue
-         : leftValue <= rightValue;
-   }
-
-   template <typename T>
-   _boo usualComparison(const OrderUnit<T>* ou, const _numi& leftId,
-      const _numi& rightId, const _num& left, const _num& right,
-      _boo& success) const {
-
-      this->inner->index.value = leftId;
-      this->inner->this_n.value = left;
-      const T leftValue = ou->value->getValue();
-
-      this->inner->index.value = rightId;
-      this->inner->this_n.value = right;
-      const T rightValue = ou->value->getValue();
-
-      if (leftValue == rightValue) {
-         return false;
-      }
-
-      success = true;
-
-      return ou->descending
-         ? leftValue > rightValue
-         : leftValue < rightValue;
-   }
-};
-
 
 
 

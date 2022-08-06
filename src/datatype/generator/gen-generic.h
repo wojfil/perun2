@@ -203,9 +203,9 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(Generator<std::vector<T>>* li, Generator<_boo>* cond, Uroboros* uro)
+   Filter_Where(Generator<std::vector<T>>* li, Generator<_boo>* cond, Attribute* attr, Uroboros* uro)
       : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner),
-        this_(nullptr)
+        this_(nullptr), attribute(attr), hasAttribute(attr != nullptr)
    {
       uro->vars.inner.createThisVarRef(this_);
    };
@@ -213,6 +213,9 @@ public:
    ~Filter_Where() {
       delete list;
       delete condition;
+      if (hasAttribute) {
+         delete attribute;
+      }
    }
 
    std::vector<T> getValue() override {
@@ -229,6 +232,9 @@ public:
       while (this->uroboros->running && index != length) {
          const T& unit = values[index.value.i];
          this->this_->value = unit;
+         if (this->hasAttribute) {
+            this->attribute->run();
+         }
 
          if (condition->getValue()) {
             result.push_back(unit);
@@ -250,6 +256,8 @@ private:
    Variable<T>* this_;
    Generator<std::vector<T>>* list;
    Generator<_boo>* condition;
+   Attribute* attribute;
+   const _boo hasAttribute;
 };
 
 

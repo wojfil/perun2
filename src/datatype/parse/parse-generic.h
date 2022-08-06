@@ -202,20 +202,52 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
    }
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result, Uroboros* uro);
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result, Uroboros* uro);
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result, Uroboros* uro);
+
+template <typename T>
+void setNumericFilter(const Keyword& kw, Generator<_num>*& num,
+   Generator<std::vector<T>>*& result, Uroboros* uro)
+{
+   switch (kw) {
+      case Keyword::kw_Every: {
+         result = new Filter_Every<T>(result, num);
+         break;
+      }
+      case Keyword::kw_Limit: {
+         result = new Filter_Limit<T>(result, num);
+         break;
+      }
+      case Keyword::kw_Skip: {
+         result = new Filter_Skip<T>(result, num);
+         break;
+      }
+   }
+}
+
+
 void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result, Uroboros* uro);
 
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result, Uroboros* uro);
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result, Uroboros* uro);
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result, Uroboros* uro);
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result, Uroboros* uro);
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result, Uroboros* uro);
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result, Uroboros* uro);
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result, Uroboros* uro);
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro);
+template <typename T>
+void setWhereFilter(Generator<_boo>*& boo, Attribute* attr, const _boo& hasMemory,
+   Generator<std::vector<T>>*& result, Uroboros* uro)
+{
+   result = new Filter_Where<T>(result, boo, attr, uro);
+}
+
+
+void setWhereFilter(Generator<_boo>*& boo, Attribute* attr, const _boo& hasMemory, _def*& result, Uroboros* uro);
+
+
+template <typename T>
+void setOrderFilter(Attribute* attr, const _boo& hasMemory, TempOrderBy<T>*& order,
+   Generator<std::vector<T>>*& result, Uroboros* uro)
+{
+   order = new TempOrderBy<T>(result, attr, uro);
+   result = order;
+};
+
+
+void setOrderFilter(Attribute* attr, const _boo& hasMemory, TempOrderBy<_str>*& order, _def*& result, Uroboros* uro);
 
 
 template <typename T, typename T2>
@@ -272,7 +304,9 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             const ThisState prevThisState = uro->vars.inner.thisState;
             uro->vars.inner.thisState = state;
             const _boo hasMemory = uro->vc.anyAttribute();
-            Attribute* attr = new Attribute(uro);
+            Attribute* attr = state == ThisState::ts_String
+               ? new Attribute(uro)
+               : nullptr;
 
             if (state == ThisState::ts_String) {
                uro->vc.addAttribute(attr);
@@ -292,16 +326,15 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             if (state == ThisState::ts_String) {
                uro->vc.retreatAttribute();
             }
-            else {
-               delete attr;
-            }
             break;
          }
          case Keyword::kw_Order: {
             const ThisState prevThisState = uro->vars.inner.thisState;
             uro->vars.inner.thisState = state;
             const _boo hasMemory = uro->vc.anyAttribute();
-            Attribute* attr = new Attribute(uro);
+            Attribute* attr = state == ThisState::ts_String
+               ? new Attribute(uro)
+               : nullptr;
 
             if (state == ThisState::ts_String) {
                uro->vc.addAttribute(attr);
@@ -313,26 +346,26 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                const Keyword& kw = first.value.keyword.k;
                if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
                   const _boo desc = kw == Keyword::kw_Desc;
-                  OrderBy<T2>* order;
+                  TempOrderBy<T2>* order;
                   setOrderFilter(attr, hasMemory, order, result, uro);
 
                   switch (state) {
                      case ThisState::ts_String: {
                         Generator<_str>* vr;
                         uro->vars.inner.createThisRef(vr);
-                        order->addString(vr, desc);
+                        order->addUnit(vr, OrderUnitType::out_String, desc);
                         break;
                      }
                      case ThisState::ts_Number: {
                         Generator<_num>* vr;
                         uro->vars.inner.createThisRef(vr);
-                        order->addNumber(vr, desc);
+                        order->addUnit(vr, OrderUnitType::out_Number, desc);
                         break;
                      }
                      case ThisState::ts_Time: {
                         Generator<_tim>* vr;
                         uro->vars.inner.createThisRef(vr);
-                        order->addTime(vr, desc);
+                        order->addUnit(vr, OrderUnitType::out_Time, desc);
                         break;
                      }
                   }
@@ -340,13 +373,9 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                   if (state == ThisState::ts_String) {
                      uro->vc.retreatAttribute();
                   }
-                  else {
-                     delete attr;
-                  }
                   break;
                }
             }
-
 
             if (!first.isKeyword(Keyword::kw_By)) {
                delete result;
@@ -371,7 +400,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             std::vector<Tokens> units;
             ts3.splitBySymbol(L',', units);
 
-            OrderBy<T2>* order;
+            TempOrderBy<T2>* order;
             setOrderFilter(attr, hasMemory, order, result, uro);
 
             const _size len = units.size();
@@ -406,31 +435,31 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
 
                Generator<_boo>* uboo;
                if (parse(uro, un, uboo)) {
-                  order->addBool(uboo, desc);
+                  order->addUnit(uboo, OrderUnitType::out_Bool, desc);
                   continue;
                }
 
                Generator<_num>* unum;
                if (parse(uro, un, unum)) {
-                  order->addNumber(unum, desc);
+                  order->addUnit(unum, OrderUnitType::out_Number, desc);
                   continue;
                }
 
                Generator<_per>* uper;
                if (parse(uro, un, uper)) {
-                  order->addPeriod(uper, desc);
+                  order->addUnit(uper, OrderUnitType::out_Period, desc);
                   continue;
                }
 
                Generator<_tim>* utim;
                if (parse(uro, un, utim)) {
-                  order->addTime(utim, desc);
+                  order->addUnit(utim, OrderUnitType::out_Time, desc);
                   continue;
                }
 
                Generator<_str>* ustr;
                if (parse(uro, un, ustr)) {
-                  order->addString(ustr, desc);
+                  order->addUnit(ustr, OrderUnitType::out_String, desc);
                }
                else {
                   delete order;
@@ -440,14 +469,11 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                }
             }
 
-            uro->vars.inner.thisState = prevThisState;
             if (state == ThisState::ts_String) {
                uro->vc.retreatAttribute();
             }
-            else {
-               delete attr;
-            }
 
+            uro->vars.inner.thisState = prevThisState;
             break;
          }
          default:

@@ -24,7 +24,6 @@
 #include <cwctype>
 
 
-
 _boo isPossibleListElement(const Tokens& tks)
 {
    const _size length = tks.getLength();
@@ -176,7 +175,6 @@ void checkLimitBySize(const Tokens& tks)
    }
 }
 
-
 _boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro)
 {
    const _size length = tks.getLength();
@@ -212,7 +210,6 @@ _boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro)
    return true;
 }
 
-
 void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result, Uroboros* uro)
 {
    switch (kw) {
@@ -231,100 +228,13 @@ void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result, U
    }
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_nlist>*& result, Uroboros* uro)
-{
-   switch (kw) {
-      case Keyword::kw_Every: {
-         result = new Filter_Every<_num>(result, num);
-         break;
-      }
-      case Keyword::kw_Limit: {
-         result = new Filter_Limit<_num>(result, num);
-         break;
-      }
-      case Keyword::kw_Skip: {
-         result = new Filter_Skip<_num>(result, num);
-         break;
-      }
-   }
-}
-
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_tlist>*& result, Uroboros* uro)
-{
-   switch (kw) {
-      case Keyword::kw_Every: {
-         result = new Filter_Every<_tim>(result, num);
-         break;
-      }
-      case Keyword::kw_Limit: {
-         result = new Filter_Limit<_tim>(result, num);
-         break;
-      }
-      case Keyword::kw_Skip: {
-         result = new Filter_Skip<_tim>(result, num);
-         break;
-      }
-   }
-}
-
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, Generator<_list>*& result, Uroboros* uro)
-{
-   switch (kw) {
-      case Keyword::kw_Every: {
-         result = new Filter_Every<_str>(result, num);
-         break;
-      }
-      case Keyword::kw_Limit: {
-         result = new Filter_Limit<_str>(result, num);
-         break;
-      }
-      case Keyword::kw_Skip: {
-         result = new Filter_Skip<_str>(result, num);
-         break;
-      }
-   }
-}
-
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_nlist>*& result, Uroboros* uro)
-{
-   result = new Filter_Where<_num>(result, boo, uro);
-}
-
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, Generator<_tlist>*& result, Uroboros* uro)
-{
-   result = new Filter_Where<_tim>(result, boo, uro);
-}
-
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory,  Generator<_list>*& result, Uroboros* uro)
-{
-   result = new Filter_WhereString(result, boo, *attr, uro);
-}
-
-void setWhereFilter(Generator<_boo>*& boo, Attribute*& attr, const _boo& hasMemory, _def*& result, Uroboros* uro)
+void setWhereFilter(Generator<_boo>*& boo, Attribute* attr, const _boo& hasMemory, _def*& result, Uroboros* uro)
 {
    result = new Filter_WhereDef(result, boo, attr, hasMemory, uro);
 }
 
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_num>*& order, Generator<_nlist>*& result, Uroboros* uro)
+void setOrderFilter(Attribute* attr, const _boo& hasMemory, TempOrderBy<_str>*& order, _def*& result, Uroboros* uro)
 {
-   order = new Filter_OrderByNumber(result, uro);
-   result = order;
-}
-
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_tim>*& order, Generator<_tlist>*& result, Uroboros* uro)
-{
-   order = new Filter_OrderByTime(result, uro);
-   result = order;
-}
-
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, Generator<_list>*& result, Uroboros* uro)
-{
-   order = new Filter_OrderByString(result, attr, uro);
-   result = order;
-}
-
-void setOrderFilter(Attribute*& attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro)
-{
-   order = new Filter_OrderByString(new Cast_D_L(result, uro), attr, uro);
+   order = new TempOrderBy<_str>(new Cast_D_L(result, uro), attr, uro);
    result = new OrderByCast(order, attr, hasMemory, uro);
 }

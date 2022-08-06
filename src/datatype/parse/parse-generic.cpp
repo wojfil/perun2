@@ -18,8 +18,6 @@
 #include "../../hash.h"
 #include "../generator/gen-definition.h"
 #include "../generator/gen-time.h"
-#include "../generator/gen-numlist.h"
-#include "../generator/gen-timlist.h"
 #include "../generator/gen-list.h"
 #include <cwctype>
 

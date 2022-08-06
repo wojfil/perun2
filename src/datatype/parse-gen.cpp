@@ -13,6 +13,8 @@
 */
 
 #include "parse-gen.h"
+#include "parse/parse-numlist.h"
+#include "parse/parse-timlist.h"
 #include "../lexer.h"
 #include "../brackets.h"
 #include "../hash.h"

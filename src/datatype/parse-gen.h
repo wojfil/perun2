@@ -28,11 +28,11 @@
 #include "parse/parse-bool.h"
 #include "parse/parse-list.h"
 #include "parse/parse-number.h"
-#include "parse/parse-numlist.h"
-#include "parse/parse-timlist.h"
 #include "parse/parse-period.h"
 #include "parse/parse-string.h"
 #include "parse/parse-time.h"
+#include "parse/parse-numlist.h"
+#include "parse/parse-timlist.h"
 #include "parse/parse-definition.h"
 
 Tokens prepareForGen(const Tokens& tks, Uroboros* uro);

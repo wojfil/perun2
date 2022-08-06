@@ -237,15 +237,15 @@ void setWhereFilter(Generator<_boo>*& boo, Attribute* attr, const _boo& hasMemor
 
 
 template <typename T>
-void setOrderFilter(Attribute* attr, const _boo& hasMemory, TempOrderBy<T>*& order,
+void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<T>*& order,
    Generator<std::vector<T>>*& result, Uroboros* uro)
 {
-   order = new TempOrderBy<T>(result, attr, uro);
+   order = new OrderBy<T>(result, attr, uro);
    result = order;
 };
 
 
-void setOrderFilter(Attribute* attr, const _boo& hasMemory, TempOrderBy<_str>*& order, _def*& result, Uroboros* uro);
+void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro);
 
 
 template <typename T, typename T2>
@@ -344,7 +344,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
                const Keyword& kw = first.value.keyword.k;
                if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
                   const _boo desc = kw == Keyword::kw_Desc;
-                  TempOrderBy<T2>* order;
+                  OrderBy<T2>* order;
                   setOrderFilter(attr, hasMemory, order, result, uro);
 
                   switch (state) {
@@ -398,7 +398,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             std::vector<Tokens> units;
             ts3.splitBySymbol(L',', units);
 
-            TempOrderBy<T2>* order;
+            OrderBy<T2>* order;
             setOrderFilter(attr, hasMemory, order, result, uro);
 
             const _size len = units.size();

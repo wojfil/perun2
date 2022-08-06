@@ -45,17 +45,17 @@ enum OrderUnitType {
 };
 
 template <typename T>
-struct TempOrderBy : Generator<std::vector<T>>
+struct OrderBy : Generator<std::vector<T>>
 {
 public:
-   TempOrderBy(Generator<std::vector<T>>* val, Attribute* attr, Uroboros* uro)
+   OrderBy(Generator<std::vector<T>>* val, Attribute* attr, Uroboros* uro)
       : baseValue(val), unitsCount(0), uroboros(uro), inner(&uro->vars.inner),
         attribute(attr), hasAttribute(attr != nullptr)
    {
       this->inner->createThisVarRef(thisReference);
    }
 
-   ~TempOrderBy()
+   ~OrderBy()
    {
       delete baseValue;
       deleteVector(boolUnits);

@@ -231,8 +231,8 @@ void setWhereFilter(Generator<_boo>*& boo, Attribute* attr, const _boo& hasMemor
    result = new Filter_WhereDef(result, boo, attr, hasMemory, uro);
 }
 
-void setOrderFilter(Attribute* attr, const _boo& hasMemory, TempOrderBy<_str>*& order, _def*& result, Uroboros* uro)
+void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro)
 {
-   order = new TempOrderBy<_str>(new Cast_D_L(result, uro), attr, uro);
+   order = new OrderBy<_str>(new Cast_D_L(result, uro), attr, uro);
    result = new OrderByCast(order, attr, hasMemory, uro);
 }

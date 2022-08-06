@@ -58,17 +58,17 @@ struct Number
 
    Number operator - () const;
 
-   bool operator == (const Number& num) const;
-   bool operator != (const Number& num) const;
-   bool operator < (const Number& num) const;
-   bool operator > (const Number& num) const;
-   bool operator <= (const Number& num) const;
-   bool operator >= (const Number& num) const;
+   _boo operator == (const Number& num) const;
+   _boo operator != (const Number& num) const;
+   _boo operator < (const Number& num) const;
+   _boo operator > (const Number& num) const;
+   _boo operator <= (const Number& num) const;
+   _boo operator >= (const Number& num) const;
 
    // number consists of a value (int or double)
    // and a boolean flag indicating current state
    NumberValue value;
-   bool isDouble;
+   _boo isDouble;
 };
 
 #endif /* NUMBER_H */

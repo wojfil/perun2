@@ -409,7 +409,7 @@ Number Number::operator - () const
       : Number(-value.i);
 }
 
-bool Number::operator == (const Number& num) const
+_boo Number::operator == (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i == num.value.i;
@@ -425,7 +425,7 @@ bool Number::operator == (const Number& num) const
 
 // below are duplicates for the rest of comparisons:
 
-bool Number::operator != (const Number& num) const
+_boo Number::operator != (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i != num.value.i;
@@ -439,7 +439,7 @@ bool Number::operator != (const Number& num) const
    return static_cast<_ndouble>(value.i) != num.value.d;
 }
 
-bool Number::operator < (const Number& num) const
+_boo Number::operator < (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i < num.value.i;
@@ -453,7 +453,7 @@ bool Number::operator < (const Number& num) const
    return value.i < num.value.d;
 }
 
-bool Number::operator > (const Number& num) const
+_boo Number::operator > (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i > num.value.i;
@@ -467,7 +467,7 @@ bool Number::operator > (const Number& num) const
    return value.i > num.value.d;
 }
 
-bool Number::operator <= (const Number& num) const
+_boo Number::operator <= (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i <= num.value.i;
@@ -481,7 +481,7 @@ bool Number::operator <= (const Number& num) const
    return value.i <= num.value.d;
 }
 
-bool Number::operator >= (const Number& num) const
+_boo Number::operator >= (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i >= num.value.i;

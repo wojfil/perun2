@@ -86,6 +86,11 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    if (tks2.getLength() == 1) {
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
+         if (f.value.word.h == uro->hashes.HASH_VAR_DEVICE) {
+            throw SyntaxException(str(L"variable '", *f.value.word.os,
+               L"' is reserved for future use. Current version of Uroboros does not support it"), f.line);
+         }
+
          if (f.value.word.h != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
             throw SyntaxException(str(L"variable '", *f.value.word.os,
                L"' does not exist or is unreachable here"), f.line);

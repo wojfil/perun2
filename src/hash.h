@@ -35,7 +35,7 @@ public:
 
    const _size HASH_NOTHING;
    const _size HASH_VAR_THIS;
-   
+
    const _size HASH_VAR_ACCESS;
    const _size HASH_VAR_ARCHIVE;
    const _size HASH_VAR_CHANGE;
@@ -94,6 +94,7 @@ public:
 
    const _size HASH_VAR_DESKTOP;
    const _size HASH_VAR_UROBOROS;
+   const _size HASH_VAR_DEVICE;
 
    const _size HASH_VAR_DIRECTORIES;
    const _size HASH_VAR_FILES;

@@ -45,7 +45,6 @@ KeywordsData::KeywordsData() : KEYWORDS( {
    { L"not", Keyword::kw_Not },
    // other commands:
    { L"print", Keyword::kw_Print },
-   { L"process", Keyword::kw_Process },
    { L"run", Keyword::kw_Run },
    { L"sleep", Keyword::kw_Sleep },
    // expression elements:

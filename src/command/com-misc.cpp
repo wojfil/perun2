@@ -348,25 +348,3 @@ void C_RunWithUroborosWith::run()
    }
 }
 
-
-void C_Process::run()
-{
-   _str process = value->getValue();
-   os_rawTrim(process);
-
-   if (process.empty()) {
-      commandLog(this->uroboros, L"Failed to start an empty process");
-      this->inner->success.value = false;
-      return;
-   }
-
-   const _boo s = os_process(process, this->inner->location.value);
-   this->inner->success.value = s;
-
-   if (s) {
-      commandLog(this->uroboros, L"Start process '", process, L"'");
-   }
-   else {
-      commandLog(this->uroboros, L"Failed to start process '", process, L"'");
-   }
-}

@@ -120,7 +120,7 @@ private:
 struct C_SleepPeriod : Command
 {
 public:
-   C_SleepPeriod(Generator<_per>* val, Uroboros* uro) 
+   C_SleepPeriod(Generator<_per>* val, Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_SleepPeriod() {
@@ -138,7 +138,7 @@ private:
 struct C_SleepMs : Command
 {
 public:
-   C_SleepMs(Generator<_num>* val, Uroboros* uro) 
+   C_SleepMs(Generator<_num>* val, Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_SleepMs() {
@@ -366,24 +366,6 @@ private:
    Attribute* attribute;
    const _boo hasAttribute;
 };
-
-
-struct C_Process : Command_L
-{
-public:
-   C_Process(Generator<_str>* val, Uroboros* uro)
-      : value(val), Command_L(uro) { };
-
-   ~C_Process() {
-      delete value;
-   };
-
-   void run() override;
-
-private:
-   Generator<_str>* value;
-};
-
 
 
 #endif /* COM_MISC_H */

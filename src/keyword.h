@@ -52,7 +52,6 @@ enum Keyword
    kw_Not,
       // others commands:
    kw_Print,
-   kw_Process,
    kw_Run,
    kw_Sleep,
       // expression elements:

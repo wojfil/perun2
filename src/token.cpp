@@ -111,7 +111,6 @@ _boo Token::isCommandKeyword() const
       case Keyword::kw_Error:
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
-      case Keyword::kw_Process:
          return true;
       default:
          return false;

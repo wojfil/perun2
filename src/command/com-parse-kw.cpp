@@ -91,10 +91,6 @@ Command* keywordCommands(const Token& word, Tokens& tks,
          checkUselessFlags(word, line, force, stack);
          return c_sleep(word, tks, line, uro);
       }
-      case Keyword::kw_Process: {
-         checkUselessFlags(word, line, force, stack);
-         return c_process(word, tks, line, uro);
-      }
    }
 
    throw SyntaxException(str(L"command cannot start with a keyword '", *word.value.keyword.os, L"'"), line);
@@ -1658,26 +1654,6 @@ static Command* c_error(const Token& word, const Tokens& tks, const _int& line, 
    else {
       throw SyntaxException(str(L"the argument of command '", *word.value.keyword.os,
          L"' cannot be resolved to a number"), line);
-   }
-}
-
-static Command* c_process(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro)
-{
-   uro->vc.markAttributesToRun();
-
-   if (tks.isEmpty()) {
-      throw SyntaxException(str(L"command '", *word.value.keyword.os,
-         L"' needs a string argument"), line);
-   }
-
-   Generator<_str>* str_;
-
-   if (parse(uro, tks, str_)) {
-      return new C_Process(str_, uro);
-   }
-   else {
-      throw SyntaxException(str(L"the argument of command '", *word.value.keyword.os,
-         L"' cannot be resolved to a string"), line);
    }
 }
 

@@ -54,7 +54,6 @@ Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _
 static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
 static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
 static Command* c_error(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
-static Command* c_process(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
 
 static void checkUselessFlags(const Token& word, const _int& line,
    const bool& force, const bool& stack);

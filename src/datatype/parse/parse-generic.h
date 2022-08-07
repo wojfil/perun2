@@ -171,9 +171,9 @@ static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
    std::vector<Tokens> elements;
    tks.splitBySymbol(L',', elements);
 
-   Generator<std::vector<T>>* strs = parseListedValues<T>(elements, uro);
-   if (strs != nullptr) {
-      return strs;
+   Generator<std::vector<T>>* units = parseListedValues<T>(elements, uro);
+   if (units != nullptr) {
+      return units;
    }
 
    Generator<std::vector<T>>* lists = parseListedLists<T>(elements, uro);

@@ -17,6 +17,7 @@
 
 #include "datatype/primitives.h"
 #include "token.h"
+#include <windows.h>
 
 #define _aunit _uint64
 
@@ -53,6 +54,7 @@ struct Attribute
 {
 public:
    Attribute(Uroboros* uro);
+   Attribute(const _aunit& val, Uroboros* uro);
 
    void add(const Token& tk);
    void set(const _aunit& v);
@@ -60,15 +62,34 @@ public:
    void setTimeCommandBase();
    _boo has(const _aunit& v) const;
    _boo hasAny() const;
+   _aunit getValue() const;
 
    void run() const;
 
    _boo markToRun = false;
    _boo markToEvaluate = false;
 
-private:
+protected:
    _aunit value;
    Uroboros* uroboros;
 };
+
+// sometimes files and directories are taken from the file system
+// by Win32API functions 'FindFirstFile()' and 'FindNextFile()'
+// the result of their call is a WIN32_FIND_DATA struct filled with data
+// this struct already contains all the data we will ever need when operating with files
+// why not use this already obtained data in many other places?
+// BridgeAttribute provides a nice data access
+
+struct BridgeAttribute : Attribute
+{
+public:
+   BridgeAttribute(const _aunit& val, Uroboros* uro, WIN32_FIND_DATAW* data);
+   void run() const;
+
+private:
+   WIN32_FIND_DATAW* dataPnt;
+};
+
 
 #endif /* ATTRIB_H */

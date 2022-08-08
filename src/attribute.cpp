@@ -16,12 +16,11 @@
 #include "uroboros.h"
 #include "os.h"
 
-
 Attribute::Attribute(Uroboros* uro)
-{
-   value = ATTR_NULL;
-   uroboros = uro;
-}
+   : value(ATTR_NULL), uroboros(uro) { };
+
+Attribute::Attribute(const _aunit& val, Uroboros* uro)
+   : value(val), uroboros(uro) { };
 
 void Attribute::add(const Token& tk)
 {
@@ -121,7 +120,20 @@ _boo Attribute::hasAny() const
    return value != ATTR_NULL;
 }
 
+_aunit Attribute::getValue() const
+{
+   return value;
+}
+
 void Attribute::run() const
 {
    os_loadAttributes(this, this->uroboros);
+}
+
+BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros* uro, WIN32_FIND_DATAW* data)
+   : Attribute(val, uro), dataPnt(data) { };
+
+void BridgeAttribute::run() const
+{
+   os_loadDataAttributes(this, this->uroboros, this->dataPnt);
 }

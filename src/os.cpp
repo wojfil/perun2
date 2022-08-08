@@ -323,6 +323,106 @@ void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
    }
 }
 
+void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, WIN32_FIND_DATAW* data)
+{
+   const DWORD& dwAttrib = data->dwFileAttributes;
+   InnerVariables& inner = uro->vars.inner;
+   inner.trimmed = inner.this_s.value;
+   inner.path.value = os_join(inner.location.value, inner.trimmed);
+
+   const _str& path = inner.path.value;
+
+   if (attr->has(ATTR_FULLNAME)) {
+      inner.fullname.value = os_fullname(inner.trimmed);
+   }
+
+   if (attr->has(ATTR_PARENT)) {
+      inner.parent.value = os_parent(path);
+   }
+
+   if (attr->has(ATTR_DRIVE)) {
+      inner.drive.value = os_drive(path);
+   }
+
+   inner.exists.value = true;
+   inner.isdirectory.value = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
+   inner.isfile.value = !inner.isdirectory.value;
+
+   if (attr->has(ATTR_ACCESS)) {
+      inner.access.value = convertToUroTime(&data->ftLastAccessTime);
+   }
+
+   if (attr->has(ATTR_ARCHIVE)) {
+      inner.archive.value = dwAttrib & FILE_ATTRIBUTE_ARCHIVE;
+   }
+
+   if (attr->has(ATTR_COMPRESSED)) {
+      inner.compressed.value = dwAttrib & FILE_ATTRIBUTE_COMPRESSED;
+   }
+
+   if (attr->has(ATTR_CREATION)) {
+      inner.creation.value = convertToUroTime(&data->ftCreationTime);
+   }
+
+   const _boo hasMod = attr->has(ATTR_MODIFICATION);
+   const _boo hasChange = attr->has(ATTR_CHANGE);
+   if (hasMod || hasChange) {
+      const _tim time = convertToUroTime(&data->ftLastWriteTime);
+
+      if (hasChange) {
+         inner.change.value = time;
+      }
+      if (hasMod) {
+         inner.modification.value = time;
+      }
+   }
+
+   if (attr->has(ATTR_LIFETIME)) {
+      inner.lifetime.value = inner.creation.value < inner.modification.value
+         ? (os_now() - inner.creation.value)
+         : (os_now() - inner.modification.value);
+   }
+
+   if (attr->has(ATTR_EMPTY)) {
+      inner.empty.value = inner.isfile.value
+         ? (data->nFileSizeLow == 0 && data->nFileSizeHigh == 0)
+         : os_emptyDirectory(path);
+   }
+
+   if (attr->has(ATTR_ENCRYPTED)) {
+      inner.encrypted.value = dwAttrib & FILE_ATTRIBUTE_ENCRYPTED;
+   }
+
+   if (attr->has(ATTR_EXTENSION)) {
+      inner.extension.value = inner.isfile.value ? os_extension(inner.trimmed) : L"";
+   }
+
+   if (attr->has(ATTR_HIDDEN)) {
+      inner.hidden.value = dwAttrib & FILE_ATTRIBUTE_HIDDEN;
+   }
+
+   if (attr->has(ATTR_NAME)) {
+      if (inner.isfile.value) {
+         inner.name.value = os_hasExtension(inner.trimmed)
+            ? os_name(inner.trimmed)
+            : os_fullname(inner.trimmed);
+      }
+      else {
+         inner.name.value = os_fullname(inner.trimmed);
+      }
+   }
+
+   if (attr->has(ATTR_READONLY)) {
+      inner.readonly.value = dwAttrib & FILE_ATTRIBUTE_READONLY;
+   }
+
+   if (attr->has(ATTR_SIZE)) {
+      inner.size.value = inner.isfile.value
+         ? _num(bigInteger(data->nFileSizeLow, data->nFileSizeHigh))
+         : _num(os_sizeDirectory(path, uro));
+   }
+}
+
 _tim os_access(const _str& path)
 {
    WIN32_FILE_ATTRIBUTE_DATA data;

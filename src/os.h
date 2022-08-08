@@ -38,8 +38,10 @@ _tim os_yesterday();
 _tim os_tomorrow();
 
 void os_sleepForMs(const _nint& ms, Uroboros* uro);
+
 void os_loadAttributes(const Attribute* attr, Uroboros* uro);
 void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner);
+void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, WIN32_FIND_DATAW* data);
 
 // file system variables:
 _tim os_access(const _str& path);

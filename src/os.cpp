@@ -122,7 +122,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
    }
 
    // below are "real" attributes of files and directories
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
    const _boo gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
    const DWORD& dwAttrib = data.dwFileAttributes;
    const _boo exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
@@ -323,7 +323,7 @@ void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
    }
 }
 
-void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, WIN32_FIND_DATAW* data)
+void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
 {
    const DWORD& dwAttrib = data->dwFileAttributes;
    InnerVariables& inner = uro->vars.inner;
@@ -425,7 +425,7 @@ void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, WIN32_FIND_DATA
 
 _tim os_access(const _str& path)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
 
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -445,7 +445,7 @@ _boo os_archive(const _str& path)
 
 _tim os_change(const _str& path)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
 
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -465,7 +465,7 @@ _boo os_compressed(const _str& path)
 
 _tim os_creation(const _str& path)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
 
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -487,7 +487,7 @@ _str os_drive(const _str& path)
 
 _boo os_empty(const _str& path)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return false;
    }
@@ -507,7 +507,7 @@ _boo os_encrypted(const _str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_ENCRYPTED);
 }
 
-_boo os_emptyFile(const WIN32_FILE_ATTRIBUTE_DATA& data)
+_boo os_emptyFile(const _adata& data)
 {
    return data.nFileSizeLow == 0
        && data.nFileSizeHigh == 0;
@@ -606,7 +606,7 @@ _boo os_isDirectory(const _str& path)
 
 _per os_lifetime(const _str& path)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
 
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return _per();
@@ -626,7 +626,7 @@ _per os_lifetime(const _str& path)
 
 _tim os_modification(const _str& path)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
 
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -689,7 +689,7 @@ _boo os_readonly(const _str& path)
 
 _nint os_size(const _str& path, Uroboros* uro)
 {
-   WIN32_FILE_ATTRIBUTE_DATA data;
+   _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
       return -1LL;
    }
@@ -704,7 +704,7 @@ _nint os_size(const _str& path, Uroboros* uro)
       : os_sizeFile(data);
 }
 
-_nint os_sizeFile(const WIN32_FILE_ATTRIBUTE_DATA& data)
+_nint os_sizeFile(const _adata& data)
 {
    return bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
 }

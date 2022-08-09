@@ -41,7 +41,7 @@ void os_sleepForMs(const _nint& ms, Uroboros* uro);
 
 void os_loadAttributes(const Attribute* attr, Uroboros* uro);
 void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner);
-void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, WIN32_FIND_DATAW* data);
+void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data);
 
 // file system variables:
 _tim os_access(const _str& path);
@@ -51,7 +51,7 @@ _boo os_compressed(const _str& path);
 _tim os_creation(const _str& path);
 _str os_drive(const _str& path);
 _boo os_empty(const _str& path);
-_boo os_emptyFile(const WIN32_FILE_ATTRIBUTE_DATA& data);
+_boo os_emptyFile(const _adata& data);
 _boo os_emptyDirectory(const _str& path);
 _boo os_encrypted(const _str& path);
 _str os_extension(const _str& value);
@@ -66,7 +66,7 @@ _str os_name(const _str& value);
 _str os_parent(const _str& path);
 _boo os_readonly(const _str& path);
 _nint os_size(const _str& path, Uroboros* uro);
-_nint os_sizeFile(const WIN32_FILE_ATTRIBUTE_DATA& data);
+_nint os_sizeFile(const _adata& data);
 _nint os_sizeDirectory(const _str& path, Uroboros* uro);
 
 _boo os_exists(const _str& path);

@@ -32,6 +32,9 @@
 #define _ndouble long double
 #define _size std::size_t
 
+#define _adata WIN32_FILE_ATTRIBUTE_DATA
+#define _fdata WIN32_FIND_DATAW
+
 
 template<typename T>
 _str toStr(const T &n)

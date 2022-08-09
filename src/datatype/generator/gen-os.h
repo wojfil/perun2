@@ -57,12 +57,14 @@ public:
       delete location;
    }
 
+   _fdata* getDataPtr();
+
 protected:
    _boo first;
    Generator<_str>* location;
    Uroboros* uroboros;
    InnerVariables* inner;
-   WIN32_FIND_DATA data;
+   _fdata data;
    _str prevThis;
    _numi prevIndex;
    _numi index;

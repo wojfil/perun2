@@ -15,25 +15,22 @@
 #ifndef GEN-DEFINITION_H_INCLUDED
 #define GEN-DEFINITION_H_INCLUDED
 
-#include <algorithm>
 #include "gen-list.h"
 #include "gen-os.h"
 #include "../cast.h"
 #include "../../attribute.h"
 #include "../../attr-memory.h"
 #include "../../uroboros.h"
+#include <algorithm>
 
 
 struct DefFilter : _def
 {
 public:
-   DefFilter(_def* def, Uroboros* uro)
-      : first(true), definition(def), uroboros(uro) {};
-
-   ~DefFilter() {
-      delete definition;
-   }
+   DefFilter(_def* def, Uroboros* uro);
+   ~DefFilter();
    void reset() override;
+   _fdata* getDataPtr();
 
 protected:
    Uroboros* uroboros;

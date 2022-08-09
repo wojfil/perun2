@@ -17,8 +17,11 @@
 
 #include "generator.h"
 #include "primitives.h"
+#include <windows.h>
 
 
+// this data structure is the crucial for Uroboros
+// it provides lazy evaluation
 struct Definition : Generator<_str>
 {
 public:
@@ -29,10 +32,19 @@ public:
       return value;
    }
 
+   virtual _fdata* getDataPtr()
+   {
+      // artificially implemented simple reflection for parsing optimizations
+      // by default, return nullptr
+      // detect definitions, that produce _fdata as a side effect
+      // that data is used later in other places
+      // as a result, we do not have to load the same data again from the file system
+      return nullptr;
+   };
+
 protected:
    _str value;
 };
 
 
 #endif /* DEFINITION_H */
-

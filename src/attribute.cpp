@@ -125,6 +125,16 @@ _aunit Attribute::getValue() const
    return value;
 }
 
+_boo Attribute::isMarkedToEvaluate() const
+{
+   return isMarkedToEvaluate_;
+}
+
+void Attribute::markToEvaluate()
+{
+   isMarkedToEvaluate_ = true;
+}
+
 void Attribute::run() const
 {
    os_loadAttributes(this, this->uroboros);

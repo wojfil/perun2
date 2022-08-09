@@ -17,6 +17,19 @@
 #include "../../uroboros.h"
 
 
+DefFilter::DefFilter(_def* def, Uroboros* uro)
+   : first(true), definition(def), uroboros(uro) { };
+
+DefFilter::~DefFilter()
+{
+   delete definition;
+}
+
+_fdata* DefFilter::getDataPtr()
+{
+   return this->definition->getDataPtr();
+}
+
 void DefFilter::reset() {
    if (!first) {
       first = true;

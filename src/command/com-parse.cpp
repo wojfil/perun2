@@ -252,11 +252,21 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       _def* def;
       if (parse(uro, left, def)) {
-         if (attr->markToEvaluate) {
+         if (attr->isMarkedToEvaluate()) {
             return new CS_InsideList(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
          }
          else {
-            return new CS_InsideDefinition(def, com, attr, aggr, hasMemory, uro);
+            _fdata* fdata = def->getDataPtr();
+
+            if (fdata == nullptr) {
+               return new CS_InsideDefinition(def, com, attr, aggr, hasMemory, uro);
+            }
+            else {
+               const _aunit aval = attr->getValue();
+               delete attr;
+               return new CS_InsideDefinition(def, com,
+                  new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+            }
          }
       }
 
@@ -418,11 +428,21 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return nullptr;
       }
 
-      if (attr->markToEvaluate) {
+      if (attr->isMarkedToEvaluate()) {
          return new CS_ListLoop(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
       }
       else {
-         return new CS_DefinitionLoop(def, com, attr, aggr, hasMemory, uro);
+         _fdata* fdata = def->getDataPtr();
+
+         if (fdata == nullptr) {
+            return new CS_DefinitionLoop(def, com, attr, aggr, hasMemory, uro);
+         }
+         else {
+            const _aunit aval = attr->getValue();
+            delete attr;
+            return new CS_DefinitionLoop(def, com,
+               new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+         }
       }
    }
 

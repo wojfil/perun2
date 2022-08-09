@@ -96,6 +96,51 @@ Command* keywordCommands(const Token& word, Tokens& tks,
    throw SyntaxException(str(L"command cannot start with a keyword '", *word.value.keyword.os, L"'"), line);
 }
 
+_boo parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Uroboros* uro,
+   Attribute* attr, const _boo& hasMemory)
+{
+   Generator<_str>* str_;
+   if (parse(uro, tks, str_)) {
+      result = new CS_StringComArg(str_, innerCommand, attr, hasMemory, uro);
+      return true;
+   }
+
+   _def* def;
+   if (parse(uro, tks, def)) {
+      _fdata* fdata = def->getDataPtr();
+
+      if (fdata == nullptr) {
+         result = new CS_DefinitionComArg(def, innerCommand, attr, hasMemory, uro);
+      }
+      else {
+         const _aunit aval = attr->getValue();
+         delete attr;
+         result = new CS_DefinitionComArg(def, innerCommand,
+            new BridgeAttribute(aval, uro, fdata), hasMemory, uro);
+      }
+
+      return true;
+   }
+
+   Generator<_list>* list;
+   if (parse(uro, tks, list)) {
+      result = new CS_ListComArg(list, innerCommand, attr, hasMemory, uro);
+      return true;
+   }
+
+   delete innerCommand;
+   delete attr;
+   return false;
+}
+
+_boo parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Uroboros* uro)
+{
+   const _boo hasMemory = uro->vc.anyAttribute();
+   Attribute* attr = new Attribute(uro);
+   attr->setCoreCommandBase();
+   return parseLooped(tks, innerCommand, result, uro, attr, hasMemory);
+}
+
 static Command* kwCommandSimple(const Token& word, Tokens& tks,
    const _int& line, Uroboros* uro)
 {
@@ -104,26 +149,9 @@ static Command* kwCommandSimple(const Token& word, Tokens& tks,
       return coreCommandSimpleSave(word, uro);
    }
 
-   const _boo hasMemory = uro->vc.anyAttribute();
-   Attribute* attr = new Attribute(uro);
-   attr->setCoreCommandBase();
-
-   Generator<_str>* str_;
-   if (parse(uro, tks, str_)) {
-      return new CS_StringComArg(str_,
-         coreCommandSimpleNoSave(word, uro), attr, hasMemory, uro);
-   }
-
-   _def* def;
-   if (parse(uro, tks, def)) {
-      return new CS_DefinitionComArg(def,
-         coreCommandSimpleNoSave(word, uro), attr, hasMemory, uro);
-   }
-
-   Generator<_list>* list;
-   if (parse(uro, tks, list)) {
-      return new CS_ListComArg(list,
-         coreCommandSimpleNoSave(word, uro), attr, hasMemory, uro);
+   Command* result;
+   if (parseLooped(tks, coreCommandSimpleNoSave(word, uro), result, uro)) {
+      return result;
    }
 
    throw SyntaxException(str(L"wrong syntax of command '", *word.value.keyword.os, L"'"), line);
@@ -149,7 +177,7 @@ static Command* coreCommandSimpleSave(const Token& word, Uroboros* uro)
       case Keyword::kw_Unhide:
          return new C_Unhide(true, uro);
       default:
-         return nullptr; // error
+         return nullptr;
    }
 }
 
@@ -169,7 +197,7 @@ static Command* coreCommandSimpleNoSave(const Token& word, Uroboros* uro)
       case Keyword::kw_Unhide:
          return new C_Unhide(false, uro);
       default:
-         return nullptr; // error
+         return nullptr;
    }
 }
 
@@ -193,7 +221,6 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
          L" to' does not contain its time argument"), line);
    }
 
-
    if (left.isEmpty()) {
       uro->vc.setTimeComAttribute(*word.value.keyword.os, line);
       Generator<_tim>* tim;
@@ -214,6 +241,7 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
 
    Generator<_tim>* tim;
    if (!parse(uro, right, tim)) {
+      delete attr;
       throw SyntaxException(str(L"time argument of command '", *word.value.keyword.os,
          L" to' is not valid"), line);
    }
@@ -221,22 +249,9 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
    uro->vars.inner.thisState = prevThisState;
    uro->vc.retreatAttribute();
 
-   Generator<_str>* str_;
-   if (parse(uro, left, str_)) {
-      return new CS_StringComArg(str_,
-         coreCommandTime(word, tim, false, uro), attr, hasMemory, uro);
-   }
-
-   _def* def;
-   if (parse(uro, left, def)) {
-      return new CS_DefinitionComArg(def,
-         coreCommandTime(word, tim, false, uro), attr, hasMemory, uro);
-   }
-
-   Generator<_list>* list;
-   if (parse(uro, left, list)) {
-      return new CS_ListComArg(list,
-         coreCommandTime(word, tim, false, uro), attr, hasMemory, uro);
+   Command* result;
+   if (parseLooped(left, coreCommandTime(word, tim, false, uro), result, uro, attr, hasMemory)) {
+      return result;
    }
 
    throw SyntaxException(str(L"wrong syntax of command '", *word.value.keyword.os, L" to'"), line);
@@ -255,7 +270,7 @@ static Command* coreCommandTime(const Token& word,
       case Keyword::kw_Remodify:
          return new C_RemodifyTo(time, saveChanges, uro);
       default:
-         return nullptr; // error
+         return nullptr;
    }
 }
 
@@ -276,34 +291,31 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, U
             L"contain its last argument"), line);
       }
 
+      const _boo hasMemory = uro->vc.anyAttribute();
+      const ThisState prevThisState = uro->vars.inner.thisState;
+      uro->vars.inner.thisState = ThisState::ts_String;
+      Attribute* attr = new Attribute(uro);
+      attr->setCoreCommandBase();
+      uro->vc.addAttribute(attr);
+
       Generator<_str>* prog;
       if (!parse(uro, right, prog)) {
+         delete attr;
          throw SyntaxException(str(L"last argument of command '", *word.value.keyword.os, L" with' "
             L"cannot be resolved to a string"), line);
       }
+
+      uro->vars.inner.thisState = prevThisState;
+      uro->vc.retreatAttribute();
 
       if (left.isEmpty()) {
          uro->vc.setCoreComAttribute(str(*word.value.keyword.os, L" with"), line);
          return new C_OpenWith(prog, uro);
       }
       else {
-         const _boo hasMemory = uro->vc.anyAttribute();
-         Attribute* attr = new Attribute(uro);
-         attr->setCoreCommandBase();
-
-         Generator<_str>* str_;
-         if (parse(uro, left, str_)) {
-            return new CS_StringComArg(str_, new C_OpenWith(prog, uro), attr, hasMemory, uro);
-         }
-
-         _def* def;
-         if (parse(uro, left, def)) {
-            return new CS_DefinitionComArg(def, new C_OpenWith(prog, uro), attr, hasMemory, uro);
-         }
-
-         Generator<_list>* list;
-         if (parse(uro, left, list)) {
-            return new CS_ListComArg(list, new C_OpenWith(prog, uro), attr, hasMemory, uro);
+         Command* result;
+         if (parseLooped(left, new C_OpenWith(prog, uro), result, uro, attr, hasMemory)) {
+            return result;
          }
 
          delete prog;
@@ -311,23 +323,9 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, U
       }
    }
 
-   const _boo hasMemory = uro->vc.anyAttribute();
-   Attribute* attr = new Attribute(uro);
-   attr->setCoreCommandBase();
-
-   Generator<_str>* str;
-   if (parse(uro, tks, str)) {
-      return new CS_StringComArg(str, new C_Open(uro), attr, hasMemory, uro);
-   }
-
-   _def* def;
-   if (parse(uro, tks, def)) {
-      return new CS_DefinitionComArg(def, new C_Open(uro), attr, hasMemory, uro);
-   }
-
-   Generator<_list>* list;
-   if (parse(uro, tks, list)) {
-      return new CS_ListComArg(list, new C_Open(uro), attr, hasMemory, uro);
+   Command* result;
+   if (parseLooped(tks, new C_Open(uro), result, uro)) {
+      return result;
    }
 
    commandSyntaxException(*word.value.keyword.os, line);
@@ -415,7 +413,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
       }
 
       Attribute* lastAttr = uro->vc.getLastAttribute();
-      lastAttr->markToEvaluate = true;
+      lastAttr->markToEvaluate();
 
       if (stack) {
          return new C_RenameTo_Stack(newName, true, extless, uro);
@@ -434,6 +432,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
 
    Generator<_str>* newName;
    if (!parse(uro, right, newName)) {
+      delete attr;
       throw SyntaxException(str(L"declaration of new name in command '", *word.value.keyword.os, L" to' is not valid"), line);
    }
 
@@ -460,6 +459,8 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
             new C_RenameTo(newName, false, force, extless, uro), attr, hasMemory, uro);
    }
 
+   delete newName;
+   delete attr;
    commandSyntaxException(str(*word.value.keyword.os, L" to"), line);
 }
 
@@ -691,6 +692,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 
          Generator<_str>* dest;
          if (!parse(uro, preAs, dest)) {
+            delete nname;
             throw SyntaxException(str(L"new location in command '", *word.value.keyword.os,
                L" to' cannot be resolved to a string"), line);
          }
@@ -768,12 +770,14 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 
       Generator<_str>* nname;
       if (!parse(uro, postAs, nname)) {
+         delete attr;
          throw SyntaxException(str(L"new name in command '", *word.value.keyword.os,
             L" to as' cannot be resolved to a string"), line);
       }
 
       Generator<_str>* dest;
       if (!parse(uro, preAs, dest)) {
+         delete attr;
          delete nname;
          throw SyntaxException(str(L"new location in command '", *word.value.keyword.os,
             L" to' cannot be resolved to a string"), line);
@@ -782,39 +786,19 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       uro->vars.inner.thisState = prevThisState;
       uro->vc.retreatAttribute();
 
-      Generator<_str>* str_;
-      if (parse(uro, left, str_)) {
-         if (stack) {
-            return new CS_StringComArg(str_,
-               new C_MoveToAs_Stack(dest, nname, extless, uro), attr, hasMemory, uro);
-         }
-         else {
-            return new CS_StringComArg(str_,
-               new C_MoveToAs(dest, nname, force, extless, uro), attr, hasMemory, uro);
+      Command* result;
+      if (stack) {
+         if (parseLooped(left, new C_MoveToAs_Stack(dest, nname, extless, uro),
+            result, uro, attr, hasMemory))
+         {
+            return result;
          }
       }
-
-      _def* def;
-      if (parse(uro, left, def)) {
-         if (stack) {
-            return new CS_DefinitionComArg(def,
-               new C_MoveToAs_Stack(dest, nname, extless, uro), attr, hasMemory, uro);
-         }
-         else {
-            return new CS_DefinitionComArg(def,
-               new C_MoveToAs(dest, nname, force, extless, uro), attr, hasMemory, uro);
-         }
-      }
-
-      Generator<_list>* list;
-      if (parse(uro, left, list)) {
-         if (stack) {
-            return new CS_ListComArg(list,
-               new C_MoveToAs_Stack(dest, nname, extless, uro), attr, hasMemory, uro);
-         }
-         else {
-            return new CS_ListComArg(list,
-               new C_MoveToAs(dest, nname, force, extless, uro), attr, hasMemory, uro);
+      else {
+         if (parseLooped(left, new C_MoveToAs(dest, nname, force, extless, uro),
+            result, uro, attr, hasMemory))
+         {
+            return result;
          }
       }
 
@@ -839,39 +823,15 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
    uro->vars.inner.thisState = prevThisState;
    uro->vc.retreatAttribute();
 
-   Generator<_str>* str_;
-   if (parse(uro, left, str_)) {
-      if (stack) {
-         return new CS_StringComArg(str_,
-            new C_MoveTo_Stack(dest, uro), attr, hasMemory, uro);
-      }
-      else {
-         return new CS_StringComArg(str_,
-            new C_MoveTo(dest, force, uro), attr, hasMemory, uro);
+   Command* result;
+   if (stack) {
+      if (parseLooped(left, new C_MoveTo_Stack(dest, uro), result, uro, attr, hasMemory)) {
+         return result;
       }
    }
-
-   _def* def;
-   if (parse(uro, left, def)) {
-      if (stack) {
-         return new CS_DefinitionComArg(def,
-            new C_MoveTo_Stack(dest, uro), attr, hasMemory, uro);
-      }
-      else {
-         return new CS_DefinitionComArg(def,
-            new C_MoveTo(dest, force, uro), attr, hasMemory, uro);
-      }
-   }
-
-   Generator<_list>* list;
-   if (parse(uro, left, list)) {
-      if (stack) {
-         return new CS_ListComArg(list,
-            new C_MoveTo_Stack(dest, uro), attr, hasMemory, uro);
-      }
-      else {
-         return new CS_ListComArg(list,
-            new C_MoveTo(dest, force, uro), attr, hasMemory, uro);
+   else {
+      if (parseLooped(left, new C_MoveTo(dest, force, uro), result, uro, attr, hasMemory)) {
+         return result;
       }
    }
 
@@ -1058,6 +1018,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
          Generator<_str>* dest;
          if (!parse(uro, preAs, dest)) {
+            delete dest;
             throw SyntaxException(str(L"new location in command '", *word.value.keyword.os,
                L" to' cannot be resolved to a string"), line);
          }
@@ -1147,39 +1108,19 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       uro->vars.inner.thisState = prevThisState;
       uro->vc.retreatAttribute();
 
-      Generator<_str>* str_;
-      if (parse(uro, left, str_)) {
-         if (stack) {
-            return new CS_StringComArg(str_,
-               new C_CopyToAs_Stack(dest, nname, false, extless, uro), attr, hasMemory, uro);
-         }
-         else {
-            return new CS_StringComArg(str_,
-               new C_CopyToAs(dest, nname, false, force, extless, uro), attr, hasMemory, uro);
+      Command* result;
+      if (stack) {
+         if (parseLooped(left, new C_CopyToAs_Stack(dest, nname, false, extless, uro),
+            result, uro, attr, hasMemory))
+         {
+            return result;
          }
       }
-
-      _def* def;
-      if (parse(uro, left, def)) {
-         if (stack) {
-            return new CS_DefinitionComArg(def,
-               new C_CopyToAs_Stack(dest, nname, false, extless, uro), attr, hasMemory, uro);
-         }
-         else {
-            return new CS_DefinitionComArg(def,
-               new C_CopyToAs(dest, nname, false, force, extless, uro), attr, hasMemory, uro);
-         }
-      }
-
-      Generator<_list>* list;
-      if (parse(uro, left, list)) {
-         if (stack) {
-            return new CS_ListComArg(list,
-               new C_CopyToAs_Stack(dest, nname, false, extless, uro), attr, hasMemory, uro);
-         }
-         else {
-            return new CS_ListComArg(list,
-               new C_CopyToAs(dest, nname, false, force, extless, uro), attr, hasMemory, uro);
+      else {
+         if (parseLooped(left, new C_CopyToAs(dest, nname, false, force, extless, uro),
+            result, uro, attr, hasMemory))
+         {
+            return result;
          }
       }
 
@@ -1204,39 +1145,15 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    uro->vars.inner.thisState = prevThisState;
    uro->vc.retreatAttribute();
 
-   Generator<_str>* str_;
-   if (parse(uro, left, str_)) {
-      if (stack) {
-         return new CS_StringComArg(str_,
-            new C_CopyTo_Stack(dest, false, uro), attr, hasMemory, uro);
-      }
-      else {
-         return new CS_StringComArg(str_,
-            new C_CopyTo(dest, false, force, uro), attr, hasMemory, uro);
+   Command* result;
+   if (stack) {
+      if (parseLooped(left, new C_CopyTo_Stack(dest, false, uro), result, uro, attr, hasMemory)) {
+         return result;
       }
    }
-
-   _def* def;
-   if (parse(uro, left, def)) {
-      if (stack) {
-         return new CS_DefinitionComArg(def,
-            new C_CopyTo_Stack(dest, false, uro), attr, hasMemory, uro);
-      }
-      else {
-         return new CS_DefinitionComArg(def,
-            new C_CopyTo(dest, false, force, uro), attr, hasMemory, uro);
-      }
-   }
-
-   Generator<_list>* list;
-   if (parse(uro, left, list)) {
-      if (stack) {
-         return new CS_ListComArg(list,
-            new C_CopyTo_Stack(dest, false, uro), attr, hasMemory, uro);
-      }
-      else {
-         return new CS_ListComArg(list,
-            new C_CopyTo(dest, false, force, uro), attr, hasMemory, uro);
+   else {
+      if (parseLooped(left, new C_CopyTo(dest, false, force, uro), result, uro, attr, hasMemory)) {
+         return result;
       }
    }
 
@@ -1249,8 +1166,8 @@ Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _
    if (tks.isEmpty()) {
       switch (uro->vars.inner.thisState) {
          case ts_None: {
-         throw SyntaxException(str(L"command '", *word.value.keyword.os, L"' needs an argument. "
-            L"Value of variable 'this' is undefined here"), line);
+         throw SyntaxException(str(L"command '", *word.value.keyword.os, L"' needs an argument here. "
+            L"Value of variable 'this' is undefined in this area"), line);
             break;
          }
          case ts_String: {
@@ -1453,22 +1370,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                   if (cf.type == Token::t_Word && cf.value.word.h == uro->hashes.HASH_VAR_UROBOROS) {
                      delete exec;
 
-                     Generator<_str>* str_;
-                     if (parse(uro, left, str_)) {
-                        return new CS_StringComArg(str_,
-                           new C_RunWithUroborosWithString(lastStr, uro), attr, lastAttr, hasMemory, uro);
-                     }
-
-                     _def* def;
-                     if (parse(uro, left, def)) {
-                        return new CS_DefinitionComArg(def,
-                           new C_RunWithUroborosWithString(lastStr, uro), attr, lastAttr, hasMemory, uro);
-                     }
-
-                     Generator<_list>* list;
-                     if (parse(uro, left, list)) {
-                        return new CS_ListComArg(list,
-                           new C_RunWithUroborosWithString(lastStr, uro), attr, lastAttr, hasMemory, uro);
+                     Command* result;
+                     if (parseLooped(left, new C_RunWithUroborosWithString(lastStr, uro), result, uro, attr, hasMemory)) {
+                        return result;
                      }
 
                      delete lastStr;
@@ -1477,22 +1381,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                   }
                }
 
-               Generator<_str>* str_;
-               if (parse(uro, left, str_)) {
-                  return new CS_StringComArg(str_,
-                     new C_RunWithWithString(exec, lastStr, uro), attr, lastAttr, hasMemory, uro);
-               }
-
-               _def* def;
-               if (parse(uro, left, def)) {
-                  return new CS_DefinitionComArg(def,
-                     new C_RunWithWithString(exec, lastStr, uro), attr, lastAttr, hasMemory, uro);
-               }
-
-               Generator<_list>* list;
-               if (parse(uro, left, list)) {
-                  return new CS_ListComArg(list,
-                     new C_RunWithWithString(exec, lastStr, uro), attr, lastAttr, hasMemory, uro);
+               Command* result;
+               if (parseLooped(left, new C_RunWithWithString(exec, lastStr, uro), result, uro, attr, hasMemory)) {
+                  return result;
                }
 
                delete exec;
@@ -1519,19 +1410,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                      if (cf.type == Token::t_Word && cf.value.word.h == uro->hashes.HASH_VAR_UROBOROS) {
                         delete exec;
 
-                        Generator<_str>* str_;
-                        if (parse(uro, left, str_)) {
-                           return new CS_StringComArg(str_, new C_RunWithUroborosWith(lastList, uro), attr, lastAttr, hasMemory, uro);
-                        }
-
-                        _def* def;
-                        if (parse(uro, left, def)) {
-                           return new CS_DefinitionComArg(def, new C_RunWithUroborosWith(lastList, uro), attr, lastAttr, hasMemory, uro);
-                        }
-
-                        Generator<_list>* list;
-                        if (parse(uro, left, list)) {
-                           return new CS_ListComArg(list, new C_RunWithUroborosWith(lastList, uro), attr, lastAttr, hasMemory, uro);
+                        Command* result;
+                        if (parseLooped(left, new C_RunWithUroborosWith(lastList, uro), result, uro, attr, hasMemory)) {
+                           return result;
                         }
 
                         delete lastList;
@@ -1540,22 +1421,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                      }
                   }
 
-                  Generator<_str>* str_;
-                  if (parse(uro, left, str_)) {
-                     return new CS_StringComArg(str_,
-                        new C_RunWithWith(exec, lastList, uro), attr, lastAttr, hasMemory, uro);
-                  }
-
-                  _def* def;
-                  if (parse(uro, left, def)) {
-                     return new CS_DefinitionComArg(def,
-                        new C_RunWithWith(exec, lastList, uro), attr, lastAttr, hasMemory, uro);
-                  }
-
-                  Generator<_list>* list;
-                  if (parse(uro, left, list)) {
-                     return new CS_ListComArg(list,
-                        new C_RunWithWith(exec, lastList, uro), attr, lastAttr, hasMemory, uro);
+                  Command* result;
+                  if (parseLooped(left, new C_RunWithWith(exec, lastList, uro), result, uro, attr, hasMemory)) {
+                     return result;
                   }
 
                   delete exec;
@@ -1588,19 +1456,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                if (cf.type == Token::t_Word && cf.value.word.h == uro->hashes.HASH_VAR_UROBOROS) {
                   delete exec;
 
-                  Generator<_str>* str_;
-                  if (parse(uro, left, str_)) {
-                     return new CS_StringComArg(str_, new C_RunWithUroboros(uro), attr, lastAttr, hasMemory, uro);
-                  }
-
-                  _def* def;
-                  if (parse(uro, left, def)) {
-                     return new CS_DefinitionComArg(def, new C_RunWithUroboros(uro), attr, lastAttr, hasMemory, uro);
-                  }
-
-                  Generator<_list>* list;
-                  if (parse(uro, left, list)) {
-                     return new CS_ListComArg(list, new C_RunWithUroboros(uro), attr, lastAttr, hasMemory, uro);
+                  Command* result;
+                  if (parseLooped(left, new C_RunWithUroboros(uro), result, uro, attr, hasMemory)) {
+                     return result;
                   }
 
                   throw SyntaxException(str(L"first argument of command '", *word.value.keyword.os,
@@ -1608,19 +1466,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                }
             }
 
-            Generator<_str>* str_;
-            if (parse(uro, left, str_)) {
-               return new CS_StringComArg(str_, new C_RunWith(exec, uro), attr, lastAttr, hasMemory, uro);
-            }
-
-            _def* def;
-            if (parse(uro, left, def)) {
-               return new CS_DefinitionComArg(def, new C_RunWith(exec, uro), attr, lastAttr, hasMemory, uro);
-            }
-
-            Generator<_list>* list;
-            if (parse(uro, left, list)) {
-               return new CS_ListComArg(list, new C_RunWith(exec, uro), attr, lastAttr, hasMemory, uro);
+            Command* result;
+            if (parseLooped(left, new C_RunWith(exec, uro), result, uro, attr, hasMemory)) {
+               return result;
             }
 
             delete exec;

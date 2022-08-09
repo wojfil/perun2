@@ -63,13 +63,15 @@ public:
    _boo has(const _aunit& v) const;
    _boo hasAny() const;
    _aunit getValue() const;
+   _boo isMarkedToEvaluate() const;
+   void markToEvaluate();
 
-   void run() const;
+   virtual void run() const;
 
    _boo markToRun = false;
-   _boo markToEvaluate = false;
 
 protected:
+   _boo isMarkedToEvaluate_ = false;
    _aunit value;
    Uroboros* uroboros;
 };
@@ -79,7 +81,9 @@ protected:
 // the result of their call is a WIN32_FIND_DATA struct filled with data
 // this struct already contains all the data we will ever need when operating with files
 // why not use this already obtained data in many other places?
-// BridgeAttribute provides a nice data access
+// BridgeAttribute contains a pointer to this data
+// as a result, we do not have to load the same data twice
+// useful when IO is the bottleneck
 
 struct BridgeAttribute : Attribute
 {

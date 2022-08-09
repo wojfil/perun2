@@ -29,18 +29,4 @@
 #define _list std::vector<std::wstring>
 
 
-enum UroDataType
-{
-   dt_Bool = 0,
-   dt_Number,
-   dt_Period,
-   dt_Time,
-   dt_String,
-   dt_Definition,
-   dt_TimeList,
-   dt_NumericList,
-   dt_List
-};
-
-
 #endif /* DATATYPE_H */

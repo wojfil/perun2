@@ -515,7 +515,7 @@ _boo os_emptyFile(const _adata& data)
 
 _boo os_emptyDirectory(const _str& path)
 {
-   WIN32_FIND_DATA data;
+   _fdata data;
    HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
    if (handle == INVALID_HANDLE_VALUE) {
       return true;
@@ -712,7 +712,7 @@ _nint os_sizeFile(const _adata& data)
 _nint os_sizeDirectory(const _str& path, Uroboros* uro)
 {
    _nint totalSize = 0LL;
-   WIN32_FIND_DATA data;
+   _fdata data;
    HANDLE sh = NULL;
    sh = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
 
@@ -828,7 +828,7 @@ _boo os_dropFile(const _str& path)
 _boo os_dropDirectory(const _str& path, Uroboros* uro)
 {
    HANDLE hFind;
-   WIN32_FIND_DATA FindFileData;
+   _fdata FindFileData;
 
    _char DirPath[MAX_PATH];
    _char FileName[MAX_PATH];
@@ -966,9 +966,9 @@ _boo os_unlock(const _str& path)
 _boo os_setTime(const _str& path, const _tim& creation,
    const _tim& access, const _tim& modification)
 {
-   FILETIME time_c;
-   FILETIME time_a;
-   FILETIME time_m;
+   _ftime time_c;
+   _ftime time_a;
+   _ftime time_m;
 
    if (!(convertToFileTime(creation, time_c)
     && convertToFileTime(access, time_a)
@@ -1019,7 +1019,7 @@ _boo os_createFile(const _str& path)
       CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
    if (h) {
-      FILETIME ftime;
+      _ftime ftime;
 
       if (convertToFileTime(os_now(), ftime)) {
          SetFileTime(h, &ftime, &ftime, &ftime);
@@ -1077,7 +1077,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
    const _size length = oldPath.size() + 1;
 
    HANDLE hFind;
-   WIN32_FIND_DATA FindFileData;
+   _fdata FindFileData;
 
    _char DirPath[MAX_PATH];
    _char FileName[MAX_PATH];
@@ -1669,7 +1669,7 @@ _boo os_isBrowsePath(const _str& path)
    return path == L"." || path == L"..";
 }
 
-inline _tim convertToUroTime(const FILETIME* time)
+inline _tim convertToUroTime(const _ftime* time)
 {
    _FILETIME ftime;
    if (FileTimeToLocalFileTime(time, &ftime)) {
@@ -1688,7 +1688,7 @@ inline _tim convertToUroTime(const FILETIME* time)
    }
 }
 
-inline _boo convertToFileTime(const _tim& uroTime, FILETIME& result)
+inline _boo convertToFileTime(const _tim& uroTime, _ftime& result)
 {
    _SYSTEMTIME stime;
    stime.wYear = uroTime.year;

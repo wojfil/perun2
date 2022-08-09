@@ -34,7 +34,7 @@
 
 #define _adata WIN32_FILE_ATTRIBUTE_DATA
 #define _fdata WIN32_FIND_DATAW
-
+#define _ftime FILETIME
 
 template<typename T>
 _str toStr(const T &n)

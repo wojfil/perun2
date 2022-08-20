@@ -966,9 +966,9 @@ _boo os_unlock(const _str& path)
 _boo os_setTime(const _str& path, const _tim& creation,
    const _tim& access, const _tim& modification)
 {
-   _ftime time_c;
-   _ftime time_a;
-   _ftime time_m;
+   _ftim time_c;
+   _ftim time_a;
+   _ftim time_m;
 
    if (!(convertToFileTime(creation, time_c)
     && convertToFileTime(access, time_a)
@@ -1019,7 +1019,7 @@ _boo os_createFile(const _str& path)
       CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
    if (h) {
-      _ftime ftime;
+      _ftim ftime;
 
       if (convertToFileTime(os_now(), ftime)) {
          SetFileTime(h, &ftime, &ftime, &ftime);
@@ -1669,7 +1669,7 @@ _boo os_isBrowsePath(const _str& path)
    return path == L"." || path == L"..";
 }
 
-inline _tim convertToUroTime(const _ftime* time)
+inline _tim convertToUroTime(const _ftim* time)
 {
    _FILETIME ftime;
    if (FileTimeToLocalFileTime(time, &ftime)) {
@@ -1688,7 +1688,7 @@ inline _tim convertToUroTime(const _ftime* time)
    }
 }
 
-inline _boo convertToFileTime(const _tim& uroTime, _ftime& result)
+inline _boo convertToFileTime(const _tim& uroTime, _ftim& result)
 {
    _SYSTEMTIME stime;
    stime.wYear = uroTime.year;

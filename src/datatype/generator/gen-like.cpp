@@ -60,22 +60,22 @@ LikeComparer* parseLikeComparer(const _str& pattern)
 
    switch (length) {
       case 0: {
-         return new LikeComparer_Constant(false);
+         return new LC_Constant(false);
       }
       case 1: {
          switch(pattern[0]) {
             case L'%':
-               return new LikeComparer_Constant(true);
+               return new LC_Constant(true);
             case L'_':
-               return new LikeComparer_ConstantLength(1);
+               return new LC_ConstantLength(1);
             case L'#':
-               return new LikeComparer_OnlyDigits(1);
+               return new LC_OnlyDigits(1);
             case L'[':
             case L']':
             case L'^':
-               return new LikeComparer_Constant(false);
+               return new LC_Constant(false);
             default:
-               return new LikeComparer_Equals(pattern);
+               return new LC_Equals(pattern);
          }
       }
       case 2: {
@@ -83,67 +83,67 @@ LikeComparer* parseLikeComparer(const _str& pattern)
          const _char& snd = pattern[1];
 
          if (fst == L'[' || fst == L']' || snd == L'[' || snd == L']') {
-            return new LikeComparer_Constant(false);
+            return new LC_Constant(false);
          }
 
          switch (fst) {
             case L'%': {
                switch (snd) {
                   case L'%':
-                     return new LikeComparer_Constant(true);
+                     return new LC_Constant(true);
                   case L'_':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   case L'^':
-                     return new LikeComparer_Constant(false);
+                     return new LC_Constant(false);
                   case L'#':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   default:
-                     return new LikeComparer_EndsWithChar(pattern);
+                     return new LC_EndsWithChar(pattern);
                }
             }
             case L'_': {
                switch (snd) {
                   case L'%':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   case L'_':
-                     return new LikeComparer_ConstantLength(2);
+                     return new LC_ConstantLength(2);
                   case L'^':
-                     return new LikeComparer_Constant(false);
+                     return new LC_Constant(false);
                   case L'#':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   default:
-                     return new LikeComparer_UnderscoreStart(pattern);
+                     return new LC_UnderscoreStart(pattern);
                }
             }
             case L'#': {
                switch (snd) {
                   case L'%':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   case L'_':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   case L'^':
-                     return new LikeComparer_Constant(false);
+                     return new LC_Constant(false);
                   case L'#':
-                     return new LikeComparer_OnlyDigits(2);
+                     return new LC_OnlyDigits(2);
                   default:
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                }
             }
             case L'^': {
-               return new LikeComparer_Constant(false);
+               return new LC_Constant(false);
             }
             default: {
                switch (snd) {
                   case L'%':
-                     return new LikeComparer_StartsWithChar(pattern);
+                     return new LC_StartsWithChar(pattern);
                   case L'_':
-                     return new LikeComparer_UnderscoreEnd(pattern);
+                     return new LC_UnderscoreEnd(pattern);
                   case L'^':
-                     return new LikeComparer_Constant(false);
+                     return new LC_Constant(false);
                   case L'#':
-                     return new LikeComparer_Default(pattern);
+                     return new LC_Default(pattern);
                   default:
-                     return new LikeComparer_Equals(pattern);
+                     return new LC_Equals(pattern);
                }
             }
          }
@@ -153,7 +153,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
    // pattern length is 3 or greater
 
    if (!correctLikePattern(pattern)) {
-      return new LikeComparer_Constant(false);
+      return new LC_Constant(false);
    }
 
    const _char& first = pattern[0];
@@ -170,7 +170,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
          case L']':
          case L'%':
          case L'^':
-            return new LikeComparer_Default(pattern);
+            return new LC_Default(pattern);
          case L'_': {
             underscoresWithin++;
             break;
@@ -194,34 +194,34 @@ LikeComparer* parseLikeComparer(const _str& pattern)
 
       switch (minusId) {
          case -1: {
-            return new LikeComparer_SingleSet(pattern);
+            return new LC_SingleSet(pattern);
          }
          case 1: {
             if (length == 3) {
-               return new LikeComparer_Constant(false);
+               return new LC_Constant(false);
             }
             else {
                const _str p = pattern.substr(2, 1);
-               return new LikeComparer_Equals(p);
+               return new LC_Equals(p);
             }
          }
          case 2: {
             if (length == 4) {
                const _str p = pattern.substr(1, 1);
-               return new LikeComparer_Equals(p);
+               return new LC_Equals(p);
             }
             else {
-               return new LikeComparer_SingleRange(pattern);
+               return new LC_SingleRange(pattern);
             }
          }
          default: {
             if (minusId == length - 2) {
                const _str p = pattern.substr(minusId - 1, 1);
-               return new LikeComparer_Equals(p);
+               return new LC_Equals(p);
             }
             else {
                const _str p2 = pattern.substr(minusId - 2);
-               return new LikeComparer_SingleRange(p2);
+               return new LC_SingleRange(p2);
             }
          }
       }
@@ -242,7 +242,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
       case L'^': {
          fieldFail = true;
          if (underscoresWithin != 0 || hashesWithin != 0) {
-            return new LikeComparer_Default(pattern);
+            return new LC_Default(pattern);
          }
          break;
       }
@@ -269,26 +269,26 @@ LikeComparer* parseLikeComparer(const _str& pattern)
 
       if (!fieldFail) {
          if (underscoresWithin == length) {
-            return new LikeComparer_ConstantLength(length);
+            return new LC_ConstantLength(length);
          }
          else if (hashesWithin == length) {
-            return new LikeComparer_OnlyDigits(length);
+            return new LC_OnlyDigits(length);
          }
 
          if (underscoresWithin > 0) {
             if (hashesWithin > 0) {
-                return new LikeComparer_Field_UH(pattern);
+                return new LC_Field_UH(pattern);
             }
             else {
-                return new LikeComparer_Field_U(pattern);
+                return new LC_Field_U(pattern);
             }
          }
          else {
             if (hashesWithin > 0) {
-                return new LikeComparer_Field_H(pattern);
+                return new LC_Field_H(pattern);
             }
             else {
-                return new LikeComparer_Equals(pattern);
+                return new LC_Equals(pattern);
             }
          }
       }
@@ -296,7 +296,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
 
    if (underscoresWithin != 0 || hashesWithin != 0 || first == L'#' || last == L'#') {
 
-      return new LikeComparer_Default(pattern);
+      return new LC_Default(pattern);
    }
 
    // wildcard on start and end
@@ -304,31 +304,31 @@ LikeComparer* parseLikeComparer(const _str& pattern)
       case L'%': {
          switch (last) {
             case L'%':
-               return new LikeComparer_Contains(pattern);
+               return new LC_Contains(pattern);
             case L'_':
-               return new LikeComparer_PercentUnderscore(pattern);
+               return new LC_PercentUnderscore(pattern);
             default:
-               return new LikeComparer_EndsWith(pattern);
+               return new LC_EndsWith(pattern);
          }
       }
       case L'_': {
          switch (last) {
             case L'%':
-               return new LikeComparer_UnderscorePercent(pattern);
+               return new LC_UnderscorePercent(pattern);
             case L'_':
-               return new LikeComparer_UnderscoreStartEnd(pattern);
+               return new LC_UnderscoreStartEnd(pattern);
             default:
-               return new LikeComparer_UnderscoreStart(pattern);
+               return new LC_UnderscoreStart(pattern);
          }
       }
       default: {
          switch (last) {
             case L'%':
-               return new LikeComparer_StartsWith(pattern);
+               return new LC_StartsWith(pattern);
             case L'_':
-               return new LikeComparer_UnderscoreEnd(pattern);
+               return new LC_UnderscoreEnd(pattern);
             default:
-               return new LikeComparer_Equals(pattern);
+               return new LC_Equals(pattern);
          }
       }
    }
@@ -368,7 +368,7 @@ _boo Like::getValue() {
 };
 
 
-_boo LikeComparer_Default::compareToPattern(const _str& value) const
+_boo LC_Default::compareToPattern(const _str& value) const
 {
    const _int vlen = value.size();
    const _int plen = pattern.size();
@@ -520,11 +520,11 @@ _boo LikeComparer_Default::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_StartsWith::LikeComparer_StartsWith(const _str& pat)
+LC_StartsWith::LC_StartsWith(const _str& pat)
    : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
-_boo LikeComparer_StartsWith::compareToPattern(const _str& value) const
+_boo LC_StartsWith::compareToPattern(const _str& value) const
 {
    if (value.size() < length) {
       return false;
@@ -540,11 +540,11 @@ _boo LikeComparer_StartsWith::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_EndsWith::LikeComparer_EndsWith(const _str& pat)
+LC_EndsWith::LC_EndsWith(const _str& pat)
    : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
-_boo LikeComparer_EndsWith::compareToPattern(const _str& value) const
+_boo LC_EndsWith::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -564,11 +564,11 @@ _boo LikeComparer_EndsWith::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_Contains::LikeComparer_Contains(const _str& pat)
+LC_Contains::LC_Contains(const _str& pat)
    : length(pat.size() - 2), string(pat.substr(1, length)) { };
 
 
-_boo LikeComparer_Contains::compareToPattern(const _str& value) const
+_boo LC_Contains::compareToPattern(const _str& value) const
 {
    return value.size() < length
       ? false
@@ -576,7 +576,7 @@ _boo LikeComparer_Contains::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_StartsWithChar::compareToPattern(const _str& value) const
+_boo LC_StartsWithChar::compareToPattern(const _str& value) const
 {
    return value.empty()
       ? false
@@ -584,7 +584,7 @@ _boo LikeComparer_StartsWithChar::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_EndsWithChar::compareToPattern(const _str& value) const
+_boo LC_EndsWithChar::compareToPattern(const _str& value) const
 {
    const _size len = value.size();
 
@@ -594,7 +594,7 @@ _boo LikeComparer_EndsWithChar::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_ContainsChar::compareToPattern(const _str& value) const
+_boo LC_ContainsChar::compareToPattern(const _str& value) const
 {
    const _size len = value.size();
 
@@ -612,7 +612,7 @@ _boo LikeComparer_ContainsChar::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_UnderscoreStart::compareToPattern(const _str& value) const
+_boo LC_UnderscoreStart::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -630,7 +630,7 @@ _boo LikeComparer_UnderscoreStart::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_UnderscoreEnd::compareToPattern(const _str& value) const
+_boo LC_UnderscoreEnd::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -648,7 +648,7 @@ _boo LikeComparer_UnderscoreEnd::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_UnderscoreStartEnd::compareToPattern(const _str& value) const
+_boo LC_UnderscoreStartEnd::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -666,29 +666,29 @@ _boo LikeComparer_UnderscoreStartEnd::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_Equals::compareToPattern(const _str& value) const
+_boo LC_Equals::compareToPattern(const _str& value) const
 {
    return value == pattern;
 }
 
 
-_boo LikeComparer_Constant::compareToPattern(const _str& value) const
+_boo LC_Constant::compareToPattern(const _str& value) const
 {
    return constant;
 }
 
 
-_boo LikeComparer_ConstantLength::compareToPattern(const _str& value) const
+_boo LC_ConstantLength::compareToPattern(const _str& value) const
 {
    return value.size() == length;
 }
 
 
-LikeComparer_UnderscorePercent::LikeComparer_UnderscorePercent(const _str& pat)
+LC_UnderscorePercent::LC_UnderscorePercent(const _str& pat)
    : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
-_boo LikeComparer_UnderscorePercent::compareToPattern(const _str& value) const
+_boo LC_UnderscorePercent::compareToPattern(const _str& value) const
 {
    if (value.size() < length) {
       return false;
@@ -704,11 +704,11 @@ _boo LikeComparer_UnderscorePercent::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_PercentUnderscore::LikeComparer_PercentUnderscore(const _str& pat)
+LC_PercentUnderscore::LC_PercentUnderscore(const _str& pat)
    : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
-_boo LikeComparer_PercentUnderscore::compareToPattern(const _str& value) const
+_boo LC_PercentUnderscore::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -729,7 +729,7 @@ _boo LikeComparer_PercentUnderscore::compareToPattern(const _str& value) const
 }
 
 
-_boo LikeComparer_OnlyDigits::compareToPattern(const _str& value) const
+_boo LC_OnlyDigits::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
    if (vlength != length) {
@@ -745,7 +745,7 @@ _boo LikeComparer_OnlyDigits::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_Field_U::LikeComparer_Field_U(const _str& pat)
+LC_Field_U::LC_Field_U(const _str& pat)
    : pattern(pat), length(pat.size()), isUnderscore(std::vector<_boo>(length))
 {
    for (_size i = 0; i < length; i++) {
@@ -754,7 +754,7 @@ LikeComparer_Field_U::LikeComparer_Field_U(const _str& pat)
 }
 
 
-_boo LikeComparer_Field_U::compareToPattern(const _str& value) const
+_boo LC_Field_U::compareToPattern(const _str& value) const
 {
    if (value.size() != length) {
       return false;
@@ -770,7 +770,7 @@ _boo LikeComparer_Field_U::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_Field_H::LikeComparer_Field_H(const _str& pat)
+LC_Field_H::LC_Field_H(const _str& pat)
    : pattern(pat), length(pat.size()), isHash(std::vector<_boo>(length))
 {
    for (_size i = 0; i < length; i++) {
@@ -779,7 +779,7 @@ LikeComparer_Field_H::LikeComparer_Field_H(const _str& pat)
 }
 
 
-_boo LikeComparer_Field_H::compareToPattern(const _str& value) const
+_boo LC_Field_H::compareToPattern(const _str& value) const
 {
    if (value.size() != length) {
       return false;
@@ -800,7 +800,7 @@ _boo LikeComparer_Field_H::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_Field_UH::LikeComparer_Field_UH(const _str& pat)
+LC_Field_UH::LC_Field_UH(const _str& pat)
    : pattern(pat), length(pat.size()),
      isUnderscore(std::vector<_boo>(length)), isHash(std::vector<_boo>(length))
 {
@@ -811,7 +811,7 @@ LikeComparer_Field_UH::LikeComparer_Field_UH(const _str& pat)
 }
 
 
-_boo LikeComparer_Field_UH::compareToPattern(const _str& value) const
+_boo LC_Field_UH::compareToPattern(const _str& value) const
 {
    if (value.size() != length) {
       return false;
@@ -834,7 +834,7 @@ _boo LikeComparer_Field_UH::compareToPattern(const _str& value) const
 }
 
 
-LikeComparer_SingleSet::LikeComparer_SingleSet(const _str& pat)
+LC_SingleSet::LC_SingleSet(const _str& pat)
 {
    const _size limit = pat.size() - 1;
    for (_size i = 1; i < limit; i++) {
@@ -843,14 +843,14 @@ LikeComparer_SingleSet::LikeComparer_SingleSet(const _str& pat)
 }
 
 
-_boo LikeComparer_SingleSet::compareToPattern(const _str& value) const
+_boo LC_SingleSet::compareToPattern(const _str& value) const
 {
    return value.size() == 1
      && chars.find(value[0]) != chars.end();
 }
 
 
-LikeComparer_SingleRange::LikeComparer_SingleRange(const _str& pat)
+LC_SingleRange::LC_SingleRange(const _str& pat)
 {
    const _char& ch1 = pat[1];
    const _char& ch2 = pat[3];
@@ -866,7 +866,7 @@ LikeComparer_SingleRange::LikeComparer_SingleRange(const _str& pat)
 }
 
 
-_boo LikeComparer_SingleRange::compareToPattern(const _str& value) const
+_boo LC_SingleRange::compareToPattern(const _str& value) const
 {
    if (value.size() != 1) {
       return false;

@@ -77,10 +77,10 @@ private:
 
 
 //  %exam__pl_e%
-struct LikeComparer_Default : LikeComparer
+struct LC_Default : LikeComparer
 {
 public:
-   LikeComparer_Default(const _str& pat) : pattern(pat) { };
+   LC_Default(const _str& pat) : pattern(pat) { };
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -89,10 +89,10 @@ private:
 
 
 //  example%
-struct LikeComparer_StartsWith : LikeComparer
+struct LC_StartsWith : LikeComparer
 {
 public:
-   LikeComparer_StartsWith(const _str& pat);
+   LC_StartsWith(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -102,10 +102,10 @@ private:
 
 
 //  %example
-struct LikeComparer_EndsWith : LikeComparer
+struct LC_EndsWith : LikeComparer
 {
 public:
-   LikeComparer_EndsWith(const _str& pat);
+   LC_EndsWith(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -115,10 +115,10 @@ private:
 
 
 //  %example%
-struct LikeComparer_Contains : LikeComparer
+struct LC_Contains : LikeComparer
 {
 public:
-   LikeComparer_Contains(const _str& pat);
+   LC_Contains(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -128,10 +128,10 @@ private:
 
 
 //  e%
-struct LikeComparer_StartsWithChar : LikeComparer
+struct LC_StartsWithChar : LikeComparer
 {
 public:
-   LikeComparer_StartsWithChar(const _str& pat) : ch(pat[0]) {};
+   LC_StartsWithChar(const _str& pat) : ch(pat[0]) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -140,10 +140,10 @@ private:
 
 
 //  %e
-struct LikeComparer_EndsWithChar : LikeComparer
+struct LC_EndsWithChar : LikeComparer
 {
 public:
-   LikeComparer_EndsWithChar(const _str& pat) : ch(pat[1]) {};
+   LC_EndsWithChar(const _str& pat) : ch(pat[1]) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -152,10 +152,10 @@ private:
 
 
 //  %e%
-struct LikeComparer_ContainsChar : LikeComparer
+struct LC_ContainsChar : LikeComparer
 {
 public:
-   LikeComparer_ContainsChar(const _str& pat) : ch(pat[1]) {};
+   LC_ContainsChar(const _str& pat) : ch(pat[1]) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -164,10 +164,10 @@ private:
 
 
 //  _example
-struct LikeComparer_UnderscoreStart : LikeComparer
+struct LC_UnderscoreStart : LikeComparer
 {
 public:
-   LikeComparer_UnderscoreStart(const _str& pat) : pattern(pat),
+   LC_UnderscoreStart(const _str& pat) : pattern(pat),
       length(pat.size()) {};
    _boo compareToPattern(const _str& value) const override;
 
@@ -178,10 +178,10 @@ private:
 
 
 //  example_
-struct LikeComparer_UnderscoreEnd : LikeComparer
+struct LC_UnderscoreEnd : LikeComparer
 {
 public:
-   LikeComparer_UnderscoreEnd(const _str& pat) : pattern(pat),
+   LC_UnderscoreEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
    _boo compareToPattern(const _str& value) const override;
 
@@ -193,10 +193,10 @@ private:
 
 
 //  _example_
-struct LikeComparer_UnderscoreStartEnd : LikeComparer
+struct LC_UnderscoreStartEnd : LikeComparer
 {
 public:
-   LikeComparer_UnderscoreStartEnd(const _str& pat) : pattern(pat),
+   LC_UnderscoreStartEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
    _boo compareToPattern(const _str& value) const override;
 
@@ -208,10 +208,10 @@ private:
 
 
 //  example
-struct LikeComparer_Equals : LikeComparer
+struct LC_Equals : LikeComparer
 {
 public:
-   LikeComparer_Equals(const _str& pat) : pattern(pat) {};
+   LC_Equals(const _str& pat) : pattern(pat) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -220,10 +220,10 @@ private:
 
 
 //  case that is always true / always false
-struct LikeComparer_Constant : LikeComparer
+struct LC_Constant : LikeComparer
 {
 public:
-   LikeComparer_Constant(const _boo& cnst) : constant(cnst) {};
+   LC_Constant(const _boo& cnst) : constant(cnst) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -233,10 +233,10 @@ private:
 
 
 //  string has to contain certain amount of characters
-struct LikeComparer_ConstantLength : LikeComparer
+struct LC_ConstantLength : LikeComparer
 {
 public:
-   LikeComparer_ConstantLength(const _size& len) : length(len) {};
+   LC_ConstantLength(const _size& len) : length(len) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -245,10 +245,10 @@ private:
 
 
 //  _example%
-struct LikeComparer_UnderscorePercent : LikeComparer
+struct LC_UnderscorePercent : LikeComparer
 {
 public:
-   LikeComparer_UnderscorePercent(const _str& pat);
+   LC_UnderscorePercent(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -258,10 +258,10 @@ private:
 
 
 //  %example_
-struct LikeComparer_PercentUnderscore : LikeComparer
+struct LC_PercentUnderscore : LikeComparer
 {
 public:
-   LikeComparer_PercentUnderscore(const _str& pat);
+   LC_PercentUnderscore(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -271,10 +271,10 @@ private:
 
 
 //  string has to contain cetrain amount of characters and they are all digits
-struct LikeComparer_OnlyDigits : LikeComparer
+struct LC_OnlyDigits : LikeComparer
 {
 public:
-   LikeComparer_OnlyDigits(const _size& len) : length(len) {};
+   LC_OnlyDigits(const _size& len) : length(len) {};
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -283,10 +283,10 @@ private:
 
 
 //  _exa_mpl_e
-struct LikeComparer_Field_U : LikeComparer
+struct LC_Field_U : LikeComparer
 {
 public:
-   LikeComparer_Field_U(const _str& pat);
+   LC_Field_U(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -297,10 +297,10 @@ private:
 
 
 //  #exa#mpl#e
-struct LikeComparer_Field_H : LikeComparer
+struct LC_Field_H : LikeComparer
 {
 public:
-   LikeComparer_Field_H(const _str& pat);
+   LC_Field_H(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -311,10 +311,10 @@ private:
 
 
 //  #exa__mpl#e_e
-struct LikeComparer_Field_UH : LikeComparer
+struct LC_Field_UH : LikeComparer
 {
 public:
-   LikeComparer_Field_UH(const _str& pat);
+   LC_Field_UH(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -326,10 +326,10 @@ private:
 
 
 //  [abc]
-struct LikeComparer_SingleSet : LikeComparer
+struct LC_SingleSet : LikeComparer
 {
 public:
-   LikeComparer_SingleSet(const _str& pat);
+   LC_SingleSet(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -338,10 +338,10 @@ private:
 
 
 //  [a-h]
-struct LikeComparer_SingleRange : LikeComparer
+struct LC_SingleRange : LikeComparer
 {
 public:
-   LikeComparer_SingleRange(const _str& pat);
+   LC_SingleRange(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:

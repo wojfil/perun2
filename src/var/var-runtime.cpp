@@ -171,7 +171,7 @@ _boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const This
 
    VarBundle<T>* bundle;
    vars->takeBundlePointer(bundle);
-   return bundle->getValue(vc, tk, result);
+   return bundle->getValue(vc, tk, result, *inner);
 }
 
 _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)

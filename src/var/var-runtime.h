@@ -64,7 +64,7 @@ public:
    {
       VarBundle<T>* bundle;
       takeBundlePointer(bundle);
-      return bundle->getValue(this->vc, tk, result);
+      return bundle->getValue(this->vc, tk, result, this->inner);
    }
 
    _boo variableExists(const Token& tk);

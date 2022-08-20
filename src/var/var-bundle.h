@@ -6,6 +6,7 @@
 #include "../command/com-var.h"
 #include "../token.h"
 #include "var-context.h"
+#include "var-inner.h"
 
 
 template <typename T>
@@ -37,7 +38,7 @@ public:
           || this->specialVars.find(hash) != this->specialVars.end();
    }
 
-   _boo getValue(VariablesContext* vc, const Token& tk, Generator<T>*& result)
+   _boo getValue(VariablesContext* vc, const Token& tk, Generator<T>*& result, const InnerVariables& inner)
    {
       if (this->userVars.find(tk.value.word.h) != this->userVars.end()) {
          ParseVariable<T>* pv = &this->userVars[tk.value.word.h];
@@ -47,6 +48,13 @@ public:
          }
       }
       else if (this->internalVars.find(tk.value.word.h) != this->internalVars.end()) {
+         if (inner.thisState != ThisState::ts_String) {
+            const _str& name = *tk.value.word.os;
+            throw SyntaxException(str(L"the value of variable '", name,
+               L"' is undefined here. Right there we are iterating over ",
+               (inner.thisState == ThisState::ts_Number) ? L"numbers. " : L"times. ",
+               L"You should assign the value of '", name, L"' to a new temporary variable somewhere before"), tk.line);
+         }
          vc->setAttribute(tk);
          result = new GeneratorRef<T>(this->internalVars[tk.value.word.h]);
          return true;

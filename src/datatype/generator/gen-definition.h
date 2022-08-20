@@ -44,11 +44,17 @@ struct Filter_WhereDef : DefFilter
 public:
    Filter_WhereDef(_def* def, Generator<_boo>* cond, Attribute* attr, const _boo& hasMem, Uroboros* uro)
       : DefFilter(def, uro), condition(cond), attribute(attr), finished(true), inner(&uro->vars.inner),
-        hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)) {};
+        hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)), hasAttribute(true) {};
+
+   Filter_WhereDef(_def* def, Generator<_boo>* cond, Uroboros* uro)
+      : DefFilter(def, uro), condition(cond), attribute(nullptr), finished(true), inner(&uro->vars.inner),
+        hasMemory(false), attrMemory(AttributeMemory(&uro->vars.inner)), hasAttribute(false) {};
 
    ~Filter_WhereDef() {
       delete condition;
-      delete attribute;
+      if (hasAttribute) {
+         delete attribute;
+      }
    }
 
    _boo hasNext() override;
@@ -60,6 +66,7 @@ private:
    Generator<_boo>* condition;
    Attribute* attribute;
    const _boo hasMemory;
+   const _boo hasAttribute;
    AttributeMemory attrMemory;
    _numi index;
 };

@@ -160,7 +160,6 @@ _boo isPossibleTernary(const Tokens& tks)
    return true;
 }
 
-
 void checkLimitBySize(const Tokens& tks)
 {
    if (tks.getLength() == 1) {
@@ -208,31 +207,9 @@ _boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro)
    return true;
 }
 
-void setNumericFilter(const Keyword& kw, Generator<_num>*& num, _def*& result, Uroboros* uro)
-{
-   switch (kw) {
-      case Keyword::kw_Every: {
-         result = new Filter_EveryDef(result, num, uro);
-         break;
-      }
-      case Keyword::kw_Limit: {
-         result = new Filter_LimitDef(result, num, uro);
-         break;
-      }
-      case Keyword::kw_Skip: {
-         result = new Filter_SkipDef(result, num, uro);
-         break;
-      }
-   }
-}
-
-void setWhereFilter(Generator<_boo>*& boo, Attribute* attr, const _boo& hasMemory, _def*& result, Uroboros* uro)
-{
-   result = new Filter_WhereDef(result, boo, attr, hasMemory, uro);
-}
-
 void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro)
 {
    order = new OrderBy<_str>(new Cast_D_L(result, uro), attr, uro);
    result = new OrderByCast(order, attr, hasMemory, uro);
 }
+

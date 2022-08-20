@@ -70,7 +70,11 @@ _boo Filter_WhereDef::hasNext()
       }
 
       value = definition->getValue();
-      this->attribute->run();
+
+      if (this->hasAttribute) {
+         this->attribute->run();
+      }
+
       const _boo con = condition->getValue();
 
       if (con) {

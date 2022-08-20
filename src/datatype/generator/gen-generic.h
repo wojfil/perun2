@@ -276,7 +276,8 @@ public:
 
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
-      if (n <= 0) {
+
+      if (n <= 0LL) {
          return std::vector<T>();
       }
 
@@ -309,7 +310,7 @@ public:
       const _nint n = number->getValue().toInt();
       const std::vector<T> lst = list->getValue();
 
-      if (n <= 0) {
+      if (n <= 0LL) {
          return lst;
       }
 
@@ -340,7 +341,7 @@ public:
       const _nint n = number->getValue().toInt();
       const std::vector<T> lst = list->getValue();
 
-      if (n <= 1) {
+      if (n <= 1LL) {
          return lst;
       }
 

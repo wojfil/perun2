@@ -51,6 +51,17 @@ _boo correctLikePattern(const _str& pattern)
 }
 
 
+LikeComparer* defaultLikeComparer(const _str& pattern)
+{
+   if (pattern.find(L'[') == _str::npos) {
+      return new LC_DefaultButNoBrackets(pattern);
+   }
+   else {
+      return new LC_Default(pattern);
+   }
+}
+
+
 // look for special case variants of the LIKE operator
 // if one is detected
 // return an optimized pattern comparer
@@ -167,10 +178,13 @@ LikeComparer* parseLikeComparer(const _str& pattern)
    for (_size i = 1; i < limit; i++) {
       switch (pattern[i]) {
          case L'[':
-         case L']':
-         case L'%':
-         case L'^':
+         case L']': {
             return new LC_Default(pattern);
+         }
+         case L'%':
+         case L'^': {
+            return defaultLikeComparer(pattern);
+         }
          case L'_': {
             underscoresWithin++;
             break;
@@ -237,12 +251,18 @@ LikeComparer* parseLikeComparer(const _str& pattern)
          break;
       }
       case L'[':
-      case L']':
+      case L']': {
+         fieldFail = true;
+         if (underscoresWithin != 0 || hashesWithin != 0) {
+            return new LC_Default(pattern);
+         }
+         break;
+      }
       case L'%':
       case L'^': {
          fieldFail = true;
          if (underscoresWithin != 0 || hashesWithin != 0) {
-            return new LC_Default(pattern);
+            return defaultLikeComparer(pattern);
          }
          break;
       }
@@ -295,8 +315,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
    }
 
    if (underscoresWithin != 0 || hashesWithin != 0 || first == L'#' || last == L'#') {
-
-      return new LC_Default(pattern);
+      return defaultLikeComparer(pattern);
    }
 
    // wildcard on start and end
@@ -334,15 +353,15 @@ LikeComparer* parseLikeComparer(const _str& pattern)
    }
 }
 
-LikeConst::LikeConst(Generator<_str>* val, const _str pattern)
-{
-   value = val;
-   comparer = parseLikeComparer(pattern);
-}
+
+LikeConst::LikeConst(Generator<_str>* val, const _str& pattern)
+  : value(val), comparer(parseLikeComparer(pattern)) { };
+
 
 _boo LikeConst::getValue() {
    return comparer->compareToPattern(value->getValue());
 };
+
 
 // if the pattern of the operator LIKE is not a string literal
 // we have to generate a new pattern string for every its call
@@ -366,6 +385,10 @@ _boo Like::getValue() {
 
    return comparer->compareToPattern(value->getValue());
 };
+
+
+LC_Default::LC_Default(const _str& pat) 
+   : pattern(pat) { };
 
 
 _boo LC_Default::compareToPattern(const _str& value) const
@@ -470,6 +493,111 @@ _boo LC_Default::compareToPattern(const _str& value) const
             }
          }
          notCharSetOn = charSetOn = false;
+      }
+      else {
+         if (p == L'#') {
+            if (std::iswdigit(c)) {
+               id++;
+            }
+            else {
+               if (lastWildCard >= 0) {
+                  id = lastWildCard;
+               }
+               else {
+                  isMatch = false;
+                  break;
+               }
+            }
+         }
+         else if (c == p) {
+            id++;
+         }
+         else {
+            if (lastWildCard >= 0) {
+               id = lastWildCard;
+            }
+            else {
+               isMatch = false;
+               break;
+            }
+         }
+      }
+   }
+
+   end = (id >= plen);
+
+   if (isMatch && !end) {
+      _boo onlyWildCards = true;
+      for (_int i = id; i < plen; i++) {
+         if (pattern[i] != L'%') {
+            onlyWildCards = false;
+            break;
+         }
+      }
+      if (onlyWildCards) {
+         end = true;
+      }
+   }
+
+   return isMatch && end;
+}
+
+
+LC_DefaultButNoBrackets::LC_DefaultButNoBrackets(const _str& pat) 
+   : pattern(pat) { };
+
+
+_boo LC_DefaultButNoBrackets::compareToPattern(const _str& value) const
+{
+   const _int vlen = value.size();
+   const _int plen = pattern.size();
+   _boo isMatch = true;
+   _boo wildCardOn = false; // %
+   _boo charWildCardOn = false; // _
+   _boo end = false;
+   _int lastWildCard = -1;
+   _int id = 0;
+   _char p = L'\0';
+
+   for (_int i = 0; i < vlen; i++) {
+      const _char& c = value[i];
+      end = (id >= plen);
+      if (!end) {
+         p = pattern[id];
+
+         if (!wildCardOn && p == L'%') {
+            lastWildCard = id;
+            wildCardOn = true;
+            while (id < plen && pattern[id] == L'%') {
+               id++;
+            }
+            if (id >= plen) {
+               p = L'\0';
+            }
+            else {
+               p = pattern[id];
+            }
+         }
+         else if (p == L'_') {
+            charWildCardOn = true;
+            id++;
+         }
+      }
+
+      if (wildCardOn) {
+         if (p == L'#') {
+            if (std::iswdigit(c)) {
+               wildCardOn = false;
+               id++;
+            }
+         }
+         else if (c == p) {
+            wildCardOn = false;
+            id++;
+         }
+      }
+      else if (charWildCardOn) {
+         charWildCardOn = false;
       }
       else {
          if (p == L'#') {

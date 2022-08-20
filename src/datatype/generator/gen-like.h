@@ -27,6 +27,7 @@ struct LikeComparer
 
 
 _boo correctLikePattern(const _str& pattern);
+LikeComparer* defaultLikeComparer(const _str& pattern);
 LikeComparer* parseLikeComparer(const _str& pattern);
 
 
@@ -34,7 +35,7 @@ LikeComparer* parseLikeComparer(const _str& pattern);
 struct LikeConst : Generator<_boo>
 {
 public:
-   LikeConst(Generator<_str>* val, const _str pattern);
+   LikeConst(Generator<_str>* val, const _str& pattern);
 
    ~LikeConst() {
       delete value;
@@ -76,11 +77,23 @@ private:
 };
 
 
-//  %exam__pl_e%
+//  %exa[m-v]__pl_e%
 struct LC_Default : LikeComparer
 {
 public:
-   LC_Default(const _str& pat) : pattern(pat) { };
+   LC_Default(const _str& pat);
+   _boo compareToPattern(const _str& value) const override;
+
+private:
+   const _str pattern;
+};
+
+
+//  %exam__pl_e%
+struct LC_DefaultButNoBrackets : LikeComparer
+{
+public:
+   LC_DefaultButNoBrackets(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
@@ -270,7 +283,7 @@ private:
 };
 
 
-//  string has to contain cetrain amount of characters and they are all digits
+//  string has to contain certain amount of characters and they are all digits
 struct LC_OnlyDigits : LikeComparer
 {
 public:

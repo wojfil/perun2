@@ -16,6 +16,7 @@
 #include "uroboros.h"
 #include "os.h"
 
+
 Attribute::Attribute(Uroboros* uro)
    : value(ATTR_NULL), uroboros(uro) { };
 
@@ -140,7 +141,7 @@ void Attribute::run() const
    os_loadAttributes(this, this->uroboros);
 }
 
-BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros* uro, WIN32_FIND_DATAW* data)
+BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros* uro, _fdata* data)
    : Attribute(val, uro), dataPnt(data) { };
 
 void BridgeAttribute::run() const

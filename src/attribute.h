@@ -88,11 +88,11 @@ protected:
 struct BridgeAttribute : Attribute
 {
 public:
-   BridgeAttribute(const _aunit& val, Uroboros* uro, WIN32_FIND_DATAW* data);
+   BridgeAttribute(const _aunit& val, Uroboros* uro, _fdata* data);
    void run() const;
 
 private:
-   WIN32_FIND_DATAW* dataPnt;
+   _fdata* dataPnt;
 };
 
 

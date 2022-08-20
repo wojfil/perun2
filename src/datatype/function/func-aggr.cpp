@@ -30,21 +30,17 @@ _num F_Average::getValue()
    _num sum(0LL);
    _int count = countSingle;
 
-   if (countSingle != 0) {
-      for (_size i = 0; i < countSingle; i++) {
-         sum += (*singleValues)[i]->getValue();
-      }
+   for (_size i = 0; i < countSingle; i++) {
+      sum += (*singleValues)[i]->getValue();
    }
 
-   if (countMulti != 0) {
-      for (_size i = 0; i < countMulti; i++) {
-         _nlist nlist = (*multiValues)[i]->getValue();
-         if (!nlist.empty()) {
-            const _size len = nlist.size();
-            count += len;
-            for (_size j = 0; j < len; j++) {
-               sum += nlist[j];
-            }
+   for (_size i = 0; i < countMulti; i++) {
+      _nlist nlist = (*multiValues)[i]->getValue();
+      if (!nlist.empty()) {
+         const _size len = nlist.size();
+         count += len;
+         for (_size j = 0; j < len; j++) {
+            sum += nlist[j];
          }
       }
    }
@@ -74,28 +70,26 @@ _num F_Max::getValue()
       }
    }
 
-   if (countMulti != 0) {
-      for (_size i = 0; i < countMulti; i++) {
-         _nlist nlist = (*multiValues)[i]->getValue();
-         if (!nlist.empty()) {
-            const _size len = nlist.size();
+   for (_size i = 0; i < countMulti; i++) {
+      _nlist nlist = (*multiValues)[i]->getValue();
+      if (!nlist.empty()) {
+         const _size len = nlist.size();
 
-            if (init) {
-               for (_size j = 0; j < len; j++) {
-                  const _num& v = nlist[j];
-                  if (v > max) {
-                     max = v;
-                  }
+         if (init) {
+            for (_size j = 0; j < len; j++) {
+               const _num& v = nlist[j];
+               if (v > max) {
+                  max = v;
                }
             }
-            else {
-               init = true;
-               max = nlist[0];
-               for (_size j = 1; j < len; j++) {
-                  const _num& v = nlist[j];
-                  if (v > max) {
-                     max = v;
-                  }
+         }
+         else {
+            init = true;
+            max = nlist[0];
+            for (_size j = 1; j < len; j++) {
+               const _num& v = nlist[j];
+               if (v > max) {
+                  max = v;
                }
             }
          }
@@ -113,18 +107,14 @@ _num F_Median::getValue()
    _nlist elements;
    elements.reserve(countSingle);
 
-   if (countSingle != 0) {
-      for (_size i = 0; i < countSingle; i++) {
-         elements.push_back((*singleValues)[i]->getValue());
-      }
+   for (_size i = 0; i < countSingle; i++) {
+      elements.push_back((*singleValues)[i]->getValue());
    }
 
-   if (countMulti != 0) {
-      for (_size i = 0; i < countMulti; i++) {
-         _nlist nlist = (*multiValues)[i]->getValue();
-         if (!nlist.empty()) {
-            appendVector(elements, nlist);
-         }
+   for (_size i = 0; i < countMulti; i++) {
+      _nlist nlist = (*multiValues)[i]->getValue();
+      if (!nlist.empty()) {
+         appendVector(elements, nlist);
       }
    }
 
@@ -155,28 +145,26 @@ _num F_Min::getValue()
       }
    }
 
-   if (countMulti != 0) {
-      for (_size i = 0; i < countMulti; i++) {
-         _nlist nlist = (*multiValues)[i]->getValue();
-         if (!nlist.empty()) {
-            const _size len = nlist.size();
+   for (_size i = 0; i < countMulti; i++) {
+      _nlist nlist = (*multiValues)[i]->getValue();
+      if (!nlist.empty()) {
+         const _size len = nlist.size();
 
-            if (init) {
-               for (_size j = 0; j < len; j++) {
-                  const _num& v = nlist[j];
-                  if (v < min) {
-                     min = v;
-                  }
+         if (init) {
+            for (_size j = 0; j < len; j++) {
+               const _num& v = nlist[j];
+               if (v < min) {
+                  min = v;
                }
             }
-            else {
-               init = true;
-               min = nlist[0];
-               for (_size j = 1; j < len; j++) {
-                  const _num& v = nlist[j];
-                  if (v < min) {
-                     min = v;
-                  }
+         }
+         else {
+            init = true;
+            min = nlist[0];
+            for (_size j = 1; j < len; j++) {
+               const _num& v = nlist[j];
+               if (v < min) {
+                  min = v;
                }
             }
          }
@@ -191,24 +179,19 @@ _num F_Sum::getValue()
 {
    _num sum(0LL);
 
-   if (countSingle != 0) {
-      for (_size i = 0; i < countSingle; i++) {
-         sum += (*singleValues)[i]->getValue();
-      }
+   for (_size i = 0; i < countSingle; i++) {
+      sum += (*singleValues)[i]->getValue();
    }
 
-   if (countMulti != 0) {
-      for (_size i = 0; i < countMulti; i++) {
-         _nlist nlist = (*multiValues)[i]->getValue();
-         if (!nlist.empty()) {
-            const _size len = nlist.size();
-            for (_size j = 0; j < len; j++) {
-               sum += nlist[j];
-            }
+   for (_size i = 0; i < countMulti; i++) {
+      _nlist nlist = (*multiValues)[i]->getValue();
+      if (!nlist.empty()) {
+         const _size len = nlist.size();
+         for (_size j = 0; j < len; j++) {
+            sum += nlist[j];
          }
       }
    }
 
    return sum;
 }
-

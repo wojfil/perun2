@@ -756,7 +756,7 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
          const _str cnst = pattern->getValue();
          delete pattern;
 
-         if (!correctLikePattern(cnst)) {
+         if (!isLikePatternCorrect(cnst)) {
             throw SyntaxException(str(L"pattern '", cnst,
                L"' is not valid for the 'like' operator"), right.first().line);
          }

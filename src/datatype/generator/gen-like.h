@@ -26,7 +26,7 @@ struct LikeComparer
 };
 
 
-_boo correctLikePattern(const _str& pattern);
+_boo isLikePatternCorrect(const _str& pattern);
 LikeComparer* defaultLikeComparer(const _str& pattern);
 LikeComparer* parseLikeComparer(const _str& pattern);
 

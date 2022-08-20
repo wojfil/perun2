@@ -18,7 +18,7 @@
 #include <cwctype>
 
 
-_boo correctLikePattern(const _str& pattern)
+_boo isLikePatternCorrect(const _str& pattern)
 {
    if (pattern.empty()) {
       return false;
@@ -163,7 +163,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
 
    // pattern length is 3 or greater
 
-   if (!correctLikePattern(pattern)) {
+   if (!isLikePatternCorrect(pattern)) {
       return new LC_Constant(false);
    }
 

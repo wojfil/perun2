@@ -41,7 +41,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
 
    const _boo possibleBinary = tks.containsSymbol(PG_CHAR_QUESTION_MARK);
 
-   if (isPossibleFunction(tks)) {
+   if (tks.isPossibleFunction()) {
       Generator<_boo>* func = boolFunction(tks, uro);
       if (func != nullptr) {
          return func;

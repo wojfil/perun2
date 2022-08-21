@@ -54,6 +54,7 @@ public:
    _boo containsFilterKeyword() const;
    _boo hasIndependentBrackets() const;
    _boo hasIndependentSquareBrackets() const;
+   _boo isPossibleFunction() const;
    void divideByKeyword(const Keyword& kw, Tokens& left, Tokens& right) const;
    void divideBySymbol(const _char& symbol, Tokens& left, Tokens& right) const;
    void splitBySymbol(const _char& symbol, std::vector<Tokens>& result) const;

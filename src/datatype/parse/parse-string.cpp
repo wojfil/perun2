@@ -34,7 +34,7 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
       return unit;
    }
 
-   if (isPossibleFunction(tks)) {
+   if (tks.isPossibleFunction()) {
       Generator<_str>* func = stringFunction(tks, uro);
       if (func != nullptr) {
          return func;

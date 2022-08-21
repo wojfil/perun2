@@ -20,7 +20,6 @@
 #include "../uroboros.h"
 
 
-_boo isPossibleFunction(const Tokens& tks);
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
 static Generator<_str>* createThisReference(Uroboros* uro);
 

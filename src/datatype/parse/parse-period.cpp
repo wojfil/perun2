@@ -84,7 +84,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (isPossibleFunction(tks)) {
+   if (tks.isPossibleFunction()) {
       Generator<_per>* func = periodFunction(tks, uro);
       if (func != nullptr) {
          return func;

@@ -37,7 +37,7 @@ Tokens::Tokens(const std::vector<Token>* li, const _int& st, const _int& ln)
 Tokens::~Tokens()
 {
    delete guardian;
-}
+};
 
 _int Tokens::getStart() const
 {
@@ -315,6 +315,30 @@ isb_exit:
    return result;
 }
 
+_boo Tokens::isPossibleFunction() const
+{
+   if (guardian->knows(PG_POSSIBLE_FUNCTION)) {
+      return guardian->protects(PG_POSSIBLE_FUNCTION);
+   }
+
+   if (length < 3) {
+      return false;
+   }
+
+   const Token& f = first();
+   const Token& s = second();
+   const Token& l = last();
+
+   const _boo result = f.type == Token::t_Word
+       && s.type == Token::t_Symbol
+       && l.type == Token::t_Symbol
+       && s.value.ch == L'('
+       && l.value.ch == L')'
+       && !hasIndependentBrackets();
+
+   guardian->set(PG_POSSIBLE_FUNCTION, result);
+   return result;
+}
 
 void Tokens::divideByKeyword(const Keyword& kw, Tokens& left, Tokens& right) const
 {

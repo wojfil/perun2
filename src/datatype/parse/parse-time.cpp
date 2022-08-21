@@ -62,7 +62,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (isPossibleFunction(tks)) {
+   if (tks.isPossibleFunction()) {
       Generator<_tim>* func = timeFunction(tks, uro);
       if (func != nullptr) {
          return func;

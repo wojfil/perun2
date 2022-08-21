@@ -31,6 +31,7 @@ inline constexpr _pg_unit PG_CHAR_COLON =          0b00000001000000;
 inline constexpr _pg_unit PG_CHAR_PLUS =           0b00000010000000;
 inline constexpr _pg_unit PG_CHAR_MINUS =          0b00000100000000;
 inline constexpr _pg_unit PG_CHAR_EQUALS =         0b00001000000000;
+inline constexpr _pg_unit PG_POSSIBLE_FUNCTION =   0b00010000000000;
 
 // what are Parse Guardians for?
 // they provide memory for a sequence of tokens

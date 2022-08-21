@@ -56,7 +56,7 @@ Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (isPossibleFunction(tks)) {
+   if (tks.isPossibleFunction()) {
       Generator<_list>* func = listFunction(tks, uro);
       if (func != nullptr) {
          return func;

@@ -36,26 +36,6 @@
 // on the other hand, current approach
 // enables variety of precise error messages
 
-
-
-_boo isPossibleFunction(const Tokens& tks)
-{
-   if (tks.getLength() < 3) {
-      return false;
-   }
-
-   const Token& f = tks.first();
-   const Token& s = tks.second();
-   const Token& l = tks.last();
-
-   return f.type == Token::t_Word
-       && s.type == Token::t_Symbol
-       && l.type == Token::t_Symbol
-       && s.value.ch == L'('
-       && l.value.ch == L')'
-       && !tks.hasIndependentBrackets();
-}
-
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 {
    Tokens tks2(tks);

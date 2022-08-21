@@ -53,7 +53,7 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (isPossibleFunction(tks)) {
+   if (tks.isPossibleFunction()) {
       Generator<_nlist>* func = numListFunction(tks, uro);
       if (func != nullptr) {
          return func;

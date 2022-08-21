@@ -74,7 +74,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
       return el;
    }
 
-   if (isPossibleListElementMember(tks, uro)) {
+   if (tks.isPossibleListElementMember(uro)) {
       Tokens tksm(tks);
       tksm.trimRight();
 

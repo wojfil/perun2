@@ -25,18 +25,13 @@
 #include <vector>
 
 
-_boo isPossibleListElement(const Tokens& tks);
 Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro);
-_boo isPossibleBinary(const Tokens& tks);
-_boo isPossibleTernary(const Tokens& tks);
 void checkLimitBySize(const Tokens& tks);
-_boo isPossibleListElementMember(const Tokens& tks, Uroboros* uro);
-
 
 template <typename T>
 static Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
 {
-   if (!isPossibleTernary(tks)) {
+   if (!tks.isPossibleTernary()) {
       return nullptr;
    }
 
@@ -70,7 +65,7 @@ static Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
 template <typename T>
 static Generator<T>* parseBinary(const Tokens& tks, Uroboros* uro)
 {
-   if (!isPossibleBinary(tks)) {
+   if (!tks.isPossibleBinary()) {
       return nullptr;
    }
 
@@ -185,7 +180,7 @@ static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
 template <typename T>
 static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
 {
-   if (!isPossibleListElement(tks)) {
+   if (!tks.isPossibleListElement()) {
       return nullptr;
    }
 

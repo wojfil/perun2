@@ -116,7 +116,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
       return el;
    }
 
-   if (isPossibleListElementMember(tks, uro)) {
+   if (tks.isPossibleListElementMember(uro)) {
       Tokens tksm(tks);
       tksm.trimRight();
 

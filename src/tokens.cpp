@@ -16,6 +16,7 @@
 #include "brackets.h"
 #include "exception.h"
 #include "lexer.h"
+#include "uroboros.h"
 
 
 Tokens::Tokens(const Tokens& tks)
@@ -334,6 +335,7 @@ _boo Tokens::isPossibleFunction() const
    }
 
    if (length < 3) {
+      guardian->set(PG_POSSIBLE_FUNCTION, false);
       return false;
    }
 
@@ -350,6 +352,165 @@ _boo Tokens::isPossibleFunction() const
 
    guardian->set(PG_POSSIBLE_FUNCTION, result);
    return result;
+}
+
+_boo Tokens::isPossibleListElement() const
+{
+   if (length <= 2 || !second().isSymbol(L'[')
+      || !last().isSymbol(L']') || hasIndependentSquareBrackets())
+   {
+      guardian->set(PG_POSSIBLE_LIST_ELEM, false);
+      return false;
+   }
+
+   if (length == 3) {
+      throw SyntaxException(L"empty space between square brackets []",
+         last().line);
+   }
+
+   if (first().type != Token::t_Word) {
+      throw SyntaxException(
+         L"square brackets [] can be preceded only by a variable name",
+         first().line);
+   }
+
+   guardian->set(PG_POSSIBLE_LIST_ELEM, true);
+   return true;
+}
+
+_boo Tokens::isPossibleBinary() const
+{
+   if (!containsSymbol(PG_CHAR_QUESTION_MARK)) {
+      guardian->set(PG_POSSIBLE_BINARY, false);
+      return false;
+   }
+
+   BracketsInfo bi;
+   _int i;
+
+   for (i = start; i <= end; i++){
+      const Token& t = listAt(i);
+
+      if (bi.isBracketFree() && t.type == Token::t_Symbol && t.value.ch == L'?') {
+         break;
+      }
+
+      bi.refresh(t);
+   }
+
+   if (i == start) {
+      throw SyntaxException(L"sign ? is preceded by empty space",
+         (*list)[i].line);
+   }
+   else if (i == end) {
+      throw SyntaxException(L"sign ? is followed by empty space",
+         (*list)[i].line);
+   }
+
+   guardian->set(PG_POSSIBLE_BINARY, true);
+   return true;
+}
+
+_boo Tokens::isPossibleTernary() const
+{
+   if (!containsSymbol(PG_CHAR_QUESTION_MARK) || !containsSymbol(PG_CHAR_COLON)) {
+      guardian->set(PG_POSSIBLE_TERNARY, false);
+      return false;
+   }
+
+   BracketsInfo bi;
+   _boo loop = true;
+   _int percentId = -1;
+   _int colonId = -1;
+
+   for (_int i = start; loop && i <= end; i++) {
+      const Token& t = listAt(i);
+
+      if (bi.isBracketFree() && t.type == Token::t_Symbol) {
+         switch (t.value.ch) {
+            case L'?': {
+               if (percentId == -1) {
+                  percentId = i;
+                  if (colonId != -1) {
+                     loop = false;
+                  }
+               }
+               else {
+                  guardian->set(PG_POSSIBLE_TERNARY, false);
+                  return false;
+               }
+               break;
+            }
+            case L':': {
+               if (colonId == -1) {
+                  colonId = i;
+                  if (percentId != -1) {
+                     loop = false;
+                  }
+               }
+               break;
+            }
+         }
+      }
+
+      bi.refresh(t);
+   }
+
+   if (percentId > colonId) {
+      throw SyntaxException(L"signs ? and : appear in reverse order",
+         (*list)[percentId].line);
+   }
+   else if (percentId == start) {
+      throw SyntaxException(L"sign ? is preceded by empty space",
+         (*list)[percentId].line);
+   }
+   else if (colonId == end) {
+      throw SyntaxException(L"sign : is followed by empty space",
+         (*list)[colonId].line);
+   }
+   else if (percentId + 1 == colonId) {
+      throw SyntaxException(L"empty space between signs ? and :",
+         (*list)[percentId].line);
+   }
+
+   guardian->set(PG_POSSIBLE_TERNARY, true);
+   return true;
+}
+
+_boo Tokens::isPossibleListElementMember(Uroboros* uro) const
+{
+   if (length <= 3 || !second().isSymbol(L'[')
+      || !penultimate().isSymbol(L']')
+      || hasIndependentSquareBrackets())
+   {
+      guardian->set(PG_LIST_ELEM_MEMBER, false);
+      return false;
+   }
+
+   if (length == 3) {
+      throw SyntaxException(L"empty space between square brackets []",
+         last().line);
+   }
+
+   const Token& lst = last();
+
+   if (lst.type != Token::t_TwoWords) {
+      guardian->set(PG_LIST_ELEM_MEMBER, false);
+      return false;
+   }
+
+   if (lst.value.twoWords.h1 != uro->hashes.HASH_NOTHING) {
+      throw SyntaxException(L"square brackets [] should be followed by a time variable member",
+         lst.line);
+   }
+
+   if (first().type != Token::t_Word) {
+      throw SyntaxException(L"square brackets [] can be preceded only by a variable name",
+         first().line);
+   }
+
+   guardian->set(PG_LIST_ELEM_MEMBER, true);
+   return true;
 }
 
 void Tokens::divideByKeyword(const Keyword& kw, Tokens& left, Tokens& right) const

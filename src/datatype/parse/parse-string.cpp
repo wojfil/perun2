@@ -47,7 +47,7 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
       }
    }
 
-   if (isPossibleListElement(tks)) {
+   if (tks.isPossibleListElement()) {
       Generator<_num>* num = parseListElementIndex(tks, uro);
       const Token& f = tks.first();
       Generator<_list>* list;

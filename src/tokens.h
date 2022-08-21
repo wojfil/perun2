@@ -19,11 +19,11 @@
 #include "guardian.h"
 #include <vector>
 
+struct Uroboros;
 
 struct Tokens
 {
 public:
-
    Tokens(const Tokens& tks);
    Tokens(const std::vector<Token>* li);
    Tokens(const std::vector<Token>* li, const _int& ln);
@@ -54,6 +54,11 @@ public:
    _boo hasIndependentBrackets() const;
    _boo hasIndependentSquareBrackets() const;
    _boo isPossibleFunction() const;
+   _boo isPossibleListElement() const;
+   _boo isPossibleBinary() const;
+   _boo isPossibleTernary() const;
+   _boo isPossibleListElementMember(Uroboros* uro) const;
+
    void divideByKeyword(const Keyword& kw, Tokens& left, Tokens& right) const;
    void divideBySymbol(const _char& symbol, Tokens& left, Tokens& right) const;
    void splitBySymbol(const _char& symbol, std::vector<Tokens>& result) const;

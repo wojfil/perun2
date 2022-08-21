@@ -67,15 +67,15 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                      if (prevSymbol) {
                         if (isDoubleChar(c) && tokens.back().value.ch == c) {
                            tokens.pop_back();
-                           tokens.push_back(Token(c, 2, line, uro));
+                           tokens.emplace_back(c, 2, line, uro);
                            prevSymbol = false;
                         }
                         else {
-                           tokens.push_back(Token(c, line, uro));
+                           tokens.emplace_back(c, line, uro);
                         }
                      }
                      else {
-                        tokens.push_back(Token(c, line, uro));
+                        tokens.emplace_back(c, line, uro);
                         prevSymbol = true;
                      }
                   }
@@ -84,11 +84,11 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                   if (prevSymbol) {
                      if (isDoubleChar(c) && tokens.back().value.ch == c) {
                         tokens.pop_back();
-                        tokens.push_back(Token(c, 2, line, uro));
+                        tokens.emplace_back(c, 2, line, uro);
                         prevSymbol = false;
                      }
                      else {
-                        tokens.push_back(Token(c, line, uro));
+                        tokens.emplace_back(c, line, uro);
                      }
                   }
                   else {
@@ -139,7 +139,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                mode = Mode::m_Normal;
 
                if (isSymbol(c)) {
-                  tokens.push_back(Token(c, line, uro));
+                  tokens.emplace_back(c, line, uro);
                   prevSymbol = true;
                }
                else if (isNewLine(c)) {
@@ -165,10 +165,10 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                const _int asteriskId = word.find(L'*');
 
                if (asteriskId == _str::npos) {
-                  tokens.push_back(Token(word, line, uro));
+                  tokens.emplace_back(word, line, uro);
                }
                else {
-                  tokens.push_back(Token(word, asteriskId, line, uro));
+                  tokens.emplace_back(word, asteriskId, line, uro);
                }
 
                wpos = i;
@@ -186,7 +186,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          case Mode::m_BLiteral: {
             if (c == L'`') {
                const _str word = code.substr(wpos, wlen);
-               tokens.push_back(Token(word, line, uro));
+               tokens.emplace_back(word, line, uro);
                wpos = i;
                wlen = 0;
                mode = Mode::m_Normal;

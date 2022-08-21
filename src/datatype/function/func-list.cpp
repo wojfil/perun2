@@ -25,7 +25,7 @@ inline _list toChars(const _str& value)
    r.reserve(len);
 
    for (_size i = 0; i < len; i++) {
-      r.push_back(_str(1, value[i]));
+      r.emplace_back(1, value[i]);
    }
 
    return r;
@@ -65,7 +65,7 @@ _list F_Split::getValue()
          for (_size i = 0; i < len1; i++) {
             if (v1[i] == ch) {
                if (start == i) {
-                  r.push_back(_str());
+                  r.emplace_back();
                }
                else {
                   r.push_back(v1.substr(start, i - start));
@@ -75,7 +75,7 @@ _list F_Split::getValue()
          }
 
          if (start == len1) {
-            r.push_back(_str());
+            r.emplace_back();
          }
          else {
             r.push_back(v1.substr(start));
@@ -208,7 +208,7 @@ _nlist F_Numbers::getValue()
                      else {
                         try {
                            const _nint ii = std::stoll(value.substr(start, sub));
-                           numbers.push_back(_num(ii));
+                           numbers.emplace_back(ii);
                         }
                         catch (...) {
                            throw UroRuntimeException(str(L"number '", value.substr(start, sub),
@@ -226,7 +226,7 @@ _nlist F_Numbers::getValue()
                      else {
                         try {
                            const _nint ii = std::stoll(value.substr(start, len1));
-                           numbers.push_back(_num(ii));
+                           numbers.emplace_back(ii);
                         }
                         catch (...) {
                            throw UroRuntimeException(str(L"number '", value.substr(start, len1),
@@ -241,7 +241,7 @@ _nlist F_Numbers::getValue()
                      else {
                         try {
                            const _nint ii = std::stoll(value.substr(dotPoint + 1, len2));
-                           numbers.push_back(_num(ii));
+                           numbers.emplace_back(ii);
                         }
                         catch (...) {
                            throw UroRuntimeException(str(L"number '", value.substr(dotPoint + 1, len2),
@@ -269,12 +269,12 @@ _nlist F_Numbers::getValue()
                         std::wstringstream ss(value.substr(start, sub));
                         _ndouble n;
                         ss >> n;
-                        numbers.push_back(_num(n));
+                        numbers.emplace_back(n);
                      }
                      else {
                         try {
                            const _nint ii = std::stoll(value.substr(start, sub));
-                           numbers.push_back(_num(ii));
+                           numbers.emplace_back(ii);
                         }
                         catch (...) {
                            throw UroRuntimeException(str(L"number '", value.substr(start, sub),
@@ -299,12 +299,12 @@ _nlist F_Numbers::getValue()
                   std::wstringstream ss(value.substr(start));
                   _ndouble n;
                   ss >> n;
-                  numbers.push_back(_num(n));
+                  numbers.emplace_back(n);
                }
                else {
                   try {
                      const _nint ii = std::stoll(value.substr(start));
-                     numbers.push_back(_num(ii));
+                     numbers.emplace_back(ii);
                   }
                   catch (...) {
                      throw UroRuntimeException(str(L"number '", value.substr(start),

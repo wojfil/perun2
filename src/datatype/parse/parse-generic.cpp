@@ -64,7 +64,7 @@ Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro)
 
 _boo isPossibleBinary(const Tokens& tks)
 {
-   if (!tks.containsSymbol(PGCS_QUESTION_MARK)) {
+   if (!tks.containsSymbol(PG_CHAR_QUESTION_MARK)) {
       return false;
    }
 
@@ -97,7 +97,7 @@ _boo isPossibleBinary(const Tokens& tks)
 
 _boo isPossibleTernary(const Tokens& tks)
 {
-   if (!tks.containsSymbol(PGCS_QUESTION_MARK) || !tks.containsSymbol(PGCS_COLON)) {
+   if (!tks.containsSymbol(PG_CHAR_QUESTION_MARK) || !tks.containsSymbol(PG_CHAR_COLON)) {
       return false;
    }
 

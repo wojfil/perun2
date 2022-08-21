@@ -39,7 +39,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   const _boo possibleBinary = tks.containsSymbol(PGCS_QUESTION_MARK);
+   const _boo possibleBinary = tks.containsSymbol(PG_CHAR_QUESTION_MARK);
 
    if (isPossibleFunction(tks)) {
       Generator<_boo>* func = boolFunction(tks, uro);
@@ -600,7 +600,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
    if (left.getLength() == 1 && lf.type == Token::t_Word &&
       uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end())
    {
-      if (right.containsSymbol(PGCS_COMMA)) {
+      if (right.containsSymbol(PG_CHAR_COMMA)) {
          std::vector<Tokens> elements;
          right.splitBySymbol(L',', elements);
          const _size elen = elements.size();

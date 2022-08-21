@@ -154,40 +154,16 @@ _boo Tokens::containsChar(const _char& ch) const
    return false;
 }
 
-_boo Tokens::containsSymbol(const _pgcs_unit& symbol) const
+_boo Tokens::containsSymbol(const _pg_unit& symbol) const
 {
-   if (guardian->knowsSymbol(symbol)) {
-      return guardian->protectsSymbol(symbol);
+   if (guardian->knows(symbol)) {
+      return guardian->protects(symbol);
    }
 
-   const _boo contains = containsChar(guardian->pgcsToChar(symbol));
-   guardian->setSymbol(symbol, contains);
+   const _boo contains = containsChar(guardian->unitToChar(symbol));
+   guardian->set(symbol, contains);
 
    return contains;
-}
-
-_boo Tokens::containsComparisonSymbol() const
-{
-   BracketsInfo bi;
-
-   for (_int i = start; i <= end; i++){
-      const Token& t = listAt(i);
-
-      if (t.type == Token::t_Symbol && bi.isBracketFree()) {
-         switch (t.value.ch) {
-            case L'<':
-            case L'>':
-            case L'!':
-            case L'=': {
-               return true;
-            }
-         }
-      }
-
-      bi.refresh(t);
-   }
-
-   return false;
 }
 
 _boo Tokens::containsKeyword(const Keyword& kw) const
@@ -205,26 +181,72 @@ _boo Tokens::containsKeyword(const Keyword& kw) const
    return false;
 }
 
+_boo Tokens::containsComparisonSymbol() const
+{
+   if (guardian->knows(PG_COMPARISON_CHAR)) {
+      return guardian->protects(PG_COMPARISON_CHAR);
+   }
+
+   BracketsInfo bi;
+   _boo result = false;
+
+   for (_int i = start; i <= end; i++) {
+      const Token& t = listAt(i);
+
+      if (t.type == Token::t_Symbol && bi.isBracketFree()) {
+         switch (t.value.ch) {
+            case L'<':
+            case L'>':
+            case L'!':
+            case L'=': {
+               result = true;
+               goto cs_exit;
+               break;
+            }
+         }
+      }
+
+      bi.refresh(t);
+   }
+
+cs_exit:
+
+   guardian->set(PG_COMPARISON_CHAR, result);
+   return result;
+}
+
 _boo Tokens::containsFilterKeyword() const
 {
-   BracketsInfo bi;
+   if (guardian->knows(PG_FILTER_KEYWORD)) {
+      return guardian->protects(PG_FILTER_KEYWORD);
+   }
 
-   for (_int i = start; i <= end; i++){
+   BracketsInfo bi;
+   _boo result = false;
+
+   for (_int i = start; i <= end; i++) {
       const Token& t = listAt(i);
       if (t.isFiltherKeyword() && bi.isBracketFree()) {
-         return true;
+         result = true;
+         break;
       }
       bi.refresh(t);
    }
 
-   return false;
+   guardian->set(PG_FILTER_KEYWORD, result);
+   return result;
 }
 
 // independent are:  () () ()
 // not independent:  ( () () )
 _boo Tokens::hasIndependentBrackets() const
 {
+   if (guardian->knows(PG_INDEP_BRACKETS)) {
+      return guardian->protects(PG_INDEP_BRACKETS);
+   }
+
    _int lvl = 0;
+   _boo result = false;
 
    for (_int i = start; i <= end; i++) {
       const Token& t = listAt(i);
@@ -237,7 +259,8 @@ _boo Tokens::hasIndependentBrackets() const
             case L')': {
                lvl--;
                if (lvl == 0 && i != end) {
-                  return true;
+                  result = true;
+                  goto ib_exit;
                }
                break;
             }
@@ -245,14 +268,22 @@ _boo Tokens::hasIndependentBrackets() const
       }
    }
 
-   return false;
+ib_exit:
+
+   guardian->set(PG_INDEP_BRACKETS, result);
+   return result;
 }
 
 // independent are:  [] [] []
 // not independent:  [ [] [] ]
 _boo Tokens::hasIndependentSquareBrackets() const
 {
+   if (guardian->knows(PG_INDEP_SQ_BRACKETS)) {
+      return guardian->protects(PG_INDEP_SQ_BRACKETS);
+   }
+
    _boo first = false;
+   _boo result = false;
    _int lvl = 0;
 
    for (_int i = start; i <= end; i++) {
@@ -262,7 +293,8 @@ _boo Tokens::hasIndependentSquareBrackets() const
             case L'[': {
                lvl++;
                if (first && lvl == 1) {
-                  return true;
+                  result = true;
+                  goto isb_exit;
                }
                break;
             }
@@ -277,7 +309,10 @@ _boo Tokens::hasIndependentSquareBrackets() const
       }
    }
 
-   return false;
+isb_exit:
+
+   guardian->set(PG_INDEP_SQ_BRACKETS, result);
+   return result;
 }
 
 

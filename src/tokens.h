@@ -48,9 +48,9 @@ public:
    void setRange(const _int& st, const _int& ln);
 
    _boo containsChar(const _char& ch) const;
-   _boo containsSymbol(const _pgcs_unit& symbol) const;
-   _boo containsComparisonSymbol() const;
+   _boo containsSymbol(const _pg_unit& symbol) const;
    _boo containsKeyword(const Keyword& kw) const;
+   _boo containsComparisonSymbol() const;
    _boo containsFilterKeyword() const;
    _boo hasIndependentBrackets() const;
    _boo hasIndependentSquareBrackets() const;

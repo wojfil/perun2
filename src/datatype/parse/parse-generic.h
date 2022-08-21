@@ -165,7 +165,7 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
 template <typename T>
 static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
 {
-   if (!tks.containsSymbol(PGCS_COMMA)) {
+   if (!tks.containsSymbol(PG_CHAR_COMMA)) {
       return nullptr;
    }
 

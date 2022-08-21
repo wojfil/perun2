@@ -15,11 +15,6 @@
 #include "guardian.h"
 
 
-ParseGuardian::ParseGuardian()
-   : visited(PG_NULL), protect(PG_NULL),
-     visitedSymbol(PGCS_NULL), protectSymbol(PGCS_NULL) { };
-
-
 _boo ParseGuardian::knows(const _pg_unit& unit) const
 {
    return this->visited & unit;
@@ -38,38 +33,20 @@ void ParseGuardian::set(const _pg_unit& unit, const _boo& value)
    }
 }
 
-_boo ParseGuardian::knowsSymbol(const _pgcs_unit& unit) const
-{
-   return this->visitedSymbol & unit;
-}
-
-_boo ParseGuardian::protectsSymbol(const _pgcs_unit& unit) const
-{
-   return this->protectSymbol & unit;
-}
-
-void ParseGuardian::setSymbol(const _pgcs_unit& unit, const _boo& value)
-{
-   this->visitedSymbol |= unit;
-   if (value) {
-      this->protectSymbol |= unit;
-   }
-}
-
-_char ParseGuardian::pgcsToChar(const _pgcs_unit& pgcs) const
+_char ParseGuardian::unitToChar(const _pg_unit& pgcs) const
 {
    switch (pgcs) {
-      case PGCS_QUESTION_MARK:
+      case PG_CHAR_QUESTION_MARK:
          return L'?';
-      case PGCS_COMMA:
+      case PG_CHAR_COMMA:
          return L',';
-      case PGCS_COLON:
+      case PG_CHAR_COLON:
          return L':';
-      case PGCS_PLUS:
+      case PG_CHAR_PLUS:
          return L'+';
-      case PGCS_MINUS:
+      case PG_CHAR_MINUS:
          return L'-';
-      case PGCS_EQUALS:
+      case PG_CHAR_EQUALS:
          return L'=';
       default:
          return L'/0';

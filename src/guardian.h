@@ -17,21 +17,20 @@
 
 #include "datatype/primitives.h"
 
-#define _pgcs_unit _uint32
 #define _pg_unit _uint64
 
-// Parse Guardian "contains symbol"
-inline constexpr _pgcs_unit PGCS_NULL =            0b0000000;
-inline constexpr _pgcs_unit PGCS_QUESTION_MARK =   0b0000001;
-inline constexpr _pgcs_unit PGCS_COMMA =           0b0000010;
-inline constexpr _pgcs_unit PGCS_COLON =           0b0000100;
-inline constexpr _pgcs_unit PGCS_PLUS =            0b0001000;
-inline constexpr _pgcs_unit PGCS_MINUS =           0b0010000;
-inline constexpr _pgcs_unit PGCS_EQUALS =          0b0100000;
-
-// usual Parse Guardians:
-inline constexpr _pg_unit PG_NULL =           0b00000000000000000000000000000000;
-inline constexpr _pg_unit PG_COMPARISON =     0b00000000000000000000000000000001;
+// all Parse Guardian units:
+inline constexpr _pg_unit PG_NULL =                0b00000000000000;
+inline constexpr _pg_unit PG_COMPARISON_CHAR =     0b00000000000001;
+inline constexpr _pg_unit PG_FILTER_KEYWORD =      0b00000000000010;
+inline constexpr _pg_unit PG_INDEP_BRACKETS =      0b00000000000100;
+inline constexpr _pg_unit PG_INDEP_SQ_BRACKETS =   0b00000000001000;
+inline constexpr _pg_unit PG_CHAR_QUESTION_MARK =  0b00000000010000;
+inline constexpr _pg_unit PG_CHAR_COMMA =          0b00000000100000;
+inline constexpr _pg_unit PG_CHAR_COLON =          0b00000001000000;
+inline constexpr _pg_unit PG_CHAR_PLUS =           0b00000010000000;
+inline constexpr _pg_unit PG_CHAR_MINUS =          0b00000100000000;
+inline constexpr _pg_unit PG_CHAR_EQUALS =         0b00001000000000;
 
 // what are Parse Guardians for?
 // they provide memory for a sequence of tokens
@@ -42,23 +41,15 @@ inline constexpr _pg_unit PG_COMPARISON =     0b00000000000000000000000000000001
 struct ParseGuardian
 {
 public:
-   ParseGuardian();
-
    _boo knows(const _pg_unit& unit) const;
    _boo protects(const _pg_unit& unit) const;
    void set(const _pg_unit& unit, const _boo& value);
 
-   _boo knowsSymbol(const _pgcs_unit& unit) const;
-   _boo protectsSymbol(const _pgcs_unit& unit) const;
-   void setSymbol(const _pgcs_unit& unit, const _boo& value);
-
-   _char pgcsToChar(const _pgcs_unit& pgcs) const;
+   _char unitToChar(const _pg_unit& pgcs) const;
 
 private:
-   _pg_unit visited;
-   _pg_unit protect;
-   _pgcs_unit visitedSymbol;
-   _pgcs_unit protectSymbol;
+   _pg_unit visited = PG_NULL;
+   _pg_unit protect = PG_NULL;
 };
 
 

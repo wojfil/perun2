@@ -613,7 +613,7 @@ static Command* command(Tokens& tks, Uroboros* uro)
 
 static Command* commandMisc(const Tokens& tks, Uroboros* uro)
 {
-   if (tks.containsSymbol(PGCS_EQUALS)) {
+   if (tks.containsSymbol(PG_CHAR_EQUALS)) {
       Tokens left(tks);
       Tokens right(tks);
       tks.divideBySymbol(L'=', left, right);

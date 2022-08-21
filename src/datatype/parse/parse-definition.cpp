@@ -61,7 +61,7 @@ _def* parseDefinition(const Tokens& tks, Uroboros* uro)
 
 static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro)
 {
-   if (!tks.containsSymbol(PGCS_COMMA)) {
+   if (!tks.containsSymbol(PG_CHAR_COMMA)) {
       return false;
    }
 

@@ -34,7 +34,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsSymbol(PGCS_COMMA)) {
+   if (tks.containsSymbol(PG_CHAR_COMMA)) {
       return nullptr;
    }
 
@@ -43,8 +43,8 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
 
    const _boo startsWithMinus = tks.first().isSymbol(L'-');
    const _boo lastIsWord = tks.last().type == Token::t_Word;
-   const _boo hasPluses =  tks.containsSymbol(PGCS_PLUS);
-   const _boo hasMinuses = tks2.containsSymbol(PGCS_MINUS);
+   const _boo hasPluses =  tks.containsSymbol(PG_CHAR_PLUS);
+   const _boo hasMinuses = tks2.containsSymbol(PG_CHAR_MINUS);
 
    if (len >= 3 && hasPluses || hasMinuses) {
       Generator<_per>* exp = parsePeriodExp(tks, uro);
@@ -67,7 +67,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
          }
       }
 
-      if (!tks.containsSymbol(PGCS_QUESTION_MARK) && !tks.containsSymbol(PGCS_COLON) && !tks.containsFilterKeyword()) {
+      if (!tks.containsSymbol(PG_CHAR_QUESTION_MARK) && !tks.containsSymbol(PG_CHAR_COLON) && !tks.containsFilterKeyword()) {
          Generator<_per>* unt = parsePeriodUnit(tks, uro);
          if (unt != nullptr) {
             return unt;
@@ -236,7 +236,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
       tks2.trimLeft();
    }
 
-   if (!tks2.containsSymbol(PGCS_MINUS)) {
+   if (!tks2.containsSymbol(PG_CHAR_MINUS)) {
       Generator<_per>* gp;
       if (parse(uro, tks2, gp)) {
          if (minusAwaits) {

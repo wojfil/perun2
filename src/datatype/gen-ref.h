@@ -23,11 +23,18 @@ template <typename T>
 struct GeneratorRef : Generator<T>
 {
 public:
-   GeneratorRef(Generator<T>* val) : value(val) {};
+   GeneratorRef(Generator<T>* val)
+      : value(val) {};
 
-   T getValue() override {
-      return value->getValue();
-   }
+   _boo isConstant() const override
+   {
+      return this->value->isConstant();
+   };
+
+   T getValue() override
+   {
+      return this->value->getValue();
+   };
 
 private:
    Generator<T>* value;

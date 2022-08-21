@@ -80,16 +80,28 @@ public:
       }
    }
 
-   Command* makeVariableAssignment(const Token& token, ParseVariable<T>* varPtr, Generator<T>* valuePtr)
+   Command* makeVariableAssignment(const Token& token, ParseVariable<T>* varPtr,
+      Generator<T>* valuePtr, const _boo& isConstant)
    {
       if (varPtr == nullptr) {
          const _size& hash = token.value.word.h;
          userVars.insert(std::make_pair(hash, ParseVariable<T>()));
+         userVars[hash].var.isConstant_ = isConstant;
+         if (isConstant) {
+            userVars[hash].var.value = valuePtr->getValue();
+         }
          return new VarAssignment<T>(userVars[hash].getVarPtr(), valuePtr);
       }
       else {
-         varPtr->resurrect();
+         varPtr->resurrect(isConstant);
          return new VarAssignment<T>(varPtr->getVarPtr(), valuePtr);
+      }
+   }
+
+   void makeNotConstant()
+   {
+      for (auto& kv : userVars) {
+         kv.second.var.isConstant_ = false;
       }
    }
 

@@ -14,16 +14,11 @@
 
 #include "var-context.h"
 #include "../exception.h"
-#include "../hash.h"
+#include "var-runtime.h"
 
 
-VariablesContext::VariablesContext(Hashes* hsh)
-{
-   this->hashes = hsh;
-   this->attrs = std::vector<Attribute*>();
-   this->aggrs = std::vector<Aggregate*>();
-}
-
+VariablesContext::VariablesContext(Hashes* hsh, Variables* vars)
+   : hashes(hsh), variables(vars) { }
 
 void VariablesContext::setAttribute(const Token& tk)
 {
@@ -113,6 +108,11 @@ void VariablesContext::markAttributesToRun()
 void VariablesContext::addAggregate(Aggregate* aggr)
 {
    this->aggrs.push_back(aggr);
+
+   // when we enter a loop
+   // variables of constant values from the past
+   // no longer can be treated as constant values
+   this->variables->makeAllNotConstant();
 }
 
 void VariablesContext::retreatAggregate()

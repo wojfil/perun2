@@ -68,6 +68,7 @@ public:
    }
 
    _boo variableExists(const Token& tk);
+   void makeAllNotConstant();
 
    // variable reference for commands, that alter variables
    template <typename T>

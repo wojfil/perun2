@@ -20,12 +20,13 @@
 #include "../command/aggregate.h"
 #include "../datatype/datatype.h"
 
+struct Variables;
 
 struct VariablesContext
 {
 public:
 
-   VariablesContext(Hashes* hsh);
+   VariablesContext(Hashes* hsh, Variables* vars);
 
    void setAttribute(const Token& tk);
    void setCoreComAttribute(const _str& comName, const _int& line);
@@ -45,6 +46,7 @@ public:
 private:
 
    Hashes* hashes;
+   Variables* variables;
    std::vector<Attribute*> attrs;
    std::vector<Aggregate*> aggrs;
 

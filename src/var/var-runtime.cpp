@@ -224,3 +224,15 @@ _boo Variables::variableExists(const Token& tk)
        || this->defGenerators.find(h) != this->defGenerators.end()
        || this->intVars.find(h) != this->intVars.end();
 }
+
+void Variables::makeAllNotConstant()
+{
+   this->boo.makeNotConstant();
+   this->per.makeNotConstant();
+   this->tim.makeNotConstant();
+   this->num.makeNotConstant();
+   this->str_.makeNotConstant();
+   this->nlist.makeNotConstant();
+   this->tlist.makeNotConstant();
+   this->list.makeNotConstant();
+}

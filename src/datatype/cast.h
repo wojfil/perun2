@@ -25,10 +25,18 @@ template <typename T1, typename T2>
 struct Cast : Generator<T2>
 {
 public:
-   Cast (Generator<T1>* b) : base(b) { };
-   ~Cast() override {
+   Cast (Generator<T1>* b)
+      : base(b) { };
+
+   ~Cast() override
+   {
       delete base;
-   }
+   };
+
+   _boo isConstant() const override
+   {
+      return this->base->isConstant();
+   };
 
 protected:
    Generator<T1>* base;
@@ -132,9 +140,11 @@ public:
    Cast_D_L(_def* b, Uroboros* uro)
       : base(b), uroboros(uro) { };
 
-   ~Cast_D_L() {
+   ~Cast_D_L()
+   {
       delete base;
    }
+
    _list getValue() override;
 
 private:

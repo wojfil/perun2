@@ -32,7 +32,7 @@ public:
    Constant<T> (const T val) : value(val) {};
    T getValue () override { return value; };
 
-   _boo isConstant()
+   _boo isConstant() const override
    {
       return true;
    };

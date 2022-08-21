@@ -687,6 +687,8 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
                   L"' cannot be ", op), first.line);
             }
 
+            pv_num->makeNotConstant();
+
             if (isIncrement) {
                return new VarIncrement(pv_num->getVarPtr());
             }
@@ -752,9 +754,11 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
             timeVariableMemberException(first);
          }
 
+         pv_tim->makeNotConstant();
+
          if (isIncrement) {
             return new VarTimeUnitIncrement(pv_tim->getVarPtr(), unit);
-            }
+         }
          else {
             return new VarTimeUnitDecrement(pv_tim->getVarPtr(), unit);
          }
@@ -828,6 +832,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
 
          Variable<_num>* var = pv_num->getVarPtr();
+         pv_num->makeNotConstant();
 
          switch (sign) {
             case L'+':
@@ -856,6 +861,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                   throw SyntaxException(str(L"right side of operator ", charStr(sign),
                      L"= cannot be resolved to a period"), first.line);
                }
+
+               pv_per->makeNotConstant();
 
                if (sign == L'+')
                   return new VarAdd_<_per>(var, per);
@@ -889,6 +896,8 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             throw SyntaxException(str(L"right side of operator '", *first.value.word.os,
                L" ", charStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
+
+         pv_tim->makeNotConstant();
 
          if (sign == L'+') {
             return new VarTimeAdd(var, per);
@@ -933,6 +942,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       const _size& h = first.value.twoWords.h2;
       Variable<_tim>* var = pv_tim->getVarPtr();
       const bool negative = (sign == '-');
+      pv_tim->makeNotConstant();
 
       if (h == uro->hashes.HASH_PER_YEAR || h == uro->hashes.HASH_PER_YEARS)
          return new VarTimeUnitChange(var, num, Period::u_Years, negative);
@@ -971,6 +981,7 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
 
       Generator<_str>* str_;
       if (parse(uro, tks, str_)) {
+         pv_str->makeNotConstant();
          return new VarAdd_<_str>(var, str_);
       }
 
@@ -997,7 +1008,13 @@ static _boo makeVarAlteration(Uroboros* uro, const Tokens& tokens, const Token& 
    if (uro->vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
       Generator<T>* value;
       if (parse(uro, tokens, value)) {
+         if (!value->isConstant()) {
+            varPtr->makeNotConstant();
+         }
          result = new VarAssignment<T>(varPtr->getVarPtr(), value);
+         if (varPtr->var.isConstant()) {
+            varPtr->var.value = value->getValue();
+         }
          return true;
       }
       else {
@@ -1015,7 +1032,8 @@ static Command* makeVarAssignment(const Token& token, Uroboros* uro,
 {
    VarBundle<T>* bundle;
    uro->vars.takeBundlePointer(bundle);
-   return bundle->makeVariableAssignment(token, varPtr, valuePtr);
+   const _boo isConstant = !uro->vc.anyAggregate() && valuePtr->isConstant();
+   return bundle->makeVariableAssignment(token, varPtr, valuePtr, isConstant);
 }
 
 static Command* commandVarAssign(const Tokens& left, const Tokens& right, Uroboros* uro)
@@ -1199,6 +1217,7 @@ static Command* commandVarAssign_Element(const Tokens& left,
          Generator<_str>* str_;
 
          if (parse(uro, right, str_)) {
+            pv_str->makeNotConstant();
             return new VarCharAssignment(pv_str->getVarPtr(), str_, index);
          }
          else {

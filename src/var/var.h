@@ -27,11 +27,18 @@ public:
    Variable<T>(T val) : value(val) {};
    ~Variable<T>() override {};
 
+   _boo isConstant() const override
+   {
+      return this->isConstant_;
+   };
+
+
    T getValue() override {
-      return value;
+      return this->value;
    };
 
    T value;
+   _boo isConstant_ = false;
 };
 
 
@@ -40,43 +47,63 @@ struct ParseVariable
 {
 
 public:
-   ParseVariable<T>() : level(0), reachable(true), var(Variable<T>()) {};
+   ParseVariable<T>() { };
 
    Variable<T>* getVarPtr() {
-      return &var;
+      return &this->var;
    }
 
-   void bracketsUp() {
-      if (reachable) {
-         level++;
+   void bracketsUp()
+   {
+      if (this->isReachable_) {
+         this->level++;
       }
    }
 
-   void bracketsDown() {
-      if (reachable) {
-         level--;
-         if (level < 0) {
-            reachable = false;
+   void bracketsDown()
+   {
+      if (this->isReachable_) {
+         this->level--;
+         if (this->level < 0) {
+            this->isReachable_ = false;
          }
       }
    }
 
-   void resurrect() {
-      reachable = true;
-      if (level < 0) {
-         level = 0;
+   void resurrect(const _boo& isConst)
+   {
+      this->isReachable_ = true;
+      this->var.isConstant_ = isConst;
+      if (this->level < 0) {
+         this->level = 0;
       }
    }
 
-   _boo isReachable() const {
-      return reachable;
+   _boo isReachable() const
+   {
+      return this->isReachable_;
+   }
+
+   void makeNotConstant()
+   {
+      this->var.isConstant_ = false;
+   }
+
+   void actualizeConstantness(const _boo& isConst)
+   {
+      if (this->var.isConstant_) {
+         if (!isConst) {
+            this->var.isConstant_ = false;
+         }
+      }
    }
 
    Variable<T> var;
 
 private:
-   _int level;
-   _boo reachable;
+   _int level = 0;
+   _boo isReachable_ = true;
 };
+
 
 #endif /* VAR_H */

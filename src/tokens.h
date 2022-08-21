@@ -47,9 +47,8 @@ public:
    void trimFunction();
    void setRange(const _int& st, const _int& ln);
 
-   _boo containsChar(const _char& ch) const;
-   _boo containsSymbol(const _pg_unit& symbol) const;
-   _boo containsKeyword(const Keyword& kw) const;
+   _boo containsSymbol(const _pg_unit& unit) const;
+   _boo containsKeyword(const _pg_unit& unit) const;
    _boo containsComparisonSymbol() const;
    _boo containsFilterKeyword() const;
    _boo hasIndependentBrackets() const;
@@ -69,6 +68,9 @@ private:
    _int start;
    _int end;
    ParseGuardian* guardian;
+
+   _boo containsChar(const _char& ch) const;
+   _boo containsKeyword(const Keyword& kw) const;
 };
 
 #endif /* TOKENS_H */

@@ -77,14 +77,14 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
       return cmp;
    }
 
-   if (tks.containsKeyword(Keyword::kw_In)) {
+   if (tks.containsKeyword(PG_KEYWORD_IN)) {
       Generator<_boo>* boo = parseIn(tks, uro);
       if (boo != nullptr) {
          return boo;
       }
    }
 
-   if (tks.containsKeyword(Keyword::kw_Like)) {
+   if (tks.containsKeyword(PG_KEYWORD_LIKE)) {
       Generator<_boo>* boo = parseLike(tks, uro);
       if (boo != nullptr) {
          return boo;

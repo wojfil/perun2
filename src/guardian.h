@@ -16,22 +16,29 @@
 #define GUARDIAN_H_INCLUDED
 
 #include "datatype/primitives.h"
+#include "keyword.h"
 
 #define _pg_unit _uint64
 
 // all Parse Guardian units:
-inline constexpr _pg_unit PG_NULL =                0b00000000000000;
-inline constexpr _pg_unit PG_COMPARISON_CHAR =     0b00000000000001;
-inline constexpr _pg_unit PG_FILTER_KEYWORD =      0b00000000000010;
-inline constexpr _pg_unit PG_INDEP_BRACKETS =      0b00000000000100;
-inline constexpr _pg_unit PG_INDEP_SQ_BRACKETS =   0b00000000001000;
-inline constexpr _pg_unit PG_CHAR_QUESTION_MARK =  0b00000000010000;
-inline constexpr _pg_unit PG_CHAR_COMMA =          0b00000000100000;
-inline constexpr _pg_unit PG_CHAR_COLON =          0b00000001000000;
-inline constexpr _pg_unit PG_CHAR_PLUS =           0b00000010000000;
-inline constexpr _pg_unit PG_CHAR_MINUS =          0b00000100000000;
-inline constexpr _pg_unit PG_CHAR_EQUALS =         0b00001000000000;
-inline constexpr _pg_unit PG_POSSIBLE_FUNCTION =   0b00010000000000;
+inline constexpr _pg_unit PG_NULL =                0b0000000000000000000;
+inline constexpr _pg_unit PG_COMPARISON_CHAR =     0b0000000000000000001;
+inline constexpr _pg_unit PG_FILTER_KEYWORD =      0b0000000000000000010;
+inline constexpr _pg_unit PG_INDEP_BRACKETS =      0b0000000000000000100;
+inline constexpr _pg_unit PG_INDEP_SQ_BRACKETS =   0b0000000000000001000;
+inline constexpr _pg_unit PG_CHAR_QUESTION_MARK =  0b0000000000000010000;
+inline constexpr _pg_unit PG_CHAR_COMMA =          0b0000000000000100000;
+inline constexpr _pg_unit PG_CHAR_COLON =          0b0000000000001000000;
+inline constexpr _pg_unit PG_CHAR_PLUS =           0b0000000000010000000;
+inline constexpr _pg_unit PG_CHAR_MINUS =          0b0000000000100000000;
+inline constexpr _pg_unit PG_CHAR_EQUALS =         0b0000000001000000000;
+inline constexpr _pg_unit PG_POSSIBLE_FUNCTION =   0b0000000010000000000;
+inline constexpr _pg_unit PG_KEYWORD_IN =          0b0000000100000000000;
+inline constexpr _pg_unit PG_KEYWORD_LIKE =        0b0000001000000000000;
+inline constexpr _pg_unit PG_KEYWORD_TO =          0b0000010000000000000;
+inline constexpr _pg_unit PG_KEYWORD_WITH =        0b0000100000000000000;
+inline constexpr _pg_unit PG_KEYWORD_AS =          0b0001000000000000000;
+inline constexpr _pg_unit PG_KEYWORD_FROM =        0b0010000000000000000;
 
 // what are Parse Guardians for?
 // they provide memory for a sequence of tokens
@@ -46,7 +53,8 @@ public:
    _boo protects(const _pg_unit& unit) const;
    void set(const _pg_unit& unit, const _boo& value);
 
-   _char unitToChar(const _pg_unit& pgcs) const;
+   _char unitToChar(const _pg_unit& unit) const;
+   Keyword unitToKeyword(const _pg_unit& unit) const;
 
 private:
    _pg_unit visited = PG_NULL;

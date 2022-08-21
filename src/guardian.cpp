@@ -33,9 +33,9 @@ void ParseGuardian::set(const _pg_unit& unit, const _boo& value)
    }
 }
 
-_char ParseGuardian::unitToChar(const _pg_unit& pgcs) const
+_char ParseGuardian::unitToChar(const _pg_unit& unit) const
 {
-   switch (pgcs) {
+   switch (unit) {
       case PG_CHAR_QUESTION_MARK:
          return L'?';
       case PG_CHAR_COMMA:
@@ -50,5 +50,25 @@ _char ParseGuardian::unitToChar(const _pg_unit& pgcs) const
          return L'=';
       default:
          return L'/0';
+   }
+}
+
+Keyword ParseGuardian::unitToKeyword(const _pg_unit& unit) const
+{
+   switch (unit) {
+      case PG_KEYWORD_IN:
+         return Keyword::kw_In;
+      case PG_KEYWORD_LIKE:
+         return Keyword::kw_Like;
+      case PG_KEYWORD_TO:
+         return Keyword::kw_To;
+      case PG_KEYWORD_WITH:
+         return Keyword::kw_With;
+      case PG_KEYWORD_AS:
+         return Keyword::kw_As;
+      case PG_KEYWORD_FROM:
+         return Keyword::kw_From;
+      default:
+         return Keyword::kw_null;
    }
 }

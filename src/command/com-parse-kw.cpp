@@ -207,7 +207,7 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
       throw SyntaxException(str(L"command '", *word.value.keyword.os, L" to' is empty"), line);
    }
 
-   if (!tks.containsKeyword(Keyword::kw_To)) {
+   if (!tks.containsKeyword(PG_KEYWORD_TO)) {
       throw SyntaxException(str(L"command '", *word.value.keyword.os,
          L" to' does not contain keyword 'to'"), line);
    }
@@ -281,7 +281,7 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, U
       return new C_Open(uro);
    }
 
-   if (tks.containsKeyword(Keyword::kw_With)) {
+   if (tks.containsKeyword(PG_KEYWORD_WITH)) {
       Tokens left(tks);
       Tokens right(tks);
       tks.divideByKeyword(Keyword::kw_With, left, right);
@@ -380,7 +380,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
          line);
    }
 
-   if (!tks.containsKeyword(Keyword::kw_To)) {
+   if (!tks.containsKeyword(PG_KEYWORD_TO)) {
       throw SyntaxException(str(L"command '", *word.value.keyword.os,  L" to' ",
          L"does not contain keyword 'to'"), line);
    }
@@ -644,8 +644,8 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       throw SyntaxException(str(L"command '", *word.value.keyword.os, L" to' is empty"), line);
    }
 
-   const _boo hasTo = tks.containsKeyword(Keyword::kw_To);
-   const _boo hasAs = tks.containsKeyword(Keyword::kw_As);
+   const _boo hasTo = tks.containsKeyword(PG_KEYWORD_TO);
+   const _boo hasAs = tks.containsKeyword(PG_KEYWORD_AS);
 
    if (!hasTo) {
       throw SyntaxException(str(L"command '", *word.value.keyword.os,
@@ -730,7 +730,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
    }
 
    if (hasAs) {
-      if (left.containsKeyword(Keyword::kw_As)) {
+      if (left.containsKeyword(PG_KEYWORD_AS)) {
          throw SyntaxException(str(L"keywords 'to' and 'as' appear in command '",
             *word.value.keyword.os, L" to as' in reverse order"), line);
       }
@@ -842,7 +842,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack, Uroboros* uro)
 {
-   if (tks.containsKeyword(Keyword::kw_From)) {
+   if (tks.containsKeyword(PG_KEYWORD_FROM)) {
       Tokens left(tks);
       Tokens right(tks);
       tks.divideByKeyword(Keyword::kw_From, left, right);
@@ -920,8 +920,8 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
 static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack, Uroboros* uro)
 {
-   const _boo hasTo = tks.containsKeyword(Keyword::kw_To);
-   const _boo hasAs = tks.containsKeyword(Keyword::kw_As);
+   const _boo hasTo = tks.containsKeyword(PG_KEYWORD_TO);
+   const _boo hasAs = tks.containsKeyword(PG_KEYWORD_AS);
 
    if (!hasTo) {
       if (hasAs) {
@@ -1054,7 +1054,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    }
 
    if (hasAs) {
-      if (left.containsKeyword(Keyword::kw_As)) {
+      if (left.containsKeyword(PG_KEYWORD_AS)) {
          throw SyntaxException(str(L"keywords 'to' and 'as' appear in "
             L"command '", *word.value.keyword.os, L" to as' in reverse order"), line);
       }
@@ -1227,7 +1227,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
 {
    uro->vc.markAttributesToRun();
 
-   if (tks.containsKeyword(Keyword::kw_With)) {
+   if (tks.containsKeyword(PG_KEYWORD_WITH)) {
       Tokens left(tks);
       Tokens right(tks);
       tks.divideByKeyword(Keyword::kw_With, left, right);
@@ -1237,7 +1237,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
       }
 
       if (left.isEmpty()) {
-         if (right.containsKeyword(Keyword::kw_With)) {
+         if (right.containsKeyword(PG_KEYWORD_WITH)) {
             if (uro->vars.inner.thisState == ts_None) {
                throw SyntaxException(str(L"command '", *word.value.keyword.os, L" with with' needs first argument"), line);
             }
@@ -1331,7 +1331,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
          }
       }
       else {
-         if (right.containsKeyword(Keyword::kw_With)) {
+         if (right.containsKeyword(PG_KEYWORD_WITH)) {
             Tokens left2(right);
             Tokens right2(right);
             right.divideByKeyword(Keyword::kw_With, left2, right2);

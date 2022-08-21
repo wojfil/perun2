@@ -154,14 +154,14 @@ _boo Tokens::containsChar(const _char& ch) const
    return false;
 }
 
-_boo Tokens::containsSymbol(const _pg_unit& symbol) const
+_boo Tokens::containsSymbol(const _pg_unit& unit) const
 {
-   if (guardian->knows(symbol)) {
-      return guardian->protects(symbol);
+   if (guardian->knows(unit)) {
+      return guardian->protects(unit);
    }
 
-   const _boo contains = containsChar(guardian->unitToChar(symbol));
-   guardian->set(symbol, contains);
+   const _boo contains = containsChar(guardian->unitToChar(unit));
+   guardian->set(unit, contains);
 
    return contains;
 }
@@ -179,6 +179,18 @@ _boo Tokens::containsKeyword(const Keyword& kw) const
    }
 
    return false;
+}
+
+_boo Tokens::containsKeyword(const _pg_unit& unit) const
+{
+   if (guardian->knows(unit)) {
+      return guardian->protects(unit);
+   }
+
+   const _boo contains = containsKeyword(guardian->unitToKeyword(unit));
+   guardian->set(unit, contains);
+
+   return contains;
 }
 
 _boo Tokens::containsComparisonSymbol() const

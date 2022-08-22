@@ -431,6 +431,22 @@ runTestCase("u = 6,1,2,4,3,5; print u order by this desc", lines("6", "5", "4", 
 runTestCase("u = 6,1,2,4,3,5; print u order by -this asc", lines("6", "5", "4", "3", "2", "1"))
 runTestCase("u = 6,1,2,4,3,5; print u skip 2 order asc", lines("2", "3", "4", "5"))
 runTestCase("u = 6,1,2,4,3,5; print u order asc skip 2", lines("3", "4", "5", "6"))
+runTestCase("x = -12.5, -2, 500000, 3 ; print x order asc", lines("-12.5", "-2", "3", "500000"))
+runTestCase("x = -12.5, -2, 500000, 3 ; print x order by length(this) desc", lines("500000","-12.5", "-2", "3"))
+runTestCase("x = -12.5, -2, 500000, 3, 2.5, 100, -150 ; print x order by length(this) desc, this asc", lines("500000", "-12.5", "-150", "2.5", "100", "-2", "3"))
+runTestCase("x = -12.5, -2, 500000, 3, 2.5, 100, -1500 ; print x order by this desc, length(this) asc", lines("500000", "100", "3", "2.5", "-2", "-12.5", "-1500"))
+(runTestCase("x = 'auf','ghy','kuk', 'tgi', 'yuo', 'zzq', 'xua'; print x order by this[1] asc, this[0] desc",
+lines("tgi", "ghy", "yuo", "xua", "kuk", "auf", "zzq")))
+(runTestCase("x = 'auf','ghy','kuk', 'tgi', 'kuo', 'zzq', 'kua'; print x order by this[1] asc, this[0] desc, this[2] asc",
+lines("tgi", "ghy" ,"kua" ,"kuk" ,"kuo" ,"auf" ,"zzq")))
+(runTestCase("x = 'auf','ghy','kuk', 'tgi', 'kuo', 'zzq', 'kua'; print x order by this[1] asc, this[0] desc, this[2] asc skip 1 every 3-1 where this != 'kuk' ",
+lines("ghy", "auf")))
+(runTestCase("x = 2 april 2008, 1 june 2022, 6 june 2007, 19 january 2015, 11 june 2007; print x order desc",
+lines("1 June 2022", "19 January 2015", "2 April 2008", "11 June 2007", "6 June 2007")))
+(runTestCase("x = 2 april 2008, 1 june 2022, 6 june 2007, 19 january 2015, 11 june 2007; print x order by this.month desc, this desc",
+lines("1 June 2022", "11 June 2007", "6 June 2007", "2 April 2008", "19 January 2015")))
+(runTestCase("x = 2 april 2008, 1 june 2022, 6 june 2007, 19 january 2015, 11 june 2007; print x order by this.month desc, this.year asc, this.day desc",
+lines("11 June 2007", "6 June 2007", "1 June 2022", "2 April 2008", "19 January 2015")))
 
 
 

@@ -60,13 +60,13 @@ public:
    IfContext ifContext;
    const PatternParser patternParser;
 
-   _boo running;
-   _boo break_;
-   _boo continue_;
-   _int exitCode;
+   _boo running = true;
+   _boo break_ = false;
+   _boo continue_ = false;
+   _int exitCode = EXITCODE_OK;
 
 private:
-   Command* commands;
+   Command* commands = nullptr;
    std::vector<Token> tokens;
 
    _boo uro_tokenize();

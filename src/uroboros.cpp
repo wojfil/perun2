@@ -28,12 +28,9 @@
 #include "var/var-runtime.h"
 
 
-Uroboros::Uroboros(const Arguments& args) : arguments(args), hashes(Hashes()), vars(Variables(this)),
-   vc(VariablesContext(&this->hashes, &this->vars)), math(Math()), flags(args.getFlags()), running(true),
-   break_(false), continue_(false), exitCode(EXITCODE_OK), sideProcess(SideProcess()),
-   terminator(Terminator(this)), keywordsData(KeywordsData()), literals(Literals()),
-   commands(nullptr), tokens(std::vector<Token>()), ifContext(IfContext()),
-   patternParser(PatternParser(this)) { };
+Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(Variables(this)),
+   vc(VariablesContext(&this->hashes, &this->vars)), flags(args.getFlags()),
+   terminator(Terminator(this)), patternParser(PatternParser(this)) { };
 
 
 _boo Uroboros::run()

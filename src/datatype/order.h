@@ -19,267 +19,315 @@
 #include "datatype.h"
 #include "../util.h"
 #include "../uroboros.h"
+#include "../print.h"
+
+
+// the base
+template <typename T>
+struct OrderBase : Generator<std::vector<T>>
+{
+public:
+   virtual _boo hasVolatileDepth() const = 0;
+   virtual _numi getDepth(const _size& index) const = 0;
+   virtual void shuffleDepth(const std::vector<_size>& indices, const _size& length) { }; // to be overriden
+};
 
 
 template <typename T>
-struct OrderUnit {
-
+struct OrderBase_Depthless : OrderBase<T>
+{
 public:
-   OrderUnit(Generator<T>* val, const _boo& desc)
-      : value(val), descending(desc) { };
+   OrderBase_Depthless(Generator<std::vector<T>>* bas)
+      : base(bas) { }
 
-   ~OrderUnit() {
-      delete value;
+   ~OrderBase_Depthless()
+   {
+      delete base;
    }
 
-   Generator<T>* value;
-   const _boo descending;
+   std::vector<T> getValue() override
+   {
+      return this->base->getValue();
+   }
+
+   _boo hasVolatileDepth() const override
+   {
+      return false;
+   }
+
+   _numi getDepth(const _size& index) const override
+   {
+      return _numi(0LL);
+   }
+
+private:
+   Generator<std::vector<T>>* base;
+
 };
 
-enum OrderUnitType {
-   out_Bool = 0,
-   out_Number,
-   out_Time,
-   out_Period,
-   out_String
+
+struct OrderBase_Definition : OrderBase<_str>
+{
+public:
+   OrderBase_Definition(_def* bas, Uroboros* uro)
+      : base(bas), uroboros(uro), inner(&uro->vars.inner) { }
+
+   ~OrderBase_Definition();
+
+   std::vector<_str> getValue() override;
+   _boo hasVolatileDepth() const override;
+   _numi getDepth(const _size& index) const override;
+   void shuffleDepth(const std::vector<_size>& indices, const _size& length) override;
+
+private:
+   _def* base;
+   Uroboros* uroboros;
+   InnerVariables* inner;
+   _boo volatileDepth;
+   std::vector<_numi> depths;
 };
+
 
 template <typename T>
 struct OrderBy : Generator<std::vector<T>>
 {
 public:
-   OrderBy(Generator<std::vector<T>>* val, Attribute* attr, Uroboros* uro)
-      : baseValue(val), unitsCount(0), uroboros(uro), inner(&uro->vars.inner),
-        attribute(attr), hasAttribute(attr != nullptr)
+   OrderBy(OrderBase<T>* bas, Attribute* attr, const _boo& desc, Uroboros* uro)
+      : base(bas), attribute(attr), descending(desc), inner(&uro->vars.inner), hasAttribute(attr != nullptr)
    {
       this->inner->createThisVarRef(thisReference);
    }
 
    ~OrderBy()
    {
-      delete baseValue;
-      deleteVector(boolUnits);
-      deleteVector(numberUnits);
-      deleteVector(timeUnits);
-      deleteVector(periodUnits);
-      deleteVector(stringUnits);
-      if (hasAttribute) {
-         delete attribute;
-      }
+      delete base;
+      delete attribute;
    }
 
-   template <typename T2>
-   void addUnit(Generator<T2>* value, const OrderUnitType& type, const _boo& descending)
-   {
-      unitsIndexes.push_back(boolUnits.size());
-      unitsTypes.push_back(type);
-      std::vector<OrderUnit<T2>*>* units;
-      getUnitsPointer(units);
-      units->push_back(new OrderUnit<T2>(value, descending));
-      unitsCount++;
-   }
+   virtual void clearValues(const _size& length) = 0;
+   virtual void addValues() = 0;
+   virtual _boo matchesSwap(const _int& start, const _int& end) const = 0;
 
-   std::vector<T> getValue()
+   std::vector<T> getValue() override
    {
-      std::vector<T> list = baseValue->getValue();
-      const _size size = list.size();
+      this->result = this->base->getValue();
+      const _size length = this->result.size();
 
-      if (size <= 1) {
-         return list;
+      if (length == 0) {
+         return this->result;
       }
+
+      clearAndReserve(this->indices, length);
+      clearValues(length);
 
       const _numi prevIndex = this->inner->index.value;
       const T prevThis = this->thisReference->value;
+      const _boo hasVolatileDepth = this->base->hasVolatileDepth();
 
-      this->quicksort(list, 0, size - 1);
+      for (_size i = 0; i < length; i++) {
+         this->thisReference->value = this->result[i];
+         this->inner->index.value = _numi(static_cast<_nint>(i));
+
+         if (this->hasAttribute) {
+            this->attribute->run();
+         }
+         this->indices[i] = i;
+         if (hasVolatileDepth) {
+            this->inner->depth.value = this->base->getDepth(i);
+         }
+
+         addValues();
+      }
+
+      this->quicksort(0, length - 1);
 
       this->inner->index.value = prevIndex;
       this->thisReference->value = prevThis;
 
-      return list;
+      shuffleByIndices(this->result, this->indices, length);
+
+      if (hasVolatileDepth) {
+         this->base->shuffleDepth(this->indices, length);
+      }
+
+      return result;
    }
 
-private:
-
-   void getUnitsPointer(std::vector<OrderUnit<_boo>*>*& result) { result = &boolUnits; }
-   void getUnitsPointer(std::vector<OrderUnit<_num>*>*& result) { result = &numberUnits; }
-   void getUnitsPointer(std::vector<OrderUnit<_tim>*>*& result) { result = &timeUnits; }
-   void getUnitsPointer(std::vector<OrderUnit<_per>*>*& result) { result = &periodUnits; }
-   void getUnitsPointer(std::vector<OrderUnit<_str>*>*& result) { result = &stringUnits; }
-
-   void quicksort(std::vector<T>& list, const _int& start,
-      const _int& end) const
+   void quicksort(const _int& start, const _int& end)
    {
       if (start < end) {
-         const _int i = partition(list, start, end);
-         const _int ip = i + 1;
-         const _int im = i - 1;
-         quicksort(list, start, im);
-         quicksort(list, ip, end);
+         const _int i = partition(start, end);
+         quicksort(start, i - 1);
+         quicksort(i + 1, end);
       }
    }
 
-   _int partition(std::vector<T>& list, const _int& start, const _int& end) const
+   _int partition(const _int& start, const _int& end)
    {
-      const T& p = list[end];
-      const _numi endId = _numi(static_cast<_nint>(end));
       _int i = start - 1;
 
-      for (_int j = start; j <= end - 1; j++){
-         if (isSmallerOrEquals(_numi(static_cast<_nint>(j)), endId, list[j], p)) {
+      for (_int j = start; j <= end - 1; j++) {
+         if (this->matchesSwap(j, end)) {
             i++;
-            std::iter_swap(list.begin() + i, list.begin() + j);
+            std::iter_swap(this->indices.begin() + i, this->indices.begin() + j);
          }
       }
 
       const _int ip = i + 1;
-      std::iter_swap(list.begin() + ip, list.begin() + end);
+      std::iter_swap(indices.begin() + ip, indices.begin() + end);
       return ip;
    }
 
-   _boo isSmallerOrEquals(const _numi& leftId, const _numi& rightId,
-      const T& left, const T& right) const
-   {
-      for (_size i = 0; i < unitsCount; i++) {
-         const OrderUnitType& unitType = unitsTypes[i];
-         const _size& unitId = unitsIndexes[i];
-
-         if (i == unitsCount - 1) {
-            switch (unitType) {
-               case out_Bool: {
-                  return finalComparison<_boo>(boolUnits[unitId],
-                     leftId, rightId, left, right);
-               }
-               case out_Number: {
-                  return finalComparison<_num>(numberUnits[unitId],
-                     leftId, rightId, left, right);
-               }
-               case out_Time: {
-                  return finalComparison<_tim>(timeUnits[unitId],
-                     leftId, rightId, left, right);
-               }
-               case out_Period: {
-                  return finalComparison<_per>(periodUnits[unitId],
-                     leftId, rightId, left, right);
-               }
-               case out_String: {
-                  return finalComparison<_str>(stringUnits[unitId],
-                     leftId, rightId, left, right);
-               }
-            }
-         }
-         else {
-            _boo success = false;
-            _boo result;
-
-            switch (unitType) {
-               case out_Bool: {
-                  result = usualComparison<_boo>(boolUnits[unitId],
-                     leftId, rightId, left, right, success);
-                  break;
-               }
-               case out_Number: {
-                  result = usualComparison<_num>(numberUnits[unitId],
-                     leftId, rightId, left, right, success);
-                  break;
-               }
-               case out_Time: {
-                  result = usualComparison<_tim>(timeUnits[unitId],
-                     leftId, rightId, left, right, success);
-                  break;
-               }
-               case out_Period: {
-                  result = usualComparison<_per>(periodUnits[unitId],
-                     leftId, rightId, left, right, success);
-                  break;
-               }
-               case out_String: {
-                  result = usualComparison<_str>(stringUnits[unitId],
-                     leftId, rightId, left, right, success);
-                  break;
-               }
-            }
-
-            if (success) {
-               return result;
-            }
-         }
-      }
-
-      return false;
-   }
-
-   template <typename T2>
-   _boo finalComparison(const OrderUnit<T2>* ou, const _numi& leftId,
-      const _numi& rightId, const T& left, const T& right) const
-   {
-      this->inner->index.value = leftId;
-      this->thisReference->value = left;
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
-      const T2 leftValue = ou->value->getValue();
-
-      this->inner->index.value = rightId;
-      this->thisReference->value = right;
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
-      const T2 rightValue = ou->value->getValue();
-
-      return ou->descending
-         ? leftValue >= rightValue
-         : leftValue <= rightValue;
-   }
-
-   template <typename T2>
-   _boo usualComparison(const OrderUnit<T2>* ou, const _numi& leftId,
-      const _numi& rightId, const T& left, const T& right, _boo& success) const
-   {
-      this->inner->index.value = leftId;
-      this->thisReference->value = left;
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
-      const T2 leftValue = ou->value->getValue();
-
-      this->inner->index.value = rightId;
-      this->thisReference->value = right;
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
-      const T2 rightValue = ou->value->getValue();
-
-      if (leftValue == rightValue) {
-         return false;
-      }
-
-      success = true;
-
-      return ou->descending
-         ? leftValue > rightValue
-         : leftValue < rightValue;
-   }
-
-   // main members:
+protected:
+   std::vector<T> result;
+   std::vector<_size> indices;
+   OrderBase<T>* base;
    Attribute* attribute;
    const _boo hasAttribute;
-   Uroboros* uroboros;
+   const _boo descending;
    InnerVariables* inner;
-   Generator<std::vector<T>>* baseValue;
    Variable<T>* thisReference;
+};
 
-   // order by units can be of 5 data types:
-   std::vector<OrderUnit<_boo>*> boolUnits;
-   std::vector<OrderUnit<_num>*> numberUnits;
-   std::vector<OrderUnit<_tim>*> timeUnits;
-   std::vector<OrderUnit<_per>*> periodUnits;
-   std::vector<OrderUnit<_str>*> stringUnits;
 
-   // information about order units
-   std::vector<_size> unitsIndexes;
-   std::vector<OrderUnitType> unitsTypes;
-   _size unitsCount;
+template <typename T, typename U1>
+struct OrderBy_OneValue : OrderBy<T>
+{
+public:
+   OrderBy_OneValue(OrderBase<T>* bas, Generator<U1>* vg,
+      Attribute* attr, const _boo& desc, Uroboros* uro)
+      : OrderBy<T>(bas, attr, desc, uro), valueGenerator(vg) { }
+
+   ~OrderBy_OneValue()
+   {
+      delete valueGenerator;
+   }
+
+   void clearValues(const _size& length) override
+   {
+      clearAndReserve(this->values, length);
+   }
+
+   void addValues() override
+   {
+      this->values.push_back(this->valueGenerator->getValue());
+   }
+
+   _boo matchesSwap(const _int& start, const _int& end) const override
+   {
+      return this->descending
+        ? this->values[this->indices[start]] >= this->values[this->indices[end]]
+        : this->values[this->indices[start]] <= this->values[this->indices[end]];
+   }
+
+private:
+   std::vector<U1> values;
+   Generator<U1>* valueGenerator;
+};
+
+
+template <typename T, typename U1, typename U2>
+struct OrderBy_TwoValues : OrderBy<T>
+{
+public:
+   OrderBy_TwoValues(OrderBase<T>* bas, Generator<U1>* vg_1, Generator<U2>* vg_2,
+      Attribute* attr, const _boo& desc, Uroboros* uro)
+      : OrderBy<T>(bas, attr, desc, uro), valueGenerator_1(vg_1), valueGenerator_2(vg_2) { }
+
+   ~OrderBy_TwoValues()
+   {
+      delete valueGenerator_1;
+      delete valueGenerator_2;
+   }
+
+   void clearValues(const _size& length) override
+   {
+      clearAndReserve(this->values_1, length);
+      clearAndReserve(this->values_2, length);
+   }
+
+   void addValues() override
+   {
+      this->values_1.push_back(this->valueGenerator_1->getValue());
+      this->values_2.push_back(this->valueGenerator_2->getValue());
+   }
+
+   _boo matchesSwap(const _int& start, const _int& end) const override
+   {
+      if (this->values_1[this->indices[start]] == this->values_1[this->indices[end]]) {
+         return this->descending
+            ? this->values_2[this->indices[start]] >= this->values_2[this->indices[end]]
+            : this->values_2[this->indices[start]] <= this->values_2[this->indices[end]];
+      }
+
+      return this->descending
+        ? this->values_1[this->indices[start]] > this->values_1[this->indices[end]]
+        : this->values_1[this->indices[start]] < this->values_1[this->indices[end]];
+   }
+
+private:
+   std::vector<U1> values_1;
+   std::vector<U2> values_2;
+   Generator<U1>* valueGenerator_1;
+   Generator<U2>* valueGenerator_2;
+};
+
+
+template <typename T, typename U1, typename U2, typename U3>
+struct OrderBy_ThreeValues : OrderBy<T>
+{
+public:
+   OrderBy_ThreeValues(OrderBase<T>* bas, Generator<U1>* vg_1, Generator<U2>* vg_2, Generator<U3>* vg_3,
+      Attribute* attr, const _boo& desc, Uroboros* uro)
+      : OrderBy<T>(bas, attr, desc, uro), valueGenerator_1(vg_1), valueGenerator_2(vg_2), valueGenerator_3(vg_3) { }
+
+   ~OrderBy_ThreeValues()
+   {
+      delete valueGenerator_1;
+      delete valueGenerator_2;
+      delete valueGenerator_3;
+   }
+
+   void clearValues(const _size& length) override
+   {
+      clearAndReserve(this->values_1, length);
+      clearAndReserve(this->values_2, length);
+      clearAndReserve(this->values_3, length);
+   }
+
+   void addValues() override
+   {
+      this->values_1.push_back(this->valueGenerator_1->getValue());
+      this->values_2.push_back(this->valueGenerator_2->getValue());
+      this->values_3.push_back(this->valueGenerator_3->getValue());
+   }
+
+   _boo matchesSwap(const _int& start, const _int& end) const override
+   {
+      if (this->values_1[this->indices[start]] == this->values_1[this->indices[end]]) {
+         if (this->values_2[this->indices[start]] == this->values_2[this->indices[end]]) {
+            return this->descending
+               ? this->values_3[this->indices[start]] >= this->values_3[this->indices[end]]
+               : this->values_3[this->indices[start]] <= this->values_3[this->indices[end]];
+         }
+
+         return this->descending
+            ? this->values_2[this->indices[start]] > this->values_2[this->indices[end]]
+            : this->values_2[this->indices[start]] < this->values_2[this->indices[end]];
+      }
+
+      return this->descending
+        ? this->values_1[this->indices[start]] > this->values_1[this->indices[end]]
+        : this->values_1[this->indices[start]] < this->values_1[this->indices[end]];
+   }
+
+private:
+   std::vector<U1> values_1;
+   std::vector<U2> values_2;
+   std::vector<U3> values_3;
+   Generator<U1>* valueGenerator_1;
+   Generator<U2>* valueGenerator_2;
+   Generator<U3>* valueGenerator_3;
 };
 
 

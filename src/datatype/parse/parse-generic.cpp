@@ -51,9 +51,3 @@ void checkLimitBySize(const Tokens& tks)
    }
 }
 
-void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro)
-{
-   order = new OrderBy<_str>(new Cast_D_L(result, uro), attr, uro);
-   result = new OrderByCast(order, attr, hasMemory, uro);
-}
-

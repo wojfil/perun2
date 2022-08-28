@@ -425,44 +425,46 @@ _boo Join_DefDef::hasNext()
 
 void OrderByCast::reset()
 {
-   if (!first) {
-      first = true;
+   if (!this->first) {
+      this->first = true;
    }
 }
 
 
 _boo OrderByCast::hasNext()
 {
-   if (first) {
-      if (hasMemory) {
-         attrMemory.load();
+   if (this->first) {
+      if (this->hasMemory) {
+         this->attrMemory.load();
       }
 
-      prevIndex = this->inner->index.value;
-      prevThis = this->inner->this_s.value;
+      this->prevIndex = this->inner->index.value;
+      this->prevThis = this->inner->this_s.value;
 
-      first = false;
-      values = base->getValue();
-      index = 0;
-      indexAsNumber.setToZero();
-      length = values.size();
+      this->first = false;
+      this->values = this->base->getValue();
+      this->index = 0;
+      this->length = this->values.size();
+      this->hasVolatileDepth = this->obase->hasVolatileDepth();
    }
 
-   if (this->uroboros->running && index != length) {
-      value = values[index];
-      this->inner->this_s.value = value;
-      this->inner->index = indexAsNumber;
-      index++;
-      indexAsNumber++;
+   if (this->uroboros->running && this->index != this->length) {
+      this->value = values[index];
+      this->inner->this_s.value = this->value;
+      this->inner->index.value.value.i = static_cast<_nint>(this->index);
+      if (hasVolatileDepth) {
+         this->inner->depth.value = this->obase->getDepth(index);
+      }
+      this->index++;
       return true;
    }
 
-   first = true;
-   this->inner->index.value = prevIndex;
-   this->inner->this_s.value = prevThis;
+   this->first = true;
+   this->inner->index.value = this->prevIndex;
+   this->inner->this_s.value = this->prevThis;
 
-   if (hasMemory) {
-      attrMemory.restore();
+   if (this->hasMemory) {
+      this->attrMemory.restore();
    }
 
    return false;

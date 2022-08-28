@@ -12,8 +12,8 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE-DEFINITION_H_INCLUDED
-#define PARSE-DEFINITION_H_INCLUDED
+#ifndef PARSE_DEFINITION_H_INCLUDED
+#define PARSE_DEFINITION_H_INCLUDED
 
 #include "../../tokens.h"
 #include "../../uroboros.h"
@@ -26,4 +26,4 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro);
 static _def* parseDefTernary(const Tokens& tks, Uroboros* uro);
 static _def* parseDefBinary(const Tokens& tks, Uroboros* uro);
 
-#endif // PARSE-DEFINITION_H_INCLUDED
+#endif // PARSE_DEFINITION_H_INCLUDED

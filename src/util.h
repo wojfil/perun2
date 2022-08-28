@@ -18,9 +18,8 @@
 #include <vector>
 #include <map>
 
-// here are several useful template functions:
+// here are several useful template functions
 // mainly for memory management
-
 
 
 // delete all elements from a vector of pointers
@@ -76,6 +75,32 @@ void deleteTwo(T1* value1, T2* value2)
       delete value2;
    }
 }
+
+// delete previous content of vector
+// and reserve known new memory
+template <typename T>
+void clearAndReserve(std::vector<T>& vec, const _size& length)
+{
+   vec.clear();
+   vec.reserve(length);
+}
+
+
+// reorganize order of elements in a vector by a vector of indices
+// both vector arguments are of the same length
+// current solution works, but is inefficient
+// todo: think of how to do in a better way without creating another vector
+template <typename T>
+void shuffleByIndices(std::vector<T>& vec, const std::vector<_size>& indices, const _size& length)
+{
+   std::vector<T> result(length);
+   for (_size i = 0; i < length; i++) {
+      result[i] = vec[indices[i]];
+   }
+
+   vec = result;
+}
+
 
 
 #endif /* UTIL_H */

@@ -12,8 +12,8 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN-DEFINITION_H_INCLUDED
-#define GEN-DEFINITION_H_INCLUDED
+#ifndef GEN_DEFINITION_H_INCLUDED
+#define GEN_DEFINITION_H_INCLUDED
 
 #include "gen-list.h"
 #include "gen-os.h"
@@ -238,9 +238,9 @@ private:
 struct OrderByCast : _def
 {
 public:
-   OrderByCast(Generator<_list>* b, Attribute* attr, const _boo& hasMem, Uroboros* uro)
+   OrderByCast(Generator<_list>* b, Attribute* attr, const _boo& hasMem, OrderBase_Definition* ob, Uroboros* uro)
       : base(b), first(true), attribute(attr), hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)),
-      uroboros(uro), inner(&uro->vars.inner) { };
+      obase(ob), uroboros(uro), inner(&uro->vars.inner) { };
 
    ~OrderByCast() {
       delete base;
@@ -253,9 +253,10 @@ private:
    Uroboros* uroboros;
    InnerVariables* inner;
    Generator<_list>* base;
+   OrderBase_Definition* obase;
+   _boo hasVolatileDepth;
    _list values;
    _size index;
-   _numi indexAsNumber;
    _size length;
    _boo first;
    Attribute* attribute;
@@ -317,4 +318,4 @@ private:
 
 
 
-#endif // GEN-DEFINITION_H_INCLUDED
+#endif // GEN_DEFINITION_H_INCLUDED

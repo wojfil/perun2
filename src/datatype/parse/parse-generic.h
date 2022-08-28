@@ -22,6 +22,7 @@
 #include "../generator/gen-generic.h"
 #include "../generator/gen-list.h"
 #include "parse-prototype.h"
+#include "parse-order.h"
 #include <vector>
 
 
@@ -197,18 +198,6 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
 }
 
 
-template <typename T>
-void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<T>*& order,
-   Generator<std::vector<T>>*& result, Uroboros* uro)
-{
-   order = new OrderBy<T>(result, attr, uro);
-   result = order;
-};
-
-
-void setOrderFilter(Attribute* attr, const _boo& hasMemory, OrderBy<_str>*& order, _def*& result, Uroboros* uro);
-
-
 static _boo parseFilterBase(const Tokens& tks, Uroboros* uro, _def*& result, _fdata*& data)
 {
    if (parseOneToken(uro, tks, result)) {
@@ -270,161 +259,7 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
          }
       }
    }
-}
-
-
-template <typename T, typename T2>
-void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeyword,
-   Tokens& ts2, Uroboros* uro)
-{
-   const ThisState prevThisState = uro->vars.inner.thisState;
-   uro->vars.inner.thisState = state;
-   const _boo hasMemory = uro->vc.anyAttribute();
-   Attribute* attr = state == ThisState::ts_String
-      ? new Attribute(uro)
-      : nullptr;
-
-   if (state == ThisState::ts_String) {
-      uro->vc.addAttribute(attr);
-   }
-
-   const Token& first = ts2.first();
-
-   if (ts2.getLength() == 1 && first.type == Token::t_Keyword) {
-      const Keyword& kw = first.value.keyword.k;
-      if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
-         const _boo desc = kw == Keyword::kw_Desc;
-         OrderBy<T2>* order;
-         setOrderFilter(attr, hasMemory, order, result, uro);
-
-         switch (state) {
-            case ThisState::ts_String: {
-               Generator<_str>* vr;
-               uro->vars.inner.createThisRef(vr);
-               order->addUnit(vr, OrderUnitType::out_String, desc);
-               break;
-            }
-            case ThisState::ts_Number: {
-               Generator<_num>* vr;
-               uro->vars.inner.createThisRef(vr);
-               order->addUnit(vr, OrderUnitType::out_Number, desc);
-               break;
-            }
-            case ThisState::ts_Time: {
-               Generator<_tim>* vr;
-               uro->vars.inner.createThisRef(vr);
-               order->addUnit(vr, OrderUnitType::out_Time, desc);
-               break;
-            }
-         }
-
-         if (state == ThisState::ts_String) {
-            uro->vc.retreatAttribute();
-         }
-
-         return;
-      }
-   }
-
-   if (!first.isKeyword(Keyword::kw_By)) {
-      delete result;
-      throw SyntaxException(str(L"keyword '", *orderKeyword.value.keyword.os,
-         L"' should to be followed by a keyword 'by'"), first.line);
-   }
-
-   ts2.trimLeft();
-   if (ts2.isEmpty()) {
-      delete result;
-      throw SyntaxException(str(L"declaration of '", *orderKeyword.value.keyword.os,
-         L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
-   }
-
-   Tokens ts3 = prepareForGen(ts2, uro);
-   if (ts3.isEmpty()) {
-      delete result;
-      throw SyntaxException(str(L"declaration of '", *orderKeyword.value.keyword.os,
-         L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
-   }
-
-   const _int commas = ts3.countSymbols(L',');
-   std::vector<Tokens> units;
-   ts3.splitBySymbol(L',', units);
-
-   OrderBy<T2>* order;
-   setOrderFilter(attr, hasMemory, order, result, uro);
-
-   const _size len = units.size();
-   for (_size i = 0; i < len; i++) {
-      Tokens& un = units[i];
-      const Token& last = un.last();
-      _boo desc = false;
-
-      if (last.type == Token::t_Keyword) {
-         switch (last.value.keyword.k) {
-            case Keyword::kw_Asc: {
-               un.trimRight();
-               if (un.isEmpty()) {
-                  delete order;
-                  throw SyntaxException(str(L"keyword '", *last.value.keyword.os,
-                     L"' is not preceded by a value declaration"), last.line);
-               }
-               break;
-            }
-            case Keyword::kw_Desc: {
-               un.trimRight();
-               desc = true;
-               if (un.isEmpty()) {
-                  delete order;
-                  throw SyntaxException(str(L"keyword '", *last.value.keyword.os,
-                     L"' is not preceded by a value declaration"), last.line);
-               }
-               break;
-            }
-         }
-      }
-
-      Generator<_boo>* uboo;
-      if (parse(uro, un, uboo)) {
-         order->addUnit(uboo, OrderUnitType::out_Bool, desc);
-         continue;
-      }
-
-      Generator<_num>* unum;
-      if (parse(uro, un, unum)) {
-         order->addUnit(unum, OrderUnitType::out_Number, desc);
-         continue;
-      }
-
-      Generator<_per>* uper;
-      if (parse(uro, un, uper)) {
-         order->addUnit(uper, OrderUnitType::out_Period, desc);
-         continue;
-      }
-
-      Generator<_tim>* utim;
-      if (parse(uro, un, utim)) {
-         order->addUnit(utim, OrderUnitType::out_Time, desc);
-         continue;
-      }
-
-      Generator<_str>* ustr;
-      if (parse(uro, un, ustr)) {
-         order->addUnit(ustr, OrderUnitType::out_String, desc);
-      }
-      else {
-         delete order;
-         throw SyntaxException(str(L"value of '", *orderKeyword.value.keyword.os, L" by' unit "
-            L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas"),
-            un.first().line);
-      }
-   }
-
-   if (state == ThisState::ts_String) {
-      uro->vc.retreatAttribute();
-   }
-
-   uro->vars.inner.thisState = prevThisState;
-}
+};
 
 
 template <typename T, typename T2>

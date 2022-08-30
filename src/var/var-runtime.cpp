@@ -55,19 +55,19 @@ Variables::Variables(Uroboros* uro)
       { this->hashes->HASH_VAR_TOMORROW, new v_Tomorrow() }
    }),
    num ({
-      { this->hashes->HASH_VAR_SIZE, &this->inner.size },
+      { this->hashes->HASH_VAR_SIZE, &this->inner.size }
    }, { }),
    str_ ( {
       { this->hashes->HASH_VAR_DRIVE, &this->inner.drive },
       { this->hashes->HASH_VAR_EXTENSION, &this->inner.extension },
       { this->hashes->HASH_VAR_FULLNAME, &this->inner.fullname },
-      { this->hashes->HASH_VAR_LOCATION, &this->inner.location },
       { this->hashes->HASH_VAR_NAME, &this->inner.name },
       { this->hashes->HASH_VAR_PARENT, &this->inner.parent },
       { this->hashes->HASH_VAR_PATH, &this->inner.path }
    }, {
       { this->hashes->HASH_VAR_DESKTOP, new Constant<_str>(os_desktopPath()) },
-      { this->hashes->HASH_VAR_UROBOROS, new Constant<_str>(this->uroPath) }
+      { this->hashes->HASH_VAR_UROBOROS, new Constant<_str>(this->uroPath) },
+      { this->hashes->HASH_VAR_LOCATION, &this->inner.location }
    }),
    nlist ( { }, { } ),
    tlist ( { }, { } ),
@@ -182,7 +182,17 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 
 _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 {
-   if (this->intVars.find(tk.value.word.h) != this->intVars.end()) {
+   if (tk.value.word.h == this->hashes->HASH_VAR_INDEX) {
+      if (!this->vc->anyAggregate()) {
+         throw SyntaxException(str(L"variable '", *tk.value.word.os,
+            L"' can be accessed only inside a loop"), tk.line);
+      }
+      else {
+         result = new NumberIntRef(this->intVars[tk.value.word.h]);
+         return true;
+      }
+   }
+   else if (this->intVars.find(tk.value.word.h) != this->intVars.end()) {
       this->vc->setAttribute(tk);
       result = new NumberIntRef(this->intVars[tk.value.word.h]);
       return true;

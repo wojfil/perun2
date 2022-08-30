@@ -183,7 +183,7 @@ _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 {
    if (tk.value.word.h == this->hashes->HASH_VAR_INDEX) {
-      if (!this->vc->anyAggregate()) {
+      if (this->uroboros->vars.inner.thisState == ThisState::ts_None) {
          throw SyntaxException(str(L"variable '", *tk.value.word.os,
             L"' can be accessed only inside a loop"), tk.line);
       }

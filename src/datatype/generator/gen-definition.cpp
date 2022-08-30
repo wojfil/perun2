@@ -446,6 +446,7 @@ _boo OrderByCast::hasNext()
       this->index = 0;
       this->length = this->values.size();
       this->hasVolatileDepth = this->obase->hasVolatileDepth();
+      this->inner->depth.value.setToZero();
    }
 
    if (this->uroboros->running && this->index != this->length) {

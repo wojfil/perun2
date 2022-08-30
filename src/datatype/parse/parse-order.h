@@ -11,7 +11,6 @@
 
 void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros* uro);
 
-
 template <typename T>
 void cleanAfterOrderParseFailure(T& result, Attribute* attr, const ThisState& state)
 {
@@ -27,12 +26,13 @@ template <typename T>
 void orderUnitFailure(const Token& tk, T& result)
 {
    throw SyntaxException(str(L"keyword '", *tk.value.keyword.os,
-      L"' is not preceded by a value"), tk.line);
+      L"' is not preceded by a value used for order"), tk.line);
 }
 
 
 template <typename T>
-void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr, const ThisState& state)
+void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr,
+   const ThisState& state, Order* order, OrderIndices* indices)
 {
    desc = false;
    const Token& last = tks.last();
@@ -42,6 +42,10 @@ void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr, const
       if (kw == Keyword::kw_Asc) {
          tks.trimRight();
          if (tks.isEmpty()) {
+            delete indices;
+            if (order != nullptr) {
+               delete order;
+            }
             cleanAfterOrderParseFailure(result, attr, state);
             orderUnitFailure(last, result);
          }
@@ -50,6 +54,10 @@ void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr, const
          desc = true;
          tks.trimRight();
          if (tks.isEmpty()) {
+            delete indices;
+            if (order != nullptr) {
+               delete order;
+            }
             cleanAfterOrderParseFailure(result, attr, state);
             orderUnitFailure(last, result);
          }
@@ -58,180 +66,27 @@ void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr, const
 }
 
 
-template <typename U1>
-void setSingleOrderFilter(Generator<U1>* value, Attribute* attr, const _boo& hasMemory,
-   const _boo& desc, _def*& result, Uroboros* uro)
+template <typename T>
+void setOrderUnit(Order*& order, Generator<T>* value, const _boo& desc, OrderIndices* indices)
 {
-   OrderBase_Definition* obase = new OrderBase_Definition(result, uro);
-   result = new OrderByCast(new OrderBy_OneValue<_str, U1>(
-      obase, value, attr, desc, uro), attr, hasMemory, obase, uro);
-}
-
-
-template <typename T, typename U1>
-void setSingleOrderFilter(Generator<U1>* value, Attribute* attr, const _boo& hasMemory,
-   const _boo& desc, Generator<std::vector<T>>*& result, Uroboros* uro)
-{
-   result = new OrderBy_OneValue<T, U1>(new OrderBase_Depthless<T>(result), value, attr, desc, uro);
-}
-
-
-template <typename U1, typename U2>
-void setDoubleOrderFilter(Generator<U1>* value_1, Generator<U2>* value_2, Attribute* attr,
-   const _boo& hasMemory, const _boo& desc, _def*& result, Uroboros* uro)
-{
-   OrderBase_Definition* obase = new OrderBase_Definition(result, uro);
-   result = new OrderByCast(new OrderBy_TwoValues<_str, U1, U2>(
-      obase, value_1, value_2, attr, desc, uro), attr, hasMemory, obase, uro);
-}
-
-
-template <typename T, typename U1, typename U2>
-void setDoubleOrderFilter(Generator<U1>* value_1, Generator<U2>* value_2, Attribute* attr,
-   const _boo& hasMemory, const _boo& desc, Generator<std::vector<T>>*& result, Uroboros* uro)
-{
-   result = new OrderBy_TwoValues<T, U1, U2>(new OrderBase_Depthless<T>(result), value_1, value_2, attr, desc, uro);
-}
-
-
-template <typename U1, typename U2, typename U3>
-void setTripleOrderFilter(Generator<U1>* value_1, Generator<U2>* value_2, Generator<U3>* value_3,
-   Attribute* attr, const _boo& hasMemory, const _boo& desc, _def*& result, Uroboros* uro)
-{
-   OrderBase_Definition* obase = new OrderBase_Definition(result, uro);
-   result = new OrderByCast(new OrderBy_ThreeValues<_str, U1, U2, U3>(
-      obase, value_1, value_2, value_3, attr, desc, uro), attr, hasMemory, obase, uro);
-}
-
-
-template <typename T, typename U1, typename U2, typename U3>
-void setTripleOrderFilter(Generator<U1>* value_1, Generator<U2>* value_2, Generator<U3>* value_3,
-   Attribute* attr, const _boo& hasMemory, const _boo& desc, Generator<std::vector<T>>*& result, Uroboros* uro)
-{
-   result = new OrderBy_ThreeValues<T, U1, U2, U3>(
-      new OrderBase_Depthless<T>(result), value_1, value_2, value_3, attr, desc, uro);
-}
-
-
-template <typename T, typename T2, typename U1>
-void finishTwoUnitsOrder(T& result, Tokens& tks, Attribute* attr,
-   const ThisState& state, const _boo& hasMemory, Uroboros* uro, Generator<U1>* firstUnit)
-{
-   _boo desc;
-   prepareOrderUnit(tks, desc, result, attr, state);
-
-   Generator<_boo>* uboo;
-   if (parse(uro, tks, uboo)) {
-      setDoubleOrderFilter(firstUnit, uboo, attr, hasMemory, desc, result, uro);
-      return;
-   }
-
-   Generator<_num>* unum;
-   if (parse(uro, tks, unum)) {
-      setDoubleOrderFilter(firstUnit, unum, attr, hasMemory, desc, result, uro);
-      return;
-   }
-
-   Generator<_per>* uper;
-   if (parse(uro, tks, uper)) {
-      setDoubleOrderFilter(firstUnit, uper, attr, hasMemory, desc, result, uro);
-      return;
-   }
-
-   Generator<_tim>* utim;
-   if (parse(uro, tks, utim)) {
-      setDoubleOrderFilter(firstUnit, utim, attr, hasMemory, desc, result, uro);
-      return;
-   }
-
-   Generator<_str>* ustr;
-   if (parse(uro, tks, ustr)) {
-      setDoubleOrderFilter(firstUnit, ustr, attr, hasMemory, desc, result, uro);
-      return;
+   if (order == nullptr) {
+      order = new OrderUnit_Final<T>(value, desc, indices);
    }
    else {
-      delete firstUnit;
-      cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(L"value of the last order unit "
-         L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas",
-         tks.first().line);
+      order = new OrderUnit_Middle<T>(value, desc, order, indices);
    }
 }
 
+void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory, _def*& result,
+   OrderIndices* indices, Order* order, Uroboros* uro);
 
-template <typename T, typename T2>
-void parseTwoUnitsOrder(T& result, Tokens& tks, Attribute* attr,
-   const ThisState& state, const _boo& hasMemory, Uroboros* uro)
+template <typename T>
+void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory,
+   Generator<std::vector<T>>*& result, OrderIndices* indices, Order* order, Uroboros* uro)
 {
-   Tokens left(tks);
-   Tokens right(tks);
-   tks.divideBySymbol(L',', left, right);
-
-   if (left.isEmpty()) {
-      cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(L"value of the first order unit is empty", tks.first().line);
-   }
-
-   if (right.isEmpty()) {
-      cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(L"value of the second order unit is empty", tks.first().line);
-   }
-
-   _boo desc;
-   prepareOrderUnit(left, desc, result, attr, state);
-
-   Generator<_boo>* uboo;
-   if (parse(uro, left, uboo)) {
-      finishTwoUnitsOrder<T, T2, _boo>(result, right, attr, state, hasMemory, uro, uboo);
-      return;
-   }
-
-   Generator<_num>* unum;
-   if (parse(uro, left, unum)) {
-      finishTwoUnitsOrder<T, T2, _num>(result, right, attr, state, hasMemory, uro, unum);
-      return;
-   }
-
-   Generator<_per>* uper;
-   if (parse(uro, left, uper)) {
-      finishTwoUnitsOrder<T, T2, _per>(result, right, attr, state, hasMemory, uro, uper);
-      return;
-   }
-
-   Generator<_tim>* utim;
-   if (parse(uro, left, utim)) {
-      finishTwoUnitsOrder<T, T2, _tim>(result, right, attr, state, hasMemory, uro, utim);
-      return;
-   }
-
-   Generator<_str>* ustr;
-   if (parse(uro, left, ustr)) {
-      finishTwoUnitsOrder<T, T2, _str>(result, right, attr, state, hasMemory, uro, ustr);
-      return;
-   }
-   else {
-      cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(L"value of the first order unit "
-         L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas",
-         left.first().line);
-   }
+   result = new OrderBy<T>(new OrderBase_Depthless<T>(result), attr, indices, order, uro);
 }
 
-
-/*template <typename T, typename T2>
-void parseThreeUnitsOrder(T& result, Tokens& tks, Attribute* attr,
-   const ThisState& state, const _boo& hasMemory, Uroboros* uro)
-{
-
-
-
-
-
-
-
-
-
-}*/
 
 template <typename T, typename T2>
 void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeyword,
@@ -254,24 +109,28 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
       const Keyword& kw = first.value.keyword.k;
       if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
          const _boo desc = kw == Keyword::kw_Desc;
+         OrderIndices* indices = new OrderIndices();
 
          switch (state) {
             case ThisState::ts_String: {
                Generator<_str>* str;
                uro->vars.inner.createThisRef(str);
-               setSingleOrderFilter(str, attr, hasMemory, desc, result, uro);
+               setSingleOrderFilter(attr, hasMemory, result, indices,
+                  new OrderUnit_Final<_str>(str, desc, indices), uro);
                break;
             }
             case ThisState::ts_Number: {
                Generator<_num>* num;
                uro->vars.inner.createThisRef(num);
-               setSingleOrderFilter(num, attr, hasMemory, desc, result, uro);
+               setSingleOrderFilter(attr, hasMemory, result, indices,
+                  new OrderUnit_Final<_num>(num, desc, indices), uro);
                break;
             }
             case ThisState::ts_Time: {
                Generator<_tim>* tim;
                uro->vars.inner.createThisRef(tim);
-               setSingleOrderFilter(tim, attr, hasMemory, desc, result, uro);
+               setSingleOrderFilter(attr, hasMemory, result, indices,
+                  new OrderUnit_Final<_tim>(tim, desc, indices), uro);
                break;
             }
          }
@@ -279,6 +138,8 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          resetOrderParseSettings(state, prevThisState, uro);
          return;
       }
+
+      return;
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {
@@ -301,73 +162,67 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
    }
 
-   const _int commas = ts3.countSymbols(L',');
+   std::vector<Tokens> tokensList;
+   if (ts3.containsSymbol(PG_CHAR_COMMA)) {
+      ts3.splitBySymbol(L',', tokensList);
+   }
+   else {
+      tokensList.push_back(ts3);
+   }
 
-   switch (commas) {
-      case 0: {
-         _boo desc;
-         prepareOrderUnit(ts3, desc, result, attr, state);
+   const _int length = tokensList.size();
+   Order* order = nullptr;
+   OrderIndices* indices = new OrderIndices();
 
-         Generator<_boo>* uboo;
-         if (parse(uro, ts3, uboo)) {
-            setSingleOrderFilter(uboo, attr, hasMemory, desc, result, uro);
-            resetOrderParseSettings(state, prevThisState, uro);
-            return;
-         }
+   for (_int i = length - 1; i >= 0; i--) {
+      Tokens& tk = tokensList[i];
+      _boo desc;
+      prepareOrderUnit(tk, desc, result, attr, state, order, indices);
 
-         Generator<_num>* unum;
-         if (parse(uro, ts3, unum)) {
-            setSingleOrderFilter(unum, attr, hasMemory, desc, result, uro);
-            resetOrderParseSettings(state, prevThisState, uro);
-            return;
-         }
-
-         Generator<_per>* uper;
-         if (parse(uro, ts3, uper)) {
-            setSingleOrderFilter(uper, attr, hasMemory, desc, result, uro);
-            resetOrderParseSettings(state, prevThisState, uro);
-            return;
-         }
-
-         Generator<_tim>* utim;
-         if (parse(uro, ts3, utim)) {
-            setSingleOrderFilter(utim, attr, hasMemory, desc, result, uro);
-            resetOrderParseSettings(state, prevThisState, uro);
-            return;
-         }
-
-         Generator<_str>* ustr;
-         if (parse(uro, ts3, ustr)) {
-            setSingleOrderFilter(ustr, attr, hasMemory, desc, result, uro);
-            resetOrderParseSettings(state, prevThisState, uro);
-            return;
-         }
-         else {
-            cleanAfterOrderParseFailure(result, attr, state);
-            throw SyntaxException(L"value of the order "
-               L"cannot be resolved to any valid data type. If you use multiple variables for order, separate them by commas",
-               ts3.first().line);
-         }
-
-         break;
+      Generator<_boo>* uboo;
+      if (parse(uro, tk, uboo)) {
+         setOrderUnit(order, uboo, desc, indices);
+         continue;
       }
-      case 1: {
-         parseTwoUnitsOrder<T, T2>(result, ts3, attr, state, hasMemory, uro);
-         resetOrderParseSettings(state, prevThisState, uro);
-         break;
+
+      Generator<_num>* unum;
+      if (parse(uro, tk, unum)) {
+         setOrderUnit(order, unum, desc, indices);
+         continue;
       }
-      /*case 2: {
-         parseThreeUnitsOrder<T, T2>(result, ts3, attr, state, hasMemory, uro);
-         resetOrderParseSettings(state, prevThisState, uro);
-         break;
-      }*/
-      default: {
+
+      Generator<_per>* uper;
+      if (parse(uro, tk, uper)) {
+         setOrderUnit(order, uper, desc, indices);
+         continue;
+      }
+
+      Generator<_tim>* utim;
+      if (parse(uro, tk, utim)) {
+         setOrderUnit(order, utim, desc, indices);
+         continue;
+      }
+
+      Generator<_str>* ustr;
+      if (parse(uro, tk, ustr)) {
+         setOrderUnit(order, ustr, desc, indices);
+         continue;
+      }
+      else {
+         if (order != nullptr) {
+            delete order;
+         }
+         delete indices;
          cleanAfterOrderParseFailure(result, attr, state);
-         throw SyntaxException(L"current version of Uroboros does not support order by 3 or more units",
-            ts3.first().line);
+
+         throw SyntaxException(L"value of this order unit cannot be resolved to any valid data type. "
+            L"Hint: if you use multiple variables for order, separate them by commas",
+            tk.first().line);
       }
    }
-}
 
+   setSingleOrderFilter(attr, hasMemory, result, indices, order, uro);
+   resetOrderParseSettings(state, prevThisState, uro);
+}
 
 #endif // PARSE_ORDER_H_INCLUDED

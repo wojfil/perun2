@@ -9,3 +9,12 @@ void resetOrderParseSettings(const ThisState& state, const ThisState& prevState,
 
    uro->vars.inner.thisState = prevState;
 }
+
+
+void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory, _def*& result,
+   OrderIndices* indices, Order* order, Uroboros* uro)
+{
+   OrderBase_Definition* obase = new OrderBase_Definition(result, uro);
+   result = new OrderByCast(new OrderBy<_str>(
+      obase, attr, indices, order, uro), attr, hasMemory, obase, uro);
+}

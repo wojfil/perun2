@@ -21,14 +21,13 @@
 #include "../uroboros.h"
 
 
-// the base
 template <typename T>
 struct OrderBase : Generator<std::vector<T>>
 {
 public:
    virtual _boo hasVolatileDepth() const = 0;
    virtual _numi getDepth(const _size& index) const = 0;
-   virtual void shuffleDepth(const std::vector<_size>& indices, const _size& length) { }; // to be overriden
+   virtual void shuffleDepth(const std::vector<_size>& indices, const _size& length) { };
 };
 
 
@@ -61,7 +60,6 @@ public:
 
 private:
    Generator<std::vector<T>>* base;
-
 };
 
 
@@ -87,12 +85,120 @@ private:
 };
 
 
+struct OrderIndices
+{
+public:
+   void clearValues(const _size& length);
+   std::vector<_size> values;
+};
+
+
+struct Order
+{
+public:
+   virtual void clearValues(const _size& length) = 0;
+   virtual void addValues() = 0;
+   virtual _boo matchesSwap(const _int& start, const _int& end) const = 0;
+};
+
+
+template <typename T>
+struct OrderUnit : Order
+{
+public:
+   OrderUnit(Generator<T>* val, const _boo desc, OrderIndices* indie)
+      : valueGenerator(val), descending(desc), indices(indie) { };
+
+   ~OrderUnit()
+   {
+      delete valueGenerator;
+   }
+
+protected:
+   Generator<T>* valueGenerator;
+   OrderIndices* indices;
+   std::vector<T> values;
+   const _boo descending;
+};
+
+
+template <typename T>
+struct OrderUnit_Middle : OrderUnit<T>
+{
+public:
+   OrderUnit_Middle(Generator<T>* val, const _boo desc, Order* next, OrderIndices* indie)
+      : OrderUnit<T>(val, desc, indie), nextUnit(next) { };
+
+   ~OrderUnit_Middle()
+   {
+      delete nextUnit;
+   }
+
+   void clearValues(const _size& length) override
+   {
+      clearAndReserve(this->values, length);
+      this->nextUnit->clearValues(length);
+   }
+
+   void addValues() override
+   {
+      this->values.push_back(this->valueGenerator->getValue());
+      this->nextUnit->addValues();
+   }
+
+   _boo matchesSwap(const _int& start, const _int& end) const override
+   {
+      const T& left = this->values[this->indices->values[start]];
+      const T& right = this->values[this->indices->values[end]];
+
+      if (left == right) {
+         return this->nextUnit->matchesSwap(start, end);
+      }
+      else {
+         return this->descending
+            ? left > right
+            : left < right;
+      }
+   }
+
+private:
+   Order* nextUnit;
+};
+
+
+template <typename T>
+struct OrderUnit_Final : OrderUnit<T>
+{
+public:
+   OrderUnit_Final(Generator<T>* val, const _boo desc, OrderIndices* indie)
+      : OrderUnit<T>(val, desc, indie) { };
+
+   void clearValues(const _size& length) override
+   {
+      clearAndReserve(this->values, length);
+   }
+
+   void addValues() override
+   {
+      this->values.push_back(this->valueGenerator->getValue());
+   }
+
+   _boo matchesSwap(const _int& start, const _int& end) const override
+   {
+      return this->descending
+         ? this->values[this->indices->values[start]] >= this->values[this->indices->values[end]]
+         : this->values[this->indices->values[start]] <= this->values[this->indices->values[end]];
+   }
+};
+
+
 template <typename T>
 struct OrderBy : Generator<std::vector<T>>
 {
 public:
-   OrderBy(OrderBase<T>* bas, Attribute* attr, const _boo& desc, Uroboros* uro)
-      : base(bas), attribute(attr), descending(desc), inner(&uro->vars.inner), hasAttribute(attr != nullptr)
+   OrderBy(OrderBase<T>* bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros* uro)
+      : base(bas), attribute(attr), inner(&uro->vars.inner),
+        hasAttribute(attr != nullptr), orderIndices(indices), order(ord)
    {
       this->inner->createThisVarRef(thisReference);
    }
@@ -101,11 +207,9 @@ public:
    {
       delete base;
       delete attribute;
+      delete orderIndices;
+      delete order;
    }
-
-   virtual void clearValues(const _size& length) = 0;
-   virtual void addValues() = 0;
-   virtual _boo matchesSwap(const _int& start, const _int& end) const = 0;
 
    std::vector<T> getValue() override
    {
@@ -116,8 +220,8 @@ public:
          return this->result;
       }
 
-      clearAndReserve(this->indices, length);
-      clearValues(length);
+      this->orderIndices->clearValues(length);
+      this->order->clearValues(length);
 
       const _numi prevIndex = this->inner->index.value;
       const T prevThis = this->thisReference->value;
@@ -130,12 +234,12 @@ public:
          if (this->hasAttribute) {
             this->attribute->run();
          }
-         this->indices[i] = i;
+         this->orderIndices->values[i] = i;
          if (hasVolatileDepth) {
             this->inner->depth.value = this->base->getDepth(i);
          }
 
-         addValues();
+         this->order->addValues();
       }
 
       this->quicksort(0, length - 1);
@@ -143,10 +247,10 @@ public:
       this->inner->index.value = prevIndex;
       this->thisReference->value = prevThis;
 
-      shuffleByIndices(this->result, this->indices, length);
+      shuffleByIndices(this->result, this->orderIndices->values, length);
 
       if (hasVolatileDepth) {
-         this->base->shuffleDepth(this->indices, length);
+         this->base->shuffleDepth(this->orderIndices->values, length);
       }
 
       return result;
@@ -166,167 +270,26 @@ public:
       _int i = start - 1;
 
       for (_int j = start; j <= end - 1; j++) {
-         if (this->matchesSwap(j, end)) {
+         if (this->order->matchesSwap(j, end)) {
             i++;
-            std::iter_swap(this->indices.begin() + i, this->indices.begin() + j);
+            std::iter_swap(this->orderIndices->values.begin() + i, this->orderIndices->values.begin() + j);
          }
       }
 
       const _int ip = i + 1;
-      std::iter_swap(indices.begin() + ip, indices.begin() + end);
+      std::iter_swap(this->orderIndices->values.begin() + ip, this->orderIndices->values.begin() + end);
       return ip;
    }
 
 protected:
    std::vector<T> result;
-   std::vector<_size> indices;
+   OrderIndices* orderIndices;
    OrderBase<T>* base;
+   Order* order;
    Attribute* attribute;
    const _boo hasAttribute;
-   const _boo descending;
    InnerVariables* inner;
    Variable<T>* thisReference;
-};
-
-
-template <typename T, typename U1>
-struct OrderBy_OneValue : OrderBy<T>
-{
-public:
-   OrderBy_OneValue(OrderBase<T>* bas, Generator<U1>* vg,
-      Attribute* attr, const _boo& desc, Uroboros* uro)
-      : OrderBy<T>(bas, attr, desc, uro), valueGenerator(vg) { }
-
-   ~OrderBy_OneValue()
-   {
-      delete valueGenerator;
-   }
-
-   void clearValues(const _size& length) override
-   {
-      clearAndReserve(this->values, length);
-   }
-
-   void addValues() override
-   {
-      this->values.push_back(this->valueGenerator->getValue());
-   }
-
-   _boo matchesSwap(const _int& start, const _int& end) const override
-   {
-      return this->descending
-        ? this->values[this->indices[start]] >= this->values[this->indices[end]]
-        : this->values[this->indices[start]] <= this->values[this->indices[end]];
-   }
-
-private:
-   std::vector<U1> values;
-   Generator<U1>* valueGenerator;
-};
-
-
-template <typename T, typename U1, typename U2>
-struct OrderBy_TwoValues : OrderBy<T>
-{
-public:
-   OrderBy_TwoValues(OrderBase<T>* bas, Generator<U1>* vg_1, Generator<U2>* vg_2,
-      Attribute* attr, const _boo& desc, Uroboros* uro)
-      : OrderBy<T>(bas, attr, desc, uro), valueGenerator_1(vg_1), valueGenerator_2(vg_2) { }
-
-   ~OrderBy_TwoValues()
-   {
-      delete valueGenerator_1;
-      delete valueGenerator_2;
-   }
-
-   void clearValues(const _size& length) override
-   {
-      clearAndReserve(this->values_1, length);
-      clearAndReserve(this->values_2, length);
-   }
-
-   void addValues() override
-   {
-      this->values_1.push_back(this->valueGenerator_1->getValue());
-      this->values_2.push_back(this->valueGenerator_2->getValue());
-   }
-
-   _boo matchesSwap(const _int& start, const _int& end) const override
-   {
-      if (this->values_1[this->indices[start]] == this->values_1[this->indices[end]]) {
-         return this->descending
-            ? this->values_2[this->indices[start]] >= this->values_2[this->indices[end]]
-            : this->values_2[this->indices[start]] <= this->values_2[this->indices[end]];
-      }
-
-      return this->descending
-        ? this->values_1[this->indices[start]] > this->values_1[this->indices[end]]
-        : this->values_1[this->indices[start]] < this->values_1[this->indices[end]];
-   }
-
-private:
-   std::vector<U1> values_1;
-   std::vector<U2> values_2;
-   Generator<U1>* valueGenerator_1;
-   Generator<U2>* valueGenerator_2;
-};
-
-
-template <typename T, typename U1, typename U2, typename U3>
-struct OrderBy_ThreeValues : OrderBy<T>
-{
-public:
-   OrderBy_ThreeValues(OrderBase<T>* bas, Generator<U1>* vg_1, Generator<U2>* vg_2, Generator<U3>* vg_3,
-      Attribute* attr, const _boo& desc, Uroboros* uro)
-      : OrderBy<T>(bas, attr, desc, uro), valueGenerator_1(vg_1), valueGenerator_2(vg_2), valueGenerator_3(vg_3) { }
-
-   ~OrderBy_ThreeValues()
-   {
-      delete valueGenerator_1;
-      delete valueGenerator_2;
-      delete valueGenerator_3;
-   }
-
-   void clearValues(const _size& length) override
-   {
-      clearAndReserve(this->values_1, length);
-      clearAndReserve(this->values_2, length);
-      clearAndReserve(this->values_3, length);
-   }
-
-   void addValues() override
-   {
-      this->values_1.push_back(this->valueGenerator_1->getValue());
-      this->values_2.push_back(this->valueGenerator_2->getValue());
-      this->values_3.push_back(this->valueGenerator_3->getValue());
-   }
-
-   _boo matchesSwap(const _int& start, const _int& end) const override
-   {
-      if (this->values_1[this->indices[start]] == this->values_1[this->indices[end]]) {
-         if (this->values_2[this->indices[start]] == this->values_2[this->indices[end]]) {
-            return this->descending
-               ? this->values_3[this->indices[start]] >= this->values_3[this->indices[end]]
-               : this->values_3[this->indices[start]] <= this->values_3[this->indices[end]];
-         }
-
-         return this->descending
-            ? this->values_2[this->indices[start]] > this->values_2[this->indices[end]]
-            : this->values_2[this->indices[start]] < this->values_2[this->indices[end]];
-      }
-
-      return this->descending
-        ? this->values_1[this->indices[start]] > this->values_1[this->indices[end]]
-        : this->values_1[this->indices[start]] < this->values_1[this->indices[end]];
-   }
-
-private:
-   std::vector<U1> values_1;
-   std::vector<U2> values_2;
-   std::vector<U3> values_3;
-   Generator<U1>* valueGenerator_1;
-   Generator<U2>* valueGenerator_2;
-   Generator<U3>* valueGenerator_3;
 };
 
 

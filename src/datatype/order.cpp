@@ -45,3 +45,7 @@ void OrderBase_Definition::shuffleDepth(const std::vector<_size>& indices, const
    shuffleByIndices(this->depths, indices, length);
 }
 
+void OrderIndices::clearValues(const _size& length)
+{
+   clearAndReserve(this->values, length);
+}

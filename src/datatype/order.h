@@ -281,7 +281,7 @@ public:
       return ip;
    }
 
-protected:
+private:
    std::vector<T> result;
    OrderIndices* orderIndices;
    OrderBase<T>* base;

@@ -993,6 +993,8 @@ Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const Com
          }
       }
    }
+
+   return nullptr;
 }
 
 

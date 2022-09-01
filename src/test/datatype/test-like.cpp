@@ -187,7 +187,7 @@ void test_like()
    testCase_like(165, L"[e-gs-u]%", L"z", false);
    testCase_like(166, L"[e-gs-u]%", L"", false);
    testCase_like(167, L"[e-gs-u]%", L"alone", false);
-   testCase_like(168, L"[e-gs-u]%", L"faces", false);
+   testCase_like(168, L"[e-gs-u]%", L"faces", true);
    testCase_like(169, L"[e-gs-u]%", L"-faces", false);
    testCase_like(170, L"[e-gs-u]%", L"early", true);
    testCase_like(171, L"[e-gs-u]%", L"history", false);
@@ -211,7 +211,7 @@ void test_like()
    testCase_like(189, L"[e-gs-u]%[e-gs-u]", L"alone", false);
    testCase_like(190, L"[e-gs-u]%[e-gs-u]", L"faces", false);
    testCase_like(191, L"[e-gs-u]%[e-gs-u]", L"-faces", false);
-   testCase_like(192, L"[e-gs-u]%[e-gs-u]", L"early", true);
+   testCase_like(192, L"[e-gs-u]%[e-gs-u]", L"early", false);
    testCase_like(193, L"[e-gs-u]%[e-gs-u]", L"historias", false);
    testCase_like(194, L"[e-gs-u]%[e-gs-u]", L"raven", false);
    testCase_like(195, L"[e-gs-u]%[e-gs-u]", L"r", false);
@@ -231,7 +231,7 @@ void test_like()
    testCase_like(209, L"[e-gs-u-]%", L"z", false);
    testCase_like(210, L"[e-gs-u-]%", L"", false);
    testCase_like(211, L"[e-gs-u-]%", L"alone", false);
-   testCase_like(212, L"[e-gs-u-]%", L"faces", false);
+   testCase_like(212, L"[e-gs-u-]%", L"faces", true);
    testCase_like(213, L"[e-gs-u-]%", L"-faces", true);
    testCase_like(214, L"[e-gs-u-]%", L"early", true);
    testCase_like(215, L"[e-gs-u-]%", L"history", false);
@@ -334,12 +334,51 @@ void test_like()
    testCase_like(312, L"-^", L"8-", false);
    testCase_like(313, L"-^", L"-8", false);
    testCase_like(314, L"-^", L"-^h", false);
+   testCase_like(315, L"e#", L"e55", false);
+   testCase_like(316, L"e##", L"e55", true);
+   testCase_like(317, L"e%57", L"e557", false);
+   testCase_like(318, L"%[c-a]%", L"co", true);
+   testCase_like(319, L"%[c-a]%", L"do", false);
+   testCase_like(320, L"%[c-a]%", L"c", true);
+   testCase_like(321, L"%[c-a]%", L"", false);
+   testCase_like(322, L"%[c-a]%", L"voine", false);
+   testCase_like(323, L"%[c-a]%", L"voce", true);
+   testCase_like(324, L"[b-]%", L"here", false);
+   testCase_like(325, L"[b-]%", L"bear", true);
+   testCase_like(326, L"[b-]%", L"cinema", false);
+   testCase_like(327, L"[b-]%", L"", false);
+   testCase_like(328, L"[b-]%", L"-", true);
+   testCase_like(329, L"[b-]%", L"-train", true);
+   testCase_like(330, L"[b-]%", L"u-train", false);
+   testCase_like(331, L"[^b-]%", L"here", true);
+   testCase_like(332, L"[^b-]%", L"bear", false);
+   testCase_like(333, L"[^b-]%", L"cinema", true);
+   testCase_like(334, L"[^b-]%", L"", false);
+   testCase_like(335, L"[^b-]%", L"-", false);
+   testCase_like(336, L"[^b-]%", L"-train", false);
+   testCase_like(337, L"[^b-]%", L"u-train", true);
+   testCase_like(338, L"#[^o]#", L"co", false);
+   testCase_like(339, L"#[^o]#", L"5o9", false);
+   testCase_like(340, L"#[^o]#", L"569", true);
+   testCase_like(341, L"#[^o]#", L"u78", false);
+   testCase_like(342, L"#[^o]#", L"b", false);
+   testCase_like(343, L"#[^o]#", L"", false);
+   testCase_like(344, L"#[^o]#", L"ooo", false);
+   testCase_like(345, L"#[^o]#", L"667", true);
+   testCase_like(346, L"#[^o]#", L"6674", false);
+   testCase_like(347, L"k%_st", L"kastastast", true);
+   testCase_like(348, L"k%an", L"kanan", true);
+   testCase_like(349, L"k%sty", L"kastastasty", true);
+   testCase_like(350, L"k%_t", L"kastastast", true);
+   testCase_like(351, L"ka%_t", L"kastastast", true);
+
 }
 
 
 void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _boo& expectedResult)
 {
-   LikeComparer* comparer = parseLikeComparer(pattern);
+   // std::wcout << caseId << std::endl;
+   LikeComparer* comparer = parseLikeCmp(pattern);
    const _boo result = comparer->compareToPattern(value);
    VERIFY(result == expectedResult, caseId);
    delete comparer;

@@ -18,6 +18,18 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include <unordered_set>
+#include <unordered_map>
+
+
+struct LikeSet
+{
+public:
+    LikeSet(const std::unordered_set<_char>& vals, const _boo& neg);
+    _boo contains(const _char& ch) const;
+
+    const std::unordered_set<_char> values;
+    const _boo negated;
+};
 
 
 struct LikeComparer
@@ -26,9 +38,10 @@ struct LikeComparer
 };
 
 
-_boo isLikePatternCorrect(const _str& pattern);
-LikeComparer* defaultLikeComparer(const _str& pattern);
-LikeComparer* parseLikeComparer(const _str& pattern);
+static LikeComparer* defaultLikeCmp(const _str& pattern);
+static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId);
+static LikeComparer* bracketsLikeCmp(const _str& pattern);
+LikeComparer* parseLikeCmp(const _str& pattern);
 
 
 // operator LIKE with pattern initialized with a string literal
@@ -78,26 +91,29 @@ private:
 
 
 //  %exa[m-v]__pl_e%
-struct LC_Default : LikeComparer
+struct LC_Default_WithBrackets : LikeComparer
 {
 public:
-   LC_Default(const _str& pat);
+   LC_Default_WithBrackets(const _str& pat, const std::unordered_map<_int, LikeSet>& cs);
    _boo compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
+   const _size patternLen;
+   const std::unordered_map<_int, LikeSet> charSets;
 };
 
 
 //  %exam__pl_e%
-struct LC_DefaultButNoBrackets : LikeComparer
+struct LC_Default_NoBrackets : LikeComparer
 {
 public:
-   LC_DefaultButNoBrackets(const _str& pat);
+   LC_Default_NoBrackets(const _str& pat);
    _boo compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
+   const _size patternLen;
 };
 
 
@@ -336,33 +352,6 @@ private:
    std::vector<_boo> isUnderscore;
    std::vector<_boo> isHash;
 };
-
-
-//  [abc]
-struct LC_SingleSet : LikeComparer
-{
-public:
-   LC_SingleSet(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
-
-private:
-   std::unordered_set<_char> chars;
-};
-
-
-//  [a-h]
-struct LC_SingleRange : LikeComparer
-{
-public:
-   LC_SingleRange(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
-
-private:
-   _char first;
-   _char last;
-};
-
-
 
 
 #endif /* GEN_LIKE_H */

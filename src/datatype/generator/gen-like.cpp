@@ -18,54 +18,121 @@
 #include <cwctype>
 
 
-_boo isLikePatternCorrect(const _str& pattern)
+// these two non-printable chars are used internally for the Like operator
+// they symbolize:
+// 1) lack of char
+// 2) there is a set of characters at this position
+inline constexpr _char LIKE_CHAR_NONE = L'\0';
+inline constexpr _char LIKE_CHAR_SET = L'\1';
+
+
+LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _boo& neg)
+   : values(vals), negated(neg) { };
+
+
+_boo LikeSet::contains(const _char& ch) const
 {
-   if (pattern.empty()) {
-      return false;
-   }
-
-   const _size len = pattern.size();
-   _int level = 0;
-
-   for (_size i = 0; i < len; i++) {
-      switch (pattern[i]) {
-         case L'[': {
-            level++;
-            break;
-         }
-         case L']': {
-            level--;
-            if (level < 0) {
-               return false;
-            }
-            break;
-         }
-         case L'^': {
-            if (level == 0)
-               return false;
-         }
-      }
-   }
-
-   return level == 0;
+   return this->negated
+      ? this->values.find(ch) == this->values.end()
+      : this->values.find(ch) != this->values.end();
 }
 
-
-LikeComparer* defaultLikeComparer(const _str& pattern)
+static LikeComparer* defaultLikeCmp(const _str& pattern)
 {
    if (pattern.find(L'[') == _str::npos) {
-      return new LC_DefaultButNoBrackets(pattern);
+      return new LC_Default_NoBrackets(pattern);
    }
    else {
-      return new LC_Default(pattern);
+      return bracketsLikeCmp(pattern);
    }
+}
+
+static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId)
+{
+    std::unordered_set<_char> set;
+    _boo negated = false;
+
+    if (pattern[startId] == L'^') {
+        negated = true;
+        startId++;
+    }
+
+    for (_size i = startId; i <= endId; i++) {
+        if (i < endId - 1 && pattern[i + 1] == L'-') {
+            const _char& left = pattern[i];
+            const _char& right = pattern[i + 2];
+
+            if (left < right) {
+                for (_char ch = left; ch <= right; ch++) {
+                    set.insert(ch);
+                }
+            }
+            else {
+                for (_char ch = right; ch <= left; ch++) {
+                    set.insert(ch);
+                }
+            }
+
+            i+= 2;
+        }
+        else {
+            set.insert(pattern[i]);
+        }
+    }
+
+    return LikeSet(set, negated);
+}
+
+static LikeComparer* bracketsLikeCmp(const _str& pattern)
+{
+   std::unordered_map<_int, LikeSet> sets;
+   const _size length = pattern.size();
+   std::wstringstream ss;
+   _int id = 0;
+
+   for (_size i = 0; i < length; i++) {
+      const _char& ch = pattern[i];
+
+      if (ch == L'[') {
+         i++;
+
+         if (i == length) {
+            ss << L'[';
+            return new LC_Default_WithBrackets(ss.str(), sets);
+         }
+
+         const _size startId = i;
+
+         while (pattern[i] != L']') {
+            i++;
+            if (i == length) {
+               ss << pattern.substr(startId - 1);
+               return new LC_Default_WithBrackets(ss.str(), sets);
+            }
+         }
+
+         if (startId == i) {
+            return new LC_Constant(false);
+         }
+
+         sets.emplace(id, makeLikeSet(pattern, startId, i - 1));
+         ss << LIKE_CHAR_SET;
+      }
+      else {
+         ss << ch;
+      }
+
+      id++;
+   }
+
+   return new LC_Default_WithBrackets(ss.str(), sets);
 }
 
 
 // look for special case variants of the LIKE operator
 // if one is detected
 // return an optimized pattern comparer
-LikeComparer* parseLikeComparer(const _str& pattern)
+LikeComparer* parseLikeCmp(const _str& pattern)
 {
    const _size length = pattern.size();
 
@@ -81,10 +148,6 @@ LikeComparer* parseLikeComparer(const _str& pattern)
                return new LC_ConstantLength(1);
             case L'#':
                return new LC_OnlyDigits(1);
-            case L'[':
-            case L']':
-            case L'^':
-               return new LC_Constant(false);
             default:
                return new LC_Equals(pattern);
          }
@@ -94,7 +157,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
          const _char& snd = pattern[1];
 
          if (fst == L'[' || fst == L']' || snd == L'[' || snd == L']') {
-            return new LC_Constant(false);
+            return defaultLikeCmp(pattern);
          }
 
          switch (fst) {
@@ -103,11 +166,9 @@ LikeComparer* parseLikeComparer(const _str& pattern)
                   case L'%':
                      return new LC_Constant(true);
                   case L'_':
-                     return new LC_Default(pattern);
-                  case L'^':
-                     return new LC_Constant(false);
+                     return new LC_Default_NoBrackets(pattern);
                   case L'#':
-                     return new LC_Default(pattern);
+                     return new LC_Default_NoBrackets(pattern);
                   default:
                      return new LC_EndsWithChar(pattern);
                }
@@ -115,13 +176,11 @@ LikeComparer* parseLikeComparer(const _str& pattern)
             case L'_': {
                switch (snd) {
                   case L'%':
-                     return new LC_Default(pattern);
+                     return new LC_Default_NoBrackets(pattern);
                   case L'_':
                      return new LC_ConstantLength(2);
-                  case L'^':
-                     return new LC_Constant(false);
                   case L'#':
-                     return new LC_Default(pattern);
+                     return new LC_Default_NoBrackets(pattern);
                   default:
                      return new LC_UnderscoreStart(pattern);
                }
@@ -129,19 +188,17 @@ LikeComparer* parseLikeComparer(const _str& pattern)
             case L'#': {
                switch (snd) {
                   case L'%':
-                     return new LC_Default(pattern);
+                     return new LC_Default_NoBrackets(pattern);
                   case L'_':
-                     return new LC_Default(pattern);
-                  case L'^':
-                     return new LC_Constant(false);
+                     return new LC_Default_NoBrackets(pattern);
                   case L'#':
                      return new LC_OnlyDigits(2);
                   default:
-                     return new LC_Default(pattern);
+                     return new LC_Default_NoBrackets(pattern);
                }
             }
             case L'^': {
-               return new LC_Constant(false);
+               return defaultLikeCmp(pattern);
             }
             default: {
                switch (snd) {
@@ -149,10 +206,8 @@ LikeComparer* parseLikeComparer(const _str& pattern)
                      return new LC_StartsWithChar(pattern);
                   case L'_':
                      return new LC_UnderscoreEnd(pattern);
-                  case L'^':
-                     return new LC_Constant(false);
                   case L'#':
-                     return new LC_Default(pattern);
+                     return new LC_Default_NoBrackets(pattern);
                   default:
                      return new LC_Equals(pattern);
                }
@@ -162,10 +217,6 @@ LikeComparer* parseLikeComparer(const _str& pattern)
    }
 
    // pattern length is 3 or greater
-
-   if (!isLikePatternCorrect(pattern)) {
-      return new LC_Constant(false);
-   }
 
    const _char& first = pattern[0];
    const _char& last = pattern[length - 1];
@@ -179,11 +230,11 @@ LikeComparer* parseLikeComparer(const _str& pattern)
       switch (pattern[i]) {
          case L'[':
          case L']': {
-            return new LC_Default(pattern);
+            return bracketsLikeCmp(pattern);
          }
          case L'%':
          case L'^': {
-            return defaultLikeComparer(pattern);
+            return defaultLikeCmp(pattern);
          }
          case L'_': {
             underscoresWithin++;
@@ -192,51 +243,6 @@ LikeComparer* parseLikeComparer(const _str& pattern)
          case L'#':  {
             hashesWithin++;
             break;
-         }
-      }
-   }
-
-   if (first == L'[' && last == L']') {
-      _int minusId = -1;
-
-      for (_int i = 1; i < limit; i++) {
-         if (pattern[i] == L'-') {
-            minusId = i;
-            break;
-         }
-      }
-
-      switch (minusId) {
-         case -1: {
-            return new LC_SingleSet(pattern);
-         }
-         case 1: {
-            if (length == 3) {
-               return new LC_Constant(false);
-            }
-            else {
-               const _str p = pattern.substr(2, 1);
-               return new LC_Equals(p);
-            }
-         }
-         case 2: {
-            if (length == 4) {
-               const _str p = pattern.substr(1, 1);
-               return new LC_Equals(p);
-            }
-            else {
-               return new LC_SingleRange(pattern);
-            }
-         }
-         default: {
-            if (minusId == length - 2) {
-               const _str p = pattern.substr(minusId - 1, 1);
-               return new LC_Equals(p);
-            }
-            else {
-               const _str p2 = pattern.substr(minusId - 2);
-               return new LC_SingleRange(p2);
-            }
          }
       }
    }
@@ -252,17 +258,13 @@ LikeComparer* parseLikeComparer(const _str& pattern)
       }
       case L'[':
       case L']': {
-         fieldFail = true;
-         if (underscoresWithin != 0 || hashesWithin != 0) {
-            return new LC_Default(pattern);
-         }
-         break;
+         return bracketsLikeCmp(pattern);
       }
       case L'%':
       case L'^': {
          fieldFail = true;
          if (underscoresWithin != 0 || hashesWithin != 0) {
-            return defaultLikeComparer(pattern);
+            return defaultLikeCmp(pattern);
          }
          break;
       }
@@ -315,7 +317,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
    }
 
    if (underscoresWithin != 0 || hashesWithin != 0 || first == L'#' || last == L'#') {
-      return defaultLikeComparer(pattern);
+      return defaultLikeCmp(pattern);
    }
 
    // wildcard on start and end
@@ -355,7 +357,7 @@ LikeComparer* parseLikeComparer(const _str& pattern)
 
 
 LikeConst::LikeConst(Generator<_str>* val, const _str& pattern)
-  : value(val), comparer(parseLikeComparer(pattern)) { };
+  : value(val), comparer(parseLikeCmp(pattern)) { };
 
 
 _boo LikeConst::getValue() {
@@ -378,7 +380,7 @@ _boo Like::getValue() {
          delete comparer;
       }
 
-      comparer = parseLikeComparer(pat);
+      comparer = parseLikeCmp(pat);
       prevHash = hsh;
       hasPrev = true;
    }
@@ -387,39 +389,36 @@ _boo Like::getValue() {
 };
 
 
-LC_Default::LC_Default(const _str& pat) 
-   : pattern(pat) { };
+LC_Default_WithBrackets::LC_Default_WithBrackets(const _str& pat, const std::unordered_map<_int, LikeSet>& cs)
+   : pattern(pat), charSets(cs), patternLen(pat.size()) { };
 
 
-_boo LC_Default::compareToPattern(const _str& value) const
+_boo LC_Default_WithBrackets::compareToPattern(const _str& value) const
 {
    const _int vlen = value.size();
-   const _int plen = pattern.size();
    _boo isMatch = true;
    _boo wildCardOn = false; // %
    _boo charWildCardOn = false; // _
-   _boo charSetOn = false;
-   _boo notCharSetOn = false;
    _boo end = false;
    _int lastWildCard = -1;
    _int id = 0;
-   std::set<_char> set;
-   _char p = L'\0';
+   _char p = LIKE_CHAR_NONE;
+   _size setId = 0;
 
    for (_int i = 0; i < vlen; i++) {
       const _char& c = value[i];
-      end = (id >= plen);
+      end = (id >= this->patternLen);
       if (!end) {
          p = pattern[id];
 
          if (!wildCardOn && p == L'%') {
             lastWildCard = id;
             wildCardOn = true;
-            while (id < plen && pattern[id] == L'%') {
+            while (id < this->patternLen && pattern[id] == L'%') {
                id++;
             }
-            if (id >= plen) {
-               p = L'\0';
+            if (id >= this->patternLen) {
+               p = LIKE_CHAR_NONE;
             }
             else {
                p = pattern[id];
@@ -427,40 +426,6 @@ _boo LC_Default::compareToPattern(const _str& value) const
          }
          else if (p == L'_') {
             charWildCardOn = true;
-            id++;
-         }
-         else if (p == L'[') {
-            if (pattern[++id] == L'^') {
-               notCharSetOn = true;
-               id++;
-            }
-            else {
-               charSetOn = true;
-            }
-
-            set.clear();
-
-            if (pattern[id + 1] == L'-' && pattern[id + 3] == L']') {
-               _char start = pattern[id];
-               id += 2;
-               _char end = pattern[id];
-               if (start <= end) {
-                  for (_char ci = start; ci <= end; ci++) {
-                     set.insert(ci);
-                  }
-               }
-               else {
-                  for (_char ci = end; ci <= start; ci++) {
-                     set.insert(ci);
-                  }
-               }
-               id++;
-            }
-
-            while (id < plen && pattern[id] != L']') {
-               set.insert(pattern[id]);
-               id++;
-            }
             id++;
          }
       }
@@ -472,7 +437,16 @@ _boo LC_Default::compareToPattern(const _str& value) const
                id++;
             }
          }
-         else if (c == p) {
+         else if (p == LIKE_CHAR_SET) {
+            if (end) {
+               return false;
+            }
+            else if (charSets.at(id).contains(c)) {
+               wildCardOn = false;
+               id++;
+            }
+         }
+         else if (p == c) {
             wildCardOn = false;
             id++;
          }
@@ -480,24 +454,13 @@ _boo LC_Default::compareToPattern(const _str& value) const
       else if (charWildCardOn) {
          charWildCardOn = false;
       }
-      else if (charSetOn || notCharSetOn) {
-         const _boo _charMatch = set.find(c) != set.end();
-
-         if ((notCharSetOn && _charMatch) || (charSetOn && !_charMatch)) {
-            if (lastWildCard >= 0) {
-               id = lastWildCard;
-            }
-            else {
-               isMatch = false;
-               break;
-            }
-         }
-         notCharSetOn = charSetOn = false;
-      }
       else {
          if (p == L'#') {
             if (std::iswdigit(c)) {
                id++;
+               if (id > this->patternLen) {
+                  return false;
+               }
             }
             else {
                if (lastWildCard >= 0) {
@@ -509,7 +472,27 @@ _boo LC_Default::compareToPattern(const _str& value) const
                }
             }
          }
-         else if (c == p) {
+         else if (p == LIKE_CHAR_SET) {
+            if (end) {
+               return false;
+            }
+            else if (charSets.at(id).contains(c)) {
+               id++;
+               if (id > this->patternLen) {
+                  return false;
+               }
+            }
+            else {
+               if (lastWildCard >= 0) {
+                  id = lastWildCard;
+               }
+               else {
+                  isMatch = false;
+                  break;
+               }
+            }
+         }
+         else if (p == c) {
             id++;
          }
          else {
@@ -524,11 +507,11 @@ _boo LC_Default::compareToPattern(const _str& value) const
       }
    }
 
-   end = (id >= plen);
+   end = (id >= this->patternLen);
 
    if (isMatch && !end) {
       _boo onlyWildCards = true;
-      for (_int i = id; i < plen; i++) {
+      for (_int i = id; i < this->patternLen; i++) {
          if (pattern[i] != L'%') {
             onlyWildCards = false;
             break;
@@ -543,36 +526,35 @@ _boo LC_Default::compareToPattern(const _str& value) const
 }
 
 
-LC_DefaultButNoBrackets::LC_DefaultButNoBrackets(const _str& pat) 
-   : pattern(pat) { };
+LC_Default_NoBrackets::LC_Default_NoBrackets(const _str& pat)
+   : pattern(pat), patternLen(pat.size()) { };
 
 
-_boo LC_DefaultButNoBrackets::compareToPattern(const _str& value) const
+_boo LC_Default_NoBrackets::compareToPattern(const _str& value) const
 {
    const _int vlen = value.size();
-   const _int plen = pattern.size();
    _boo isMatch = true;
    _boo wildCardOn = false; // %
    _boo charWildCardOn = false; // _
    _boo end = false;
    _int lastWildCard = -1;
    _int id = 0;
-   _char p = L'\0';
+   _char p = LIKE_CHAR_NONE;
 
    for (_int i = 0; i < vlen; i++) {
       const _char& c = value[i];
-      end = (id >= plen);
+      end = (id >= this->patternLen);
       if (!end) {
          p = pattern[id];
 
          if (!wildCardOn && p == L'%') {
             lastWildCard = id;
             wildCardOn = true;
-            while (id < plen && pattern[id] == L'%') {
+            while (id < this->patternLen && pattern[id] == L'%') {
                id++;
             }
-            if (id >= plen) {
-               p = L'\0';
+            if (id >= this->patternLen) {
+               p = LIKE_CHAR_NONE;
             }
             else {
                p = pattern[id];
@@ -603,6 +585,9 @@ _boo LC_DefaultButNoBrackets::compareToPattern(const _str& value) const
          if (p == L'#') {
             if (std::iswdigit(c)) {
                id++;
+               if (id > this->patternLen) {
+                  return false;
+               }
             }
             else {
                if (lastWildCard >= 0) {
@@ -629,11 +614,11 @@ _boo LC_DefaultButNoBrackets::compareToPattern(const _str& value) const
       }
    }
 
-   end = (id >= plen);
+   end = (id >= this->patternLen);
 
    if (isMatch && !end) {
       _boo onlyWildCards = true;
-      for (_int i = id; i < plen; i++) {
+      for (_int i = id; i < this->patternLen; i++) {
          if (pattern[i] != L'%') {
             onlyWildCards = false;
             break;
@@ -960,47 +945,3 @@ _boo LC_Field_UH::compareToPattern(const _str& value) const
 
    return true;
 }
-
-
-LC_SingleSet::LC_SingleSet(const _str& pat)
-{
-   const _size limit = pat.size() - 1;
-   for (_size i = 1; i < limit; i++) {
-      chars.insert(pat[i]);
-   }
-}
-
-
-_boo LC_SingleSet::compareToPattern(const _str& value) const
-{
-   return value.size() == 1
-     && chars.find(value[0]) != chars.end();
-}
-
-
-LC_SingleRange::LC_SingleRange(const _str& pat)
-{
-   const _char& ch1 = pat[1];
-   const _char& ch2 = pat[3];
-
-   if (ch1 < ch2) {
-      first = ch1;
-      last = ch2;
-   }
-   else {
-      first = ch2;
-      last = ch1;
-   }
-}
-
-
-_boo LC_SingleRange::compareToPattern(const _str& value) const
-{
-   if (value.size() != 1) {
-      return false;
-   }
-
-   const _char& ch = value[0];
-   return ch >= first && ch <= last;
-}
-

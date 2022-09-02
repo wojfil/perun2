@@ -12,8 +12,8 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM-ARG_H_INCLUDED
-#define COM-ARG_H_INCLUDED
+#ifndef COM_ARG_H_INCLUDED
+#define COM_ARG_H_INCLUDED
 
 #include "com.h"
 #include "../attribute.h"
@@ -128,4 +128,4 @@ private:
 };
 
 
-#endif // COM-ARG_H_INCLUDED
+#endif // COM_ARG_H_INCLUDED

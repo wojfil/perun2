@@ -221,64 +221,15 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return nullptr;
       }
 
-      uro->vars.inner.thisState = ThisState::ts_String;
       Tokens right(tks.list, rightStart, rightLen);
-      const _boo hasMemory = uro->vc.anyAttribute();
-      Attribute* attr = new Attribute(uro);
-      Aggregate* aggr = new Aggregate(uro);
-      uro->vc.addAttribute(attr);
-      uro->vc.addAggregate(aggr);
-      beforeCommandStruct(nullptr, uro);
-         com = parseCommands(right, uro);
-      afterCommandStruct(uro);
-      uro->vars.inner.thisState = prevThisState;
-      uro->vc.retreatAttribute();
-      uro->vc.retreatAggregate();
+      Command* c = parseIterationLoop(true, left, right, prevThisState, uro);
 
-      if (com == nullptr) {
-         return nullptr;
+      if (c != nullptr) {
+         return c;
       }
 
-      if (left.isEmpty()) {
-         Generator<_str>* tr;
-         uro->vars.inner.createThisRef(tr);
-         return new CS_InsideString(tr, com, attr, aggr, hasMemory, uro);
-      }
-
-      Generator<_str>* str_;
-      if (parse(uro, left, str_)) {
-         return new CS_InsideString(str_, com, attr, aggr, hasMemory, uro);
-      }
-
-      _def* def;
-      if (parse(uro, left, def)) {
-         if (attr->isMarkedToEvaluate()) {
-            return new CS_InsideList(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
-         }
-         else {
-            _fdata* fdata = def->getDataPtr();
-
-            if (fdata == nullptr) {
-               return new CS_InsideDefinition(def, com, attr, aggr, hasMemory, uro);
-            }
-            else {
-               const _aunit aval = attr->getValue();
-               delete attr;
-               return new CS_InsideDefinition(def, com,
-                  new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
-            }
-         }
-      }
-
-      Generator<_list>* list;
-      if (parse(uro, left, list)) {
-         return new CS_InsideList(list, com, attr, aggr, hasMemory, uro);
-      }
-      else {
-         delete com;
-         throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os, L"' is not followed by a valid "
-            L"declaration of string or list"), leftFirst.line);
-      }
+      throw SyntaxException(str(L"keyword '", *leftFirst.value.keyword.os, L"' is not followed by a valid "
+         L"declaration of string or list"), leftFirst.line);
    }
 
    // build "if"
@@ -402,6 +353,34 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          : nullptr;
    }
 
+   Command* c = parseIterationLoop(false, left, right, prevThisState, uro);
+   if (c != nullptr) {
+      return c;
+   }
+
+   throw SyntaxException(L"tokens before { bracket do not form any valid syntax structure", tks.first().line);
+}
+
+static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, const Tokens& right,
+   const ThisState& prevState, Uroboros* uro)
+{
+   Command* com = nullptr;
+
+   if (isInside && left.isEmpty()) {
+      Generator<_str>* tr;
+      uro->vars.inner.createThisRef(tr);
+      uro->vars.inner.thisState = ThisState::ts_String;
+      _boo hasMemory;
+      Attribute* attr;
+      Aggregate* aggr;
+
+      if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
+         return new CS_InsideString(tr, com, attr, aggr, hasMemory, uro);
+      }
+      else {
+         return nullptr;
+      }
+   }
 
    // string loop
    Generator<_str>* str;
@@ -411,9 +390,17 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       Attribute* attr;
       Aggregate* aggr;
 
-      return parseLoopBase(com, right, uro, prevThisState, attr, aggr, hasMemory)
-         ? new CS_StringLoop(str, com, attr, aggr, hasMemory, uro)
-         : nullptr;
+      if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
+         if (isInside) {
+            return new CS_InsideString(str, com, attr, aggr, hasMemory, uro);
+         }
+         else {
+            return new CS_StringLoop(str, com, attr, aggr, hasMemory, uro);
+         }
+      }
+      else {
+         return nullptr;
+      }
    }
 
    // definition loop
@@ -424,24 +411,41 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       Attribute* attr;
       Aggregate* aggr;
 
-      if (!parseLoopBase(com, right, uro, prevThisState, attr, aggr, hasMemory)) {
+      if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
          return nullptr;
       }
 
       if (attr->isMarkedToEvaluate()) {
-         return new CS_ListLoop(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+         if (isInside) {
+            return new CS_InsideList(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+         }
+         else {
+            return new CS_ListLoop(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+         }
       }
       else {
          _fdata* fdata = def->getDataPtr();
 
          if (fdata == nullptr) {
-            return new CS_DefinitionLoop(def, com, attr, aggr, hasMemory, uro);
+            if (isInside) {
+               return new CS_InsideDefinition(def, com, attr, aggr, hasMemory, uro);
+            }
+            else {
+               return new CS_DefinitionLoop(def, com, attr, aggr, hasMemory, uro);
+            }
          }
          else {
             const _aunit aval = attr->getValue();
             delete attr;
-            return new CS_DefinitionLoop(def, com,
-               new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+
+            if (isInside) {
+               return new CS_InsideDefinition(def, com,
+                  new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+            }
+            else {
+               return new CS_DefinitionLoop(def, com,
+                  new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+            }
          }
       }
    }
@@ -454,12 +458,17 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       Attribute* attr;
       Aggregate* aggr;
 
-      return parseLoopBase(com, right, uro, prevThisState, attr, aggr, hasMemory)
-         ? new CS_ListLoop(lst, com, attr, aggr, hasMemory, uro)
-         : nullptr;
-   }
+      if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
+         return nullptr;
+      }
 
-   throw SyntaxException(L"tokens before { bracket do not form any valid syntax structure", tks.first().line);
+      if (isInside) {
+         return new CS_InsideList(lst, com, attr, aggr, hasMemory, uro);
+      }
+      else {
+         return new CS_ListLoop(lst, com, attr, aggr, hasMemory, uro);
+      }
+   }
 }
 
 static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,

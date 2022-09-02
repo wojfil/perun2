@@ -469,6 +469,8 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
          return new CS_ListLoop(lst, com, attr, aggr, hasMemory, uro);
       }
    }
+
+   return nullptr;
 }
 
 static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,

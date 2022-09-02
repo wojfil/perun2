@@ -1058,9 +1058,20 @@ _boo os_moveTo(const _str& oldPath, const _str& newPath)
 
 _boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile, Uroboros* uro)
 {
-   return isFile
-      ? os_copyToFile(oldPath, newPath)
-      : os_copyToDirectory(oldPath, newPath, uro);
+   if (isFile) {
+      return os_copyToFile(oldPath, newPath);
+   }
+   else {
+      const _boo success = os_copyToDirectory(oldPath, newPath, uro);
+      if (!success && !uro->running && os_directoryExists(newPath)) {
+         // if directory copy operation
+         // was stopped by the user
+         // delete recent partially copied directory if it is there
+         os_dropDirectory(newPath, uro);
+      }
+
+      return success;
+   }
 }
 
 _boo os_copyToFile(const _str& oldPath, const _str& newPath)

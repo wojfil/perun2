@@ -329,6 +329,7 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, U
    }
 
    commandSyntaxException(*word.value.keyword.os, line);
+   return nullptr;
 }
 
 static Command* c_select(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro)
@@ -370,6 +371,7 @@ static Command* c_select(const Token& word, const Tokens& tks, const _int& line,
    }
 
    commandSyntaxException(*word.value.keyword.os, line);
+   return nullptr;
 }
 
 static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
@@ -462,6 +464,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
    delete newName;
    delete attr;
    commandSyntaxException(str(*word.value.keyword.os, L" to"), line);
+   return nullptr;
 }
 
 static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
@@ -635,6 +638,7 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
    }
 
    commandSyntaxException(*word.value.keyword.os, line);
+   return nullptr;
 }
 
 static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
@@ -1206,6 +1210,8 @@ Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _
    else {
       throw SyntaxException(L"wrong syntax. No command can be formed of this code", line);
    }
+
+   return nullptr;
 }
 
 static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro)
@@ -1221,6 +1227,7 @@ static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, 
    }
 
    commandSyntaxException(*word.value.keyword.os, line);
+   return nullptr;
 }
 
 static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro)
@@ -1486,6 +1493,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
    }
 
    commandSyntaxException(*word.value.keyword.os, line);
+   return nullptr;
 }
 
 static Command* c_error(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro)

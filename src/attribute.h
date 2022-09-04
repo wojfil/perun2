@@ -81,8 +81,8 @@ protected:
 // the result of their call is a WIN32_FIND_DATA struct filled with data
 // this struct already contains all the data we will ever need when operating with files
 // why not use this already obtained data in many other places?
-// BridgeAttribute contains a pointer to this data
-// as a result, we do not have to load the same data twice
+// BridgeAttribute contains a dangling pointer to this data
+// as a result, we do not have to load the same data multiple times
 // useful when IO is the bottleneck
 
 struct BridgeAttribute : Attribute

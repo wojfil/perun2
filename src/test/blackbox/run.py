@@ -4,6 +4,9 @@ SYNTAX_ERROR_EXIT_CODE = 2
 
 def getCmd(code):
   return "uro -d res -c \"" + code + "\""
+  
+def getCmdAsArgs(code):
+  return ['uro', '-d', 'res', '-c', code]
 
 def runTestCase(code, expectedOutput):
   realOutput = subprocess.getoutput(getCmd(code))
@@ -13,18 +16,17 @@ def runTestCase(code, expectedOutput):
     print("  Received output: \n" + realOutput)
     
 def expectSyntaxError(code):
-  a = 0 # todo
-  #r = subprocess.run(["ls"])
-  #if r.returncode == SYNTAX_ERROR_EXIT_CODE:
-  #  print("Test failed at expecting syntax error, code: " + code)
-  #  print("  Process exit code: \n" + exit_code)
+  p = subprocess.Popen(getCmdAsArgs(code), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+  p.communicate()
+  if p.returncode != SYNTAX_ERROR_EXIT_CODE:
+    print("Test failed at expecting syntax error from code: " + code)
+    print("  Received exit code: \n" + str(p.returncode))
   
 def lines(*args):
   return "\n".join(args)
   
-  
 print ("BLACK-BOX TESTS START")
-	
+
 runTestCase("print 'hello world'", "hello world")
 runTestCase(" 'hello world'   ", "hello world")
 runTestCase("print 'hello' + ' ' + 'worlds'", "hello worlds")
@@ -352,7 +354,7 @@ runTestCase("print sqrt(1)", "1")
 runTestCase("print sqrt(4)", "2")
 runTestCase("print sqrt(16)", "4")
 runTestCase("print sqrt(1024)", "32")
-runTestCase("print sqrt(0.25)", "0.5")
+runTestCase("print -sqrt(0.25)", "-0.5")
 runTestCase("print sqrt(0.16)", "0.4")
 runTestCase("print sqrt(289)", "17")
 runTestCase("print sqrt(114.49)", "10.7")
@@ -567,6 +569,7 @@ expectSyntaxError("print ENDSWITH(2,3,4)")
 expectSyntaxError("print ENDSWITHs(2,'3')")
 expectSyntaxError("print absolute('aa44 ')")
 expectSyntaxError("print absolute()")
+expectSyntaxError("print absolute(5 april)")
 expectSyntaxError("print ceil(3,6 ,8)")
 expectSyntaxError("print ceil('5')")
 expectSyntaxError("print ceil(3, 5.3)")
@@ -620,20 +623,23 @@ expectSyntaxError("print easter(2 days)")
 expectSyntaxError("print date()")
 expectSyntaxError("print date(2, 6)")
 expectSyntaxError("print date(5,3,2010,7)")
-expectSyntaxError("print date(5,0,2010)")
-expectSyntaxError("print date(29,2,2011)")
-expectSyntaxError("print date(0,12,1994)")
-expectSyntaxError("print date(5,16,2073)")
+expectSyntaxError("print date(5,'thy',2010)")
+expectSyntaxError("print date(5 years,2,2011)")
+expectSyntaxError("print date(0,12,3 seconds)")
+expectSyntaxError("print date(5,55,'2012')")
 expectSyntaxError("print newyear()")
 expectSyntaxError("print newyear('fgh')")
 expectSyntaxError("print newyear(3, 7)")
 expectSyntaxError("print newyear(3 years)")
 expectSyntaxError("print time(3)")
-expectSyntaxError("print time(3, 7,7,6,5,4)")
-expectSyntaxError("print time(3, 0,2010,0,5)")
-expectSyntaxError("print time(3, 3,2010,0,587)")
-expectSyntaxError("print time(33, 3,2010,0,0)")
+expectSyntaxError("print time(3, 7,7,6,5,4,4)")
+expectSyntaxError("print time(3, 7,7,6,5,4,4, 5)")
+expectSyntaxError("print time(3, 7,7,'ab',5,4)")
+expectSyntaxError("print time(5 days, 0,2010,0,5)")
+expectSyntaxError("print time(3, 3,3 april 2010,0,58)")
+expectSyntaxError("print time(33, 100 years,2010,0,0)")
 expectSyntaxError("print time(25, 4, 2045,0)")
+expectSyntaxError("print time(25, 4, 2045,0, '4')")
 expectSyntaxError("u = 6,1,2,4,3,5; print u skip")
 expectSyntaxError("u = 6,1,2,4,3,5; print u limit")
 expectSyntaxError("u = 6,1,2,4,3,5; print u where")

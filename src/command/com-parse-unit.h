@@ -21,37 +21,53 @@
 #include <vector>
 
 
-struct CS_If;
+struct CS_Condition;
 
-struct IfParseUnit
+
+struct ConditionUnit
 {
 public:
+   ConditionUnit(CS_Condition* pntr);
 
-   IfParseUnit(CS_If* pntr): pointer(pntr),
-      closed(false), elseClosed(false), locked(true) { };
+   void finish();
+   void setElse(Command* com);
+   void addElseIf(Command* com, Generator<_boo>* cond);
 
-   CS_If* pointer;
-   _boo closed;
-   _boo elseClosed;
-   _boo locked;
+   _boo isClosed() const;
+   _boo isElseClosed() const;
+   _boo isLocked() const;
+
+   void close();
+   void closeElse();
+   void unlock();
+
+   CS_Condition* const pointer;
+
+private:
+   _boo closed = false;
+   _boo elseClosed = false;
+   _boo locked = true;
+
+   Command* elseCommand = nullptr;
+   std::vector<Command*> elseIfCommands;
+   std::vector<Generator<_boo>*> elseIfConditions;
 };
 
 
-struct IfContext
+struct ConditionContext
 {
 public:
-   IfContext() : units(std::vector<IfParseUnit>()) { };
-
-   void addIfParseUnit(CS_If* pntr);
+   void addIfParseUnit();
+   void addIfParseUnit(CS_Condition* pntr);
    void retreatIfParseUnit();
    void lockLastIf();
    void setElse(Command* com, const _int& line);
    void setEmptyElse(const _int& line);
    void addElseIf(Generator<_boo>* cond, Command* com, const _int& line);
+   void finish();
 
 private:
-   std::vector<IfParseUnit> units;
-
+   std::vector<ConditionUnit> units;
 };
 
 

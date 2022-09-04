@@ -23,47 +23,23 @@
 #include <vector>
 
 
-struct CS_If : Command
+struct CS_Condition : Command
 {
 public:
-   CS_If(Generator<_boo>* cond, Uroboros* uro)
-      : condition(cond), mainCommand(nullptr), elseCommand(nullptr),
-        elseIfConditions(std::vector<Generator<_boo>*>()),
-        elseIfCommands(std::vector<Command*>()),
-        hasMain(false), hasAlternatives(false), hasElse(false),
-        elseIfCount(0), uroboros(uro) { };
+   CS_Condition();
+   ~CS_Condition();
+   void setMain(Command* mainCom, Generator<_boo>* mainCond);
+   void setCommand(Command* com);
+   Command* getMainCommand();
+   Generator<_boo>* getMainCondition();
 
-   ~CS_If() {
-      delete condition;
-      if (mainCommand != nullptr) {
-         delete mainCommand;
-      }
-      if (hasElse) {
-         delete elseCommand;
-      }
-      if (elseIfConditions.size() != 0) {
-         deleteVector(elseIfConditions);
-         deleteVector(elseIfCommands);
-      }
-   };
-
-   void setMain(Command* com);
-   void setElse(Command* com);
-   void addElseIf(Generator<_boo>* cond, Command* com);
    void run() override;
 
-   Command* mainCommand;
-
 private:
-   Uroboros* uroboros;
-   Generator<_boo>* condition;
-   Command* elseCommand;
-   std::vector<Generator<_boo>*> elseIfConditions;
-   std::vector<Command*> elseIfCommands;
-   _boo hasMain;
-   _boo hasAlternatives;
-   _boo hasElse;
-   _size elseIfCount;
+   Command* command;
+
+   Command* mainCommand = nullptr;
+   Generator<_boo>* mainCondition = nullptr;
 };
 
 
@@ -130,7 +106,7 @@ private:
 struct If_ManyAlternatives : If_Base
 {
 public:
-   If_ManyAlternatives(Generator<_boo>* cond, Command* com, 
+   If_ManyAlternatives(Generator<_boo>* cond, Command* com,
       const std::vector<Generator<_boo>*>& altConds, const std::vector<Command*>& altComms);
    ~If_ManyAlternatives();
 
@@ -144,7 +120,7 @@ protected:
 struct If_Alts : If_ManyAlternatives
 {
 public:
-   If_Alts(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds, 
+   If_Alts(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds,
       const std::vector<Command*>& altComms);
    void run() override;
 };
@@ -153,7 +129,7 @@ public:
 struct If_AltsElse : If_ManyAlternatives
 {
 public:
-   If_AltsElse(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds, 
+   If_AltsElse(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds,
       const std::vector<Command*>& altComms, Command* els);
    ~If_AltsElse();
    void run() override;

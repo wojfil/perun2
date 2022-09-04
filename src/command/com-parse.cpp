@@ -42,6 +42,8 @@ Command* parseCommands(const Tokens& tks, Uroboros* uro)
                if (depth == 0) {
                   if (sublen != 0) {
                      //lockLastIf();
+                     uro->conditionContext.lockLastIf();
+
                      Tokens tks2(tks.list, i - sublen, sublen);
                      commands.push_back(command(tks2, uro));
                      sublen = 0;
@@ -129,7 +131,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       Tokens tks2(tks.list, rightStart, rightLen);
-      beforeCommandStruct(nullptr, uro);
+      beforeCommandStruct(uro);
          com = parseCommands(tks2, uro);
       afterCommandStruct(uro);
       return com;
@@ -161,7 +163,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       Aggregate* aggr = new Aggregate(uro);
       uro->vc.addAggregate(aggr);
-      beforeCommandStruct(nullptr, uro);
+      beforeCommandStruct(uro);
          com = parseCommands(right, uro);
       afterCommandStruct(uro);
       uro->vc.retreatAggregate();
@@ -197,7 +199,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       Aggregate* aggr = new Aggregate(uro);
       uro->vc.addAggregate(aggr);
-      beforeCommandStruct(nullptr, uro);
+      beforeCommandStruct(uro);
          com = parseCommands(right, uro);
       afterCommandStruct(uro);
       uro->vc.retreatAggregate();
@@ -246,25 +248,25 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
             leftFirst.line);
       }
 
-      CS_If* cif = new CS_If(boo, uro);
+      CS_Condition* cond = new CS_Condition();
 
       if (rightLen == 0) {
-         beforeCommandStruct(cif, uro);
+         beforeCommandStruct(cond, uro);
          afterCommandStruct(uro);
-         return cif;
+         return cond;
       }
 
       Tokens right(tks.list, rightStart, rightLen);
 
-      beforeCommandStruct(cif, uro);
+      beforeCommandStruct(cond, uro);
          com = parseCommands(right, uro);
       afterCommandStruct(uro);
 
       if (com != nullptr) {
-         cif->setMain(com);
+         cond->setMain(com, boo);
       }
 
-      return cif;
+      return cond;
    }
 
    // build "else" and "else if"
@@ -273,7 +275,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       if (left.isEmpty()) {
          if (rightLen == 0) {
-            uro->ifContext.setEmptyElse(leftFirst.line);
+            uro->conditionContext.setEmptyElse(leftFirst.line);
             return nullptr;
          }
 
@@ -284,7 +286,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          uro->vars.varsLevelDown();
 
          if (com != nullptr) {
-            uro->ifContext.setElse(com, leftFirst.line);
+            uro->conditionContext.setElse(com, leftFirst.line);
          }
       }
       else {
@@ -307,7 +309,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
 
          if (rightLen == 0) {
-            uro->ifContext.addElseIf(boo, new C_DoNothing(), leftFirst.line);
+            uro->conditionContext.addElseIf(boo, new C_DoNothing(), leftFirst.line);
             return nullptr;
          }
 
@@ -318,7 +320,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          uro->vars.varsLevelDown();
 
          if (com != nullptr) {
-            uro->ifContext.addElseIf(boo, com, leftFirst.line);
+            uro->conditionContext.addElseIf(boo, com, leftFirst.line);
          }
       }
 
@@ -482,7 +484,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
    aggr = new Aggregate(uro);
    uro->vc.addAggregate(aggr);
 
-   beforeCommandStruct(nullptr, uro);
+   beforeCommandStruct(uro);
       com = parseCommands(rightTokens, uro);
    afterCommandStruct(uro);
 
@@ -505,7 +507,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
    aggr = new Aggregate(uro);
    uro->vc.addAggregate(aggr);
 
-   beforeCommandStruct(nullptr, uro);
+   beforeCommandStruct(uro);
       com = parseCommands(rightTokens, uro);
    afterCommandStruct(uro);
 
@@ -520,15 +522,21 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
    return success;
 }
 
-static void beforeCommandStruct(CS_If* pntr, Uroboros* uro)
+static void beforeCommandStruct(Uroboros* uro)
 {
-   uro->ifContext.addIfParseUnit(pntr);
+   uro->conditionContext.addIfParseUnit();
+   uro->vars.varsLevelUp();
+}
+
+static void beforeCommandStruct(CS_Condition* cond, Uroboros* uro)
+{
+   uro->conditionContext.addIfParseUnit(cond);
    uro->vars.varsLevelUp();
 }
 
 static void afterCommandStruct(Uroboros* uro)
 {
-   uro->ifContext.retreatIfParseUnit();
+   uro->conditionContext.retreatIfParseUnit();
    uro->vars.varsLevelDown();
 }
 

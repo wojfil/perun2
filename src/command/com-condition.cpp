@@ -17,61 +17,50 @@
 #include "../util.h"
 
 
-void CS_If::setMain(Command* com)
+CS_Condition::CS_Condition()
+  : command(new C_DoNothing()) { }
+
+CS_Condition::~CS_Condition()
 {
-   mainCommand = com;
-   hasMain = true;
+   delete this->command;
 }
 
-
-void CS_If::setElse(Command* com)
+void CS_Condition::setMain(Command* mainCom, Generator<_boo>* mainCond)
 {
-   elseCommand = com;
-   hasElse = true;
-   hasAlternatives = true;
+   this->mainCommand = mainCom;
+   this->mainCondition = mainCond;
 }
 
-
-void CS_If::addElseIf(Generator<_boo>* cond, Command* com)
+void CS_Condition::setCommand(Command* com)
 {
-   elseIfConditions.push_back(cond);
-   elseIfCommands.push_back(com);
-   elseIfCount++;
-   hasAlternatives = true;
+   delete this->command;
+   this->command = com;
 }
 
-
-void CS_If::run()
+Command* CS_Condition::getMainCommand()
 {
-   if (this->uroboros->running) {
-      if (condition->getValue()) {
-         if (hasMain) {
-            mainCommand->run();
-         }
-      }
-      else if (hasAlternatives) {
-         for (_size i = 0; i < elseIfCount && this->uroboros->running; i++) {
-            if ((elseIfConditions[i])->getValue()) {
-               (elseIfCommands[i])->run();
-               return;
-            }
-         }
-         if (this->uroboros->running && hasElse) {
-            elseCommand->run();
-         }
-      }
-   }
+   return this->mainCommand;
 }
 
+Generator<_boo>* CS_Condition::getMainCondition()
+{
+   return this->mainCondition;
+}
+
+void CS_Condition::run()
+{
+   this->command->run();
+}
 
 
 If_Base::If_Base(Generator<_boo>* cond, Command* com)
    : condition(cond), mainCommand(com) { }
 
+
 If_Base::~If_Base()
 {
-   delete condition;
-   delete mainCommand;
+   delete this->condition;
+   delete this->mainCommand;
 }
 
 
@@ -91,7 +80,7 @@ If_Else::If_Else(Generator<_boo>* cond, Command* com, Command* alt)
 
 If_Else::~If_Else()
 {
-   delete altCommand;
+   delete this->altCommand;
 }
 
 void If_Else::run()
@@ -110,8 +99,8 @@ If_ElseIf::If_ElseIf(Generator<_boo>* cond, Command* com, Generator<_boo>* altCo
 
 If_ElseIf::~If_ElseIf()
 {
-   delete altCondition;
-   delete altCommand;
+   delete this->altCondition;
+   delete this->altCommand;
 }
 
 void If_ElseIf::run()
@@ -130,9 +119,9 @@ If_ElseIfElse::If_ElseIfElse(Generator<_boo>* cond, Command* com, Generator<_boo
 
 If_ElseIfElse::~If_ElseIfElse()
 {
-   delete altCondition;
-   delete altCommand;
-   delete elseCommand;
+   delete this->altCondition;
+   delete this->altCommand;
+   delete this->elseCommand;
 }
 
 void If_ElseIfElse::run()
@@ -149,7 +138,7 @@ void If_ElseIfElse::run()
 }
 
 
-If_ManyAlternatives::If_ManyAlternatives(Generator<_boo>* cond, Command* com, 
+If_ManyAlternatives::If_ManyAlternatives(Generator<_boo>* cond, Command* com,
       const std::vector<Generator<_boo>*>& altConds, const std::vector<Command*>& altComms)
    : If_Base(cond, com), altConditions(altConds), altCommands(altComms), altCount(altConds.size()) { }
 
@@ -160,7 +149,7 @@ If_ManyAlternatives::~If_ManyAlternatives()
 }
 
 
-If_Alts::If_Alts(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds, 
+If_Alts::If_Alts(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds,
    const std::vector<Command*>& altComms)
    : If_ManyAlternatives(cond, com, altConds, altComms) { }
 
@@ -180,13 +169,13 @@ void If_Alts::run()
 }
 
 
-If_AltsElse::If_AltsElse(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds, 
+If_AltsElse::If_AltsElse(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds,
    const std::vector<Command*>& altComms, Command* els)
    : If_ManyAlternatives(cond, com, altConds, altComms), elseCommand(els) { }
 
 If_AltsElse::~If_AltsElse()
 {
-   delete elseCommand;
+   delete this->elseCommand;
 }
 
 void If_AltsElse::run()

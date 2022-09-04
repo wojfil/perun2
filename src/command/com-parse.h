@@ -27,15 +27,17 @@
 
 
 Command* parseCommands(const Tokens& tks, Uroboros* uro);
+
 static Command* commandStruct(const Tokens& tks, const _int& sublen,
    const _int& index, const _int& open, Uroboros* uro);
-static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, const Tokens& right, 
+static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, const Tokens& right,
    const ThisState& prevState, Uroboros* uro);
 static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,
    const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _boo& hasMemory);
 static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,
    const ThisState& prevState, Aggregate*& aggr);
-static void beforeCommandStruct(CS_If* pntr, Uroboros* uro);
+static void beforeCommandStruct(CS_Condition* cond, Uroboros* uro);
+static void beforeCommandStruct(Uroboros* uro);
 static void afterCommandStruct(Uroboros* uro);
 static Command* command(Tokens& tks, Uroboros* uro);
 static Command* commandMisc(const Tokens& tks, Uroboros* uro);

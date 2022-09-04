@@ -70,6 +70,7 @@ _boo Uroboros::uro_parse()
       Tokens tks(&this->tokens);
       checkBrackets(tks);
       this->commands = parseCommands(tks, this);
+      this->conditionContext.finish();
    }
    catch (const SyntaxException& ex) {
       rawPrint(ex.getMessage());
@@ -92,13 +93,6 @@ _boo Uroboros::uro_postParse()
 
    // this is potential direction of optimizations
    // next iteration of syntax analysis after successful parsing of commands
-   // 1) variables, that appear only once are incorporated into optimized expressions as constants
-   // 2) If statements, that do not contain any Else/Else If structure are transformed into simpler forms
-   // 3) loops, that do not feature any attribute are also simplified
-   // how to do that? potential solution:
-   // every Command has a method: Command* postParse();
-   // it returns nullptr by default
-   // we can override this method, so the command can return a simplified form of itself if possible
 
    return true;
 };

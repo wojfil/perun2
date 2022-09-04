@@ -57,7 +57,7 @@ public:
    SideProcess sideProcess;
    Literals literals;
    const _uint32 flags;
-   IfContext ifContext;
+   ConditionContext conditionContext;
    const PatternParser patternParser;
 
    _boo running = true;

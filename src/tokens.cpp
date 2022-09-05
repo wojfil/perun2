@@ -380,7 +380,11 @@ _boo Tokens::isPossibleListElement() const
 
 _boo Tokens::isPossibleBinary() const
 {
-   if (!containsSymbol(PG_CHAR_QUESTION_MARK)) {
+   if (guardian->knows(PG_POSSIBLE_BINARY)) {
+      return guardian->protects(PG_POSSIBLE_BINARY);
+   }
+
+   if (!containsSymbol(PG_CHAR_QUESTION_MARK) || containsSymbol(PG_CHAR_COLON)) {
       guardian->set(PG_POSSIBLE_BINARY, false);
       return false;
    }
@@ -413,6 +417,10 @@ _boo Tokens::isPossibleBinary() const
 
 _boo Tokens::isPossibleTernary() const
 {
+   if (guardian->knows(PG_POSSIBLE_TERNARY)) {
+      return guardian->protects(PG_POSSIBLE_TERNARY);
+   }
+
    if (!containsSymbol(PG_CHAR_QUESTION_MARK) || !containsSymbol(PG_CHAR_COLON)) {
       guardian->set(PG_POSSIBLE_TERNARY, false);
       return false;

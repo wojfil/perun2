@@ -31,6 +31,12 @@ void CS_Condition::setMain(Command* mainCom, Generator<_boo>* mainCond)
    this->mainCondition = mainCond;
 }
 
+void CS_Condition::setMain(Generator<_boo>* mainCond)
+{
+   this->mainCommand = new C_DoNothing();
+   this->mainCondition = mainCond;
+}
+
 void CS_Condition::setCommand(Command* com)
 {
    delete this->command;

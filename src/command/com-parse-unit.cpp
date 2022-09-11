@@ -21,6 +21,7 @@
 ConditionUnit::ConditionUnit(CS_Condition* pntr)
   : pointer(pntr) { };
 
+
 void ConditionUnit::finish()
 {
    if (this->pointer == nullptr) {
@@ -103,125 +104,106 @@ void ConditionUnit::closeElse()
    this->elseClosed = true;
 }
 
-void ConditionUnit::unlock()
+void ConditionUnit::lock()
 {
-   this->locked = false;
+   this->locked = true;
 }
 
 
-void ConditionContext::addIfParseUnit()
+
+void ConditionContext::add(CS_Condition* pntr)
 {
-   if (!this->units.empty() && this->units.back().isClosed()) {
-      this->units.back().finish();
-      this->units.pop_back();
-   }
-
-   this->units.emplace_back(nullptr);
-}
-
-void ConditionContext::addIfParseUnit(CS_Condition* pntr)
-{
-   if (!this->units.empty() && this->units.back().isClosed()) {
-      this->units.back().finish();
-      this->units.pop_back();
-   }
-
    this->units.emplace_back(pntr);
 }
 
-void ConditionContext::retreatIfParseUnit()
+void ConditionContext::addClosed(CS_Condition* pntr)
 {
-   if (this->units.empty()) {
-      return;
-   }
+   this->units.emplace_back(pntr);
+   this->units.back().close();
+}
 
-   if (this->units.back().isClosed()) {
-      this->units.back().finish();
-      this->units.pop_back();
-   }
-
-   if (!this->units.empty()) {
-      ConditionUnit& cond = this->units.back();
-
-      if (cond.pointer == nullptr) {
-         cond.finish();
+void ConditionContext::deleteClosedUnits()
+{
+   while (!this->units.empty()) {
+      ConditionUnit& cu = this->units.back();
+      if (cu.isClosed()) {
+         cu.finish();
          this->units.pop_back();
       }
       else {
-         cond.close();
-         cond.unlock();
+         cu.close();
+         break;
       }
    }
 }
 
-void ConditionContext::lockLastIf()
+void ConditionContext::deleteLast()
+{
+   this->units.pop_back();
+}
+
+void ConditionContext::lockLast()
 {
    if (!this->units.empty()) {
-      ConditionUnit& cond = this->units.back();
-
-      if (cond.pointer != nullptr && cond.isClosed()) {
-         cond.finish();
-         this->units.pop_back();
+      ConditionUnit& cu = this->units.back();
+      if (cu.isClosed()) {
+         cu.lock();
       }
    }
 }
 
-void ConditionContext::setElse(Command* com, const _int& line)
+_boo ConditionContext::isExpandable() const
 {
-   if (this->units.empty() || this->units.back().pointer == nullptr || this->units.back().isLocked()) {
+   if (this->units.empty()) {
+      return false;
+   }
+
+   const ConditionUnit& cu = this->units.back();
+   return cu.isClosed() && !cu.isLocked() && cu.pointer != nullptr;
+}
+
+void ConditionContext::addElse(Command* com, const _int& line)
+{
+   if (!this->isExpandable()) {
       throw SyntaxException(L"structure 'else' is not preceded by a structure 'if' ", line);
    }
 
-   ConditionUnit& cond = this->units.back();
+   ConditionUnit& cu = this->units.back();
 
-   if (cond.isElseClosed()) {
-      throw SyntaxException(
-         L"structure 'if' already contains an assigned structure 'else'", line);
+   if (cu.isElseClosed()) {
+      throw SyntaxException(L"structure 'if' already contains an assigned structure 'else'", line);
    }
 
-   cond.setElse(com);
-   cond.closeElse();
+   cu.setElse(com);
+   cu.closeElse();
 }
 
-void ConditionContext::setEmptyElse(const _int& line)
+void ConditionContext::addEmptyElse(const _int& line)
 {
-   if (this->units.empty() || this->units.back().pointer == nullptr || this->units.back().isLocked()) {
-      throw SyntaxException(
-         L"structure 'else' is not preceded by a structure 'if'", line);
+   if (!this->isExpandable()) {
+      throw SyntaxException(L"structure 'else' is not preceded by a structure 'if' ", line);
    }
 
-   ConditionUnit& cond = this->units.back();
+   ConditionUnit& cu = this->units.back();
 
-   if (cond.isElseClosed()) {
-      throw SyntaxException(
-         L"structure 'if' already contains an assigned structure 'else'", line);
+   if (cu.isElseClosed()) {
+      throw SyntaxException(L"structure 'if' already contains an assigned structure 'else'", line);
    }
 
-   cond.closeElse();
+   cu.closeElse();
 }
 
 void ConditionContext::addElseIf(Generator<_boo>* cond, Command* com, const _int& line)
 {
-   if (this->units.empty() || this->units.back().pointer == nullptr || this->units.back().isLocked()) {
-      throw SyntaxException(
-         L"structure 'else if' is not preceded by a structure 'if'", line);
+   if (!this->isExpandable()) {
+      throw SyntaxException(L"structure 'else if' is not preceded by a structure 'if'", line);
    }
 
-   ConditionUnit& condUnit = this->units.back();
+   ConditionUnit& cu = this->units.back();
 
-   if (condUnit.isElseClosed()) {
-      throw SyntaxException(
-         L"structure 'else if' should appear before the structure 'else'", line);
+   if (cu.isElseClosed()) {
+      throw SyntaxException(L"structure 'else if' should have appeared before the structure 'else'", line);
    }
 
-   condUnit.addElseIf(com, cond);
+   cu.addElseIf(com, cond);
 }
-
-void ConditionContext::finish()
-{
-   if (!this->units.empty()) {
-      this->units.back().finish();
-      this->units.pop_back();
-   }
-}
-

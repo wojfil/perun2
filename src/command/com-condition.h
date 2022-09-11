@@ -20,7 +20,6 @@
 #include "../datatype/primitives.h"
 #include "../util.h"
 #include "../uroboros.h"
-#include <vector>
 
 
 struct CS_Condition : Command
@@ -29,6 +28,7 @@ public:
    CS_Condition();
    ~CS_Condition();
    void setMain(Command* mainCom, Generator<_boo>* mainCond);
+   void setMain(Generator<_boo>* mainCond);
    void setCommand(Command* com);
    Command* getMainCommand();
    Generator<_boo>* getMainCondition();

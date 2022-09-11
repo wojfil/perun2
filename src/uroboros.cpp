@@ -70,7 +70,7 @@ _boo Uroboros::uro_parse()
       Tokens tks(&this->tokens);
       checkBrackets(tks);
       this->commands = parseCommands(tks, this);
-      this->conditionContext.finish();
+      this->conditionContext.deleteClosedUnits();
    }
    catch (const SyntaxException& ex) {
       rawPrint(ex.getMessage());

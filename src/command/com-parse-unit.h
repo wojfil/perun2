@@ -39,14 +39,15 @@ public:
 
    void close();
    void closeElse();
-   void unlock();
+   void lock();
 
    CS_Condition* const pointer;
+
 
 private:
    _boo closed = false;
    _boo elseClosed = false;
-   _boo locked = true;
+   _boo locked = false;
 
    Command* elseCommand = nullptr;
    std::vector<Command*> elseIfCommands;
@@ -57,14 +58,17 @@ private:
 struct ConditionContext
 {
 public:
-   void addIfParseUnit();
-   void addIfParseUnit(CS_Condition* pntr);
-   void retreatIfParseUnit();
-   void lockLastIf();
-   void setElse(Command* com, const _int& line);
-   void setEmptyElse(const _int& line);
+
+   void add(CS_Condition* pntr);
+   void addClosed(CS_Condition* pntr);
+   void deleteClosedUnits();
+   void deleteLast();
+   void lockLast();
+   _boo isExpandable() const;
+   void addElse(Command* com, const _int& line);
+   void addEmptyElse(const _int& line);
    void addElseIf(Generator<_boo>* cond, Command* com, const _int& line);
-   void finish();
+
 
 private:
    std::vector<ConditionUnit> units;

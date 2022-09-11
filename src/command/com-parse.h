@@ -36,9 +36,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
    const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _boo& hasMemory);
 static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,
    const ThisState& prevState, Aggregate*& aggr);
-static void beforeCommandStruct(CS_Condition* cond, Uroboros* uro);
-static void beforeCommandStruct(Uroboros* uro);
-static void afterCommandStruct(Uroboros* uro);
+static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, Uroboros* uro);
 static Command* command(Tokens& tks, Uroboros* uro);
 static Command* commandMisc(const Tokens& tks, Uroboros* uro);
 static Command* commandVarChange(const Tokens& left, const Tokens& right,

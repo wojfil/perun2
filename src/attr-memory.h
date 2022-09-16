@@ -26,12 +26,8 @@
 struct AttributeMemory
 {
 public:
-   AttributeMemory(Attribute* attr, InnerVariables* iv)
-      : attribute(attr), hasAttribute(true), inner(iv) { };
-
-   AttributeMemory(InnerVariables* iv)
-      : attribute(nullptr), hasAttribute(false), inner(iv) { };
-
+   AttributeMemory(Attribute* attr, InnerVariables* iv);
+   AttributeMemory(InnerVariables* iv);
 
    void load();
    void restore() const;

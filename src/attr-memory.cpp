@@ -17,6 +17,13 @@
 #include "os.h"
 
 
+AttributeMemory::AttributeMemory(Attribute* attr, InnerVariables* iv)
+   : attribute(attr), hasAttribute(true), inner(iv) { };
+
+AttributeMemory::AttributeMemory(InnerVariables* iv)
+   : attribute(nullptr), hasAttribute(false), inner(iv) { };
+
+
 void AttributeMemory::load()
 {
    if (!hasAttribute || attribute->markToRun) {

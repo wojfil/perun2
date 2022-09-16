@@ -173,8 +173,7 @@ static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
       return units;
    }
 
-   Generator<std::vector<T>>* lists = parseListedLists<T>(elements, uro);
-   return lists;
+   return parseListedLists<T>(elements, uro);
 }
 
 
@@ -222,41 +221,42 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
    const _boo& hasAttr, const _boo& isFinal, const _boo& hasMemory, Uroboros* uro, T& base)
 {
    const _size fplen = prototypes.size();
-   if (fplen != 0) {
-      _int lastWhereId = -1;
+   _int lastWhereId = -1;
 
-      // look for index of the last Where filter in the list
-      // only this one filter will run an Attribute
-      // attributes of all Where filters are combined into this one
-      for (_int i = fplen - 1; i >= 0; i--) {
-         if (prototypes[i]->getFilterType() == FilterType::ft_Where) {
-            lastWhereId = i;
-            break;
-         }
+   // look for index of the last Where filter in the list
+   // only this one filter will run an Attribute
+   // attributes of all Where filters are combined into this one
+   for (_int i = fplen - 1; i >= 0; i--) {
+      if (prototypes[i]->getFilterType() == FilterType::ft_Where) {
+         lastWhereId = i;
+         break;
       }
+   }
 
-      for (_size i = 0; i < fplen; i++) {
-         FilterPrototype<T>* fp = prototypes[i];
-         if (i == lastWhereId) {
-            base = fp->build(base, attr, hasMemory, uro);
-         }
-         else {
-            base = fp->build(base, nullptr, hasMemory, uro);
-         }
-      }
-
-      deleteVector(prototypes);
-      prototypes.clear();
-
-      if (isFinal) {
-         if (hasAttr && lastWhereId == -1) {
-            delete attr;
-         }
+   for (_size i = 0; i < fplen; i++) {
+      FilterPrototype<T>* fp = prototypes[i];
+      if (i == lastWhereId) {
+         base = fp->build(base, attr, hasMemory, uro);
       }
       else {
-         if (hasAttr && lastWhereId != -1) {
-            attr = new Attribute(uro);
+         base = fp->build(base, nullptr, hasMemory, uro);
+      }
+   }
+
+   deleteVector(prototypes);
+   prototypes.clear();
+
+   if (isFinal) {
+      if (hasAttr && lastWhereId == -1) {
+         delete attr;
+      }
+   }
+   else {
+      if (hasAttr) {
+         if (lastWhereId == -1) {
+            delete attr;
          }
+         attr = new Attribute(uro);
       }
    }
 };
@@ -290,12 +290,14 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
    // attribute
    const _boo hasAttr = (state == ThisState::ts_String);
    Attribute* attr;
+   _boo hasBridgeAttr = (fdata != nullptr);
+
    if (hasAttr) {
-      if (fdata == nullptr) {
-         attr = new Attribute(uro);
+      if (hasBridgeAttr) {
+         attr = new BridgeAttribute(uro, fdata);
       }
       else {
-         attr = new BridgeAttribute(ATTR_NULL, uro, fdata);
+         attr = new Attribute(uro);
       }
    }
    else {
@@ -352,7 +354,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
          }
          case Keyword::kw_Order: {
             buildFilterPrototypes(prototypes, attr, hasAttr, false, hasMemory, uro, base);
-            addOrderByFilter<T, T2>(base, state, ts.first(), ts2, uro);
+            addOrderByFilter<T, T2>(base, state, ts.first(), ts2, hasBridgeAttr ? fdata : nullptr, uro);
+            hasBridgeAttr = false;
             break;
          }
       }

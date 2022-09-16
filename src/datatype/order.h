@@ -19,77 +19,15 @@
 #include "datatype.h"
 #include "../util.h"
 #include "../uroboros.h"
+#include "../attr-memory.h"
 
-
-template <typename T>
-struct OrderBase : Generator<std::vector<T>>
-{
-public:
-   virtual _boo hasVolatileDepth() const = 0;
-   virtual _numi getDepth(const _size& index) const = 0;
-   virtual void shuffleDepth(const std::vector<_size>& indices, const _size& length) { };
-};
-
-
-template <typename T>
-struct OrderBase_Depthless : OrderBase<T>
-{
-public:
-   OrderBase_Depthless(Generator<std::vector<T>>* bas)
-      : base(bas) { }
-
-   ~OrderBase_Depthless()
-   {
-      delete base;
-   }
-
-   std::vector<T> getValue() override
-   {
-      return this->base->getValue();
-   }
-
-   _boo hasVolatileDepth() const override
-   {
-      return false;
-   }
-
-   _numi getDepth(const _size& index) const override
-   {
-      return _numi(0LL);
-   }
-
-private:
-   Generator<std::vector<T>>* base;
-};
-
-
-struct OrderBase_Definition : OrderBase<_str>
-{
-public:
-   OrderBase_Definition(_def* bas, Uroboros* uro)
-      : base(bas), uroboros(uro), inner(&uro->vars.inner) { }
-
-   ~OrderBase_Definition();
-
-   std::vector<_str> getValue() override;
-   _boo hasVolatileDepth() const override;
-   _numi getDepth(const _size& index) const override;
-   void shuffleDepth(const std::vector<_size>& indices, const _size& length) override;
-
-private:
-   _def* base;
-   Uroboros* uroboros;
-   InnerVariables* inner;
-   _boo volatileDepth;
-   std::vector<_numi> depths;
-};
 
 
 struct OrderIndices
 {
 public:
-   void clearValues(const _size& length);
-   std::vector<_size> values;
+   void prepare(const _size& length);
+   std::vector<_size> values; // use a flexible array instead ?? would fit
 };
 
 
@@ -97,6 +35,7 @@ struct Order
 {
 public:
    virtual void clearValues(const _size& length) = 0;
+   virtual void clearValues() = 0;
    virtual void addValues() = 0;
    virtual _boo matchesSwap(const _int& start, const _int& end) const = 0;
 };
@@ -140,6 +79,12 @@ public:
       this->nextUnit->clearValues(length);
    }
 
+   void clearValues() override
+   {
+      this->values.clear();
+      this->nextUnit->clearValues();
+   }
+
    void addValues() override
    {
       this->values.push_back(this->valueGenerator->getValue());
@@ -178,6 +123,11 @@ public:
       clearAndReserve(this->values, length);
    }
 
+   void clearValues() override
+   {
+      this->values.clear();
+   }
+
    void addValues() override
    {
       this->values.push_back(this->valueGenerator->getValue());
@@ -193,11 +143,11 @@ public:
 
 
 template <typename T>
-struct OrderBy : Generator<std::vector<T>>
+struct OrderBy
 {
 public:
-   OrderBy(OrderBase<T>* bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros* uro)
-      : base(bas), attribute(attr), inner(&uro->vars.inner),
+   OrderBy(Attribute* attr, OrderIndices* indices, Order* ord, Uroboros* uro)
+      : attribute(attr), inner(&uro->vars.inner),
         hasAttribute(attr != nullptr), orderIndices(indices), order(ord)
    {
       this->inner->createThisVarRef(thisReference);
@@ -205,56 +155,11 @@ public:
 
    ~OrderBy()
    {
-      delete base;
       delete attribute;
       delete orderIndices;
       delete order;
    }
 
-   std::vector<T> getValue() override
-   {
-      this->result = this->base->getValue();
-      const _size length = this->result.size();
-
-      if (length == 0) {
-         return this->result;
-      }
-
-      this->orderIndices->clearValues(length);
-      this->order->clearValues(length);
-
-      const _numi prevIndex = this->inner->index.value;
-      const T prevThis = this->thisReference->value;
-      const _boo hasVolatileDepth = this->base->hasVolatileDepth();
-
-      for (_size i = 0; i < length; i++) {
-         this->thisReference->value = this->result[i];
-         this->inner->index.value = _numi(static_cast<_nint>(i));
-
-         if (this->hasAttribute) {
-            this->attribute->run();
-         }
-         this->orderIndices->values[i] = i;
-         if (hasVolatileDepth) {
-            this->inner->depth.value = this->base->getDepth(i);
-         }
-
-         this->order->addValues();
-      }
-
-      this->quicksort(0, length - 1);
-
-      this->inner->index.value = prevIndex;
-      this->thisReference->value = prevThis;
-
-      shuffleByIndices(this->result, this->orderIndices->values, length);
-
-      if (hasVolatileDepth) {
-         this->base->shuffleDepth(this->orderIndices->values, length);
-      }
-
-      return result;
-   }
 
    void quicksort(const _int& start, const _int& end)
    {
@@ -273,23 +178,114 @@ public:
          if (this->order->matchesSwap(j, end)) {
             i++;
             std::iter_swap(this->orderIndices->values.begin() + i, this->orderIndices->values.begin() + j);
+            std::iter_swap(this->resultPtr->begin() + i, this->resultPtr->begin() + j);
+
          }
       }
 
       const _int ip = i + 1;
       std::iter_swap(this->orderIndices->values.begin() + ip, this->orderIndices->values.begin() + end);
+      std::iter_swap(this->resultPtr->begin() + ip, this->resultPtr->begin() + end);
       return ip;
    }
 
-private:
-   std::vector<T> result;
+protected:
    OrderIndices* orderIndices;
-   OrderBase<T>* base;
    Order* order;
    Attribute* attribute;
    const _boo hasAttribute;
    InnerVariables* inner;
    Variable<T>* thisReference;
+   std::vector<T>* resultPtr;
+};
+
+
+template <typename T>
+struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
+{
+public:
+   OrderBy_List(Generator<std::vector<T>>* bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros* uro)
+      : OrderBy<T>(attr, indices, ord, uro), base(bas) { }
+
+   ~OrderBy_List()
+   {
+      delete this->base;
+   }
+
+   std::vector<T> getValue() override
+   {
+      std::vector<T> result = this->base->getValue();
+      const _size length = result.size();
+
+      if (length == 0) {
+         return result;
+      }
+
+      this->resultPtr = &result;
+      this->orderIndices->prepare(length);
+      this->order->clearValues(length);
+
+      const _numi prevIndex = this->inner->index.value;
+      const _numi prevDepth = this->inner->depth.value;
+      const T prevThis = this->thisReference->value;
+      this->inner->depth.value.setToZero();
+
+      for (_size i = 0; i < length; i++) {
+         this->thisReference->value = result[i];
+         this->inner->index.value = _numi(static_cast<_nint>(i));
+
+         if (this->hasAttribute) {
+            this->attribute->run();
+         }
+
+         this->orderIndices->values[i] = i;
+         this->order->addValues();
+      }
+
+      this->quicksort(0, length - 1);
+
+      this->inner->index.value = prevIndex;
+      this->inner->depth.value = prevDepth;
+      this->thisReference->value = prevThis;
+
+      return result;
+   }
+
+private:
+   Generator<std::vector<T>>* base;
+
+};
+
+
+struct OrderBy_Definition : OrderBy<_str>, _def
+{
+public:
+   OrderBy_Definition(_def* bas, Attribute* attr, const _boo& hasMem,
+      OrderIndices* indices, Order* ord, Uroboros* uro);
+   ~OrderBy_Definition();
+
+   void reset() override;
+   _boo hasNext() override;
+
+private:
+   _def* base;
+   _boo first = true;
+   Uroboros* uroboros;
+   InnerVariables* inner;
+   const _boo hasMemory;
+   AttributeMemory attrMemory;
+
+   _size length;
+   _size index;
+
+   _numi prevIndex;
+   _numi prevDepth;
+   _str prevThis;
+
+   _list result;
+
+   _boo hasVolatileDepth;
+   std::vector<_nint> depths;
 };
 
 

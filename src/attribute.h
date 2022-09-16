@@ -88,6 +88,7 @@ protected:
 struct BridgeAttribute : Attribute
 {
 public:
+   BridgeAttribute(Uroboros* uro, _fdata* data);
    BridgeAttribute(const _aunit& val, Uroboros* uro, _fdata* data);
    void run() const;
 

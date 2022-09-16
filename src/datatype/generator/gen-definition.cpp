@@ -423,55 +423,6 @@ _boo Join_DefDef::hasNext()
 }
 
 
-void OrderByCast::reset()
-{
-   if (!this->first) {
-      this->first = true;
-   }
-}
-
-
-_boo OrderByCast::hasNext()
-{
-   if (this->first) {
-      if (this->hasMemory) {
-         this->attrMemory.load();
-      }
-
-      this->prevIndex = this->inner->index.value;
-      this->prevThis = this->inner->this_s.value;
-
-      this->first = false;
-      this->values = this->base->getValue();
-      this->index = 0;
-      this->length = this->values.size();
-      this->hasVolatileDepth = this->obase->hasVolatileDepth();
-      this->inner->depth.value.setToZero();
-   }
-
-   if (this->uroboros->running && this->index != this->length) {
-      this->value = values[index];
-      this->inner->this_s.value = this->value;
-      this->inner->index.value.value.i = static_cast<_nint>(this->index);
-      if (hasVolatileDepth) {
-         this->inner->depth.value = this->obase->getDepth(index);
-      }
-      this->index++;
-      return true;
-   }
-
-   this->first = true;
-   this->inner->index.value = this->prevIndex;
-   this->inner->this_s.value = this->prevThis;
-
-   if (this->hasMemory) {
-      this->attrMemory.restore();
-   }
-
-   return false;
-}
-
-
 void DefTernary::reset()
 {
    if (!first) {

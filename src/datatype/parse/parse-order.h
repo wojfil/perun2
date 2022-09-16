@@ -84,22 +84,27 @@ template <typename T>
 void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory,
    Generator<std::vector<T>>*& result, OrderIndices* indices, Order* order, Uroboros* uro)
 {
-   result = new OrderBy<T>(new OrderBase_Depthless<T>(result), attr, indices, order, uro);
+   result = new OrderBy_List<T>(result, attr, indices, order, uro);
 }
 
 
 template <typename T, typename T2>
 void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeyword,
-   Tokens& ts2, Uroboros* uro)
+   Tokens& ts2, _fdata* fdata, Uroboros* uro)
 {
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = state;
    const _boo hasMemory = uro->vc.anyAttribute();
-   Attribute* attr = state == ThisState::ts_String
-      ? new Attribute(uro)
-      : nullptr;
+   Attribute* attr = nullptr;
 
    if (state == ThisState::ts_String) {
+      if (fdata == nullptr) {
+         attr = new Attribute(uro);
+      }
+      else {
+         attr = new BridgeAttribute(uro, fdata);
+      }
+
       uro->vc.addAttribute(attr);
    }
 
@@ -138,8 +143,6 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          resetOrderParseSettings(state, prevThisState, uro);
          return;
       }
-
-      return;
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {

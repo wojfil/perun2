@@ -235,38 +235,6 @@ private:
 };
 
 
-struct OrderByCast : _def
-{
-public:
-   OrderByCast(Generator<_list>* b, Attribute* attr, const _boo& hasMem, OrderBase_Definition* ob, Uroboros* uro)
-      : base(b), first(true), attribute(attr), hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)),
-      obase(ob), uroboros(uro), inner(&uro->vars.inner) { };
-
-   ~OrderByCast() {
-      delete base;
-   }
-
-   void reset() override;
-   _boo hasNext() override;
-
-private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
-   Generator<_list>* base;
-   OrderBase_Definition* obase;
-   _boo hasVolatileDepth;
-   _list values;
-   _size index;
-   _size length;
-   _boo first;
-   Attribute* attribute;
-   const _boo hasMemory;
-   AttributeMemory attrMemory;
-   _numi prevIndex;
-   _str prevThis;
-};
-
-
 // ternary and binary works with Definitions in its own way
 // so instead of using templates from 'gen.generic.h'
 // here are special structs

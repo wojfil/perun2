@@ -72,6 +72,23 @@ private:
 };
 
 
+struct DefinitionChain : _def
+{
+public:
+   DefinitionChain(_def* def, Uroboros* uro);
+   ~DefinitionChain();
+
+   _boo hasNext() override;
+   void reset() override;
+
+private:
+   InnerVariables* inner;
+   _def* definition;
+   _nint index = 0LL;
+   _boo finished = true;
+};
+
+
 struct Filter_LimitDef : DefFilter
 {
 public:

@@ -90,6 +90,42 @@ _boo Filter_WhereDef::hasNext()
 }
 
 
+DefinitionChain::DefinitionChain(_def* def, Uroboros* uro)
+   : definition(def), inner(&uro->vars.inner) { };
+
+
+DefinitionChain::~DefinitionChain()
+{
+   delete this->definition;
+};
+
+
+void DefinitionChain::reset()
+{
+   if (!this->finished) {
+      this->finished = true;
+      this->index = 0LL;
+      this->definition->reset();
+   }
+};
+
+
+_boo DefinitionChain::hasNext()
+{
+   if (this->definition->hasNext()) {
+      this->finished = false;
+      this->value = this->definition->getValue();
+      this->inner->index.value.value.i = this->index;
+      this->index++;
+      return true;
+   }
+
+   this->finished = true;
+   this->index = 0LL;
+   return false;
+};
+
+
 _boo Filter_LimitDef::hasNext()
 {
    if (first) {

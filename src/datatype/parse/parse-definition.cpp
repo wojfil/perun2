@@ -213,7 +213,7 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
 
    switch (cl) {
       case cl_Definition: {
-         return prevDef;
+         return new DefinitionChain(prevDef, uro);
       }
       case cl_String: {
          delete prevStr;

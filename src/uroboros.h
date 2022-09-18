@@ -23,7 +23,6 @@
 #include "terminator.h"
 #include "keyword.h"
 #include "side-process.h"
-#include "literals.h"
 #include "command/com.h"
 #include "command/com-parse-unit.h"
 #include "datatype/generator/gen-pattern.h"
@@ -55,7 +54,6 @@ public:
    Terminator terminator;
    const KeywordsData keywordsData;
    SideProcess sideProcess;
-   Literals literals;
    const _uint32 flags;
    ConditionContext conditionContext;
    const PatternParser patternParser;

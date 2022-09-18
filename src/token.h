@@ -110,6 +110,7 @@ union TokenValue
    } twoWords;
 
    // constructors:
+   TokenValue() = delete;
    TokenValue(const _char& ch) : ch(ch) {};
    TokenValue(const _char& ch, const _int& am) : chars({ ch, am }) {};
    TokenValue(const _num& n, const _size& os_id, const _size& os_len, const NumberMode& nm)
@@ -140,6 +141,7 @@ public:
    };
 
    // constructors:
+   Token() = delete;
    Token(const _char& v, const _int& li, Uroboros* uro);
    Token(const _char& v, const _int& am, const _int& li, Uroboros* uro);
    Token(const _num& v, const _int& li, const _size& os_id, const _size& os_len,

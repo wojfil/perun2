@@ -39,10 +39,10 @@ Variables::Variables(Uroboros* uro)
       { this->hashes->HASH_VAR_ARCHIVE, &this->inner.archive },
       { this->hashes->HASH_VAR_COMPRESSED, &this->inner.compressed },
       { this->hashes->HASH_VAR_ENCRYPTED, &this->inner.encrypted },
-   }, { }),
+   }, { }, uro),
    per ({
       { this->hashes->HASH_VAR_LIFETIME, &this->inner.lifetime }
-   }, { }),
+   }, { }, uro),
    tim ({
       { this->hashes->HASH_VAR_ACCESS, &this->inner.access },
       { this->hashes->HASH_VAR_CHANGE, &this->inner.change },
@@ -53,10 +53,10 @@ Variables::Variables(Uroboros* uro)
       { this->hashes->HASH_VAR_TODAY, new v_Today() },
       { this->hashes->HASH_VAR_YESTERDAY, new v_Yesterday() },
       { this->hashes->HASH_VAR_TOMORROW, new v_Tomorrow() }
-   }),
+   }, uro),
    num ({
       { this->hashes->HASH_VAR_SIZE, &this->inner.size }
-   }, { }),
+   }, { }, uro),
    str_ ( {
       { this->hashes->HASH_VAR_DRIVE, &this->inner.drive },
       { this->hashes->HASH_VAR_EXTENSION, &this->inner.extension },
@@ -68,15 +68,15 @@ Variables::Variables(Uroboros* uro)
       { this->hashes->HASH_VAR_DESKTOP, new Constant<_str>(os_desktopPath()) },
       { this->hashes->HASH_VAR_UROBOROS, new Constant<_str>(this->uroPath) },
       { this->hashes->HASH_VAR_LOCATION, &this->inner.location }
-   }),
-   nlist ( { }, { } ),
-   tlist ( { }, { } ),
+   }, uro),
+   nlist ( { }, { }, uro ),
+   tlist ( { }, { }, uro ),
    list ( { },
    {
       { this->hashes->HASH_VAR_ALPHABET, new Constant<_list>(inner.getAlphabet()) },
       { this->hashes->HASH_VAR_ASCII, new Constant<_list>(inner.getAscii()) },
       { this->hashes->HASH_VAR_ARGUMENTS, new Constant<_list>(uroboros->arguments.getArgs()) }
-   }),
+   }, uro),
    defGenerators({
       { this->hashes->HASH_VAR_DIRECTORIES, new DefinitionGenerator(ELEM_DIRECTORIES, uro) },
       { this->hashes->HASH_VAR_FILES, new DefinitionGenerator(ELEM_FILES, uro) },
@@ -154,7 +154,7 @@ void Variables::takeBundlePointer(VarBundle<_list>*& bundle)
 
 template <typename T>
 _boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const ThisState& thisState,
-   Hashes* hashes, InnerVariables* inner, VariablesContext* vc, Variables* vars)
+   Hashes* hashes, InnerVariables* inner, VariablesContext* vc, Variables* vars, Uroboros* uro)
 {
    if (tk.value.word.h == hashes->HASH_VAR_THIS) {
       if (inner->thisState == thisState) {
@@ -162,7 +162,7 @@ _boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const This
          return true;
       }
       else if (inner->thisState == ThisState::ts_None) {
-         vc->attributeException(tk);
+         vc->attributeException(tk, uro);
       }
       else {
          return false;
@@ -177,14 +177,14 @@ _boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const This
 _boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_Time,
-      this->hashes, &this->inner, this->vc, this);
+      this->hashes, &this->inner, this->vc, this, this->uroboros);
 }
 
 _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 {
    if (tk.value.word.h == this->hashes->HASH_VAR_INDEX) {
       if (this->uroboros->vars.inner.thisState == ThisState::ts_None && !this->vc->anyAggregate()) {
-         throw SyntaxException(str(L"variable '", *tk.value.word.os,
+         throw SyntaxException(str(L"variable '", tk.getOriginString(this->uroboros),
             L"' can be accessed only inside a loop"), tk.line);
       }
       else {
@@ -193,19 +193,19 @@ _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
       }
    }
    else if (this->intVars.find(tk.value.word.h) != this->intVars.end()) {
-      this->vc->setAttribute(tk);
+      this->vc->setAttribute(tk, this->uroboros);
       result = new NumberIntRef(this->intVars[tk.value.word.h]);
       return true;
    }
 
    return getVarValueIncludingThis(tk, result, ThisState::ts_Number,
-      this->hashes, &this->inner, this->vc, this);
+      this->hashes, &this->inner, this->vc, this, this->uroboros);
 }
 
 _boo Variables::getVarValue(const Token& tk, Generator<_str>*& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_String,
-      this->hashes, &this->inner, this->vc, this);
+      this->hashes, &this->inner, this->vc, this, this->uroboros);
 }
 
 _boo Variables::getVarValue(const Token& tk, _def*& result)

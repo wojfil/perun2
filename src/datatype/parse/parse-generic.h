@@ -27,7 +27,7 @@
 
 
 Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro);
-void checkLimitBySize(const Tokens& tks);
+void checkLimitBySize(const Tokens& tks, Uroboros* uro);
 
 template <typename T>
 static Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
@@ -283,7 +283,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
    const _boo hasMemory = uro->vc.anyAttribute();
    const Tokens tks2(tks.list, start, length);
    std::vector<Tokens> filterTokens;
-   tks2.splitByFiltherKeywords(filterTokens);
+   tks2.splitByFiltherKeywords(filterTokens, uro);
    const _size flength = filterTokens.size();
    std::vector<FilterPrototype<T>*> prototypes;
 
@@ -314,13 +314,13 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
          case Keyword::kw_Limit:
          case Keyword::kw_Skip: {
             if (kw == Keyword::kw_Limit) {
-               checkLimitBySize(ts2);
+               checkLimitBySize(ts2, uro);
             }
 
             Generator<_num>* num;
             if (!parse(uro, ts2, num)) {
                deleteVector(prototypes);
-               throw SyntaxException(str(L"tokens after keyword '", *ts.first().value.keyword.os,
+               throw SyntaxException(str(L"tokens after keyword '", ts.first().getOriginString(uro),
                   L"' cannot be resolved to a number"), tks.first().line);
             }
 
@@ -339,7 +339,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
             if (!parse(uro, ts2, boo)) {
                deleteVector(prototypes);
                uro->vars.inner.thisState = prevThisState;
-               throw SyntaxException(str(L"tokens after keyword '", *ts.first().value.keyword.os,
+               throw SyntaxException(str(L"tokens after keyword '", ts.first().getOriginString(uro),
                   L"' cannot be resolved to a logic condition"), tks.first().line);
             }
 

@@ -36,6 +36,6 @@ static Generator<_num>* numExpTreeMerge2(
 static _boo isNumExpComputable(const std::vector<ExpElement<_num>*>& infList);
 static _boo isNumExpOperator(const _char& ch);
 static _boo isNumExpHighPriority(const _char& ch);
-void timeVariableMemberException(const Token& tk);
+void timeVariableMemberException(const Token& tk, Uroboros* uro);
 
 #endif /* EXP_PARSE_NUMBER_H */

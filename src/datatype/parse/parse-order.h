@@ -23,16 +23,16 @@ void cleanAfterOrderParseFailure(T& result, Attribute* attr, const ThisState& st
 
 
 template <typename T>
-void orderUnitFailure(const Token& tk, T& result)
+void orderUnitFailure(const Token& tk, T& result, Uroboros* uro)
 {
-   throw SyntaxException(str(L"keyword '", *tk.value.keyword.os,
+   throw SyntaxException(str(L"keyword '", tk.getOriginString(uro),
       L"' is not preceded by a value used for order"), tk.line);
 }
 
 
 template <typename T>
 void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr,
-   const ThisState& state, Order* order, OrderIndices* indices)
+   const ThisState& state, Order* order, OrderIndices* indices, Uroboros* uro)
 {
    desc = false;
    const Token& last = tks.last();
@@ -47,7 +47,7 @@ void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr,
                delete order;
             }
             cleanAfterOrderParseFailure(result, attr, state);
-            orderUnitFailure(last, result);
+            orderUnitFailure(last, result, uro);
          }
       }
       else if (kw == Keyword::kw_Desc) {
@@ -59,7 +59,7 @@ void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr,
                delete order;
             }
             cleanAfterOrderParseFailure(result, attr, state);
-            orderUnitFailure(last, result);
+            orderUnitFailure(last, result, uro);
          }
       }
    }
@@ -147,22 +147,22 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 
    if (!first.isKeyword(Keyword::kw_By)) {
       cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(str(L"keyword '", *orderKeyword.value.keyword.os,
+      throw SyntaxException(str(L"keyword '", orderKeyword.getOriginString(uro),
          L"' should be followed by a keyword 'by'"), first.line);
    }
 
    ts2.trimLeft();
    if (ts2.isEmpty()) {
       cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(str(L"declaration of '", *orderKeyword.value.keyword.os,
-         L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
+      throw SyntaxException(str(L"declaration of '", orderKeyword.getOriginString(uro),
+         L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
    }
 
    Tokens ts3 = prepareForGen(ts2, uro);
    if (ts3.isEmpty()) {
       cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(str(L"declaration of '", *orderKeyword.value.keyword.os,
-         L" ", *first.value.keyword.os, L"' filter is empty"), first.line);
+      throw SyntaxException(str(L"declaration of '", orderKeyword.getOriginString(uro),
+         L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
    }
 
    std::vector<Tokens> tokensList;
@@ -180,7 +180,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    for (_int i = length - 1; i >= 0; i--) {
       Tokens& tk = tokensList[i];
       _boo desc;
-      prepareOrderUnit(tk, desc, result, attr, state, order, indices);
+      prepareOrderUnit(tk, desc, result, attr, state, order, indices, uro);
 
       Generator<_boo>* uboo;
       if (parse(uro, tk, uboo)) {

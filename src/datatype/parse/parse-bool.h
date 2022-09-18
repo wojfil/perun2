@@ -41,9 +41,9 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    const Tokens& right, Uroboros* uro);
-static void emptyOperSideException(const Token& oper, const bool& isLeft);
+static void emptyOperSideException(const Token& oper, const bool& isLeft, Uroboros* uro);
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _boo& negated, const Tokens& tks);
+   const _str& timeMember, const _boo& negated, const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseComparisons(const Tokens& tks, Uroboros* uro);
 static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
    const Tokens& right, const CompType& ct, Uroboros* uro);

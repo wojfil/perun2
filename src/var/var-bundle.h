@@ -14,8 +14,8 @@ struct VarBundle
 {
 public:
    VarBundle(const std::map<_size, Variable<T>*>& iVars,
-      const std::map<_size, Generator<T>*>& sVars)
-    : userVars(), internalVars(iVars), specialVars(sVars) { };
+      const std::map<_size, Generator<T>*>& sVars, Uroboros* uro)
+    : userVars(), internalVars(iVars), specialVars(sVars), uroboros(uro) { };
 
    void levelUp()
    {
@@ -48,10 +48,10 @@ public:
          }
       }
       else if (this->internalVars.find(tk.value.word.h) != this->internalVars.end()) {
-         vc->setAttribute(tk);
+         vc->setAttribute(tk, this->uroboros);
 
          if (inner.thisState != ThisState::ts_String) {
-            const _str& name = *tk.value.word.os;
+            const _str name = tk.getOriginString(this->uroboros);
             throw SyntaxException(str(L"the value of variable '", name,
                L"' is undefined here. Right there we are iterating over ",
                (inner.thisState == ThisState::ts_Number) ? L"numbers. " : L"times. ",
@@ -109,6 +109,7 @@ private:
    std::map<_size, ParseVariable<T>> userVars;
    std::map<_size, Variable<T>*> internalVars;
    std::map<_size, Generator<T>*> specialVars;
+   Uroboros* uroboros;
 
 };
 

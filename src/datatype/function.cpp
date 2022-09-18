@@ -57,21 +57,21 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
    if (uro->hashes.HASH_GROUP_FUNC_BOO_STR.find(name) != uro->hashes.HASH_GROUP_FUNC_BOO_STR.end())
    {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       return simpleBoolFunction(args[0], word, uro);
    }
    else if (name == uro->hashes.HASH_FUNC_EXIST) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       _def* def;
       if (parse(uro, args[0], def)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          return new F_AnyDef(def);
@@ -80,33 +80,33 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       Generator<_list>* list;
       if (parse(uro, args[0], list)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          return new F_Exist(list, uro);
       }
       else {
-         functionArgException(1, L"list", word);
+         functionArgException(1, L"list", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_ANY) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
-         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a collection"), word.line);
       }
 
       _def* def;
       if (parse(uro, args[0], def)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
          return new F_AnyDef(def);
       }
@@ -114,8 +114,8 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       Generator<_tlist>* tlist;
       if (parse(uro, args[0], tlist)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
          return new F_Any<_tim>(tlist);
       }
@@ -123,8 +123,8 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       Generator<_nlist>* nlist;
       if (parse(uro, args[0], nlist)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
          return new F_Any<_num>(nlist);
       }
@@ -132,31 +132,31 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       Generator<_list>* list;
       if (parse(uro, args[0], list)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          return new F_Any<_str>(list);
       }
       else {
-         functionArgException(1, L"list", word);
+         functionArgException(1, L"list", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_ANYINSIDE) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str1;
       if (parse(uro, args[0], str1)) {
          delete str1;
-         throw SyntaxException(str(L"first argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"first argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a collection"), word.line);
       }
 
       _def* def;
       if (!parse(uro, args[0], def)) {
-         functionArgException(1, L"definition", word);
+         functionArgException(1, L"definition", word, uro);
       }
 
       if (len == 1) {
@@ -166,10 +166,10 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          return new F_AnyInside(def, ts, uro);
       }
 
-      checkInOperatorCommaAmbiguity(word, args[0]);
+      checkInOperatorCommaAmbiguity(word, args[0], uro);
 
       if (len > 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
@@ -178,12 +178,12 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
       else {
          delete def;
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_CONTAINS) {
       if (len != 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
@@ -194,11 +194,11 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          }
          else {
             delete str_;
-            functionArgException(2, L"string", word);
+            functionArgException(2, L"string", word, uro);
          }
       }
 
-      checkInOperatorCommaAmbiguity(word, args[0]);
+      checkInOperatorCommaAmbiguity(word, args[0], uro);
 
       _def* def;
       if (parse(uro, args[0], def)) {
@@ -208,7 +208,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          }
          else {
             delete def;
-            functionArgException(2, L"string", word);
+            functionArgException(2, L"string", word, uro);
          }
       }
 
@@ -220,7 +220,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          }
          else {
             delete tlist;
-            functionArgException(2, L"time", word);
+            functionArgException(2, L"time", word, uro);
          }
       }
 
@@ -232,7 +232,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          }
          else {
             delete nlist;
-            functionArgException(2, L"number", word);
+            functionArgException(2, L"number", word, uro);
          }
       }
 
@@ -244,22 +244,22 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          }
          else {
             delete list;
-            functionArgException(2, L"string", word);
+            functionArgException(2, L"string", word, uro);
          }
       }
       else {
-         throw SyntaxException(str(L"first argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"first argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_EXISTSINSIDE) {
       if (len == 0 || len > 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       if (len == 1) {
@@ -275,12 +275,12 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
       else {
          delete str;
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_EXISTINSIDE) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       _def* def;
@@ -292,9 +292,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
             return new F_AnyInside(def, ts, uro);
          }
          else {
-            checkInOperatorCommaAmbiguity(word, args[0]);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
             if (len > 2) {
-               functionArgNumberException(len, word);
+               functionArgNumberException(len, word, uro);
             }
 
             Generator<_str>* str2;
@@ -302,14 +302,14 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
                return new F_AnyInside(def, str2, uro);
             }
             else {
-               functionArgException(2, L"string", word);
+               functionArgException(2, L"string", word, uro);
             }
          }
       }
 
       Generator<_list>* list;
       if (!parse(uro, args[0], list)) {
-         functionArgException(1, L"list", word);
+         functionArgException(1, L"list", word, uro);
       }
 
       if (len == 1) {
@@ -319,9 +319,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          return new F_ExistInside(list, ts, uro);
       }
 
-      checkInOperatorCommaAmbiguity(word, args[0]);
+      checkInOperatorCommaAmbiguity(word, args[0], uro);
       if (len > 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str2;
@@ -330,33 +330,35 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
       else {
          delete list;
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_STARTSWITH) {
       if (len != 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       if (args[1].getLength() == 1) {
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               switch ((*f.value.str).size()) {
+               const _str os = f.getOriginString(uro);
+
+               switch (os.size()) {
                   case 0: {
                      return new Constant<_boo>(true);
                   }
                   case 1: {
-                     const _char ch = (*f.value.str)[0];
+                     const _char ch = os[0];
                      return new F_StartsWithChar(str, ch);
                   }
                   default: {
-                     return new F_StartsWithConst(str, *f.value.str);
+                     return new F_StartsWithConst(str, os);
                   }
                }
             }
@@ -380,33 +382,35 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
          return new F_StartsWith(str, str2);
       }
       else {
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_ENDSWITH) {
       if (len != 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       if (args[1].getLength() == 1) {
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               switch ((*f.value.str).size()) {
+               const _str os = f.getOriginString(uro);
+
+               switch (os.size()) {
                   case 0: {
                      return new Constant<_boo>(true);
                   }
                   case 1: {
-                     const _char ch = (*f.value.str)[0];
+                     const _char ch = os[0];
                      return new F_EndsWithChar(str, ch);
                   }
                   default: {
-                     return new F_EndsWithConst(str, *f.value.str);
+                     return new F_EndsWithConst(str, os);
                   }
                }
             }
@@ -427,7 +431,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 
       Generator<_str>* str2;
       if (!parse(uro, args[1], str2)) {
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
 
       return new F_EndsWith(str, str2);
@@ -440,7 +444,7 @@ static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word,
 {
    Generator<_str>* arg1;
    if (!parse(uro, tks, arg1)) {
-      functionArgException(1, L"string", word);
+      functionArgException(1, L"string", word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -489,27 +493,27 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
 
    if (uro->hashes.HASH_GROUP_FUNC_NUM_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_NUM_NUM.end()) {
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       return simpleNumberFunction(args[0], word, uro);
    }
    else if (name == uro->hashes.HASH_FUNC_LENGTH) {
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
       if (parse(uro, args[0], arg1)) {
          return new F_Length(arg1);
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string. "
             L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_FROMBINARY || name == uro->hashes.HASH_FUNC_FROMHEX) {
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
 
@@ -520,18 +524,18 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
             return new F_FromHex(arg1);
       }
       else {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_VAR_SIZE) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          if (len != 1) {
-            functionArgNumberException(len, word);
+            functionArgNumberException(len, word, uro);
          }
          return new F_Size(str_, uro);
       }
@@ -539,8 +543,8 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       _def* def;
       if (parse(uro, args[0], def)) {
          if (len != 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
          return new F_SizeDefinition(def, uro);
       }
@@ -548,38 +552,38 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       Generator<_list>* list;
       if (parse(uro, args[0], list)) {
          if (len != 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
          return new F_SizeList(list, uro);
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string nor a list"), word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_NUMBER) {
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
       if (parse(uro, args[0], arg1)) {
          return new F_Number(arg1);
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string"), word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_COUNT) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
-         throw SyntaxException(str(L"the argument of the function '", *word.value.word.os,
+         throw SyntaxException(str(L"the argument of the function '", word.getOriginString(uro),
             L"' is not a collection. If you want to measure length of a string, use function 'length' instead"), word.line);
       }
 
@@ -604,16 +608,16 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       throw SyntaxException(str(L"the argument of the function '",
-         *word.value.word.os, L"' cannot be resolved to any collection"), word.line);
+         word.getOriginString(uro), L"' cannot be resolved to any collection"), word.line);
    }
    else if (name == uro->hashes.HASH_FUNC_COUNTINSIDE) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       _def* def;
       if (!parse(uro, args[0], def)) {
-         functionArgException(1, L"definition", word);
+         functionArgException(1, L"definition", word, uro);
       }
 
       if (len == 1) {
@@ -623,9 +627,9 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          return new F_CountInside(def, ts, uro);
       }
 
-      checkInOperatorCommaAmbiguity(word, args[0]);
+      checkInOperatorCommaAmbiguity(word, args[0], uro);
       if (len > 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
@@ -634,29 +638,29 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
       else {
          delete def;
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_POWER) {
       if (len != 2)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_num>* arg1;
       if (!parse(uro, args[0], arg1)) {
-         functionArgException(1, L"number", word);
+         functionArgException(1, L"number", word, uro);
       }
 
       Generator<_num>* arg2;
       if (!parse(uro, args[1], arg2)) {
          delete arg1;
-         functionArgException(2, L"number", word);
+         functionArgException(2, L"number", word, uro);
       }
 
       return new F_Power(arg1, arg2);
    }
    else if (uro->hashes.HASH_GROUP_AGGRFUNC.find(name) != uro->hashes.HASH_GROUP_AGGRFUNC.end()) {
       if (len == 0) {
-         throw SyntaxException(str(L"aggregate function '", *word.value.word.os,
+         throw SyntaxException(str(L"aggregate function '", word.getOriginString(uro),
             L"' needs at least one argument"), word.line);
       }
 
@@ -664,22 +668,22 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_FIRST || name == uro->hashes.HASH_FUNC_LAST) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
 
-         throw SyntaxException(str(L"function '", *word.value.word.os,
+         throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
       Generator<_nlist>* nlist;
       if (parse(uro, args[0], nlist)) {
          if (len != 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          if (name == uro->hashes.HASH_FUNC_FIRST) {
@@ -692,7 +696,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_RANDOM) {
       if (len > 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       if (len == 0) {
@@ -719,7 +723,7 @@ static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& wor
 {
    Generator<_num>* arg;
    if (!parse(uro, tks, arg)) {
-      functionArgException(1, L"number", word);
+      functionArgException(1, L"number", word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -768,7 +772,7 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
             deleteVectorPtr(multis);
 
             throw SyntaxException(str(ordinalNumber(i + 1),
-               L" argument of aggregate function '", *word.value.word.os,
+               L" argument of aggregate function '", word.getOriginString(uro),
                L"' cannot be resolved to a number nor a numeric list"), word.line);
          }
       }
@@ -797,14 +801,14 @@ Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro)
 
    if (name == uro->hashes.HASH_FUNC_LIFETIME) {
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_str>* str;
       if (parse(uro, args[0], str)) {
          return new F_Lifetime(str, uro);
       }
       else {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
    }
 
@@ -820,35 +824,35 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
 
    if (name == uro->hashes.HASH_FUNC_AFTER || name == uro->hashes.HASH_FUNC_BEFORE) {
       if (len != 2)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       return stringTwoArgFunction(args, word, uro);
    }
    else if (uro->hashes.HASH_GROUP_FUNC_STR_STR.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_STR.end()) {
 
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       return simpleStringFunction(args[0], word, uro);
    }
    else if (name == uro->hashes.HASH_FUNC_REVERSED) {
-      const _str sub = (*word.value.word.os).substr(0, 7);
+      const _str sub = (word.getOriginString(uro)).substr(0, 7);
       throw SyntaxException(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
    else if (uro->hashes.HASH_GROUP_FUNC_STR_STR_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_STR_NUM.end()) {
       if (len != 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       Generator<_num>* num;
       if (!parse(uro, args[1], num)) {
          delete str;
-         functionArgException(2, L"number", word);
+         functionArgException(2, L"number", word, uro);
       }
 
       if (name == uro->hashes.HASH_FUNC_REPEAT)
@@ -862,44 +866,44 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_REPLACE) {
       if (len != 3) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str1;
       if (!parse(uro, args[0], str1)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       Generator<_str>* str2;
       if (!parse(uro, args[1], str2)) {
          delete str1;
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
 
       Generator<_str>* str3;
       if (!parse(uro, args[2], str3)) {
          delete str1;
          delete str2;
-         functionArgException(3, L"string", word);
+         functionArgException(3, L"string", word, uro);
       }
 
       return new F_Replace(str1, str2, str3);
    }
    else if (name == uro->hashes.HASH_FUNC_SUBSTRING) {
       if (len < 2 || len > 3) {
-         throw SyntaxException(str(L"function '", *word.value.word.os, L"' can only take "
+         throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' can only take "
             L" two or three arguments"), word.line);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       Generator<_num>* num;
       if (!parse(uro, args[1], num)) {
          delete str;
-         functionArgException(2, L"number", word);
+         functionArgException(2, L"number", word, uro);
       }
 
       if (len == 2) {
@@ -910,14 +914,14 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       if (!parse(uro, args[2], num2)) {
          delete str;
          delete num;
-         functionArgException(3, L"number", word);
+         functionArgException(3, L"number", word, uro);
       }
 
       return new F_Substring_3(str, num, num2);
    }
    else if (name == uro->hashes.HASH_FUNC_CONCATENATE) {
       if (len < 1) {
-         throw SyntaxException(str(L"function '", *word.value.word.os,
+         throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' needs at least one arguments"), word.line);
       }
 
@@ -933,7 +937,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          Generator<_list>* list;
          if (parse(uro, args[i], list)) {
             if (i != len - 1) {
-               checkInOperatorCommaAmbiguity(word, args[i]);
+               checkInOperatorCommaAmbiguity(word, args[i], uro);
             }
             values->push_back(new F_ConcatenateUnit(list));
          }
@@ -941,7 +945,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
             deleteVectorPtr(values);
 
             throw SyntaxException(str(ordinalNumber(i + 1), L" argument of the function '",
-               *word.value.word.os, L"' cannot be resolved to any data type"), word.line);
+               word.getOriginString(uro), L"' cannot be resolved to any data type"), word.line);
          }
       }
 
@@ -949,21 +953,21 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_FIRST || name == uro->hashes.HASH_FUNC_LAST) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
-         throw SyntaxException(str(L"function '", *word.value.word.os,
+         throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
       _def* def;
       if (parse(uro, args[0], def)) {
          if (len != 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          if (name == uro->hashes.HASH_FUNC_FIRST) {
@@ -977,8 +981,8 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       Generator<_list>* list;
       if (parse(uro, args[0], list)) {
          if (len != 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          if (name == uro->hashes.HASH_FUNC_FIRST) {
@@ -989,13 +993,13 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          }
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
+         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to any collection"), word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_PATH) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       if (len > 4) {
@@ -1005,7 +1009,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
             Generator<_str>* str;
             if (!parse(uro, args[i], str)) {
                deleteVectorPtr(values);
-               functionArgException(i + 1, L"string", word);
+               functionArgException(i + 1, L"string", word, uro);
             }
 
             values->push_back(str);
@@ -1016,7 +1020,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       else {
          Generator<_str>* str1;
          if (!parse(uro, args[0], str1)) {
-            functionArgException(1, L"string", word);
+            functionArgException(1, L"string", word, uro);
          }
 
          if (len == 1) {
@@ -1026,7 +1030,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          Generator<_str>* str2;
          if (!parse(uro, args[1], str2)) {
             delete str1;
-            functionArgException(2, L"string", word);
+            functionArgException(2, L"string", word, uro);
          }
 
          if (len == 2) {
@@ -1037,7 +1041,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          if (!parse(uro, args[2], str3)) {
             delete str1;
             delete str2;
-            functionArgException(3, L"string", word);
+            functionArgException(3, L"string", word, uro);
          }
 
          if (len == 3) {
@@ -1049,7 +1053,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
             delete str1;
             delete str2;
             delete str3;
-            functionArgException(4, L"string", word);
+            functionArgException(4, L"string", word, uro);
          }
 
          return new F_Path_4(str1, str2, str3, str4);
@@ -1057,7 +1061,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_STRING) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_boo>* boo;
@@ -1080,12 +1084,12 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          return new F_String_P(per);
       }
 
-      throw SyntaxException(str(L"the argument of function '", *word.value.word.os,
+      throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
         L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
    }
    else if (uro->hashes.HASH_GROUP_FUNC_STR_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_NUM.end()) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_num>* num;
@@ -1099,12 +1103,12 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
             return new F_Hex(num);
       }
       else {
-         functionArgException(1, L"number", word);
+         functionArgException(1, L"number", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_MONTHNAME) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_num>* num;
@@ -1112,12 +1116,12 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          return new F_MonthName(num);
       }
       else {
-         functionArgException(1, L"number", word);
+         functionArgException(1, L"number", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_WEEKDAYNAME) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_num>* num;
@@ -1125,7 +1129,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          return new F_WeekDayName(num);
       }
       else {
-         functionArgException(1, L"number", word);
+         functionArgException(1, L"number", word, uro);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_RANDOM) {
@@ -1136,7 +1140,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          if (len > 1) {
-            functionArgNumberException(len, word);
+            functionArgNumberException(len, word, uro);
          }
          return new F_RandomChar(str_, uro);
       }
@@ -1144,41 +1148,41 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       Generator<_list>* list;
       if (parse(uro, args[0], list)) {
          if (len > 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          return new F_RandomElement<_str>(list, uro);
       }
       else {
-         throw SyntaxException(str(L"wrong arguments of function '", *word.value.word.os),
+         throw SyntaxException(str(L"wrong arguments of function '", word.getOriginString(uro)),
             word.line);
       }
    }
    else if (name == uro->hashes.HASH_FUNC_JOIN) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_list>* list;
       if (!parse(uro, args[0], list)) {
-         functionArgException(1, L"list", word);
+         functionArgException(1, L"list", word, uro);
       }
 
       if (len == 1) {
-         throw SyntaxException(str(L"function '", *word.value.word.os,
+         throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' cannot be called with one argument. If you want to join multiple strings without a separator, use function 'concatenate' instead"), word.line);
       }
 
-      checkInOperatorCommaAmbiguity(word, args[0]);
+      checkInOperatorCommaAmbiguity(word, args[0], uro);
 
       if (len != 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[1], str)) {
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
 
       return new F_Join(list, str);
@@ -1191,13 +1195,13 @@ static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, co
 {
    Generator<_str>* arg1;
    if (!parse(uro, args[0], arg1)) {
-      functionArgException(1, L"string", word);
+      functionArgException(1, L"string", word, uro);
    }
 
    Generator<_str>* arg2;
    if (!parse(uro, args[1], arg2)) {
       delete arg1;
-      functionArgException(2, L"string", word);
+      functionArgException(2, L"string", word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -1214,7 +1218,7 @@ static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& wor
 {
    Generator<_str>* arg1;
    if (!parse(uro, tks, arg1)) {
-      functionArgException(1, L"string", word);
+      functionArgException(1, L"string", word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -1264,7 +1268,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
 
    if (uro->hashes.HASH_GROUP_FUNC_TIM_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_TIM_NUM.end()) {
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       return simpleTimeFunction(args[0], word, uro);
    }
@@ -1272,11 +1276,11 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
    if (uro->hashes.HASH_GROUP_TIME_ATTR.find(name) != uro->hashes.HASH_GROUP_TIME_ATTR.end()) {
 
       if (len != 1)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
       if (!parse(uro, args[0], arg1)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       if (name == uro->hashes.HASH_VAR_ACCESS)
@@ -1291,42 +1295,42 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
 
    else if (name == uro->hashes.HASH_FUNC_DATE) {
       if (len != 3)
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
 
       Generator<_num>* arg1;
       if (!parse(uro, args[0], arg1)) {
-         functionArgException(1, L"number", word);
+         functionArgException(1, L"number", word, uro);
       }
 
       Generator<_num>* arg2;
       if (!parse(uro, args[1], arg2)) {
          delete arg1;
-         functionArgException(2, L"number", word);
+         functionArgException(2, L"number", word, uro);
       }
 
       Generator<_num>* arg3;
       if (!parse(uro, args[2], arg3)) {
          delete arg1;
          delete arg2;
-         functionArgException(3, L"number", word);
+         functionArgException(3, L"number", word, uro);
       }
 
       return new F_Time_3(arg1, arg2, arg3);
    }
    else if (name == uro->hashes.HASH_FUNC_TIME) {
       if (len < 2 || len == 4 || len > 6) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_num>* arg1;
       if (!parse(uro, args[0], arg1)) {
-         functionArgException(1, L"number", word);
+         functionArgException(1, L"number", word, uro);
       }
 
       Generator<_num>* arg2;
       if (!parse(uro, args[1], arg2)) {
          delete arg1;
-         functionArgException(2, L"number", word);
+         functionArgException(2, L"number", word, uro);
       }
 
       if (len == 2) {
@@ -1337,7 +1341,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       if (!parse(uro, args[2], arg3)) {
          delete arg1;
          delete arg2;
-         functionArgException(3, L"number", word);
+         functionArgException(3, L"number", word, uro);
       }
 
       if (len == 3) {
@@ -1349,7 +1353,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
          delete arg1;
          delete arg2;
          delete arg3;
-         functionArgException(4, L"number", word);
+         functionArgException(4, L"number", word, uro);
       }
 
       Generator<_num>* arg5;
@@ -1358,7 +1362,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
          delete arg2;
          delete arg3;
          delete arg4;
-         functionArgException(5, L"number", word);
+         functionArgException(5, L"number", word, uro);
       }
 
       if (len == 5) {
@@ -1372,29 +1376,29 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
          delete arg3;
          delete arg4;
          delete arg5;
-         functionArgException(6, L"number", word);
+         functionArgException(6, L"number", word, uro);
       }
 
       return new F_Time_6(arg1, arg2, arg3, arg4, arg5, arg6);
    }
    else if (name == uro->hashes.HASH_FUNC_FIRST || name == uro->hashes.HASH_FUNC_LAST) {
       if (len == 0) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str_;
       if (parse(uro, args[0], str_)) {
          delete str_;
 
-         throw SyntaxException(str(L"function '", *word.value.word.os,
+         throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
       Generator<_tlist>* tlist;
       if (parse(uro, args[0], tlist)) {
          if (len != 1) {
-            checkInOperatorCommaAmbiguity(word, args[0]);
-            functionArgNumberException(len, word);
+            checkInOperatorCommaAmbiguity(word, args[0], uro);
+            functionArgNumberException(len, word, uro);
          }
 
          if (name == uro->hashes.HASH_FUNC_FIRST) {
@@ -1407,7 +1411,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_RANDOM) {
       if (len > 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       if (len == 0) {
@@ -1427,7 +1431,7 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
 {
    Generator<_num>* arg1;
    if (!parse(uro, tks, arg1)) {
-      functionArgException(1, L"number", word);
+      functionArgException(1, L"number", word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -1443,16 +1447,16 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
 }
 
 
-static void functionArgNumberException(const _int& argNumber, const Token& word)
+static void functionArgNumberException(const _int& argNumber, const Token& word, Uroboros* uro)
 {
-   throw SyntaxException(str(L"function '", *word.value.word.os, L"' cannot be called with ",
+   throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? L"" : L"s")), word.line);
 }
 
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word)
+static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, Uroboros* uro)
 {
    throw SyntaxException(str(ordinalNumber(argNumber), L" argument of function '",
-      *word.value.word.os, L"' cannot be resolved to a ", typeName), word.line);
+      word.getOriginString(uro), L"' cannot be resolved to a ", typeName), word.line);
 }
 
 static _str ordinalNumber(const _int& number)
@@ -1496,12 +1500,12 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
 
    if (name == uro->hashes.HASH_FUNC_CHARACTERS || name == uro->hashes.HASH_FUNC_WORDS) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       if (name == uro->hashes.HASH_FUNC_CHARACTERS)
@@ -1511,24 +1515,24 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
    }
    if (name == uro->hashes.HASH_FUNC_SPLIT) {
       if (len != 2) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str1;
       if (!parse(uro, args[0], str1)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       Generator<_str>* str2;
       if (!parse(uro, args[1], str2)) {
          delete str1;
-         functionArgException(2, L"string", word);
+         functionArgException(2, L"string", word, uro);
       }
 
       return new F_Split(str1, str2);
    }
 
-   throw SyntaxException(str(L"function with name '", *word.value.word.os,
+   throw SyntaxException(str(L"function with name '", word.getOriginString(uro),
       L"' does not exist"), word.line);
 }
 
@@ -1542,12 +1546,12 @@ Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
 
    if (name == uro->hashes.HASH_FUNC_NUMBERS) {
       if (len != 1) {
-         functionArgNumberException(len, word);
+         functionArgNumberException(len, word, uro);
       }
 
       Generator<_str>* str;
       if (!parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word);
+         functionArgException(1, L"string", word, uro);
       }
 
       return new F_Numbers(str);
@@ -1560,12 +1564,12 @@ Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
 static void checkFunctionAttribute(const Token& word, Uroboros* uro)
 {
    if (!uro->vc.anyAttribute() || uro->vars.inner.thisState != ThisState::ts_String) {
-      throw SyntaxException(str(L"function '", *word.value.word.os,
+      throw SyntaxException(str(L"function '", word.getOriginString(uro),
          L"' can be called only inside an iteration loop"), word.line);
    }
 }
 
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks)
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Uroboros* uro)
 {
    BracketsInfo bi;
    _int end = tks.getEnd();
@@ -1599,8 +1603,8 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks)
    }
 
    const Token& inToken = tks.listAt(index);
-   throw SyntaxException(str(L"the right side of the operator '", *inToken.value.keyword.os,
-      L"' used in function '", *word.value.word.os,
+   throw SyntaxException(str(L"the right side of the operator '", inToken.getOriginString(uro),
+      L"' used in function '", word.getOriginString(uro),
       L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);
 }

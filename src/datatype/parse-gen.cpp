@@ -32,7 +32,7 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    checkBrackets(tks);
 
    // look for a special kind of syntax errors: forbidden keywords
-   checkKeywords(tks);
+   checkKeywords(tks, uro);
 
    // create a modificable copy of the sequence
    Tokens tks2(tks);
@@ -87,12 +87,12 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
       const Token& f = tks2.first();
       if (f.type == Token::t_Word) {
          if (f.value.word.h == uro->hashes.HASH_VAR_DEVICE) {
-            throw SyntaxException(str(L"variable '", *f.value.word.os,
+            throw SyntaxException(str(L"variable '", f.getOriginString(uro),
                L"' is reserved for future use. Current version of Uroboros does not support it"), f.line);
          }
 
          if (f.value.word.h != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
-            throw SyntaxException(str(L"variable '", *f.value.word.os,
+            throw SyntaxException(str(L"variable '", f.getOriginString(uro),
                L"' does not exist or is unreachable here"), f.line);
          }
       }
@@ -147,7 +147,7 @@ Tokens prepareForGen(const Tokens& tks, Uroboros* uro)
    return tks2;
 }
 
-void checkKeywords(const Tokens& tks)
+void checkKeywords(const Tokens& tks, Uroboros* uro)
 {
    const _int end = tks.getEnd();
 
@@ -155,7 +155,7 @@ void checkKeywords(const Tokens& tks)
       const Token& t = tks.listAt(i);
 
       if (t.type == Token::t_Keyword && isExpForbiddenKeyword(t)) {
-         throw SyntaxException(str(L"expected ; before keyword '", *t.value.keyword.os, L"'"), t.line);
+         throw SyntaxException(str(L"expected ; before keyword '", t.getOriginString(uro), L"'"), t.line);
       }
    }
 }

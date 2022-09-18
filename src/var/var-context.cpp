@@ -20,7 +20,7 @@
 VariablesContext::VariablesContext(Hashes* hsh, Variables* vars)
    : hashes(hsh), variables(vars) { }
 
-void VariablesContext::setAttribute(const Token& tk)
+void VariablesContext::setAttribute(const Token& tk, Uroboros* uro)
 {
    if (this->hashes->HASH_GROUP_ATTR.find(tk.value.word.h) ==
        this->hashes->HASH_GROUP_ATTR.end())
@@ -30,7 +30,7 @@ void VariablesContext::setAttribute(const Token& tk)
 
    const _size size = this->attrs.size();
    if (size == 0) {
-      this->attributeException(tk);
+      this->attributeException(tk, uro);
    }
 
    this->attrs[size - 1]->add(tk);
@@ -70,9 +70,9 @@ void VariablesContext::setTimeComAttribute(const _str& comName, const _int& line
    last->set(ATTR_CHANGE);
 }
 
-void VariablesContext::attributeException(const Token& tk)
+void VariablesContext::attributeException(const Token& tk, Uroboros* uro)
 {
-   throw SyntaxException(str(L"the value of variable '", *tk.value.word.os,
+   throw SyntaxException(str(L"the value of variable '", tk.getOriginString(uro),
       L"' is undefined here"), tk.line);
 }
 

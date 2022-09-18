@@ -39,15 +39,15 @@ static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& wor
 Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro);
 static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word, Uroboros* uro);
 
-static void functionArgNumberException(const _int& argNumber, const Token& word);
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word);
+static void functionArgNumberException(const _int& argNumber, const Token& word, Uroboros* uro);
+static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, Uroboros* uro);
 static _str ordinalNumber(const _int& number);
 
 Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro);
 Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro);
 
 static void checkFunctionAttribute(const Token& word, Uroboros* uro);
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks);
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Uroboros* uro);
 
 
 #endif /* FUNCTION_H */

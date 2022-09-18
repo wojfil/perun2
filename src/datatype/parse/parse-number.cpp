@@ -145,7 +145,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
          else if (h == hs.HASH_PER_DATE)
             return nullptr;
          else
-            timeVariableMemberException(last);
+            timeVariableMemberException(last, uro);
       }
       else {
          delete num;
@@ -679,8 +679,8 @@ static _boo isNumExpHighPriority(const _char& ch)
    }
 }
 
-void timeVariableMemberException(const Token& tk)
+void timeVariableMemberException(const Token& tk, Uroboros* uro)
 {
-   throw SyntaxException(str(L"'", *tk.value.twoWords.os2,
+   throw SyntaxException(str(L"'", tk.getOriginString_2(uro),
       L"' is not a time variable member"), tk.line);
 }

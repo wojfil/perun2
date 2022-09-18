@@ -617,7 +617,7 @@ _int Tokens::countSymbols(const _char& symbol) const
    return count;
 }
 
-void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
+void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result, Uroboros* uro) const
 {
    BracketsInfo bi;
    _int sublen = 0;
@@ -629,8 +629,8 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
          if (sublen == 0) {
             const Token& prev = listAt(i - 1);
 
-            throw SyntaxException(str(L"adjacent filter keywords '", *prev.value.keyword.os,
-               L"' and '", *t.value.keyword.os, L"'"), t.line);
+            throw SyntaxException(str(L"adjacent filter keywords '", prev.getOriginString(uro),
+               L"' and '", t.getOriginString(uro), L"'"), t.line);
          }
 
          result.push_back(Tokens(list, i - sublen - 1, sublen + 1));
@@ -644,7 +644,7 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result) const
 
    if (sublen == 0) {
       throw SyntaxException(str(L"expression cannot end with a filter keyword '",
-         *last().value.keyword.os, L"'"), last().line);
+         last().getOriginString(uro), L"'"), last().line);
    }
    else {
       result.push_back(Tokens(list, end - sublen, sublen + 1));

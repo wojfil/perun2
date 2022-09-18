@@ -56,7 +56,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
 static Command* c_error(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
 
 static void checkUselessFlags(const Token& word, const _int& line,
-   const bool& force, const bool& stack);
+   const bool& force, const bool& stack, Uroboros* uro);
 static void commandSyntaxException(const _str& name, const _int& line);
 static void commandNoArgException(const _str& name, const _int& line);
 

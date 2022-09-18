@@ -39,12 +39,12 @@ Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro)
    return num;
 }
 
-void checkLimitBySize(const Tokens& tks)
+void checkLimitBySize(const Tokens& tks, Uroboros* uro)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
       if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
-         throw SyntaxException(str(L"collection cannot be limited by file size '", *tk.value.num.os,
+         throw SyntaxException(str(L"collection cannot be limited by file size '", tk.getOriginString(uro),
             L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition"),
             tk.line);
       }

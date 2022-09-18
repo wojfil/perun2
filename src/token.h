@@ -21,6 +21,8 @@
 
 struct Uroboros;
 
+
+//
 enum NumberMode
 {
    nm_Normal = 0,
@@ -28,6 +30,22 @@ enum NumberMode
    nm_Month,
    nm_WeekDay
 };
+
+
+//
+struct OriginStringInfo
+{
+public:
+   OriginStringInfo() = delete;
+   OriginStringInfo(const _size& ind, const _size& len);
+
+   _size index;
+   _size length;
+};
+
+
+#define _osi OriginStringInfo
+
 
 union TokenValue
 {
@@ -45,17 +63,17 @@ union TokenValue
    struct
    {
       _num n;
-      _str* os; // os = original appearance of token in the source code
+      _osi os; // os = original appearance of token in the source code
       NumberMode nm;
    } num;
 
    // string literal
-   _str* str;
+   _osi str;
 
    // pattern
    struct
    {
-      _str* str;
+      _osi os;
       _int id; // index of first asterisk
    } pattern;
 
@@ -63,14 +81,14 @@ union TokenValue
    struct
    {
       _size h;  // h  = hash of string
-      _str* os;
+      _osi os;
    } word;
 
    // keyword - important syntax element (print, if, copy...)
    struct
    {
       Keyword k;
-      _str* os;
+      _osi os;
    } keyword;
 
    // two words - time variable member (creation.year)
@@ -78,21 +96,21 @@ union TokenValue
    {
       _size h1;
       _size h2;
-      _str* os1;
-      _str* os2;
+      _osi os1;
+      _osi os2;
    } twoWords;
 
    // constructors:
    TokenValue(const _char& ch) : ch(ch) {};
    TokenValue(const _char& ch, const _int& am) : chars({ ch, am }) {};
-   TokenValue(const _num& n, _str* os, const NumberMode& nm)
-      : num({ n, os, nm }) {};
-   TokenValue(_str* str) : str(str) {};
-   TokenValue(_str* str, const _int& id) : pattern({ str, id }) {};
-   TokenValue(const _size& h, _str* os) : word({ h, os }) {};
-   TokenValue(const Keyword& k, _str* os) : keyword({ k, os }) {};
-   TokenValue(const _size& h1, const _size& h2, _str* os1, _str* os2)
-      : twoWords({ h1, h2, os1, os2 }) {};
+   TokenValue(const _num& n, const _size& os_id, const _size& os_len, const NumberMode& nm)
+      : num({ n, _osi(os_id, os_len), nm }) {};
+   TokenValue(const _size& os_id, const _size& os_len) : str(_osi(os_id, os_len)) {};
+   TokenValue(const _size& os_id, const _size& os_len, const _int& id) : pattern({ _osi(os_id, os_len), id }) {};
+   TokenValue(const _size& h, const _size& os_id, const _size& os_len) : word({ h, _osi(os_id, os_len) }) {};
+   TokenValue(const Keyword& k, const _size& os_id, const _size& os_len) : keyword({ k, _osi(os_id, os_len) }) {};
+   TokenValue(const _size& h1, const _size& h2, const _size& os_id1, const _size& os_len1, const _size& os_id2, const _size& os_len2)
+      : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) {};
 };
 
 
@@ -115,15 +133,14 @@ public:
    // constructors:
    Token(const _char& v, const _int& li, Uroboros* uro);
    Token(const _char& v, const _int& am, const _int& li, Uroboros* uro);
-   Token(const _num& v, const _int& li, Uroboros* uro);
-   Token(const _num& v, const _int& li, const _str& os,
+   Token(const _num& v, const _int& li, const _size& os_id, const _size& os_len,
       const NumberMode& nm, Uroboros* uro);
-   Token(const _str& v, const _int& li, Uroboros* uro);
-   Token(const _str& v, const _int& id, const _int& li, Uroboros* uro);
-   Token(const _size& v, const _int& li, const _str& os, Uroboros* uro);
-   Token(const Keyword& v, const _int& li, const _str& os, Uroboros* uro);
-   Token(const _size& v1, const _size& v2, const _int& li, const _str& os1,
-      const _str& os2, Uroboros* uro);
+   Token(const _size& os_id, const _size& os_len, const _int& li, Uroboros* uro);
+   Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, Uroboros* uro);
+   Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros* uro);
+   Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros* uro);
+   Token(const _size& v1, const _size& v2, const _int& li, const _size& os_id1, const _size& os_len1,
+      const _size& os_id2, const _size& os_len2, Uroboros* uro);
 
    // members:
    const Type type;
@@ -138,6 +155,12 @@ public:
    _boo isLogicConstant() const;
    _boo isWeekDay() const;
    _boo isMonth() const;
+   _str getOriginString(Uroboros* uro) const;
+   _str getOriginString_2(Uroboros* uro) const;
+
+private:
+   _str getCodeSubstr(const _osi& osi, Uroboros* uro) const;
+
 };
 
 

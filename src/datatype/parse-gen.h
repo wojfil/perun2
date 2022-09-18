@@ -36,7 +36,7 @@
 #include "parse/parse-definition.h"
 
 Tokens prepareForGen(const Tokens& tks, Uroboros* uro);
-void checkKeywords(const Tokens& tks);
+void checkKeywords(const Tokens& tks, Uroboros* uro);
 _boo isExpForbiddenKeyword(const Token& tk);
 
 _boo parse(Uroboros* uro, const Tokens& tns, Generator<_boo>*& result);

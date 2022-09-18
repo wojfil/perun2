@@ -38,7 +38,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
       return unit;
    }
    else if (len >= 2) {
-      Generator<_tim>* cnst = parseTimeConst(tks);
+      Generator<_tim>* cnst = parseTimeConst(tks, uro);
       if (cnst != nullptr) {
          return cnst;
       }
@@ -102,7 +102,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-Generator<_tim>* parseTimeConst(const Tokens& tks)
+Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -115,7 +115,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxException(str(L"'", *first.value.word.os,
+         throw SyntaxException(str(L"'", first.getOriginString(uro),
             L"' is not a valid month name"), first.line);
       }
 
@@ -136,7 +136,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks)
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxException(str(L"'", *second.value.word.os,
+      throw SyntaxException(str(L"'", second.getOriginString(uro),
          L"' is not a valid month name"), second.line);
    }
 

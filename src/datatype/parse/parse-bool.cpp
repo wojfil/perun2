@@ -575,17 +575,17 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
    tks.divideByKeyword(Keyword::kw_In, left, right);
 
    if (left.isEmpty()) {
-      emptyOperSideException(tks.first(), true);
+      emptyOperSideException(tks.first(), true, uro);
    }
    if (right.isEmpty()) {
-      emptyOperSideException(tks.last(), false);
+      emptyOperSideException(tks.last(), false, uro);
    }
 
    _boo neg = left.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       left.trimRight();
       if (left.isEmpty()) {
-         emptyOperSideException(tks.first(), true);
+         emptyOperSideException(tks.first(), true, uro);
       }
    }
 
@@ -609,15 +609,15 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
             if (t.getLength() == 1) {
                const Token& tf = t.first();
                if (tf.isWeekDay()) {
-                  timeInNumberException(left.first(), tf, L"weekDay", neg, left);
+                  timeInNumberException(left.first(), tf, L"weekDay", neg, left, uro);
                }
                else if (tf.isMonth()) {
-                  timeInNumberException(left.first(), tf, L"month", neg, left);
+                  timeInNumberException(left.first(), tf, L"month", neg, left, uro);
                }
 
                const _boo isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
                if (isInteger) {
-                  timeInNumberException(left.first(), tf, L"year", neg, left);
+                  timeInNumberException(left.first(), tf, L"year", neg, left, uro);
                }
             }
          }
@@ -628,12 +628,12 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
          const _boo isMonth = rf.isMonth();
 
          if (isWeek || isMonth) {
-            timeInNumberException(left.first(), right.first(), isWeek ? L"weekDay" : L"month", neg, left);
+            timeInNumberException(left.first(), right.first(), isWeek ? L"weekDay" : L"month", neg, left, uro);
          }
 
          const _boo isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
          if (isInteger) {
-            timeInNumberException(left.first(), right.first(), L"year", neg, left);
+            timeInNumberException(left.first(), right.first(), L"year", neg, left, uro);
          }
       }
    }
@@ -687,39 +687,39 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    }
 }
 
-static void emptyOperSideException(const Token& oper, const bool& isLeft)
+static void emptyOperSideException(const Token& oper, const bool& isLeft, Uroboros* uro)
 {
    const _str side = isLeft ? L"left" : L"right";
 
-   throw SyntaxException(str(side, L" side of operator '", *oper.value.keyword.os, L"' is empty"),
+   throw SyntaxException(str(side, L" side of operator '", oper.getOriginString(uro), L"' is empty"),
       oper.line);
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _boo& negated, const Tokens& tks)
+   const _str& timeMember, const _boo& negated, const Tokens& tks, Uroboros* uro)
 {
    if (timeMember == L"year") {
       if (negated) {
-         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" not in ", toStr(numVar.value.num.n.value.i),
-            L"', write '", *timeVar.value.word.os, L".year != ",
+         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", toStr(numVar.value.num.n.value.i),
+            L"', write '", timeVar.getOriginString(uro), L".year != ",
             toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" in ", toStr(numVar.value.num.n.value.i),
-            L"', write '", *timeVar.value.word.os, L".year = ",
+         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" in ", toStr(numVar.value.num.n.value.i),
+            L"', write '", timeVar.getOriginString(uro), L".year = ",
             toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
    }
    else {
       if (negated) {
-         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" not in ", *numVar.value.word.os,
-            L"', write '", *timeVar.value.word.os, L".", timeMember,
-            L" != ", *numVar.value.word.os, L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", numVar.getOriginString(uro),
+            L"', write '", timeVar.getOriginString(uro), L".", timeMember,
+            L" != ", numVar.getOriginString(uro), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"instead of '", *timeVar.value.word.os, L" in ", *numVar.value.word.os,
-            L"', write '", *timeVar.value.word.os, L".", timeMember,
-            L" = ", *numVar.value.word.os, L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" in ", numVar.getOriginString(uro),
+            L"', write '", timeVar.getOriginString(uro), L".", timeMember,
+            L" = ", numVar.getOriginString(uro), L"'"), tks.first().line);
       }
    }
 }
@@ -731,17 +731,17 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
    tks.divideByKeyword(Keyword::kw_Like, left, right);
 
    if (left.isEmpty()) {
-      emptyOperSideException(tks.first(), true);
+      emptyOperSideException(tks.first(), true, uro);
    }
    if (right.isEmpty()) {
-      emptyOperSideException(tks.last(), false);
+      emptyOperSideException(tks.last(), false, uro);
    }
 
    _boo neg = left.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       left.trimRight();
       if (left.isEmpty()) {
-         emptyOperSideException(tks.first(), true);
+         emptyOperSideException(tks.first(), true, uro);
       }
    }
 
@@ -887,13 +887,13 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Ur
       const _str s = _str(1, sign);
 
       if (isVar1 && (isWeek2 || isMonth2)) {
-         throw SyntaxException(str(L"instead of '", *t1.value.word.os, L" ", s, L" ", *t2.value.num.os,
-            L"', write '", *t1.value.word.os, L".", (isWeek2 ? L"weekDay" : L"month"),
-            L" ", s, L" ", *t2.value.num.os, L"'"), tks.first().line);
+         throw SyntaxException(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
+            L"', write '", t1.getOriginString(uro), L".", (isWeek2 ? L"weekDay" : L"month"),
+            L" ", s, L" ", t2.getOriginString(uro), L"'"), tks.first().line);
       }
       else if ((isWeek1 || isMonth1) && isVar2) {
-         throw SyntaxException(str(L"instead of '", *t1.value.num.os, L" ", s, L" ", *t2.value.word.os,
-            L"', write '", *t1.value.num.os, L" ", s, L" ", *t2.value.word.os, L".",
+         throw SyntaxException(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
+            L"', write '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro), L".",
             (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
       }
 
@@ -903,22 +903,22 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Ur
       if (isVar1 && isInteger2) {
          const _nint& nm = t2.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxException(str(L"instead of '", *t1.value.word.os, L" ", s, L" ", toStr(nm),
-               L"', write '", *t1.value.word.os, L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
+            throw SyntaxException(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", toStr(nm),
+               L"', write '", t1.getOriginString(uro), L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
          }
          else {
-            throw SyntaxException(str(L"time variable '", *t1.value.word.os,
+            throw SyntaxException(str(L"time variable '", t1.getOriginString(uro),
                L"' cannot be compared with a number"), tks.first().line);
          }
       }
       else if (isInteger1 && isVar2) {
          const _nint& nm = t1.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100) {
-            throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", *t2.value.word.os,
-               L"', write '", toStr(nm), L" ", s, L" ", *t2.value.word.os, L".year'"), tks.first().line);
+            throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro),
+               L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro), L".year'"), tks.first().line);
          }
          else {
-            throw SyntaxException(str(L"time variable '", *t2.value.word.os,
+            throw SyntaxException(str(L"time variable '", t2.getOriginString(uro),
                L"' cannot be compared with a number"), tks.first().line);
          }
       }

@@ -16,53 +16,34 @@
 #include "uroboros.h"
 
 
+OriginStringInfo::OriginStringInfo(const _size& ind, const _size& len)
+   : index(ind), length(len) { };
+
 Token::Token(const _char& v, const _int& li, Uroboros* uro)
    : line(li), type(t_Symbol), value(v) { };
 
 Token::Token(const _char& v, const _int& am, const _int& li, Uroboros* uro)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
-Token::Token(const _num& v, const _int& li, Uroboros* uro)
-   : line(li), type(t_Number), value(v, nullptr, NumberMode::nm_Normal) { };
-
-Token::Token(const _num& v, const _int& li, const _str& os,
+Token::Token(const _num& v, const _int& li, const _size& os_id, const _size& os_len,
    const NumberMode& nm, Uroboros* uro)
-   : line(li), type(t_Number), value(v, new _str(os), nm)
-{
-   uro->literals.addValue(value.num.os);
-};
+   : line(li), type(t_Number), value(v, os_id, os_len, nm) { };
 
-Token::Token(const _str& v, const _int& li, Uroboros* uro)
-   : line(li), type(t_Quotation), value(new _str(v))
-{
-   uro->literals.addValue(value.str);
-};
+Token::Token(const _size& os_id, const _size& os_len, const _int& li, Uroboros* uro)
+   : line(li), type(t_Quotation), value(os_id, os_len) { };
 
-Token::Token(const _str& v, const _int& id, const _int& li, Uroboros* uro)
-   : line(li), type(t_Pattern), value(new _str(v), id)
-{
-   uro->literals.addValue(value.str);
-};
+Token::Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, Uroboros* uro)
+   : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const _size& v, const _int& li, const _str& os, Uroboros* uro)
-   : line(li), type(t_Word), value( v, new _str(os) )
-{
-   uro->literals.addValue(value.word.os);
-};
+Token::Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros* uro)
+   : line(li), type(t_Word), value(v, os_id, os_len) { };
 
-Token::Token(const Keyword& v, const _int& li, const _str& os, Uroboros* uro)
-   : line(li), type(t_Keyword), value( v, new _str(os) )
-{
-   uro->literals.addValue(value.keyword.os);
-};
+Token::Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros* uro)
+   : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
-Token::Token(const _size& v1, const _size& v2, const _int& li, const _str& os1,
-   const _str& os2, Uroboros* uro)
-   : line(li), type(t_TwoWords), value( v1, v2, new _str(os1), new _str(os2) )
-{
-   uro->literals.addValue(value.twoWords.os1);
-   uro->literals.addValue(value.twoWords.os2);
-};
+Token::Token(const _size& v1, const _size& v2, const _int& li, const _size& os_id1, const _size& os_len1,
+   const _size& os_id2, const _size& os_len2, Uroboros* uro)
+   : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 
 _boo Token::isSymbol(const _char& ch) const
 {
@@ -143,4 +124,49 @@ _boo Token::isWeekDay() const
 _boo Token::isMonth() const
 {
    return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
+}
+
+_str Token::getOriginString(Uroboros* uro) const
+{
+   switch (type) {
+      case Token::Type::t_Symbol: {
+         return charStr(value.ch);
+      }
+      case Token::Type::t_MultiSymbol: {
+         return _str(value.chars.am, value.chars.ch);
+      }
+      case Token::Type::t_Number: {
+         return getCodeSubstr(value.num.os, uro);
+      }
+      case Token::Type::t_Word: {
+         return getCodeSubstr(value.word.os, uro);
+      }
+      case Token::Type::t_Keyword: {
+         return getCodeSubstr(value.keyword.os, uro);
+      }
+      case Token::Type::t_Quotation: {
+         return getCodeSubstr(value.str, uro);
+      }
+      case Token::Type::t_Pattern: {
+         return getCodeSubstr(value.pattern.os, uro);
+      }
+      case Token::Type::t_TwoWords: {
+         return getCodeSubstr(value.twoWords.os1, uro);
+      }
+      default: {
+         return _str();
+      }
+   }
+}
+
+_str Token::getOriginString_2(Uroboros* uro) const
+{
+   return type == Token::Type::t_TwoWords
+      ? getCodeSubstr(value.twoWords.os2, uro)
+      : _str();
+}
+
+_str Token::getCodeSubstr(const _osi& osi, Uroboros* uro) const
+{
+   return uro->arguments.code.substr(osi.index, osi.length);
 }

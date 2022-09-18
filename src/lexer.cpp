@@ -133,8 +133,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
                wlen++;
             }
             else {
-               const _str word = code.substr(wpos, wlen);
-               tokens.push_back(wordToken(word, line, uro));
+               tokens.push_back(wordToken(code, wpos, wlen, line, uro));
                wlen = 0;
                mode = Mode::m_Normal;
 
@@ -161,14 +160,20 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          }
          case Mode::m_ALiteral: {
             if (c == L'\'') {
-               const _str word = code.substr(wpos, wlen);
-               const _int asteriskId = word.find(L'*');
+               _int asteriskId = -1;
 
-               if (asteriskId == _str::npos) {
-                  tokens.emplace_back(word, line, uro);
+               for (_size i = wpos; i < wpos + wlen; i++) {
+                  if (code[i] == L'*') {
+                     asteriskId = static_cast<_int>(i);
+                     break;
+                  }
+               }
+
+               if (asteriskId == -1) {
+                  tokens.emplace_back(wpos, wlen, line, uro);
                }
                else {
-                  tokens.emplace_back(word, asteriskId, line, uro);
+                  tokens.emplace_back(wpos, wlen, asteriskId, line, uro);
                }
 
                wpos = i;
@@ -185,8 +190,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
          }
          case Mode::m_BLiteral: {
             if (c == L'`') {
-               const _str word = code.substr(wpos, wlen);
-               tokens.emplace_back(word, line, uro);
+               tokens.emplace_back(wpos, wlen, line, uro);
                wpos = i;
                wlen = 0;
                mode = Mode::m_Normal;
@@ -223,8 +227,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
    switch (mode) {
       case m_Word: {
          if (wlen != 0) {
-            const _str word = code.substr(wpos, wlen);
-            tokens.push_back(wordToken(word, line, uro));
+            tokens.push_back(wordToken(code, wpos, wlen, line, uro));
          }
          break;
       }
@@ -237,14 +240,16 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
    return tokens;
 }
 
-static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
+static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros* uro)
 {
    _int dots = 0;
    _boo nums = true;
 
-   for (const _char &c : value) {
-      if (!std::iswdigit(c)) {
-         if (c == L'.') {
+   for (_size i = start; i < start + length; i++) {
+      const _char& ch = code[i];
+
+      if (!std::iswdigit(ch)) {
+         if (ch == L'.') {
             dots++;
          }
          else {
@@ -254,21 +259,22 @@ static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
    }
 
    if (nums) {
+      const _str value = code.substr(start, length);
       switch (dots) {
          case 0: {
             try {
-               return Token(_num(std::stoll(value)), line, uro);
+               return Token(_num(std::stoll(value)), line, start, length, NumberMode::nm_Normal, uro);
             }
             catch (...) {
-               bigNumberException(value, line);
+               bigNumberException(code, start, length, line);
             }
          }
          case 1: {
             try {
-               return Token(_num(stringToDouble(value)), line, uro);
+               return Token(_num(stringToDouble(value)), line, start, length, NumberMode::nm_Normal, uro);
             }
             catch (...) {
-               bigNumberException(value, line);
+               bigNumberException(code, start, length, line);
             }
          }
          default: {
@@ -277,15 +283,14 @@ static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
       }
    }
 
-   _int len = value.length();
-   if (len > 2 && dots <= 1) {
-      _char c1 = value.at(len - 2);
-      _char c2 = value.back();
+   if (length > 2 && dots <= 1) {
+      _char c1 = code[start + length - 2];
+      _char c2 = code[start + length - 1];
       nums = true;
-      const _int n = len - 2;
+      const _int n = length - 2;
 
-      for (_int i = 0; i < n; i++) {
-         _char c = value[i];
+      for (_size i = start; i < n; i++) {
+         const _char& c = code[i];
          if (!std::iswdigit(c) && c != L'.') {
             nums = false;
             break;
@@ -295,7 +300,7 @@ static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
       if (nums) {
          _nint mult = getSuffixMultiplier(c1, c2);
          if (mult != -1) {
-            _str value2 = value.substr(0, len - 2);
+            _str value2 = code.substr(start, length - 2);
             if (dots == 0) {
                try {
                   // check for number overflow
@@ -304,12 +309,12 @@ static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
                   _nint i = std::stoll(value2);
                   _nint i2 = i * mult;
                   if (mult != 0 && i2 / mult != i) {
-                     bigNumberException(value, line);
+                     bigNumberException(code, start, length, line);
                   }
-                  return Token(_num(i2), line, value, NumberMode::nm_Size, uro);
+                  return Token(_num(i2), line, start, length, NumberMode::nm_Size, uro);
                }
                catch (...) {
-                  bigNumberException(value, line);
+                  bigNumberException(code, start, length, line);
                }
             }
             else {
@@ -317,10 +322,10 @@ static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
                   _ndouble d = stringToDouble(value2);
                   d *= mult;
 
-                  return Token(_num(d), line, value, NumberMode::nm_Size, uro);
+                  return Token(_num(d), line, start, length, NumberMode::nm_Size, uro);
                }
                catch (...) {
-                  bigNumberException(value, line);
+                  bigNumberException(code, start, length, line);
                }
             }
          }
@@ -329,54 +334,55 @@ static Token wordToken(const _str& value, const _int& line, Uroboros* uro)
 
    switch (dots) {
       case 0: {
-         _str lower = value;
+         _str lower = code.substr(start, length);
          toLower(lower);
          const _size hsh = rawStringHash(lower);
 
          auto fm = uro->hashes.HASH_MAP_MONTHS.find(hsh);
          if (fm != uro->hashes.HASH_MAP_MONTHS.end()) {
-            return Token(_num(fm->second), line, value, NumberMode::nm_Month, uro);
+            return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, uro);
          }
 
          auto fw = uro->hashes.HASH_MAP_WEEKDAYS.find(hsh);
          if (fw != uro->hashes.HASH_MAP_WEEKDAYS.end()) {
-            return Token(_num(fw->second), line, value, NumberMode::nm_WeekDay, uro);
+            return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, uro);
          }
 
          auto fk = uro->keywordsData.KEYWORDS.find(lower);
          if (fk == uro->keywordsData.KEYWORDS.end()) {
-            return Token(hsh, line, value, uro);
+            return Token(hsh, line, start, length, uro);
          }
          else {
-            return Token(fk->second, line, value, uro);
+            return Token(fk->second, line, start, length, uro);
          }
       }
       case 1: {
-         _int pnt = 0;
-         for (_int i = 0; i < len; i++) {
-            const _char& c = value[i];
+         _int pnt = start;
+         for (_int i = start; i < start + length; i++) {
+            const _char& c = code[i];
             if (c == L'.') {
                pnt = i;
             }
          }
 
-         if (pnt == len - 1) {
-            throw SyntaxException(str(L"a time variable member was expected after '", value, L"'"), line);
+         if (pnt == length - 1) {
+            throw SyntaxException(str(L"a time variable member was expected after '", code.substr(start, length), L"'"), line);
          }
 
-         const _str os1 = value.substr(0, pnt);
-         const _str os2 = value.substr(pnt + 1);
+         const _str os1 = code.substr(start, pnt - start);
+         const _str os2 = code.substr(pnt + 1, start + length - pnt - 1);
          const _size h1 = stringHash(os1);
          const _size h2 = stringHash(os2);
 
-         return Token(h1, h2, line, os1, os2, uro);
+
+         return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, uro);
       }
       default: {
-         throw SyntaxException(str(L"word '", value, L"' cannot contain multiple dots"), line);
+         throw SyntaxException(str(L"word '", code.substr(start, length), L"' cannot contain multiple dots"), line);
       }
    }
 
-   return Token(value, line, uro);
+   return Token(start, length, line, uro);
 }
 
 inline _ndouble stringToDouble(const _str& value)
@@ -387,9 +393,9 @@ inline _ndouble stringToDouble(const _str& value)
    return n;
 }
 
-inline void bigNumberException(const _str& value, const _int& line)
+inline void bigNumberException(const _str& code, const _size& start, const _size& length, const _int& line)
 {
-   throw SyntaxException(str(L"number '", value, L"' is too big to be stored in the memory"), line);
+   throw SyntaxException(str(L"number '", code.substr(start, length), L"' is too big to be stored in the memory"), line);
 }
 
 _nint getSuffixMultiplier(const _char& c1, const _char& c2)

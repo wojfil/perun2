@@ -72,8 +72,8 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
 
          Generator<_tim>* var;
          if (!uro->vars.getVarValue(tk, var)) {
-            throw SyntaxException(str(L"time variable from expression '", *tk.value.twoWords.os1,
-               L".", *tk.value.twoWords.os2, L"' does not exist or is unreachable here"), tk.line);
+            throw SyntaxException(str(L"time variable from expression '", tk.getOriginString(uro),
+               L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
          }
 
          const _size& h = tk.value.twoWords.h2;
@@ -95,7 +95,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
          else if (h == hs.HASH_PER_DATE)
             return false;
          else {
-            timeVariableMemberException(tk);
+            timeVariableMemberException(tk, uro);
          }
 
          return true;
@@ -116,7 +116,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
          return true;
       }
       case Token::t_Quotation: {
-         result = new Constant<_str>(*tk.value.str);
+         result = new Constant<_str>(tk.getOriginString(uro));
          return true;
       }
       case Token::t_Word: {
@@ -167,8 +167,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
 
          Generator<_tim>* var;
          if (!uro->vars.getVarValue(tk, var)) {
-            throw SyntaxException(str(L"time variable '", *tk.value.twoWords.os1,
-               L"' does not exist"), tk.line);
+            throw SyntaxException(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
          }
 
          if (tk.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE) {
@@ -218,7 +217,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
          }
       }
       case Token::t_Pattern: {
-         return uro->patternParser.parse(*tk.value.pattern.str, tk.value.pattern.id, result);
+         return uro->patternParser.parse(tk.getOriginString(uro), tk.value.pattern.id, result);
       }
       default: {
          return false;

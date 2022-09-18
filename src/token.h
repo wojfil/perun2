@@ -21,8 +21,14 @@
 
 struct Uroboros;
 
+// Token represents the smallest syntax unit of the language
 
-//
+
+// if Token is a number, it can be
+// 1) normal number   : 50, 0.34, -45.231, ...
+// 2) file size       : 12mb, 100gb, 10kb, ...
+// 3) month           : april, july, ...
+// 4) day of the week : monday, sunday, ...
 enum NumberMode
 {
    nm_Normal = 0,
@@ -32,15 +38,18 @@ enum NumberMode
 };
 
 
-//
+// this struct contains information
+// about representation of certain token in the source code string
+// this is just an index of starting character
+// and length of the character sequence
 struct OriginStringInfo
 {
 public:
    OriginStringInfo() = delete;
    OriginStringInfo(const _size& ind, const _size& len);
 
-   _size index;
-   _size length;
+   const _size index;
+   const _size length;
 };
 
 

@@ -34,7 +34,7 @@ void uroConsoleInit()
 }
 
 
-_int wmain(_int argc, _char* argv[], _char *envp[])
+_int wmain(_int argc, _char* argv[], _char* envp[])
 {
    uroConsoleInit();
 

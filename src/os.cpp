@@ -31,6 +31,9 @@
 #include <algorithm>
 
 
+namespace uro
+{
+
 inline constexpr _nint OS_SLEEP_UNIT = 300LL;
 // while sleeping
 // check every 300 ms if the program received an interruption signal
@@ -1835,3 +1838,4 @@ _str os_quoteEmbraced(const _str& value)
       : str(L"\"", value, L"\"");
 }
 
+}

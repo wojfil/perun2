@@ -19,6 +19,9 @@
 #include "uroboros.h"
 
 
+namespace uro
+{
+
 Tokens::Tokens(const Tokens& tks)
    : list(tks.list), start(tks.getStart()), length(tks.getLength()),
      end(tks.getEnd()), guardian(new ParseGuardian()) { };
@@ -683,4 +686,6 @@ void Tokens::divideForTernary(Tokens& condition, Tokens& left, Tokens& right) co
    condition.setRange(start, percentId - start);
    left.setRange(percentId + 1, colonId - percentId - 1);
    right.setRange(colonId + 1, length + start - colonId - 1);
+}
+
 }

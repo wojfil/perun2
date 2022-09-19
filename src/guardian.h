@@ -18,6 +18,10 @@
 #include "datatype/primitives.h"
 #include "keyword.h"
 
+
+namespace uro
+{
+
 #define _pg_unit _uint64
 
 // all Parse Guardian units:
@@ -65,5 +69,6 @@ private:
    _pg_unit protect = PG_NULL;
 };
 
+}
 
 #endif // GUARDIAN_H_INCLUDED

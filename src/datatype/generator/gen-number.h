@@ -19,6 +19,9 @@
 #include "gen-generic.h"
 
 
+namespace uro::gen
+{
+
 struct Negation : UnaryOperation<_num>
 {
    Negation(Generator<_num>* val) : UnaryOperation<_num>(val) { };
@@ -207,6 +210,7 @@ struct TimeSecondsAtIndex : Generator<_num>, TimeMemberAtIndex
    _num getValue() override;
 };
 
+}
 
 #endif /* GEN_NUMBER_H */
 

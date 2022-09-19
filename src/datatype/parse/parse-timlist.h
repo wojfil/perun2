@@ -18,12 +18,16 @@
 #include "../parse-gen.h"
 
 
-Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
 
-static Generator<_tlist>* parseTimListed(const Tokens& tks, Uroboros* uro);
-static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, Uroboros* uro);
-static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, Uroboros* uro);
-static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, Uroboros* uro);
+Generator<_tlist>* parseTimList(const Tokens& tks, uro::Uroboros* uro);
 
+static Generator<_tlist>* parseTimListed(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, uro::Uroboros* uro);
+static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, uro::Uroboros* uro);
+static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, uro::Uroboros* uro);
+
+}
 
 #endif /* PARSE_TIMLIST_H */

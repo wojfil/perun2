@@ -21,6 +21,9 @@
 #include "../../uroboros.h"
 
 
+namespace uro::func
+{
+
 // one arg
 template <typename T>
 struct Func_1
@@ -138,5 +141,6 @@ private:
    Math* math;
 };
 
+}
 
 #endif /* FUNC_GENERIC_H */

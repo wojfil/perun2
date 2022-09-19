@@ -24,7 +24,10 @@
 #include "../parse-gen.h"
 
 
-Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -63,7 +66,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
    }
 
    if (tks.isPossibleFunction()) {
-      Generator<_tim>* func = timeFunction(tks, uro);
+      Generator<_tim>* func = func::timeFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -85,7 +88,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
          const Token& last = tks.last();
 
          if (last.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE)
-            return new TimeDateAtIndex(tlist, num);
+            return new gen::TimeDateAtIndex(tlist, num);
          else
             return nullptr;
       }
@@ -102,7 +105,7 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro)
+Generator<_tim>* parseTimeConst(const Tokens& tks, uro::Uroboros* uro)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -125,7 +128,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro)
 
       const _tnum month = static_cast<_tnum>(first.value.num.n.toInt());
       const _tnum year = tokenToTimeNumber(second);
-      return new Constant<_tim>(_tim(month, year));
+      return new gen::Constant<_tim>(_tim(month, year));
    }
 
    // tt_Date:
@@ -150,7 +153,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro)
    checkDayCorrectness(day, month, year, first);
 
    if (len == 3) {
-      return new Constant<_tim>(_tim(day, month, year));
+      return new gen::Constant<_tim>(_tim(day, month, year));
    }
 
    // tt_ShortClock
@@ -175,7 +178,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro)
    }
 
    if (len == 7) {
-      return new Constant<_tim>(_tim(day, month, year, hour, minute));
+      return new gen::Constant<_tim>(_tim(day, month, year, hour, minute));
    }
 
    // tt_Clock:
@@ -189,7 +192,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro)
       clockUnitException(L"seconds", secs, tks.at(8));
    }
 
-   return new Constant<_tim>(_tim(day, month, year, hour, minute, secs));
+   return new gen::Constant<_tim>(_tim(day, month, year, hour, minute, secs));
 }
 
 static _tnum tokenToTimeNumber(const Token& tk)
@@ -218,7 +221,7 @@ static void clockUnitException(const _str& unit, const _tnum& value,
       L") went out of range"), tk.line);
 }
 
-static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros* uro)
+static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
 {
    Generator<_tim>* prevTim = nullptr;
    Generator<_tim>* time = nullptr;
@@ -323,7 +326,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros* uro)
 
 static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
-   _int& numReserve, Uroboros* uro)
+   _int& numReserve, uro::Uroboros* uro)
 {
    Generator<_tim>* tim;
    if (parse(uro, tks, tim)) {
@@ -340,7 +343,7 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
       }
       else {
          if (subtract) {
-            Generator<_per>* diff = new TimeDifference(prevTim, tim);
+            Generator<_per>* diff = new gen::TimeDifference(prevTim, tim);
             prevTim = nullptr;
 
             if (time == nullptr) {
@@ -350,10 +353,10 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
             else {
                Generator<_tim>* prev = time;
                if (prevSubtract) {
-                  time = new DecreasedTime(prev, diff);
+                  time = new gen::DecreasedTime(prev, diff);
                }
                else {
-                  time = new IncreasedTime(prev, diff);
+                  time = new gen::IncreasedTime(prev, diff);
                }
             }
          }
@@ -393,10 +396,10 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
 
       Generator<_tim>* prev = time;
       if (subtract) {
-         time = new DecreasedTime(prev, per);
+         time = new gen::DecreasedTime(prev, per);
       }
       else {
-         time = new IncreasedTime(prev, per);
+         time = new gen::IncreasedTime(prev, per);
       }
    }
    else {
@@ -410,10 +413,12 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
       }
 
       Generator<_tim>* prev = time;
-      time = new IncreasedTime(prev, per);
+      time = new gen::IncreasedTime(prev, per);
    }
 
    sublen = 0;
    numReserve = 0;
    return true;
+}
+
 }

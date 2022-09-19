@@ -18,6 +18,9 @@
 #include "..\uroboros.h"
 
 
+namespace uro::comm
+{
+
 void CS_Pair::run()
 {
    if (this->uroboros->running) {
@@ -488,4 +491,6 @@ void CS_InsideList::run()
    if (this->hasMemory) {
       this->attrMemory.restore();
    }
+}
+
 }

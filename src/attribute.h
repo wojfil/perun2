@@ -19,6 +19,10 @@
 #include "token.h"
 #include <windows.h>
 
+
+namespace uro
+{
+
 #define _aunit _uint64
 
 inline constexpr _aunit ATTR_NULL =         0b00000000000000000000000000000000;
@@ -96,5 +100,6 @@ private:
    _fdata* dataPnt;
 };
 
+}
 
 #endif /* ATTRIB_H */

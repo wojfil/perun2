@@ -16,6 +16,9 @@
 #include "exception.h"
 
 
+namespace uro
+{
+
 void BracketsInfo::refresh(const Token& tk)
 {
    if (tk.type == Token::t_Symbol) {
@@ -114,4 +117,6 @@ void checkBrackets(const Tokens& tks)
    else if (lv3 != 0) {
       throw SyntaxException(L"bracket { is not closed", i3);
    }
+}
+
 }

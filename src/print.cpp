@@ -15,8 +15,11 @@
 #include "print.h"
 #include "os.h"
 
-_int g_guiMes;
 
+namespace uro
+{
+
+_int g_guiMes;
 
 void rawPrint(const _str& value)
 {
@@ -47,4 +50,6 @@ void commandLog(const Uroboros* uro,const _str& value)
          }
       }
    }
+}
+
 }

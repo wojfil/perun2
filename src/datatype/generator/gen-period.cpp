@@ -14,6 +14,9 @@
 
 #include "gen-period.h"
 
+namespace uro::gen
+{
+
 _per PeriodUnit::getValue()
 {
    const _tnum n = toTimeNumber(value->getValue());
@@ -39,3 +42,5 @@ _per NegatedPeriod::getValue()
 {
    return -(value->getValue());
 };
+
+}

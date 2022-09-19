@@ -3,6 +3,8 @@
 
 #include "datatype/datatype.h"
 
+namespace uro 
+{
 
 enum ArgsParseState {
    aps_Ok = 0,
@@ -42,5 +44,6 @@ private:
    ArgsParseState parseState;
 };
 
+}
 
 #endif // ARGUMENTS_H_INCLUDED

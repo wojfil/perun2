@@ -17,6 +17,10 @@
 #include "../../os.h"
 
 
+
+namespace uro::gen
+{
+
 _tim IncreasedTime::getValue()
 {
    _tim t = time->getValue();
@@ -59,3 +63,4 @@ _tim TimeDateAtIndex::getValue() {
    return getElement() ? time->toDate() : _tim();
 };
 
+}

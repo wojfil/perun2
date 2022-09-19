@@ -22,6 +22,8 @@
 #include "../attr-memory.h"
 
 
+namespace uro::gen
+{
 
 struct OrderIndices
 {
@@ -146,7 +148,7 @@ template <typename T>
 struct OrderBy
 {
 public:
-   OrderBy(Attribute* attr, OrderIndices* indices, Order* ord, Uroboros* uro)
+   OrderBy(Attribute* attr, OrderIndices* indices, Order* ord, uro::Uroboros* uro)
       : attribute(attr), inner(&uro->vars.inner),
         hasAttribute(attr != nullptr), orderIndices(indices), order(ord)
    {
@@ -194,8 +196,8 @@ protected:
    Order* order;
    Attribute* attribute;
    const _boo hasAttribute;
-   InnerVariables* inner;
-   Variable<T>* thisReference;
+   uro::InnerVariables* inner;
+   vars::Variable<T>* thisReference;
    std::vector<T>* resultPtr;
 };
 
@@ -204,7 +206,7 @@ template <typename T>
 struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
 {
 public:
-   OrderBy_List(Generator<std::vector<T>>* bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros* uro)
+   OrderBy_List(Generator<std::vector<T>>* bas, Attribute* attr, OrderIndices* indices, Order* ord, uro::Uroboros* uro)
       : OrderBy<T>(attr, indices, ord, uro), base(bas) { }
 
    ~OrderBy_List()
@@ -261,7 +263,7 @@ struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
    OrderBy_Definition(_def* bas, Attribute* attr, const _boo& hasMem,
-      OrderIndices* indices, Order* ord, Uroboros* uro);
+      OrderIndices* indices, Order* ord, uro::Uroboros* uro);
    ~OrderBy_Definition();
 
    void reset() override;
@@ -270,8 +272,8 @@ public:
 private:
    _def* base;
    _boo first = true;
-   Uroboros* uroboros;
-   InnerVariables* inner;
+   uro::Uroboros* uroboros;
+   uro::InnerVariables* inner;
    const _boo hasMemory;
    AttributeMemory attrMemory;
 
@@ -288,5 +290,6 @@ private:
    std::vector<_nint> depths;
 };
 
+}
 
 #endif /* ORDER_H */

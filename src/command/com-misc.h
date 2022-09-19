@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of uro::Uroboros.
+    uro::Uroboros is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    uro::Uroboros is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with uro::Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef COM_MISC_H
@@ -24,10 +24,13 @@
 #include "../var/var.h"
 
 
+namespace uro::comm
+{
+
 struct C_PrintSingle : Command
 {
 public:
-   C_PrintSingle(Generator<_str>* val, Uroboros* uro)
+   C_PrintSingle(Generator<_str>* val, uro::Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_PrintSingle() {
@@ -37,7 +40,7 @@ public:
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    Generator<_str>* value;
 };
 
@@ -45,7 +48,7 @@ private:
 struct C_PrintList : Command
 {
 public:
-   C_PrintList(Generator<_list>* val, Uroboros* uro)
+   C_PrintList(Generator<_list>* val, uro::Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_PrintList() {
@@ -55,7 +58,7 @@ public:
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    Generator<_list>* value;
 };
 
@@ -63,7 +66,7 @@ private:
 struct C_PrintDefinition : Command
 {
 public:
-   C_PrintDefinition(_def* val, Uroboros* uro)
+   C_PrintDefinition(_def* val, uro::Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_PrintDefinition() {
@@ -73,7 +76,7 @@ public:
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    _def* value;
 };
 
@@ -81,46 +84,46 @@ private:
 struct C_PrintThis_Str : Command
 {
 public:
-   C_PrintThis_Str(Uroboros* uro)
+   C_PrintThis_Str(uro::Uroboros* uro)
       : uroboros(uro), variable(&uro->vars.inner.this_s) { };
    void run() override;
 
 private:
-   Variable<_str>* variable;
-   Uroboros* uroboros;
+   uro::vars::Variable<_str>* variable;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_PrintThis_Num : Command
 {
 public:
-   C_PrintThis_Num(Uroboros* uro)
+   C_PrintThis_Num(uro::Uroboros* uro)
       : uroboros(uro), variable(&uro->vars.inner.this_n) { };
    void run() override;
 
 private:
-   Variable<_num>* variable;
-   Uroboros* uroboros;
+   uro::vars::Variable<_num>* variable;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_PrintThis_Tim : Command
 {
 public:
-   C_PrintThis_Tim(Uroboros* uro)
+   C_PrintThis_Tim(uro::Uroboros* uro)
       : uroboros(uro), variable(&uro->vars.inner.this_t) { };
    void run() override;
 
 private:
-   Variable<_tim>* variable;
-   Uroboros* uroboros;
+   uro::vars::Variable<_tim>* variable;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_SleepPeriod : Command
 {
 public:
-   C_SleepPeriod(Generator<_per>* val, Uroboros* uro)
+   C_SleepPeriod(Generator<_per>* val, uro::Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_SleepPeriod() {
@@ -130,7 +133,7 @@ public:
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    Generator<_per>* value;
 };
 
@@ -138,7 +141,7 @@ private:
 struct C_SleepMs : Command
 {
 public:
-   C_SleepMs(Generator<_num>* val, Uroboros* uro)
+   C_SleepMs(Generator<_num>* val, uro::Uroboros* uro)
       : value(val), uroboros(uro) { };
 
    ~C_SleepMs() {
@@ -148,7 +151,7 @@ public:
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    Generator<_num>* value;
 };
 
@@ -156,55 +159,55 @@ private:
 struct C_Break : Command
 {
 public:
-   C_Break(Uroboros* uro)
+   C_Break(uro::Uroboros* uro)
       : uroboros(uro) { };
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_Continue : Command
 {
 public:
-   C_Continue(Uroboros* uro)
+   C_Continue(uro::Uroboros* uro)
       : uroboros(uro) { };
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_Exit : Command
 {
 public:
-   C_Exit(Uroboros* uro)
+   C_Exit(uro::Uroboros* uro)
       : uroboros(uro) { };
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_Error : Command
 {
 public:
-   C_Error(Uroboros* uro)
+   C_Error(uro::Uroboros* uro)
       : uroboros(uro) { };
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
 };
 
 
 struct C_ErrorWithExitCode : Command
 {
 public:
-   C_ErrorWithExitCode(Generator<_num>* code, Uroboros* uro)
+   C_ErrorWithExitCode(Generator<_num>* code, uro::Uroboros* uro)
       : exitCode(code), uroboros(uro) { };
 
    ~C_ErrorWithExitCode() {
@@ -214,7 +217,7 @@ public:
    void run() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    Generator<_num>* exitCode;
 };
 
@@ -222,7 +225,7 @@ private:
 struct C_Run : Command_L
 {
 public:
-   C_Run(Generator<_str>* val, Attribute* attr, Uroboros* uro)
+   C_Run(Generator<_str>* val, Attribute* attr, uro::Uroboros* uro)
       : value(val), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_Run() {
@@ -241,10 +244,10 @@ private:
 struct C_RunWith : Command_L
 {
 public:
-   C_RunWith(Generator<_str>* val, Uroboros* uro)
+   C_RunWith(Generator<_str>* val, uro::Uroboros* uro)
       : value(val), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWith(Generator<_str>* val, Attribute* attr, Uroboros* uro)
+   C_RunWith(Generator<_str>* val, Attribute* attr, uro::Uroboros* uro)
       : value(val), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWith() {
@@ -263,10 +266,10 @@ private:
 struct C_RunWithWithString : Command_L
 {
 public:
-   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Uroboros* uro)
+   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, uro::Uroboros* uro)
       : value(val), argument(arg), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Attribute* attr, Uroboros* uro)
+   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Attribute* attr, uro::Uroboros* uro)
       : value(val), argument(arg), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithWithString() {
@@ -287,10 +290,10 @@ private:
 struct C_RunWithWith : Command_L
 {
 public:
-   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Uroboros* uro)
+   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, uro::Uroboros* uro)
       : value(val), arguments(args), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Attribute* attr, Uroboros* uro)
+   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Attribute* attr, uro::Uroboros* uro)
       : value(val), arguments(args), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithWith() {
@@ -311,9 +314,9 @@ private:
 struct C_RunWithUroboros : Command_L
 {
 public:
-   C_RunWithUroboros(Uroboros* uro)
+   C_RunWithUroboros(uro::Uroboros* uro)
       : attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-   C_RunWithUroboros(Attribute* attr, Uroboros* uro)
+   C_RunWithUroboros(Attribute* attr, uro::Uroboros* uro)
       : attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
@@ -327,10 +330,10 @@ private:
 struct C_RunWithUroborosWithString : Command_L
 {
 public:
-   C_RunWithUroborosWithString(Generator<_str>* arg, Uroboros* uro)
+   C_RunWithUroborosWithString(Generator<_str>* arg, uro::Uroboros* uro)
       : argument(arg), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWithString(Generator<_str>* arg, Attribute* attr, Uroboros* uro)
+   C_RunWithUroborosWithString(Generator<_str>* arg, Attribute* attr, uro::Uroboros* uro)
       : argument(arg), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithUroborosWithString() {
@@ -349,10 +352,10 @@ private:
 struct C_RunWithUroborosWith : Command_L
 {
 public:
-   C_RunWithUroborosWith(Generator<_list>* args, Uroboros* uro)
+   C_RunWithUroborosWith(Generator<_list>* args, uro::Uroboros* uro)
       : arguments(args), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWith(Generator<_list>* args, Attribute* attr, Uroboros* uro)
+   C_RunWithUroborosWith(Generator<_list>* args, Attribute* attr, uro::Uroboros* uro)
       : arguments(args), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    ~C_RunWithUroborosWith() {
@@ -367,6 +370,7 @@ private:
    const _boo hasAttribute;
 };
 
+}
 
 #endif /* COM_MISC_H */
 

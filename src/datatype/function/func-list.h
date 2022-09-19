@@ -18,9 +18,10 @@
 #include "func-generic.h"
 
 
+namespace uro::func
+{
 
 inline _list toChars(const _str& value);
-
 
 struct F_Characters : Func_1<_str>, Generator<_list>
 {
@@ -56,10 +57,6 @@ private:
    _num fromChar(const _char& ch);
 };
 
-
-
-
-
-
+}
 
 #endif // FUNC_LIST_H_INCLUDED

@@ -19,18 +19,23 @@
 #include "../uroboros.h"
 
 
+namespace uro::comm
+{
+
 // this command listens to the state of its running Uroboros instance
 struct Command_L : Command
 {
 public:
-   Command_L(Uroboros* uro)
+   Command_L(uro::Uroboros* uro)
       : uroboros(uro), inner(&(uro->vars.inner)) { };
 
 protected:
-   Uroboros* uroboros;
-   InnerVariables* inner;
+   uro::Uroboros* uroboros;
+   uro::InnerVariables* inner;
 
 };
+
+}
 
 
 #endif // COM_LISTENER_H_INCLUDED

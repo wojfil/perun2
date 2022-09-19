@@ -19,6 +19,11 @@
 #include "../../uroboros.h"
 
 
-Generator<_list>* parseList(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
+
+Generator<_list>* parseList(const Tokens& tks, uro::Uroboros* uro);
+
+}
 
 #endif /* PARSE_LIST_H */

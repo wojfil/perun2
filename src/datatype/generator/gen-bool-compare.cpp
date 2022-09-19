@@ -16,6 +16,9 @@
 #include "../../uroboros.h"
 
 
+namespace uro::gen
+{
+
 DefComparison::~DefComparison()
 {
    delete value1;
@@ -431,4 +434,6 @@ _boo DefinitionListBiggerEquals::getValue()
    }
 
    return false;
+}
+
 }

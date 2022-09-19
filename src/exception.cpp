@@ -14,6 +14,10 @@
 
 #include "exception.h"
 
+
+namespace uro
+{
+
 SyntaxException::SyntaxException(const _str& msg, const _int& li)
    : message(msg), line(li) { };
 
@@ -28,4 +32,6 @@ _str SyntaxException::getMessage() const
 _str UroRuntimeException::getMessage() const
 {
    return str(L"Runtime error: ", message, L".");
+}
+
 }

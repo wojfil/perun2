@@ -17,6 +17,10 @@
 
 #include "number.h"
 
+
+namespace uro
+{
+
 // sometimes, Number is always an integer
 // for example - index of loop iteration, depth of recursive element
 // this struct provides optimizations
@@ -37,8 +41,8 @@ struct NumberInt : Number
    _boo operator != (const NumberInt& num) const;
    NumberInt& operator += (const _nint& num);
    NumberInt& operator -= (const _nint& num);
-
 };
 
+}
 
 #endif // NUMBER_INT_H_INCLUDED

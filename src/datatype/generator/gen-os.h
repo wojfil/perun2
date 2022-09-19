@@ -21,6 +21,15 @@
 #include <windows.h>
 
 
+namespace uro
+{
+struct Uroboros;
+struct InnerVariables;
+}
+
+namespace uro::gen
+{
+
 inline constexpr _uint32 ELEM_NONE = 0;
 inline constexpr _uint32 ELEM_ALL = 1;
 inline constexpr _uint32 ELEM_DIRECTORIES = 2;
@@ -29,21 +38,17 @@ inline constexpr _uint32 ELEM_RECURSIVE_ALL = 4;
 inline constexpr _uint32 ELEM_RECURSIVE_DIRECTORIES = 5;
 inline constexpr _uint32 ELEM_RECURSIVE_FILES = 6;
 
-struct Uroboros;
-struct InnerVariables;
-
-
 struct DefinitionGenerator
 {
 public:
-   DefinitionGenerator(const _uint32& el, Uroboros* uro)
+   DefinitionGenerator(const _uint32& el, uro::Uroboros* uro)
       : element_(el), uroboros(uro) { };
 
    _def* generateDefault() const;
    _def* generatePattern(Generator<_str>* location, const _uint32& element, const _str& pattern) const;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    const _uint32 element_;
 };
 
@@ -51,7 +56,7 @@ private:
 struct OsDefinition : _def
 {
 public:
-   OsDefinition(Generator<_str>* loc, Uroboros* uro, const _str& patt);
+   OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt);
 
    ~OsDefinition() {
       delete location;
@@ -62,8 +67,8 @@ public:
 protected:
    _boo first;
    Generator<_str>* location;
-   Uroboros* uroboros;
-   InnerVariables* inner;
+   uro::Uroboros* uroboros;
+   uro::InnerVariables* inner;
    _fdata data;
    _str prevThis;
    _numi prevIndex;
@@ -80,7 +85,7 @@ protected:
 struct OsDefinitionPlain : OsDefinition
 {
 public:
-   OsDefinitionPlain(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   OsDefinitionPlain(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinition(loc, uro, patt) { };
 
    void reset() override;
@@ -93,7 +98,7 @@ protected:
 struct OsDefinitionRecursive : OsDefinition
 {
 public:
-   OsDefinitionRecursive(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   OsDefinitionRecursive(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinition(loc, uro, patt), goDeeper(false), paths(_list()),
         bases(_list()), handles(std::vector<HANDLE>()) { };
 
@@ -110,7 +115,7 @@ protected:
 struct Uro_Files : OsDefinitionPlain
 {
 public:
-   Uro_Files(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   Uro_Files(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionPlain(loc, uro, patt) {};
 
    _boo hasNext() override;
@@ -120,7 +125,7 @@ public:
 struct Uro_Directories : OsDefinitionPlain
 {
 public:
-   Uro_Directories(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   Uro_Directories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionPlain(loc, uro, patt) {};
 
    _boo hasNext() override;
@@ -130,7 +135,7 @@ public:
 struct Uro_All : OsDefinitionPlain
 {
 public:
-   Uro_All(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   Uro_All(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionPlain(loc, uro, patt) {};
 
    _boo hasNext() override;
@@ -140,7 +145,7 @@ public:
 struct Uro_RecursiveFiles : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveFiles(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   Uro_RecursiveFiles(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionRecursive(loc, uro, patt) { };
 
    _boo hasNext() override;
@@ -150,7 +155,7 @@ public:
 struct Uro_RecursiveDirectories : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveDirectories(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   Uro_RecursiveDirectories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionRecursive(loc, uro, patt) { };
 
    _boo hasNext() override;
@@ -160,7 +165,7 @@ public:
 struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveAll(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+   Uro_RecursiveAll(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionRecursive(loc, uro, patt), prevFile(false) { };
 
    _boo hasNext() override;
@@ -169,5 +174,6 @@ private:
    _boo prevFile;
 };
 
+}
 
 #endif // GEN_OS_H_INCLUDED

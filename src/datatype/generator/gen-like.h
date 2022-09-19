@@ -21,6 +21,9 @@
 #include <unordered_map>
 
 
+namespace uro::gen
+{
+
 struct LikeSet
 {
 public:
@@ -353,5 +356,6 @@ private:
    std::vector<_boo> isHash;
 };
 
+}
 
 #endif /* GEN_LIKE_H */

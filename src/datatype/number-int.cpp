@@ -15,6 +15,9 @@
 #include "number-int.h"
 
 
+namespace uro
+{
+
 NumberInt::NumberInt()
    : Number() { }
 
@@ -73,4 +76,6 @@ NumberInt& NumberInt::operator -= (const _nint& num)
 {
    value.i -= num;
    return *this;
+}
+
 }

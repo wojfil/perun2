@@ -20,6 +20,9 @@
 #include "gen-number.h"
 
 
+namespace uro::gen
+{
+
 struct IncreasedTime : Generator<_tim>
 {
 public:
@@ -110,6 +113,7 @@ struct TimeDateAtIndex : Generator<_tim>, TimeMemberAtIndex
    _tim getValue() override;
 };
 
+}
 
 #endif /* GEN_TIME_H */
 

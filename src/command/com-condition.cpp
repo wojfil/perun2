@@ -17,6 +17,9 @@
 #include "../util.h"
 
 
+namespace uro::comm
+{
+
 CS_Condition::CS_Condition()
   : command(new C_DoNothing()) { }
 
@@ -199,4 +202,6 @@ void If_AltsElse::run()
 
       this->elseCommand->run();
    }
+}
+
 }

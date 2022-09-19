@@ -36,6 +36,10 @@
 #define _fdata WIN32_FIND_DATAW
 #define _ftim FILETIME
 
+
+namespace uro
+{
+
 template<typename T>
 _str toStr(const T &n)
 {
@@ -69,5 +73,7 @@ void toLower(_str& value);
 void toUpper(_str& value);
 void toLowerChar(_char& ch);
 void toUpperChar(_char& ch);
+
+}
 
 #endif /* PRIMITIVES_H */

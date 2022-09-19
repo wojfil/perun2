@@ -17,6 +17,10 @@
 
 #include "primitives.h"
 
+
+namespace uro
+{
+
 // generator is a structure
 // that generates a new instance of a certain data type
 // when is called
@@ -38,5 +42,6 @@ public:
    };
 };
 
+}
 
 #endif /* GENERATOR_H */

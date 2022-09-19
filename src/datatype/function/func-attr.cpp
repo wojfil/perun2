@@ -18,6 +18,8 @@
 #include "..\..\util.h"
 
 
+namespace uro::func
+{
 
 AttrFunction::~AttrFunction()
 {
@@ -393,3 +395,4 @@ _boo F_Readonly::getValue()
    return p.empty() ? false : os_readonly(p);
 }
 
+}

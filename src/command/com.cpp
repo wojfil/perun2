@@ -15,7 +15,12 @@
 #include "com.h"
 
 
+namespace uro::comm
+{
+
 void C_DoNothing::run()
 {
    // that's all
+}
+
 }

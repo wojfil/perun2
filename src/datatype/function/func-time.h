@@ -18,6 +18,8 @@
 #include "func-generic.h"
 
 
+namespace uro::func
+{
 
 struct F_Christmas : Func_1<_num>, Generator<_tim>
 {
@@ -120,8 +122,6 @@ private:
    Generator<_num>* arg6;
 };
 
-
-
-
+}
 
 #endif // FUNC_TIME_H_INCLUDED

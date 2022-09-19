@@ -23,7 +23,10 @@
 #include "../parse-gen.h"
 
 
-_def* parseDefinition(const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+_def* parseDefinition(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -59,7 +62,7 @@ _def* parseDefinition(const Tokens& tks, Uroboros* uro)
 }
 
 
-static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro)
+static _boo isDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.containsSymbol(PG_CHAR_COMMA)) {
       return false;
@@ -86,7 +89,7 @@ static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro)
 
 // for the sake of optimization
 // definition chains are lazy evaluated
-static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
+static _def* parseDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -128,19 +131,19 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
             _def* def;
             if (parse(uro, tk, def)) {
                _def* pdef = prevDef;
-               prevDef = new Join_DefDef(pdef, def, uro);
+               prevDef = new gen::Join_DefDef(pdef, def, uro);
             }
             else {
                Generator<_str>* str;
                if (parse(uro, tk, str)) {
                   _def* pdef = prevDef;
-                  prevDef = new Join_DefStr(pdef, str, uro);
+                  prevDef = new gen::Join_DefStr(pdef, str, uro);
                }
                else {
                   Generator<_list>* list;
                   if (parse(uro, tk, list)) {
                      _def* pdef = prevDef;
-                     prevDef = new Join_DefList(pdef, list, uro);
+                     prevDef = new gen::Join_DefList(pdef, list, uro);
                   }
                   else {
                      delete prevDef;
@@ -154,21 +157,21 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
          case cl_String: {
             _def* def;
             if (parse(uro, tk, def)) {
-               prevDef = new Join_StrDef(prevStr, def, uro);
+               prevDef = new gen::Join_StrDef(prevStr, def, uro);
                prevStr = nullptr;
                cl = ChainLink::cl_Definition;
             }
             else {
                Generator<_str>* str;
                if (parse(uro, tk, str)) {
-                  prevList =  new Join_StrStr(prevStr, str);
+                  prevList =  new gen::Join_StrStr(prevStr, str);
                   prevStr = nullptr;
                   cl = ChainLink::cl_List;
                }
                else {
                   Generator<_list>* list;
                   if (parse(uro, tk, list)) {
-                     prevList =  new Join_StrList(prevStr, list);
+                     prevList =  new gen::Join_StrList(prevStr, list);
                      prevStr = nullptr;
                      cl = ChainLink::cl_List;
                   }
@@ -184,7 +187,7 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
          case cl_List: {
             _def* def;
             if (parse(uro, tk, def)) {
-               prevDef = new Join_ListDef(prevList, def, uro);
+               prevDef = new gen::Join_ListDef(prevList, def, uro);
                prevList = nullptr;
                cl = ChainLink::cl_Definition;
             }
@@ -192,13 +195,13 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
                Generator<_str>* str;
                if (parse(uro, tk, str)) {
                   Generator<_list>* plist = prevList;
-                  prevList = new Join_ListStr(plist, str);
+                  prevList = new gen::Join_ListStr(plist, str);
                }
                else {
                   Generator<_list>* list;
                   if (parse(uro, tk, list)) {
                      Generator<_list>* plist = prevList;
-                     prevList = new Join_ListList(plist, list);
+                     prevList = new gen::Join_ListList(plist, list);
                   }
                   else {
                      delete prevList;
@@ -213,7 +216,7 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
 
    switch (cl) {
       case cl_Definition: {
-         return new DefinitionChain(prevDef, uro);
+         return new gen::DefinitionChain(prevDef, uro);
       }
       case cl_String: {
          delete prevStr;
@@ -229,7 +232,7 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro)
 }
 
 
-_def* parseDefTernary(const Tokens& tks, Uroboros* uro)
+_def* parseDefTernary(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.isPossibleTernary()) {
       return nullptr;
@@ -258,11 +261,11 @@ _def* parseDefTernary(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   return new DefTernary(condition, left, right);
+   return new gen::DefTernary(condition, left, right);
 }
 
 
-static _def* parseDefBinary(const Tokens& tks, Uroboros* uro)
+static _def* parseDefBinary(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.isPossibleBinary()) {
       return nullptr;
@@ -283,6 +286,7 @@ static _def* parseDefBinary(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   return new DefBinary(condition, value);
+   return new gen::DefBinary(condition, value);
 }
 
+}

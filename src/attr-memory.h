@@ -20,6 +20,9 @@
 #include "var/var-inner.h"
 
 
+namespace uro
+{
+
 // this struct is a consequence of using struct Attribute in iteration loops with other nested iteration loops
 // sometimes attributes have to be saved in the memory and rolled back later
 
@@ -62,5 +65,6 @@ private:
    _num prev_size;
 };
 
+}
 
 #endif // ATTR_MEMORY_H_INCLUDED

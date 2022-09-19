@@ -1,7 +1,10 @@
 #include "parse-order.h"
 
 
-void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros* uro)
+namespace uro::parse
+{
+
+void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, uro::Uroboros* uro)
 {
    if (state == ThisState::ts_String) {
       uro->vc.retreatAttribute();
@@ -11,7 +14,9 @@ void resetOrderParseSettings(const ThisState& state, const ThisState& prevState,
 }
 
 void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory, _def*& result,
-   OrderIndices* indices, Order* order, Uroboros* uro)
+   gen::OrderIndices* indices, gen::Order* order, uro::Uroboros* uro)
 {
-   result = new OrderBy_Definition(result, attr, hasMemory, indices, order, uro);
+   result = new gen::OrderBy_Definition(result, attr, hasMemory, indices, order, uro);
+}
+
 }

@@ -16,6 +16,9 @@
 #include "../uroboros.h"
 
 
+namespace uro::gen
+{
+
 _num Cast_B_N::getValue()
 {
    return _num ( this->base->getValue() ? 1LL : 0LL ) ;
@@ -121,3 +124,5 @@ _list Cast_D_L::getValue()
 
    return strings;
 };
+
+}

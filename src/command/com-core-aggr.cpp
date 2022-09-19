@@ -18,6 +18,9 @@
 #include "../os.h"
 
 
+namespace uro::comm
+{
+
 void C_AggrCopy_String::run()
 {
    const _str n = os_trim(value->getValue());
@@ -360,4 +363,6 @@ void C_Select_List::run()
 
       this->inner->success.value = !anyFailed;
    }
+}
+
 }

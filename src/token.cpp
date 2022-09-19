@@ -16,6 +16,9 @@
 #include "uroboros.h"
 
 
+namespace uro
+{
+
 OriginStringInfo::OriginStringInfo(const _size& ind, const _size& len)
    : index(ind), length(len) { };
 
@@ -193,4 +196,6 @@ _str Token::getOriginString_2(Uroboros* uro) const
 _str Token::getCodeSubstr(const _osi& osi, Uroboros* uro) const
 {
    return uro->arguments.code.substr(osi.index, osi.length);
+}
+
 }

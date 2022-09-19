@@ -18,6 +18,9 @@
 #include "datatype/primitives.h"
 
 
+namespace uro
+{
+
 class SyntaxException
 {
 public:
@@ -38,5 +41,7 @@ public:
 private:
    const _str message;
 };
+
+}
 
 #endif /* EXCEPTION_H */

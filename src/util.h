@@ -19,6 +19,8 @@
 #include <map>
 
 
+namespace uro
+{
 
 // delete all elements from a vector of pointers
 template <typename T>
@@ -81,6 +83,8 @@ void clearAndReserve(std::vector<T>& vec, const _size& length)
 {
    vec.clear();
    vec.reserve(length);
+}
+
 }
 
 

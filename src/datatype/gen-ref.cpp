@@ -15,11 +15,15 @@
 #include "gen-ref.h"
 
 
+namespace uro::gen
+{
+
 NumberIntRef::NumberIntRef(Generator<_numi>* val)
    : value(val) {};
-
 
 _num NumberIntRef::getValue()
 {
    return value->getValue();
+}
+
 }

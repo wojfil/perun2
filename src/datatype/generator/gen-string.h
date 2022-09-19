@@ -21,6 +21,9 @@
 #include "../../uroboros.h"
 
 
+namespace uro::gen
+{
+
 struct ConcatString : Generator<_str>
 {
 public:
@@ -61,11 +64,11 @@ private:
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference(Uroboros* uro) : inner(&uro->vars.inner) {};
+   LocationReference(uro::Uroboros* uro) : inner(&uro->vars.inner) {};
    _str getValue() override;
 
 private:
-   InnerVariables* inner;
+   uro::InnerVariables* inner;
 };
 
 
@@ -105,6 +108,8 @@ private:
    _def* definition;
    Generator<_num>* index;
 };
+
+}
 
 #endif /* GEN_STRING_H */
 

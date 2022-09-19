@@ -22,7 +22,10 @@
 #include "parse-number.h"
 
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
+namespace uro::parse
+{
+
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
 {
    const Token& tk = tks.first();
 
@@ -30,11 +33,11 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
       case Token::t_Keyword: {
          switch (tk.value.keyword.k) {
             case Keyword::kw_True: {
-               result = new Constant<_boo>(true);
+               result = new gen::Constant<_boo>(true);
                return true;
             }
             case Keyword::kw_False: {
-               result = new Constant<_boo>(false);
+               result = new gen::Constant<_boo>(false);
                return true;
             }
             default: {
@@ -51,13 +54,13 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = new Constant<_num>(tk.value.num.n);
+         result = new gen::Constant<_num>(tk.value.num.n);
          return true;
       }
       case Token::t_Word: {
@@ -79,19 +82,19 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
          const _size& h = tk.value.twoWords.h2;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-            result = new TimeYears(var);
+            result = new gen::TimeYears(var);
          else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-            result = new TimeMonths(var);
+            result = new gen::TimeMonths(var);
          else if (h == hs.HASH_PER_WEEKDAY)
-            result = new TimeWeekDay(var);
+            result = new gen::TimeWeekDay(var);
          else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-            result = new TimeDays(var);
+            result = new gen::TimeDays(var);
          else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-            result = new TimeHours(var);
+            result = new gen::TimeHours(var);
          else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-            result = new TimeMinutes(var);
+            result = new gen::TimeMinutes(var);
          else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECOND)
-            result = new TimeSeconds(var);
+            result = new gen::TimeSeconds(var);
          else if (h == hs.HASH_PER_DATE)
             return false;
          else {
@@ -106,17 +109,17 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = new Constant<_str>(tk.value.num.n.toString());
+         result = new gen::Constant<_str>(tk.value.num.n.toString());
          return true;
       }
       case Token::t_Quotation: {
-         result = new Constant<_str>(tk.getOriginString(uro));
+         result = new gen::Constant<_str>(tk.getOriginString(uro));
          return true;
       }
       case Token::t_Word: {
@@ -128,7 +131,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
 {
    const Token& tk = tks.first();
 
@@ -136,7 +139,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
 {
    const Token& tk = tks.first();
 
@@ -144,7 +147,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
 {
    const Token& tk = tks.first();
 
@@ -152,7 +155,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
 {
    const Token& tk = tks.first();
 
@@ -171,7 +174,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
          }
 
          if (tk.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE) {
-            result = new TimeDate(var);
+            result = new gen::TimeDate(var);
             return true;
          }
          else {
@@ -184,7 +187,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
    }
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
 {
    const Token& tk = tks.first();
 
@@ -192,7 +195,7 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
+_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
 {
    const Token& tk = tks.first();
 
@@ -224,3 +227,5 @@ _boo parseOneToken(Uroboros* uro, const Tokens& tks, _def*& result)
       }
    }
 };
+
+}

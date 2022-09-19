@@ -18,6 +18,8 @@
 #include "..\uroboros.h"
 
 
+namespace uro::comm
+{
 
 void CS_StringComArg::run()
 {
@@ -123,4 +125,6 @@ void CS_DefinitionComArg::run()
    if (hasMemory) {
       attrMemory.restore();
    }
+}
+
 }

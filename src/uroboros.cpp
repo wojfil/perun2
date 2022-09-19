@@ -28,9 +28,12 @@
 #include "var/var-runtime.h"
 
 
-Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(Variables(this)),
-   vc(VariablesContext(&this->hashes, &this->vars)), flags(args.getFlags()),
-   terminator(Terminator(this)), patternParser(PatternParser(this)) { };
+namespace uro
+{
+
+Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(vars::Variables(this)),
+   vc(vars::VariablesContext(&this->hashes, &this->vars)), flags(args.getFlags()),
+   terminator(Terminator(this)), patternParser(gen::PatternParser(this)) { };
 
 
 _boo Uroboros::run()
@@ -69,7 +72,7 @@ _boo Uroboros::uro_parse()
    try {
       Tokens tks(&this->tokens);
       checkBrackets(tks);
-      this->commands = parseCommands(tks, this);
+      this->commands = comm::parseCommands(tks, this);
       this->conditionContext.deleteClosedUnits();
    }
    catch (const SyntaxException& ex) {
@@ -112,3 +115,5 @@ _boo Uroboros::uro_runCommands()
    delete this->commands;
    return true;
 };
+
+}

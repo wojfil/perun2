@@ -19,6 +19,9 @@
 #include "generator.h"
 
 
+namespace uro::gen
+{
+
 template <typename T>
 struct GeneratorRef : Generator<T>
 {
@@ -55,5 +58,6 @@ private:
    Generator<_numi>* value;
 };
 
+}
 
 #endif // GEN_REF_H_INCLUDED

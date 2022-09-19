@@ -14,6 +14,8 @@
 
 #include "math.h"
 
+namespace uro
+{
 
 Math::Math() {
    anyRandomDouble = false;
@@ -39,4 +41,6 @@ _nint Math::randomInt(const _nint& limit) {
 
 void Math::setAnyRandomDouble() {
    anyRandomDouble = true;
+}
+
 }

@@ -20,6 +20,10 @@
 #include "../command/aggregate.h"
 #include "../datatype/datatype.h"
 
+
+namespace uro::vars
+{
+
 struct Variables;
 
 struct VariablesContext
@@ -28,28 +32,30 @@ public:
 
    VariablesContext(Hashes* hsh, Variables* vars);
 
-   void setAttribute(const Token& tk, Uroboros* uro);
+   void setAttribute(const Token& tk, uro::Uroboros* uro);
    void setCoreComAttribute(const _str& comName, const _int& line);
    void setTimeComAttribute(const _str& comName, const _int& line);
-   void attributeException(const Token& tk, Uroboros* uro);
+   void attributeException(const Token& tk, uro::Uroboros* uro);
    void addAttribute(Attribute* attr);
    void retreatAttribute();
    _boo anyAttribute();
    Attribute* getLastAttribute();
    void markAttributesToRun();
 
-   void addAggregate(Aggregate* aggr);
+   void addAggregate(comm::Aggregate* aggr);
    void retreatAggregate();
    _boo anyAggregate();
-   Aggregate* getLastAggregate();
+   comm::Aggregate* getLastAggregate();
 
 private:
 
    Hashes* hashes;
    Variables* variables;
    std::vector<Attribute*> attrs;
-   std::vector<Aggregate*> aggrs;
+   std::vector<comm::Aggregate*> aggrs;
 
 };
+
+}
 
 #endif // VAR_GROUP_H_INCLUDED

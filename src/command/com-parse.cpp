@@ -26,7 +26,10 @@
 #include "../datatype/parse/parse-number.h"
 
 
-Command* parseCommands(const Tokens& tks, Uroboros* uro)
+namespace uro::comm
+{
+
+Command* parseCommands(const Tokens& tks, uro::Uroboros* uro)
 {
    std::vector<Command*> commands;
    _int sublen = 0;
@@ -98,14 +101,14 @@ Command* parseCommands(const Tokens& tks, Uroboros* uro)
    }
 }
 
-void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Uroboros* uro)
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, uro::Uroboros* uro)
 {
    const _int end = tks.getEnd();
 
    for (_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
 
-      if (t.type == Token::t_Keyword && isExpForbiddenKeyword(t)) {
+      if (t.type == Token::t_Keyword && parse::isExpForbiddenKeyword(t)) {
          throw SyntaxException(str(L"a command-ending semicolon ; was expected somewhere between keyword '",
             t.getOriginString(uro), L"' and curly brackets {}"), t.line);
       }
@@ -114,7 +117,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Uroboros* uro)
 
 // can return nullptr
 static Command* commandStruct(const Tokens& tks, const _int& sublen,
-   const _int& index, const _int& open, Uroboros* uro)
+   const _int& index, const _int& open, uro::Uroboros* uro)
 {
    const _int leftStart = index - sublen;
    const _int leftLen = open - leftStart;
@@ -150,7 +153,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       Generator<_num>* num;
-      if (!parse(uro, left, num)) {
+      if (!parse::parse(uro, left, num)) {
          throw SyntaxException(str(L"keyword '", leftLast.getOriginString(uro),
             L"' is not preceded by a valid number"), leftLast.line);
       }
@@ -184,7 +187,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       Generator<_boo>* boo;
-      if (!parse(uro, left, boo)) {
+      if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
             L"' is not followed by a valid condition"), leftFirst.line);
       }
@@ -235,7 +238,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       Generator<_boo>* boo;
-      if (!parse(uro, left, boo)) {
+      if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro), L"' is not followed by a valid condition"),
             leftFirst.line);
       }
@@ -290,7 +293,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
 
          Generator<_boo>* boo;
-         if (!parse(uro, left, boo)) {
+         if (!parse::parse(uro, left, boo)) {
             throw SyntaxException(str(L"keywords '", leftFirst.getOriginString(uro), L" ",
                ifToken.getOriginString(uro), L"' are not followed by a valid condition"), leftFirst.line);
          }
@@ -321,7 +324,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
    // time list loop
    Generator<_tlist>* tlist;
-   if (parse(uro, left, tlist)) {
+   if (parse::parse(uro, left, tlist)) {
       uro->vars.inner.thisState = ThisState::ts_Time;
       Aggregate* aggr;
 
@@ -332,7 +335,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
    // number list loop
    Generator<_nlist>* nlist;
-   if (parse(uro, left, nlist)) {
+   if (parse::parse(uro, left, nlist)) {
       uro->vars.inner.thisState = ThisState::ts_Number;
       Aggregate* aggr;
 
@@ -350,7 +353,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 }
 
 static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, const Tokens& right,
-   const ThisState& prevState, Uroboros* uro)
+   const ThisState& prevState, uro::Uroboros* uro)
 {
    Command* com = nullptr;
 
@@ -372,7 +375,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
 
    // string loop
    Generator<_str>* str;
-   if (parse(uro, left, str)) {
+   if (parse::parse(uro, left, str)) {
       uro->vars.inner.thisState = ThisState::ts_String;
       _boo hasMemory;
       Attribute* attr;
@@ -393,7 +396,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
 
    // definition loop
    _def* def;
-   if (parse(uro, left, def)) {
+   if (parse::parse(uro, left, def)) {
       uro->vars.inner.thisState = ThisState::ts_String;
       _boo hasMemory;
       Attribute* attr;
@@ -405,10 +408,10 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
 
       if (attr->isMarkedToEvaluate()) {
          if (isInside) {
-            return new CS_InsideList(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+            return new CS_InsideList(new gen::Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
          }
          else {
-            return new CS_ListLoop(new Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+            return new CS_ListLoop(new gen::Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
          }
       }
       else {
@@ -440,7 +443,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
 
    // list loop
    Generator<_list>* lst;
-   if (parse(uro, left, lst)) {
+   if (parse::parse(uro, left, lst)) {
       uro->vars.inner.thisState = ThisState::ts_String;
       _boo hasMemory;
       Attribute* attr;
@@ -461,7 +464,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
    return nullptr;
 }
 
-static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,
+static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
    const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _boo& hasMemory)
 {
    hasMemory = uro->vc.anyAttribute();
@@ -485,7 +488,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
    return success;
 }
 
-static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* uro,
+static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
    const ThisState& prevState, Aggregate*& aggr)
 {
    aggr = new Aggregate(uro);
@@ -504,7 +507,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros* ur
    return success;
 }
 
-static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, Uroboros* uro)
+static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, uro::Uroboros* uro)
 {
    uro->conditionContext.add(cond);
    uro->vars.varsLevelUp();
@@ -514,7 +517,7 @@ static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, Uro
    return com;
 }
 
-static Command* command(Tokens& tks, Uroboros* uro)
+static Command* command(Tokens& tks, uro::Uroboros* uro)
 {
    const Token& f = tks.first();
 
@@ -603,7 +606,7 @@ static Command* command(Tokens& tks, Uroboros* uro)
    }
 }
 
-static Command* commandMisc(const Tokens& tks, Uroboros* uro)
+static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
 {
    if (tks.containsSymbol(PG_CHAR_EQUALS)) {
       Tokens left(tks);
@@ -672,7 +675,7 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
 
       if (first.type == Token::t_Word) {
          if (tks.getLength() == 2) {
-            ParseVariable<_num>* pv_num;
+            vars::ParseVariable<_num>* pv_num;
 
             if (!uro->vars.getVarPtr(first, pv_num)) {
                throw SyntaxException(str(L"variable '", first.getOriginString(uro),
@@ -695,7 +698,7 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
 
             if (varSquareBrackets(tks2)) {
                Generator<_num>* index = parseListElementIndex(tks2, uro);
-               ParseVariable<_nlist>* pv_nlist;
+               vars::ParseVariable<_nlist>* pv_nlist;
 
                if (!uro->vars.getVarPtr(first, pv_nlist)) {
                   throw SyntaxException(str(L"variable '", first.getOriginString(uro),
@@ -716,7 +719,7 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
             throw SyntaxException(L"the dot . should be preceded by a time variable name", first.line);
          }
 
-         ParseVariable<_tim>* pv_tim;
+         vars::ParseVariable<_tim>* pv_tim;
 
          if (!uro->vars.getVarPtr(first, pv_tim)) {
             throw SyntaxException(str(L"time variable from expression '", first.getOriginString(uro),
@@ -743,7 +746,7 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
                L"' cannot be ", op), first.line);
          }
          else {
-            timeVariableMemberException(first, uro);
+            parse::timeVariableMemberException(first, uro);
          }
 
          pv_tim->makeNotConstant();
@@ -764,15 +767,15 @@ static Command* commandMisc(const Tokens& tks, Uroboros* uro)
 }
 
 static Command* commandVarChange(const Tokens& left, const Tokens& right,
-   const _char& sign, Uroboros* uro)
+   const _char& sign, uro::Uroboros* uro)
 {
    const Token& first = left.first();
 
    if (left.getLength() > 1) {
       if (varSquareBrackets(left)) {
-         ParseVariable<_list>* pv_list;
-         ParseVariable<_nlist>* pv_nlist;
-         ParseVariable<_tlist>* pv_tlist;
+         vars::ParseVariable<_list>* pv_list;
+         vars::ParseVariable<_nlist>* pv_nlist;
+         vars::ParseVariable<_tlist>* pv_tlist;
 
          if (uro->vars.getVarPtr(first, pv_list)
           || uro->vars.getVarPtr(first, pv_nlist)
@@ -782,7 +785,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                L"' is immutable, so its elements cannot be modified"), right.first().line);
          }
 
-         ParseVariable<_str>* pv_str;
+         vars::ParseVariable<_str>* pv_str;
 
          if (uro->vars.getVarPtr(first, pv_str)) {
             throw SyntaxException(str(L"operation ", charStr(sign),
@@ -800,7 +803,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             aro.trimRight();
 
             if (varSquareBrackets(aro)) {
-               ParseVariable<_tlist>* pv_tlist;
+               vars::ParseVariable<_tlist>* pv_tlist;
                if (uro->vars.getVarPtr(first, pv_tlist)) {
                   throw SyntaxException(str(L"operation ", charStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable"), first.line);
@@ -814,16 +817,16 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
    }
 
    if (first.type == Token::t_Word) {
-      ParseVariable<_num>* pv_num;
+      vars::ParseVariable<_num>* pv_num;
       if (uro->vars.getVarPtr(first, pv_num)) {
          Generator<_num>* num;
 
-         if (!parse(uro, right, num)) {
+         if (!parse::parse(uro, right, num)) {
             throw SyntaxException(str(L"right side of operator ", charStr(sign),
                L"= cannot be resolved to a number"), first.line);
          }
 
-         Variable<_num>* var = pv_num->getVarPtr();
+         vars::Variable<_num>* var = pv_num->getVarPtr();
          pv_num->makeNotConstant();
 
          switch (sign) {
@@ -840,16 +843,16 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
       }
 
-      ParseVariable<_per>* pv_per;
+      vars::ParseVariable<_per>* pv_per;
       if (uro->vars.getVarPtr(first, pv_per)) {
-         Variable<_per>* var = pv_per->getVarPtr();
+         vars::Variable<_per>* var = pv_per->getVarPtr();
 
          switch (sign) {
             case L'+':
             case L'-': {
                Generator<_per>* per;
 
-               if (!parse(uro, right, per)) {
+               if (!parse::parse(uro, right, per)) {
                   throw SyntaxException(str(L"right side of operator ", charStr(sign),
                      L"= cannot be resolved to a period"), first.line);
                }
@@ -870,7 +873,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
       }
 
-      ParseVariable<_tim>* pv_tim;
+      vars::ParseVariable<_tim>* pv_tim;
       if (uro->vars.getVarPtr(first, pv_tim)) {
          switch (sign) {
             case L'*':
@@ -881,10 +884,10 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             }
          }
 
-         Variable<_tim>* var = pv_tim->getVarPtr();
+         vars::Variable<_tim>* var = pv_tim->getVarPtr();
          Generator<_per>* per;
 
-         if (!parse(uro, right, per)) {
+         if (!parse::parse(uro, right, per)) {
             throw SyntaxException(str(L"right side of operator '", first.getOriginString(uro),
                L" ", charStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
@@ -916,7 +919,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
       }
 
-      ParseVariable<_tim>* pv_tim;
+      vars::ParseVariable<_tim>* pv_tim;
       if (!uro->vars.getVarPtr(first, pv_tim)) {
          throw SyntaxException(str(L"'", first.getOriginString(uro),
             L"' is not a time variable for ", charStr(sign), L"= operation"),
@@ -925,14 +928,14 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
       Generator<_num>* num;
 
-      if (!parse(uro, right, num)) {
+      if (!parse::parse(uro, right, num)) {
          throw SyntaxException(str(L"right side of operation '", first.getOriginString(uro), L".",
             first.getOriginString_2(uro), L" ", charStr(sign),
             L"=' cannot be resolved to a number"), first.line);
       }
 
       const _size& h = first.value.twoWords.h2;
-      Variable<_tim>* var = pv_tim->getVarPtr();
+      vars::Variable<_tim>* var = pv_tim->getVarPtr();
       const bool negative = (sign == '-');
       pv_tim->makeNotConstant();
 
@@ -953,7 +956,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             L"' time variable member cannot be altered"), first.line);
       }
 
-      timeVariableMemberException(first, uro);
+      parse::timeVariableMemberException(first, uro);
    }
    else {
       throw SyntaxException(str(L"operator ", charStr(sign),
@@ -965,20 +968,20 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 }
 
 static Command* commandVarIncrement(const Token& first, const Tokens& tks,
-   const _int& line, Uroboros* uro)
+   const _int& line, uro::Uroboros* uro)
 {
-   ParseVariable<_str>* pv_str;
+   vars::ParseVariable<_str>* pv_str;
    if (uro->vars.getVarPtr(first, pv_str)) {
-      Variable<_str>* var = pv_str->getVarPtr();
+      vars::Variable<_str>* var = pv_str->getVarPtr();
 
       Generator<_str>* str_;
-      if (parse(uro, tks, str_)) {
+      if (parse::parse(uro, tks, str_)) {
          pv_str->makeNotConstant();
          return new VarAdd_<_str>(var, str_);
       }
 
       Generator<_list>* list;
-      if (parse(uro, tks, list)) {
+      if (parse::parse(uro, tks, list)) {
          delete list;
          throw SyntaxException(str(L"variable '", first.getOriginString(uro),
             L"' can be incremented only by a string"), line);
@@ -994,12 +997,12 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
 }
 
 template <typename T>
-static _boo makeVarAlteration(Uroboros* uro, const Tokens& tokens, const Token& first,
-   ParseVariable<T>*& varPtr, Command*& result, const _str& dataTypeName)
+static _boo makeVarAlteration(uro::Uroboros* uro, const Tokens& tokens, const Token& first,
+   vars::ParseVariable<T>*& varPtr, Command*& result, const _str& dataTypeName)
 {
    if (uro->vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
       Generator<T>* value;
-      if (parse(uro, tokens, value)) {
+      if (parse::parse(uro, tokens, value)) {
          if (!value->isConstant()) {
             varPtr->makeNotConstant();
          }
@@ -1019,16 +1022,16 @@ static _boo makeVarAlteration(Uroboros* uro, const Tokens& tokens, const Token& 
 }
 
 template <typename T>
-static Command* makeVarAssignment(const Token& token, Uroboros* uro,
-   ParseVariable<T>* varPtr, Generator<T>* valuePtr)
+static Command* makeVarAssignment(const Token& token, uro::Uroboros* uro,
+   vars::ParseVariable<T>* varPtr, Generator<T>* valuePtr)
 {
-   VarBundle<T>* bundle;
+   vars::VarBundle<T>* bundle;
    uro->vars.takeBundlePointer(bundle);
    const _boo isConstant = !uro->vc.anyAggregate() && valuePtr->isConstant();
    return bundle->makeVariableAssignment(token, varPtr, valuePtr, isConstant);
 }
 
-static Command* commandVarAssign(const Tokens& left, const Tokens& right, Uroboros* uro)
+static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::Uroboros* uro)
 {
    const Token& first = left.first();
 
@@ -1042,9 +1045,9 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
          le.trimRight();
 
          if (varSquareBrackets(le)) {
-            ParseVariable<_nlist>* pv_nlist;
-            ParseVariable<_tlist>* pv_tlist;
-            ParseVariable<_list>* pv_list;
+            vars::ParseVariable<_nlist>* pv_nlist;
+            vars::ParseVariable<_tlist>* pv_tlist;
+            vars::ParseVariable<_list>* pv_list;
 
             if (uro->vars.getVarPtr(first, pv_nlist) ||
                 uro->vars.getVarPtr(first, pv_tlist) ||
@@ -1075,42 +1078,42 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
 
    Command* varAlteration;
 
-   ParseVariable<_boo>* pv_boo = nullptr;
+   vars::ParseVariable<_boo>* pv_boo = nullptr;
    if (makeVarAlteration(uro, right, first, pv_boo, varAlteration, L"bool")) {
       return varAlteration;
    }
 
-   ParseVariable<_num>* pv_num = nullptr;
+   vars::ParseVariable<_num>* pv_num = nullptr;
    if (makeVarAlteration(uro, right, first, pv_num, varAlteration, L"number")) {
       return varAlteration;
    }
 
-   ParseVariable<_tim>* pv_tim = nullptr;
+   vars::ParseVariable<_tim>* pv_tim = nullptr;
    if (makeVarAlteration(uro, right, first, pv_tim, varAlteration, L"time")) {
       return varAlteration;
    }
 
-   ParseVariable<_per>* pv_per = nullptr;
+   vars::ParseVariable<_per>* pv_per = nullptr;
    if (makeVarAlteration(uro, right, first, pv_per, varAlteration, L"period")) {
       return varAlteration;
    }
 
-   ParseVariable<_str>* pv_str = nullptr;
+   vars::ParseVariable<_str>* pv_str = nullptr;
    if (makeVarAlteration(uro, right, first, pv_str, varAlteration, L"string")) {
       return varAlteration;
    }
 
-   ParseVariable<_nlist>* pv_nlist = nullptr;
+   vars::ParseVariable<_nlist>* pv_nlist = nullptr;
    if (makeVarAlteration(uro, right, first, pv_nlist, varAlteration, L"numeric list")) {
       return varAlteration;
    }
 
-   ParseVariable<_tlist>* pv_tlist = nullptr;
+   vars::ParseVariable<_tlist>* pv_tlist = nullptr;
    if (makeVarAlteration(uro, right, first, pv_tlist, varAlteration, L"time list")) {
       return varAlteration;
    }
 
-   ParseVariable<_list>* pv_list = nullptr;
+   vars::ParseVariable<_list>* pv_list = nullptr;
    if (makeVarAlteration(uro, right, first, pv_list, varAlteration, L"list")) {
       return varAlteration;
    }
@@ -1121,42 +1124,42 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
    ////
 
    Generator<_boo>* boo;
-   if (parse(uro, right, boo)) {
+   if (parse::parse(uro, right, boo)) {
       return makeVarAssignment(first, uro, pv_boo, boo);
    }
 
    Generator<_num>* num;
-   if (parse(uro, right, num)) {
+   if (parse::parse(uro, right, num)) {
       return makeVarAssignment(first, uro, pv_num, num);
    }
 
    Generator<_tim>* tim;
-   if (parse(uro, right, tim)) {
+   if (parse::parse(uro, right, tim)) {
       return makeVarAssignment(first, uro, pv_tim, tim);
    }
 
    Generator<_per>* per;
-   if (parse(uro, right, per)) {
+   if (parse::parse(uro, right, per)) {
       return makeVarAssignment(first, uro, pv_per, per);
    }
 
    Generator<_str>* str_;
-   if (parse(uro, right, str_)) {
+   if (parse::parse(uro, right, str_)) {
       return makeVarAssignment(first, uro, pv_str, str_);
    }
 
    Generator<_nlist>* nlist;
-   if (parse(uro, right, nlist)) {
+   if (parse::parse(uro, right, nlist)) {
       return makeVarAssignment(first, uro, pv_nlist, nlist);
    }
 
    Generator<_tlist>* tlist;
-   if (parse(uro, right, tlist)) {
+   if (parse::parse(uro, right, tlist)) {
       return makeVarAssignment(first, uro, pv_tlist, tlist);
    }
 
    Generator<_list>* list;
-   if (parse(uro, right, list)) {
+   if (parse::parse(uro, right, list)) {
       return makeVarAssignment(first, uro, pv_list, list);
    }
 
@@ -1185,13 +1188,13 @@ static bool varSquareBrackets(const Tokens& tks)
 }
 
 static Command* commandVarAssign_Element(const Tokens& left,
-   const Tokens& right, Uroboros* uro)
+   const Tokens& right, uro::Uroboros* uro)
 {
    const Token& first = left.first();
 
-   ParseVariable<_list>* pv_list;
-   ParseVariable<_nlist>* pv_nlist;
-   ParseVariable<_tlist>* pv_tlist;
+   vars::ParseVariable<_list>* pv_list;
+   vars::ParseVariable<_nlist>* pv_nlist;
+   vars::ParseVariable<_tlist>* pv_tlist;
 
    if (uro->vars.getVarPtr(first, pv_list) ||
        uro->vars.getVarPtr(first, pv_nlist) ||
@@ -1201,13 +1204,13 @@ static Command* commandVarAssign_Element(const Tokens& left,
          L"' is immutable, so its elements cannot me modified"), first.line);
    }
 
-   ParseVariable<_str>* pv_str;
+   vars::ParseVariable<_str>* pv_str;
    if (uro->vars.getVarPtr(first, pv_str)) {
       if (pv_str->isReachable()) {
          Generator<_num>* index = parseListElementIndex(left, uro);
          Generator<_str>* str_;
 
-         if (parse(uro, right, str_)) {
+         if (parse::parse(uro, right, str_)) {
             pv_str->makeNotConstant();
             return new VarCharAssignment(pv_str->getVarPtr(), str_, index);
          }
@@ -1226,14 +1229,14 @@ static Command* commandVarAssign_Element(const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro)
+static Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro)
 {
    Tokens left2(tks);
    left2.trimBoth();
    left2.trimLeft();
    Generator<_num>* index;
 
-   if (!parse(uro, left2, index)) {
+   if (!parse::parse(uro, left2, index)) {
       throw SyntaxException(
         L"content of square brackets [] cannot be resolved to a number",
         tks.second().line);
@@ -1242,7 +1245,7 @@ static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro)
    return index;
 }
 
-static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Uroboros* uro)
+static void checkNoSemicolonBeforeBrackets(const Tokens& tks, uro::Uroboros* uro)
 {
    const _int end = tks.getEnd();
    const _int start = tks.getStart() + 1;
@@ -1271,4 +1274,6 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Uroboros* uro)
          }
       }
    }
+}
+
 }

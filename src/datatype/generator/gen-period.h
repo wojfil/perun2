@@ -19,6 +19,9 @@
 #include "gen-generic.h"
 
 
+namespace uro::gen
+{
+
 struct PeriodUnit : Generator<_per>
 {
 public:
@@ -99,5 +102,6 @@ private:
    Generator<_per>* value;
 };
 
+}
 
 #endif /* GEN_PERIOD_H */

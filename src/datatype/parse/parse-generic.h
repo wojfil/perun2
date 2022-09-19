@@ -26,11 +26,14 @@
 #include <vector>
 
 
-Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros* uro);
-void checkLimitBySize(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
+
+Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro);
+void checkLimitBySize(const Tokens& tks, uro::Uroboros* uro);
 
 template <typename T>
-static Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
+static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.isPossibleTernary()) {
       return nullptr;
@@ -59,12 +62,12 @@ static Generator<T>* parseTernary(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   return new Ternary<T>(condition, left, right);
+   return new gen::Ternary<T>(condition, left, right);
 }
 
 
 template <typename T>
-static Generator<T>* parseBinary(const Tokens& tks, Uroboros* uro)
+static Generator<T>* parseBinary(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.isPossibleBinary()) {
       return nullptr;
@@ -85,12 +88,12 @@ static Generator<T>* parseBinary(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   return new Binary<T>(condition, value);
+   return new gen::Binary<T>(condition, value);
 }
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements, Uroboros* uro)
+static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements, uro::Uroboros* uro)
 {
    const _size len = elements.size();
    std::vector<Generator<T>*>* result = new std::vector<Generator<T>*>();
@@ -111,9 +114,9 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
       }
    }
 
-   Generator<std::vector<T>>* v = new Listed<T>(result);
+   Generator<std::vector<T>>* v = new gen::Listed<T>(result);
    if (isConstant) {
-      Generator<std::vector<T>>* cnst = new Constant<std::vector<T>>(v->getValue());
+      Generator<std::vector<T>>* cnst = new gen::Constant<std::vector<T>>(v->getValue());
       delete v;
       return cnst;
    }
@@ -124,7 +127,7 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, Uroboros* uro)
+static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, uro::Uroboros* uro)
 {
    const _size len = elements.size();
    std::vector<Generator<std::vector<T>>*>* result
@@ -146,9 +149,9 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
       }
    }
 
-   Generator<std::vector<T>>* v = new ListedLists<T>(result);
+   Generator<std::vector<T>>* v = new gen::ListedLists<T>(result);
    if (isConstant) {
-      Generator<std::vector<T>>* cnst = new Constant<std::vector<T>>(v->getValue());
+      Generator<std::vector<T>>* cnst = new gen::Constant<std::vector<T>>(v->getValue());
       delete v;
       return cnst;
    }
@@ -159,7 +162,7 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
+static Generator<std::vector<T>>* parseListed(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.containsSymbol(PG_CHAR_COMMA)) {
       return nullptr;
@@ -178,7 +181,7 @@ static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros* uro)
 
 
 template <typename T>
-static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
+static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.isPossibleListElement()) {
       return nullptr;
@@ -188,7 +191,7 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
    const Token& f = tks.first();
    Generator<std::vector<T>>* collection;
    if (uro->vars.getVarValue(f, collection)) {
-      return new ListElement<T>(collection, num);
+      return new gen::ListElement<T>(collection, num);
    }
    else {
       delete num;
@@ -197,7 +200,7 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros* uro)
 }
 
 
-static _boo parseFilterBase(const Tokens& tks, Uroboros* uro, _def*& result, _fdata*& data)
+static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& result, _fdata*& data)
 {
    if (parseOneToken(uro, tks, result)) {
       data = result->getDataPtr();
@@ -209,7 +212,7 @@ static _boo parseFilterBase(const Tokens& tks, Uroboros* uro, _def*& result, _fd
 
 
 template <typename T>
-static _boo parseFilterBase(const Tokens& tks, Uroboros* uro, Generator<T>*& result, _fdata*& data)
+static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>*& result, _fdata*& data)
 {
    data = nullptr;
    return parseOneToken(uro, tks, result);
@@ -218,7 +221,7 @@ static _boo parseFilterBase(const Tokens& tks, Uroboros* uro, Generator<T>*& res
 
 template <typename T>
 static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, Attribute*& attr,
-   const _boo& hasAttr, const _boo& isFinal, const _boo& hasMemory, Uroboros* uro, T& base)
+   const _boo& hasAttr, const _boo& isFinal, const _boo& hasMemory, uro::Uroboros* uro, T& base)
 {
    const _size fplen = prototypes.size();
    _int lastWhereId = -1;
@@ -263,7 +266,7 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
 
 
 template <typename T, typename T2>
-static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
+static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* uro)
 {
    if (tks.getLength() < 3 || !tks.second().isFiltherKeyword()) {
       return nullptr;
@@ -365,5 +368,6 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros* uro)
    return base;
 }
 
+}
 
 #endif /* PARSE_GENERIC_H */

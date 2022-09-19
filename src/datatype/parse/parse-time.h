@@ -19,14 +19,19 @@
 #include "../../uroboros.h"
 
 
-Generator<_tim>* parseTime(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
 
-Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros* uro);
+Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro);
+
+Generator<_tim>* parseTimeConst(const Tokens& tks, uro::Uroboros* uro);
 static _tnum tokenToTimeNumber(const Token& tk);
 static void checkDayCorrectness(const _tnum& day, const _tnum& month, const _tnum& year, const Token& tk);
 static void clockUnitException(const _str& unit, const _tnum& value, const Token& tk);
-static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros* uro);
+static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro);
 static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
-   Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks, _int& numReserve, Uroboros* uro);
+   Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks, _int& numReserve, uro::Uroboros* uro);
+
+}
 
 #endif /* PARSE_TIME_H */

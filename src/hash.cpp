@@ -16,6 +16,10 @@
 #include <unordered_map>
 #include <algorithm>
 
+
+namespace uro
+{
+
 // case-insensitive hash of a string
 // not cryptographically secure, but works efficiently
 _size stringHash(const _str& value)
@@ -335,3 +339,5 @@ Hashes::Hashes() :
       { this->HASH_PER_SECOND, Period::u_Seconds },
       { this->HASH_PER_SECONDS, Period::u_Seconds }
    }) { };
+
+}

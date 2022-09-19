@@ -18,6 +18,9 @@
 #include "primitives.h"
 
 
+namespace uro
+{
+
 union NumberValue
 {
    _nint i;
@@ -70,5 +73,7 @@ struct Number
    NumberValue value;
    _boo isDouble;
 };
+
+}
 
 #endif /* NUMBER_H */

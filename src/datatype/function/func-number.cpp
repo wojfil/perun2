@@ -24,6 +24,9 @@
 #include <cmath>
 
 
+namespace uro::func
+{
+
 _num F_Absolute::getValue()
 {
    _num n = arg1->getValue();
@@ -483,4 +486,6 @@ _num F_FromHex::getValue()
    ss >> x;
 
    return _num(x);
+}
+
 }

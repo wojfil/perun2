@@ -15,6 +15,9 @@
 #include "gen-number.h"
 
 
+namespace uro::gen
+{
+
 _num Negation::getValue() {
    return -value->getValue();
 };
@@ -119,3 +122,4 @@ _num TimeSecondsAtIndex::getValue() {
    return getElement() ? _num(time->second) : _num();
 };
 
+}

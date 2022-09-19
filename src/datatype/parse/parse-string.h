@@ -19,8 +19,12 @@
 #include "../../uroboros.h"
 
 
-Generator<_str>* parseString(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
 
-Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro);
+Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro);
+Generator<_str>* parseStringConcat(const Tokens& tks, uro::Uroboros* uro);
+
+}
 
 #endif /* PARSE_STRING_H */

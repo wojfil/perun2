@@ -18,6 +18,9 @@
 #include <cwctype>
 
 
+namespace uro::gen
+{
+
 // these two non-printable chars are used internally for the Like operator
 // they symbolize:
 // 1) lack of char
@@ -944,4 +947,6 @@ _boo LC_Field_UH::compareToPattern(const _str& value) const
    }
 
    return true;
+}
+
 }

@@ -17,6 +17,9 @@
 #include "../../util.h"
 
 
+namespace uro::gen
+{
+
 Join_StrStr::~Join_StrStr() {
    delete left;
    delete right;
@@ -65,4 +68,6 @@ _list Join_ListList::getValue()
    _list v = left->getValue();
    appendVector(v, right->getValue());
    return v;
+}
+
 }

@@ -24,43 +24,45 @@
 #include "../uroboros.h"
 
 
+namespace uro::comm
+{
 
 Command* keywordCommands(const Token& word, Tokens& tks,
-   const _int& line, const bool& force, const bool& stack, Uroboros* uro);
+   const _int& line, const bool& force, const bool& stack, uro::Uroboros* uro);
 
 static Command* kwCommandSimple(const Token& word, Tokens& tks,
-   const _int& line, Uroboros* uro);
-static Command* coreCommandSimpleSave(const Token& word, Uroboros* uro);
-static Command* coreCommandSimpleNoSave(const Token& word, Uroboros* uro);
+   const _int& line, uro::Uroboros* uro);
+static Command* coreCommandSimpleSave(const Token& word, uro::Uroboros* uro);
+static Command* coreCommandSimpleNoSave(const Token& word, uro::Uroboros* uro);
 static Command* kwCommandTime(const Token& word, Tokens& tks,
-   const _int& line, Uroboros* uro);
+   const _int& line, uro::Uroboros* uro);
 static Command* coreCommandTime(const Token& word,
-   Generator<_tim>* time, const _boo& saveChanges, Uroboros* uro);
+   Generator<_tim>* time, const _boo& saveChanges, uro::Uroboros* uro);
 
-static Command* c_open(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
-static Command* c_select(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
+static Command* c_open(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
+static Command* c_select(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
 static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros* uro);
+   const bool& force, const bool& stack, uro::Uroboros* uro);
 static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros* uro);
+   const bool& force, const bool& stack, uro::Uroboros* uro);
 static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros* uro);
+   const bool& force, const bool& stack, uro::Uroboros* uro);
 static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int& line,
-    const bool& force, const bool& stack, Uroboros* uro);
+    const bool& force, const bool& stack, uro::Uroboros* uro);
 static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros* uro);
+   const bool& force, const bool& stack, uro::Uroboros* uro);
 
-Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _boo& directError, Uroboros* uro);
-static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
-static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
-static Command* c_error(const Token& word, const Tokens& tks, const _int& line, Uroboros* uro);
+Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _boo& directError, uro::Uroboros* uro);
+static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
+static Command* c_run(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
+static Command* c_error(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
 
 static void checkUselessFlags(const Token& word, const _int& line,
-   const bool& force, const bool& stack, Uroboros* uro);
+   const bool& force, const bool& stack, uro::Uroboros* uro);
 static void commandSyntaxException(const _str& name, const _int& line);
 static void commandNoArgException(const _str& name, const _int& line);
 
-
+}
 
 #endif /* COM_PARSE_KW_H */
 

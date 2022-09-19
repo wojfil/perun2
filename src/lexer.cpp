@@ -21,6 +21,9 @@
 #include <sstream>
 
 
+namespace uro
+{
+
 // transform source code into a list of tokens
 // meanwhile, omit comments
 // both // singleline
@@ -497,4 +500,6 @@ void invalidCharException(const _char& ch, const _int& line)
          throw SyntaxException(str(L"character '", charStr(ch), L"' is not allowed in Uroboros"), line);
       }
    }
+}
+
 }

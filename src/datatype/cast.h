@@ -21,6 +21,9 @@
 #include "../uroboros.h"
 
 
+namespace uro::gen
+{
+
 template <typename T1, typename T2>
 struct Cast : Generator<T2>
 {
@@ -137,7 +140,7 @@ struct Cast_TL_L : Cast<_tlist, _list>
 struct Cast_D_L : Generator<_list>
 {
 public:
-   Cast_D_L(_def* b, Uroboros* uro)
+   Cast_D_L(_def* b, uro::Uroboros* uro)
       : base(b), uroboros(uro) { };
 
    ~Cast_D_L()
@@ -148,9 +151,10 @@ public:
    _list getValue() override;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    _def* base;
 };
 
+}
 
 #endif /* CAST_H */

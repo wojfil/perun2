@@ -20,6 +20,9 @@
 #include "primitives.h"
 
 
+namespace uro
+{
+
 enum ElementType
 {
    et_Operator = 0,
@@ -36,7 +39,7 @@ struct ExpElement
 public:
 
    ExpElement<T> (const T& cnst, const _int& li)
-      : generator(new Constant<T>(cnst)), _hasValue(true), constant(cnst),
+      : generator(new gen::Constant<T>(cnst)), _hasValue(true), constant(cnst),
       type(ElementType::et_Constant), _operator(0), line(li) {};
    ExpElement<T> (const _char& op, const _int& li) : generator(nullptr), _hasValue(false),
       _operator(op), type(ElementType::et_Operator), constant(T()), line(li) {};
@@ -66,6 +69,8 @@ private:
    Generator<T>* generator;
    _boo _hasValue;
 };
+
+}
 
 #endif /* EXP_ELEMENT_H */
 

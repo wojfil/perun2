@@ -15,6 +15,9 @@
 #include "gen-bool.h"
 
 
+namespace uro::gen
+{
+
 _boo Not::getValue() {
    return !value->getValue();
 };
@@ -54,3 +57,4 @@ _boo InConstTimeList::getValue() {
    return std::binary_search(list.begin(), list.end(), value->getValue());
 };
 
+}

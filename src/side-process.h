@@ -19,6 +19,9 @@
 #include <Windows.h>
 
 
+namespace uro
+{
+
 struct SideProcess
 {
 public:
@@ -28,5 +31,6 @@ public:
    PROCESS_INFORMATION info;
 };
 
+}
 
 #endif // SIDE_PROCESS_H_INCLUDED

@@ -16,6 +16,9 @@
 #include <sstream>
 
 
+namespace uro
+{
+
 Period::Period()
 {
    init();
@@ -1298,4 +1301,5 @@ inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit)
    return 0;
 }
 
+}
 

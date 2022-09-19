@@ -25,6 +25,9 @@
 #include "../../var/var.h"
 
 
+namespace uro::gen
+{
+
 template <typename T>
 struct Constant : Generator<T>
 {
@@ -203,7 +206,7 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(Generator<std::vector<T>>* li, Generator<_boo>* cond, Attribute* attr, Uroboros* uro)
+   Filter_Where(Generator<std::vector<T>>* li, Generator<_boo>* cond, Attribute* attr, uro::Uroboros* uro)
       : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner),
         this_(nullptr), attribute(attr), hasAttribute(attr != nullptr)
    {
@@ -251,9 +254,9 @@ public:
    }
 
 private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
-   Variable<T>* this_;
+   uro::Uroboros* uroboros;
+   uro::InnerVariables* inner;
+   vars::Variable<T>* this_;
    Generator<std::vector<T>>* list;
    Generator<_boo>* condition;
    Attribute* attribute;
@@ -366,16 +369,16 @@ template <typename T>
 struct VarReference : Generator<T>
 {
 public:
-   VarReference(Variable<T>* var) : variable(var) { };
+   VarReference(vars::Variable<T>* var) : variable(var) { };
 
    T getValue() override {
       return variable->value;
    }
 
 private:
-   Variable<T>* variable;
+   vars::Variable<T>* variable;
 };
 
-
+}
 
 #endif /* GEN_GENERIC_H */

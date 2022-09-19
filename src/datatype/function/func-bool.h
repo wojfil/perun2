@@ -19,7 +19,8 @@
 #include <wctype.h>
 
 
-
+namespace uro::func
+{
 
 template <typename T>
 struct F_Any : Func_1<std::vector<T>>, Generator<_boo>
@@ -297,6 +298,6 @@ public:
    _boo getValue() override;
 };
 
-
+}
 
 #endif // FUNC_BOOL_H_INCLUDED

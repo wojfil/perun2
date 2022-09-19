@@ -19,6 +19,16 @@
 #include <set>
 #include <map>
 
+
+namespace uro
+{
+   struct Uroboros;
+   struct InnerVariables;
+}
+
+namespace uro::comm
+{
+
 inline constexpr _uint32 AGGR_NULL =      0b000;
 inline constexpr _uint32 AGGR_COPY =      0b001;
 inline constexpr _uint32 AGGR_SELECT =    0b010;
@@ -30,14 +40,10 @@ inline constexpr _uint32 AGGR_SELECT =    0b010;
 // this is what Aggregate is for - it stores files and directories
 // and performs the command once at the loop exit
 
-
-struct Uroboros;
-struct InnerVariables;
-
 struct Aggregate
 {
 public:
-   Aggregate(Uroboros* uro);
+   Aggregate(uro::Uroboros* uro);
    void set(const _uint32& v);
    void run();
 
@@ -49,10 +55,12 @@ public:
    std::set<_str> invalidSelect;
 
 private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
+   uro::Uroboros* uroboros;
+   uro::InnerVariables* inner;
    _uint32 value;
    inline _boo has(const _uint32& v) const;
 };
+
+}
 
 #endif /* AGGR_H */

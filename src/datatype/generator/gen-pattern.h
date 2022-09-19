@@ -18,18 +18,22 @@
 #include "gen-os.h"
 
 
+namespace uro::gen
+{
+
 struct PatternParser
 {
 public:
-   PatternParser(Uroboros* uro)
+   PatternParser(uro::Uroboros* uro)
       : uroboros(uro), defGenerator(ELEM_NONE, uro) { };
 
    _boo parse(const _str& pattern, const _int& asteriskId, _def*& result) const;
 
 private:
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    const DefinitionGenerator defGenerator;
 };
 
+}
 
 #endif // GEN_PATTERN_H_INCLUDED

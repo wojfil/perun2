@@ -19,6 +19,9 @@
 #include <vector>
 
 
+namespace uro
+{
+
 struct Time
 {
    // time can be defined in 4 forms:
@@ -97,5 +100,7 @@ inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);
 std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base);
+
+}
 
 #endif /* TIME_H */

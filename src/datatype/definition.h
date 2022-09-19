@@ -20,6 +20,9 @@
 #include <windows.h>
 
 
+namespace uro
+{
+
 // this data structure is the crucial for Uroboros
 // it provides lazy evaluation
 struct Definition : Generator<_str>
@@ -46,5 +49,6 @@ protected:
    _str value;
 };
 
+}
 
 #endif /* DEFINITION_H */

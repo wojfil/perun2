@@ -24,7 +24,10 @@
 #include "../parse-gen.h"
 
 
-Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+Generator<_per>* parsePeriod(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -79,13 +82,13 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
       if (startsWithMinus) {
          Generator<_per>* per;
          if (parse(uro, tks2, per)) {
-            return new NegatedPeriod(per);
+            return new gen::NegatedPeriod(per);
          }
       }
    }
 
    if (tks.isPossibleFunction()) {
-      Generator<_per>* func = periodFunction(tks, uro);
+      Generator<_per>* func = func::periodFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -104,7 +107,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated, Uroboros* uro)
+static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated, uro::Uroboros* uro)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -123,7 +126,7 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
 
       if (num.isDouble) {
          if (num.value.d == 1L) {
-            return new Constant<_per>(Period(negated ? -1 : 1, unit));
+            return new gen::Constant<_per>(Period(negated ? -1 : 1, unit));
          }
          else {
             unitNameException(last.getOriginString(uro), tks);
@@ -131,7 +134,7 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
       }
       else {
          if (num.value.i == 1LL) {
-            return new Constant<_per>(Period(negated ? -1 : 1, unit));
+            return new gen::Constant<_per>(Period(negated ? -1 : 1, unit));
          }
          else {
             unitNameException(last.getOriginString(uro), tks);
@@ -152,13 +155,13 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated,
          v *= -1;
       }
 
-      return new Constant<_per>(Period(v, unit));
+      return new gen::Constant<_per>(Period(v, unit));
    }
 
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros* uro)
+static Generator<_per>* parsePeriodUnit(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size& h = tks.last().value.word.h;
    Tokens tks2(tks);
@@ -179,7 +182,7 @@ static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros* uro)
        uro->hashes.HASH_GROUP_PERIOD_MULTI.end())
    {
       const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
-      return new PeriodUnit(num, unit);
+      return new gen::PeriodUnit(num, unit);
    }
 
    return nullptr;
@@ -191,7 +194,7 @@ static void unitNameException(const _str& name, const Tokens& tks)
       name, L"'"), tks.last().line);
 }
 
-static Generator<_per>* parsePeriodExp(const Tokens& tks, Uroboros* uro)
+static Generator<_per>* parsePeriodExp(const Tokens& tks, uro::Uroboros* uro)
 {
    std::vector<Tokens> elements;
    tks.splitBySymbol(L'+', elements);
@@ -214,14 +217,14 @@ static Generator<_per>* parsePeriodExp(const Tokens& tks, Uroboros* uro)
          return nullptr;
       }
       else {
-         result = new PeriodAddition(result, per);
+         result = new gen::PeriodAddition(result, per);
       }
    }
 
    return result;
 }
 
-static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
+static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, uro::Uroboros* uro)
 {
    const _int baseLen = tks.getLength();
    if (baseLen == 1) {
@@ -240,7 +243,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
       Generator<_per>* gp;
       if (parse(uro, tks2, gp)) {
          if (minusAwaits) {
-            return new NegatedPeriod(gp);
+            return new gen::NegatedPeriod(gp);
          }
          else {
             return gp;
@@ -264,7 +267,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
       hasFirst = true;
       isTime = false;
       if (minusAwaits) {
-         result = new NegatedPeriod(result);
+         result = new gen::NegatedPeriod(result);
          minusAwaits = false;
       }
    }
@@ -283,14 +286,14 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
       if (isTime) {
          Generator<_tim>* time2;
          if (parse(uro, el, time2)) {
-            Generator<_per>* per = new TimeDifference(time, time2);
+            Generator<_per>* per = new gen::TimeDifference(time, time2);
 
             if (hasFirst) {
-               result = new PeriodSubtraction(result, per);
+               result = new gen::PeriodSubtraction(result, per);
             }
             else {
                if (minusAwaits) {
-                  result = new NegatedPeriod(per);
+                  result = new gen::NegatedPeriod(per);
                   minusAwaits = false;
                }
                else {
@@ -304,7 +307,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
          else {
             Generator<_per>* per3;
             if (parse(uro, el, per3)) {
-               Generator<_tim>* tim3 = new DecreasedTime(time, per3);
+               Generator<_tim>* tim3 = new gen::DecreasedTime(time, per3);
                time = tim3;
             }
             else {
@@ -317,11 +320,11 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
          Generator<_per>* per;
          if (parse(uro, el, per)) {
             if (minusAwaits) {
-               result = new NegatedPeriod(new PeriodSubtraction(result, per));
+               result = new gen::NegatedPeriod(new gen::PeriodSubtraction(result, per));
                minusAwaits = false;
             }
             else {
-               result = new PeriodSubtraction(result, per);
+               result = new gen::PeriodSubtraction(result, per);
             }
          }
          else {
@@ -348,7 +351,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros* uro)
    return result;
 }
 
-static Generator<_per>* parseTimeDifference(const Tokens& tks, Uroboros* uro)
+static Generator<_per>* parseTimeDifference(const Tokens& tks, uro::Uroboros* uro)
 {
    Tokens left(tks);
    Tokens right(tks);
@@ -366,7 +369,7 @@ static Generator<_per>* parseTimeDifference(const Tokens& tks, Uroboros* uro)
    if (parse(uro, left, tim1)) {
       Generator<_tim>* tim2;
       if (parse(uro, right, tim2)) {
-         return new TimeDifference(tim1, tim2);
+         return new gen::TimeDifference(tim1, tim2);
       }
       else {
          delete tim1;
@@ -384,5 +387,7 @@ static Generator<_per>* parseTimeDifference(const Tokens& tks, Uroboros* uro)
       return nullptr;
    }
 
-   return new PeriodSubtraction(per1, per2);
+   return new gen::PeriodSubtraction(per1, per2);
+}
+
 }

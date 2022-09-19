@@ -38,21 +38,21 @@ _int wmain(_int argc, _char* argv[], _char *envp[])
 {
    uroConsoleInit();
 
-   Arguments arguments(&argc, &argv);
+   uro::Arguments arguments(&argc, &argv);
 
    switch (arguments.getParseState())
    {
-      case ArgsParseState::aps_Failed:
+      case uro::ArgsParseState::aps_Failed:
       {
-         return EXITCODE_CLI_ERROR;
+         return uro::EXITCODE_CLI_ERROR;
       }
-      case ArgsParseState::aps_PrintInfo:
+      case uro::ArgsParseState::aps_PrintInfo:
       {
-         return EXITCODE_OK;
+         return uro::EXITCODE_OK;
       }
    }
 
-   Uroboros uroboros(arguments);
+   uro::Uroboros uroboros(arguments);
    uroboros.run();
 
    return uroboros.exitCode;

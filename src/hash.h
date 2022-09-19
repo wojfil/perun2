@@ -21,9 +21,11 @@
 #include <map>
 
 
+namespace uro
+{
+
 _size stringHash(const _str& value);
 _size rawStringHash(const _str& value);
-
 
 // prepare hashes for language keywords
 // so, instead of comparing strings, we will compare hashes
@@ -232,5 +234,6 @@ public:
 
 };
 
+}
 
 #endif // HASH_H_INCLUDED

@@ -20,9 +20,12 @@
 #include "../exp-element.h"
 
 
-Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
 
-static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro);
+Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro);
+
+static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro);
 static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList,
    std::vector<ExpElement<_num>*>& pntList);
 static Generator<_num>* numExpIntegrateUnary(
@@ -36,6 +39,8 @@ static Generator<_num>* numExpTreeMerge2(
 static _boo isNumExpComputable(const std::vector<ExpElement<_num>*>& infList);
 static _boo isNumExpOperator(const _char& ch);
 static _boo isNumExpHighPriority(const _char& ch);
-void timeVariableMemberException(const Token& tk, Uroboros* uro);
+void timeVariableMemberException(const Token& tk, uro::Uroboros* uro);
+
+}
 
 #endif /* EXP_PARSE_NUMBER_H */

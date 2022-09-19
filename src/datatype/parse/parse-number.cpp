@@ -22,12 +22,14 @@
 #include "../../hash.h"
 
 
+namespace uro::parse
+{
+
 // within an expression, minus sign can either mean subtraction operation (x-y) or unary negation (-x)
 // this sign is used to distinguish them
 const _char UNARY_MINUS = L'~';
 
-
-Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
+Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -38,7 +40,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
    }
 
    if (tks.isPossibleFunction()) {
-      Generator<_num>* func = numberFunction(tks, uro);
+      Generator<_num>* func = uro::func::numberFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -97,7 +99,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
          Generator<_num>* num;
 
          if (parse(uro, tks2, num)) {
-            return new Negation(num);
+            return new gen::Negation(num);
          }
          else {
             Generator<_per>* per;
@@ -129,19 +131,19 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
          const Hashes& hs = uro->hashes;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-            return new TimeYearsAtIndex(tlist, num);
+            return new gen::TimeYearsAtIndex(tlist, num);
          else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-            return new TimeMonthsAtIndex(tlist, num);
+            return new gen::TimeMonthsAtIndex(tlist, num);
          else if (h == hs.HASH_PER_WEEKDAY)
-            return new TimeWeekDayAtIndex(tlist, num);
+            return new gen::TimeWeekDayAtIndex(tlist, num);
          else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-            return new TimeDaysAtIndex(tlist, num);
+            return new gen::TimeDaysAtIndex(tlist, num);
          else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-            return new TimeHoursAtIndex(tlist, num);
+            return new gen::TimeHoursAtIndex(tlist, num);
          else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-            return new TimeMinutesAtIndex(tlist, num);
+            return new gen::TimeMinutesAtIndex(tlist, num);
          else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECONDS)
-            return new TimeSecondsAtIndex(tlist, num);
+            return new gen::TimeSecondsAtIndex(tlist, num);
          else if (h == hs.HASH_PER_DATE)
             return nullptr;
          else
@@ -168,7 +170,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros* uro)
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros* uro)
+static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
 {
    std::vector<ExpElement<_num>*> infList; // infix notation list
    const _int start = tks.getStart();
@@ -396,7 +398,7 @@ static Generator<_num>* numExpIntegrateUnary(
             }
             else {
                Generator<_num>* n = e->takeValue();
-               Generator<_num>* neg = new Negation(n);
+               Generator<_num>* neg = new gen::Negation(n);
                newElement = new ExpElement<_num>(neg, e->line);
             }
 
@@ -473,19 +475,19 @@ static Generator<_num>* numExpTreeMerge(
             else {
                Generator<_num>* first = firstElement->takeValue();
                Generator<_num>* second = secondElement->takeValue();
-               BinaryOperation<_num>* bin;
+               gen::BinaryOperation<_num>* bin;
 
                switch(op) {
                   case L'*': {
-                     bin = new Multiplication(first, second);
+                     bin = new gen::Multiplication(first, second);
                      break;
                   }
                   case L'/': {
-                     bin = new Division(first, second);
+                     bin = new gen::Division(first, second);
                      break;
                   }
                   case L'%': {
-                     bin = new Modulo(first, second);
+                     bin = new gen::Modulo(first, second);
                      break;
                   }
                }
@@ -544,17 +546,17 @@ static Generator<_num>* numExpTreeMerge2(
                }
             }
 
-            first = new Constant<_num>(value);
+            first = new gen::Constant<_num>(value);
          }
          else {
             switch(op) {
                case L'+': {
-                  Addition* add = new Addition(first, second);
+                  gen::Addition* add = new gen::Addition(first, second);
                   first = add;
                   break;
                }
                case L'-': {
-                  Subtraction* sub = new Subtraction(first, second);
+                  gen::Subtraction* sub = new gen::Subtraction(first, second);
                   first = sub;
                   break;
                }
@@ -679,8 +681,10 @@ static _boo isNumExpHighPriority(const _char& ch)
    }
 }
 
-void timeVariableMemberException(const Token& tk, Uroboros* uro)
+void timeVariableMemberException(const Token& tk, uro::Uroboros* uro)
 {
    throw SyntaxException(str(L"'", tk.getOriginString_2(uro),
       L"' is not a time variable member"), tk.line);
+}
+
 }

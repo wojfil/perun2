@@ -18,6 +18,9 @@
 #include "com-condition.h"
 
 
+namespace uro::comm
+{
+
 ConditionUnit::ConditionUnit(CS_Condition* pntr)
   : pointer(pntr) { };
 
@@ -206,4 +209,6 @@ void ConditionContext::addElseIf(Generator<_boo>* cond, Command* com, const _int
    }
 
    cu.addElseIf(com, cond);
+}
+
 }

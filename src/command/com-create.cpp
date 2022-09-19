@@ -18,6 +18,9 @@
 #include "../os.h"
 
 
+namespace uro::comm
+{
+
 void C_Create::run()
 {
    if (this->uroboros->running) {
@@ -874,4 +877,6 @@ void C_CreateDirectories_List_Stack::run()
 
       this->inner->success.value = success;
    }
+}
+
 }

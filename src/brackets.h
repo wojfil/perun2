@@ -17,6 +17,8 @@
 
 #include "tokens.h"
 
+namespace uro
+{
 
 struct BracketsInfo
 {
@@ -32,6 +34,8 @@ private:
 
 
 void checkBrackets(const Tokens& tks);
+
+}
 
 #endif /* BRACKETS_H */
 

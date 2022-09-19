@@ -32,9 +32,9 @@
 #include "math.h"
 #include <cwctype>
 
-// function parsing could have been done in a more generalized way
-// on the other hand, current approach
-// enables variety of precise error messages
+
+namespace uro::func
+{
 
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 {
@@ -47,7 +47,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
    return result;
 }
 
-Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
+Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -68,7 +68,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -78,7 +78,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -96,14 +96,14 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          delete str_;
          throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a collection"), word.line);
       }
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -112,7 +112,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_tlist>* tlist;
-      if (parse(uro, args[0], tlist)) {
+      if (parse::parse(uro, args[0], tlist)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -121,7 +121,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_nlist>* nlist;
-      if (parse(uro, args[0], nlist)) {
+      if (parse::parse(uro, args[0], nlist)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -130,7 +130,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -148,14 +148,14 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str1;
-      if (parse(uro, args[0], str1)) {
+      if (parse::parse(uro, args[0], str1)) {
          delete str1;
          throw SyntaxException(str(L"first argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a collection"), word.line);
       }
 
       _def* def;
-      if (!parse(uro, args[0], def)) {
+      if (!parse::parse(uro, args[0], def)) {
          functionArgException(1, L"definition", word, uro);
       }
 
@@ -173,7 +173,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (parse(uro, args[1], str)) {
+      if (parse::parse(uro, args[1], str)) {
          return new F_AnyInside(def, str, uro);
       }
       else {
@@ -187,9 +187,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          Generator<_str>* str2;
-         if (parse(uro, args[1], str2)) {
+         if (parse::parse(uro, args[1], str2)) {
             return new F_ContainsStr(str_, str2);
          }
          else {
@@ -201,9 +201,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       checkInOperatorCommaAmbiguity(word, args[0], uro);
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
          Generator<_str>* str2;
-         if (parse(uro, args[1], str2)) {
+         if (parse::parse(uro, args[1], str2)) {
             return new F_ContainsDef(def, str2, uro);
          }
          else {
@@ -213,9 +213,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_tlist>* tlist;
-      if (parse(uro, args[0], tlist)) {
+      if (parse::parse(uro, args[0], tlist)) {
          Generator<_tim>* tim2;
-         if (parse(uro, args[1], tim2)) {
+         if (parse::parse(uro, args[1], tim2)) {
             return new F_ContainsCol<_tim>(tlist, tim2);
          }
          else {
@@ -225,9 +225,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_nlist>* nlist;
-      if (parse(uro, args[0], nlist)) {
+      if (parse::parse(uro, args[0], nlist)) {
          Generator<_num>* num2;
-         if (parse(uro, args[1], num2)) {
+         if (parse::parse(uro, args[1], num2)) {
             return new F_ContainsCol<_num>(nlist, num2);
          }
          else {
@@ -237,9 +237,9 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
          Generator<_str>* str2;
-         if (parse(uro, args[1], str2)) {
+         if (parse::parse(uro, args[1], str2)) {
             return new F_ContainsCol<_str>(list, str2);
          }
          else {
@@ -258,7 +258,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
@@ -270,7 +270,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str2;
-      if (parse(uro, args[1], str2)) {
+      if (parse::parse(uro, args[1], str2)) {
          return new F_ExistsInside(str, str2, uro);
       }
       else {
@@ -284,7 +284,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
          if (len == 1) {
             checkFunctionAttribute(word, uro);
             Generator<_str>* ts;
@@ -298,7 +298,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
             }
 
             Generator<_str>* str2;
-            if (parse(uro, args[1], str2)) {
+            if (parse::parse(uro, args[1], str2)) {
                return new F_AnyInside(def, str2, uro);
             }
             else {
@@ -308,7 +308,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (!parse(uro, args[0], list)) {
+      if (!parse::parse(uro, args[0], list)) {
          functionArgException(1, L"list", word, uro);
       }
 
@@ -325,7 +325,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str2;
-      if (parse(uro, args[1], str2)) {
+      if (parse::parse(uro, args[1], str2)) {
          return new F_ExistInside(list, str2, uro);
       }
       else {
@@ -339,7 +339,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
@@ -351,7 +351,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 
                switch (os.size()) {
                   case 0: {
-                     return new Constant<_boo>(true);
+                     return new gen::Constant<_boo>(true);
                   }
                   case 1: {
                      const _char ch = os[0];
@@ -378,7 +378,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str2;
-      if (parse(uro, args[1], str2)) {
+      if (parse::parse(uro, args[1], str2)) {
          return new F_StartsWith(str, str2);
       }
       else {
@@ -391,7 +391,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
@@ -403,7 +403,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
 
                switch (os.size()) {
                   case 0: {
-                     return new Constant<_boo>(true);
+                     return new gen::Constant<_boo>(true);
                   }
                   case 1: {
                      const _char ch = os[0];
@@ -430,7 +430,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str2;
-      if (!parse(uro, args[1], str2)) {
+      if (!parse::parse(uro, args[1], str2)) {
          functionArgException(2, L"string", word, uro);
       }
 
@@ -440,10 +440,10 @@ Generator<_boo>* boolFunction(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word, Uroboros* uro)
+static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
 {
    Generator<_str>* arg1;
-   if (!parse(uro, tks, arg1)) {
+   if (!parse::parse(uro, tks, arg1)) {
       functionArgException(1, L"string", word, uro);
    }
 
@@ -484,7 +484,7 @@ static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word,
    return nullptr;
 }
 
-Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
+Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -502,7 +502,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
-      if (parse(uro, args[0], arg1)) {
+      if (parse::parse(uro, args[0], arg1)) {
          return new F_Length(arg1);
       }
       else {
@@ -517,7 +517,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
 
       Generator<_str>* arg1;
 
-      if (parse(uro, args[0], arg1)) {
+      if (parse::parse(uro, args[0], arg1)) {
          if (name == uro->hashes.HASH_FUNC_FROMBINARY)
             return new F_FromBinary(arg1);
          else
@@ -533,7 +533,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          if (len != 1) {
             functionArgNumberException(len, word, uro);
          }
@@ -541,7 +541,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -550,7 +550,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -567,7 +567,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
-      if (parse(uro, args[0], arg1)) {
+      if (parse::parse(uro, args[0], arg1)) {
          return new F_Number(arg1);
       }
       else {
@@ -581,29 +581,29 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          delete str_;
          throw SyntaxException(str(L"the argument of the function '", word.getOriginString(uro),
             L"' is not a collection. If you want to measure length of a string, use function 'length' instead"), word.line);
       }
 
       Generator<_tlist>* tlist;
-      if (parse(uro, args[0], tlist)) {
+      if (parse::parse(uro, args[0], tlist)) {
           return new F_Count<_tim>(tlist);
       }
 
       Generator<_nlist>* nlist;
-      if (parse(uro, args[0], nlist)) {
+      if (parse::parse(uro, args[0], nlist)) {
           return new F_Count<_num>(nlist);
       }
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
           return new F_CountDef(def, uro);
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
           return new F_Count<_str>(list);
       }
 
@@ -616,7 +616,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       _def* def;
-      if (!parse(uro, args[0], def)) {
+      if (!parse::parse(uro, args[0], def)) {
          functionArgException(1, L"definition", word, uro);
       }
 
@@ -633,7 +633,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (parse(uro, args[1], str)) {
+      if (parse::parse(uro, args[1], str)) {
          return new F_CountInside(def, str, uro);
       }
       else {
@@ -646,12 +646,12 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
          functionArgNumberException(len, word, uro);
 
       Generator<_num>* arg1;
-      if (!parse(uro, args[0], arg1)) {
+      if (!parse::parse(uro, args[0], arg1)) {
          functionArgException(1, L"number", word, uro);
       }
 
       Generator<_num>* arg2;
-      if (!parse(uro, args[1], arg2)) {
+      if (!parse::parse(uro, args[1], arg2)) {
          delete arg1;
          functionArgException(2, L"number", word, uro);
       }
@@ -672,7 +672,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          delete str_;
 
          throw SyntaxException(str(L"function '", word.getOriginString(uro),
@@ -680,7 +680,7 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_nlist>* nlist;
-      if (parse(uro, args[0], nlist)) {
+      if (parse::parse(uro, args[0], nlist)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -704,13 +704,13 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* num;
-      if (parse(uro, args[0], num)) {
+      if (parse::parse(uro, args[0], num)) {
          uro->math.setAnyRandomDouble();
          return new F_RandomNumber(num, uro);
       }
 
       Generator<_nlist>* nlist;
-      if (parse(uro, args[0], nlist)) {
+      if (parse::parse(uro, args[0], nlist)) {
          uro->math.setAnyRandomDouble();
          return new F_RandomElement<_num>(nlist, uro);
       }
@@ -719,10 +719,10 @@ Generator<_num>* numberFunction(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word, Uroboros* uro)
+static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
 {
    Generator<_num>* arg;
-   if (!parse(uro, tks, arg)) {
+   if (!parse::parse(uro, tks, arg)) {
       functionArgException(1, L"number", word, uro);
    }
 
@@ -746,7 +746,7 @@ static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& wor
       return nullptr;
 }
 
-static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word, Uroboros* uro)
+static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word, uro::Uroboros* uro)
 {
    const _size& name = word.value.word.h;
 
@@ -759,12 +759,12 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
       const Tokens& tks = args[i];
 
       Generator<_num>* num;
-      if (parse(uro, tks, num)) {
+      if (parse::parse(uro, tks, num)) {
          singles->push_back(num);
       }
       else {
          Generator<_nlist>* nlist;
-         if (parse(uro, tks, nlist)) {
+         if (parse::parse(uro, tks, nlist)) {
             multis->push_back(nlist);
          }
          else {
@@ -792,7 +792,7 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
       return nullptr;
 }
 
-Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro)
+Generator<_per>* periodFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -804,7 +804,7 @@ Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro)
          functionArgNumberException(len, word, uro);
 
       Generator<_str>* str;
-      if (parse(uro, args[0], str)) {
+      if (parse::parse(uro, args[0], str)) {
          return new F_Lifetime(str, uro);
       }
       else {
@@ -815,7 +815,7 @@ Generator<_per>* periodFunction(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
+Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -845,12 +845,12 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
       Generator<_num>* num;
-      if (!parse(uro, args[1], num)) {
+      if (!parse::parse(uro, args[1], num)) {
          delete str;
          functionArgException(2, L"number", word, uro);
       }
@@ -870,18 +870,18 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str1;
-      if (!parse(uro, args[0], str1)) {
+      if (!parse::parse(uro, args[0], str1)) {
          functionArgException(1, L"string", word, uro);
       }
 
       Generator<_str>* str2;
-      if (!parse(uro, args[1], str2)) {
+      if (!parse::parse(uro, args[1], str2)) {
          delete str1;
          functionArgException(2, L"string", word, uro);
       }
 
       Generator<_str>* str3;
-      if (!parse(uro, args[2], str3)) {
+      if (!parse::parse(uro, args[2], str3)) {
          delete str1;
          delete str2;
          functionArgException(3, L"string", word, uro);
@@ -896,12 +896,12 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
       Generator<_num>* num;
-      if (!parse(uro, args[1], num)) {
+      if (!parse::parse(uro, args[1], num)) {
          delete str;
          functionArgException(2, L"number", word, uro);
       }
@@ -911,7 +911,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* num2;
-      if (!parse(uro, args[2], num2)) {
+      if (!parse::parse(uro, args[2], num2)) {
          delete str;
          delete num;
          functionArgException(3, L"number", word, uro);
@@ -929,13 +929,13 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
 
       for (_size i = 0; i < len; i++) {
          Generator<_str>* str_;
-         if (parse(uro, args[i], str_)) {
+         if (parse::parse(uro, args[i], str_)) {
             values->push_back(str_);
             continue;
          }
 
          Generator<_list>* list;
-         if (parse(uro, args[i], list)) {
+         if (parse::parse(uro, args[i], list)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i], uro);
             }
@@ -957,14 +957,14 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          delete str_;
          throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
       _def* def;
-      if (parse(uro, args[0], def)) {
+      if (parse::parse(uro, args[0], def)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -979,7 +979,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -1007,7 +1007,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
 
          for (_size i = 0; i < len; i++) {
             Generator<_str>* str;
-            if (!parse(uro, args[i], str)) {
+            if (!parse::parse(uro, args[i], str)) {
                deleteVectorPtr(values);
                functionArgException(i + 1, L"string", word, uro);
             }
@@ -1019,7 +1019,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
       else {
          Generator<_str>* str1;
-         if (!parse(uro, args[0], str1)) {
+         if (!parse::parse(uro, args[0], str1)) {
             functionArgException(1, L"string", word, uro);
          }
 
@@ -1028,7 +1028,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          }
 
          Generator<_str>* str2;
-         if (!parse(uro, args[1], str2)) {
+         if (!parse::parse(uro, args[1], str2)) {
             delete str1;
             functionArgException(2, L"string", word, uro);
          }
@@ -1038,7 +1038,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          }
 
          Generator<_str>* str3;
-         if (!parse(uro, args[2], str3)) {
+         if (!parse::parse(uro, args[2], str3)) {
             delete str1;
             delete str2;
             functionArgException(3, L"string", word, uro);
@@ -1049,7 +1049,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
          }
 
          Generator<_str>* str4;
-         if (!parse(uro, args[3], str4)) {
+         if (!parse::parse(uro, args[3], str4)) {
             delete str1;
             delete str2;
             delete str3;
@@ -1065,22 +1065,22 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_boo>* boo;
-      if (parse(uro, args[0], boo)) {
+      if (parse::parse(uro, args[0], boo)) {
          return new F_String_B(boo);
       }
 
       Generator<_num>* num;
-      if (parse(uro, args[0], num)) {
+      if (parse::parse(uro, args[0], num)) {
          return new F_String_N(num);
       }
 
       Generator<_tim>* tim;
-      if (parse(uro, args[0], tim)) {
+      if (parse::parse(uro, args[0], tim)) {
          return new F_String_T(tim);
       }
 
       Generator<_per>* per;
-      if (parse(uro, args[0], per)) {
+      if (parse::parse(uro, args[0], per)) {
          return new F_String_P(per);
       }
 
@@ -1094,7 +1094,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
 
       Generator<_num>* num;
 
-      if (parse(uro, args[0], num)) {
+      if (parse::parse(uro, args[0], num)) {
          if (name == uro->hashes.HASH_FUNC_ROMAN)
             return new F_Roman(num);
          else if (name == uro->hashes.HASH_FUNC_BINARY)
@@ -1112,7 +1112,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* num;
-      if (parse(uro, args[0], num)) {
+      if (parse::parse(uro, args[0], num)) {
          return new F_MonthName(num);
       }
       else {
@@ -1125,7 +1125,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* num;
-      if (parse(uro, args[0], num)) {
+      if (parse::parse(uro, args[0], num)) {
          return new F_WeekDayName(num);
       }
       else {
@@ -1138,7 +1138,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          if (len > 1) {
             functionArgNumberException(len, word, uro);
          }
@@ -1146,7 +1146,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (parse(uro, args[0], list)) {
+      if (parse::parse(uro, args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -1165,7 +1165,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_list>* list;
-      if (!parse(uro, args[0], list)) {
+      if (!parse::parse(uro, args[0], list)) {
          functionArgException(1, L"list", word, uro);
       }
 
@@ -1181,7 +1181,7 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[1], str)) {
+      if (!parse::parse(uro, args[1], str)) {
          functionArgException(2, L"string", word, uro);
       }
 
@@ -1191,15 +1191,15 @@ Generator<_str>* stringFunction(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word, Uroboros* uro)
+static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word, uro::Uroboros* uro)
 {
    Generator<_str>* arg1;
-   if (!parse(uro, args[0], arg1)) {
+   if (!parse::parse(uro, args[0], arg1)) {
       functionArgException(1, L"string", word, uro);
    }
 
    Generator<_str>* arg2;
-   if (!parse(uro, args[1], arg2)) {
+   if (!parse::parse(uro, args[1], arg2)) {
       delete arg1;
       functionArgException(2, L"string", word, uro);
    }
@@ -1214,10 +1214,10 @@ static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, co
    return nullptr;
 }
 
-static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word, Uroboros* uro)
+static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
 {
    Generator<_str>* arg1;
-   if (!parse(uro, tks, arg1)) {
+   if (!parse::parse(uro, tks, arg1)) {
       functionArgException(1, L"string", word, uro);
    }
 
@@ -1259,7 +1259,7 @@ static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& wor
       return nullptr;
 }
 
-Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
+Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1279,7 +1279,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
          functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
-      if (!parse(uro, args[0], arg1)) {
+      if (!parse::parse(uro, args[0], arg1)) {
          functionArgException(1, L"string", word, uro);
       }
 
@@ -1298,18 +1298,18 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
          functionArgNumberException(len, word, uro);
 
       Generator<_num>* arg1;
-      if (!parse(uro, args[0], arg1)) {
+      if (!parse::parse(uro, args[0], arg1)) {
          functionArgException(1, L"number", word, uro);
       }
 
       Generator<_num>* arg2;
-      if (!parse(uro, args[1], arg2)) {
+      if (!parse::parse(uro, args[1], arg2)) {
          delete arg1;
          functionArgException(2, L"number", word, uro);
       }
 
       Generator<_num>* arg3;
-      if (!parse(uro, args[2], arg3)) {
+      if (!parse::parse(uro, args[2], arg3)) {
          delete arg1;
          delete arg2;
          functionArgException(3, L"number", word, uro);
@@ -1323,12 +1323,12 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* arg1;
-      if (!parse(uro, args[0], arg1)) {
+      if (!parse::parse(uro, args[0], arg1)) {
          functionArgException(1, L"number", word, uro);
       }
 
       Generator<_num>* arg2;
-      if (!parse(uro, args[1], arg2)) {
+      if (!parse::parse(uro, args[1], arg2)) {
          delete arg1;
          functionArgException(2, L"number", word, uro);
       }
@@ -1338,7 +1338,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* arg3;
-      if (!parse(uro, args[2], arg3)) {
+      if (!parse::parse(uro, args[2], arg3)) {
          delete arg1;
          delete arg2;
          functionArgException(3, L"number", word, uro);
@@ -1349,7 +1349,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* arg4;
-      if (!parse(uro, args[3], arg4)) {
+      if (!parse::parse(uro, args[3], arg4)) {
          delete arg1;
          delete arg2;
          delete arg3;
@@ -1357,7 +1357,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* arg5;
-      if (!parse(uro, args[4], arg5)) {
+      if (!parse::parse(uro, args[4], arg5)) {
          delete arg1;
          delete arg2;
          delete arg3;
@@ -1370,7 +1370,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_num>* arg6;
-      if (!parse(uro, args[5], arg6)) {
+      if (!parse::parse(uro, args[5], arg6)) {
          delete arg1;
          delete arg2;
          delete arg3;
@@ -1387,7 +1387,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str_;
-      if (parse(uro, args[0], str_)) {
+      if (parse::parse(uro, args[0], str_)) {
          delete str_;
 
          throw SyntaxException(str(L"function '", word.getOriginString(uro),
@@ -1395,7 +1395,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_tlist>* tlist;
-      if (parse(uro, args[0], tlist)) {
+      if (parse::parse(uro, args[0], tlist)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], uro);
             functionArgNumberException(len, word, uro);
@@ -1419,7 +1419,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_tlist>* tlist;
-      if (parse(uro, args[0], tlist)) {
+      if (parse::parse(uro, args[0], tlist)) {
          return new F_RandomElement<_tim>(tlist, uro);
       }
    }
@@ -1427,10 +1427,10 @@ Generator<_tim>* timeFunction(const Tokens& tks, Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word, Uroboros* uro)
+static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
 {
    Generator<_num>* arg1;
-   if (!parse(uro, tks, arg1)) {
+   if (!parse::parse(uro, tks, arg1)) {
       functionArgException(1, L"number", word, uro);
    }
 
@@ -1447,13 +1447,13 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
 }
 
 
-static void functionArgNumberException(const _int& argNumber, const Token& word, Uroboros* uro)
+static void functionArgNumberException(const _int& argNumber, const Token& word, uro::Uroboros* uro)
 {
    throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? L"" : L"s")), word.line);
 }
 
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, Uroboros* uro)
+static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, uro::Uroboros* uro)
 {
    throw SyntaxException(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(uro), L"' cannot be resolved to a ", typeName), word.line);
@@ -1491,7 +1491,7 @@ static _str ordinalNumber(const _int& number)
    }
 }
 
-Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
+Generator<_list>* listFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1504,7 +1504,7 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
@@ -1519,12 +1519,12 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str1;
-      if (!parse(uro, args[0], str1)) {
+      if (!parse::parse(uro, args[0], str1)) {
          functionArgException(1, L"string", word, uro);
       }
 
       Generator<_str>* str2;
-      if (!parse(uro, args[1], str2)) {
+      if (!parse::parse(uro, args[1], str2)) {
          delete str1;
          functionArgException(2, L"string", word, uro);
       }
@@ -1537,7 +1537,7 @@ Generator<_list>* listFunction(const Tokens& tks, Uroboros* uro)
 }
 
 
-Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
+Generator<_nlist>* numListFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1550,7 +1550,7 @@ Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
       }
 
       Generator<_str>* str;
-      if (!parse(uro, args[0], str)) {
+      if (!parse::parse(uro, args[0], str)) {
          functionArgException(1, L"string", word, uro);
       }
 
@@ -1561,7 +1561,7 @@ Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros* uro)
 }
 
 
-static void checkFunctionAttribute(const Token& word, Uroboros* uro)
+static void checkFunctionAttribute(const Token& word, uro::Uroboros* uro)
 {
    if (!uro->vc.anyAttribute() || uro->vars.inner.thisState != ThisState::ts_String) {
       throw SyntaxException(str(L"function '", word.getOriginString(uro),
@@ -1569,7 +1569,7 @@ static void checkFunctionAttribute(const Token& word, Uroboros* uro)
    }
 }
 
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Uroboros* uro)
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, uro::Uroboros* uro)
 {
    BracketsInfo bi;
    _int end = tks.getEnd();
@@ -1607,4 +1607,6 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, 
       L"' used in function '", word.getOriginString(uro),
       L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);
+}
+
 }

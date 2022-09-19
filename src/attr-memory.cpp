@@ -17,6 +17,9 @@
 #include "os.h"
 
 
+namespace uro
+{
+
 AttributeMemory::AttributeMemory(Attribute* attr, InnerVariables* iv)
    : attribute(attr), hasAttribute(true), inner(iv) { };
 
@@ -208,4 +211,6 @@ void AttributeMemory::restore() const
    if (attribute->has(ATTR_SIZE)) {
       inner->size.value = prev_size;
    }
+}
+
 }

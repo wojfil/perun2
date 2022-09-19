@@ -19,6 +19,10 @@
 #include "guardian.h"
 #include <vector>
 
+
+namespace uro
+{
+
 struct Uroboros;
 
 struct Tokens
@@ -77,5 +81,7 @@ private:
    _boo containsChar(const _char& ch) const;
    _boo containsKeyword(const Keyword& kw) const;
 };
+
+}
 
 #endif /* TOKENS_H */

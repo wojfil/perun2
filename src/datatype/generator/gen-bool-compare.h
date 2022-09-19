@@ -20,6 +20,8 @@
 #include "../../uroboros.h"
 
 
+namespace uro::gen
+{
 
 enum CompType
 {
@@ -382,12 +384,12 @@ private:
 struct DefComparison : Generator<_boo>
 {
 public:
-   DefComparison(_def* val1, _def* val2, Uroboros* uro)
+   DefComparison(_def* val1, _def* val2, uro::Uroboros* uro)
       : value1(val1), value2(val2), uroboros(uro) { };
 
 protected:
    ~DefComparison();
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    _def* value1;
    _def* value2;
 };
@@ -395,7 +397,7 @@ protected:
 
 struct DefinitionsEqual : DefComparison
 {
-   DefinitionsEqual(_def* val1, _def* val2, Uroboros* uro)
+   DefinitionsEqual(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
    _boo getValue() override;
@@ -404,7 +406,7 @@ struct DefinitionsEqual : DefComparison
 
 struct DefinitionsNotEqual : DefComparison
 {
-   DefinitionsNotEqual(_def* val1, _def* val2, Uroboros* uro)
+   DefinitionsNotEqual(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
    _boo getValue() override;
@@ -413,7 +415,7 @@ struct DefinitionsNotEqual : DefComparison
 
 struct DefinitionsSmaller : DefComparison
 {
-   DefinitionsSmaller(_def* val1, _def* val2, Uroboros* uro)
+   DefinitionsSmaller(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
    _boo getValue() override;
@@ -422,7 +424,7 @@ struct DefinitionsSmaller : DefComparison
 
 struct DefinitionsSmallerEquals : DefComparison
 {
-   DefinitionsSmallerEquals(_def* val1, _def* val2, Uroboros* uro)
+   DefinitionsSmallerEquals(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
    _boo getValue() override;
@@ -431,7 +433,7 @@ struct DefinitionsSmallerEquals : DefComparison
 
 struct DefinitionsBigger : DefComparison
 {
-   DefinitionsBigger(_def* val1, _def* val2, Uroboros* uro)
+   DefinitionsBigger(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
    _boo getValue() override;
@@ -440,7 +442,7 @@ struct DefinitionsBigger : DefComparison
 
 struct DefinitionsBiggerEquals : DefComparison
 {
-   DefinitionsBiggerEquals(_def* val1, _def* val2, Uroboros* uro)
+   DefinitionsBiggerEquals(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
    _boo getValue() override;
@@ -453,12 +455,12 @@ struct DefinitionsBiggerEquals : DefComparison
 struct DefListComparison : Generator<_boo>
 {
 public:
-   DefListComparison(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefListComparison(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : definition(def), list(li), uroboros(uro) { };
 
 protected:
    ~DefListComparison();
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    _def* definition;
    Generator<_list>* list;
 };
@@ -466,7 +468,7 @@ protected:
 
 struct DefinitionListEqual : DefListComparison
 {
-   DefinitionListEqual(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefinitionListEqual(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
    _boo getValue() override;
@@ -475,7 +477,7 @@ struct DefinitionListEqual : DefListComparison
 
 struct DefinitionListNotEqual : DefListComparison
 {
-   DefinitionListNotEqual(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefinitionListNotEqual(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
    _boo getValue() override;
@@ -484,7 +486,7 @@ struct DefinitionListNotEqual : DefListComparison
 
 struct DefinitionListSmaller : DefListComparison
 {
-   DefinitionListSmaller(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefinitionListSmaller(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
    _boo getValue() override;
@@ -493,7 +495,7 @@ struct DefinitionListSmaller : DefListComparison
 
 struct DefinitionListSmallerEquals : DefListComparison
 {
-   DefinitionListSmallerEquals(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefinitionListSmallerEquals(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
    _boo getValue() override;
@@ -502,7 +504,7 @@ struct DefinitionListSmallerEquals : DefListComparison
 
 struct DefinitionListBigger : DefListComparison
 {
-   DefinitionListBigger(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefinitionListBigger(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
    _boo getValue() override;
@@ -511,12 +513,13 @@ struct DefinitionListBigger : DefListComparison
 
 struct DefinitionListBiggerEquals : DefListComparison
 {
-   DefinitionListBiggerEquals(_def* def, Generator<_list>* li, Uroboros* uro)
+   DefinitionListBiggerEquals(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
    _boo getValue() override;
 };
 
+}
 
 
 #endif /* GEN_BOOL_COMPARE_H */

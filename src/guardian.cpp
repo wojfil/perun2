@@ -15,6 +15,9 @@
 #include "guardian.h"
 
 
+namespace uro
+{
+
 _boo ParseGuardian::knows(const _pg_unit& unit) const
 {
    return this->visited & unit;
@@ -71,4 +74,6 @@ Keyword ParseGuardian::unitToKeyword(const _pg_unit& unit) const
       default:
          return Keyword::kw_null;
    }
+}
+
 }

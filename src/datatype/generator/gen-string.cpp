@@ -17,6 +17,9 @@
 #include "../../var/var-runtime.h"
 
 
+namespace uro::gen
+{
+
 _str ConcatString::getValue()
 {
    std::wstringstream ss;
@@ -74,4 +77,6 @@ _str DefinitionElement::getValue()
    }
 
    return L"";
+}
+
 }

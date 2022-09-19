@@ -17,10 +17,13 @@
 #include "var-runtime.h"
 
 
+namespace uro::vars
+{
+
 VariablesContext::VariablesContext(Hashes* hsh, Variables* vars)
    : hashes(hsh), variables(vars) { }
 
-void VariablesContext::setAttribute(const Token& tk, Uroboros* uro)
+void VariablesContext::setAttribute(const Token& tk, uro::Uroboros* uro)
 {
    if (this->hashes->HASH_GROUP_ATTR.find(tk.value.word.h) ==
        this->hashes->HASH_GROUP_ATTR.end())
@@ -70,7 +73,7 @@ void VariablesContext::setTimeComAttribute(const _str& comName, const _int& line
    last->set(ATTR_CHANGE);
 }
 
-void VariablesContext::attributeException(const Token& tk, Uroboros* uro)
+void VariablesContext::attributeException(const Token& tk, uro::Uroboros* uro)
 {
    throw SyntaxException(str(L"the value of variable '", tk.getOriginString(uro),
       L"' is undefined here"), tk.line);
@@ -105,7 +108,7 @@ void VariablesContext::markAttributesToRun()
    }
 }
 
-void VariablesContext::addAggregate(Aggregate* aggr)
+void VariablesContext::addAggregate(comm::Aggregate* aggr)
 {
    this->aggrs.push_back(aggr);
 
@@ -125,8 +128,10 @@ _boo VariablesContext::anyAggregate()
    return !this->aggrs.empty();
 }
 
-Aggregate* VariablesContext::getLastAggregate()
+comm::Aggregate* VariablesContext::getLastAggregate()
 {
    const _size len = this->aggrs.size();
    return len == 0 ? nullptr : this->aggrs[len - 1];
+}
+
 }

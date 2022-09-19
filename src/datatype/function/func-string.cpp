@@ -25,6 +25,9 @@
 #include <iomanip>
 
 
+namespace uro::func
+{
+
 _str F_After::getValue()
 {
    const _str s1 = arg1->getValue();
@@ -890,3 +893,4 @@ _str F_Hex::getValue()
    return oss.str();
 }
 
+}

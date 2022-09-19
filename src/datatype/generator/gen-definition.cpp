@@ -17,7 +17,10 @@
 #include "../../uroboros.h"
 
 
-DefFilter::DefFilter(_def* def, Uroboros* uro)
+namespace uro::gen
+{
+
+DefFilter::DefFilter(_def* def, uro::Uroboros* uro)
    : first(true), definition(def), uroboros(uro) { };
 
 DefFilter::~DefFilter()
@@ -90,7 +93,7 @@ _boo Filter_WhereDef::hasNext()
 }
 
 
-DefinitionChain::DefinitionChain(_def* def, Uroboros* uro)
+DefinitionChain::DefinitionChain(_def* def, uro::Uroboros* uro)
    : definition(def), inner(&uro->vars.inner) { };
 
 
@@ -524,3 +527,4 @@ _boo DefBinary::hasNext()
    return false;
 }
 
+}

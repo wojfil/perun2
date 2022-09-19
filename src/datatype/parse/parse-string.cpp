@@ -24,7 +24,10 @@
 #include "../parse-gen.h"
 
 
-Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -35,7 +38,7 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
    }
 
    if (tks.isPossibleFunction()) {
-      Generator<_str>* func = stringFunction(tks, uro);
+      Generator<_str>* func = func::stringFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -53,19 +56,19 @@ Generator<_str>* parseString(const Tokens& tks, Uroboros* uro)
       Generator<_list>* list;
 
       if (uro->vars.getVarValue(f, list)) {
-         return new ListElement<_str>(list, num);
+         return new gen::ListElement<_str>(list, num);
       }
       else {
          Generator<_str>* str;
 
          if (uro->vars.getVarValue(f, str)) {
-            return new CharAtIndex(str, num);
+            return new gen::CharAtIndex(str, num);
          }
          else {
             _def* def;
 
             if (uro->vars.getVarValue(f, def)) {
-               return new DefinitionElement(def, num);
+               return new gen::DefinitionElement(def, num);
             }
             else {
                delete num;
@@ -98,7 +101,7 @@ void concatParseOutcome(_boo& parsed, _boo& allConstants, Generator<T>* recentVa
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
+Generator<_str>* parseStringConcat(const Tokens& tks, uro::Uroboros* uro)
 {
    enum PrevType {
       pt_String = 0,
@@ -144,12 +147,12 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
          case pt_Number: {
             Generator<_num>* num;
             if (parse(uro, tks, num)) {
-               Generator<_num>* add = new Addition(prevNum, num);
+               Generator<_num>* add = new gen::Addition(prevNum, num);
                prevNum = add;
                concatParseOutcome(parsed, allConstants, num);
             }
             else {
-               result->push_back(new Cast_N_S(prevNum));
+               result->push_back(new gen::Cast_N_S(prevNum));
                prevNum = nullptr;
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
@@ -165,12 +168,12 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
          case pt_Time: {
             Generator<_per>* per;
             if (parse(uro, tks, per)) {
-               Generator<_tim>* incr = new IncreasedTime(prevTim, per);
+               Generator<_tim>* incr = new gen::IncreasedTime(prevTim, per);
                prevTim = incr;
                concatParseOutcome(parsed, allConstants, per);
             }
             else {
-               result->push_back(new Cast_T_S(prevTim));
+               result->push_back(new gen::Cast_T_S(prevTim));
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
@@ -185,12 +188,12 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
          case pt_Period: {
             Generator<_per>* per;
             if (parse(uro, tks, per)) {
-               Generator<_per>* add = new PeriodAddition(prevPer, per);
+               Generator<_per>* add = new gen::PeriodAddition(prevPer, per);
                prevPer = add;
                concatParseOutcome(parsed, allConstants, per);
             }
             else {
-               result->push_back(new Cast_P_S(prevPer));
+               result->push_back(new gen::Cast_P_S(prevPer));
                prevPer = nullptr;
                if (parse(uro, tks, prevNum)) {
                   prevType = pt_Number;
@@ -240,29 +243,31 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros* uro)
 
    switch (prevType) {
       case pt_Number: {
-         result->push_back(new Cast_N_S(prevNum));
+         result->push_back(new gen::Cast_N_S(prevNum));
          break;
       }
       case pt_Time: {
-         result->push_back(new Cast_T_S(prevTim));
+         result->push_back(new gen::Cast_T_S(prevTim));
          break;
       }
       case pt_Period: {
-         result->push_back(new Cast_P_S(prevPer));
+         result->push_back(new gen::Cast_P_S(prevPer));
          break;
       }
    }
 
-   Generator<_str>* concat = new ConcatString(result);
+   Generator<_str>* concat = new gen::ConcatString(result);
 
    if (allConstants) {
       // if all units of string concatenation are constant
       // just transform the whole structure into one constant value
       const _str cnst = concat->getValue();
       delete concat;
-      return new Constant<_str>(cnst);
+      return new gen::Constant<_str>(cnst);
    }
    else {
       return concat;
    }
+}
+
 }

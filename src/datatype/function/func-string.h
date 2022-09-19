@@ -18,6 +18,9 @@
 #include "func-generic.h"
 
 
+namespace uro::func
+{
+
 struct F_After : Func_2<_str, _str>, Generator<_str>
 {
 public:
@@ -326,6 +329,6 @@ public:
    _str getValue() override;
 };
 
+}
 
 #endif /* FUNC_STRING_H */
-

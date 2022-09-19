@@ -26,6 +26,8 @@
 #include "../../os.h"
 
 
+namespace uro::gen
+{
 
 _def* DefinitionGenerator::generateDefault() const
 {
@@ -61,7 +63,7 @@ _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
    }
 }
 
-OsDefinition::OsDefinition(Generator<_str>* loc, Uroboros* uro, const _str& patt)
+OsDefinition::OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
    : first(true), location(loc), uroboros(uro),
      inner(&uro->vars.inner), flags(uro->flags), pattern(patt) { };
 
@@ -591,4 +593,6 @@ _boo Uro_RecursiveAll::hasNext()
 
    reset();
    return false;
+}
+
 }

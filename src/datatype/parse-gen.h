@@ -35,18 +35,24 @@
 #include "parse/parse-timlist.h"
 #include "parse/parse-definition.h"
 
-Tokens prepareForGen(const Tokens& tks, Uroboros* uro);
-void checkKeywords(const Tokens& tks, Uroboros* uro);
+
+namespace uro::parse
+{
+
+Tokens prepareForGen(const Tokens& tks, uro::Uroboros* uro);
+void checkKeywords(const Tokens& tks, uro::Uroboros* uro);
 _boo isExpForbiddenKeyword(const Token& tk);
 
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_boo>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_num>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_str>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns,Generator<_nlist>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_tlist>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_list>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_tim>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, Generator<_per>*& result);
-_boo parse(Uroboros* uro, const Tokens& tns, _def*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_boo>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_num>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_str>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_nlist>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_tlist>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_list>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_tim>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_per>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tns, _def*& result);
+
+}
 
 #endif /* PARSE_GEN_H */

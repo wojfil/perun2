@@ -19,6 +19,10 @@
 #include "datatype/datatype.h"
 #include "keyword.h"
 
+
+namespace uro
+{
+
 struct Uroboros;
 
 // Token represents the smallest syntax unit of the language
@@ -173,5 +177,6 @@ private:
 
 };
 
+}
 
 #endif /* TOKEN_H */

@@ -9,12 +9,15 @@
 #include "var-inner.h"
 
 
+namespace uro::vars
+{
+
 template <typename T>
 struct VarBundle
 {
 public:
    VarBundle(const std::map<_size, Variable<T>*>& iVars,
-      const std::map<_size, Generator<T>*>& sVars, Uroboros* uro)
+      const std::map<_size, Generator<T>*>& sVars, uro::Uroboros* uro)
     : userVars(), internalVars(iVars), specialVars(sVars), uroboros(uro) { };
 
    void levelUp()
@@ -43,7 +46,7 @@ public:
       if (this->userVars.find(tk.value.word.h) != this->userVars.end()) {
          ParseVariable<T>* pv = &this->userVars[tk.value.word.h];
          if (pv->isReachable()) {
-            result = new GeneratorRef<T>(pv->getVarPtr());
+            result = new gen::GeneratorRef<T>(pv->getVarPtr());
             return true;
          }
       }
@@ -58,11 +61,11 @@ public:
                L"You should assign the value of '", name, L"' to a new temporary variable somewhere before"), tk.line);
          }
 
-         result = new GeneratorRef<T>(this->internalVars[tk.value.word.h]);
+         result = new gen::GeneratorRef<T>(this->internalVars[tk.value.word.h]);
          return true;
       }
       else if (this->specialVars.find(tk.value.word.h) != this->specialVars.end()) {
-         result = new GeneratorRef<T>(this->specialVars[tk.value.word.h]);
+         result = new gen::GeneratorRef<T>(this->specialVars[tk.value.word.h]);
          return true;
       }
 
@@ -90,11 +93,11 @@ public:
          if (isConstant) {
             userVars[hash].var.value = valuePtr->getValue();
          }
-         return new VarAssignment<T>(userVars[hash].getVarPtr(), valuePtr);
+         return new comm::VarAssignment<T>(userVars[hash].getVarPtr(), valuePtr);
       }
       else {
          varPtr->resurrect(isConstant);
-         return new VarAssignment<T>(varPtr->getVarPtr(), valuePtr);
+         return new comm::VarAssignment<T>(varPtr->getVarPtr(), valuePtr);
       }
    }
 
@@ -109,8 +112,10 @@ private:
    std::map<_size, ParseVariable<T>> userVars;
    std::map<_size, Variable<T>*> internalVars;
    std::map<_size, Generator<T>*> specialVars;
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
 
 };
+
+}
 
 #endif // VAR_BUNDLE_H_INCLUDED

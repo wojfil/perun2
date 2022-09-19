@@ -16,11 +16,19 @@
 #define COM_H
 
 
+namespace uro
+{
+
 struct Command
 {
    virtual void run() = 0;
    virtual ~Command() { };
 };
+
+}
+
+namespace uro::comm
+{
 
 struct C_DoNothing : Command
 {
@@ -30,5 +38,6 @@ public:
    void run() override;
 };
 
+}
 
 #endif /* COM_H */

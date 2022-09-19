@@ -18,6 +18,8 @@
 #include "tokens.h"
 #include "uroboros.h"
 
+namespace uro
+{
 
 std::vector<Token> tokenize(const _str &code, Uroboros* uro);
 static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros* uro);
@@ -30,5 +32,6 @@ inline _ndouble stringToDouble(const _str& value);
 _nint getSuffixMultiplier(const _char& c1, const _char& c2);
 void invalidCharException(const _char& ch, const _int& line);
 
+}
 
 #endif /* LEXER_H */

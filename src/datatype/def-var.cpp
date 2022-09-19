@@ -15,6 +15,9 @@
 #include "def-var.h"
 
 
+namespace uro::gen
+{
+
 void DefinitionRef::reset()
 {
    definition->reset();
@@ -28,4 +31,6 @@ _boo DefinitionRef::hasNext()
    }
 
    return false;
+}
+
 }

@@ -18,6 +18,9 @@
 #include <cwctype>
 
 
+namespace uro::func
+{
+
 _boo F_AnyDef::getValue()
 {
    const _boo any = definition->hasNext();
@@ -481,4 +484,6 @@ _boo F_IsHex::getValue()
    }
 
    return true;
+}
+
 }

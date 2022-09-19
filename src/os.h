@@ -21,6 +21,10 @@
 #include <map>
 #include "windows.h"
 
+
+namespace uro
+{
+
 inline constexpr _char OS_SEPARATOR = L'\\';
 const _str OS_SEPARATOR_STRING = L"\\";
 const _str OS_SEPARATOR_ASTERISK = L"\\*";
@@ -141,6 +145,6 @@ _str os_makeArg(const _str& value);
 void os_rawTrim(_str& value);
 _str os_quoteEmbraced(const _str& value);
 
-
+}
 
 #endif /* OS_H */

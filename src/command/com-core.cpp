@@ -18,6 +18,9 @@
 #include "../os.h"
 
 
+namespace uro::comm
+{
+
 ////
 //   simple commands:
 ////
@@ -1414,4 +1417,6 @@ _str getCCNameShort(const _str& path)
    return f.size() == 2 && f[1] == L':' && os_isDriveLetter(f[0])
       ? str(L"'", f, OS_SEPARATOR_APOSTROPHE)
       : str(L"'", f, L"'");
+}
+
 }

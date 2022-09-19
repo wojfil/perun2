@@ -17,6 +17,9 @@
 #include "../../os.h"
 
 
+namespace uro::gen
+{
+
 _boo PatternParser::parse(const _str& pattern, const _int& asteriskId, _def*& result) const
 {
    const _str trimmed = os_trim(pattern);
@@ -45,3 +48,4 @@ _boo PatternParser::parse(const _str& pattern, const _int& asteriskId, _def*& re
    return false;
 };
 
+}

@@ -27,6 +27,10 @@
 #include "command/com-parse-unit.h"
 #include "datatype/generator/gen-pattern.h"
 
+
+namespace uro
+{
+
 #define VERSION_STR L"1.0.6"
 
 inline constexpr  _int EXITCODE_OK =             0;
@@ -49,14 +53,14 @@ public:
    const Arguments arguments;
    Hashes hashes;
    Math math;
-   Variables vars;
-   VariablesContext vc;
+   vars::Variables vars;
+   vars::VariablesContext vc;
    Terminator terminator;
    const KeywordsData keywordsData;
    SideProcess sideProcess;
    const _uint32 flags;
-   ConditionContext conditionContext;
-   const PatternParser patternParser;
+   comm::ConditionContext conditionContext;
+   const gen::PatternParser patternParser;
 
    _boo running = true;
    _boo break_ = false;
@@ -73,5 +77,7 @@ private:
    _boo uro_runCommands();
 
 };
+
+}
 
 #endif /* UROBOROS_H */

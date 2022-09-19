@@ -18,6 +18,9 @@
 #include <locale>
 
 
+namespace uro
+{
+
 _str charStr(const _char& ch) {
    return _str(1, ch);
 }
@@ -52,3 +55,4 @@ void toUpperChar(_char& ch)
    ch = std::toupper(ch, std::locale(""));
 }
 
+}

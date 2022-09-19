@@ -19,11 +19,16 @@
 #include "../../uroboros.h"
 
 
-_def* parseDefinition(const Tokens& tks, Uroboros* uro);
+namespace uro::parse
+{
 
-static _boo isDefinitionChain(const Tokens& tks, Uroboros* uro);
-static _def* parseDefinitionChain(const Tokens& tks, Uroboros* uro);
-static _def* parseDefTernary(const Tokens& tks, Uroboros* uro);
-static _def* parseDefBinary(const Tokens& tks, Uroboros* uro);
+_def* parseDefinition(const Tokens& tks, uro::Uroboros* uro);
+
+static _boo isDefinitionChain(const Tokens& tks, uro::Uroboros* uro);
+static _def* parseDefinitionChain(const Tokens& tks, uro::Uroboros* uro);
+static _def* parseDefTernary(const Tokens& tks, uro::Uroboros* uro);
+static _def* parseDefBinary(const Tokens& tks, uro::Uroboros* uro);
+
+}
 
 #endif // PARSE_DEFINITION_H_INCLUDED

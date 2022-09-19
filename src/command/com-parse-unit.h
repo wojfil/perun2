@@ -21,8 +21,10 @@
 #include <vector>
 
 
-struct CS_Condition;
+namespace uro::comm
+{
 
+struct CS_Condition;
 
 struct ConditionUnit
 {
@@ -74,5 +76,6 @@ private:
    std::vector<ConditionUnit> units;
 };
 
+}
 
 #endif /* COM_PARSE_UNIT_H */

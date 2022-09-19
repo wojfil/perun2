@@ -18,6 +18,10 @@
 #include "../generator.h"
 #include "../datatype.h"
 
+
+namespace uro::func
+{
+
 // nice abbreviations:
 #define _single std::vector<Generator<_num>*>*
 #define _multi std::vector<Generator<_nlist>*>*
@@ -79,9 +83,6 @@ struct F_Sum : FuncAggr
    _num getValue() override;
 };
 
-
-
-
+}
 
 #endif // FUNC_AGGR_H_INCLUDED
-

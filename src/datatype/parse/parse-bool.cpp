@@ -25,7 +25,10 @@
 #include <vector>
 
 
-Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -42,7 +45,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
    const _boo possibleBinary = tks.containsSymbol(PG_CHAR_QUESTION_MARK);
 
    if (tks.isPossibleFunction()) {
-      Generator<_boo>* func = boolFunction(tks, uro);
+      Generator<_boo>* func = func::boolFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -103,7 +106,7 @@ Generator<_boo>* parseBool(const Tokens& tks, Uroboros* uro)
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static Generator<_boo>* parseBoolExp(const Tokens& tks, Uroboros* uro)
+static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
 {
    std::vector<ExpElement<_boo>*> infList; // infix notation list
    const _int start = tks.getStart();
@@ -317,7 +320,7 @@ static Generator<_boo>* boolExpIntegrateNegations(
             }
             else {
                Generator<_boo>* n = e->takeValue();
-               Generator<_boo>* no = new Not(n);
+               Generator<_boo>* no = new gen::Not(n);
                newElement = new ExpElement<_boo>(no, e->line);
             }
 
@@ -382,21 +385,21 @@ static Generator<_boo>* boolExpTreeMerge(
             newElement = new ExpElement<_boo>(value, firstElement->line);
          }
          else {
-            BinaryOperation<_boo>* bin;
+            gen::BinaryOperation<_boo>* bin;
             Generator<_boo>* first = firstElement->takeValue();
             Generator<_boo>* second = secondElement->takeValue();
 
             switch(op) {
                case L'&': {
-                  bin = new And(first, second);
+                  bin = new gen::And(first, second);
                   break;
                }
                case L'|': {
-                  bin = new Or(first, second);
+                  bin = new gen::Or(first, second);
                   break;
                }
                case L'^': {
-                  bin = new Xor(first, second);
+                  bin = new gen::Xor(first, second);
                   break;
                }
             }
@@ -528,7 +531,7 @@ static _char toBoolExpOperator(const Token& tk)
 
 template <typename T>
 static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
-   const Tokens& right, Uroboros* uro)
+   const Tokens& right, uro::Uroboros* uro)
 {
    Generator<T>* valLeft;
    if (!parse(uro, left, valLeft)) {
@@ -541,10 +544,10 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
    Generator<T>* num2;
    if (parse(uro, right, num2)) {
       if (negated) {
-         return new NotEquals<T>(valLeft, num2);
+         return new gen::NotEquals<T>(valLeft, num2);
       }
       else {
-         return new Equals<T>(valLeft, num2);
+         return new gen::Equals<T>(valLeft, num2);
       }
    }
 
@@ -554,12 +557,12 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
          delete valRight;
-         Generator<_boo>* in = new InConstList<T>(valLeft, vs);
-         return negated ? new Not(in) : in;
+         Generator<_boo>* in = new gen::InConstList<T>(valLeft, vs);
+         return negated ? new gen::Not(in) : in;
       }
       else {
-         Generator<_boo>* in = new InList<T>(valLeft, valRight);
-         return negated ? new Not(in) : in;
+         Generator<_boo>* in = new gen::InList<T>(valLeft, valRight);
+         return negated ? new gen::Not(in) : in;
       }
    }
    else {
@@ -568,7 +571,7 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
    }
 }
 
-static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
+static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
 {
    Tokens left(tks);
    Tokens right(tks);
@@ -651,7 +654,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, Uroboros* uro)
 
 
 static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
-   const Tokens& right, Uroboros* uro)
+   const Tokens& right, uro::Uroboros* uro)
 {
    Generator<_tim>* tim;
    if (!parse(uro, left, tim)) {
@@ -661,10 +664,10 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    Generator<_tim>* tim2;
    if (parse(uro, right, tim2)) {
       if (negated) {
-         return new NotEquals<_tim>(tim, tim2);
+         return new gen::NotEquals<_tim>(tim, tim2);
       }
       else {
-         return new Equals<_tim>(tim, tim2);
+         return new gen::Equals<_tim>(tim, tim2);
       }
    }
 
@@ -673,12 +676,12 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
          delete tlist;
-         Generator<_boo>* in = new InConstTimeList(tim, vs);
-         return negated ? new Not(in) : in;
+         Generator<_boo>* in = new gen::InConstTimeList(tim, vs);
+         return negated ? new gen::Not(in) : in;
       }
       else {
-         Generator<_boo>* in = new InTimeList(tim, tlist);
-         return negated ? new Not(in) : in;
+         Generator<_boo>* in = new gen::InTimeList(tim, tlist);
+         return negated ? new gen::Not(in) : in;
       }
    }
    else {
@@ -687,7 +690,7 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    }
 }
 
-static void emptyOperSideException(const Token& oper, const bool& isLeft, Uroboros* uro)
+static void emptyOperSideException(const Token& oper, const bool& isLeft, uro::Uroboros* uro)
 {
    const _str side = isLeft ? L"left" : L"right";
 
@@ -696,7 +699,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft, Urobor
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _boo& negated, const Tokens& tks, Uroboros* uro)
+   const _str& timeMember, const _boo& negated, const Tokens& tks, uro::Uroboros* uro)
 {
    if (timeMember == L"year") {
       if (negated) {
@@ -724,7 +727,7 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
    }
 }
 
-static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
+static Generator<_boo>* parseLike(const Tokens& tks, uro::Uroboros* uro)
 {
    Tokens left(tks);
    Tokens right(tks);
@@ -757,18 +760,18 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
          delete pattern;
 
          if (neg) {
-            return new Not(new LikeConst(value, cnst));
+            return new gen::Not(new gen::LikeConst(value, cnst));
          }
          else {
-            return new LikeConst(value, cnst);
+            return new gen::LikeConst(value, cnst);
          }
       }
 
       if (neg) {
-         return new Not(new Like(value, pattern));
+         return new gen::Not(new gen::Like(value, pattern));
       }
       else {
-         return new Like(value, pattern);
+         return new gen::Like(value, pattern);
       }
    }
    else {
@@ -777,7 +780,7 @@ static Generator<_boo>* parseLike(const Tokens& tks, Uroboros* uro)
    }
 }
 
-static Generator<_boo>* parseComparisons(const Tokens& tks, Uroboros* uro)
+static Generator<_boo>* parseComparisons(const Tokens& tks, uro::Uroboros* uro)
 {
    BracketsInfo bi;
    const _int end = tks.getEnd();
@@ -803,21 +806,21 @@ static Generator<_boo>* parseComparisons(const Tokens& tks, Uroboros* uro)
 
 template <typename T>
 static Generator<_boo>* comparison(Generator<T>* val1,
-   Generator<T>* val2, const CompType& ct)
+   Generator<T>* val2, const gen::CompType& ct)
 {
    switch (ct) {
-      case ct_Equals:
-         return new Equals<T>(val1, val2);
-      case ct_NotEquals:
-         return new NotEquals<T>(val1, val2);
-      case ct_Smaller:
-         return new Smaller<T>(val1, val2);
-      case ct_SmallerEquals:
-         return new SmallerEquals<T>(val1, val2);
-      case ct_Bigger:
-         return new Bigger<T>(val1, val2);
-      case ct_BiggerEquals:
-         return new BiggerEquals<T>(val1, val2);
+      case gen::ct_Equals:
+         return new gen::Equals<T>(val1, val2);
+      case gen::ct_NotEquals:
+         return new gen::NotEquals<T>(val1, val2);
+      case gen::ct_Smaller:
+         return new gen::Smaller<T>(val1, val2);
+      case gen::ct_SmallerEquals:
+         return new gen::SmallerEquals<T>(val1, val2);
+      case gen::ct_Bigger:
+         return new gen::Bigger<T>(val1, val2);
+      case gen::ct_BiggerEquals:
+         return new gen::BiggerEquals<T>(val1, val2);
       default:
          return nullptr;
    };
@@ -825,7 +828,7 @@ static Generator<_boo>* comparison(Generator<T>* val1,
 
 
 template <typename T>
-Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, const CompType& ct, Uroboros* uro)
+Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
 {
    Generator<T>* v1;
    Generator<T>* v2;
@@ -833,18 +836,18 @@ Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, co
    const _boo parsed2 = parse(uro, right, v2);
    if (parsed1 && parsed2) {
       switch (ct) {
-         case ct_Equals:
-            return new Equals<T>(v1, v2);
-         case ct_NotEquals:
-            return new NotEquals<T>(v1, v2);
-         case ct_Smaller:
-            return new Smaller<T>(v1, v2);
-         case ct_SmallerEquals:
-            return new SmallerEquals<T>(v1, v2);
-         case ct_Bigger:
-            return new Bigger<T>(v1, v2);
-         case ct_BiggerEquals:
-            return new BiggerEquals<T>(v1, v2);
+         case gen::ct_Equals:
+            return new gen::Equals<T>(v1, v2);
+         case gen::ct_NotEquals:
+            return new gen::NotEquals<T>(v1, v2);
+         case gen::ct_Smaller:
+            return new gen::Smaller<T>(v1, v2);
+         case gen::ct_SmallerEquals:
+            return new gen::SmallerEquals<T>(v1, v2);
+         case gen::ct_Bigger:
+            return new gen::Bigger<T>(v1, v2);
+         case gen::ct_BiggerEquals:
+            return new gen::BiggerEquals<T>(v1, v2);
          default:
             return nullptr;
       };
@@ -861,11 +864,11 @@ Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, co
    return nullptr;
 }
 
-static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Uroboros* uro)
+static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro)
 {
    Tokens left(tks);
    Tokens right(tks);
-   CompType ct = prepareComparison(tks, sign, left, right);
+   gen::CompType ct = prepareComparison(tks, sign, left, right);
 
    // look for some common errors
    // and throw precise messages to the user
@@ -953,37 +956,37 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, Ur
    return parseCollectionComparisons(left, right, ct, uro);
 }
 
-Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const CompType& ct,
-   const _boo& reversed, Uroboros* uro)
+Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const gen::CompType& ct,
+   const _boo& reversed, uro::Uroboros* uro)
 {
    switch (ct) {
-      case ct_Equals:
-         return new DefinitionListEqual(def, list, uro);
-      case ct_NotEquals:
-         return new DefinitionListNotEqual(def, list, uro);
+      case gen::ct_Equals:
+         return new gen::DefinitionListEqual(def, list, uro);
+      case gen::ct_NotEquals:
+         return new gen::DefinitionListNotEqual(def, list, uro);
       default: {
          if (reversed) {
             switch(ct) {
-               case ct_Smaller:
-                  return new DefinitionListBigger(def, list, uro);
-               case ct_SmallerEquals:
-                  return new DefinitionListBiggerEquals(def, list, uro);
-               case ct_Bigger:
-                  return new DefinitionListSmaller(def, list, uro);
-               case ct_BiggerEquals:
-                  return new DefinitionListSmallerEquals(def, list, uro);
+               case gen::ct_Smaller:
+                  return new gen::DefinitionListBigger(def, list, uro);
+               case gen::ct_SmallerEquals:
+                  return new gen::DefinitionListBiggerEquals(def, list, uro);
+               case gen::ct_Bigger:
+                  return new gen::DefinitionListSmaller(def, list, uro);
+               case gen::ct_BiggerEquals:
+                  return new gen::DefinitionListSmallerEquals(def, list, uro);
             }
          }
          else {
             switch(ct) {
-               case ct_Smaller:
-                  return new DefinitionListSmaller(def, list, uro);
-               case ct_SmallerEquals:
-                  return new DefinitionListSmallerEquals(def, list, uro);
-               case ct_Bigger:
-                  return new DefinitionListBigger(def, list, uro);
-               case ct_BiggerEquals:
-                  return new DefinitionListBiggerEquals(def, list, uro);
+               case gen::ct_Smaller:
+                  return new gen::DefinitionListSmaller(def, list, uro);
+               case gen::ct_SmallerEquals:
+                  return new gen::DefinitionListSmallerEquals(def, list, uro);
+               case gen::ct_Bigger:
+                  return new gen::DefinitionListBigger(def, list, uro);
+               case gen::ct_BiggerEquals:
+                  return new gen::DefinitionListBiggerEquals(def, list, uro);
             }
          }
       }
@@ -994,7 +997,7 @@ Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const Com
 
 
 template <typename T>
-Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, const CompType& ct, Uroboros* uro)
+Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
 {
    Generator<std::vector<T>>* leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1002,18 +1005,18 @@ Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, 
       Generator<std::vector<T>>* rightValue;
       if (parse(uro, right, rightValue)) {
          switch(ct) {
-            case ct_Equals:
-               return new CollectionsEqual<T>(leftValue, rightValue);
-            case ct_NotEquals:
-               return new CollectionsNotEqual<T>(leftValue, rightValue);
-            case ct_Smaller:
-               return new CollectionsSmaller<T>(leftValue, rightValue);
-            case ct_SmallerEquals:
-               return new CollectionsSmallerEquals<T>(leftValue, rightValue);
-            case ct_Bigger:
-               return new CollectionsBigger<T>(leftValue, rightValue);
-            case ct_BiggerEquals:
-               return new CollectionsBiggerEquals<T>(leftValue, rightValue);
+            case gen::ct_Equals:
+               return new gen::CollectionsEqual<T>(leftValue, rightValue);
+            case gen::ct_NotEquals:
+               return new gen::CollectionsNotEqual<T>(leftValue, rightValue);
+            case gen::ct_Smaller:
+               return new gen::CollectionsSmaller<T>(leftValue, rightValue);
+            case gen::ct_SmallerEquals:
+               return new gen::CollectionsSmallerEquals<T>(leftValue, rightValue);
+            case gen::ct_Bigger:
+               return new gen::CollectionsBigger<T>(leftValue, rightValue);
+            case gen::ct_BiggerEquals:
+               return new gen::CollectionsBiggerEquals<T>(leftValue, rightValue);
          }
       }
    }
@@ -1024,7 +1027,7 @@ Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, 
 
 template <typename T>
 Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& right,
-   const CompType& ct, Uroboros* uro)
+   const gen::CompType& ct, uro::Uroboros* uro)
 {
    Generator<T>* leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1032,18 +1035,18 @@ Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& rig
 
       if (parse(uro, right, rightCollection)) {
          switch(ct) {
-            case ct_Equals:
-               return new CollectionValueEquals<T>(rightCollection, leftValue);
-            case ct_NotEquals:
-               return new CollectionValueNotEquals<T>(rightCollection, leftValue);
-            case ct_Smaller:
-               return new CollectionValueBigger<T>(rightCollection);
-            case ct_SmallerEquals:
-               return new CollectionValueBiggerEquals<T>(rightCollection);
-            case ct_Bigger:
-               return new CollectionValueSmaller<T>(rightCollection);
-            case ct_BiggerEquals:
-               return new CollectionValueSmallerEquals<T>(rightCollection);
+            case gen::ct_Equals:
+               return new gen::CollectionValueEquals<T>(rightCollection, leftValue);
+            case gen::ct_NotEquals:
+               return new gen::CollectionValueNotEquals<T>(rightCollection, leftValue);
+            case gen::ct_Smaller:
+               return new gen::CollectionValueBigger<T>(rightCollection);
+            case gen::ct_SmallerEquals:
+               return new gen::CollectionValueBiggerEquals<T>(rightCollection);
+            case gen::ct_Bigger:
+               return new gen::CollectionValueSmaller<T>(rightCollection);
+            case gen::ct_BiggerEquals:
+               return new gen::CollectionValueSmallerEquals<T>(rightCollection);
          }
       }
       else {
@@ -1058,18 +1061,18 @@ Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& rig
 
       if (parse(uro, left, leftCollection)) {
          switch(ct) {
-            case ct_Equals:
-               return new CollectionValueEquals<T>(leftCollection, rightValue);
-            case ct_NotEquals:
-               return new CollectionValueNotEquals<T>(leftCollection, rightValue);
-            case ct_Smaller:
-               return new CollectionValueSmaller<T>(leftCollection);
-            case ct_SmallerEquals:
-               return new CollectionValueSmallerEquals<T>(leftCollection);
-            case ct_Bigger:
-               return new CollectionValueBigger<T>(leftCollection);
-            case ct_BiggerEquals:
-               return new CollectionValueBiggerEquals<T>(leftCollection);
+            case gen::ct_Equals:
+               return new gen::CollectionValueEquals<T>(leftCollection, rightValue);
+            case gen::ct_NotEquals:
+               return new gen::CollectionValueNotEquals<T>(leftCollection, rightValue);
+            case gen::ct_Smaller:
+               return new gen::CollectionValueSmaller<T>(leftCollection);
+            case gen::ct_SmallerEquals:
+               return new gen::CollectionValueSmallerEquals<T>(leftCollection);
+            case gen::ct_Bigger:
+               return new gen::CollectionValueBigger<T>(leftCollection);
+            case gen::ct_BiggerEquals:
+               return new gen::CollectionValueBiggerEquals<T>(leftCollection);
          }
       }
       else {
@@ -1082,7 +1085,7 @@ Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& rig
 }
 
 static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
-   const Tokens& right, const CompType& ct, Uroboros* uro)
+   const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
 {
    _def* leftDef;
    _def* rightDef;
@@ -1095,18 +1098,18 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
    if (hasLeftDef || hasRightDef) {
       if (hasLeftDef && hasRightDef) {
          switch(ct) {
-            case ct_Equals:
-               return new DefinitionsEqual(leftDef, rightDef, uro);
-            case ct_NotEquals:
-               return new DefinitionsNotEqual(leftDef, rightDef, uro);
-            case ct_Smaller:
-               return new DefinitionsSmaller(leftDef, rightDef, uro);
-            case ct_SmallerEquals:
-               return new DefinitionsSmallerEquals(leftDef, rightDef, uro);
-            case ct_Bigger:
-               return new DefinitionsBigger(leftDef, rightDef, uro);
-            case ct_BiggerEquals:
-               return new DefinitionsBiggerEquals(leftDef, rightDef, uro);
+            case gen::ct_Equals:
+               return new gen::DefinitionsEqual(leftDef, rightDef, uro);
+            case gen::ct_NotEquals:
+               return new gen::DefinitionsNotEqual(leftDef, rightDef, uro);
+            case gen::ct_Smaller:
+               return new gen::DefinitionsSmaller(leftDef, rightDef, uro);
+            case gen::ct_SmallerEquals:
+               return new gen::DefinitionsSmallerEquals(leftDef, rightDef, uro);
+            case gen::ct_Bigger:
+               return new gen::DefinitionsBigger(leftDef, rightDef, uro);
+            case gen::ct_BiggerEquals:
+               return new gen::DefinitionsBiggerEquals(leftDef, rightDef, uro);
          }
       }
 
@@ -1152,7 +1155,7 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
    return comparisonCollections<_str>(left, right, ct, uro);
 }
 
-static CompType prepareComparison(const Tokens& tks, const _char& sign,
+static gen::CompType prepareComparison(const Tokens& tks, const _char& sign,
    Tokens& left, Tokens& right)
 {
    tks.divideBySymbol(sign, left, right);
@@ -1191,15 +1194,17 @@ static CompType prepareComparison(const Tokens& tks, const _char& sign,
 
    switch (sign) {
       case L'<':
-         return eq ? CompType::ct_SmallerEquals : CompType::ct_Smaller;
+         return eq ? gen::CompType::ct_SmallerEquals : gen::CompType::ct_Smaller;
       case L'>':
-         return eq ? CompType::ct_BiggerEquals : CompType::ct_Bigger;
+         return eq ? gen::CompType::ct_BiggerEquals : gen::CompType::ct_Bigger;
       case L'=':
-         return CompType::ct_Equals;
+         return gen::CompType::ct_Equals;
       case L'!': {
-         return CompType::ct_NotEquals;
+         return gen::CompType::ct_NotEquals;
       default:
-         return CompType::ct_Equals;
+         return gen::CompType::ct_Equals;
       }
    }
+}
+
 }

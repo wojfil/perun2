@@ -23,6 +23,9 @@
 #include <sstream>
 
 
+namespace uro::comm
+{
+
 void C_PrintSingle::run()
 {
    print(this->uroboros, this->value->getValue());
@@ -348,3 +351,4 @@ void C_RunWithUroborosWith::run()
    }
 }
 
+}

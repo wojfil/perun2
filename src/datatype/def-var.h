@@ -19,7 +19,8 @@
 #include "../var/var.h"
 
 
-
+namespace uro::gen
+{
 
 struct DefinitionRef : Definition
 {
@@ -32,10 +33,7 @@ private:
    Definition* definition;
 };
 
-
-
-
-
+}
 
 
 #endif // DEF_VAR_H_INCLUDED

@@ -17,6 +17,8 @@
 #include <sstream>
 
 
+namespace uro::func
+{
 
 inline _list toChars(const _str& value)
 {
@@ -317,4 +319,6 @@ _nlist F_Numbers::getValue()
          return numbers;
       }
    }
+}
+
 }

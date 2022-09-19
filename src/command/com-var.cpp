@@ -15,6 +15,9 @@
 #include "com-var.h"
 
 
+namespace uro::comm
+{
+
 void VarNumMultiply::run()
 {
    (variable->value) *= (value->getValue());
@@ -260,3 +263,4 @@ void VarTimeUnitDecrement::run()
    }
 };
 
+}

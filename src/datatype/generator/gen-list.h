@@ -23,6 +23,9 @@
 #include "../../os.h"
 
 
+namespace uro::gen
+{
+
 struct Join_StrStr : Generator<_list>
 {
 
@@ -86,6 +89,7 @@ private:
    Generator<_list>* right;
 };
 
+}
 
 #endif /* GEN_LIST_H */
 

@@ -4,6 +4,9 @@
 #include "os.h"
 
 
+namespace uro
+{
+
 Arguments::Arguments(const _str& loc, const _str& cod)
    : location(loc), code(cod), args(_list()), flags(FLAG_NULL),
    parseState(ArgsParseState::aps_Ok) { };
@@ -236,4 +239,6 @@ _str Arguments::getCode() const
 ArgsParseState Arguments::getParseState() const
 {
    return this->parseState;
+}
+
 }

@@ -19,6 +19,9 @@
 #include "datatype/primitives.h"
 
 
+namespace uro
+{
+
 enum Keyword
 {
    kw_null = -1,
@@ -95,5 +98,6 @@ public:
    const std::map<_str, Keyword> KEYWORDS;
 };
 
+}
 
 #endif // KEYWORD_H_INCLUDED

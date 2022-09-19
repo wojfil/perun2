@@ -19,7 +19,10 @@
 #include "../uroboros.h"
 
 
-Aggregate::Aggregate(Uroboros* uro)
+namespace uro::comm
+{
+
+Aggregate::Aggregate(uro::Uroboros* uro)
    : failedCopy(0), failedSelect(0), value(AGGR_NULL),
      inner(&uro->vars.inner), uroboros(uro) { };
 
@@ -157,4 +160,6 @@ void Aggregate::run()
 inline _boo Aggregate::has(const _uint32& v) const
 {
    return value & v;
+}
+
 }

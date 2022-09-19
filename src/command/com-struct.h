@@ -23,6 +23,9 @@
 #include "com-arg.h"
 
 
+namespace uro::comm
+{
+
 struct CS_Pair : Command_L
 {
 public:
@@ -296,6 +299,7 @@ private:
    _str prevLocation;
 };
 
+}
 
 #endif /* COM_STRUCT_H */
 

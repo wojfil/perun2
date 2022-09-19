@@ -23,7 +23,10 @@
 #include "../parse-gen.h"
 
 
-Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+Generator<_list>* parseList (const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -57,11 +60,13 @@ Generator<_list>* parseList (const Tokens& tks, Uroboros* uro)
    }
 
    if (tks.isPossibleFunction()) {
-      Generator<_list>* func = listFunction(tks, uro);
+      Generator<_list>* func = func::listFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
 
    return nullptr;
+}
+
 }

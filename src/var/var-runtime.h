@@ -26,13 +26,16 @@
 #include "../token.h"
 
 
+namespace uro::vars
+{
+
 struct Uroboros;
 
 struct Variables
 {
 public:
 
-   Variables(Uroboros* uro);
+   Variables(uro::Uroboros* uro);
 
    const _str uroPath;
    InnerVariables inner;
@@ -81,7 +84,7 @@ public:
 
 private:
 
-   Uroboros* uroboros;
+   uro::Uroboros* uroboros;
    Hashes* hashes;
    VariablesContext* vc;
 
@@ -94,9 +97,12 @@ private:
    VarBundle<_tlist> tlist;
    VarBundle<_list> list;
 
-   std::map<_size, DefinitionGenerator*> defGenerators;
+   std::map<_size, gen::DefinitionGenerator*> defGenerators;
    std::map<_size, Variable<_numi>*> intVars;
 
 };
+
+
+}
 
 #endif /* VAR_RUNTIME_H */

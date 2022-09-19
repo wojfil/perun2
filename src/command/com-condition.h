@@ -21,6 +21,8 @@
 #include "../util.h"
 #include "../uroboros.h"
 
+namespace uro::comm
+{
 
 struct CS_Condition : Command
 {
@@ -138,5 +140,6 @@ private:
    Command* elseCommand;
 };
 
+}
 
 #endif // COM_CONDITION_H_INCLUDED

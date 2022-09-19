@@ -17,6 +17,9 @@
 #include "../datatype/generator/gen-generic.h"
 
 
+namespace uro
+{
+
 InnerVariables::InnerVariables(const _str& loc, const _str& ucom)
    : thisState(ThisState::ts_None), trimmed(L""), urocom(ucom),
      depth(_numi(0LL)), location(loc) { }
@@ -48,31 +51,32 @@ _list InnerVariables::getAscii()
 
 void InnerVariables::createThisRef(Generator<_str>*& result)
 {
-   result = new GeneratorRef<_str>(&this_s);
+   result = new gen::GeneratorRef<_str>(&this_s);
 }
 
 void InnerVariables::createThisRef(Generator<_num>*& result)
 {
-   result = new GeneratorRef<_num>(&this_n);
+   result = new gen::GeneratorRef<_num>(&this_n);
 }
 
 void InnerVariables::createThisRef(Generator<_tim>*& result)
 {
-   result = new GeneratorRef<_tim>(&this_t);
+   result = new gen::GeneratorRef<_tim>(&this_t);
 }
 
-void InnerVariables::createThisVarRef(Variable<_str>*& result)
+void InnerVariables::createThisVarRef(vars::Variable<_str>*& result)
 {
    result = &this_s;
 }
 
-void InnerVariables::createThisVarRef(Variable<_num>*& result)
+void InnerVariables::createThisVarRef(vars::Variable<_num>*& result)
 {
    result = &this_n;
 }
 
-void InnerVariables::createThisVarRef(Variable<_tim>*& result)
+void InnerVariables::createThisVarRef(vars::Variable<_tim>*& result)
 {
    result = &this_t;
 }
 
+}

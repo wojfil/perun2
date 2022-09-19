@@ -14,6 +14,10 @@
 
 #include "keyword.h"
 
+
+namespace uro
+{
+
 KeywordsData::KeywordsData() : KEYWORDS( {
    // core commands:
    { L"copy", Keyword::kw_Copy },
@@ -78,3 +82,5 @@ KeywordsData::KeywordsData() : KEYWORDS( {
    { L"exit", Keyword::kw_Exit },
    { L"error", Keyword::kw_Error }
 }) { };
+
+}

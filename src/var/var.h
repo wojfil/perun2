@@ -19,6 +19,9 @@
 #include "../datatype/primitives.h"
 
 
+namespace uro::vars
+{
+
 template <typename T>
 struct Variable : Generator<T>
 {
@@ -105,5 +108,6 @@ private:
    _boo isReachable_ = true;
 };
 
+}
 
 #endif /* VAR_H */

@@ -2,6 +2,9 @@
 #include "../util.h"
 
 
+namespace uro::gen
+{
+
 void OrderIndices::prepare(const _size& length)
 {
    clearAndReserve(this->values, length);
@@ -129,4 +132,6 @@ _boo OrderBy_Definition::hasNext()
       this->index++;
       return true;
    }
+}
+
 }

@@ -22,6 +22,9 @@
 #include <algorithm>
 
 
+namespace uro::gen
+{
+
 // logic negation:
 struct Not : UnaryOperation<_boo>
 {
@@ -160,5 +163,6 @@ private:
    const _size length;
 };
 
+}
 
 #endif /* GEN_BOOL_H */

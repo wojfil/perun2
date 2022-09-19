@@ -21,7 +21,10 @@
 #include "../parse-gen.h"
 
 
-Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
+namespace uro::parse
+{
+
+Generator<_nlist>* parseNumList(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
@@ -54,11 +57,13 @@ Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros* uro)
    }
 
    if (tks.isPossibleFunction()) {
-      Generator<_nlist>* func = numListFunction(tks, uro);
+      Generator<_nlist>* func = func::numListFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
 
    return nullptr;
+}
+
 }

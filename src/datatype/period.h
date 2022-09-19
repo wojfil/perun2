@@ -20,11 +20,13 @@
 #include "../exception.h"
 
 
+namespace uro
+{
+
 // _tnum is a data structure used for every element of Time and Period
 // let it be "int" as default
 // it can be anything, but necessarily non-unsigned
 #define _tnum _int
-
 
 struct Period
 {
@@ -105,6 +107,7 @@ inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit);
 // if return value < 0       left period is smaller
 // if return value > 0       left period is greater
 
+}
 
 #endif /* PERIOD_H */
 

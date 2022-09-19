@@ -18,6 +18,9 @@
 #include "primitives.h"
 
 
+namespace uro
+{
+
 Number::Number()
    : value(0LL), isDouble(false) { }
 
@@ -493,4 +496,6 @@ _boo Number::operator >= (const Number& num) const
       return value.d >= num.value.i;
    }
    return value.i >= num.value.d;
+}
+
 }

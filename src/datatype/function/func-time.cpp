@@ -16,6 +16,9 @@
 #include "../../exception.h"
 
 
+namespace uro::func
+{
+
 _tim F_Christmas::getValue()
 {
    const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
@@ -163,3 +166,4 @@ _tim F_Time_6::getValue()
    return _tim(v1, v2, v3, v4, v5, v6);
 }
 
+}

@@ -19,6 +19,9 @@
 #include <algorithm>
 
 
+namespace uro
+{
+
 const _tnum FIRST_YEAR = 1601;
 const _tnum LAST_YEAR = 30000;
 
@@ -1009,4 +1012,6 @@ std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base)
    }
 
    return result;
+}
+
 }

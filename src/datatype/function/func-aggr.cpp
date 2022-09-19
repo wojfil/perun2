@@ -17,6 +17,8 @@
 #include <algorithm>
 
 
+namespace uro::func
+{
 
 FuncAggr::~FuncAggr()
 {
@@ -194,4 +196,6 @@ _num F_Sum::getValue()
    }
 
    return sum;
+}
+
 }

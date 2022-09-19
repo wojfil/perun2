@@ -19,6 +19,9 @@
 #include "../../uroboros.h"
 
 
+namespace uro::func
+{
+
 struct AttrFunction
 {
 public:
@@ -365,5 +368,6 @@ public:
    _boo getValue() override;
 };
 
+}
 
 #endif // FUNC_ATTR_H_INCLUDED

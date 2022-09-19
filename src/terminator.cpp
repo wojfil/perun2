@@ -16,6 +16,9 @@
 #include "uroboros.h"
 
 
+namespace uro
+{
+
 Uroboros* Terminator::uroboros = nullptr;
 
 Terminator::Terminator(Uroboros* uro)
@@ -37,4 +40,6 @@ _int Terminator::HandlerRoutine(_ulong dwCtrlType)
     default:
       return FALSE;
     }
+}
+
 }

@@ -18,6 +18,9 @@
 #include "datatype/primitives.h"
 
 
+namespace uro
+{
+
 struct Uroboros;
 
 struct Terminator
@@ -30,5 +33,6 @@ private:
    static _int HandlerRoutine(_ulong dwCtrlType);
 };
 
+}
 
 #endif // TERMINATOR_H_INCLUDED

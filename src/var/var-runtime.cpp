@@ -25,7 +25,10 @@
 #include "../terminator.h"
 
 
-Variables::Variables(Uroboros* uro)
+namespace uro::vars
+{
+
+Variables::Variables(uro::Uroboros* uro)
    : uroboros(uro), hashes(&uro->hashes), vc(&uro->vc), uroPath(os_uroborosPath()),
    inner(os_trim(uro->arguments.getLocation()), str(os_quoteEmbraced(this->uroPath), L" -s ")),
    boo ({
@@ -49,10 +52,10 @@ Variables::Variables(Uroboros* uro)
       { this->hashes->HASH_VAR_CREATION, &this->inner.creation },
       { this->hashes->HASH_VAR_MODIFICATION, &this->inner.modification }
    }, {
-      { this->hashes->HASH_VAR_NOW, new v_Now() },
-      { this->hashes->HASH_VAR_TODAY, new v_Today() },
-      { this->hashes->HASH_VAR_YESTERDAY, new v_Yesterday() },
-      { this->hashes->HASH_VAR_TOMORROW, new v_Tomorrow() }
+      { this->hashes->HASH_VAR_NOW, new gen::v_Now() },
+      { this->hashes->HASH_VAR_TODAY, new gen::v_Today() },
+      { this->hashes->HASH_VAR_YESTERDAY, new gen::v_Yesterday() },
+      { this->hashes->HASH_VAR_TOMORROW, new gen::v_Tomorrow() }
    }, uro),
    num ({
       { this->hashes->HASH_VAR_SIZE, &this->inner.size }
@@ -65,23 +68,23 @@ Variables::Variables(Uroboros* uro)
       { this->hashes->HASH_VAR_PARENT, &this->inner.parent },
       { this->hashes->HASH_VAR_PATH, &this->inner.path }
    }, {
-      { this->hashes->HASH_VAR_DESKTOP, new Constant<_str>(os_desktopPath()) },
-      { this->hashes->HASH_VAR_UROBOROS, new Constant<_str>(this->uroPath) },
+      { this->hashes->HASH_VAR_DESKTOP, new gen::Constant<_str>(os_desktopPath()) },
+      { this->hashes->HASH_VAR_UROBOROS, new gen::Constant<_str>(this->uroPath) },
       { this->hashes->HASH_VAR_LOCATION, &this->inner.location }
    }, uro),
    nlist ( { }, { }, uro ),
    tlist ( { }, { }, uro ),
    list ( { },
    {
-      { this->hashes->HASH_VAR_ALPHABET, new Constant<_list>(inner.getAlphabet()) },
-      { this->hashes->HASH_VAR_ASCII, new Constant<_list>(inner.getAscii()) },
-      { this->hashes->HASH_VAR_ARGUMENTS, new Constant<_list>(uroboros->arguments.getArgs()) }
+      { this->hashes->HASH_VAR_ALPHABET, new gen::Constant<_list>(inner.getAlphabet()) },
+      { this->hashes->HASH_VAR_ASCII, new gen::Constant<_list>(inner.getAscii()) },
+      { this->hashes->HASH_VAR_ARGUMENTS, new gen::Constant<_list>(uroboros->arguments.getArgs()) }
    }, uro),
    defGenerators({
-      { this->hashes->HASH_VAR_DIRECTORIES, new DefinitionGenerator(ELEM_DIRECTORIES, uro) },
-      { this->hashes->HASH_VAR_FILES, new DefinitionGenerator(ELEM_FILES, uro) },
-      { this->hashes->HASH_VAR_RECURSIVEFILES, new DefinitionGenerator(ELEM_RECURSIVE_FILES, uro) },
-      { this->hashes->HASH_VAR_RECURSIVEDIRECTORIES, new DefinitionGenerator(ELEM_RECURSIVE_DIRECTORIES, uro) }
+      { this->hashes->HASH_VAR_DIRECTORIES, new gen::DefinitionGenerator(gen::ELEM_DIRECTORIES, uro) },
+      { this->hashes->HASH_VAR_FILES, new gen::DefinitionGenerator(gen::ELEM_FILES, uro) },
+      { this->hashes->HASH_VAR_RECURSIVEFILES, new gen::DefinitionGenerator(gen::ELEM_RECURSIVE_FILES, uro) },
+      { this->hashes->HASH_VAR_RECURSIVEDIRECTORIES, new gen::DefinitionGenerator(gen::ELEM_RECURSIVE_DIRECTORIES, uro) }
    }),
    intVars({
       { this->hashes->HASH_VAR_INDEX, &this->inner.index },
@@ -154,7 +157,7 @@ void Variables::takeBundlePointer(VarBundle<_list>*& bundle)
 
 template <typename T>
 _boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const ThisState& thisState,
-   Hashes* hashes, InnerVariables* inner, VariablesContext* vc, Variables* vars, Uroboros* uro)
+   Hashes* hashes, InnerVariables* inner, VariablesContext* vc, Variables* vars, uro::Uroboros* uro)
 {
    if (tk.value.word.h == hashes->HASH_VAR_THIS) {
       if (inner->thisState == thisState) {
@@ -188,13 +191,13 @@ _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
             L"' can be accessed only inside a loop"), tk.line);
       }
       else {
-         result = new NumberIntRef(this->intVars[tk.value.word.h]);
+         result = new gen::NumberIntRef(this->intVars[tk.value.word.h]);
          return true;
       }
    }
    else if (this->intVars.find(tk.value.word.h) != this->intVars.end()) {
       this->vc->setAttribute(tk, this->uroboros);
-      result = new NumberIntRef(this->intVars[tk.value.word.h]);
+      result = new gen::NumberIntRef(this->intVars[tk.value.word.h]);
       return true;
    }
 
@@ -245,4 +248,6 @@ void Variables::makeAllNotConstant()
    this->nlist.makeNotConstant();
    this->tlist.makeNotConstant();
    this->list.makeNotConstant();
+}
+
 }

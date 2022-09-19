@@ -4,6 +4,9 @@
 #include "uroboros.h"
 
 
+namespace uro
+{
+
 void cmd_version()
 {
    rawPrint(L"Uroboros " VERSION_STR);
@@ -36,4 +39,6 @@ void cmd_help()
    rawPrint(L"  -n           Run in noomit mode (iterate over all file system elements with no exceptions).");
    rawPrint(L"  -s           Run in silent mode (no command log messages).");
    rawPrint(L"  -g           For internal use only. Set up log message communication with GUI.");
+}
+
 }

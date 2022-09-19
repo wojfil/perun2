@@ -18,6 +18,11 @@
 #include "datatype/primitives.h"
 #include "uroboros.h"
 #include <iostream>
+
+
+namespace uro
+{
+
 #define GUIMES_LIMIT 219
 #define GUIMES_TIME 40
 
@@ -49,6 +54,8 @@ void commandLog(const Uroboros* uro, Args const&... args)
          }
       }
    }
+}
+
 }
 
 

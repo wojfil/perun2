@@ -14,5 +14,11 @@
 
 #include "side-process.h"
 
+
+namespace uro
+{
+
 SideProcess::SideProcess()
    : info({}), running(false) { };
+
+}

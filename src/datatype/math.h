@@ -19,6 +19,9 @@
 #include <random>
 
 
+namespace uro
+{
+
 struct Math {
 
 public:
@@ -36,5 +39,6 @@ private:
    std::uniform_real_distribution<> doubleDist;
 };
 
+}
 
 #endif // MATH_H_INCLUDED

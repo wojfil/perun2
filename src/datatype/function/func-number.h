@@ -19,6 +19,9 @@
 #include "../../uroboros.h"
 
 
+namespace uro::func
+{
+
 struct F_Absolute : Func_1<_num>, Generator<_num>
 {
 public:
@@ -192,6 +195,7 @@ public:
    _num getValue() override;
 };
 
+}
 
 #endif /* FUNC_NUMBER_H */
 

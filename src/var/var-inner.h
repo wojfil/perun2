@@ -21,6 +21,9 @@
 #include "../datatype/primitives.h"
 
 
+namespace uro
+{
+
 // parsing context of the variable "this"
 enum ThisState
 {
@@ -42,44 +45,46 @@ public:
    void createThisRef(Generator<_num>*& result);
    void createThisRef(Generator<_tim>*& result);
 
-   void createThisVarRef(Variable<_str>*& result);
-   void createThisVarRef(Variable<_num>*& result);
-   void createThisVarRef(Variable<_tim>*& result);
+   void createThisVarRef(vars::Variable<_str>*& result);
+   void createThisVarRef(vars::Variable<_num>*& result);
+   void createThisVarRef(vars::Variable<_tim>*& result);
 
    ThisState thisState;
-   Variable<_tim> access;
-   Variable<_boo> archive;
-   Variable<_tim> change;
-   Variable<_boo> compressed;
-   Variable<_tim> creation;
-   Variable<_numi> depth;
-   Variable<_str> drive;
-   Variable<_boo> empty;
-   Variable<_boo> encrypted;
-   Variable<_boo> exists;
-   Variable<_str> extension;
-   Variable<_str> fullname;
-   Variable<_boo> hidden;
-   Variable<_numi> index;
-   Variable<_boo> isdirectory;
-   Variable<_boo> isfile;
-   Variable<_per> lifetime;
-   Variable<_str> location;
-   Variable<_tim> modification;
-   Variable<_str> name;
-   Variable<_str> parent;
-   Variable<_str> path;
-   Variable<_boo> readonly;
-   Variable<_num> size;
+   vars::Variable<_tim> access;
+   vars::Variable<_boo> archive;
+   vars::Variable<_tim> change;
+   vars::Variable<_boo> compressed;
+   vars::Variable<_tim> creation;
+   vars::Variable<_numi> depth;
+   vars::Variable<_str> drive;
+   vars::Variable<_boo> empty;
+   vars::Variable<_boo> encrypted;
+   vars::Variable<_boo> exists;
+   vars::Variable<_str> extension;
+   vars::Variable<_str> fullname;
+   vars::Variable<_boo> hidden;
+   vars::Variable<_numi> index;
+   vars::Variable<_boo> isdirectory;
+   vars::Variable<_boo> isfile;
+   vars::Variable<_per> lifetime;
+   vars::Variable<_str> location;
+   vars::Variable<_tim> modification;
+   vars::Variable<_str> name;
+   vars::Variable<_str> parent;
+   vars::Variable<_str> path;
+   vars::Variable<_boo> readonly;
+   vars::Variable<_num> size;
 
-   Variable<_num> this_n;
-   Variable<_str> this_s;
-   Variable<_tim> this_t;
+   vars::Variable<_num> this_n;
+   vars::Variable<_str> this_s;
+   vars::Variable<_tim> this_t;
 
-   Variable<_boo> success;
+   vars::Variable<_boo> success;
 
    _str trimmed;
    const _str urocom;
 };
+
+}
 
 #endif // VAR_INNER_H_INCLUDED

@@ -25,8 +25,9 @@
 #include "test-const.h"
 #include "test-time.h"
 
+using namespace uro;
 
-int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
+_int wmain(_int argc, _char* argv[], _char* envp[])
 {
     std::setlocale(LC_CTYPE, "");
     _setmode(_fileno(stdout), _O_U8TEXT);
@@ -42,4 +43,3 @@ int wmain(int argc, wchar_t* argv[], wchar_t *envp[])
 	
     return 0;
 }
-

@@ -18,7 +18,7 @@
 #include "../../datatype/period.h"
 #include <iostream>
 
-
+using namespace uro;
 
 void test_time()
 {

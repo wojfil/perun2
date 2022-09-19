@@ -19,16 +19,17 @@
 #include <iostream>
 #include <vector>
 
+using namespace uro;
 
 template <typename T>
 void testCase_in(const _int& caseId, const T& value, const std::vector<T>& collection, const _boo& expectedResult)
 {
-    Generator<T>* v = new Constant<T>(value);
-    Generator<T>* v2 = new Constant<T>(value);
-    Generator<std::vector<T>>* c = new Constant<std::vector<T>>(collection);
+    Generator<T>* v = new gen::Constant<T>(value);
+    Generator<T>* v2 = new gen::Constant<T>(value);
+    Generator<std::vector<T>>* c = new gen::Constant<std::vector<T>>(collection);
 
-    Generator<_boo>* inConst = new InConstList<T>(v, collection);
-    Generator<_boo>* inVar   = new InList<T>(v2, c);
+    Generator<_boo>* inConst = new gen::InConstList<T>(v, collection);
+    Generator<_boo>* inVar   = new gen::InList<T>(v2, c);
 
 	const _boo resultConst = inConst->getValue();
 	const _boo resultVar   = inVar->getValue();

@@ -18,12 +18,13 @@
 #include <iostream>
 #include <vector>
 
+using namespace uro;
 
 // check, if a generated constant stores correct data
 template <typename T>
 void testCase_const(const _int& caseId, const T& value)
 {
-    Generator<T>* v = new Constant<T>(value);
+    Generator<T>* v = new gen::Constant<T>(value);
 	const _boo result  = v->getValue() == value;
     VERIFY(result, caseId);
     delete v;

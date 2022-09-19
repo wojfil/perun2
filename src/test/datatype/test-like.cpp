@@ -17,6 +17,7 @@
 #include "../../datatype/generator/gen-like.h"
 #include <iostream>
 
+using namespace uro;
 
 void test_like()
 {
@@ -378,7 +379,7 @@ void test_like()
 void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _boo& expectedResult)
 {
    // std::wcout << caseId << std::endl;
-   LikeComparer* comparer = parseLikeCmp(pattern);
+   gen::LikeComparer* comparer = gen::parseLikeCmp(pattern);
    const _boo result = comparer->compareToPattern(value);
    VERIFY(result == expectedResult, caseId);
    delete comparer;

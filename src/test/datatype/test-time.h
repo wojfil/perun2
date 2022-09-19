@@ -19,6 +19,8 @@
 #include "../../datatype/period.h"
 #include "../../datatype/datatype.h"
 
+using namespace uro;
+
 void test_time();
 
 void testCase_timeShift(const _int& caseId, const _tim& value, const _per& shift, const _tim& expectedResult);

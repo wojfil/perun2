@@ -17,6 +17,8 @@
 
 #include "../../datatype/generator/gen-like.h"
 
+using namespace uro;
+
 void test_like();
 void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _boo& expectedResult);
 

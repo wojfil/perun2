@@ -144,7 +144,7 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
          }
       }
       else {
-         langutil::deleteVectorPtr(result);
+         deleteVectorPtr(result);
          return nullptr;
       }
    }

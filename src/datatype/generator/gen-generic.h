@@ -126,7 +126,7 @@ public:
       length(val->size()) { };
 
    ~Listed() {
-      deleteVectorPtr(value);
+      langutil::deleteVectorPtr(value);
    }
 
    std::vector<T> getValue() override {
@@ -151,14 +151,14 @@ public:
       length(val->size()) { };
 
    ~ListedLists() {
-      deleteVectorPtr(value);
+      langutil::deleteVectorPtr(value);
    }
 
    std::vector<T> getValue() override {
       std::vector<T> list;
       for (_size i = 0; i < length; i++) {
          const std::vector<T> vec = (*value)[i]->getValue();
-         appendVector(list, vec);
+         langutil::appendVector(list, vec);
       }
       return list;
    }

@@ -19,7 +19,7 @@
 #include <map>
 
 
-namespace uro
+namespace uro::langutil
 {
 
 // delete all elements from a vector of pointers

@@ -254,7 +254,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
                      prevTim, time, tks2, numReserve, uro)) {
 
-                     deleteTwo(prevTim, time);
+                     langutil::deleteTwo(prevTim, time);
                      return nullptr;
                   }
                   if (numReserve == 0) {
@@ -271,9 +271,9 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
                if (bi.isBracketFree() && sublen != 0) {
                   const Tokens tks2(tks.list, i - sublen, sublen);
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
-                     prevTim, time, tks2, numReserve, uro)) {
-
-                     deleteTwo(prevTim, time);
+                     prevTim, time, tks2, numReserve, uro))
+                  {
+                     langutil::deleteTwo(prevTim, time);
                      return nullptr;
                   }
 
@@ -305,7 +305,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
    }
 
    if (sublen == 0) {
-      deleteTwo(prevTim, time);
+      langutil::deleteTwo(prevTim, time);
 
       if (subtract)
          throw SyntaxException(L"expression cannot end with -", tks.last().line);
@@ -317,7 +317,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
    if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2,
       numReserve, uro) || numReserve != 0 || prevTim != nullptr)
    {
-      deleteTwo(prevTim, time);
+      langutil::deleteTwo(prevTim, time);
       return nullptr;
    }
 

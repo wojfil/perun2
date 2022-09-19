@@ -22,8 +22,8 @@ namespace uro::func
 
 FuncAggr::~FuncAggr()
 {
-   deleteVectorPtr(singleValues);
-   deleteVectorPtr(multiValues);
+   langutil::deleteVectorPtr(singleValues);
+   langutil::deleteVectorPtr(multiValues);
 }
 
 
@@ -116,7 +116,7 @@ _num F_Median::getValue()
    for (_size i = 0; i < countMulti; i++) {
       _nlist nlist = (*multiValues)[i]->getValue();
       if (!nlist.empty()) {
-         appendVector(elements, nlist);
+         langutil::appendVector(elements, nlist);
       }
    }
 

@@ -768,8 +768,8 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
             multis->push_back(nlist);
          }
          else {
-            deleteVectorPtr(singles);
-            deleteVectorPtr(multis);
+            langutil::deleteVectorPtr(singles);
+            langutil::deleteVectorPtr(multis);
 
             throw SyntaxException(str(ordinalNumber(i + 1),
                L" argument of aggregate function '", word.getOriginString(uro),
@@ -942,7 +942,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
             values->push_back(new F_ConcatenateUnit(list));
          }
          else {
-            deleteVectorPtr(values);
+            langutil::deleteVectorPtr(values);
 
             throw SyntaxException(str(ordinalNumber(i + 1), L" argument of the function '",
                word.getOriginString(uro), L"' cannot be resolved to any data type"), word.line);
@@ -1008,7 +1008,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          for (_size i = 0; i < len; i++) {
             Generator<_str>* str;
             if (!parse::parse(uro, args[i], str)) {
-               deleteVectorPtr(values);
+               langutil::deleteVectorPtr(values);
                functionArgException(i + 1, L"string", word, uro);
             }
 

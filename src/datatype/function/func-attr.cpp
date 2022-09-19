@@ -154,7 +154,7 @@ _str F_Path_4::getValue()
 
 F_Path_Multi::~F_Path_Multi()
 {
-   deleteVectorPtr(this->values);
+   langutil::deleteVectorPtr(this->values);
 }
 
 _str F_Path_Multi::getValue()

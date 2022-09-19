@@ -106,7 +106,7 @@ static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, 
             Generator<_tim>* time2 = timeFromTwoSeqs(elements[i - 1], tks, uro);
 
             if (time2 == nullptr) {
-               deleteVectorPtr(result);
+               langutil::deleteVectorPtr(result);
                return nullptr;
             }
             else {
@@ -118,7 +118,7 @@ static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, 
             }
          }
          else {
-            deleteVectorPtr(result);
+            langutil::deleteVectorPtr(result);
             return nullptr;
          }
       }
@@ -180,7 +180,7 @@ static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& element
             isPrev = false;
          }
          else {
-            deleteVectorPtr(result);
+            langutil::deleteVectorPtr(result);
             return nullptr;
          }
       }

@@ -212,7 +212,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
                         sublen = 0;
                      }
                      else {
-                        deleteVector(infList);
+                        langutil::deleteVector(infList);
                         return nullptr;
                      }
                   }
@@ -231,7 +231,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
                   if (sublen == 1) {
                      const Token& pt = tks.listAt(i - 1);
                      if (pt.type != Token::t_Word) {
-                        deleteVector(infList);
+                        langutil::deleteVector(infList);
                         throw SyntaxException(L"function name is not valid", t.line);
                      }
                   }
@@ -284,14 +284,14 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
             infList.push_back(new ExpElement<_num>(num, tks2.first().line));
          }
          else {
-            deleteVector(infList);
+            langutil::deleteVector(infList);
             return nullptr;
          }
       }
    }
 
    if (!isNumExpComputable(infList)) {
-      deleteVector(infList);
+      langutil::deleteVector(infList);
       throw SyntaxException(L"syntax of a numeric expression is not valid",
          tks.first().line);
    }
@@ -299,8 +299,8 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
    std::vector<ExpElement<_num>*> pntList;
    Generator<_num>* num = numExpTree(infList, pntList);
 
-   deleteVector(infList);
-   deleteVector(pntList);
+   langutil::deleteVector(infList);
+   langutil::deleteVector(pntList);
 
    return num;
 }

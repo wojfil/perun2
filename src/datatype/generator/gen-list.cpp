@@ -66,7 +66,7 @@ _list Join_ListStr::getValue()
 _list Join_ListList::getValue()
 {
    _list v = left->getValue();
-   appendVector(v, right->getValue());
+   langutil::appendVector(v, right->getValue());
    return v;
 }
 

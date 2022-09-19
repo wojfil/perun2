@@ -32,7 +32,8 @@ public:
    CS_Pair(Command* fst, Command* snd, Uroboros* uro)
       : first(fst), second(snd), Command_L(uro) {};
 
-   ~CS_Pair() {
+   ~CS_Pair()
+   {
       delete first;
       delete second;
    };
@@ -51,8 +52,9 @@ public:
    CS_Block(std::vector<Command*> coms, Uroboros* uro)
       : commands(coms), length(coms.size()), Command_L(uro) { };
 
-   ~CS_Block() {
-      deleteVector(commands);
+   ~CS_Block()
+   {
+      langutil::deleteVector(commands);
    };
 
    void run() override;
@@ -69,7 +71,8 @@ public:
    CS_Times(Generator<_num>* ts, Command* com, Aggregate* aggr, Uroboros* uro)
       : aggregate(aggr), times(ts), command(com), Command_L(uro)  { };
 
-   ~CS_Times() {
+   ~CS_Times()
+   {
       delete times;
       delete command;
       delete aggregate;
@@ -90,7 +93,8 @@ public:
    CS_While(Generator<_boo>* cond, Command* com, Aggregate* aggr, Uroboros* uro)
       : aggregate(aggr), condition(cond), command(com), Command_L(uro)  { };
 
-   ~CS_While() {
+   ~CS_While()
+   {
       delete condition;
       delete command;
       delete aggregate;
@@ -111,7 +115,8 @@ public:
    CS_TimeLoop(Generator<_tlist>* tList, Command* com, Aggregate* aggr, Uroboros* uro)
       : aggregate(aggr), timeList(tList), command(com), Command_L(uro)  { };
 
-   ~CS_TimeLoop() {
+   ~CS_TimeLoop()
+   {
       delete timeList;
       delete command;
       delete aggregate;
@@ -132,7 +137,8 @@ public:
    CS_NumberLoop(Generator<_nlist>* nList, Command* com, Aggregate* aggr, Uroboros* uro)
       : aggregate(aggr), numberList(nList), command(com), Command_L(uro)  { };
 
-   ~CS_NumberLoop() {
+   ~CS_NumberLoop()
+   {
       delete numberList;
       delete command;
       delete aggregate;
@@ -158,7 +164,8 @@ public:
       const _boo& hasmem, Uroboros* uro)
       : IterationLoop(com, attr, hasmem, uro), string(str), aggregate(aggr) { };
 
-   ~CS_StringLoop() {
+   ~CS_StringLoop()
+   {
       delete string;
       delete command;
       delete aggregate;
@@ -183,7 +190,8 @@ public:
       const _boo& hasmem, Uroboros* uro)
       : IterationLoop(com, attr, hasmem, uro), definition(def), aggregate(aggr) { };
 
-   ~CS_DefinitionLoop() {
+   ~CS_DefinitionLoop()
+   {
       delete definition;
       delete command;
       delete aggregate;
@@ -208,7 +216,8 @@ public:
       const _boo& hasmem, Uroboros* uro)
       : IterationLoop(com, attr, hasmem, uro), list(li), aggregate(aggr) { };
 
-   ~CS_ListLoop() {
+   ~CS_ListLoop()
+   {
       delete list;
       delete command;
       delete aggregate;
@@ -233,7 +242,8 @@ public:
       const _boo& hasmem, Uroboros* uro)
       : IterationLoop(com, attr, hasmem, uro), string(str), aggregate(aggr) { };
 
-   ~CS_InsideString() {
+   ~CS_InsideString()
+   {
       delete string;
       delete command;
       delete aggregate;
@@ -285,7 +295,8 @@ public:
       const _boo& hasmem, Uroboros* uro)
       : IterationLoop(com, attr, hasmem, uro), list(li), aggregate(aggr) { };
 
-   ~CS_InsideList() {
+   ~CS_InsideList()
+   {
       delete list;
       delete command;
       delete aggregate;

@@ -396,7 +396,7 @@ _str F_ConcatenateUnit::getValue()
 
 F_Concatenate::~F_Concatenate()
 {
-   deleteVectorPtr(values);
+   langutil::deleteVectorPtr(values);
 }
 
 _str F_Concatenate::getValue()

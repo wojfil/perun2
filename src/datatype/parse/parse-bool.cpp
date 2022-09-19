@@ -147,7 +147,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
                            sublen = 0;
                         }
                         else {
-                           deleteVector(infList);
+                           langutil::deleteVector(infList);
                            return nullptr;
                         }
                      }
@@ -205,14 +205,14 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
             infList.push_back(new ExpElement<_boo>(boo, tks2.first().line));
          }
          else {
-            deleteVector(infList);
+            langutil::deleteVector(infList);
             return nullptr;
          }
       }
    }
 
    if (!isBoolExpComputable(infList)) {
-      deleteVector(infList);
+      langutil::deleteVector(infList);
       throw SyntaxException(L"syntax of a boolean expression is not valid",
          tks.first().line);
    }
@@ -220,8 +220,8 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
    std::vector<ExpElement<_boo>*> pntList;
    Generator<_boo>* boo = boolExpTree(infList, pntList);
 
-   deleteVector(infList);
-   deleteVector(pntList);
+   langutil::deleteVector(infList);
+   langutil::deleteVector(pntList);
 
    return boo;
 }

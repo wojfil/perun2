@@ -219,7 +219,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks, uro::Uroboros* uro)
          else {
             // parsing has failed
             // so free memory
-            deleteVectorPtr(result);
+            langutil::deleteVectorPtr(result);
 
             switch (prevType) {
                case pt_Number: {

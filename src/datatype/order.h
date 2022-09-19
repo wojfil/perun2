@@ -77,7 +77,7 @@ public:
 
    void clearValues(const _size& length) override
    {
-      clearAndReserve(this->values, length);
+      langutil::clearAndReserve(this->values, length);
       this->nextUnit->clearValues(length);
    }
 
@@ -122,7 +122,7 @@ public:
 
    void clearValues(const _size& length) override
    {
-      clearAndReserve(this->values, length);
+      langutil::clearAndReserve(this->values, length);
    }
 
    void clearValues() override

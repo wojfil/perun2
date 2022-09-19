@@ -153,8 +153,8 @@ If_ManyAlternatives::If_ManyAlternatives(Generator<_boo>* cond, Command* com,
 
 If_ManyAlternatives::~If_ManyAlternatives()
 {
-   deleteVector(altConditions);
-   deleteVector(altCommands);
+   langutil::deleteVector(altConditions);
+   langutil::deleteVector(altCommands);
 }
 
 

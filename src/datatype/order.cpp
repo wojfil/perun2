@@ -7,7 +7,7 @@ namespace uro::gen
 
 void OrderIndices::prepare(const _size& length)
 {
-   clearAndReserve(this->values, length);
+   langutil::clearAndReserve(this->values, length);
 }
 
 OrderBy_Definition::OrderBy_Definition(_def* bas, Attribute* attr,

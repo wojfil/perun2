@@ -30,8 +30,9 @@ public:
    ConcatString(std::vector<Generator<_str>*>* val) : value(val),
       length(val->size()) { };
 
-   ~ConcatString() {
-      deleteVectorPtr(value);
+   ~ConcatString()
+   {
+      langutil::deleteVectorPtr(value);
    }
 
    _str getValue() override;
@@ -48,7 +49,8 @@ public:
    StringBinary (Generator<_boo>* cond, Generator<_str>* val)
       : condition(cond), value(val) {};
 
-   ~StringBinary() {
+   ~StringBinary()
+   {
       delete condition;
       delete value;
    }
@@ -78,7 +80,8 @@ public:
    CharAtIndex (Generator<_str>* val, Generator<_num>* ind)
       : value(val), index(ind) {};
 
-   ~CharAtIndex() {
+   ~CharAtIndex()
+   {
       delete value;
       delete index;
    }
@@ -97,7 +100,8 @@ public:
    DefinitionElement(_def* def, Generator<_num>* in)
       : definition(def), index(in) {};
 
-   ~DefinitionElement() {
+   ~DefinitionElement()
+   {
       delete definition;
       delete index;
    }

@@ -55,16 +55,7 @@ void CS_Times::run()
       this->inner->index.value++;
       repeats--;
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-         break;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-         continue;
-      }
+      P_CHECK_LOOP_BREAK;
    }
 
    this->aggregate->run();
@@ -81,16 +72,7 @@ void CS_While::run()
       this->command->run();
       this->inner->index.value++;
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-         break;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-         continue;
-      }
+      P_CHECK_LOOP_BREAK;
    }
 
    this->aggregate->run();
@@ -119,16 +101,7 @@ void CS_TimeLoop::run()
       this->inner->index.value++;
       index++;
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-         break;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-         continue;
-      }
+      P_CHECK_LOOP_BREAK;
    }
 
    this->aggregate->run();
@@ -158,16 +131,7 @@ void CS_NumberLoop::run()
       this->inner->index.value++;
       index++;
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-         break;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-         continue;
-      }
+      P_CHECK_LOOP_BREAK;
    }
 
    this->aggregate->run();
@@ -195,14 +159,7 @@ void CS_StringLoop::run()
       }
       this->command->run();
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-      }
+      P_CHECK_SOFT_LOOP_BREAK;
 
       this->aggregate->run();
 
@@ -240,16 +197,7 @@ void CS_DefinitionLoop::run()
 
       this->command->run();
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-         this->definition->reset();
-         break;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-      }
+      P_CHECK_LOOP_BREAK;
 
       index++;
       this->inner->index.value = index;
@@ -295,16 +243,7 @@ void CS_ListLoop::run()
       index++;
       this->inner->index.value = index;
 
-      if (this->uroboros->break_) {
-         this->uroboros->running = true;
-         this->uroboros->break_ = false;
-         break;
-      }
-      else if (this->uroboros->continue_) {
-         this->uroboros->running = true;
-         this->uroboros->continue_ = false;
-         continue;
-      }
+      P_CHECK_LOOP_BREAK;
    }
 
    this->aggregate->run();
@@ -320,7 +259,6 @@ void CS_ListLoop::run()
 void CS_InsideString::run()
 {
    if (this->uroboros->running) {
-
       const _str val = os_trim(this->string->getValue());
       const _str newLocation = os_join(this->inner->location.value, val);
 
@@ -342,21 +280,12 @@ void CS_InsideString::run()
          }
 
          this->command->run();
-
-         if (this->uroboros->break_) {
-            this->uroboros->running = true;
-            this->uroboros->break_ = false;
-         }
-         else if (this->uroboros->continue_) {
-            this->uroboros->running = true;
-            this->uroboros->continue_ = false;
-         }
-
          this->aggregate->run();
+
+         P_CHECK_SOFT_LOOP_BREAK;
 
          P_MEMORY_RESTORE;
          this->inner->location.value = this->prevLocation;
-
 
          if (this->hasMemory) {
             this->attrMemory.restore();
@@ -397,16 +326,7 @@ void CS_InsideDefinition::run()
 
          this->command->run();
 
-         if (this->uroboros->break_) {
-            this->uroboros->running = true;
-            this->uroboros->break_ = false;
-            this->definition->reset();
-            break;
-         }
-         else if (this->uroboros->continue_) {
-            this->uroboros->running = true;
-            this->uroboros->continue_ = false;
-         }
+         P_CHECK_LOOP_BREAK;
 
          index++;
          this->inner->index.value = index;
@@ -460,15 +380,7 @@ void CS_InsideList::run()
 
          this->command->run();
 
-         if (this->uroboros->break_) {
-            this->uroboros->running = true;
-            this->uroboros->break_ = false;
-            break;
-         }
-         else if (this->uroboros->continue_) {
-            this->uroboros->running = true;
-            this->uroboros->continue_ = false;
-         }
+         P_CHECK_LOOP_BREAK;
 
          outIndex++;
          this->inner->index.value = outIndex;

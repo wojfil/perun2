@@ -28,8 +28,11 @@ namespace uro::gen
 struct OrderIndices
 {
 public:
+   OrderIndices();
+   ~OrderIndices();
    void prepare(const _size& length);
-   std::vector<_size> values; // use a flexible array instead ?? would fit
+
+   _size* values;
 };
 
 
@@ -179,14 +182,13 @@ public:
       for (_int j = start; j <= end - 1; j++) {
          if (this->order->matchesSwap(j, end)) {
             i++;
-            std::iter_swap(this->orderIndices->values.begin() + i, this->orderIndices->values.begin() + j);
+            std::swap(this->orderIndices->values[i], this->orderIndices->values[j]);
             std::iter_swap(this->resultPtr->begin() + i, this->resultPtr->begin() + j);
-
          }
       }
 
       const _int ip = i + 1;
-      std::iter_swap(this->orderIndices->values.begin() + ip, this->orderIndices->values.begin() + end);
+      std::swap(this->orderIndices->values[ip], this->orderIndices->values[end]);
       std::iter_swap(this->resultPtr->begin() + ip, this->resultPtr->begin() + end);
       return ip;
    }
@@ -255,7 +257,6 @@ public:
 
 private:
    Generator<std::vector<T>>* base;
-
 };
 
 

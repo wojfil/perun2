@@ -5,9 +5,18 @@
 namespace uro::gen
 {
 
+OrderIndices::OrderIndices() 
+   : values(new _size[0]()) { }
+
+OrderIndices::~OrderIndices()
+{
+   delete[] this->values;
+}
+
 void OrderIndices::prepare(const _size& length)
 {
-   langutil::clearAndReserve(this->values, length);
+   delete[] this->values;
+   this->values = new _size[length]();
 }
 
 OrderBy_Definition::OrderBy_Definition(_def* bas, Attribute* attr,
@@ -103,7 +112,7 @@ _boo OrderBy_Definition::hasNext()
       this->orderIndices->prepare(this->length);
 
       for (_size i = 0; i < this->length; i++) {
-         this->orderIndices->values.push_back(i);
+         this->orderIndices->values[i] = i;
       }
 
       this->quicksort(0, this->length - 1);

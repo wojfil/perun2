@@ -151,8 +151,8 @@ void CS_StringLoop::run()
 
       const _str val = this->string->getValue();
       this->inner->this_s.value = val;
-      this->inner->index.value = 0LL;
-      this->inner->depth.value = 0LL;
+      this->inner->index.value.setToZero();
+      this->inner->depth.value.setToZero();
 
       if (this->hasAttribute) {
          this->attribute->run();

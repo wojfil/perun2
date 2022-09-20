@@ -31,7 +31,7 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
-   if (tks.first().isSymbol(L'-')) {
+   if (tks.first().isSymbol(L'-') || tks.containsFilterKeyword()) {
       return nullptr;
    }
 

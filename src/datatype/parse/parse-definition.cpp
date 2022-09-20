@@ -36,9 +36,8 @@ _def* parseDefinition(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   _def* filter = parseFilter<_def*, _str>(tks, ThisState::ts_String, uro);
-   if (filter != nullptr) {
-      return filter;
+   if (tks.containsFilterKeyword()) {
+      return parseFilter<_def*, _str>(tks, ThisState::ts_String, uro);
    }
 
    if (isDefinitionChain(tks, uro)) {

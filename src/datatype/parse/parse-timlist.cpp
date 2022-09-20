@@ -33,10 +33,9 @@ Generator<_tlist>* parseTimList(const Tokens& tks, uro::Uroboros* uro)
       parseOneToken(uro, tks, unit);
       return unit;
    }
-
-   Generator<_tlist>* filter = parseFilter<Generator<_tlist>*, _tim>(tks, ThisState::ts_Time, uro);
-   if (filter != nullptr) {
-      return filter;
+   
+   if (tks.containsFilterKeyword()) {
+      return parseFilter<Generator<_tlist>*, _tim>(tks, ThisState::ts_Time, uro);
    }
 
    if (len >= 3) {

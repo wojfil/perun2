@@ -39,13 +39,17 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
+   if (tks.containsFilterKeyword()) {
+      return nullptr;
+   }
+
    if (tks.isPossibleFunction()) {
       Generator<_num>* func = uro::func::numberFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
-   else if (len >= 2 && !tks.containsSymbol(PG_CHAR_COMMA) && !tks.containsFilterKeyword()) {
+   else if (len >= 2 && !tks.containsSymbol(PG_CHAR_COMMA)) {
       // build numeric expression (but only if the sequence has any operator)
       BracketsInfo bi;
       const _int end = tks.getEnd();

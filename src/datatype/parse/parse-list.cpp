@@ -37,9 +37,14 @@ Generator<_list>* parseList (const Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   Generator<_list>* filter = parseFilter<Generator<_list>*, _str>(tks, ThisState::ts_String, uro);
-   if (filter != nullptr) {
-      return filter;
+   if (tks.containsFilterKeyword()) {
+      Generator<_list>* filter = parseFilter<Generator<_list>*, _str>(tks, ThisState::ts_String, uro);
+      if (filter == nullptr) {
+         throw SyntaxException(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
+      }
+      else {
+         return filter;
+      }
    }
 
    if (len >= 3) {

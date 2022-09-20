@@ -67,6 +67,7 @@ public:
    void divideBySymbol(const _char& symbol, Tokens& left, Tokens& right) const;
    void splitBySymbol(const _char& symbol, std::vector<Tokens>& result) const;
    _int countSymbols(const _char& symbol) const;
+   _int getFilterKeywordId() const;
    void splitByFiltherKeywords(std::vector<Tokens>& result, Uroboros* uro) const;
    void divideForTernary(Tokens& condition, Tokens& left, Tokens& right) const;
 

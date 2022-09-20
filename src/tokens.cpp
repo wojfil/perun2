@@ -620,6 +620,21 @@ _int Tokens::countSymbols(const _char& symbol) const
    return count;
 }
 
+_int Tokens::getFilterKeywordId() const
+{  
+   BracketsInfo bi;
+
+   for (_int i = start; i <= end; i++) {
+      const Token& t = listAt(i);
+
+      if (t.isFiltherKeyword() && bi.isBracketFree()) {
+         return i;
+      }
+   }
+
+   return -1;
+}
+
 void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result, Uroboros* uro) const
 {
    BracketsInfo bi;

@@ -37,7 +37,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsSymbol(PG_CHAR_COMMA)) {
+   if (tks.containsSymbol(PG_CHAR_COMMA) || tks.containsFilterKeyword()) {
       return nullptr;
    }
 

@@ -202,7 +202,7 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* ur
 
 static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& result, _fdata*& data)
 {
-   if (parseOneToken(uro, tks, result)) {
+   if (parse::parse(uro, tks, result)) {
       data = result->getDataPtr();
       return true;
    }
@@ -215,7 +215,7 @@ template <typename T>
 static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>*& result, _fdata*& data)
 {
    data = nullptr;
-   return parseOneToken(uro, tks, result);
+   return parse::parse(uro, tks, result);
 };
 
 
@@ -268,25 +268,34 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
 template <typename T, typename T2>
 static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* uro)
 {
-   if (tks.getLength() < 3 || !tks.second().isFiltherKeyword()) {
-      return nullptr;
+   const _size firstKeywordId = tks.getFilterKeywordId();
+
+   if (firstKeywordId == tks.getStart()) {
+      throw SyntaxException(str(L"filter keyword '", tks.first().getOriginString(uro),
+         L"' is not preceded by a collection of values"), tks.first().line);
+   }
+   else if (firstKeywordId == tks.getStart() + tks.getLength() - 1) {
+      const Token& t = tks.listAt(firstKeywordId);
+      throw SyntaxException(str(L"filter keyword '", t.getOriginString(uro),
+         L"' cannot stand at the end of an expression"), t.line);
    }
 
-   const _int start = tks.getStart() + 2;
-   const _int length = tks.getLength() - 2;
-
+   const Tokens tks2(tks.list, tks.getStart(), firstKeywordId - tks.getStart());
    _fdata* fdata;
    T base;
 
-   if (!parseFilterBase(tks, uro, base, fdata)) {
+   if (!parseFilterBase(tks2, uro, base, fdata)) {
       return nullptr;
    }
 
    // core
+   const _int kw = firstKeywordId - tks.getStart() + 1;
+   const _int start = tks.getStart() + kw; 
+   const _int length = tks.getLength() - kw;
    const _boo hasMemory = uro->vc.anyAttribute();
-   const Tokens tks2(tks.list, start, length);
+   const Tokens tks3(tks.list, start, length);
    std::vector<Tokens> filterTokens;
-   tks2.splitByFiltherKeywords(filterTokens, uro);
+   tks3.splitByFiltherKeywords(filterTokens, uro);
    const _size flength = filterTokens.size();
    std::vector<FilterPrototype<T>*> prototypes;
 

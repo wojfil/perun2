@@ -34,9 +34,8 @@ Generator<_nlist>* parseNumList(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   Generator<_nlist>* filter = parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number, uro);
-   if (filter != nullptr) {
-      return filter;
+   if (tks.containsFilterKeyword()) {
+      return parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number, uro);
    }
 
    if (len >= 3) {

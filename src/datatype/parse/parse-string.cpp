@@ -37,6 +37,10 @@ Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
+   if (tks.containsFilterKeyword()) {
+      return nullptr;
+   }
+
    if (tks.isPossibleFunction()) {
       Generator<_str>* func = func::stringFunction(tks, uro);
       if (func != nullptr) {

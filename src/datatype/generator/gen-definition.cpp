@@ -133,11 +133,11 @@ _boo Filter_LimitDef::hasNext()
 {
    if (first) {
       limit = number->getValue().toInt();
-      if (limit <= 0) {
+      if (limit <= 0LL) {
          return false;
       }
 
-      counter = 0;
+      counter = 0LL;
       first = false;
    }
 
@@ -160,11 +160,11 @@ _boo Filter_SkipDef::hasNext()
 {
    if (first) {
       limit = number->getValue().toInt();
-      if (limit < 0) {
-         limit = 0;
+      if (limit < 0LL) {
+         limit = 0LL;
       }
 
-      counter = 0;
+      counter = 0LL;
       first = false;
    }
 
@@ -192,8 +192,8 @@ _boo Filter_EveryDef::hasNext()
 {
    if (first) {
       limit = number->getValue().toInt();
-      if (limit < 1) {
-         limit = 1;
+      if (limit < 1LL) {
+         limit = 1LL;
       }
 
       counter = limit;
@@ -207,7 +207,7 @@ _boo Filter_EveryDef::hasNext()
       }
 
       if (counter == limit) {
-         counter = 1;
+         counter = 1LL;
          value = definition->getValue();
          this->inner->index.value = index;
          index++;

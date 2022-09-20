@@ -105,8 +105,8 @@ public:
    _boo hasNext() override;
 
 private:
-   _size counter;
-   _size limit;
+   _nint counter;
+   _nint limit;
    Generator<_num>* number;
 };
 
@@ -125,8 +125,8 @@ public:
 
 private:
    uro::InnerVariables* inner;
-   _size counter;
-   _size limit;
+   _nint counter;
+   _nint limit;
    Generator<_num>* number;
 };
 
@@ -145,8 +145,8 @@ public:
 
 private:
    uro::InnerVariables* inner;
-   _size counter;
-   _size limit;
+   _nint counter;
+   _nint limit;
    Generator<_num>* number;
    _numi index;
 };

@@ -28,20 +28,20 @@ void CS_StringComArg::run()
          attrMemory.load();
       }
 
-      prevThis = this->inner->this_s.value;
-      prevIndex = this->inner->index.value;
+      P_MEMORY_LOAD;
 
       const _str val = string->getValue();
-      this->inner->index.value.setToZero();
       this->inner->this_s.value = val;
+      this->inner->index.value.setToZero();
+      this->inner->depth.value.setToZero();
 
       if (hasAttribute) {
          this->attribute->run();
       }
+
       command->run();
 
-      this->inner->this_s.value = prevThis;
-      this->inner->index.value = prevIndex;
+      P_MEMORY_RESTORE;
 
       if (hasMemory) {
          attrMemory.restore();
@@ -63,11 +63,11 @@ void CS_ListComArg::run()
       attrMemory.load();
    }
 
-   prevThis = this->inner->this_s.value;
-   prevIndex = this->inner->index.value;
+   P_MEMORY_LOAD;
 
    _numi index(0LL);
    this->inner->index.value.setToZero();
+   this->inner->depth.value.setToZero();
 
    while (this->uroboros->running && index != length) {
       this->inner->this_s.value = values[index.value.i];
@@ -81,8 +81,7 @@ void CS_ListComArg::run()
       this->inner->index.value = index;
    }
 
-   this->inner->this_s.value = prevThis;
-   this->inner->index.value = prevIndex;
+   P_MEMORY_RESTORE;
 
    if (hasMemory) {
       attrMemory.restore();
@@ -96,8 +95,7 @@ void CS_DefinitionComArg::run()
       attrMemory.load();
    }
 
-   prevThis = this->inner->this_s.value;
-   prevIndex = this->inner->index.value;
+   P_MEMORY_LOAD;
 
    _numi index;
    this->inner->index.value.setToZero();
@@ -119,8 +117,7 @@ void CS_DefinitionComArg::run()
       this->inner->index.value = index;
    }
 
-   this->inner->this_s.value = prevThis;
-   this->inner->index.value = prevIndex;
+   P_MEMORY_RESTORE;
 
    if (hasMemory) {
       attrMemory.restore();

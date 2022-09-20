@@ -18,6 +18,7 @@
 #include "com-listener.h"
 #include "../util.h"
 #include "../attribute.h"
+#include "../patterns.h"
 #include "../datatype/datatype.h"
 #include "../datatype/generator.h"
 #include "com-arg.h"

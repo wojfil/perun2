@@ -22,6 +22,7 @@
 #include "../datatype/generator.h"
 #include "aggregate.h"
 #include "../uroboros.h"
+#include "../patterns.h"
 
 
 namespace uro::comm
@@ -51,9 +52,7 @@ protected:
    AttributeMemory attrMemory;
    const _boo hasMemory;
    const _boo hasAttribute;
-
-   _str prevThis;
-   _numi prevIndex;
+   P_MEMORY_MEMBER;
 };
 
 

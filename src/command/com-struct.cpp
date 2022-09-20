@@ -183,12 +183,12 @@ void CS_StringLoop::run()
          this->attrMemory.load();
       }
 
-      this->prevThis = this->inner->this_s.value;
-      this->prevIndex = this->inner->index.value;
+      P_MEMORY_LOAD;
 
       const _str val = this->string->getValue();
-      this->inner->index.value = 0LL;
       this->inner->this_s.value = val;
+      this->inner->index.value = 0LL;
+      this->inner->depth.value = 0LL;
 
       if (this->hasAttribute) {
          this->attribute->run();
@@ -206,8 +206,7 @@ void CS_StringLoop::run()
 
       this->aggregate->run();
 
-      this->inner->this_s.value = this->prevThis;
-      this->inner->index.value = this->prevIndex;
+      P_MEMORY_RESTORE;
 
       if (this->hasMemory) {
          this->attrMemory.restore();
@@ -222,11 +221,10 @@ void CS_DefinitionLoop::run()
       this->attrMemory.load();
    }
 
-   this->prevThis = this->inner->this_s.value;
-   this->prevIndex = this->inner->index.value;
+   P_MEMORY_LOAD;
 
    _numi index(0LL);
-   this->inner->index.value = 0LL;
+   this->inner->index.value.setToZero();
 
    while (this->definition->hasNext()) {
       if (!this->uroboros->running) {
@@ -259,8 +257,7 @@ void CS_DefinitionLoop::run()
 
    this->aggregate->run();
 
-   this->inner->this_s.value = this->prevThis;
-   this->inner->index.value = this->prevIndex;
+   P_MEMORY_RESTORE;
 
    if (this->hasMemory) {
       this->attrMemory.restore();
@@ -281,11 +278,11 @@ void CS_ListLoop::run()
       this->attrMemory.load();
    }
 
-   this->prevThis = this->inner->this_s.value;
-   this->prevIndex = this->inner->index.value;
+   P_MEMORY_LOAD;
 
    _numi index(0LL);
    this->inner->index.value.setToZero();
+   this->inner->depth.value.setToZero();
 
    while (this->uroboros->running && index != length) {
       this->inner->this_s.value = values[index.value.i];
@@ -312,8 +309,7 @@ void CS_ListLoop::run()
 
    this->aggregate->run();
 
-   this->inner->this_s.value = this->prevThis;
-   this->inner->index.value =this-> prevIndex;
+   P_MEMORY_RESTORE;
 
    if (this->hasMemory) {
       this->attrMemory.restore();
@@ -324,20 +320,21 @@ void CS_ListLoop::run()
 void CS_InsideString::run()
 {
    if (this->uroboros->running) {
-      if (this->hasMemory) {
-         this->attrMemory.load();
-      }
 
       const _str val = os_trim(this->string->getValue());
       const _str newLocation = os_join(this->inner->location.value, val);
 
       if (!val.empty() && os_directoryExists(newLocation)) {
-         this->prevThis = this->inner->this_s.value;
-         this->prevIndex = this->inner->index.value;
+         if (this->hasMemory) {
+            this->attrMemory.load();
+         }
+
+         P_MEMORY_LOAD;
          this->prevLocation = this->inner->location.value;
 
          this->inner->this_s.value = newLocation;
          this->inner->index.value.setToZero();
+         this->inner->depth.value.setToZero();
          this->inner->location.value = newLocation;
 
          if (this->hasAttribute) {
@@ -357,14 +354,15 @@ void CS_InsideString::run()
 
          this->aggregate->run();
 
+         P_MEMORY_RESTORE;
          this->inner->location.value = this->prevLocation;
-         this->inner->this_s.value = this->prevThis;
-         this->inner->index.value = this->prevIndex;
+
+
+         if (this->hasMemory) {
+            this->attrMemory.restore();
+         }
       }
 
-      if (this->hasMemory) {
-         this->attrMemory.restore();
-      }
    }
 }
 
@@ -375,8 +373,7 @@ void CS_InsideDefinition::run()
       this->attrMemory.load();
    }
 
-   this->prevThis = this->inner->this_s.value;
-   this->prevIndex = this->inner->index.value;
+   P_MEMORY_LOAD;
    this->prevLocation = this->inner->location.value;
 
    _numi index(0LL);
@@ -388,8 +385,7 @@ void CS_InsideDefinition::run()
          break;
       }
 
-      const _str newLocation =
-         os_join(this->prevLocation, this->definition->getValue());
+      const _str newLocation = os_join(this->prevLocation, this->definition->getValue());
 
       if (os_directoryExists(newLocation)) {
          this->inner->location.value = newLocation;
@@ -421,9 +417,8 @@ void CS_InsideDefinition::run()
 
    this->aggregate->run();
 
+   P_MEMORY_RESTORE;
    this->inner->location.value = this->prevLocation;
-   this->inner->this_s.value = this->prevThis;
-   this->inner->index.value = this->prevIndex;
 
    if (this->hasMemory) {
       this->attrMemory.restore();
@@ -444,13 +439,13 @@ void CS_InsideList::run()
       this->attrMemory.load();
    }
 
-   this->prevThis = this->inner->this_s.value;
-   this->prevIndex = this->inner->index.value;
+   P_MEMORY_LOAD;
    this->prevLocation = this->inner->location.value;
 
    _numi index(0LL);
    _nint outIndex = 0LL;
-   this->inner->index.value = 0LL;
+   this->inner->index.value.setToZero();
+   this->inner->depth.value.setToZero();
 
    while (this->uroboros->running && index != length) {
       const _str v = os_trim(values[index.value.i]);
@@ -484,8 +479,7 @@ void CS_InsideList::run()
 
    this->aggregate->run();
 
-   this->inner->this_s.value = this->prevThis;
-   this->inner->index.value = this->prevIndex;
+   P_MEMORY_RESTORE;
    this->inner->location.value = this->prevLocation;
 
    if (this->hasMemory) {

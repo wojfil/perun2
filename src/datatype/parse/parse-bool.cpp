@@ -680,7 +680,7 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
          return negated ? new gen::Not(in) : in;
       }
       else {
-         Generator<_boo>* in = new gen::InTimeList(tim, tlist);
+         Generator<_boo>* in = new gen::InList<_tim>(tim, tlist);
          return negated ? new gen::Not(in) : in;
       }
    }

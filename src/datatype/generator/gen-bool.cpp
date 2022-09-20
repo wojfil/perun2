@@ -38,18 +38,13 @@ _boo Xor::getValue() {
 };
 
 
-_boo InTimeList::getValue() {
-   const _tim time = value->getValue();
-   const _tlist lst = list->getValue();
-   const _size length = lst.size();
+InConstTimeList::InConstTimeList(Generator<_tim>* val, const _tlist& li)
+   : value(val), list(sortedAndUniqueTimeList(li)) { };
 
-   for (_size i = 0; i < length; i++) {
-      if (lst[i] == time) {
-         return true;
-      }
-   }
 
-   return false;
+InConstTimeList::~InConstTimeList() 
+{
+   delete value;
 };
 
 

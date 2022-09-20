@@ -125,42 +125,18 @@ private:
 
 // Time works quite differently than other data types
 // for example '3 June 2005' equals 'June 2005'
-// so let there be special case structs
-struct InTimeList : Generator<_boo>
-{
-public:
-   InTimeList(Generator<_tim>* val, Generator<_tlist>* li)
-      : value(val), list(li) { };
-
-   ~InTimeList() {
-      delete value;
-      delete list;
-   };
-
-   _boo getValue() override;
-
-private:
-   Generator<_tim>* value;
-   Generator<_tlist>* list;
-};
-
-
+// so let there be special a case struct
 struct InConstTimeList : Generator<_boo>
 {
 public:
-   InConstTimeList(Generator<_tim>* val, const _tlist& li)
-      : value(val), list(sortedAndUniqueTimeList(li)), length(li.size()) { };
-
-   ~InConstTimeList() {
-      delete value;
-   };
+   InConstTimeList(Generator<_tim>* val, const _tlist& li);
+   ~InConstTimeList();
 
    _boo getValue() override;
 
 private:
    Generator<_tim>* value;
    const _tlist list;
-   const _size length;
 };
 
 }

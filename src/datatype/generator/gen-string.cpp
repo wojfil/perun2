@@ -22,7 +22,7 @@ namespace uro::gen
 
 _str ConcatString::getValue()
 {
-   std::wstringstream ss;
+   _stream ss;
    for (_size i = 0; i < length; i++) {
       ss << (*value)[i]->getValue();
    }

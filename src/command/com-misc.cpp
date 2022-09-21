@@ -218,8 +218,8 @@ void C_RunWithWith::run()
       }
    }
    else {
-      std::wstringstream comStream;
-      std::wstringstream logStream;
+      _stream comStream;
+      _stream logStream;
       const _str& first = rawArgs[0];
       logStream << str(getCCName(this->inner->trimmed), L" with '", base, L"' with '", first, L"'");
       comStream << str(base, L" ", os_quoteEmbraced(this->inner->trimmed), L" ", os_makeArg(first));
@@ -322,8 +322,8 @@ void C_RunWithUroborosWith::run()
       }
    }
    else {
-      std::wstringstream comStream;
-      std::wstringstream logStream;
+      _stream comStream;
+      _stream logStream;
       const _str& first = rawArgs[0];
       logStream << str(getCCName(this->inner->trimmed), L" with Uroboros with '", first, L"'");
       comStream << str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed), L" ", os_makeArg(first));

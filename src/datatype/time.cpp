@@ -58,7 +58,7 @@ _str Time::toString() const
       return L"no time";
    }
 
-   std::wstringstream ss;
+   _stream ss;
 
    if (type != tt_YearMonth) {
       ss << day;

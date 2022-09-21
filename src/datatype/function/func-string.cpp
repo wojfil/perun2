@@ -56,7 +56,7 @@ _str F_After::getValue()
    }
    else {
       auto pos = s1.find(s2);
-      return pos == std::wstring::npos
+      return pos == _str::npos
          ? L""
          : s1.substr(pos + s2.size());
    }
@@ -91,7 +91,7 @@ _str F_Before::getValue()
    }
    else {
       auto pos = s1.find(s2);
-      return pos == std::wstring::npos
+      return pos == _str::npos
          ? L""
          : s1.substr(0, pos);
    }
@@ -384,7 +384,7 @@ _str F_ConcatenateUnit::getValue()
       }
    }
 
-   std::wstringstream ss;
+   _stream ss;
 
    for (_size i = 0; i < length; i++) {
       ss << values[i];
@@ -401,7 +401,7 @@ F_Concatenate::~F_Concatenate()
 
 _str F_Concatenate::getValue()
 {
-   std::wstringstream ss;
+   _stream ss;
 
    for (_size i = 0; i < length; i++) {
       ss << (*values)[i]->getValue();
@@ -768,7 +768,7 @@ _str F_Join::getValue()
          const _str separator = arg2->getValue();
 
          if (separator == L"") {
-            std::wstringstream ss;
+            _stream ss;
 
             for (_size i = 0; i < length; i++) {
                ss << values[i];
@@ -777,7 +777,7 @@ _str F_Join::getValue()
             return ss.str();
          }
          else {
-            std::wstringstream ss;
+            _stream ss;
             ss << values[0];
 
             for (_size i = 0; i < length; i++) {
@@ -804,7 +804,7 @@ _str F_Roman::getValue()
       return base.toString();
    }
 
-   std::wstringstream ss;
+   _stream ss;
    if (number < 0LL) {
       ss << L"-";
       number *= -1LL;
@@ -853,7 +853,7 @@ _str F_Roman::getValue()
 _str F_Binary::getValue()
 {
    _nint v = arg1->getValue().toInt();
-   std::wstringstream ss;
+   _stream ss;
    _boo negative = false;
 
    if (v < 0) {
@@ -882,15 +882,15 @@ _str F_Hex::getValue()
 
    if (v < 0) {
       v *= -1;
-
-      std::wostringstream oss;
+      _stream oss;
       oss << std::hex << v;
       return str(L"-", oss.str());
    }
-
-   std::wostringstream oss;
-   oss << std::hex << v;
-   return oss.str();
+   else {
+      _stream oss;
+      oss << std::hex << v;
+      return oss.str();
+   }
 }
 
 }

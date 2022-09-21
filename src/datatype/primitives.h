@@ -35,6 +35,7 @@
 #define _adata WIN32_FILE_ATTRIBUTE_DATA
 #define _fdata WIN32_FIND_DATAW
 #define _ftim FILETIME
+#define _stream std::wstringstream
 
 
 namespace uro

@@ -108,7 +108,7 @@ _nint Period::toSeconds() const
 
 _str Period::toString() const
 {
-   std::wstringstream ss;
+   _stream ss;
    _boo first = true;
 
    const _tnum y = years + years_sec;

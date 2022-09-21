@@ -50,7 +50,7 @@ public:
    Uroboros(const Arguments& args);
    _boo run();
 
-   const Arguments arguments;
+   const Arguments& arguments;
    Hashes hashes;
    Math math;
    vars::Variables vars;

@@ -137,7 +137,7 @@ _str os_readFile(const _str& path, _boo& result);
 void os_showWebsite(const _str& url);
 
 inline _nint bigInteger(const _uint32& low, const _uint32& high);
-_boo os_isBrowsePath(const _str& path);
+inline _boo os_isBrowsePath(const _str& path);
 inline _tim convertToUroTime(const _ftim* time);
 inline _boo convertToFileTime(const _tim& uroTime, _ftim& result);
 

@@ -1114,8 +1114,9 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
             return false;
          }
 
-         if (!(wcscmp(FindFileData.cFileName, L".") && wcscmp(FindFileData.cFileName, L"..")))
+         if (!os_isBrowsePath(FindFileData.cFileName)) {
             continue;
+         }
 
          wcscat(FileName, FindFileData.cFileName);
          const _str np = str(newPath, OS_SEPARATOR_STRING, _str(FileName).substr(length));
@@ -1146,6 +1147,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
          }
       }
    }
+
    FindClose(hFind);
 
    return true;
@@ -1678,9 +1680,21 @@ inline _nint bigInteger(const _uint32& low, const _uint32& high)
    return n;
 }
 
-_boo os_isBrowsePath(const _str& path)
+inline _boo os_isBrowsePath(const _str& path)
 {
-   return path == L"." || path == L"..";
+   // this is an equivalent to
+   // return path == L"." || path == L"..";
+   switch (path.size()) {
+      case 1: {
+         return path[0] == L'.';
+      }
+      case 2: {
+         return path[0] == L'.' && path[1] == L'.';
+      }
+      default: {
+         return false;
+      }
+   }
 }
 
 inline _tim convertToUroTime(const _ftim* time)

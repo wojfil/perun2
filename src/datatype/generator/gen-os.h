@@ -18,6 +18,7 @@
 
 #include "../generator.h"
 #include "../datatype.h"
+#include "../../patterns.h"
 #include <windows.h>
 
 
@@ -70,10 +71,8 @@ protected:
    uro::Uroboros* uroboros;
    uro::InnerVariables* inner;
    _fdata data;
-   _str prevThis;
-   _numi prevIndex;
    _numi index;
-   _numi prevDepth;
+   P_MEMORY_MEMBER;
 
    const _str pattern;
    const _uint32 flags;

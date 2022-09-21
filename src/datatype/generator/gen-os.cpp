@@ -77,9 +77,7 @@ void OsDefinitionPlain::reset()
    if (!first) {
       first = true;
       FindClose(handle);
-      this->inner->this_s.value = prevThis;
-      this->inner->index.value = prevIndex;
-      this->inner->depth.value = prevDepth;
+      P_MEMORY_RESTORE;
    }
 }
 
@@ -96,9 +94,7 @@ void OsDefinitionRecursive::reset()
          }
          handles.clear();
       }
-      this->inner->depth.value = prevDepth;
-      this->inner->this_s.value = prevThis;
-      this->inner->index.value = prevIndex;
+      P_MEMORY_RESTORE;
    }
 }
 
@@ -115,9 +111,7 @@ _boo Uro_All::hasNext()
 
          first = false;
          value = data.cFileName;
-         prevThis = this->inner->this_s.value;
-         prevIndex = this->inner->index.value;
-         prevDepth = this->inner->depth.value;
+         P_MEMORY_LOAD;
          this->inner->depth.value.setToZero();
          index.setToZero();
          this->inner->index.value = index;
@@ -161,9 +155,7 @@ _boo Uro_All::hasNext()
 
    first = true;
    FindClose(handle);
-   this->inner->this_s.value = prevThis;
-   this->inner->index.value = prevIndex;
-   this->inner->depth.value = prevDepth;
+   P_MEMORY_RESTORE;
    return false;
 }
 
@@ -180,9 +172,7 @@ _boo Uro_Files::hasNext()
 
          first = false;
          value = data.cFileName;
-         prevThis = this->inner->this_s.value;
-         prevIndex = this->inner->index.value;
-         prevDepth = this->inner->depth.value;
+         P_MEMORY_LOAD;
          this->inner->depth.value.setToZero();
          index.setToZero();
          this->inner->index.value = index;
@@ -222,9 +212,7 @@ _boo Uro_Files::hasNext()
 
    first = true;
    FindClose(handle);
-   this->inner->this_s.value = prevThis;
-   this->inner->index.value = prevIndex;
-   this->inner->depth.value = prevDepth;
+   P_MEMORY_RESTORE;
    return false;
 }
 
@@ -241,9 +229,7 @@ _boo Uro_Directories::hasNext()
 
          first = false;
          value = data.cFileName;
-         prevThis = this->inner->this_s.value;
-         prevIndex = this->inner->index.value;
-         prevDepth = this->inner->depth.value;
+         P_MEMORY_LOAD;
          this->inner->depth.value.setToZero();
          index.setToZero();
          this->inner->index.value = index;
@@ -283,9 +269,7 @@ _boo Uro_Directories::hasNext()
 
    first = true;
    FindClose(handle);
-   this->inner->this_s.value = prevThis;
-   this->inner->index.value = prevIndex;
-   this->inner->depth.value = prevDepth;
+   P_MEMORY_RESTORE;
    return false;
 }
 
@@ -293,12 +277,10 @@ _boo Uro_RecursiveFiles::hasNext()
 {
    if (first) {
       this->paths.push_back(os_trim(location->getValue()));
-      prevDepth = this->inner->depth.value;
+      P_MEMORY_LOAD;
       this->inner->depth.value.setToZero();
       goDeeper = true;
       first = false;
-      prevThis = this->inner->this_s.value;
-      prevIndex = this->inner->index.value;
       index.setToZero();
       this->inner->index.value = index;
    }
@@ -398,12 +380,10 @@ _boo Uro_RecursiveDirectories::hasNext()
 {
    if (first) {
       paths.push_back(os_trim(location->getValue()));
-      prevDepth = this->inner->depth.value;
+      P_MEMORY_LOAD;
       this->inner->depth.value.value.i = -1LL;
       goDeeper = true;
       first = false;
-      prevThis = this->inner->this_s.value;
-      prevIndex = this->inner->index.value;
       index.setToZero();
       this->inner->index.value = index;
    }
@@ -488,12 +468,10 @@ _boo Uro_RecursiveAll::hasNext()
 {
    if (first) {
       paths.push_back(os_trim(location->getValue()));
-      prevDepth = this->inner->depth.value;
+      P_MEMORY_LOAD;
       this->inner->depth.value.value.i = -1LL;
       goDeeper = true;
       first = false;
-      prevThis = this->inner->this_s.value;
-      prevIndex = this->inner->index.value;
       index.setToZero();
       this->inner->index.value = index;
    }

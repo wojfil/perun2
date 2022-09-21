@@ -23,20 +23,21 @@
 #include <fcntl.h>
 #include "uroboros.h"
 
-
-void uroConsoleInit()
+namespace uro
 {
-   std::wcin.tie(0);
-   std::wcout.tie(0);
-   std::setlocale(LC_CTYPE, "");
-   _setmode(_fileno(stdout), _O_U8TEXT);
-   CoInitializeEx(0, COINIT_MULTITHREADED);
+   void uroConsoleInit()
+   {
+      std::wcin.tie(0);
+      std::wcout.tie(0);
+      std::setlocale(LC_CTYPE, "");
+      _setmode(_fileno(stdout), _O_U8TEXT);
+      CoInitializeEx(0, COINIT_MULTITHREADED);
+   }
 }
-
 
 _int wmain(_int argc, _char* argv[], _char* envp[])
 {
-   uroConsoleInit();
+   uro::uroConsoleInit();
 
    uro::Arguments arguments(&argc, &argv);
 

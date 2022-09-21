@@ -29,6 +29,11 @@ _str NumberInt::toString() const
    return toStr(value.i);
 }
 
+_nint NumberInt::toInt() const
+{
+   return value.i;
+}
+
 _boo NumberInt::isZero() const
 {
    return value.i == 0LL;
@@ -39,9 +44,19 @@ _boo NumberInt::isMinusOne() const
    return value.i == -1LL;
 }
 
+void NumberInt::makeOpposite()
+{
+   value.i *= -1LL;
+}
+
 void NumberInt::setToZero()
 {
    value.i = 0LL;
+}
+
+void NumberInt::setToMinusOne()
+{
+   value.i = -1LL;
 }
 
 NumberInt& NumberInt::operator ++ (int)

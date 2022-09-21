@@ -23,7 +23,7 @@ namespace uro
 
 // sometimes, Number is always an integer
 // for example - index of loop iteration, depth of recursive element
-// this struct provides optimizations
+// this struct provides optimization for these special cases
 
 struct NumberInt : Number
 {
@@ -31,9 +31,12 @@ struct NumberInt : Number
    NumberInt(const _nint& val);
 
    _str toString() const;
+   _nint toInt() const;
    _boo isZero() const;
    _boo isMinusOne() const;
+   void makeOpposite();
    void setToZero();
+   void setToMinusOne();
 
    NumberInt& operator ++ (int);
    NumberInt& operator -- (int);

@@ -95,6 +95,26 @@ void Number::makeOpposite()
    }
 }
 
+void Number::setToZero()
+{
+   if (isDouble) {
+      value.d = 0L;
+   }
+   else {
+      value.i = 0LL;
+   }
+}
+
+void Number::setToMinusOne()
+{
+   if (isDouble) {
+      value.d = -1L;
+   }
+   else {
+      value.i = -1LL;
+   }
+}
+
 Number& Number::operator += (const Number& num)
 {
    if (isDouble)  {

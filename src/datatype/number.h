@@ -43,6 +43,8 @@ struct Number
    _boo isZero() const;
    _boo isMinusOne() const;
    void makeOpposite();
+   void setToZero();
+   void setToMinusOne();
 
    Number& operator += (const Number& num);
    Number& operator -= (const Number& num);

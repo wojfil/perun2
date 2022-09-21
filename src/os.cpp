@@ -848,8 +848,9 @@ _boo os_dropDirectory(const _str& path, Uroboros* uro)
             return false;
          }
 
-         if (!(wcscmp(FindFileData.cFileName, L".") && wcscmp(FindFileData.cFileName, L"..")))
+         if (os_isBrowsePath(FindFileData.cFileName)) {
             continue;
+         }
 
          wcscat(FileName,FindFileData.cFileName);
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {

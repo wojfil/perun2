@@ -1,11 +1,12 @@
 #include "order.h"
 #include "../util.h"
+#include "../patterns.h"
 
 
 namespace uro::gen
 {
 
-OrderIndices::OrderIndices() 
+OrderIndices::OrderIndices()
    : values(new _size[0]()) { }
 
 OrderIndices::~OrderIndices()
@@ -44,12 +45,8 @@ void OrderBy_Definition::reset()
 
    if (!this->first) {
       this->base->reset();
-
       this->first = true;
-
-      this->inner->index.value = this->prevIndex;
-      this->inner->depth.value = this->prevDepth;
-      this->thisReference->value = this->prevThis;
+      P_MEMORY_RESTORE;
 
       if (this->hasMemory) {
          this->attrMemory.restore();
@@ -61,10 +58,7 @@ _boo OrderBy_Definition::hasNext()
 {
    if (this->first) {
       this->reset();
-
-      this->prevIndex = this->inner->index.value;
-      this->prevDepth = this->inner->depth.value;
-      this->prevThis = this->thisReference->value;
+      P_MEMORY_LOAD;
 
       if (this->hasMemory) {
          this->attrMemory.load();

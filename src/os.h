@@ -70,7 +70,6 @@ _str os_name(const _str& value);
 _str os_parent(const _str& path);
 _boo os_readonly(const _str& path);
 _nint os_size(const _str& path, Uroboros* uro);
-_nint os_sizeFile(const _adata& data);
 _nint os_sizeDirectory(const _str& path, Uroboros* uro);
 
 _boo os_exists(const _str& path);

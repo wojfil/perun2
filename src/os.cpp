@@ -233,7 +233,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
    if (attr->has(ATTR_SIZE)) {
       if (exists) {
          inner.size.value = isFile
-            ? _num(os_sizeFile(data))
+            ? _num(bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
             : _num(os_sizeDirectory(path, uro));
       }
       else {
@@ -704,41 +704,35 @@ _nint os_size(const _str& path, Uroboros* uro)
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
       ? os_sizeDirectory(path, uro)
-      : os_sizeFile(data);
-}
-
-_nint os_sizeFile(const _adata& data)
-{
-   return bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
+      : bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
 }
 
 _nint os_sizeDirectory(const _str& path, Uroboros* uro)
 {
    _nint totalSize = 0LL;
    _fdata data;
-   HANDLE sh = NULL;
-   sh = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
+   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
 
-   if (sh == INVALID_HANDLE_VALUE) {
+   if (handle == INVALID_HANDLE_VALUE) {
       return totalSize;
    }
 
    do {
       if (!uro->running) {
-         FindClose(sh);
+         FindClose(handle);
          return -1LL;
       }
       if (!os_isBrowsePath(data.cFileName)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_ASTERISK, data.cFileName), uro);
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, data.cFileName), uro);
          }
          else {
-            totalSize += static_cast<_nint>(data.nFileSizeHigh * (MAXDWORD) + data.nFileSizeLow);
+            totalSize += bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
          }
       }
-   } while (FindNextFile(sh, &data));
+   } while (FindNextFile(handle, &data));
 
-   FindClose(sh);
+   FindClose(handle);
    return totalSize;
 }
 

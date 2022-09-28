@@ -134,6 +134,7 @@ _str os_currentPath();
 
 _str os_readFile(const _str& path, _boo& result);
 void os_showWebsite(const _str& url);
+_boo os_find(const _str& path, const _str& value);
 
 inline _nint bigInteger(const _uint32& low, const _uint32& high);
 inline _boo os_isBrowsePath(const _str& path);

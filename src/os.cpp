@@ -29,6 +29,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <algorithm>
+#include <fstream>
 
 
 namespace uro
@@ -1665,6 +1666,31 @@ _str os_readFile(const _str& path, _boo& result)
 void os_showWebsite(const _str& url)
 {
    ShellExecuteW(NULL, L"open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+}
+
+_boo os_find(const _str& path, const _str& value)
+{
+   std::wifstream stream(path.c_str());
+   if (!stream) {
+      return false;
+   }
+   else if (value == L"") {
+      stream.close();
+      return true;
+   }
+
+   _str line;
+   _boo result = false;
+
+   while (std::getline(stream, line)) {
+      if (line.find(value) != _str::npos) {
+         result = true;
+         break;
+      }
+   }
+
+   stream.close();
+   return result;
 }
 
 inline _nint bigInteger(const _uint32& low, const _uint32& high)

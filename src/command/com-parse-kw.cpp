@@ -24,6 +24,7 @@
 #include "com-create.h"
 #include "../datatype/generator/gen-string.h"
 #include "../hash.h"
+#include "../patterns.h"
 
 
 namespace uro::comm
@@ -210,14 +211,12 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
       throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
    }
 
-   if (!tks.containsKeyword(PG_KEYWORD_TO)) {
+   if (!tks.check(TI_HAS_KEYWORD_TO)) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro),
          L" to' does not contain keyword 'to'"), line);
    }
 
-   Tokens left(tks.list);
-   Tokens right(tks.list);
-   tks.divideByKeyword(Keyword::kw_To, left, right);
+   P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (right.isEmpty()) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro),
@@ -284,10 +283,8 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, u
       return new C_Open(uro);
    }
 
-   if (tks.containsKeyword(PG_KEYWORD_WITH)) {
-      Tokens left(tks);
-      Tokens right(tks);
-      tks.divideByKeyword(Keyword::kw_With, left, right);
+   if (tks.check(TI_HAS_KEYWORD_WITH)) {
+      P_DIVIDE_BY_KEYWORD(kw_With);
 
       if (right.isEmpty()) {
          throw SyntaxException(str(L"command '", word.getOriginString(uro),  L" with' does not "
@@ -385,14 +382,12 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
          line);
    }
 
-   if (!tks.containsKeyword(PG_KEYWORD_TO)) {
+   if (!tks.check(TI_HAS_KEYWORD_TO)) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro),  L" to' ",
          L"does not contain keyword 'to'"), line);
    }
 
-   Tokens left(tks.list);
-   Tokens right(tks.list);
-   tks.divideByKeyword(Keyword::kw_To, left, right);
+   P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (right.isEmpty()) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' ",
@@ -651,23 +646,21 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
    }
 
-   const _boo hasTo = tks.containsKeyword(PG_KEYWORD_TO);
-   const _boo hasAs = tks.containsKeyword(PG_KEYWORD_AS);
+   const _boo hasTo = tks.check(TI_HAS_KEYWORD_TO);
+   const _boo hasAs = tks.check(TI_HAS_KEYWORD_AS);
 
    if (!hasTo) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro),
          L" to' cannot be called without keyword 'to'"), line);
    }
 
-   Tokens left(tks);
-   Tokens right(tks);
-   tks.divideByKeyword(Keyword::kw_To, left, right);
+   P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (left.isEmpty()) {
       if (hasAs) {
-         Tokens preAs(right);
-         Tokens postAs(right);
-         right.divideByKeyword(Keyword::kw_As, preAs, postAs);
+         std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
+         Tokens& preAs = pair2.first;
+         Tokens& postAs = pair2.second;
 
          if (preAs.isEmpty()) {
             throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to as' "
@@ -737,14 +730,14 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
    }
 
    if (hasAs) {
-      if (left.containsKeyword(PG_KEYWORD_AS)) {
+      if (left.check(TI_HAS_KEYWORD_AS)) {
          throw SyntaxException(str(L"keywords 'to' and 'as' appear in command '",
             word.getOriginString(uro), L" to as' in reverse order"), line);
       }
 
-      Tokens preAs(right);
-      Tokens postAs(right);
-      right.divideByKeyword(Keyword::kw_As, preAs, postAs);
+      std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
+      Tokens& preAs = pair2.first;
+      Tokens& postAs = pair2.second;
 
       if (preAs.isEmpty()) {
          throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to as' "
@@ -849,10 +842,8 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
 static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack, uro::Uroboros* uro)
 {
-   if (tks.containsKeyword(PG_KEYWORD_FROM)) {
-      Tokens left(tks);
-      Tokens right(tks);
-      tks.divideByKeyword(Keyword::kw_From, left, right);
+   if (tks.check(TI_HAS_KEYWORD_FROM)) {
+      P_DIVIDE_BY_KEYWORD(kw_From);
 
       if (left.isEmpty()) {
          throw SyntaxException(str(L"command '", word.getOriginString(uro), L" from' does not "
@@ -927,8 +918,8 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
 static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack, uro::Uroboros* uro)
 {
-   const _boo hasTo = tks.containsKeyword(PG_KEYWORD_TO);
-   const _boo hasAs = tks.containsKeyword(PG_KEYWORD_AS);
+   const _boo hasTo = tks.check(TI_HAS_KEYWORD_TO);
+   const _boo hasAs = tks.check(TI_HAS_KEYWORD_AS);
 
    if (!hasTo) {
       if (hasAs) {
@@ -985,15 +976,13 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       commandSyntaxException(word.getOriginString(uro), line);
    }
 
-   Tokens left(tks);
-   Tokens right(tks);
-   tks.divideByKeyword(Keyword::kw_To, left, right);
+   P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (left.isEmpty()) {
       if (hasAs) {
-         Tokens preAs(right);
-         Tokens postAs(right);
-         right.divideByKeyword(Keyword::kw_As, preAs, postAs);
+         std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
+         Tokens& preAs = pair2.first;
+         Tokens& postAs = pair2.second;
 
          if (preAs.isEmpty()) {
             throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to as' "
@@ -1061,14 +1050,14 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    }
 
    if (hasAs) {
-      if (left.containsKeyword(PG_KEYWORD_AS)) {
+      if (left.check(TI_HAS_KEYWORD_AS)) {
          throw SyntaxException(str(L"keywords 'to' and 'as' appear in "
             L"command '", word.getOriginString(uro), L" to as' in reverse order"), line);
       }
 
-      Tokens preAs(right);
-      Tokens postAs(right);
-      right.divideByKeyword(Keyword::kw_As, preAs, postAs);
+      std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
+      Tokens& preAs = pair2.first;
+      Tokens& postAs = pair2.second;
 
       if (preAs.isEmpty()) {
          throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to as' "
@@ -1237,17 +1226,15 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, ur
 {
    uro->vc.markAttributesToRun();
 
-   if (tks.containsKeyword(PG_KEYWORD_WITH)) {
-      Tokens left(tks);
-      Tokens right(tks);
-      tks.divideByKeyword(Keyword::kw_With, left, right);
+   if (tks.check(TI_HAS_KEYWORD_WITH)) {
+      P_DIVIDE_BY_KEYWORD(kw_With);
 
       if (right.isEmpty()) {
          throw SyntaxException(str(L"right side of command '", word.getOriginString(uro), L" with' is empty"), line);
       }
 
       if (left.isEmpty()) {
-         if (right.containsKeyword(PG_KEYWORD_WITH)) {
+         if (right.check(TI_HAS_KEYWORD_WITH)) {
             if (uro->vars.inner.thisState == ts_None) {
                throw SyntaxException(str(L"command '", word.getOriginString(uro), L" with with' needs first argument"), line);
             }
@@ -1255,9 +1242,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, ur
             uro->vc.setCoreComAttribute(str(word.getOriginString(uro), L" with with"), line);
             Attribute* lastAttr = uro->vc.getLastAttribute();
 
-            Tokens left2(right);
-            Tokens right2(right);
-            right.divideByKeyword(Keyword::kw_With, left2, right2);
+            std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_With);
+            Tokens& left2 = pair2.first;
+            Tokens& right2 = pair2.second;
 
             if (left2.isEmpty()) {
                throw SyntaxException(str(L"command '", word.getOriginString(uro),
@@ -1341,10 +1328,10 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, ur
          }
       }
       else {
-         if (right.containsKeyword(PG_KEYWORD_WITH)) {
-            Tokens left2(right);
-            Tokens right2(right);
-            right.divideByKeyword(Keyword::kw_With, left2, right2);
+         if (right.check(TI_HAS_KEYWORD_WITH)) {
+            std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_With);
+            Tokens& left2 = pair2.first;
+            Tokens& right2 = pair2.second;
 
             if (left2.isEmpty()) {
                throw SyntaxException(str(L"command '", word.getOriginString(uro),

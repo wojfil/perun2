@@ -34,12 +34,12 @@ Generator<_tlist>* parseTimList(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
    
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return parseFilter<Generator<_tlist>*, _tim>(tks, ThisState::ts_Time, uro);
    }
 
    if (len >= 3) {
-      if (tks.containsSymbol(PG_CHAR_COMMA)) {
+      if (tks.check(TI_HAS_CHAR_COMMA)) {
          Generator<_tlist>* listed = parseTimListed(tks, uro);
          if (listed != nullptr) {
             return listed;
@@ -67,8 +67,7 @@ static Generator<_tlist>* parseTimListed(const Tokens& tks, uro::Uroboros* uro)
    // a list separator or a date and clock separator within one time
    // so parsing goes a weird way
 
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L',', elements);
+   const std::vector<Tokens> elements =tks.splitBySymbol(L',');
 
    Generator<_tlist>* times = parseListedTimes(elements, uro);
    if (times != nullptr) {
@@ -139,7 +138,7 @@ static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, 
 {
    const _int start = prev.getStart();
    const _int length = prev.getLength() + curr.getLength() + 1;
-   const Tokens tks2(curr.list, start, length);
+   const Tokens tks2(curr, start, length);
    Generator<_tim>* tim;
    return parse(uro, tks2, tim) ? tim : nullptr;
 }

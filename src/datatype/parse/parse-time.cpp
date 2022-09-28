@@ -31,7 +31,7 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
-   if (tks.first().isSymbol(L'-') || tks.containsFilterKeyword()) {
+   if (tks.first().isSymbol(L'-') || tks.check(TI_HAS_FILTER_KEYWORD)) {
       return nullptr;
    }
 
@@ -46,9 +46,8 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
          return cnst;
       }
 
-      const _boo hasPluses = tks.containsSymbol(PG_CHAR_PLUS);
-      const _boo hasMinuses = tks.containsSymbol(PG_CHAR_MINUS);
-
+      const _boo hasPluses = tks.check(TI_HAS_CHAR_PLUS);
+      const _boo hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
 
       if (hasMinuses || hasPluses) {
          Generator<_per>* per;
@@ -65,7 +64,7 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   if (tks.isPossibleFunction()) {
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       Generator<_tim>* func = func::timeFunction(tks, uro);
       if (func != nullptr) {
          return func;
@@ -77,10 +76,8 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
       return el;
    }
 
-   if (tks.isPossibleListElementMember(uro)) {
-      Tokens tksm(tks);
-      tksm.trimRight();
-
+   if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
+      const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
       Generator<_num>* num = parseListElementIndex(tksm, uro);
       const Token& f = tks.first();
       Generator<_tlist>* tlist;
@@ -155,6 +152,9 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, uro::Uroboros* uro)
    if (len == 3) {
       return new gen::Constant<_tim>(_tim(day, month, year));
    }
+
+   
+
 
    // tt_ShortClock
    if (!(len == 7 || len == 9)){
@@ -250,7 +250,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
                      }
                   }
 
-                  const Tokens tks2(tks.list, i - sublen, sublen);
+                  const Tokens tks2(tks, i - sublen, sublen);
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
                      prevTim, time, tks2, numReserve, uro)) {
 
@@ -269,7 +269,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
             }
             case L'-': {
                if (bi.isBracketFree() && sublen != 0) {
-                  const Tokens tks2(tks.list, i - sublen, sublen);
+                  const Tokens tks2(tks, i - sublen, sublen);
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
                      prevTim, time, tks2, numReserve, uro))
                   {
@@ -313,7 +313,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
          throw SyntaxException(L"expression cannot end with +", tks.last().line);
    }
 
-   const Tokens tks2(tks.list, 1 + end - sublen, sublen);
+   const Tokens tks2(tks, 1 + end - sublen, sublen);
    if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2,
       numReserve, uro) || numReserve != 0 || prevTim != nullptr)
    {
@@ -405,7 +405,7 @@ static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
    else {
       const _int start = tks.getStart() - numReserve;
       const _int length = tks.getLength() + numReserve;
-      Tokens tks2(tks.list, start, length);
+      const Tokens tks2(tks, start, length);
 
       Generator<_per>* per;
       if (!parse(uro, tks2, per)) {

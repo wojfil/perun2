@@ -37,7 +37,7 @@ Generator<_list>* parseList (const Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       Generator<_list>* filter = parseFilter<Generator<_list>*, _str>(tks, ThisState::ts_String, uro);
       if (filter == nullptr) {
          throw SyntaxException(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
@@ -64,7 +64,7 @@ Generator<_list>* parseList (const Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   if (tks.isPossibleFunction()) {
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       Generator<_list>* func = func::listFunction(tks, uro);
       if (func != nullptr) {
          return func;

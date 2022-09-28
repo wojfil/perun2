@@ -39,19 +39,15 @@
 namespace uro::parse
 {
 
-Tokens prepareForGen(const Tokens& tks, uro::Uroboros* uro);
-void checkKeywords(const Tokens& tks, uro::Uroboros* uro);
-_boo isExpForbiddenKeyword(const Token& tk);
-
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_boo>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_num>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_str>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_nlist>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_tlist>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_list>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_tim>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, Generator<_per>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tns, _def*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result);
+_boo parse(uro::Uroboros* uro, const Tokens& tks, _def*& result);
 
 }
 

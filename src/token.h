@@ -163,7 +163,8 @@ public:
 
    // methods:
    _boo isCommandKeyword() const;
-   _boo isFiltherKeyword() const;
+   _boo isFilterKeyword() const;
+   _boo isExpForbiddenKeyword() const;
    _boo isSymbol(const _char& ch) const;
    _boo isKeyword(const Keyword& kw) const;
    _boo isLogicConstant() const;

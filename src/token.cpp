@@ -125,7 +125,7 @@ _boo Token::isCommandKeyword() const
    }
 }
 
-_boo Token::isFiltherKeyword() const
+_boo Token::isFilterKeyword() const
 {
    if (type != Token::t_Keyword) {
       return false;
@@ -137,6 +137,25 @@ _boo Token::isFiltherKeyword() const
       case Keyword::kw_Order:
       case Keyword::kw_Skip:
       case Keyword::kw_Where:
+         return true;
+      default:
+         return false;
+   }
+}
+
+_boo Token::isExpForbiddenKeyword() const
+{
+   if (isCommandKeyword()) {
+      return true;
+   }
+
+   if (type != Token::t_Keyword) {
+      return false;
+   }
+
+   switch (value.keyword.k) {
+      case Keyword::kw_Force:
+      case Keyword::kw_Stack:
          return true;
       default:
          return false;

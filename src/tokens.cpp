@@ -22,567 +22,171 @@
 namespace uro
 {
 
-Tokens::Tokens(const Tokens& tks)
-   : list(tks.list), start(tks.getStart()), length(tks.getLength()),
-     end(tks.getEnd()), guardian(new ParseGuardian()) { };
+Tokens::Tokens(const std::vector<Token>& li, const _int& st, const _int& ln, const _tinfo& in)
+   : start(st), length(ln), end(st + ln - 1), list(li), info(in) { }
 
-Tokens::Tokens(const std::vector<Token>* li)
-   : list(li), length(li->size()), start(0),
-     end(this->length - 1), guardian(new ParseGuardian()) { };
-
-Tokens::Tokens(const std::vector<Token>* li, const _int& ln)
-   : list(li), length(ln), start(0),
-     end(this->length - 1), guardian(new ParseGuardian()) { };
-
-Tokens::Tokens(const std::vector<Token>* li, const _int& st, const _int& ln)
-   : list(li), length(ln), start(st),
-     end(this->start + this->length - 1), guardian(new ParseGuardian()) { };
-
-Tokens::~Tokens()
+Tokens::Tokens(const std::vector<Token>& li)
+   : start(0), length(static_cast<_int>(li.size())), end(this->length - 1), list(li)
 {
-   delete guardian;
-};
+   checkBracketsThoroughly(*this);
+   this->setData();
+}
 
-_int Tokens::getStart() const
+Tokens::Tokens(const Tokens& tks, const _int& st, const _int& ln)
+   : start(st), length(ln), end(st + ln - 1), list(tks.getList())
 {
-   return start;
-};
-
-_int Tokens::getLength() const
-{
-   return length;
-};
-
-_int Tokens::getEnd() const
-{
-   return end;
-};
-
-_boo Tokens::isEmpty() const
-{
-   return length == 0;
-};
-
-const Token& Tokens::first() const
-{
-   return (*list)[start];
-};
-
-const Token& Tokens::second() const
-{
-   return (*list)[start + 1];
-};
-
-const Token& Tokens::penultimate() const
-{
-   return (*list)[end - 1];
-};
-
-const Token& Tokens::last() const
-{
-   return (*list)[end];
-};
-
-const Token& Tokens::at(const _int index) const
-{
-   return (*list)[start + index];
-};
-
-const Token& Tokens::listAt(const _int index) const
-{
-   return (*list)[index];
-};
+   this->setData();
+}
 
 void Tokens::trimLeft()
 {
-   if (length != 0) {
-      start++;
-      length--;
+   if (this->length != 0) {
+      this->start++;
+      this->length--;
+      this->setData();
    }
-};
-
-void Tokens::expandLeft()
-{
-   start--;
-   length++;
-};
+}
 
 void Tokens::trimRight()
 {
-   if (length != 0) {
-      end--;
-      length--;
+   if (this->length != 0) {
+      this->end--;
+      this->length--;
+      this->setData();
    }
-};
-
-void Tokens::trimBoth()
-{
-   if (length >= 2) {
-      start++;
-      end--;
-      length -= 2;
-   }
-};
-
-void Tokens::trimFunction()
-{
-   if (length >= 3) {
-      start += 2;
-      end--;
-      length -= 3;
-   }
-};
-
-void Tokens::setRange(const _int& st, const _int& ln)
-{
-   start = st;
-   length = ln;
-   end = start + length - 1;
 }
 
-_boo Tokens::containsChar(const _char& ch) const
+_int Tokens::getStart() const
+{
+   return this->start;
+}
+
+_int Tokens::getLength() const
+{
+   return this->length;
+}
+
+_int Tokens::getEnd() const
+{
+   return this->end;
+}
+
+const std::vector<Token>& Tokens::getList() const
+{
+   return this->list;
+}
+
+_tinfo Tokens::getInfo() const
+{
+   return this->info;
+}
+
+_boo Tokens::check(const _tinfo& in) const
+{
+   return this->info & in;
+}
+
+_boo Tokens::isEmpty() const
+{
+   return this->length == 0;
+}
+
+const Token& Tokens::first() const
+{
+   return this->list[this->start];
+}
+
+const Token& Tokens::second() const
+{
+   return this->list[this->start + 1];
+}
+
+const Token& Tokens::penultimate() const
+{
+   return this->list[this->end - 1];
+}
+
+const Token& Tokens::last() const
+{
+   return this->list[this->end];
+}
+
+const Token& Tokens::at(const _int index) const
+{
+   return this->list[this->start + index];
+}
+
+const Token& Tokens::listAt(const _int index) const
+{
+   return this->list[index];
+}
+
+std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword& kw) const
 {
    BracketsInfo bi;
 
-   for (_int i = start; i <= end; i++){
-      const Token& t = listAt(i);
-      if (t.type != Token::t_Symbol) {
-         continue;
-      }
-      if (t.value.ch == ch && bi.isBracketFree()) {
-         return true;
-      }
-      bi.refresh(t);
-   }
-
-   return false;
-}
-
-_boo Tokens::containsSymbol(const _pg_unit& unit) const
-{
-   if (guardian->knows(unit)) {
-      return guardian->protects(unit);
-   }
-
-   const _boo contains = containsChar(guardian->unitToChar(unit));
-   guardian->set(unit, contains);
-
-   return contains;
-}
-
-_boo Tokens::containsKeyword(const Keyword& kw) const
-{
-   BracketsInfo bi;
-
-   for (_int i = start; i <= end; i++){
-      const Token& t = listAt(i);
-      if (t.type == Token::t_Keyword && t.value.keyword.k == kw && bi.isBracketFree()) {
-         return true;
-      }
-      bi.refresh(t);
-   }
-
-   return false;
-}
-
-_boo Tokens::containsKeyword(const _pg_unit& unit) const
-{
-   if (guardian->knows(unit)) {
-      return guardian->protects(unit);
-   }
-
-   const _boo contains = containsKeyword(guardian->unitToKeyword(unit));
-   guardian->set(unit, contains);
-
-   return contains;
-}
-
-_boo Tokens::containsComparisonSymbol() const
-{
-   if (guardian->knows(PG_COMPARISON_CHAR)) {
-      return guardian->protects(PG_COMPARISON_CHAR);
-   }
-
-   BracketsInfo bi;
-   _boo result = false;
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
-
-      if (t.type == Token::t_Symbol && bi.isBracketFree()) {
-         switch (t.value.ch) {
-            case L'<':
-            case L'>':
-            case L'!':
-            case L'=': {
-               result = true;
-               goto cs_exit;
-               break;
-            }
-         }
-      }
-
-      bi.refresh(t);
-   }
-
-cs_exit:
-
-   guardian->set(PG_COMPARISON_CHAR, result);
-   return result;
-}
-
-_boo Tokens::containsFilterKeyword() const
-{
-   if (guardian->knows(PG_FILTER_KEYWORD)) {
-      return guardian->protects(PG_FILTER_KEYWORD);
-   }
-
-   BracketsInfo bi;
-   _boo result = false;
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
-      if (t.isFiltherKeyword() && bi.isBracketFree()) {
-         result = true;
-         break;
-      }
-      bi.refresh(t);
-   }
-
-   guardian->set(PG_FILTER_KEYWORD, result);
-   return result;
-}
-
-// independent are:  () () ()
-// not independent:  ( () () )
-_boo Tokens::hasIndependentBrackets() const
-{
-   if (guardian->knows(PG_INDEP_BRACKETS)) {
-      return guardian->protects(PG_INDEP_BRACKETS);
-   }
-
-   _int lvl = 0;
-   _boo result = false;
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
-      if (t.type == Token::t_Symbol){
-         switch(t.value.ch) {
-            case L'(': {
-               lvl++;
-               break;
-            }
-            case L')': {
-               lvl--;
-               if (lvl == 0 && i != end) {
-                  result = true;
-                  goto ib_exit;
-               }
-               break;
-            }
-         }
-      }
-   }
-
-ib_exit:
-
-   guardian->set(PG_INDEP_BRACKETS, result);
-   return result;
-}
-
-// independent are:  [] [] []
-// not independent:  [ [] [] ]
-_boo Tokens::hasIndependentSquareBrackets() const
-{
-   if (guardian->knows(PG_INDEP_SQ_BRACKETS)) {
-      return guardian->protects(PG_INDEP_SQ_BRACKETS);
-   }
-
-   _boo first = false;
-   _boo result = false;
-   _int lvl = 0;
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
-      if (t.type == Token::t_Symbol){
-         switch(t.value.ch) {
-            case L'[': {
-               lvl++;
-               if (first && lvl == 1) {
-                  result = true;
-                  goto isb_exit;
-               }
-               break;
-            }
-            case L']': {
-               lvl--;
-               if (!first && lvl == 0) {
-                  first = true;
-               }
-               break;
-            }
-         }
-      }
-   }
-
-isb_exit:
-
-   guardian->set(PG_INDEP_SQ_BRACKETS, result);
-   return result;
-}
-
-_boo Tokens::isPossibleFunction() const
-{
-   if (guardian->knows(PG_POSSIBLE_FUNCTION)) {
-      return guardian->protects(PG_POSSIBLE_FUNCTION);
-   }
-
-   if (length < 3) {
-      guardian->set(PG_POSSIBLE_FUNCTION, false);
-      return false;
-   }
-
-   const Token& f = first();
-   const Token& s = second();
-   const Token& l = last();
-
-   const _boo result = f.type == Token::t_Word
-       && s.type == Token::t_Symbol
-       && l.type == Token::t_Symbol
-       && s.value.ch == L'('
-       && l.value.ch == L')'
-       && !hasIndependentBrackets();
-
-   guardian->set(PG_POSSIBLE_FUNCTION, result);
-   return result;
-}
-
-_boo Tokens::isPossibleListElement() const
-{
-   if (length <= 2 || !second().isSymbol(L'[')
-      || !last().isSymbol(L']') || hasIndependentSquareBrackets())
-   {
-      guardian->set(PG_POSSIBLE_LIST_ELEM, false);
-      return false;
-   }
-
-   if (length == 3) {
-      throw SyntaxException(L"empty space between square brackets []",
-         last().line);
-   }
-
-   if (first().type != Token::t_Word) {
-      throw SyntaxException(
-         L"square brackets [] can be preceded only by a variable name",
-         first().line);
-   }
-
-   guardian->set(PG_POSSIBLE_LIST_ELEM, true);
-   return true;
-}
-
-_boo Tokens::isPossibleBinary() const
-{
-   if (guardian->knows(PG_POSSIBLE_BINARY)) {
-      return guardian->protects(PG_POSSIBLE_BINARY);
-   }
-
-   if (!containsSymbol(PG_CHAR_QUESTION_MARK) || containsSymbol(PG_CHAR_COLON)) {
-      guardian->set(PG_POSSIBLE_BINARY, false);
-      return false;
-   }
-
-   BracketsInfo bi;
-   _int i;
-
-   for (i = start; i <= end; i++){
-      const Token& t = listAt(i);
-
-      if (bi.isBracketFree() && t.type == Token::t_Symbol && t.value.ch == L'?') {
-         break;
-      }
-
-      bi.refresh(t);
-   }
-
-   if (i == start) {
-      throw SyntaxException(L"sign ? is preceded by empty space",
-         (*list)[i].line);
-   }
-   else if (i == end) {
-      throw SyntaxException(L"sign ? is followed by empty space",
-         (*list)[i].line);
-   }
-
-   guardian->set(PG_POSSIBLE_BINARY, true);
-   return true;
-}
-
-_boo Tokens::isPossibleTernary() const
-{
-   if (guardian->knows(PG_POSSIBLE_TERNARY)) {
-      return guardian->protects(PG_POSSIBLE_TERNARY);
-   }
-
-   if (!containsSymbol(PG_CHAR_QUESTION_MARK) || !containsSymbol(PG_CHAR_COLON)) {
-      guardian->set(PG_POSSIBLE_TERNARY, false);
-      return false;
-   }
-
-   BracketsInfo bi;
-   _boo loop = true;
-   _int percentId = -1;
-   _int colonId = -1;
-
-   for (_int i = start; loop && i <= end; i++) {
-      const Token& t = listAt(i);
-
-      if (bi.isBracketFree() && t.type == Token::t_Symbol) {
-         switch (t.value.ch) {
-            case L'?': {
-               if (percentId == -1) {
-                  percentId = i;
-                  if (colonId != -1) {
-                     loop = false;
-                  }
-               }
-               else {
-                  guardian->set(PG_POSSIBLE_TERNARY, false);
-                  return false;
-               }
-               break;
-            }
-            case L':': {
-               if (colonId == -1) {
-                  colonId = i;
-                  if (percentId != -1) {
-                     loop = false;
-                  }
-               }
-               break;
-            }
-         }
-      }
-
-      bi.refresh(t);
-   }
-
-   if (percentId > colonId) {
-      throw SyntaxException(L"signs ? and : appear in reverse order",
-         (*list)[percentId].line);
-   }
-   else if (percentId == start) {
-      throw SyntaxException(L"sign ? is preceded by empty space",
-         (*list)[percentId].line);
-   }
-   else if (colonId == end) {
-      throw SyntaxException(L"sign : is followed by empty space",
-         (*list)[colonId].line);
-   }
-   else if (percentId + 1 == colonId) {
-      throw SyntaxException(L"empty space between signs ? and :",
-         (*list)[percentId].line);
-   }
-
-   guardian->set(PG_POSSIBLE_TERNARY, true);
-   return true;
-}
-
-_boo Tokens::isPossibleListElementMember(Uroboros* uro) const
-{
-   if (length <= 3 || !second().isSymbol(L'[')
-      || !penultimate().isSymbol(L']')
-      || hasIndependentSquareBrackets())
-   {
-      guardian->set(PG_LIST_ELEM_MEMBER, false);
-      return false;
-   }
-
-   if (length == 3) {
-      throw SyntaxException(L"empty space between square brackets []",
-         last().line);
-   }
-
-   const Token& lst = last();
-
-   if (lst.type != Token::t_TwoWords) {
-      guardian->set(PG_LIST_ELEM_MEMBER, false);
-      return false;
-   }
-
-   if (lst.value.twoWords.h1 != uro->hashes.HASH_NOTHING) {
-      throw SyntaxException(L"square brackets [] should be followed by a time variable member",
-         lst.line);
-   }
-
-   if (first().type != Token::t_Word) {
-      throw SyntaxException(L"square brackets [] can be preceded only by a variable name",
-         first().line);
-   }
-
-   guardian->set(PG_LIST_ELEM_MEMBER, true);
-   return true;
-}
-
-void Tokens::divideByKeyword(const Keyword& kw, Tokens& left, Tokens& right) const
-{
-   BracketsInfo bi;
-
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->listAt(i);
 
       if (t.isKeyword(kw)) {
          if (bi.isBracketFree()) {
-            left.setRange(start, i - start);
-            right.setRange(i + 1, length + start - i - 1);
-            return;
+            return std::make_pair(
+               Tokens(this->list, this->start, i - this->start),
+               Tokens(this->list, i + 1, this->length + this->start - i - 1)
+            );
          }
       }
       else {
          bi.refresh(t);
       }
    }
+
+   throw new SyntaxException(L"keyword not found", first().line);
 }
 
-void Tokens::divideBySymbol(const _char& symbol, Tokens& left, Tokens& right) const
+std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
 {
    BracketsInfo bi;
 
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->listAt(i);
 
       if (t.isSymbol(symbol)) {
          if (bi.isBracketFree()) {
-            left.setRange(start, i - start);
-            right.setRange(i + 1, length + start - i - 1);
-            return;
+            return std::make_pair(
+               Tokens(this->list, this->start, i - this->start),
+               Tokens(this->list, i + 1, this->length + this->start - i - 1)
+            );
          }
       }
       else {
          bi.refresh(t);
       }
    }
+
+   throw new SyntaxException(str(L"symbol '", charStr(symbol), L"' not found"), first().line);
 }
 
-void Tokens::splitBySymbol(const _char& symbol, std::vector<Tokens>& result) const
+std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
 {
+   std::vector<Tokens> result;
    BracketsInfo bi;
    _int sublen = 0;
 
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->listAt(i);
 
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
          if (sublen == 0) {
             if (result.empty()) {
-               throw SyntaxException(str(L"expression cannot start with a ", charStr(symbol), L" symbol"), t.line);
+               throw SyntaxException(str(L"expression cannot this->start with a ", charStr(symbol), L" symbol"), t.line);
             }
             else {
                throw SyntaxException(str(L"adjacent ", charStr(symbol), L" symbols"), t.line);
             }
          }
 
-         result.push_back(Tokens(list, i - sublen, sublen));
+         result.emplace_back(*this, i - sublen, sublen);
          sublen = 0;
       }
       else {
@@ -593,12 +197,14 @@ void Tokens::splitBySymbol(const _char& symbol, std::vector<Tokens>& result) con
 
    if (sublen == 0) {
       if (!isEmpty()) {
-         throw SyntaxException(str(L"expression cannot end with a ", charStr(symbol), L" symbol"), last().line);
+         throw SyntaxException(str(L"expression cannot this->end with a ", charStr(symbol), L" symbol"), last().line);
       }
    }
    else {
-      result.push_back(Tokens(list, 1 + end - sublen, sublen));
+      result.emplace_back(*this, 1 + this->end - sublen, sublen);
    }
+
+   return result;
 }
 
 _int Tokens::countSymbols(const _char& symbol) const
@@ -606,8 +212,8 @@ _int Tokens::countSymbols(const _char& symbol) const
    BracketsInfo bi;
    _int count = 0;
 
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->listAt(i);
 
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
          count++;
@@ -621,13 +227,13 @@ _int Tokens::countSymbols(const _char& symbol) const
 }
 
 _int Tokens::getFilterKeywordId() const
-{  
+{
    BracketsInfo bi;
 
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->listAt(i);
 
-      if (t.isFiltherKeyword() && bi.isBracketFree()) {
+      if (t.isFilterKeyword() && bi.isBracketFree()) {
          return i;
       }
    }
@@ -635,23 +241,24 @@ _int Tokens::getFilterKeywordId() const
    return -1;
 }
 
-void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result, Uroboros* uro) const
+std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros* uro) const
 {
+   std::vector<Tokens> result;
    BracketsInfo bi;
    _int sublen = 0;
 
-   for (_int i = start; i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->listAt(i);
 
-      if (t.isFiltherKeyword() && bi.isBracketFree()) {
+      if (t.isFilterKeyword() && bi.isBracketFree()) {
          if (sublen == 0) {
-            const Token& prev = listAt(i - 1);
+            const Token& prev = this->listAt(i - 1);
 
             throw SyntaxException(str(L"adjacent filter keywords '", prev.getOriginString(uro),
                L"' and '", t.getOriginString(uro), L"'"), t.line);
          }
 
-         result.push_back(Tokens(list, i - sublen - 1, sublen + 1));
+         result.emplace_back(*this, i - sublen - 1, sublen + 1);
          sublen = 0;
       }
       else {
@@ -665,11 +272,13 @@ void Tokens::splitByFiltherKeywords(std::vector<Tokens>& result, Uroboros* uro) 
          last().getOriginString(uro), L"'"), last().line);
    }
    else {
-      result.push_back(Tokens(list, end - sublen, sublen + 1));
+      result.emplace_back(*this, this->end - sublen, sublen + 1);
    }
+
+   return result;
 }
 
-void Tokens::divideForTernary(Tokens& condition, Tokens& left, Tokens& right) const
+std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
 {
    BracketsInfo bi;
    _boo hasPercent = false;
@@ -677,8 +286,8 @@ void Tokens::divideForTernary(Tokens& condition, Tokens& left, Tokens& right) co
    _int percentId = -1;
    _int colonId = -1;
 
-   for (_int i = start; loop && i <= end; i++) {
-      const Token& t = listAt(i);
+   for (_int i = this->start; loop && i <= this->end; i++) {
+      const Token& t = this->listAt(i);
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
             if (hasPercent) {
@@ -698,9 +307,339 @@ void Tokens::divideForTernary(Tokens& condition, Tokens& left, Tokens& right) co
       }
    }
 
-   condition.setRange(start, percentId - start);
-   left.setRange(percentId + 1, colonId - percentId - 1);
-   right.setRange(colonId + 1, length + start - colonId - 1);
+   return std::make_tuple(
+      Tokens(this->list, this->start, percentId - this->start),
+      Tokens(this->list, percentId + 1, colonId - percentId - 1),
+      Tokens(this->list, colonId + 1, this->length + this->start - colonId - 1)
+   );
+}
+
+void negationByExclamationException(const _int& line)
+{
+   throw SyntaxException(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
+}
+
+void Tokens::checkCommonExpressionExceptions(Uroboros* uro) const
+{
+   _boo prevExclamantion = false;
+
+   if (first().isSymbol(L'!')) {
+      negationByExclamationException(first().line);
+   }
+
+   if (this->length == 1) {
+      const Token& f = first();
+      if (f.type == Token::t_Word) {
+         if (f.value.word.h == uro->hashes.HASH_VAR_DEVICE) {
+            throw SyntaxException(str(L"variable '", f.getOriginString(uro),
+               L"' is reserved for future use. Current version of Uroboros does not support it"), f.line);
+         }
+
+         if (f.value.word.h != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
+            if (!(this->start > 0 && this->list[this->start - 1].isKeyword(Keyword::kw_Create)
+            && (f.value.word.h == uro->hashes.HASH_VAR_FILE || f.value.word.h == uro->hashes.HASH_VAR_DIRECTORY))) {
+               throw SyntaxException(str(L"variable '", f.getOriginString(uro), L"' does not exist or is unreachable here"), f.line);
+            }
+         }
+      }
+   }
+
+   if (this->list[this->start].isSymbol(L'[')) {
+      throw SyntaxException(
+         L"a collection variable was expected before [ bracket. "
+         L"If your intention was to define an array, then you should write values inside a pair of round brackets () and separate them by commas", 
+         this->list[this->start].line);
+   }
+
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->list[i];
+
+      if (prevExclamantion && !t.isSymbol(L'=')) {
+         negationByExclamationException(this->list[i - 1].line);
+      }
+
+      if (t.type == Token::t_MultiSymbol) {
+         switch (t.value.chars.ch) {
+            case L'+': {
+               if (i == this->start) {
+                  throw SyntaxException(L"expression cannot start with incrementation signs ++", t.line);
+               }
+               else {
+                  throw SyntaxException(L"incrementation signs ++ cannot appear inside an expression", t.line);
+               }
+               break;
+            }
+            case L'-': {
+               if (i == this->start) {
+                  throw SyntaxException(L"expression cannot start with decrementation signs --", t.line);
+               }
+               else {
+                  throw SyntaxException(L"decrementation signs -- cannot appear inside an expression", t.line);
+               }
+               break;
+            }
+         }
+      }
+      else if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
+         throw SyntaxException(str(L"expected ; before keyword '", t.getOriginString(uro), L"'"), t.line);
+      }
+
+      prevExclamantion = t.isSymbol(L'!');
+   }
+}
+
+void Tokens::setData()
+{
+   this->info = TI_NULL;
+
+   while (this->length >= 2) {
+      if (this->list[this->start].isSymbol(L'(') && this->list[this->end].isSymbol(L')')) {
+         _int lvl = 0;
+         _boo b = true;
+
+         for (_int i = this->start; b && i <= this->end; i++) {
+            const Token& t = this->list[i];
+            if (t.type == Token::t_Symbol) {
+               switch (t.value.ch) {
+                  case L'(': {
+                     lvl++;
+                     break;
+                  }
+                  case L')': {
+                     lvl--;
+                     if (lvl == 0 && i != this->end)
+                     {
+                        b = false;
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+
+         if (b) {
+            this->start++;
+            this->length -= 2;
+            this->end--;
+         }
+         else {
+            break;
+         }
+      }
+      else {
+         break;
+      }
+   }
+
+   _int round = 0; // level of round brackets
+   _int square = 0; // level of square brackets
+   _boo indepRound = false;
+   _boo firstSquare = false;
+   _boo indepSquare = false;
+   _int firstQuestionMarkId = -1;
+   _int firstColonId = -1;
+
+   for (_int i = this->start; i <= this->end; i++) {
+      const Token& t = this->list[i];
+
+      if (round == 0 && square == 0) {
+         switch (t.type) {
+            case Token::t_Symbol: {
+               switch (t.value.ch) {
+                  case L'?': {
+                     this->info |= TI_HAS_CHAR_QUESTION_MARK;
+                     if (firstQuestionMarkId == -1) {
+                        firstQuestionMarkId = i;
+                     }
+                     break;
+                  }
+                  case L',': {
+                     this->info |= TI_HAS_CHAR_COMMA;
+                     break;
+                  }
+                  case L':': {
+                     this->info |= TI_HAS_CHAR_COLON;
+                     if (firstColonId == -1) {
+                        firstColonId = i;
+                     }
+                     break;
+                  }
+                  case L'+': {
+                     this->info |= TI_HAS_CHAR_PLUS;
+                     break;
+                  }
+                  case L'-': {
+                     this->info |= TI_HAS_CHAR_MINUS;
+                     break;
+                  }
+                  case L'=': {
+                     this->info |= TI_HAS_CHAR_EQUALS;
+                     this->info |= TI_HAS_COMPARISON_CHAR;
+                     break;
+                  }
+                  case L'<':
+                  case L'>':
+                  case L'!': {
+                     this->info |= TI_HAS_COMPARISON_CHAR;
+                     break;
+                  }
+               }
+               break;
+            }
+            case Token::t_Keyword: {
+               switch (t.value.keyword.k) {
+                  case Keyword::kw_In: {
+                     this->info |= TI_HAS_KEYWORD_IN;
+                     break;
+                  }
+                  case Keyword::kw_Like: {
+                     this->info |= TI_HAS_KEYWORD_LIKE;
+                     break;
+                  }
+                  case Keyword::kw_To: {
+                     this->info |= TI_HAS_KEYWORD_TO;
+                     break;
+                  }
+                  case Keyword::kw_With: {
+                     this->info |= TI_HAS_KEYWORD_WITH;
+                     break;
+                  }
+                  case Keyword::kw_As: {
+                     this->info |= TI_HAS_KEYWORD_AS;
+                     break;
+                  }
+                  case Keyword::kw_From: {
+                     this->info |= TI_HAS_KEYWORD_FROM;
+                     break;
+                  }
+                  default: {
+                     if (t.isFilterKeyword()) {
+                        this->info |= TI_HAS_FILTER_KEYWORD;
+                     }
+                     break;
+                  }
+               }
+               break;
+            }
+         }
+      }
+
+      if (t.type == Token::t_Symbol) {
+         switch (t.value.ch) {
+            case '(':  {
+               round++;
+               break;
+            }
+            case ')':  {
+               round--;
+               
+               if (round == 0 && i != this->end) {
+                  indepRound = true;
+               }
+               else if (round < 0) {
+                  throw SyntaxException(L"unopened bracket ( is closed", t.line);
+               }
+               break;
+            }
+            case '[':  {
+               square++;
+               
+               if (firstSquare && square == 1) {
+                  indepSquare = true;
+               }
+               break;
+            }
+            case ']':  {
+               square--;
+
+               if (!firstSquare && square == 0) {
+                  firstSquare = true;
+               }
+               else if (square < 0) {
+                  throw SyntaxException(L"unopened bracket [ is closed", t.line);
+               }
+               break;
+            }
+         }
+      }
+   }
+
+   if (round != 0) {
+      throw SyntaxException(L"bracket ( is not closed", this->list[this->end].line);
+   }
+   else if (square != 0) {
+      throw SyntaxException(L"bracket [ is not closed", this->list[this->end].line);
+   }
+
+   if (indepRound) {
+      this->info |= TI_HAS_INDEP_BRACKETS;
+   }
+
+   if (indepSquare) {
+      this->info |= TI_HAS_INDEP_SQ_BRACKETS;
+   }
+
+   if (this->length >= 3 && !indepRound) {
+      if (this->list[this->start].type == Token::t_Word && this->list[this->start + 1].isSymbol(L'(') && this->list[this->end].isSymbol(L')')) {
+         this->info |= TI_IS_POSSIBLE_FUNCTION;
+      }
+   }
+
+   if ((this->info & TI_HAS_CHAR_QUESTION_MARK) != TI_NULL) {
+      if (firstQuestionMarkId == this->start) {
+         throw SyntaxException(L"sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
+      }
+
+      if ((this->info & TI_HAS_CHAR_COLON) == TI_NULL) {
+         if (firstQuestionMarkId == this->end) {
+            throw SyntaxException(L"sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
+         }
+
+         this->info |= TI_IS_POSSIBLE_BINARY;
+      }
+      else {
+         if (firstQuestionMarkId > firstColonId) {
+            throw SyntaxException(L"signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
+         }
+         else if (firstColonId == this->end) {
+            throw SyntaxException(L"sign : is followed by empty space", this->list[firstColonId].line);
+         }
+         else if (firstQuestionMarkId + 1 == firstColonId) {
+            throw SyntaxException(L"empty space between signs ? and :", this->list[firstQuestionMarkId].line);
+         }
+
+         this->info |= TI_IS_POSSIBLE_TERNARY;
+      }
+   }
+
+   if (!indepSquare && this->length >= 3 && this->list[this->start + 1].isSymbol(L'[')) {
+      const Token& first = this->list[this->start];
+      const Token& last = this->list[this->end];
+
+      if (last.isSymbol(L']')) {
+         if (this->length == 3) {
+            throw SyntaxException(L"empty space between square brackets []", last.line);
+         }
+         else if (first.type != Token::t_Word) {
+            throw SyntaxException(L"square brackets [] can be preceded only by a variable name", first.line);
+         }
+
+         this->info |= TI_IS_POSSIBLE_LIST_ELEM;
+      }
+
+      if (this->list[this->end - 1].isSymbol(L']')) {
+         if (this->length == 3) {
+            throw SyntaxException(L"empty space between square brackets []", last.line);
+         }
+         else if (first.type != Token::t_Word) {
+            throw SyntaxException(L"square brackets [] can be preceded only by a variable name", first.line);
+         }
+
+         if (last.value.twoWords.h1 == rawStringHash(L"")) {
+            this->info |= TI_IS_LIST_ELEM_MEMBER;
+         }
+      }
+   }
 }
 
 }

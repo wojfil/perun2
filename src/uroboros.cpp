@@ -70,8 +70,7 @@ _boo Uroboros::uro_tokenize()
 _boo Uroboros::uro_parse()
 {
    try {
-      Tokens tks(&this->tokens);
-      checkBrackets(tks);
+      const Tokens tks(this->tokens);
       this->commands = comm::parseCommands(tks, this);
       this->conditionContext.deleteClosedUnits();
    }

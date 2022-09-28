@@ -34,7 +34,7 @@ Generator<_nlist>* parseNumList(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number, uro);
    }
 
@@ -55,7 +55,7 @@ Generator<_nlist>* parseNumList(const Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   if (tks.isPossibleFunction()) {
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       Generator<_nlist>* func = func::numListFunction(tks, uro);
       if (func != nullptr) {
          return func;

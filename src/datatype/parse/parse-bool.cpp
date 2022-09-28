@@ -38,13 +38,13 @@ Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return nullptr;
    }
 
-   const _boo possibleBinary = tks.containsSymbol(PG_CHAR_QUESTION_MARK);
+   const _boo possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
 
-   if (tks.isPossibleFunction()) {
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       Generator<_boo>* func = func::boolFunction(tks, uro);
       if (func != nullptr) {
          return func;
@@ -80,14 +80,14 @@ Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
       return cmp;
    }
 
-   if (tks.containsKeyword(PG_KEYWORD_IN)) {
+   if (tks.check(TI_HAS_KEYWORD_IN)) {
       Generator<_boo>* boo = parseIn(tks, uro);
       if (boo != nullptr) {
          return boo;
       }
    }
 
-   if (tks.containsKeyword(PG_KEYWORD_LIKE)) {
+   if (tks.check(TI_HAS_KEYWORD_LIKE)) {
       Generator<_boo>* boo = parseLike(tks, uro);
       if (boo != nullptr) {
          return boo;
@@ -130,7 +130,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
                }
                else {
                   if (free) {
-                     const Tokens tks2(tks.list, i - sublen, sublen);
+                     const Tokens tks2(tks, i - sublen, sublen);
                      const _int line = tks2.first().line;
 
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
@@ -193,7 +193,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
    }
 
    if (sublen != 0) {
-      Tokens tks2(tks.list, 1 + end - sublen, sublen);
+      const Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
          const _boo boo = (tks2.first().value.keyword.k == Keyword::kw_True);
@@ -530,11 +530,11 @@ static _char toBoolExpOperator(const Token& tk)
 }
 
 template <typename T>
-static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
-   const Tokens& right, uro::Uroboros* uro)
+static Generator<_boo>* parseIn_Unit(const _boo& negated, 
+   const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro)
 {
    Generator<T>* valLeft;
-   if (!parse(uro, left, valLeft)) {
+   if (!parse(uro, pair.first, valLeft)) {
       return nullptr;
    }
 
@@ -542,7 +542,7 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
    // in this special case, the whole structure is reduced to
    // a simple comparison "left == right" or "left != right"
    Generator<T>* num2;
-   if (parse(uro, right, num2)) {
+   if (parse(uro, pair.second, num2)) {
       if (negated) {
          return new gen::NotEquals<T>(valLeft, num2);
       }
@@ -553,7 +553,7 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
 
    Generator<std::vector<T>>* valRight;
 
-   if (parse(uro, right, valRight)) {
+   if (parse(uro, pair.second, valRight)) {
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
          delete valRight;
@@ -573,96 +573,94 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated, const Tokens& left,
 
 static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
 {
-   Tokens left(tks);
-   Tokens right(tks);
-   tks.divideByKeyword(Keyword::kw_In, left, right);
+   std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
-   if (left.isEmpty()) {
+   if (pair.first.isEmpty()) {
       emptyOperSideException(tks.first(), true, uro);
    }
-   if (right.isEmpty()) {
+   if (pair.second.isEmpty()) {
       emptyOperSideException(tks.last(), false, uro);
    }
 
-   _boo neg = left.last().isKeyword(Keyword::kw_Not);
+   _boo neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
-      left.trimRight();
-      if (left.isEmpty()) {
+      pair.first.trimRight();
+      if (pair.first.isEmpty()) {
          emptyOperSideException(tks.first(), true, uro);
       }
    }
 
    // first: try to build "Number IN NumList"
-   Generator<_boo>* list = parseIn_Unit<_num>(neg, left, right, uro);
+   Generator<_boo>* list = parseIn_Unit<_num>(neg, pair, uro);
    if (list != nullptr) {
       return list;
    }
 
-   const Token& lf = left.first();
+   const Token& lf = pair.first.first();
 
-   if (left.getLength() == 1 && lf.type == Token::t_Word &&
+   if (pair.first.getLength() == 1 && lf.type == Token::t_Word &&
       uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end())
    {
-      if (right.containsSymbol(PG_CHAR_COMMA)) {
-         std::vector<Tokens> elements;
-         right.splitBySymbol(L',', elements);
+      if (pair.second.check(TI_HAS_CHAR_COMMA)) {
+         const std::vector<Tokens> elements = pair.second.splitBySymbol(L',');
          const _size elen = elements.size();
          for (_size i = 0; i < elen; i++) {
             const Tokens& t = elements[i];
             if (t.getLength() == 1) {
                const Token& tf = t.first();
                if (tf.isWeekDay()) {
-                  timeInNumberException(left.first(), tf, L"weekDay", neg, left, uro);
+                  timeInNumberException(pair.first.first(), tf, L"weekDay", neg, pair.first, uro);
                }
                else if (tf.isMonth()) {
-                  timeInNumberException(left.first(), tf, L"month", neg, left, uro);
+                  timeInNumberException(pair.first.first(), tf, L"month", neg, pair.first, uro);
                }
 
                const _boo isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
                if (isInteger) {
-                  timeInNumberException(left.first(), tf, L"year", neg, left, uro);
+                  timeInNumberException(pair.first.first(), tf, L"year", neg, pair.first, uro);
                }
             }
          }
       }
-      else if (right.getLength() == 1) {
-         const Token& rf = right.first();
+      else if (pair.second.getLength() == 1) {
+         const Token& rf = pair.second.first();
          const _boo isWeek = rf.isWeekDay();
          const _boo isMonth = rf.isMonth();
 
          if (isWeek || isMonth) {
-            timeInNumberException(left.first(), right.first(), isWeek ? L"weekDay" : L"month", neg, left, uro);
+            timeInNumberException(pair.first.first(), pair.second.first(), 
+               isWeek ? L"weekDay" : L"month", neg, pair.first, uro);
          }
 
          const _boo isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
          if (isInteger) {
-            timeInNumberException(left.first(), right.first(), L"year", neg, left, uro);
+            timeInNumberException(pair.first.first(), pair.second.first(), L"year", neg, pair.first, uro);
          }
       }
    }
 
    // secondary: try to build "Time IN TimList"
-   Generator<_boo>* list2 = parseInTimList(neg, left, right, uro);
+   Generator<_boo>* list2 = parseInTimList(neg, pair, uro);
    if (list2 != nullptr) {
       return list2;
    }
 
    // finally: try to build "string IN list"
-   Generator<_boo>* list3 = parseIn_Unit<_str>(neg, left, right, uro);
+   Generator<_boo>* list3 = parseIn_Unit<_str>(neg, pair, uro);
    return list3;
 }
 
 
-static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
-   const Tokens& right, uro::Uroboros* uro)
+static Generator<_boo>* parseInTimList(const bool& negated, 
+   const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro)
 {
    Generator<_tim>* tim;
-   if (!parse(uro, left, tim)) {
+   if (!parse(uro, pair.first, tim)) {
       return nullptr;
    }
 
    Generator<_tim>* tim2;
-   if (parse(uro, right, tim2)) {
+   if (parse(uro, pair.second, tim2)) {
       if (negated) {
          return new gen::NotEquals<_tim>(tim, tim2);
       }
@@ -672,7 +670,7 @@ static Generator<_boo>* parseInTimList(const bool& negated, const Tokens& left,
    }
 
    Generator<_tlist>* tlist;
-   if (parse(uro, right, tlist)) {
+   if (parse(uro, pair.second, tlist)) {
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
          delete tlist;
@@ -729,32 +727,30 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
 
 static Generator<_boo>* parseLike(const Tokens& tks, uro::Uroboros* uro)
 {
-   Tokens left(tks);
-   Tokens right(tks);
-   tks.divideByKeyword(Keyword::kw_Like, left, right);
+   std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
-   if (left.isEmpty()) {
+   if (pair.first.isEmpty()) {
       emptyOperSideException(tks.first(), true, uro);
    }
-   if (right.isEmpty()) {
+   if (pair.second.isEmpty()) {
       emptyOperSideException(tks.last(), false, uro);
    }
 
-   _boo neg = left.last().isKeyword(Keyword::kw_Not);
+   const _boo neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
-      left.trimRight();
-      if (left.isEmpty()) {
+      pair.first.trimRight();
+      if (pair.first.isEmpty()) {
          emptyOperSideException(tks.first(), true, uro);
       }
    }
 
    Generator<_str>* value;
-   if (!parse(uro, left, value)) {
+   if (!parse(uro, pair.first, value)) {
       return nullptr;
    }
 
    Generator<_str>* pattern;
-   if (parse(uro, right, pattern)) {
+   if (parse(uro, pair.second, pattern)) {
       if (pattern->isConstant()) {
          const _str cnst = pattern->getValue();
          delete pattern;
@@ -866,9 +862,10 @@ Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, co
 
 static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro)
 {
-   Tokens left(tks);
-   Tokens right(tks);
-   gen::CompType ct = prepareComparison(tks, sign, left, right);
+   gen::CompType ct;
+   const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
+   const Tokens& left = pair.first;
+   const Tokens& right = pair.second;
 
    // look for some common errors
    // and throw precise messages to the user
@@ -1155,14 +1152,13 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
    return comparisonCollections<_str>(left, right, ct, uro);
 }
 
-static gen::CompType prepareComparison(const Tokens& tks, const _char& sign,
-   Tokens& left, Tokens& right)
+static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype)
 {
-   tks.divideBySymbol(sign, left, right);
+   std::pair<Tokens, Tokens> result = tks.divideBySymbol(sign);
    _boo eq = false;
 
-   if (left.isEmpty()) {
-      if (right.isEmpty()) {
+   if (result.first.isEmpty()) {
+      if (result.second.isEmpty()) {
          throw SyntaxException(str(L"both sides of ", charStr(sign),
             L" comparison are empty"), tks.first().line);
       }
@@ -1172,39 +1168,46 @@ static gen::CompType prepareComparison(const Tokens& tks, const _char& sign,
       }
    }
 
-   if (right.isEmpty()) {
+   if (result.second.isEmpty()) {
       throw SyntaxException(str(L"right side of ", charStr(sign),
          L" comparison is empty"), tks.last().line);
    }
 
-   if (right.first().isSymbol(L'=')) {
-      if (right.getLength() == 1) {
+   if (result.second.first().isSymbol(L'=')) {
+      if (result.second.getLength() == 1) {
          throw SyntaxException(str(L"right side of ", charStr(sign),
-            L"= comparison is empty"), right.first().line);
+            L"= comparison is empty"), result.second.first().line);
       }
 
-      right.trimLeft();
+      result.second.trimLeft();
       eq = true;
    }
    else if (sign == L'!') {
       throw SyntaxException(L"expected = after exclamation mark. "
          L"For a simple negation, use keyword 'not' instead",
-         right.first().line);
+         result.second.first().line);
    }
 
    switch (sign) {
       case L'<':
-         return eq ? gen::CompType::ct_SmallerEquals : gen::CompType::ct_Smaller;
+         ctype = eq ? gen::CompType::ct_SmallerEquals : gen::CompType::ct_Smaller;
+         break;
       case L'>':
-         return eq ? gen::CompType::ct_BiggerEquals : gen::CompType::ct_Bigger;
+         ctype = eq ? gen::CompType::ct_BiggerEquals : gen::CompType::ct_Bigger;
+         break;
       case L'=':
-         return gen::CompType::ct_Equals;
+         ctype = gen::CompType::ct_Equals;
+         break;
       case L'!': {
-         return gen::CompType::ct_NotEquals;
+         ctype = gen::CompType::ct_NotEquals;
+         break;
       default:
-         return gen::CompType::ct_Equals;
+         ctype = gen::CompType::ct_Equals;
+         break;
       }
    }
+
+   return result;
 }
 
 }

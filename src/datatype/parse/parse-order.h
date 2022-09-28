@@ -161,19 +161,12 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
    }
 
-   Tokens ts3 = prepareForGen(ts2, uro);
-   if (ts3.isEmpty()) {
-      cleanAfterOrderParseFailure(result, attr, state);
-      throw SyntaxException(str(L"declaration of '", orderKeyword.getOriginString(uro),
-         L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
-   }
-
    std::vector<Tokens> tokensList;
-   if (ts3.containsSymbol(PG_CHAR_COMMA)) {
-      ts3.splitBySymbol(L',', tokensList);
+   if (ts2.check(TI_HAS_CHAR_COMMA)) {
+      tokensList = ts2.splitBySymbol(L',');
    }
    else {
-      tokensList.push_back(ts3);
+      tokensList.push_back(ts2);
    }
 
    const _int length = tokensList.size();

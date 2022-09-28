@@ -48,7 +48,7 @@ bool BracketsInfo::isBracketFree() const
    return round == 0 && square == 0;
 }
 
-void checkBrackets(const Tokens& tks)
+void checkBracketsThoroughly(const Tokens& tks)
 {
    // 1 = ()
    // 2 = []

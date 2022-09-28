@@ -38,13 +38,10 @@ namespace uro::func
 
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 {
-   Tokens tks2(tks);
-   tks2.trimFunction();
-
-   std::vector<Tokens> result;
-   tks2.splitBySymbol(L',', result);
-
-   return result;
+   const _size start = tks.getStart() + 2;
+   const _size length = tks.getLength() - 3;
+   const Tokens tks2(tks.getList(), start, length, tks.getInfo());
+   return tks2.splitBySymbol(L',');
 }
 
 Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
@@ -891,7 +888,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
    }
    else if (name == uro->hashes.HASH_FUNC_SUBSTRING) {
       if (len < 2 || len > 3) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' can only take "
+         throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' can only take"
             L" two or three arguments"), word.line);
       }
 
@@ -1155,7 +1152,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          return new F_RandomElement<_str>(list, uro);
       }
       else {
-         throw SyntaxException(str(L"wrong arguments of function '", word.getOriginString(uro)),
+         throw SyntaxException(str(L"wrong arguments of function '", word.getOriginString(uro), L"'"),
             word.line);
       }
    }
@@ -1595,8 +1592,7 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, 
       return;
    }
 
-   Tokens right(tks);
-   right.setRange(index + 1, tks.getLength() + start - index - 1);
+   const Tokens right(tks, index + 1, tks.getLength() + start - index - 1);
 
    if (right.first().isSymbol(L'(')) {
       return;

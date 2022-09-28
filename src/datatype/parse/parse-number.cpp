@@ -39,17 +39,17 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return nullptr;
    }
 
-   if (tks.isPossibleFunction()) {
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       Generator<_num>* func = uro::func::numberFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
-   else if (len >= 2 && !tks.containsSymbol(PG_CHAR_COMMA)) {
+   else if (len >= 2 && !tks.check(TI_HAS_CHAR_COMMA)) {
       // build numeric expression (but only if the sequence has any operator)
       BracketsInfo bi;
       const _int end = tks.getEnd();
@@ -70,9 +70,8 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
             if (num != nullptr) {
                return num;
             }
-            else if (!tks.containsComparisonSymbol()) {
-               std::vector<Tokens> elements;
-               tks.splitBySymbol(L'+', elements);
+            else if (!tks.check(TI_HAS_COMPARISON_CHAR)) {
+               const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
                const _size elen = elements.size();
 
                if (elen == 1) {
@@ -122,10 +121,8 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
       return el;
    }
 
-   if (tks.isPossibleListElementMember(uro)) {
-      Tokens tksm(tks);
-      tksm.trimRight();
-
+   if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
+      const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
       Generator<_num>* num = parseListElementIndex(tksm, uro);
       const Token& f = tks.first();
       Generator<_tlist>* tlist;
@@ -197,7 +194,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
             }
             else {
                if (free) {
-                  const Tokens tks2(tks.list, i - sublen, sublen);
+                  const Tokens tks2(tks, i - sublen, sublen);
                   const _int line = tks2.first().line;
 
                   if (tks2.getLength() == 1
@@ -277,7 +274,7 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
    }
 
    if (sublen != 0) {
-      Tokens tks2(tks.list, 1 + end - sublen, sublen);
+      Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().type == Token::t_Number) {
          infList.push_back(new ExpElement<_num>(tks2.first().value.num.n, tks2.first().line));

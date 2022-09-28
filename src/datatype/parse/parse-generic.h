@@ -35,28 +35,25 @@ void checkLimitBySize(const Tokens& tks, uro::Uroboros* uro);
 template <typename T>
 static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.isPossibleTernary()) {
+   if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return nullptr;
    }
 
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
+   std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
    Generator<_boo>* condition;
-   if (!parse(uro, tks1, condition)) {
+   if (!parse(uro, std::get<0>(trio), condition)) {
       return nullptr;
    }
 
    Generator<T>* left;
-   if (!parse(uro, tks2, left)) {
+   if (!parse(uro, std::get<1>(trio), left)) {
       delete condition;
       return nullptr;
    }
 
    Generator<T>* right;
-   if (!parse(uro, tks3, right)) {
+   if (!parse(uro, std::get<2>(trio), right)) {
       delete condition;
       delete left;
       return nullptr;
@@ -69,21 +66,19 @@ static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
 template <typename T>
 static Generator<T>* parseBinary(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.isPossibleBinary()) {
+   if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return nullptr;
    }
 
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   tks.divideBySymbol(L'?', tks1, tks2);
+   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
 
    Generator<_boo>* condition;
-   if (!parse(uro, tks1, condition)) {
+   if (!parse(uro, pair.first, condition)) {
       return nullptr;
    }
 
    Generator<T>* value;
-   if (!parse(uro, tks2, value)) {
+   if (!parse(uro, pair.second, value)) {
       delete condition;
       return nullptr;
    }
@@ -164,12 +159,11 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
 template <typename T>
 static Generator<std::vector<T>>* parseListed(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.containsSymbol(PG_CHAR_COMMA)) {
+   if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return nullptr;
    }
 
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L',', elements);
+   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
 
    Generator<std::vector<T>>* units = parseListedValues<T>(elements, uro);
    if (units != nullptr) {
@@ -183,7 +177,7 @@ static Generator<std::vector<T>>* parseListed(const Tokens& tks, uro::Uroboros* 
 template <typename T>
 static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.isPossibleListElement()) {
+   if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return nullptr;
    }
 
@@ -280,7 +274,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
          L"' cannot stand at the end of an expression"), t.line);
    }
 
-   const Tokens tks2(tks.list, tks.getStart(), firstKeywordId - tks.getStart());
+   const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
    _fdata* fdata;
    T base;
 
@@ -290,12 +284,11 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
 
    // core
    const _int kw = firstKeywordId - tks.getStart() + 1;
-   const _int start = tks.getStart() + kw; 
+   const _int start = tks.getStart() + kw;
    const _int length = tks.getLength() - kw;
    const _boo hasMemory = uro->vc.anyAttribute();
-   const Tokens tks3(tks.list, start, length);
-   std::vector<Tokens> filterTokens;
-   tks3.splitByFiltherKeywords(filterTokens, uro);
+   const Tokens tks3(tks, start, length);
+   std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(uro);
    const _size flength = filterTokens.size();
    std::vector<FilterPrototype<T>*> prototypes;
 
@@ -317,23 +310,24 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
    }
 
    for (_size i = 0; i < flength; i++) {
-      const Tokens& ts = filterTokens[i];
-      const Keyword& kw = ts.first().value.keyword.k;
-      Tokens ts2(ts.list, ts.getStart() + 1, ts.getLength() - 1);
+      Tokens& ts = filterTokens[i];
+      const Token tsf = ts.first();
+      const Keyword& kw = tsf.value.keyword.k;
+      ts.trimLeft();
 
       switch (kw) {
          case Keyword::kw_Every:
          case Keyword::kw_Limit:
          case Keyword::kw_Skip: {
             if (kw == Keyword::kw_Limit) {
-               checkLimitBySize(ts2, uro);
+               checkLimitBySize(ts, uro);
             }
 
             Generator<_num>* num;
-            if (!parse(uro, ts2, num)) {
+            if (!parse(uro, ts, num)) {
                langutil::deleteVector(prototypes);
-               throw SyntaxException(str(L"tokens after keyword '", ts.first().getOriginString(uro),
-                  L"' cannot be resolved to a number"), tks.first().line);
+               throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
+                  L"' cannot be resolved to a number"), tsf.line);
             }
 
             prototypes.push_back(new FP_Numeric<T>(num, kw));
@@ -348,11 +342,11 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
             }
 
             Generator<_boo>* boo;
-            if (!parse(uro, ts2, boo)) {
+            if (!parse(uro, ts, boo)) {
                langutil::deleteVector(prototypes);
                uro->vars.inner.thisState = prevThisState;
-               throw SyntaxException(str(L"tokens after keyword '", ts.first().getOriginString(uro),
-                  L"' cannot be resolved to a logic condition"), tks.first().line);
+               throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
+                  L"' cannot be resolved to a logic condition"), tsf.line);
             }
 
             prototypes.push_back(new FP_Where<T>(boo));
@@ -366,7 +360,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
          }
          case Keyword::kw_Order: {
             buildFilterPrototypes(prototypes, attr, hasAttr, false, hasMemory, uro, base);
-            addOrderByFilter<T, T2>(base, state, ts.first(), ts2, hasBridgeAttr ? fdata : nullptr, uro);
+            addOrderByFilter<T, T2>(base, state, tsf, ts, hasBridgeAttr ? fdata : nullptr, uro);
             hasBridgeAttr = false;
             break;
          }

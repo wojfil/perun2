@@ -1,7 +1,6 @@
 #ifndef PATTERNS_H_INCLUDED
 #define PATTERNS_H_INCLUDED
 
-// todo add explanation comments
 
 #define P_MEMORY_MEMBER _str prevThis; \
    _numi prevIndex; \
@@ -38,6 +37,10 @@
       this->uroboros->running = true; \
       this->uroboros->continue_ = false; \
    }
+
+#define P_DIVIDE_BY_KEYWORD(kw) std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw); \
+   Tokens& left = pair.first; \
+   Tokens& right = pair.second; \
 
 
 #endif // PATTERNS_H_INCLUDED

@@ -37,24 +37,24 @@ Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return nullptr;
    }
 
-   if (tks.isPossibleFunction()) {
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       Generator<_str>* func = func::stringFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
    }
-   else if (tks.containsSymbol(PG_CHAR_PLUS)) {
+   else if (tks.check(TI_HAS_CHAR_PLUS)) {
       Generator<_str>* str = parseStringConcat(tks, uro);
       if (str != nullptr) {
          return str;
       }
    }
 
-   if (tks.isPossibleListElement()) {
+   if (tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       Generator<_num>* num = parseListElementIndex(tks, uro);
       const Token& f = tks.first();
       Generator<_list>* list;
@@ -114,8 +114,7 @@ Generator<_str>* parseStringConcat(const Tokens& tks, uro::Uroboros* uro)
       pt_Period
    };
 
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L'+', elements);
+   const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
 
    PrevType prevType = pt_String;
    Generator<_num>* prevNum = nullptr;

@@ -45,7 +45,7 @@ Command* parseCommands(const Tokens& tks, uro::Uroboros* uro)
                if (depth == 0) {
                   if (sublen != 0) {
                      uro->conditionContext.lockLast();
-                     Tokens tks2(tks.list, i - sublen, sublen);
+                     Tokens tks2(tks, i - sublen, sublen);
                      commands.push_back(command(tks2, uro));
                      sublen = 0;
                   }
@@ -89,7 +89,7 @@ Command* parseCommands(const Tokens& tks, uro::Uroboros* uro)
    }
 
    if (sublen != 0) {
-      Tokens tks2(tks.list, 1 + end - sublen, sublen);
+      Tokens tks2(tks, 1 + end - sublen, sublen);
       commands.push_back(command(tks2, uro));
    }
 
@@ -108,7 +108,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, uro::Uroboros* uro)
    for (_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
 
-      if (t.type == Token::t_Keyword && parse::isExpForbiddenKeyword(t)) {
+      if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
          throw SyntaxException(str(L"a command-ending semicolon ; was expected somewhere between keyword '",
             t.getOriginString(uro), L"' and curly brackets {}"), t.line);
       }
@@ -131,12 +131,12 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return nullptr;
       }
 
-      Tokens tks2(tks.list, rightStart, rightLen);
-      com = parseCommandsAsMember(tks2, nullptr, uro);
+      Tokens right(tks, rightStart, rightLen);
+      com = parseCommandsAsMember(right, nullptr, uro);
       return com;
    }
 
-   Tokens left(tks.list, leftStart, leftLen);
+   Tokens left(tks, leftStart, leftLen);
    checkKeywordsBeforeCurlyBrackets(left, uro);
 
    // build "times"
@@ -152,13 +152,14 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return nullptr;
       }
 
+      left.checkCommonExpressionExceptions(uro);
       Generator<_num>* num;
       if (!parse::parse(uro, left, num)) {
          throw SyntaxException(str(L"keyword '", leftLast.getOriginString(uro),
             L"' is not preceded by a valid number"), leftLast.line);
       }
 
-      Tokens right(tks.list, rightStart, rightLen);
+      Tokens right(tks, rightStart, rightLen);
 
       Aggregate* aggr = new Aggregate(uro);
       uro->vc.addAggregate(aggr);
@@ -186,13 +187,14 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
             L"' is empty. It would either never run or cause an infinite loop"), leftFirst.line);
       }
 
+      left.checkCommonExpressionExceptions(uro);
       Generator<_boo>* boo;
       if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
             L"' is not followed by a valid condition"), leftFirst.line);
       }
 
-      Tokens right(tks.list, rightStart, rightLen);
+      Tokens right(tks, rightStart, rightLen);
 
       Aggregate* aggr = new Aggregate(uro);
       uro->vc.addAggregate(aggr);
@@ -213,12 +215,13 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          throw SyntaxException(str(L"argumentless structure '", leftFirst.getOriginString(uro),
             L"' can be created only inside a loop iterating over strings"), leftFirst.line);
       }
+      left.checkCommonExpressionExceptions(uro);
 
       if (rightLen == 0) {
          return nullptr;
       }
 
-      Tokens right(tks.list, rightStart, rightLen);
+      Tokens right(tks, rightStart, rightLen);
       Command* c = parseIterationLoop(true, left, right, prevThisState, uro);
 
       if (c != nullptr) {
@@ -237,6 +240,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
             leftFirst.line);
       }
 
+      left.checkCommonExpressionExceptions(uro);
       Generator<_boo>* boo;
       if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro), L"' is not followed by a valid condition"),
@@ -251,7 +255,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          return cond;
       }
 
-      Tokens right(tks.list, rightStart, rightLen);
+      Tokens right(tks, rightStart, rightLen);
       com = parseCommandsAsMember(right, cond, uro);
 
       if (com != nullptr) {
@@ -270,7 +274,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
             return nullptr;
          }
 
-         Tokens right(tks.list, rightStart, rightLen);
+         Tokens right(tks, rightStart, rightLen);
          com = parseCommandsAsMember(right, nullptr, uro);
          uro->conditionContext.deleteLast();
 
@@ -292,6 +296,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
                ifToken.getOriginString(uro), L"' are not followed by a condition"), leftFirst.line);
          }
 
+         left.checkCommonExpressionExceptions(uro);
          Generator<_boo>* boo;
          if (!parse::parse(uro, left, boo)) {
             throw SyntaxException(str(L"keywords '", leftFirst.getOriginString(uro), L" ",
@@ -304,7 +309,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
             return nullptr;
          }
 
-         Tokens right(tks.list, rightStart, rightLen);
+         Tokens right(tks, rightStart, rightLen);
          com = parseCommandsAsMember(right, nullptr, uro);
          uro->conditionContext.deleteLast();
 
@@ -320,7 +325,8 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       return nullptr;
    }
 
-   Tokens right(tks.list, rightStart, rightLen);
+   left.checkCommonExpressionExceptions(uro);
+   Tokens right(tks, rightStart, rightLen);
 
    // time list loop
    Generator<_tlist>* tlist;
@@ -584,6 +590,7 @@ static Command* command(Tokens& tks, uro::Uroboros* uro)
          }
          default: {
             tks.trimLeft();
+            tks.checkCommonExpressionExceptions(uro);
             return keywordCommands(f3, tks, f.line, force, stack, uro);
          }
       }
@@ -599,6 +606,7 @@ static Command* command(Tokens& tks, uro::Uroboros* uro)
    Command* misc = commandMisc(tks, uro);
 
    if (misc == nullptr) {
+      tks.checkCommonExpressionExceptions(uro);
       return c_print(Token(Keyword::kw_Print, f.line, static_cast<_size>(0), static_cast<_size>(0), uro), tks, f.line, false, uro);
    }
    else {
@@ -608,11 +616,12 @@ static Command* command(Tokens& tks, uro::Uroboros* uro)
 
 static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (tks.containsSymbol(PG_CHAR_EQUALS)) {
-      Tokens left(tks);
-      Tokens right(tks);
-      tks.divideBySymbol(L'=', left, right);
-
+   if (tks.check(TI_HAS_CHAR_EQUALS)) {
+      std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'=');
+      Tokens& left = pair.first;
+      Tokens& right = pair.second;
+      right.checkCommonExpressionExceptions(uro);
+      
       if (left.isEmpty()) {
          if (right.isEmpty()) {
             throw SyntaxException(
@@ -1231,12 +1240,12 @@ static Command* commandVarAssign_Element(const Tokens& left,
 
 static Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro)
 {
-   Tokens left2(tks);
-   left2.trimBoth();
-   left2.trimLeft();
+   const _size start = tks.getStart() + 2;
+   const _size length = tks.getLength() - 3;
+   const Tokens tks2(tks, start, length);
    Generator<_num>* index;
 
-   if (!parse::parse(uro, left2, index)) {
+   if (!parse::parse(uro, tks2, index)) {
       throw SyntaxException(
         L"content of square brackets [] cannot be resolved to a number",
         tks.second().line);

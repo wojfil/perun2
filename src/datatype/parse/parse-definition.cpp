@@ -36,7 +36,7 @@ _def* parseDefinition(const Tokens& tks, uro::Uroboros* uro)
       return unit;
    }
 
-   if (tks.containsFilterKeyword()) {
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return parseFilter<_def*, _str>(tks, ThisState::ts_String, uro);
    }
 
@@ -63,16 +63,15 @@ _def* parseDefinition(const Tokens& tks, uro::Uroboros* uro)
 
 static _boo isDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.containsSymbol(PG_CHAR_COMMA)) {
+   if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
    }
 
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L',', elements);
+   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
    const _size len = elements.size();
 
    for (_size i = 0; i < len; i++) {
-      Tokens& tk = elements[i];
+      const Tokens& tk = elements[i];
       _def* def;
       if (parse(uro, tk, def)) {
          delete def;
@@ -96,8 +95,7 @@ static _def* parseDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
       cl_List
    };
 
-   std::vector<Tokens> elements;
-   tks.splitBySymbol(L',', elements);
+   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
    const _size len = elements.size();
 
    ChainLink cl;
@@ -123,7 +121,7 @@ static _def* parseDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
    }
 
    for (_size i = 1; i < len; i++) {
-      Tokens& tk = elements[i];
+      const Tokens& tk = elements[i];
 
       switch (cl) {
          case cl_Definition: {
@@ -163,14 +161,14 @@ static _def* parseDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
             else {
                Generator<_str>* str;
                if (parse(uro, tk, str)) {
-                  prevList =  new gen::Join_StrStr(prevStr, str);
+                  prevList = new gen::Join_StrStr(prevStr, str);
                   prevStr = nullptr;
                   cl = ChainLink::cl_List;
                }
                else {
                   Generator<_list>* list;
                   if (parse(uro, tk, list)) {
-                     prevList =  new gen::Join_StrList(prevStr, list);
+                     prevList = new gen::Join_StrList(prevStr, list);
                      prevStr = nullptr;
                      cl = ChainLink::cl_List;
                   }
@@ -233,28 +231,25 @@ static _def* parseDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
 
 _def* parseDefTernary(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.isPossibleTernary()) {
+   if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return nullptr;
    }
 
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   Tokens tks3(tks);
-   tks.divideForTernary(tks1, tks2, tks3);
+   std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
    Generator<_boo>* condition;
-   if (!parse(uro, tks1, condition)) {
+   if (!parse(uro, std::get<0>(trio), condition)) {
       return nullptr;
    }
 
    _def* left;
-   if (!parse(uro, tks2, left)) {
+   if (!parse(uro, std::get<1>(trio), left)) {
       delete condition;
       return nullptr;
    }
 
    _def* right;
-   if (!parse(uro, tks3, right)) {
+   if (!parse(uro, std::get<2>(trio), right)) {
       delete condition;
       delete left;
       return nullptr;
@@ -266,21 +261,19 @@ _def* parseDefTernary(const Tokens& tks, uro::Uroboros* uro)
 
 static _def* parseDefBinary(const Tokens& tks, uro::Uroboros* uro)
 {
-   if (!tks.isPossibleBinary()) {
+   if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return nullptr;
    }
 
-   Tokens tks1(tks);
-   Tokens tks2(tks);
-   tks.divideBySymbol(L'?', tks1, tks2);
+   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
 
    Generator<_boo>* condition;
-   if (!parse(uro, tks1, condition)) {
+   if (!parse(uro, pair.first, condition)) {
       return nullptr;
    }
 
    _def* value;
-   if (!parse(uro, tks2, value)) {
+   if (!parse(uro, pair.second, value)) {
       delete condition;
       return nullptr;
    }

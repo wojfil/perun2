@@ -29,7 +29,7 @@ Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
-   const Tokens tks2(tks.list, start, length);
+   const Tokens tks2(tks, start, length);
 
    Generator<_num>* num = parseNumber(tks2, uro);
    if (num == nullptr) {

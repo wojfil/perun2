@@ -32,8 +32,7 @@ private:
    _int square;
 };
 
-
-void checkBrackets(const Tokens& tks);
+void checkBracketsThoroughly(const Tokens& tks);
 
 }
 

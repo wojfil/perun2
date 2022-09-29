@@ -267,6 +267,32 @@ private:
 };
 
 
+struct F_Find : Func_2<_str, _str>, Generator<_boo>
+{
+public:
+   F_Find(Generator<_str>* a1, Generator<_str>* a2, Uroboros* uro)
+      : Func_2(a1, a2), inner(&uro->vars.inner) { };
+   _boo getValue() override;
+
+private:
+   InnerVariables* inner;
+};
+
+
+struct F_Find_InThis : Func_1<_str>, Generator<_boo>
+{
+public:
+   F_Find_InThis(Generator<_str>* a1, Uroboros* uro) 
+      : Func_1(a1), uroboros(uro), inner(&uro->vars.inner) { };
+   _boo getValue() override;
+
+private:
+   Uroboros* uroboros;
+   InnerVariables* inner;
+};
+
+
+
 struct F_IsLetter : Func_1<_str>, Generator<_boo>
 {
 public:

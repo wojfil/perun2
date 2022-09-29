@@ -143,6 +143,7 @@ Hashes::Hashes() :
    HASH_FUNC_EXISTINSIDE(rawStringHash(L"existinside")),
    HASH_FUNC_STARTSWITH(rawStringHash(L"startswith")),
    HASH_FUNC_ENDSWITH(rawStringHash(L"endswith")),
+   HASH_FUNC_FIND(rawStringHash(L"find")),
 
    HASH_FUNC_ABSOLUTE(rawStringHash(L"absolute")),
    HASH_FUNC_CEIL(rawStringHash(L"ceil")),

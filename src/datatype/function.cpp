@@ -433,6 +433,32 @@ Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_EndsWith(str, str2);
    }
+   else if (name == uro->hashes.HASH_FUNC_FIND) {
+      if (len == 0 || len > 2) {
+         functionArgNumberException(len, word, uro);
+      }
+
+      Generator<_str>* str;
+      if (!parse::parse(uro, args[0], str)) {
+         functionArgException(1, L"string", word, uro);
+      }
+
+      if (len == 1) {
+         checkFunctionAttribute(word, uro);
+         Generator<_str>* ts;
+         uro->vars.inner.createThisRef(ts);
+         return new F_Find_InThis(str, uro);
+      }
+
+      Generator<_str>* str2;
+      if (parse::parse(uro, args[1], str2)) {
+         return new F_Find(str, str2, uro);
+      }
+      else {
+         delete str;
+         functionArgException(2, L"string", word, uro);
+      }
+   }
 
    return nullptr;
 }

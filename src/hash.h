@@ -140,6 +140,7 @@ public:
    const _size HASH_FUNC_EXISTINSIDE;
    const _size HASH_FUNC_STARTSWITH;
    const _size HASH_FUNC_ENDSWITH;
+   const _size HASH_FUNC_FIND;
 
    const _size HASH_FUNC_ABSOLUTE;
    const _size HASH_FUNC_CEIL;

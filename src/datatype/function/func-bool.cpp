@@ -338,6 +338,29 @@ _boo F_EndsWithChar::getValue()
 }
 
 
+_boo F_Find::getValue()
+{
+   const _str v = os_trim(this->arg1->getValue());
+
+   if (os_isInvaild(v)) {
+      return false;
+   }
+
+   const _str path = os_join(this->inner->location.value, v);
+   return os_find(path, this->arg2->getValue());
+}
+
+
+_boo F_Find_InThis::getValue()
+{
+   if (!this->inner->exists.value || this->inner->isdirectory.value) {
+      return false;
+   }
+
+   return os_find(this->inner->path.value, this->arg1->getValue());
+}
+
+
 F_StartsWithConst::~F_StartsWithConst()
 {
    delete value;

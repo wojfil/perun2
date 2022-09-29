@@ -1,0 +1,4 @@
+open recursiveFiles
+  where extension in ('h', 'cpp')
+  and not find('This file is part of Uroboros.')
+  with 'notepad'

@@ -245,7 +245,7 @@ _str Arguments::getLocation() const
    return this->location;
 }
 
-_str Arguments::getCode() const
+const _str& Arguments::getCode() const
 {
    return this->code;
 }

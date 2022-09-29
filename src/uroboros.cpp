@@ -49,7 +49,7 @@ _boo Uroboros::uro_tokenize()
    this->exitCode = EXITCODE_OK;
 
    try {
-      this->tokens = tokenize(this->arguments.code, this);
+      this->tokens = tokenize(this->arguments.getCode(), this);
    }
    catch (const SyntaxException& ex) {
       rawPrint(ex.getMessage());

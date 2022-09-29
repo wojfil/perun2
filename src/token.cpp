@@ -22,27 +22,27 @@ namespace uro
 OriginStringInfo::OriginStringInfo(const _size& ind, const _size& len)
    : index(ind), length(len) { };
 
-TokenValue::TokenValue(const _char& ch) 
+TokenValue::TokenValue(const _char& ch)
    : ch(ch) { };
 
-TokenValue::TokenValue(const _char& ch, const _int& am) 
+TokenValue::TokenValue(const _char& ch, const _int& am)
    : chars({ ch, am }) { };
 
 TokenValue::TokenValue(const _num& n, const _size& os_id, const _size& os_len, const NumberMode& nm)
    : num({ n, _osi(os_id, os_len), nm }) { };
-TokenValue::TokenValue(const _size& os_id, const _size& os_len) 
+TokenValue::TokenValue(const _size& os_id, const _size& os_len)
    : str(_osi(os_id, os_len)) { };
 
-TokenValue::TokenValue(const _size& os_id, const _size& os_len, const _int& id) 
+TokenValue::TokenValue(const _size& os_id, const _size& os_len, const _int& id)
    : pattern({ _osi(os_id, os_len), id }) { };
 
-TokenValue::TokenValue(const _size& h, const _size& os_id, const _size& os_len) 
+TokenValue::TokenValue(const _size& h, const _size& os_id, const _size& os_len)
    : word({ h, _osi(os_id, os_len) }) { };
 
-TokenValue::TokenValue(const Keyword& k, const _size& os_id, const _size& os_len) 
+TokenValue::TokenValue(const Keyword& k, const _size& os_id, const _size& os_len)
    : keyword({ k, _osi(os_id, os_len) }) { };
-   
-TokenValue::TokenValue(const _size& h1, const _size& h2, const _size& os_id1, 
+
+TokenValue::TokenValue(const _size& h1, const _size& h2, const _size& os_id1,
    const _size& os_len1, const _size& os_id2, const _size& os_len2)
    : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
@@ -214,7 +214,7 @@ _str Token::getOriginString_2(Uroboros* uro) const
 
 _str Token::getCodeSubstr(const _osi& osi, Uroboros* uro) const
 {
-   return uro->arguments.code.substr(osi.index, osi.length);
+   return uro->arguments.getCode().substr(osi.index, osi.length);
 }
 
 }

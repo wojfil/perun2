@@ -17,7 +17,7 @@
 
 #include "datatype/datatype.h"
 
-namespace uro 
+namespace uro
 {
 
 enum ArgsParseState {
@@ -43,15 +43,12 @@ public:
    _uint32 getFlags() const;
    _list getArgs() const;
    _str getLocation() const;
-   _str getCode() const;
+   const _str& getCode() const;
    ArgsParseState getParseState() const;
-
-   // to avoid unnecessary duplication of potentially long code
-   // code is public and passed as a reference to the lexer
-   _str code;
 
 private:
 
+   _str code;
    _uint32 flags;
    _list args;
    _str location;

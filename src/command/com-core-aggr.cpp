@@ -341,7 +341,7 @@ void C_Select_List::run()
 
       for (auto it = selectPaths.begin(); it != selectPaths.end(); it++)
       {
-         if (!this->uroboros->running) {
+         if (this->uroboros->state != State::s_Running) {
             break;
          }
 

@@ -23,7 +23,7 @@ namespace uro::comm
 
 void CS_StringComArg::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (hasMemory) {
          attrMemory.load();
       }
@@ -69,7 +69,7 @@ void CS_ListComArg::run()
    this->inner->index.value.setToZero();
    this->inner->depth.value.setToZero();
 
-   while (this->uroboros->running && index != length) {
+   while (this->uroboros->state == State::s_Running && index != length) {
       this->inner->this_s.value = values[index.value.i];
 
       if (hasAttribute) {
@@ -101,7 +101,7 @@ void CS_DefinitionComArg::run()
    this->inner->index.value.setToZero();
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          definition->reset();
          break;
       }

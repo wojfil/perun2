@@ -23,7 +23,7 @@ namespace uro::comm
 
 void C_Create::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
          commandLog(this->uroboros, L"Failed to create ", getCCName(this->inner->path.value));
          this->inner->success.value = false;
@@ -68,7 +68,7 @@ void C_Create::run()
 
 void C_Create_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
          commandLog(this->uroboros, L"Failed to create ", getCCName(this->inner->path.value));
          this->inner->success.value = false;
@@ -127,7 +127,7 @@ void C_Create_Stack::run()
 
 void C_CreateFile::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
          commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
          this->inner->success.value = false;
@@ -158,7 +158,7 @@ void C_CreateFile::run()
 
 void C_CreateFile_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
          commandLog(this->uroboros, L"Failed to create file ", getCCName(this->inner->path.value));
          this->inner->success.value = false;
@@ -200,7 +200,7 @@ void C_CreateFile_Stack::run()
 
 void C_CreateDirectory::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
          commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
          this->inner->success.value = false;
@@ -231,7 +231,7 @@ void C_CreateDirectory::run()
 
 void C_CreateDirectory_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (!this->inner->isfile.value && !this->inner->isdirectory.value) {
          commandLog(this->uroboros, L"Failed to create directory ", getCCName(this->inner->path.value));
          this->inner->success.value = false;
@@ -267,7 +267,7 @@ void C_CreateDirectory_Stack::run()
 
 void C_Create_String::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str value = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -315,7 +315,7 @@ void C_Create_String::run()
 
 void C_CreateFile_String::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str value = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -350,7 +350,7 @@ void C_CreateFile_String::run()
 
 void C_CreateDirectory_String::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str value = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -385,7 +385,7 @@ void C_CreateDirectory_String::run()
 
 void C_Create_String_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str value = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -437,7 +437,7 @@ void C_Create_String_Stack::run()
 
 void C_CreateFile_String_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str value = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -476,7 +476,7 @@ void C_CreateFile_String_Stack::run()
 
 void C_CreateDirectory_String_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str value = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -508,7 +508,7 @@ void C_CreateDirectory_String_Stack::run()
 
 void C_Create_List::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -579,7 +579,7 @@ void C_Create_List::run()
 
 void C_CreateFiles_List::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -636,7 +636,7 @@ void C_CreateFiles_List::run()
 
 void C_CreateDirectories_List::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -693,7 +693,7 @@ void C_CreateDirectories_List::run()
 
 void C_Create_List_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -768,7 +768,7 @@ void C_Create_List_Stack::run()
 
 void C_CreateFiles_List_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -829,7 +829,7 @@ void C_CreateFiles_List_Stack::run()
 
 void C_CreateDirectories_List_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();

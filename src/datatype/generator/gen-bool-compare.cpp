@@ -28,7 +28,7 @@ DefComparison::~DefComparison()
 _boo DefinitionsEqual::getValue()
 {
    while (true) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -64,7 +64,7 @@ _boo DefinitionsEqual::getValue()
 _boo DefinitionsNotEqual::getValue()
 {
    while (true) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -100,7 +100,7 @@ _boo DefinitionsNotEqual::getValue()
 _boo DefinitionsSmaller::getValue()
 {
    while (true) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -129,7 +129,7 @@ _boo DefinitionsSmaller::getValue()
 _boo DefinitionsSmallerEquals::getValue()
 {
    while (true) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -158,7 +158,7 @@ _boo DefinitionsSmallerEquals::getValue()
 _boo DefinitionsBigger::getValue()
 {
    while (true) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -187,7 +187,7 @@ _boo DefinitionsBigger::getValue()
 _boo DefinitionsBiggerEquals::getValue()
 {
    while (true) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -238,7 +238,7 @@ _boo DefinitionListEqual::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -281,7 +281,7 @@ _boo DefinitionListNotEqual::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -318,7 +318,7 @@ _boo DefinitionListSmaller::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          return false;
       }
@@ -351,7 +351,7 @@ _boo DefinitionListSmallerEquals::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          return false;
       }
@@ -389,7 +389,7 @@ _boo DefinitionListBigger::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          return false;
       }
@@ -421,7 +421,7 @@ _boo DefinitionListBiggerEquals::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          return false;
       }

@@ -285,7 +285,7 @@ _boo Uro_RecursiveFiles::hasNext()
       this->inner->index.value = index;
    }
 
-   while (this->uroboros->running) {
+   while (this->uroboros->state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -388,7 +388,7 @@ _boo Uro_RecursiveDirectories::hasNext()
       this->inner->index.value = index;
    }
 
-   while (this->uroboros->running) {
+   while (this->uroboros->state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -476,7 +476,7 @@ _boo Uro_RecursiveAll::hasNext()
       this->inner->index.value = index;
    }
 
-   while (this->uroboros->running) {
+   while (this->uroboros->state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {

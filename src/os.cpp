@@ -84,7 +84,7 @@ void os_sleepForMs(const _nint& ms, Uroboros* uro)
 
    Sleep(remainder);
 
-   while (uro->running && loops != 0LL) {
+   while (uro->state == State::s_Running && loops != 0LL) {
       Sleep(OS_SLEEP_UNIT);
       loops--;
    }
@@ -719,7 +719,7 @@ _nint os_sizeDirectory(const _str& path, Uroboros* uro)
    }
 
    do {
-      if (!uro->running) {
+      if (!uro->state == State::s_Running) {
          FindClose(handle);
          return -1LL;
       }
@@ -844,7 +844,7 @@ _boo os_dropDirectory(const _str& path, Uroboros* uro)
    bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!uro->running) {
+         if (!uro->state == State::s_Running) {
             FindClose(hFind);
             return false;
          }
@@ -1062,7 +1062,7 @@ _boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile, Uro
    }
    else {
       const _boo success = os_copyToDirectory(oldPath, newPath, uro);
-      if (!success && !uro->running && os_directoryExists(newPath)) {
+      if (!success && !uro->state == State::s_Running && os_directoryExists(newPath)) {
          // if directory copy operation
          // was stopped by the user
          // delete recent partially copied directory if it is there
@@ -1105,7 +1105,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
    bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!uro->running) {
+         if (!uro->state == State::s_Running) {
             FindClose(hFind);
             return false;
          }
@@ -1233,7 +1233,7 @@ _boo os_run(const _str& comm, Uroboros* uro)
    ::GetExitCodeProcess(uro->sideProcess.info.hProcess, &dwExitCode);
 
    uro->sideProcess.running = false;
-   return uro->running && dwExitCode == 0;
+   return uro->state == State::s_Running && dwExitCode == 0;
 }
 
 _boo os_process(const _str& command, const _str& location)

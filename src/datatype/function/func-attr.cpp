@@ -223,7 +223,7 @@ _num F_SizeDefinition::getValue()
    _nint total = 0LL;
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          definition->reset();
          return _num(-1LL);
       }
@@ -250,7 +250,7 @@ _num F_SizeList::getValue()
    }
 
    for (_size i = 0; i < len; i++) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          return _num(-1LL);
       }
 

@@ -17,26 +17,24 @@
    this->inner->depth.value = this->prevDepth;
 
 
-#define P_CHECK_LOOP_BREAK if (this->uroboros->break_) { \
-      this->uroboros->running = true; \
-      this->uroboros->break_ = false; \
+#define P_CHECK_LOOP_BREAK if (this->uroboros->state == State::s_Break) { \
+      this->uroboros->state = State::s_Running; \
       break; \
    } \
-   else if (this->uroboros->continue_) { \
-      this->uroboros->running = true; \
-      this->uroboros->continue_ = false; \
+   else if (this->uroboros->state == State::s_Continue) { \
+      this->uroboros->state = State::s_Running; \
       continue; \
    }
 
 
-#define P_CHECK_SOFT_LOOP_BREAK if (this->uroboros->break_) { \
-      this->uroboros->running = true; \
-      this->uroboros->break_ = false; \
-   } \
-   else if (this->uroboros->continue_) { \
-      this->uroboros->running = true; \
-      this->uroboros->continue_ = false; \
+#define P_CHECK_SOFT_LOOP_BREAK switch (this->uroboros->state) { \
+      case State::s_Break: \
+      case State::s_Continue: { \
+         this->uroboros->state = State::s_Running; \
+         break; \
+      } \
    }
+
 
 #define P_DIVIDE_BY_KEYWORD(kw) std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw); \
    Tokens& left = pair.first; \

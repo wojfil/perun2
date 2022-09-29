@@ -23,10 +23,10 @@ namespace uro::comm
 
 void CS_Pair::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       this->first->run();
    }
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       this->second->run();
    }
 }
@@ -34,7 +34,7 @@ void CS_Pair::run()
 
 void CS_Block::run()
 {
-   for (_size i = 0; this->uroboros->running && i < this->length; i++) {
+   for (_size i = 0; this->uroboros->state == State::s_Running && i < this->length; i++) {
       (this->commands[i])->run();
    }
 }
@@ -50,7 +50,7 @@ void CS_Times::run()
    const _numi prevIndex = this->inner->index.value;
    this->inner->index.value.setToZero();
 
-   while (this->uroboros->running && repeats != 0LL) {
+   while (this->uroboros->state == State::s_Running && repeats != 0LL) {
       this->command->run();
       this->inner->index.value++;
       repeats--;
@@ -68,7 +68,7 @@ void CS_While::run()
    const _numi prevIndex = this->inner->index.value;
    this->inner->index.value.setToZero();
 
-   while (this->uroboros->running && this->condition->getValue()) {
+   while (this->uroboros->state == State::s_Running && this->condition->getValue()) {
       this->command->run();
       this->inner->index.value++;
 
@@ -95,7 +95,7 @@ void CS_TimeLoop::run()
    this->inner->index.value.setToZero();
    _size index = 0;
 
-   while (this->uroboros->running && index != length) {
+   while (this->uroboros->state == State::s_Running && index != length) {
       this->inner->this_t.value = values[index];
       this->command->run();
       this->inner->index.value++;
@@ -125,7 +125,7 @@ void CS_NumberLoop::run()
    this->inner->index.value.setToZero();
 
    _size index = 0;
-   while (this->uroboros->running && index != length) {
+   while (this->uroboros->state == State::s_Running && index != length) {
       this->inner->this_n.value = values[index];
       this->command->run();
       this->inner->index.value++;
@@ -142,7 +142,7 @@ void CS_NumberLoop::run()
 
 void CS_StringLoop::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       if (this->hasMemory) {
          this->attrMemory.load();
       }
@@ -184,7 +184,7 @@ void CS_DefinitionLoop::run()
    this->inner->index.value.setToZero();
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -232,7 +232,7 @@ void CS_ListLoop::run()
    this->inner->index.value.setToZero();
    this->inner->depth.value.setToZero();
 
-   while (this->uroboros->running && index != length) {
+   while (this->uroboros->state == State::s_Running && index != length) {
       this->inner->this_s.value = values[index.value.i];
 
       if (this->hasAttribute) {
@@ -258,7 +258,7 @@ void CS_ListLoop::run()
 
 void CS_InsideString::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str val = os_trim(this->string->getValue());
       const _str newLocation = os_join(this->inner->location.value, val);
 
@@ -309,7 +309,7 @@ void CS_InsideDefinition::run()
    this->inner->index.value.setToZero();
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -367,7 +367,7 @@ void CS_InsideList::run()
    this->inner->index.value.setToZero();
    this->inner->depth.value.setToZero();
 
-   while (this->uroboros->running && index != length) {
+   while (this->uroboros->state == State::s_Running && index != length) {
       const _str v = os_trim(values[index.value.i]);
       const _str newLocation = os_join(this->prevLocation, v);
       if (!v.empty() && os_directoryExists(newLocation)) {

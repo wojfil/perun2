@@ -65,7 +65,7 @@ _boo OrderBy_Definition::hasNext()
       }
 
       while (this->base->hasNext()) {
-         if (!this->uroboros->running) {
+         if (this->uroboros->state != State::s_Running) {
             this->base->reset();
             return false;
          }

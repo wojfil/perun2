@@ -35,7 +35,7 @@ void C_PrintList::run()
 {
    const _list list = this->value->getValue();
    const _size length = list.size();
-   for (_size i = 0; this->uroboros->running && i < length; i++) {
+   for (_size i = 0; this->uroboros->state == State::s_Running && i < length; i++) {
       print(this->uroboros, list[i]);
    }
 }
@@ -43,7 +43,7 @@ void C_PrintList::run()
 void C_PrintDefinition::run()
 {
    while (this->value->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->value->reset();
          break;
       }
@@ -78,30 +78,28 @@ void C_SleepMs::run()
 
 void C_Break::run()
 {
-   this->uroboros->running = false;
-   this->uroboros->break_ = true;
+   this->uroboros->state = State::s_Break;
 }
 
 void C_Continue::run()
 {
-   this->uroboros->running = false;
-   this->uroboros->continue_ = true;
+   this->uroboros->state = State::s_Continue;
 }
 
 void C_Exit::run()
 {
-   this->uroboros->running = false;
+   this->uroboros->state = State::s_Exit;
 }
 
 void C_Error::run()
 {
-   this->uroboros->running = false;
+   this->uroboros->state = State::s_Exit;
    this->uroboros->exitCode = EXITCODE_RUNTIME_ERROR;
 }
 
 void C_ErrorWithExitCode::run()
 {
-   this->uroboros->running = false;
+   this->uroboros->state = State::s_Exit;
    const _int code = static_cast<_int>(this->exitCode->getValue().toInt());
    this->uroboros->exitCode = (code == EXITCODE_OK)
       ? EXITCODE_RUNTIME_ERROR

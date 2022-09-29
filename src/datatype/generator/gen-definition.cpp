@@ -67,7 +67,7 @@ _boo Filter_WhereDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (this->uroboros->state != State::s_Running) {
          definition->reset();
          break;
       }
@@ -142,7 +142,7 @@ _boo Filter_LimitDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running || counter >= limit) {
+      if (this->uroboros->state != State::s_Running || counter >= limit) {
          definition->reset();
          break;
       }
@@ -169,7 +169,7 @@ _boo Filter_SkipDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (this->uroboros->state != State::s_Running) {
          definition->reset();
       }
 
@@ -202,7 +202,7 @@ _boo Filter_EveryDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (this->uroboros->state != State::s_Running) {
          definition->reset();
       }
 
@@ -241,7 +241,7 @@ void Join_DefStr::reset()
 
 _boo Join_DefStr::hasNext()
 {
-   if (!this->uroboros->running) {
+   if (this->uroboros->state != State::s_Running) {
       reset();
       return false;
    }
@@ -280,7 +280,7 @@ void Join_StrDef::reset()
 
 _boo Join_StrDef::hasNext()
 {
-   if (!this->uroboros->running) {
+   if (this->uroboros->state != State::s_Running) {
       reset();
       return false;
    }
@@ -321,7 +321,7 @@ void Join_DefList::reset()
 
 _boo Join_DefList::hasNext()
 {
-   if (!this->uroboros->running) {
+   if (this->uroboros->state != State::s_Running) {
       reset();
       return false;
    }
@@ -370,7 +370,7 @@ void Join_ListDef::reset()
 
 _boo Join_ListDef::hasNext()
 {
-   if (!this->uroboros->running) {
+   if (this->uroboros->state != State::s_Running) {
       reset();
       return false;
    }
@@ -429,7 +429,7 @@ void Join_DefDef::reset()
 
 _boo Join_DefDef::hasNext()
 {
-   if (!this->uroboros->running) {
+   if (this->uroboros->state != State::s_Running) {
       reset();
       return false;
    }

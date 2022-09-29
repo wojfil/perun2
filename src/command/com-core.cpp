@@ -27,7 +27,7 @@ namespace uro::comm
 
 void C_Delete::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_delete(this->inner->path.value);
       this->inner->success.value = s;
 
@@ -45,7 +45,7 @@ void C_Delete::run()
 
 void C_Drop::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_drop(this->inner->path.value, this->inner->isfile.value, this->uroboros);
       this->inner->success.value = s;
 
@@ -63,7 +63,7 @@ void C_Drop::run()
 
 void C_Hide::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_hide(this->inner->path.value);
       this->inner->success.value = s;
 
@@ -81,7 +81,7 @@ void C_Hide::run()
 
 void C_Lock::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_lock(this->inner->path.value);
       this->inner->success.value = s;
 
@@ -99,7 +99,7 @@ void C_Lock::run()
 
 void C_Open::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_open(this->inner->path.value);
       this->inner->success.value = s;
 
@@ -114,7 +114,7 @@ void C_Open::run()
 
 void C_Unlock::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_unlock(this->inner->path.value);
       this->inner->success.value = s;
 
@@ -132,7 +132,7 @@ void C_Unlock::run()
 
 void C_Unhide::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _boo s = this->inner->exists.value && os_unhide(this->inner->path.value);
       this->inner->success.value = s;
 
@@ -150,7 +150,7 @@ void C_Unhide::run()
 
 void C_OpenWith::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str pro = os_trim(program->getValue());
 
       if (!this->inner->exists.value || pro.empty()) {
@@ -194,7 +194,7 @@ void C_OpenWith::run()
 
 void C_ReaccessTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _tim t = this->inner->access.value;
       t.setValue(time->getValue());
       this->inner->success.value = this->inner->exists.value
@@ -215,7 +215,7 @@ void C_ReaccessTo::run()
 
 void C_RechangeTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _tim t = this->inner->change.value;
       t.setValue(time->getValue());
       this->inner->success.value = this->inner->exists.value
@@ -237,7 +237,7 @@ void C_RechangeTo::run()
 
 void C_RecreateTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _tim t = this->inner->creation.value;
       t.setValue(time->getValue());
       this->inner->success.value = this->inner->exists.value
@@ -258,7 +258,7 @@ void C_RecreateTo::run()
 
 void C_RemodifyTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _tim t = this->inner->modification.value;
       t.setValue(time->getValue());
       this->inner->success.value = this->inner->exists.value
@@ -280,7 +280,7 @@ void C_RemodifyTo::run()
 
 void C_RenameTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str n = os_fullname(os_trim(name->getValue()));
 
       if (!this->inner->exists.value || os_isInvaild(n)
@@ -329,7 +329,7 @@ void C_RenameTo::run()
 
 void C_RenameTo_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str n = os_fullname(os_trim(name->getValue()));
       if (!this->inner->exists.value || os_isInvaild(n)
@@ -397,7 +397,7 @@ void C_RenameTo_Stack::run()
 
 void C_MoveTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str n = os_trim(location->getValue());
 
@@ -450,7 +450,7 @@ void C_MoveTo::run()
 
 void C_MoveTo_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str n = os_trim(location->getValue());
 
@@ -504,7 +504,7 @@ void C_MoveTo_Stack::run()
 
 void C_MoveToAs::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
@@ -562,7 +562,7 @@ void C_MoveToAs::run()
 
 void C_MoveToAs_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& oldPath = this->inner->path.value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
@@ -637,7 +637,7 @@ void C_MoveToAs_Stack::run()
 
 void C_DownloadFrom_String::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _str name = os_trim(element->getValue());
       const _str src = os_trim(location->getValue());
@@ -681,7 +681,7 @@ void C_DownloadFrom_String::run()
 
 void C_DownloadFrom_List::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -740,7 +740,7 @@ void C_DownloadFrom_List::run()
 
 void C_DownloadFrom_Definition::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str dest = this->inner->location.value;
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(this->inner->location.value, src);
@@ -754,7 +754,7 @@ void C_DownloadFrom_Definition::run()
       _boo success = true;
       this->inner->location.value = srcLoc;
 
-      while (this->uroboros->running && elements->hasNext()) {
+      while (this->uroboros->state == State::s_Running && elements->hasNext()) {
          const _str n = os_trim(elements->getValue());
          const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
@@ -792,7 +792,7 @@ void C_DownloadFrom_Definition::run()
 
 void C_DownloadFrom_String_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _str name = os_trim(element->getValue());
       const _str src = os_trim(location->getValue());
@@ -839,7 +839,7 @@ void C_DownloadFrom_String_Stack::run()
 
 void C_DownloadFrom_List_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& dest = this->inner->location.value;
       const _list names = elements->getValue();
       const _size len = names.size();
@@ -901,7 +901,7 @@ void C_DownloadFrom_List_Stack::run()
 
 void C_DownloadFrom_Definition_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str dest = this->inner->location.value;
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(dest, src);
@@ -917,7 +917,7 @@ void C_DownloadFrom_Definition_Stack::run()
       this->inner->location.value = srcLoc;
 
       while (elements->hasNext()) {
-         if (!this->uroboros->running) {
+         if (!this->uroboros->state == State::s_Running) {
             elements->reset();
             break;
          }
@@ -940,7 +940,7 @@ void C_DownloadFrom_Definition_Stack::run()
                else {
                   newPath = os_stackPath(newPath);
 
-                  if (!this->uroboros->running) {
+                  if (!this->uroboros->state == State::s_Running) {
                      elements->reset();
                      break;
                   }
@@ -966,7 +966,7 @@ void C_DownloadFrom_Definition_Stack::run()
 
 void C_Download_String::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str oldElement = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -1009,7 +1009,7 @@ void C_Download_String::run()
 
 void C_Download_List::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _list oldPaths = elements->getValue();
       const _size len = oldPaths.size();
 
@@ -1031,7 +1031,7 @@ void C_Download_List::run()
 
       _boo success = true;
 
-      for (_size i = 0; this->uroboros->running && i < len; i++) {
+      for (_size i = 0; this->uroboros->state == State::s_Running && i < len; i++) {
          const _str n = os_trim(oldPaths[i]);
          const _str oldPath = os_join(dest, n);
 
@@ -1068,7 +1068,7 @@ void C_Download_List::run()
 
 void C_Download_String_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str oldElement = os_trim(element->getValue());
       const _str& dest = this->inner->location.value;
 
@@ -1098,7 +1098,7 @@ void C_Download_String_Stack::run()
          else {
             newPath = os_stackPath(newPath);
          }
-         if (!this->uroboros->running) {
+         if (!this->uroboros->state == State::s_Running) {
             return;
          }
       }
@@ -1117,7 +1117,7 @@ void C_Download_String_Stack::run()
 
 void C_Download_List_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _list oldPaths = elements->getValue();
       const _size len = oldPaths.size();
 
@@ -1139,7 +1139,7 @@ void C_Download_List_Stack::run()
 
       _boo success = true;
 
-      for (_size i = 0; this->uroboros->running && i < len; i++) {
+      for (_size i = 0; this->uroboros->state == State::s_Running && i < len; i++) {
          const _str oldPath = os_trim(oldPaths[i]);
 
          if (os_isInvaild(oldPath) || !os_isPath(oldPath) || !os_exists(oldPath)) {
@@ -1159,7 +1159,7 @@ void C_Download_List_Stack::run()
             else {
                newPath = os_stackPath(newPath);
             }
-            if (!this->uroboros->running) {
+            if (!this->uroboros->state == State::s_Running) {
                break;
             }
          }
@@ -1181,7 +1181,7 @@ void C_Download_List_Stack::run()
 
 void C_CopyTo::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str n = os_trim(location->getValue());
 
@@ -1227,7 +1227,7 @@ void C_CopyTo::run()
 
 void C_CopyTo_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str n = os_trim(location->getValue());
 
@@ -1276,7 +1276,7 @@ void C_CopyTo_Stack::run()
 
 void C_CopyToAs::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       _str& oldPath = this->inner->path.value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
@@ -1328,7 +1328,7 @@ void C_CopyToAs::run()
 
 void C_CopyToAs_Stack::run()
 {
-   if (this->uroboros->running) {
+   if (this->uroboros->state == State::s_Running) {
       const _str& oldPath = this->inner->path.value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());

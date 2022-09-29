@@ -79,7 +79,7 @@ _boo F_ContainsDef::getValue()
    const _str v = this->value->getValue();
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          this->definition->reset();
          break;
       }

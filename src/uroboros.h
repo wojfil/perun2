@@ -33,16 +33,23 @@ namespace uro
 
 #define VERSION_STR L"1.0.6"
 
-inline constexpr  _int EXITCODE_OK =             0;
-inline constexpr  _int EXITCODE_RUNTIME_ERROR =  1;
-inline constexpr  _int EXITCODE_SYNTAX_ERROR =   2;
-inline constexpr  _int EXITCODE_CLI_ERROR =      3;
+inline constexpr _int EXITCODE_OK =             0;
+inline constexpr _int EXITCODE_RUNTIME_ERROR =  1;
+inline constexpr _int EXITCODE_SYNTAX_ERROR =   2;
+inline constexpr _int EXITCODE_CLI_ERROR =      3;
 
-inline constexpr  _uint32 FLAG_NULL =      0b000;
-inline constexpr  _uint32 FLAG_NOOMIT =    0b001;
-inline constexpr  _uint32 FLAG_SILENT =    0b010;
-inline constexpr  _uint32 FLAG_GUI =       0b100;
+inline constexpr _uint32 FLAG_NULL =      0b000;
+inline constexpr _uint32 FLAG_NOOMIT =    0b001;
+inline constexpr _uint32 FLAG_SILENT =    0b010;
+inline constexpr _uint32 FLAG_GUI =       0b100;
 
+enum State
+{
+   s_Running = 0,
+   s_Break,
+   s_Continue,
+   s_Exit
+};
 
 struct Uroboros
 {
@@ -61,10 +68,7 @@ public:
    const _uint32 flags;
    comm::ConditionContext conditionContext;
    const gen::PatternParser patternParser;
-
-   _boo running = true;
-   _boo break_ = false;
-   _boo continue_ = false;
+   State state = State::s_Running;
    _int exitCode = EXITCODE_OK;
 
 private:

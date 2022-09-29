@@ -232,7 +232,7 @@ public:
       this->inner->index.value.setToZero();
       _numi index(0LL);
 
-      while (this->uroboros->running && index != length) {
+      while (this->uroboros->state == State::s_Running && index != length) {
          const T& unit = values[index.value.i];
          this->this_->value = unit;
          if (this->hasAttribute) {

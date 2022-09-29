@@ -63,7 +63,7 @@ _num F_CountDef::getValue()
    _nint n = 0LL;
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          definition->reset();
          break;
       }
@@ -91,7 +91,7 @@ _num F_CountInside::getValue()
    _nint n = 0LL;
 
    while (definition->hasNext()) {
-      if (!this->uroboros->running) {
+      if (!this->uroboros->state == State::s_Running) {
          definition->reset();
          break;
       }

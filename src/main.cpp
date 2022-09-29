@@ -25,7 +25,7 @@
 
 namespace uro
 {
-   void uroConsoleInit()
+   void consoleInit()
    {
       std::wcin.tie(0);
       std::wcout.tie(0);
@@ -37,7 +37,7 @@ namespace uro
 
 _int wmain(_int argc, _char* argv[], _char* envp[])
 {
-   uro::uroConsoleInit();
+   uro::consoleInit();
 
    uro::Arguments arguments(&argc, &argv);
 

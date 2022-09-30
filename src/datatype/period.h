@@ -26,7 +26,7 @@ namespace uro
 // _tnum is a data structure used for every element of Time and Period
 // let it be "int" as default
 // it can be anything, but necessarily non-unsigned
-#define _tnum _int
+typedef _int _tnum;
 
 struct Period
 {

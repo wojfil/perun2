@@ -19,7 +19,6 @@
 #include "attribute.h"
 #include <set>
 #include <map>
-#include "windows.h"
 
 
 namespace uro

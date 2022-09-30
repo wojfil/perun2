@@ -18,38 +18,49 @@
 namespace uro::gen
 {
 
-_bool Not::getValue() {
+Not::Not(Generator<_bool>* val) 
+   : UnaryOperation<_bool>(val) { };
+
+And::And(Generator<_bool>* val1, Generator<_bool>* val2)
+   : BinaryOperation<_bool>(val1, val2) { };
+
+Or::Or(Generator<_bool>* val1, Generator<_bool>* val2)
+   : BinaryOperation<_bool>(val1, val2) { };
+
+Xor::Xor(Generator<_bool>* val1, Generator<_bool>* val2)
+   : BinaryOperation<_bool>(val1, val2) { };
+
+_bool Not::getValue() 
+{
    return !value->getValue();
-};
+}
 
-
-_bool And::getValue() {
+_bool And::getValue() 
+{
    return value1->getValue() && value2->getValue();
-};
+}
 
-
-_bool Or::getValue() {
+_bool Or::getValue() 
+{
    return value1->getValue() || value2->getValue();
-};
+}
 
-
-_bool Xor::getValue() {
+_bool Xor::getValue() 
+{
    return value1->getValue() ^ value2->getValue();
-};
-
+}
 
 InConstTimeList::InConstTimeList(Generator<_tim>* val, const _tlist& li)
    : value(val), list(sortedAndUniqueTimeList(li)) { };
 
-
 InConstTimeList::~InConstTimeList() 
 {
    delete value;
-};
+}
 
-
-_bool InConstTimeList::getValue() {
+_bool InConstTimeList::getValue() 
+{
    return std::binary_search(list.begin(), list.end(), value->getValue());
-};
+}
 
 }

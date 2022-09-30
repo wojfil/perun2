@@ -25,39 +25,34 @@
 namespace uro::gen
 {
 
-// logic negation:
 struct Not : UnaryOperation<_bool>
 {
-   Not(Generator<_bool>* val) : UnaryOperation<_bool>(val) { };
-
+public:
+   Not(Generator<_bool>* val);
    _bool getValue() override;
 };
 
 
-// three basic gates:
 struct And : BinaryOperation<_bool>
 {
-   And(Generator<_bool>* val1, Generator<_bool>* val2)
-      : BinaryOperation<_bool>(val1, val2) { };
-
+public:
+   And(Generator<_bool>* val1, Generator<_bool>* val2);
    _bool getValue() override;
 };
 
 
 struct Or : BinaryOperation<_bool>
 {
-   Or(Generator<_bool>* val1, Generator<_bool>* val2)
-      : BinaryOperation<_bool>(val1, val2) { };
-
+public:
+   Or(Generator<_bool>* val1, Generator<_bool>* val2);
    _bool getValue() override;
 };
 
 
 struct Xor : BinaryOperation<_bool>
 {
-   Xor(Generator<_bool>* val1, Generator<_bool>* val2)
-      : BinaryOperation<_bool>(val1, val2) { };
-
+public:
+   Xor(Generator<_bool>* val1, Generator<_bool>* val2);
    _bool getValue() override;
 };
 
@@ -71,12 +66,14 @@ public:
    InList<T> (Generator<T>* val, Generator<std::vector<T>>* li)
       : value(val), list(li) { };
 
-   ~InList<T>() {
+   ~InList<T>()
+   {
       delete value;
       delete list;
    };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       const std::vector<T> vs = list->getValue();
       const T v = value->getValue();
       const _size len = vs.size();
@@ -109,11 +106,13 @@ public:
       list.erase(std::unique(list.begin(), list.end()), list.end());
    };
 
-   ~InConstList<T>() {
+   ~InConstList<T>() 
+   {
       delete value;
    };
 
-   _bool getValue() override  {
+   _bool getValue() override
+   {
       return std::binary_search(list.begin(), list.end(), value->getValue());
    };
 
@@ -131,7 +130,6 @@ struct InConstTimeList : Generator<_bool>
 public:
    InConstTimeList(Generator<_tim>* val, const _tlist& li);
    ~InConstTimeList();
-
    _bool getValue() override;
 
 private:

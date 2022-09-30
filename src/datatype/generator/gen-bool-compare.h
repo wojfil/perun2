@@ -43,7 +43,8 @@ public:
       : value1(val1), value2(val2) { };
 
 protected:
-   ~Comparison<T>() {
+   ~Comparison<T>() 
+   {
       delete value1;
       delete value2;
    };
@@ -56,10 +57,12 @@ protected:
 template <typename T>
 struct Equals : Comparison<T>
 {
+public:
    Equals(Generator<T>* val1, Generator<T>* val2)
       : Comparison<T>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return this->value1->getValue() == this->value2->getValue();
    }
 };
@@ -68,10 +71,12 @@ struct Equals : Comparison<T>
 template <typename T>
 struct NotEquals : Comparison<T>
 {
+public:
    NotEquals(Generator<T>* val1, Generator<T>* val2)
       : Comparison<T>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return this->value1->getValue() != this->value2->getValue();
    }
 };
@@ -80,10 +85,12 @@ struct NotEquals : Comparison<T>
 template <typename T>
 struct Smaller : Comparison<T>
 {
+public:
    Smaller(Generator<T>* val1, Generator<T>* val2)
       : Comparison<T>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override
+   {
       return this->value1->getValue() < this->value2->getValue();
    }
 };
@@ -92,10 +99,12 @@ struct Smaller : Comparison<T>
 template <typename T>
 struct SmallerEquals : Comparison<T>
 {
+public:
    SmallerEquals(Generator<T>* val1, Generator<T>* val2)
       : Comparison<T>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override
+   {
       return this->value1->getValue() <= this->value2->getValue();
    }
 };
@@ -104,10 +113,12 @@ struct SmallerEquals : Comparison<T>
 template <typename T>
 struct Bigger : Comparison<T>
 {
+public:
    Bigger(Generator<T>* val1, Generator<T>* val2)
       : Comparison<T>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return this->value1->getValue() > this->value2->getValue();
    }
 };
@@ -116,10 +127,12 @@ struct Bigger : Comparison<T>
 template <typename T>
 struct BiggerEquals : Comparison<T>
 {
+public:
    BiggerEquals(Generator<T>* val1, Generator<T>* val2)
       : Comparison<T>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return this->value1->getValue() >= this->value2->getValue();
    }
 };
@@ -130,11 +143,13 @@ struct BiggerEquals : Comparison<T>
 template <typename T>
 struct CollectionsEqual : Comparison<std::vector<T>>
 {
+public:
    CollectionsEqual(Generator<std::vector<T>>* val1,
       Generator<std::vector<T>>* val2)
       : Comparison<std::vector<T>>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       const std::vector<T> v1 = this->value1->getValue();
       const std::vector<T> v2 = this->value2->getValue();
       const _size s1 = v1.size();
@@ -157,11 +172,13 @@ struct CollectionsEqual : Comparison<std::vector<T>>
 template <typename T>
 struct CollectionsNotEqual : Comparison<std::vector<T>>
 {
+public:
    CollectionsNotEqual(Generator<std::vector<T>>* val1,
       Generator<std::vector<T>>* val2)
       : Comparison<std::vector<T>>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override
+   {
       const std::vector<T> v1 = this->value1->getValue();
       const std::vector<T> v2 = this->value2->getValue();
       const _size s1 = v1.size();
@@ -184,11 +201,13 @@ struct CollectionsNotEqual : Comparison<std::vector<T>>
 template <typename T>
 struct CollectionsSmaller : Comparison<std::vector<T>>
 {
+public:
    CollectionsSmaller(Generator<std::vector<T>>* val1,
       Generator<std::vector<T>>* val2)
       : Comparison<std::vector<T>>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override
+   {
       return this->value1->getValue().size() < this->value2->getValue().size();
    }
 };
@@ -197,11 +216,13 @@ struct CollectionsSmaller : Comparison<std::vector<T>>
 template <typename T>
 struct CollectionsSmallerEquals : Comparison<std::vector<T>>
 {
+public:
    CollectionsSmallerEquals(Generator<std::vector<T>>* val1,
       Generator<std::vector<T>>* val2)
       : Comparison<std::vector<T>>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override
+   {
       const _size s1 = this->value1->getValue().size();
 
       return s1 == 0
@@ -214,11 +235,13 @@ struct CollectionsSmallerEquals : Comparison<std::vector<T>>
 template <typename T>
 struct CollectionsBigger : Comparison<std::vector<T>>
 {
+public:
    CollectionsBigger(Generator<std::vector<T>>* val1,
       Generator<std::vector<T>>* val2)
       : Comparison<std::vector<T>>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return this->value1->getValue().size() > this->value2->getValue().size();
    }
 };
@@ -227,11 +250,13 @@ struct CollectionsBigger : Comparison<std::vector<T>>
 template <typename T>
 struct CollectionsBiggerEquals : Comparison<std::vector<T>>
 {
+public:
    CollectionsBiggerEquals(Generator<std::vector<T>>* val1,
       Generator<std::vector<T>>* val2)
       : Comparison<std::vector<T>>(val1, val2) { };
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       const _size s2 = this->value2->getValue().size();
 
       return s2 == 0
@@ -252,12 +277,14 @@ public:
       Generator<T>* val)
       : collection(col), value(val) { };
 
-   ~CollectionValueEquals() {
+   ~CollectionValueEquals() 
+   {
       delete collection;
       delete value;
    }
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       const std::vector<T> c = collection->getValue();
       if (c.size() != 1) {
          return false;
@@ -280,12 +307,14 @@ public:
       Generator<T>* val)
       : collection(col), value(val) { };
 
-   ~CollectionValueNotEquals() {
+   ~CollectionValueNotEquals() 
+   {
       delete collection;
       delete value;
    }
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       const std::vector<T> c = collection->getValue();
       if (c.size() != 1) {
          return true;
@@ -307,11 +336,13 @@ public:
    CollectionValueSmaller(Generator<std::vector<T>>* col)
       : collection(col) { };
 
-   ~CollectionValueSmaller() {
+   ~CollectionValueSmaller() 
+   {
       delete collection;
    }
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return collection->getValue().size() < 1;
    }
 
@@ -327,11 +358,13 @@ public:
    CollectionValueSmallerEquals(Generator<std::vector<T>>* col)
       : collection(col) { };
 
-   ~CollectionValueSmallerEquals() {
+   ~CollectionValueSmallerEquals() 
+   {
       delete collection;
    }
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return collection->getValue().size() <= 1;
    }
 
@@ -347,11 +380,13 @@ public:
    CollectionValueBigger(Generator<std::vector<T>>* col)
       : collection(col) { };
 
-   ~CollectionValueBigger() {
+   ~CollectionValueBigger() 
+   {
       delete collection;
    }
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return collection->getValue().size() > 1;
    }
 
@@ -367,11 +402,13 @@ public:
    CollectionValueBiggerEquals(Generator<std::vector<T>>* col)
       : collection(col) { };
 
-   ~CollectionValueBiggerEquals() {
+   ~CollectionValueBiggerEquals() 
+   {
       delete collection;
    }
 
-   _bool getValue() override {
+   _bool getValue() override 
+   {
       return collection->getValue().size() >= 1;
    }
 
@@ -397,6 +434,7 @@ protected:
 
 struct DefinitionsEqual : DefComparison
 {
+public:
    DefinitionsEqual(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
@@ -406,6 +444,7 @@ struct DefinitionsEqual : DefComparison
 
 struct DefinitionsNotEqual : DefComparison
 {
+public:
    DefinitionsNotEqual(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
@@ -415,6 +454,7 @@ struct DefinitionsNotEqual : DefComparison
 
 struct DefinitionsSmaller : DefComparison
 {
+public:
    DefinitionsSmaller(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
@@ -424,6 +464,7 @@ struct DefinitionsSmaller : DefComparison
 
 struct DefinitionsSmallerEquals : DefComparison
 {
+public:
    DefinitionsSmallerEquals(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
@@ -433,6 +474,7 @@ struct DefinitionsSmallerEquals : DefComparison
 
 struct DefinitionsBigger : DefComparison
 {
+public:
    DefinitionsBigger(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
@@ -442,6 +484,7 @@ struct DefinitionsBigger : DefComparison
 
 struct DefinitionsBiggerEquals : DefComparison
 {
+public:
    DefinitionsBiggerEquals(_def* val1, _def* val2, uro::Uroboros* uro)
       : DefComparison(val1, val2, uro) { };
 
@@ -468,6 +511,7 @@ protected:
 
 struct DefinitionListEqual : DefListComparison
 {
+public:
    DefinitionListEqual(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
@@ -477,6 +521,7 @@ struct DefinitionListEqual : DefListComparison
 
 struct DefinitionListNotEqual : DefListComparison
 {
+public:
    DefinitionListNotEqual(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
@@ -486,6 +531,7 @@ struct DefinitionListNotEqual : DefListComparison
 
 struct DefinitionListSmaller : DefListComparison
 {
+public:
    DefinitionListSmaller(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
@@ -495,6 +541,7 @@ struct DefinitionListSmaller : DefListComparison
 
 struct DefinitionListSmallerEquals : DefListComparison
 {
+public:
    DefinitionListSmallerEquals(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
@@ -504,6 +551,7 @@ struct DefinitionListSmallerEquals : DefListComparison
 
 struct DefinitionListBigger : DefListComparison
 {
+public:
    DefinitionListBigger(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 
@@ -513,6 +561,7 @@ struct DefinitionListBigger : DefListComparison
 
 struct DefinitionListBiggerEquals : DefListComparison
 {
+public:
    DefinitionListBiggerEquals(_def* def, Generator<_list>* li, uro::Uroboros* uro)
       : DefListComparison(def, li, uro) { };
 

@@ -23,7 +23,7 @@ DefComparison::~DefComparison()
 {
    delete value1;
    delete value2;
-};
+}
 
 _bool DefinitionsEqual::getValue()
 {
@@ -59,7 +59,7 @@ _bool DefinitionsEqual::getValue()
    }
 
    return false;
-};
+}
 
 _bool DefinitionsNotEqual::getValue()
 {
@@ -95,7 +95,7 @@ _bool DefinitionsNotEqual::getValue()
    }
 
    return false;
-};
+}
 
 _bool DefinitionsSmaller::getValue()
 {
@@ -124,7 +124,7 @@ _bool DefinitionsSmaller::getValue()
    }
 
    return false;
-};
+}
 
 _bool DefinitionsSmallerEquals::getValue()
 {
@@ -153,7 +153,7 @@ _bool DefinitionsSmallerEquals::getValue()
    }
 
    return false;
-};
+}
 
 _bool DefinitionsBigger::getValue()
 {
@@ -182,7 +182,7 @@ _bool DefinitionsBigger::getValue()
    }
 
    return false;
-};
+}
 
 _bool DefinitionsBiggerEquals::getValue()
 {
@@ -211,14 +211,13 @@ _bool DefinitionsBiggerEquals::getValue()
    }
 
    return false;
-};
-
+}
 
 DefListComparison::~DefListComparison()
 {
    delete definition;
    delete list;
-};
+}
 
 _bool DefinitionListEqual::getValue()
 {

@@ -1418,25 +1418,10 @@ _bool os_hasExtension(const _str& value)
    return false;
 }
 
-_bool os_isDriveLetter(const _char& ch)
+inline _bool os_isDriveLetter(const _char& ch)
 {
-   // or just use normal comparisons ch > 'a'  etc
-   switch (ch) {
-      case L'a': case L'b': case L'c': case L'd': case L'e':
-      case L'f': case L'g': case L'h': case L'i': case L'j':
-      case L'k': case L'l': case L'm': case L'n': case L'o':
-      case L'p': case L'q': case L'r': case L's': case L't':
-      case L'u': case L'v': case L'w': case L'x': case L'y':
-      case L'z': case L'A': case L'B': case L'C': case L'D':
-      case L'E': case L'F': case L'G': case L'H': case L'I':
-      case L'J': case L'K': case L'L': case L'M': case L'N':
-      case L'O': case L'P': case L'Q': case L'R': case L'S':
-      case L'T': case L'U': case L'V': case L'W': case L'X':
-      case L'Y': case L'Z':
-         return true;
-      default:
-         return false;
-   }
+   return (ch >= L'a' && ch <= L'z') 
+       || (ch >= L'A' && ch <= L'Z');
 }
 
 _bool os_isPath(const _str value)

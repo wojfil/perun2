@@ -83,6 +83,26 @@ static Generator<T>* parseBinary(const Tokens& tks, uro::Uroboros* uro)
       return nullptr;
    }
 
+   if (condition->isConstant()) {
+      if (condition->getValue()) {
+         if (value->isConstant()) {
+            const T v = value->getValue();
+            delete condition;
+            delete value;
+            return new gen::Constant<T>(v);
+         }
+         else {
+            delete condition;
+            return value;
+         }
+      }
+      else {
+         delete condition;
+         delete value;
+         return new gen::Constant<T>(T());
+      }
+   }
+
    return new gen::Binary<T>(condition, value);
 }
 

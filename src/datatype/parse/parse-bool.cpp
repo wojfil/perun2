@@ -1159,23 +1159,23 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _cha
 
    if (result.first.isEmpty()) {
       if (result.second.isEmpty()) {
-         throw SyntaxException(str(L"both sides of ", charStr(sign),
+         throw SyntaxException(str(L"both sides of ", toStr(sign),
             L" comparison are empty"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"left side of ", charStr(sign),
+         throw SyntaxException(str(L"left side of ", toStr(sign),
             L" comparison is empty"), tks.first().line);
       }
    }
 
    if (result.second.isEmpty()) {
-      throw SyntaxException(str(L"right side of ", charStr(sign),
+      throw SyntaxException(str(L"right side of ", toStr(sign),
          L" comparison is empty"), tks.last().line);
    }
 
    if (result.second.first().isSymbol(L'=')) {
       if (result.second.getLength() == 1) {
-         throw SyntaxException(str(L"right side of ", charStr(sign),
+         throw SyntaxException(str(L"right side of ", toStr(sign),
             L"= comparison is empty"), result.second.first().line);
       }
 

@@ -485,7 +485,7 @@ _tim os_creation(const _str& path)
 _str os_drive(const _str& path)
 {
    return os_isAbsolute(path)
-      ? str(charStr(std::towupper(path[0])), L":")
+      ? str(toStr(std::towupper(path[0])), L":")
       : L"";
 }
 

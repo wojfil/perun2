@@ -733,11 +733,11 @@ _str F_Capitalize::getValue()
 
       if (isLetter) {
          if (prevLetter) {
-            toLowerChar(value[i]);
+            toLower(value[i]);
          }
          else {
             prevLetter = true;
-            toUpperChar(value[i]);
+            toUpper(value[i]);
          }
       }
       else {

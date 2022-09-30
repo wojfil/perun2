@@ -43,6 +43,8 @@ typedef FILETIME                    _ftim;
 typedef std::wstringstream          _stream;
 
 
+_str toStr(const _char& ch);
+
 template<typename T>
 _str toStr(const T &n)
 {
@@ -50,7 +52,6 @@ _str toStr(const T &n)
     s << n;
     return s.str();
 }
-
 
 template<typename... Args>
 _str str(Args const&... args)
@@ -70,12 +71,10 @@ _str str(Args const&... args)
    return result;
 }
 
-
-_str charStr(const _char& ch);
+void toLower(_char& ch);
 void toLower(_str& value);
+void toUpper(_char& ch);
 void toUpper(_str& value);
-void toLowerChar(_char& ch);
-void toUpperChar(_char& ch);
 
 }
 

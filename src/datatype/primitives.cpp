@@ -21,10 +21,14 @@
 namespace uro
 {
 
-_str charStr(const _char& ch) {
+_str toStr(const _char& ch) {
    return _str(1, ch);
 }
 
+void toLower(_char& ch)
+{
+   ch = std::tolower(ch, std::locale(""));
+}
 
 void toLower(_str& value)
 {
@@ -35,6 +39,10 @@ void toLower(_str& value)
    }
 }
 
+void toUpper(_char& ch)
+{
+   ch = std::toupper(ch, std::locale(""));
+}
 
 void toUpper(_str& value)
 {
@@ -43,16 +51,6 @@ void toUpper(_str& value)
    for (_size i = 0; i < len; i++) {
       value[i] = std::toupper(value[i], std::locale(""));
    }
-}
-
-void toLowerChar(_char& ch)
-{
-   ch = std::tolower(ch, std::locale(""));
-}
-
-void toUpperChar(_char& ch)
-{
-   ch = std::toupper(ch, std::locale(""));
 }
 
 }

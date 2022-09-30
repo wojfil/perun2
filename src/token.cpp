@@ -176,7 +176,7 @@ _str Token::getOriginString(Uroboros* uro) const
 {
    switch (type) {
       case Token::Type::t_Symbol: {
-         return charStr(value.ch);
+         return toStr(value.ch);
       }
       case Token::Type::t_MultiSymbol: {
          return _str(value.chars.am, value.chars.ch);

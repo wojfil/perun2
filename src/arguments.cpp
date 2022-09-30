@@ -121,7 +121,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
                      break;
                   }
                   default: {
-                     rawPrint(str(L"Command-line error: unknown option '", charStr(arg[j]), L"'."));
+                     rawPrint(str(L"Command-line error: unknown option '", toStr(arg[j]), L"'."));
                      return;
                   }
                }

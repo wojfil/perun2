@@ -164,7 +164,7 @@ std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
       }
    }
 
-   throw new SyntaxException(str(L"symbol '", charStr(symbol), L"' not found"), first().line);
+   throw new SyntaxException(str(L"symbol '", toStr(symbol), L"' not found"), first().line);
 }
 
 std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
@@ -179,10 +179,10 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
          if (sublen == 0) {
             if (result.empty()) {
-               throw SyntaxException(str(L"expression cannot this->start with a ", charStr(symbol), L" symbol"), t.line);
+               throw SyntaxException(str(L"expression cannot this->start with a ", toStr(symbol), L" symbol"), t.line);
             }
             else {
-               throw SyntaxException(str(L"adjacent ", charStr(symbol), L" symbols"), t.line);
+               throw SyntaxException(str(L"adjacent ", toStr(symbol), L" symbols"), t.line);
             }
          }
 
@@ -197,7 +197,7 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
 
    if (sublen == 0) {
       if (!isEmpty()) {
-         throw SyntaxException(str(L"expression cannot this->end with a ", charStr(symbol), L" symbol"), last().line);
+         throw SyntaxException(str(L"expression cannot this->end with a ", toStr(symbol), L" symbol"), last().line);
       }
    }
    else {

@@ -497,7 +497,7 @@ void invalidCharException(const _char& ch, const _int& line)
          throw SyntaxException(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
       }
       default: {
-         throw SyntaxException(str(L"character '", charStr(ch), L"' is not allowed in Uroboros"), line);
+         throw SyntaxException(str(L"character '", toStr(ch), L"' is not allowed in Uroboros"), line);
       }
    }
 }

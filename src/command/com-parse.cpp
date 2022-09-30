@@ -653,7 +653,7 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
             case L'%': {
                left.trimRight();
                if (left.isEmpty()) {
-                  throw SyntaxException(str(L"left side of the ", charStr(ch),
+                  throw SyntaxException(str(L"left side of the ", toStr(ch),
                      L"= operator is empty"), tks.last().line);
                }
 
@@ -797,7 +797,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          vars::ParseVariable<_str>* pv_str;
 
          if (uro->vars.getVarPtr(first, pv_str)) {
-            throw SyntaxException(str(L"operation ", charStr(sign),
+            throw SyntaxException(str(L"operation ", toStr(sign),
                L"= cannot be performed on a character from string variable"), first.line);
          }
 
@@ -814,13 +814,13 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             if (varSquareBrackets(aro)) {
                vars::ParseVariable<_tlist>* pv_tlist;
                if (uro->vars.getVarPtr(first, pv_tlist)) {
-                  throw SyntaxException(str(L"operation ", charStr(sign),
+                  throw SyntaxException(str(L"operation ", toStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable"), first.line);
                }
             }
          }
 
-         throw SyntaxException(str(L"operator ", charStr(sign),
+         throw SyntaxException(str(L"operator ", toStr(sign),
             L"= should be preceded by a variable name"), first.line);
       }
    }
@@ -831,7 +831,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          Generator<_num>* num;
 
          if (!parse::parse(uro, right, num)) {
-            throw SyntaxException(str(L"right side of operator ", charStr(sign),
+            throw SyntaxException(str(L"right side of operator ", toStr(sign),
                L"= cannot be resolved to a number"), first.line);
          }
 
@@ -862,7 +862,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                Generator<_per>* per;
 
                if (!parse::parse(uro, right, per)) {
-                  throw SyntaxException(str(L"right side of operator ", charStr(sign),
+                  throw SyntaxException(str(L"right side of operator ", toStr(sign),
                      L"= cannot be resolved to a period"), first.line);
                }
 
@@ -876,7 +876,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             case L'*':
             case L'/':
             case L'%': {
-               throw SyntaxException(str(L"operation ",  charStr(sign),
+               throw SyntaxException(str(L"operation ",  toStr(sign),
                   L"= cannot be performed on a period"), first.line);
             }
          }
@@ -888,7 +888,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             case L'*':
             case L'/':
             case L'%': {
-               throw SyntaxException(str(L"operation ", charStr(sign),
+               throw SyntaxException(str(L"operation ", toStr(sign),
                   L"= is not valid for a time variable"), first.line);
             }
          }
@@ -898,7 +898,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
          if (!parse::parse(uro, right, per)) {
             throw SyntaxException(str(L"right side of operator '", first.getOriginString(uro),
-               L" ", charStr(sign), L"=' cannot be resolved to a period"), first.line);
+               L" ", toStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
 
          pv_tim->makeNotConstant();
@@ -923,7 +923,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          case L'*':
          case L'/':
          case L'%': {
-            throw SyntaxException(str(L"operation ", charStr(sign),
+            throw SyntaxException(str(L"operation ", toStr(sign),
                L"= is not valid for a time variable"), first.line);
          }
       }
@@ -931,7 +931,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       vars::ParseVariable<_tim>* pv_tim;
       if (!uro->vars.getVarPtr(first, pv_tim)) {
          throw SyntaxException(str(L"'", first.getOriginString(uro),
-            L"' is not a time variable for ", charStr(sign), L"= operation"),
+            L"' is not a time variable for ", toStr(sign), L"= operation"),
             first.line);
       }
 
@@ -939,7 +939,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
       if (!parse::parse(uro, right, num)) {
          throw SyntaxException(str(L"right side of operation '", first.getOriginString(uro), L".",
-            first.getOriginString_2(uro), L" ", charStr(sign),
+            first.getOriginString_2(uro), L" ", toStr(sign),
             L"=' cannot be resolved to a number"), first.line);
       }
 
@@ -968,7 +968,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       parse::timeVariableMemberException(first, uro);
    }
    else {
-      throw SyntaxException(str(L"operator ", charStr(sign),
+      throw SyntaxException(str(L"operator ", toStr(sign),
          L"= has to be preceded by a single word, which is a variable name"),
          first.line);
    }

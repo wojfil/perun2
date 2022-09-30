@@ -19,14 +19,19 @@
 #include "time.h"
 #include "definition.h"
 
-#define _num Number
-#define _numi NumberInt
-#define _tim Time
-#define _per Period
-#define _nlist std::vector<Number>
-#define _tlist std::vector<Time>
-#define _def Definition
-#define _list std::vector<std::wstring>
 
+namespace uro
+{
+
+typedef Number                      _num;
+typedef NumberInt                   _numi;
+typedef Time                        _tim;
+typedef Period                      _per;
+typedef std::vector<Number>         _nlist;
+typedef std::vector<Time>           _tlist;
+typedef Definition                  _def;
+typedef std::vector<std::wstring>   _list;
+
+}
 
 #endif /* DATATYPE_H */

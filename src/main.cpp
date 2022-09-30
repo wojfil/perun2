@@ -23,6 +23,7 @@
 #include <fcntl.h>
 #include "uroboros.h"
 
+
 namespace uro
 {
    void consoleInit()
@@ -35,10 +36,9 @@ namespace uro
    }
 }
 
-_int wmain(_int argc, _char* argv[], _char* envp[])
+uro::_int wmain(uro::_int argc, uro::_char* argv[], uro::_char* envp[])
 {
    uro::consoleInit();
-
    uro::Arguments arguments(&argc, &argv);
 
    switch (arguments.getParseState())

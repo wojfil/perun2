@@ -23,7 +23,7 @@
 namespace uro
 {
 
-#define _aunit _uint64
+typedef _uint64 _aunit;
 
 inline constexpr _aunit ATTR_NULL =         0b00000000000000000000000000000000;
 inline constexpr _aunit ATTR_ACCESS =       0b00000000000000000000000000000001;

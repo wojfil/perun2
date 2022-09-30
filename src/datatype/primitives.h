@@ -19,27 +19,29 @@
 #include <cstdint>
 #include <string>
 #include <sstream>
-
-#define _bool bool
-#define _char wchar_t
-#define _str std::wstring
-
-#define _int int32_t
-#define _uint32 uint32_t
-#define _uint64 uint64_t
-#define _ulong long unsigned int
-#define _nint int64_t
-#define _ndouble long double
-#define _size std::size_t
-
-#define _adata WIN32_FILE_ATTRIBUTE_DATA
-#define _fdata WIN32_FIND_DATAW
-#define _ftim FILETIME
-#define _stream std::wstringstream
+#include <windows.h>
 
 
 namespace uro
 {
+
+typedef bool                        _bool;
+typedef wchar_t                     _char;
+typedef std::wstring                _str;
+
+typedef int32_t                     _int;
+typedef uint32_t                    _uint32;
+typedef uint64_t                    _uint64;
+typedef long unsigned int           _ulong;
+typedef int64_t                     _nint;
+typedef long double                 _ndouble;
+typedef std::size_t                 _size;
+
+typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
+typedef WIN32_FIND_DATAW            _fdata;
+typedef FILETIME                    _ftim;
+typedef std::wstringstream          _stream;
+
 
 template<typename T>
 _str toStr(const T &n)

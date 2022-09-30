@@ -23,8 +23,8 @@ namespace uro::func
 {
 
 // nice abbreviations:
-#define _single std::vector<Generator<_num>*>*
-#define _multi std::vector<Generator<_nlist>*>*
+typedef std::vector<Generator<_num>*>*     _single;
+typedef std::vector<Generator<_nlist>*>*   _multi;
 
 
 struct FuncAggr : Generator<_num>

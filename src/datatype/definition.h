@@ -28,7 +28,7 @@ namespace uro
 struct Definition : Generator<_str>
 {
 public:
-    virtual _boo hasNext() = 0;
+    virtual _bool hasNext() = 0;
     virtual void reset() = 0;
 
    _str getValue() override {

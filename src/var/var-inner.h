@@ -51,35 +51,35 @@ public:
 
    ThisState thisState;
    vars::Variable<_tim> access;
-   vars::Variable<_boo> archive;
+   vars::Variable<_bool> archive;
    vars::Variable<_tim> change;
-   vars::Variable<_boo> compressed;
+   vars::Variable<_bool> compressed;
    vars::Variable<_tim> creation;
    vars::Variable<_numi> depth;
    vars::Variable<_str> drive;
-   vars::Variable<_boo> empty;
-   vars::Variable<_boo> encrypted;
-   vars::Variable<_boo> exists;
+   vars::Variable<_bool> empty;
+   vars::Variable<_bool> encrypted;
+   vars::Variable<_bool> exists;
    vars::Variable<_str> extension;
    vars::Variable<_str> fullname;
-   vars::Variable<_boo> hidden;
+   vars::Variable<_bool> hidden;
    vars::Variable<_numi> index;
-   vars::Variable<_boo> isdirectory;
-   vars::Variable<_boo> isfile;
+   vars::Variable<_bool> isdirectory;
+   vars::Variable<_bool> isfile;
    vars::Variable<_per> lifetime;
    vars::Variable<_str> location;
    vars::Variable<_tim> modification;
    vars::Variable<_str> name;
    vars::Variable<_str> parent;
    vars::Variable<_str> path;
-   vars::Variable<_boo> readonly;
+   vars::Variable<_bool> readonly;
    vars::Variable<_num> size;
 
    vars::Variable<_num> this_n;
    vars::Variable<_str> this_s;
    vars::Variable<_tim> this_t;
 
-   vars::Variable<_boo> success;
+   vars::Variable<_bool> success;
 
    _str trimmed;
    const _str urocom;

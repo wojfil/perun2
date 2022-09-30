@@ -35,7 +35,7 @@ public:
    Constant<T> (const T val) : value(val) {};
    T getValue () override { return value; };
 
-   _boo isConstant() const override
+   _bool isConstant() const override
    {
       return true;
    };
@@ -76,7 +76,7 @@ template <typename T>
 struct Ternary : Generator<T>
 {
 public:
-   Ternary<T> (Generator<_boo>* cond, Generator<T>* le, Generator<T>* ri)
+   Ternary<T> (Generator<_bool>* cond, Generator<T>* le, Generator<T>* ri)
       : condition(cond), left(le), right(ri) {};
 
    ~Ternary<T>() {
@@ -90,7 +90,7 @@ public:
    };
 
 private:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    Generator<T>* left;
    Generator<T>* right;
 };
@@ -100,7 +100,7 @@ template <typename T>
 struct Binary : Generator<T>
 {
 public:
-   Binary<T> (Generator<_boo>* cond, Generator<T>* val)
+   Binary<T> (Generator<_bool>* cond, Generator<T>* val)
       : condition(cond), value(val){};
 
    T getValue () override {
@@ -113,7 +113,7 @@ public:
    }
 
 private:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    Generator<T>* value;
 };
 
@@ -206,7 +206,7 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(Generator<std::vector<T>>* li, Generator<_boo>* cond, Attribute* attr, uro::Uroboros* uro)
+   Filter_Where(Generator<std::vector<T>>* li, Generator<_bool>* cond, Attribute* attr, uro::Uroboros* uro)
       : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner),
         this_(nullptr), attribute(attr), hasAttribute(attr != nullptr)
    {
@@ -258,9 +258,9 @@ private:
    uro::InnerVariables* inner;
    vars::Variable<T>* this_;
    Generator<std::vector<T>>* list;
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 

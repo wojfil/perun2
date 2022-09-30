@@ -33,7 +33,7 @@ public:
 
    virtual ~Generator() { };
 
-   virtual _boo isConstant() const
+   virtual _bool isConstant() const
    {
       // artificially implemented simple reflection for parsing
       // constant generators are detected

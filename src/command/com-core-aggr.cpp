@@ -172,7 +172,7 @@ void C_Copy_String::run()
    if (os_exists(path)) {
       std::set<_str> set;
       set.insert(path);
-      const _boo s = os_copy(set);
+      const _bool s = os_copy(set);
       if (s) {
          logCopySuccess(this->uroboros, path);
       }
@@ -199,7 +199,7 @@ void C_Copy_List::run()
    }
 
    std::set<_str> set;
-   _boo anyFailure = false;
+   _bool anyFailure = false;
 
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
@@ -220,7 +220,7 @@ void C_Copy_List::run()
    }
 
    if (!set.empty()) {
-      const _boo s = os_copy(set);
+      const _bool s = os_copy(set);
       const auto end = set.end();
 
       for (auto it = set.begin(); it != end; ++it) {
@@ -246,7 +246,7 @@ void C_Select_String::run()
    }
 
    const _str path = os_join(this->inner->location.value, n);
-   _boo success = false;
+   _bool success = false;
 
    if (os_exists(path) && os_hasParentDirectory(path)) {
       const _str parent = os_parent(path);
@@ -337,7 +337,7 @@ void C_Select_List::run()
       this->inner->success.value = false;
    }
    else {
-      _boo anyFailed = false;
+      _bool anyFailed = false;
 
       for (auto it = selectPaths.begin(); it != selectPaths.end(); it++)
       {
@@ -345,7 +345,7 @@ void C_Select_List::run()
             break;
          }
 
-         const _boo success = os_select(it->first, it->second);
+         const _bool success = os_select(it->first, it->second);
          if (!anyFailed && !success) {
             anyFailed = true;
          }

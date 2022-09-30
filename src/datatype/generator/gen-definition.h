@@ -37,7 +37,7 @@ public:
 
 protected:
    uro::Uroboros* uroboros;
-   _boo first;
+   _bool first;
    _def* definition;
 };
 
@@ -45,11 +45,11 @@ protected:
 struct Filter_WhereDef : DefFilter
 {
 public:
-   Filter_WhereDef(_def* def, Generator<_boo>* cond, Attribute* attr, const _boo& hasMem, uro::Uroboros* uro)
+   Filter_WhereDef(_def* def, Generator<_bool>* cond, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro)
       : DefFilter(def, uro), condition(cond), attribute(attr), finished(true), inner(&uro->vars.inner),
         hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)), hasAttribute(true) {};
 
-   Filter_WhereDef(_def* def, Generator<_boo>* cond, uro::Uroboros* uro)
+   Filter_WhereDef(_def* def, Generator<_bool>* cond, uro::Uroboros* uro)
       : DefFilter(def, uro), condition(cond), attribute(nullptr), finished(true), inner(&uro->vars.inner),
         hasMemory(false), attrMemory(AttributeMemory(&uro->vars.inner)), hasAttribute(false) {};
 
@@ -60,16 +60,16 @@ public:
       }
    }
 
-   _boo hasNext() override;
+   _bool hasNext() override;
    void reset() override;
 
 private:
    uro::InnerVariables* inner;
-   _boo finished;
-   Generator<_boo>* condition;
+   _bool finished;
+   Generator<_bool>* condition;
    Attribute* attribute;
-   const _boo hasMemory;
-   const _boo hasAttribute;
+   const _bool hasMemory;
+   const _bool hasAttribute;
    AttributeMemory attrMemory;
    _numi index;
 };
@@ -81,14 +81,14 @@ public:
    DefinitionChain(_def* def, uro::Uroboros* uro);
    ~DefinitionChain();
 
-   _boo hasNext() override;
+   _bool hasNext() override;
    void reset() override;
 
 private:
    uro::InnerVariables* inner;
    _def* definition;
    _nint index = 0LL;
-   _boo finished = true;
+   _bool finished = true;
 };
 
 
@@ -102,7 +102,7 @@ public:
       delete number;
    }
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    _nint counter;
@@ -121,7 +121,7 @@ public:
       delete number;
    }
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::InnerVariables* inner;
@@ -141,7 +141,7 @@ public:
       delete number;
    }
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::InnerVariables* inner;
@@ -161,13 +161,13 @@ public:
    ~Join_DefStr();
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::Uroboros* uroboros;
    _def* left;
    Generator<_str>* right;
-   _boo taken;
+   _bool taken;
 };
 
 
@@ -180,13 +180,13 @@ public:
    ~Join_StrDef();
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::Uroboros* uroboros;
    Generator<_str>* left;
    _def* right;
-   _boo first;
+   _bool first;
 };
 
 
@@ -199,13 +199,13 @@ public:
    ~Join_DefList();
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::Uroboros* uroboros;
    _def* left;
    Generator<_list>* right;
-   _boo taken;
+   _bool taken;
    _size length;
    _size index;
    _list values;
@@ -221,14 +221,14 @@ public:
    ~Join_ListDef();
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::Uroboros* uroboros;
    Generator<_list>* left;
    _def* right;
-   _boo first;
-   _boo taken;
+   _bool first;
+   _bool taken;
    _size length;
    _size index;
    _list values;
@@ -244,14 +244,14 @@ public:
    ~Join_DefDef();
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    uro::Uroboros* uroboros;
    _def* left;
    _def* right;
-   _boo first;
-   _boo taken;
+   _bool first;
+   _bool taken;
 };
 
 
@@ -262,7 +262,7 @@ private:
 struct DefTernary : _def
 {
 public:
-   DefTernary(Generator<_boo>* cond, _def* le, _def* ri)
+   DefTernary(Generator<_bool>* cond, _def* le, _def* ri)
       : condition(cond), left(le), right(ri), first(true), isLeft(true) {};
 
    ~DefTernary() {
@@ -272,21 +272,21 @@ public:
    }
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    _def* left;
    _def* right;
-   _boo first;
-   _boo isLeft;
+   _bool first;
+   _bool isLeft;
 };
 
 
 struct DefBinary : _def
 {
 public:
-   DefBinary(Generator<_boo>* cond, _def* le)
+   DefBinary(Generator<_bool>* cond, _def* le)
       : condition(cond), left(le), first(true) {};
 
    ~DefBinary() {
@@ -295,12 +295,12 @@ public:
    }
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    _def* left;
-   _boo first;
+   _bool first;
 };
 
 }

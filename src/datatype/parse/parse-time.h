@@ -29,7 +29,7 @@ static _tnum tokenToTimeNumber(const Token& tk);
 static void checkDayCorrectness(const _tnum& day, const _tnum& month, const _tnum& year, const Token& tk);
 static void clockUnitException(const _str& unit, const _tnum& value, const Token& tk);
 static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro);
-static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
+static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
    Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks, _int& numReserve, uro::Uroboros* uro);
 
 }

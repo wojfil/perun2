@@ -61,7 +61,7 @@ _def* parseDefinition(const Tokens& tks, uro::Uroboros* uro)
 }
 
 
-static _boo isDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
+static _bool isDefinitionChain(const Tokens& tks, uro::Uroboros* uro)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -237,7 +237,7 @@ _def* parseDefTernary(const Tokens& tks, uro::Uroboros* uro)
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    if (!parse(uro, std::get<0>(trio), condition)) {
       return nullptr;
    }
@@ -267,7 +267,7 @@ static _def* parseDefBinary(const Tokens& tks, uro::Uroboros* uro)
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
 
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    if (!parse(uro, pair.first, condition)) {
       return nullptr;
    }

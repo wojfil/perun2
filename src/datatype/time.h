@@ -49,7 +49,7 @@ struct Time
    TimeType type;
 
    _str toString() const;
-   void initClock(const _boo& withSeconds, const _tnum& recentChange);
+   void initClock(const _bool& withSeconds, const _tnum& recentChange);
 
    void addYears(const _tnum& y);
    void addMonths(const _tnum& m);
@@ -68,19 +68,19 @@ struct Time
 
    Time toDate() const;
    _tnum getWeekDay() const;
-   _boo equalsExactly(const Time& tim) const;
-   _boo isEmpty() const;
+   _bool equalsExactly(const Time& tim) const;
+   _bool isEmpty() const;
    void setValue(const Time& tim);
 
    Time& operator += (const Period& per);
    Time& operator -= (const Period& per);
 
-   _boo operator == (const Time& tim) const;
-   _boo operator != (const Time& tim) const;
-   _boo operator < (const Time& tim) const;
-   _boo operator > (const Time& tim) const;
-   _boo operator <= (const Time& tim) const;
-   _boo operator >= (const Time& tim) const;
+   _bool operator == (const Time& tim) const;
+   _bool operator != (const Time& tim) const;
+   _bool operator < (const Time& tim) const;
+   _bool operator > (const Time& tim) const;
+   _bool operator <= (const Time& tim) const;
+   _bool operator >= (const Time& tim) const;
 
    Period operator - (const Time& tim) const;
 
@@ -91,11 +91,11 @@ _str monthToString(const _tnum& month);
 _str weekdayToString(const _tnum& wday);
 
 inline _str fillTimeUnit(const _tnum& val);
-inline _boo isLeapYear(const _tnum& year);
+inline _bool isLeapYear(const _tnum& year);
 _tnum daysInMonth(const _tnum& month, const _tnum& year);
 inline Period timeDifference(const Time& min, const Time& max);
 inline _tnum daysInYears(const _tnum& min, const _tnum& max);
-inline void decrementMonth(Period& p, const Time& t, const _boo& addDays);
+inline void decrementMonth(Period& p, const Time& t, const _bool& addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);

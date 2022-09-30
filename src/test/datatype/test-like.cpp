@@ -376,11 +376,11 @@ void test_like()
 }
 
 
-void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _boo& expectedResult)
+void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _bool& expectedResult)
 {
    // std::wcout << caseId << std::endl;
    gen::LikeComparer* comparer = gen::parseLikeCmp(pattern);
-   const _boo result = comparer->compareToPattern(value);
+   const _bool result = comparer->compareToPattern(value);
    VERIFY(result == expectedResult, caseId);
    delete comparer;
 }

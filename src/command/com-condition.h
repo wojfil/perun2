@@ -29,11 +29,11 @@ struct CS_Condition : Command
 public:
    CS_Condition();
    ~CS_Condition();
-   void setMain(Command* mainCom, Generator<_boo>* mainCond);
-   void setMain(Generator<_boo>* mainCond);
+   void setMain(Command* mainCom, Generator<_bool>* mainCond);
+   void setMain(Generator<_bool>* mainCond);
    void setCommand(Command* com);
    Command* getMainCommand();
-   Generator<_boo>* getMainCondition();
+   Generator<_bool>* getMainCondition();
 
    void run() override;
 
@@ -41,7 +41,7 @@ private:
    Command* command;
 
    Command* mainCommand = nullptr;
-   Generator<_boo>* mainCondition = nullptr;
+   Generator<_bool>* mainCondition = nullptr;
 };
 
 
@@ -49,11 +49,11 @@ private:
 struct If_Base : Command
 {
 public:
-   If_Base(Generator<_boo>* cond, Command* com);
+   If_Base(Generator<_bool>* cond, Command* com);
    ~If_Base();
 
 protected:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    Command* mainCommand;
 };
 
@@ -61,7 +61,7 @@ protected:
 struct If_Raw : If_Base
 {
 public:
-   If_Raw(Generator<_boo>* cond, Command* com);
+   If_Raw(Generator<_bool>* cond, Command* com);
    void run() override;
 };
 
@@ -69,7 +69,7 @@ public:
 struct If_Else : If_Base
 {
 public:
-   If_Else(Generator<_boo>* cond, Command* com, Command* alt);
+   If_Else(Generator<_bool>* cond, Command* com, Command* alt);
    ~If_Else();
    void run() override;
 
@@ -81,12 +81,12 @@ private:
 struct If_ElseIf : If_Base
 {
 public:
-   If_ElseIf(Generator<_boo>* cond, Command* com, Generator<_boo>* altCond, Command* alt);
+   If_ElseIf(Generator<_bool>* cond, Command* com, Generator<_bool>* altCond, Command* alt);
    ~If_ElseIf();
    void run() override;
 
 private:
-   Generator<_boo>* altCondition;
+   Generator<_bool>* altCondition;
    Command* altCommand;
 };
 
@@ -94,12 +94,12 @@ private:
 struct If_ElseIfElse : If_Base
 {
 public:
-   If_ElseIfElse(Generator<_boo>* cond, Command* com, Generator<_boo>* altCond, Command* alt, Command* els);
+   If_ElseIfElse(Generator<_bool>* cond, Command* com, Generator<_bool>* altCond, Command* alt, Command* els);
    ~If_ElseIfElse();
    void run() override;
 
 private:
-   Generator<_boo>* altCondition;
+   Generator<_bool>* altCondition;
    Command* altCommand;
    Command* elseCommand;
 };
@@ -108,12 +108,12 @@ private:
 struct If_ManyAlternatives : If_Base
 {
 public:
-   If_ManyAlternatives(Generator<_boo>* cond, Command* com,
-      const std::vector<Generator<_boo>*>& altConds, const std::vector<Command*>& altComms);
+   If_ManyAlternatives(Generator<_bool>* cond, Command* com,
+      const std::vector<Generator<_bool>*>& altConds, const std::vector<Command*>& altComms);
    ~If_ManyAlternatives();
 
 protected:
-   std::vector<Generator<_boo>*> altConditions;
+   std::vector<Generator<_bool>*> altConditions;
    std::vector<Command*> altCommands;
    const _size altCount;
 };
@@ -122,7 +122,7 @@ protected:
 struct If_Alts : If_ManyAlternatives
 {
 public:
-   If_Alts(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds,
+   If_Alts(Generator<_bool>* cond, Command* com, const std::vector<Generator<_bool>*>& altConds,
       const std::vector<Command*>& altComms);
    void run() override;
 };
@@ -131,7 +131,7 @@ public:
 struct If_AltsElse : If_ManyAlternatives
 {
 public:
-   If_AltsElse(Generator<_boo>* cond, Command* com, const std::vector<Generator<_boo>*>& altConds,
+   If_AltsElse(Generator<_bool>* cond, Command* com, const std::vector<Generator<_bool>*>& altConds,
       const std::vector<Command*>& altComms, Command* els);
    ~If_AltsElse();
    void run() override;

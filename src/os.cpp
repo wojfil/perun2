@@ -127,13 +127,13 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
 
    // below are "real" attributes of files and directories
    _adata data;
-   const _boo gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
+   const _bool gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
    const DWORD& dwAttrib = data.dwFileAttributes;
-   const _boo exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
+   const _bool exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
    inner.exists.value = exists;
 
-   _boo isDir;
-   _boo isFile;
+   _bool isDir;
+   _bool isFile;
 
    if (exists) {
       isDir = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
@@ -167,8 +167,8 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
          : _tim();
    }
 
-   const _boo hasMod = attr->has(ATTR_MODIFICATION);
-   const _boo hasChange = attr->has(ATTR_CHANGE);
+   const _bool hasMod = attr->has(ATTR_MODIFICATION);
+   const _bool hasChange = attr->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
       const _tim time = exists
          ? convertToUroTime(&data.ftLastWriteTime)
@@ -368,8 +368,8 @@ void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
       inner.creation.value = convertToUroTime(&data->ftCreationTime);
    }
 
-   const _boo hasMod = attr->has(ATTR_MODIFICATION);
-   const _boo hasChange = attr->has(ATTR_CHANGE);
+   const _bool hasMod = attr->has(ATTR_MODIFICATION);
+   const _bool hasChange = attr->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
       const _tim time = convertToUroTime(&data->ftLastWriteTime);
 
@@ -442,7 +442,7 @@ _tim os_access(const _str& path)
    return convertToUroTime(&data.ftLastAccessTime);
 }
 
-_boo os_archive(const _str& path)
+_bool os_archive(const _str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_ARCHIVE);
 }
@@ -462,7 +462,7 @@ _tim os_change(const _str& path)
    return convertToUroTime(&data.ftLastWriteTime);
 }
 
-_boo os_compressed(const _str& path)
+_bool os_compressed(const _str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_COMPRESSED);
 }
@@ -489,7 +489,7 @@ _str os_drive(const _str& path)
       : L"";
 }
 
-_boo os_empty(const _str& path)
+_bool os_empty(const _str& path)
 {
    _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
@@ -506,18 +506,18 @@ _boo os_empty(const _str& path)
       : os_emptyFile(data);
 }
 
-_boo os_encrypted(const _str& path)
+_bool os_encrypted(const _str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_ENCRYPTED);
 }
 
-_boo os_emptyFile(const _adata& data)
+_bool os_emptyFile(const _adata& data)
 {
    return data.nFileSizeLow == 0
        && data.nFileSizeHigh == 0;
 }
 
-_boo os_emptyDirectory(const _str& path)
+_bool os_emptyDirectory(const _str& path)
 {
    _fdata data;
    HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
@@ -575,7 +575,7 @@ _str os_fullname(const _str& value)
    return value;
 }
 
-_boo os_hasAttribute(const _str& path, const ULONG& attribute)
+_bool os_hasAttribute(const _str& path, const ULONG& attribute)
 {
    DWORD dwAttrib = GetFileAttributesW(path.c_str());
 
@@ -583,12 +583,12 @@ _boo os_hasAttribute(const _str& path, const ULONG& attribute)
           (dwAttrib & attribute);
 }
 
-_boo os_hidden(const _str& path)
+_bool os_hidden(const _str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_HIDDEN);
 }
 
-_boo os_isFile(const _str& path)
+_bool os_isFile(const _str& path)
 {
    DWORD dwAttrib = GetFileAttributesW(path.c_str());
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
@@ -598,7 +598,7 @@ _boo os_isFile(const _str& path)
    return !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
 }
 
-_boo os_isDirectory(const _str& path)
+_bool os_isDirectory(const _str& path)
 {
    DWORD dwAttrib = GetFileAttributesW(path.c_str());
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
@@ -648,7 +648,7 @@ _str os_name(const _str& value)
    const _int len = value.length();
    _int i = len - 1;
    _int dot = -1;
-   _boo sep = false;
+   _bool sep = false;
 
    for (; i >= 0; i--) {
       const _char& ch = value[i];
@@ -686,7 +686,7 @@ _str os_parent(const _str& path)
    return L"";
 }
 
-_boo os_readonly(const _str& path)
+_bool os_readonly(const _str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
@@ -737,7 +737,7 @@ _nint os_sizeDirectory(const _str& path, Uroboros* uro)
    return totalSize;
 }
 
-_boo os_exists(const _str& path)
+_bool os_exists(const _str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -747,7 +747,7 @@ _boo os_exists(const _str& path)
       != INVALID_FILE_ATTRIBUTES;
 }
 
-_boo os_fileExists(const _str& path)
+_bool os_fileExists(const _str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -759,7 +759,7 @@ _boo os_fileExists(const _str& path)
           (!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)));
 }
 
-_boo os_directoryExists(const _str& path)
+_bool os_directoryExists(const _str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -778,7 +778,7 @@ _boo os_directoryExists(const _str& path)
 ///
 /////
 
-_boo os_delete(const _str& path)
+_bool os_delete(const _str& path)
 {
    _char wszFrom[MAX_PATH] = { 0 };
    wcscpy(wszFrom, path.c_str());
@@ -794,21 +794,21 @@ _boo os_delete(const _str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-_boo os_drop(const _str& path, Uroboros* uro)
+_bool os_drop(const _str& path, Uroboros* uro)
 {
    return os_isFile(path)
       ? os_dropFile(path)
       : os_dropDirectory(path, uro);
 }
 
-_boo os_drop(const _str& path, const _boo& isFile, Uroboros* uro)
+_bool os_drop(const _str& path, const _bool& isFile, Uroboros* uro)
 {
    return isFile
       ? os_dropFile(path)
       : os_dropDirectory(path, uro);
 }
 
-_boo os_dropFile(const _str& path)
+_bool os_dropFile(const _str& path)
 {
    WINBOOL w = DeleteFileW(path.c_str());
 
@@ -823,7 +823,7 @@ _boo os_dropFile(const _str& path)
    return false;
 }
 
-_boo os_dropDirectory(const _str& path, Uroboros* uro)
+_bool os_dropDirectory(const _str& path, Uroboros* uro)
 {
    HANDLE hFind;
    _fdata FindFileData;
@@ -889,7 +889,7 @@ _boo os_dropDirectory(const _str& path, Uroboros* uro)
    return RemoveDirectoryW(const_cast<_char*>(path.c_str())) != 0;
 }
 
-_boo os_hide(const _str& path)
+_bool os_hide(const _str& path)
 {
    const _char* p = path.c_str();
    const DWORD attr = GetFileAttributesW(p);
@@ -904,7 +904,7 @@ _boo os_hide(const _str& path)
    return true;
 }
 
-_boo os_lock(const _str& path)
+_bool os_lock(const _str& path)
 {
    const _char* p = path.c_str();
    const DWORD attr = GetFileAttributesW(p);
@@ -919,19 +919,19 @@ _boo os_lock(const _str& path)
    return true;
 }
 
-_boo os_open(const _str& path)
+_bool os_open(const _str& path)
 {
    const _str location = os_parent(path);
    return (INT_PTR)ShellExecuteW(0, 0, path.c_str(), 0, location.c_str() , SW_SHOW) > 32;
 }
 
-_boo os_openWith(const _str& program, const _str& path)
+_bool os_openWith(const _str& program, const _str& path)
 {
    const _str location = os_parent(path);
    return (INT_PTR)ShellExecuteW(NULL, L"open", program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
 }
 
-_boo os_unhide(const _str& path)
+_bool os_unhide(const _str& path)
 {
    const _char* p = path.c_str();
    const DWORD attr = GetFileAttributesW(p);
@@ -946,7 +946,7 @@ _boo os_unhide(const _str& path)
    return true;
 }
 
-_boo os_unlock(const _str& path)
+_bool os_unlock(const _str& path)
 {
    const _char* p = path.c_str();
    const DWORD attr = GetFileAttributesW(p);
@@ -962,7 +962,7 @@ _boo os_unlock(const _str& path)
 }
 
 
-_boo os_setTime(const _str& path, const _tim& creation,
+_bool os_setTime(const _str& path, const _tim& creation,
    const _tim& access, const _tim& modification)
 {
    _ftim time_c;
@@ -994,17 +994,17 @@ _boo os_setTime(const _str& path, const _tim& creation,
       return false;
    }
 
-   const _boo result = SetFileTime(handle, &time_c, &time_a, &time_m);
+   const _bool result = SetFileTime(handle, &time_c, &time_a, &time_m);
    CloseHandle(handle);
    return result;
 }
 
-_boo os_createFile(const _str& path)
+_bool os_createFile(const _str& path)
 {
    if (os_hasParentDirectory(path)) {
       const _str p = os_parent(path);
       if (!os_exists(p)) {
-         const _boo b = os_createDirectory(p);
+         const _bool b = os_createDirectory(p);
          if (!b) {
             return false;
          }
@@ -1032,12 +1032,12 @@ _boo os_createFile(const _str& path)
    }
 }
 
-_boo os_createDirectory(const _str& path)
+_bool os_createDirectory(const _str& path)
 {
    if (os_hasParentDirectory(path)) {
       const _str p = os_parent(path);
       if (!os_exists(p)) {
-         const _boo b = os_createDirectory(p);
+         const _bool b = os_createDirectory(p);
          if (!b) {
             return false;
          }
@@ -1050,18 +1050,18 @@ _boo os_createDirectory(const _str& path)
    return CreateDirectoryW(path.c_str(), NULL) != 0;
 }
 
-_boo os_moveTo(const _str& oldPath, const _str& newPath)
+_bool os_moveTo(const _str& oldPath, const _str& newPath)
 {
    return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile, Uroboros* uro)
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, Uroboros* uro)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
    }
    else {
-      const _boo success = os_copyToDirectory(oldPath, newPath, uro);
+      const _bool success = os_copyToDirectory(oldPath, newPath, uro);
       if (!success && !uro->state == State::s_Running && os_directoryExists(newPath)) {
          // if directory copy operation
          // was stopped by the user
@@ -1073,12 +1073,12 @@ _boo os_copyTo(const _str& oldPath, const _str& newPath, const _boo& isFile, Uro
    }
 }
 
-_boo os_copyToFile(const _str& oldPath, const _str& newPath)
+_bool os_copyToFile(const _str& oldPath, const _str& newPath)
 {
    return CopyFileW(oldPath.c_str(), newPath.c_str(), true) != 0;
 }
 
-_boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
+_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1149,7 +1149,7 @@ _boo os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
    return true;
 }
 
-_boo os_copy(const std::set<_str>& paths)
+_bool os_copy(const std::set<_str>& paths)
 {
     _size totalSize = sizeof(DROPFILES) + sizeof(_char);
 
@@ -1179,7 +1179,7 @@ _boo os_copy(const std::set<_str>& paths)
    return true;
 }
 
-_boo os_select(const _str& parent, const std::set<_str>& paths)
+_bool os_select(const _str& parent, const std::set<_str>& paths)
 {
    ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
    std::vector<ITEMIDLIST*> v;
@@ -1200,7 +1200,7 @@ _boo os_select(const _str& parent, const std::set<_str>& paths)
    return hr == S_OK;
 }
 
-_boo os_run(const _str& comm, Uroboros* uro)
+_bool os_run(const _str& comm, Uroboros* uro)
 {
    uro->sideProcess.running = true;
    STARTUPINFO si;
@@ -1236,7 +1236,7 @@ _boo os_run(const _str& comm, Uroboros* uro)
    return uro->state == State::s_Running && dwExitCode == 0;
 }
 
-_boo os_process(const _str& command, const _str& location)
+_bool os_process(const _str& command, const _str& location)
 {
    STARTUPINFO si;
    PROCESS_INFORMATION pi;
@@ -1264,7 +1264,7 @@ _boo os_process(const _str& command, const _str& location)
    ) != 0;
 }
 
-_boo os_isInvaild(const _str& path)
+_bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();
 
@@ -1377,7 +1377,7 @@ _str os_join(const _str& path1, const _str& path2)
       : str(path1, OS_SEPARATOR_STRING, path2);
 }
 
-_boo os_isAbsolute(const _str& path)
+_bool os_isAbsolute(const _str& path)
 {
    switch (path.size()) {
       case 0:
@@ -1398,7 +1398,7 @@ _boo os_isAbsolute(const _str& path)
    return path[1] == L':' && os_isDriveLetter(path[0]);
 }
 
-_boo os_hasExtension(const _str& value)
+_bool os_hasExtension(const _str& value)
 {
    const _int len = value.length();
 
@@ -1418,7 +1418,7 @@ _boo os_hasExtension(const _str& value)
    return false;
 }
 
-_boo os_isDriveLetter(const _char& ch)
+_bool os_isDriveLetter(const _char& ch)
 {
    // or just use normal comparisons ch > 'a'  etc
    switch (ch) {
@@ -1439,12 +1439,12 @@ _boo os_isDriveLetter(const _char& ch)
    }
 }
 
-_boo os_isPath(const _str value)
+_bool os_isPath(const _str value)
 {
    return value.find(OS_SEPARATOR) != _str::npos;
 }
 
-_boo os_hasParentDirectory(const _str& path)
+_bool os_hasParentDirectory(const _str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -1546,7 +1546,7 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
    return newPath;
 }
 
-_boo os_pathWasStacked(const _str& basePath)
+_bool os_pathWasStacked(const _str& basePath)
 {
    const _size len = basePath.length();
    if (len < 4 || basePath[len - 1] != L')') {
@@ -1639,7 +1639,7 @@ _size os_readFile_size(const _str& path)
     return fileinfo.st_size;
 }
 
-_str os_readFile(const _str& path, _boo& result)
+_str os_readFile(const _str& path, _bool& result)
 {
    _str buffer;
    FILE* f = _wfopen(path.c_str(), L"rtS, ccs=UTF-8");
@@ -1668,7 +1668,7 @@ void os_showWebsite(const _str& url)
    ShellExecuteW(NULL, L"open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-_boo os_find(const _str& path, const _str& value)
+_bool os_find(const _str& path, const _str& value)
 {
    std::wifstream stream(path.c_str());
    if (!stream) {
@@ -1680,7 +1680,7 @@ _boo os_find(const _str& path, const _str& value)
    }
 
    _str line;
-   _boo result = false;
+   _bool result = false;
 
    while (std::getline(stream, line)) {
       if (line.find(value) != _str::npos) {
@@ -1701,7 +1701,7 @@ inline _nint bigInteger(const _uint32& low, const _uint32& high)
    return n;
 }
 
-inline _boo os_isBrowsePath(const _str& path)
+inline _bool os_isBrowsePath(const _str& path)
 {
    // this is an equivalent to
    // return path == L"." || path == L"..";
@@ -1737,7 +1737,7 @@ inline _tim convertToUroTime(const _ftim* time)
    }
 }
 
-inline _boo convertToFileTime(const _tim& uroTime, _ftim& result)
+inline _bool convertToFileTime(const _tim& uroTime, _ftim& result)
 {
    _SYSTEMTIME stime;
    stime.wYear = uroTime.year;
@@ -1758,7 +1758,7 @@ inline _boo convertToFileTime(const _tim& uroTime, _ftim& result)
 _str os_makeArg(const _str& value)
 {
    const _size len = value.size();
-   _boo anySpace = false;
+   _bool anySpace = false;
    _size quotes = 0;
 
    for (_size i = 0; i < len; i++) {

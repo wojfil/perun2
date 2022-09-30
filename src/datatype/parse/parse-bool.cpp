@@ -28,12 +28,12 @@
 namespace uro::parse
 {
 
-Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
+Generator<_bool>* parseBool(const Tokens& tks, uro::Uroboros* uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_boo>* unit = nullptr;
+      Generator<_bool>* unit = nullptr;
       parseOneToken(uro, tks, unit);
       return unit;
    }
@@ -42,10 +42,10 @@ Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
       return nullptr;
    }
 
-   const _boo possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
+   const _bool possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_boo>* func = func::boolFunction(tks, uro);
+      Generator<_bool>* func = func::boolFunction(tks, uro);
       if (func != nullptr) {
          return func;
       }
@@ -62,7 +62,7 @@ Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
          {
             if (!(t.isKeyword(Keyword::kw_Not) && i != end && (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like))))
             {
-               Generator<_boo>* boo = parseBoolExp(tks, uro);
+               Generator<_bool>* boo = parseBoolExp(tks, uro);
                if (boo == nullptr) {
                   throw SyntaxException(L"syntax of a boolean expression is not valid", tks.first().line);
                }
@@ -75,26 +75,26 @@ Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   Generator<_boo>* cmp = parseComparisons(tks, uro);
+   Generator<_bool>* cmp = parseComparisons(tks, uro);
    if (cmp != nullptr) {
       return cmp;
    }
 
    if (tks.check(TI_HAS_KEYWORD_IN)) {
-      Generator<_boo>* boo = parseIn(tks, uro);
+      Generator<_bool>* boo = parseIn(tks, uro);
       if (boo != nullptr) {
          return boo;
       }
    }
 
    if (tks.check(TI_HAS_KEYWORD_LIKE)) {
-      Generator<_boo>* boo = parseLike(tks, uro);
+      Generator<_bool>* boo = parseLike(tks, uro);
       if (boo != nullptr) {
          return boo;
       }
    }
 
-   Generator<_boo>* tern = parseTernary<_boo>(tks, uro);
+   Generator<_bool>* tern = parseTernary<_bool>(tks, uro);
    if (tern != nullptr) {
       return tern;
    }
@@ -106,9 +106,9 @@ Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro)
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
 {
-   std::vector<ExpElement<_boo>*> infList; // infix notation list
+   std::vector<ExpElement<_bool>*> infList; // infix notation list
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
    _int sublen = 0, lv1 = 0, lv2 = 0;
@@ -116,7 +116,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Keyword) {
-         const _boo free = (lv1 == 0) && (lv2 == 0);
+         const _bool free = (lv1 == 0) && (lv2 == 0);
          if (isBoolExpOperator(t)) {
             if (t.isKeyword(Keyword::kw_Not) && i != end &&
                 (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like)))
@@ -126,7 +126,7 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
             else {
                const _char ch = toBoolExpOperator(t);
                if (sublen == 0) {
-                  infList.push_back(new ExpElement<_boo>(ch, t.line));
+                  infList.push_back(new ExpElement<_bool>(ch, t.line));
                }
                else {
                   if (free) {
@@ -134,16 +134,16 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
                      const _int line = tks2.first().line;
 
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-                        const _boo boo = tks2.first().value.keyword.k == Keyword::kw_True;
-                        infList.push_back(new ExpElement<_boo>(boo, line));
-                        infList.push_back(new ExpElement<_boo>(ch, line));
+                        const _bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
+                        infList.push_back(new ExpElement<_bool>(boo, line));
+                        infList.push_back(new ExpElement<_bool>(ch, line));
                         sublen = 0;
                      }
                      else {
-                        Generator<_boo>* boo;
+                        Generator<_bool>* boo;
                         if (parse(uro, tks2, boo)) {
-                           infList.push_back(new ExpElement<_boo>(boo, line));
-                           infList.push_back(new ExpElement<_boo>(ch, line));
+                           infList.push_back(new ExpElement<_bool>(boo, line));
+                           infList.push_back(new ExpElement<_bool>(ch, line));
                            sublen = 0;
                         }
                         else {
@@ -196,13 +196,13 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
       const Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-         const _boo boo = (tks2.first().value.keyword.k == Keyword::kw_True);
-         infList.push_back(new ExpElement<_boo>(boo, tks2.first().line));
+         const _bool boo = (tks2.first().value.keyword.k == Keyword::kw_True);
+         infList.push_back(new ExpElement<_bool>(boo, tks2.first().line));
       }
       else {
-         Generator<_boo>* boo;
+         Generator<_bool>* boo;
          if (parse(uro, tks2, boo)) {
-            infList.push_back(new ExpElement<_boo>(boo, tks2.first().line));
+            infList.push_back(new ExpElement<_bool>(boo, tks2.first().line));
          }
          else {
             langutil::deleteVector(infList);
@@ -217,8 +217,8 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
          tks.first().line);
    }
 
-   std::vector<ExpElement<_boo>*> pntList;
-   Generator<_boo>* boo = boolExpTree(infList, pntList);
+   std::vector<ExpElement<_bool>*> pntList;
+   Generator<_bool>* boo = boolExpTree(infList, pntList);
 
    langutil::deleteVector(infList);
    langutil::deleteVector(pntList);
@@ -226,18 +226,18 @@ static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
    return boo;
 }
 
-static Generator<_boo>* boolExpTree(
-   const std::vector<ExpElement<_boo>*>& infList,
-   std::vector<ExpElement<_boo>*>& pntList)
+static Generator<_bool>* boolExpTree(
+   const std::vector<ExpElement<_bool>*>& infList,
+   std::vector<ExpElement<_bool>*>& pntList)
 {
-   std::vector<ExpElement<_boo>*> elements;
-   std::vector<ExpElement<_boo>*> temp;
+   std::vector<ExpElement<_bool>*> elements;
+   std::vector<ExpElement<_bool>*> temp;
    const _size len = infList.size();
    _int brackets = 0;
-   _boo anyNot = false;
+   _bool anyNot = false;
 
    for (_size i = 0; i < len; i++) {
-      ExpElement<_boo>* e = infList[i];
+      ExpElement<_bool>* e = infList[i];
       if (e->type == ElementType::et_Operator) {
          const _char op = e->_operator;
          switch (op) {
@@ -251,8 +251,8 @@ static Generator<_boo>* boolExpTree(
             case L')': {
                brackets--;
                if (brackets == 0) {
-                  Generator<_boo>* result = boolExpTree(temp, pntList);
-                  ExpElement<_boo>* ee = new ExpElement<_boo>(result, e->line);
+                  Generator<_bool>* result = boolExpTree(temp, pntList);
+                  ExpElement<_bool>* ee = new ExpElement<_bool>(result, e->line);
                   pntList.push_back(ee);
                   temp.resize(0);
                   elements.push_back(ee);
@@ -292,16 +292,16 @@ static Generator<_boo>* boolExpTree(
       : boolExpTreeMerge(elements, pntList);
 }
 
-static Generator<_boo>* boolExpIntegrateNegations(
-   const std::vector<ExpElement<_boo>*>& elements,
-   std::vector<ExpElement<_boo>*>& pntList)
+static Generator<_bool>* boolExpIntegrateNegations(
+   const std::vector<ExpElement<_bool>*>& elements,
+   std::vector<ExpElement<_bool>*>& pntList)
 {
-   std::vector<ExpElement<_boo>*> newList;
-   _boo negate = false;
+   std::vector<ExpElement<_bool>*> newList;
+   _bool negate = false;
    const _size len = elements.size();
 
    for (_size i = 0; i < len; i++) {
-      ExpElement<_boo>* e = elements[i];
+      ExpElement<_bool>* e = elements[i];
       if (e->type == ElementType::et_Operator) {
          if (e->_operator == L'!') {
             negate = true;
@@ -312,16 +312,16 @@ static Generator<_boo>* boolExpIntegrateNegations(
       }
       else {
          if (negate) {
-            ExpElement<_boo>* newElement;
+            ExpElement<_bool>* newElement;
 
             if (e->type == ElementType::et_Constant) {
-               const _boo value = !(e->constant);
-               newElement = new ExpElement<_boo>(value, e->line);
+               const _bool value = !(e->constant);
+               newElement = new ExpElement<_bool>(value, e->line);
             }
             else {
-               Generator<_boo>* n = e->takeValue();
-               Generator<_boo>* no = new gen::Not(n);
-               newElement = new ExpElement<_boo>(no, e->line);
+               Generator<_bool>* n = e->takeValue();
+               Generator<_bool>* no = new gen::Not(n);
+               newElement = new ExpElement<_bool>(no, e->line);
             }
 
             pntList.push_back(newElement);
@@ -337,20 +337,20 @@ static Generator<_boo>* boolExpIntegrateNegations(
    return boolExpTreeMerge(newList, pntList);
 }
 
-static Generator<_boo>* boolExpTreeMerge(
-   const std::vector<ExpElement<_boo>*>& elements,
-   std::vector<ExpElement<_boo>*>& pntList)
+static Generator<_bool>* boolExpTreeMerge(
+   const std::vector<ExpElement<_bool>*>& elements,
+   std::vector<ExpElement<_bool>*>& pntList)
 {
    const _size len = elements.size();
    if (len == 1) {
       return elements[0]->takeValue();
    }
 
-   ExpElement<_boo>* firstElement = elements[0];
-   ExpElement<_boo>* oper;
+   ExpElement<_bool>* firstElement = elements[0];
+   ExpElement<_bool>* oper;
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_boo>* secondElement = elements[i];
+      ExpElement<_bool>* secondElement = elements[i];
       const ElementType& type = secondElement->type;
 
       if (type == ElementType::et_Operator) {
@@ -358,14 +358,14 @@ static Generator<_boo>* boolExpTreeMerge(
       }
       else {
          const _char& op = oper->_operator;
-         ExpElement<_boo>* newElement;
+         ExpElement<_bool>* newElement;
 
          if (type == ElementType::et_Constant
             && firstElement->type == ElementType::et_Constant) {
 
-            const _boo v1 = firstElement->constant;
-            const _boo v2 = secondElement->constant;
-            _boo value;
+            const _bool v1 = firstElement->constant;
+            const _bool v2 = secondElement->constant;
+            _bool value;
 
             switch(op) {
                case L'&': {
@@ -382,12 +382,12 @@ static Generator<_boo>* boolExpTreeMerge(
                }
             }
 
-            newElement = new ExpElement<_boo>(value, firstElement->line);
+            newElement = new ExpElement<_bool>(value, firstElement->line);
          }
          else {
-            gen::BinaryOperation<_boo>* bin;
-            Generator<_boo>* first = firstElement->takeValue();
-            Generator<_boo>* second = secondElement->takeValue();
+            gen::BinaryOperation<_bool>* bin;
+            Generator<_bool>* first = firstElement->takeValue();
+            Generator<_bool>* second = secondElement->takeValue();
 
             switch(op) {
                case L'&': {
@@ -404,7 +404,7 @@ static Generator<_boo>* boolExpTreeMerge(
                }
             }
 
-            newElement = new ExpElement<_boo>(bin, firstElement->line);
+            newElement = new ExpElement<_bool>(bin, firstElement->line);
          }
          pntList.push_back(newElement);
          firstElement = newElement;
@@ -414,7 +414,7 @@ static Generator<_boo>* boolExpTreeMerge(
    return firstElement->takeValue();
 }
 
-static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
+static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
 {
    const _size len = infList.size();
    if (len == 0) {
@@ -422,7 +422,7 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
    }
 
    // bool expressions can start with only two symbols: not or (
-   ExpElement<_boo>* prev = infList[0];
+   ExpElement<_bool>* prev = infList[0];
    if (prev->type == ElementType::et_Operator) {
       const _char op = prev->_operator;
       if (!(op == L'(' || op == L'!')) {
@@ -431,7 +431,7 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
    }
 
    // bool expressions can end with only one symbol: )
-   ExpElement<_boo>* last = infList[len - 1];
+   ExpElement<_bool>* last = infList[len - 1];
    if (last->type == ElementType::et_Operator) {
       if (last->_operator != L')') {
          return false;
@@ -439,8 +439,8 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
    }
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_boo>* curr = infList[i];
-      const _boo cop = curr->type == ElementType::et_Operator;
+      ExpElement<_bool>* curr = infList[i];
+      const _bool cop = curr->type == ElementType::et_Operator;
 
       if (prev->type == ElementType::et_Operator) {
          switch (prev->_operator) {
@@ -500,7 +500,7 @@ static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList)
    return true;
 }
 
-_boo isBoolExpOperator(const Token& tk)
+_bool isBoolExpOperator(const Token& tk)
 {
    switch (tk.value.keyword.k) {
       case Keyword::kw_And:
@@ -530,7 +530,7 @@ static _char toBoolExpOperator(const Token& tk)
 }
 
 template <typename T>
-static Generator<_boo>* parseIn_Unit(const _boo& negated, 
+static Generator<_bool>* parseIn_Unit(const _bool& negated, 
    const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro)
 {
    Generator<T>* valLeft;
@@ -557,11 +557,11 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated,
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
          delete valRight;
-         Generator<_boo>* in = new gen::InConstList<T>(valLeft, vs);
+         Generator<_bool>* in = new gen::InConstList<T>(valLeft, vs);
          return negated ? new gen::Not(in) : in;
       }
       else {
-         Generator<_boo>* in = new gen::InList<T>(valLeft, valRight);
+         Generator<_bool>* in = new gen::InList<T>(valLeft, valRight);
          return negated ? new gen::Not(in) : in;
       }
    }
@@ -571,7 +571,7 @@ static Generator<_boo>* parseIn_Unit(const _boo& negated,
    }
 }
 
-static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseIn(const Tokens& tks, uro::Uroboros* uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
@@ -582,7 +582,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
       emptyOperSideException(tks.last(), false, uro);
    }
 
-   _boo neg = pair.first.last().isKeyword(Keyword::kw_Not);
+   _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       pair.first.trimRight();
       if (pair.first.isEmpty()) {
@@ -591,7 +591,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
    }
 
    // first: try to build "Number IN NumList"
-   Generator<_boo>* list = parseIn_Unit<_num>(neg, pair, uro);
+   Generator<_bool>* list = parseIn_Unit<_num>(neg, pair, uro);
    if (list != nullptr) {
       return list;
    }
@@ -615,7 +615,7 @@ static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
                   timeInNumberException(pair.first.first(), tf, L"month", neg, pair.first, uro);
                }
 
-               const _boo isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
+               const _bool isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
                if (isInteger) {
                   timeInNumberException(pair.first.first(), tf, L"year", neg, pair.first, uro);
                }
@@ -624,15 +624,15 @@ static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
       }
       else if (pair.second.getLength() == 1) {
          const Token& rf = pair.second.first();
-         const _boo isWeek = rf.isWeekDay();
-         const _boo isMonth = rf.isMonth();
+         const _bool isWeek = rf.isWeekDay();
+         const _bool isMonth = rf.isMonth();
 
          if (isWeek || isMonth) {
             timeInNumberException(pair.first.first(), pair.second.first(), 
                isWeek ? L"weekDay" : L"month", neg, pair.first, uro);
          }
 
-         const _boo isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
+         const _bool isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
          if (isInteger) {
             timeInNumberException(pair.first.first(), pair.second.first(), L"year", neg, pair.first, uro);
          }
@@ -640,18 +640,18 @@ static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro)
    }
 
    // secondary: try to build "Time IN TimList"
-   Generator<_boo>* list2 = parseInTimList(neg, pair, uro);
+   Generator<_bool>* list2 = parseInTimList(neg, pair, uro);
    if (list2 != nullptr) {
       return list2;
    }
 
    // finally: try to build "string IN list"
-   Generator<_boo>* list3 = parseIn_Unit<_str>(neg, pair, uro);
+   Generator<_bool>* list3 = parseIn_Unit<_str>(neg, pair, uro);
    return list3;
 }
 
 
-static Generator<_boo>* parseInTimList(const bool& negated, 
+static Generator<_bool>* parseInTimList(const bool& negated, 
    const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro)
 {
    Generator<_tim>* tim;
@@ -674,11 +674,11 @@ static Generator<_boo>* parseInTimList(const bool& negated,
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
          delete tlist;
-         Generator<_boo>* in = new gen::InConstTimeList(tim, vs);
+         Generator<_bool>* in = new gen::InConstTimeList(tim, vs);
          return negated ? new gen::Not(in) : in;
       }
       else {
-         Generator<_boo>* in = new gen::InList<_tim>(tim, tlist);
+         Generator<_bool>* in = new gen::InList<_tim>(tim, tlist);
          return negated ? new gen::Not(in) : in;
       }
    }
@@ -697,7 +697,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft, uro::U
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _boo& negated, const Tokens& tks, uro::Uroboros* uro)
+   const _str& timeMember, const _bool& negated, const Tokens& tks, uro::Uroboros* uro)
 {
    if (timeMember == L"year") {
       if (negated) {
@@ -725,7 +725,7 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
    }
 }
 
-static Generator<_boo>* parseLike(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseLike(const Tokens& tks, uro::Uroboros* uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
@@ -736,7 +736,7 @@ static Generator<_boo>* parseLike(const Tokens& tks, uro::Uroboros* uro)
       emptyOperSideException(tks.last(), false, uro);
    }
 
-   const _boo neg = pair.first.last().isKeyword(Keyword::kw_Not);
+   const _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       pair.first.trimRight();
       if (pair.first.isEmpty()) {
@@ -776,7 +776,7 @@ static Generator<_boo>* parseLike(const Tokens& tks, uro::Uroboros* uro)
    }
 }
 
-static Generator<_boo>* parseComparisons(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseComparisons(const Tokens& tks, uro::Uroboros* uro)
 {
    BracketsInfo bi;
    const _int end = tks.getEnd();
@@ -801,7 +801,7 @@ static Generator<_boo>* parseComparisons(const Tokens& tks, uro::Uroboros* uro)
 }
 
 template <typename T>
-static Generator<_boo>* comparison(Generator<T>* val1,
+static Generator<_bool>* comparison(Generator<T>* val1,
    Generator<T>* val2, const gen::CompType& ct)
 {
    switch (ct) {
@@ -824,12 +824,12 @@ static Generator<_boo>* comparison(Generator<T>* val1,
 
 
 template <typename T>
-Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
+Generator<_bool>* parseComparisonUnit(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
 {
    Generator<T>* v1;
    Generator<T>* v2;
-   const _boo parsed1 = parse(uro, left, v1);
-   const _boo parsed2 = parse(uro, right, v2);
+   const _bool parsed1 = parse(uro, left, v1);
+   const _bool parsed2 = parse(uro, right, v2);
    if (parsed1 && parsed2) {
       switch (ct) {
          case gen::ct_Equals:
@@ -860,7 +860,7 @@ Generator<_boo>* parseComparisonUnit(const Tokens& left, const Tokens& right, co
    return nullptr;
 }
 
-static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro)
+static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -873,13 +873,13 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, ur
       const Token& t1 = left.first();
       const Token& t2 = right.first();
 
-      const _boo isWeek1 = t1.isWeekDay();
-      const _boo isWeek2 = t2.isWeekDay();
-      const _boo isMonth1 = t1.isMonth();
-      const _boo isMonth2 = t2.isMonth();
-      const _boo isVar1 = t1.type == Token::t_Word &&
+      const _bool isWeek1 = t1.isWeekDay();
+      const _bool isWeek2 = t2.isWeekDay();
+      const _bool isMonth1 = t1.isMonth();
+      const _bool isMonth2 = t2.isMonth();
+      const _bool isVar1 = t1.type == Token::t_Word &&
          uro->hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
-      const _boo isVar2 = t2.type == Token::t_Word &&
+      const _bool isVar2 = t2.type == Token::t_Word &&
          uro->hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
 
       //const _str& v1 = t1.originString;
@@ -897,8 +897,8 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, ur
             (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
       }
 
-      const _boo isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
-      const _boo isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
+      const _bool isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
+      const _bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
 
       if (isVar1 && isInteger2) {
          const _nint& nm = t2.value.num.n.value.i;
@@ -925,26 +925,26 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, ur
    }
 
    // try to parse comparison for every singular data type
-   Generator<_boo>* boo = parseComparisonUnit<_boo>(left, right, ct, uro);
+   Generator<_bool>* boo = parseComparisonUnit<_bool>(left, right, ct, uro);
    if (boo != nullptr) {
       return boo;
    }
 
-   Generator<_boo>* num = parseComparisonUnit<_num>(left, right, ct, uro);
+   Generator<_bool>* num = parseComparisonUnit<_num>(left, right, ct, uro);
    if (num != nullptr) {
       return num;
    }
 
-   Generator<_boo>* per = parseComparisonUnit<_per>(left, right, ct, uro);
+   Generator<_bool>* per = parseComparisonUnit<_per>(left, right, ct, uro);
    if (per != nullptr) {
       return per;
    }
 
-   Generator<_boo>* tim = parseComparisonUnit<_tim>(left, right, ct, uro);
+   Generator<_bool>* tim = parseComparisonUnit<_tim>(left, right, ct, uro);
    if (tim != nullptr) {
       return tim;
    }
-   Generator<_boo>* str = parseComparisonUnit<_str>(left, right, ct, uro);
+   Generator<_bool>* str = parseComparisonUnit<_str>(left, right, ct, uro);
    if (str != nullptr) {
       return str;
    }
@@ -953,8 +953,8 @@ static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, ur
    return parseCollectionComparisons(left, right, ct, uro);
 }
 
-Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const gen::CompType& ct,
-   const _boo& reversed, uro::Uroboros* uro)
+Generator<_bool>* comparisonDefList( _def* def, Generator<_list>* list, const gen::CompType& ct,
+   const _bool& reversed, uro::Uroboros* uro)
 {
    switch (ct) {
       case gen::ct_Equals:
@@ -994,7 +994,7 @@ Generator<_boo>* comparisonDefList( _def* def, Generator<_list>* list, const gen
 
 
 template <typename T>
-Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
+Generator<_bool>* comparisonCollections(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
 {
    Generator<std::vector<T>>* leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1023,7 +1023,7 @@ Generator<_boo>* comparisonCollections(const Tokens& left, const Tokens& right, 
 
 
 template <typename T>
-Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& right,
+Generator<_bool>* comparisonCollectionValue(const Tokens& left, const Tokens& right,
    const gen::CompType& ct, uro::Uroboros* uro)
 {
    Generator<T>* leftValue;
@@ -1081,13 +1081,13 @@ Generator<_boo>* comparisonCollectionValue(const Tokens& left, const Tokens& rig
    return nullptr;
 }
 
-static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
+static Generator<_bool>* parseCollectionComparisons(const Tokens& left,
    const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
 {
    _def* leftDef;
    _def* rightDef;
-   const _boo hasLeftDef = parse(uro, left, leftDef);
-   const _boo hasRightDef = parse(uro, right, rightDef);
+   const _bool hasLeftDef = parse(uro, left, leftDef);
+   const _bool hasRightDef = parse(uro, right, rightDef);
 
    // special case situations
    // when definition is compared with other data types or with another definition
@@ -1124,27 +1124,27 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
       }
    }
 
-   Generator<_boo>* tim = comparisonCollectionValue<_tim>(left, right, ct, uro);
+   Generator<_bool>* tim = comparisonCollectionValue<_tim>(left, right, ct, uro);
    if (tim != nullptr) {
       return tim;
    }
 
-   Generator<_boo>* num = comparisonCollectionValue<_num>(left, right, ct, uro);
+   Generator<_bool>* num = comparisonCollectionValue<_num>(left, right, ct, uro);
    if (num != nullptr) {
       return num;
    }
 
-   Generator<_boo>* str = comparisonCollectionValue<_str>(left, right, ct, uro);
+   Generator<_bool>* str = comparisonCollectionValue<_str>(left, right, ct, uro);
    if (str != nullptr) {
       return str;
    }
 
-   Generator<_boo>* tlist = comparisonCollections<_tim>(left, right, ct, uro);
+   Generator<_bool>* tlist = comparisonCollections<_tim>(left, right, ct, uro);
    if (tlist != nullptr) {
       return tlist;
    }
 
-   Generator<_boo>* nlist = comparisonCollections<_num>(left, right, ct, uro);
+   Generator<_bool>* nlist = comparisonCollections<_num>(left, right, ct, uro);
    if (nlist != nullptr) {
       return nlist;
    }
@@ -1155,7 +1155,7 @@ static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype)
 {
    std::pair<Tokens, Tokens> result = tks.divideBySymbol(sign);
-   _boo eq = false;
+   _bool eq = false;
 
    if (result.first.isEmpty()) {
       if (result.second.isEmpty()) {

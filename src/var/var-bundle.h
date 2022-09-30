@@ -48,14 +48,14 @@ public:
       }
    };
 
-   _boo hasVar(const _size& hash)
+   _bool hasVar(const _size& hash)
    {
       return this->userVars.find(hash) != this->userVars.end()
           || this->internalVars.find(hash) != this->internalVars.end()
           || this->specialVars.find(hash) != this->specialVars.end();
    }
 
-   _boo getValue(VariablesContext* vc, const Token& tk, Generator<T>*& result, const InnerVariables& inner)
+   _bool getValue(VariablesContext* vc, const Token& tk, Generator<T>*& result, const InnerVariables& inner)
    {
       if (this->userVars.find(tk.value.word.h) != this->userVars.end()) {
          ParseVariable<T>* pv = &this->userVars[tk.value.word.h];
@@ -86,7 +86,7 @@ public:
       return false;
    }
 
-   _boo getVarPtr(const Token& tk, ParseVariable<T>*& result)
+   _bool getVarPtr(const Token& tk, ParseVariable<T>*& result)
    {
       if (this->userVars.find(tk.value.word.h) == this->userVars.end()) {
          return false;
@@ -98,7 +98,7 @@ public:
    }
 
    Command* makeVariableAssignment(const Token& token, ParseVariable<T>* varPtr,
-      Generator<T>* valuePtr, const _boo& isConstant)
+      Generator<T>* valuePtr, const _bool& isConstant)
    {
       if (varPtr == nullptr) {
          const _size& hash = token.value.word.h;

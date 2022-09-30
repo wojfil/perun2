@@ -32,7 +32,7 @@ void ConditionUnit::finish()
    }
 
    Command* mainCommand = this->pointer->getMainCommand();
-   Generator<_boo>* mainCondition = this->pointer->getMainCondition();
+   Generator<_bool>* mainCondition = this->pointer->getMainCondition();
    const _size altCount = this->elseIfCommands.size();
 
    switch (altCount) {
@@ -76,23 +76,23 @@ void ConditionUnit::setElse(Command* com)
    this->elseCommand = com;
 }
 
-void ConditionUnit::addElseIf(Command* com, Generator<_boo>* cond)
+void ConditionUnit::addElseIf(Command* com, Generator<_bool>* cond)
 {
    this->elseIfCommands.push_back(com);
    this->elseIfConditions.push_back(cond);
 }
 
-_boo ConditionUnit::isClosed() const
+_bool ConditionUnit::isClosed() const
 {
    return this->closed;
 }
 
-_boo ConditionUnit::isElseClosed() const
+_bool ConditionUnit::isElseClosed() const
 {
    return this->elseClosed;
 }
 
-_boo ConditionUnit::isLocked() const
+_bool ConditionUnit::isLocked() const
 {
    return this->locked;
 }
@@ -155,7 +155,7 @@ void ConditionContext::lockLast()
    }
 }
 
-_boo ConditionContext::isExpandable() const
+_bool ConditionContext::isExpandable() const
 {
    if (this->units.empty()) {
       return false;
@@ -196,7 +196,7 @@ void ConditionContext::addEmptyElse(const _int& line)
    cu.closeElse();
 }
 
-void ConditionContext::addElseIf(Generator<_boo>* cond, Command* com, const _int& line)
+void ConditionContext::addElseIf(Generator<_bool>* cond, Command* com, const _int& line)
 {
    if (!this->isExpandable()) {
       throw SyntaxException(L"structure 'else if' is not preceded by a structure 'if'", line);

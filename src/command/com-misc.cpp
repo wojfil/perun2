@@ -117,7 +117,7 @@ void C_Run::run()
       return;
    }
 
-   const _boo s = os_run(command, this->uroboros);
+   const _bool s = os_run(command, this->uroboros);
    this->inner->success.value = s;
 
    if (s) {
@@ -144,7 +144,7 @@ void C_RunWith::run()
    }
 
    const _str com = str(base, L" ", os_quoteEmbraced(this->inner->trimmed));
-   const _boo s = os_run(com, this->uroboros);
+   const _bool s = os_run(com, this->uroboros);
    this->inner->success.value = s;
 
    if (s) {
@@ -174,7 +174,7 @@ void C_RunWithWithString::run()
    const _str arg = os_makeArg(rawArg);
    const _str com = str(base, L" ", os_quoteEmbraced(this->inner->trimmed), L" ", arg);
 
-   const _boo s = os_run(com, this->uroboros);
+   const _bool s = os_run(com, this->uroboros);
    this->inner->success.value = s;
 
    if (s) {
@@ -205,7 +205,7 @@ void C_RunWithWith::run()
 
    if (len == 0) {
       const _str com = str(base, L" ", os_quoteEmbraced(this->inner->trimmed));
-      const _boo s = os_run(com, this->uroboros);
+      const _bool s = os_run(com, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -229,7 +229,7 @@ void C_RunWithWith::run()
       }
 
       const _str com = comStream.str();
-      const _boo s = os_run(com, this->uroboros);
+      const _bool s = os_run(com, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -254,7 +254,7 @@ void C_RunWithUroboros::run()
    }
 
    const _str com = str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed));
-   const _boo s = os_run(com, this->uroboros);
+   const _bool s = os_run(com, this->uroboros);
    this->inner->success.value = s;
 
    if (s) {
@@ -281,7 +281,7 @@ void C_RunWithUroborosWithString::run()
    const _str arg = os_makeArg(rawArg);
    const _str com = str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed), L" ", arg);
 
-   const _boo s = os_run(com, this->uroboros);
+   const _bool s = os_run(com, this->uroboros);
    this->inner->success.value = s;
 
    if (s) {
@@ -309,7 +309,7 @@ void C_RunWithUroborosWith::run()
 
    if (len == 0) {
       const _str com = str(this->inner->urocom, os_quoteEmbraced(this->inner->trimmed));
-      const _boo s = os_run(com, this->uroboros);
+      const _bool s = os_run(com, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -333,7 +333,7 @@ void C_RunWithUroborosWith::run()
       }
 
       const _str com = comStream.str();
-      const _boo s = os_run(com, this->uroboros);
+      const _bool s = os_run(com, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {

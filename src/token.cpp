@@ -72,23 +72,23 @@ Token::Token(const _size& v1, const _size& v2, const _int& li, const _size& os_i
    const _size& os_id2, const _size& os_len2, Uroboros* uro)
    : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 
-_boo Token::isSymbol(const _char& ch) const
+_bool Token::isSymbol(const _char& ch) const
 {
    return type == t_Symbol && value.ch == ch;
 }
 
-_boo Token::isKeyword(const Keyword& kw) const
+_bool Token::isKeyword(const Keyword& kw) const
 {
    return type == t_Keyword && value.keyword.k == kw;
 }
 
-_boo Token::isLogicConstant() const
+_bool Token::isLogicConstant() const
 {
    return type == t_Keyword
       && (value.keyword.k == Keyword::kw_True || value.keyword.k == Keyword::kw_False);
 }
 
-_boo Token::isCommandKeyword() const
+_bool Token::isCommandKeyword() const
 {
    if (type != Token::t_Keyword) {
       return false;
@@ -125,7 +125,7 @@ _boo Token::isCommandKeyword() const
    }
 }
 
-_boo Token::isFilterKeyword() const
+_bool Token::isFilterKeyword() const
 {
    if (type != Token::t_Keyword) {
       return false;
@@ -143,7 +143,7 @@ _boo Token::isFilterKeyword() const
    }
 }
 
-_boo Token::isExpForbiddenKeyword() const
+_bool Token::isExpForbiddenKeyword() const
 {
    if (isCommandKeyword()) {
       return true;
@@ -162,12 +162,12 @@ _boo Token::isExpForbiddenKeyword() const
    }
 }
 
-_boo Token::isWeekDay() const
+_bool Token::isWeekDay() const
 {
    return type == Token::t_Number && value.num.nm == NumberMode::nm_WeekDay;
 }
 
-_boo Token::isMonth() const
+_bool Token::isMonth() const
 {
    return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
 }

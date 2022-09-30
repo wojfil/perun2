@@ -44,7 +44,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
    return tks2.splitBySymbol(L',');
 }
 
-Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -348,7 +348,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 
                switch (os.size()) {
                   case 0: {
-                     return new gen::Constant<_boo>(true);
+                     return new gen::Constant<_bool>(true);
                   }
                   case 1: {
                      const _char ch = os[0];
@@ -400,7 +400,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 
                switch (os.size()) {
                   case 0: {
-                     return new gen::Constant<_boo>(true);
+                     return new gen::Constant<_bool>(true);
                   }
                   case 1: {
                      const _char ch = os[0];
@@ -463,7 +463,7 @@ Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
+static Generator<_bool>* simpleBoolFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
 {
    Generator<_str>* arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -1087,7 +1087,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgNumberException(len, word, uro);
       }
 
-      Generator<_boo>* boo;
+      Generator<_bool>* boo;
       if (parse::parse(uro, args[0], boo)) {
          return new F_String_B(boo);
       }

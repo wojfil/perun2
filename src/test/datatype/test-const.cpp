@@ -25,7 +25,7 @@ template <typename T>
 void testCase_const(const _int& caseId, const T& value)
 {
     Generator<T>* v = new gen::Constant<T>(value);
-	const _boo result  = v->getValue() == value;
+	const _bool result  = v->getValue() == value;
     VERIFY(result, caseId);
     delete v;
 }
@@ -42,8 +42,8 @@ void test_const()
     testCase_const<_num> (8, _num(-7LL));
     testCase_const<_num> (9, _num(7.7L));
     testCase_const<_num> (10, _num(-0.33L));
-    testCase_const<_boo> (11, true);
-    testCase_const<_boo> (12, false);
+    testCase_const<_bool> (11, true);
+    testCase_const<_bool> (12, false);
     testCase_const<_list> (13, {L"Uro", L"boro", L"s"});
     testCase_const<_nlist> (14, {_num(45LL), _num(3LL), _num(3.2L) });
 }

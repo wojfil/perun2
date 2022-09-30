@@ -27,7 +27,7 @@ public:
    PatternParser(uro::Uroboros* uro)
       : uroboros(uro), defGenerator(ELEM_NONE, uro) { };
 
-   _boo parse(const _str& pattern, const _int& asteriskId, _def*& result) const;
+   _bool parse(const _str& pattern, const _int& asteriskId, _def*& result) const;
 
 private:
    uro::Uroboros* uroboros;

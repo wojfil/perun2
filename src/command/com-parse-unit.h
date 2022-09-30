@@ -33,11 +33,11 @@ public:
 
    void finish();
    void setElse(Command* com);
-   void addElseIf(Command* com, Generator<_boo>* cond);
+   void addElseIf(Command* com, Generator<_bool>* cond);
 
-   _boo isClosed() const;
-   _boo isElseClosed() const;
-   _boo isLocked() const;
+   _bool isClosed() const;
+   _bool isElseClosed() const;
+   _bool isLocked() const;
 
    void close();
    void closeElse();
@@ -47,13 +47,13 @@ public:
 
 
 private:
-   _boo closed = false;
-   _boo elseClosed = false;
-   _boo locked = false;
+   _bool closed = false;
+   _bool elseClosed = false;
+   _bool locked = false;
 
    Command* elseCommand = nullptr;
    std::vector<Command*> elseIfCommands;
-   std::vector<Generator<_boo>*> elseIfConditions;
+   std::vector<Generator<_bool>*> elseIfConditions;
 };
 
 
@@ -66,10 +66,10 @@ public:
    void deleteClosedUnits();
    void deleteLast();
    void lockLast();
-   _boo isExpandable() const;
+   _bool isExpandable() const;
    void addElse(Command* com, const _int& line);
    void addEmptyElse(const _int& line);
-   void addElseIf(Generator<_boo>* cond, Command* com, const _int& line);
+   void addElseIf(Generator<_bool>* cond, Command* com, const _int& line);
 
 
 private:

@@ -36,7 +36,7 @@ Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(vars::Variable
    terminator(Terminator(this)), patternParser(gen::PatternParser(this)) { };
 
 
-_boo Uroboros::run()
+_bool Uroboros::run()
 {
    return this->uro_tokenize()
        && this->uro_parse()
@@ -44,7 +44,7 @@ _boo Uroboros::run()
        && this->uro_runCommands();
 };
 
-_boo Uroboros::uro_tokenize()
+_bool Uroboros::uro_tokenize()
 {
    this->exitCode = EXITCODE_OK;
 
@@ -67,7 +67,7 @@ _boo Uroboros::uro_tokenize()
 };
 
 
-_boo Uroboros::uro_parse()
+_bool Uroboros::uro_parse()
 {
    try {
       const Tokens tks(this->tokens);
@@ -89,7 +89,7 @@ _boo Uroboros::uro_parse()
    return true;
 };
 
-_boo Uroboros::uro_postParse()
+_bool Uroboros::uro_postParse()
 {
    this->math.init();
 
@@ -99,7 +99,7 @@ _boo Uroboros::uro_postParse()
    return true;
 };
 
-_boo Uroboros::uro_runCommands()
+_bool Uroboros::uro_runCommands()
 {
    try {
       this->commands->run();

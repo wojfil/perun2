@@ -39,7 +39,7 @@ void Aggregate::run()
       return;
    }
 
-   _boo selectFailure = false;
+   _bool selectFailure = false;
 
    if (has(AGGR_SELECT)) {
       if (!invalidSelect.empty()) {
@@ -58,7 +58,7 @@ void Aggregate::run()
       }
 
       if (!selectPaths.empty()) {
-         _boo anyGoodPath = false;
+         _bool anyGoodPath = false;
          std::set<_str> goodPaths;
 
          for (const std::pair<_str, std::set<_str>>& pair : selectPaths) {
@@ -157,7 +157,7 @@ void Aggregate::run()
    }
 }
 
-inline _boo Aggregate::has(const _uint32& v) const
+inline _bool Aggregate::has(const _uint32& v) const
 {
    return value & v;
 }

@@ -58,7 +58,7 @@ private:
    uro::Uroboros* uroboros;
    uro::InnerVariables* inner;
    _uint32 value;
-   inline _boo has(const _uint32& v) const;
+   inline _bool has(const _uint32& v) const;
 };
 
 }

@@ -27,17 +27,17 @@ namespace uro::gen
 struct LikeSet
 {
 public:
-    LikeSet(const std::unordered_set<_char>& vals, const _boo& neg);
-    _boo contains(const _char& ch) const;
+    LikeSet(const std::unordered_set<_char>& vals, const _bool& neg);
+    _bool contains(const _char& ch) const;
 
     const std::unordered_set<_char> values;
-    const _boo negated;
+    const _bool negated;
 };
 
 
 struct LikeComparer
 {
-   virtual _boo compareToPattern(const _str& value) const = 0;
+   virtual _bool compareToPattern(const _str& value) const = 0;
 };
 
 
@@ -48,7 +48,7 @@ LikeComparer* parseLikeCmp(const _str& pattern);
 
 
 // operator LIKE with pattern initialized with a string literal
-struct LikeConst : Generator<_boo>
+struct LikeConst : Generator<_bool>
 {
 public:
    LikeConst(Generator<_str>* val, const _str& pattern);
@@ -58,7 +58,7 @@ public:
       delete comparer;
    }
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_str>* value;
@@ -67,7 +67,7 @@ private:
 
 
 // operator LIKE with pattern initialized with any string expression
-struct Like : Generator<_boo>
+struct Like : Generator<_bool>
 {
 public:
    Like(Generator<_str>* val, Generator<_str>* pat) : value(val), pattern(pat),
@@ -81,14 +81,14 @@ public:
       }
    }
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_str>* value;
    Generator<_str>* pattern;
 
    LikeComparer* comparer;
-   _boo hasPrev;
+   _bool hasPrev;
    _size prevHash;
 };
 
@@ -98,7 +98,7 @@ struct LC_Default_WithBrackets : LikeComparer
 {
 public:
    LC_Default_WithBrackets(const _str& pat, const std::unordered_map<_int, LikeSet>& cs);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
@@ -112,7 +112,7 @@ struct LC_Default_NoBrackets : LikeComparer
 {
 public:
    LC_Default_NoBrackets(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
@@ -125,7 +125,7 @@ struct LC_StartsWith : LikeComparer
 {
 public:
    LC_StartsWith(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
@@ -138,7 +138,7 @@ struct LC_EndsWith : LikeComparer
 {
 public:
    LC_EndsWith(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
@@ -151,7 +151,7 @@ struct LC_Contains : LikeComparer
 {
 public:
    LC_Contains(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
@@ -164,7 +164,7 @@ struct LC_StartsWithChar : LikeComparer
 {
 public:
    LC_StartsWithChar(const _str& pat) : ch(pat[0]) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _char ch;
@@ -176,7 +176,7 @@ struct LC_EndsWithChar : LikeComparer
 {
 public:
    LC_EndsWithChar(const _str& pat) : ch(pat[1]) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _char ch;
@@ -188,7 +188,7 @@ struct LC_ContainsChar : LikeComparer
 {
 public:
    LC_ContainsChar(const _str& pat) : ch(pat[1]) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _char ch;
@@ -201,7 +201,7 @@ struct LC_UnderscoreStart : LikeComparer
 public:
    LC_UnderscoreStart(const _str& pat) : pattern(pat),
       length(pat.size()) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
@@ -215,7 +215,7 @@ struct LC_UnderscoreEnd : LikeComparer
 public:
    LC_UnderscoreEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
@@ -230,7 +230,7 @@ struct LC_UnderscoreStartEnd : LikeComparer
 public:
    LC_UnderscoreStartEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
@@ -244,7 +244,7 @@ struct LC_Equals : LikeComparer
 {
 public:
    LC_Equals(const _str& pat) : pattern(pat) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
@@ -255,11 +255,11 @@ private:
 struct LC_Constant : LikeComparer
 {
 public:
-   LC_Constant(const _boo& cnst) : constant(cnst) {};
-   _boo compareToPattern(const _str& value) const override;
+   LC_Constant(const _bool& cnst) : constant(cnst) {};
+   _bool compareToPattern(const _str& value) const override;
 
 private:
-   const _boo constant;
+   const _bool constant;
 };
 
 
@@ -269,7 +269,7 @@ struct LC_ConstantLength : LikeComparer
 {
 public:
    LC_ConstantLength(const _size& len) : length(len) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _size length;
@@ -281,7 +281,7 @@ struct LC_UnderscorePercent : LikeComparer
 {
 public:
    LC_UnderscorePercent(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
@@ -294,7 +294,7 @@ struct LC_PercentUnderscore : LikeComparer
 {
 public:
    LC_PercentUnderscore(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
@@ -307,7 +307,7 @@ struct LC_OnlyDigits : LikeComparer
 {
 public:
    LC_OnlyDigits(const _size& len) : length(len) {};
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    const _size length;
@@ -319,12 +319,12 @@ struct LC_Field_U : LikeComparer
 {
 public:
    LC_Field_U(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
    _str pattern;
-   std::vector<_boo> isUnderscore;
+   std::vector<_bool> isUnderscore;
 };
 
 
@@ -333,12 +333,12 @@ struct LC_Field_H : LikeComparer
 {
 public:
    LC_Field_H(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
    _str pattern;
-   std::vector<_boo> isHash;
+   std::vector<_bool> isHash;
 };
 
 
@@ -347,13 +347,13 @@ struct LC_Field_UH : LikeComparer
 {
 public:
    LC_Field_UH(const _str& pat);
-   _boo compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) const override;
 
 private:
    _size length;
    _str pattern;
-   std::vector<_boo> isUnderscore;
-   std::vector<_boo> isHash;
+   std::vector<_bool> isUnderscore;
+   std::vector<_bool> isHash;
 };
 
 }

@@ -21,9 +21,9 @@
 namespace uro::func
 {
 
-_boo F_AnyDef::getValue()
+_bool F_AnyDef::getValue()
 {
-   const _boo any = definition->hasNext();
+   const _bool any = definition->hasNext();
 
    if (any) {
       definition->reset();
@@ -33,7 +33,7 @@ _boo F_AnyDef::getValue()
 }
 
 
-_boo F_AnyInside::getValue()
+_bool F_AnyInside::getValue()
 {
    const _str v = os_trim(this->value->getValue());
    if (os_isInvaild(v)) {
@@ -48,7 +48,7 @@ _boo F_AnyInside::getValue()
    const _str prevLoc = this->inner->location.value;
    this->inner->location.value = path;
 
-   const _boo any = this->definition->hasNext();
+   const _bool any = this->definition->hasNext();
    if (any) {
       this->definition->reset();
    }
@@ -58,7 +58,7 @@ _boo F_AnyInside::getValue()
 }
 
 
-_boo F_ContainsStr::getValue()
+_bool F_ContainsStr::getValue()
 {
    const _str phrase = this->arg2->getValue();
    if (phrase.empty()) {
@@ -74,7 +74,7 @@ _boo F_ContainsStr::getValue()
 }
 
 
-_boo F_ContainsDef::getValue()
+_bool F_ContainsDef::getValue()
 {
    const _str v = this->value->getValue();
 
@@ -94,14 +94,14 @@ _boo F_ContainsDef::getValue()
 }
 
 
-_boo F_IsLower::getValue()
+_bool F_IsLower::getValue()
 {
    const _str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   _boo anyLetter = false;
+   _bool anyLetter = false;
    const _size len = value.size();
 
    for (_size i = 0; i < len; i++) {
@@ -119,14 +119,14 @@ _boo F_IsLower::getValue()
 }
 
 
-_boo F_IsUpper::getValue()
+_bool F_IsUpper::getValue()
 {
    const _str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   _boo anyLetter = false;
+   _bool anyLetter = false;
    const _size len = value.size();
 
    for (_size i = 0; i < len; i++) {
@@ -144,20 +144,20 @@ _boo F_IsUpper::getValue()
 }
 
 
-_boo F_IsNumber::getValue()
+_bool F_IsNumber::getValue()
 {
    return isNumber(this->arg1->getValue());
 }
 
 
-_boo isNumber(const _str& value)
+_bool isNumber(const _str& value)
 {
    if (value.empty()) {
       return false;
    }
 
    const _size len = value.size();
-   _boo hasDot = false;
+   _bool hasDot = false;
 
    for (_size i = 0; i < len; i++) {
       const _char& ch = value[i];
@@ -183,7 +183,7 @@ _boo isNumber(const _str& value)
 }
 
 
-_boo F_StartsWith::getValue()
+_bool F_StartsWith::getValue()
 {
    const _str phrase = this->arg2->getValue();
    if (phrase.empty()) {
@@ -212,7 +212,7 @@ _boo F_StartsWith::getValue()
 }
 
 
-_boo F_EndsWith::getValue()
+_bool F_EndsWith::getValue()
 {
    const _str phrase = this->arg2->getValue();
    if (phrase.empty()) {
@@ -241,7 +241,7 @@ _boo F_EndsWith::getValue()
 }
 
 
-_boo F_ExistsInside::getValue()
+_bool F_ExistsInside::getValue()
 {
    const _str p = os_trim(this->arg2->getValue());
    if (os_isInvaild(p)) {
@@ -264,7 +264,7 @@ _boo F_ExistsInside::getValue()
 }
 
 
-_boo F_ExistInside::getValue()
+_bool F_ExistInside::getValue()
 {
    const _str p = os_trim(this->arg2->getValue());
    if (os_isInvaild(p)) {
@@ -310,7 +310,7 @@ F_StartsWithChar::~F_StartsWithChar()
 }
 
 
-_boo F_StartsWithChar::getValue()
+_bool F_StartsWithChar::getValue()
 {
    const _str v = value->getValue();
    const _size len = v.size();
@@ -327,7 +327,7 @@ F_EndsWithChar::~F_EndsWithChar()
 }
 
 
-_boo F_EndsWithChar::getValue()
+_bool F_EndsWithChar::getValue()
 {
    const _str v = value->getValue();
    const _size len = v.size();
@@ -338,7 +338,7 @@ _boo F_EndsWithChar::getValue()
 }
 
 
-_boo F_Find::getValue()
+_bool F_Find::getValue()
 {
    const _str v = os_trim(this->arg1->getValue());
 
@@ -351,7 +351,7 @@ _boo F_Find::getValue()
 }
 
 
-_boo F_Find_InThis::getValue()
+_bool F_Find_InThis::getValue()
 {
    if (!this->inner->exists.value || this->inner->isdirectory.value) {
       return false;
@@ -366,7 +366,7 @@ F_StartsWithConst::~F_StartsWithConst()
    delete value;
 }
 
-_boo F_StartsWithConst::getValue()
+_bool F_StartsWithConst::getValue()
 {
    const _str v = value->getValue();
    const _size len = v.size();
@@ -390,7 +390,7 @@ F_EndsWithConst::~F_EndsWithConst()
 }
 
 
-_boo F_EndsWithConst::getValue()
+_bool F_EndsWithConst::getValue()
 {
    const _str v = value->getValue();
    const _size len = v.size();
@@ -410,7 +410,7 @@ _boo F_EndsWithConst::getValue()
 }
 
 
-_boo F_IsLetter::getValue()
+_bool F_IsLetter::getValue()
 {
    const _str value = this->arg1->getValue();
    if (value.empty()) {
@@ -428,7 +428,7 @@ _boo F_IsLetter::getValue()
 }
 
 
-_boo F_IsDigit::getValue()
+_bool F_IsDigit::getValue()
 {
    const _str value = this->arg1->getValue();
    if (value.empty()) {
@@ -460,7 +460,7 @@ _boo F_IsDigit::getValue()
 }
 
 
-_boo F_IsBinary::getValue()
+_bool F_IsBinary::getValue()
 {
    const _str value = this->arg1->getValue();
    if (value.empty()) {
@@ -484,7 +484,7 @@ _boo F_IsBinary::getValue()
 }
 
 
-_boo F_IsHex::getValue()
+_bool F_IsHex::getValue()
 {
    const _str value = this->arg1->getValue();
    if (value.empty()) {

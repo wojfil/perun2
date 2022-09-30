@@ -71,14 +71,14 @@ _nint Number::toInt() const
       : value.i;
 }
 
-_boo Number::isZero() const
+_bool Number::isZero() const
 {
    return isDouble
       ? (value.d == 0L)
       : (value.i == 0LL);
 }
 
-_boo Number::isMinusOne() const
+_bool Number::isMinusOne() const
 {
    return isDouble
       ? (value.d == -1L)
@@ -432,7 +432,7 @@ Number Number::operator - () const
       : Number(-value.i);
 }
 
-_boo Number::operator == (const Number& num) const
+_bool Number::operator == (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i == num.value.i;
@@ -448,7 +448,7 @@ _boo Number::operator == (const Number& num) const
 
 // below are duplicates for the rest of comparisons:
 
-_boo Number::operator != (const Number& num) const
+_bool Number::operator != (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i != num.value.i;
@@ -462,7 +462,7 @@ _boo Number::operator != (const Number& num) const
    return static_cast<_ndouble>(value.i) != num.value.d;
 }
 
-_boo Number::operator < (const Number& num) const
+_bool Number::operator < (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i < num.value.i;
@@ -476,7 +476,7 @@ _boo Number::operator < (const Number& num) const
    return value.i < num.value.d;
 }
 
-_boo Number::operator > (const Number& num) const
+_bool Number::operator > (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i > num.value.i;
@@ -490,7 +490,7 @@ _boo Number::operator > (const Number& num) const
    return value.i > num.value.d;
 }
 
-_boo Number::operator <= (const Number& num) const
+_bool Number::operator <= (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i <= num.value.i;
@@ -504,7 +504,7 @@ _boo Number::operator <= (const Number& num) const
    return value.i <= num.value.d;
 }
 
-_boo Number::operator >= (const Number& num) const
+_bool Number::operator >= (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i >= num.value.i;

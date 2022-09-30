@@ -98,7 +98,7 @@ void OsDefinitionRecursive::reset()
    }
 }
 
-_boo Uro_All::hasNext()
+_bool Uro_All::hasNext()
 {
    if (first) {
       _str path = os_trim(location->getValue());
@@ -117,7 +117,7 @@ _boo Uro_All::hasNext()
          this->inner->index.value = index;
 
          if (!os_isBrowsePath(value)) {
-            const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+            const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
                || (!isDir && os_extension(value) != OS_UROEXT))
@@ -139,7 +139,7 @@ _boo Uro_All::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+         const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
             || (!isDir && os_extension(value) != OS_UROEXT))
@@ -159,7 +159,7 @@ _boo Uro_All::hasNext()
    return false;
 }
 
-_boo Uro_Files::hasNext()
+_bool Uro_Files::hasNext()
 {
    if (first) {
       _str path = os_trim(location->getValue());
@@ -178,7 +178,7 @@ _boo Uro_Files::hasNext()
          this->inner->index.value = index;
 
          if (!os_isBrowsePath(value)) {
-            const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+            const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
                this->inner->index.value = index;
@@ -198,7 +198,7 @@ _boo Uro_Files::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+         const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
             this->inner->index.value = index;
@@ -216,7 +216,7 @@ _boo Uro_Files::hasNext()
    return false;
 }
 
-_boo Uro_Directories::hasNext()
+_bool Uro_Directories::hasNext()
 {
    if (first) {
       _str path = os_trim(location->getValue());
@@ -235,7 +235,7 @@ _boo Uro_Directories::hasNext()
          this->inner->index.value = index;
 
          if (!os_isBrowsePath(value)) {
-            const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+            const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
                this->inner->index.value = index;
@@ -255,7 +255,7 @@ _boo Uro_Directories::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const _boo isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+         const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
             this->inner->index.value = index;
@@ -273,7 +273,7 @@ _boo Uro_Directories::hasNext()
    return false;
 }
 
-_boo Uro_RecursiveFiles::hasNext()
+_bool Uro_RecursiveFiles::hasNext()
 {
    if (first) {
       this->paths.push_back(os_trim(location->getValue()));
@@ -376,7 +376,7 @@ _boo Uro_RecursiveFiles::hasNext()
    return false;
 }
 
-_boo Uro_RecursiveDirectories::hasNext()
+_bool Uro_RecursiveDirectories::hasNext()
 {
    if (first) {
       paths.push_back(os_trim(location->getValue()));
@@ -464,7 +464,7 @@ _boo Uro_RecursiveDirectories::hasNext()
    return false;
 }
 
-_boo Uro_RecursiveAll::hasNext()
+_bool Uro_RecursiveAll::hasNext()
 {
    if (first) {
       paths.push_back(os_trim(location->getValue()));

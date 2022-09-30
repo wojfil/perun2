@@ -34,12 +34,12 @@ _nint NumberInt::toInt() const
    return value.i;
 }
 
-_boo NumberInt::isZero() const
+_bool NumberInt::isZero() const
 {
    return value.i == 0LL;
 }
 
-_boo NumberInt::isMinusOne() const
+_bool NumberInt::isMinusOne() const
 {
    return value.i == -1LL;
 }
@@ -71,12 +71,12 @@ NumberInt& NumberInt::operator -- (int)
    return *this;
 }
 
-_boo NumberInt::operator == (const NumberInt& num) const
+_bool NumberInt::operator == (const NumberInt& num) const
 {
    return value.i == num.value.i;
 }
 
-_boo NumberInt::operator != (const NumberInt& num) const
+_bool NumberInt::operator != (const NumberInt& num) const
 {
    return value.i != num.value.i;
 }

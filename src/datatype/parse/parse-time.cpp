@@ -46,8 +46,8 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
          return cnst;
       }
 
-      const _boo hasPluses = tks.check(TI_HAS_CHAR_PLUS);
-      const _boo hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
+      const _bool hasPluses = tks.check(TI_HAS_CHAR_PLUS);
+      const _bool hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
 
       if (hasMinuses || hasPluses) {
          Generator<_per>* per;
@@ -229,8 +229,8 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
    _int sublen = 0;
-   _boo subtract = false;
-   _boo prevSubtract = false;
+   _bool subtract = false;
+   _bool prevSubtract = false;
    _int numReserve = 0;
 
    for (_int i = start; i <= end; i++) {
@@ -324,7 +324,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
    return time;
 }
 
-static _boo timeExpUnit(_int& sublen, const _boo& subtract, _boo& prevSubtract,
+static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
    Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
    _int& numReserve, uro::Uroboros* uro)
 {

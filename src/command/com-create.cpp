@@ -39,7 +39,7 @@ void C_Create::run()
       }
 
       if (os_hasExtension(this->inner->path.value)) {
-         const _boo s = os_createFile(this->inner->path.value);
+         const _bool s = os_createFile(this->inner->path.value);
          this->inner->success.value = s;
 
          if (s) {
@@ -51,7 +51,7 @@ void C_Create::run()
          }
       }
       else {
-         const _boo s = os_createDirectory(this->inner->path.value);
+         const _bool s = os_createDirectory(this->inner->path.value);
          this->inner->success.value = s;
 
          if (s) {
@@ -76,8 +76,8 @@ void C_Create_Stack::run()
       }
 
       _str path = this->inner->path.value;
-      const _boo hasExt = os_hasExtension(path);
-      _boo nameChanged = false;
+      const _bool hasExt = os_hasExtension(path);
+      _bool nameChanged = false;
 
       if (this->inner->exists.value) {
          nameChanged = true;
@@ -92,7 +92,7 @@ void C_Create_Stack::run()
       }
 
       if (hasExt) {
-         const _boo s = os_createFile(path);
+         const _bool s = os_createFile(path);
          this->inner->success.value = s;
 
          if (s) {
@@ -107,7 +107,7 @@ void C_Create_Stack::run()
          }
       }
       else {
-         const _boo s = os_createDirectory(path);
+         const _bool s = os_createDirectory(path);
          this->inner->success.value = s;
 
          if (s) {
@@ -142,7 +142,7 @@ void C_CreateFile::run()
          }
       }
 
-      const _boo s = os_createFile(this->inner->path.value);
+      const _bool s = os_createFile(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -166,8 +166,8 @@ void C_CreateFile_Stack::run()
       }
 
       _str path = this->inner->path.value;
-      const _boo hasExt = os_hasExtension(path);
-      _boo nameChanged = false;
+      const _bool hasExt = os_hasExtension(path);
+      _bool nameChanged = false;
 
       if (this->inner->exists.value) {
          nameChanged = true;
@@ -181,7 +181,7 @@ void C_CreateFile_Stack::run()
          }
       }
 
-      const _boo s = os_createFile(path);
+      const _bool s = os_createFile(path);
       this->inner->success.value = s;
 
       if (s) {
@@ -215,7 +215,7 @@ void C_CreateDirectory::run()
          }
       }
 
-      const _boo s = os_createDirectory(this->inner->path.value);
+      const _bool s = os_createDirectory(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -239,14 +239,14 @@ void C_CreateDirectory_Stack::run()
       }
 
       _str path = this->inner->path.value;
-      _boo nameChanged = false;
+      _bool nameChanged = false;
 
       if (this->inner->exists.value) {
          nameChanged = true;
          path = os_stackPath(path);
       }
 
-      const _boo s = os_createDirectory(path);
+      const _bool s = os_createDirectory(path);
       this->inner->success.value = s;
 
       if (s) {
@@ -288,7 +288,7 @@ void C_Create_String::run()
       }
 
       if (os_hasExtension(value)) {
-         const _boo s = os_createFile(path);
+         const _bool s = os_createFile(path);
          this->inner->success.value = s;
 
          if (s) {
@@ -299,7 +299,7 @@ void C_Create_String::run()
          }
       }
       else {
-         const _boo s = os_createDirectory(path);
+         const _bool s = os_createDirectory(path);
          this->inner->success.value = s;
 
          if (s) {
@@ -335,7 +335,7 @@ void C_CreateFile_String::run()
          }
       }
 
-      const _boo s = os_createFile(path);
+      const _bool s = os_createFile(path);
       this->inner->success.value = s;
 
       if (s) {
@@ -370,7 +370,7 @@ void C_CreateDirectory_String::run()
          }
       }
 
-      const _boo s = os_createDirectory(path);
+      const _bool s = os_createDirectory(path);
       this->inner->success.value = s;
 
       if (s) {
@@ -396,7 +396,7 @@ void C_Create_String_Stack::run()
       }
 
       _str path = os_join(dest, value);
-      const _boo hasExt = os_hasExtension(value);
+      const _bool hasExt = os_hasExtension(value);
 
       if (os_exists(path)) {
          if (hasExt) {
@@ -410,7 +410,7 @@ void C_Create_String_Stack::run()
       }
 
       if (hasExt) {
-         const _boo s = os_createFile(path);
+         const _bool s = os_createFile(path);
          this->inner->success.value = s;
 
          if (s) {
@@ -421,7 +421,7 @@ void C_Create_String_Stack::run()
          }
       }
       else {
-         const _boo s = os_createDirectory(path);
+         const _bool s = os_createDirectory(path);
          this->inner->success.value = s;
 
          if (s) {
@@ -448,7 +448,7 @@ void C_CreateFile_String_Stack::run()
       }
 
       _str path = os_join(dest, value);
-      const _boo hasExt = os_hasExtension(value);
+      const _bool hasExt = os_hasExtension(value);
 
       if (os_exists(path)) {
          if (hasExt) {
@@ -461,7 +461,7 @@ void C_CreateFile_String_Stack::run()
          }
       }
 
-      const _boo s = os_createFile(path);
+      const _bool s = os_createFile(path);
       this->inner->success.value = s;
 
       if (s) {
@@ -492,7 +492,7 @@ void C_CreateDirectory_String_Stack::run()
          path = os_stackPath(path);
       }
 
-      const _boo s = os_createDirectory(path);
+      const _bool s = os_createDirectory(path);
       this->inner->success.value = s;
 
       if (s) {
@@ -525,7 +525,7 @@ void C_Create_List::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -546,7 +546,7 @@ void C_Create_List::run()
             }
 
             if (os_hasExtension(n)) {
-               const _boo s = os_createFile(path);
+               const _bool s = os_createFile(path);
                this->inner->success.value = s;
 
                if (s) {
@@ -558,7 +558,7 @@ void C_Create_List::run()
                }
             }
             else {
-               const _boo s = os_createDirectory(path);
+               const _bool s = os_createDirectory(path);
                this->inner->success.value = s;
 
                if (s) {
@@ -596,7 +596,7 @@ void C_CreateFiles_List::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -616,7 +616,7 @@ void C_CreateFiles_List::run()
                }
             }
 
-            const _boo s = os_createFile(path);
+            const _bool s = os_createFile(path);
             this->inner->success.value = s;
 
             if (s) {
@@ -653,7 +653,7 @@ void C_CreateDirectories_List::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -673,7 +673,7 @@ void C_CreateDirectories_List::run()
                }
             }
 
-            const _boo s = os_createDirectory(path);
+            const _bool s = os_createDirectory(path);
             this->inner->success.value = s;
 
             if (s) {
@@ -710,7 +710,7 @@ void C_Create_List_Stack::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -721,7 +721,7 @@ void C_Create_List_Stack::run()
          }
          else {
             _str path = os_join(dest, n);
-            const _boo hasExt = os_hasExtension(path);
+            const _bool hasExt = os_hasExtension(path);
 
             if (os_exists(path)) {
                if (hasExt) {
@@ -735,7 +735,7 @@ void C_Create_List_Stack::run()
             }
 
             if (hasExt) {
-               const _boo s = os_createFile(path);
+               const _bool s = os_createFile(path);
                this->inner->success.value = s;
 
                if (s) {
@@ -747,7 +747,7 @@ void C_Create_List_Stack::run()
                }
             }
             else {
-               const _boo s = os_createDirectory(path);
+               const _bool s = os_createDirectory(path);
                this->inner->success.value = s;
 
                if (s) {
@@ -785,7 +785,7 @@ void C_CreateFiles_List_Stack::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -796,7 +796,7 @@ void C_CreateFiles_List_Stack::run()
          }
          else {
             _str path = os_join(dest, n);
-            const _boo hasExt = os_hasExtension(path);
+            const _bool hasExt = os_hasExtension(path);
 
             if (os_exists(path)) {
                if (hasExt) {
@@ -809,7 +809,7 @@ void C_CreateFiles_List_Stack::run()
                }
             }
 
-            const _boo s = os_createFile(path);
+            const _bool s = os_createFile(path);
             this->inner->success.value = s;
 
             if (s) {
@@ -846,7 +846,7 @@ void C_CreateDirectories_List_Stack::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -862,7 +862,7 @@ void C_CreateDirectories_List_Stack::run()
                path = os_stackPath(path);
             }
 
-            const _boo s = os_createDirectory(path);
+            const _bool s = os_createDirectory(path);
             this->inner->success.value = s;
 
             if (s) {

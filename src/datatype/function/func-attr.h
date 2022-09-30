@@ -262,47 +262,47 @@ public:
 };
 
 
-struct F_Archive : AttrFunction, Generator<_boo>
+struct F_Archive : AttrFunction, Generator<_bool>
 {
 public:
    F_Archive(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_Compressed : AttrFunction, Generator<_boo>
+struct F_Compressed : AttrFunction, Generator<_bool>
 {
 public:
    F_Compressed(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_Empty : AttrFunction, Generator<_boo>
+struct F_Empty : AttrFunction, Generator<_bool>
 {
 public:
    F_Empty(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_Encrypted : AttrFunction, Generator<_boo>
+struct F_Encrypted : AttrFunction, Generator<_bool>
 {
 public:
    F_Encrypted(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_Exist : Generator<_boo>
+struct F_Exist : Generator<_bool>
 {
 public:
    F_Exist(Generator<_list>* val, Uroboros* uro)
@@ -310,7 +310,7 @@ public:
 
    ~F_Exist();
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Uroboros* uroboros;
@@ -319,53 +319,53 @@ private:
 };
 
 
-struct F_Exists : AttrFunction, Generator<_boo>
+struct F_Exists : AttrFunction, Generator<_bool>
 {
 public:
    F_Exists(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_Hidden : AttrFunction, Generator<_boo>
+struct F_Hidden : AttrFunction, Generator<_bool>
 {
 public:
    F_Hidden(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsDirectory : AttrFunction, Generator<_boo>
+struct F_IsDirectory : AttrFunction, Generator<_bool>
 {
 public:
    F_IsDirectory(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsFile : AttrFunction, Generator<_boo>
+struct F_IsFile : AttrFunction, Generator<_bool>
 {
 public:
    F_IsFile(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_Readonly : AttrFunction, Generator<_boo>
+struct F_Readonly : AttrFunction, Generator<_bool>
 {
 public:
    F_Readonly(Generator<_str>* val, Uroboros* uro)
       : AttrFunction(val, uro) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 }

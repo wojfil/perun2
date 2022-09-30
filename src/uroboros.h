@@ -55,7 +55,7 @@ struct Uroboros
 {
 public:
    Uroboros(const Arguments& args);
-   _boo run();
+   _bool run();
 
    const Arguments& arguments;
    Hashes hashes;
@@ -75,10 +75,10 @@ private:
    Command* commands = nullptr;
    std::vector<Token> tokens;
 
-   _boo uro_tokenize();
-   _boo uro_parse();
-   _boo uro_postParse();
-   _boo uro_runCommands();
+   _bool uro_tokenize();
+   _bool uro_parse();
+   _bool uro_postParse();
+   _bool uro_runCommands();
 
 };
 

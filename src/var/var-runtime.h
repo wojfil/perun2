@@ -44,7 +44,7 @@ public:
    void varsLevelDown();
 
    // these overloaded methods fit easily into template functions:
-   void takeBundlePointer(VarBundle<_boo>*& bundle);
+   void takeBundlePointer(VarBundle<_bool>*& bundle);
    void takeBundlePointer(VarBundle<_per>*& bundle);
    void takeBundlePointer(VarBundle<_tim>*& bundle);
    void takeBundlePointer(VarBundle<_num>*& bundle);
@@ -54,28 +54,28 @@ public:
    void takeBundlePointer(VarBundle<_list>*& bundle);
 
    // get a reference to variable or 'this'
-   _boo getVarValue(const Token& tk, Generator<_tim>*& result);
-   _boo getVarValue(const Token& tk, Generator<_str>*& result);
-   _boo getVarValue(const Token& tk, Generator<_num>*& result);
+   _bool getVarValue(const Token& tk, Generator<_tim>*& result);
+   _bool getVarValue(const Token& tk, Generator<_str>*& result);
+   _bool getVarValue(const Token& tk, Generator<_num>*& result);
 
    // generate new definition
-   _boo getVarValue(const Token& tk, _def*& result);
+   _bool getVarValue(const Token& tk, _def*& result);
 
    // usual variable value reference
    template <typename T>
-   _boo getVarValue(const Token& tk, Generator<T>*& result)
+   _bool getVarValue(const Token& tk, Generator<T>*& result)
    {
       VarBundle<T>* bundle;
       takeBundlePointer(bundle);
       return bundle->getValue(this->vc, tk, result, this->inner);
    }
 
-   _boo variableExists(const Token& tk);
+   _bool variableExists(const Token& tk);
    void makeAllNotConstant();
 
    // variable reference for commands, that alter variables
    template <typename T>
-   _boo getVarPtr(const Token& tk, ParseVariable<T>*& result)
+   _bool getVarPtr(const Token& tk, ParseVariable<T>*& result)
    {
       VarBundle<T>* bundle;
       takeBundlePointer(bundle);
@@ -88,7 +88,7 @@ private:
    Hashes* hashes;
    VariablesContext* vc;
 
-   VarBundle<_boo> boo;
+   VarBundle<_bool> boo;
    VarBundle<_per> per;
    VarBundle<_tim> tim;
    VarBundle<_num> num;

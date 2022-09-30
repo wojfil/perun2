@@ -23,7 +23,7 @@ void DefinitionRef::reset()
    definition->reset();
 }
 
-_boo DefinitionRef::hasNext()
+_bool DefinitionRef::hasNext()
 {
    if (definition->hasNext()) {
       value = definition->getValue();

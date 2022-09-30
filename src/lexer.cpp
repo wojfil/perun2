@@ -45,7 +45,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
    _char prev = L' ';
    const _size len = code.length();
    _size wpos = 0, wlen = 0;
-   _boo prevSymbol = false;
+   _bool prevSymbol = false;
 
    for (_size i = 0; i < len; i++) {
       const _char& c = code[i];
@@ -246,7 +246,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
 static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros* uro)
 {
    _int dots = 0;
-   _boo nums = true;
+   _bool nums = true;
 
    for (_size i = start; i < start + length; i++) {
       const _char& ch = code[i];
@@ -423,7 +423,7 @@ _nint getSuffixMultiplier(const _char& c1, const _char& c2)
    }
 }
 
-inline _boo isSymbol(const _char& ch)
+inline _bool isSymbol(const _char& ch)
 {
    switch (ch) {
       case L',':
@@ -451,12 +451,12 @@ inline _boo isSymbol(const _char& ch)
    }
 }
 
-_boo isNewLine(const _char& ch)
+_bool isNewLine(const _char& ch)
 {
    return ch == L'\n';
 }
 
-inline _boo isAllowedInWord(const _char& ch)
+inline _bool isAllowedInWord(const _char& ch)
 {
    if (std::iswalpha(ch) || std::iswdigit(ch)) {
       return true;
@@ -471,7 +471,7 @@ inline _boo isAllowedInWord(const _char& ch)
    }
 }
 
-inline _boo isDoubleChar(const _char& ch)
+inline _bool isDoubleChar(const _char& ch)
 {
    switch (ch) {
       case L'+':

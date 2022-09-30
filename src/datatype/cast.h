@@ -36,7 +36,7 @@ public:
       delete base;
    };
 
-   _boo isConstant() const override
+   _bool isConstant() const override
    {
       return this->base->isConstant();
    };
@@ -47,27 +47,27 @@ protected:
 
 
 
-struct Cast_B_N : Cast<_boo, _num>
+struct Cast_B_N : Cast<_bool, _num>
 {
-   Cast_B_N(Generator<_boo>* b) : Cast(b) { };
+   Cast_B_N(Generator<_bool>* b) : Cast(b) { };
    _num getValue() override;
 };
 
-struct Cast_B_NL : Cast<_boo, _nlist>
+struct Cast_B_NL : Cast<_bool, _nlist>
 {
-   Cast_B_NL(Generator<_boo>* b) : Cast(b) { };
+   Cast_B_NL(Generator<_bool>* b) : Cast(b) { };
    _nlist getValue() override;
 };
 
-struct Cast_B_S : Cast<_boo, _str>
+struct Cast_B_S : Cast<_bool, _str>
 {
-   Cast_B_S(Generator<_boo>* b) : Cast(b) { };
+   Cast_B_S(Generator<_bool>* b) : Cast(b) { };
    _str getValue() override;
 };
 
-struct Cast_B_L : Cast<_boo, _list>
+struct Cast_B_L : Cast<_bool, _list>
 {
-   Cast_B_L(Generator<_boo>* b) : Cast(b) { };
+   Cast_B_L(Generator<_bool>* b) : Cast(b) { };
    _list getValue() override;
 };
 

@@ -40,8 +40,8 @@ struct Number
 
    _str toString() const;
    _nint toInt() const;
-   _boo isZero() const;
-   _boo isMinusOne() const;
+   _bool isZero() const;
+   _bool isMinusOne() const;
    void makeOpposite();
    void setToZero();
    void setToMinusOne();
@@ -63,17 +63,17 @@ struct Number
 
    Number operator - () const;
 
-   _boo operator == (const Number& num) const;
-   _boo operator != (const Number& num) const;
-   _boo operator < (const Number& num) const;
-   _boo operator > (const Number& num) const;
-   _boo operator <= (const Number& num) const;
-   _boo operator >= (const Number& num) const;
+   _bool operator == (const Number& num) const;
+   _bool operator != (const Number& num) const;
+   _bool operator < (const Number& num) const;
+   _bool operator > (const Number& num) const;
+   _bool operator <= (const Number& num) const;
+   _bool operator >= (const Number& num) const;
 
    // number consists of a value (int or double)
    // and a boolean flag indicating current state
    NumberValue value;
-   _boo isDouble;
+   _bool isDouble;
 };
 
 }

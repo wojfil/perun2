@@ -58,7 +58,7 @@ _num F_Average::getValue()
 _num F_Max::getValue()
 {
    _num max;
-   _boo init = false;
+   _bool init = false;
 
    if (countSingle != 0) {
       init = true;
@@ -133,7 +133,7 @@ _num F_Median::getValue()
 _num F_Min::getValue()
 {
    _num min;
-   _boo init = false;
+   _bool init = false;
 
    if (countSingle != 0) {
       init = true;

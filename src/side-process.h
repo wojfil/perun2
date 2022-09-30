@@ -27,7 +27,7 @@ struct SideProcess
 public:
    SideProcess();
 
-   _boo running;
+   _bool running;
    PROCESS_INFORMATION info;
 };
 

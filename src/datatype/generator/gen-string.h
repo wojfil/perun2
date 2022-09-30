@@ -46,7 +46,7 @@ private:
 struct StringBinary : Generator<_str>
 {
 public:
-   StringBinary (Generator<_boo>* cond, Generator<_str>* val)
+   StringBinary (Generator<_bool>* cond, Generator<_str>* val)
       : condition(cond), value(val) {};
 
    ~StringBinary()
@@ -58,7 +58,7 @@ public:
    _str getValue() override;
 
 private:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    Generator<_str>* value;
 };
 

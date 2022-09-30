@@ -114,12 +114,12 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-_boo Attribute::has(const _aunit& v) const
+_bool Attribute::has(const _aunit& v) const
 {
    return value & v;
 }
 
-_boo Attribute::hasAny() const
+_bool Attribute::hasAny() const
 {
    return value != ATTR_NULL;
 }
@@ -129,7 +129,7 @@ _aunit Attribute::getValue() const
    return value;
 }
 
-_boo Attribute::isMarkedToEvaluate() const
+_bool Attribute::isMarkedToEvaluate() const
 {
    return isMarkedToEvaluate_;
 }

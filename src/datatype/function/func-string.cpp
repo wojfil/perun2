@@ -596,7 +596,7 @@ _str F_AfterDigits::getValue()
 {
    const _str value = arg1->getValue();
    const _size len = value.size();
-   _boo after = false;
+   _bool after = false;
 
    for (_size i = 0; i < len; i++) {
       if (after) {
@@ -637,7 +637,7 @@ _str F_AfterLetters::getValue()
 {
    const _str value = arg1->getValue();
    const _size len = value.size();
-   _boo after = false;
+   _bool after = false;
 
    for (_size i = 0; i < len; i++) {
       if (after) {
@@ -725,11 +725,11 @@ _str F_Capitalize::getValue()
       return value;
    }
 
-   _boo prevLetter = false;
+   _bool prevLetter = false;
 
    for (_size i = 0; i < len; i++) {
       const _char& ch = value[i];
-      const _boo isLetter = std::iswalpha(ch);
+      const _bool isLetter = std::iswalpha(ch);
 
       if (isLetter) {
          if (prevLetter) {
@@ -820,7 +820,7 @@ _str F_Roman::getValue()
       (L"C" L"̅" L"M" L"̅"), (L"M" L"̅")
    };
 
-   const _boo isBig = number > 3999LL;
+   const _bool isBig = number > 3999LL;
    _int i = 24;
 
    while (number > 0) {
@@ -854,7 +854,7 @@ _str F_Binary::getValue()
 {
    _nint v = arg1->getValue().toInt();
    _stream ss;
-   _boo negative = false;
+   _bool negative = false;
 
    if (v < 0) {
       v *= -1;

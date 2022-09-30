@@ -55,7 +55,7 @@ void Filter_WhereDef::reset() {
 }
 
 
-_boo Filter_WhereDef::hasNext()
+_bool Filter_WhereDef::hasNext()
 {
    if (first) {
       finished = false;
@@ -78,7 +78,7 @@ _boo Filter_WhereDef::hasNext()
          this->attribute->run();
       }
 
-      const _boo con = condition->getValue();
+      const _bool con = condition->getValue();
 
       if (con) {
          this->inner->index.value = index;
@@ -113,7 +113,7 @@ void DefinitionChain::reset()
 };
 
 
-_boo DefinitionChain::hasNext()
+_bool DefinitionChain::hasNext()
 {
    if (this->definition->hasNext()) {
       this->finished = false;
@@ -129,7 +129,7 @@ _boo DefinitionChain::hasNext()
 };
 
 
-_boo Filter_LimitDef::hasNext()
+_bool Filter_LimitDef::hasNext()
 {
    if (first) {
       limit = number->getValue().toInt();
@@ -156,7 +156,7 @@ _boo Filter_LimitDef::hasNext()
 };
 
 
-_boo Filter_SkipDef::hasNext()
+_bool Filter_SkipDef::hasNext()
 {
    if (first) {
       limit = number->getValue().toInt();
@@ -188,7 +188,7 @@ _boo Filter_SkipDef::hasNext()
 };
 
 
-_boo Filter_EveryDef::hasNext()
+_bool Filter_EveryDef::hasNext()
 {
    if (first) {
       limit = number->getValue().toInt();
@@ -239,7 +239,7 @@ void Join_DefStr::reset()
    }
 }
 
-_boo Join_DefStr::hasNext()
+_bool Join_DefStr::hasNext()
 {
    if (this->uroboros->state != State::s_Running) {
       reset();
@@ -278,7 +278,7 @@ void Join_StrDef::reset()
 }
 
 
-_boo Join_StrDef::hasNext()
+_bool Join_StrDef::hasNext()
 {
    if (this->uroboros->state != State::s_Running) {
       reset();
@@ -319,7 +319,7 @@ void Join_DefList::reset()
 }
 
 
-_boo Join_DefList::hasNext()
+_bool Join_DefList::hasNext()
 {
    if (this->uroboros->state != State::s_Running) {
       reset();
@@ -368,7 +368,7 @@ void Join_ListDef::reset()
 }
 
 
-_boo Join_ListDef::hasNext()
+_bool Join_ListDef::hasNext()
 {
    if (this->uroboros->state != State::s_Running) {
       reset();
@@ -427,7 +427,7 @@ void Join_DefDef::reset()
 }
 
 
-_boo Join_DefDef::hasNext()
+_bool Join_DefDef::hasNext()
 {
    if (this->uroboros->state != State::s_Running) {
       reset();
@@ -476,7 +476,7 @@ void DefTernary::reset()
 }
 
 
-_boo DefTernary::hasNext()
+_bool DefTernary::hasNext()
 {
    if (first) {
       isLeft = condition->getValue();
@@ -509,7 +509,7 @@ void DefBinary::reset()
 }
 
 
-_boo DefBinary::hasNext()
+_bool DefBinary::hasNext()
 {
    if (first) {
       if (!condition->getValue()) {

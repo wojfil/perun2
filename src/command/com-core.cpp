@@ -28,7 +28,7 @@ namespace uro::comm
 void C_Delete::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_delete(this->inner->path.value);
+      const _bool s = this->inner->exists.value && os_delete(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -46,7 +46,7 @@ void C_Delete::run()
 void C_Drop::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_drop(this->inner->path.value, this->inner->isfile.value, this->uroboros);
+      const _bool s = this->inner->exists.value && os_drop(this->inner->path.value, this->inner->isfile.value, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -64,7 +64,7 @@ void C_Drop::run()
 void C_Hide::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_hide(this->inner->path.value);
+      const _bool s = this->inner->exists.value && os_hide(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -82,7 +82,7 @@ void C_Hide::run()
 void C_Lock::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_lock(this->inner->path.value);
+      const _bool s = this->inner->exists.value && os_lock(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -100,7 +100,7 @@ void C_Lock::run()
 void C_Open::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_open(this->inner->path.value);
+      const _bool s = this->inner->exists.value && os_open(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -115,7 +115,7 @@ void C_Open::run()
 void C_Unlock::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_unlock(this->inner->path.value);
+      const _bool s = this->inner->exists.value && os_unlock(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -133,7 +133,7 @@ void C_Unlock::run()
 void C_Unhide::run()
 {
    if (this->uroboros->state == State::s_Running) {
-      const _boo s = this->inner->exists.value && os_unhide(this->inner->path.value);
+      const _bool s = this->inner->exists.value && os_unhide(this->inner->path.value);
       this->inner->success.value = s;
 
       if (s) {
@@ -161,7 +161,7 @@ void C_OpenWith::run()
 
       const _str proPath = os_join(this->inner->location.value, pro);
       if (os_exists(proPath)) {
-         const _boo s = os_openWith(proPath, os_quoteEmbraced(this->inner->path.value));
+         const _bool s = os_openWith(proPath, os_quoteEmbraced(this->inner->path.value));
          this->inner->success.value = s;
 
          if (s) {
@@ -179,7 +179,7 @@ void C_OpenWith::run()
          }
 
          const _str com = str(pro, L" ", os_quoteEmbraced(this->inner->path.value));
-         const _boo s = os_process(com, os_parent(this->inner->path.value));
+         const _bool s = os_process(com, os_parent(this->inner->path.value));
          this->inner->success.value = s;
 
          if (s) {
@@ -291,7 +291,7 @@ void C_RenameTo::run()
          return;
       }
 
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(this->inner->path.value);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(this->inner->path.value);
 
       if (!extensionless && hasExt && !os_hasExtension(n)) {
          n += str(L".", os_extension(this->inner->path.value));
@@ -308,7 +308,7 @@ void C_RenameTo::run()
          }
       }
 
-      const _boo s = os_moveTo(this->inner->path.value, newPath);
+      const _bool s = os_moveTo(this->inner->path.value, newPath);
       this->inner->success.value = s;
 
       if (s) {
@@ -340,10 +340,10 @@ void C_RenameTo_Stack::run()
          return;
       }
 
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
       const _str parent = os_parent(oldPath);
       _str newPath;
-      _boo s;
+      _bool s;
 
       if (hasExt) {
          _str ex;
@@ -421,7 +421,7 @@ void C_MoveTo::run()
 
       const _str fulln = os_fullname(oldPath);
       const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
@@ -431,7 +431,7 @@ void C_MoveTo::run()
          }
       }
 
-      const _boo s = os_moveTo(oldPath, newPath);
+      const _bool s = os_moveTo(oldPath, newPath);
       this->inner->success.value = s;
 
       if (s) {
@@ -472,7 +472,7 @@ void C_MoveTo_Stack::run()
 
       const _str fulln = os_fullname(oldPath);
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (hasExt) {
@@ -485,7 +485,7 @@ void C_MoveTo_Stack::run()
          }
       }
 
-      const _boo s = os_moveTo(oldPath, newPath);
+      const _bool s = os_moveTo(oldPath, newPath);
       this->inner->success.value = s;
 
       if (s) {
@@ -517,7 +517,7 @@ void C_MoveToAs::run()
          return;
       }
 
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
          fulln += str(L".", os_extension(oldPath));
@@ -543,7 +543,7 @@ void C_MoveToAs::run()
          }
       }
 
-      const _boo s = os_moveTo(oldPath, newPath);
+      const _bool s = os_moveTo(oldPath, newPath);
       this->inner->success.value = s;
 
       if (s) {
@@ -585,9 +585,9 @@ void C_MoveToAs_Stack::run()
          }
       }
 
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
       _str newPath;
-      _boo s;
+      _bool s;
 
       if (hasExt) {
          _str ex;
@@ -667,7 +667,7 @@ void C_DownloadFrom_String::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -701,7 +701,7 @@ void C_DownloadFrom_List::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str& n = os_trim(names[i]);
@@ -722,7 +722,7 @@ void C_DownloadFrom_List::run()
                }
             }
 
-            const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+            const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
                commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
@@ -751,7 +751,7 @@ void C_DownloadFrom_Definition::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
       this->inner->location.value = srcLoc;
 
       while (this->uroboros->state == State::s_Running && elements->hasNext()) {
@@ -773,7 +773,7 @@ void C_DownloadFrom_Definition::run()
                }
             }
 
-            const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+            const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
                commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
@@ -825,7 +825,7 @@ void C_DownloadFrom_String_Stack::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -859,7 +859,7 @@ void C_DownloadFrom_List_Stack::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
@@ -883,7 +883,7 @@ void C_DownloadFrom_List_Stack::run()
                }
             }
 
-            const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+            const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
                commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
@@ -912,7 +912,7 @@ void C_DownloadFrom_Definition_Stack::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
       const _str f = os_fullname(srcLoc);
       this->inner->location.value = srcLoc;
 
@@ -947,7 +947,7 @@ void C_DownloadFrom_Definition_Stack::run()
                }
             }
 
-            const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+            const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
                commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
@@ -995,7 +995,7 @@ void C_Download_String::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -1029,7 +1029,7 @@ void C_Download_List::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; this->uroboros->state == State::s_Running && i < len; i++) {
          const _str n = os_trim(oldPaths[i]);
@@ -1051,7 +1051,7 @@ void C_Download_List::run()
             }
          }
 
-         const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+         const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
          if (s) {
             commandLog(this->uroboros, L"Download ", getCCName(oldPath));
@@ -1103,7 +1103,7 @@ void C_Download_String_Stack::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -1137,7 +1137,7 @@ void C_Download_List_Stack::run()
          return;
       }
 
-      _boo success = true;
+      _bool success = true;
 
       for (_size i = 0; this->uroboros->state == State::s_Running && i < len; i++) {
          const _str oldPath = os_trim(oldPaths[i]);
@@ -1164,7 +1164,7 @@ void C_Download_List_Stack::run()
             }
          }
 
-         const _boo s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
+         const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
          if (s) {
             commandLog(this->uroboros, L"Download ", getCCName(oldPath));
@@ -1203,7 +1203,7 @@ void C_CopyTo::run()
 
       const _str fulln = os_fullname(oldPath);
       const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
@@ -1213,7 +1213,7 @@ void C_CopyTo::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -1249,7 +1249,7 @@ void C_CopyTo_Stack::run()
 
       const _str fulln = os_fullname(oldPath);
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (hasExt) {
@@ -1262,7 +1262,7 @@ void C_CopyTo_Stack::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -1288,7 +1288,7 @@ void C_CopyToAs::run()
          return;
       }
 
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
          fulln += str(L".", os_extension(oldPath));
@@ -1314,7 +1314,7 @@ void C_CopyToAs::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {
@@ -1350,7 +1350,7 @@ void C_CopyToAs_Stack::run()
          }
       }
 
-      const _boo hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->inner->isfile.value && os_hasExtension(oldPath);
       _str newPath;
 
       if (hasExt) {
@@ -1380,7 +1380,7 @@ void C_CopyToAs_Stack::run()
          }
       }
 
-      const _boo s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
+      const _bool s = os_copyTo(oldPath, newPath, this->inner->isfile.value, this->uroboros);
       this->inner->success.value = s;
 
       if (s) {

@@ -26,46 +26,46 @@ namespace uro::gen
 {
 
 // logic negation:
-struct Not : UnaryOperation<_boo>
+struct Not : UnaryOperation<_bool>
 {
-   Not(Generator<_boo>* val) : UnaryOperation<_boo>(val) { };
+   Not(Generator<_bool>* val) : UnaryOperation<_bool>(val) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
 // three basic gates:
-struct And : BinaryOperation<_boo>
+struct And : BinaryOperation<_bool>
 {
-   And(Generator<_boo>* val1, Generator<_boo>* val2)
-      : BinaryOperation<_boo>(val1, val2) { };
+   And(Generator<_bool>* val1, Generator<_bool>* val2)
+      : BinaryOperation<_bool>(val1, val2) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct Or : BinaryOperation<_boo>
+struct Or : BinaryOperation<_bool>
 {
-   Or(Generator<_boo>* val1, Generator<_boo>* val2)
-      : BinaryOperation<_boo>(val1, val2) { };
+   Or(Generator<_bool>* val1, Generator<_bool>* val2)
+      : BinaryOperation<_bool>(val1, val2) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct Xor : BinaryOperation<_boo>
+struct Xor : BinaryOperation<_bool>
 {
-   Xor(Generator<_boo>* val1, Generator<_boo>* val2)
-      : BinaryOperation<_boo>(val1, val2) { };
+   Xor(Generator<_bool>* val1, Generator<_bool>* val2)
+      : BinaryOperation<_bool>(val1, val2) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
 // IN operator straight outta SQL
 // right side is variant, so is generated for every call
 template <typename T>
-struct InList : Generator<_boo>
+struct InList : Generator<_bool>
 {
 public:
    InList<T> (Generator<T>* val, Generator<std::vector<T>>* li)
@@ -76,7 +76,7 @@ public:
       delete list;
    };
 
-   _boo getValue() override {
+   _bool getValue() override {
       const std::vector<T> vs = list->getValue();
       const T v = value->getValue();
       const _size len = vs.size();
@@ -99,7 +99,7 @@ private:
 // an optimized variant of the IN operator
 // is parsed if second argument is constant
 template <typename T>
-struct InConstList : Generator<_boo>
+struct InConstList : Generator<_bool>
 {
 public:
    InConstList<T> (Generator<T>* val, const std::vector<T>& li)
@@ -113,7 +113,7 @@ public:
       delete value;
    };
 
-   _boo getValue() override  {
+   _bool getValue() override  {
       return std::binary_search(list.begin(), list.end(), value->getValue());
    };
 
@@ -126,13 +126,13 @@ private:
 // Time works quite differently than other data types
 // for example '3 June 2005' equals 'June 2005'
 // so let there be special a case struct
-struct InConstTimeList : Generator<_boo>
+struct InConstTimeList : Generator<_bool>
 {
 public:
    InConstTimeList(Generator<_tim>* val, const _tlist& li);
    ~InConstTimeList();
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_tim>* value;

@@ -23,17 +23,17 @@ namespace uro::func
 {
 
 template <typename T>
-struct F_Any : Func_1<std::vector<T>>, Generator<_boo>
+struct F_Any : Func_1<std::vector<T>>, Generator<_bool>
 {
 public:
    F_Any<T>(Generator<std::vector<T>>* a1) : Func_1<std::vector<T>>(a1) { };
-   _boo getValue() override {
+   _bool getValue() override {
       return this->arg1->getValue().size() > 0;
    }
 };
 
 
-struct F_AnyDef : Generator<_boo>
+struct F_AnyDef : Generator<_bool>
 {
 public:
    F_AnyDef(_def* def) : definition(def) { };
@@ -41,14 +41,14 @@ public:
       delete definition;
    }
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    _def* definition;
 };
 
 
-struct F_AnyInside : Generator<_boo>
+struct F_AnyInside : Generator<_bool>
 {
 public:
    F_AnyInside(_def* def, Generator<_str>* val, Uroboros* uro)
@@ -59,7 +59,7 @@ public:
       delete value;
    }
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    InnerVariables* inner;
@@ -69,13 +69,13 @@ private:
 
 
 template <typename T>
-struct F_ContainsCol : Func_2<std::vector<T>, T>, Generator<_boo>
+struct F_ContainsCol : Func_2<std::vector<T>, T>, Generator<_bool>
 {
 public:
    F_ContainsCol<T>(Generator<std::vector<T>>* a1, Generator<T>* a2)
       : Func_2<std::vector<T>, T>(a1, a2) { };
 
-   _boo getValue() override {
+   _bool getValue() override {
       const std::vector<T> col = this->arg1->getValue();
       const _size length = col.size();
 
@@ -108,17 +108,17 @@ public:
 };
 
 
-struct F_ContainsStr : Func_2<_str, _str>, Generator<_boo>
+struct F_ContainsStr : Func_2<_str, _str>, Generator<_bool>
 {
 public:
    F_ContainsStr(Generator<_str>* a1, Generator<_str>* a2)
       : Func_2<_str, _str>(a1, a2) { };
 
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_ContainsDef : Generator<_boo>
+struct F_ContainsDef : Generator<_bool>
 {
 public:
    F_ContainsDef(_def* def, Generator<_str>* val, Uroboros* uro)
@@ -129,7 +129,7 @@ public:
       delete value;
    }
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Uroboros* uroboros;
@@ -138,81 +138,81 @@ private:
 };
 
 
-struct F_IsLower : Func_1<_str>, Generator<_boo>
+struct F_IsLower : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsLower(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsUpper : Func_1<_str>, Generator<_boo>
+struct F_IsUpper : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsUpper(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsNumber : Func_1<_str>, Generator<_boo>
+struct F_IsNumber : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsNumber(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-_boo isNumber(const _str& value);
+_bool isNumber(const _str& value);
 
 
-struct F_StartsWith : Func_2<_str, _str>, Generator<_boo>
+struct F_StartsWith : Func_2<_str, _str>, Generator<_bool>
 {
 public:
    F_StartsWith(Generator<_str>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_EndsWith : Func_2<_str, _str>, Generator<_boo>
+struct F_EndsWith : Func_2<_str, _str>, Generator<_bool>
 {
 public:
    F_EndsWith(Generator<_str>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_ExistsInside : Func_2<_str, _str>, Generator<_boo>
+struct F_ExistsInside : Func_2<_str, _str>, Generator<_bool>
 {
 public:
    F_ExistsInside(Generator<_str>* a1, Generator<_str>* a2, Uroboros* uro)
       : Func_2(a1, a2), inner(&uro->vars.inner) { };
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    InnerVariables* inner;
 };
 
 
-struct F_ExistInside : Func_2<_list, _str>, Generator<_boo>
+struct F_ExistInside : Func_2<_list, _str>, Generator<_bool>
 {
 public:
    F_ExistInside(Generator<_list>* a1, Generator<_str>* a2, Uroboros* uro)
       : Func_2(a1, a2), inner(&uro->vars.inner) { };
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    InnerVariables* inner;
 };
 
 
-struct F_StartsWithChar : Generator<_boo>
+struct F_StartsWithChar : Generator<_bool>
 {
 public:
    F_StartsWithChar(Generator<_str>* val, const _char& ch)
       : value(val), character(ch) { };
    ~F_StartsWithChar();
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_str>* value;
@@ -220,14 +220,14 @@ private:
 };
 
 
-struct F_EndsWithChar : Generator<_boo>
+struct F_EndsWithChar : Generator<_bool>
 {
 public:
    F_EndsWithChar(Generator<_str>* val, const _char& ch)
       : value(val), character(ch) { };
    ~F_EndsWithChar();
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_str>* value;
@@ -235,14 +235,14 @@ private:
 };
 
 
-struct F_StartsWithConst : Generator<_boo>
+struct F_StartsWithConst : Generator<_bool>
 {
 public:
    F_StartsWithConst(Generator<_str>* val, const _str& cnst)
       : value(val), constant(cnst), constantLength(cnst.size()) { };
    ~F_StartsWithConst();
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_str>* value;
@@ -251,14 +251,14 @@ private:
 };
 
 
-struct F_EndsWithConst : Generator<_boo>
+struct F_EndsWithConst : Generator<_bool>
 {
 public:
    F_EndsWithConst(Generator<_str>* val, const _str& cnst)
       : value(val), constant(cnst), constantLength(cnst.size()) { };
    ~F_EndsWithConst();
 
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Generator<_str>* value;
@@ -267,24 +267,24 @@ private:
 };
 
 
-struct F_Find : Func_2<_str, _str>, Generator<_boo>
+struct F_Find : Func_2<_str, _str>, Generator<_bool>
 {
 public:
    F_Find(Generator<_str>* a1, Generator<_str>* a2, Uroboros* uro)
       : Func_2(a1, a2), inner(&uro->vars.inner) { };
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    InnerVariables* inner;
 };
 
 
-struct F_Find_InThis : Func_1<_str>, Generator<_boo>
+struct F_Find_InThis : Func_1<_str>, Generator<_bool>
 {
 public:
    F_Find_InThis(Generator<_str>* a1, Uroboros* uro) 
       : Func_1(a1), uroboros(uro), inner(&uro->vars.inner) { };
-   _boo getValue() override;
+   _bool getValue() override;
 
 private:
    Uroboros* uroboros;
@@ -293,35 +293,35 @@ private:
 
 
 
-struct F_IsLetter : Func_1<_str>, Generator<_boo>
+struct F_IsLetter : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsLetter(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsDigit : Func_1<_str>, Generator<_boo>
+struct F_IsDigit : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsDigit(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsBinary : Func_1<_str>, Generator<_boo>
+struct F_IsBinary : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsBinary(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 
-struct F_IsHex : Func_1<_str>, Generator<_boo>
+struct F_IsHex : Func_1<_str>, Generator<_bool>
 {
 public:
    F_IsHex(Generator<_str>* a1) : Func_1(a1) { };
-   _boo getValue() override;
+   _bool getValue() override;
 };
 
 }

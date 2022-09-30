@@ -34,24 +34,24 @@ struct FilterPrototype
 public:
    virtual ~FilterPrototype() { };
    virtual FilterType getFilterType() = 0;
-   virtual T build(T base, Attribute* attr, const _boo& hasMem, uro::Uroboros* uro) = 0;
+   virtual T build(T base, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro) = 0;
 };
 
 template <typename T>
-void makeWhereFilter(Generator<_boo>* boo, Attribute* attr,
-   const _boo& hasMemory, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
+void makeWhereFilter(Generator<_bool>* boo, Attribute* attr,
+   const _bool& hasMemory, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
 {
    result = new gen::Filter_Where<T>(result, boo, attr, uro);
 }
 
 template <typename T>
-void makeWhereFilter(Generator<_boo>* boo, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
+void makeWhereFilter(Generator<_bool>* boo, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
 {
    result = new gen::Filter_Where<T>(result, boo, nullptr, uro);
 }
 
-void makeWhereFilter(Generator<_boo>* boo, Attribute* attr, const _boo& hasMemory, _def*& result, uro::Uroboros* uro);
-void makeWhereFilter(Generator<_boo>* boo, _def*& result, uro::Uroboros* uro);
+void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, uro::Uroboros* uro);
+void makeWhereFilter(Generator<_bool>* boo, _def*& result, uro::Uroboros* uro);
 
 template <typename T>
 void makeNumericFilter(const Keyword& kw, Generator<_num>* num, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
@@ -78,7 +78,7 @@ template <typename T>
 struct FP_Where : FilterPrototype<T>
 {
 public:
-   FP_Where(Generator<_boo>* cond)
+   FP_Where(Generator<_bool>* cond)
       : condition(cond) { };
 
    ~FP_Where()
@@ -93,7 +93,7 @@ public:
       return FilterType::ft_Where;
    };
 
-   T build(T base, Attribute* attr, const _boo& hasMem, uro::Uroboros* uro) override
+   T build(T base, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro) override
    {
       T result = base;
 
@@ -109,7 +109,7 @@ public:
    };
 
 private:
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
 
 };
 
@@ -132,7 +132,7 @@ public:
       return FilterType::ft_Numeric;
    };
 
-   T build(T base, Attribute* attr, const _boo& hasMem, uro::Uroboros* uro) override
+   T build(T base, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro) override
    {
       T result = base;
       makeNumericFilter(keyword, value, result, uro);

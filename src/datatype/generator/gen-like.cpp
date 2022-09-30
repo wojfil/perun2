@@ -29,11 +29,11 @@ inline constexpr _char LIKE_CHAR_NONE = L'\0';
 inline constexpr _char LIKE_CHAR_SET = L'\1';
 
 
-LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _boo& neg)
+LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _bool& neg)
    : values(vals), negated(neg) { };
 
 
-_boo LikeSet::contains(const _char& ch) const
+_bool LikeSet::contains(const _char& ch) const
 {
    return this->negated
       ? this->values.find(ch) == this->values.end()
@@ -53,7 +53,7 @@ static LikeComparer* defaultLikeCmp(const _str& pattern)
 static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId)
 {
     std::unordered_set<_char> set;
-    _boo negated = false;
+    _bool negated = false;
 
     if (pattern[startId] == L'^') {
         negated = true;
@@ -225,7 +225,7 @@ LikeComparer* parseLikeCmp(const _str& pattern)
    const _char& last = pattern[length - 1];
    const _size limit = length - 1;
 
-   _boo fieldFail = false;
+   _bool fieldFail = false;
    _int underscoresWithin = 0;
    _int hashesWithin = 0;
 
@@ -363,7 +363,7 @@ LikeConst::LikeConst(Generator<_str>* val, const _str& pattern)
   : value(val), comparer(parseLikeCmp(pattern)) { };
 
 
-_boo LikeConst::getValue() {
+_bool LikeConst::getValue() {
    return comparer->compareToPattern(value->getValue());
 };
 
@@ -374,7 +374,7 @@ _boo LikeConst::getValue() {
 // so, for every call, generate a pattern string and its hash
 // if the hash is the same as hash from the previously used pattern
 // then just use previous pattern comparer
-_boo Like::getValue() {
+_bool Like::getValue() {
    const _str pat = pattern->getValue();
    const _size hsh = rawStringHash(pat);
 
@@ -396,13 +396,13 @@ LC_Default_WithBrackets::LC_Default_WithBrackets(const _str& pat, const std::uno
    : pattern(pat), charSets(cs), patternLen(pat.size()) { };
 
 
-_boo LC_Default_WithBrackets::compareToPattern(const _str& value) const
+_bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
 {
    const _int vlen = value.size();
-   _boo isMatch = true;
-   _boo wildCardOn = false; // %
-   _boo charWildCardOn = false; // _
-   _boo end = false;
+   _bool isMatch = true;
+   _bool wildCardOn = false; // %
+   _bool charWildCardOn = false; // _
+   _bool end = false;
    _int lastWildCard = -1;
    _int id = 0;
    _char p = LIKE_CHAR_NONE;
@@ -513,7 +513,7 @@ _boo LC_Default_WithBrackets::compareToPattern(const _str& value) const
    end = (id >= this->patternLen);
 
    if (isMatch && !end) {
-      _boo onlyWildCards = true;
+      _bool onlyWildCards = true;
       for (_int i = id; i < this->patternLen; i++) {
          if (pattern[i] != L'%') {
             onlyWildCards = false;
@@ -533,13 +533,13 @@ LC_Default_NoBrackets::LC_Default_NoBrackets(const _str& pat)
    : pattern(pat), patternLen(pat.size()) { };
 
 
-_boo LC_Default_NoBrackets::compareToPattern(const _str& value) const
+_bool LC_Default_NoBrackets::compareToPattern(const _str& value) const
 {
    const _int vlen = value.size();
-   _boo isMatch = true;
-   _boo wildCardOn = false; // %
-   _boo charWildCardOn = false; // _
-   _boo end = false;
+   _bool isMatch = true;
+   _bool wildCardOn = false; // %
+   _bool charWildCardOn = false; // _
+   _bool end = false;
    _int lastWildCard = -1;
    _int id = 0;
    _char p = LIKE_CHAR_NONE;
@@ -620,7 +620,7 @@ _boo LC_Default_NoBrackets::compareToPattern(const _str& value) const
    end = (id >= this->patternLen);
 
    if (isMatch && !end) {
-      _boo onlyWildCards = true;
+      _bool onlyWildCards = true;
       for (_int i = id; i < this->patternLen; i++) {
          if (pattern[i] != L'%') {
             onlyWildCards = false;
@@ -640,7 +640,7 @@ LC_StartsWith::LC_StartsWith(const _str& pat)
    : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
-_boo LC_StartsWith::compareToPattern(const _str& value) const
+_bool LC_StartsWith::compareToPattern(const _str& value) const
 {
    if (value.size() < length) {
       return false;
@@ -660,7 +660,7 @@ LC_EndsWith::LC_EndsWith(const _str& pat)
    : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
-_boo LC_EndsWith::compareToPattern(const _str& value) const
+_bool LC_EndsWith::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -684,7 +684,7 @@ LC_Contains::LC_Contains(const _str& pat)
    : length(pat.size() - 2), string(pat.substr(1, length)) { };
 
 
-_boo LC_Contains::compareToPattern(const _str& value) const
+_bool LC_Contains::compareToPattern(const _str& value) const
 {
    return value.size() < length
       ? false
@@ -692,7 +692,7 @@ _boo LC_Contains::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_StartsWithChar::compareToPattern(const _str& value) const
+_bool LC_StartsWithChar::compareToPattern(const _str& value) const
 {
    return value.empty()
       ? false
@@ -700,7 +700,7 @@ _boo LC_StartsWithChar::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_EndsWithChar::compareToPattern(const _str& value) const
+_bool LC_EndsWithChar::compareToPattern(const _str& value) const
 {
    const _size len = value.size();
 
@@ -710,7 +710,7 @@ _boo LC_EndsWithChar::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_ContainsChar::compareToPattern(const _str& value) const
+_bool LC_ContainsChar::compareToPattern(const _str& value) const
 {
    const _size len = value.size();
 
@@ -728,7 +728,7 @@ _boo LC_ContainsChar::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_UnderscoreStart::compareToPattern(const _str& value) const
+_bool LC_UnderscoreStart::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -746,7 +746,7 @@ _boo LC_UnderscoreStart::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_UnderscoreEnd::compareToPattern(const _str& value) const
+_bool LC_UnderscoreEnd::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -764,7 +764,7 @@ _boo LC_UnderscoreEnd::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_UnderscoreStartEnd::compareToPattern(const _str& value) const
+_bool LC_UnderscoreStartEnd::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -782,19 +782,19 @@ _boo LC_UnderscoreStartEnd::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_Equals::compareToPattern(const _str& value) const
+_bool LC_Equals::compareToPattern(const _str& value) const
 {
    return value == pattern;
 }
 
 
-_boo LC_Constant::compareToPattern(const _str& value) const
+_bool LC_Constant::compareToPattern(const _str& value) const
 {
    return constant;
 }
 
 
-_boo LC_ConstantLength::compareToPattern(const _str& value) const
+_bool LC_ConstantLength::compareToPattern(const _str& value) const
 {
    return value.size() == length;
 }
@@ -804,7 +804,7 @@ LC_UnderscorePercent::LC_UnderscorePercent(const _str& pat)
    : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
-_boo LC_UnderscorePercent::compareToPattern(const _str& value) const
+_bool LC_UnderscorePercent::compareToPattern(const _str& value) const
 {
    if (value.size() < length) {
       return false;
@@ -824,7 +824,7 @@ LC_PercentUnderscore::LC_PercentUnderscore(const _str& pat)
    : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
-_boo LC_PercentUnderscore::compareToPattern(const _str& value) const
+_bool LC_PercentUnderscore::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
 
@@ -845,7 +845,7 @@ _boo LC_PercentUnderscore::compareToPattern(const _str& value) const
 }
 
 
-_boo LC_OnlyDigits::compareToPattern(const _str& value) const
+_bool LC_OnlyDigits::compareToPattern(const _str& value) const
 {
    const _size vlength = value.size();
    if (vlength != length) {
@@ -862,7 +862,7 @@ _boo LC_OnlyDigits::compareToPattern(const _str& value) const
 
 
 LC_Field_U::LC_Field_U(const _str& pat)
-   : pattern(pat), length(pat.size()), isUnderscore(std::vector<_boo>(length))
+   : pattern(pat), length(pat.size()), isUnderscore(std::vector<_bool>(length))
 {
    for (_size i = 0; i < length; i++) {
       isUnderscore[i] = (pat[i] == L'_');
@@ -870,7 +870,7 @@ LC_Field_U::LC_Field_U(const _str& pat)
 }
 
 
-_boo LC_Field_U::compareToPattern(const _str& value) const
+_bool LC_Field_U::compareToPattern(const _str& value) const
 {
    if (value.size() != length) {
       return false;
@@ -887,7 +887,7 @@ _boo LC_Field_U::compareToPattern(const _str& value) const
 
 
 LC_Field_H::LC_Field_H(const _str& pat)
-   : pattern(pat), length(pat.size()), isHash(std::vector<_boo>(length))
+   : pattern(pat), length(pat.size()), isHash(std::vector<_bool>(length))
 {
    for (_size i = 0; i < length; i++) {
       isHash[i] = (pat[i] == L'#');
@@ -895,7 +895,7 @@ LC_Field_H::LC_Field_H(const _str& pat)
 }
 
 
-_boo LC_Field_H::compareToPattern(const _str& value) const
+_bool LC_Field_H::compareToPattern(const _str& value) const
 {
    if (value.size() != length) {
       return false;
@@ -918,7 +918,7 @@ _boo LC_Field_H::compareToPattern(const _str& value) const
 
 LC_Field_UH::LC_Field_UH(const _str& pat)
    : pattern(pat), length(pat.size()),
-     isUnderscore(std::vector<_boo>(length)), isHash(std::vector<_boo>(length))
+     isUnderscore(std::vector<_bool>(length)), isHash(std::vector<_bool>(length))
 {
    for (_size i = 0; i < length; i++) {
       isUnderscore[i] = (pat[i] == L'_');
@@ -927,7 +927,7 @@ LC_Field_UH::LC_Field_UH(const _str& pat)
 }
 
 
-_boo LC_Field_UH::compareToPattern(const _str& value) const
+_bool LC_Field_UH::compareToPattern(const _str& value) const
 {
    if (value.size() != length) {
       return false;

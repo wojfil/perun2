@@ -23,34 +23,34 @@
 namespace uro::parse
 {
 
-Generator<_boo>* parseBool(const Tokens& tks, uro::Uroboros* uro);
+Generator<_bool>* parseBool(const Tokens& tks, uro::Uroboros* uro);
 
-static Generator<_boo>* parseBoolTernary(const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* boolExpTree(
-   const std::vector<ExpElement<_boo>*>& infList,
-   std::vector<ExpElement<_boo>*>& pntList);
-static Generator<_boo>* boolExpIntegrateNegations(
-   const std::vector<ExpElement<_boo>*>& elements,
-   std::vector<ExpElement<_boo>*>& pntList);
-static Generator<_boo>* boolExpTreeMerge(
-   const std::vector<ExpElement<_boo>*>& elements,
-   std::vector<ExpElement<_boo>*>& pntList);
-static _boo isBoolExpComputable(const std::vector<ExpElement<_boo>*>& infList);
-_boo isBoolExpOperator(const Token& tk);
+static Generator<_bool>* parseBoolTernary(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* boolExpTree(
+   const std::vector<ExpElement<_bool>*>& infList,
+   std::vector<ExpElement<_bool>*>& pntList);
+static Generator<_bool>* boolExpIntegrateNegations(
+   const std::vector<ExpElement<_bool>*>& elements,
+   std::vector<ExpElement<_bool>*>& pntList);
+static Generator<_bool>* boolExpTreeMerge(
+   const std::vector<ExpElement<_bool>*>& elements,
+   std::vector<ExpElement<_bool>*>& pntList);
+static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList);
+_bool isBoolExpOperator(const Token& tk);
 static _char toBoolExpOperator(const Token& tk);
 
-static Generator<_boo>* parseLike(const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* parseIn(const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* parseInTimList(const bool& negated, 
+static Generator<_bool>* parseLike(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* parseIn(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* parseInTimList(const bool& negated, 
    const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro);
 static void emptyOperSideException(const Token& oper, const bool& isLeft, uro::Uroboros* uro);
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _boo& negated, const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* parseComparisons(const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* parseCollectionComparisons(const Tokens& left,
+   const _str& timeMember, const _bool& negated, const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* parseComparisons(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* parseCollectionComparisons(const Tokens& left,
    const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro);
-static Generator<_boo>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro);
+static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro);
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype);
 
 }

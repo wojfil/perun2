@@ -54,7 +54,7 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
       BracketsInfo bi;
       const _int end = tks.getEnd();
       const _int start = tks.getStart();
-      _boo anyOperator = false;
+      _bool anyOperator = false;
 
       if (tks.first().isSymbol(L'*')) {
          return nullptr;
@@ -177,13 +177,13 @@ static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
    _int sublen = 0, lv1 = 0, lv2 = 0;
-   _boo prev = false;
+   _bool prev = false;
 
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
          const _char& ch = t.value.ch;
-         const _boo free = (lv1 == 0) && (lv2 == 0);
+         const _bool free = (lv1 == 0) && (lv2 == 0);
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
                // _character '-' can represent either binary subtraction
@@ -313,7 +313,7 @@ static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList
    std::vector<ExpElement<_num>*> temp;
    const _size len = infList.size();
    _int brackets = 0;
-   _boo anyUnary = false;
+   _bool anyUnary = false;
 
    for (_size i = 0; i < len; i++) {
       ExpElement<_num>* e = infList[i];
@@ -376,7 +376,7 @@ static Generator<_num>* numExpIntegrateUnary(
    std::vector<ExpElement<_num>*>& pntList)
 {
    std::vector<ExpElement<_num>*> newList;
-   _boo minus = false;
+   _bool minus = false;
    const _size len = elements.size();
 
    for (_size i = 0; i < len; i++) {
@@ -521,7 +521,7 @@ static Generator<_num>* numExpTreeMerge2(
    const std::vector<ExpElement<_num>*>& elements)
 {
    Generator<_num>* first = elements[0]->takeValue();
-   _boo firstIsConstant = elements[0]->type == ElementType::et_Constant;
+   _bool firstIsConstant = elements[0]->type == ElementType::et_Constant;
    _char op;
    const _size len = elements.size();
 
@@ -571,7 +571,7 @@ static Generator<_num>* numExpTreeMerge2(
    return first;
 }
 
-static _boo isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
+static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
 {
    const _size len = infList.size();
    if (len == 0) {
@@ -597,7 +597,7 @@ static _boo isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
 
    for (_size i = 1; i < len; i++) {
       ExpElement<_num>* curr = infList[i];
-      const _boo cop = curr->type == ElementType::et_Operator;
+      const _bool cop = curr->type == ElementType::et_Operator;
 
       if (prev->type == ElementType::et_Operator) {
          switch (prev->_operator) {
@@ -656,7 +656,7 @@ static _boo isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
    return true;
 }
 
-static _boo isNumExpOperator(const _char& ch)
+static _bool isNumExpOperator(const _char& ch)
 {
    switch (ch) {
       case L'+':
@@ -670,7 +670,7 @@ static _boo isNumExpOperator(const _char& ch)
    }
 }
 
-static _boo isNumExpHighPriority(const _char& ch)
+static _bool isNumExpHighPriority(const _char& ch)
 {
    switch (ch)  {
       case L'*':

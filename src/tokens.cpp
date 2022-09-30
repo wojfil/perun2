@@ -81,12 +81,12 @@ _tinfo Tokens::getInfo() const
    return this->info;
 }
 
-_boo Tokens::check(const _tinfo& in) const
+_bool Tokens::check(const _tinfo& in) const
 {
    return this->info & in;
 }
 
-_boo Tokens::isEmpty() const
+_bool Tokens::isEmpty() const
 {
    return this->length == 0;
 }
@@ -281,8 +281,8 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros* uro) const
 std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
 {
    BracketsInfo bi;
-   _boo hasPercent = false;
-   _boo loop = true;
+   _bool hasPercent = false;
+   _bool loop = true;
    _int percentId = -1;
    _int colonId = -1;
 
@@ -321,7 +321,7 @@ void negationByExclamationException(const _int& line)
 
 void Tokens::checkCommonExpressionExceptions(Uroboros* uro) const
 {
-   _boo prevExclamantion = false;
+   _bool prevExclamantion = false;
 
    if (first().isSymbol(L'!')) {
       negationByExclamationException(first().line);
@@ -395,7 +395,7 @@ void Tokens::setData()
    while (this->length >= 2) {
       if (this->list[this->start].isSymbol(L'(') && this->list[this->end].isSymbol(L')')) {
          _int lvl = 0;
-         _boo b = true;
+         _bool b = true;
 
          for (_int i = this->start; b && i <= this->end; i++) {
             const Token& t = this->list[i];
@@ -433,9 +433,9 @@ void Tokens::setData()
 
    _int round = 0; // level of round brackets
    _int square = 0; // level of square brackets
-   _boo indepRound = false;
-   _boo firstSquare = false;
-   _boo indepSquare = false;
+   _bool indepRound = false;
+   _bool firstSquare = false;
+   _bool indepSquare = false;
    _int firstQuestionMarkId = -1;
    _int firstColonId = -1;
 

@@ -32,8 +32,8 @@ namespace uro::func
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
 static Generator<_str>* createThisReference(uro::Uroboros* uro);
 
-Generator<_boo>* boolFunction(const Tokens& tks, uro::Uroboros* uro);
-static Generator<_boo>* simpleBoolFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro);
+Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_bool>* simpleBoolFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro);
 
 Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro);
 static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro);

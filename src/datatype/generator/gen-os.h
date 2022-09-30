@@ -66,7 +66,7 @@ public:
    _fdata* getDataPtr();
 
 protected:
-   _boo first;
+   _bool first;
    Generator<_str>* location;
    uro::Uroboros* uroboros;
    uro::InnerVariables* inner;
@@ -104,7 +104,7 @@ public:
    void reset() override;
 
 protected:
-   _boo goDeeper;
+   _bool goDeeper;
    std::vector<HANDLE> handles;
    _list paths;
    _list bases;
@@ -117,7 +117,7 @@ public:
    Uro_Files(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionPlain(loc, uro, patt) {};
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 };
 
 
@@ -127,7 +127,7 @@ public:
    Uro_Directories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionPlain(loc, uro, patt) {};
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 };
 
 
@@ -137,7 +137,7 @@ public:
    Uro_All(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionPlain(loc, uro, patt) {};
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 };
 
 
@@ -147,7 +147,7 @@ public:
    Uro_RecursiveFiles(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionRecursive(loc, uro, patt) { };
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 };
 
 
@@ -157,7 +157,7 @@ public:
    Uro_RecursiveDirectories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionRecursive(loc, uro, patt) { };
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 };
 
 
@@ -167,10 +167,10 @@ public:
    Uro_RecursiveAll(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
       : OsDefinitionRecursive(loc, uro, patt), prevFile(false) { };
 
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
-   _boo prevFile;
+   _bool prevFile;
 };
 
 }

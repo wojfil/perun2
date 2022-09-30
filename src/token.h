@@ -162,14 +162,14 @@ public:
    const TokenValue value;
 
    // methods:
-   _boo isCommandKeyword() const;
-   _boo isFilterKeyword() const;
-   _boo isExpForbiddenKeyword() const;
-   _boo isSymbol(const _char& ch) const;
-   _boo isKeyword(const Keyword& kw) const;
-   _boo isLogicConstant() const;
-   _boo isWeekDay() const;
-   _boo isMonth() const;
+   _bool isCommandKeyword() const;
+   _bool isFilterKeyword() const;
+   _bool isExpForbiddenKeyword() const;
+   _bool isSymbol(const _char& ch) const;
+   _bool isKeyword(const Keyword& kw) const;
+   _bool isLogicConstant() const;
+   _bool isWeekDay() const;
+   _bool isMonth() const;
    _str getOriginString(Uroboros* uro) const;
    _str getOriginString_2(Uroboros* uro) const;
 

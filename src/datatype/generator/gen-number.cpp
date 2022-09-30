@@ -75,7 +75,7 @@ TimeMemberAtIndex::~TimeMemberAtIndex() {
    delete index;
 };
 
-_boo TimeMemberAtIndex::getElement()
+_bool TimeMemberAtIndex::getElement()
 {
    result = times->getValue();
    const _size length = result.size();

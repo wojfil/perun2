@@ -27,13 +27,13 @@ namespace uro::comm
 struct C_Create : Command_L
 {
 public:
-   C_Create(const _boo& force, Attribute* attr, uro::Uroboros* uro)
+   C_Create(const _bool& force, Attribute* attr, uro::Uroboros* uro)
       : forced(force), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   const _boo forced;
+   const _bool forced;
    Attribute* attribute; // memory is freed in another object
 };
 
@@ -54,13 +54,13 @@ private:
 struct C_CreateFile : Command_L
 {
 public:
-   C_CreateFile(const _boo& force, Attribute* attr, uro::Uroboros* uro)
+   C_CreateFile(const _bool& force, Attribute* attr, uro::Uroboros* uro)
       : forced(force), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   const _boo forced;
+   const _bool forced;
    Attribute* attribute;
 };
 
@@ -81,14 +81,14 @@ private:
 struct C_CreateDirectory : Command_L
 {
 public:
-   C_CreateDirectory(const _boo& force, Attribute* attr, uro::Uroboros* uro)
+   C_CreateDirectory(const _bool& force, Attribute* attr, uro::Uroboros* uro)
       : forced(force), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
 private:
    Attribute* attribute;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -109,7 +109,7 @@ private:
 struct C_Create_String : Command_L
 {
 public:
-   C_Create_String(Generator<_str>* el, const _boo& forc, uro::Uroboros* uro)
+   C_Create_String(Generator<_str>* el, const _bool& forc, uro::Uroboros* uro)
       : element(el), forced(forc), Command_L(uro) { };
 
    ~C_Create_String() {
@@ -120,14 +120,14 @@ public:
 
 private:
    Generator<_str>* element;
-   const _boo forced;
+   const _bool forced;
 };
 
 
 struct C_CreateFile_String : Command_L
 {
 public:
-   C_CreateFile_String(Generator<_str>* el, const _boo& forc, uro::Uroboros* uro)
+   C_CreateFile_String(Generator<_str>* el, const _bool& forc, uro::Uroboros* uro)
       : element(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateFile_String() {
@@ -138,14 +138,14 @@ public:
 
 private:
    Generator<_str>* element;
-   const _boo forced;
+   const _bool forced;
 };
 
 
 struct C_CreateDirectory_String : Command_L
 {
 public:
-   C_CreateDirectory_String(Generator<_str>* el, const _boo& forc, uro::Uroboros* uro)
+   C_CreateDirectory_String(Generator<_str>* el, const _bool& forc, uro::Uroboros* uro)
       : element(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateDirectory_String() {
@@ -156,7 +156,7 @@ public:
 
 private:
    Generator<_str>* element;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -217,7 +217,7 @@ private:
 struct C_Create_List : Command_L
 {
 public:
-   C_Create_List(Generator<_list>* el, const _boo& forc, uro::Uroboros* uro)
+   C_Create_List(Generator<_list>* el, const _bool& forc, uro::Uroboros* uro)
       : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_Create_List() {
@@ -228,14 +228,14 @@ public:
 
 private:
    Generator<_list>* elements;
-   const _boo forced;
+   const _bool forced;
 };
 
 
 struct C_CreateFiles_List : Command_L
 {
 public:
-   C_CreateFiles_List(Generator<_list>* el, const _boo& forc, uro::Uroboros* uro)
+   C_CreateFiles_List(Generator<_list>* el, const _bool& forc, uro::Uroboros* uro)
       : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateFiles_List() {
@@ -246,14 +246,14 @@ public:
 
 private:
    Generator<_list>* elements;
-   const _boo forced;
+   const _bool forced;
 };
 
 
 struct C_CreateDirectories_List : Command_L
 {
 public:
-   C_CreateDirectories_List(Generator<_list>* el, const _boo& forc, uro::Uroboros* uro)
+   C_CreateDirectories_List(Generator<_list>* el, const _bool& forc, uro::Uroboros* uro)
       : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_CreateDirectories_List() {
@@ -264,7 +264,7 @@ public:
 
 private:
    Generator<_list>* elements;
-   const _boo forced;
+   const _bool forced;
 };
 
 

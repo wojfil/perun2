@@ -89,7 +89,7 @@ void VariablesContext::retreatAttribute()
    this->attrs.pop_back();
 }
 
-_boo VariablesContext::anyAttribute()
+_bool VariablesContext::anyAttribute()
 {
    return !this->attrs.empty();
 }
@@ -123,7 +123,7 @@ void VariablesContext::retreatAggregate()
    this->aggrs.pop_back();
 }
 
-_boo VariablesContext::anyAggregate()
+_bool VariablesContext::anyAggregate()
 {
    return !this->aggrs.empty();
 }

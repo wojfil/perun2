@@ -42,7 +42,7 @@ public:
    virtual void clearValues(const _size& length) = 0;
    virtual void clearValues() = 0;
    virtual void addValues() = 0;
-   virtual _boo matchesSwap(const _int& start, const _int& end) const = 0;
+   virtual _bool matchesSwap(const _int& start, const _int& end) const = 0;
 };
 
 
@@ -50,7 +50,7 @@ template <typename T>
 struct OrderUnit : Order
 {
 public:
-   OrderUnit(Generator<T>* val, const _boo desc, OrderIndices* indie)
+   OrderUnit(Generator<T>* val, const _bool desc, OrderIndices* indie)
       : valueGenerator(val), descending(desc), indices(indie) { };
 
    ~OrderUnit()
@@ -62,7 +62,7 @@ protected:
    Generator<T>* valueGenerator;
    OrderIndices* indices;
    std::vector<T> values;
-   const _boo descending;
+   const _bool descending;
 };
 
 
@@ -70,7 +70,7 @@ template <typename T>
 struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
-   OrderUnit_Middle(Generator<T>* val, const _boo desc, Order* next, OrderIndices* indie)
+   OrderUnit_Middle(Generator<T>* val, const _bool desc, Order* next, OrderIndices* indie)
       : OrderUnit<T>(val, desc, indie), nextUnit(next) { };
 
    ~OrderUnit_Middle()
@@ -96,7 +96,7 @@ public:
       this->nextUnit->addValues();
    }
 
-   _boo matchesSwap(const _int& start, const _int& end) const override
+   _bool matchesSwap(const _int& start, const _int& end) const override
    {
       const T& left = this->values[this->indices->values[start]];
       const T& right = this->values[this->indices->values[end]];
@@ -120,7 +120,7 @@ template <typename T>
 struct OrderUnit_Final : OrderUnit<T>
 {
 public:
-   OrderUnit_Final(Generator<T>* val, const _boo desc, OrderIndices* indie)
+   OrderUnit_Final(Generator<T>* val, const _bool desc, OrderIndices* indie)
       : OrderUnit<T>(val, desc, indie) { };
 
    void clearValues(const _size& length) override
@@ -138,7 +138,7 @@ public:
       this->values.push_back(this->valueGenerator->getValue());
    }
 
-   _boo matchesSwap(const _int& start, const _int& end) const override
+   _bool matchesSwap(const _int& start, const _int& end) const override
    {
       return this->descending
          ? this->values[this->indices->values[start]] >= this->values[this->indices->values[end]]
@@ -197,7 +197,7 @@ protected:
    OrderIndices* orderIndices;
    Order* order;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
    uro::InnerVariables* inner;
    vars::Variable<T>* thisReference;
    std::vector<T>* resultPtr;
@@ -263,19 +263,19 @@ private:
 struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
-   OrderBy_Definition(_def* bas, Attribute* attr, const _boo& hasMem,
+   OrderBy_Definition(_def* bas, Attribute* attr, const _bool& hasMem,
       OrderIndices* indices, Order* ord, uro::Uroboros* uro);
    ~OrderBy_Definition();
 
    void reset() override;
-   _boo hasNext() override;
+   _bool hasNext() override;
 
 private:
    _def* base;
-   _boo first = true;
+   _bool first = true;
    uro::Uroboros* uroboros;
    uro::InnerVariables* inner;
-   const _boo hasMemory;
+   const _bool hasMemory;
    AttributeMemory attrMemory;
 
    _size length;
@@ -287,7 +287,7 @@ private:
 
    _list result;
 
-   _boo hasVolatileDepth;
+   _bool hasVolatileDepth;
    std::vector<_nint> depths;
 };
 

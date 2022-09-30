@@ -81,9 +81,9 @@ static Generator<_tlist>* parseTimListed(const Tokens& tks, uro::Uroboros* uro)
 static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, uro::Uroboros* uro)
 {
    const _size len = elements.size();
-   _boo isPrev = false;
+   _bool isPrev = false;
    std::vector<Generator<_tim>*>* result = new std::vector<Generator<_tim>*>();
-   _boo isConstant = true;
+   _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
@@ -146,9 +146,9 @@ static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, 
 static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, uro::Uroboros* uro)
 {
    const _size len = elements.size();
-   _boo isPrev = false;
+   _bool isPrev = false;
    std::vector<Generator<_tlist>*>* result = new std::vector<Generator<_tlist>*>();
-   _boo isConstant = true;
+   _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];

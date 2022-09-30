@@ -25,7 +25,7 @@ DefComparison::~DefComparison()
    delete value2;
 };
 
-_boo DefinitionsEqual::getValue()
+_bool DefinitionsEqual::getValue()
 {
    while (true) {
       if (!this->uroboros->state == State::s_Running) {
@@ -61,7 +61,7 @@ _boo DefinitionsEqual::getValue()
    return false;
 };
 
-_boo DefinitionsNotEqual::getValue()
+_bool DefinitionsNotEqual::getValue()
 {
    while (true) {
       if (!this->uroboros->state == State::s_Running) {
@@ -97,7 +97,7 @@ _boo DefinitionsNotEqual::getValue()
    return false;
 };
 
-_boo DefinitionsSmaller::getValue()
+_bool DefinitionsSmaller::getValue()
 {
    while (true) {
       if (!this->uroboros->state == State::s_Running) {
@@ -126,7 +126,7 @@ _boo DefinitionsSmaller::getValue()
    return false;
 };
 
-_boo DefinitionsSmallerEquals::getValue()
+_bool DefinitionsSmallerEquals::getValue()
 {
    while (true) {
       if (!this->uroboros->state == State::s_Running) {
@@ -155,7 +155,7 @@ _boo DefinitionsSmallerEquals::getValue()
    return false;
 };
 
-_boo DefinitionsBigger::getValue()
+_bool DefinitionsBigger::getValue()
 {
    while (true) {
       if (!this->uroboros->state == State::s_Running) {
@@ -184,7 +184,7 @@ _boo DefinitionsBigger::getValue()
    return false;
 };
 
-_boo DefinitionsBiggerEquals::getValue()
+_bool DefinitionsBiggerEquals::getValue()
 {
    while (true) {
       if (!this->uroboros->state == State::s_Running) {
@@ -220,7 +220,7 @@ DefListComparison::~DefListComparison()
    delete list;
 };
 
-_boo DefinitionListEqual::getValue()
+_bool DefinitionListEqual::getValue()
 {
    const _list v = this->list->getValue();
    const _size len = v.size();
@@ -263,7 +263,7 @@ _boo DefinitionListEqual::getValue()
    return false;
 }
 
-_boo DefinitionListNotEqual::getValue()
+_bool DefinitionListNotEqual::getValue()
 {
    const _list v = this->list->getValue();
    const _size len = v.size();
@@ -306,7 +306,7 @@ _boo DefinitionListNotEqual::getValue()
    return false;
 }
 
-_boo DefinitionListSmaller::getValue()
+_bool DefinitionListSmaller::getValue()
 {
    const _list v = this->list->getValue();
    const _size len = v.size();
@@ -333,7 +333,7 @@ _boo DefinitionListSmaller::getValue()
    return true;
 }
 
-_boo DefinitionListSmallerEquals::getValue()
+_bool DefinitionListSmallerEquals::getValue()
 {
    const _list v = this->list->getValue();
    const _size len = v.size();
@@ -371,7 +371,7 @@ _boo DefinitionListSmallerEquals::getValue()
    return true;
 }
 
-_boo DefinitionListBigger::getValue()
+_bool DefinitionListBigger::getValue()
 {
    const _list v = this->list->getValue();
    const _size len = v.size();
@@ -409,7 +409,7 @@ _boo DefinitionListBigger::getValue()
    return false;
 }
 
-_boo DefinitionListBiggerEquals::getValue()
+_bool DefinitionListBiggerEquals::getValue()
 {
    const _list v = this->list->getValue();
    const _size len = v.size();

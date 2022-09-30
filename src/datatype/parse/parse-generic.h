@@ -41,7 +41,7 @@ static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    if (!parse(uro, std::get<0>(trio), condition)) {
       return nullptr;
    }
@@ -72,7 +72,7 @@ static Generator<T>* parseBinary(const Tokens& tks, uro::Uroboros* uro)
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
 
-   Generator<_boo>* condition;
+   Generator<_bool>* condition;
    if (!parse(uro, pair.first, condition)) {
       return nullptr;
    }
@@ -92,7 +92,7 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
 {
    const _size len = elements.size();
    std::vector<Generator<T>*>* result = new std::vector<Generator<T>*>();
-   _boo isConstant = true;
+   _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
@@ -127,7 +127,7 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
    const _size len = elements.size();
    std::vector<Generator<std::vector<T>>*>* result
       = new std::vector<Generator<std::vector<T>>*>();
-   _boo isConstant = true;
+   _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
@@ -194,7 +194,7 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* ur
 }
 
 
-static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& result, _fdata*& data)
 {
    if (parse::parse(uro, tks, result)) {
       data = result->getDataPtr();
@@ -206,7 +206,7 @@ static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& result
 
 
 template <typename T>
-static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>*& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>*& result, _fdata*& data)
 {
    data = nullptr;
    return parse::parse(uro, tks, result);
@@ -215,7 +215,7 @@ static _boo parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>*
 
 template <typename T>
 static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, Attribute*& attr,
-   const _boo& hasAttr, const _boo& isFinal, const _boo& hasMemory, uro::Uroboros* uro, T& base)
+   const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, uro::Uroboros* uro, T& base)
 {
    const _size fplen = prototypes.size();
    _int lastWhereId = -1;
@@ -286,16 +286,16 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
    const _int kw = firstKeywordId - tks.getStart() + 1;
    const _int start = tks.getStart() + kw;
    const _int length = tks.getLength() - kw;
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    const Tokens tks3(tks, start, length);
    std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(uro);
    const _size flength = filterTokens.size();
    std::vector<FilterPrototype<T>*> prototypes;
 
    // attribute
-   const _boo hasAttr = (state == ThisState::ts_String);
+   const _bool hasAttr = (state == ThisState::ts_String);
    Attribute* attr;
-   _boo hasBridgeAttr = (fdata != nullptr);
+   _bool hasBridgeAttr = (fdata != nullptr);
 
    if (hasAttr) {
       if (hasBridgeAttr) {
@@ -341,7 +341,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
                uro->vc.addAttribute(attr);
             }
 
-            Generator<_boo>* boo;
+            Generator<_bool>* boo;
             if (!parse(uro, ts, boo)) {
                langutil::deleteVector(prototypes);
                uro->vars.inner.thisState = prevThisState;

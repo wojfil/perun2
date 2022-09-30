@@ -39,15 +39,15 @@
 namespace uro::parse
 {
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result);
-_boo parse(uro::Uroboros* uro, const Tokens& tks, _def*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result);
+_bool parse(uro::Uroboros* uro, const Tokens& tks, _def*& result);
 
 }
 

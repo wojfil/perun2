@@ -24,9 +24,9 @@
 namespace uro::parse
 {
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& result)
 {
-   Generator<_boo>* boo = parseBool(tks, uro);
+   Generator<_bool>* boo = parseBool(tks, uro);
    if (boo == nullptr) {
       return false;
    }
@@ -36,10 +36,10 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
 {
    // cast from "bool" to "Number"
-   Generator<_boo>* boo = parseBool(tks, uro);
+   Generator<_bool>* boo = parseBool(tks, uro);
    if (boo != nullptr) {
       result = new gen::Cast_B_N(boo);
       return true;
@@ -55,10 +55,10 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
 {
    // cast from "bool" to "string"
-   Generator<_boo>* boo = parseBool(tks, uro);
+   Generator<_bool>* boo = parseBool(tks, uro);
    if (boo != nullptr) {
       result = new gen::Cast_B_S(boo);
       return true;
@@ -95,10 +95,10 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
 {
    // cast from "bool" to "numList"
-   Generator<_boo>* boo = parseBool(tks, uro);
+   Generator<_bool>* boo = parseBool(tks, uro);
    if (boo != nullptr) {
       result = new gen::Cast_B_NL(boo);
       return true;
@@ -121,7 +121,7 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
 {
    // cast from "Time" to "timList"
    Generator<_tim>* tim = parseTime(tks, uro);
@@ -140,10 +140,10 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
 {
    // cast from "bool" to "list"
-   Generator<_boo>* boo = parseBool(tks, uro);
+   Generator<_bool>* boo = parseBool(tks, uro);
    if (boo != nullptr) {
       result = new gen::Cast_B_L(boo);
       return true;
@@ -208,7 +208,7 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
 {
    Generator<_tim>* tim = parseTime(tks, uro);
    if (tim == nullptr) {
@@ -220,7 +220,7 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
 {
    Generator<_per>* per = parsePeriod(tks, uro);
    if (per == nullptr) {
@@ -232,7 +232,7 @@ _boo parse(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
    }
 }
 
-_boo parse(uro::Uroboros* uro, const Tokens& tks, _def*& result)
+_bool parse(uro::Uroboros* uro, const Tokens& tks, _def*& result)
 {
    _def* def = parseDefinition(tks, uro);
    if (def == nullptr) {

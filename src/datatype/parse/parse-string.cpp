@@ -95,7 +95,7 @@ Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro)
 }
 
 template <typename T>
-void concatParseOutcome(_boo& parsed, _boo& allConstants, Generator<T>* recentValue)
+void concatParseOutcome(_bool& parsed, _bool& allConstants, Generator<T>* recentValue)
 {
    parsed = true;
    allConstants &= recentValue->isConstant();
@@ -122,12 +122,12 @@ Generator<_str>* parseStringConcat(const Tokens& tks, uro::Uroboros* uro)
    Generator<_per>* prevPer = nullptr;
 
    const _size len = elements.size();
-   _boo allConstants = true;
+   _bool allConstants = true;
    std::vector<Generator<_str>*>* result = new std::vector<Generator<_str>*>();
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      _boo parsed = false;
+      _bool parsed = false;
 
       switch (prevType) {
          case pt_String: {

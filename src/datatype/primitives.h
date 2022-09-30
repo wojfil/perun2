@@ -20,7 +20,7 @@
 #include <string>
 #include <sstream>
 
-#define _boo bool
+#define _bool bool
 #define _char wchar_t
 #define _str std::wstring
 

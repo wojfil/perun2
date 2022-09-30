@@ -237,7 +237,7 @@ public:
 private:
    Generator<_str>* value;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 
@@ -259,7 +259,7 @@ public:
 private:
    Generator<_str>* value;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 
@@ -283,7 +283,7 @@ private:
    Generator<_str>* value;
    Generator<_str>* argument;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 
@@ -307,7 +307,7 @@ private:
    Generator<_str>* value;
    Generator<_list>* arguments;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 
@@ -323,7 +323,7 @@ public:
 
 private:
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 
@@ -345,7 +345,7 @@ public:
 private:
    Generator<_str>* argument;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 
@@ -367,7 +367,7 @@ public:
 private:
    Generator<_list>* arguments;
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 }

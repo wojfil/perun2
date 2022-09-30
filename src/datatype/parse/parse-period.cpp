@@ -44,10 +44,10 @@ Generator<_per>* parsePeriod(const Tokens& tks, uro::Uroboros* uro)
    Tokens tks2(tks);
    tks2.trimLeft();
 
-   const _boo startsWithMinus = tks.first().isSymbol(L'-');
-   const _boo lastIsWord = tks.last().type == Token::t_Word;
-   const _boo hasPluses =  tks.check(TI_HAS_CHAR_PLUS);
-   const _boo hasMinuses = tks2.check(TI_HAS_CHAR_MINUS);
+   const _bool startsWithMinus = tks.first().isSymbol(L'-');
+   const _bool lastIsWord = tks.last().type == Token::t_Word;
+   const _bool hasPluses =  tks.check(TI_HAS_CHAR_PLUS);
+   const _bool hasMinuses = tks2.check(TI_HAS_CHAR_MINUS);
 
    if (len >= 3 && hasPluses || hasMinuses) {
       Generator<_per>* exp = parsePeriodExp(tks, uro);
@@ -107,7 +107,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodConst(const Tokens& tks, const _boo& negated, uro::Uroboros* uro)
+static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated, uro::Uroboros* uro)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -231,7 +231,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, uro::Uroboros* uro
       return parse(uro, tks, per) ? per : nullptr;
    }
 
-   _boo minusAwaits = tks.first().isSymbol(L'-');
+   _bool minusAwaits = tks.first().isSymbol(L'-');
 
    Tokens tks2(tks);
    if (minusAwaits) {
@@ -256,8 +256,8 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, uro::Uroboros* uro
    const std::vector<Tokens> elements = tks2.splitBySymbol(L'-');
    const _size len = elements.size();
 
-   _boo isTime;
-   _boo hasFirst = false;
+   _bool isTime;
+   _bool hasFirst = false;
    Generator<_tim>* time = nullptr;
    Generator<_per>* result;
 

@@ -25,7 +25,7 @@
 namespace uro::parse
 {
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& result)
 {
    const Token& tk = tks.first();
 
@@ -33,11 +33,11 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& resu
       case Token::t_Keyword: {
          switch (tk.value.keyword.k) {
             case Keyword::kw_True: {
-               result = new gen::Constant<_boo>(true);
+               result = new gen::Constant<_bool>(true);
                return true;
             }
             case Keyword::kw_False: {
-               result = new gen::Constant<_boo>(false);
+               result = new gen::Constant<_bool>(false);
                return true;
             }
             default: {
@@ -54,7 +54,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_boo>*& resu
    }
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
 {
    const Token& tk = tks.first();
 
@@ -109,7 +109,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& resu
    }
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
 {
    const Token& tk = tks.first();
 
@@ -131,7 +131,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& resu
    }
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
 {
    const Token& tk = tks.first();
 
@@ -139,7 +139,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& re
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
 {
    const Token& tk = tks.first();
 
@@ -147,7 +147,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& re
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
 {
    const Token& tk = tks.first();
 
@@ -155,7 +155,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& res
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
 {
    const Token& tk = tks.first();
 
@@ -187,7 +187,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& resu
    }
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
 {
    const Token& tk = tks.first();
 
@@ -195,7 +195,7 @@ _boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& resu
       && uro->vars.getVarValue(tk, result);
 };
 
-_boo parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
+_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
 {
    const Token& tk = tks.first();
 

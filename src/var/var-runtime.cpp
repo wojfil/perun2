@@ -115,7 +115,7 @@ void Variables::varsLevelDown()
    this->list.levelDown();
 }
 
-void Variables::takeBundlePointer(VarBundle<_boo>*& bundle)
+void Variables::takeBundlePointer(VarBundle<_bool>*& bundle)
 {
    bundle = &this->boo;
 }
@@ -156,7 +156,7 @@ void Variables::takeBundlePointer(VarBundle<_list>*& bundle)
 }
 
 template <typename T>
-_boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const ThisState& thisState,
+_bool getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const ThisState& thisState,
    Hashes* hashes, InnerVariables* inner, VariablesContext* vc, Variables* vars, uro::Uroboros* uro)
 {
    if (tk.value.word.h == hashes->HASH_VAR_THIS) {
@@ -177,13 +177,13 @@ _boo getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const This
    return bundle->getValue(vc, tk, result, *inner);
 }
 
-_boo Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
+_bool Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_Time,
       this->hashes, &this->inner, this->vc, this, this->uroboros);
 }
 
-_boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
+_bool Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 {
    if (tk.value.word.h == this->hashes->HASH_VAR_INDEX) {
       if (this->uroboros->vars.inner.thisState == ThisState::ts_None && !this->vc->anyAggregate()) {
@@ -205,13 +205,13 @@ _boo Variables::getVarValue(const Token& tk, Generator<_num>*& result)
       this->hashes, &this->inner, this->vc, this, this->uroboros);
 }
 
-_boo Variables::getVarValue(const Token& tk, Generator<_str>*& result)
+_bool Variables::getVarValue(const Token& tk, Generator<_str>*& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_String,
       this->hashes, &this->inner, this->vc, this, this->uroboros);
 }
 
-_boo Variables::getVarValue(const Token& tk, _def*& result)
+_bool Variables::getVarValue(const Token& tk, _def*& result)
 {
    if (this->defGenerators.find(tk.value.word.h) != this->defGenerators.end()) {
       result = this->defGenerators[tk.value.word.h]->generateDefault();
@@ -222,7 +222,7 @@ _boo Variables::getVarValue(const Token& tk, _def*& result)
 }
 
 // check if hash of variable exists in any hash map
-_boo Variables::variableExists(const Token& tk)
+_bool Variables::variableExists(const Token& tk)
 {
    const _size& h = tk.value.word.h;
 

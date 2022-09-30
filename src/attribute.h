@@ -64,18 +64,18 @@ public:
    void set(const _aunit& v);
    void setCoreCommandBase();
    void setTimeCommandBase();
-   _boo has(const _aunit& v) const;
-   _boo hasAny() const;
+   _bool has(const _aunit& v) const;
+   _bool hasAny() const;
    _aunit getValue() const;
-   _boo isMarkedToEvaluate() const;
+   _bool isMarkedToEvaluate() const;
    void markToEvaluate();
 
    virtual void run() const;
 
-   _boo markToRun = false;
+   _bool markToRun = false;
 
 protected:
-   _boo isMarkedToEvaluate_ = false;
+   _bool isMarkedToEvaluate_ = false;
    _aunit value;
    Uroboros* uroboros;
 };

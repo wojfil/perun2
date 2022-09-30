@@ -37,7 +37,7 @@ static Command* coreCommandSimpleNoSave(const Token& word, uro::Uroboros* uro);
 static Command* kwCommandTime(const Token& word, Tokens& tks,
    const _int& line, uro::Uroboros* uro);
 static Command* coreCommandTime(const Token& word,
-   Generator<_tim>* time, const _boo& saveChanges, uro::Uroboros* uro);
+   Generator<_tim>* time, const _bool& saveChanges, uro::Uroboros* uro);
 
 static Command* c_open(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
 static Command* c_select(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
@@ -52,7 +52,7 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
 static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack, uro::Uroboros* uro);
 
-Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _boo& directError, uro::Uroboros* uro);
+Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _bool& directError, uro::Uroboros* uro);
 static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
 static Command* c_run(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);
 static Command* c_error(const Token& word, const Tokens& tks, const _int& line, uro::Uroboros* uro);

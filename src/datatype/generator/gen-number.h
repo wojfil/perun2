@@ -145,7 +145,7 @@ public:
       : times(tims), index(in) {};
 
    ~TimeMemberAtIndex();
-   _boo getElement();
+   _bool getElement();
 
 protected:
    Generator<_tlist>* times;

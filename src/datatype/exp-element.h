@@ -67,7 +67,7 @@ public:
 private:
 
    Generator<T>* generator;
-   _boo _hasValue;
+   _bool _hasValue;
 };
 
 }

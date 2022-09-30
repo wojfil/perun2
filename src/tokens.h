@@ -70,8 +70,8 @@ public:
    _int getEmbracement() const;
    const std::vector<Token>& getList() const;
    _tinfo getInfo() const;
-   _boo check(const _tinfo& in) const;
-   _boo isEmpty() const;
+   _bool check(const _tinfo& in) const;
+   _bool isEmpty() const;
    const Token& first() const;
    const Token& second() const;
    const Token& penultimate() const;

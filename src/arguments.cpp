@@ -31,13 +31,13 @@ Arguments::Arguments(const _str& loc, const _str& cod, const _uint32& fls)
 
 Arguments::Arguments(_int* argc, _char** argv[])
 {
-   _boo options = true;
-   _boo nextParseLocation = false;
-   _boo hasCode = false;
-   _boo hasValue = false;
-   _boo here = false;
+   _bool options = true;
+   _bool nextParseLocation = false;
+   _bool hasCode = false;
+   _bool hasValue = false;
+   _bool here = false;
    _str value;
-   _boo d_has = false;
+   _bool d_has = false;
    _str d_value;
 
    this->flags = FLAG_NULL;
@@ -204,7 +204,7 @@ Arguments::Arguments(_int* argc, _char** argv[])
          return;
       }
 
-      _boo result = true;
+      _bool result = true;
       this->code = os_readFile(filePath, result);
 
       if (!result) {

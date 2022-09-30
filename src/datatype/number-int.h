@@ -32,16 +32,16 @@ struct NumberInt : Number
 
    _str toString() const;
    _nint toInt() const;
-   _boo isZero() const;
-   _boo isMinusOne() const;
+   _bool isZero() const;
+   _bool isMinusOne() const;
    void makeOpposite();
    void setToZero();
    void setToMinusOne();
 
    NumberInt& operator ++ (int);
    NumberInt& operator -- (int);
-   _boo operator == (const NumberInt& num) const;
-   _boo operator != (const NumberInt& num) const;
+   _bool operator == (const NumberInt& num) const;
+   _bool operator != (const NumberInt& num) const;
    NumberInt& operator += (const _nint& num);
    NumberInt& operator -= (const _nint& num);
 };

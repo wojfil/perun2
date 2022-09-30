@@ -241,7 +241,7 @@ _num F_SizeDefinition::getValue()
 
 _num F_SizeList::getValue()
 {
-   _boo any = false;
+   _bool any = false;
    _nint total = 0LL;
    const _list vs = values->getValue();
    const _size len = vs.size();
@@ -298,25 +298,25 @@ _tim F_Modification::getValue()
    return p.empty() ? _tim() : os_modification(p);
 }
 
-_boo F_Archive::getValue()
+_bool F_Archive::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_archive(p);
 }
 
-_boo F_Compressed::getValue()
+_bool F_Compressed::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_compressed(p);
 }
 
-_boo F_Empty::getValue()
+_bool F_Empty::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_empty(p);
 }
 
-_boo F_Encrypted::getValue()
+_bool F_Encrypted::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_encrypted(p);
@@ -327,7 +327,7 @@ F_Exist::~F_Exist()
    delete value;
 }
 
-_boo F_Exist::getValue()
+_bool F_Exist::getValue()
 {
    if (this->inner->location.value.empty()) {
       return false;
@@ -365,31 +365,31 @@ _boo F_Exist::getValue()
    }
 }
 
-_boo F_Exists::getValue()
+_bool F_Exists::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_exists(p);
 }
 
-_boo F_Hidden::getValue()
+_bool F_Hidden::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_hidden(p);
 }
 
-_boo F_IsDirectory::getValue()
+_bool F_IsDirectory::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_isDirectory(p);
 }
 
-_boo F_IsFile::getValue()
+_bool F_IsFile::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_isFile(p);
 }
 
-_boo F_Readonly::getValue()
+_bool F_Readonly::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_readonly(p);

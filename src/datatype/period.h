@@ -84,17 +84,17 @@ public:
    Period operator - (const Period& per) const;
    Period operator - () const;
 
-   _boo operator == (const Period& per) const;
-   _boo operator != (const Period& per) const;
-   _boo operator < (const Period& per) const;
-   _boo operator > (const Period& per) const;
-   _boo operator <= (const Period& per) const;
-   _boo operator >= (const Period& per) const;
+   _bool operator == (const Period& per) const;
+   _bool operator != (const Period& per) const;
+   _bool operator < (const Period& per) const;
+   _bool operator > (const Period& per) const;
+   _bool operator <= (const Period& per) const;
+   _bool operator >= (const Period& per) const;
 
 private:
 
    inline void addUnit(const Period& per);
-   inline _boo isNegativeDifference() const;
+   inline _bool isNegativeDifference() const;
    inline void checkDifference();
 
    inline _tnum periodUnitsCmp(const Period& per) const;

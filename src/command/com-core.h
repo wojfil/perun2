@@ -30,11 +30,11 @@ namespace uro::comm
 struct C_Simple : Command_L
 {
 public:
-   C_Simple(const _boo& save, uro::Uroboros* uro)
+   C_Simple(const _bool& save, uro::Uroboros* uro)
       : saveChanges(save), Command_L(uro) { };
 
 protected:
-   const _boo saveChanges;
+   const _bool saveChanges;
 };
 
 struct C_Delete : Command_L
@@ -49,7 +49,7 @@ public:
 
 private:
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 struct C_Drop : Command_L
@@ -64,12 +64,12 @@ public:
 
 private:
    Attribute* attribute;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
 };
 
 struct C_Hide : C_Simple
 {
-   C_Hide(const _boo& save, uro::Uroboros* uro)
+   C_Hide(const _bool& save, uro::Uroboros* uro)
       : C_Simple(save, uro) { };
 
    void run() override;
@@ -77,7 +77,7 @@ struct C_Hide : C_Simple
 
 struct C_Lock : C_Simple
 {
-   C_Lock(const _boo& save, uro::Uroboros* uro)
+   C_Lock(const _bool& save, uro::Uroboros* uro)
       : C_Simple(save, uro) { };
 
    void run() override;
@@ -93,7 +93,7 @@ struct C_Open : C_Simple
 
 struct C_Unlock : C_Simple
 {
-   C_Unlock(const _boo& save, uro::Uroboros* uro)
+   C_Unlock(const _bool& save, uro::Uroboros* uro)
       : C_Simple(save, uro) { };
 
    void run() override;
@@ -101,7 +101,7 @@ struct C_Unlock : C_Simple
 
 struct C_Unhide : C_Simple
 {
-   C_Unhide(const _boo& save, uro::Uroboros* uro)
+   C_Unhide(const _bool& save, uro::Uroboros* uro)
       : C_Simple(save, uro) { };
 
    void run() override;
@@ -133,7 +133,7 @@ protected:
 struct C_TimeAlter : Command_L
 {
 public:
-   C_TimeAlter(Generator<_tim>* ti, const _boo& save, uro::Uroboros* uro)
+   C_TimeAlter(Generator<_tim>* ti, const _bool& save, uro::Uroboros* uro)
       : time(ti), saveChanges(save), Command_L(uro) { };
 
    ~C_TimeAlter() {
@@ -142,13 +142,13 @@ public:
 
 protected:
    Generator<_tim>* time;
-   const _boo saveChanges;
+   const _bool saveChanges;
 };
 
 
 struct C_ReaccessTo : C_TimeAlter
 {
-   C_ReaccessTo(Generator<_tim>* ti, const _boo& save, uro::Uroboros* uro)
+   C_ReaccessTo(Generator<_tim>* ti, const _bool& save, uro::Uroboros* uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -157,7 +157,7 @@ struct C_ReaccessTo : C_TimeAlter
 
 struct C_RechangeTo : C_TimeAlter
 {
-   C_RechangeTo(Generator<_tim>* ti, const _boo& save, uro::Uroboros* uro)
+   C_RechangeTo(Generator<_tim>* ti, const _bool& save, uro::Uroboros* uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -166,7 +166,7 @@ struct C_RechangeTo : C_TimeAlter
 
 struct C_RecreateTo : C_TimeAlter
 {
-   C_RecreateTo(Generator<_tim>* ti, const _boo& save, uro::Uroboros* uro)
+   C_RecreateTo(Generator<_tim>* ti, const _bool& save, uro::Uroboros* uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -175,7 +175,7 @@ struct C_RecreateTo : C_TimeAlter
 
 struct C_RemodifyTo : C_TimeAlter
 {
-   C_RemodifyTo(Generator<_tim>* ti, const _boo& save, uro::Uroboros* uro)
+   C_RemodifyTo(Generator<_tim>* ti, const _bool& save, uro::Uroboros* uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -185,8 +185,8 @@ struct C_RemodifyTo : C_TimeAlter
 struct C_RenameTo : Command_L
 {
 public:
-   C_RenameTo(Generator<_str>* na, const _boo& save, const _boo& forc,
-      const _boo& extless, uro::Uroboros* uro)
+   C_RenameTo(Generator<_str>* na, const _bool& save, const _bool& forc,
+      const _bool& extless, uro::Uroboros* uro)
       : name(na), saveChanges(save), forced(forc), extensionless(extless), Command_L(uro) { };
 
    ~C_RenameTo() {
@@ -197,16 +197,16 @@ public:
 
 protected:
    Generator<_str>* name;
-   const _boo saveChanges;
-   const _boo forced;
-   const _boo extensionless;
+   const _bool saveChanges;
+   const _bool forced;
+   const _bool extensionless;
 };
 
 
 struct C_RenameTo_Stack : Command_L
 {
 public:
-   C_RenameTo_Stack(Generator<_str>* na, const _boo& save, const _boo& extless, uro::Uroboros* uro)
+   C_RenameTo_Stack(Generator<_str>* na, const _bool& save, const _bool& extless, uro::Uroboros* uro)
       : name(na), saveChanges(save), extensionless(extless), Command_L(uro) { };
 
    ~C_RenameTo_Stack() {
@@ -217,18 +217,18 @@ public:
 
 protected:
    Generator<_str>* name;
-   const _boo saveChanges;
-   const _boo extensionless;
+   const _bool saveChanges;
+   const _bool extensionless;
 };
 
 
 struct C_MoveTo : Command_L
 {
 public:
-   C_MoveTo(Generator<_str>* loc, const _boo& forc, uro::Uroboros* uro)
+   C_MoveTo(Generator<_str>* loc, const _bool& forc, uro::Uroboros* uro)
       : location(loc), hasAttribute(false), attribute(nullptr), forced(forc), Command_L(uro) { };
 
-   C_MoveTo(Generator<_str>* loc, const _boo& forc, Attribute* attr, uro::Uroboros* uro)
+   C_MoveTo(Generator<_str>* loc, const _bool& forc, Attribute* attr, uro::Uroboros* uro)
       : location(loc), hasAttribute(true), attribute(attr), forced(forc), Command_L(uro) { };
 
    ~C_MoveTo() {
@@ -239,9 +239,9 @@ public:
 
 protected:
    Generator<_str>* location;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
    Attribute* attribute;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -262,7 +262,7 @@ public:
 
 protected:
    Generator<_str>* location;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
    Attribute* attribute;
 };
 
@@ -270,13 +270,13 @@ protected:
 struct C_MoveToAs : Command_L
 {
 public:
-   C_MoveToAs(Generator<_str>* loc, Generator<_str>* na, const _boo& forc,
-      const _boo& extless, uro::Uroboros* uro)
+   C_MoveToAs(Generator<_str>* loc, Generator<_str>* na, const _bool& forc,
+      const _bool& extless, uro::Uroboros* uro)
       : location(loc), name(na), hasAttribute(false),
         attribute(nullptr), forced(forc), extensionless(extless), Command_L(uro) { };
 
-   C_MoveToAs(Generator<_str>* loc, Generator<_str>* na, const _boo& forc,
-      const _boo& extless, Attribute* attr, uro::Uroboros* uro)
+   C_MoveToAs(Generator<_str>* loc, Generator<_str>* na, const _bool& forc,
+      const _bool& extless, Attribute* attr, uro::Uroboros* uro)
       : location(loc), name(na), hasAttribute(true),
         attribute(attr), forced(forc), extensionless(extless), Command_L(uro) { };
 
@@ -290,10 +290,10 @@ public:
 protected:
    Generator<_str>* location;
    Generator<_str>* name;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
    Attribute* attribute;
-   const _boo forced;
-   const _boo extensionless;
+   const _bool forced;
+   const _bool extensionless;
 };
 
 
@@ -301,12 +301,12 @@ struct C_MoveToAs_Stack : Command_L
 {
 public:
    C_MoveToAs_Stack(Generator<_str>* loc, Generator<_str>* na,
-      const _boo& extless, uro::Uroboros* uro)
+      const _bool& extless, uro::Uroboros* uro)
       : location(loc), name(na), hasAttribute(false),
         attribute(nullptr), extensionless(extless), Command_L(uro) { };
 
    C_MoveToAs_Stack(Generator<_str>* loc, Generator<_str>* na,
-      const _boo& extless, Attribute* attr, uro::Uroboros* uro)
+      const _bool& extless, Attribute* attr, uro::Uroboros* uro)
       : location(loc), name(na), hasAttribute(true),
         attribute(attr), extensionless(extless), Command_L(uro) { };
 
@@ -320,9 +320,9 @@ public:
 protected:
    Generator<_str>* location;
    Generator<_str>* name;
-   const _boo hasAttribute;
+   const _bool hasAttribute;
    Attribute* attribute;
-   const _boo extensionless;
+   const _bool extensionless;
 };
 
 
@@ -330,7 +330,7 @@ struct C_DownloadFrom_String : Command_L
 {
 public:
    C_DownloadFrom_String(Generator<_str>* loc, Generator<_str>* el,
-      const _boo& forc, uro::Uroboros* uro)
+      const _bool& forc, uro::Uroboros* uro)
       : location(loc), element(el), forced(forc), Command_L(uro) { };
 
    ~C_DownloadFrom_String() {
@@ -343,7 +343,7 @@ public:
 protected:
    Generator<_str>* location;
    Generator<_str>* element;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -351,7 +351,7 @@ struct C_DownloadFrom_List : Command_L
 {
 public:
    C_DownloadFrom_List(Generator<_str>* loc, Generator<_list>* el,
-      const _boo& forc, uro::Uroboros* uro)
+      const _bool& forc, uro::Uroboros* uro)
       : location(loc), elements(el), forced(forc), Command_L(uro) { };
 
    ~C_DownloadFrom_List() {
@@ -364,7 +364,7 @@ public:
 protected:
    Generator<_str>* location;
    Generator<_list>* elements;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -372,7 +372,7 @@ struct C_DownloadFrom_Definition : Command_L
 {
 public:
    C_DownloadFrom_Definition(Generator<_str>* loc, _def* el,
-      const _boo& forc, uro::Uroboros* uro)
+      const _bool& forc, uro::Uroboros* uro)
       : location(loc), elements(el), forced(forc), Command_L(uro) { };
 
    ~C_DownloadFrom_Definition() {
@@ -385,7 +385,7 @@ public:
 protected:
    Generator<_str>* location;
    _def* elements;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -449,7 +449,7 @@ protected:
 struct C_Download_String : Command_L
 {
 public:
-   C_Download_String(Generator<_str>* el, const _boo& forc, uro::Uroboros* uro)
+   C_Download_String(Generator<_str>* el, const _bool& forc, uro::Uroboros* uro)
       : element(el), forced(forc), Command_L(uro) { };
 
    ~C_Download_String() {
@@ -460,14 +460,14 @@ public:
 
 protected:
    Generator<_str>* element;
-   const _boo forced;
+   const _bool forced;
 };
 
 
 struct C_Download_List : Command_L
 {
 public:
-   C_Download_List(Generator<_list>* el, const _boo& forc, uro::Uroboros* uro)
+   C_Download_List(Generator<_list>* el, const _bool& forc, uro::Uroboros* uro)
       : elements(el), forced(forc), Command_L(uro) { };
 
    ~C_Download_List() {
@@ -478,7 +478,7 @@ public:
 
 protected:
    Generator<_list>* elements;
-   const _boo forced;
+   const _bool forced;
 };
 
 
@@ -519,8 +519,8 @@ protected:
 struct C_CopyTo : Command_L
 {
 public:
-   C_CopyTo(Generator<_str>* loc, const _boo& save,
-      const _boo& forc, uro::Uroboros* uro)
+   C_CopyTo(Generator<_str>* loc, const _bool& save,
+      const _bool& forc, uro::Uroboros* uro)
       : location(loc), saveChanges(save), forced(forc), Command_L(uro) { };
 
    ~C_CopyTo() {
@@ -531,15 +531,15 @@ public:
 
 protected:
    Generator<_str>* location;
-   const _boo saveChanges;
-   const _boo forced;
+   const _bool saveChanges;
+   const _bool forced;
 };
 
 
 struct C_CopyTo_Stack : Command_L
 {
 public:
-   C_CopyTo_Stack(Generator<_str>* loc, const _boo& save, uro::Uroboros* uro)
+   C_CopyTo_Stack(Generator<_str>* loc, const _bool& save, uro::Uroboros* uro)
       : location(loc), saveChanges(save), Command_L(uro) { };
 
    ~C_CopyTo_Stack() {
@@ -550,7 +550,7 @@ public:
 
 protected:
    Generator<_str>* location;
-   const _boo saveChanges;
+   const _bool saveChanges;
 };
 
 
@@ -558,7 +558,7 @@ struct C_CopyToAs : Command_L
 {
 public:
    C_CopyToAs(Generator<_str>* loc, Generator<_str>* na,
-      const _boo& save, const _boo& forc, const _boo& extless, uro::Uroboros* uro)
+      const _bool& save, const _bool& forc, const _bool& extless, uro::Uroboros* uro)
       : location(loc), name(na), forced(forc), extensionless(extless), Command_L(uro) { };
 
    ~C_CopyToAs() {
@@ -571,8 +571,8 @@ public:
 protected:
    Generator<_str>* location;
    Generator<_str>* name;
-   const _boo forced;
-   const _boo extensionless;
+   const _bool forced;
+   const _bool extensionless;
 };
 
 
@@ -580,7 +580,7 @@ struct C_CopyToAs_Stack : Command_L
 {
 public:
    C_CopyToAs_Stack(Generator<_str>* loc, Generator<_str>* na,
-      const _boo& save, const _boo& extless, uro::Uroboros* uro)
+      const _bool& save, const _bool& extless, uro::Uroboros* uro)
       : location(loc), name(na), extensionless(extless), Command_L(uro) { };
 
    ~C_CopyToAs_Stack() {
@@ -593,7 +593,7 @@ public:
 protected:
    Generator<_str>* location;
    Generator<_str>* name;
-   const _boo extensionless;
+   const _bool extensionless;
 };
 
 

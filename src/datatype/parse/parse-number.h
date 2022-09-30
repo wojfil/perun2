@@ -36,9 +36,9 @@ static Generator<_num>* numExpTreeMerge(
    std::vector<ExpElement<_num>*>& pntList);
 static Generator<_num>* numExpTreeMerge2(
    const std::vector<ExpElement<_num>*>& elements);
-static _boo isNumExpComputable(const std::vector<ExpElement<_num>*>& infList);
-static _boo isNumExpOperator(const _char& ch);
-static _boo isNumExpHighPriority(const _char& ch);
+static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList);
+static _bool isNumExpOperator(const _char& ch);
+static _bool isNumExpHighPriority(const _char& ch);
 void timeVariableMemberException(const Token& tk, uro::Uroboros* uro);
 
 }

@@ -30,7 +30,7 @@ public:
    Variable<T>(T val) : value(val) {};
    ~Variable<T>() override {};
 
-   _boo isConstant() const override
+   _bool isConstant() const override
    {
       return this->isConstant_;
    };
@@ -41,7 +41,7 @@ public:
    };
 
    T value;
-   _boo isConstant_ = false;
+   _bool isConstant_ = false;
 };
 
 
@@ -73,7 +73,7 @@ public:
       }
    }
 
-   void resurrect(const _boo& isConst)
+   void resurrect(const _bool& isConst)
    {
       this->isReachable_ = true;
       this->var.isConstant_ = isConst;
@@ -82,7 +82,7 @@ public:
       }
    }
 
-   _boo isReachable() const
+   _bool isReachable() const
    {
       return this->isReachable_;
    }
@@ -92,7 +92,7 @@ public:
       this->var.isConstant_ = false;
    }
 
-   void actualizeConstantness(const _boo& isConst)
+   void actualizeConstantness(const _bool& isConst)
    {
       if (this->var.isConstant_) {
          if (!isConst) {
@@ -105,7 +105,7 @@ public:
 
 private:
    _int level = 0;
-   _boo isReachable_ = true;
+   _bool isReachable_ = true;
 };
 
 }

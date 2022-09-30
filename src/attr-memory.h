@@ -36,7 +36,7 @@ public:
    void restore() const;
 
 private:
-   const _boo hasAttribute;
+   const _bool hasAttribute;
    Attribute* attribute;
    InnerVariables* inner;
 
@@ -46,22 +46,22 @@ private:
    _str prev_parent;
    _str prev_drive;
    _numi prev_depth;
-   _boo prev_exists;
-   _boo prev_isfile;
-   _boo prev_isdirectory;
+   _bool prev_exists;
+   _bool prev_isfile;
+   _bool prev_isdirectory;
    _tim prev_access;
-   _boo prev_archive;
-   _boo prev_compressed;
+   _bool prev_archive;
+   _bool prev_compressed;
    _tim prev_change;
    _tim prev_creation;
-   _boo prev_empty;
-   _boo prev_encrypted;
+   _bool prev_empty;
+   _bool prev_encrypted;
    _str prev_extension;
-   _boo prev_hidden;
+   _bool prev_hidden;
    _per prev_lifetime;
    _tim prev_modification;
    _str prev_name;
-   _boo prev_readonly;
+   _bool prev_readonly;
    _num prev_size;
 };
 

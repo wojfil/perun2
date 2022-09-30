@@ -264,13 +264,13 @@ _num F_Power::getValue()
          }
 
          // if the number is inver
-         _boo inv = false;
+         _bool inv = false;
          if (exp < 0LL) {
             exp *= -1LL;
             inv = true;
          }
 
-         _boo neg = false;
+         _bool neg = false;
          if (base < 0LL) {
             base *= -1LL;
             neg = (exp % 2LL == 1LL);
@@ -428,7 +428,7 @@ _num F_FromBinary::getValue()
 
    _nint result = 0LL;
    _size i = 0;
-   _boo negative = false;
+   _bool negative = false;
 
    if (baseString[0] == L'-') {
       if (len == 1) {

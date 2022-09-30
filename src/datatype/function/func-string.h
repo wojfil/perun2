@@ -197,10 +197,10 @@ public:
 };
 
 
-struct F_String_B : Func_1<_boo>, Generator<_str>
+struct F_String_B : Func_1<_bool>, Generator<_str>
 {
 public:
-   F_String_B(Generator<_boo>* a1) : Func_1(a1) { };
+   F_String_B(Generator<_bool>* a1) : Func_1(a1) { };
    _str getValue() override;
 };
 

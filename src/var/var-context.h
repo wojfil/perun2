@@ -38,13 +38,13 @@ public:
    void attributeException(const Token& tk, uro::Uroboros* uro);
    void addAttribute(Attribute* attr);
    void retreatAttribute();
-   _boo anyAttribute();
+   _bool anyAttribute();
    Attribute* getLastAttribute();
    void markAttributesToRun();
 
    void addAggregate(comm::Aggregate* aggr);
    void retreatAggregate();
-   _boo anyAggregate();
+   _bool anyAggregate();
    comm::Aggregate* getLastAggregate();
 
 private:

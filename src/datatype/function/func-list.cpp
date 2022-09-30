@@ -136,11 +136,11 @@ _list F_Words::getValue()
       }
       default: {
          _list words;
-         _boo prevLetter = false;
+         _bool prevLetter = false;
          _size start = 0;
 
          for (_size i = 0; i < len; i++) {
-            const _boo isLetter = std::iswalpha(value[i]);
+            const _bool isLetter = std::iswalpha(value[i]);
             if (isLetter) {
                if (!prevLetter) {
                   start = i;
@@ -184,11 +184,11 @@ _nlist F_Numbers::getValue()
       }
       default: {
          _nlist numbers;
-         _boo digitSerie = false;
+         _bool digitSerie = false;
          _size start = 0;
-         _boo hasDot = false;
+         _bool hasDot = false;
          _size dotPoint = 0;
-         _boo splitted = false;
+         _bool splitted = false;
 
          for (_size i = 0; i < len; i++) {
             const _char& ch = value[i];

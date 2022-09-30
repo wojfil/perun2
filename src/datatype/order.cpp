@@ -35,7 +35,7 @@ void OrderIndices::prepare(const _size& length)
 }
 
 OrderBy_Definition::OrderBy_Definition(_def* bas, Attribute* attr,
-   const _boo& hasMem, OrderIndices* indices, Order* ord, Uroboros* uro)
+   const _bool& hasMem, OrderIndices* indices, Order* ord, Uroboros* uro)
    : OrderBy<_str>(attr, indices, ord, uro), base(bas),
      uroboros(uro), inner(&uro->vars.inner),
      hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner))
@@ -68,7 +68,7 @@ void OrderBy_Definition::reset()
    }
 }
 
-_boo OrderBy_Definition::hasNext()
+_bool OrderBy_Definition::hasNext()
 {
    if (this->first) {
       this->reset();

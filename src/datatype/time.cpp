@@ -332,12 +332,12 @@ _tnum Time::getWeekDay() const
    return wd == 0 ? 7 : wd;
 }
 
-_boo Time::equalsExactly(const Time& tim) const
+_bool Time::equalsExactly(const Time& tim) const
 {
    return type == tim.type && *this == tim;
 }
 
-_boo Time::isEmpty() const
+_bool Time::isEmpty() const
 {
    return year == FIRST_YEAR
        && type == TimeType::tt_Clock
@@ -442,7 +442,7 @@ Time& Time::operator -= (const Period& per)
 }
 
 // add clock to an already existing time
-void Time::initClock(const _boo& withSeconds, const _tnum& recentChange)
+void Time::initClock(const _bool& withSeconds, const _tnum& recentChange)
 {
    if (type == tt_YearMonth || type == tt_Date) {
       hour = 0;
@@ -478,7 +478,7 @@ void Time::initClock(const _boo& withSeconds, const _tnum& recentChange)
    }
 }
 
-_boo Time::operator == (const Time& tim) const
+_bool Time::operator == (const Time& tim) const
 {
    if (type == tt_YearMonth || tim.type == tt_YearMonth) {
       return month == tim.month
@@ -507,7 +507,7 @@ _boo Time::operator == (const Time& tim) const
        && second == tim.second;
 }
 
-_boo Time::operator != (const Time& tim) const
+_bool Time::operator != (const Time& tim) const
 {
    if (type == tt_YearMonth || tim.type == tt_YearMonth) {
       return month != tim.month
@@ -536,7 +536,7 @@ _boo Time::operator != (const Time& tim) const
        || second != tim.second;
 }
 
-_boo Time::operator < (const Time& tim) const
+_bool Time::operator < (const Time& tim) const
 {
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
@@ -563,7 +563,7 @@ _boo Time::operator < (const Time& tim) const
 }
 
 // the same as for < operator, but with reversed comparisons
-_boo Time::operator > (const Time& tim) const
+_bool Time::operator > (const Time& tim) const
 {
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
@@ -589,7 +589,7 @@ _boo Time::operator > (const Time& tim) const
    return second > tim.second;
 }
 
-_boo Time::operator <= (const Time& tim) const
+_bool Time::operator <= (const Time& tim) const
 {
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
@@ -615,7 +615,7 @@ _boo Time::operator <= (const Time& tim) const
    return second <= tim.second;
 }
 
-_boo Time::operator >= (const Time& tim) const
+_bool Time::operator >= (const Time& tim) const
 {
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
@@ -724,7 +724,7 @@ inline _str fillTimeUnit(const _tnum& val)
       : toStr(val);
 }
 
-inline _boo isLeapYear(const _tnum& year)
+inline _bool isLeapYear(const _tnum& year)
 {
    if (year % 4 == 0) {
       if (year % 100 == 0) {
@@ -934,7 +934,7 @@ inline _tnum daysInYears(const _tnum& min, const _tnum& max)
    }
 }
 
-inline void decrementMonth(Period& p, const Time& t, const _boo& addDays)
+inline void decrementMonth(Period& p, const Time& t, const _bool& addDays)
 {
    if (p.months_sec == 0) {
       p.years_sec--;

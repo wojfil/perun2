@@ -109,7 +109,7 @@ _nint Period::toSeconds() const
 _str Period::toString() const
 {
    _stream ss;
-   _boo first = true;
+   _bool first = true;
 
    const _tnum y = years + years_sec;
    const _tnum m = months + months_sec;
@@ -189,7 +189,7 @@ _str Period::toString() const
       : ss.str();
 }
 
-inline _boo Period::isNegativeDifference() const
+inline _bool Period::isNegativeDifference() const
 {
    return years < 0
        || months < 0
@@ -655,7 +655,7 @@ Period Period::operator - () const
    return p;
 }
 
-_boo Period::operator == (const Period& per) const
+_bool Period::operator == (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -692,7 +692,7 @@ _boo Period::operator == (const Period& per) const
    return periodCmp(per) == 0;
 }
 
-_boo Period::operator != (const Period& per) const
+_bool Period::operator != (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -729,7 +729,7 @@ _boo Period::operator != (const Period& per) const
    return periodCmp(per) != 0;
 }
 
-_boo Period::operator < (const Period& per) const
+_bool Period::operator < (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -766,7 +766,7 @@ _boo Period::operator < (const Period& per) const
    return periodCmp(per) < 0;
 }
 
-_boo Period::operator > (const Period& per) const
+_bool Period::operator > (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -803,7 +803,7 @@ _boo Period::operator > (const Period& per) const
    return periodCmp(per) > 0;
 }
 
-_boo Period::operator <= (const Period& per) const
+_bool Period::operator <= (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -840,7 +840,7 @@ _boo Period::operator <= (const Period& per) const
    return periodCmp(per) <= 0;
 }
 
-_boo Period::operator >= (const Period& per) const
+_bool Period::operator >= (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -1048,8 +1048,8 @@ inline _tnum Period::periodCmp(const Period& per) const
    _tnum m1 = months - per.months;
    _tnum m2 = months_sec - per.months_sec;
 
-   const _boo noYear = (y1 == 0) && (y2 == 0);
-   const _boo noMonth = (m1 == 0) && (m2 == 0);
+   const _bool noYear = (y1 == 0) && (y2 == 0);
+   const _bool noMonth = (m1 == 0) && (m2 == 0);
 
    if (noYear || noMonth) {
       d += months_ad - per.months_ad + years_ad - per.years_ad;
@@ -1114,8 +1114,8 @@ inline _tnum Period::periodCmp(const Period& per) const
    }
 
    // final
-   _boo ney = false;
-   _boo nem = false;
+   _bool ney = false;
+   _bool nem = false;
 
    if ((y1 > 0 && y2 < 0 && y1 >= (-y2)) ||
        (y1 < 0 && y2 > 0 && (-y1) >= y2))

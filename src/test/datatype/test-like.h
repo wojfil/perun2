@@ -20,6 +20,6 @@
 using namespace uro;
 
 void test_like();
-void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _boo& expectedResult);
+void testCase_like(const _int& caseId, const _str& pattern, const _str& value, const _bool& expectedResult);
 
 #endif // TEST_LIKE_INCLUDED

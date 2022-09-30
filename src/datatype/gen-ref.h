@@ -29,7 +29,7 @@ public:
    GeneratorRef(Generator<T>* val)
       : value(val) {};
 
-   _boo isConstant() const override
+   _bool isConstant() const override
    {
       return this->value->isConstant();
    };

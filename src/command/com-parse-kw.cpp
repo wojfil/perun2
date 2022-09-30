@@ -100,8 +100,8 @@ Command* keywordCommands(const Token& word, Tokens& tks,
    throw SyntaxException(str(L"command cannot start with a keyword '", word.getOriginString(uro), L"'"), line);
 }
 
-_boo parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, uro::Uroboros* uro,
-   Attribute* attr, const _boo& hasMemory)
+_bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, uro::Uroboros* uro,
+   Attribute* attr, const _bool& hasMemory)
 {
    Generator<_str>* str_;
    if (parse::parse(uro, tks, str_)) {
@@ -137,9 +137,9 @@ _boo parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, uro
    return false;
 }
 
-_boo parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, uro::Uroboros* uro)
+_bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, uro::Uroboros* uro)
 {
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    Attribute* attr = new Attribute(uro);
    attr->setCoreCommandBase();
    return parseLooped(tks, innerCommand, result, uro, attr, hasMemory);
@@ -234,7 +234,7 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
       return coreCommandTime(word, tim, true, uro);
    }
 
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = ThisState::ts_String;
    Attribute* attr = new Attribute(uro);
@@ -260,7 +260,7 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
 }
 
 static Command* coreCommandTime(const Token& word,
-   Generator<_tim>* time, const _boo& saveChanges, uro::Uroboros* uro)
+   Generator<_tim>* time, const _bool& saveChanges, uro::Uroboros* uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Reaccess:
@@ -291,7 +291,7 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, u
             L"contain its last argument"), line);
       }
 
-      const _boo hasMemory = uro->vc.anyAttribute();
+      const _bool hasMemory = uro->vc.anyAttribute();
       const ThisState prevThisState = uro->vars.inner.thisState;
       uro->vars.inner.thisState = ThisState::ts_String;
       Attribute* attr = new Attribute(uro);
@@ -394,7 +394,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
          L"does not contain declaration of new name"), line);
    }
 
-   _boo extless = false;
+   _bool extless = false;
 
    if (right.first().isKeyword(Keyword::kw_Extensionless)) {
       extless = true;
@@ -423,7 +423,7 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
       }
    }
 
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = ThisState::ts_String;
    Attribute* attr = new Attribute(uro);
@@ -646,8 +646,8 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
    }
 
-   const _boo hasTo = tks.check(TI_HAS_KEYWORD_TO);
-   const _boo hasAs = tks.check(TI_HAS_KEYWORD_AS);
+   const _bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
+   const _bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
 
    if (!hasTo) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro),
@@ -672,7 +672,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
                L"does not contain a declaration of new name written after keyword 'as'"), line);
          }
 
-         _boo extless = false;
+         _bool extless = false;
          const Token& paf = postAs.first();
 
          if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
@@ -749,7 +749,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
             L"does not contain declaration of a new name written after keyword 'as'"), line);
       }
 
-      _boo extless = false;
+      _bool extless = false;
       const Token& paf = postAs.first();
 
       if (paf.isKeyword(Keyword::kw_Extensionless)) {
@@ -761,7 +761,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
          }
       }
 
-      const _boo hasMemory = uro->vc.anyAttribute();
+      const _bool hasMemory = uro->vc.anyAttribute();
       const ThisState prevThisState = uro->vars.inner.thisState;
       uro->vars.inner.thisState = ThisState::ts_String;
       Attribute* attr = new Attribute(uro);
@@ -807,7 +807,7 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to as'"), line);
    }
 
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = ThisState::ts_String;
    Attribute* attr = new Attribute(uro);
@@ -918,8 +918,8 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
 static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    const bool& force, const bool& stack, uro::Uroboros* uro)
 {
-   const _boo hasTo = tks.check(TI_HAS_KEYWORD_TO);
-   const _boo hasAs = tks.check(TI_HAS_KEYWORD_AS);
+   const _bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
+   const _bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
 
    if (!hasTo) {
       if (hasAs) {
@@ -994,7 +994,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
                L"does not contain a declaration of new name written after keyword 'as'"), line);
          }
 
-         _boo extless = false;
+         _bool extless = false;
          const Token& paf = postAs.first();
 
          if (paf.isKeyword(Keyword::kw_Extensionless)) {
@@ -1069,7 +1069,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
             L"does not contain a declaration of new name written after keyword 'as'"), line);
       }
 
-      _boo extless = false;
+      _bool extless = false;
       const Token& paf = postAs.first();
 
       if (paf.isKeyword(Keyword::kw_Extensionless)) {
@@ -1081,7 +1081,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
          }
       }
 
-      const _boo hasMemory = uro->vc.anyAttribute();
+      const _bool hasMemory = uro->vc.anyAttribute();
       const ThisState prevThisState = uro->vars.inner.thisState;
       uro->vars.inner.thisState = ThisState::ts_String;
       Attribute* attr = new Attribute(uro);
@@ -1125,7 +1125,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to as'"), line);
    }
 
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = ThisState::ts_String;
    Attribute* attr = new Attribute(uro);
@@ -1157,7 +1157,7 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to'"), line);
 }
 
-Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _boo& directError, uro::Uroboros* uro)
+Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _bool& directError, uro::Uroboros* uro)
 {
    if (tks.isEmpty()) {
       switch (uro->vars.inner.thisState) {
@@ -1343,7 +1343,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, ur
                   L" with with' cannot be called without its last argument"), line);
             }
 
-            const _boo hasMemory = uro->vc.anyAttribute();
+            const _bool hasMemory = uro->vc.anyAttribute();
             Attribute* lastAttr = uro->vc.getLastAttribute();
             const ThisState prevThisState = uro->vars.inner.thisState;
             uro->vars.inner.thisState = ThisState::ts_String;
@@ -1431,7 +1431,7 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, ur
             }
          }
          else {
-            const _boo hasMemory = uro->vc.anyAttribute();
+            const _bool hasMemory = uro->vc.anyAttribute();
             Attribute* lastAttr = uro->vc.getLastAttribute();
             const ThisState prevThisState = uro->vars.inner.thisState;
             uro->vars.inner.thisState = ThisState::ts_String;

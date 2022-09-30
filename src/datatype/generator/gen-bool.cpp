@@ -18,22 +18,22 @@
 namespace uro::gen
 {
 
-_boo Not::getValue() {
+_bool Not::getValue() {
    return !value->getValue();
 };
 
 
-_boo And::getValue() {
+_bool And::getValue() {
    return value1->getValue() && value2->getValue();
 };
 
 
-_boo Or::getValue() {
+_bool Or::getValue() {
    return value1->getValue() || value2->getValue();
 };
 
 
-_boo Xor::getValue() {
+_bool Xor::getValue() {
    return value1->getValue() ^ value2->getValue();
 };
 
@@ -48,7 +48,7 @@ InConstTimeList::~InConstTimeList()
 };
 
 
-_boo InConstTimeList::getValue() {
+_bool InConstTimeList::getValue() {
    return std::binary_search(list.begin(), list.end(), value->getValue());
 };
 

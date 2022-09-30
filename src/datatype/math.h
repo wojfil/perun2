@@ -34,7 +34,7 @@ public:
 
 private:
 
-   _boo anyRandomDouble;
+   _bool anyRandomDouble;
    std::mt19937 generator;
    std::uniform_real_distribution<> doubleDist;
 };

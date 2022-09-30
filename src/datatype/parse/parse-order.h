@@ -48,7 +48,7 @@ void orderUnitFailure(const Token& tk, T& result, uro::Uroboros* uro)
 
 
 template <typename T>
-void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr,
+void prepareOrderUnit(Tokens& tks, _bool& desc, T& result, Attribute* attr,
    const ThisState& state, gen::Order* order, gen::OrderIndices* indices, uro::Uroboros* uro)
 {
    desc = false;
@@ -84,7 +84,7 @@ void prepareOrderUnit(Tokens& tks, _boo& desc, T& result, Attribute* attr,
 
 
 template <typename T>
-void setOrderUnit(gen::Order*& order, Generator<T>* value, const _boo& desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::Order*& order, Generator<T>* value, const _bool& desc, gen::OrderIndices* indices)
 {
    if (order == nullptr) {
       order = new gen::OrderUnit_Final<T>(value, desc, indices);
@@ -94,11 +94,11 @@ void setOrderUnit(gen::Order*& order, Generator<T>* value, const _boo& desc, gen
    }
 }
 
-void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory, _def*& result,
+void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _def*& result,
    gen::OrderIndices* indices, gen::Order* order, uro::Uroboros* uro);
 
 template <typename T>
-void setSingleOrderFilter(Attribute* attr, const _boo& hasMemory,
+void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory,
    Generator<std::vector<T>>*& result, gen::OrderIndices* indices, gen::Order* order, uro::Uroboros* uro)
 {
    result = new gen::OrderBy_List<T>(result, attr, indices, order, uro);
@@ -111,7 +111,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 {
    const ThisState prevThisState = uro->vars.inner.thisState;
    uro->vars.inner.thisState = state;
-   const _boo hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro->vc.anyAttribute();
    Attribute* attr = nullptr;
 
    if (state == ThisState::ts_String) {
@@ -130,7 +130,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    if (ts2.getLength() == 1 && first.type == Token::t_Keyword) {
       const Keyword& kw = first.value.keyword.k;
       if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
-         const _boo desc = kw == Keyword::kw_Desc;
+         const _bool desc = kw == Keyword::kw_Desc;
          gen::OrderIndices* indices = new gen::OrderIndices();
 
          switch (state) {
@@ -189,10 +189,10 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 
    for (_int i = length - 1; i >= 0; i--) {
       Tokens& tk = tokensList[i];
-      _boo desc;
+      _bool desc;
       prepareOrderUnit(tk, desc, result, attr, state, order, indices, uro);
 
-      Generator<_boo>* uboo;
+      Generator<_bool>* uboo;
       if (parse(uro, tk, uboo)) {
          setOrderUnit(order, uboo, desc, indices);
          continue;

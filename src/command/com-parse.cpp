@@ -188,7 +188,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       left.checkCommonExpressionExceptions(uro);
-      Generator<_boo>* boo;
+      Generator<_bool>* boo;
       if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
             L"' is not followed by a valid condition"), leftFirst.line);
@@ -241,7 +241,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       left.checkCommonExpressionExceptions(uro);
-      Generator<_boo>* boo;
+      Generator<_bool>* boo;
       if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro), L"' is not followed by a valid condition"),
             leftFirst.line);
@@ -297,7 +297,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
 
          left.checkCommonExpressionExceptions(uro);
-         Generator<_boo>* boo;
+         Generator<_bool>* boo;
          if (!parse::parse(uro, left, boo)) {
             throw SyntaxException(str(L"keywords '", leftFirst.getOriginString(uro), L" ",
                ifToken.getOriginString(uro), L"' are not followed by a valid condition"), leftFirst.line);
@@ -358,7 +358,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    throw SyntaxException(L"tokens before { bracket do not form any valid syntax structure", tks.first().line);
 }
 
-static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, const Tokens& right,
+static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, const Tokens& right,
    const ThisState& prevState, uro::Uroboros* uro)
 {
    Command* com = nullptr;
@@ -367,7 +367,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
       Generator<_str>* tr;
       uro->vars.inner.createThisRef(tr);
       uro->vars.inner.thisState = ThisState::ts_String;
-      _boo hasMemory;
+      _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
 
@@ -383,7 +383,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
    Generator<_str>* str;
    if (parse::parse(uro, left, str)) {
       uro->vars.inner.thisState = ThisState::ts_String;
-      _boo hasMemory;
+      _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
 
@@ -404,7 +404,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
    _def* def;
    if (parse::parse(uro, left, def)) {
       uro->vars.inner.thisState = ThisState::ts_String;
-      _boo hasMemory;
+      _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
 
@@ -451,7 +451,7 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
    Generator<_list>* lst;
    if (parse::parse(uro, left, lst)) {
       uro->vars.inner.thisState = ThisState::ts_String;
-      _boo hasMemory;
+      _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
 
@@ -470,8 +470,8 @@ static Command* parseIterationLoop(const _boo& isInside, const Tokens& left, con
    return nullptr;
 }
 
-static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
-   const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _boo& hasMemory)
+static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
+   const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _bool& hasMemory)
 {
    hasMemory = uro->vc.anyAttribute();
    attr = new Attribute(uro);
@@ -485,7 +485,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboro
    uro->vc.retreatAttribute();
    uro->vc.retreatAggregate();
 
-   const _boo success = com != nullptr;
+   const _bool success = com != nullptr;
    if (!success) {
       delete attr;
       delete aggr;
@@ -494,7 +494,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboro
    return success;
 }
 
-static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
+static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
    const ThisState& prevState, Aggregate*& aggr)
 {
    aggr = new Aggregate(uro);
@@ -505,7 +505,7 @@ static _boo parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboro
    uro->vars.inner.thisState = prevState;
    uro->vc.retreatAggregate();
 
-   const _boo success = com != nullptr;
+   const _bool success = com != nullptr;
    if (!success) {
       delete aggr;
    }
@@ -551,8 +551,8 @@ static Command* command(Tokens& tks, uro::Uroboros* uro)
       }
    }
 
-   _boo force = false;
-   _boo stack = false;
+   _bool force = false;
+   _bool stack = false;
 
    const Token& f2 = tks.first();
    if (f2.type == Token::t_Keyword) {
@@ -675,7 +675,7 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
    if (last.type == Token::t_MultiSymbol &&
        (last.value.chars.ch == L'+' || last.value.chars.ch == L'-'))
    {
-      const _boo isIncrement = last.value.chars.ch == L'+';
+      const _bool isIncrement = last.value.chars.ch == L'+';
 
       const _str op = isIncrement
          ? L"incremented by one"
@@ -1006,7 +1006,7 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
 }
 
 template <typename T>
-static _boo makeVarAlteration(uro::Uroboros* uro, const Tokens& tokens, const Token& first,
+static _bool makeVarAlteration(uro::Uroboros* uro, const Tokens& tokens, const Token& first,
    vars::ParseVariable<T>*& varPtr, Command*& result, const _str& dataTypeName)
 {
    if (uro->vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
@@ -1036,7 +1036,7 @@ static Command* makeVarAssignment(const Token& token, uro::Uroboros* uro,
 {
    vars::VarBundle<T>* bundle;
    uro->vars.takeBundlePointer(bundle);
-   const _boo isConstant = !uro->vc.anyAggregate() && valuePtr->isConstant();
+   const _bool isConstant = !uro->vc.anyAggregate() && valuePtr->isConstant();
    return bundle->makeVariableAssignment(token, varPtr, valuePtr, isConstant);
 }
 
@@ -1087,7 +1087,7 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::U
 
    Command* varAlteration;
 
-   vars::ParseVariable<_boo>* pv_boo = nullptr;
+   vars::ParseVariable<_bool>* pv_boo = nullptr;
    if (makeVarAlteration(uro, right, first, pv_boo, varAlteration, L"bool")) {
       return varAlteration;
    }
@@ -1132,7 +1132,7 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::U
    // or "resurrect" an existing variable from somewhere else out of reach
    ////
 
-   Generator<_boo>* boo;
+   Generator<_bool>* boo;
    if (parse::parse(uro, right, boo)) {
       return makeVarAssignment(first, uro, pv_boo, boo);
    }
@@ -1258,7 +1258,7 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks, uro::Uroboros* uro
 {
    const _int end = tks.getEnd();
    const _int start = tks.getStart() + 1;
-   const _boo startsWithElse = tks.listAt(start - 1).isKeyword(Keyword::kw_Else);
+   const _bool startsWithElse = tks.listAt(start - 1).isKeyword(Keyword::kw_Else);
 
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);

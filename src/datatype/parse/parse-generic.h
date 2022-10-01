@@ -59,6 +59,35 @@ static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
       return nullptr;
    }
 
+   if (condition->isConstant()) {
+      if (condition->getValue()) {
+         delete condition;
+         delete right;
+
+         if (left->isConstant()) {
+            const T v = left->getValue();
+            delete left;
+            return new gen::Constant<T>(v);
+         }
+         else {
+            return left;
+         }
+      }
+      else {
+         delete condition;
+         delete left;
+
+         if (right->isConstant()) {
+            const T v = right->getValue();
+            delete right;
+            return new gen::Constant<T>(v);
+         }
+         else {
+            return right;
+         }
+      }
+   }
+
    return new gen::Ternary<T>(condition, left, right);
 }
 

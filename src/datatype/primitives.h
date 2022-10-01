@@ -46,7 +46,7 @@ typedef std::wstringstream          _stream;
 _str toStr(const _char& ch);
 
 template<typename T>
-_str toStr(const T &n)
+_str toStr(const T& n)
 {
     std::wostringstream s;
     s << n;
@@ -58,13 +58,13 @@ _str str(Args const&... args)
 {
    _size len = 0;
    using value_type = std::common_type_t<Args const&...>;
-   for (auto const &arg : {static_cast<value_type>(args)...}) {
+   for (auto const& arg : { static_cast<value_type>(args)...} ) {
       len += arg.size();
    }
 
    _str result;
    result.reserve(len);
-   for (auto const &arg : {static_cast<value_type>(args)...}) {
+   for (auto const& arg : { static_cast<value_type>(args)...} ) {
       result += arg;
    }
 

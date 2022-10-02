@@ -26,12 +26,12 @@ _bool PatternParser::parse(const _str& pattern, const _int& asteriskId, _def*& r
 
    if (trimmed == L"*") {
       result = this->defGenerator.generatePattern(
-         new LocationReference(this->uroboros), ELEM_ALL, OS_SEPARATOR_ASTERISK);
+         new LocationReference(this->uroboros), OsElement::oe_All, OS_SEPARATOR_ASTERISK);
       return true;
    }
    else if (trimmed == L"**") {
       result = this->defGenerator.generatePattern(
-         new LocationReference(this->uroboros), ELEM_RECURSIVE_ALL, OS_SEPARATOR_ASTERISK);
+         new LocationReference(this->uroboros), OsElement::oe_RecursiveAll, OS_SEPARATOR_ASTERISK);
       return true;
    }
 
@@ -40,7 +40,7 @@ _bool PatternParser::parse(const _str& pattern, const _int& asteriskId, _def*& r
    if (asteriskId == length - 1) {
       const _str p = str(OS_SEPARATOR_STRING, pattern.substr(0, length - 1), L"*");
       result = this->defGenerator.generatePattern(
-         new LocationReference(this->uroboros), ELEM_ALL, p);
+         new LocationReference(this->uroboros), OsElement::oe_All, p);
       return true;
    }
 

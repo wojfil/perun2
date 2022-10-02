@@ -31,26 +31,30 @@ struct InnerVariables;
 namespace uro::gen
 {
 
-inline constexpr _uint32 ELEM_NONE = 0;
-inline constexpr _uint32 ELEM_ALL = 1;
-inline constexpr _uint32 ELEM_DIRECTORIES = 2;
-inline constexpr _uint32 ELEM_FILES = 3;
-inline constexpr _uint32 ELEM_RECURSIVE_ALL = 4;
-inline constexpr _uint32 ELEM_RECURSIVE_DIRECTORIES = 5;
-inline constexpr _uint32 ELEM_RECURSIVE_FILES = 6;
+enum OsElement
+{
+   oe_None = 0,
+   oe_All,
+   oe_Directories,
+   oe_Files,
+   oe_RecursiveAll,
+   oe_RecursiveDirectories,
+   oe_RecursiveFiles
+};
+
 
 struct DefinitionGenerator
 {
 public:
-   DefinitionGenerator(const _uint32& el, uro::Uroboros* uro)
+   DefinitionGenerator(const OsElement& el, uro::Uroboros* uro)
       : element_(el), uroboros(uro) { };
 
    _def* generateDefault() const;
-   _def* generatePattern(Generator<_str>* location, const _uint32& element, const _str& pattern) const;
+   _def* generatePattern(Generator<_str>* location, const OsElement& element, const _str& pattern) const;
 
 private:
    uro::Uroboros* uroboros;
-   const _uint32 element_;
+   const OsElement element_;
 };
 
 

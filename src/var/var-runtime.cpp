@@ -81,10 +81,10 @@ Variables::Variables(uro::Uroboros* uro)
       { this->hashes->HASH_VAR_ARGUMENTS, new gen::Constant<_list>(uroboros->arguments.getArgs()) }
    }, uro),
    defGenerators({
-      { this->hashes->HASH_VAR_DIRECTORIES, new gen::DefinitionGenerator(gen::ELEM_DIRECTORIES, uro) },
-      { this->hashes->HASH_VAR_FILES, new gen::DefinitionGenerator(gen::ELEM_FILES, uro) },
-      { this->hashes->HASH_VAR_RECURSIVEFILES, new gen::DefinitionGenerator(gen::ELEM_RECURSIVE_FILES, uro) },
-      { this->hashes->HASH_VAR_RECURSIVEDIRECTORIES, new gen::DefinitionGenerator(gen::ELEM_RECURSIVE_DIRECTORIES, uro) }
+      { this->hashes->HASH_VAR_DIRECTORIES, new gen::DefinitionGenerator(gen::OsElement::oe_Directories, uro) },
+      { this->hashes->HASH_VAR_FILES, new gen::DefinitionGenerator(gen::OsElement::oe_Files, uro) },
+      { this->hashes->HASH_VAR_RECURSIVEFILES, new gen::DefinitionGenerator(gen::OsElement::oe_RecursiveFiles, uro) },
+      { this->hashes->HASH_VAR_RECURSIVEDIRECTORIES, new gen::DefinitionGenerator(gen::OsElement::oe_RecursiveDirectories, uro) }
    }),
    intVars({
       { this->hashes->HASH_VAR_INDEX, &this->inner.index },

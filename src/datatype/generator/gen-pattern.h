@@ -25,7 +25,7 @@ struct PatternParser
 {
 public:
    PatternParser(uro::Uroboros* uro)
-      : uroboros(uro), defGenerator(ELEM_NONE, uro) { };
+      : uroboros(uro), defGenerator(OsElement::oe_None, uro) { };
 
    _bool parse(const _str& pattern, const _int& asteriskId, _def*& result) const;
 

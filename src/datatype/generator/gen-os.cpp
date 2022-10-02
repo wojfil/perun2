@@ -36,25 +36,25 @@ _def* DefinitionGenerator::generateDefault() const
 }
 
 _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
-   const _uint32& element, const _str& pattern) const
+   const OsElement& element, const _str& pattern) const
 {
    switch (element) {
-      case ELEM_ALL: {
+      case OsElement::oe_All: {
          return new Uro_All(location, this->uroboros, pattern);
       }
-      case ELEM_DIRECTORIES: {
+      case OsElement::oe_Directories: {
          return new Uro_Directories(location, this->uroboros, pattern);
       }
-      case ELEM_FILES: {
+      case OsElement::oe_Files: {
          return new Uro_Files(location, this->uroboros, pattern);
       }
-      case ELEM_RECURSIVE_FILES: {
+      case OsElement::oe_RecursiveFiles: {
          return new Uro_RecursiveFiles(location, this->uroboros, pattern);
       }
-      case ELEM_RECURSIVE_DIRECTORIES: {
+      case OsElement::oe_RecursiveDirectories: {
          return new Uro_RecursiveDirectories(location, this->uroboros, pattern);
       }
-      case ELEM_RECURSIVE_ALL: {
+      case OsElement::oe_RecursiveAll: {
          return new Uro_RecursiveAll(location, this->uroboros, pattern);
       }
       default: {

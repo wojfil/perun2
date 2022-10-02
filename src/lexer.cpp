@@ -390,7 +390,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
 inline _ndouble stringToDouble(const _str& value)
 {
-   std::wstringstream ss(value);
+   _stream ss(value);
    _ndouble n;
    ss >> n;
    return n;

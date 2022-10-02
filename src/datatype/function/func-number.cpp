@@ -16,6 +16,7 @@
 #include "../../exception.h"
 #include "func-bool.h"
 #include "../../util.h"
+#include "../../lexer.h"
 #include "../../uroboros.h"
 #include "../../os.h"
 #include "../math.h"
@@ -143,10 +144,7 @@ _num F_Number::getValue()
       }
    }
    else {
-      std::wstringstream ss(s);
-      _ndouble n;
-      ss >> n;
-      return _num(n);
+      return _num(stringToDouble(s));
    }
 }
 
@@ -481,7 +479,7 @@ _num F_FromHex::getValue()
    }
 
    _nint x;
-   std::wstringstream ss;
+   _stream ss;
    ss << std::hex << baseString;
    ss >> x;
 

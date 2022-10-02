@@ -90,7 +90,7 @@ static LikeComparer* bracketsLikeCmp(const _str& pattern)
 {
    std::unordered_map<_int, LikeSet> sets;
    const _size length = pattern.size();
-   std::wstringstream ss;
+   _stream ss;
    _int id = 0;
 
    for (_size i = 0; i < length; i++) {

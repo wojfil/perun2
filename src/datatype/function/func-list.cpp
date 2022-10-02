@@ -13,8 +13,8 @@
 */
 
 #include "func-list.h"
+#include "../../lexer.h"
 #include <cwctype>
-#include <sstream>
 
 
 namespace uro::func
@@ -268,10 +268,7 @@ _nlist F_Numbers::getValue()
                   }
                   else {
                      if (hasDot) {
-                        std::wstringstream ss(value.substr(start, sub));
-                        _ndouble n;
-                        ss >> n;
-                        numbers.emplace_back(n);
+                        numbers.emplace_back(stringToDouble(value.substr(start, sub)));
                      }
                      else {
                         try {
@@ -298,10 +295,7 @@ _nlist F_Numbers::getValue()
             }
             else {
                if (hasDot) {
-                  std::wstringstream ss(value.substr(start));
-                  _ndouble n;
-                  ss >> n;
-                  numbers.emplace_back(n);
+                  numbers.emplace_back(stringToDouble(value.substr(start)));
                }
                else {
                   try {

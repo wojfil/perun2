@@ -21,13 +21,20 @@
 namespace uro::gen
 {
 
+inline constexpr _uint32 PATTERN_INFO_NULL =             0b0000000;
+inline constexpr _uint32 PATTERN_INFO_VALID =            0b0000001;
+inline constexpr _uint32 PATTERN_INFO_ONE_ASTERISK =     0b0000010;
+inline constexpr _uint32 PATTERN_INFO_DOUBLE_ASTERISK =  0b0000100;
+inline constexpr _uint32 PATTERN_INFO_IS_ABSOLUTE =      0b0001000;
+
+
 struct PatternParser
 {
 public:
    PatternParser(uro::Uroboros* uro)
       : uroboros(uro), defGenerator(OsElement::oe_None, uro) { };
 
-   _bool parse(const _str& pattern, const _int& asteriskId, _def*& result) const;
+   _bool parse(const _str& originPattern, _def*& result, const _int& line) const;
 
 private:
    uro::Uroboros* uroboros;

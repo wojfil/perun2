@@ -109,6 +109,7 @@ _bool os_run(const _str& comm, Uroboros* uro);
 _bool os_process(const _str& command, const _str& location);
 
 _bool os_isInvaild(const _str& path);
+_uint32 os_patternInfo(const _str& pattern);
 _str os_trim(const _str& path);
 inline void os_escapeQuote(_str& path);
 _str os_join(const _str& path1, const _str& path2);

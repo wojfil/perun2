@@ -50,7 +50,8 @@ public:
       : element_(el), uroboros(uro) { };
 
    _def* generateDefault() const;
-   _def* generatePattern(Generator<_str>* location, const OsElement& element, const _str& pattern) const;
+   _def* generatePattern(Generator<_str>* location, const OsElement& element, 
+      const _str& pattern, const _bool& isAbsolute) const;
 
 private:
    uro::Uroboros* uroboros;
@@ -61,7 +62,7 @@ private:
 struct OsDefinition : _def
 {
 public:
-   OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt);
+   OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs);
 
    ~OsDefinition() {
       delete location;
@@ -79,17 +80,17 @@ protected:
    P_MEMORY_MEMBER;
 
    const _str pattern;
-   const _uint32 flags;
-   // just save a copy of flags in the memory
-   // they are constant, so a pointer is unnecessary
+   const _uint32 flags; // a copy of Uroboros command-line flags
+   _str baseLocation;
+   const _bool isAbsolute;
 };
 
 
 struct OsDefinitionPlain : OsDefinition
 {
 public:
-   OsDefinitionPlain(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinition(loc, uro, patt) { };
+   OsDefinitionPlain(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinition(loc, uro, patt, abs) { };
 
    void reset() override;
 
@@ -101,14 +102,13 @@ protected:
 struct OsDefinitionRecursive : OsDefinition
 {
 public:
-   OsDefinitionRecursive(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinition(loc, uro, patt), goDeeper(false), paths(_list()),
-        bases(_list()), handles(std::vector<HANDLE>()) { };
+   OsDefinitionRecursive(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinition(loc, uro, patt, abs) { };
 
    void reset() override;
 
 protected:
-   _bool goDeeper;
+   _bool goDeeper = false;
    std::vector<HANDLE> handles;
    _list paths;
    _list bases;
@@ -118,8 +118,8 @@ protected:
 struct Uro_Files : OsDefinitionPlain
 {
 public:
-   Uro_Files(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinitionPlain(loc, uro, patt) {};
+   Uro_Files(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinitionPlain(loc, uro, patt, abs) {};
 
    _bool hasNext() override;
 };
@@ -128,8 +128,8 @@ public:
 struct Uro_Directories : OsDefinitionPlain
 {
 public:
-   Uro_Directories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinitionPlain(loc, uro, patt) {};
+   Uro_Directories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinitionPlain(loc, uro, patt, abs) {};
 
    _bool hasNext() override;
 };
@@ -138,8 +138,8 @@ public:
 struct Uro_All : OsDefinitionPlain
 {
 public:
-   Uro_All(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinitionPlain(loc, uro, patt) {};
+   Uro_All(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinitionPlain(loc, uro, patt, abs) {};
 
    _bool hasNext() override;
 };
@@ -148,8 +148,8 @@ public:
 struct Uro_RecursiveFiles : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveFiles(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinitionRecursive(loc, uro, patt) { };
+   Uro_RecursiveFiles(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinitionRecursive(loc, uro, patt, abs) { };
 
    _bool hasNext() override;
 };
@@ -158,8 +158,8 @@ public:
 struct Uro_RecursiveDirectories : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveDirectories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinitionRecursive(loc, uro, patt) { };
+   Uro_RecursiveDirectories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinitionRecursive(loc, uro, patt, abs) { };
 
    _bool hasNext() override;
 };
@@ -168,13 +168,13 @@ public:
 struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveAll(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
-      : OsDefinitionRecursive(loc, uro, patt), prevFile(false) { };
+   Uro_RecursiveAll(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+      : OsDefinitionRecursive(loc, uro, patt, abs) { };
 
    _bool hasNext() override;
 
 private:
-   _bool prevFile;
+   _bool prevFile = false;
 };
 
 }

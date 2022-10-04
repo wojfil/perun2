@@ -255,6 +255,26 @@ private:
 };
 
 
+struct DefinitionSuffix : _def
+{
+public:
+   DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs);
+   ~DefinitionSuffix();
+
+   _bool hasNext() override;
+   void reset() override;
+
+private:
+   uro::Uroboros* uroboros;
+   uro::InnerVariables* inner;
+   _def* definition;
+   _bool first = true;
+   _numi index;
+   const _str suffix;
+   const _bool absoluteBase;
+};
+
+
 // ternary and binary works with Definitions in its own way
 // so instead of using templates from 'gen.generic.h'
 // here are special structs

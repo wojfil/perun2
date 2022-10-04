@@ -13,8 +13,8 @@
 */
 
 #include "gen-string.h"
-#include <sstream>
 #include "../../var/var-runtime.h"
+#include "../../os.h"
 
 
 namespace uro::gen
@@ -27,19 +27,23 @@ _str ConcatString::getValue()
       ss << (*value)[i]->getValue();
    }
    return ss.str();
-};
-
+}
 
 _str StringBinary::getValue()
 {
    return condition->getValue()
       ? value->getValue()
       : L"";
-};
+}
 
 _str LocationReference::getValue()
 {
    return this->inner->location.value;
+}
+
+_str RelativeLocation::getValue()
+{
+   return str(this->inner->location.value, OS_SEPARATOR_STRING, this->value->getValue());
 }
 
 _str CharAtIndex::getValue()

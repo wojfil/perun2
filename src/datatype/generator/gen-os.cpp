@@ -32,30 +32,30 @@ namespace uro::gen
 _def* DefinitionGenerator::generateDefault() const
 {
    return this->generatePattern(new LocationReference(this->uroboros),
-      this->element_, OS_SEPARATOR_ASTERISK);
+      this->element_, OS_SEPARATOR_ASTERISK, false);
 }
 
 _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
-   const OsElement& element, const _str& pattern) const
+   const OsElement& element, const _str& pattern, const _bool& isAbsolute) const
 {
    switch (element) {
       case OsElement::oe_All: {
-         return new Uro_All(location, this->uroboros, pattern);
+         return new Uro_All(location, this->uroboros, pattern, isAbsolute);
       }
       case OsElement::oe_Directories: {
-         return new Uro_Directories(location, this->uroboros, pattern);
+         return new Uro_Directories(location, this->uroboros, pattern, isAbsolute);
       }
       case OsElement::oe_Files: {
-         return new Uro_Files(location, this->uroboros, pattern);
+         return new Uro_Files(location, this->uroboros, pattern, isAbsolute);
       }
       case OsElement::oe_RecursiveFiles: {
-         return new Uro_RecursiveFiles(location, this->uroboros, pattern);
+         return new Uro_RecursiveFiles(location, this->uroboros, pattern, isAbsolute);
       }
       case OsElement::oe_RecursiveDirectories: {
-         return new Uro_RecursiveDirectories(location, this->uroboros, pattern);
+         return new Uro_RecursiveDirectories(location, this->uroboros, pattern, isAbsolute);
       }
       case OsElement::oe_RecursiveAll: {
-         return new Uro_RecursiveAll(location, this->uroboros, pattern);
+         return new Uro_RecursiveAll(location, this->uroboros, pattern, isAbsolute);
       }
       default: {
          return nullptr;
@@ -63,9 +63,9 @@ _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
    }
 }
 
-OsDefinition::OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt)
+OsDefinition::OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
    : first(true), location(loc), uroboros(uro),
-     inner(&uro->vars.inner), flags(uro->flags), pattern(patt) { };
+     inner(&uro->vars.inner), flags(uro->flags), pattern(patt), isAbsolute(abs) { };
 
 _fdata* OsDefinition::getDataPtr()
 {
@@ -101,9 +101,9 @@ void OsDefinitionRecursive::reset()
 _bool Uro_All::hasNext()
 {
    if (first) {
-      _str path = os_trim(location->getValue());
-      if (os_directoryExists(path)) {
-         path = str(path, pattern);
+      this->baseLocation = os_trim(location->getValue());
+      if (os_directoryExists(this->baseLocation)) {
+         const _str path = str(this->baseLocation, pattern);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -125,6 +125,9 @@ _bool Uro_All::hasNext()
                this->inner->index.value = index;
                index++;
                this->inner->depth.value.setToZero();
+               if (this->isAbsolute) {
+                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+               }
                this->inner->this_s.value = value;
                return true;
             }
@@ -147,6 +150,9 @@ _bool Uro_All::hasNext()
             this->inner->index.value = index;
             index++;
             this->inner->depth.value.setToZero();
+            if (this->isAbsolute) {
+               this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+            }
             this->inner->this_s.value = value;
             return true;
          }
@@ -162,9 +168,9 @@ _bool Uro_All::hasNext()
 _bool Uro_Files::hasNext()
 {
    if (first) {
-      _str path = os_trim(location->getValue());
-      if (os_directoryExists(path)) {
-         path = str(path, pattern);
+      this->baseLocation = os_trim(location->getValue());
+      if (os_directoryExists(this->baseLocation)) {
+         const _str path = str(this->baseLocation, pattern);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -184,6 +190,9 @@ _bool Uro_Files::hasNext()
                this->inner->index.value = index;
                index++;
                this->inner->depth.value.setToZero();
+               if (this->isAbsolute) {
+                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+               }
                this->inner->this_s.value = value;
                return true;
             }
@@ -204,6 +213,9 @@ _bool Uro_Files::hasNext()
             this->inner->index.value = index;
             index++;
             this->inner->depth.value.setToZero();
+            if (this->isAbsolute) {
+               this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+            }
             this->inner->this_s.value = value;
             return true;
          }
@@ -219,9 +231,9 @@ _bool Uro_Files::hasNext()
 _bool Uro_Directories::hasNext()
 {
    if (first) {
-      _str path = os_trim(location->getValue());
-      if (os_directoryExists(path)) {
-         path = str(path, pattern);
+      this->baseLocation = os_trim(location->getValue());
+      if (os_directoryExists(this->baseLocation)) {
+         const _str path = str(this->baseLocation, pattern);
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -241,6 +253,9 @@ _bool Uro_Directories::hasNext()
                this->inner->index.value = index;
                index++;
                this->inner->depth.value.setToZero();
+               if (this->isAbsolute) {
+                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+               }
                this->inner->this_s.value = value;
                return true;
             }
@@ -261,6 +276,9 @@ _bool Uro_Directories::hasNext()
             this->inner->index.value = index;
             index++;
             this->inner->depth.value.setToZero();
+            if (this->isAbsolute) {
+               this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+            }
             this->inner->this_s.value = value;
             return true;
          }
@@ -276,7 +294,8 @@ _bool Uro_Directories::hasNext()
 _bool Uro_RecursiveFiles::hasNext()
 {
    if (first) {
-      this->paths.push_back(os_trim(location->getValue()));
+      this->baseLocation = os_trim(location->getValue());
+      this->paths.emplace_back(this->baseLocation);
       P_MEMORY_LOAD;
       this->inner->depth.value.setToZero();
       goDeeper = true;
@@ -311,6 +330,9 @@ _bool Uro_RecursiveFiles::hasNext()
                   value = v;
                   this->inner->index.value = index;
                   index++;
+                  if (this->isAbsolute) {
+                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+                  }
                   this->inner->this_s.value = value;
                   return true;
                }
@@ -351,6 +373,9 @@ _bool Uro_RecursiveFiles::hasNext()
                   value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
                   this->inner->index.value = index;
                   index++;
+                  if (this->isAbsolute) {
+                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+                  }
                   this->inner->this_s.value = value;
                   return true;
                }
@@ -379,7 +404,8 @@ _bool Uro_RecursiveFiles::hasNext()
 _bool Uro_RecursiveDirectories::hasNext()
 {
    if (first) {
-      paths.push_back(os_trim(location->getValue()));
+      this->baseLocation = os_trim(location->getValue());
+      this->paths.emplace_back(this->baseLocation);
       P_MEMORY_LOAD;
       this->inner->depth.value.setToMinusOne();
       goDeeper = true;
@@ -440,6 +466,9 @@ _bool Uro_RecursiveDirectories::hasNext()
                this->inner->depth.value++;
                this->inner->index.value = index;
                index++;
+               if (this->isAbsolute) {
+                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+               }
                this->inner->this_s.value = value;
                return true;
             }
@@ -467,7 +496,8 @@ _bool Uro_RecursiveDirectories::hasNext()
 _bool Uro_RecursiveAll::hasNext()
 {
    if (first) {
-      paths.push_back(os_trim(location->getValue()));
+      this->baseLocation = os_trim(location->getValue());
+      this->paths.emplace_back(this->baseLocation);
       P_MEMORY_LOAD;
       this->inner->depth.value.setToMinusOne();
       goDeeper = true;
@@ -534,6 +564,9 @@ _bool Uro_RecursiveAll::hasNext()
                   this->inner->depth.value++;
                   this->inner->index.value = index;
                   index++;
+                  if (this->isAbsolute) {
+                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+                  }
                   this->inner->this_s.value = value;
                   return true;
                }
@@ -548,6 +581,9 @@ _bool Uro_RecursiveAll::hasNext()
                   value = this->inner->depth.value.isZero() ? v : str(bases.back(), v);
                   this->inner->index.value = index;
                   index++;
+                  if (this->isAbsolute) {
+                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
+                  }
                   this->inner->this_s.value = value;
                   return true;
                }

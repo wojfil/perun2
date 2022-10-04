@@ -462,6 +462,54 @@ _bool Join_DefDef::hasNext()
 }
 
 
+DefinitionSuffix::DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs)
+   : uroboros(uro), inner(&uro->vars.inner), definition(def), 
+     suffix(str(OS_SEPARATOR_STRING, suf)), absoluteBase(abs) { };
+
+
+DefinitionSuffix::~DefinitionSuffix()
+{
+   delete this->definition;
+}
+
+
+void DefinitionSuffix::reset()
+{
+   if (!this->first) {
+      this->definition->reset();
+      this->first = true;
+   }
+}
+
+
+_bool DefinitionSuffix::hasNext()
+{
+   if (this->first) {
+      this->first = false;
+      this->index.setToZero();
+   }
+
+   while (definition->hasNext()) {
+      if (this->uroboros->state != State::s_Running) {
+         this->definition->reset();
+         this->first = true;
+         break;
+      }
+
+      this->value = str(this->definition->getValue(), this->suffix);
+
+      if (os_exists(this->absoluteBase ? this->value : str(this->inner->location.value, OS_SEPARATOR_STRING, this->value))) {
+         this->inner->index.value = index;
+         index++;
+         return true;
+      }
+   }
+
+   this->first = true;
+   return false;
+}
+
+
 void DefTernary::reset()
 {
    if (!first) {

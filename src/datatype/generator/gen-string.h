@@ -47,7 +47,7 @@ struct StringBinary : Generator<_str>
 {
 public:
    StringBinary (Generator<_bool>* cond, Generator<_str>* val)
-      : condition(cond), value(val) {};
+      : condition(cond), value(val) { };
 
    ~StringBinary()
    {
@@ -66,7 +66,7 @@ private:
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference(uro::Uroboros* uro) : inner(&uro->vars.inner) {};
+   LocationReference(uro::Uroboros* uro) : inner(&uro->vars.inner) { };
    _str getValue() override;
 
 private:
@@ -74,11 +74,30 @@ private:
 };
 
 
+struct RelativeLocation : Generator<_str>
+{
+public:
+   RelativeLocation(Generator<_str>* val, uro::Uroboros* uro) 
+      : value(val), inner(&uro->vars.inner) { };
+
+   ~RelativeLocation()
+   {
+      delete value;
+   }
+
+   _str getValue() override;
+
+private:
+   uro::InnerVariables* inner;
+   Generator<_str>* value;
+};
+
+
 struct CharAtIndex : Generator<_str>
 {
 public:
    CharAtIndex (Generator<_str>* val, Generator<_num>* ind)
-      : value(val), index(ind) {};
+      : value(val), index(ind) { };
 
    ~CharAtIndex()
    {

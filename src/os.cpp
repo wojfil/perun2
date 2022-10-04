@@ -22,7 +22,6 @@
 
 #include "os.h"
 #include <time.h>
-#include "var/var-runtime.h"
 #include "uroboros.h"
 #include <shlobj.h>
 #include <cwctype>
@@ -1292,6 +1291,68 @@ _bool os_isInvaild(const _str& path)
    }
 
    return false;
+}
+
+_uint32 os_patternInfo(const _str& pattern)
+{
+   _uint32 result = gen::PATTERN_INFO_NULL;
+   const _size length = pattern.size();
+
+   if (length == 0 || pattern[length - 1] == L'.') {
+      return result;
+   }
+
+   if (os_isAbsolute(pattern)) {
+      result |= gen::PATTERN_INFO_IS_ABSOLUTE;
+      if (length < 4 || pattern[2] != OS_SEPARATOR) {
+         return result;
+      }
+   }
+
+   _char prev;
+   _size countAstrisks = 0;
+
+   for (_size i = 0; i < length; i++) {
+      const _char& ch = pattern[i];
+
+      switch (ch) {
+         case L'*': {
+            countAstrisks++;
+
+            if (prev == L'*') {
+               result |= gen::PATTERN_INFO_DOUBLE_ASTERISK;
+            }
+            break;
+         }
+         case L'<':
+         case L'>':
+         case L'|':
+         case L'?':
+         case L'"': {
+            return result;
+         }
+         case L':': {
+            if (i != 1 || !(result & gen::PATTERN_INFO_IS_ABSOLUTE)) {
+               return result;
+            }
+            break;
+         }
+         case OS_SEPARATOR:{
+            if (prev == OS_SEPARATOR) {
+               return result;
+            }
+         }
+      }
+
+      prev = ch;
+   }
+
+   if (countAstrisks == 1) {
+      result |= gen::PATTERN_INFO_ONE_ASTERISK;
+   }
+
+   result |= gen::PATTERN_INFO_VALID;
+   return result;
 }
 
 _str os_trim(const _str& path)

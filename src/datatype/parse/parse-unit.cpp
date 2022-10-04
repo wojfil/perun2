@@ -205,7 +205,7 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == L'*') {
-            return uro->patternParser.parse(L"**", -1, result);
+            return uro->patternParser.parse(L"**", result, tk.line);
          }
          else {
             return false;
@@ -213,14 +213,14 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
-            return uro->patternParser.parse(L"*", -1, result);
+            return uro->patternParser.parse(L"*", result, tk.line);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return uro->patternParser.parse(tk.getOriginString(uro), tk.value.pattern.id, result);
+         return uro->patternParser.parse(tk.getOriginString(uro), result, tk.line);
       }
       default: {
          return false;

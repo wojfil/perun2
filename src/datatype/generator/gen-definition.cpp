@@ -129,6 +129,86 @@ _bool DefinitionChain::hasNext()
 };
 
 
+LocationVessel::LocationVessel() 
+   : isAbsolute(false), inner(nullptr) { };
+
+LocationVessel::LocationVessel(uro::Uroboros* uro)
+   : isAbsolute(true), inner(&uro->vars.inner) { };
+
+
+_str LocationVessel::getValue()
+{
+   return this->isAbsolute
+      ? this->value
+      : str(this->inner->location.value, OS_SEPARATOR_STRING, this->value);
+};
+
+
+void LocationVessel::setValue(const _str& val)
+{
+   this->value = val;
+};
+
+
+NestedDefiniton::NestedDefiniton(LocationVessel* ves, _def* def, _def* locs)
+   : vessel(ves), definition(def), locations(locs) { };
+
+
+NestedDefiniton::~NestedDefiniton()
+{
+   delete this->definition;
+   delete this->locations;
+};
+
+
+void NestedDefiniton::reset()
+{
+   if (this->defOpened) {
+      this->defOpened = false;
+      this->definition->reset();
+   }
+   if (this->locsOpened) {
+      this->locsOpened = false;
+      this->locations->reset();
+   }
+};
+
+
+_bool NestedDefiniton::hasNext()
+{
+   if (!this->locsOpened) {
+      if (this->locations->hasNext()) {
+         this->locsOpened = true;
+         this->vessel->setValue(this->locations->getValue());
+      }
+      else {
+         return false;
+      }
+   }
+
+   while (true) {
+      if (this->definition->hasNext()) {
+         this->defOpened = true;
+         this->value = this->definition->getValue();
+         return true;
+      }
+      else {
+         this->defOpened = false;
+         if (this->locations->hasNext()) {
+            this->locsOpened = true;
+            this->vessel->setValue(this->locations->getValue());
+         }
+         else {
+            this->locsOpened = false;
+            return false;
+         }
+      }
+   }
+   
+   return false;
+};
+
+
 _bool Filter_LimitDef::hasNext()
 {
    if (first) {
@@ -462,9 +542,8 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs)
-   : uroboros(uro), inner(&uro->vars.inner), definition(def), 
-     suffix(str(OS_SEPARATOR_STRING, suf)), absoluteBase(abs) { };
+DefinitionSuffix::DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs, const _bool& dir)
+   : uroboros(uro), inner(&uro->vars.inner), definition(def), suffix(suf), absoluteBase(abs), isDirectory(dir) { };
 
 
 DefinitionSuffix::~DefinitionSuffix()
@@ -497,8 +576,11 @@ _bool DefinitionSuffix::hasNext()
       }
 
       this->value = str(this->definition->getValue(), this->suffix);
+      const _str path = this->absoluteBase 
+         ? this->value 
+         : str(this->inner->location.value, OS_SEPARATOR_STRING, this->value);
 
-      if (os_exists(this->absoluteBase ? this->value : str(this->inner->location.value, OS_SEPARATOR_STRING, this->value))) {
+      if (this->isDirectory ? os_directoryExists(path): os_exists(path)) {
          this->inner->index.value = index;
          index++;
          return true;

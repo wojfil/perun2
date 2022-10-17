@@ -92,6 +92,38 @@ private:
 };
 
 
+struct LocationVessel : Generator<_str>
+{
+public:
+   LocationVessel();
+   LocationVessel(uro::Uroboros* uro);
+   _str getValue() override;
+   void setValue(const _str& val);
+
+private:
+   uro::InnerVariables* inner;
+   _str value;
+   const _bool isAbsolute;
+};
+
+
+struct NestedDefiniton : _def
+{
+public:
+   NestedDefiniton(LocationVessel* ves, _def* def, _def* locs);
+   ~NestedDefiniton();
+   _bool hasNext() override;
+   void reset() override;
+
+private:
+   LocationVessel* vessel;
+   _def* definition;
+   _def* locations;
+   _bool defOpened = false;
+   _bool locsOpened = false;
+};
+
+
 struct Filter_LimitDef : DefFilter
 {
 public:
@@ -258,7 +290,7 @@ private:
 struct DefinitionSuffix : _def
 {
 public:
-   DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs);
+   DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs, const _bool& dir);
    ~DefinitionSuffix();
 
    _bool hasNext() override;
@@ -272,6 +304,7 @@ private:
    _numi index;
    const _str suffix;
    const _bool absoluteBase;
+   const _bool isDirectory;
 };
 
 

@@ -22,6 +22,9 @@
 namespace uro::gen
 {
 
+#define P_PATTERN_START_ID (isAbsolute ? 3 : 0)
+
+
 _bool PatternParser::parse(const _str& originPattern, _def*& result, const _int& line) const
 {
    const _str pattern = os_trim(originPattern);
@@ -39,15 +42,15 @@ _bool PatternParser::parse(const _str& originPattern, _def*& result, const _int&
 
    const _uint32 info = os_patternInfo(pattern);
 
-   if (!(info & PATTERN_INFO_VALID)) {
+   if ((info & PATTERN_INFO_VALID) == 0 || (info & PATTERN_INFO_DOUBLE_ASTERISK) != 0) {
       throw SyntaxException(str(L"asterisk pattern '", originPattern, L"' is not valid"), line);
    }
 
    const _bool isAbsolute = info & PATTERN_INFO_IS_ABSOLUTE;
-   const _size length = pattern.size();
+   const _size totalLength = pattern.size();
    _int separatorId = -1;
 
-   for (_size i = (isAbsolute ? 3 : 0); i < length; i++) {
+   for (_size i = P_PATTERN_START_ID; i < totalLength; i++) {
       switch (pattern[i]) {
          case OS_SEPARATOR: {
             separatorId = static_cast<_int>(i);
@@ -79,10 +82,10 @@ exitParser:
       }
    }
 
-   if (info & PATTERN_INFO_ONE_ASTERISK) {
+   if ((info & PATTERN_INFO_ONE_ASTERISK) != 0) {
       _int separatorId2 = -1;
 
-      for (_size i = separatorId + ((isAbsolute && separatorId == -1) ? 4 : 1); i < length; i++) {
+      for (_size i = separatorId + ((isAbsolute && separatorId == -1) ? 4 : 1); i < totalLength; i++) {
          if (pattern[i] == OS_SEPARATOR) {
             separatorId2 = static_cast<_int>(i);
             break;
@@ -102,28 +105,129 @@ exitParser:
          return true;
       }
 
-      const _str suffix = pattern.substr(separatorId2 + 1);
-      const _int patternStart = (separatorId == -1 ? ((isAbsolute ? 3 : 0)) : separatorId);
+      const _str suffix = str(OS_SEPARATOR_STRING, pattern.substr(separatorId2 + 1));
+      const _int patternStart = separatorId == -1 ? P_PATTERN_START_ID : separatorId;
       const _int patternLength = separatorId2 - patternStart;
       const _str p = (separatorId == -1) 
          ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart, patternLength))
          : pattern.substr(patternStart, patternLength);
 
-      _def* d = this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute);
-      result = new DefinitionSuffix(d, this->uroboros, suffix, isAbsolute);
+      _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute);
+      result = new DefinitionSuffix(d, this->uroboros, suffix, isAbsolute, false);
       return true;
    }
 
-   if (info & PATTERN_INFO_ONE_ASTERISK) {
-      // todo
+   _size start = separatorId == -1 ? P_PATTERN_START_ID : static_cast<_size>(separatorId + 1);
+   _bool hasAsterisk = false;
+   _str asteriskPart;
+   _str suffixPart;
+   std::vector<PatternUnit> units;
+
+   for (_size i = start; i < totalLength; i++) {
+      switch (pattern[i]) {
+         case OS_SEPARATOR: {
+            this->addUnit(asteriskPart, suffixPart, pattern.substr(start, i - start), hasAsterisk, units);
+            start = i + 1;
+            hasAsterisk = false;
+            break;
+         }
+         case L'*': {
+            hasAsterisk = true;
+            break;
+         }
+      }
    }
 
-   if (info & PATTERN_INFO_DOUBLE_ASTERISK) {
-      // todo
+   this->addUnit(asteriskPart, suffixPart, pattern.substr(start), hasAsterisk, units);
+
+   if (suffixPart.empty()) {
+      units.emplace_back(asteriskPart);
    }
+   else {
+      units.emplace_back(asteriskPart, suffixPart);
+   }
+
+   const _size ulen = units.size();
+
+   if (ulen == 1) {
+      const PatternUnit& u = units[0];
+      const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
+
+      if (u.suffixPart.empty()) {
+         result = this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute);
+      }
+      else {
+         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute);
+         result = new DefinitionSuffix(d, this->uroboros, u.suffixPart, isAbsolute, false);
+      }
+
+      return true;
+   }
+   else if (ulen == 2) {
+      const PatternUnit& u0 = units[0];
+      const PatternUnit& u1 = units[1];
+
+      const _str p0 = str(OS_SEPARATOR_STRING, u0.asteriskPart);
+
+      _def* d0;
+
+      if (u0.suffixPart.empty()) {
+         d0 = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute);
+      }
+      else {
+         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute);
+         d0 = new DefinitionSuffix(d, this->uroboros, u0.suffixPart, isAbsolute, true);
+      }
+
+      LocationVessel* vessel;
+      if (isAbsolute) {
+         vessel = new LocationVessel(this->uroboros);
+      }
+      else {
+         vessel = new LocationVessel();
+      }
+
+      _def* d1;
+      const _str p1 = str(OS_SEPARATOR_STRING, u1.asteriskPart);
+
+      if (u1.suffixPart.empty()) {
+         d1 = this->defGenerator.generatePattern(vessel, OsElement::oe_All, p1, isAbsolute);
+      }
+      else {
+         _def* d = this->defGenerator.generatePattern(vessel, OsElement::oe_Directories, p1, isAbsolute);
+         d1 = new DefinitionSuffix(d, this->uroboros, u1.suffixPart, isAbsolute, false);
+      }
+
+      result = new NestedDefiniton(vessel, d1, d0);
+      return true;
+   }
+   
 
    delete base;
    return false;
-};
+}
+
+void PatternParser::addUnit(_str& asteriskPart, _str& suffixPart, const _str& part, 
+   const _bool& hasAsterisk, std::vector<PatternUnit>& units) const
+{
+   if (asteriskPart.empty()) {
+      asteriskPart = part;
+   }
+   else {
+      if (hasAsterisk) {
+         if (suffixPart.empty()) {
+            units.emplace_back(asteriskPart);
+         }
+         else {
+            units.emplace_back(asteriskPart, suffixPart);
+            suffixPart.clear();
+         }
+         asteriskPart = part;
+      }
+      else {
+         suffixPart = str(suffixPart, OS_SEPARATOR_STRING, part);
+      }
+   }
+}
 
 }

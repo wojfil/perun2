@@ -148,7 +148,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
 
    if (attr->has(ATTR_ACCESS)) {
       inner.access.value = exists
-         ? convertToUroTime(&data.ftLastAccessTime)
+         ? os_convertToUroTime(&data.ftLastAccessTime)
          : _tim();
    }
 
@@ -162,7 +162,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
 
    if (attr->has(ATTR_CREATION)) {
       inner.creation.value = exists
-         ? convertToUroTime(&data.ftCreationTime)
+         ? os_convertToUroTime(&data.ftCreationTime)
          : _tim();
    }
 
@@ -170,7 +170,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
    const _bool hasChange = attr->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
       const _tim time = exists
-         ? convertToUroTime(&data.ftLastWriteTime)
+         ? os_convertToUroTime(&data.ftLastWriteTime)
          : _tim();
 
       if (hasChange) {
@@ -233,7 +233,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
    if (attr->has(ATTR_SIZE)) {
       if (exists) {
          inner.size.value = isFile
-            ? _num(bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
+            ? _num(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
             : _num(os_sizeDirectory(path, uro));
       }
       else {
@@ -352,7 +352,7 @@ void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
    inner.isfile.value = !inner.isdirectory.value;
 
    if (attr->has(ATTR_ACCESS)) {
-      inner.access.value = convertToUroTime(&data->ftLastAccessTime);
+      inner.access.value = os_convertToUroTime(&data->ftLastAccessTime);
    }
 
    if (attr->has(ATTR_ARCHIVE)) {
@@ -364,13 +364,13 @@ void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
    }
 
    if (attr->has(ATTR_CREATION)) {
-      inner.creation.value = convertToUroTime(&data->ftCreationTime);
+      inner.creation.value = os_convertToUroTime(&data->ftCreationTime);
    }
 
    const _bool hasMod = attr->has(ATTR_MODIFICATION);
    const _bool hasChange = attr->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
-      const _tim time = convertToUroTime(&data->ftLastWriteTime);
+      const _tim time = os_convertToUroTime(&data->ftLastWriteTime);
 
       if (hasChange) {
          inner.change.value = time;
@@ -421,7 +421,7 @@ void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
 
    if (attr->has(ATTR_SIZE)) {
       inner.size.value = inner.isfile.value
-         ? _num(bigInteger(data->nFileSizeLow, data->nFileSizeHigh))
+         ? _num(os_bigInteger(data->nFileSizeLow, data->nFileSizeHigh))
          : _num(os_sizeDirectory(path, uro));
    }
 }
@@ -438,7 +438,7 @@ _tim os_access(const _str& path)
       return _tim();
    }
 
-   return convertToUroTime(&data.ftLastAccessTime);
+   return os_convertToUroTime(&data.ftLastAccessTime);
 }
 
 _bool os_archive(const _str& path)
@@ -458,7 +458,7 @@ _tim os_change(const _str& path)
       return _tim();
    }
 
-   return convertToUroTime(&data.ftLastWriteTime);
+   return os_convertToUroTime(&data.ftLastWriteTime);
 }
 
 _bool os_compressed(const _str& path)
@@ -478,7 +478,7 @@ _tim os_creation(const _str& path)
       return _tim();
    }
 
-   return convertToUroTime(&data.ftCreationTime);
+   return os_convertToUroTime(&data.ftCreationTime);
 }
 
 _str os_drive(const _str& path)
@@ -619,8 +619,8 @@ _per os_lifetime(const _str& path)
       return _per();
    }
 
-   const _tim modification = convertToUroTime(&data.ftLastWriteTime);
-   const _tim creation = convertToUroTime(&data.ftCreationTime);
+   const _tim modification = os_convertToUroTime(&data.ftLastWriteTime);
+   const _tim creation = os_convertToUroTime(&data.ftCreationTime);
 
    return creation < modification
       ? (os_now() - creation)
@@ -639,7 +639,7 @@ _tim os_modification(const _str& path)
       return _tim();
    }
 
-   return convertToUroTime(&data.ftLastWriteTime);
+   return os_convertToUroTime(&data.ftLastWriteTime);
 }
 
 _str os_name(const _str& value)
@@ -704,7 +704,7 @@ _nint os_size(const _str& path, Uroboros* uro)
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
       ? os_sizeDirectory(path, uro)
-      : bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
+      : os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
 }
 
 _nint os_sizeDirectory(const _str& path, Uroboros* uro)
@@ -727,7 +727,7 @@ _nint os_sizeDirectory(const _str& path, Uroboros* uro)
             totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, data.cFileName), uro);
          }
          else {
-            totalSize += bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
+            totalSize += os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
          }
       }
    } while (FindNextFile(handle, &data));
@@ -968,9 +968,9 @@ _bool os_setTime(const _str& path, const _tim& creation,
    _ftim time_a;
    _ftim time_m;
 
-   if (!(convertToFileTime(creation, time_c)
-    && convertToFileTime(access, time_a)
-    && convertToFileTime(modification, time_m)))
+   if (!(os_convertToFileTime(creation, time_c)
+    && os_convertToFileTime(access, time_a)
+    && os_convertToFileTime(modification, time_m)))
    {
       return false;
    }
@@ -1019,7 +1019,7 @@ _bool os_createFile(const _str& path)
    if (h) {
       _ftim ftime;
 
-      if (convertToFileTime(os_now(), ftime)) {
+      if (os_convertToFileTime(os_now(), ftime)) {
          SetFileTime(h, &ftime, &ftime, &ftime);
       }
 
@@ -1739,7 +1739,7 @@ _bool os_find(const _str& path, const _str& value)
    return result;
 }
 
-inline _nint bigInteger(const _uint32& low, const _uint32& high)
+inline _nint os_bigInteger(const _uint32& low, const _uint32& high)
 {
    _nint n = high;
    n <<= sizeof(high) * 8;
@@ -1764,7 +1764,7 @@ inline _bool os_isBrowsePath(const _str& path)
    }
 }
 
-inline _tim convertToUroTime(const _ftim* time)
+inline _tim os_convertToUroTime(const _ftim* time)
 {
    _FILETIME ftime;
    if (FileTimeToLocalFileTime(time, &ftime)) {
@@ -1783,7 +1783,7 @@ inline _tim convertToUroTime(const _ftim* time)
    }
 }
 
-inline _bool convertToFileTime(const _tim& uroTime, _ftim& result)
+inline _bool os_convertToFileTime(const _tim& uroTime, _ftim& result)
 {
    _SYSTEMTIME stime;
    stime.wYear = uroTime.year;

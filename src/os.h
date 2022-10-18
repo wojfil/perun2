@@ -136,10 +136,10 @@ _str os_readFile(const _str& path, _bool& result);
 void os_showWebsite(const _str& url);
 _bool os_find(const _str& path, const _str& value);
 
-inline _nint bigInteger(const _uint32& low, const _uint32& high);
+inline _nint os_bigInteger(const _uint32& low, const _uint32& high);
 inline _bool os_isBrowsePath(const _str& path);
-inline _tim convertToUroTime(const _ftim* time);
-inline _bool convertToFileTime(const _tim& uroTime, _ftim& result);
+inline _tim os_convertToUroTime(const _ftim* time);
+inline _bool os_convertToFileTime(const _tim& uroTime, _ftim& result);
 
 _str os_makeArg(const _str& value);
 void os_rawTrim(_str& value);

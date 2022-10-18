@@ -43,7 +43,7 @@ typedef FILETIME                    _ftim;
 typedef std::wstringstream          _stream;
 
 
-const _str EMPTY_STRING = L"";
+static const _str EMPTY_STRING = L"";
 
 
 _str toStr(const _char& ch);

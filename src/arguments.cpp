@@ -29,7 +29,7 @@ Arguments::Arguments(const _str& loc, const _str& cod, const _uint32& fls)
    : location(loc), code(cod), args(_list()), flags(fls),
    parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(_int* argc, _char** argv[])
+Arguments::Arguments(const _int& argc, _char** const argv[])
 {
    _bool options = true;
    _bool nextParseLocation = false;
@@ -46,12 +46,12 @@ Arguments::Arguments(_int* argc, _char** argv[])
    this->code = L"";
    this->parseState = ArgsParseState::aps_Failed;
 
-   if ((*argc) == 1) {
+   if (argc == 1) {
       rawPrint(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
       return;
    }
 
-   for (_int i = 1; i < *argc; i++) {
+   for (_int i = 1; i < argc; i++) {
       const _str arg = _str((*argv)[i]);
       const _size len = arg.size();
 

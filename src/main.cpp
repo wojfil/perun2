@@ -39,7 +39,7 @@ namespace uro
 uro::_int wmain(uro::_int argc, uro::_char* argv[], uro::_char* envp[])
 {
    uro::consoleInit();
-   uro::Arguments arguments(&argc, &argv);
+   uro::Arguments arguments(argc, &argv);
 
    switch (arguments.getParseState())
    {

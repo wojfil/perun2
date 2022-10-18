@@ -32,7 +32,7 @@ struct Arguments
 public:
 
    // Uroboros arguments parsed from the command-line
-   Arguments(_int* argc, _char** argv[]);
+   Arguments(const _int& argc, _char** const argv[]);
 
    // Uroboros arguments made from code and location
    Arguments(const _str& loc, const _str& cod);

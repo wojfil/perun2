@@ -21,7 +21,7 @@ namespace uro
 {
 
 InnerVariables::InnerVariables(const _str& loc, const _str& ucom)
-   : thisState(ThisState::ts_None), trimmed(L""), urocom(ucom),
+   : thisState(ThisState::ts_None), urocom(ucom),
      depth(_numi(0LL)), location(loc) { }
 
 _list InnerVariables::getAlphabet()

@@ -51,7 +51,7 @@ void Aggregate::run()
 
       if (failedSelect > 0) {
          for (_uint32 i = 0; i < failedSelect; i++) {
-            logSelectError(this->uroboros, L"");
+            logSelectError(this->uroboros, EMPTY_STRING);
          }
          failedSelect = 0;
          selectFailure = true;
@@ -116,7 +116,7 @@ void Aggregate::run()
 
       if (failedCopy > 0) {
          for (_uint32 i = 0; i < failedCopy; i++) {
-            logCopyError(this->uroboros, L"");
+            logCopyError(this->uroboros, EMPTY_STRING);
          }
          failedCopy = 0;
       }

@@ -33,7 +33,7 @@ _str StringBinary::getValue()
 {
    return condition->getValue()
       ? value->getValue()
-      : L"";
+      : EMPTY_STRING;
 }
 
 _str LocationReference::getValue()
@@ -52,14 +52,14 @@ _str CharAtIndex::getValue()
    const _size len = v.size();
 
    if (len == 0) {
-      return L"";
+      return v;
    }
 
    const _nint n = index->getValue().toInt();
 
    return n >= 0 && n < len
       ? _str(1, v[n])
-      : L"";
+      : EMPTY_STRING;
 }
 
 _str DefinitionElement::getValue()
@@ -67,7 +67,7 @@ _str DefinitionElement::getValue()
    _nint n = index->getValue().toInt();
 
    if (n < 0LL) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    while (definition->hasNext()) {
@@ -80,7 +80,7 @@ _str DefinitionElement::getValue()
       n--;
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 }

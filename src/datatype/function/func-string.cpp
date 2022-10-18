@@ -31,12 +31,12 @@ namespace uro::func
 _str F_After::getValue()
 {
    const _str s1 = arg1->getValue();
-   if (s1 == L"")
-      return L"";
+   if (s1.empty())
+      return s1;
 
    const _str s2 = arg2->getValue();
-   if (s2 == L"")
-      return L"";
+   if (s2.empty())
+      return s2;
 
    const _size len2 = s2.size();
 
@@ -47,17 +47,17 @@ _str F_After::getValue()
       for (_size i = 0; i < len1; i++) {
          if (s1[i] == sign) {
             return i == len1 - 1
-               ? L""
+               ? EMPTY_STRING
                : s1.substr(i + 1);
          }
       }
 
-      return L"";
+      return EMPTY_STRING;
    }
    else {
       auto pos = s1.find(s2);
       return pos == _str::npos
-         ? L""
+         ? EMPTY_STRING
          : s1.substr(pos + s2.size());
    }
 }
@@ -66,12 +66,12 @@ _str F_After::getValue()
 _str F_Before::getValue()
 {
    const _str s1 = arg1->getValue();
-   if (s1 == L"")
-      return L"";
+   if (s1.empty())
+      return s1;
 
    const _str s2 = arg2->getValue();
-   if (s2 == L"")
-      return L"";
+   if (s2.empty())
+      return EMPTY_STRING;
 
    const _size len2 = s2.size();
 
@@ -82,17 +82,17 @@ _str F_Before::getValue()
       for (_size i = 0; i < len1; i++) {
          if (s1[i] == sign) {
             return i == 0
-               ? L""
+               ? EMPTY_STRING
                : s1.substr(0, i);
          }
       }
 
-      return L"";
+      return EMPTY_STRING;
    }
    else {
       auto pos = s1.find(s2);
       return pos == _str::npos
-         ? L""
+         ? EMPTY_STRING
          : s1.substr(0, pos);
    }
 }
@@ -189,7 +189,7 @@ _str F_Trim::getValue()
    }
 
    if (left == length - 1) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    _int right;
@@ -219,7 +219,7 @@ _str F_Repeat::getValue()
 {
    const _nint repeats = arg2->getValue().toInt();
    if (repeats <= 0LL) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    const _str base = arg1->getValue();
@@ -227,7 +227,7 @@ _str F_Repeat::getValue()
 
    switch (len) {
       case 0: {
-         return L"";
+         return EMPTY_STRING;
       }
       case 1: {
          return _str(repeats, base[0]);
@@ -274,7 +274,7 @@ _str F_Left::getValue()
 {
    const _nint left = arg2->getValue().toInt();
    if (left <= 0LL) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    const _str value = arg1->getValue();
@@ -290,7 +290,7 @@ _str F_Right::getValue()
 {
    const _nint right = arg2->getValue().toInt();
    if (right <= 0LL) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    const _str value = arg1->getValue();
@@ -322,7 +322,7 @@ _str F_Substring_2::getValue()
    }
    else {
       return index >= length
-         ? L""
+         ? EMPTY_STRING
          : value.substr(index);
    }
 }
@@ -336,7 +336,7 @@ _str F_Substring_3::getValue()
    const _nint length = static_cast<_nint>(value.size());
 
    if (index2 <= 0LL) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    if (index < 0LL) {
@@ -345,7 +345,7 @@ _str F_Substring_3::getValue()
       if (index >= length) {
          const _nint lets = length - index + index2;
          return lets <= 0LL
-            ? L""
+            ? EMPTY_STRING
             : value.substr(0, lets);
       }
       else {
@@ -357,7 +357,7 @@ _str F_Substring_3::getValue()
    }
    else {
       if (index >= length) {
-         return L"";
+         return EMPTY_STRING;
       }
 
       return index + index2 >= length
@@ -374,7 +374,7 @@ _str F_ConcatenateUnit::getValue()
 
    switch (length) {
       case 0: {
-         return L"";
+         return EMPTY_STRING;
       }
       case 1: {
          return values[0];
@@ -419,7 +419,7 @@ _str F_FirstDef::getValue()
       return v;
    }
    else {
-      return L"";
+      return EMPTY_STRING;
    }
 }
 
@@ -427,7 +427,7 @@ _str F_FirstDef::getValue()
 _str F_LastDef::getValue()
 {
    if (!definition->hasNext()) {
-      return L"";
+      return EMPTY_STRING;
    }
 
    while (definition->hasNext()) { }
@@ -564,7 +564,7 @@ _str F_MonthName::getValue()
       case 12LL:
          return L"December";
       default:
-         return L"";
+         return EMPTY_STRING;
    }
 }
 
@@ -587,7 +587,7 @@ _str F_WeekDayName::getValue()
       case 7LL:
          return L"Sunday";
       default:
-         return L"";
+         return EMPTY_STRING;
    }
 }
 
@@ -629,7 +629,7 @@ _str F_AfterDigits::getValue()
       }
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 
@@ -652,7 +652,7 @@ _str F_AfterLetters::getValue()
       }
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 
@@ -670,13 +670,13 @@ _str F_BeforeDigits::getValue()
          case L'8': case L'9':
          {
             return i == 0
-               ? L""
+               ? EMPTY_STRING
                : value.substr(0, i);
          }
       }
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 
@@ -688,12 +688,12 @@ _str F_BeforeLetters::getValue()
    for (_size i = 0; i < len; i++) {
       if (std::iswalpha(value[i])) {
          return i == 0
-            ? L""
+            ? EMPTY_STRING
             : value.substr(0, i);
       }
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 
@@ -703,9 +703,7 @@ _str F_RandomChar::getValue()
    const _size len = value.size();
 
    switch (len) {
-      case 0: {
-         return L"";
-      }
+      case 0:
       case 1: {
          return value;
       }
@@ -756,7 +754,7 @@ _str F_Join::getValue()
 
    switch (length) {
       case 0: {
-         return L"";
+         return EMPTY_STRING;
       }
       case 1: {
          return values[0];
@@ -767,7 +765,7 @@ _str F_Join::getValue()
       default: {
          const _str separator = arg2->getValue();
 
-         if (separator == L"") {
+         if (separator.empty()) {
             _stream ss;
 
             for (_size i = 0; i < length; i++) {

@@ -38,10 +38,10 @@ void cmd_website()
 
 void cmd_help()
 {
-   rawPrint(L"");
+   rawPrint(EMPTY_STRING);
    rawPrint(L"In order to run a script, pass a file name or its path as an argument. Extension is not mandatory.");
    rawPrint(L"By default, working location is the directory where the script is located.");
-   rawPrint(L"");
+   rawPrint(EMPTY_STRING);
    rawPrint(L"Options:");
    rawPrint(L"  --help       Display this information again.");
    rawPrint(L"  --version    Display interpreter version information.");

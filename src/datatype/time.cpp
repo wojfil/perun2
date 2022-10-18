@@ -691,7 +691,7 @@ _str monthToString(const _tnum& month)
       case 12:
          return L"December";
       default:
-         return L"";
+         return EMPTY_STRING;
    }
 }
 
@@ -713,7 +713,7 @@ _str weekdayToString(const _tnum& wday)
       case 7:
          return L"Sunday";
       default:
-         return L"";
+         return EMPTY_STRING;
    }
 }
 

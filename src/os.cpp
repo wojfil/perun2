@@ -208,7 +208,7 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
    }
 
    if (attr->has(ATTR_EXTENSION)) {
-      inner.extension.value = isFile ? os_extension(inner.trimmed) : L"";
+      inner.extension.value = isFile ? os_extension(inner.trimmed) : EMPTY_STRING;
    }
 
    if (attr->has(ATTR_HIDDEN)) {
@@ -246,15 +246,15 @@ void os_loadAttributes(const Attribute* attr, Uroboros* uro)
 void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
 {
    if (attr->has(ATTR_PATH)) {
-      inner.path.value = L"";
+      inner.path.value = EMPTY_STRING;
    }
 
    if (attr->has(ATTR_FULLNAME)) {
-      inner.fullname.value = L"";
+      inner.fullname.value = EMPTY_STRING;
    }
 
    if (attr->has(ATTR_DRIVE)) {
-      inner.drive.value = L"";
+      inner.drive.value = EMPTY_STRING;
    }
 
    if (!attr->has(ATTR_EXISTS)) {
@@ -294,7 +294,7 @@ void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
    }
 
    if (attr->has(ATTR_EXTENSION)) {
-      inner.extension.value = L"";
+      inner.extension.value = EMPTY_STRING;
    }
 
    if (attr->has(ATTR_HIDDEN)) {
@@ -310,11 +310,11 @@ void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
    }
 
    if (attr->has(ATTR_NAME)) {
-      inner.name.value = L"";
+      inner.name.value = EMPTY_STRING;
    }
 
    if (attr->has(ATTR_PARENT)) {
-      inner.parent.value = L"";
+      inner.parent.value = EMPTY_STRING;
    }
 
    if (attr->has(ATTR_READONLY)) {
@@ -397,7 +397,7 @@ void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
    }
 
    if (attr->has(ATTR_EXTENSION)) {
-      inner.extension.value = inner.isfile.value ? os_extension(inner.trimmed) : L"";
+      inner.extension.value = inner.isfile.value ? os_extension(inner.trimmed) : EMPTY_STRING;
    }
 
    if (attr->has(ATTR_HIDDEN)) {
@@ -485,7 +485,7 @@ _str os_drive(const _str& path)
 {
    return os_isAbsolute(path)
       ? str(toStr(std::towupper(path[0])), L":")
-      : L"";
+      : EMPTY_STRING;
 }
 
 _bool os_empty(const _str& path)
@@ -544,7 +544,7 @@ _str os_extension(const _str& value)
       const _char& ch = value[i];
       if (ch == L'.') {
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
-            return L"";
+            return EMPTY_STRING;
          }
          else {
             _str result = value.substr(i + 1);
@@ -553,11 +553,11 @@ _str os_extension(const _str& value)
          }
       }
       else if (ch == OS_SEPARATOR) {
-         return L"";
+         return EMPTY_STRING;
       }
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 _str os_fullname(const _str& value)
@@ -682,7 +682,7 @@ _str os_parent(const _str& path)
       }
    }
 
-   return L"";
+   return EMPTY_STRING;
 }
 
 _bool os_readonly(const _str& path)
@@ -1378,7 +1378,7 @@ exitStart:
 
    switch (len - start) {
       case 0: {
-         return L"";
+         return EMPTY_STRING;
       }
       case 1: {
          _str result = path.substr(len - 1, 1);
@@ -1720,7 +1720,7 @@ _bool os_find(const _str& path, const _str& value)
    if (!stream) {
       return false;
    }
-   else if (value == L"") {
+   else if (value.empty()) {
       stream.close();
       return true;
    }
@@ -1867,7 +1867,7 @@ r_exitStart:
 
    switch (len - start) {
       case 0: {
-         value = L"";
+         value = EMPTY_STRING;
          return;
       }
       case 1: {

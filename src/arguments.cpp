@@ -42,8 +42,6 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
 
    this->flags = FLAG_NULL;
    this->args = _list();
-   this->location = L"";
-   this->code = L"";
    this->parseState = ArgsParseState::aps_Failed;
 
    if (argc == 1) {

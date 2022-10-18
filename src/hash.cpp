@@ -38,7 +38,7 @@ _size rawStringHash(const _str& value)
 
 // prepare data for future hash comparisons
 Hashes::Hashes() :
-   HASH_NOTHING(rawStringHash(L"")),
+   HASH_NOTHING(rawStringHash(EMPTY_STRING)),
    HASH_VAR_THIS(rawStringHash(L"this")),
 
    HASH_VAR_ACCESS(rawStringHash(L"access")),

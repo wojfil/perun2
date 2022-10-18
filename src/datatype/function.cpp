@@ -1473,7 +1473,7 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
 static void functionArgNumberException(const _int& argNumber, const Token& word, uro::Uroboros* uro)
 {
    throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
-      toStr(argNumber), L" argument", (argNumber == 1 ? L"" : L"s")), word.line);
+      toStr(argNumber), L" argument", (argNumber == 1 ? EMPTY_STRING : L"s")), word.line);
 }
 
 static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, uro::Uroboros* uro)

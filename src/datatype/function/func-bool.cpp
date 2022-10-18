@@ -437,22 +437,8 @@ _bool F_IsDigit::getValue()
 
    const _size len = value.size();
    for (_size i = 0; i < len; i++) {
-      switch (value[i]) {
-         case L'0':
-         case L'1':
-         case L'2':
-         case L'3':
-         case L'4':
-         case L'5':
-         case L'6':
-         case L'7':
-         case L'8':
-         case L'9': {
-            break;
-         }
-         default: {
-            return false;
-         }
+      if (!std::iswdigit(value[i])) {
+         return false;
       }
    }
 

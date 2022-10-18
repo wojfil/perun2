@@ -600,31 +600,13 @@ _str F_AfterDigits::getValue()
 
    for (_size i = 0; i < len; i++) {
       if (after) {
-         switch (value[i]) {
-            case L'0': case L'1':
-            case L'2': case L'3':
-            case L'4': case L'5':
-            case L'6': case L'7':
-            case L'8': case L'9':
-            {
-               break;
-            }
-            default: {
-               return value.substr(i);
-            }
+         if (!std::iswdigit(value[i])) {
+            return value.substr(i);
          }
       }
       else {
-         switch (value[i]) {
-            case L'0': case L'1':
-            case L'2': case L'3':
-            case L'4': case L'5':
-            case L'6': case L'7':
-            case L'8': case L'9':
-            {
-               after = true;
-               break;
-            }
+         if (std::iswdigit(value[i])) {
+            after = true;
          }
       }
    }
@@ -662,17 +644,10 @@ _str F_BeforeDigits::getValue()
    const _size len = value.size();
 
    for (_size i = 0; i < len; i++) {
-      switch (value[i]) {
-         case L'0': case L'1':
-         case L'2': case L'3':
-         case L'4': case L'5':
-         case L'6': case L'7':
-         case L'8': case L'9':
-         {
-            return i == 0
-               ? EMPTY_STRING
-               : value.substr(0, i);
-         }
+      if (std::iswdigit(value[i])) {
+         return i == 0
+            ? EMPTY_STRING
+            : value.substr(0, i);
       }
    }
 

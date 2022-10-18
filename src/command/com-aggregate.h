@@ -12,8 +12,8 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef AGGR_H
-#define AGGR_H
+#ifndef COM_AGGREGATE_H_INCLUDED
+#define COM_AGGREGATE_H_INCLUDED
 
 #include "../datatype/datatype.h"
 #include <set>
@@ -63,4 +63,4 @@ private:
 
 }
 
-#endif /* AGGR_H */
+#endif /* COM_AGGREGATE_H_INCLUDED */

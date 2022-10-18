@@ -20,7 +20,7 @@
 #include "../attr-memory.h"
 #include "../datatype/datatype.h"
 #include "../datatype/generator.h"
-#include "aggregate.h"
+#include "com-aggregate.h"
 #include "../uroboros.h"
 #include "../patterns.h"
 

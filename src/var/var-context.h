@@ -17,7 +17,7 @@
 
 #include "../attribute.h"
 #include "../hash.h"
-#include "../command/aggregate.h"
+#include "../command/com-aggregate.h"
 #include "../datatype/datatype.h"
 
 

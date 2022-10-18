@@ -12,7 +12,7 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "aggregate.h"
+#include "com-aggregate.h"
 #include "com-core-aggr.h"
 #include "../os.h"
 #include "../var/var-runtime.h"

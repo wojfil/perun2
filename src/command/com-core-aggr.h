@@ -17,7 +17,7 @@
 
 #include "com-core.h"
 #include "com-listener.h"
-#include "aggregate.h"
+#include "com-aggregate.h"
 
 
 namespace uro::comm

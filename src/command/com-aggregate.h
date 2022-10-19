@@ -16,8 +16,8 @@
 #define COM_AGGREGATE_H_INCLUDED
 
 #include "../datatype/datatype.h"
-#include <set>
-#include <map>
+#include <unordered_set >
+#include <unordered_map>
 
 
 namespace uro
@@ -44,15 +44,15 @@ struct Aggregate
 {
 public:
    Aggregate(Uroboros& uro);
-   void set(const _uint32& v);
+   void set (const _uint32& v);
    void run();
 
-   std::set<_str> copyPaths;
-   std::map<_str, std::set<_str>> selectPaths;
+   std::unordered_set <_str> copyPaths;
+   std::unordered_map<_str, std::unordered_set <_str>> selectPaths;
    _uint32 failedCopy;
    _uint32 failedSelect;
-   std::set<_str> invalidCopy;
-   std::set<_str> invalidSelect;
+   std::unordered_set <_str> invalidCopy;
+   std::unordered_set <_str> invalidSelect;
 
 private:
    Uroboros& uroboros;

@@ -17,8 +17,7 @@
 
 #include "datatype\datatype.h"
 #include "attribute.h"
-#include <set>
-#include <map>
+#include <unordered_set>
 
 
 namespace uro
@@ -102,8 +101,8 @@ _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, U
 _bool os_copyToFile(const _str& oldPath, const _str& newPath);
 _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro);
 
-_bool os_copy(const std::set<_str>& paths);
-_bool os_select(const _str& parent, const std::set<_str>& paths);
+_bool os_copy(const std::unordered_set<_str>& paths);
+_bool os_select(const _str& parent, const std::unordered_set<_str>& paths);
 
 _bool os_run(const _str& comm, Uroboros& uro);
 _bool os_process(const _str& command, const _str& location);

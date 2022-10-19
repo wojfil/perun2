@@ -1148,13 +1148,12 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro
    return true;
 }
 
-_bool os_copy(const std::set<_str>& paths)
+_bool os_copy(const std::unordered_set<_str>& paths)
 {
-    _size totalSize = sizeof(DROPFILES) + sizeof(_char);
+   _size totalSize = sizeof(DROPFILES) + sizeof(_char);
 
-   std::set<_str>::iterator it1;
-   for (it1 = paths.begin(); it1 != paths.end(); ++it1) {
-      totalSize += sizeof(_char) * (it1->size() + 1);
+   for (const auto& p : paths) {
+      totalSize += sizeof(_char) * (p.size() + 1);
    }
 
    HDROP hdrop   = static_cast<HDROP>(GlobalAlloc(GHND, totalSize));
@@ -1163,10 +1162,10 @@ _bool os_copy(const std::set<_str>& paths)
    df->fWide     = true;
 
    _char* dstStart = (_char*)(&df[1]);
-   std::set<_str>::iterator it2;
-   for (it2 = paths.begin(); it2 != paths.end(); ++it2) {
-      wcscpy(dstStart, it2->c_str());
-      dstStart = &dstStart[it2->size() + 1];
+
+   for (const auto& p : paths) {
+      wcscpy(dstStart, p.c_str());
+      dstStart = &dstStart[p.size() + 1];
    }
 
    GlobalUnlock(hdrop);
@@ -1178,18 +1177,16 @@ _bool os_copy(const std::set<_str>& paths)
    return true;
 }
 
-_bool os_select(const _str& parent, const std::set<_str>& paths)
+_bool os_select(const _str& parent, const std::unordered_set<_str>& paths)
 {
    ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
    std::vector<ITEMIDLIST*> v;
 
-   std::set<_str>::iterator it;
-   for (it = paths.begin(); it != paths.end(); ++it) {
-      v.push_back(ILCreateFromPathW(it->c_str()));
+   for (const auto& p : paths) {
+      v.push_back(ILCreateFromPathW(p.c_str()));
    }
 
-   HRESULT hr = SHOpenFolderAndSelectItems(folder, v.size(),
-      (LPCITEMIDLIST*)v.data(), 0);
+   HRESULT hr = SHOpenFolderAndSelectItems(folder, v.size(), (LPCITEMIDLIST*)v.data(), 0);
 
    for (auto idl : v) {
       ILFree(idl);

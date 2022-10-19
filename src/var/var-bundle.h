@@ -55,7 +55,7 @@ public:
           || this->specialVars.find(hash) != this->specialVars.end();
    }
 
-   _bool getValue(VariablesContext* vc, const Token& tk, Generator<T>*& result, const InnerVariables& inner)
+   _bool getValue(VariablesContext& vc, const Token& tk, Generator<T>*& result, const InnerVariables& inner)
    {
       if (this->userVars.find(tk.value.word.h) != this->userVars.end()) {
          ParseVariable<T>* pv = &this->userVars[tk.value.word.h];
@@ -65,7 +65,7 @@ public:
          }
       }
       else if (this->internalVars.find(tk.value.word.h) != this->internalVars.end()) {
-         vc->setAttribute(tk, this->uroboros);
+         vc.setAttribute(tk, this->uroboros);
 
          if (inner.thisState != ThisState::ts_String) {
             const _str name = tk.getOriginString(this->uroboros);

@@ -30,7 +30,7 @@ struct VariablesContext
 {
 public:
 
-   VariablesContext(Hashes* hsh, Variables* vars);
+   VariablesContext(Hashes& hsh, Variables& vars);
 
    void setAttribute(const Token& tk, uro::Uroboros& uro);
    void setCoreComAttribute(const _str& comName, const _int& line);
@@ -49,8 +49,8 @@ public:
 
 private:
 
-   Hashes* hashes;
-   Variables* variables;
+   Hashes& hashes;
+   Variables& variables;
    std::vector<Attribute*> attrs;
    std::vector<comm::Aggregate*> aggrs;
 

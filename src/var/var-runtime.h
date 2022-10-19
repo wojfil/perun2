@@ -85,8 +85,8 @@ public:
 private:
 
    uro::Uroboros& uroboros;
-   Hashes* hashes;
-   VariablesContext* vc;
+   Hashes& hashes;
+   VariablesContext& vc;
 
    VarBundle<_bool> boo;
    VarBundle<_per> per;

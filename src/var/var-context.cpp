@@ -20,13 +20,13 @@
 namespace uro::vars
 {
 
-VariablesContext::VariablesContext(Hashes* hsh, Variables* vars)
+VariablesContext::VariablesContext(Hashes& hsh, Variables& vars)
    : hashes(hsh), variables(vars) { }
 
 void VariablesContext::setAttribute(const Token& tk, uro::Uroboros& uro)
 {
-   if (this->hashes->HASH_GROUP_ATTR.find(tk.value.word.h) ==
-       this->hashes->HASH_GROUP_ATTR.end())
+   if (this->hashes.HASH_GROUP_ATTR.find(tk.value.word.h) ==
+       this->hashes.HASH_GROUP_ATTR.end())
    {
       return;
    }
@@ -115,7 +115,7 @@ void VariablesContext::addAggregate(comm::Aggregate* aggr)
    // when we enter a loop
    // variables of constant values from the past
    // no longer can be treated as constant values
-   this->variables->makeAllNotConstant();
+   this->variables.makeAllNotConstant();
 }
 
 void VariablesContext::retreatAggregate()

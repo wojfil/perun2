@@ -17,8 +17,8 @@
 
 #include "datatype/primitives.h"
 #include "datatype/period.h"
-#include <set>
-#include <map>
+#include <unordered_set>
+#include <unordered_map>
 
 
 namespace uro
@@ -215,23 +215,23 @@ public:
    const _size HASH_FUNC_SPLIT;
    const _size HASH_FUNC_NUMBERS;
 
-   const std::set<_size> HASH_GROUP_MONTHS;
-   const std::set<_size> HASH_GROUP_WEEKDAYS;
-   const std::set<_size> HASH_GROUP_PERIOD_SINGLE;
-   const std::set<_size> HASH_GROUP_PERIOD_MULTI;
-   const std::set<_size> HASH_GROUP_TIME_ATTR;
-   const std::set<_size> HASH_GROUP_ATTR;
-   const std::set<_size> HASH_GROUP_INNERVAR;
-   const std::set<_size> HASH_GROUP_FUNC_BOO_STR;
-   const std::set<_size> HASH_GROUP_FUNC_NUM_NUM;
-   const std::set<_size> HASH_GROUP_AGGRFUNC;
-   const std::set<_size> HASH_GROUP_FUNC_STR_STR;
-   const std::set<_size> HASH_GROUP_FUNC_STR_STR_NUM;
-   const std::set<_size> HASH_GROUP_FUNC_STR_NUM;
-   const std::set<_size> HASH_GROUP_FUNC_TIM_NUM;
-   const std::map<_size, _tnum> HASH_MAP_MONTHS;
-   const std::map<_size, _tnum> HASH_MAP_WEEKDAYS;
-   const std::map<_size, Period::PeriodUnit> HASH_MAP_PERIOD_UNITS;
+   const std::unordered_set<_size> HASH_GROUP_MONTHS;
+   const std::unordered_set<_size> HASH_GROUP_WEEKDAYS;
+   const std::unordered_set<_size> HASH_GROUP_PERIOD_SINGLE;
+   const std::unordered_set<_size> HASH_GROUP_PERIOD_MULTI;
+   const std::unordered_set<_size> HASH_GROUP_TIME_ATTR;
+   const std::unordered_set<_size> HASH_GROUP_ATTR;
+   const std::unordered_set<_size> HASH_GROUP_INNERVAR;
+   const std::unordered_set<_size> HASH_GROUP_FUNC_BOO_STR;
+   const std::unordered_set<_size> HASH_GROUP_FUNC_NUM_NUM;
+   const std::unordered_set<_size> HASH_GROUP_AGGRFUNC;
+   const std::unordered_set<_size> HASH_GROUP_FUNC_STR_STR;
+   const std::unordered_set<_size> HASH_GROUP_FUNC_STR_STR_NUM;
+   const std::unordered_set<_size> HASH_GROUP_FUNC_STR_NUM;
+   const std::unordered_set<_size> HASH_GROUP_FUNC_TIM_NUM;
+   const std::unordered_map<_size, _tnum> HASH_MAP_MONTHS;
+   const std::unordered_map<_size, _tnum> HASH_MAP_WEEKDAYS;
+   const std::unordered_map<_size, Period::PeriodUnit> HASH_MAP_PERIOD_UNITS;
 
 };
 

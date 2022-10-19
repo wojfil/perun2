@@ -280,12 +280,9 @@ private:
 
    _size length;
    _size index;
-
-   _numi prevIndex;
-   _numi prevDepth;
-   _str prevThis;
-
    _list result;
+
+   P_MEMORY_MEMBER;
 
    _bool hasVolatileDepth;
    std::vector<_nint> depths;

@@ -129,9 +129,7 @@ _bool OrderBy_Definition::hasNext()
 
    if (this->index == this->length) {
       this->first = true;
-      this->inner.index.value = this->prevIndex;
-      this->inner.depth.value = this->prevDepth;
-      this->thisReference->value = this->prevThis;
+      P_MEMORY_RESTORE;
 
       if (this->hasMemory) {
          this->attrMemory.restore();

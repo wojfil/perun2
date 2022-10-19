@@ -133,6 +133,7 @@ _bool Token::isFilterKeyword() const
 
    switch (value.keyword.k) {
       case Keyword::kw_Every:
+      case Keyword::kw_Final:
       case Keyword::kw_Limit:
       case Keyword::kw_Order:
       case Keyword::kw_Skip:

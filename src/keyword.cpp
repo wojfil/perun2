@@ -62,6 +62,7 @@ KeywordsData::KeywordsData() : KEYWORDS( {
    { L"while", Keyword::kw_While },
    // filthers:
    { L"every", Keyword::kw_Every },
+   { L"final", Keyword::kw_Final },
    { L"limit", Keyword::kw_Limit },
    { L"order", Keyword::kw_Order },
    { L"skip", Keyword::kw_Skip },

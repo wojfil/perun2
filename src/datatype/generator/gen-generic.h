@@ -122,8 +122,8 @@ template <typename T>
 struct Listed : Generator<std::vector<T>>
 {
 public:
-   Listed(std::vector<Generator<T>*>* val) : value(val),
-      length(val->size()) { };
+   Listed(std::vector<Generator<T>*>* val)
+      : value(val), length(val->size()) { };
 
    ~Listed() {
       langutil::deleteVectorPtr(value);
@@ -147,8 +147,8 @@ template <typename T>
 struct ListedLists : Generator<std::vector<T>>
 {
 public:
-   ListedLists(std::vector<Generator<std::vector<T>>*>* val) : value(val),
-      length(val->size()) { };
+   ListedLists(std::vector<Generator<std::vector<T>>*>* val) 
+      : value(val), length(val->size()) { };
 
    ~ListedLists() {
       langutil::deleteVectorPtr(value);
@@ -173,8 +173,8 @@ template <typename T>
 struct ListElement : Generator<T>
 {
 public:
-   ListElement(Generator<std::vector<T>>* li, Generator<_num>* id) :
-      list(li), index(id) { };
+   ListElement(Generator<std::vector<T>>* li, Generator<_num>* id)
+      : list(li), index(id) { };
 
    ~ListElement() {
       delete list;
@@ -269,8 +269,8 @@ template <typename T>
 struct Filter_Limit : Generator<std::vector<T>>
 {
 public:
-   Filter_Limit(Generator<std::vector<T>>* li, Generator<_num>* num) :
-      list(li), number(num) { };
+   Filter_Limit(Generator<std::vector<T>>* li, Generator<_num>* num)
+      : list(li), number(num) { };
 
    ~Filter_Limit() {
       delete list;
@@ -301,8 +301,8 @@ template <typename T>
 struct Filter_Skip : Generator<std::vector<T>>
 {
 public:
-   Filter_Skip(Generator<std::vector<T>>* li, Generator<_num>* num) :
-      list(li), number(num) { };
+   Filter_Skip(Generator<std::vector<T>>* li, Generator<_num>* num)
+      : list(li), number(num) { };
 
    ~Filter_Skip() {
       delete list;
@@ -332,8 +332,8 @@ template <typename T>
 struct Filter_Every : Generator<std::vector<T>>
 {
 public:
-   Filter_Every(Generator<std::vector<T>>* li, Generator<_num>* num) :
-      list(li), number(num) { };
+   Filter_Every(Generator<std::vector<T>>* li, Generator<_num>* num)
+      : list(li), number(num) { };
 
    ~Filter_Every() {
       delete list;
@@ -357,6 +357,38 @@ public:
       }
 
       return result;
+   }
+
+private:
+   Generator<std::vector<T>>* list;
+   Generator<_num>* number;
+};
+
+
+template <typename T>
+struct Filter_Final : Generator<std::vector<T>>
+{
+public:
+   Filter_Final(Generator<std::vector<T>>* li, Generator<_num>* num)
+      : list(li), number(num) { };
+
+   ~Filter_Final() {
+      delete list;
+      delete number;
+   }
+
+   std::vector<T> getValue() override {
+      const _nint n = number->getValue().toInt();
+
+      if (n <= 0LL) {
+         return std::vector<T>();
+      }
+
+      const std::vector<T> lst = list->getValue();
+
+      return n >= lst.size()
+         ? lst
+         : std::vector<T>(lst.end() - n, lst.end());
    }
 
 private:

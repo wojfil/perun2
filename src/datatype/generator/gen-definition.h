@@ -22,6 +22,7 @@
 #include "../../attr-memory.h"
 #include "../../uroboros.h"
 #include <algorithm>
+#include <deque>
 
 
 namespace uro::gen
@@ -182,6 +183,29 @@ private:
    Generator<_num>* number;
    _numi index;
 };
+
+
+struct Filter_FinalDef : DefFilter
+{
+public:
+   Filter_FinalDef(_def* def, Generator<_num>* num, uro::Uroboros* uro)
+      : DefFilter(def, uro), number(num), inner(&uro->vars.inner) { };
+
+   ~Filter_FinalDef() {
+      delete number;
+   }
+
+   _bool hasNext() override;
+
+private:
+   uro::InnerVariables* inner;
+   Generator<_num>* number;
+
+   std::deque<_str> values;
+   _nint length;
+   _nint index;
+};
+
 
 
 struct Join_DefStr : _def

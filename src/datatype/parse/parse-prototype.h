@@ -61,6 +61,10 @@ void makeNumericFilter(const Keyword& kw, Generator<_num>* num, Generator<std::v
          result = new gen::Filter_Every<T>(result, num);
          break;
       }
+      case Keyword::kw_Final: {
+         result = new gen::Filter_Final<T>(result, num);
+         break;
+      }
       case Keyword::kw_Limit: {
          result = new gen::Filter_Limit<T>(result, num);
          break;

@@ -303,6 +303,54 @@ _bool Filter_EveryDef::hasNext()
 };
 
 
+_bool Filter_FinalDef::hasNext()
+{
+   if (first) {
+      const _nint limit = number->getValue().toInt();
+      if (limit < 1LL) {
+         return false;
+      }
+
+      values.clear();
+      length = 0LL;
+      
+      while (definition->hasNext()) {
+         if (this->uroboros->state != State::s_Running) {
+            definition->reset();
+            return false;
+         }
+
+         if (length == limit) {
+            values.pop_front();
+         }
+         else {
+            length++;
+         }
+         values.emplace_back(definition->getValue());
+      }
+
+      index = 0LL;
+      first = false;
+   }
+
+   if (this->uroboros->state != State::s_Running) {
+      first = true;
+      return false;
+   }
+
+   if (index < length) {
+      value = values[static_cast<_size>(index)];
+      this->inner->index.value.value.i = index;
+      index++;
+      return true;
+   }
+
+   first = true;
+   return false;
+};
+
+
+
 Join_DefStr::~Join_DefStr()
 {
    delete left;

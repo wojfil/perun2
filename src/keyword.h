@@ -68,6 +68,7 @@ enum Keyword
    kw_While,
       // filthers:
    kw_Every,
+   kw_Final,
    kw_Limit,
    kw_Order,
    kw_Skip,

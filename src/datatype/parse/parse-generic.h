@@ -366,6 +366,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
 
       switch (kw) {
          case Keyword::kw_Every:
+         case Keyword::kw_Final:
          case Keyword::kw_Limit:
          case Keyword::kw_Skip: {
             if (kw == Keyword::kw_Limit) {

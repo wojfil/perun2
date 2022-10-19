@@ -25,10 +25,9 @@ namespace uro
 struct SideProcess
 {
 public:
-   SideProcess();
-
-   _bool running;
+   _bool running = false;
    PROCESS_INFORMATION info;
+   
 };
 
 }

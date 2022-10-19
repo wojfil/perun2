@@ -72,7 +72,7 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint& ms, Uroboros* uro)
+void os_sleepForMs(const _nint& ms, Uroboros& uro)
 {
    if (ms <= 0LL) {
       return;
@@ -83,16 +83,16 @@ void os_sleepForMs(const _nint& ms, Uroboros* uro)
 
    Sleep(remainder);
 
-   while (uro->state == State::s_Running && loops != 0LL) {
+   while (uro.state == State::s_Running && loops != 0LL) {
       Sleep(OS_SLEEP_UNIT);
       loops--;
    }
 }
 
 // explanation of attributes is in file 'attribute.h'
-void os_loadAttributes(const Attribute* attr, Uroboros* uro)
+void os_loadAttributes(const Attribute* attr, Uroboros& uro)
 {
-   InnerVariables& inner = uro->vars.inner;
+   InnerVariables& inner = uro.vars.inner;
    inner.trimmed = os_trim(inner.this_s.value);
 
    if (os_isInvaild(inner.trimmed)) {
@@ -326,10 +326,10 @@ void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner)
    }
 }
 
-void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data)
+void os_loadDataAttributes(const Attribute* attr, Uroboros& uro, _fdata* data)
 {
    const DWORD& dwAttrib = data->dwFileAttributes;
-   InnerVariables& inner = uro->vars.inner;
+   InnerVariables& inner = uro.vars.inner;
    inner.trimmed = inner.this_s.value;
    inner.path.value = os_join(inner.location.value, inner.trimmed);
 
@@ -690,7 +690,7 @@ _bool os_readonly(const _str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-_nint os_size(const _str& path, Uroboros* uro)
+_nint os_size(const _str& path, Uroboros& uro)
 {
    _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
@@ -707,7 +707,7 @@ _nint os_size(const _str& path, Uroboros* uro)
       : os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
 }
 
-_nint os_sizeDirectory(const _str& path, Uroboros* uro)
+_nint os_sizeDirectory(const _str& path, Uroboros& uro)
 {
    _nint totalSize = 0LL;
    _fdata data;
@@ -718,7 +718,7 @@ _nint os_sizeDirectory(const _str& path, Uroboros* uro)
    }
 
    do {
-      if (!uro->state == State::s_Running) {
+      if (!uro.state == State::s_Running) {
          FindClose(handle);
          return -1LL;
       }
@@ -793,14 +793,14 @@ _bool os_delete(const _str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-_bool os_drop(const _str& path, Uroboros* uro)
+_bool os_drop(const _str& path, Uroboros& uro)
 {
    return os_isFile(path)
       ? os_dropFile(path)
       : os_dropDirectory(path, uro);
 }
 
-_bool os_drop(const _str& path, const _bool& isFile, Uroboros* uro)
+_bool os_drop(const _str& path, const _bool& isFile, Uroboros& uro)
 {
    return isFile
       ? os_dropFile(path)
@@ -822,7 +822,7 @@ _bool os_dropFile(const _str& path)
    return false;
 }
 
-_bool os_dropDirectory(const _str& path, Uroboros* uro)
+_bool os_dropDirectory(const _str& path, Uroboros& uro)
 {
    HANDLE hFind;
    _fdata FindFileData;
@@ -843,7 +843,7 @@ _bool os_dropDirectory(const _str& path, Uroboros* uro)
    bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!uro->state == State::s_Running) {
+         if (!uro.state == State::s_Running) {
             FindClose(hFind);
             return false;
          }
@@ -1054,14 +1054,14 @@ _bool os_moveTo(const _str& oldPath, const _str& newPath)
    return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, Uroboros* uro)
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, Uroboros& uro)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
    }
    else {
       const _bool success = os_copyToDirectory(oldPath, newPath, uro);
-      if (!success && !uro->state == State::s_Running && os_directoryExists(newPath)) {
+      if (!success && !uro.state == State::s_Running && os_directoryExists(newPath)) {
          // if directory copy operation
          // was stopped by the user
          // delete recent partially copied directory if it is there
@@ -1077,7 +1077,7 @@ _bool os_copyToFile(const _str& oldPath, const _str& newPath)
    return CopyFileW(oldPath.c_str(), newPath.c_str(), true) != 0;
 }
 
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro)
+_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1104,7 +1104,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro
    bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!uro->state == State::s_Running) {
+         if (!uro.state == State::s_Running) {
             FindClose(hFind);
             return false;
          }
@@ -1199,22 +1199,22 @@ _bool os_select(const _str& parent, const std::set<_str>& paths)
    return hr == S_OK;
 }
 
-_bool os_run(const _str& comm, Uroboros* uro)
+_bool os_run(const _str& comm, Uroboros& uro)
 {
-   uro->sideProcess.running = true;
+   uro.sideProcess.running = true;
    STARTUPINFO si;
 
    ZeroMemory(&si, sizeof(si));
    si.cb = sizeof(si);
-   ZeroMemory(&uro->sideProcess.info, sizeof(uro->sideProcess.info));
+   ZeroMemory(&uro.sideProcess.info, sizeof(uro.sideProcess.info));
 
    const _size len = comm.size() + 1;
    _char cmd[len];
    wcscpy(cmd, comm.c_str());
 
-   const _size lenloc = uro->vars.inner.location.value.size() + 1;
+   const _size lenloc = uro.vars.inner.location.value.size() + 1;
    _char loc[lenloc];
-   wcscpy(loc, uro->vars.inner.location.value.c_str());
+   wcscpy(loc, uro.vars.inner.location.value.c_str());
 
    CreateProcessW
    (
@@ -1224,15 +1224,15 @@ _bool os_run(const _str& comm, Uroboros* uro)
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
       loc,
-      &si, &uro->sideProcess.info
+      &si, &uro.sideProcess.info
    );
 
-   WaitForSingleObject(uro->sideProcess.info.hProcess, INFINITE);
+   WaitForSingleObject(uro.sideProcess.info.hProcess, INFINITE);
    DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(uro->sideProcess.info.hProcess, &dwExitCode);
+   ::GetExitCodeProcess(uro.sideProcess.info.hProcess, &dwExitCode);
 
-   uro->sideProcess.running = false;
-   return uro->state == State::s_Running && dwExitCode == 0;
+   uro.sideProcess.running = false;
+   return uro.state == State::s_Running && dwExitCode == 0;
 }
 
 _bool os_process(const _str& command, const _str& location)

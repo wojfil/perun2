@@ -40,20 +40,20 @@ _bool F_AnyInside::getValue()
       return false;
    }
 
-   const _str path = os_join(this->inner->location.value, v);
+   const _str path = os_join(this->inner.location.value, v);
    if (!os_directoryExists(path)) {
       return false;
    }
 
-   const _str prevLoc = this->inner->location.value;
-   this->inner->location.value = path;
+   const _str prevLoc = this->inner.location.value;
+   this->inner.location.value = path;
 
    const _bool any = this->definition->hasNext();
    if (any) {
       this->definition->reset();
    }
 
-   this->inner->location.value = prevLoc;
+   this->inner.location.value = prevLoc;
    return any;
 }
 
@@ -79,7 +79,7 @@ _bool F_ContainsDef::getValue()
    const _str v = this->value->getValue();
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros->state == State::s_Running) {
+      if (!this->uroboros.state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -248,7 +248,7 @@ _bool F_ExistsInside::getValue()
       return false;
    }
 
-   const _str base = os_join(this->inner->location.value, p);
+   const _str base = os_join(this->inner.location.value, p);
    if (!os_directoryExists(base)) {
       return false;
    }
@@ -271,7 +271,7 @@ _bool F_ExistInside::getValue()
       return false;
    }
 
-   const _str base = os_join(this->inner->location.value, p);
+   const _str base = os_join(this->inner.location.value, p);
    if (!os_directoryExists(base)) {
       return false;
    }
@@ -346,18 +346,18 @@ _bool F_Find::getValue()
       return false;
    }
 
-   const _str path = os_join(this->inner->location.value, v);
+   const _str path = os_join(this->inner.location.value, v);
    return os_find(path, this->arg2->getValue());
 }
 
 
 _bool F_Find_InThis::getValue()
 {
-   if (!this->inner->exists.value || this->inner->isdirectory.value) {
+   if (!this->inner.exists.value || this->inner.isdirectory.value) {
       return false;
    }
 
-   return os_find(this->inner->path.value, this->arg1->getValue());
+   return os_find(this->inner.path.value, this->arg1->getValue());
 }
 
 

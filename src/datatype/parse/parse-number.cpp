@@ -29,7 +29,7 @@ namespace uro::parse
 // this sign is used to distinguish them
 const _char UNARY_MINUS = L'~';
 
-Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
+Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
@@ -126,10 +126,10 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
       Generator<_num>* num = parseListElementIndex(tksm, uro);
       const Token& f = tks.first();
       Generator<_tlist>* tlist;
-      if (uro->vars.getVarValue(f, tlist)) {
+      if (uro.vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
          const _size& h = last.value.twoWords.h2;
-         const Hashes& hs = uro->hashes;
+         const Hashes& hs = uro.hashes;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
             return new gen::TimeYearsAtIndex(tlist, num);
@@ -171,7 +171,7 @@ Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro)
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro)
 {
    std::vector<ExpElement<_num>*> infList; // infix notation list
    const _int start = tks.getStart();
@@ -682,7 +682,7 @@ static _bool isNumExpHighPriority(const _char& ch)
    }
 }
 
-void timeVariableMemberException(const Token& tk, uro::Uroboros* uro)
+void timeVariableMemberException(const Token& tk, Uroboros& uro)
 {
    throw SyntaxException(str(L"'", tk.getOriginString_2(uro),
       L"' is not a time variable member"), tk.line);

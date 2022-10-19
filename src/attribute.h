@@ -57,8 +57,8 @@ struct Uroboros;
 struct Attribute
 {
 public:
-   Attribute(Uroboros* uro);
-   Attribute(const _aunit& val, Uroboros* uro);
+   Attribute(Uroboros& uro);
+   Attribute(const _aunit& val, Uroboros& uro);
 
    void add(const Token& tk);
    void set(const _aunit& v);
@@ -77,7 +77,7 @@ public:
 protected:
    _bool isMarkedToEvaluate_ = false;
    _aunit value;
-   Uroboros* uroboros;
+   Uroboros& uroboros;
 };
 
 // sometimes files and directories are taken from the file system
@@ -92,8 +92,8 @@ protected:
 struct BridgeAttribute : Attribute
 {
 public:
-   BridgeAttribute(Uroboros* uro, _fdata* data);
-   BridgeAttribute(const _aunit& val, Uroboros* uro, _fdata* data);
+   BridgeAttribute(Uroboros& uro, _fdata* data);
+   BridgeAttribute(const _aunit& val, Uroboros& uro, _fdata* data);
    void run() const;
 
 private:

@@ -27,7 +27,7 @@
 namespace uro::parse
 {
 
-Generator<_per>* parsePeriod(const Tokens& tks, uro::Uroboros* uro)
+Generator<_per>* parsePeriod(const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
@@ -107,7 +107,7 @@ Generator<_per>* parsePeriod(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated, uro::Uroboros* uro)
+static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated, Uroboros& uro)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -119,10 +119,10 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated
    const _size& h = last.value.word.h;
    const Number& num = first.value.num.n;
 
-   if (uro->hashes.HASH_GROUP_PERIOD_SINGLE.find(h) !=
-       uro->hashes.HASH_GROUP_PERIOD_SINGLE.end())
+   if (uro.hashes.HASH_GROUP_PERIOD_SINGLE.find(h) !=
+       uro.hashes.HASH_GROUP_PERIOD_SINGLE.end())
    {
-      const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
+      const Period::PeriodUnit unit = uro.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
 
       if (num.isDouble) {
          if (num.value.d == 1L) {
@@ -142,10 +142,10 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated
       }
    }
 
-   if (uro->hashes.HASH_GROUP_PERIOD_MULTI.find(h) !=
-      uro->hashes.HASH_GROUP_PERIOD_MULTI.end())
+   if (uro.hashes.HASH_GROUP_PERIOD_MULTI.find(h) !=
+      uro.hashes.HASH_GROUP_PERIOD_MULTI.end())
    {
-      const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
+      const Period::PeriodUnit unit = uro.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
 
       _tnum v = num.isDouble
          ? static_cast<_tnum>(num.value.d)
@@ -161,7 +161,7 @@ static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated
    return nullptr;
 }
 
-static Generator<_per>* parsePeriodUnit(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros& uro)
 {
    const _size& h = tks.last().value.word.h;
    Tokens tks2(tks);
@@ -172,16 +172,16 @@ static Generator<_per>* parsePeriodUnit(const Tokens& tks, uro::Uroboros* uro)
       return nullptr;
    }
 
-   if (uro->hashes.HASH_GROUP_PERIOD_SINGLE.find(h) !=
-      uro->hashes.HASH_GROUP_PERIOD_SINGLE.end())
+   if (uro.hashes.HASH_GROUP_PERIOD_SINGLE.find(h) !=
+      uro.hashes.HASH_GROUP_PERIOD_SINGLE.end())
    {
       unitNameException(tks.last().getOriginString(uro), tks);
    }
 
-   if (uro->hashes.HASH_GROUP_PERIOD_MULTI.find(h) !=
-       uro->hashes.HASH_GROUP_PERIOD_MULTI.end())
+   if (uro.hashes.HASH_GROUP_PERIOD_MULTI.find(h) !=
+       uro.hashes.HASH_GROUP_PERIOD_MULTI.end())
    {
-      const Period::PeriodUnit unit = uro->hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
+      const Period::PeriodUnit unit = uro.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
       return new gen::PeriodUnit(num, unit);
    }
 
@@ -194,7 +194,7 @@ static void unitNameException(const _str& name, const Tokens& tks)
       name, L"'"), tks.last().line);
 }
 
-static Generator<_per>* parsePeriodExp(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_per>* parsePeriodExp(const Tokens& tks, Uroboros& uro)
 {
    const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
    const _size len = elements.size();
@@ -223,7 +223,7 @@ static Generator<_per>* parsePeriodExp(const Tokens& tks, uro::Uroboros* uro)
    return result;
 }
 
-static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros& uro)
 {
    const _int baseLen = tks.getLength();
    if (baseLen == 1) {
@@ -349,7 +349,7 @@ static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, uro::Uroboros* uro
    return result;
 }
 
-static Generator<_per>* parseTimeDifference(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_per>* parseTimeDifference(const Tokens& tks, Uroboros& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'-');
 

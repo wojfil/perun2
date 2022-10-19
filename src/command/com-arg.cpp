@@ -23,7 +23,7 @@ namespace uro::comm
 
 void CS_StringComArg::run()
 {
-   if (this->uroboros->state == State::s_Running) {
+   if (this->uroboros.state == State::s_Running) {
       if (hasMemory) {
          attrMemory.load();
       }
@@ -31,9 +31,9 @@ void CS_StringComArg::run()
       P_MEMORY_LOAD;
 
       const _str val = string->getValue();
-      this->inner->this_s.value = val;
-      this->inner->index.value.setToZero();
-      this->inner->depth.value.setToZero();
+      this->inner.this_s.value = val;
+      this->inner.index.value.setToZero();
+      this->inner.depth.value.setToZero();
 
       if (hasAttribute) {
          this->attribute->run();
@@ -66,11 +66,11 @@ void CS_ListComArg::run()
    P_MEMORY_LOAD;
 
    _numi index(0LL);
-   this->inner->index.value.setToZero();
-   this->inner->depth.value.setToZero();
+   this->inner.index.value.setToZero();
+   this->inner.depth.value.setToZero();
 
-   while (this->uroboros->state == State::s_Running && index != length) {
-      this->inner->this_s.value = values[index.value.i];
+   while (this->uroboros.state == State::s_Running && index != length) {
+      this->inner.this_s.value = values[index.value.i];
 
       if (hasAttribute) {
          this->attribute->run();
@@ -78,7 +78,7 @@ void CS_ListComArg::run()
 
       command->run();
       index++;
-      this->inner->index.value = index;
+      this->inner.index.value = index;
    }
 
    P_MEMORY_RESTORE;
@@ -98,15 +98,15 @@ void CS_DefinitionComArg::run()
    P_MEMORY_LOAD;
 
    _numi index;
-   this->inner->index.value.setToZero();
+   this->inner.index.value.setToZero();
 
    while (definition->hasNext()) {
-      if (!this->uroboros->state == State::s_Running) {
+      if (!this->uroboros.state == State::s_Running) {
          definition->reset();
          break;
       }
 
-      this->inner->this_s.value = definition->getValue();
+      this->inner.this_s.value = definition->getValue();
 
       if (hasAttribute) {
          this->attribute->run();
@@ -114,7 +114,7 @@ void CS_DefinitionComArg::run()
 
       command->run();
       index++;
-      this->inner->index.value = index;
+      this->inner.index.value = index;
    }
 
    P_MEMORY_RESTORE;

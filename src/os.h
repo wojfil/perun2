@@ -40,11 +40,11 @@ _tim os_today();
 _tim os_yesterday();
 _tim os_tomorrow();
 
-void os_sleepForMs(const _nint& ms, Uroboros* uro);
+void os_sleepForMs(const _nint& ms, Uroboros& uro);
 
-void os_loadAttributes(const Attribute* attr, Uroboros* uro);
+void os_loadAttributes(const Attribute* attr, Uroboros& uro);
 void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner);
-void os_loadDataAttributes(const Attribute* attr, Uroboros* uro, _fdata* data);
+void os_loadDataAttributes(const Attribute* attr, Uroboros& uro, _fdata* data);
 
 // file system variables:
 _tim os_access(const _str& path);
@@ -68,8 +68,8 @@ _tim os_modification(const _str& path);
 _str os_name(const _str& value);
 _str os_parent(const _str& path);
 _bool os_readonly(const _str& path);
-_nint os_size(const _str& path, Uroboros* uro);
-_nint os_sizeDirectory(const _str& path, Uroboros* uro);
+_nint os_size(const _str& path, Uroboros& uro);
+_nint os_sizeDirectory(const _str& path, Uroboros& uro);
 
 _bool os_exists(const _str& path);
 _bool os_fileExists(const _str& path);
@@ -79,10 +79,10 @@ _bool os_directoryExists(const _str& path);
 // some of them require pointer to the running Uroboros instance
 // they can be stopped safely by an interruption call during operation
 _bool os_delete(const _str& path);
-_bool os_drop(const _str& path, Uroboros* uro);
-_bool os_drop(const _str& path, const _bool& isFile, Uroboros* uro);
+_bool os_drop(const _str& path, Uroboros& uro);
+_bool os_drop(const _str& path, const _bool& isFile, Uroboros& uro);
 _bool os_dropFile(const _str& path);
-_bool os_dropDirectory(const _str& path, Uroboros* uro);
+_bool os_dropDirectory(const _str& path, Uroboros& uro);
 _bool os_hide(const _str& path);
 _bool os_lock(const _str& path);
 _bool os_open(const _str& path);
@@ -98,14 +98,14 @@ _bool os_createFile(const _str& path);
 _bool os_createDirectory(const _str& path);
 
 _bool os_moveTo(const _str& oldPath, const _str& newPath);
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, Uroboros* uro);
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, Uroboros& uro);
 _bool os_copyToFile(const _str& oldPath, const _str& newPath);
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros* uro);
+_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro);
 
 _bool os_copy(const std::set<_str>& paths);
 _bool os_select(const _str& parent, const std::set<_str>& paths);
 
-_bool os_run(const _str& comm, Uroboros* uro);
+_bool os_run(const _str& comm, Uroboros& uro);
 _bool os_process(const _str& command, const _str& location);
 
 _bool os_isInvaild(const _str& path);

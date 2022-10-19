@@ -29,13 +29,13 @@ namespace uro
 extern _int g_guiMes;
 
 void rawPrint(const _str& value);
-void print(const Uroboros* uro, const _str& value);
-void commandLog(const Uroboros* uro, const _str& value);
+void print(const Uroboros& uro, const _str& value);
+void commandLog(const Uroboros& uro, const _str& value);
 
 template<typename... Args>
-void commandLog(const Uroboros* uro, Args const&... args)
+void commandLog(const Uroboros& uro, Args const&... args)
 {
-   if (!(uro->flags & FLAG_SILENT)) {
+   if (!(uro.flags & FLAG_SILENT)) {
       using value_type = std::common_type_t<Args const&...>;
       for (auto const &arg : {static_cast<value_type>(args)...}) {
          std::wcout << arg;
@@ -43,7 +43,7 @@ void commandLog(const Uroboros* uro, Args const&... args)
 
       std::wcout << L"\n";
 
-      if (uro->flags & FLAG_GUI) {
+      if (uro.flags & FLAG_GUI) {
       // this is ugly solution for a rare bug in Windows GUI
       // (user interaction gets frozen while runtime)
       // delete this if the bug is solved properly

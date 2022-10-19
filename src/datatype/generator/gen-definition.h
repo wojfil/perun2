@@ -31,13 +31,13 @@ namespace uro::gen
 struct DefFilter : _def
 {
 public:
-   DefFilter(_def* def, uro::Uroboros* uro);
+   DefFilter(_def* def, Uroboros& uro);
    ~DefFilter();
    void reset() override;
    _fdata* getDataPtr();
 
 protected:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    _bool first;
    _def* definition;
 };
@@ -46,13 +46,13 @@ protected:
 struct Filter_WhereDef : DefFilter
 {
 public:
-   Filter_WhereDef(_def* def, Generator<_bool>* cond, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro)
-      : DefFilter(def, uro), condition(cond), attribute(attr), finished(true), inner(&uro->vars.inner),
-        hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner)), hasAttribute(true) {};
+   Filter_WhereDef(_def* def, Generator<_bool>* cond, Attribute* attr, const _bool& hasMem, Uroboros& uro)
+      : DefFilter(def, uro), condition(cond), attribute(attr), finished(true), inner(uro.vars.inner),
+        hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner)), hasAttribute(true) {};
 
-   Filter_WhereDef(_def* def, Generator<_bool>* cond, uro::Uroboros* uro)
-      : DefFilter(def, uro), condition(cond), attribute(nullptr), finished(true), inner(&uro->vars.inner),
-        hasMemory(false), attrMemory(AttributeMemory(&uro->vars.inner)), hasAttribute(false) {};
+   Filter_WhereDef(_def* def, Generator<_bool>* cond, Uroboros& uro)
+      : DefFilter(def, uro), condition(cond), attribute(nullptr), finished(true), inner(uro.vars.inner),
+        hasMemory(false), attrMemory(AttributeMemory(uro.vars.inner)), hasAttribute(false) {};
 
    ~Filter_WhereDef() {
       delete condition;
@@ -65,7 +65,7 @@ public:
    void reset() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    _bool finished;
    Generator<_bool>* condition;
    Attribute* attribute;
@@ -79,14 +79,14 @@ private:
 struct DefinitionChain : _def
 {
 public:
-   DefinitionChain(_def* def, uro::Uroboros* uro);
+   DefinitionChain(_def* def, Uroboros& uro);
    ~DefinitionChain();
 
    _bool hasNext() override;
    void reset() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    _def* definition;
    _nint index = 0LL;
    _bool finished = true;
@@ -96,13 +96,12 @@ private:
 struct LocationVessel : Generator<_str>
 {
 public:
-   LocationVessel();
-   LocationVessel(uro::Uroboros* uro);
+   LocationVessel(const _bool& abs, Uroboros& uro);
    _str getValue() override;
    void setValue(const _str& val);
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    _str value;
    const _bool isAbsolute;
 };
@@ -128,7 +127,7 @@ private:
 struct Filter_LimitDef : DefFilter
 {
 public:
-   Filter_LimitDef(_def* def, Generator<_num>* num, uro::Uroboros* uro)
+   Filter_LimitDef(_def* def, Generator<_num>* num, Uroboros& uro)
       : DefFilter(def, uro), number(num) { };
 
    ~Filter_LimitDef() {
@@ -147,8 +146,8 @@ private:
 struct Filter_SkipDef : DefFilter
 {
 public:
-   Filter_SkipDef(_def* def, Generator<_num>* num, uro::Uroboros* uro)
-      : DefFilter(def, uro), number(num), inner(&uro->vars.inner) { };
+   Filter_SkipDef(_def* def, Generator<_num>* num, Uroboros& uro)
+      : DefFilter(def, uro), number(num), inner(uro.vars.inner) { };
 
    ~Filter_SkipDef() {
       delete number;
@@ -157,7 +156,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    _nint counter;
    _nint limit;
    Generator<_num>* number;
@@ -167,8 +166,8 @@ private:
 struct Filter_EveryDef : DefFilter
 {
 public:
-   Filter_EveryDef(_def* def, Generator<_num>* num, uro::Uroboros* uro)
-      : DefFilter(def, uro), number(num), inner(&uro->vars.inner) { };
+   Filter_EveryDef(_def* def, Generator<_num>* num, Uroboros& uro)
+      : DefFilter(def, uro), number(num), inner(uro.vars.inner) { };
 
    ~Filter_EveryDef() {
       delete number;
@@ -177,7 +176,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    _nint counter;
    _nint limit;
    Generator<_num>* number;
@@ -188,8 +187,8 @@ private:
 struct Filter_FinalDef : DefFilter
 {
 public:
-   Filter_FinalDef(_def* def, Generator<_num>* num, uro::Uroboros* uro)
-      : DefFilter(def, uro), number(num), inner(&uro->vars.inner) { };
+   Filter_FinalDef(_def* def, Generator<_num>* num, Uroboros& uro)
+      : DefFilter(def, uro), number(num), inner(uro.vars.inner) { };
 
    ~Filter_FinalDef() {
       delete number;
@@ -198,7 +197,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    Generator<_num>* number;
 
    std::deque<_str> values;
@@ -212,7 +211,7 @@ struct Join_DefStr : _def
 {
 
 public:
-   Join_DefStr(_def* lef, Generator<_str>* rig, uro::Uroboros* uro)
+   Join_DefStr(_def* lef, Generator<_str>* rig, Uroboros& uro)
         : left(lef), right(rig), taken(false), uroboros(uro) {};
    ~Join_DefStr();
 
@@ -220,7 +219,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    _def* left;
    Generator<_str>* right;
    _bool taken;
@@ -231,7 +230,7 @@ struct Join_StrDef : _def
 {
 
 public:
-   Join_StrDef(Generator<_str>* lef, _def* rig, uro::Uroboros* uro)
+   Join_StrDef(Generator<_str>* lef, _def* rig, Uroboros& uro)
         : left(lef), right(rig), first(true), uroboros(uro) {};
    ~Join_StrDef();
 
@@ -239,7 +238,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    Generator<_str>* left;
    _def* right;
    _bool first;
@@ -250,7 +249,7 @@ struct Join_DefList : _def
 {
 
 public:
-   Join_DefList(_def* lef, Generator<_list>* rig, uro::Uroboros* uro)
+   Join_DefList(_def* lef, Generator<_list>* rig, Uroboros& uro)
         : left(lef), right(rig), taken(false), uroboros(uro) {};
    ~Join_DefList();
 
@@ -258,7 +257,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    _def* left;
    Generator<_list>* right;
    _bool taken;
@@ -272,7 +271,7 @@ struct Join_ListDef : _def
 {
 
 public:
-   Join_ListDef(Generator<_list>* lef, _def* rig, uro::Uroboros* uro)
+   Join_ListDef(Generator<_list>* lef, _def* rig, Uroboros& uro)
         : left(lef), right(rig), first(true), taken(false), uroboros(uro) {};
    ~Join_ListDef();
 
@@ -280,7 +279,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    Generator<_list>* left;
    _def* right;
    _bool first;
@@ -295,7 +294,7 @@ struct Join_DefDef : _def
 {
 
 public:
-   Join_DefDef(_def* lef, _def* rig, uro::Uroboros* uro)
+   Join_DefDef(_def* lef, _def* rig, Uroboros& uro)
         : left(lef), right(rig), first(true), taken(false), uroboros(uro) {};
    ~Join_DefDef();
 
@@ -303,7 +302,7 @@ public:
    _bool hasNext() override;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    _def* left;
    _def* right;
    _bool first;
@@ -314,15 +313,15 @@ private:
 struct DefinitionSuffix : _def
 {
 public:
-   DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs, const _bool& dir);
+   DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& dir);
    ~DefinitionSuffix();
 
    _bool hasNext() override;
    void reset() override;
 
 private:
-   uro::Uroboros* uroboros;
-   uro::InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
    _def* definition;
    _bool first = true;
    _numi index;

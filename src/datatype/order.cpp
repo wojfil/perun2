@@ -35,10 +35,10 @@ void OrderIndices::prepare(const _size& length)
 }
 
 OrderBy_Definition::OrderBy_Definition(_def* bas, Attribute* attr,
-   const _bool& hasMem, OrderIndices* indices, Order* ord, Uroboros* uro)
+   const _bool& hasMem, OrderIndices* indices, Order* ord, Uroboros& uro)
    : OrderBy<_str>(attr, indices, ord, uro), base(bas),
-     uroboros(uro), inner(&uro->vars.inner),
-     hasMemory(hasMem), attrMemory(AttributeMemory(attr, &uro->vars.inner))
+     uroboros(uro), inner(uro.vars.inner),
+     hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner))
 {
    this->resultPtr = &this->result;
 }
@@ -79,7 +79,7 @@ _bool OrderBy_Definition::hasNext()
       }
 
       while (this->base->hasNext()) {
-         if (this->uroboros->state != State::s_Running) {
+         if (this->uroboros.state != State::s_Running) {
             this->base->reset();
             return false;
          }
@@ -91,7 +91,7 @@ _bool OrderBy_Definition::hasNext()
          }
 
          this->result.push_back(this->base->getValue());
-         const _numi& depth = this->inner->depth.value;
+         const _numi& depth = this->inner.depth.value;
 
          this->depths.push_back(depth.value.i);
          this->order->addValues();
@@ -114,7 +114,7 @@ _bool OrderBy_Definition::hasNext()
       }
 
       if (!this->hasVolatileDepth) {
-         this->inner->depth.value.setToZero();
+         this->inner.depth.value.setToZero();
       }
 
       this->orderIndices->prepare(this->length);
@@ -129,8 +129,8 @@ _bool OrderBy_Definition::hasNext()
 
    if (this->index == this->length) {
       this->first = true;
-      this->inner->index.value = this->prevIndex;
-      this->inner->depth.value = this->prevDepth;
+      this->inner.index.value = this->prevIndex;
+      this->inner.depth.value = this->prevDepth;
       this->thisReference->value = this->prevThis;
 
       if (this->hasMemory) {
@@ -142,9 +142,9 @@ _bool OrderBy_Definition::hasNext()
    else {
       this->value = this->result[this->index];
       this->thisReference->value = this->value;
-      this->inner->index.value.value.i = static_cast<_nint>(this->index);
+      this->inner.index.value.value.i = static_cast<_nint>(this->index);
       if (this->hasVolatileDepth) {
-         this->inner->depth.value.value.i = this->depths[this->orderIndices->values[this->index]];
+         this->inner.depth.value.value.i = this->depths[this->orderIndices->values[this->index]];
       }
       this->index++;
       return true;

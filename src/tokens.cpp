@@ -241,7 +241,7 @@ _int Tokens::getFilterKeywordId() const
    return -1;
 }
 
-std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros* uro) const
+std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros& uro) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
@@ -319,7 +319,7 @@ void negationByExclamationException(const _int& line)
    throw SyntaxException(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
 }
 
-void Tokens::checkCommonExpressionExceptions(Uroboros* uro) const
+void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
 {
    _bool prevExclamantion = false;
 
@@ -330,14 +330,14 @@ void Tokens::checkCommonExpressionExceptions(Uroboros* uro) const
    if (this->length == 1) {
       const Token& f = first();
       if (f.type == Token::t_Word) {
-         if (f.value.word.h == uro->hashes.HASH_VAR_DEVICE) {
+         if (f.value.word.h == uro.hashes.HASH_VAR_DEVICE) {
             throw SyntaxException(str(L"variable '", f.getOriginString(uro),
                L"' is reserved for future use. Current version of Uroboros does not support it"), f.line);
          }
 
-         if (f.value.word.h != uro->hashes.HASH_VAR_THIS && !uro->vars.variableExists(f)) {
+         if (f.value.word.h != uro.hashes.HASH_VAR_THIS && !uro.vars.variableExists(f)) {
             if (!(this->start > 0 && this->list[this->start - 1].isKeyword(Keyword::kw_Create)
-            && (f.value.word.h == uro->hashes.HASH_VAR_FILE || f.value.word.h == uro->hashes.HASH_VAR_DIRECTORY))) {
+            && (f.value.word.h == uro.hashes.HASH_VAR_FILE || f.value.word.h == uro.hashes.HASH_VAR_DIRECTORY))) {
                throw SyntaxException(str(L"variable '", f.getOriginString(uro), L"' does not exist or is unreachable here"), f.line);
             }
          }

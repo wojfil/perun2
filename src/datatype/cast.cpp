@@ -114,7 +114,7 @@ _list Cast_D_L::getValue()
    _list strings;
 
    while (this->base->hasNext()) {
-      if (this->uroboros->state != State::s_Running) {
+      if (this->uroboros.state != State::s_Running) {
          this->base->reset();
          break;
       }

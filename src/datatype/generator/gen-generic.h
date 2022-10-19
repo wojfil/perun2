@@ -206,11 +206,11 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(Generator<std::vector<T>>* li, Generator<_bool>* cond, Attribute* attr, uro::Uroboros* uro)
-      : list(li), condition(cond), uroboros(uro), inner(&uro->vars.inner),
+   Filter_Where(Generator<std::vector<T>>* li, Generator<_bool>* cond, Attribute* attr, Uroboros& uro)
+      : list(li), condition(cond), uroboros(uro), inner(uro.vars.inner),
         this_(nullptr), attribute(attr), hasAttribute(attr != nullptr)
    {
-      uro->vars.inner.createThisVarRef(this_);
+      uro.vars.inner.createThisVarRef(this_);
    };
 
    ~Filter_Where() {
@@ -226,13 +226,13 @@ public:
       std::vector<T> result;
       const _numi length = _numi(static_cast<_nint>(values.size()));
 
-      const _numi prevIndex = this->inner->index.value;
+      const _numi prevIndex = this->inner.index.value;
       const T prevThis = this->this_->value;
 
-      this->inner->index.value.setToZero();
+      this->inner.index.value.setToZero();
       _numi index(0LL);
 
-      while (this->uroboros->state == State::s_Running && index != length) {
+      while (this->uroboros.state == State::s_Running && index != length) {
          const T& unit = values[index.value.i];
          this->this_->value = unit;
          if (this->hasAttribute) {
@@ -243,19 +243,19 @@ public:
             result.push_back(unit);
          }
 
-         this->inner->index.value++;
+         this->inner.index.value++;
          index++;
       }
 
-      this->inner->index.value = prevIndex;
+      this->inner.index.value = prevIndex;
       this->this_->value = prevThis;
 
       return result;
    }
 
 private:
-   uro::Uroboros* uroboros;
-   uro::InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
    vars::Variable<T>* this_;
    Generator<std::vector<T>>* list;
    Generator<_bool>* condition;

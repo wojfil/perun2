@@ -23,9 +23,9 @@
 namespace uro::parse
 {
 
-Generator<_num>* parseNumber(const Tokens& tks, uro::Uroboros* uro);
+Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro);
 
-static Generator<_num>* parseNumExp(const Tokens& tks, uro::Uroboros* uro);
+static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro);
 static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList,
    std::vector<ExpElement<_num>*>& pntList);
 static Generator<_num>* numExpIntegrateUnary(
@@ -39,7 +39,7 @@ static Generator<_num>* numExpTreeMerge2(
 static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList);
 static _bool isNumExpOperator(const _char& ch);
 static _bool isNumExpHighPriority(const _char& ch);
-void timeVariableMemberException(const Token& tk, uro::Uroboros* uro);
+void timeVariableMemberException(const Token& tk, Uroboros& uro);
 
 }
 

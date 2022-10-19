@@ -28,9 +28,9 @@
 namespace uro::vars
 {
 
-Variables::Variables(uro::Uroboros* uro)
-   : uroboros(uro), hashes(&uro->hashes), vc(&uro->vc), uroPath(os_uroborosPath()),
-   inner(os_trim(uro->arguments.getLocation()), str(os_quoteEmbraced(this->uroPath), L" -s ")),
+Variables::Variables(uro::Uroboros& uro)
+   : uroboros(uro), hashes(&uro.hashes), vc(&uro.vc), uroPath(os_uroborosPath()),
+   inner(os_trim(uro.arguments.getLocation()), str(os_quoteEmbraced(this->uroPath), L" -s ")),
    boo ({
       { this->hashes->HASH_VAR_EMPTY, &this->inner.empty },
       { this->hashes->HASH_VAR_EXISTS, &this->inner.exists },
@@ -78,7 +78,7 @@ Variables::Variables(uro::Uroboros* uro)
    {
       { this->hashes->HASH_VAR_ALPHABET, new gen::Constant<_list>(inner.getAlphabet()) },
       { this->hashes->HASH_VAR_ASCII, new gen::Constant<_list>(inner.getAscii()) },
-      { this->hashes->HASH_VAR_ARGUMENTS, new gen::Constant<_list>(uroboros->arguments.getArgs()) }
+      { this->hashes->HASH_VAR_ARGUMENTS, new gen::Constant<_list>(uroboros.arguments.getArgs()) }
    }, uro),
    defGenerators({
       { this->hashes->HASH_VAR_DIRECTORIES, new gen::DefinitionGenerator(gen::OsElement::oe_Directories, uro) },
@@ -157,14 +157,14 @@ void Variables::takeBundlePointer(VarBundle<_list>*& bundle)
 
 template <typename T>
 _bool getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const ThisState& thisState,
-   Hashes* hashes, InnerVariables* inner, VariablesContext* vc, Variables* vars, uro::Uroboros* uro)
+   Hashes* hashes, InnerVariables& inner, VariablesContext* vc, Variables* vars, uro::Uroboros& uro)
 {
    if (tk.value.word.h == hashes->HASH_VAR_THIS) {
-      if (inner->thisState == thisState) {
-         inner->createThisRef(result);
+      if (inner.thisState == thisState) {
+         inner.createThisRef(result);
          return true;
       }
-      else if (inner->thisState == ThisState::ts_None) {
+      else if (inner.thisState == ThisState::ts_None) {
          vc->attributeException(tk, uro);
       }
       else {
@@ -174,19 +174,19 @@ _bool getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const Thi
 
    VarBundle<T>* bundle;
    vars->takeBundlePointer(bundle);
-   return bundle->getValue(vc, tk, result, *inner);
+   return bundle->getValue(vc, tk, result, inner);
 }
 
 _bool Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_Time,
-      this->hashes, &this->inner, this->vc, this, this->uroboros);
+      this->hashes, this->inner, this->vc, this, this->uroboros);
 }
 
 _bool Variables::getVarValue(const Token& tk, Generator<_num>*& result)
 {
    if (tk.value.word.h == this->hashes->HASH_VAR_INDEX) {
-      if (this->uroboros->vars.inner.thisState == ThisState::ts_None && !this->vc->anyAggregate()) {
+      if (this->uroboros.vars.inner.thisState == ThisState::ts_None && !this->vc->anyAggregate()) {
          throw SyntaxException(str(L"variable '", tk.getOriginString(this->uroboros),
             L"' can be accessed only inside a loop"), tk.line);
       }
@@ -202,13 +202,13 @@ _bool Variables::getVarValue(const Token& tk, Generator<_num>*& result)
    }
 
    return getVarValueIncludingThis(tk, result, ThisState::ts_Number,
-      this->hashes, &this->inner, this->vc, this, this->uroboros);
+      this->hashes, this->inner, this->vc, this, this->uroboros);
 }
 
 _bool Variables::getVarValue(const Token& tk, Generator<_str>*& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_String,
-      this->hashes, &this->inner, this->vc, this, this->uroboros);
+      this->hashes, this->inner, this->vc, this, this->uroboros);
 }
 
 _bool Variables::getVarValue(const Token& tk, _def*& result)

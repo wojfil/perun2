@@ -29,29 +29,29 @@
 namespace uro::comm
 {
 
-Command* parseCommands(const Tokens& tks, uro::Uroboros* uro);
+Command* parseCommands(const Tokens& tks, Uroboros& uro);
 
 static Command* commandStruct(const Tokens& tks, const _int& sublen,
-   const _int& index, const _int& open, uro::Uroboros* uro);
+   const _int& index, const _int& open, Uroboros& uro);
 static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, const Tokens& right,
-   const ThisState& prevState, uro::Uroboros* uro);
-static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
+   const ThisState& prevState, Uroboros& uro);
+static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros& uro,
    const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _bool& hasMemory);
-static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
+static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros& uro,
    const ThisState& prevState, Aggregate*& aggr);
-static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, uro::Uroboros* uro);
-static Command* command(Tokens& tks, uro::Uroboros* uro);
-static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro);
+static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, Uroboros& uro);
+static Command* command(Tokens& tks, Uroboros& uro);
+static Command* commandMisc(const Tokens& tks, Uroboros& uro);
 static Command* commandVarChange(const Tokens& left, const Tokens& right,
-   const _char& sign, uro::Uroboros* uro);
+   const _char& sign, Uroboros& uro);
 static Command* commandVarIncrement(const Token& first, const Tokens& tks,
-   const _int& line, uro::Uroboros* uro);
-static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::Uroboros* uro);
+   const _int& line, Uroboros& uro);
+static Command* commandVarAssign(const Tokens& left, const Tokens& right, Uroboros& uro);
 
 static _bool varSquareBrackets(const Tokens& tks);
-static Command* commandVarAssign_Element(const Tokens& left, const Tokens& right, uro::Uroboros* uro);
-static Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro);
-static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, uro::Uroboros* uro);
+static Command* commandVarAssign_Element(const Tokens& left, const Tokens& right, Uroboros& uro);
+static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro);
+static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, Uroboros& uro);
 
 }
 

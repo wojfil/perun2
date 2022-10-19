@@ -51,8 +51,8 @@ private:
 struct F_AnyInside : Generator<_bool>
 {
 public:
-   F_AnyInside(_def* def, Generator<_str>* val, Uroboros* uro)
-      : definition(def), value(val), inner(&uro->vars.inner) { };
+   F_AnyInside(_def* def, Generator<_str>* val, Uroboros& uro)
+      : definition(def), value(val), inner(uro.vars.inner) { };
 
    ~F_AnyInside() {
       delete definition;
@@ -62,7 +62,7 @@ public:
    _bool getValue() override;
 
 private:
-   InnerVariables* inner;
+   InnerVariables& inner;
    _def* definition;
    Generator<_str>* value;
 };
@@ -121,7 +121,7 @@ public:
 struct F_ContainsDef : Generator<_bool>
 {
 public:
-   F_ContainsDef(_def* def, Generator<_str>* val, Uroboros* uro)
+   F_ContainsDef(_def* def, Generator<_str>* val, Uroboros& uro)
       : definition(def), value(val), uroboros(uro) { };
 
    ~F_ContainsDef() {
@@ -132,7 +132,7 @@ public:
    _bool getValue() override;
 
 private:
-   Uroboros* uroboros;
+   Uroboros& uroboros;
    _def* definition;
    Generator<_str>* value;
 };
@@ -184,24 +184,24 @@ public:
 struct F_ExistsInside : Func_2<_str, _str>, Generator<_bool>
 {
 public:
-   F_ExistsInside(Generator<_str>* a1, Generator<_str>* a2, Uroboros* uro)
-      : Func_2(a1, a2), inner(&uro->vars.inner) { };
+   F_ExistsInside(Generator<_str>* a1, Generator<_str>* a2, Uroboros& uro)
+      : Func_2(a1, a2), inner(uro.vars.inner) { };
    _bool getValue() override;
 
 private:
-   InnerVariables* inner;
+   InnerVariables& inner;
 };
 
 
 struct F_ExistInside : Func_2<_list, _str>, Generator<_bool>
 {
 public:
-   F_ExistInside(Generator<_list>* a1, Generator<_str>* a2, Uroboros* uro)
-      : Func_2(a1, a2), inner(&uro->vars.inner) { };
+   F_ExistInside(Generator<_list>* a1, Generator<_str>* a2, Uroboros& uro)
+      : Func_2(a1, a2), inner(uro.vars.inner) { };
    _bool getValue() override;
 
 private:
-   InnerVariables* inner;
+   InnerVariables& inner;
 };
 
 
@@ -270,25 +270,25 @@ private:
 struct F_Find : Func_2<_str, _str>, Generator<_bool>
 {
 public:
-   F_Find(Generator<_str>* a1, Generator<_str>* a2, Uroboros* uro)
-      : Func_2(a1, a2), inner(&uro->vars.inner) { };
+   F_Find(Generator<_str>* a1, Generator<_str>* a2, Uroboros& uro)
+      : Func_2(a1, a2), inner(uro.vars.inner) { };
    _bool getValue() override;
 
 private:
-   InnerVariables* inner;
+   InnerVariables& inner;
 };
 
 
 struct F_Find_InThis : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_Find_InThis(Generator<_str>* a1, Uroboros* uro) 
-      : Func_1(a1), uroboros(uro), inner(&uro->vars.inner) { };
+   F_Find_InThis(Generator<_str>* a1, Uroboros& uro) 
+      : Func_1(a1), uroboros(uro), inner(uro.vars.inner) { };
    _bool getValue() override;
 
 private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
 };
 
 

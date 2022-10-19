@@ -26,7 +26,7 @@
 namespace uro::parse
 {
 
-void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, uro::Uroboros* uro);
+void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro);
 
 template <typename T>
 void cleanAfterOrderParseFailure(T& result, Attribute* attr, const ThisState& state)
@@ -40,7 +40,7 @@ void cleanAfterOrderParseFailure(T& result, Attribute* attr, const ThisState& st
 
 
 template <typename T>
-void orderUnitFailure(const Token& tk, T& result, uro::Uroboros* uro)
+void orderUnitFailure(const Token& tk, T& result, Uroboros& uro)
 {
    throw SyntaxException(str(L"keyword '", tk.getOriginString(uro),
       L"' is not preceded by a value used for order"), tk.line);
@@ -49,7 +49,7 @@ void orderUnitFailure(const Token& tk, T& result, uro::Uroboros* uro)
 
 template <typename T>
 void prepareOrderUnit(Tokens& tks, _bool& desc, T& result, Attribute* attr,
-   const ThisState& state, gen::Order* order, gen::OrderIndices* indices, uro::Uroboros* uro)
+   const ThisState& state, gen::Order* order, gen::OrderIndices* indices, Uroboros& uro)
 {
    desc = false;
    const Token& last = tks.last();
@@ -95,11 +95,11 @@ void setOrderUnit(gen::Order*& order, Generator<T>* value, const _bool& desc, ge
 }
 
 void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _def*& result,
-   gen::OrderIndices* indices, gen::Order* order, uro::Uroboros* uro);
+   gen::OrderIndices* indices, gen::Order* order, Uroboros& uro);
 
 template <typename T>
 void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory,
-   Generator<std::vector<T>>*& result, gen::OrderIndices* indices, gen::Order* order, uro::Uroboros* uro)
+   Generator<std::vector<T>>*& result, gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
 {
    result = new gen::OrderBy_List<T>(result, attr, indices, order, uro);
 }
@@ -107,11 +107,11 @@ void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory,
 
 template <typename T, typename T2>
 void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeyword,
-   Tokens& ts2, _fdata* fdata, uro::Uroboros* uro)
+   Tokens& ts2, _fdata* fdata, Uroboros& uro)
 {
-   const ThisState prevThisState = uro->vars.inner.thisState;
-   uro->vars.inner.thisState = state;
-   const _bool hasMemory = uro->vc.anyAttribute();
+   const ThisState prevThisState = uro.vars.inner.thisState;
+   uro.vars.inner.thisState = state;
+   const _bool hasMemory = uro.vc.anyAttribute();
    Attribute* attr = nullptr;
 
    if (state == ThisState::ts_String) {
@@ -122,7 +122,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          attr = new BridgeAttribute(uro, fdata);
       }
 
-      uro->vc.addAttribute(attr);
+      uro.vc.addAttribute(attr);
    }
 
    const Token& first = ts2.first();
@@ -136,21 +136,21 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          switch (state) {
             case ThisState::ts_String: {
                Generator<_str>* str;
-               uro->vars.inner.createThisRef(str);
+               uro.vars.inner.createThisRef(str);
                setSingleOrderFilter(attr, hasMemory, result, indices,
                   new gen::OrderUnit_Final<_str>(str, desc, indices), uro);
                break;
             }
             case ThisState::ts_Number: {
                Generator<_num>* num;
-               uro->vars.inner.createThisRef(num);
+               uro.vars.inner.createThisRef(num);
                setSingleOrderFilter(attr, hasMemory, result, indices,
                   new gen::OrderUnit_Final<_num>(num, desc, indices), uro);
                break;
             }
             case ThisState::ts_Time: {
                Generator<_tim>* tim;
-               uro->vars.inner.createThisRef(tim);
+               uro.vars.inner.createThisRef(tim);
                setSingleOrderFilter(attr, hasMemory, result, indices,
                   new gen::OrderUnit_Final<_tim>(tim, desc, indices), uro);
                break;

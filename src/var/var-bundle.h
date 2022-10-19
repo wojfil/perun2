@@ -31,7 +31,7 @@ struct VarBundle
 {
 public:
    VarBundle(const std::map<_size, Variable<T>*>& iVars,
-      const std::map<_size, Generator<T>*>& sVars, uro::Uroboros* uro)
+      const std::map<_size, Generator<T>*>& sVars, uro::Uroboros& uro)
     : userVars(), internalVars(iVars), specialVars(sVars), uroboros(uro) { };
 
    void levelUp()
@@ -126,7 +126,7 @@ private:
    std::map<_size, ParseVariable<T>> userVars;
    std::map<_size, Variable<T>*> internalVars;
    std::map<_size, Generator<T>*> specialVars;
-   uro::Uroboros* uroboros;
+   uro::Uroboros& uroboros;
 
 };
 

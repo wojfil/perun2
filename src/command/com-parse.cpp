@@ -29,7 +29,7 @@
 namespace uro::comm
 {
 
-Command* parseCommands(const Tokens& tks, uro::Uroboros* uro)
+Command* parseCommands(const Tokens& tks, Uroboros& uro)
 {
    std::vector<Command*> commands;
    _int sublen = 0;
@@ -44,7 +44,7 @@ Command* parseCommands(const Tokens& tks, uro::Uroboros* uro)
             case L';': {
                if (depth == 0) {
                   if (sublen != 0) {
-                     uro->conditionContext.lockLast();
+                     uro.conditionContext.lockLast();
                      Tokens tks2(tks, i - sublen, sublen);
                      commands.push_back(command(tks2, uro));
                      sublen = 0;
@@ -101,7 +101,7 @@ Command* parseCommands(const Tokens& tks, uro::Uroboros* uro)
    }
 }
 
-void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, uro::Uroboros* uro)
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Uroboros& uro)
 {
    const _int end = tks.getEnd();
 
@@ -117,7 +117,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, uro::Uroboros* uro)
 
 // can return nullptr
 static Command* commandStruct(const Tokens& tks, const _int& sublen,
-   const _int& index, const _int& open, uro::Uroboros* uro)
+   const _int& index, const _int& open, Uroboros& uro)
 {
    const _int leftStart = index - sublen;
    const _int leftLen = open - leftStart;
@@ -162,9 +162,9 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       Tokens right(tks, rightStart, rightLen);
 
       Aggregate* aggr = new Aggregate(uro);
-      uro->vc.addAggregate(aggr);
+      uro.vc.addAggregate(aggr);
       com = parseCommandsAsMember(right, nullptr, uro);
-      uro->vc.retreatAggregate();
+      uro.vc.retreatAggregate();
 
       return com == nullptr
          ? nullptr
@@ -197,21 +197,21 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       Tokens right(tks, rightStart, rightLen);
 
       Aggregate* aggr = new Aggregate(uro);
-      uro->vc.addAggregate(aggr);
+      uro.vc.addAggregate(aggr);
       com = parseCommandsAsMember(right, nullptr, uro);
-      uro->vc.retreatAggregate();
+      uro.vc.retreatAggregate();
 
       return com == nullptr
          ? nullptr
          : new CS_While(boo, com, aggr, uro);
    }
 
-   const ThisState prevThisState = uro->vars.inner.thisState;
+   const ThisState prevThisState = uro.vars.inner.thisState;
 
    // build "inside"
    if (leftFirst.isKeyword(Keyword::kw_Inside)) {
       left.trimLeft();
-      if (left.isEmpty() && uro->vars.inner.thisState != ThisState::ts_String) {
+      if (left.isEmpty() && uro.vars.inner.thisState != ThisState::ts_String) {
          throw SyntaxException(str(L"argumentless structure '", leftFirst.getOriginString(uro),
             L"' can be created only inside a loop iterating over strings"), leftFirst.line);
       }
@@ -251,7 +251,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       if (rightLen == 0) {
          cond->setMain(boo);
-         uro->conditionContext.addClosed(cond);
+         uro.conditionContext.addClosed(cond);
          return cond;
       }
 
@@ -270,16 +270,16 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
       if (left.isEmpty()) { // build "else"
          if (rightLen == 0) {
-            uro->conditionContext.addEmptyElse(leftFirst.line);
+            uro.conditionContext.addEmptyElse(leftFirst.line);
             return nullptr;
          }
 
          Tokens right(tks, rightStart, rightLen);
          com = parseCommandsAsMember(right, nullptr, uro);
-         uro->conditionContext.deleteLast();
+         uro.conditionContext.deleteLast();
 
          if (com != nullptr) {
-            uro->conditionContext.addElse(com, leftFirst.line);
+            uro.conditionContext.addElse(com, leftFirst.line);
          }
       }
       else { // build "else if"
@@ -305,16 +305,16 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 
          if (rightLen == 0) {
             com = new C_DoNothing();
-            uro->conditionContext.addElseIf(boo, com, leftFirst.line);
+            uro.conditionContext.addElseIf(boo, com, leftFirst.line);
             return nullptr;
          }
 
          Tokens right(tks, rightStart, rightLen);
          com = parseCommandsAsMember(right, nullptr, uro);
-         uro->conditionContext.deleteLast();
+         uro.conditionContext.deleteLast();
 
          if (com != nullptr) {
-            uro->conditionContext.addElseIf(boo, com, leftFirst.line);
+            uro.conditionContext.addElseIf(boo, com, leftFirst.line);
          }
       }
 
@@ -331,7 +331,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    // time list loop
    Generator<_tlist>* tlist;
    if (parse::parse(uro, left, tlist)) {
-      uro->vars.inner.thisState = ThisState::ts_Time;
+      uro.vars.inner.thisState = ThisState::ts_Time;
       Aggregate* aggr;
 
       return parseLoopBase(com, right, uro, prevThisState, aggr)
@@ -342,7 +342,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    // number list loop
    Generator<_nlist>* nlist;
    if (parse::parse(uro, left, nlist)) {
-      uro->vars.inner.thisState = ThisState::ts_Number;
+      uro.vars.inner.thisState = ThisState::ts_Number;
       Aggregate* aggr;
 
       return parseLoopBase(com, right, uro, prevThisState, aggr)
@@ -359,14 +359,14 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
 }
 
 static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, const Tokens& right,
-   const ThisState& prevState, uro::Uroboros* uro)
+   const ThisState& prevState, Uroboros& uro)
 {
    Command* com = nullptr;
 
    if (isInside && left.isEmpty()) {
       Generator<_str>* tr;
-      uro->vars.inner.createThisRef(tr);
-      uro->vars.inner.thisState = ThisState::ts_String;
+      uro.vars.inner.createThisRef(tr);
+      uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
@@ -382,7 +382,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    // string loop
    Generator<_str>* str;
    if (parse::parse(uro, left, str)) {
-      uro->vars.inner.thisState = ThisState::ts_String;
+      uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
@@ -403,7 +403,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    // definition loop
    _def* def;
    if (parse::parse(uro, left, def)) {
-      uro->vars.inner.thisState = ThisState::ts_String;
+      uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
@@ -450,7 +450,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    // list loop
    Generator<_list>* lst;
    if (parse::parse(uro, left, lst)) {
-      uro->vars.inner.thisState = ThisState::ts_String;
+      uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
       Aggregate* aggr;
@@ -470,20 +470,20 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    return nullptr;
 }
 
-static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
+static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros& uro,
    const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _bool& hasMemory)
 {
-   hasMemory = uro->vc.anyAttribute();
+   hasMemory = uro.vc.anyAttribute();
    attr = new Attribute(uro);
-   uro->vc.addAttribute(attr);
+   uro.vc.addAttribute(attr);
    aggr = new Aggregate(uro);
-   uro->vc.addAggregate(aggr);
+   uro.vc.addAggregate(aggr);
 
    com = parseCommandsAsMember(rightTokens, nullptr, uro);
 
-   uro->vars.inner.thisState = prevState;
-   uro->vc.retreatAttribute();
-   uro->vc.retreatAggregate();
+   uro.vars.inner.thisState = prevState;
+   uro.vc.retreatAttribute();
+   uro.vc.retreatAggregate();
 
    const _bool success = com != nullptr;
    if (!success) {
@@ -494,16 +494,16 @@ static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Urobor
    return success;
 }
 
-static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Uroboros* uro,
+static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, Uroboros& uro,
    const ThisState& prevState, Aggregate*& aggr)
 {
    aggr = new Aggregate(uro);
-   uro->vc.addAggregate(aggr);
+   uro.vc.addAggregate(aggr);
 
    com = parseCommandsAsMember(rightTokens, nullptr, uro);
 
-   uro->vars.inner.thisState = prevState;
-   uro->vc.retreatAggregate();
+   uro.vars.inner.thisState = prevState;
+   uro.vc.retreatAggregate();
 
    const _bool success = com != nullptr;
    if (!success) {
@@ -513,17 +513,17 @@ static _bool parseLoopBase(Command*& com, const Tokens& rightTokens, uro::Urobor
    return success;
 }
 
-static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, uro::Uroboros* uro)
+static Command* parseCommandsAsMember(const Tokens& tks, CS_Condition* cond, Uroboros& uro)
 {
-   uro->conditionContext.add(cond);
-   uro->vars.varsLevelUp();
+   uro.conditionContext.add(cond);
+   uro.vars.varsLevelUp();
    Command* com = parseCommands(tks, uro);
-   uro->vars.varsLevelDown();
-   uro->conditionContext.deleteClosedUnits();
+   uro.vars.varsLevelDown();
+   uro.conditionContext.deleteClosedUnits();
    return com;
 }
 
-static Command* command(Tokens& tks, uro::Uroboros* uro)
+static Command* command(Tokens& tks, Uroboros& uro)
 {
    const Token& f = tks.first();
 
@@ -531,7 +531,7 @@ static Command* command(Tokens& tks, uro::Uroboros* uro)
       switch (f.value.keyword.k) {
          case Keyword::kw_Break:
          case Keyword::kw_Continue: {
-            if (uro->vc.anyAggregate()) {
+            if (uro.vc.anyAggregate()) {
                if (f.value.keyword.k == Keyword::kw_Break) {
                   return new C_Break(uro);
                }
@@ -614,7 +614,7 @@ static Command* command(Tokens& tks, uro::Uroboros* uro)
    }
 }
 
-static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
+static Command* commandMisc(const Tokens& tks, Uroboros& uro)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'=');
@@ -686,7 +686,7 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
          if (tks.getLength() == 2) {
             vars::ParseVariable<_num>* pv_num;
 
-            if (!uro->vars.getVarPtr(first, pv_num)) {
+            if (!uro.vars.getVarPtr(first, pv_num)) {
                throw SyntaxException(str(L"variable '", first.getOriginString(uro),
                   L"' cannot be ", op), first.line);
             }
@@ -709,7 +709,7 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
                Generator<_num>* index = parseListElementIndex(tks2, uro);
                vars::ParseVariable<_nlist>* pv_nlist;
 
-               if (!uro->vars.getVarPtr(first, pv_nlist)) {
+               if (!uro.vars.getVarPtr(first, pv_nlist)) {
                   throw SyntaxException(str(L"variable '", first.getOriginString(uro),
                      L"' cannot be ", op), first.line);
                }
@@ -724,13 +724,13 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
          }
       }
       else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
-         if (first.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
+         if (first.value.twoWords.h1 == uro.hashes.HASH_NOTHING) {
             throw SyntaxException(L"the dot . should be preceded by a time variable name", first.line);
          }
 
          vars::ParseVariable<_tim>* pv_tim;
 
-         if (!uro->vars.getVarPtr(first, pv_tim)) {
+         if (!uro.vars.getVarPtr(first, pv_tim)) {
             throw SyntaxException(str(L"time variable from expression '", first.getOriginString(uro),
                L"' does not exist or is unreachable here"), first.line);
          }
@@ -738,19 +738,19 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
          const _size& h = first.value.twoWords.h2;
          Period::PeriodUnit unit;
 
-         if (h == uro->hashes.HASH_PER_YEAR || h == uro->hashes.HASH_PER_YEARS)
+         if (h == uro.hashes.HASH_PER_YEAR || h == uro.hashes.HASH_PER_YEARS)
             unit = Period::u_Years;
-         else if (h == uro->hashes.HASH_PER_MONTH || h == uro->hashes.HASH_PER_MONTHS)
+         else if (h == uro.hashes.HASH_PER_MONTH || h == uro.hashes.HASH_PER_MONTHS)
             unit = Period::u_Months;
-         else if (h == uro->hashes.HASH_PER_DAY || h == uro->hashes.HASH_PER_DAYS)
+         else if (h == uro.hashes.HASH_PER_DAY || h == uro.hashes.HASH_PER_DAYS)
             unit = Period::u_Days;
-         else if (h == uro->hashes.HASH_PER_HOUR || h == uro->hashes.HASH_PER_HOURS)
+         else if (h == uro.hashes.HASH_PER_HOUR || h == uro.hashes.HASH_PER_HOURS)
             unit = Period::u_Hours;
-         else if (h == uro->hashes.HASH_PER_MINUTE || h == uro->hashes.HASH_PER_MINUTES)
+         else if (h == uro.hashes.HASH_PER_MINUTE || h == uro.hashes.HASH_PER_MINUTES)
             unit = Period::u_Minutes;
-         else if (h == uro->hashes.HASH_PER_SECOND || h == uro->hashes.HASH_PER_SECONDS)
+         else if (h == uro.hashes.HASH_PER_SECOND || h == uro.hashes.HASH_PER_SECONDS)
             unit = Period::u_Seconds;
-         else if (h == uro->hashes.HASH_PER_DATE || h == uro->hashes.HASH_PER_WEEKDAY) {
+         else if (h == uro.hashes.HASH_PER_DATE || h == uro.hashes.HASH_PER_WEEKDAY) {
             throw SyntaxException(str(L"time variable member '", first.getOriginString_2(uro),
                L"' cannot be ", op), first.line);
          }
@@ -776,7 +776,7 @@ static Command* commandMisc(const Tokens& tks, uro::Uroboros* uro)
 }
 
 static Command* commandVarChange(const Tokens& left, const Tokens& right,
-   const _char& sign, uro::Uroboros* uro)
+   const _char& sign, Uroboros& uro)
 {
    const Token& first = left.first();
 
@@ -786,9 +786,9 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          vars::ParseVariable<_nlist>* pv_nlist;
          vars::ParseVariable<_tlist>* pv_tlist;
 
-         if (uro->vars.getVarPtr(first, pv_list)
-          || uro->vars.getVarPtr(first, pv_nlist)
-          || uro->vars.getVarPtr(first, pv_tlist))
+         if (uro.vars.getVarPtr(first, pv_list)
+          || uro.vars.getVarPtr(first, pv_nlist)
+          || uro.vars.getVarPtr(first, pv_tlist))
          {
             throw SyntaxException(str(L"collection variable '", first.getOriginString(uro),
                L"' is immutable, so its elements cannot be modified"), right.first().line);
@@ -796,7 +796,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
          vars::ParseVariable<_str>* pv_str;
 
-         if (uro->vars.getVarPtr(first, pv_str)) {
+         if (uro.vars.getVarPtr(first, pv_str)) {
             throw SyntaxException(str(L"operation ", toStr(sign),
                L"= cannot be performed on a character from string variable"), first.line);
          }
@@ -807,13 +807,13 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       else {
          const Token& arom = left.last();
 
-         if (arom.type == Token::t_TwoWords && arom.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
+         if (arom.type == Token::t_TwoWords && arom.value.twoWords.h1 == uro.hashes.HASH_NOTHING) {
             Tokens aro(left);
             aro.trimRight();
 
             if (varSquareBrackets(aro)) {
                vars::ParseVariable<_tlist>* pv_tlist;
-               if (uro->vars.getVarPtr(first, pv_tlist)) {
+               if (uro.vars.getVarPtr(first, pv_tlist)) {
                   throw SyntaxException(str(L"operation ", toStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable"), first.line);
                }
@@ -827,7 +827,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
    if (first.type == Token::t_Word) {
       vars::ParseVariable<_num>* pv_num;
-      if (uro->vars.getVarPtr(first, pv_num)) {
+      if (uro.vars.getVarPtr(first, pv_num)) {
          Generator<_num>* num;
 
          if (!parse::parse(uro, right, num)) {
@@ -853,7 +853,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       }
 
       vars::ParseVariable<_per>* pv_per;
-      if (uro->vars.getVarPtr(first, pv_per)) {
+      if (uro.vars.getVarPtr(first, pv_per)) {
          vars::Variable<_per>* var = pv_per->getVarPtr();
 
          switch (sign) {
@@ -883,7 +883,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       }
 
       vars::ParseVariable<_tim>* pv_tim;
-      if (uro->vars.getVarPtr(first, pv_tim)) {
+      if (uro.vars.getVarPtr(first, pv_tim)) {
          switch (sign) {
             case L'*':
             case L'/':
@@ -929,7 +929,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       }
 
       vars::ParseVariable<_tim>* pv_tim;
-      if (!uro->vars.getVarPtr(first, pv_tim)) {
+      if (!uro.vars.getVarPtr(first, pv_tim)) {
          throw SyntaxException(str(L"'", first.getOriginString(uro),
             L"' is not a time variable for ", toStr(sign), L"= operation"),
             first.line);
@@ -948,19 +948,19 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       const bool negative = (sign == '-');
       pv_tim->makeNotConstant();
 
-      if (h == uro->hashes.HASH_PER_YEAR || h == uro->hashes.HASH_PER_YEARS)
+      if (h == uro.hashes.HASH_PER_YEAR || h == uro.hashes.HASH_PER_YEARS)
          return new VarTimeUnitChange(var, num, Period::u_Years, negative);
-      else if (h == uro->hashes.HASH_PER_MONTH || h == uro->hashes.HASH_PER_MONTHS)
+      else if (h == uro.hashes.HASH_PER_MONTH || h == uro.hashes.HASH_PER_MONTHS)
          return new VarTimeUnitChange(var, num, Period::u_Months, negative);
-      else if (h == uro->hashes.HASH_PER_DAY || h == uro->hashes.HASH_PER_DAYS)
+      else if (h == uro.hashes.HASH_PER_DAY || h == uro.hashes.HASH_PER_DAYS)
          return new VarTimeUnitChange(var, num, Period::u_Days, negative);
-      else if (h == uro->hashes.HASH_PER_HOUR || h == uro->hashes.HASH_PER_HOURS)
+      else if (h == uro.hashes.HASH_PER_HOUR || h == uro.hashes.HASH_PER_HOURS)
          return new VarTimeUnitChange(var, num, Period::u_Hours, negative);
-      else if (h == uro->hashes.HASH_PER_MINUTE || h == uro->hashes.HASH_PER_MINUTES)
+      else if (h == uro.hashes.HASH_PER_MINUTE || h == uro.hashes.HASH_PER_MINUTES)
          return new VarTimeUnitChange(var, num, Period::u_Minutes, negative);
-      else if (h == uro->hashes.HASH_PER_SECOND || h == uro->hashes.HASH_PER_SECONDS)
+      else if (h == uro.hashes.HASH_PER_SECOND || h == uro.hashes.HASH_PER_SECONDS)
          return new VarTimeUnitChange(var, num, Period::u_Seconds, negative);
-      else if (h == uro->hashes.HASH_PER_DATE || h == uro->hashes.HASH_PER_WEEKDAY) {
+      else if (h == uro.hashes.HASH_PER_DATE || h == uro.hashes.HASH_PER_WEEKDAY) {
          throw SyntaxException(str(L"value of '", first.getOriginString_2(uro),
             L"' time variable member cannot be altered"), first.line);
       }
@@ -977,10 +977,10 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 }
 
 static Command* commandVarIncrement(const Token& first, const Tokens& tks,
-   const _int& line, uro::Uroboros* uro)
+   const _int& line, Uroboros& uro)
 {
    vars::ParseVariable<_str>* pv_str;
-   if (uro->vars.getVarPtr(first, pv_str)) {
+   if (uro.vars.getVarPtr(first, pv_str)) {
       vars::Variable<_str>* var = pv_str->getVarPtr();
 
       Generator<_str>* str_;
@@ -1006,10 +1006,10 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
 }
 
 template <typename T>
-static _bool makeVarAlteration(uro::Uroboros* uro, const Tokens& tokens, const Token& first,
+static _bool makeVarAlteration(Uroboros& uro, const Tokens& tokens, const Token& first,
    vars::ParseVariable<T>*& varPtr, Command*& result, const _str& dataTypeName)
 {
-   if (uro->vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
+   if (uro.vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
       Generator<T>* value;
       if (parse::parse(uro, tokens, value)) {
          if (!value->isConstant()) {
@@ -1031,16 +1031,16 @@ static _bool makeVarAlteration(uro::Uroboros* uro, const Tokens& tokens, const T
 }
 
 template <typename T>
-static Command* makeVarAssignment(const Token& token, uro::Uroboros* uro,
+static Command* makeVarAssignment(const Token& token, Uroboros& uro,
    vars::ParseVariable<T>* varPtr, Generator<T>* valuePtr)
 {
    vars::VarBundle<T>* bundle;
-   uro->vars.takeBundlePointer(bundle);
-   const _bool isConstant = !uro->vc.anyAggregate() && valuePtr->isConstant();
+   uro.vars.takeBundlePointer(bundle);
+   const _bool isConstant = !uro.vc.anyAggregate() && valuePtr->isConstant();
    return bundle->makeVariableAssignment(token, varPtr, valuePtr, isConstant);
 }
 
-static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::Uroboros* uro)
+static Command* commandVarAssign(const Tokens& left, const Tokens& right, Uroboros& uro)
 {
    const Token& first = left.first();
 
@@ -1049,7 +1049,7 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::U
    }
 
    if (left.getLength() >= 5 ) {
-      if (left.last().type == Token::t_TwoWords && left.last().value.word.h == uro->hashes.HASH_NOTHING) {
+      if (left.last().type == Token::t_TwoWords && left.last().value.word.h == uro.hashes.HASH_NOTHING) {
          Tokens le(left);
          le.trimRight();
 
@@ -1058,9 +1058,9 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::U
             vars::ParseVariable<_tlist>* pv_tlist;
             vars::ParseVariable<_list>* pv_list;
 
-            if (uro->vars.getVarPtr(first, pv_nlist) ||
-                uro->vars.getVarPtr(first, pv_tlist) ||
-                uro->vars.getVarPtr(first, pv_list))
+            if (uro.vars.getVarPtr(first, pv_nlist) ||
+                uro.vars.getVarPtr(first, pv_tlist) ||
+                uro.vars.getVarPtr(first, pv_list))
             {
                throw SyntaxException(str(L"collection variable '", first.getOriginString(uro),
                   L"' is immutable, so its elements cannot me modified"), first.line);
@@ -1081,7 +1081,7 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, uro::U
    // assign value to an existing variable
    ////
 
-   if (uro->hashes.HASH_GROUP_INNERVAR.find(first.value.word.h) != uro->hashes.HASH_GROUP_INNERVAR.end()) {
+   if (uro.hashes.HASH_GROUP_INNERVAR.find(first.value.word.h) != uro.hashes.HASH_GROUP_INNERVAR.end()) {
       throw SyntaxException(str(L"variable '", first.getOriginString(uro), L"' is immutable"), first.line);
    }
 
@@ -1197,7 +1197,7 @@ static bool varSquareBrackets(const Tokens& tks)
 }
 
 static Command* commandVarAssign_Element(const Tokens& left,
-   const Tokens& right, uro::Uroboros* uro)
+   const Tokens& right, Uroboros& uro)
 {
    const Token& first = left.first();
 
@@ -1205,16 +1205,16 @@ static Command* commandVarAssign_Element(const Tokens& left,
    vars::ParseVariable<_nlist>* pv_nlist;
    vars::ParseVariable<_tlist>* pv_tlist;
 
-   if (uro->vars.getVarPtr(first, pv_list) ||
-       uro->vars.getVarPtr(first, pv_nlist) ||
-       uro->vars.getVarPtr(first, pv_tlist))
+   if (uro.vars.getVarPtr(first, pv_list) ||
+       uro.vars.getVarPtr(first, pv_nlist) ||
+       uro.vars.getVarPtr(first, pv_tlist))
    {
       throw SyntaxException(str(L"collection variable '", first.getOriginString(uro),
          L"' is immutable, so its elements cannot me modified"), first.line);
    }
 
    vars::ParseVariable<_str>* pv_str;
-   if (uro->vars.getVarPtr(first, pv_str)) {
+   if (uro.vars.getVarPtr(first, pv_str)) {
       if (pv_str->isReachable()) {
          Generator<_num>* index = parseListElementIndex(left, uro);
          Generator<_str>* str_;
@@ -1238,7 +1238,7 @@ static Command* commandVarAssign_Element(const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
@@ -1254,7 +1254,7 @@ static Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* 
    return index;
 }
 
-static void checkNoSemicolonBeforeBrackets(const Tokens& tks, uro::Uroboros* uro)
+static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Uroboros& uro)
 {
    const _int end = tks.getEnd();
    const _int start = tks.getStart() + 1;

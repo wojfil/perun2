@@ -43,7 +43,7 @@ inline constexpr _uint32 AGGR_SELECT =    0b010;
 struct Aggregate
 {
 public:
-   Aggregate(uro::Uroboros* uro);
+   Aggregate(Uroboros& uro);
    void set(const _uint32& v);
    void run();
 
@@ -55,8 +55,8 @@ public:
    std::set<_str> invalidSelect;
 
 private:
-   uro::Uroboros* uroboros;
-   uro::InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
    _uint32 value;
    inline _bool has(const _uint32& v) const;
 };

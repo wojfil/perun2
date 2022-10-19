@@ -84,10 +84,10 @@ public:
    std::vector<Tokens> splitBySymbol(const _char& symbol) const;
    _int countSymbols(const _char& symbol) const;
    _int getFilterKeywordId() const;
-   std::vector<Tokens> splitByFiltherKeywords(Uroboros* uro) const;
+   std::vector<Tokens> splitByFiltherKeywords(Uroboros& uro) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 
-   void checkCommonExpressionExceptions(Uroboros* uro) const;
+   void checkCommonExpressionExceptions(Uroboros& uro) const;
 
 private:
    _int start;

@@ -145,16 +145,16 @@ public:
 
    // constructors:
    Token() = delete;
-   Token(const _char& v, const _int& li, Uroboros* uro);
-   Token(const _char& v, const _int& am, const _int& li, Uroboros* uro);
+   Token(const _char& v, const _int& li, Uroboros& uro);
+   Token(const _char& v, const _int& am, const _int& li, Uroboros& uro);
    Token(const _num& v, const _int& li, const _size& os_id, const _size& os_len,
-      const NumberMode& nm, Uroboros* uro);
-   Token(const _size& os_id, const _size& os_len, const _int& li, Uroboros* uro);
-   Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, Uroboros* uro);
-   Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros* uro);
-   Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros* uro);
+      const NumberMode& nm, Uroboros& uro);
+   Token(const _size& os_id, const _size& os_len, const _int& li, Uroboros& uro);
+   Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, Uroboros& uro);
+   Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros& uro);
+   Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros& uro);
    Token(const _size& v1, const _size& v2, const _int& li, const _size& os_id1, const _size& os_len1,
-      const _size& os_id2, const _size& os_len2, Uroboros* uro);
+      const _size& os_id2, const _size& os_len2, Uroboros& uro);
 
    // members:
    const Type type;
@@ -170,11 +170,11 @@ public:
    _bool isLogicConstant() const;
    _bool isWeekDay() const;
    _bool isMonth() const;
-   _str getOriginString(Uroboros* uro) const;
-   _str getOriginString_2(Uroboros* uro) const;
+   _str getOriginString(Uroboros& uro) const;
+   _str getOriginString_2(Uroboros& uro) const;
 
 private:
-   _str getCodeSubstr(const _osi& osi, Uroboros* uro) const;
+   _str getCodeSubstr(const _osi& osi, Uroboros& uro) const;
 
 };
 

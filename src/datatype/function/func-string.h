@@ -280,8 +280,8 @@ public:
 struct F_RandomChar : Func_1<_str>, Generator<_str>
 {
 public:
-   F_RandomChar(Generator<_str>* a1, Uroboros* uro)
-      : Func_1(a1), math(&uro->math) { };
+   F_RandomChar(Generator<_str>* a1, Uroboros& uro)
+      : Func_1(a1), math(&uro.math) { };
 
    _str getValue() override;
 

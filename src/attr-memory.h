@@ -29,8 +29,8 @@ namespace uro
 struct AttributeMemory
 {
 public:
-   AttributeMemory(Attribute* attr, InnerVariables* iv);
-   AttributeMemory(InnerVariables* iv);
+   AttributeMemory(Attribute* attr, InnerVariables& iv);
+   AttributeMemory(InnerVariables& iv);
 
    void load();
    void restore() const;
@@ -38,7 +38,7 @@ public:
 private:
    const _bool hasAttribute;
    Attribute* attribute;
-   InnerVariables* inner;
+   InnerVariables& inner;
 
    _str prev_trimmed;
    _str prev_path;

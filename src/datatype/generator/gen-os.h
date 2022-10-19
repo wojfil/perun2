@@ -46,7 +46,7 @@ enum OsElement
 struct DefinitionGenerator
 {
 public:
-   DefinitionGenerator(const OsElement& el, uro::Uroboros* uro)
+   DefinitionGenerator(const OsElement& el, Uroboros& uro)
       : element_(el), uroboros(uro) { };
 
    _def* generateDefault() const;
@@ -54,7 +54,7 @@ public:
       const _str& pattern, const _bool& isAbsolute) const;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    const OsElement element_;
 };
 
@@ -62,7 +62,7 @@ private:
 struct OsDefinition : _def
 {
 public:
-   OsDefinition(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs);
+   OsDefinition(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs);
 
    ~OsDefinition() {
       delete location;
@@ -73,8 +73,8 @@ public:
 protected:
    _bool first;
    Generator<_str>* location;
-   uro::Uroboros* uroboros;
-   uro::InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
    _fdata data;
    _numi index;
    P_MEMORY_MEMBER;
@@ -89,7 +89,7 @@ protected:
 struct OsDefinitionPlain : OsDefinition
 {
 public:
-   OsDefinitionPlain(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   OsDefinitionPlain(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinition(loc, uro, patt, abs) { };
 
    void reset() override;
@@ -102,7 +102,7 @@ protected:
 struct OsDefinitionRecursive : OsDefinition
 {
 public:
-   OsDefinitionRecursive(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   OsDefinitionRecursive(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinition(loc, uro, patt, abs) { };
 
    void reset() override;
@@ -118,7 +118,7 @@ protected:
 struct Uro_Files : OsDefinitionPlain
 {
 public:
-   Uro_Files(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   Uro_Files(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinitionPlain(loc, uro, patt, abs) {};
 
    _bool hasNext() override;
@@ -128,7 +128,7 @@ public:
 struct Uro_Directories : OsDefinitionPlain
 {
 public:
-   Uro_Directories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   Uro_Directories(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinitionPlain(loc, uro, patt, abs) {};
 
    _bool hasNext() override;
@@ -138,7 +138,7 @@ public:
 struct Uro_All : OsDefinitionPlain
 {
 public:
-   Uro_All(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   Uro_All(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinitionPlain(loc, uro, patt, abs) {};
 
    _bool hasNext() override;
@@ -148,7 +148,7 @@ public:
 struct Uro_RecursiveFiles : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveFiles(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   Uro_RecursiveFiles(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinitionRecursive(loc, uro, patt, abs) { };
 
    _bool hasNext() override;
@@ -158,7 +158,7 @@ public:
 struct Uro_RecursiveDirectories : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveDirectories(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   Uro_RecursiveDirectories(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinitionRecursive(loc, uro, patt, abs) { };
 
    _bool hasNext() override;
@@ -168,7 +168,7 @@ public:
 struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveAll(Generator<_str>* loc, uro::Uroboros* uro, const _str& patt, const _bool& abs)
+   Uro_RecursiveAll(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
       : OsDefinitionRecursive(loc, uro, patt, abs) { };
 
    _bool hasNext() override;

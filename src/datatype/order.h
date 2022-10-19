@@ -151,11 +151,11 @@ template <typename T>
 struct OrderBy
 {
 public:
-   OrderBy(Attribute* attr, OrderIndices* indices, Order* ord, uro::Uroboros* uro)
-      : attribute(attr), inner(&uro->vars.inner),
+   OrderBy(Attribute* attr, OrderIndices* indices, Order* ord, Uroboros& uro)
+      : attribute(attr), inner(uro.vars.inner),
         hasAttribute(attr != nullptr), orderIndices(indices), order(ord)
    {
-      this->inner->createThisVarRef(thisReference);
+      this->inner.createThisVarRef(thisReference);
    }
 
    ~OrderBy()
@@ -198,7 +198,7 @@ protected:
    Order* order;
    Attribute* attribute;
    const _bool hasAttribute;
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    vars::Variable<T>* thisReference;
    std::vector<T>* resultPtr;
 };
@@ -208,7 +208,7 @@ template <typename T>
 struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
 {
 public:
-   OrderBy_List(Generator<std::vector<T>>* bas, Attribute* attr, OrderIndices* indices, Order* ord, uro::Uroboros* uro)
+   OrderBy_List(Generator<std::vector<T>>* bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros& uro)
       : OrderBy<T>(attr, indices, ord, uro), base(bas) { }
 
    ~OrderBy_List()
@@ -229,14 +229,14 @@ public:
       this->orderIndices->prepare(length);
       this->order->clearValues(length);
 
-      const _numi prevIndex = this->inner->index.value;
-      const _numi prevDepth = this->inner->depth.value;
+      const _numi prevIndex = this->inner.index.value;
+      const _numi prevDepth = this->inner.depth.value;
       const T prevThis = this->thisReference->value;
-      this->inner->depth.value.setToZero();
+      this->inner.depth.value.setToZero();
 
       for (_size i = 0; i < length; i++) {
          this->thisReference->value = result[i];
-         this->inner->index.value = _numi(static_cast<_nint>(i));
+         this->inner.index.value = _numi(static_cast<_nint>(i));
 
          if (this->hasAttribute) {
             this->attribute->run();
@@ -248,8 +248,8 @@ public:
 
       this->quicksort(0, length - 1);
 
-      this->inner->index.value = prevIndex;
-      this->inner->depth.value = prevDepth;
+      this->inner.index.value = prevIndex;
+      this->inner.depth.value = prevDepth;
       this->thisReference->value = prevThis;
 
       return result;
@@ -264,7 +264,7 @@ struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
    OrderBy_Definition(_def* bas, Attribute* attr, const _bool& hasMem,
-      OrderIndices* indices, Order* ord, uro::Uroboros* uro);
+      OrderIndices* indices, Order* ord, Uroboros& uro);
    ~OrderBy_Definition();
 
    void reset() override;
@@ -273,8 +273,8 @@ public:
 private:
    _def* base;
    _bool first = true;
-   uro::Uroboros* uroboros;
-   uro::InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
    const _bool hasMemory;
    AttributeMemory attrMemory;
 

@@ -26,12 +26,12 @@ namespace uro::comm
 struct Command_L : Command
 {
 public:
-   Command_L(uro::Uroboros* uro)
-      : uroboros(uro), inner(&(uro->vars.inner)) { };
+   Command_L(Uroboros& uro)
+      : uroboros(uro), inner(uro.vars.inner) { };
 
 protected:
-   uro::Uroboros* uroboros;
-   uro::InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
 
 };
 

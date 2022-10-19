@@ -38,12 +38,12 @@ _str StringBinary::getValue()
 
 _str LocationReference::getValue()
 {
-   return this->inner->location.value;
+   return this->inner.location.value;
 }
 
 _str RelativeLocation::getValue()
 {
-   return str(this->inner->location.value, OS_SEPARATOR_STRING, this->value->getValue());
+   return str(this->inner.location.value, OS_SEPARATOR_STRING, this->value->getValue());
 }
 
 _str CharAtIndex::getValue()

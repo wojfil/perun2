@@ -23,15 +23,15 @@ namespace uro::parse
 
 // turn one token into a generator
 // overloading is applied, so these functions can fit into template parsing in other places
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result);
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_bool>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_str>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_nlist>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tlist>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_list>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tim>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_per>*& result);
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _def*& result);
 
 }
 

@@ -24,7 +24,7 @@
 namespace uro::parse
 {
 
-Generator<_tlist>* parseTimList(const Tokens& tks, uro::Uroboros* uro)
+Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
@@ -60,7 +60,7 @@ Generator<_tlist>* parseTimList(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_tlist>* parseTimListed(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_tlist>* parseTimListed(const Tokens& tks, Uroboros& uro)
 {
    // look - I do not use template functions from 'parse-generic.h'
    // why? because time has a special property - comma can mean
@@ -78,7 +78,7 @@ static Generator<_tlist>* parseTimListed(const Tokens& tks, uro::Uroboros* uro)
    return lists;
 }
 
-static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, uro::Uroboros* uro)
+static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
    _bool isPrev = false;
@@ -134,7 +134,7 @@ static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, 
    }
 }
 
-static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, uro::Uroboros* uro)
+static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, Uroboros& uro)
 {
    const _int start = prev.getStart();
    const _int length = prev.getLength() + curr.getLength() + 1;
@@ -143,7 +143,7 @@ static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, 
    return parse(uro, tks2, tim) ? tim : nullptr;
 }
 
-static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, uro::Uroboros* uro)
+static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
    _bool isPrev = false;

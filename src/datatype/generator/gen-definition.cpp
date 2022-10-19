@@ -20,7 +20,7 @@
 namespace uro::gen
 {
 
-DefFilter::DefFilter(_def* def, uro::Uroboros* uro)
+DefFilter::DefFilter(_def* def, Uroboros& uro)
    : first(true), definition(def), uroboros(uro) { };
 
 DefFilter::~DefFilter()
@@ -67,7 +67,7 @@ _bool Filter_WhereDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros->state != State::s_Running) {
+      if (this->uroboros.state != State::s_Running) {
          definition->reset();
          break;
       }
@@ -81,7 +81,7 @@ _bool Filter_WhereDef::hasNext()
       const _bool con = condition->getValue();
 
       if (con) {
-         this->inner->index.value = index;
+         this->inner.index.value = index;
          index++;
          return true;
       }
@@ -93,8 +93,8 @@ _bool Filter_WhereDef::hasNext()
 }
 
 
-DefinitionChain::DefinitionChain(_def* def, uro::Uroboros* uro)
-   : definition(def), inner(&uro->vars.inner) { };
+DefinitionChain::DefinitionChain(_def* def, Uroboros& uro)
+   : definition(def), inner(uro.vars.inner) { };
 
 
 DefinitionChain::~DefinitionChain()
@@ -118,7 +118,7 @@ _bool DefinitionChain::hasNext()
    if (this->definition->hasNext()) {
       this->finished = false;
       this->value = this->definition->getValue();
-      this->inner->index.value.value.i = this->index;
+      this->inner.index.value.value.i = this->index;
       this->index++;
       return true;
    }
@@ -129,18 +129,15 @@ _bool DefinitionChain::hasNext()
 };
 
 
-LocationVessel::LocationVessel() 
-   : isAbsolute(false), inner(nullptr) { };
-
-LocationVessel::LocationVessel(uro::Uroboros* uro)
-   : isAbsolute(true), inner(&uro->vars.inner) { };
+LocationVessel::LocationVessel(const _bool& abs, Uroboros& uro)
+   : isAbsolute(abs), inner(uro.vars.inner) { };
 
 
 _str LocationVessel::getValue()
 {
    return this->isAbsolute
       ? this->value
-      : str(this->inner->location.value, OS_SEPARATOR_STRING, this->value);
+      : str(this->inner.location.value, OS_SEPARATOR_STRING, this->value);
 };
 
 
@@ -222,7 +219,7 @@ _bool Filter_LimitDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros->state != State::s_Running || counter >= limit) {
+      if (this->uroboros.state != State::s_Running || counter >= limit) {
          definition->reset();
          break;
       }
@@ -249,12 +246,12 @@ _bool Filter_SkipDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros->state != State::s_Running) {
+      if (this->uroboros.state != State::s_Running) {
          definition->reset();
       }
 
       if (counter == limit) {
-         this->inner->index.value -= limit;
+         this->inner.index.value -= limit;
          value = definition->getValue();
          return true;
       }
@@ -282,14 +279,14 @@ _bool Filter_EveryDef::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros->state != State::s_Running) {
+      if (this->uroboros.state != State::s_Running) {
          definition->reset();
       }
 
       if (counter == limit) {
          counter = 1LL;
          value = definition->getValue();
-         this->inner->index.value = index;
+         this->inner.index.value = index;
          index++;
          return true;
       }
@@ -315,7 +312,7 @@ _bool Filter_FinalDef::hasNext()
       length = 0LL;
       
       while (definition->hasNext()) {
-         if (this->uroboros->state != State::s_Running) {
+         if (this->uroboros.state != State::s_Running) {
             definition->reset();
             return false;
          }
@@ -333,14 +330,14 @@ _bool Filter_FinalDef::hasNext()
       first = false;
    }
 
-   if (this->uroboros->state != State::s_Running) {
+   if (this->uroboros.state != State::s_Running) {
       first = true;
       return false;
    }
 
    if (index < length) {
       value = values[static_cast<_size>(index)];
-      this->inner->index.value.value.i = index;
+      this->inner.index.value.value.i = index;
       index++;
       return true;
    }
@@ -369,7 +366,7 @@ void Join_DefStr::reset()
 
 _bool Join_DefStr::hasNext()
 {
-   if (this->uroboros->state != State::s_Running) {
+   if (this->uroboros.state != State::s_Running) {
       reset();
       return false;
    }
@@ -408,7 +405,7 @@ void Join_StrDef::reset()
 
 _bool Join_StrDef::hasNext()
 {
-   if (this->uroboros->state != State::s_Running) {
+   if (this->uroboros.state != State::s_Running) {
       reset();
       return false;
    }
@@ -449,7 +446,7 @@ void Join_DefList::reset()
 
 _bool Join_DefList::hasNext()
 {
-   if (this->uroboros->state != State::s_Running) {
+   if (this->uroboros.state != State::s_Running) {
       reset();
       return false;
    }
@@ -498,7 +495,7 @@ void Join_ListDef::reset()
 
 _bool Join_ListDef::hasNext()
 {
-   if (this->uroboros->state != State::s_Running) {
+   if (this->uroboros.state != State::s_Running) {
       reset();
       return false;
    }
@@ -557,7 +554,7 @@ void Join_DefDef::reset()
 
 _bool Join_DefDef::hasNext()
 {
-   if (this->uroboros->state != State::s_Running) {
+   if (this->uroboros.state != State::s_Running) {
       reset();
       return false;
    }
@@ -590,8 +587,8 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_def* def, uro::Uroboros* uro, const _str& suf, const _bool& abs, const _bool& dir)
-   : uroboros(uro), inner(&uro->vars.inner), definition(def), suffix(suf), absoluteBase(abs), isDirectory(dir) { };
+DefinitionSuffix::DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& dir)
+   : uroboros(uro), inner(uro.vars.inner), definition(def), suffix(suf), absoluteBase(abs), isDirectory(dir) { };
 
 
 DefinitionSuffix::~DefinitionSuffix()
@@ -617,7 +614,7 @@ _bool DefinitionSuffix::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros->state != State::s_Running) {
+      if (this->uroboros.state != State::s_Running) {
          this->definition->reset();
          this->first = true;
          break;
@@ -626,10 +623,10 @@ _bool DefinitionSuffix::hasNext()
       this->value = str(this->definition->getValue(), this->suffix);
       const _str path = this->absoluteBase 
          ? this->value 
-         : str(this->inner->location.value, OS_SEPARATOR_STRING, this->value);
+         : str(this->inner.location.value, OS_SEPARATOR_STRING, this->value);
 
       if (this->isDirectory ? os_directoryExists(path): os_exists(path)) {
-         this->inner->index.value = index;
+         this->inner.index.value = index;
          index++;
          return true;
       }

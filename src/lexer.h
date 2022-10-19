@@ -21,8 +21,8 @@
 namespace uro
 {
 
-std::vector<Token> tokenize(const _str &code, Uroboros* uro);
-static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros* uro);
+std::vector<Token> tokenize(const _str &code, Uroboros& uro);
+static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros& uro);
 inline _bool isSymbol(const _char& ch);
 _bool isNewLine(const _char& ch);
 inline _bool isAllowedInWord(const _char& ch);

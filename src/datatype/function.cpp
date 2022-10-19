@@ -44,14 +44,14 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
    return tks2.splitBySymbol(L',');
 }
 
-Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_bool>* boolFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (uro->hashes.HASH_GROUP_FUNC_BOO_STR.find(name) != uro->hashes.HASH_GROUP_FUNC_BOO_STR.end())
+   if (uro.hashes.HASH_GROUP_FUNC_BOO_STR.find(name) != uro.hashes.HASH_GROUP_FUNC_BOO_STR.end())
    {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
@@ -59,7 +59,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return simpleBoolFunction(args[0], word, uro);
    }
-   else if (name == uro->hashes.HASH_FUNC_EXIST) {
+   else if (name == uro.hashes.HASH_FUNC_EXIST) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -87,7 +87,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"list", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_ANY) {
+   else if (name == uro.hashes.HASH_FUNC_ANY) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -139,7 +139,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"list", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_ANYINSIDE) {
+   else if (name == uro.hashes.HASH_FUNC_ANYINSIDE) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -159,7 +159,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
       if (len == 1) {
          checkFunctionAttribute(word, uro);
          Generator<_str>* ts;
-         uro->vars.inner.createThisRef(ts);
+         uro.vars.inner.createThisRef(ts);
          return new F_AnyInside(def, ts, uro);
       }
 
@@ -178,7 +178,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(2, L"string", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_CONTAINS) {
+   else if (name == uro.hashes.HASH_FUNC_CONTAINS) {
       if (len != 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -249,7 +249,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
             L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_EXISTSINSIDE) {
+   else if (name == uro.hashes.HASH_FUNC_EXISTSINSIDE) {
       if (len == 0 || len > 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -262,7 +262,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
       if (len == 1) {
          checkFunctionAttribute(word, uro);
          Generator<_str>* ts;
-         uro->vars.inner.createThisRef(ts);
+         uro.vars.inner.createThisRef(ts);
          return new F_ExistsInside(str, ts, uro);
       }
 
@@ -275,7 +275,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(2, L"string", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_EXISTINSIDE) {
+   else if (name == uro.hashes.HASH_FUNC_EXISTINSIDE) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -285,7 +285,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          if (len == 1) {
             checkFunctionAttribute(word, uro);
             Generator<_str>* ts;
-            uro->vars.inner.createThisRef(ts);
+            uro.vars.inner.createThisRef(ts);
             return new F_AnyInside(def, ts, uro);
          }
          else {
@@ -312,7 +312,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
       if (len == 1) {
          checkFunctionAttribute(word, uro);
          Generator<_str>* ts;
-         uro->vars.inner.createThisRef(ts);
+         uro.vars.inner.createThisRef(ts);
          return new F_ExistInside(list, ts, uro);
       }
 
@@ -330,7 +330,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(2, L"string", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_STARTSWITH) {
+   else if (name == uro.hashes.HASH_FUNC_STARTSWITH) {
       if (len != 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -382,7 +382,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(2, L"string", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_ENDSWITH) {
+   else if (name == uro.hashes.HASH_FUNC_ENDSWITH) {
       if (len != 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -433,7 +433,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_EndsWith(str, str2);
    }
-   else if (name == uro->hashes.HASH_FUNC_FIND) {
+   else if (name == uro.hashes.HASH_FUNC_FIND) {
       if (len == 0 || len > 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -446,7 +446,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
       if (len == 1) {
          checkFunctionAttribute(word, uro);
          Generator<_str>* ts;
-         uro->vars.inner.createThisRef(ts);
+         uro.vars.inner.createThisRef(ts);
          return new F_Find_InThis(str, uro);
       }
 
@@ -463,7 +463,7 @@ Generator<_bool>* boolFunction(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_bool>* simpleBoolFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
+static Generator<_bool>* simpleBoolFunction(const Tokens& tks, const Token& word, Uroboros& uro)
 {
    Generator<_str>* arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -472,55 +472,55 @@ static Generator<_bool>* simpleBoolFunction(const Tokens& tks, const Token& word
 
    const _size& name = word.value.word.h;
 
-   if (name == uro->hashes.HASH_FUNC_ISLOWER)
+   if (name == uro.hashes.HASH_FUNC_ISLOWER)
       return new F_IsLower(arg1);
-   else if (name == uro->hashes.HASH_FUNC_ISUPPER)
+   else if (name == uro.hashes.HASH_FUNC_ISUPPER)
       return new F_IsUpper(arg1);
-   else if (name == uro->hashes.HASH_FUNC_ISNUMBER)
+   else if (name == uro.hashes.HASH_FUNC_ISNUMBER)
       return new F_IsNumber(arg1);
-   else if (name == uro->hashes.HASH_VAR_ARCHIVE)
+   else if (name == uro.hashes.HASH_VAR_ARCHIVE)
       return new F_Archive(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_COMPRESSED)
+   else if (name == uro.hashes.HASH_VAR_COMPRESSED)
       return new F_Compressed(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_EMPTY)
+   else if (name == uro.hashes.HASH_VAR_EMPTY)
       return new F_Empty(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_ENCRYPTED)
+   else if (name == uro.hashes.HASH_VAR_ENCRYPTED)
       return new F_Encrypted(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_EXISTS)
+   else if (name == uro.hashes.HASH_VAR_EXISTS)
       return new F_Exists(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_HIDDEN)
+   else if (name == uro.hashes.HASH_VAR_HIDDEN)
       return new F_Hidden(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_ISDIRECTORY)
+   else if (name == uro.hashes.HASH_VAR_ISDIRECTORY)
       return new F_IsDirectory(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_ISFILE)
+   else if (name == uro.hashes.HASH_VAR_ISFILE)
       return new F_IsFile(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_READONLY)
+   else if (name == uro.hashes.HASH_VAR_READONLY)
       return new F_Readonly(arg1, uro);
-   else if (name == uro->hashes.HASH_FUNC_ISLETTER)
+   else if (name == uro.hashes.HASH_FUNC_ISLETTER)
       return new F_IsLetter(arg1);
-   else if (name == uro->hashes.HASH_FUNC_ISDIGIT)
+   else if (name == uro.hashes.HASH_FUNC_ISDIGIT)
       return new F_IsDigit(arg1);
-   else if (name == uro->hashes.HASH_FUNC_ISBINARY)
+   else if (name == uro.hashes.HASH_FUNC_ISBINARY)
       return new F_IsBinary(arg1);
-   else if (name == uro->hashes.HASH_FUNC_ISHEX)
+   else if (name == uro.hashes.HASH_FUNC_ISHEX)
       return new F_IsHex(arg1);
    return nullptr;
 }
 
-Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_num>* numberFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (uro->hashes.HASH_GROUP_FUNC_NUM_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_NUM_NUM.end()) {
+   if (uro.hashes.HASH_GROUP_FUNC_NUM_NUM.find(name) != uro.hashes.HASH_GROUP_FUNC_NUM_NUM.end()) {
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
       return simpleNumberFunction(args[0], word, uro);
    }
-   else if (name == uro->hashes.HASH_FUNC_LENGTH) {
+   else if (name == uro.hashes.HASH_FUNC_LENGTH) {
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
@@ -534,14 +534,14 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
             L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_FROMBINARY || name == uro->hashes.HASH_FUNC_FROMHEX) {
+   else if (name == uro.hashes.HASH_FUNC_FROMBINARY || name == uro.hashes.HASH_FUNC_FROMHEX) {
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
       Generator<_str>* arg1;
 
       if (parse::parse(uro, args[0], arg1)) {
-         if (name == uro->hashes.HASH_FUNC_FROMBINARY)
+         if (name == uro.hashes.HASH_FUNC_FROMBINARY)
             return new F_FromBinary(arg1);
          else
             return new F_FromHex(arg1);
@@ -550,7 +550,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"string", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_VAR_SIZE) {
+   else if (name == uro.hashes.HASH_VAR_SIZE) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -585,7 +585,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
             L"' cannot be resolved to a string nor a list"), word.line);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_NUMBER) {
+   else if (name == uro.hashes.HASH_FUNC_NUMBER) {
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
@@ -598,7 +598,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
             L"' cannot be resolved to a string"), word.line);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_COUNT) {
+   else if (name == uro.hashes.HASH_FUNC_COUNT) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -633,7 +633,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
       throw SyntaxException(str(L"the argument of the function '",
          word.getOriginString(uro), L"' cannot be resolved to any collection"), word.line);
    }
-   else if (name == uro->hashes.HASH_FUNC_COUNTINSIDE) {
+   else if (name == uro.hashes.HASH_FUNC_COUNTINSIDE) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -646,7 +646,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
       if (len == 1) {
          checkFunctionAttribute(word, uro);
          Generator<_str>* ts;
-         uro->vars.inner.createThisRef(ts);
+         uro.vars.inner.createThisRef(ts);
          return new F_CountInside(def, ts, uro);
       }
 
@@ -664,7 +664,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(2, L"string", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_POWER) {
+   else if (name == uro.hashes.HASH_FUNC_POWER) {
       if (len != 2)
          functionArgNumberException(len, word, uro);
 
@@ -681,7 +681,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_Power(arg1, arg2);
    }
-   else if (uro->hashes.HASH_GROUP_AGGRFUNC.find(name) != uro->hashes.HASH_GROUP_AGGRFUNC.end()) {
+   else if (uro.hashes.HASH_GROUP_AGGRFUNC.find(name) != uro.hashes.HASH_GROUP_AGGRFUNC.end()) {
       if (len == 0) {
          throw SyntaxException(str(L"aggregate function '", word.getOriginString(uro),
             L"' needs at least one argument"), word.line);
@@ -689,7 +689,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return aggrFunction(args, word, uro);
    }
-   else if (name == uro->hashes.HASH_FUNC_FIRST || name == uro->hashes.HASH_FUNC_LAST) {
+   else if (name == uro.hashes.HASH_FUNC_FIRST || name == uro.hashes.HASH_FUNC_LAST) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -709,7 +709,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
             functionArgNumberException(len, word, uro);
          }
 
-         if (name == uro->hashes.HASH_FUNC_FIRST) {
+         if (name == uro.hashes.HASH_FUNC_FIRST) {
             return new F_First<_num>(nlist);
          }
          else {
@@ -717,7 +717,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
          }
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_RANDOM) {
+   else if (name == uro.hashes.HASH_FUNC_RANDOM) {
       if (len > 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -728,13 +728,13 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
 
       Generator<_num>* num;
       if (parse::parse(uro, args[0], num)) {
-         uro->math.setAnyRandomDouble();
+         uro.math.setAnyRandomDouble();
          return new F_RandomNumber(num, uro);
       }
 
       Generator<_nlist>* nlist;
       if (parse::parse(uro, args[0], nlist)) {
-         uro->math.setAnyRandomDouble();
+         uro.math.setAnyRandomDouble();
          return new F_RandomElement<_num>(nlist, uro);
       }
    }
@@ -742,7 +742,7 @@ Generator<_num>* numberFunction(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
+static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& word, Uroboros& uro)
 {
    Generator<_num>* arg;
    if (!parse::parse(uro, tks, arg)) {
@@ -751,25 +751,25 @@ static Generator<_num>* simpleNumberFunction(const Tokens& tks, const Token& wor
 
    const _size& name = word.value.word.h;
 
-   if (name == uro->hashes.HASH_FUNC_ABSOLUTE)
+   if (name == uro.hashes.HASH_FUNC_ABSOLUTE)
       return new F_Absolute(arg);
-   else if (name == uro->hashes.HASH_FUNC_CEIL)
+   else if (name == uro.hashes.HASH_FUNC_CEIL)
       return new F_Ceil(arg);
-   else if (name == uro->hashes.HASH_FUNC_FLOOR)
+   else if (name == uro.hashes.HASH_FUNC_FLOOR)
       return new F_Floor(arg);
-   else if (name == uro->hashes.HASH_FUNC_ROUND)
+   else if (name == uro.hashes.HASH_FUNC_ROUND)
       return new F_Round(arg);
-   else if (name == uro->hashes.HASH_FUNC_SIGN)
+   else if (name == uro.hashes.HASH_FUNC_SIGN)
       return new F_Sign(arg);
-   else if (name == uro->hashes.HASH_FUNC_SQRT)
+   else if (name == uro.hashes.HASH_FUNC_SQRT)
       return new F_Sqrt(arg);
-   else if (name == uro->hashes.HASH_FUNC_TRUNCATE)
+   else if (name == uro.hashes.HASH_FUNC_TRUNCATE)
       return new F_Truncate(arg);
    else
       return nullptr;
 }
 
-static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word, uro::Uroboros* uro)
+static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Token& word, Uroboros& uro)
 {
    const _size& name = word.value.word.h;
 
@@ -801,28 +801,28 @@ static Generator<_num>* aggrFunction(const std::vector<Tokens>& args, const Toke
       }
    }
 
-   if (name == uro->hashes.HASH_FUNC_AVERAGE)
+   if (name == uro.hashes.HASH_FUNC_AVERAGE)
       return new F_Average(singles, multis);
-   else if (name == uro->hashes.HASH_FUNC_MAX)
+   else if (name == uro.hashes.HASH_FUNC_MAX)
       return new F_Max(singles, multis);
-   else if (name == uro->hashes.HASH_FUNC_MEDIAN)
+   else if (name == uro.hashes.HASH_FUNC_MEDIAN)
       return new F_Median(singles, multis);
-   else if (name == uro->hashes.HASH_FUNC_MIN)
+   else if (name == uro.hashes.HASH_FUNC_MIN)
       return new F_Min(singles, multis);
-   else if (name == uro->hashes.HASH_FUNC_SUM)
+   else if (name == uro.hashes.HASH_FUNC_SUM)
       return new F_Sum(singles, multis);
    else
       return nullptr;
 }
 
-Generator<_per>* periodFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_per>* periodFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == uro->hashes.HASH_FUNC_LIFETIME) {
+   if (name == uro.hashes.HASH_FUNC_LIFETIME) {
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
@@ -838,31 +838,31 @@ Generator<_per>* periodFunction(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_str>* stringFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == uro->hashes.HASH_FUNC_AFTER || name == uro->hashes.HASH_FUNC_BEFORE) {
+   if (name == uro.hashes.HASH_FUNC_AFTER || name == uro.hashes.HASH_FUNC_BEFORE) {
       if (len != 2)
          functionArgNumberException(len, word, uro);
 
       return stringTwoArgFunction(args, word, uro);
    }
-   else if (uro->hashes.HASH_GROUP_FUNC_STR_STR.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_STR.end()) {
+   else if (uro.hashes.HASH_GROUP_FUNC_STR_STR.find(name) != uro.hashes.HASH_GROUP_FUNC_STR_STR.end()) {
 
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
       return simpleStringFunction(args[0], word, uro);
    }
-   else if (name == uro->hashes.HASH_FUNC_REVERSED) {
+   else if (name == uro.hashes.HASH_FUNC_REVERSED) {
       const _str sub = (word.getOriginString(uro)).substr(0, 7);
       throw SyntaxException(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
-   else if (uro->hashes.HASH_GROUP_FUNC_STR_STR_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_STR_NUM.end()) {
+   else if (uro.hashes.HASH_GROUP_FUNC_STR_STR_NUM.find(name) != uro.hashes.HASH_GROUP_FUNC_STR_STR_NUM.end()) {
       if (len != 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -878,16 +878,16 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(2, L"number", word, uro);
       }
 
-      if (name == uro->hashes.HASH_FUNC_REPEAT)
+      if (name == uro.hashes.HASH_FUNC_REPEAT)
          return new F_Repeat(str, num);
-      else if (name == uro->hashes.HASH_FUNC_LEFT)
+      else if (name == uro.hashes.HASH_FUNC_LEFT)
          return new F_Left(str, num);
-      else if (name == uro->hashes.HASH_FUNC_RIGHT)
+      else if (name == uro.hashes.HASH_FUNC_RIGHT)
          return new F_Right(str, num);
-      else if (name == uro->hashes.HASH_FUNC_FILL)
+      else if (name == uro.hashes.HASH_FUNC_FILL)
          return new F_Fill(str, num);
    }
-   else if (name == uro->hashes.HASH_FUNC_REPLACE) {
+   else if (name == uro.hashes.HASH_FUNC_REPLACE) {
       if (len != 3) {
          functionArgNumberException(len, word, uro);
       }
@@ -912,7 +912,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_Replace(str1, str2, str3);
    }
-   else if (name == uro->hashes.HASH_FUNC_SUBSTRING) {
+   else if (name == uro.hashes.HASH_FUNC_SUBSTRING) {
       if (len < 2 || len > 3) {
          throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' can only take"
             L" two or three arguments"), word.line);
@@ -942,7 +942,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_Substring_3(str, num, num2);
    }
-   else if (name == uro->hashes.HASH_FUNC_CONCATENATE) {
+   else if (name == uro.hashes.HASH_FUNC_CONCATENATE) {
       if (len < 1) {
          throw SyntaxException(str(L"function '", word.getOriginString(uro),
             L"' needs at least one arguments"), word.line);
@@ -974,7 +974,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_Concatenate(values);
    }
-   else if (name == uro->hashes.HASH_FUNC_FIRST || name == uro->hashes.HASH_FUNC_LAST) {
+   else if (name == uro.hashes.HASH_FUNC_FIRST || name == uro.hashes.HASH_FUNC_LAST) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -993,7 +993,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
             functionArgNumberException(len, word, uro);
          }
 
-         if (name == uro->hashes.HASH_FUNC_FIRST) {
+         if (name == uro.hashes.HASH_FUNC_FIRST) {
             return new F_FirstDef(def);
          }
          else {
@@ -1008,7 +1008,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
             functionArgNumberException(len, word, uro);
          }
 
-         if (name == uro->hashes.HASH_FUNC_FIRST) {
+         if (name == uro.hashes.HASH_FUNC_FIRST) {
             return new F_First<_str>(list);
          }
          else {
@@ -1020,7 +1020,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
             L"' cannot be resolved to any collection"), word.line);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_PATH) {
+   else if (name == uro.hashes.HASH_FUNC_PATH) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -1082,7 +1082,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          return new F_Path_4(str1, str2, str3, str4);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_STRING) {
+   else if (name == uro.hashes.HASH_FUNC_STRING) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1110,7 +1110,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
       throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
         L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
    }
-   else if (uro->hashes.HASH_GROUP_FUNC_STR_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_STR_NUM.end()) {
+   else if (uro.hashes.HASH_GROUP_FUNC_STR_NUM.find(name) != uro.hashes.HASH_GROUP_FUNC_STR_NUM.end()) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1118,18 +1118,18 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
       Generator<_num>* num;
 
       if (parse::parse(uro, args[0], num)) {
-         if (name == uro->hashes.HASH_FUNC_ROMAN)
+         if (name == uro.hashes.HASH_FUNC_ROMAN)
             return new F_Roman(num);
-         else if (name == uro->hashes.HASH_FUNC_BINARY)
+         else if (name == uro.hashes.HASH_FUNC_BINARY)
             return new F_Binary(num);
-         else if (name == uro->hashes.HASH_FUNC_HEX)
+         else if (name == uro.hashes.HASH_FUNC_HEX)
             return new F_Hex(num);
       }
       else {
          functionArgException(1, L"number", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_MONTHNAME) {
+   else if (name == uro.hashes.HASH_FUNC_MONTHNAME) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1142,7 +1142,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"number", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_WEEKDAYNAME) {
+   else if (name == uro.hashes.HASH_FUNC_WEEKDAYNAME) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1155,7 +1155,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"number", word, uro);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_RANDOM) {
+   else if (name == uro.hashes.HASH_FUNC_RANDOM) {
       if (len == 0) {
          return nullptr;
       }
@@ -1182,7 +1182,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
             word.line);
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_JOIN) {
+   else if (name == uro.hashes.HASH_FUNC_JOIN) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -1214,7 +1214,7 @@ Generator<_str>* stringFunction(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word, uro::Uroboros* uro)
+static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, const Token& word, Uroboros& uro)
 {
    Generator<_str>* arg1;
    if (!parse::parse(uro, args[0], arg1)) {
@@ -1229,15 +1229,15 @@ static Generator<_str>* stringTwoArgFunction(const std::vector<Tokens>& args, co
 
    const _size& name = word.value.word.h;
 
-   if (name == uro->hashes.HASH_FUNC_AFTER)
+   if (name == uro.hashes.HASH_FUNC_AFTER)
       return new F_After(arg1, arg2);
-   else if (name == uro->hashes.HASH_FUNC_BEFORE)
+   else if (name == uro.hashes.HASH_FUNC_BEFORE)
       return new F_Before(arg1, arg2);
 
    return nullptr;
 }
 
-static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
+static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& word, Uroboros& uro)
 {
    Generator<_str>* arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -1246,57 +1246,57 @@ static Generator<_str>* simpleStringFunction(const Tokens& tks, const Token& wor
 
    const _size& name = word.value.word.h;
 
-   if (name == uro->hashes.HASH_FUNC_DIGITS)
+   if (name == uro.hashes.HASH_FUNC_DIGITS)
       return new F_Digits(arg1);
-   else if (name == uro->hashes.HASH_FUNC_LETTERS)
+   else if (name == uro.hashes.HASH_FUNC_LETTERS)
       return new F_Letters(arg1);
-   else if (name == uro->hashes.HASH_FUNC_LOWER)
+   else if (name == uro.hashes.HASH_FUNC_LOWER)
       return new F_Lower(arg1);
-   else if (name == uro->hashes.HASH_FUNC_TRIM)
+   else if (name == uro.hashes.HASH_FUNC_TRIM)
       return new F_Trim(arg1);
-   else if (name == uro->hashes.HASH_FUNC_UPPER)
+   else if (name == uro.hashes.HASH_FUNC_UPPER)
       return new F_Upper(arg1);
-   else if (name == uro->hashes.HASH_FUNC_REVERSE)
+   else if (name == uro.hashes.HASH_FUNC_REVERSE)
       return new F_Reverse(arg1);
-   else if (name == uro->hashes.HASH_VAR_DRIVE)
+   else if (name == uro.hashes.HASH_VAR_DRIVE)
       return new F_Drive(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_EXTENSION)
+   else if (name == uro.hashes.HASH_VAR_EXTENSION)
       return new F_Extension(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_FULLNAME)
+   else if (name == uro.hashes.HASH_VAR_FULLNAME)
       return new F_Fullname(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_NAME)
+   else if (name == uro.hashes.HASH_VAR_NAME)
       return new F_Name(arg1, uro);
-   else if (name == uro->hashes.HASH_VAR_PARENT)
+   else if (name == uro.hashes.HASH_VAR_PARENT)
       return new F_Parent(arg1, uro);
-   else if (name == uro->hashes.HASH_FUNC_AFTERDIGITS)
+   else if (name == uro.hashes.HASH_FUNC_AFTERDIGITS)
       return new F_AfterDigits(arg1);
-   else if (name == uro->hashes.HASH_FUNC_AFTERLETTERS)
+   else if (name == uro.hashes.HASH_FUNC_AFTERLETTERS)
       return new F_AfterLetters(arg1);
-   else if (name == uro->hashes.HASH_FUNC_BEFOREDIGITS)
+   else if (name == uro.hashes.HASH_FUNC_BEFOREDIGITS)
       return new F_BeforeDigits(arg1);
-   else if (name == uro->hashes.HASH_FUNC_BEFORELETTERS)
+   else if (name == uro.hashes.HASH_FUNC_BEFORELETTERS)
       return new F_BeforeLetters(arg1);
-   else if (name == uro->hashes.HASH_FUNC_CAPITALIZE)
+   else if (name == uro.hashes.HASH_FUNC_CAPITALIZE)
       return new F_Capitalize(arg1);
    else
       return nullptr;
 }
 
-Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_tim>* timeFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (uro->hashes.HASH_GROUP_FUNC_TIM_NUM.find(name) != uro->hashes.HASH_GROUP_FUNC_TIM_NUM.end()) {
+   if (uro.hashes.HASH_GROUP_FUNC_TIM_NUM.find(name) != uro.hashes.HASH_GROUP_FUNC_TIM_NUM.end()) {
       if (len != 1)
          functionArgNumberException(len, word, uro);
 
       return simpleTimeFunction(args[0], word, uro);
    }
 
-   if (uro->hashes.HASH_GROUP_TIME_ATTR.find(name) != uro->hashes.HASH_GROUP_TIME_ATTR.end()) {
+   if (uro.hashes.HASH_GROUP_TIME_ATTR.find(name) != uro.hashes.HASH_GROUP_TIME_ATTR.end()) {
 
       if (len != 1)
          functionArgNumberException(len, word, uro);
@@ -1306,17 +1306,17 @@ Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"string", word, uro);
       }
 
-      if (name == uro->hashes.HASH_VAR_ACCESS)
+      if (name == uro.hashes.HASH_VAR_ACCESS)
          return new F_Access(arg1, uro);
-      else if (name == uro->hashes.HASH_VAR_CHANGE)
+      else if (name == uro.hashes.HASH_VAR_CHANGE)
          return new F_Change(arg1, uro);
-      else if (name == uro->hashes.HASH_VAR_CREATION)
+      else if (name == uro.hashes.HASH_VAR_CREATION)
          return new F_Creation(arg1, uro);
       else
          return new F_Modification(arg1, uro);
    }
 
-   else if (name == uro->hashes.HASH_FUNC_DATE) {
+   else if (name == uro.hashes.HASH_FUNC_DATE) {
       if (len != 3)
          functionArgNumberException(len, word, uro);
 
@@ -1340,7 +1340,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_Time_3(arg1, arg2, arg3);
    }
-   else if (name == uro->hashes.HASH_FUNC_TIME) {
+   else if (name == uro.hashes.HASH_FUNC_TIME) {
       if (len < 2 || len == 4 || len > 6) {
          functionArgNumberException(len, word, uro);
       }
@@ -1404,7 +1404,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
 
       return new F_Time_6(arg1, arg2, arg3, arg4, arg5, arg6);
    }
-   else if (name == uro->hashes.HASH_FUNC_FIRST || name == uro->hashes.HASH_FUNC_LAST) {
+   else if (name == uro.hashes.HASH_FUNC_FIRST || name == uro.hashes.HASH_FUNC_LAST) {
       if (len == 0) {
          functionArgNumberException(len, word, uro);
       }
@@ -1424,7 +1424,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
             functionArgNumberException(len, word, uro);
          }
 
-         if (name == uro->hashes.HASH_FUNC_FIRST) {
+         if (name == uro.hashes.HASH_FUNC_FIRST) {
             return new F_First<_tim>(tlist);
          }
          else {
@@ -1432,7 +1432,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
          }
       }
    }
-   else if (name == uro->hashes.HASH_FUNC_RANDOM) {
+   else if (name == uro.hashes.HASH_FUNC_RANDOM) {
       if (len > 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1450,7 +1450,7 @@ Generator<_tim>* timeFunction(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word, uro::Uroboros* uro)
+static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word, Uroboros& uro)
 {
    Generator<_num>* arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -1459,24 +1459,24 @@ static Generator<_tim>* simpleTimeFunction(const Tokens& tks, const Token& word,
 
    const _size& name = word.value.word.h;
 
-   if (name == uro->hashes.HASH_FUNC_CHRISTMAS)
+   if (name == uro.hashes.HASH_FUNC_CHRISTMAS)
       return new F_Christmas(arg1);
-   else if (name == uro->hashes.HASH_FUNC_EASTER)
+   else if (name == uro.hashes.HASH_FUNC_EASTER)
       return new F_Easter(arg1);
-   else if (name == uro->hashes.HASH_FUNC_NEWYEAR)
+   else if (name == uro.hashes.HASH_FUNC_NEWYEAR)
       return new F_NewYear(arg1);
    else
       return nullptr;
 }
 
 
-static void functionArgNumberException(const _int& argNumber, const Token& word, uro::Uroboros* uro)
+static void functionArgNumberException(const _int& argNumber, const Token& word, Uroboros& uro)
 {
    throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? EMPTY_STRING : L"s")), word.line);
 }
 
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, uro::Uroboros* uro)
+static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, Uroboros& uro)
 {
    throw SyntaxException(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(uro), L"' cannot be resolved to a ", typeName), word.line);
@@ -1514,14 +1514,14 @@ static _str ordinalNumber(const _int& number)
    }
 }
 
-Generator<_list>* listFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_list>* listFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == uro->hashes.HASH_FUNC_CHARACTERS || name == uro->hashes.HASH_FUNC_WORDS) {
+   if (name == uro.hashes.HASH_FUNC_CHARACTERS || name == uro.hashes.HASH_FUNC_WORDS) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1531,12 +1531,12 @@ Generator<_list>* listFunction(const Tokens& tks, uro::Uroboros* uro)
          functionArgException(1, L"string", word, uro);
       }
 
-      if (name == uro->hashes.HASH_FUNC_CHARACTERS)
+      if (name == uro.hashes.HASH_FUNC_CHARACTERS)
          return new F_Characters(str);
       else
          return new F_Words(str);
    }
-   if (name == uro->hashes.HASH_FUNC_SPLIT) {
+   if (name == uro.hashes.HASH_FUNC_SPLIT) {
       if (len != 2) {
          functionArgNumberException(len, word, uro);
       }
@@ -1560,14 +1560,14 @@ Generator<_list>* listFunction(const Tokens& tks, uro::Uroboros* uro)
 }
 
 
-Generator<_nlist>* numListFunction(const Tokens& tks, uro::Uroboros* uro)
+Generator<_nlist>* numListFunction(const Tokens& tks, Uroboros& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == uro->hashes.HASH_FUNC_NUMBERS) {
+   if (name == uro.hashes.HASH_FUNC_NUMBERS) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -1584,15 +1584,15 @@ Generator<_nlist>* numListFunction(const Tokens& tks, uro::Uroboros* uro)
 }
 
 
-static void checkFunctionAttribute(const Token& word, uro::Uroboros* uro)
+static void checkFunctionAttribute(const Token& word, Uroboros& uro)
 {
-   if (!uro->vc.anyAttribute() || uro->vars.inner.thisState != ThisState::ts_String) {
+   if (!uro.vc.anyAttribute() || uro.vars.inner.thisState != ThisState::ts_String) {
       throw SyntaxException(str(L"function '", word.getOriginString(uro),
          L"' can be called only inside an iteration loop"), word.line);
    }
 }
 
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, uro::Uroboros* uro)
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Uroboros& uro)
 {
    BracketsInfo bi;
    _int end = tks.getEnd();

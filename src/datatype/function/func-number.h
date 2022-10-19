@@ -52,7 +52,7 @@ public:
 struct F_CountDef : Generator<_num>
 {
 public:
-   F_CountDef(_def* def, Uroboros* uro)
+   F_CountDef(_def* def, Uroboros& uro)
       : definition(def), uroboros(uro) { };
 
    ~F_CountDef() {
@@ -62,7 +62,7 @@ public:
    _num getValue() override;
 
 private:
-   Uroboros* uroboros;
+   Uroboros& uroboros;
    _def* definition;
 };
 
@@ -70,8 +70,8 @@ private:
 struct F_CountInside : Generator<_num>
 {
 public:
-   F_CountInside(_def* def, Generator<_str>* val, Uroboros* uro)
-      : definition(def), value(val), uroboros(uro), inner(&uro->vars.inner) { };
+   F_CountInside(_def* def, Generator<_str>* val, Uroboros& uro)
+      : definition(def), value(val), uroboros(uro), inner(uro.vars.inner) { };
 
    ~F_CountInside() {
       delete definition;
@@ -81,8 +81,8 @@ public:
    _num getValue() override;
 
 private:
-   Uroboros* uroboros;
-   InnerVariables* inner;
+   Uroboros& uroboros;
+   InnerVariables& inner;
    _def* definition;
    Generator<_str>* value;
 };
@@ -157,8 +157,8 @@ public:
 struct F_Random : Generator<_num>
 {
 public:
-   F_Random(Uroboros* uro)
-      : math(&uro->math) { };
+   F_Random(Uroboros& uro)
+      : math(&uro.math) { };
 
    _num getValue() override;
 
@@ -170,8 +170,8 @@ private:
 struct F_RandomNumber : Func_1<_num>, Generator<_num>
 {
 public:
-   F_RandomNumber(Generator<_num>* a1, Uroboros* uro)
-      : Func_1(a1), math(&uro->math) { };
+   F_RandomNumber(Generator<_num>* a1, Uroboros& uro)
+      : Func_1(a1), math(&uro.math) { };
 
    _num getValue() override;
 

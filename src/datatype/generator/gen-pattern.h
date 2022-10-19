@@ -42,17 +42,17 @@ public:
 struct PatternParser
 {
 public:
-   PatternParser(uro::Uroboros* uro)
+   PatternParser(Uroboros& uro)
       : uroboros(uro), defGenerator(OsElement::oe_None, uro) { };
 
    _bool parse(const _str& originPattern, _def*& result, const _int& line) const;
 
 private:
 
-   void addUnit(_str& asteriskPart, _str& suffixPart, const _str& part, 
+   void addUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
       const _bool& hasAsterisk, std::vector<PatternUnit>& units) const;
 
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    const DefinitionGenerator defGenerator;
 };
 

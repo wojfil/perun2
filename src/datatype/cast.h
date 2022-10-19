@@ -140,7 +140,7 @@ struct Cast_TL_L : Cast<_tlist, _list>
 struct Cast_D_L : Generator<_list>
 {
 public:
-   Cast_D_L(_def* b, uro::Uroboros* uro)
+   Cast_D_L(_def* b, Uroboros& uro)
       : base(b), uroboros(uro) { };
 
    ~Cast_D_L()
@@ -151,7 +151,7 @@ public:
    _list getValue() override;
 
 private:
-   uro::Uroboros* uroboros;
+   Uroboros& uroboros;
    _def* base;
 };
 

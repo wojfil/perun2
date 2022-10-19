@@ -35,7 +35,7 @@ struct Variables
 {
 public:
 
-   Variables(uro::Uroboros* uro);
+   Variables(uro::Uroboros& uro);
 
    const _str uroPath;
    InnerVariables inner;
@@ -84,7 +84,7 @@ public:
 
 private:
 
-   uro::Uroboros* uroboros;
+   uro::Uroboros& uroboros;
    Hashes* hashes;
    VariablesContext* vc;
 

@@ -179,14 +179,7 @@ exitParser:
          d0 = new DefinitionSuffix(d, this->uroboros, u0.suffixPart, isAbsolute, true);
       }
 
-      LocationVessel* vessel;
-      if (isAbsolute) {
-         vessel = new LocationVessel(this->uroboros);
-      }
-      else {
-         vessel = new LocationVessel();
-      }
-
+      LocationVessel* vessel = new LocationVessel(isAbsolute, this->uroboros);
       _def* d1;
       const _str p1 = str(OS_SEPARATOR_STRING, u1.asteriskPart);
 

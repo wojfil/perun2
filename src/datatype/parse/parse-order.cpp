@@ -18,17 +18,17 @@
 namespace uro::parse
 {
 
-void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, uro::Uroboros* uro)
+void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro)
 {
    if (state == ThisState::ts_String) {
-      uro->vc.retreatAttribute();
+      uro.vc.retreatAttribute();
    }
 
-   uro->vars.inner.thisState = prevState;
+   uro.vars.inner.thisState = prevState;
 }
 
 void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _def*& result,
-   gen::OrderIndices* indices, gen::Order* order, uro::Uroboros* uro)
+   gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
 {
    result = new gen::OrderBy_Definition(result, attr, hasMemory, indices, order, uro);
 }

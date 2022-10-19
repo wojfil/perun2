@@ -27,7 +27,7 @@
 namespace uro::parse
 {
 
-Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro)
+Generator<_str>* parseString(const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
@@ -59,19 +59,19 @@ Generator<_str>* parseString(const Tokens& tks, uro::Uroboros* uro)
       const Token& f = tks.first();
       Generator<_list>* list;
 
-      if (uro->vars.getVarValue(f, list)) {
+      if (uro.vars.getVarValue(f, list)) {
          return new gen::ListElement<_str>(list, num);
       }
       else {
          Generator<_str>* str;
 
-         if (uro->vars.getVarValue(f, str)) {
+         if (uro.vars.getVarValue(f, str)) {
             return new gen::CharAtIndex(str, num);
          }
          else {
             _def* def;
 
-            if (uro->vars.getVarValue(f, def)) {
+            if (uro.vars.getVarValue(f, def)) {
                return new gen::DefinitionElement(def, num);
             }
             else {
@@ -105,7 +105,7 @@ void concatParseOutcome(_bool& parsed, _bool& allConstants, Generator<T>* recent
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-Generator<_str>* parseStringConcat(const Tokens& tks, uro::Uroboros* uro)
+Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
 {
    enum PrevType {
       pt_String = 0,

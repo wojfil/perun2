@@ -29,11 +29,11 @@
 namespace uro::parse
 {
 
-Generator<_num>* parseListElementIndex(const Tokens& tks, uro::Uroboros* uro);
-void checkLimitBySize(const Tokens& tks, uro::Uroboros* uro);
+Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro);
+void checkLimitBySize(const Tokens& tks, Uroboros& uro);
 
 template <typename T>
-static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
+static Generator<T>* parseTernary(const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return nullptr;
@@ -93,7 +93,7 @@ static Generator<T>* parseTernary(const Tokens& tks, uro::Uroboros* uro)
 
 
 template <typename T>
-static Generator<T>* parseBinary(const Tokens& tks, uro::Uroboros* uro)
+static Generator<T>* parseBinary(const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return nullptr;
@@ -137,7 +137,7 @@ static Generator<T>* parseBinary(const Tokens& tks, uro::Uroboros* uro)
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements, uro::Uroboros* uro)
+static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
    std::vector<Generator<T>*>* result = new std::vector<Generator<T>*>();
@@ -171,7 +171,7 @@ static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& e
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, uro::Uroboros* uro)
+static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
    std::vector<Generator<std::vector<T>>*>* result
@@ -206,7 +206,7 @@ static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& el
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListed(const Tokens& tks, uro::Uroboros* uro)
+static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return nullptr;
@@ -224,7 +224,7 @@ static Generator<std::vector<T>>* parseListed(const Tokens& tks, uro::Uroboros* 
 
 
 template <typename T>
-static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* uro)
+static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return nullptr;
@@ -233,7 +233,7 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* ur
    Generator<_num>* num = parseListElementIndex(tks, uro);
    const Token& f = tks.first();
    Generator<std::vector<T>>* collection;
-   if (uro->vars.getVarValue(f, collection)) {
+   if (uro.vars.getVarValue(f, collection)) {
       return new gen::ListElement<T>(collection, num);
    }
    else {
@@ -243,7 +243,7 @@ static Generator<T>* parseCollectionElement(const Tokens& tks, uro::Uroboros* ur
 }
 
 
-static _bool parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _def*& result, _fdata*& data)
 {
    if (parse::parse(uro, tks, result)) {
       data = result->getDataPtr();
@@ -255,7 +255,7 @@ static _bool parseFilterBase(const Tokens& tks, uro::Uroboros* uro, _def*& resul
 
 
 template <typename T>
-static _bool parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>*& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, Generator<T>*& result, _fdata*& data)
 {
    data = nullptr;
    return parse::parse(uro, tks, result);
@@ -264,7 +264,7 @@ static _bool parseFilterBase(const Tokens& tks, uro::Uroboros* uro, Generator<T>
 
 template <typename T>
 static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, Attribute*& attr,
-   const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, uro::Uroboros* uro, T& base)
+   const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, Uroboros& uro, T& base)
 {
    const _size fplen = prototypes.size();
    _int lastWhereId = -1;
@@ -309,7 +309,7 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
 
 
 template <typename T, typename T2>
-static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* uro)
+static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros& uro)
 {
    const _size firstKeywordId = tks.getFilterKeywordId();
 
@@ -335,7 +335,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
    const _int kw = firstKeywordId - tks.getStart() + 1;
    const _int start = tks.getStart() + kw;
    const _int length = tks.getLength() - kw;
-   const _bool hasMemory = uro->vc.anyAttribute();
+   const _bool hasMemory = uro.vc.anyAttribute();
    const Tokens tks3(tks, start, length);
    std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(uro);
    const _size flength = filterTokens.size();
@@ -384,26 +384,26 @@ static T parseFilter(const Tokens& tks, const ThisState& state, uro::Uroboros* u
             break;
          }
          case Keyword::kw_Where: {
-            const ThisState prevThisState = uro->vars.inner.thisState;
-            uro->vars.inner.thisState = state;
+            const ThisState prevThisState = uro.vars.inner.thisState;
+            uro.vars.inner.thisState = state;
 
             if (hasAttr) {
-               uro->vc.addAttribute(attr);
+               uro.vc.addAttribute(attr);
             }
 
             Generator<_bool>* boo;
             if (!parse(uro, ts, boo)) {
                langutil::deleteVector(prototypes);
-               uro->vars.inner.thisState = prevThisState;
+               uro.vars.inner.thisState = prevThisState;
                throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
                   L"' cannot be resolved to a logic condition"), tsf.line);
             }
 
             prototypes.push_back(new FP_Where<T>(boo));
-            uro->vars.inner.thisState = prevThisState;
+            uro.vars.inner.thisState = prevThisState;
 
             if (hasAttr) {
-               uro->vc.retreatAttribute();
+               uro.vc.retreatAttribute();
             }
 
             break;

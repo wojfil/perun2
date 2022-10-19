@@ -28,7 +28,7 @@
 namespace uro::parse
 {
 
-Generator<_bool>* parseBool(const Tokens& tks, uro::Uroboros* uro)
+Generator<_bool>* parseBool(const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
@@ -106,7 +106,7 @@ Generator<_bool>* parseBool(const Tokens& tks, uro::Uroboros* uro)
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static Generator<_bool>* parseBoolExp(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseBoolExp(const Tokens& tks, Uroboros& uro)
 {
    std::vector<ExpElement<_bool>*> infList; // infix notation list
    const _int start = tks.getStart();
@@ -531,7 +531,7 @@ static _char toBoolExpOperator(const Token& tk)
 
 template <typename T>
 static Generator<_bool>* parseIn_Unit(const _bool& negated, 
-   const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro)
+   const std::pair<Tokens, Tokens>& pair, Uroboros& uro)
 {
    Generator<T>* valLeft;
    if (!parse(uro, pair.first, valLeft)) {
@@ -571,7 +571,7 @@ static Generator<_bool>* parseIn_Unit(const _bool& negated,
    }
 }
 
-static Generator<_bool>* parseIn(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseIn(const Tokens& tks, Uroboros& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
@@ -599,7 +599,7 @@ static Generator<_bool>* parseIn(const Tokens& tks, uro::Uroboros* uro)
    const Token& lf = pair.first.first();
 
    if (pair.first.getLength() == 1 && lf.type == Token::t_Word &&
-      uro->hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end())
+      uro.hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end())
    {
       if (pair.second.check(TI_HAS_CHAR_COMMA)) {
          const std::vector<Tokens> elements = pair.second.splitBySymbol(L',');
@@ -652,7 +652,7 @@ static Generator<_bool>* parseIn(const Tokens& tks, uro::Uroboros* uro)
 
 
 static Generator<_bool>* parseInTimList(const bool& negated, 
-   const std::pair<Tokens, Tokens>& pair, uro::Uroboros* uro)
+   const std::pair<Tokens, Tokens>& pair, Uroboros& uro)
 {
    Generator<_tim>* tim;
    if (!parse(uro, pair.first, tim)) {
@@ -688,7 +688,7 @@ static Generator<_bool>* parseInTimList(const bool& negated,
    }
 }
 
-static void emptyOperSideException(const Token& oper, const bool& isLeft, uro::Uroboros* uro)
+static void emptyOperSideException(const Token& oper, const bool& isLeft, Uroboros& uro)
 {
    const _str side = isLeft ? L"left" : L"right";
 
@@ -697,7 +697,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft, uro::U
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool& negated, const Tokens& tks, uro::Uroboros* uro)
+   const _str& timeMember, const _bool& negated, const Tokens& tks, Uroboros& uro)
 {
    if (timeMember == L"year") {
       if (negated) {
@@ -725,7 +725,7 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
    }
 }
 
-static Generator<_bool>* parseLike(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseLike(const Tokens& tks, Uroboros& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
@@ -776,7 +776,7 @@ static Generator<_bool>* parseLike(const Tokens& tks, uro::Uroboros* uro)
    }
 }
 
-static Generator<_bool>* parseComparisons(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_bool>* parseComparisons(const Tokens& tks, Uroboros& uro)
 {
    BracketsInfo bi;
    const _int end = tks.getEnd();
@@ -824,7 +824,7 @@ static Generator<_bool>* comparison(Generator<T>* val1,
 
 
 template <typename T>
-Generator<_bool>* parseComparisonUnit(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
+Generator<_bool>* parseComparisonUnit(const Tokens& left, const Tokens& right, const gen::CompType& ct, Uroboros& uro)
 {
    Generator<T>* v1;
    Generator<T>* v2;
@@ -860,7 +860,7 @@ Generator<_bool>* parseComparisonUnit(const Tokens& left, const Tokens& right, c
    return nullptr;
 }
 
-static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, uro::Uroboros* uro)
+static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, Uroboros& uro)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -878,9 +878,9 @@ static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, u
       const _bool isMonth1 = t1.isMonth();
       const _bool isMonth2 = t2.isMonth();
       const _bool isVar1 = t1.type == Token::t_Word &&
-         uro->hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
+         uro.hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end();
       const _bool isVar2 = t2.type == Token::t_Word &&
-         uro->hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != uro->hashes.HASH_GROUP_TIME_ATTR.end();
+         uro.hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end();
 
       //const _str& v1 = t1.originString;
       //const _str& v2 = t2.originString;
@@ -954,7 +954,7 @@ static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, u
 }
 
 Generator<_bool>* comparisonDefList( _def* def, Generator<_list>* list, const gen::CompType& ct,
-   const _bool& reversed, uro::Uroboros* uro)
+   const _bool& reversed, Uroboros& uro)
 {
    switch (ct) {
       case gen::ct_Equals:
@@ -994,7 +994,7 @@ Generator<_bool>* comparisonDefList( _def* def, Generator<_list>* list, const ge
 
 
 template <typename T>
-Generator<_bool>* comparisonCollections(const Tokens& left, const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
+Generator<_bool>* comparisonCollections(const Tokens& left, const Tokens& right, const gen::CompType& ct, Uroboros& uro)
 {
    Generator<std::vector<T>>* leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1024,7 +1024,7 @@ Generator<_bool>* comparisonCollections(const Tokens& left, const Tokens& right,
 
 template <typename T>
 Generator<_bool>* comparisonCollectionValue(const Tokens& left, const Tokens& right,
-   const gen::CompType& ct, uro::Uroboros* uro)
+   const gen::CompType& ct, Uroboros& uro)
 {
    Generator<T>* leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1082,7 +1082,7 @@ Generator<_bool>* comparisonCollectionValue(const Tokens& left, const Tokens& ri
 }
 
 static Generator<_bool>* parseCollectionComparisons(const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, uro::Uroboros* uro)
+   const Tokens& right, const gen::CompType& ct, Uroboros& uro)
 {
    _def* leftDef;
    _def* rightDef;

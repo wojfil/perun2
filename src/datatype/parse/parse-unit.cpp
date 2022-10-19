@@ -25,7 +25,7 @@
 namespace uro::parse
 {
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_bool>*& result)
 {
    const Token& tk = tks.first();
 
@@ -46,7 +46,7 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& re
          }
       }
       case Token::t_Word: {
-         return uro->vars.getVarValue(tk, result);
+         return uro.vars.getVarValue(tk, result);
       }
       default: {
          return false;
@@ -54,7 +54,7 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_bool>*& re
    }
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
 {
    const Token& tk = tks.first();
 
@@ -64,17 +64,17 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& res
          return true;
       }
       case Token::t_Word: {
-         return uro->vars.getVarValue(tk, result);
+         return uro.vars.getVarValue(tk, result);
       }
       case Token::t_TwoWords: {
-         const Hashes& hs = uro->hashes;
+         const Hashes& hs = uro.hashes;
 
          if (tk.value.twoWords.h1 == hs.HASH_NOTHING) {
             throw SyntaxException(L"dot . should be preceded by a time variable name", tk.line);
          }
 
          Generator<_tim>* var;
-         if (!uro->vars.getVarValue(tk, var)) {
+         if (!uro.vars.getVarValue(tk, var)) {
             throw SyntaxException(str(L"time variable from expression '", tk.getOriginString(uro),
                L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
          }
@@ -109,7 +109,7 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_num>*& res
    }
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_str>*& result)
 {
    const Token& tk = tks.first();
 
@@ -123,7 +123,7 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& res
          return true;
       }
       case Token::t_Word: {
-         return uro->vars.getVarValue(tk, result);
+         return uro.vars.getVarValue(tk, result);
       }
       default: {
          return false;
@@ -131,49 +131,49 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_str>*& res
    }
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_nlist>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_nlist>*& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word
-      && uro->vars.getVarValue(tk, result);
+      && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tlist>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tlist>*& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word
-      && uro->vars.getVarValue(tk, result);
+      && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_list>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_list>*& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word
-      && uro->vars.getVarValue(tk, result);
+      && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tim>*& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Word: {
-         return uro->vars.getVarValue(tk, result);
+         return uro.vars.getVarValue(tk, result);
       }
       case Token::t_TwoWords: {
-         if (tk.value.twoWords.h1 == uro->hashes.HASH_NOTHING) {
+         if (tk.value.twoWords.h1 == uro.hashes.HASH_NOTHING) {
             throw SyntaxException(L"dot . should be preceded by a time variable name", tk.line);
          }
 
          Generator<_tim>* var;
-         if (!uro->vars.getVarValue(tk, var)) {
+         if (!uro.vars.getVarValue(tk, var)) {
             throw SyntaxException(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
          }
 
-         if (tk.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE) {
+         if (tk.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {
             result = new gen::TimeDate(var);
             return true;
          }
@@ -187,25 +187,25 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_tim>*& res
    }
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, Generator<_per>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_per>*& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word
-      && uro->vars.getVarValue(tk, result);
+      && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _def*& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Word: {
-         return uro->vars.getVarValue(tk, result);
+         return uro.vars.getVarValue(tk, result);
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == L'*') {
-            return uro->patternParser.parse(L"**", result, tk.line);
+            return uro.patternParser.parse(L"**", result, tk.line);
          }
          else {
             return false;
@@ -213,14 +213,14 @@ _bool parseOneToken(uro::Uroboros* uro, const Tokens& tks, _def*& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
-            return uro->patternParser.parse(L"*", result, tk.line);
+            return uro.patternParser.parse(L"*", result, tk.line);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return uro->patternParser.parse(tk.getOriginString(uro), result, tk.line);
+         return uro.patternParser.parse(tk.getOriginString(uro), result, tk.line);
       }
       default: {
          return false;

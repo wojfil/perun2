@@ -34,27 +34,27 @@ struct FilterPrototype
 public:
    virtual ~FilterPrototype() { };
    virtual FilterType getFilterType() = 0;
-   virtual T build(T base, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro) = 0;
+   virtual T build(T base, Attribute* attr, const _bool& hasMem, Uroboros& uro) = 0;
 };
 
 template <typename T>
 void makeWhereFilter(Generator<_bool>* boo, Attribute* attr,
-   const _bool& hasMemory, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
+   const _bool& hasMemory, Generator<std::vector<T>>*& result, Uroboros& uro)
 {
    result = new gen::Filter_Where<T>(result, boo, attr, uro);
 }
 
 template <typename T>
-void makeWhereFilter(Generator<_bool>* boo, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
+void makeWhereFilter(Generator<_bool>* boo, Generator<std::vector<T>>*& result, Uroboros& uro)
 {
    result = new gen::Filter_Where<T>(result, boo, nullptr, uro);
 }
 
-void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, uro::Uroboros* uro);
-void makeWhereFilter(Generator<_bool>* boo, _def*& result, uro::Uroboros* uro);
+void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, Uroboros& uro);
+void makeWhereFilter(Generator<_bool>* boo, _def*& result, Uroboros& uro);
 
 template <typename T>
-void makeNumericFilter(const Keyword& kw, Generator<_num>* num, Generator<std::vector<T>>*& result, uro::Uroboros* uro)
+void makeNumericFilter(const Keyword& kw, Generator<_num>* num, Generator<std::vector<T>>*& result, Uroboros& uro)
 {
    switch (kw) {
       case Keyword::kw_Every: {
@@ -76,7 +76,7 @@ void makeNumericFilter(const Keyword& kw, Generator<_num>* num, Generator<std::v
    }
 }
 
-void makeNumericFilter(const Keyword& kw, Generator<_num>* num, _def*& result, uro::Uroboros* uro);
+void makeNumericFilter(const Keyword& kw, Generator<_num>* num, _def*& result, Uroboros& uro);
 
 template <typename T>
 struct FP_Where : FilterPrototype<T>
@@ -97,7 +97,7 @@ public:
       return FilterType::ft_Where;
    };
 
-   T build(T base, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro) override
+   T build(T base, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
    {
       T result = base;
 
@@ -136,7 +136,7 @@ public:
       return FilterType::ft_Numeric;
    };
 
-   T build(T base, Attribute* attr, const _bool& hasMem, uro::Uroboros* uro) override
+   T build(T base, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
    {
       T result = base;
       makeNumericFilter(keyword, value, result, uro);

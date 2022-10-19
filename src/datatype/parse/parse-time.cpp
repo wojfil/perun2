@@ -27,7 +27,7 @@
 namespace uro::parse
 {
 
-Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
+Generator<_tim>* parseTime(const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
@@ -81,10 +81,10 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
       Generator<_num>* num = parseListElementIndex(tksm, uro);
       const Token& f = tks.first();
       Generator<_tlist>* tlist;
-      if (uro->vars.getVarValue(f, tlist)) {
+      if (uro.vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
 
-         if (last.value.twoWords.h2 == uro->hashes.HASH_FUNC_DATE)
+         if (last.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE)
             return new gen::TimeDateAtIndex(tlist, num);
          else
             return nullptr;
@@ -102,7 +102,7 @@ Generator<_tim>* parseTime(const Tokens& tks, uro::Uroboros* uro)
    return nullptr;
 }
 
-Generator<_tim>* parseTimeConst(const Tokens& tks, uro::Uroboros* uro)
+Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -221,7 +221,7 @@ static void clockUnitException(const _str& unit, const _tnum& value,
       L") went out of range"), tk.line);
 }
 
-static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
+static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro)
 {
    Generator<_tim>* prevTim = nullptr;
    Generator<_tim>* time = nullptr;
@@ -326,7 +326,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, uro::Uroboros* uro)
 
 static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
    Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
-   _int& numReserve, uro::Uroboros* uro)
+   _int& numReserve, Uroboros& uro)
 {
    Generator<_tim>* tim;
    if (parse(uro, tks, tim)) {

@@ -26,10 +26,10 @@ void rawPrint(const _str& value)
    std::wcout << value << L"\n";
 }
 
-void print(const Uroboros* uro,const _str& value)
+void print(const Uroboros& uro,const _str& value)
 {
    std::wcout << value << L"\n";
-   if (uro->flags & FLAG_GUI) {
+   if (uro.flags & FLAG_GUI) {
       g_guiMes++;
       if (g_guiMes == GUIMES_LIMIT) {
          g_guiMes = 0;
@@ -38,11 +38,11 @@ void print(const Uroboros* uro,const _str& value)
    }
 }
 
-void commandLog(const Uroboros* uro,const _str& value)
+void commandLog(const Uroboros& uro,const _str& value)
 {
-   if (!(uro->flags & FLAG_SILENT)) {
+   if (!(uro.flags & FLAG_SILENT)) {
       std::wcout << value << L"\n";
-      if (uro->flags & FLAG_GUI) {
+      if (uro.flags & FLAG_GUI) {
          g_guiMes++;
          if (g_guiMes == GUIMES_LIMIT) {
             g_guiMes = 0;

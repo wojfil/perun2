@@ -19,17 +19,17 @@
 namespace uro::parse
 {
 
-void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, uro::Uroboros* uro)
+void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, Uroboros& uro)
 {
    result = new gen::Filter_WhereDef(result, boo, attr, hasMemory, uro);
 }
 
-void makeWhereFilter(Generator<_bool>* boo, _def*& result, uro::Uroboros* uro)
+void makeWhereFilter(Generator<_bool>* boo, _def*& result, Uroboros& uro)
 {
    result = new gen::Filter_WhereDef(result, boo, uro);
 }
 
-void makeNumericFilter(const Keyword& kw, Generator<_num>* num, _def*& result, uro::Uroboros* uro)
+void makeNumericFilter(const Keyword& kw, Generator<_num>* num, _def*& result, Uroboros& uro)
 {
    switch (kw) {
       case Keyword::kw_Every: {

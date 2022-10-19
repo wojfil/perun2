@@ -32,10 +32,10 @@ public:
 
    VariablesContext(Hashes* hsh, Variables* vars);
 
-   void setAttribute(const Token& tk, uro::Uroboros* uro);
+   void setAttribute(const Token& tk, uro::Uroboros& uro);
    void setCoreComAttribute(const _str& comName, const _int& line);
    void setTimeComAttribute(const _str& comName, const _int& line);
-   void attributeException(const Token& tk, uro::Uroboros* uro);
+   void attributeException(const Token& tk, uro::Uroboros& uro);
    void addAttribute(Attribute* attr);
    void retreatAttribute();
    _bool anyAttribute();

@@ -64,7 +64,7 @@ _num F_CountDef::getValue()
    _nint n = 0LL;
 
    while (definition->hasNext()) {
-      if (!this->uroboros->state == State::s_Running) {
+      if (!this->uroboros.state == State::s_Running) {
          definition->reset();
          break;
       }
@@ -82,24 +82,24 @@ _num F_CountInside::getValue()
       return _num(-1LL);
    }
 
-   const _str path = os_join(this->inner->location.value, v);
+   const _str path = os_join(this->inner.location.value, v);
    if (!os_directoryExists(path)) {
       return _num(-1LL);
    }
 
-   const _str prevLoc = this->inner->location.value;
-   this->inner->location.value = path;
+   const _str prevLoc = this->inner.location.value;
+   this->inner.location.value = path;
    _nint n = 0LL;
 
    while (definition->hasNext()) {
-      if (!this->uroboros->state == State::s_Running) {
+      if (!this->uroboros.state == State::s_Running) {
          definition->reset();
          break;
       }
       n++;
    }
 
-   this->inner->location.value = prevLoc;
+   this->inner.location.value = prevLoc;
    return _num(n);
 }
 

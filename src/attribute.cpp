@@ -20,16 +20,16 @@
 namespace uro
 {
 
-Attribute::Attribute(Uroboros* uro)
+Attribute::Attribute(Uroboros& uro)
    : value(ATTR_NULL), uroboros(uro) { };
 
-Attribute::Attribute(const _aunit& val, Uroboros* uro)
+Attribute::Attribute(const _aunit& val, Uroboros& uro)
    : value(val), uroboros(uro) { };
 
 void Attribute::add(const Token& tk)
 {
    const _size& h = tk.value.word.h;
-   const Hashes& hashes = this->uroboros->hashes;
+   const Hashes& hashes = this->uroboros.hashes;
 
    if (hashes.HASH_GROUP_ATTR.find(h) == hashes.HASH_GROUP_ATTR.end()) {
       return;
@@ -144,10 +144,10 @@ void Attribute::run() const
    os_loadAttributes(this, this->uroboros);
 }
 
-BridgeAttribute::BridgeAttribute(Uroboros* uro, _fdata* data)
+BridgeAttribute::BridgeAttribute(Uroboros& uro, _fdata* data)
    : Attribute(uro), dataPnt(data) { };
 
-BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros* uro, _fdata* data)
+BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros& uro, _fdata* data)
    : Attribute(val, uro), dataPnt(data) { };
 
 void BridgeAttribute::run() const

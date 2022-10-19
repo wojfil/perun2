@@ -31,9 +31,9 @@
 namespace uro
 {
 
-Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(vars::Variables(this)),
+Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(vars::Variables(*this)),
    vc(vars::VariablesContext(&this->hashes, &this->vars)), flags(args.getFlags()),
-   terminator(Terminator(this)), patternParser(gen::PatternParser(this)) { };
+   terminator(Terminator(this)), patternParser(gen::PatternParser(*this)) { };
 
 
 _bool Uroboros::run()
@@ -49,7 +49,7 @@ _bool Uroboros::uro_tokenize()
    this->exitCode = EXITCODE_OK;
 
    try {
-      this->tokens = tokenize(this->arguments.getCode(), this);
+      this->tokens = tokenize(this->arguments.getCode(), *this);
    }
    catch (const SyntaxException& ex) {
       rawPrint(ex.getMessage());
@@ -71,7 +71,7 @@ _bool Uroboros::uro_parse()
 {
    try {
       const Tokens tks(this->tokens);
-      this->commands = comm::parseCommands(tks, this);
+      this->commands = comm::parseCommands(tks, *this);
       this->conditionContext.deleteClosedUnits();
    }
    catch (const SyntaxException& ex) {

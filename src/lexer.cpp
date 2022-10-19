@@ -28,7 +28,7 @@ namespace uro
 // meanwhile, omit comments
 // both // singleline
 // and /* multiline */
-std::vector<Token> tokenize(const _str& code, Uroboros* uro)
+std::vector<Token> tokenize(const _str& code, Uroboros& uro)
 {
    enum Mode {
       m_Normal = 0,
@@ -243,7 +243,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros* uro)
    return tokens;
 }
 
-static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros* uro)
+static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros& uro)
 {
    _int dots = 0;
    _bool nums = true;
@@ -341,18 +341,18 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          toLower(lower);
          const _size hsh = rawStringHash(lower);
 
-         auto fm = uro->hashes.HASH_MAP_MONTHS.find(hsh);
-         if (fm != uro->hashes.HASH_MAP_MONTHS.end()) {
+         auto fm = uro.hashes.HASH_MAP_MONTHS.find(hsh);
+         if (fm != uro.hashes.HASH_MAP_MONTHS.end()) {
             return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, uro);
          }
 
-         auto fw = uro->hashes.HASH_MAP_WEEKDAYS.find(hsh);
-         if (fw != uro->hashes.HASH_MAP_WEEKDAYS.end()) {
+         auto fw = uro.hashes.HASH_MAP_WEEKDAYS.find(hsh);
+         if (fw != uro.hashes.HASH_MAP_WEEKDAYS.end()) {
             return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, uro);
          }
 
-         auto fk = uro->keywordsData.KEYWORDS.find(lower);
-         if (fk == uro->keywordsData.KEYWORDS.end()) {
+         auto fk = uro.keywordsData.KEYWORDS.find(lower);
+         if (fk == uro.keywordsData.KEYWORDS.end()) {
             return Token(hsh, line, start, length, uro);
          }
          else {

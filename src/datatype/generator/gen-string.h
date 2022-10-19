@@ -66,19 +66,19 @@ private:
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference(uro::Uroboros* uro) : inner(&uro->vars.inner) { };
+   LocationReference(Uroboros& uro) : inner(uro.vars.inner) { };
    _str getValue() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
 };
 
 
 struct RelativeLocation : Generator<_str>
 {
 public:
-   RelativeLocation(Generator<_str>* val, uro::Uroboros* uro) 
-      : value(val), inner(&uro->vars.inner) { };
+   RelativeLocation(Generator<_str>* val, Uroboros& uro) 
+      : value(val), inner(uro.vars.inner) { };
 
    ~RelativeLocation()
    {
@@ -88,7 +88,7 @@ public:
    _str getValue() override;
 
 private:
-   uro::InnerVariables* inner;
+   InnerVariables& inner;
    Generator<_str>* value;
 };
 

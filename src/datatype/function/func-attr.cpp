@@ -34,7 +34,7 @@ _str AttrFunction::getPath()
       return EMPTY_STRING;
    }
 
-   const _str p = os_join(this->inner->location.value, b);
+   const _str p = os_join(this->inner.location.value, b);
    return os_isAbsolute(p) ? p : EMPTY_STRING;
 }
 
@@ -42,9 +42,9 @@ _str F_Path::getValue()
 {
    const _str b = os_trim(this->value->getValue());
 
-   return b.empty() || this->inner->location.value.empty()
+   return b.empty() || this->inner.location.value.empty()
       ? EMPTY_STRING
-      : os_join(this->inner->location.value, b);
+      : os_join(this->inner.location.value, b);
 }
 
 F_Path_2::~F_Path_2()
@@ -223,13 +223,13 @@ _num F_SizeDefinition::getValue()
    _nint total = 0LL;
 
    while (definition->hasNext()) {
-      if (!this->uroboros->state == State::s_Running) {
+      if (!this->uroboros.state == State::s_Running) {
          definition->reset();
          return _num(-1LL);
       }
 
       const _str v = definition->getValue();
-      const _nint s = os_size(os_join(this->inner->location.value, v), this->uroboros);
+      const _nint s = os_size(os_join(this->inner.location.value, v), this->uroboros);
       if (s != -1LL) {
          total += s;
       }
@@ -250,13 +250,13 @@ _num F_SizeList::getValue()
    }
 
    for (_size i = 0; i < len; i++) {
-      if (!this->uroboros->state == State::s_Running) {
+      if (!this->uroboros.state == State::s_Running) {
          return _num(-1LL);
       }
 
       const _str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvaild(v)) {
-         const _nint s = os_size(os_join(this->inner->location.value, v), this->uroboros);
+         const _nint s = os_size(os_join(this->inner.location.value, v), this->uroboros);
          if (s != -1LL) {
             total += s;
             any = true;
@@ -329,7 +329,7 @@ F_Exist::~F_Exist()
 
 _bool F_Exist::getValue()
 {
-   if (this->inner->location.value.empty()) {
+   if (this->inner.location.value.empty()) {
       return false;
    }
 
@@ -346,7 +346,7 @@ _bool F_Exist::getValue()
             return false;
          }
 
-         return os_exists(os_join(this->inner->location.value, b));
+         return os_exists(os_join(this->inner.location.value, b));
       }
       default: {
          for (_size i = 0; i < len; i++) {
@@ -355,7 +355,7 @@ _bool F_Exist::getValue()
                return false;
             }
 
-            if (!os_exists(os_join(this->inner->location.value, b))) {
+            if (!os_exists(os_join(this->inner.location.value, b))) {
                return false;
             }
          }

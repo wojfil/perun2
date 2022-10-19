@@ -30,7 +30,7 @@ namespace uro::comm
 struct CS_Pair : Command_L
 {
 public:
-   CS_Pair(Command* fst, Command* snd, Uroboros* uro)
+   CS_Pair(Command* fst, Command* snd, Uroboros& uro)
       : first(fst), second(snd), Command_L(uro) {};
 
    ~CS_Pair()
@@ -50,7 +50,7 @@ private:
 struct CS_Block : Command_L
 {
 public:
-   CS_Block(std::vector<Command*> coms, Uroboros* uro)
+   CS_Block(std::vector<Command*> coms, Uroboros& uro)
       : commands(coms), length(coms.size()), Command_L(uro) { };
 
    ~CS_Block()
@@ -69,7 +69,7 @@ private:
 struct CS_Times : Command_L
 {
 public:
-   CS_Times(Generator<_num>* ts, Command* com, Aggregate* aggr, Uroboros* uro)
+   CS_Times(Generator<_num>* ts, Command* com, Aggregate* aggr, Uroboros& uro)
       : aggregate(aggr), times(ts), command(com), Command_L(uro)  { };
 
    ~CS_Times()
@@ -91,7 +91,7 @@ private:
 struct CS_While : Command_L
 {
 public:
-   CS_While(Generator<_bool>* cond, Command* com, Aggregate* aggr, Uroboros* uro)
+   CS_While(Generator<_bool>* cond, Command* com, Aggregate* aggr, Uroboros& uro)
       : aggregate(aggr), condition(cond), command(com), Command_L(uro)  { };
 
    ~CS_While()
@@ -113,7 +113,7 @@ private:
 struct CS_TimeLoop : Command_L
 {
 public:
-   CS_TimeLoop(Generator<_tlist>* tList, Command* com, Aggregate* aggr, Uroboros* uro)
+   CS_TimeLoop(Generator<_tlist>* tList, Command* com, Aggregate* aggr, Uroboros& uro)
       : aggregate(aggr), timeList(tList), command(com), Command_L(uro)  { };
 
    ~CS_TimeLoop()
@@ -135,7 +135,7 @@ private:
 struct CS_NumberLoop : Command_L
 {
 public:
-   CS_NumberLoop(Generator<_nlist>* nList, Command* com, Aggregate* aggr, Uroboros* uro)
+   CS_NumberLoop(Generator<_nlist>* nList, Command* com, Aggregate* aggr, Uroboros& uro)
       : aggregate(aggr), numberList(nList), command(com), Command_L(uro)  { };
 
    ~CS_NumberLoop()
@@ -158,11 +158,11 @@ struct CS_StringLoop : IterationLoop
 {
 public:
    CS_StringLoop(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros* uro)
+      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), string(str), aggregate(aggr) { };
 
    CS_StringLoop(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
-      const _bool& hasmem, Uroboros* uro)
+      const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), string(str), aggregate(aggr) { };
 
    ~CS_StringLoop()
@@ -184,11 +184,11 @@ struct CS_DefinitionLoop : IterationLoop
 {
 public:
    CS_DefinitionLoop(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros* uro)
+      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), definition(def), aggregate(aggr) { };
 
    CS_DefinitionLoop(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
-      const _bool& hasmem, Uroboros* uro)
+      const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), definition(def), aggregate(aggr) { };
 
    ~CS_DefinitionLoop()
@@ -210,11 +210,11 @@ struct CS_ListLoop : IterationLoop
 {
 public:
    CS_ListLoop(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros* uro)
+      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), list(li), aggregate(aggr) { };
 
    CS_ListLoop(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
-      const _bool& hasmem, Uroboros* uro)
+      const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), list(li), aggregate(aggr) { };
 
    ~CS_ListLoop()
@@ -236,11 +236,11 @@ struct CS_InsideString : IterationLoop
 {
 public:
    CS_InsideString(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros* uro)
+      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), string(str), aggregate(aggr) { };
 
    CS_InsideString(Generator<_str>* str, Command* com, Attribute* attr, Aggregate* aggr,
-      const _bool& hasmem, Uroboros* uro)
+      const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), string(str), aggregate(aggr) { };
 
    ~CS_InsideString()
@@ -263,11 +263,11 @@ struct CS_InsideDefinition : IterationLoop
 {
 public:
    CS_InsideDefinition(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros* uro)
+      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), definition(def), aggregate(aggr) { };
 
    CS_InsideDefinition(_def* def, Command* com, Attribute* attr, Aggregate* aggr,
-      const _bool& hasmem, Uroboros* uro)
+      const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), definition(def), aggregate(aggr) { };
 
    ~CS_InsideDefinition() {
@@ -289,11 +289,11 @@ struct CS_InsideList : IterationLoop
 {
 public:
    CS_InsideList(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros* uro)
+      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), list(li), aggregate(aggr) { };
 
    CS_InsideList(Generator<_list>* li, Command* com, Attribute* attr, Aggregate* aggr,
-      const _bool& hasmem, Uroboros* uro)
+      const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), list(li), aggregate(aggr) { };
 
    ~CS_InsideList()

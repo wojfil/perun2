@@ -16,7 +16,7 @@
 #define COM_AGGREGATE_H_INCLUDED
 
 #include "../datatype/datatype.h"
-#include <unordered_set >
+#include <unordered_set>
 #include <unordered_map>
 
 

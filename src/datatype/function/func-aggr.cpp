@@ -110,7 +110,7 @@ _num F_Median::getValue()
    elements.reserve(countSingle);
 
    for (_size i = 0; i < countSingle; i++) {
-      elements.push_back((*singleValues)[i]->getValue());
+      elements.emplace_back((*singleValues)[i]->getValue());
    }
 
    for (_size i = 0; i < countMulti; i++) {

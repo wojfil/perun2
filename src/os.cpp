@@ -1183,7 +1183,7 @@ _bool os_select(const _str& parent, const std::unordered_set<_str>& paths)
    std::vector<ITEMIDLIST*> v;
 
    for (const auto& p : paths) {
-      v.push_back(ILCreateFromPathW(p.c_str()));
+      v.emplace_back(ILCreateFromPathW(p.c_str()));
    }
 
    HRESULT hr = SHOpenFolderAndSelectItems(folder, v.size(), (LPCITEMIDLIST*)v.data(), 0);

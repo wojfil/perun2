@@ -180,7 +180,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
       tokensList = ts2.splitBySymbol(L',');
    }
    else {
-      tokensList.push_back(ts2);
+      tokensList.emplace_back(ts2);
    }
 
    const _int length = tokensList.size();

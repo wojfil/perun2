@@ -142,7 +142,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
       }
 
       if (hasValue) {
-         this->args.push_back(arg);
+         this->args.emplace_back(arg);
       }
       else {
          hasValue = true;

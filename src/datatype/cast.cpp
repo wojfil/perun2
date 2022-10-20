@@ -119,7 +119,7 @@ _list Cast_D_L::getValue()
          break;
       }
 
-      strings.push_back(this->base->getValue());
+      strings.emplace_back(this->base->getValue());
    }
 
    return strings;

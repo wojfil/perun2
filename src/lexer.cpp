@@ -95,7 +95,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                      }
                   }
                   else {
-                     tokens.push_back(Token(c, line, uro));
+                     tokens.emplace_back(c, line, uro);
                      prevSymbol = true;
                   }
                }

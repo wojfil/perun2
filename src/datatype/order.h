@@ -92,7 +92,7 @@ public:
 
    void addValues() override
    {
-      this->values.push_back(this->valueGenerator->getValue());
+      this->values.emplace_back(this->valueGenerator->getValue());
       this->nextUnit->addValues();
    }
 
@@ -135,7 +135,7 @@ public:
 
    void addValues() override
    {
-      this->values.push_back(this->valueGenerator->getValue());
+      this->values.emplace_back(this->valueGenerator->getValue());
    }
 
    _bool matchesSwap(const _int& start, const _int& end) const override

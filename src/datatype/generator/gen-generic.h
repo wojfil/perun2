@@ -240,7 +240,7 @@ public:
          }
 
          if (condition->getValue()) {
-            result.push_back(unit);
+            result.emplace_back(unit);
          }
 
          this->inner.index.value++;

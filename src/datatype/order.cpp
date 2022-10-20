@@ -90,10 +90,10 @@ _bool OrderBy_Definition::hasNext()
             this->attribute->run();
          }
 
-         this->result.push_back(this->base->getValue());
+         this->result.emplace_back(this->base->getValue());
          const _numi& depth = this->inner.depth.value;
 
-         this->depths.push_back(depth.value.i);
+         this->depths.emplace_back(depth.value.i);
          this->order->addValues();
 
          if (!this->hasVolatileDepth && depth.value.i != 0LL) {

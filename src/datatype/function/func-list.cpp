@@ -70,7 +70,7 @@ _list F_Split::getValue()
                   r.emplace_back();
                }
                else {
-                  r.push_back(v1.substr(start, i - start));
+                  r.emplace_back(v1.substr(start, i - start));
                }
                start = i + 1;
             }
@@ -80,7 +80,7 @@ _list F_Split::getValue()
             r.emplace_back();
          }
          else {
-            r.push_back(v1.substr(start));
+            r.emplace_back(v1.substr(start));
          }
 
          return r;
@@ -90,12 +90,12 @@ _list F_Split::getValue()
          _list r;
 
          while (index != _str::npos) {
-            r.push_back(v1.substr(0, index));
+            r.emplace_back(v1.substr(0, index));
             v1 = v1.substr(index + len2);
             index = v1.find(v2);
          }
 
-         r.push_back(v1);
+         r.emplace_back(v1);
          return r;
       }
    }
@@ -148,14 +148,14 @@ _list F_Words::getValue()
             }
             else {
                if (prevLetter) {
-                  words.push_back(value.substr(start, i - start));
+                  words.emplace_back(value.substr(start, i - start));
                }
             }
             prevLetter = isLetter;
          }
 
          if (prevLetter) {
-            words.push_back(value.substr(start));
+            words.emplace_back(value.substr(start));
          }
 
          return words;
@@ -205,7 +205,7 @@ _nlist F_Numbers::getValue()
                   if (splitted) {
                      const _size sub = i - start + 1;
                      if (sub == 1) {
-                        numbers.push_back(fromChar(value[start]));
+                        numbers.emplace_back(fromChar(value[start]));
                      }
                      else {
                         try {
@@ -223,7 +223,7 @@ _nlist F_Numbers::getValue()
                      // split the number
                      const _size len1 = dotPoint - start;
                      if (len1 == 1) {
-                        numbers.push_back(fromChar(value[start]));
+                        numbers.emplace_back(fromChar(value[start]));
                      }
                      else {
                         try {
@@ -238,7 +238,7 @@ _nlist F_Numbers::getValue()
 
                      const _size len2 = i - dotPoint - 1;
                      if (len2 == 1) {
-                        numbers.push_back(fromChar(value[dotPoint + 1]));
+                        numbers.emplace_back(fromChar(value[dotPoint + 1]));
                      }
                      else {
                         try {
@@ -264,7 +264,7 @@ _nlist F_Numbers::getValue()
                if (digitSerie) {
                   const _size sub = i - start + 1;
                   if (sub == 1) {
-                     numbers.push_back(fromChar(value[start]));
+                     numbers.emplace_back(fromChar(value[start]));
                   }
                   else {
                      if (hasDot) {
@@ -291,7 +291,7 @@ _nlist F_Numbers::getValue()
 
          if (digitSerie) {
             if (start == len - 1) {
-               numbers.push_back(fromChar(value[len - 1]));
+               numbers.emplace_back(fromChar(value[len - 1]));
             }
             else {
                if (hasDot) {

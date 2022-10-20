@@ -44,8 +44,8 @@ _list Join_StrStr::getValue()
 {
    _list v;
    v.reserve(2);
-   v.push_back(left->getValue());
-   v.push_back(right->getValue());
+   v.emplace_back(left->getValue());
+   v.emplace_back(right->getValue());
    return v;
 }
 
@@ -59,7 +59,7 @@ _list Join_StrList::getValue()
 _list Join_ListStr::getValue()
 {
    _list v = left->getValue();
-   v.push_back(right->getValue());
+   v.emplace_back(right->getValue());
    return v;
 }
 

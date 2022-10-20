@@ -64,6 +64,8 @@ _bool PatternParser::parse(const _str& originPattern, _def*& result, const _int&
 
 exitParser:
 
+   _str prefix;
+
    Generator<_str>* base;
    if (separatorId == -1) {
       if (isAbsolute) {
@@ -78,7 +80,9 @@ exitParser:
          base = new Constant<_str>(pattern.substr(0, separatorId));
       }
       else {
-         base = new RelativeLocation(new Constant<_str>(pattern.substr(0, separatorId)), this->uroboros);
+         prefix = pattern.substr(0, separatorId);
+         base = new RelativeLocation(new Constant<_str>(prefix), this->uroboros);
+         prefix += OS_SEPARATOR;
       }
    }
 
@@ -98,8 +102,10 @@ exitParser:
                str(OS_SEPARATOR_STRING, isAbsolute ? pattern.substr(3) : pattern), isAbsolute);
          }
          else {
-            result = this->defGenerator.generatePattern(base, OsElement::oe_All, 
-               pattern.substr(separatorId), isAbsolute);
+            const _str s = pattern.substr(separatorId);
+            result = prefix == EMPTY_STRING
+               ? this->defGenerator.generatePattern(base, OsElement::oe_All, s, isAbsolute)
+               : this->defGenerator.generatePattern(base, OsElement::oe_All, s, isAbsolute, prefix);
          }
          
          return true;
@@ -112,7 +118,9 @@ exitParser:
          ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart, patternLength))
          : pattern.substr(patternStart, patternLength);
 
-      _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute);
+      _def* d = prefix == EMPTY_STRING
+         ? this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute)
+         : this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
       result = new DefinitionSuffix(d, this->uroboros, suffix, isAbsolute, false);
       return true;
    }
@@ -154,10 +162,14 @@ exitParser:
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
-         result = this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute);
+         result = prefix == EMPTY_STRING
+            ? this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute)
+            : this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute, prefix);
       }
       else {
-         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute);
+         _def* d = prefix == EMPTY_STRING
+            ? this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute)
+            : this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
          result = new DefinitionSuffix(d, this->uroboros, u.suffixPart, isAbsolute, false);
       }
 

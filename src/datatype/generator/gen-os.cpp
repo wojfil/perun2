@@ -28,6 +28,21 @@
 
 namespace uro::gen
 {
+   
+#define P_OS_GEN_CORE_ARGS location, this->uroboros, pattern, isAbsolute
+
+#define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
+      this->value = this->hasPrefix \
+         ? str(this->prefix, this->baseLocation, OS_SEPARATOR_STRING, this->value) \
+         : str(this->baseLocation, OS_SEPARATOR_STRING, this->value); \
+      } \
+   else if (this->hasPrefix) { \
+      this->value = str(this->prefix, this->value); \
+   } \
+
+
+DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro) 
+   : element_(el), uroboros(uro) { };
 
 _def* DefinitionGenerator::generateDefault() const
 {
@@ -40,22 +55,22 @@ _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
 {
    switch (element) {
       case OsElement::oe_All: {
-         return new Uro_All(location, this->uroboros, pattern, isAbsolute);
+         return new Uro_All(P_OS_GEN_CORE_ARGS);
       }
       case OsElement::oe_Directories: {
-         return new Uro_Directories(location, this->uroboros, pattern, isAbsolute);
+         return new Uro_Directories(P_OS_GEN_CORE_ARGS);
       }
       case OsElement::oe_Files: {
-         return new Uro_Files(location, this->uroboros, pattern, isAbsolute);
+         return new Uro_Files(P_OS_GEN_CORE_ARGS);
       }
       case OsElement::oe_RecursiveFiles: {
-         return new Uro_RecursiveFiles(location, this->uroboros, pattern, isAbsolute);
+         return new Uro_RecursiveFiles(P_OS_GEN_CORE_ARGS);
       }
       case OsElement::oe_RecursiveDirectories: {
-         return new Uro_RecursiveDirectories(location, this->uroboros, pattern, isAbsolute);
+         return new Uro_RecursiveDirectories(P_OS_GEN_CORE_ARGS);
       }
       case OsElement::oe_RecursiveAll: {
-         return new Uro_RecursiveAll(location, this->uroboros, pattern, isAbsolute);
+         return new Uro_RecursiveAll(P_OS_GEN_CORE_ARGS);
       }
       default: {
          return nullptr;
@@ -63,9 +78,44 @@ _def* DefinitionGenerator::generatePattern(Generator<_str>* location,
    }
 }
 
-OsDefinition::OsDefinition(Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs)
+_def* DefinitionGenerator::generatePattern(Generator<_str>* location, const OsElement& element, 
+   const _str& pattern, const _bool& isAbsolute, const _str& prefix) const
+{
+   switch (element) {
+      case OsElement::oe_All: {
+         return new Uro_All(P_OS_GEN_CORE_ARGS, prefix);
+      }
+      case OsElement::oe_Directories: {
+         return new Uro_Directories(P_OS_GEN_CORE_ARGS, prefix);
+      }
+      case OsElement::oe_Files: {
+         return new Uro_Files(P_OS_GEN_CORE_ARGS, prefix);
+      }
+      case OsElement::oe_RecursiveFiles: {
+         return new Uro_RecursiveFiles(P_OS_GEN_CORE_ARGS, prefix);
+      }
+      case OsElement::oe_RecursiveDirectories: {
+         return new Uro_RecursiveDirectories(P_OS_GEN_CORE_ARGS, prefix);
+      }
+      case OsElement::oe_RecursiveAll: {
+         return new Uro_RecursiveAll(P_OS_GEN_CORE_ARGS, prefix);
+      }
+      default: {
+         return nullptr;
+      }
+   }
+}
+
+OsDefinition::OsDefinition(P_OS_ARGS_NO_PREFIX)
    : first(true), location(loc), uroboros(uro),
-     inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs) { };
+     inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs),
+     hasPrefix(false), prefix(EMPTY_STRING) { };
+
+OsDefinition::OsDefinition(P_OS_ARGS_PREFIX)
+   : first(true), location(loc), uroboros(uro),
+     inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs),
+     hasPrefix(true), prefix(pref) { };
+
 
 _fdata* OsDefinition::getDataPtr()
 {
@@ -125,9 +175,9 @@ _bool Uro_All::hasNext()
                this->inner.index.value = index;
                index++;
                this->inner.depth.value.setToZero();
-               if (this->isAbsolute) {
-                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-               }
+
+               P_OS_GEN_VALUE_ALTERATION;
+
                this->inner.this_s.value = value;
                return true;
             }
@@ -150,9 +200,9 @@ _bool Uro_All::hasNext()
             this->inner.index.value = index;
             index++;
             this->inner.depth.value.setToZero();
-            if (this->isAbsolute) {
-               this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-            }
+
+            P_OS_GEN_VALUE_ALTERATION;
+
             this->inner.this_s.value = value;
             return true;
          }
@@ -190,9 +240,9 @@ _bool Uro_Files::hasNext()
                this->inner.index.value = index;
                index++;
                this->inner.depth.value.setToZero();
-               if (this->isAbsolute) {
-                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-               }
+
+               P_OS_GEN_VALUE_ALTERATION;
+
                this->inner.this_s.value = value;
                return true;
             }
@@ -213,9 +263,9 @@ _bool Uro_Files::hasNext()
             this->inner.index.value = index;
             index++;
             this->inner.depth.value.setToZero();
-            if (this->isAbsolute) {
-               this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-            }
+
+            P_OS_GEN_VALUE_ALTERATION;
+
             this->inner.this_s.value = value;
             return true;
          }
@@ -253,9 +303,9 @@ _bool Uro_Directories::hasNext()
                this->inner.index.value = index;
                index++;
                this->inner.depth.value.setToZero();
-               if (this->isAbsolute) {
-                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-               }
+
+               P_OS_GEN_VALUE_ALTERATION;
+
                this->inner.this_s.value = value;
                return true;
             }
@@ -276,9 +326,9 @@ _bool Uro_Directories::hasNext()
             this->inner.index.value = index;
             index++;
             this->inner.depth.value.setToZero();
-            if (this->isAbsolute) {
-               this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-            }
+
+            P_OS_GEN_VALUE_ALTERATION;
+
             this->inner.this_s.value = value;
             return true;
          }
@@ -309,7 +359,7 @@ _bool Uro_RecursiveFiles::hasNext()
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), pattern);
-            handles.push_back(FindFirstFile(p.c_str(), &data));
+            handles.emplace_back(FindFirstFile(p.c_str(), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -330,9 +380,9 @@ _bool Uro_RecursiveFiles::hasNext()
                   value = v;
                   this->inner.index.value = index;
                   index++;
-                  if (this->isAbsolute) {
-                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-                  }
+
+                  P_OS_GEN_VALUE_ALTERATION;
+
                   this->inner.this_s.value = value;
                   return true;
                }
@@ -356,13 +406,13 @@ _bool Uro_RecursiveFiles::hasNext()
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
                   if ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
-                     paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+                     paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                      if (this->inner.depth.value.isZero()) {
-                        bases.push_back(str(v, OS_SEPARATOR_STRING));
+                        bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                      }
                      else {
-                        bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                        bases.emplace_back(str(bases.back(), v, OS_SEPARATOR_STRING));
                      }
 
                      goDeeper = true;
@@ -373,9 +423,9 @@ _bool Uro_RecursiveFiles::hasNext()
                   value = this->inner.depth.value.isZero() ? v : str(bases.back(), v);
                   this->inner.index.value = index;
                   index++;
-                  if (this->isAbsolute) {
-                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-                  }
+
+                  P_OS_GEN_VALUE_ALTERATION;
+
                   this->inner.this_s.value = value;
                   return true;
                }
@@ -419,8 +469,8 @@ _bool Uro_RecursiveDirectories::hasNext()
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), pattern);
+            handles.emplace_back(FindFirstFile(p.c_str(), &data));
 
-            handles.push_back(FindFirstFile(p.c_str(), &data));
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
                handles.pop_back();
@@ -453,22 +503,22 @@ _bool Uro_RecursiveDirectories::hasNext()
                 && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
             {
                value = this->inner.depth.value.isMinusOne() ? v : str(bases.back(), v);
-               paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+               paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                if (this->inner.depth.value.isMinusOne()) {
-                  bases.push_back(str(v, OS_SEPARATOR_STRING));
+                  bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                }
                else {
-                  bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                  bases.emplace_back(str(bases.back(), v, OS_SEPARATOR_STRING));
                }
 
                goDeeper = true;
                this->inner.depth.value++;
                this->inner.index.value = index;
                index++;
-               if (this->isAbsolute) {
-                  this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-               }
+
+               P_OS_GEN_VALUE_ALTERATION;
+
                this->inner.this_s.value = value;
                return true;
             }
@@ -511,8 +561,8 @@ _bool Uro_RecursiveAll::hasNext()
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), pattern);
-
-            handles.push_back(FindFirstFile(p.c_str(), &data));
+            handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
                handles.pop_back();
@@ -551,22 +601,22 @@ _bool Uro_RecursiveAll::hasNext()
                   }
 
                   value = this->inner.depth.value.isMinusOne() ? v : str(bases.back(), v);
-                  paths.push_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+                  paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                   if (this->inner.depth.value.isMinusOne()) {
-                     bases.push_back(str(v, OS_SEPARATOR_STRING));
+                     bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                   }
                   else {
-                     bases.push_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                     bases.emplace_back(str(bases.back(), v, OS_SEPARATOR_STRING));
                   }
 
                   goDeeper = true;
                   this->inner.depth.value++;
                   this->inner.index.value = index;
                   index++;
-                  if (this->isAbsolute) {
-                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-                  }
+
+                  P_OS_GEN_VALUE_ALTERATION;
+
                   this->inner.this_s.value = value;
                   return true;
                }
@@ -581,9 +631,9 @@ _bool Uro_RecursiveAll::hasNext()
                   value = this->inner.depth.value.isZero() ? v : str(bases.back(), v);
                   this->inner.index.value = index;
                   index++;
-                  if (this->isAbsolute) {
-                     this->value = str(this->baseLocation, OS_SEPARATOR_STRING, this->value);
-                  }
+
+                  P_OS_GEN_VALUE_ALTERATION;
+
                   this->inner.this_s.value = value;
                   return true;
                }

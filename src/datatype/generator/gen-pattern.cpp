@@ -31,12 +31,12 @@ _bool PatternParser::parse(const _str& originPattern, _def*& result, const _int&
 
    if (pattern == L"*") {
       result = this->defGenerator.generatePattern(
-         new LocationReference(this->uroboros), OsElement::oe_All, OS_SEPARATOR_ASTERISK, false);
+         new LocationReference(this->uroboros), OsElement::oe_All, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
       return true;
    }
    else if (pattern == L"**") {
       result = this->defGenerator.generatePattern(
-         new LocationReference(this->uroboros), OsElement::oe_RecursiveAll, OS_SEPARATOR_ASTERISK, false);
+         new LocationReference(this->uroboros), OsElement::oe_RecursiveAll, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
       return true;
    }
 
@@ -98,29 +98,25 @@ exitParser:
 
       if (separatorId2 == -1) {
          if (separatorId == -1) {
-            result = this->defGenerator.generatePattern(base, OsElement::oe_All, 
-               str(OS_SEPARATOR_STRING, isAbsolute ? pattern.substr(3) : pattern), isAbsolute);
+            result = this->defGenerator.generatePattern(base, OsElement::oe_All,
+               str(OS_SEPARATOR_STRING, isAbsolute ? pattern.substr(3) : pattern), isAbsolute, prefix);
          }
          else {
             const _str s = pattern.substr(separatorId);
-            result = prefix == EMPTY_STRING
-               ? this->defGenerator.generatePattern(base, OsElement::oe_All, s, isAbsolute)
-               : this->defGenerator.generatePattern(base, OsElement::oe_All, s, isAbsolute, prefix);
+            result = this->defGenerator.generatePattern(base, OsElement::oe_All, s, isAbsolute, prefix);
          }
-         
+
          return true;
       }
 
       const _str suffix = str(OS_SEPARATOR_STRING, pattern.substr(separatorId2 + 1));
       const _int patternStart = separatorId == -1 ? P_PATTERN_START_ID : separatorId;
       const _int patternLength = separatorId2 - patternStart;
-      const _str p = (separatorId == -1) 
+      const _str p = (separatorId == -1)
          ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart, patternLength))
          : pattern.substr(patternStart, patternLength);
 
-      _def* d = prefix == EMPTY_STRING
-         ? this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute)
-         : this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
+      _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
       result = new DefinitionSuffix(d, this->uroboros, suffix, isAbsolute, false);
       return true;
    }
@@ -162,14 +158,10 @@ exitParser:
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
-         result = prefix == EMPTY_STRING
-            ? this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute)
-            : this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute, prefix);
+         result = this->defGenerator.generatePattern(base, OsElement::oe_All, p, isAbsolute, prefix);
       }
       else {
-         _def* d = prefix == EMPTY_STRING
-            ? this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute)
-            : this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
+         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
          result = new DefinitionSuffix(d, this->uroboros, u.suffixPart, isAbsolute, false);
       }
 
@@ -184,10 +176,10 @@ exitParser:
       _def* d0;
 
       if (u0.suffixPart.empty()) {
-         d0 = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute);
+         d0 = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute, prefix);
       }
       else {
-         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute);
+         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute, prefix);
          d0 = new DefinitionSuffix(d, this->uroboros, u0.suffixPart, isAbsolute, true);
       }
 
@@ -196,23 +188,23 @@ exitParser:
       const _str p1 = str(OS_SEPARATOR_STRING, u1.asteriskPart);
 
       if (u1.suffixPart.empty()) {
-         d1 = this->defGenerator.generatePattern(vessel, OsElement::oe_All, p1, isAbsolute);
+         d1 = this->defGenerator.generatePattern(vessel, OsElement::oe_All, p1, isAbsolute, prefix);
       }
       else {
-         _def* d = this->defGenerator.generatePattern(vessel, OsElement::oe_Directories, p1, isAbsolute);
+         _def* d = this->defGenerator.generatePattern(vessel, OsElement::oe_Directories, p1, isAbsolute, prefix);
          d1 = new DefinitionSuffix(d, this->uroboros, u1.suffixPart, isAbsolute, false);
       }
 
       result = new NestedDefiniton(vessel, d1, d0);
       return true;
    }
-   
+
 
    delete base;
    return false;
 }
 
-void PatternParser::addUnit(_str& asteriskPart, _str& suffixPart, const _str& part, 
+void PatternParser::addUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
    const _bool& hasAsterisk, std::vector<PatternUnit>& units) const
 {
    if (asteriskPart.empty()) {

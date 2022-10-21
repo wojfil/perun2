@@ -28,7 +28,7 @@
 
 namespace uro::gen
 {
-   
+
 #define P_OS_GEN_CORE_ARGS location, this->uroboros, pattern, isAbsolute
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
@@ -41,44 +41,16 @@ namespace uro::gen
    } \
 
 
-DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro) 
+DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro)
    : element_(el), uroboros(uro) { };
 
 _def* DefinitionGenerator::generateDefault() const
 {
    return this->generatePattern(new LocationReference(this->uroboros),
-      this->element_, OS_SEPARATOR_ASTERISK, false);
+      this->element_, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
 }
 
-_def* DefinitionGenerator::generatePattern(Generator<_str>* location,
-   const OsElement& element, const _str& pattern, const _bool& isAbsolute) const
-{
-   switch (element) {
-      case OsElement::oe_All: {
-         return new Uro_All(P_OS_GEN_CORE_ARGS);
-      }
-      case OsElement::oe_Directories: {
-         return new Uro_Directories(P_OS_GEN_CORE_ARGS);
-      }
-      case OsElement::oe_Files: {
-         return new Uro_Files(P_OS_GEN_CORE_ARGS);
-      }
-      case OsElement::oe_RecursiveFiles: {
-         return new Uro_RecursiveFiles(P_OS_GEN_CORE_ARGS);
-      }
-      case OsElement::oe_RecursiveDirectories: {
-         return new Uro_RecursiveDirectories(P_OS_GEN_CORE_ARGS);
-      }
-      case OsElement::oe_RecursiveAll: {
-         return new Uro_RecursiveAll(P_OS_GEN_CORE_ARGS);
-      }
-      default: {
-         return nullptr;
-      }
-   }
-}
-
-_def* DefinitionGenerator::generatePattern(Generator<_str>* location, const OsElement& element, 
+_def* DefinitionGenerator::generatePattern(Generator<_str>* location, const OsElement& element,
    const _str& pattern, const _bool& isAbsolute, const _str& prefix) const
 {
    switch (element) {
@@ -106,15 +78,10 @@ _def* DefinitionGenerator::generatePattern(Generator<_str>* location, const OsEl
    }
 }
 
-OsDefinition::OsDefinition(P_OS_ARGS_NO_PREFIX)
+OsDefinition::OsDefinition(P_OS_GEN_ARGS)
    : first(true), location(loc), uroboros(uro),
      inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs),
-     hasPrefix(false), prefix(EMPTY_STRING) { };
-
-OsDefinition::OsDefinition(P_OS_ARGS_PREFIX)
-   : first(true), location(loc), uroboros(uro),
-     inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs),
-     hasPrefix(true), prefix(pref) { };
+     hasPrefix(!pref.empty()), prefix(pref) { };
 
 
 _fdata* OsDefinition::getDataPtr()
@@ -562,7 +529,7 @@ _bool Uro_RecursiveAll::hasNext()
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), pattern);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
-            
+
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
                handles.pop_back();

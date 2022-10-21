@@ -31,10 +31,8 @@ struct InnerVariables;
 namespace uro::gen
 {
 
-#define P_OS_ARGS_NO_PREFIX Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs
-#define P_OS_ARGS_PREFIX Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs, const _str& pref
-#define P_OS_SHORT_ARGS_NO_PREFIX loc, uro, patt, abs
-#define P_OS_SHORT_ARGS_PREFIX loc, uro, patt, abs, pref
+#define P_OS_GEN_ARGS Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs, const _str& pref
+#define P_OS_GEN_ARGS_SHORT loc, uro, patt, abs, pref
 
 
 enum OsElement
@@ -57,8 +55,6 @@ public:
 
    _def* generateDefault() const;
    _def* generatePattern(Generator<_str>* location, const OsElement& element, 
-      const _str& pattern, const _bool& isAbsolute) const;
-   _def* generatePattern(Generator<_str>* location, const OsElement& element, 
       const _str& pattern, const _bool& isAbsolute, const _str& prefix) const;
 
 private:
@@ -71,8 +67,7 @@ struct OsDefinition : _def
 {
 public:
    OsDefinition() = delete;
-   OsDefinition(P_OS_ARGS_NO_PREFIX);
-   OsDefinition(P_OS_ARGS_PREFIX);
+   OsDefinition(P_OS_GEN_ARGS);
 
    ~OsDefinition() {
       delete location;
@@ -102,8 +97,7 @@ struct OsDefinitionPlain : OsDefinition
 {
 public:
    OsDefinitionPlain() = delete;
-   OsDefinitionPlain(P_OS_ARGS_NO_PREFIX) : OsDefinition(P_OS_SHORT_ARGS_NO_PREFIX) { };
-   OsDefinitionPlain(P_OS_ARGS_PREFIX) : OsDefinition(P_OS_SHORT_ARGS_PREFIX) { };
+   OsDefinitionPlain(P_OS_GEN_ARGS) : OsDefinition(P_OS_GEN_ARGS_SHORT) { };
 
    void reset() override;
 
@@ -116,8 +110,7 @@ struct OsDefinitionRecursive : OsDefinition
 {
 public:
    OsDefinitionRecursive() = delete;
-   OsDefinitionRecursive(P_OS_ARGS_NO_PREFIX) : OsDefinition(P_OS_SHORT_ARGS_NO_PREFIX) { };
-   OsDefinitionRecursive(P_OS_ARGS_PREFIX) : OsDefinition(P_OS_SHORT_ARGS_PREFIX) { };
+   OsDefinitionRecursive(P_OS_GEN_ARGS) : OsDefinition(P_OS_GEN_ARGS_SHORT) { };
 
    void reset() override;
 
@@ -133,8 +126,7 @@ struct Uro_Files : OsDefinitionPlain
 {
 public:
    Uro_Files() = delete;
-   Uro_Files(P_OS_ARGS_NO_PREFIX) : OsDefinitionPlain(P_OS_SHORT_ARGS_NO_PREFIX) {};
-   Uro_Files(P_OS_ARGS_PREFIX) : OsDefinitionPlain(P_OS_SHORT_ARGS_PREFIX) {};
+   Uro_Files(P_OS_GEN_ARGS) : OsDefinitionPlain(P_OS_GEN_ARGS_SHORT) {};
 
    _bool hasNext() override;
 };
@@ -144,8 +136,7 @@ struct Uro_Directories : OsDefinitionPlain
 {
 public:
    Uro_Directories() = delete;
-   Uro_Directories(P_OS_ARGS_NO_PREFIX) : OsDefinitionPlain(P_OS_SHORT_ARGS_NO_PREFIX) {};
-   Uro_Directories(P_OS_ARGS_PREFIX) : OsDefinitionPlain(P_OS_SHORT_ARGS_PREFIX) {};
+   Uro_Directories(P_OS_GEN_ARGS) : OsDefinitionPlain(P_OS_GEN_ARGS_SHORT) {};
 
    _bool hasNext() override;
 };
@@ -155,8 +146,7 @@ struct Uro_All : OsDefinitionPlain
 {
 public:
    Uro_All() = delete;
-   Uro_All(P_OS_ARGS_NO_PREFIX) : OsDefinitionPlain(P_OS_SHORT_ARGS_NO_PREFIX) {};
-   Uro_All(P_OS_ARGS_PREFIX) : OsDefinitionPlain(P_OS_SHORT_ARGS_PREFIX) {};
+   Uro_All(P_OS_GEN_ARGS) : OsDefinitionPlain(P_OS_GEN_ARGS_SHORT) {};
 
    _bool hasNext() override;
 };
@@ -166,8 +156,7 @@ struct Uro_RecursiveFiles : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveFiles() = delete;
-   Uro_RecursiveFiles(P_OS_ARGS_NO_PREFIX) : OsDefinitionRecursive(P_OS_SHORT_ARGS_NO_PREFIX) { };
-   Uro_RecursiveFiles(P_OS_ARGS_PREFIX) : OsDefinitionRecursive(P_OS_SHORT_ARGS_PREFIX) { };
+   Uro_RecursiveFiles(P_OS_GEN_ARGS) : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT) { };
 
    _bool hasNext() override;
 };
@@ -177,8 +166,7 @@ struct Uro_RecursiveDirectories : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveDirectories() = delete;
-   Uro_RecursiveDirectories(P_OS_ARGS_NO_PREFIX) : OsDefinitionRecursive(P_OS_SHORT_ARGS_NO_PREFIX) { };
-   Uro_RecursiveDirectories(P_OS_ARGS_PREFIX) : OsDefinitionRecursive(P_OS_SHORT_ARGS_PREFIX) { };
+   Uro_RecursiveDirectories(P_OS_GEN_ARGS) : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT) { };
 
    _bool hasNext() override;
 };
@@ -188,8 +176,7 @@ struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveAll() = delete;
-   Uro_RecursiveAll(P_OS_ARGS_NO_PREFIX) : OsDefinitionRecursive(P_OS_SHORT_ARGS_NO_PREFIX) { };
-   Uro_RecursiveAll(P_OS_ARGS_PREFIX) : OsDefinitionRecursive(P_OS_SHORT_ARGS_PREFIX) { };
+   Uro_RecursiveAll(P_OS_GEN_ARGS) : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT) { };
 
    _bool hasNext() override;
 

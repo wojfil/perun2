@@ -111,18 +111,22 @@ private:
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, const _bool& abs);
+   NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, Uroboros& uro, const _bool& abs, const _bool& fin);
    ~NestedDefiniton();
    _bool hasNext() override;
    void reset() override;
+   _fdata* getDataPtr();
 
 private:
    LocationVessel* vessel;
    _def* definition;
    _def* locations;
+   InnerVariables& inner;
+   _numi index;
    _bool defOpened = false;
    _bool locsOpened = false;
    const _bool isAbsolute;
+   const _bool isFinal;
 };
 
 
@@ -315,7 +319,7 @@ private:
 struct DefinitionSuffix : _def
 {
 public:
-   DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& dir);
+   DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& fin);
    ~DefinitionSuffix();
 
    _bool hasNext() override;
@@ -329,7 +333,11 @@ private:
    _numi index;
    const _str suffix;
    const _bool absoluteBase;
-   const _bool isDirectory;
+   const _bool isFinal;
+   // DefSuffix is final, if it appears at the end of a pattern
+   // if not, we can introduce optimalizations:
+   // 1) return only directories
+   // 2) do not calculate indexes (the last Definition of the pattern does that anyways)
 };
 
 

@@ -86,6 +86,9 @@ exitParseBeginning:
       }
    }
 
+   // the pattern contains only one asterisk
+   // this is the simplest case
+   // we can easily deduce the result
    if ((info & PATTERN_INFO_ONE_ASTERISK) != 0) {
       _int separatorId2 = -1;
 
@@ -117,7 +120,7 @@ exitParseBeginning:
          : pattern.substr(patternStart, patternLength);
 
       _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
-      result = new DefinitionSuffix(d, this->uroboros, suffix, isAbsolute, false);
+      result = new DefinitionSuffix(d, this->uroboros, suffix, isAbsolute, true);
       return true;
    }
 
@@ -153,6 +156,8 @@ exitParseBeginning:
 
    const _size ulen = units.size();
 
+   // the pattern contains multiple asterisks
+   // but they all appear within one 'path segment' (there is no separator \ / between them)
    if (ulen == 1) {
       const PatternUnit& u = units[0];
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
@@ -162,43 +167,45 @@ exitParseBeginning:
       }
       else {
          _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p, isAbsolute, prefix);
-         result = new DefinitionSuffix(d, this->uroboros, u.suffixPart, isAbsolute, false);
+         result = new DefinitionSuffix(d, this->uroboros, u.suffixPart, isAbsolute, true);
       }
 
       return true;
    }
-   else if (ulen == 2) {
-      const PatternUnit& u0 = units[0];
-      const PatternUnit& u1 = units[1];
 
-      const _str p0 = str(OS_SEPARATOR_STRING, u0.asteriskPart);
+   // the pattern contains multiple asterisks spread around
+   // but there are no 'double asterisks' **
+   if ((info & PATTERN_INFO_DOUBLE_ASTERISK) == 0) {
+      const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
 
-      _def* d0;
-
-      if (u0.suffixPart.empty()) {
-         d0 = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute, prefix);
+      if (units[0].suffixPart.empty()) {
+         result = this->defGenerator.generatePattern(base, OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
       }
       else {
-         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, p0, isAbsolute, prefix);
-         d0 = new DefinitionSuffix(d, this->uroboros, u0.suffixPart, isAbsolute, true);
+         _def* d = this->defGenerator.generatePattern(base, OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
+         result = new DefinitionSuffix(d, this->uroboros, units[0].suffixPart, isAbsolute, false);
       }
 
-      LocationVessel* vessel = new LocationVessel(isAbsolute, this->uroboros);
-      _def* d1;
-      const _str p1 = str(OS_SEPARATOR_STRING, u1.asteriskPart);
+      for (_size i = 1; i < ulen; i++) {
+         const _bool isFinal = i == (ulen - 1);
+         LocationVessel* vessel = new LocationVessel(isAbsolute, this->uroboros);
+         _def* nextDef;
+         const _str nextPatt = str(OS_SEPARATOR_STRING, units[i].asteriskPart);
 
-      if (u1.suffixPart.empty()) {
-         d1 = this->defGenerator.generatePattern(vessel, OsElement::oe_All, p1, isAbsolute, prefix);
-      }
-      else {
-         _def* d = this->defGenerator.generatePattern(vessel, OsElement::oe_Directories, p1, isAbsolute, prefix);
-         d1 = new DefinitionSuffix(d, this->uroboros, u1.suffixPart, isAbsolute, false);
+         if (units[i].suffixPart.empty()) {
+            nextDef = this->defGenerator.generatePattern(vessel, 
+               isFinal ? OsElement::oe_All : OsElement::oe_Directories, nextPatt, isAbsolute, prefix);
+         }
+         else {
+            _def* d = this->defGenerator.generatePattern(vessel, OsElement::oe_Directories, nextPatt, isAbsolute, prefix);
+            nextDef = new DefinitionSuffix(d, this->uroboros, units[i].suffixPart, isAbsolute, isFinal);
+         }
+
+         result = new NestedDefiniton(vessel, nextDef, result, this->uroboros, isAbsolute, isFinal);
       }
 
-      result = new NestedDefiniton(vessel, d1, d0, isAbsolute);
       return true;
    }
-
 
    delete base;
    return false;

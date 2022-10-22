@@ -152,8 +152,8 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, const _bool& abs)
-   : vessel(ves), definition(def), locations(locs), isAbsolute(abs) { };
+NestedDefiniton::NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, Uroboros& uro, const _bool& abs, const _bool& fin)
+   : vessel(ves), definition(def), locations(locs), inner(uro.vars.inner), isAbsolute(abs), isFinal(fin) { };
 
 
 NestedDefiniton::~NestedDefiniton()
@@ -182,6 +182,9 @@ _bool NestedDefiniton::hasNext()
       if (this->locations->hasNext()) {
          this->locsOpened = true;
          this->vessel->setValue(this->locations->getValue());
+         if (this->isFinal) {
+            this->index.setToZero();
+         }
       }
       else {
          return false;
@@ -194,6 +197,12 @@ _bool NestedDefiniton::hasNext()
          this->value = this->isAbsolute
             ? this->definition->getValue()
             : str(this->vessel->getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
+
+         
+         if (this->isFinal) {
+            this->inner.index.value = index;
+            index++;
+         }
          return true;
       }
       else {
@@ -212,6 +221,10 @@ _bool NestedDefiniton::hasNext()
    return false;
 };
 
+_fdata* NestedDefiniton::getDataPtr()
+{
+   return this->definition->getDataPtr();
+}
 
 _bool Filter_LimitDef::hasNext()
 {
@@ -594,8 +607,8 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& dir)
-   : uroboros(uro), inner(uro.vars.inner), definition(def), suffix(suf), absoluteBase(abs), isDirectory(dir) { };
+DefinitionSuffix::DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& fin)
+   : uroboros(uro), inner(uro.vars.inner), definition(def), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 
 DefinitionSuffix::~DefinitionSuffix()
@@ -617,7 +630,9 @@ _bool DefinitionSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
-      this->index.setToZero();
+      if (this->isFinal) {
+         this->index.setToZero();
+      }
    }
 
    while (definition->hasNext()) {
@@ -632,9 +647,11 @@ _bool DefinitionSuffix::hasNext()
          ? this->value 
          : str(this->inner.location.value, OS_SEPARATOR_STRING, this->value);
 
-      if (this->isDirectory ? os_directoryExists(path): os_exists(path)) {
-         this->inner.index.value = index;
-         index++;
+      if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {
+         if (this->isFinal) {
+            this->inner.index.value = index;
+            index++;
+         }
          return true;
       }
    }

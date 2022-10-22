@@ -98,6 +98,7 @@ struct LocationVessel : Generator<_str>
 public:
    LocationVessel(const _bool& abs, Uroboros& uro);
    _str getValue() override;
+   const _str& getRawValue() const;
    void setValue(const _str& val);
 
 private:
@@ -110,7 +111,7 @@ private:
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel* ves, _def* def, _def* locs);
+   NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, const _bool& abs);
    ~NestedDefiniton();
    _bool hasNext() override;
    void reset() override;
@@ -121,6 +122,7 @@ private:
    _def* locations;
    _bool defOpened = false;
    _bool locsOpened = false;
+   const _bool isAbsolute;
 };
 
 

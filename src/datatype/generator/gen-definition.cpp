@@ -68,7 +68,7 @@ _bool Filter_WhereDef::hasNext()
 
    while (definition->hasNext()) {
       if (this->uroboros.state != State::s_Running) {
-         definition->reset();
+         this->reset();
          break;
       }
 
@@ -140,6 +140,11 @@ _str LocationVessel::getValue()
       : str(this->inner.location.value, OS_SEPARATOR_STRING, this->value);
 };
 
+const _str& LocationVessel::getRawValue() const
+{
+   return this->value;
+};
+
 
 void LocationVessel::setValue(const _str& val)
 {
@@ -147,8 +152,8 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel* ves, _def* def, _def* locs)
-   : vessel(ves), definition(def), locations(locs) { };
+NestedDefiniton::NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, const _bool& abs)
+   : vessel(ves), definition(def), locations(locs), isAbsolute(abs) { };
 
 
 NestedDefiniton::~NestedDefiniton()
@@ -186,7 +191,9 @@ _bool NestedDefiniton::hasNext()
    while (true) {
       if (this->definition->hasNext()) {
          this->defOpened = true;
-         this->value = this->definition->getValue();
+         this->value = this->isAbsolute
+            ? this->definition->getValue()
+            : str(this->vessel->getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
          return true;
       }
       else {

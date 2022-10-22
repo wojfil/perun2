@@ -57,12 +57,12 @@ _bool PatternParser::parse(const _str& originPattern, _def*& result, const _int&
             break;
          }
          case L'*': {
-            goto exitParser;
+            goto exitParseBeginning;
          }
       }
    }
 
-exitParser:
+exitParseBeginning:
 
    _str prefix;
 
@@ -195,7 +195,7 @@ exitParser:
          d1 = new DefinitionSuffix(d, this->uroboros, u1.suffixPart, isAbsolute, false);
       }
 
-      result = new NestedDefiniton(vessel, d1, d0);
+      result = new NestedDefiniton(vessel, d1, d0, isAbsolute);
       return true;
    }
 

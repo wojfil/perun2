@@ -25,13 +25,9 @@ namespace uro::gen
 struct PeriodUnit : Generator<_per>
 {
 public:
-   PeriodUnit(Generator<_num>* val, Period::PeriodUnit un)
-      : value(val), unit(un) { };
-
-   ~PeriodUnit() {
-      delete value;
-   }
-
+   PeriodUnit() = delete;
+   PeriodUnit(Generator<_num>* val, Period::PeriodUnit un);
+   ~PeriodUnit();
    _per getValue() override;
 
 private:
@@ -42,43 +38,28 @@ private:
 
 struct PeriodAddition : BinaryOperation<_per>
 {
-   PeriodAddition(Generator<_per>* val1, Generator<_per>* val2)
-      : BinaryOperation<_per>(val1, val2) { };
-
+public:
+   PeriodAddition() = delete;
+   PeriodAddition(Generator<_per>* val1, Generator<_per>* val2);
    _per getValue() override;
 };
 
 
-struct PeriodSubtraction : Generator<_per>
+struct PeriodSubtraction : BinaryOperation<_per>
 {
 public:
-   PeriodSubtraction(Generator<_per>* val1, Generator<_per>* val2)
-      : value1(val1), value2(val2) { };
-
-   ~PeriodSubtraction() {
-      delete value1;
-      delete value2;
-   }
-
+   PeriodSubtraction() = delete;
+   PeriodSubtraction(Generator<_per>* val1, Generator<_per>* val2);
    _per getValue() override;
-
-private:
-   Generator<_per>* value1;
-   Generator<_per>* value2;
 };
 
 
 struct TimeDifference : Generator<_per>
 {
 public:
-   TimeDifference(Generator<_tim>* val1, Generator<_tim>* val2)
-      : value1(val1), value2(val2) { };
-
-   ~TimeDifference() {
-      delete value1;
-      delete value2;
-   }
-
+   TimeDifference() = delete;
+   TimeDifference(Generator<_tim>* val1, Generator<_tim>* val2);
+   ~TimeDifference();
    _per getValue() override;
 
 private:
@@ -90,12 +71,9 @@ private:
 struct NegatedPeriod : Generator<_per>
 {
 public:
-   NegatedPeriod(Generator<_per>* val) : value(val){ };
-
-   ~NegatedPeriod() {
-      delete value;
-   }
-
+   NegatedPeriod() = delete;
+   NegatedPeriod(Generator<_per>* val);
+   ~NegatedPeriod();
    _per getValue() override;
 
 private:

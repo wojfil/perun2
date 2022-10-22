@@ -13,113 +13,121 @@
 */
 
 #include "gen-number.h"
+#include "gen-generic.h"
 
 
 namespace uro::gen
 {
 
-_num Negation::getValue() {
-   return -value->getValue();
-};
+Negation::Negation(Generator<_num>* val) 
+   : UnaryOperation<_num>(val) { };
 
-_num Addition::getValue() {
-   return value1->getValue() + value2->getValue();
-};
+Addition::Addition(Generator<_num>* val1, Generator<_num>* val2)
+   : BinaryOperation<_num>(val1, val2) { };
 
-_num Subtraction::getValue() {
-   return value1->getValue() - value2->getValue();
-};
+Subtraction::Subtraction(Generator<_num>* val1, Generator<_num>* val2)
+   : BinaryOperation<_num>(val1, val2) { };
+      
+Multiplication::Multiplication(Generator<_num>* val1, Generator<_num>* val2)
+   : BinaryOperation<_num>(val1, val2) { };
 
-_num Multiplication::getValue() {
-   return value1->getValue() * value2->getValue();
-};
+Division::Division(Generator<_num>* val1, Generator<_num>* val2)
+   : BinaryOperation<_num>(val1, val2) { };
 
-_num Division::getValue() {
-   return value1->getValue() / value2->getValue();
-};
+Modulo::Modulo(Generator<_num>* val1, Generator<_num>* val2)
+   : BinaryOperation<_num>(val1, val2) { };
 
-_num Modulo::getValue() {
-   return value1->getValue() % value2->getValue();
-};
-
-_num TimeYears::getValue() {
-   return Number(static_cast<_nint>(time->getValue().year));
-};
-
-_num TimeMonths::getValue() {
-   return _num(static_cast<_nint>(time->getValue().month));
-};
-
-_num TimeWeekDay::getValue() {
-   return _num(static_cast<_nint>(time->getValue().getWeekDay()));
-};
-
-_num TimeDays::getValue() {
-   return _num(static_cast<_nint>(time->getValue().day));
-};
-
-_num TimeHours::getValue() {
-   return _num(static_cast<_nint>(time->getValue().hour));
-};
-
-_num TimeMinutes::getValue() {
-   return _num(static_cast<_nint>(time->getValue().minute));
-};
-
-_num TimeSeconds::getValue() {
-   return _num(static_cast<_nint>(time->getValue().second));
-};
-
-TimeMemberAtIndex::~TimeMemberAtIndex() {
-   delete times;
-   delete index;
-};
-
-_bool TimeMemberAtIndex::getElement()
+_num Negation::getValue()
 {
-   result = times->getValue();
-   const _size length = result.size();
+   return -this->value->getValue();
+}
 
-   if (length == 0) {
-      return false;
+_num Addition::getValue()
+{
+   return this->value1->getValue() + this->value2->getValue();
+}
+
+_num Subtraction::getValue()
+{
+   return this->value1->getValue() - this->value2->getValue();
+}
+
+_num Multiplication::getValue()
+{
+   return this->value1->getValue() * this->value2->getValue();
+}
+
+_num Division::getValue()
+{
+   return this->value1->getValue() / this->value2->getValue();
+}
+
+_num Modulo::getValue()
+{
+   return this->value1->getValue() % this->value2->getValue();
+}
+
+TimeMember::TimeMember(Generator<_tim>* tim, const Period::PeriodUnit& pu) 
+   : time(tim), unit(pu) { };
+
+TimeMember::~TimeMember()
+{
+   delete this->time;
+}
+
+_num TimeMember::getValue() 
+{
+   switch (this->unit) {
+      case Period::u_Years:
+         return _num(static_cast<_nint>(this->time->getValue().year));
+      case Period::u_Months:
+         return _num(static_cast<_nint>(this->time->getValue().month));
+      case Period::u_Weeks:
+         return _num(static_cast<_nint>(this->time->getValue().getWeekDay()));
+      case Period::u_Days:
+         return _num(static_cast<_nint>(this->time->getValue().day));
+      case Period::u_Hours:
+         return _num(static_cast<_nint>(this->time->getValue().hour));
+      case Period::u_Minutes:
+         return _num(static_cast<_nint>(this->time->getValue().minute));
+      case Period::u_Seconds:
+         return _num(static_cast<_nint>(this->time->getValue().second));
    }
 
-   const _nint id = index->getValue().toInt();
+   return _num();
+}
 
-   if (id < 0LL || id >= length) {
-      return false;
+TimeMemberAtIndex::TimeMemberAtIndex(Generator<_tim>* tim, const Period::PeriodUnit& pu) 
+   : time(tim), unit(pu) { };
+
+TimeMemberAtIndex::~TimeMemberAtIndex() 
+{
+   delete this->time;
+}
+
+_num TimeMemberAtIndex::getValue() 
+{
+   const _tim t = this->time->getValue();
+
+   switch (this->unit) {
+      case Period::u_Years:
+         return _num(static_cast<_nint>(this->time->getValue().year));
+      case Period::u_Months:
+         return _num(static_cast<_nint>(this->time->getValue().month));
+      case Period::u_Weeks:
+         return _num(static_cast<_nint>(this->time->getValue().getWeekDay()));
+      case Period::u_Days:
+         return _num(static_cast<_nint>(this->time->getValue().day));
+      case Period::u_Hours:
+         return _num(static_cast<_nint>(this->time->getValue().hour));
+      case Period::u_Minutes:
+         return _num(static_cast<_nint>(this->time->getValue().minute));
+      case Period::u_Seconds:
+         return _num(static_cast<_nint>(this->time->getValue().second));
    }
 
-   time = &(result[id]);
-   return true;
-};
+   return _num();
+}
 
-_num TimeYearsAtIndex::getValue() {
-   return getElement() ? _num(time->year) : _num();
-};
-
-_num TimeMonthsAtIndex::getValue() {
-   return getElement() ? _num(time->month) : _num();
-};
-
-_num TimeWeekDayAtIndex::getValue() {
-   return getElement() ? _num(time->getWeekDay()) : _num();
-};
-
-_num TimeDaysAtIndex::getValue() {
-   return getElement() ? _num(time->day) : _num();
-};
-
-_num TimeHoursAtIndex::getValue() {
-   return getElement() ? _num(time->hour) : _num();
-};
-
-_num TimeMinutesAtIndex::getValue() {
-   return getElement() ? _num(time->minute) : _num();
-};
-
-_num TimeSecondsAtIndex::getValue() {
-   return getElement() ? _num(time->second) : _num();
-};
 
 }

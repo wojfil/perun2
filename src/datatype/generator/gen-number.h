@@ -24,191 +24,79 @@ namespace uro::gen
 
 struct Negation : UnaryOperation<_num>
 {
-   Negation(Generator<_num>* val) : UnaryOperation<_num>(val) { };
-
+   Negation() = delete;
+   Negation(Generator<_num>* val);
    _num getValue() override;
 };
 
 
 struct Addition : BinaryOperation<_num>
 {
-   Addition(Generator<_num>* val1, Generator<_num>* val2)
-      : BinaryOperation<_num>(val1, val2) { };
-
+   Addition() = delete;
+   Addition(Generator<_num>* val1, Generator<_num>* val2);
    _num getValue() override;
 };
 
 
 struct Subtraction : BinaryOperation<_num>
 {
-   Subtraction(Generator<_num>* val1, Generator<_num>* val2)
-      : BinaryOperation<_num>(val1, val2) { };
-
+   Subtraction() = delete;
+   Subtraction(Generator<_num>* val1, Generator<_num>* val2);
    _num getValue() override;
 };
 
 
 struct Multiplication : BinaryOperation<_num>
 {
-   Multiplication(Generator<_num>* val1, Generator<_num>* val2)
-      : BinaryOperation<_num>(val1, val2) { };
-
+   Multiplication() = delete;
+   Multiplication(Generator<_num>* val1, Generator<_num>* val2);
    _num getValue() override;
 };
 
 
 struct Division : BinaryOperation<_num>
 {
-   Division(Generator<_num>* val1, Generator<_num>* val2)
-      : BinaryOperation<_num>(val1, val2) { };
-
+   Division() = delete;
+   Division(Generator<_num>* val1, Generator<_num>* val2);
    _num getValue() override;
 };
 
 
 struct Modulo : BinaryOperation<_num>
 {
-   Modulo(Generator<_num>* val1, Generator<_num>* val2)
-      : BinaryOperation<_num>(val1, val2) { };
-
+   Modulo() = delete;
+   Modulo(Generator<_num>* val1, Generator<_num>* val2);
    _num getValue() override;
 };
 
 
-struct TimeMember
+struct TimeMember : Generator<_num>
 {
 public:
-   TimeMember (Generator<_tim>* tim) : time(tim) {};
-
-   ~TimeMember() {
-      delete time;
-   }
+   TimeMember() = delete;
+   TimeMember(Generator<_tim>* tim, const Period::PeriodUnit& pu);
+   ~TimeMember();
+   _num getValue() override;
 
 protected:
    Generator<_tim>* time;
+   const Period::PeriodUnit unit;
 };
 
 
-struct TimeYears : Generator<_num>, TimeMember
-{
-   TimeYears(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeMonths : Generator<_num>, TimeMember
-{
-   TimeMonths(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeWeekDay : Generator<_num>, TimeMember
-{
-   TimeWeekDay(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeDays : Generator<_num>, TimeMember
-{
-   TimeDays(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeHours : Generator<_num>, TimeMember
-{
-   TimeHours(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeMinutes : Generator<_num>, TimeMember
-{
-   TimeMinutes(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeSeconds : Generator<_num>, TimeMember
-{
-   TimeSeconds(Generator<_tim>* tim) : TimeMember(tim) {};
-   _num getValue() override;
-};
-
-
-struct TimeMemberAtIndex
+struct TimeMemberAtIndex : Generator<_num>
 {
 public:
-   TimeMemberAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : times(tims), index(in) {};
-
+   TimeMemberAtIndex() = delete;
+   TimeMemberAtIndex(Generator<_tim>* tim, const Period::PeriodUnit& pu);
    ~TimeMemberAtIndex();
-   _bool getElement();
+   _num getValue() override;
 
 protected:
-   Generator<_tlist>* times;
-   Generator<_num>* index;
-   _tlist result;
-   _tim* time;
+   Generator<_tim>* time;
+   const Period::PeriodUnit unit;
 };
 
-
-struct TimeYearsAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeYearsAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
-
-
-struct TimeMonthsAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeMonthsAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
-
-
-struct TimeWeekDayAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeWeekDayAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
-
-
-struct TimeDaysAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeDaysAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
-
-
-struct TimeHoursAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeHoursAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
-
-
-struct TimeMinutesAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeMinutesAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
-
-
-struct TimeSecondsAtIndex : Generator<_num>, TimeMemberAtIndex
-{
-   TimeSecondsAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
-   _num getValue() override;
-};
 
 }
 

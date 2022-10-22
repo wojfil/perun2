@@ -17,7 +17,6 @@
 
 #include "../generator.h"
 #include "gen-generic.h"
-#include "gen-number.h"
 
 
 namespace uro::gen
@@ -26,14 +25,9 @@ namespace uro::gen
 struct IncreasedTime : Generator<_tim>
 {
 public:
-   IncreasedTime (Generator<_tim>* tim, Generator<_per>* per)
-      : time(tim), period(per) {};
-
-   ~IncreasedTime() {
-      delete time;
-      delete period;
-   }
-
+   IncreasedTime() = delete;
+   IncreasedTime(Generator<_tim>* tim, Generator<_per>* per);
+   ~IncreasedTime();
    _tim getValue() override;
 
 private:
@@ -42,18 +36,12 @@ private:
 };
 
 
-// the same, but with reversed operator
 struct DecreasedTime : Generator<_tim>
 {
 public:
-   DecreasedTime (Generator<_tim>* tim, Generator<_per>* per)
-      : time(tim), period(per) {};
-
-   ~DecreasedTime() {
-      delete time;
-      delete period;
-   }
-
+   DecreasedTime() = delete;
+   DecreasedTime(Generator<_tim>* tim, Generator<_per>* per);
+   ~DecreasedTime();
    _tim getValue() override;
 
 private:
@@ -65,8 +53,6 @@ private:
 struct v_Now : Generator<_tim>
 {
 public:
-   v_Now() {};
-
    _tim getValue() override;
 };
 
@@ -74,8 +60,6 @@ public:
 struct v_Today : Generator<_tim>
 {
 public:
-   v_Today() {};
-
    _tim getValue() override;
 };
 
@@ -83,8 +67,6 @@ public:
 struct v_Yesterday : Generator<_tim>
 {
 public:
-   v_Yesterday() {};
-
    _tim getValue() override;
 };
 
@@ -92,25 +74,29 @@ public:
 struct v_Tomorrow : Generator<_tim>
 {
 public:
-   v_Tomorrow() {};
-
    _tim getValue() override;
 };
 
 
 struct TimeDate : UnaryOperation<_tim>
 {
-   TimeDate(Generator<_tim>* val) : UnaryOperation<_tim>(val) { };
-
+public:
+   TimeDate() = delete;
+   TimeDate(Generator<_tim>* val);
    _tim getValue() override;
 };
 
 
-struct TimeDateAtIndex : Generator<_tim>, TimeMemberAtIndex
+struct TimeDateAtIndex : Generator<_tim>
 {
-   TimeDateAtIndex(Generator<_tlist>* tims, Generator<_num>* in)
-      : TimeMemberAtIndex(tims, in) {};
+public:
+   TimeDateAtIndex() = delete;
+   TimeDateAtIndex(Generator<_tim>* tim);
+   ~TimeDateAtIndex();
    _tim getValue() override;
+
+private:
+   Generator<_tim>* time;
 };
 
 }

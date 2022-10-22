@@ -82,19 +82,19 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
          const _size& h = tk.value.twoWords.h2;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-            result = new gen::TimeYears(var);
+            result = new gen::TimeMember(var, Period::u_Years);
          else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-            result = new gen::TimeMonths(var);
+            result = new gen::TimeMember(var, Period::u_Months);
          else if (h == hs.HASH_PER_WEEKDAY)
-            result = new gen::TimeWeekDay(var);
+            result = new gen::TimeMember(var, Period::u_Weeks);
          else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-            result = new gen::TimeDays(var);
+            result = new gen::TimeMember(var, Period::u_Days);
          else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-            result = new gen::TimeHours(var);
+            result = new gen::TimeMember(var, Period::u_Hours);
          else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-            result = new gen::TimeMinutes(var);
+            result = new gen::TimeMember(var, Period::u_Minutes);
          else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECOND)
-            result = new gen::TimeSeconds(var);
+            result = new gen::TimeMember(var, Period::u_Seconds);
          else if (h == hs.HASH_PER_DATE)
             return false;
          else {

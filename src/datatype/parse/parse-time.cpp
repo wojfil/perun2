@@ -83,9 +83,10 @@ Generator<_tim>* parseTime(const Tokens& tks, Uroboros& uro)
       Generator<_tlist>* tlist;
       if (uro.vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
+         Generator<_tim>* tim = new gen::ListElement<_tim>(tlist, num);
 
          if (last.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE)
-            return new gen::TimeDateAtIndex(tlist, num);
+            return new gen::TimeDateAtIndex(tim);
          else
             return nullptr;
       }

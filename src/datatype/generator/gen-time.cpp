@@ -13,27 +13,45 @@
 */
 
 #include "gen-time.h"
+#include "gen-generic.h"
 #include "../generator.h"
 #include "../../os.h"
-
 
 
 namespace uro::gen
 {
 
+IncreasedTime::IncreasedTime (Generator<_tim>* tim, Generator<_per>* per)
+   : time(tim), period(per) { }
+
+IncreasedTime::~IncreasedTime() 
+{
+   delete time;
+   delete period;
+}
+
 _tim IncreasedTime::getValue()
 {
-   _tim t = time->getValue();
-   t += period->getValue();
+   _tim t = this->time->getValue();
+   t += this->period->getValue();
    return t;
-};
+}
+
+DecreasedTime::DecreasedTime(Generator<_tim>* tim, Generator<_per>* per)
+   : time(tim), period(per) {};
+
+DecreasedTime::~DecreasedTime() 
+{
+   delete time;
+   delete period;
+}
 
 _tim DecreasedTime::getValue()
 {
-   _tim t = time->getValue();
-   t -= period->getValue();
+   _tim t = this->time->getValue();
+   t -= this->period->getValue();
    return t;
-};
+}
 
 _tim v_Now::getValue()
 {
@@ -55,12 +73,25 @@ _tim v_Tomorrow::getValue()
    return os_tomorrow();
 }
 
-_tim TimeDate::getValue() {
-   return (value->getValue()).toDate();
-};
+TimeDate::TimeDate(Generator<_tim>* val) 
+   : UnaryOperation<_tim>(val) { }
 
-_tim TimeDateAtIndex::getValue() {
-   return getElement() ? time->toDate() : _tim();
-};
+_tim TimeDate::getValue() 
+{
+   return this->value->getValue().toDate();
+}
+
+TimeDateAtIndex::TimeDateAtIndex(Generator<_tim>* tim)
+   : time(tim) { }
+
+TimeDateAtIndex::~TimeDateAtIndex() 
+{
+   delete this->time;
+}
+
+_tim TimeDateAtIndex::getValue() 
+{
+   return this->time->getValue().toDate();
+}
 
 }

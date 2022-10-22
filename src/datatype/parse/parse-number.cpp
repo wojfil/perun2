@@ -130,21 +130,22 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
          const Token& last = tks.last();
          const _size& h = last.value.twoWords.h2;
          const Hashes& hs = uro.hashes;
+         Generator<_tim>* tim = new gen::ListElement<_tim>(tlist, num);
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-            return new gen::TimeYearsAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Years);
          else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-            return new gen::TimeMonthsAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Months);
          else if (h == hs.HASH_PER_WEEKDAY)
-            return new gen::TimeWeekDayAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Weeks);
          else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-            return new gen::TimeDaysAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Days);
          else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-            return new gen::TimeHoursAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Hours);
          else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-            return new gen::TimeMinutesAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Minutes);
          else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECONDS)
-            return new gen::TimeSecondsAtIndex(tlist, num);
+            return new gen::TimeMemberAtIndex(tim, Period::u_Seconds);
          else if (h == hs.HASH_PER_DATE)
             return nullptr;
          else

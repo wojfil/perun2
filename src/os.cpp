@@ -1352,6 +1352,12 @@ _uint32 os_patternInfo(const _str& pattern)
    return result;
 }
 
+_bool os_bothAreSeparators(const _char& left, const _char& right)
+{ 
+   return (left == right) 
+      && (left == OS_SEPARATOR); 
+}
+
 _str os_trim(const _str& path)
 {
    const _int len = path.length();
@@ -1415,7 +1421,8 @@ exitEnd:
          : path.substr(start, end - start + 1);
    }
 
-   std::replace(result.begin(),result.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
+   std::replace(result.begin(), result.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
+   result.erase(std::unique(result.begin(), result.end(), os_bothAreSeparators), result.end());   
    os_escapeQuote(result);
    return result;
 }
@@ -1905,7 +1912,7 @@ r_exitEnd:
          value = value.substr(start, end - start + 1);
       }
    }
-
+   
    return;
 }
 

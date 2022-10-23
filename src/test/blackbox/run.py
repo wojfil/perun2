@@ -1,10 +1,12 @@
 import subprocess
+import os
 
 SYNTAX_ERROR_EXIT_CODE = 2
+SEPARATOR = os.path.sep
 
 def getCmd(code):
   return "uro -d res -c \"" + code + "\""
-  
+
 def getCmdAsArgs(code):
   return ['uro', '-d', 'res', '-c', code]
 
@@ -14,16 +16,20 @@ def runTestCase(code, expectedOutput):
     print("Test failed at running code: " + code)
     print("  Expected output: \n" + expectedOutput)
     print("  Received output: \n" + realOutput)
-    
+
 def expectSyntaxError(code):
   p = subprocess.Popen(getCmdAsArgs(code), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
   p.communicate()
   if p.returncode != SYNTAX_ERROR_EXIT_CODE:
     print("Test failed at expecting syntax error from code: " + code)
     print("  Received exit code: \n" + str(p.returncode))
-  
+
 def lines(*args):
   return "\n".join(args)
+
+def path(*args):
+  return SEPARATOR.join(args)
+  
   
 print ("BLACK-BOX TESTS START")
 

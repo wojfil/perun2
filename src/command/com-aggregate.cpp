@@ -59,11 +59,11 @@ void Aggregate::run()
 
       if (!selectPaths.empty()) {
          _bool anyGoodPath = false;
-         std::unordered_set<_str> goodPaths;
+         _set goodPaths;
 
-         for (const std::pair<_str, std::unordered_set<_str>>& pair : selectPaths) {
+         for (const std::pair<_str, _set>& pair : selectPaths) {
             const _str& parent = pair.first;
-            const std::unordered_set<_str>& paths = pair.second;
+            const _set& paths = pair.second;
 
             if (!os_directoryExists(parent)) {
                for (auto it = paths.begin(); it != paths.end(); it++) {
@@ -122,7 +122,7 @@ void Aggregate::run()
       }
 
       if (!copyPaths.empty()) {
-         std::unordered_set<_str> goodPaths;
+         _set goodPaths;
 
          for (auto it = copyPaths.begin(); it != copyPaths.end(); it++) {
             const _str& path = *it;

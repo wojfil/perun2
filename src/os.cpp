@@ -1148,7 +1148,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro
    return true;
 }
 
-_bool os_copy(const std::unordered_set<_str>& paths)
+_bool os_copy(const _set& paths)
 {
    _size totalSize = sizeof(DROPFILES) + sizeof(_char);
 
@@ -1177,7 +1177,7 @@ _bool os_copy(const std::unordered_set<_str>& paths)
    return true;
 }
 
-_bool os_select(const _str& parent, const std::unordered_set<_str>& paths)
+_bool os_select(const _str& parent, const _set& paths)
 {
    ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
    std::vector<ITEMIDLIST*> v;

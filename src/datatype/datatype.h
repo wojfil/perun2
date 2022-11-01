@@ -18,19 +18,23 @@
 #include "number-int.h"
 #include "time.h"
 #include "definition.h"
+#include <unordered_set>
 
 
 namespace uro
 {
 
-typedef Number                      _num;
-typedef NumberInt                   _numi;
-typedef Time                        _tim;
-typedef Period                      _per;
-typedef std::vector<Number>         _nlist;
-typedef std::vector<Time>           _tlist;
-typedef Definition                  _def;
-typedef std::vector<std::wstring>   _list;
+typedef Number                              _num;
+typedef NumberInt                           _numi;
+typedef Time                                _tim;
+typedef Period                              _per;
+typedef std::vector<Number>                 _nlist;
+typedef std::vector<Time>                   _tlist;
+typedef Definition                          _def;
+typedef std::vector<std::wstring>           _list;
+typedef std::unordered_set<std::wstring>    _set;
+
+
 
 }
 

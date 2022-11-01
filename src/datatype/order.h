@@ -50,16 +50,11 @@ template <typename T>
 struct OrderUnit : Order
 {
 public:
-   OrderUnit(Generator<T>* val, const _bool desc, OrderIndices* indie)
-      : valueGenerator(val), descending(desc), indices(indie) { };
-
-   ~OrderUnit()
-   {
-      delete valueGenerator;
-   }
+   OrderUnit(_genptr<T>& val, const _bool desc, OrderIndices* indie)
+      : valueGenerator(std::move(val)), descending(desc), indices(indie) { };
 
 protected:
-   Generator<T>* valueGenerator;
+   _genptr<T> valueGenerator;
    OrderIndices* indices;
    std::vector<T> values;
    const _bool descending;
@@ -70,7 +65,7 @@ template <typename T>
 struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
-   OrderUnit_Middle(Generator<T>* val, const _bool desc, Order* next, OrderIndices* indie)
+   OrderUnit_Middle(_genptr<T>& val, const _bool desc, Order* next, OrderIndices* indie)
       : OrderUnit<T>(val, desc, indie), nextUnit(next) { };
 
    ~OrderUnit_Middle()
@@ -120,7 +115,7 @@ template <typename T>
 struct OrderUnit_Final : OrderUnit<T>
 {
 public:
-   OrderUnit_Final(Generator<T>* val, const _bool desc, OrderIndices* indie)
+   OrderUnit_Final(_genptr<T>& val, const _bool desc, OrderIndices* indie)
       : OrderUnit<T>(val, desc, indie) { };
 
    void clearValues(const _size& length) override
@@ -208,13 +203,8 @@ template <typename T>
 struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
 {
 public:
-   OrderBy_List(Generator<std::vector<T>>* bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros& uro)
-      : OrderBy<T>(attr, indices, ord, uro), base(bas) { }
-
-   ~OrderBy_List()
-   {
-      delete this->base;
-   }
+   OrderBy_List(_genptr<std::vector<T>>& bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros& uro)
+      : OrderBy<T>(attr, indices, ord, uro), base(std::move(bas)) { }
 
    std::vector<T> getValue() override
    {
@@ -256,22 +246,21 @@ public:
    }
 
 private:
-   Generator<std::vector<T>>* base;
+   _genptr<std::vector<T>> base;
 };
 
 
 struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
-   OrderBy_Definition(_def* bas, Attribute* attr, const _bool& hasMem,
+   OrderBy_Definition(_defptr& bas, Attribute* attr, const _bool& hasMem,
       OrderIndices* indices, Order* ord, Uroboros& uro);
-   ~OrderBy_Definition();
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   _def* base;
+   _defptr base;
    _bool first = true;
    Uroboros& uroboros;
    InnerVariables& inner;

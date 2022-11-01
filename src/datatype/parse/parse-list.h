@@ -22,7 +22,7 @@
 namespace uro::parse
 {
 
-Generator<_list>* parseList(const Tokens& tks, Uroboros& uro);
+_bool parseList(_genptr<_list>& result, const Tokens& tks, Uroboros& uro);
 
 }
 

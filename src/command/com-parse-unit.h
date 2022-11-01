@@ -17,6 +17,7 @@
 
 #include "../datatype/primitives.h"
 #include "../datatype/generator.h"
+#include "../datatype/gen-memory.h"
 #include "com.h"
 #include <vector>
 
@@ -33,7 +34,7 @@ public:
 
    void finish();
    void setElse(Command* com);
-   void addElseIf(Command* com, Generator<_bool>* cond);
+   void addElseIf(Command* com, _genptr<_bool>& cond);
 
    _bool isClosed() const;
    _bool isElseClosed() const;
@@ -53,7 +54,7 @@ private:
 
    Command* elseCommand = nullptr;
    std::vector<Command*> elseIfCommands;
-   std::vector<Generator<_bool>*> elseIfConditions;
+   std::vector<_genptr<_bool>> elseIfConditions;
 };
 
 
@@ -69,7 +70,7 @@ public:
    _bool isExpandable() const;
    void addElse(Command* com, const _int& line);
    void addEmptyElse(const _int& line);
-   void addElseIf(Generator<_bool>* cond, Command* com, const _int& line);
+   void addElseIf(_genptr<_bool>& cond, Command* com, const _int& line);
 
 
 private:

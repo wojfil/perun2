@@ -20,6 +20,7 @@
 #include "vector"
 #include "../generator.h"
 #include "../datatype.h"
+#include "../gen-memory.h"
 #include "../../util.h"
 #include "../../uroboros.h"
 #include "../../var/var.h"
@@ -32,7 +33,7 @@ template <typename T>
 struct Constant : Generator<T>
 {
 public:
-   Constant<T> (const T val) : value(val) {};
+   Constant<T> (const T& val) : value(val) {};
    T getValue () override { return value; };
 
    _bool isConstant() const override
@@ -49,10 +50,10 @@ template<typename T>
 struct UnaryOperation : Generator<T>
 {
 public:
-   UnaryOperation<T> (Generator<T>* val) : value(val) { };
+   UnaryOperation<T> (_genptr<T>& val) : value(std::move(val)) { };
+
 protected:
-   ~UnaryOperation<T> () { delete value; };
-   Generator<T>* value;
+   _genptr<T> value;
 };
 
 
@@ -60,15 +61,12 @@ template <typename T>
 struct BinaryOperation : Generator<T>
 {
 public:
-   BinaryOperation<T> (Generator<T>* val1, Generator<T>* val2)
-      : value1(val1), value2(val2) { };
+   BinaryOperation<T> (_genptr<T>& val1, _genptr<T>& val2)
+      : value1(std::move(val1)), value2(std::move(val2)) { };
+
 protected:
-   ~BinaryOperation<T>() {
-      delete value1;
-      delete value2;
-   };
-   Generator<T>* value1;
-   Generator<T>* value2;
+   _genptr<T> value1;
+   _genptr<T> value2;
 };
 
 
@@ -76,23 +74,17 @@ template <typename T>
 struct Ternary : Generator<T>
 {
 public:
-   Ternary<T> (Generator<_bool>* cond, Generator<T>* le, Generator<T>* ri)
-      : condition(cond), left(le), right(ri) {};
-
-   ~Ternary<T>() {
-      delete condition;
-      delete left;
-      delete right;
-   }
+   Ternary<T> (_genptr<_bool>& cond, _genptr<T>& le, _genptr<T>& ri)
+      : condition(std::move(cond)), left(std::move(le)), right(std::move(ri)) {};
 
    T getValue() override {
       return condition->getValue() ? left->getValue() : right->getValue();
    };
 
 private:
-   Generator<_bool>* condition;
-   Generator<T>* left;
-   Generator<T>* right;
+   _genptr<_bool> condition;
+   _genptr<T> left;
+   _genptr<T> right;
 };
 
 
@@ -100,21 +92,16 @@ template <typename T>
 struct Binary : Generator<T>
 {
 public:
-   Binary<T> (Generator<_bool>* cond, Generator<T>* val)
-      : condition(cond), value(val){};
+   Binary<T> (_genptr<_bool>& cond, _genptr<T>& val)
+      : condition(std::move(cond)), value(std::move(val)){};
 
    T getValue () override {
       return condition->getValue() ? value->getValue() : T();
    };
 
-   ~Binary<T>() {
-      delete condition;
-      delete value;
-   }
-
 private:
-   Generator<_bool>* condition;
-   Generator<T>* value;
+   _genptr<_bool> condition;
+   _genptr<T> value;
 };
 
 
@@ -122,23 +109,21 @@ template <typename T>
 struct Listed : Generator<std::vector<T>>
 {
 public:
-   Listed(std::vector<Generator<T>*>* val)
-      : value(val), length(val->size()) { };
-
-   ~Listed() {
-      langutil::deleteVectorPtr(value);
-   }
+   Listed(std::vector<_genptr<T>>& val) : length(val.size())
+   {
+      transferGenPtrs(val, this->value);
+   };
 
    std::vector<T> getValue() override {
       std::vector<T> list(length);
       for (_size i = 0; i < length; i++) {
-         list[i] = (*value)[i]->getValue();
+         list[i] = value[i]->getValue();
       }
       return list;
    }
 
 private:
-   std::vector<Generator<T>*>* value;
+   std::vector<_genptr<T>> value;
    const _size length;
 };
 
@@ -147,24 +132,22 @@ template <typename T>
 struct ListedLists : Generator<std::vector<T>>
 {
 public:
-   ListedLists(std::vector<Generator<std::vector<T>>*>* val) 
-      : value(val), length(val->size()) { };
-
-   ~ListedLists() {
-      langutil::deleteVectorPtr(value);
-   }
+   ListedLists(std::vector<_genptr<std::vector<T>>>& val) : length(val.size())
+   {
+      transferGenPtrs(val, this->value);
+   };
 
    std::vector<T> getValue() override {
       std::vector<T> list;
       for (_size i = 0; i < length; i++) {
-         const std::vector<T> vec = (*value)[i]->getValue();
+         const std::vector<T> vec = value[i]->getValue();
          langutil::appendVector(list, vec);
       }
       return list;
    }
 
 private:
-   std::vector<Generator<std::vector<T>>*>* value;
+   std::vector<_genptr<std::vector<T>>> value;
    const _size length;
 };
 
@@ -173,13 +156,8 @@ template <typename T>
 struct ListElement : Generator<T>
 {
 public:
-   ListElement(Generator<std::vector<T>>* li, Generator<_num>* id)
-      : list(li), index(id) { };
-
-   ~ListElement() {
-      delete list;
-      delete index;
-   }
+   ListElement(_genptr<std::vector<T>>& li, _genptr<_num>& id)
+      : list(std::move(li)), index(std::move(id)) { };
 
    T getValue() override {
       const std::vector<T> lst = list->getValue();
@@ -197,8 +175,8 @@ public:
    }
 
 private:
-   Generator<std::vector<T>>* list;
-   Generator<_num>* index;
+   _genptr<std::vector<T>> list;
+   _genptr<_num> index;
 };
 
 
@@ -206,20 +184,12 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(Generator<std::vector<T>>* li, Generator<_bool>* cond, Attribute* attr, Uroboros& uro)
-      : list(li), condition(cond), uroboros(uro), inner(uro.vars.inner),
+   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, Attribute* attr, Uroboros& uro)
+      : list(std::move(li)), condition(std::move(cond)), uroboros(uro), inner(uro.vars.inner),
         this_(nullptr), attribute(attr), hasAttribute(attr != nullptr)
    {
       uro.vars.inner.createThisVarRef(this_);
    };
-
-   ~Filter_Where() {
-      delete list;
-      delete condition;
-      if (hasAttribute) {
-         delete attribute;
-      }
-   }
 
    std::vector<T> getValue() override {
       const std::vector<T> values = list->getValue();
@@ -257,8 +227,8 @@ private:
    Uroboros& uroboros;
    InnerVariables& inner;
    vars::Variable<T>* this_;
-   Generator<std::vector<T>>* list;
-   Generator<_bool>* condition;
+   _genptr<std::vector<T>> list;
+   _genptr<_bool> condition;
    Attribute* attribute;
    const _bool hasAttribute;
 };
@@ -269,13 +239,8 @@ template <typename T>
 struct Filter_Limit : Generator<std::vector<T>>
 {
 public:
-   Filter_Limit(Generator<std::vector<T>>* li, Generator<_num>* num)
-      : list(li), number(num) { };
-
-   ~Filter_Limit() {
-      delete list;
-      delete number;
-   }
+   Filter_Limit(_genptr<std::vector<T>>& li, _genptr<_num>& num)
+      : list(std::move(li)), number(std::move(num)) { };
 
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
@@ -292,8 +257,8 @@ public:
    }
 
 private:
-   Generator<std::vector<T>>* list;
-   Generator<_num>* number;
+   _genptr<std::vector<T>> list;
+   _genptr<_num> number;
 };
 
 
@@ -301,13 +266,8 @@ template <typename T>
 struct Filter_Skip : Generator<std::vector<T>>
 {
 public:
-   Filter_Skip(Generator<std::vector<T>>* li, Generator<_num>* num)
-      : list(li), number(num) { };
-
-   ~Filter_Skip() {
-      delete list;
-      delete number;
-   }
+   Filter_Skip(_genptr<std::vector<T>>& li, _genptr<_num>& num)
+      : list(std::move(li)), number(std::move(num)) { };
 
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
@@ -323,8 +283,8 @@ public:
    }
 
 private:
-   Generator<std::vector<T>>* list;
-   Generator<_num>* number;
+   _genptr<std::vector<T>> list;
+   _genptr<_num> number;
 };
 
 
@@ -332,13 +292,8 @@ template <typename T>
 struct Filter_Every : Generator<std::vector<T>>
 {
 public:
-   Filter_Every(Generator<std::vector<T>>* li, Generator<_num>* num)
-      : list(li), number(num) { };
-
-   ~Filter_Every() {
-      delete list;
-      delete number;
-   }
+   Filter_Every(_genptr<std::vector<T>>& li, _genptr<_num>& num)
+      : list(std::move(li)), number(std::move(num)) { };
 
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
@@ -360,8 +315,8 @@ public:
    }
 
 private:
-   Generator<std::vector<T>>* list;
-   Generator<_num>* number;
+   _genptr<std::vector<T>> list;
+   _genptr<_num> number;
 };
 
 
@@ -369,13 +324,8 @@ template <typename T>
 struct Filter_Final : Generator<std::vector<T>>
 {
 public:
-   Filter_Final(Generator<std::vector<T>>* li, Generator<_num>* num)
-      : list(li), number(num) { };
-
-   ~Filter_Final() {
-      delete list;
-      delete number;
-   }
+   Filter_Final(_genptr<std::vector<T>>& li, _genptr<_num>& num)
+      : list(std::move(li)), number(std::move(num)) { };
 
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
@@ -392,8 +342,8 @@ public:
    }
 
 private:
-   Generator<std::vector<T>>* list;
-   Generator<_num>* number;
+   _genptr<std::vector<T>> list;
+   _genptr<_num> number;
 };
 
 

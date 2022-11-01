@@ -28,27 +28,22 @@
 namespace uro::parse
 {
 
-Generator<_bool>* parseBool(const Tokens& tks, Uroboros& uro)
+_bool parseBool(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_bool>* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return nullptr;
+      return false;
    }
 
    const _bool possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_bool>* func = func::boolFunction(tks, uro);
-      if (func != nullptr) {
-         return func;
-      }
+      return func::boolFunction(result, tks, uro);
    }
    else if (len >= 2 && !possibleBinary) {
       // build numeric expression (but only if sequence has any operator)
@@ -60,14 +55,11 @@ Generator<_bool>* parseBool(const Tokens& tks, Uroboros& uro)
          const Token& t = tks.listAt(i);
          if (t.type == Token::t_Keyword && isBoolExpOperator(t) && bi.isBracketFree())
          {
-            if (!(t.isKeyword(Keyword::kw_Not) && i != end && (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like))))
+            if (!(t.isKeyword(Keyword::kw_Not) && i != end
+               && (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like))))
             {
-               Generator<_bool>* boo = parseBoolExp(tks, uro);
-               if (boo == nullptr) {
+               if (!parseBoolExp(result, tks, uro)) {
                   throw SyntaxException(L"syntax of a boolean expression is not valid", tks.first().line);
-               }
-               else {
-                  return boo;
                }
             }
          }
@@ -75,40 +67,44 @@ Generator<_bool>* parseBool(const Tokens& tks, Uroboros& uro)
       }
    }
 
-   Generator<_bool>* cmp = parseComparisons(tks, uro);
-   if (cmp != nullptr) {
-      return cmp;
+   _genptr<_bool> cmp;
+   if (parseComparisons(cmp, tks, uro)) {
+      result = std::move(cmp);
+      return true;
    }
 
    if (tks.check(TI_HAS_KEYWORD_IN)) {
-      Generator<_bool>* boo = parseIn(tks, uro);
-      if (boo != nullptr) {
-         return boo;
+      _genptr<_bool> boo;
+      if (parseIn(boo, tks, uro)) {
+         result = std::move(boo);
+         return true;
       }
    }
 
    if (tks.check(TI_HAS_KEYWORD_LIKE)) {
-      Generator<_bool>* boo = parseLike(tks, uro);
-      if (boo != nullptr) {
-         return boo;
+      _genptr<_bool> boo;
+      if (parseLike(boo, tks, uro)) {
+         result = std::move(boo);
+         return true;
       }
    }
 
-   Generator<_bool>* tern = parseTernary<_bool>(tks, uro);
-   if (tern != nullptr) {
-      return tern;
+   _genptr<_bool> tern;
+   if (parseTernary<_bool>(tern, tks, uro)) {
+      result = std::move(tern);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
 
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static Generator<_bool>* parseBoolExp(const Tokens& tks, Uroboros& uro)
+static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 {
-   std::vector<ExpElement<_bool>*> infList; // infix notation list
+   std::vector<ExpElement<_bool>> infList; // infix notation list
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
    _int sublen = 0, lv1 = 0, lv2 = 0;
@@ -126,7 +122,7 @@ static Generator<_bool>* parseBoolExp(const Tokens& tks, Uroboros& uro)
             else {
                const _char ch = toBoolExpOperator(t);
                if (sublen == 0) {
-                  infList.push_back(new ExpElement<_bool>(ch, t.line));
+                  infList.emplace_back(ch, t.line);
                }
                else {
                   if (free) {
@@ -135,20 +131,19 @@ static Generator<_bool>* parseBoolExp(const Tokens& tks, Uroboros& uro)
 
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
                         const _bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
-                        infList.push_back(new ExpElement<_bool>(boo, line));
-                        infList.push_back(new ExpElement<_bool>(ch, line));
+                        infList.emplace_back(boo, line);
+                        infList.emplace_back(ch, line);
                         sublen = 0;
                      }
                      else {
-                        Generator<_bool>* boo;
+                        _genptr<_bool> boo;
                         if (parse(uro, tks2, boo)) {
-                           infList.push_back(new ExpElement<_bool>(boo, line));
-                           infList.push_back(new ExpElement<_bool>(ch, line));
+                           infList.emplace_back(boo, line);
+                           infList.emplace_back(ch, line);
                            sublen = 0;
                         }
                         else {
-                           langutil::deleteVector(infList);
-                           return nullptr;
+                           return false;
                         }
                      }
                   }
@@ -197,77 +192,70 @@ static Generator<_bool>* parseBoolExp(const Tokens& tks, Uroboros& uro)
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
          const _bool boo = (tks2.first().value.keyword.k == Keyword::kw_True);
-         infList.push_back(new ExpElement<_bool>(boo, tks2.first().line));
+         infList.emplace_back(boo, tks2.first().line);
       }
       else {
-         Generator<_bool>* boo;
+         _genptr<_bool> boo;
          if (parse(uro, tks2, boo)) {
-            infList.push_back(new ExpElement<_bool>(boo, tks2.first().line));
+            infList.emplace_back(boo, tks2.first().line);
          }
          else {
-            langutil::deleteVector(infList);
-            return nullptr;
+            return false;
          }
       }
    }
 
    if (!isBoolExpComputable(infList)) {
-      langutil::deleteVector(infList);
       throw SyntaxException(L"syntax of a boolean expression is not valid",
          tks.first().line);
    }
 
-   std::vector<ExpElement<_bool>*> pntList;
-   Generator<_bool>* boo = boolExpTree(infList, pntList);
-
-   langutil::deleteVector(infList);
-   langutil::deleteVector(pntList);
-
-   return boo;
+   return boolExpTree(result, infList);
 }
 
-static Generator<_bool>* boolExpTree(
-   const std::vector<ExpElement<_bool>*>& infList,
-   std::vector<ExpElement<_bool>*>& pntList)
+static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& infList)
 {
-   std::vector<ExpElement<_bool>*> elements;
-   std::vector<ExpElement<_bool>*> temp;
+   std::vector<ExpElement<_bool>> elements;
+   std::vector<ExpElement<_bool>> temp;
    const _size len = infList.size();
    _int brackets = 0;
    _bool anyNot = false;
 
    for (_size i = 0; i < len; i++) {
-      ExpElement<_bool>* e = infList[i];
-      if (e->type == ElementType::et_Operator) {
-         const _char op = e->_operator;
+      ExpElement<_bool>& e = infList[i];
+      if (e.type == ElementType::et_Operator) {
+         const _char op = e.operator_;
          switch (op) {
             case L'(': {
                brackets++;
                if (brackets > 1) {
-                  temp.push_back(e);
+                  temp.emplace_back(e);
                }
                break;
             }
             case L')': {
                brackets--;
                if (brackets == 0) {
-                  Generator<_bool>* result = boolExpTree(temp, pntList);
-                  ExpElement<_bool>* ee = new ExpElement<_bool>(result, e->line);
-                  pntList.push_back(ee);
-                  temp.resize(0);
-                  elements.push_back(ee);
+                  _genptr<_bool> res;
+
+                  if (!boolExpTree(res, temp)) {
+                     return false;
+                  }
+
+                  temp.clear();
+                  elements.emplace_back(res, e.line);
                }
                else {
-                  temp.push_back(e);
+                  temp.emplace_back(e);
                }
                break;
             }
             default: {
                if (brackets == 0) {
-                  elements.push_back(e);
+                  elements.emplace_back(e);
                }
                else {
-                  temp.push_back(e);
+                  temp.emplace_back(e);
                }
                if (!anyNot && op == L'!') {
                   anyNot = true;
@@ -279,95 +267,87 @@ static Generator<_bool>* boolExpTree(
       else
       {
          if (brackets == 0) {
-            elements.push_back(e);
+            elements.emplace_back(e);
          }
          else {
-            temp.push_back(e);
+            temp.emplace_back(e);
          }
       }
    }
 
    return anyNot
-      ? boolExpIntegrateNegations(elements, pntList)
-      : boolExpTreeMerge(elements, pntList);
+      ? boolExpIntegrateNegations(result, elements)
+      : boolExpTreeMerge(result, elements);
 }
 
-static Generator<_bool>* boolExpIntegrateNegations(
-   const std::vector<ExpElement<_bool>*>& elements,
-   std::vector<ExpElement<_bool>*>& pntList)
+static _bool boolExpIntegrateNegations(_genptr<_bool>& result,
+   std::vector<ExpElement<_bool>>& elements)
 {
-   std::vector<ExpElement<_bool>*> newList;
+   std::vector<ExpElement<_bool>> newList;
    _bool negate = false;
    const _size len = elements.size();
 
    for (_size i = 0; i < len; i++) {
-      ExpElement<_bool>* e = elements[i];
-      if (e->type == ElementType::et_Operator) {
-         if (e->_operator == L'!') {
+      ExpElement<_bool>& e = elements[i];
+      if (e.type == ElementType::et_Operator) {
+         if (e.operator_ == L'!') {
             negate = true;
          }
          else {
-            newList.push_back(e);
+            newList.emplace_back(e);
          }
       }
       else {
          if (negate) {
-            ExpElement<_bool>* newElement;
-
-            if (e->type == ElementType::et_Constant) {
-               const _bool value = !(e->constant);
-               newElement = new ExpElement<_bool>(value, e->line);
+            if (e.type == ElementType::et_Constant) {
+               const _bool value = !(e.constant);
+               newList.emplace_back(value, e.line);
             }
             else {
-               Generator<_bool>* n = e->takeValue();
-               Generator<_bool>* no = new gen::Not(n);
-               newElement = new ExpElement<_bool>(no, e->line);
+               _genptr<_bool> n = std::move(e.generator);
+               _genptr<_bool> no(new gen::Not(n));
+               newList.emplace_back(no, e.line);
             }
 
-            pntList.push_back(newElement);
-            newList.push_back(newElement);
             negate = false;
          }
          else {
-            newList.push_back(e);
+            newList.emplace_back(e);
          }
       }
    }
 
-   return boolExpTreeMerge(newList, pntList);
+   return boolExpTreeMerge(result, newList);
 }
 
-static Generator<_bool>* boolExpTreeMerge(
-   const std::vector<ExpElement<_bool>*>& elements,
-   std::vector<ExpElement<_bool>*>& pntList)
+static _bool boolExpTreeMerge(_genptr<_bool>& result,
+   std::vector<ExpElement<_bool>>& elements)
 {
    const _size len = elements.size();
    if (len == 1) {
-      return elements[0]->takeValue();
+      result = std::move(elements[0].generator);
+      return true;
    }
 
-   ExpElement<_bool>* firstElement = elements[0];
-   ExpElement<_bool>* oper;
+   ExpElement<_bool> firstElement(elements[0]);
+   _char oper;
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_bool>* secondElement = elements[i];
-      const ElementType& type = secondElement->type;
+      ExpElement<_bool>& secondElement = elements[i];
+      const ElementType& type = secondElement.type;
 
       if (type == ElementType::et_Operator) {
-         oper = secondElement;
+         oper = secondElement.operator_;
       }
       else {
-         const _char& op = oper->_operator;
-         ExpElement<_bool>* newElement;
+         const _int line = firstElement.line;
 
-         if (type == ElementType::et_Constant
-            && firstElement->type == ElementType::et_Constant) {
-
-            const _bool v1 = firstElement->constant;
-            const _bool v2 = secondElement->constant;
+         if (type == ElementType::et_Constant && firstElement.type == ElementType::et_Constant) {
+            const _bool v1 = firstElement.constant;
+            const _bool v2 = secondElement.constant;
             _bool value;
 
-            switch(op) {
+            switch(oper) {
                case L'&': {
                   value = v1 && v2;
                   break;
@@ -382,39 +362,38 @@ static Generator<_bool>* boolExpTreeMerge(
                }
             }
 
-            newElement = new ExpElement<_bool>(value, firstElement->line);
+            firstElement.reinit(value, line);
          }
          else {
-            gen::BinaryOperation<_bool>* bin;
-            Generator<_bool>* first = firstElement->takeValue();
-            Generator<_bool>* second = secondElement->takeValue();
+            _genptr<_bool> first = std::move(firstElement.generator);
+            _genptr<_bool> second = std::move(secondElement.generator);
+            _genptr<_bool> bin;
 
-            switch(op) {
+            switch(oper) {
                case L'&': {
-                  bin = new gen::And(first, second);
+                  bin = std::make_unique<gen::And>(first, second);
                   break;
                }
                case L'|': {
-                  bin = new gen::Or(first, second);
+                  bin = std::make_unique<gen::Or>(first, second);
                   break;
                }
                case L'^': {
-                  bin = new gen::Xor(first, second);
+                  bin = std::make_unique<gen::Xor>(first, second);
                   break;
                }
             }
 
-            newElement = new ExpElement<_bool>(bin, firstElement->line);
+            firstElement.reinit(bin, line);
          }
-         pntList.push_back(newElement);
-         firstElement = newElement;
       }
    }
 
-   return firstElement->takeValue();
+   result = std::move(firstElement.generator);
+   return true;
 }
 
-static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
+static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
 {
    const _size len = infList.size();
    if (len == 0) {
@@ -422,37 +401,38 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
    }
 
    // bool expressions can start with only two symbols: not or (
-   ExpElement<_bool>* prev = infList[0];
-   if (prev->type == ElementType::et_Operator) {
-      const _char op = prev->_operator;
+   const ExpElement<_bool>& first = infList[0];
+   if (first.type == ElementType::et_Operator) {
+      const _char op = first.operator_;
       if (!(op == L'(' || op == L'!')) {
          return false;
       }
    }
 
    // bool expressions can end with only one symbol: )
-   ExpElement<_bool>* last = infList[len - 1];
-   if (last->type == ElementType::et_Operator) {
-      if (last->_operator != L')') {
+   const ExpElement<_bool>& last = infList[len - 1];
+   if (last.type == ElementType::et_Operator) {
+      if (last.operator_ != L')') {
          return false;
       }
    }
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_bool>* curr = infList[i];
-      const _bool cop = curr->type == ElementType::et_Operator;
+      const ExpElement<_bool>& prev = infList[i - 1];
+      const ExpElement<_bool>& curr = infList[i];
+      const _bool cop = curr.type == ElementType::et_Operator;
 
-      if (prev->type == ElementType::et_Operator) {
-         switch (prev->_operator) {
+      if (prev.type == ElementType::et_Operator) {
+         switch (prev.operator_) {
             case L'!': {
-               if (cop && curr->_operator != L'(') {
+               if (cop && curr.operator_ != L'(') {
                   return false;
                }
                break;
             }
             case L'(': {
                if (cop) {
-                  const _char op = curr->_operator;
+                  const _char op = curr.operator_;
                   if (!(op == L'(' || op == L'!')) {
                      return false;
                   }
@@ -461,7 +441,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
             }
             case L')': {
                if (cop) {
-                  const _char op = curr->_operator;
+                  const _char op = curr.operator_;
                   if (op == L'(' || op == L'!') {
                      return false;
                   }
@@ -473,7 +453,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
             }
             default: {
                if (cop) {
-                  const _char op = curr->_operator;
+                  const _char op = curr.operator_;
                   if (!(op == L'(' || op == L'!')) {
                      return false;
                   }
@@ -485,7 +465,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
       else
       {
          if (cop) {
-            const _char op = curr->_operator;
+            const _char op = curr.operator_;
             if (op == L'!' || op == L'(') {
                return false;
             }
@@ -494,7 +474,6 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>*>& infList)
             return false;
          }
       }
-      prev = curr;
    }
 
    return true;
@@ -530,48 +509,53 @@ static _char toBoolExpOperator(const Token& tk)
 }
 
 template <typename T>
-static Generator<_bool>* parseIn_Unit(const _bool& negated, 
+static _bool parseIn_Unit(_genptr<_bool>& result, const _bool& negated,
    const std::pair<Tokens, Tokens>& pair, Uroboros& uro)
 {
-   Generator<T>* valLeft;
+   _genptr<T> valLeft;
    if (!parse(uro, pair.first, valLeft)) {
-      return nullptr;
+      return false;
    }
 
    // check if the right side is a single value
    // in this special case, the whole structure is reduced to
    // a simple comparison "left == right" or "left != right"
-   Generator<T>* num2;
+   _genptr<T> num2;
    if (parse(uro, pair.second, num2)) {
       if (negated) {
-         return new gen::NotEquals<T>(valLeft, num2);
+         result = std::make_unique<gen::NotEquals<T>>(valLeft, num2);
       }
       else {
-         return new gen::Equals<T>(valLeft, num2);
+         result = std::make_unique<gen::Equals<T>>(valLeft, num2);
       }
+      return true;
    }
 
-   Generator<std::vector<T>>* valRight;
+   _genptr<std::vector<T>> valRight;
 
    if (parse(uro, pair.second, valRight)) {
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
-         delete valRight;
-         Generator<_bool>* in = new gen::InConstList<T>(valLeft, vs);
-         return negated ? new gen::Not(in) : in;
+         _genptr<_bool> in(new gen::InConstList<T>(valLeft, vs));
+         result = negated
+            ? std::make_unique<gen::Not>(in)
+            : std::move(in);
       }
       else {
-         Generator<_bool>* in = new gen::InList<T>(valLeft, valRight);
-         return negated ? new gen::Not(in) : in;
+         _genptr<_bool> in(new gen::InList<T>(valLeft, valRight));
+         result = negated
+            ? std::make_unique<gen::Not>(in)
+            : std::move(in);
       }
+
+      return true;
    }
    else {
-      delete valLeft;
-      return nullptr;
+      return false;
    }
 }
 
-static Generator<_bool>* parseIn(const Tokens& tks, Uroboros& uro)
+static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
@@ -591,9 +575,11 @@ static Generator<_bool>* parseIn(const Tokens& tks, Uroboros& uro)
    }
 
    // first: try to build "Number IN NumList"
-   Generator<_bool>* list = parseIn_Unit<_num>(neg, pair, uro);
-   if (list != nullptr) {
-      return list;
+   _genptr<_bool> list;
+
+   if (parseIn_Unit<_num>(list, neg, pair, uro)) {
+      result = std::move(list);
+      return true;
    }
 
    const Token& lf = pair.first.first();
@@ -628,7 +614,7 @@ static Generator<_bool>* parseIn(const Tokens& tks, Uroboros& uro)
          const _bool isMonth = rf.isMonth();
 
          if (isWeek || isMonth) {
-            timeInNumberException(pair.first.first(), pair.second.first(), 
+            timeInNumberException(pair.first.first(), pair.second.first(),
                isWeek ? L"weekDay" : L"month", neg, pair.first, uro);
          }
 
@@ -640,51 +626,57 @@ static Generator<_bool>* parseIn(const Tokens& tks, Uroboros& uro)
    }
 
    // secondary: try to build "Time IN TimList"
-   Generator<_bool>* list2 = parseInTimList(neg, pair, uro);
-   if (list2 != nullptr) {
-      return list2;
+   _genptr<_bool> list2;
+   if (parseInTimList(list2, neg, pair, uro)) {
+      result = std::move(list2);
+      return true;
    }
 
    // finally: try to build "string IN list"
-   Generator<_bool>* list3 = parseIn_Unit<_str>(neg, pair, uro);
-   return list3;
+   return parseIn_Unit<_str>(result, neg, pair, uro);;
 }
 
 
-static Generator<_bool>* parseInTimList(const bool& negated, 
+static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    const std::pair<Tokens, Tokens>& pair, Uroboros& uro)
 {
-   Generator<_tim>* tim;
+   _genptr<_tim> tim;
    if (!parse(uro, pair.first, tim)) {
-      return nullptr;
+      return false;
    }
 
-   Generator<_tim>* tim2;
+   _genptr<_tim> tim2;
    if (parse(uro, pair.second, tim2)) {
       if (negated) {
-         return new gen::NotEquals<_tim>(tim, tim2);
+         result = std::make_unique<gen::NotEquals<_tim>>(tim, tim2);
       }
       else {
-         return new gen::Equals<_tim>(tim, tim2);
+         result = std::make_unique<gen::Equals<_tim>>(tim, tim2);
       }
+
+      return true;
    }
 
-   Generator<_tlist>* tlist;
+   _genptr<_tlist> tlist;
    if (parse(uro, pair.second, tlist)) {
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
-         delete tlist;
-         Generator<_bool>* in = new gen::InConstTimeList(tim, vs);
-         return negated ? new gen::Not(in) : in;
+         _genptr<_bool> in(new gen::InConstTimeList(tim, vs));
+         result = negated
+            ? std::make_unique<gen::Not>(in)
+            : std::move(in);
       }
       else {
-         Generator<_bool>* in = new gen::InList<_tim>(tim, tlist);
-         return negated ? new gen::Not(in) : in;
+         _genptr<_bool> in(new gen::InList<_tim>(tim, tlist));
+         result = negated
+            ? std::make_unique<gen::Not>(in)
+            : std::move(in);
       }
+
+      return true;
    }
    else {
-      delete tim;
-      return nullptr;
+      return false;
    }
 }
 
@@ -725,7 +717,7 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
    }
 }
 
-static Generator<_bool>* parseLike(const Tokens& tks, Uroboros& uro)
+static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
@@ -744,39 +736,43 @@ static Generator<_bool>* parseLike(const Tokens& tks, Uroboros& uro)
       }
    }
 
-   Generator<_str>* value;
+   _genptr<_str> value;
    if (!parse(uro, pair.first, value)) {
-      return nullptr;
+      return false;
    }
 
-   Generator<_str>* pattern;
+   _genptr<_str> pattern;
    if (parse(uro, pair.second, pattern)) {
       if (pattern->isConstant()) {
          const _str cnst = pattern->getValue();
-         delete pattern;
 
          if (neg) {
-            return new gen::Not(new gen::LikeConst(value, cnst));
+            _genptr<_bool> b(new gen::LikeConst(value, cnst));
+            result = std::make_unique<gen::Not>(b);
          }
          else {
-            return new gen::LikeConst(value, cnst);
+            result = std::make_unique<gen::LikeConst>(value, cnst);
          }
+
+         return true;
       }
 
       if (neg) {
-         return new gen::Not(new gen::Like(value, pattern));
+         _genptr<_bool> b(new gen::Like(value, pattern));
+         result = std::make_unique<gen::Not>(b);
       }
       else {
-         return new gen::Like(value, pattern);
+         result = std::make_unique<gen::Like>(value, pattern);
       }
+
+      return true;
    }
    else {
-      delete value;
-      return nullptr;
+      return false;
    }
 }
 
-static Generator<_bool>* parseComparisons(const Tokens& tks, Uroboros& uro)
+static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 {
    BracketsInfo bi;
    const _int end = tks.getEnd();
@@ -790,77 +786,67 @@ static Generator<_bool>* parseComparisons(const Tokens& tks, Uroboros& uro)
             case L'>':
             case L'!':
             case L'=': {
-               return parseComparison(tks, ch, uro);
+               return parseComparison(result, tks, ch, uro);
             }
          }
       }
       bi.refresh(t);
    }
 
-   return nullptr;
+   return false;
 }
 
 template <typename T>
-static Generator<_bool>* comparison(Generator<T>* val1,
-   Generator<T>* val2, const gen::CompType& ct)
+static _bool comparison(_genptr<_bool>& result, _genptr<T>& val1,
+   _genptr<T>& val2, const gen::CompType& ct)
 {
    switch (ct) {
-      case gen::ct_Equals:
-         return new gen::Equals<T>(val1, val2);
-      case gen::ct_NotEquals:
-         return new gen::NotEquals<T>(val1, val2);
-      case gen::ct_Smaller:
-         return new gen::Smaller<T>(val1, val2);
-      case gen::ct_SmallerEquals:
-         return new gen::SmallerEquals<T>(val1, val2);
-      case gen::ct_Bigger:
-         return new gen::Bigger<T>(val1, val2);
-      case gen::ct_BiggerEquals:
-         return new gen::BiggerEquals<T>(val1, val2);
+      case gen::ct_Equals: {
+         result = std::make_unique<gen::Equals<T>>(val1, val2);
+         break;
+      }
+      case gen::ct_NotEquals: {
+         result = std::make_unique<gen::NotEquals<T>>(val1, val2);
+         break;
+      }
+      case gen::ct_Smaller: {
+         result = std::make_unique<gen::Smaller<T>>(val1, val2);
+         break;
+      }
+      case gen::ct_SmallerEquals: {
+         result = std::make_unique<gen::SmallerEquals<T>>(val1, val2);
+         break;
+      }
+      case gen::ct_Bigger: {
+         result = std::make_unique<gen::Bigger<T>>(val1, val2);
+         break;
+      }
+      case gen::ct_BiggerEquals: {
+         result = std::make_unique<gen::BiggerEquals<T>>(val1, val2);
+         break;
+      }
       default:
-         return nullptr;
+         return false;
    };
+
+   return true;
 }
 
 
 template <typename T>
-Generator<_bool>* parseComparisonUnit(const Tokens& left, const Tokens& right, const gen::CompType& ct, Uroboros& uro)
+_bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
+   const Tokens& right, const gen::CompType& ct, Uroboros& uro)
 {
-   Generator<T>* v1;
-   Generator<T>* v2;
-   const _bool parsed1 = parse(uro, left, v1);
-   const _bool parsed2 = parse(uro, right, v2);
-   if (parsed1 && parsed2) {
-      switch (ct) {
-         case gen::ct_Equals:
-            return new gen::Equals<T>(v1, v2);
-         case gen::ct_NotEquals:
-            return new gen::NotEquals<T>(v1, v2);
-         case gen::ct_Smaller:
-            return new gen::Smaller<T>(v1, v2);
-         case gen::ct_SmallerEquals:
-            return new gen::SmallerEquals<T>(v1, v2);
-         case gen::ct_Bigger:
-            return new gen::Bigger<T>(v1, v2);
-         case gen::ct_BiggerEquals:
-            return new gen::BiggerEquals<T>(v1, v2);
-         default:
-            return nullptr;
-      };
-      return comparison<T>(v1, v2, ct);
+   _genptr<T> v1;
+   _genptr<T> v2;
+   if (parse(uro, left, v1) && parse(uro, right, v2)) {
+      return comparison<T>(result, v1, v2, ct);
    }
 
-   if (parsed1) {
-      delete v1;
-   }
-   else if (parsed2) {
-      delete v2;
-   }
-
-   return nullptr;
+   return false;
 }
 
-static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, Uroboros& uro)
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, Uroboros& uro)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -925,167 +911,217 @@ static Generator<_bool>* parseComparison(const Tokens& tks, const _char& sign, U
    }
 
    // try to parse comparison for every singular data type
-   Generator<_bool>* boo = parseComparisonUnit<_bool>(left, right, ct, uro);
-   if (boo != nullptr) {
-      return boo;
-   }
-
-   Generator<_bool>* num = parseComparisonUnit<_num>(left, right, ct, uro);
-   if (num != nullptr) {
-      return num;
-   }
-
-   Generator<_bool>* per = parseComparisonUnit<_per>(left, right, ct, uro);
-   if (per != nullptr) {
-      return per;
-   }
-
-   Generator<_bool>* tim = parseComparisonUnit<_tim>(left, right, ct, uro);
-   if (tim != nullptr) {
-      return tim;
-   }
-   Generator<_bool>* str = parseComparisonUnit<_str>(left, right, ct, uro);
-   if (str != nullptr) {
-      return str;
+   if (parseComparisonUnit<_bool>(result, left, right, ct, uro)
+    || parseComparisonUnit<_num>(result, left, right, ct, uro)
+    || parseComparisonUnit<_per>(result, left, right, ct, uro)
+    || parseComparisonUnit<_tim>(result, left, right, ct, uro)
+    || parseComparisonUnit<_tim>(result, left, right, ct, uro)) {
+      return true;
    }
 
    // comparisons between singular values have failed, so try comparisons of collections
-   return parseCollectionComparisons(left, right, ct, uro);
+   return parseCollectionComparisons(result, left, right, ct, uro);
 }
 
-Generator<_bool>* comparisonDefList( _def* def, Generator<_list>* list, const gen::CompType& ct,
+_bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& list, const gen::CompType& ct,
    const _bool& reversed, Uroboros& uro)
 {
    switch (ct) {
-      case gen::ct_Equals:
-         return new gen::DefinitionListEqual(def, list, uro);
-      case gen::ct_NotEquals:
-         return new gen::DefinitionListNotEqual(def, list, uro);
+      case gen::ct_Equals: {
+         result = std::make_unique<gen::DefinitionListEqual>(def, list, uro);
+         break;
+      }
+      case gen::ct_NotEquals: {
+         result = std::make_unique<gen::DefinitionListNotEqual>(def, list, uro);
+         break;
+    }
       default: {
          if (reversed) {
             switch(ct) {
-               case gen::ct_Smaller:
-                  return new gen::DefinitionListBigger(def, list, uro);
-               case gen::ct_SmallerEquals:
-                  return new gen::DefinitionListBiggerEquals(def, list, uro);
-               case gen::ct_Bigger:
-                  return new gen::DefinitionListSmaller(def, list, uro);
-               case gen::ct_BiggerEquals:
-                  return new gen::DefinitionListSmallerEquals(def, list, uro);
+               case gen::ct_Smaller: {
+                  result = std::make_unique<gen::DefinitionListBigger>(def, list, uro);
+                  break;
+               }
+               case gen::ct_SmallerEquals: {
+                  result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, uro);
+                  break;
+               }
+               case gen::ct_Bigger: {
+                  result = std::make_unique<gen::DefinitionListSmaller>(def, list, uro);
+                  break;
+               }
+               case gen::ct_BiggerEquals: {
+                  result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, uro);
+                  break;
+               }
+               default: {
+                  return false;
+               }
             }
          }
          else {
             switch(ct) {
-               case gen::ct_Smaller:
-                  return new gen::DefinitionListSmaller(def, list, uro);
-               case gen::ct_SmallerEquals:
-                  return new gen::DefinitionListSmallerEquals(def, list, uro);
-               case gen::ct_Bigger:
-                  return new gen::DefinitionListBigger(def, list, uro);
-               case gen::ct_BiggerEquals:
-                  return new gen::DefinitionListBiggerEquals(def, list, uro);
+               case gen::ct_Smaller: {
+                  result = std::make_unique<gen::DefinitionListSmaller>(def, list, uro);
+                  break;
+               }
+               case gen::ct_SmallerEquals: {
+                  result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, uro);
+                  break;
+               }
+               case gen::ct_Bigger: {
+                  result = std::make_unique<gen::DefinitionListBigger>(def, list, uro);
+                  break;
+               }
+               case gen::ct_BiggerEquals: {
+                  result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, uro);
+                  break;
+               }
+               default: {
+                  return false;
+               }
             }
          }
+         break;
       }
    }
 
-   return nullptr;
+   return true;
 }
 
 
 template <typename T>
-Generator<_bool>* comparisonCollections(const Tokens& left, const Tokens& right, const gen::CompType& ct, Uroboros& uro)
+_bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
+   const Tokens& right, const gen::CompType& ct, Uroboros& uro)
 {
-   Generator<std::vector<T>>* leftValue;
+   _genptr<std::vector<T>> leftValue;
    if (parse(uro, left, leftValue)) {
+      _genptr<std::vector<T>> rightValue;
 
-      Generator<std::vector<T>>* rightValue;
       if (parse(uro, right, rightValue)) {
          switch(ct) {
-            case gen::ct_Equals:
-               return new gen::CollectionsEqual<T>(leftValue, rightValue);
-            case gen::ct_NotEquals:
-               return new gen::CollectionsNotEqual<T>(leftValue, rightValue);
-            case gen::ct_Smaller:
-               return new gen::CollectionsSmaller<T>(leftValue, rightValue);
-            case gen::ct_SmallerEquals:
-               return new gen::CollectionsSmallerEquals<T>(leftValue, rightValue);
-            case gen::ct_Bigger:
-               return new gen::CollectionsBigger<T>(leftValue, rightValue);
-            case gen::ct_BiggerEquals:
-               return new gen::CollectionsBiggerEquals<T>(leftValue, rightValue);
+            case gen::ct_Equals: {
+               result = std::make_unique<gen::CollectionsEqual<T>>(leftValue, rightValue);
+               break;
+            }
+            case gen::ct_NotEquals: {
+               result = std::make_unique<gen::CollectionsNotEqual<T>>(leftValue, rightValue);
+               break;
+            }
+            case gen::ct_Smaller: {
+               result = std::make_unique<gen::CollectionsSmaller<T>>(leftValue, rightValue);
+               break;
+            }
+            case gen::ct_SmallerEquals: {
+               result = std::make_unique<gen::CollectionsSmallerEquals<T>>(leftValue, rightValue);
+               break;
+            }
+            case gen::ct_Bigger: {
+               result = std::make_unique<gen::CollectionsBigger<T>>(leftValue, rightValue);
+               break;
+            }
+            case gen::ct_BiggerEquals: {
+               result = std::make_unique<gen::CollectionsBiggerEquals<T>>(leftValue, rightValue);
+               break;
+            }
          }
+         return true;
       }
    }
 
-   return nullptr;
+   return false;
 }
 
 
 template <typename T>
-Generator<_bool>* comparisonCollectionValue(const Tokens& left, const Tokens& right,
+_bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, const Tokens& right,
    const gen::CompType& ct, Uroboros& uro)
 {
-   Generator<T>* leftValue;
+   _genptr<T> leftValue;
    if (parse(uro, left, leftValue)) {
-      Generator<std::vector<T>>* rightCollection;
+      _genptr<std::vector<T>> rightCollection;
 
       if (parse(uro, right, rightCollection)) {
          switch(ct) {
-            case gen::ct_Equals:
-               return new gen::CollectionValueEquals<T>(rightCollection, leftValue);
-            case gen::ct_NotEquals:
-               return new gen::CollectionValueNotEquals<T>(rightCollection, leftValue);
-            case gen::ct_Smaller:
-               return new gen::CollectionValueBigger<T>(rightCollection);
-            case gen::ct_SmallerEquals:
-               return new gen::CollectionValueBiggerEquals<T>(rightCollection);
-            case gen::ct_Bigger:
-               return new gen::CollectionValueSmaller<T>(rightCollection);
-            case gen::ct_BiggerEquals:
-               return new gen::CollectionValueSmallerEquals<T>(rightCollection);
+            case gen::ct_Equals: {
+               result = std::make_unique<gen::CollectionValueEquals<T>>(rightCollection, leftValue);
+               break;
+            }
+            case gen::ct_NotEquals: {
+               result = std::make_unique<gen::CollectionValueNotEquals<T>>(rightCollection, leftValue);
+               break;
+            }
+            case gen::ct_Smaller: {
+               result = std::make_unique<gen::CollectionValueBigger<T>>(rightCollection);
+               break;
+            }
+            case gen::ct_SmallerEquals: {
+               result = std::make_unique<gen::CollectionValueBiggerEquals<T>>(rightCollection);
+               break;
+            }
+            case gen::ct_Bigger: {
+               result = std::make_unique<gen::CollectionValueSmaller<T>>(rightCollection);
+               break;
+            }
+            case gen::ct_BiggerEquals: {
+               result = std::make_unique<gen::CollectionValueSmallerEquals<T>>(rightCollection);
+               break;
+            }
          }
+         return true;
       }
       else {
-         delete leftValue;
-         return nullptr;
+         return false;
       }
    }
 
-   Generator<T>* rightValue;
+   _genptr<T> rightValue;
    if (parse(uro, right, rightValue)) {
-      Generator<std::vector<T>>* leftCollection;
+      _genptr<std::vector<T>> leftCollection;
 
       if (parse(uro, left, leftCollection)) {
          switch(ct) {
-            case gen::ct_Equals:
-               return new gen::CollectionValueEquals<T>(leftCollection, rightValue);
-            case gen::ct_NotEquals:
-               return new gen::CollectionValueNotEquals<T>(leftCollection, rightValue);
-            case gen::ct_Smaller:
-               return new gen::CollectionValueSmaller<T>(leftCollection);
-            case gen::ct_SmallerEquals:
-               return new gen::CollectionValueSmallerEquals<T>(leftCollection);
-            case gen::ct_Bigger:
-               return new gen::CollectionValueBigger<T>(leftCollection);
-            case gen::ct_BiggerEquals:
-               return new gen::CollectionValueBiggerEquals<T>(leftCollection);
+            case gen::ct_Equals: {
+               result = std::make_unique<gen::CollectionValueEquals<T>>(leftCollection, rightValue);
+               break;
+            }
+            case gen::ct_NotEquals: {
+               result = std::make_unique<gen::CollectionValueNotEquals<T>>(leftCollection, rightValue);
+               break;
+            }
+            case gen::ct_Smaller: {
+               result = std::make_unique<gen::CollectionValueSmaller<T>>(leftCollection);
+               break;
+            }
+            case gen::ct_SmallerEquals: {
+               result = std::make_unique<gen::CollectionValueSmallerEquals<T>>(leftCollection);
+               break;
+            }
+            case gen::ct_Bigger: {
+               result = std::make_unique<gen::CollectionValueBigger<T>>(leftCollection);
+               break;
+            }
+            case gen::ct_BiggerEquals: {
+               result = std::make_unique<gen::CollectionValueBiggerEquals<T>>(leftCollection);
+               break;
+            }
          }
+
+         return true;
       }
       else {
-         delete rightValue;
-         return nullptr;
+         return false;
       }
    }
 
-   return nullptr;
+   return false;
 }
 
-static Generator<_bool>* parseCollectionComparisons(const Tokens& left,
+static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
    const Tokens& right, const gen::CompType& ct, Uroboros& uro)
 {
-   _def* leftDef;
-   _def* rightDef;
+   _defptr leftDef;
+   _defptr rightDef;
    const _bool hasLeftDef = parse(uro, left, leftDef);
    const _bool hasRightDef = parse(uro, right, rightDef);
 
@@ -1095,61 +1131,55 @@ static Generator<_bool>* parseCollectionComparisons(const Tokens& left,
    if (hasLeftDef || hasRightDef) {
       if (hasLeftDef && hasRightDef) {
          switch(ct) {
-            case gen::ct_Equals:
-               return new gen::DefinitionsEqual(leftDef, rightDef, uro);
-            case gen::ct_NotEquals:
-               return new gen::DefinitionsNotEqual(leftDef, rightDef, uro);
-            case gen::ct_Smaller:
-               return new gen::DefinitionsSmaller(leftDef, rightDef, uro);
-            case gen::ct_SmallerEquals:
-               return new gen::DefinitionsSmallerEquals(leftDef, rightDef, uro);
-            case gen::ct_Bigger:
-               return new gen::DefinitionsBigger(leftDef, rightDef, uro);
-            case gen::ct_BiggerEquals:
-               return new gen::DefinitionsBiggerEquals(leftDef, rightDef, uro);
+            case gen::ct_Equals: {
+               result = std::make_unique<gen::DefinitionsEqual>(leftDef, rightDef, uro);
+               break;
+            }
+            case gen::ct_NotEquals: {
+               result = std::make_unique<gen::DefinitionsNotEqual>(leftDef, rightDef, uro);
+               break;
+            }
+            case gen::ct_Smaller: {
+               result = std::make_unique<gen::DefinitionsSmaller>(leftDef, rightDef, uro);
+               break;
+            }
+            case gen::ct_SmallerEquals: {
+               result = std::make_unique<gen::DefinitionsSmallerEquals>(leftDef, rightDef, uro);
+               break;
+            }
+            case gen::ct_Bigger: {
+               result = std::make_unique<gen::DefinitionsBigger>(leftDef, rightDef, uro);
+               break;
+            }
+            case gen::ct_BiggerEquals: {
+               result = std::make_unique<gen::DefinitionsBiggerEquals>(leftDef, rightDef, uro);
+               break;
+            }
          }
+
+         return true;
       }
 
       if (hasLeftDef) {
-         Generator<_list>* rightList;
+         _genptr<_list> rightList;
          return parse(uro, right, rightList)
-            ? comparisonDefList(leftDef, rightList, ct, false, uro)
-            : nullptr;
+            ? comparisonDefList(result, leftDef, rightList, ct, false, uro)
+            : false;
       }
       else {
-         Generator<_list>* leftList;
+         _genptr<_list> leftList;
          return parse(uro, left, leftList)
-            ? comparisonDefList(rightDef, leftList, ct, true, uro)
-            : nullptr;
+            ? comparisonDefList(result, rightDef, leftList, ct, true, uro)
+            : false;
       }
    }
 
-   Generator<_bool>* tim = comparisonCollectionValue<_tim>(left, right, ct, uro);
-   if (tim != nullptr) {
-      return tim;
-   }
-
-   Generator<_bool>* num = comparisonCollectionValue<_num>(left, right, ct, uro);
-   if (num != nullptr) {
-      return num;
-   }
-
-   Generator<_bool>* str = comparisonCollectionValue<_str>(left, right, ct, uro);
-   if (str != nullptr) {
-      return str;
-   }
-
-   Generator<_bool>* tlist = comparisonCollections<_tim>(left, right, ct, uro);
-   if (tlist != nullptr) {
-      return tlist;
-   }
-
-   Generator<_bool>* nlist = comparisonCollections<_num>(left, right, ct, uro);
-   if (nlist != nullptr) {
-      return nlist;
-   }
-
-   return comparisonCollections<_str>(left, right, ct, uro);
+   return comparisonCollectionValue<_tim>(result, left, right, ct, uro)
+       || comparisonCollectionValue<_num>(result, left, right, ct, uro)
+       || comparisonCollectionValue<_str>(result, left, right, ct, uro)
+       || comparisonCollections<_tim>(result, left, right, ct, uro)
+       || comparisonCollections<_num>(result, left, right, ct, uro)
+       || comparisonCollections<_str>(result, left, right, ct, uro);
 }
 
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype)

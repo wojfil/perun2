@@ -50,7 +50,7 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
 
 static _bool varSquareBrackets(const Tokens& tks);
 static Command* commandVarAssign_Element(const Tokens& left, const Tokens& right, Uroboros& uro);
-static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro);
+static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
 static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, Uroboros& uro);
 
 }

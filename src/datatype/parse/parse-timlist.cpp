@@ -24,43 +24,32 @@
 namespace uro::parse
 {
 
-Generator<_tlist>* parseTimList(const Tokens& tks, Uroboros& uro)
+_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_tlist>* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
-   
+
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return parseFilter<Generator<_tlist>*, _tim>(tks, ThisState::ts_Time, uro);
+      return parseFilter<_genptr<_tlist>, _tim>(result, tks, ThisState::ts_Time, uro);
    }
 
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {
-         Generator<_tlist>* listed = parseTimListed(tks, uro);
-         if (listed != nullptr) {
-            return listed;
-         }
+         return parseTimListed(result, tks, uro);
       }
 
-      Generator<_tlist>* bin = parseBinary<_tlist>(tks, uro);
-      if (bin != nullptr) {
-         return bin;
-      }
-
-      Generator<_tlist>* tern = parseTernary<_tlist>(tks, uro);
-      if (tern != nullptr) {
-         return tern;
+      if (parseBinary<_tlist>(result, tks, uro) || parseTernary<_tlist>(result, tks, uro)) {
+         return true;
       }
    }
 
-   return nullptr;
+   return false;
 }
 
-static Generator<_tlist>* parseTimListed(const Tokens& tks, Uroboros& uro)
+static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, Uroboros& uro)
 {
    // look - I do not use template functions from 'parse-generic.h'
    // why? because time has a special property - comma can mean
@@ -69,122 +58,126 @@ static Generator<_tlist>* parseTimListed(const Tokens& tks, Uroboros& uro)
 
    const std::vector<Tokens> elements =tks.splitBySymbol(L',');
 
-   Generator<_tlist>* times = parseListedTimes(elements, uro);
-   if (times != nullptr) {
-      return times;
+   _genptr<_tlist> times;
+   if (parseListedTimes(times, elements, uro)) {
+      result = std::move(times);
+      return true;
    }
 
-   Generator<_tlist>* lists = parseListedTimLists(elements, uro);
-   return lists;
+   return parseListedTimLists(result, elements, uro);
 }
 
-static Generator<_tlist>* parseListedTimes(const std::vector<Tokens>& elements, Uroboros& uro)
+static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
    _bool isPrev = false;
-   std::vector<Generator<_tim>*>* result = new std::vector<Generator<_tim>*>();
+   std::vector<_genptr<_tim>> result;
    _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      Generator<_tim>* time;
+      _genptr<_tim> time;
 
       if (parse(uro, tks, time)) {
          isPrev = true;
-         result->push_back(time);
+         result.push_back(std::move(time));
          if (isConstant && !time->isConstant()) {
             isConstant = false;
          }
       }
       else {
          if (isPrev) {
-            Generator<_tim>*& last = result->back();
-            result->pop_back();
-            delete last;
-            Generator<_tim>* time2 = timeFromTwoSeqs(elements[i - 1], tks, uro);
+            _genptr<_tim> last = std::move(result.back());
+            result.pop_back();
+            _genptr<_tim> time2;
 
-            if (time2 == nullptr) {
-               langutil::deleteVectorPtr(result);
-               return nullptr;
-            }
-            else {
-               result->push_back(time2);
+            if (timeFromTwoSeqs(time2, elements[i - 1], tks, uro)) {
+               result.push_back(std::move(time2));
                isPrev = false;
                if (isConstant && !time2->isConstant()) {
                   isConstant = false;
                }
             }
+            else {
+               return false;
+            }
          }
          else {
-            langutil::deleteVectorPtr(result);
-            return nullptr;
+            return false;
          }
       }
    }
 
-   Generator<_tlist>* v = new gen::Listed<_tim>(result);
+   _genptr<_tlist> v(new gen::Listed<_tim>(result));
 
    if (isConstant) {
-      Generator<_tlist>* cnst = new gen::Constant<_tlist>(v->getValue());
-      delete v;
-      return cnst;
+      res = std::make_unique<gen::Constant<_tlist>>(v->getValue());
    }
    else {
-      return v;
+      res = std::move(v);
    }
+
+   return true;
 }
 
-static Generator<_tim>* timeFromTwoSeqs(const Tokens& prev, const Tokens& curr, Uroboros& uro)
+static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, Uroboros& uro)
 {
    const _int start = prev.getStart();
    const _int length = prev.getLength() + curr.getLength() + 1;
    const Tokens tks2(curr, start, length);
-   Generator<_tim>* tim;
-   return parse(uro, tks2, tim) ? tim : nullptr;
+   return parse(uro, tks2, result);
 }
 
-static Generator<_tlist>* parseListedTimLists(const std::vector<Tokens>& elements, Uroboros& uro)
+static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
    _bool isPrev = false;
-   std::vector<Generator<_tlist>*>* result = new std::vector<Generator<_tlist>*>();
+   std::vector<_genptr<_tlist>> result;
    _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      Generator<_tim>* time;
+      _genptr<_tim> time;
 
       if (parse(uro, tks, time)) {
-         result->push_back(new gen::Cast_T_TL(time));
+         _genptr<_tlist> time2(new gen::Cast_T_TL(time));
+         result.push_back(std::move(time2));
          isPrev = true;
       }
       else {
          if (isPrev) {
-            Generator<_tim>* time2 = timeFromTwoSeqs(elements[i - 1], tks, uro);
+            _genptr<_tim> time2;
 
-            if (time2 != nullptr) {
-               Generator<_tlist>*& last = result->back();
-               result->pop_back();
-               delete last;
-               result->push_back(new gen::Cast_T_TL(time2));
+            if (timeFromTwoSeqs(time2, elements[i - 1], tks, uro)) {
+               _genptr<_tlist>(std::move(result.back()));
+               result.pop_back();
+               result.push_back(std::make_unique<gen::Cast_T_TL>(time2));
                isPrev = false;
                continue;
             }
          }
 
-         Generator<_tlist>* tlist;
+         _genptr<_tlist> tlist;
          if (parse(uro, tks, tlist)) {
-            result->push_back(tlist);
+            result.push_back(std::move(tlist));
             isPrev = false;
          }
          else {
-            langutil::deleteVectorPtr(result);
-            return nullptr;
+            return false;
          }
       }
    }
 
-   return new gen::ListedLists<_tim>(result);
+   _genptr<_tlist> v(new gen::ListedLists<_tim>(result));
+
+   if (isConstant) {
+      res = std::make_unique<gen::Constant<_tlist>>(v->getValue());
+   }
+   else {
+      res = std::move(v);
+   }
+
+   return true;
 }
 
 }

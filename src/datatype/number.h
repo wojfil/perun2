@@ -54,7 +54,7 @@ struct Number
 
    Number& operator ++ (int);
    Number& operator -- (int);
-
+   
    Number operator + (const Number& num) const;
    Number operator - (const Number& num) const;
    Number operator * (const Number& num) const;

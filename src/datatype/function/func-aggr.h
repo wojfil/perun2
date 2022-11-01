@@ -15,7 +15,7 @@
 #ifndef FUNC_AGGR_H_INCLUDED
 #define FUNC_AGGR_H_INCLUDED
 
-#include "../generator.h"
+#include "../gen-memory.h"
 #include "../datatype.h"
 
 
@@ -23,18 +23,19 @@ namespace uro::func
 {
 
 // nice abbreviations:
-typedef std::vector<Generator<_num>*>*     _single;
-typedef std::vector<Generator<_nlist>*>*   _multi;
+typedef std::vector<_genptr<_num>>     _single;
+typedef std::vector<_genptr<_nlist>>   _multi;
 
 
 struct FuncAggr : Generator<_num>
 {
 public:
-   FuncAggr(_single single, _multi multi)
-      : singleValues(single), multiValues(multi),
-        countSingle(single->size()), countMulti(multi->size()) { };
-
-   ~FuncAggr();
+   FuncAggr(_single& single, _multi& multi)
+      : countSingle(single.size()), countMulti(multi.size())
+   { 
+      transferGenPtrs(single, this->singleValues);
+      transferGenPtrs(multi, this->multiValues);
+   };
 
 protected:
    _single singleValues;
@@ -46,40 +47,35 @@ protected:
 
 struct F_Average : FuncAggr
 {
-   F_Average(_single single, _multi multi) : FuncAggr(single, multi) { };
-
+   F_Average(_single& single, _multi& multi) : FuncAggr(single, multi) { };
    _num getValue() override;
 };
 
 
 struct F_Max : FuncAggr
 {
-   F_Max(_single single, _multi multi) : FuncAggr(single, multi) { };
-
+   F_Max(_single& single, _multi& multi) : FuncAggr(single, multi) { };
    _num getValue() override;
 };
 
 
 struct F_Median : FuncAggr
 {
-   F_Median(_single single, _multi multi) : FuncAggr(single, multi) { };
-
+   F_Median(_single& single, _multi& multi) : FuncAggr(single, multi) { };
    _num getValue() override;
 };
 
 
 struct F_Min : FuncAggr
 {
-   F_Min(_single single, _multi multi) : FuncAggr(single, multi) { };
-
+   F_Min(_single& single, _multi& multi) : FuncAggr(single, multi) { };
    _num getValue() override;
 };
 
 
 struct F_Sum : FuncAggr
 {
-   F_Sum(_single single, _multi multi) : FuncAggr(single, multi) { };
-
+   F_Sum(_single& single, _multi& multi) : FuncAggr(single, multi) { };
    _num getValue() override;
 };
 

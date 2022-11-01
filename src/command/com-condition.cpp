@@ -28,16 +28,16 @@ CS_Condition::~CS_Condition()
    delete this->command;
 }
 
-void CS_Condition::setMain(Command* mainCom, Generator<_bool>* mainCond)
+void CS_Condition::setMain(Command* mainCom, _genptr<_bool>& mainCond)
 {
    this->mainCommand = mainCom;
-   this->mainCondition = mainCond;
+   this->mainCondition = std::move(mainCond);
 }
 
-void CS_Condition::setMain(Generator<_bool>* mainCond)
+void CS_Condition::setMain(_genptr<_bool>& mainCond)
 {
    this->mainCommand = new C_DoNothing();
-   this->mainCondition = mainCond;
+   this->mainCondition = std::move(mainCond);
 }
 
 void CS_Condition::setCommand(Command* com)
@@ -51,7 +51,7 @@ Command* CS_Condition::getMainCommand()
    return this->mainCommand;
 }
 
-Generator<_bool>* CS_Condition::getMainCondition()
+_genptr<_bool>& CS_Condition::getMainCondition()
 {
    return this->mainCondition;
 }
@@ -62,18 +62,17 @@ void CS_Condition::run()
 }
 
 
-If_Base::If_Base(Generator<_bool>* cond, Command* com)
-   : condition(cond), mainCommand(com) { }
+If_Base::If_Base(_genptr<_bool>& cond, Command* com)
+   : condition(std::move(cond)), mainCommand(com) { }
 
 
 If_Base::~If_Base()
 {
-   delete this->condition;
    delete this->mainCommand;
 }
 
 
-If_Raw::If_Raw(Generator<_bool>* cond, Command* com)
+If_Raw::If_Raw(_genptr<_bool>& cond, Command* com)
    : If_Base(cond, com) { }
 
 void If_Raw::run()
@@ -84,7 +83,7 @@ void If_Raw::run()
 }
 
 
-If_Else::If_Else(Generator<_bool>* cond, Command* com, Command* alt)
+If_Else::If_Else(_genptr<_bool>& cond, Command* com, Command* alt)
    : If_Base(cond, com), altCommand(alt) { }
 
 If_Else::~If_Else()
@@ -103,12 +102,11 @@ void If_Else::run()
 }
 
 
-If_ElseIf::If_ElseIf(Generator<_bool>* cond, Command* com, Generator<_bool>* altCond, Command* alt)
-   : If_Base(cond, com), altCondition(altCond), altCommand(alt) { }
+If_ElseIf::If_ElseIf(_genptr<_bool>& cond, Command* com, _genptr<_bool>& altCond, Command* alt)
+   : If_Base(cond, com), altCondition(std::move(altCond)), altCommand(std::move(alt)) { }
 
 If_ElseIf::~If_ElseIf()
 {
-   delete this->altCondition;
    delete this->altCommand;
 }
 
@@ -123,12 +121,11 @@ void If_ElseIf::run()
 }
 
 
-If_ElseIfElse::If_ElseIfElse(Generator<_bool>* cond, Command* com, Generator<_bool>* altCond, Command* alt, Command* els)
-   : If_Base(cond, com), altCondition(altCond), altCommand(alt), elseCommand(els) { }
+If_ElseIfElse::If_ElseIfElse(_genptr<_bool>& cond, Command* com, _genptr<_bool>& altCond, Command* alt, Command* els)
+   : If_Base(cond, com), altCondition(std::move(altCond)), altCommand(alt), elseCommand(els) { }
 
 If_ElseIfElse::~If_ElseIfElse()
 {
-   delete this->altCondition;
    delete this->altCommand;
    delete this->elseCommand;
 }
@@ -147,18 +144,20 @@ void If_ElseIfElse::run()
 }
 
 
-If_ManyAlternatives::If_ManyAlternatives(Generator<_bool>* cond, Command* com,
-      const std::vector<Generator<_bool>*>& altConds, const std::vector<Command*>& altComms)
-   : If_Base(cond, com), altConditions(altConds), altCommands(altComms), altCount(altConds.size()) { }
+If_ManyAlternatives::If_ManyAlternatives(_genptr<_bool>& cond, Command* com,
+      std::vector<_genptr<_bool>>& altConds, const std::vector<Command*>& altComms)
+   : If_Base(cond, com), altCommands(altComms), altCount(altConds.size())
+{
+   transferGenPtrs(altConds, this->altConditions);
+}
 
 If_ManyAlternatives::~If_ManyAlternatives()
 {
-   langutil::deleteVector(altConditions);
    langutil::deleteVector(altCommands);
 }
 
 
-If_Alts::If_Alts(Generator<_bool>* cond, Command* com, const std::vector<Generator<_bool>*>& altConds,
+If_Alts::If_Alts(_genptr<_bool>& cond, Command* com, std::vector<_genptr<_bool>>& altConds,
    const std::vector<Command*>& altComms)
    : If_ManyAlternatives(cond, com, altConds, altComms) { }
 
@@ -178,7 +177,7 @@ void If_Alts::run()
 }
 
 
-If_AltsElse::If_AltsElse(Generator<_bool>* cond, Command* com, const std::vector<Generator<_bool>*>& altConds,
+If_AltsElse::If_AltsElse(_genptr<_bool>& cond, Command* com, std::vector<_genptr<_bool>>& altConds,
    const std::vector<Command*>& altComms, Command* els)
    : If_ManyAlternatives(cond, com, altConds, altComms), elseCommand(els) { }
 

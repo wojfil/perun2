@@ -19,12 +19,6 @@
 namespace uro::gen
 {
 
-DefComparison::~DefComparison()
-{
-   delete value1;
-   delete value2;
-}
-
 _bool DefinitionsEqual::getValue()
 {
    while (true) {
@@ -211,12 +205,6 @@ _bool DefinitionsBiggerEquals::getValue()
    }
 
    return false;
-}
-
-DefListComparison::~DefListComparison()
-{
-   delete definition;
-   delete list;
 }
 
 _bool DefinitionListEqual::getValue()

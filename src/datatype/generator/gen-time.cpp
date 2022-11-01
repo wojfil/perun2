@@ -21,14 +21,8 @@
 namespace uro::gen
 {
 
-IncreasedTime::IncreasedTime (Generator<_tim>* tim, Generator<_per>* per)
-   : time(tim), period(per) { }
-
-IncreasedTime::~IncreasedTime() 
-{
-   delete time;
-   delete period;
-}
+IncreasedTime::IncreasedTime (_genptr<_tim>& tim, _genptr<_per>& per)
+   : time(std::move(tim)), period(std::move(per)) { }
 
 _tim IncreasedTime::getValue()
 {
@@ -37,14 +31,8 @@ _tim IncreasedTime::getValue()
    return t;
 }
 
-DecreasedTime::DecreasedTime(Generator<_tim>* tim, Generator<_per>* per)
-   : time(tim), period(per) {};
-
-DecreasedTime::~DecreasedTime() 
-{
-   delete time;
-   delete period;
-}
+DecreasedTime::DecreasedTime(_genptr<_tim>& tim, _genptr<_per>& per)
+   : time(std::move(tim)), period(std::move(per)) {};
 
 _tim DecreasedTime::getValue()
 {
@@ -73,7 +61,7 @@ _tim v_Tomorrow::getValue()
    return os_tomorrow();
 }
 
-TimeDate::TimeDate(Generator<_tim>* val) 
+TimeDate::TimeDate(_genptr<_tim>& val) 
    : UnaryOperation<_tim>(val) { }
 
 _tim TimeDate::getValue() 
@@ -81,13 +69,8 @@ _tim TimeDate::getValue()
    return this->value->getValue().toDate();
 }
 
-TimeDateAtIndex::TimeDateAtIndex(Generator<_tim>* tim)
-   : time(tim) { }
-
-TimeDateAtIndex::~TimeDateAtIndex() 
-{
-   delete this->time;
-}
+TimeDateAtIndex::TimeDateAtIndex(_genptr<_tim>& tim)
+   : time(std::move(tim)) { }
 
 _tim TimeDateAtIndex::getValue() 
 {

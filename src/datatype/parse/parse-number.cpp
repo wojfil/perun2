@@ -29,25 +29,21 @@ namespace uro::parse
 // this sign is used to distinguish them
 const _char UNARY_MINUS = L'~';
 
-Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
+
+_bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_num>* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return nullptr;
+      return false;
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_num>* func = uro::func::numberFunction(tks, uro);
-      if (func != nullptr) {
-         return func;
-      }
+      return uro::func::numberFunction(result, tks, uro);
    }
    else if (len >= 2 && !tks.check(TI_HAS_CHAR_COMMA)) {
       // build numeric expression (but only if the sequence has any operator)
@@ -57,7 +53,7 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
       _bool anyOperator = false;
 
       if (tks.first().isSymbol(L'*')) {
-         return nullptr;
+         return false;
       }
 
       for (_int i = start; i <= end; i++) {
@@ -65,10 +61,8 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
          if (t.type == Token::t_Symbol && isNumExpOperator(t.value.ch) && bi.isBracketFree()
              && !(i == start && t.value.ch == L'-'))
          {
-            Generator<_num>* num = parseNumExp(tks, uro);
-
-            if (num != nullptr) {
-               return num;
+            if (parseNumExp(result, tks, uro)) {
+               return true;
             }
             else if (!tks.check(TI_HAS_COMPARISON_CHAR)) {
                const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
@@ -80,12 +74,9 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
 
                for (_size i = 0; i < elen; i++) {
                   const Tokens& tkse = elements[i];
-                  Generator<_str>* str;
+                  _genptr<_str> str;
 
-                  if (parse(uro, tkse, str)) {
-                     delete str;
-                  }
-                  else {
+                  if (!parse(uro, tkse, str)) {
                      throw SyntaxException(L"syntax of an expression is not valid", tkse.first().line);
                   }
                }
@@ -99,82 +90,73 @@ Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro)
       if (!anyOperator && tks.first().isSymbol(L'-')) {
          Tokens tks2(tks);
          tks2.trimLeft();
-         Generator<_num>* num;
+         _genptr<_num> num;
 
          if (parse(uro, tks2, num)) {
-            return new gen::Negation(num);
+            result = std::make_unique<gen::Negation>(num);
+            return true;
          }
          else {
-            Generator<_per>* per;
-            if (parse(uro, tks2, per)) {
-               delete per;
-            }
-            else {
+            _genptr<_per> per;
+            if (!parse(uro, tks2, per)) {
                throw SyntaxException(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
             }
          }
       }
    }
 
-   Generator<_num>* el = parseCollectionElement<_num>(tks, uro);
-   if (el != nullptr) {
-      return el;
+   if (parseCollectionElement<_num>(result, tks, uro)) {
+      return true;
    }
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
-      Generator<_num>* num = parseListElementIndex(tksm, uro);
+      _genptr<_num> num;
+      parseListElementIndex(num, tksm, uro);
       const Token& f = tks.first();
-      Generator<_tlist>* tlist;
+      _genptr<_tlist> tlist;
       if (uro.vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
          const _size& h = last.value.twoWords.h2;
          const Hashes& hs = uro.hashes;
-         Generator<_tim>* tim = new gen::ListElement<_tim>(tlist, num);
+         _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Years);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Years);
          else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Months);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Months);
          else if (h == hs.HASH_PER_WEEKDAY)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Weeks);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Weeks);
          else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Days);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Days);
          else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Hours);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Hours);
          else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Minutes);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Minutes);
          else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECONDS)
-            return new gen::TimeMemberAtIndex(tim, Period::u_Seconds);
+            result = std::make_unique<gen::TimeMemberAtIndex>(tim, Period::u_Seconds);
          else if (h == hs.HASH_PER_DATE)
-            return nullptr;
+            return false;
          else
             timeVariableMemberException(last, uro);
+
+         return true;
       }
-      else {
-         delete num;
-      }
    }
 
-   Generator<_num>* bin = parseBinary<_num>(tks, uro);
-   if (bin != nullptr) {
-      return bin;
+   if (parseBinary<_num>(result, tks, uro) || parseTernary<_num>(result, tks, uro)) {
+      return true;
    }
 
-   Generator<_num>* tern = parseTernary<_num>(tks, uro);
-   if (tern != nullptr) {
-      return tern;
-   }
-
-   return nullptr;
+   return false;
 }
 
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro)
+static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 {
-   std::vector<ExpElement<_num>*> infList; // infix notation list
+   std::vector<ExpElement<_num>> infList; // infix notation list
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
    _int sublen = 0, lv1 = 0, lv2 = 0;
@@ -187,11 +169,10 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro)
          const _bool free = (lv1 == 0) && (lv2 == 0);
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
-               // _character '-' can represent either binary subtraction
+               // check if character '-' represents binary subtraction
                // or unary negation
-               const _char ch2 = (ch == L'-' &&
-                  (prev || i == start)) ? UNARY_MINUS : ch;
-               infList.push_back(new ExpElement<_num>(ch2, t.line));
+               const _char ch2 = (ch == L'-' && (prev || i == start)) ? UNARY_MINUS : ch;
+               infList.emplace_back(ch2, t.line);
             }
             else {
                if (free) {
@@ -202,20 +183,19 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro)
                      && tks2.first().type == Token::t_Number) {
 
                      const _num num = tks2.first().value.num.n;
-                     infList.push_back(new ExpElement<_num>(num, line));
-                     infList.push_back(new ExpElement<_num>(ch, line));
+                     infList.emplace_back(num, line);
+                     infList.emplace_back(ch, line);
                      sublen = 0;
                   }
                   else {
-                     Generator<_num>* num;
+                     _genptr<_num> num;
                      if (parse(uro, tks2, num)) {
-                        infList.push_back(new ExpElement<_num>(num, line));
-                        infList.push_back(new ExpElement<_num>(ch, line));
+                        infList.emplace_back(num, line);
+                        infList.emplace_back(ch, line);
                         sublen = 0;
                      }
                      else {
-                        langutil::deleteVector(infList);
-                        return nullptr;
+                        return false;
                      }
                   }
                }
@@ -233,7 +213,6 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro)
                   if (sublen == 1) {
                      const Token& pt = tks.listAt(i - 1);
                      if (pt.type != Token::t_Word) {
-                        langutil::deleteVector(infList);
                         throw SyntaxException(L"function name is not valid", t.line);
                      }
                   }
@@ -278,76 +257,70 @@ static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro)
       Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().type == Token::t_Number) {
-         infList.push_back(new ExpElement<_num>(tks2.first().value.num.n, tks2.first().line));
+         infList.emplace_back(tks2.first().value.num.n, tks2.first().line);
       }
       else {
-         Generator<_num>* num;
+         _genptr<_num> num;
          if (parse(uro, tks2, num)) {
-            infList.push_back(new ExpElement<_num>(num, tks2.first().line));
+            infList.emplace_back(num, tks2.first().line);
          }
          else {
-            langutil::deleteVector(infList);
-            return nullptr;
+            return false;
          }
       }
    }
 
    if (!isNumExpComputable(infList)) {
-      langutil::deleteVector(infList);
       throw SyntaxException(L"syntax of a numeric expression is not valid",
          tks.first().line);
    }
 
-   std::vector<ExpElement<_num>*> pntList;
-   Generator<_num>* num = numExpTree(infList, pntList);
-
-   langutil::deleteVector(infList);
-   langutil::deleteVector(pntList);
-
-   return num;
+   return numExpTree(result, infList);
 }
 
-static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList,
-   std::vector<ExpElement<_num>*>& pntList)
+static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList)
 {
-   std::vector<ExpElement<_num>*> elements;
-   std::vector<ExpElement<_num>*> temp;
+   std::vector<ExpElement<_num>> elements;
+   std::vector<ExpElement<_num>> temp;
    const _size len = infList.size();
    _int brackets = 0;
    _bool anyUnary = false;
 
    for (_size i = 0; i < len; i++) {
-      ExpElement<_num>* e = infList[i];
-      if (e->type == ElementType::et_Operator) {
-         const _char op = e->_operator;
+      ExpElement<_num>& e = infList[i];
+      if (e.type == ElementType::et_Operator) {
+         const _char op = e.operator_;
          switch (op) {
             case L'(': {
                brackets++;
                if (brackets > 1) {
-                  temp.push_back(e);
+                  temp.emplace_back(e);
                }
                break;
             }
             case L')': {
                brackets--;
                if (brackets == 0) {
-                  Generator<_num>* result = numExpTree(temp, pntList);
-                  ExpElement<_num>* ee = new ExpElement<_num>(result, e->line);
-                  pntList.push_back(ee);
-                  temp.resize(0);
-                  elements.push_back(ee);
+                  _genptr<_num> res;
+
+                  if (!numExpTree(res, temp)) {
+                     return false;
+                  }
+
+                  temp.clear();
+                  elements.emplace_back(res, e.line);
                }
                else {
-                  temp.push_back(e);
+                  temp.emplace_back(e);
                }
                break;
             }
             default: {
                if (brackets == 0) {
-                  elements.push_back(e);
+                  elements.emplace_back(e);
                }
                else {
-                  temp.push_back(e);
+                  temp.emplace_back(e);
                }
                if (!anyUnary && op == UNARY_MINUS) {
                   anyUnary = true;
@@ -359,182 +332,168 @@ static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList
       else
       {
          if (brackets == 0) {
-            elements.push_back(e);
+            elements.emplace_back(e);
          }
          else {
-            temp.push_back(e);
+            temp.emplace_back(e);
          }
       }
    }
 
    return anyUnary
-      ? numExpIntegrateUnary(elements, pntList)
-      : numExpTreeMerge(elements, pntList);
+      ? numExpIntegrateUnary(result, elements)
+      : numExpTreeMerge(result, elements);
 }
 
-static Generator<_num>* numExpIntegrateUnary(
-   const std::vector<ExpElement<_num>*>& elements,
-   std::vector<ExpElement<_num>*>& pntList)
+static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
 {
-   std::vector<ExpElement<_num>*> newList;
+   std::vector<ExpElement<_num>> newList;
    _bool minus = false;
    const _size len = elements.size();
 
    for (_size i = 0; i < len; i++) {
-      ExpElement<_num>* e = elements[i];
-      if (e->type == ElementType::et_Operator) {
-         if (e->_operator == UNARY_MINUS) {
+      ExpElement<_num>& e = elements[i];
+      if (e.type == ElementType::et_Operator) {
+         if (e.operator_ == UNARY_MINUS) {
             minus = true;
          }
          else {
-            newList.push_back(e);
+            newList.emplace_back(e);
          }
       }
       else {
          if (minus) {
-            ExpElement<_num>* newElement;
-
-            if (e->type == ElementType::et_Constant) {
-               const _num value = -(e->constant);
-               newElement = new ExpElement<_num>(value, e->line);
+            if (e.type == ElementType::et_Constant) {
+               const _num value = -(e.constant);
+               newList.emplace_back(value, e.line);
             }
             else {
-               Generator<_num>* n = e->takeValue();
-               Generator<_num>* neg = new gen::Negation(n);
-               newElement = new ExpElement<_num>(neg, e->line);
+               _genptr<_num> n = std::move(e.generator);
+               _genptr<_num> neg(new gen::Negation(n));
+               newList.emplace_back(neg, e.line);
             }
 
-            pntList.push_back(newElement);
-            newList.push_back(newElement);
             minus = false;
          }
          else {
-            newList.push_back(e);
+            newList.emplace_back(e);
          }
       }
    }
 
-   return numExpTreeMerge(newList, pntList);
+   return numExpTreeMerge(result, newList);
 }
 
-static Generator<_num>* numExpTreeMerge(
-   const std::vector<ExpElement<_num>*>& elements,
-   std::vector<ExpElement<_num>*>& pntList)
+static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
 {
    const _size len = elements.size();
    if (len == 1) {
-      return elements[0]->takeValue();
+      result = std::move(elements[0].generator);
+      return true;
    }
 
-   std::vector<ExpElement<_num>*> nextElements;
-   ExpElement<_num>* firstElement = elements[0];
-   ExpElement<_num>* oper;
+   std::vector<ExpElement<_num>> nextElements;
+   ExpElement<_num> firstElement(elements[0]);
+   _char oper;
+   _int operLine;
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_num>* secondElement = elements[i];
-      const ElementType& type = secondElement->type;
+      ExpElement<_num>& secondElement = elements[i];
+      const ElementType& type = secondElement.type;
 
       if (type == ElementType::et_Operator) {
-         oper = secondElement;
+         oper = secondElement.operator_;
+         operLine = secondElement.line;
       }
       else {
-         const _char& op = oper->_operator;
-         if (isNumExpHighPriority(op)) {
-            ExpElement<_num>* newElement;
-
-            if (type == ElementType::et_Constant
-               && firstElement->type == ElementType::et_Constant)
+         if (isNumExpHighPriority(oper)) {
+            if (type == ElementType::et_Constant && firstElement.type == ElementType::et_Constant)
             {
-               const _num& v1 = firstElement->constant;
-               const _num& v2 = secondElement->constant;
+               const _num& v1 = firstElement.constant;
+               const _num& v2 = secondElement.constant;
                _num value;
 
-               switch(op) {
+               switch(oper) {
                   case L'*': {
                      value = v1 * v2;
                      break;
                   }
                   case L'/': {
                      if (v2.isZero()) {
-                        throw SyntaxException(L"inevitable division by zero",
-                           secondElement->line);
+                        throw SyntaxException(L"inevitable division by zero", secondElement.line);
                      }
                      value = v1 / v2;
                      break;
                   }
                   case L'%': {
                      if (v2.isZero()) {
-                        throw SyntaxException(L"inevitable modulo by zero",
-                           secondElement->line);
+                        throw SyntaxException(L"inevitable modulo by zero", secondElement.line);
                      }
                      value = v1 % v2;
                      break;
                   }
                }
 
-               newElement = new ExpElement<_num>(value, firstElement->line);
+               firstElement.reinit(value, firstElement.line);
             }
             else {
-               Generator<_num>* first = firstElement->takeValue();
-               Generator<_num>* second = secondElement->takeValue();
-               gen::BinaryOperation<_num>* bin;
+               _genptr<_num> first = std::move(firstElement.generator);
+               _genptr<_num> second = std::move(secondElement.generator);
+               _genptr<_num> bin;
 
-               switch(op) {
+               switch(oper) {
                   case L'*': {
-                     bin = new gen::Multiplication(first, second);
+                     bin = std::make_unique<gen::Multiplication>(first, second);
                      break;
                   }
                   case L'/': {
-                     bin = new gen::Division(first, second);
+                     bin = std::make_unique<gen::Division>(first, second);
                      break;
                   }
                   case L'%': {
-                     bin = new gen::Modulo(first, second);
+                     bin = std::make_unique<gen::Modulo>(first, second);
                      break;
                   }
                }
 
-               newElement = new ExpElement<_num>(bin, firstElement->line);
+               firstElement.reinit(bin, firstElement.line);
             }
-
-            pntList.push_back(newElement);
-            firstElement = newElement;
          }
          else {
-            nextElements.push_back(firstElement);
-            nextElements.push_back(oper);
-            firstElement = secondElement;
+            nextElements.emplace_back(firstElement);
+            nextElements.emplace_back(oper, operLine);
+            firstElement.reinit(secondElement);
          }
       }
    }
 
-   nextElements.push_back(firstElement);
+   nextElements.emplace_back(firstElement);
 
    if (nextElements.size() == 1) {
-      return nextElements[0]->takeValue();
+      result = std::move(nextElements[0].generator);
+      return true;
    }
    else {
-      return numExpTreeMerge2(nextElements);
+      return numExpTreeMerge2(result, nextElements);
    }
 }
 
-static Generator<_num>* numExpTreeMerge2(
-   const std::vector<ExpElement<_num>*>& elements)
+static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
 {
-   Generator<_num>* first = elements[0]->takeValue();
-   _bool firstIsConstant = elements[0]->type == ElementType::et_Constant;
+   _genptr<_num> first(std::move(elements[0].generator));
+   _bool firstIsConstant = first->isConstant();
    _char op;
    const _size len = elements.size();
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_num>* e = elements[i];
-      if (e->type == ElementType::et_Operator) {
-         op = e->_operator;
+      ExpElement<_num>& e = elements[i];
+      if (e.type == ElementType::et_Operator) {
+         op = e.operator_;
       }
       else {
-         Generator<_num>* second = e->takeValue();
+         _genptr<_num> second(std::move(e.generator));
 
-         if (firstIsConstant && e->type == ElementType::et_Constant) {
+         if (firstIsConstant && e.type == ElementType::et_Constant) {
             _num value;
 
             switch(op) {
@@ -548,18 +507,18 @@ static Generator<_num>* numExpTreeMerge2(
                }
             }
 
-            first = new gen::Constant<_num>(value);
+            first = std::make_unique<gen::Constant<_num>>(value);
          }
          else {
+            _genptr<_num> prev = std::move(first);
+
             switch(op) {
                case L'+': {
-                  gen::Addition* add = new gen::Addition(first, second);
-                  first = add;
+                  first = std::make_unique<gen::Addition>(prev, second);
                   break;
                }
                case L'-': {
-                  gen::Subtraction* sub = new gen::Subtraction(first, second);
-                  first = sub;
+                  first = std::make_unique<gen::Subtraction>(prev, second);
                   break;
                }
             }
@@ -569,10 +528,11 @@ static Generator<_num>* numExpTreeMerge2(
       }
    }
 
-   return first;
+   result = std::move(first);
+   return true;
 }
 
-static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
+static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
 {
    const _size len = infList.size();
    if (len == 0) {
@@ -580,37 +540,38 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
    }
 
    // numeric expressions can start with only two symbols: - or (
-   ExpElement<_num>* prev = infList[0];
-   if (prev->type == ElementType::et_Operator) {
-      const _char op = prev->_operator;
+   const ExpElement<_num>& first = infList[0];
+   if (first.type == ElementType::et_Operator) {
+      const _char& op = first.operator_;
       if (!(op == L'(' || op == UNARY_MINUS)) {
          return false;
       }
    }
 
    // numeric expressions can end with only one symbol: )
-   ExpElement<_num>* last = infList[len - 1];
-   if (last->type == ElementType::et_Operator) {
-      if (last->_operator != L')') {
+   const ExpElement<_num>& last = infList[len - 1];
+   if (last.type == ElementType::et_Operator) {
+      if (last.operator_ != L')') {
          return false;
       }
    }
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_num>* curr = infList[i];
-      const _bool cop = curr->type == ElementType::et_Operator;
+      const ExpElement<_num>& prev = infList[i - 1];
+      const ExpElement<_num>& curr = infList[i];
+      const _bool cop = curr.type == ElementType::et_Operator;
 
-      if (prev->type == ElementType::et_Operator) {
-         switch (prev->_operator) {
+      if (prev.type == ElementType::et_Operator) {
+         switch (prev.operator_) {
             case UNARY_MINUS: {
-               if (cop && curr->_operator != L'(') {
+               if (cop && curr.operator_ != L'(') {
                   return false;
                }
                break;
             }
             case L'(': {
                if (cop) {
-                  const _char op = curr->_operator;
+                  const _char op = curr.operator_;
                   if (!(op == L'(' || op == UNARY_MINUS)) {
                      return false;
                   }
@@ -619,7 +580,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
             }
             case L')': {
                if (cop) {
-                  const _char op = curr->_operator;
+                  const _char op = curr.operator_;
                   if (op == UNARY_MINUS || op == L'(') {
                      return false;
                   }
@@ -631,7 +592,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
             }
             default: {
                if (cop) {
-                  const _char op = curr->_operator;
+                  const _char op = curr.operator_;
                   if (!(op == L'(' || op == UNARY_MINUS)) {
                      return false;
                   }
@@ -642,7 +603,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
       }
       else {
          if (cop) {
-            const _char op = curr->_operator;
+            const _char op = curr.operator_;
             if (op == UNARY_MINUS || op == L'(') {
                return false;
             }
@@ -651,7 +612,6 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList)
             return false;
          }
       }
-      prev = curr;
    }
 
    return true;

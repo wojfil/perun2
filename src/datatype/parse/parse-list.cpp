@@ -26,52 +26,38 @@
 namespace uro::parse
 {
 
-Generator<_list>* parseList (const Tokens& tks, Uroboros& uro)
+_bool parseList(_genptr<_list>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_list>* unit;
-      if (parseOneToken(uro, tks, unit)) {
-         return unit;
-      }
+      return parseOneToken(uro, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      Generator<_list>* filter = parseFilter<Generator<_list>*, _str>(tks, ThisState::ts_String, uro);
-      if (filter == nullptr) {
-         throw SyntaxException(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
+      if (parseFilter<_genptr<_list>, _str>(result, tks, ThisState::ts_String, uro)) {
+         return true;
       }
       else {
-         return filter;
+         throw SyntaxException(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
       }
    }
 
    if (len >= 3) {
-      Generator<_list>* listed = parseListed<_str>(tks, uro);
-      if (listed != nullptr) {
-         return listed;
+      if (tks.check(TI_HAS_CHAR_COMMA)) {
+         return parseListed<_str>(result, tks, uro);
       }
 
-      Generator<_list>* bin = parseBinary<_list>(tks, uro);
-      if (bin != nullptr) {
-         return bin;
-      }
-
-      Generator<_list>* tern = parseTernary<_list>(tks, uro);
-      if (tern != nullptr) {
-         return tern;
+      if (parseBinary<_list>(result, tks, uro) || parseTernary<_list>(result, tks, uro)) {
+         return true;
       }
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_list>* func = func::listFunction(tks, uro);
-      if (func != nullptr) {
-         return func;
-      }
+      return func::listFunction(result, tks, uro);
    }
 
-   return nullptr;
+   return false;
 }
 
 }

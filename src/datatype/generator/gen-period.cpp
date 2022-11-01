@@ -18,13 +18,8 @@ namespace uro::gen
 {
 
 
-PeriodUnit::PeriodUnit(Generator<_num>* val, Period::PeriodUnit un)
-   : value(val), unit(un) { };
-
-PeriodUnit::PeriodUnit::~PeriodUnit() 
-{
-   delete this->value;
-}
+PeriodUnit::PeriodUnit(_genptr<_num>& val, Period::PeriodUnit un)
+   : value(std::move(val)), unit(un) { };
 
 _per PeriodUnit::getValue()
 {
@@ -32,7 +27,7 @@ _per PeriodUnit::getValue()
    return _per(n, this->unit);
 }
 
-PeriodAddition::PeriodAddition(Generator<_per>* val1, Generator<_per>* val2)
+PeriodAddition::PeriodAddition(_genptr<_per>& val1, _genptr<_per>& val2)
    : BinaryOperation<_per>(val1, val2) { }
 
 _per PeriodAddition::getValue()
@@ -40,7 +35,7 @@ _per PeriodAddition::getValue()
    return this->value1->getValue() + this->value2->getValue();
 }
 
-PeriodSubtraction::PeriodSubtraction(Generator<_per>* val1, Generator<_per>* val2)
+PeriodSubtraction::PeriodSubtraction(_genptr<_per>& val1, _genptr<_per>& val2)
    : BinaryOperation<_per>(val1, val2) { }
 
 _per PeriodSubtraction::getValue()
@@ -48,27 +43,16 @@ _per PeriodSubtraction::getValue()
    return this->value1->getValue() - this->value2->getValue();
 }
 
-TimeDifference::TimeDifference(Generator<_tim>* val1, Generator<_tim>* val2)
-      : value1(val1), value2(val2) { };
-
-TimeDifference::~TimeDifference()
-{
-   delete this->value1;
-   delete this->value2;
-}
+TimeDifference::TimeDifference(_genptr<_tim>& val1, _genptr<_tim>& val2)
+   : value1(std::move(val1)), value2(std::move(val2)) { };
 
 _per TimeDifference::getValue()
 {
    return this->value1->getValue() - this->value2->getValue();
 }
 
-NegatedPeriod::NegatedPeriod(Generator<_per>* val) 
-   : value(val){ };
-
-NegatedPeriod::~NegatedPeriod()
-{
-   delete this->value;
-}
+NegatedPeriod::NegatedPeriod(_genptr<_per>& val) 
+   : value(std::move(val)) { };
 
 _per NegatedPeriod::getValue()
 {

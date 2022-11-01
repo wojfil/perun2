@@ -359,14 +359,28 @@ LikeComparer* parseLikeCmp(const _str& pattern)
 }
 
 
-LikeConst::LikeConst(Generator<_str>* val, const _str& pattern)
-  : value(val), comparer(parseLikeCmp(pattern)) { };
+LikeConst::LikeConst(_genptr<_str>& val, const _str& pattern)
+  : value(std::move(val)), comparer(parseLikeCmp(pattern)) { };
 
+LikeConst::~LikeConst()
+{
+   delete comparer;
+};
 
-_bool LikeConst::getValue() {
+_bool LikeConst::getValue() 
+{
    return comparer->compareToPattern(value->getValue());
 };
 
+Like::Like(_genptr<_str>& val, _genptr<_str>& pat)
+   : value(std::move(val)), pattern(std::move(pat)) { };
+
+Like::~Like()
+{
+   if (hasPrev) {
+      delete comparer;
+   }
+};
 
 // if the pattern of the operator LIKE is not a string literal
 // we have to generate a new pattern string for every its call

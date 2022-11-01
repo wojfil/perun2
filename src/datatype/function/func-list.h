@@ -26,7 +26,7 @@ inline _list toChars(const _str& value);
 struct F_Characters : Func_1<_str>, Generator<_list>
 {
 public:
-   F_Characters(Generator<_str>* a1) : Func_1(a1) { };
+   F_Characters(_genptr<_str>& a1) : Func_1(a1) { };
    _list getValue() override;
 };
 
@@ -34,7 +34,7 @@ public:
 struct F_Split : Func_2<_str, _str>, Generator<_list>
 {
 public:
-   F_Split(Generator<_str>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
+   F_Split(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
    _list getValue() override;
 };
 
@@ -42,7 +42,7 @@ public:
 struct F_Words : Func_1<_str>, Generator<_list>
 {
 public:
-   F_Words(Generator<_str>* a1) : Func_1(a1) { };
+   F_Words(_genptr<_str>& a1) : Func_1(a1) { };
    _list getValue() override;
 };
 
@@ -50,7 +50,7 @@ public:
 struct F_Numbers : Func_1<_str>, Generator<_nlist>
 {
 public:
-   F_Numbers(Generator<_str>* a1) : Func_1(a1) { };
+   F_Numbers(_genptr<_str>& a1) : Func_1(a1) { };
    _nlist getValue() override;
 
 private:

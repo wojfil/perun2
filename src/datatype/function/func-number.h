@@ -25,7 +25,7 @@ namespace uro::func
 struct F_Absolute : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Absolute(Generator<_num>* a1) : Func_1(a1) { };
+   F_Absolute(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -33,7 +33,7 @@ public:
 struct F_Ceil : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Ceil(Generator<_num>* a1) : Func_1(a1) { };
+   F_Ceil(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -42,7 +42,7 @@ template <typename T>
 struct F_Count : Func_1<std::vector<T>>, Generator<_num>
 {
 public:
-   F_Count<T>(Generator<std::vector<T>>* a1) : Func_1<std::vector<T>>(a1) { };
+   F_Count<T>(_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) { };
    _num getValue() override {
       return _num(static_cast<_nint>(this->arg1->getValue().size()));
    }
@@ -52,46 +52,37 @@ public:
 struct F_CountDef : Generator<_num>
 {
 public:
-   F_CountDef(_def* def, Uroboros& uro)
-      : definition(def), uroboros(uro) { };
-
-   ~F_CountDef() {
-      delete definition;
-   }
+   F_CountDef(_defptr& def, Uroboros& uro)
+      : definition(std::move(def)), uroboros(uro) { };
 
    _num getValue() override;
 
 private:
    Uroboros& uroboros;
-   _def* definition;
+   _defptr definition;
 };
 
 
 struct F_CountInside : Generator<_num>
 {
 public:
-   F_CountInside(_def* def, Generator<_str>* val, Uroboros& uro)
-      : definition(def), value(val), uroboros(uro), inner(uro.vars.inner) { };
-
-   ~F_CountInside() {
-      delete definition;
-      delete value;
-   }
+   F_CountInside(_defptr& def, _genptr<_str>& val, Uroboros& uro)
+      : definition(std::move(def)), value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
 
    _num getValue() override;
 
 private:
    Uroboros& uroboros;
    InnerVariables& inner;
-   _def* definition;
-   Generator<_str>* value;
+   _defptr definition;
+   _genptr<_str> value;
 };
 
 
 struct F_Floor : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Floor(Generator<_num>* a1) : Func_1(a1) { };
+   F_Floor(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -99,7 +90,7 @@ public:
 struct F_Length : Func_1<_str>, Generator<_num>
 {
 public:
-   F_Length(Generator<_str>* a1) : Func_1(a1) { };
+   F_Length(_genptr<_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -107,7 +98,7 @@ public:
 struct F_Number : Func_1<_str>, Generator<_num>
 {
 public:
-   F_Number(Generator<_str>* a1) : Func_1(a1) { };
+   F_Number(_genptr<_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -115,7 +106,7 @@ public:
 struct F_Power : Func_2<_num, _num>, Generator<_num>
 {
 public:
-   F_Power(Generator<_num>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
+   F_Power(_genptr<_num>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
    _num getValue() override;
 
 private:
@@ -125,7 +116,7 @@ private:
 struct F_Round : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Round(Generator<_num>* a1) : Func_1(a1) { };
+   F_Round(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -133,7 +124,7 @@ public:
 struct F_Sign : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Sign(Generator<_num>* a1) : Func_1(a1) { };
+   F_Sign(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -141,7 +132,7 @@ public:
 struct F_Sqrt : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Sqrt(Generator<_num>* a1) : Func_1(a1) { };
+   F_Sqrt(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -149,7 +140,7 @@ public:
 struct F_Truncate : Func_1<_num>, Generator<_num>
 {
 public:
-   F_Truncate(Generator<_num>* a1) : Func_1(a1) { };
+   F_Truncate(_genptr<_num>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -170,7 +161,7 @@ private:
 struct F_RandomNumber : Func_1<_num>, Generator<_num>
 {
 public:
-   F_RandomNumber(Generator<_num>* a1, Uroboros& uro)
+   F_RandomNumber(_genptr<_num>& a1, Uroboros& uro)
       : Func_1(a1), math(&uro.math) { };
 
    _num getValue() override;
@@ -183,7 +174,7 @@ private:
 struct F_FromBinary : Func_1<_str>, Generator<_num>
 {
 public:
-   F_FromBinary(Generator<_str>* a1) : Func_1(a1) { };
+   F_FromBinary(_genptr<_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -191,7 +182,7 @@ public:
 struct F_FromHex : Func_1<_str>, Generator<_num>
 {
 public:
-   F_FromHex(Generator<_str>* a1) : Func_1(a1) { };
+   F_FromHex(_genptr<_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 

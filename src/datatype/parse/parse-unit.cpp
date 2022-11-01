@@ -25,7 +25,7 @@
 namespace uro::parse
 {
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_bool>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -33,11 +33,11 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_bool>*& result)
       case Token::t_Keyword: {
          switch (tk.value.keyword.k) {
             case Keyword::kw_True: {
-               result = new gen::Constant<_bool>(true);
+               result = std::make_unique<gen::Constant<_bool>>(true);
                return true;
             }
             case Keyword::kw_False: {
-               result = new gen::Constant<_bool>(false);
+               result = std::make_unique<gen::Constant<_bool>>(false);
                return true;
             }
             default: {
@@ -54,13 +54,13 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_bool>*& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = new gen::Constant<_num>(tk.value.num.n);
+         result = std::make_unique<gen::Constant<_num>>(tk.value.num.n);
          return true;
       }
       case Token::t_Word: {
@@ -73,7 +73,7 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
             throw SyntaxException(L"dot . should be preceded by a time variable name", tk.line);
          }
 
-         Generator<_tim>* var;
+         _genptr<_tim> var;
          if (!uro.vars.getVarValue(tk, var)) {
             throw SyntaxException(str(L"time variable from expression '", tk.getOriginString(uro),
                L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
@@ -82,19 +82,19 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
          const _size& h = tk.value.twoWords.h2;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
-            result = new gen::TimeMember(var, Period::u_Years);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Years);
          else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
-            result = new gen::TimeMember(var, Period::u_Months);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Months);
          else if (h == hs.HASH_PER_WEEKDAY)
-            result = new gen::TimeMember(var, Period::u_Weeks);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Weeks);
          else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
-            result = new gen::TimeMember(var, Period::u_Days);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Days);
          else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
-            result = new gen::TimeMember(var, Period::u_Hours);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Hours);
          else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
-            result = new gen::TimeMember(var, Period::u_Minutes);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Minutes);
          else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECOND)
-            result = new gen::TimeMember(var, Period::u_Seconds);
+            result = std::make_unique<gen::TimeMember>(var, Period::u_Seconds);
          else if (h == hs.HASH_PER_DATE)
             return false;
          else {
@@ -109,17 +109,17 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_str>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_str>& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = new gen::Constant<_str>(tk.value.num.n.toString());
+         result = std::make_unique<gen::Constant<_str>>(tk.value.num.n.toString());
          return true;
       }
       case Token::t_Quotation: {
-         result = new gen::Constant<_str>(tk.getOriginString(uro));
+         result = std::make_unique<gen::Constant<_str>>(tk.getOriginString(uro));
          return true;
       }
       case Token::t_Word: {
@@ -131,31 +131,25 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_str>*& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_nlist>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
-
-   return tk.type == Token::t_Word
-      && uro.vars.getVarValue(tk, result);
+   return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tlist>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
-
-   return tk.type == Token::t_Word
-      && uro.vars.getVarValue(tk, result);
+   return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_list>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_list>& result)
 {
    const Token& tk = tks.first();
-
-   return tk.type == Token::t_Word
-      && uro.vars.getVarValue(tk, result);
+   return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tim>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result)
 {
    const Token& tk = tks.first();
 
@@ -168,13 +162,13 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tim>*& result)
             throw SyntaxException(L"dot . should be preceded by a time variable name", tk.line);
          }
 
-         Generator<_tim>* var;
+         _genptr<_tim> var;
          if (!uro.vars.getVarValue(tk, var)) {
             throw SyntaxException(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
          }
 
          if (tk.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {
-            result = new gen::TimeDate(var);
+            result = std::make_unique<gen::TimeDate>(var);
             return true;
          }
          else {
@@ -187,15 +181,14 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_tim>*& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, Generator<_per>*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
-   return tk.type == Token::t_Word
-      && uro.vars.getVarValue(tk, result);
+   return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _def*& result)
+_bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
 {
    const Token& tk = tks.first();
 

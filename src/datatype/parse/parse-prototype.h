@@ -34,86 +34,78 @@ struct FilterPrototype
 public:
    virtual ~FilterPrototype() { };
    virtual FilterType getFilterType() = 0;
-   virtual T build(T base, Attribute* attr, const _bool& hasMem, Uroboros& uro) = 0;
+   virtual void build(T& result, Attribute* attr, const _bool& hasMem, Uroboros& uro) = 0;
 };
 
 template <typename T>
-void makeWhereFilter(Generator<_bool>* boo, Attribute* attr,
-   const _bool& hasMemory, Generator<std::vector<T>>*& result, Uroboros& uro)
+void makeWhereFilter(_genptr<_bool>& boo, Attribute* attr,
+   const _bool& hasMemory, _genptr<std::vector<T>>& result, Uroboros& uro)
 {
-   result = new gen::Filter_Where<T>(result, boo, attr, uro);
+   _genptr<std::vector<T>> prev = std::move(result);
+   result = std::make_unique<gen::Filter_Where<T>>(prev, boo, attr, uro);
 }
 
 template <typename T>
-void makeWhereFilter(Generator<_bool>* boo, Generator<std::vector<T>>*& result, Uroboros& uro)
+void makeWhereFilter(_genptr<_bool>& boo, _genptr<std::vector<T>>& result, Uroboros& uro)
 {
-   result = new gen::Filter_Where<T>(result, boo, nullptr, uro);
+   _genptr<std::vector<T>> prev = std::move(result);
+   result = std::make_unique<gen::Filter_Where<T>>(prev, boo, nullptr, uro);
 }
 
-void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, Uroboros& uro);
-void makeWhereFilter(Generator<_bool>* boo, _def*& result, Uroboros& uro);
+void makeWhereFilter(_genptr<_bool>& boo, Attribute* attr, const _bool& hasMemory, _defptr& result, Uroboros& uro);
+void makeWhereFilter(_genptr<_bool>& boo, _defptr& result, Uroboros& uro);
 
 template <typename T>
-void makeNumericFilter(const Keyword& kw, Generator<_num>* num, Generator<std::vector<T>>*& result, Uroboros& uro)
+void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _genptr<std::vector<T>>& result, Uroboros& uro)
 {
+   _genptr<std::vector<T>> prev = std::move(result);
+
    switch (kw) {
       case Keyword::kw_Every: {
-         result = new gen::Filter_Every<T>(result, num);
+         result = std::make_unique<gen::Filter_Every<T>>(prev, num);
          break;
       }
       case Keyword::kw_Final: {
-         result = new gen::Filter_Final<T>(result, num);
+         result = std::make_unique<gen::Filter_Final<T>>(prev, num);
          break;
       }
       case Keyword::kw_Limit: {
-         result = new gen::Filter_Limit<T>(result, num);
+         result = std::make_unique<gen::Filter_Limit<T>>(prev, num);
          break;
       }
       case Keyword::kw_Skip: {
-         result = new gen::Filter_Skip<T>(result, num);
+         result = std::make_unique<gen::Filter_Skip<T>>(prev, num);
          break;
       }
    }
 }
 
-void makeNumericFilter(const Keyword& kw, Generator<_num>* num, _def*& result, Uroboros& uro);
+void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _defptr& result, Uroboros& uro);
 
 template <typename T>
 struct FP_Where : FilterPrototype<T>
 {
 public:
-   FP_Where(Generator<_bool>* cond)
-      : condition(cond) { };
-
-   ~FP_Where()
-   {
-      if (condition != nullptr) {
-         delete condition;
-      }
-   };
+   FP_Where(_genptr<_bool>& cond) 
+      : condition(std::move(cond)) { };
 
    FilterType getFilterType() override
    {
       return FilterType::ft_Where;
    };
 
-   T build(T base, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
+   void build(T& result, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
    {
-      T result = base;
-
       if (attr == nullptr) {
          makeWhereFilter(condition, result, uro);
       }
       else {
          makeWhereFilter(condition, attr, hasMem, result, uro);
       }
-
-      condition = nullptr;
-      return result;
    };
 
 private:
-   Generator<_bool>* condition;
+   _genptr<_bool> condition;
 
 };
 
@@ -121,31 +113,21 @@ template <typename T>
 struct FP_Numeric : FilterPrototype<T>
 {
 public:
-   FP_Numeric(Generator<_num>* val, const Keyword& kw)
-      : value(val), keyword(kw) { };
-
-   ~FP_Numeric()
-   {
-      if (value != nullptr) {
-         delete value;
-      }
-   };
+   FP_Numeric(_genptr<_num>& val, const Keyword& kw)
+      : value(std::move(val)), keyword(kw) { };
 
    FilterType getFilterType() override
    {
       return FilterType::ft_Numeric;
    };
 
-   T build(T base, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
+   void build(T& result, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
    {
-      T result = base;
       makeNumericFilter(keyword, value, result, uro);
-      value = nullptr;
-      return result;
    };
 
 private:
-   Generator<_num>* value;
+   _genptr<_num> value;
    const Keyword keyword;
 };
 

@@ -30,54 +30,42 @@ namespace uro::comm
 struct C_PrintSingle : Command
 {
 public:
-   C_PrintSingle(Generator<_str>* val, Uroboros& uro)
-      : value(val), uroboros(uro) { };
-
-   ~C_PrintSingle() {
-      delete value;
-   };
+   C_PrintSingle(_genptr<_str>& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro) { };
 
    void run() override;
 
 private:
    Uroboros& uroboros;
-   Generator<_str>* value;
+   _genptr<_str> value;
 };
 
 
 struct C_PrintList : Command
 {
 public:
-   C_PrintList(Generator<_list>* val, Uroboros& uro)
-      : value(val), uroboros(uro) { };
-
-   ~C_PrintList() {
-      delete value;
-   };
+   C_PrintList(_genptr<_list>& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro) { };
 
    void run() override;
 
 private:
    Uroboros& uroboros;
-   Generator<_list>* value;
+   _genptr<_list> value;
 };
 
 
 struct C_PrintDefinition : Command
 {
 public:
-   C_PrintDefinition(_def* val, Uroboros& uro)
-      : value(val), uroboros(uro) { };
-
-   ~C_PrintDefinition() {
-      delete value;
-   };
+   C_PrintDefinition(_defptr& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro) { };
 
    void run() override;
 
 private:
    Uroboros& uroboros;
-   _def* value;
+   _defptr value;
 };
 
 
@@ -123,36 +111,28 @@ private:
 struct C_SleepPeriod : Command
 {
 public:
-   C_SleepPeriod(Generator<_per>* val, Uroboros& uro)
-      : value(val), uroboros(uro) { };
-
-   ~C_SleepPeriod() {
-      delete value;
-   };
+   C_SleepPeriod(_genptr<_per>& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro) { };
 
    void run() override;
 
 private:
    Uroboros& uroboros;
-   Generator<_per>* value;
+   _genptr<_per> value;
 };
 
 
 struct C_SleepMs : Command
 {
 public:
-   C_SleepMs(Generator<_num>* val, Uroboros& uro)
-      : value(val), uroboros(uro) { };
-
-   ~C_SleepMs() {
-      delete value;
-   };
+   C_SleepMs(_genptr<_num>& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro) { };
 
    void run() override;
 
 private:
    Uroboros& uroboros;
-   Generator<_num>* value;
+   _genptr<_num> value;
 };
 
 
@@ -207,35 +187,27 @@ private:
 struct C_ErrorWithExitCode : Command
 {
 public:
-   C_ErrorWithExitCode(Generator<_num>* code, Uroboros& uro)
-      : exitCode(code), uroboros(uro) { };
-
-   ~C_ErrorWithExitCode() {
-      delete exitCode;
-   }
+   C_ErrorWithExitCode(_genptr<_num>& code, Uroboros& uro)
+      : exitCode(std::move(code)), uroboros(uro) { };
 
    void run() override;
 
 private:
    Uroboros& uroboros;
-   Generator<_num>* exitCode;
+   _genptr<_num> exitCode;
 };
 
 
 struct C_Run : Command_L
 {
 public:
-   C_Run(Generator<_str>* val, Attribute* attr, Uroboros& uro)
-      : value(val), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
-
-   ~C_Run() {
-      delete value;
-   };
+   C_Run(_genptr<_str>& val, Attribute* attr, Uroboros& uro)
+      : value(std::move(val)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* value;
+   _genptr<_str> value;
    Attribute* attribute;
    const _bool hasAttribute;
 };
@@ -244,20 +216,16 @@ private:
 struct C_RunWith : Command_L
 {
 public:
-   C_RunWith(Generator<_str>* val, Uroboros& uro)
-      : value(val), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
+   C_RunWith(_genptr<_str>& val, Uroboros& uro)
+      : value(std::move(val)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWith(Generator<_str>* val, Attribute* attr, Uroboros& uro)
-      : value(val), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
-
-   ~C_RunWith() {
-      delete value;
-   };
+   C_RunWith(_genptr<_str>& val, Attribute* attr, Uroboros& uro)
+      : value(std::move(val)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* value;
+   _genptr<_str> value;
    Attribute* attribute;
    const _bool hasAttribute;
 };
@@ -266,22 +234,17 @@ private:
 struct C_RunWithWithString : Command_L
 {
 public:
-   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Uroboros& uro)
-      : value(val), argument(arg), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
+   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, Uroboros& uro)
+      : value(std::move(val)), argument(std::move(arg)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithWithString(Generator<_str>* val, Generator<_str>* arg, Attribute* attr, Uroboros& uro)
-      : value(val), argument(arg), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
-
-   ~C_RunWithWithString() {
-      delete value;
-      delete argument;
-   };
+   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, Attribute* attr, Uroboros& uro)
+      : value(std::move(val)), argument(std::move(arg)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* value;
-   Generator<_str>* argument;
+   _genptr<_str> value;
+   _genptr<_str> argument;
    Attribute* attribute;
    const _bool hasAttribute;
 };
@@ -290,22 +253,17 @@ private:
 struct C_RunWithWith : Command_L
 {
 public:
-   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Uroboros& uro)
-      : value(val), arguments(args), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
+   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& args, Uroboros& uro)
+      : value(std::move(val)), arguments(std::move(args)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithWith(Generator<_str>* val, Generator<_list>* args, Attribute* attr, Uroboros& uro)
-      : value(val), arguments(args), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
-
-   ~C_RunWithWith() {
-      delete value;
-      delete arguments;
-   };
+   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& args, Attribute* attr, Uroboros& uro)
+      : value(std::move(val)), arguments(std::move(args)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* value;
-   Generator<_list>* arguments;
+   _genptr<_str> value;
+   _genptr<_list> arguments;
    Attribute* attribute;
    const _bool hasAttribute;
 };
@@ -330,20 +288,16 @@ private:
 struct C_RunWithUroborosWithString : Command_L
 {
 public:
-   C_RunWithUroborosWithString(Generator<_str>* arg, Uroboros& uro)
-      : argument(arg), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
+   C_RunWithUroborosWithString(_genptr<_str>& arg, Uroboros& uro)
+      : argument(std::move(arg)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWithString(Generator<_str>* arg, Attribute* attr, Uroboros& uro)
-      : argument(arg), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
-
-   ~C_RunWithUroborosWithString() {
-      delete argument;
-   };
+   C_RunWithUroborosWithString(_genptr<_str>& arg, Attribute* attr, Uroboros& uro)
+      : argument(std::move(arg)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* argument;
+   _genptr<_str> argument;
    Attribute* attribute;
    const _bool hasAttribute;
 };
@@ -352,20 +306,16 @@ private:
 struct C_RunWithUroborosWith : Command_L
 {
 public:
-   C_RunWithUroborosWith(Generator<_list>* args, Uroboros& uro)
-      : arguments(args), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
+   C_RunWithUroborosWith(_genptr<_list>& args, Uroboros& uro)
+      : arguments(std::move(args)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWith(Generator<_list>* args, Attribute* attr, Uroboros& uro)
-      : arguments(args), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
-
-   ~C_RunWithUroborosWith() {
-      delete arguments;
-   };
+   C_RunWithUroborosWith(_genptr<_list>& args, Attribute* attr, Uroboros& uro)
+      : arguments(std::move(args)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* arguments;
+   _genptr<_list> arguments;
    Attribute* attribute;
    const _bool hasAttribute;
 };

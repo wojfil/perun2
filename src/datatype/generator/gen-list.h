@@ -30,15 +30,14 @@ struct Join_StrStr : Generator<_list>
 {
 
 public:
-   Join_StrStr(Generator<_str>* lef, Generator<_str>* rig)
-        : left(lef), right(rig) {};
-   ~Join_StrStr();
+   Join_StrStr(_genptr<_str>& lef, _genptr<_str>& rig)
+        : left(std::move(lef)), right(std::move(rig)) { };
 
    _list getValue() override;
 
 private:
-   Generator<_str>* left;
-   Generator<_str>* right;
+   _genptr<_str> left;
+   _genptr<_str> right;
 };
 
 
@@ -46,15 +45,14 @@ struct Join_StrList : Generator<_list>
 {
 
 public:
-   Join_StrList(Generator<_str>* lef, Generator<_list>* rig)
-        : left(lef), right(rig) {};
-   ~Join_StrList();
+   Join_StrList(_genptr<_str>& lef, _genptr<_list>& rig)
+        : left(std::move(lef)), right(std::move(rig)) { };
 
    _list getValue() override;
 
 private:
-   Generator<_str>* left;
-   Generator<_list>* right;
+   _genptr<_str> left;
+   _genptr<_list> right;
 };
 
 
@@ -62,15 +60,14 @@ struct Join_ListStr : Generator<_list>
 {
 
 public:
-   Join_ListStr(Generator<_list>* lef, Generator<_str>* rig)
-        : left(lef), right(rig) {};
-   ~Join_ListStr();
+   Join_ListStr(_genptr<_list>& lef, _genptr<_str>& rig)
+        : left(std::move(lef)), right(std::move(rig)) { };
 
    _list getValue() override;
 
 private:
-   Generator<_list>* left;
-   Generator<_str>* right;
+   _genptr<_list> left;
+   _genptr<_str> right;
 };
 
 
@@ -78,15 +75,14 @@ struct Join_ListList : Generator<_list>
 {
 
 public:
-   Join_ListList(Generator<_list>* lef, Generator<_list>* rig)
-        : left(lef), right(rig) {};
-   ~Join_ListList();
+   Join_ListList(_genptr<_list>& lef, _genptr<_list>& rig)
+        : left(std::move(lef)), right(std::move(rig)) { };
 
    _list getValue() override;
 
 private:
-   Generator<_list>* left;
-   Generator<_list>* right;
+   _genptr<_list> left;
+   _genptr<_list> right;
 };
 
 }

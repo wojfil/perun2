@@ -110,17 +110,13 @@ struct C_Unhide : C_Simple
 struct C_OpenWith : Command_L
 {
 public:
-   C_OpenWith(Generator<_str>* pro, Uroboros& uro)
-      : program(pro), Command_L(uro) { };
-
-   ~C_OpenWith() {
-      delete program;
-   }
+   C_OpenWith(_genptr<_str>& pro, Uroboros& uro)
+      : program(std::move(pro)), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* program;
+   _genptr<_str> program;
 };
 
 
@@ -133,22 +129,18 @@ protected:
 struct C_TimeAlter : Command_L
 {
 public:
-   C_TimeAlter(Generator<_tim>* ti, const _bool& save, Uroboros& uro)
-      : time(ti), saveChanges(save), Command_L(uro) { };
-
-   ~C_TimeAlter() {
-      delete time;
-   }
+   C_TimeAlter(_genptr<_tim>& ti, const _bool& save, Uroboros& uro)
+      : time(std::move(ti)), saveChanges(save), Command_L(uro) { };
 
 protected:
-   Generator<_tim>* time;
+   _genptr<_tim> time;
    const _bool saveChanges;
 };
 
 
 struct C_ReaccessTo : C_TimeAlter
 {
-   C_ReaccessTo(Generator<_tim>* ti, const _bool& save, Uroboros& uro)
+   C_ReaccessTo(_genptr<_tim>& ti, const _bool& save, Uroboros& uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -157,7 +149,7 @@ struct C_ReaccessTo : C_TimeAlter
 
 struct C_RechangeTo : C_TimeAlter
 {
-   C_RechangeTo(Generator<_tim>* ti, const _bool& save, Uroboros& uro)
+   C_RechangeTo(_genptr<_tim>& ti, const _bool& save, Uroboros& uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -166,7 +158,7 @@ struct C_RechangeTo : C_TimeAlter
 
 struct C_RecreateTo : C_TimeAlter
 {
-   C_RecreateTo(Generator<_tim>* ti, const _bool& save, Uroboros& uro)
+   C_RecreateTo(_genptr<_tim>& ti, const _bool& save, Uroboros& uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -175,7 +167,7 @@ struct C_RecreateTo : C_TimeAlter
 
 struct C_RemodifyTo : C_TimeAlter
 {
-   C_RemodifyTo(Generator<_tim>* ti, const _bool& save, Uroboros& uro)
+   C_RemodifyTo(_genptr<_tim>& ti, const _bool& save, Uroboros& uro)
       : C_TimeAlter(ti, save, uro) { };
 
    void run() override;
@@ -185,18 +177,14 @@ struct C_RemodifyTo : C_TimeAlter
 struct C_RenameTo : Command_L
 {
 public:
-   C_RenameTo(Generator<_str>* na, const _bool& save, const _bool& forc,
+   C_RenameTo(_genptr<_str>& na, const _bool& save, const _bool& forc,
       const _bool& extless, Uroboros& uro)
-      : name(na), saveChanges(save), forced(forc), extensionless(extless), Command_L(uro) { };
-
-   ~C_RenameTo() {
-      delete name;
-   }
+      : name(std::move(na)), saveChanges(save), forced(forc), extensionless(extless), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* name;
+   _genptr<_str> name;
    const _bool saveChanges;
    const _bool forced;
    const _bool extensionless;
@@ -206,17 +194,13 @@ protected:
 struct C_RenameTo_Stack : Command_L
 {
 public:
-   C_RenameTo_Stack(Generator<_str>* na, const _bool& save, const _bool& extless, Uroboros& uro)
-      : name(na), saveChanges(save), extensionless(extless), Command_L(uro) { };
-
-   ~C_RenameTo_Stack() {
-      delete name;
-   }
+   C_RenameTo_Stack(_genptr<_str>& na, const _bool& save, const _bool& extless, Uroboros& uro)
+      : name(std::move(na)), saveChanges(save), extensionless(extless), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* name;
+   _genptr<_str> name;
    const _bool saveChanges;
    const _bool extensionless;
 };
@@ -225,20 +209,16 @@ protected:
 struct C_MoveTo : Command_L
 {
 public:
-   C_MoveTo(Generator<_str>* loc, const _bool& forc, Uroboros& uro)
-      : location(loc), hasAttribute(false), attribute(nullptr), forced(forc), Command_L(uro) { };
+   C_MoveTo(_genptr<_str>& loc, const _bool& forc, Uroboros& uro)
+      : location(std::move(loc)), hasAttribute(false), attribute(nullptr), forced(forc), Command_L(uro) { };
 
-   C_MoveTo(Generator<_str>* loc, const _bool& forc, Attribute* attr, Uroboros& uro)
-      : location(loc), hasAttribute(true), attribute(attr), forced(forc), Command_L(uro) { };
-
-   ~C_MoveTo() {
-      delete location;
-   }
+   C_MoveTo(_genptr<_str>& loc, const _bool& forc, Attribute* attr, Uroboros& uro)
+      : location(std::move(loc)), hasAttribute(true), attribute(attr), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
+   _genptr<_str> location;
    const _bool hasAttribute;
    Attribute* attribute;
    const _bool forced;
@@ -248,20 +228,16 @@ protected:
 struct C_MoveTo_Stack : Command_L
 {
 public:
-   C_MoveTo_Stack(Generator<_str>* loc, Uroboros& uro)
-      : location(loc), hasAttribute(false), attribute(nullptr), Command_L(uro) { };
+   C_MoveTo_Stack(_genptr<_str>& loc, Uroboros& uro)
+      : location(std::move(loc)), hasAttribute(false), attribute(nullptr), Command_L(uro) { };
 
-   C_MoveTo_Stack(Generator<_str>* loc, Attribute* attr, Uroboros& uro)
-      : location(loc), hasAttribute(true), attribute(attr), Command_L(uro) { };
-
-   ~C_MoveTo_Stack() {
-      delete location;
-   }
+   C_MoveTo_Stack(_genptr<_str>& loc, Attribute* attr, Uroboros& uro)
+      : location(std::move(loc)), hasAttribute(true), attribute(attr), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
+   _genptr<_str> location;
    const _bool hasAttribute;
    Attribute* attribute;
 };
@@ -270,26 +246,21 @@ protected:
 struct C_MoveToAs : Command_L
 {
 public:
-   C_MoveToAs(Generator<_str>* loc, Generator<_str>* na, const _bool& forc,
+   C_MoveToAs(_genptr<_str>& loc, _genptr<_str>& na, const _bool& forc,
       const _bool& extless, Uroboros& uro)
-      : location(loc), name(na), hasAttribute(false),
+      : location(std::move(loc)), name(std::move(na)), hasAttribute(false),
         attribute(nullptr), forced(forc), extensionless(extless), Command_L(uro) { };
 
-   C_MoveToAs(Generator<_str>* loc, Generator<_str>* na, const _bool& forc,
+   C_MoveToAs(_genptr<_str>& loc, _genptr<_str>& na, const _bool& forc,
       const _bool& extless, Attribute* attr, Uroboros& uro)
-      : location(loc), name(na), hasAttribute(true),
+      : location(std::move(loc)), name(std::move(na)), hasAttribute(true),
         attribute(attr), forced(forc), extensionless(extless), Command_L(uro) { };
-
-   ~C_MoveToAs() {
-      delete location;
-      delete name;
-   }
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_str>* name;
+   _genptr<_str> location;
+   _genptr<_str> name;
    const _bool hasAttribute;
    Attribute* attribute;
    const _bool forced;
@@ -300,26 +271,17 @@ protected:
 struct C_MoveToAs_Stack : Command_L
 {
 public:
-   C_MoveToAs_Stack(Generator<_str>* loc, Generator<_str>* na,
-      const _bool& extless, Uroboros& uro)
-      : location(loc), name(na), hasAttribute(false),
-        attribute(nullptr), extensionless(extless), Command_L(uro) { };
+   C_MoveToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na, const _bool& extless, Uroboros& uro)
+      : location(std::move(loc)), name(std::move(na)), hasAttribute(false), attribute(nullptr), extensionless(extless), Command_L(uro) { };
 
-   C_MoveToAs_Stack(Generator<_str>* loc, Generator<_str>* na,
-      const _bool& extless, Attribute* attr, Uroboros& uro)
-      : location(loc), name(na), hasAttribute(true),
-        attribute(attr), extensionless(extless), Command_L(uro) { };
-
-   ~C_MoveToAs_Stack() {
-      delete location;
-      delete name;
-   }
+   C_MoveToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na, const _bool& extless, Attribute* attr, Uroboros& uro)
+      : location(std::move(loc)), name(std::move(na)), hasAttribute(true), attribute(attr), extensionless(extless), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_str>* name;
+   _genptr<_str> location;
+   _genptr<_str> name;
    const _bool hasAttribute;
    Attribute* attribute;
    const _bool extensionless;
@@ -329,20 +291,14 @@ protected:
 struct C_DownloadFrom_String : Command_L
 {
 public:
-   C_DownloadFrom_String(Generator<_str>* loc, Generator<_str>* el,
-      const _bool& forc, Uroboros& uro)
-      : location(loc), element(el), forced(forc), Command_L(uro) { };
-
-   ~C_DownloadFrom_String() {
-      delete location;
-      delete element;
-   }
+   C_DownloadFrom_String(_genptr<_str>& loc, _genptr<_str>& el, const _bool& forc, Uroboros& uro)
+      : location(std::move(loc)), element(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_str>* element;
+   _genptr<_str> location;
+   _genptr<_str> element;
    const _bool forced;
 };
 
@@ -350,20 +306,14 @@ protected:
 struct C_DownloadFrom_List : Command_L
 {
 public:
-   C_DownloadFrom_List(Generator<_str>* loc, Generator<_list>* el,
-      const _bool& forc, Uroboros& uro)
-      : location(loc), elements(el), forced(forc), Command_L(uro) { };
-
-   ~C_DownloadFrom_List() {
-      delete location;
-      delete elements;
-   }
+   C_DownloadFrom_List(_genptr<_str>& loc, _genptr<_list>& el, const _bool& forc, Uroboros& uro)
+      : location(std::move(loc)), elements(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_list>* elements;
+   _genptr<_str> location;
+   _genptr<_list> elements;
    const _bool forced;
 };
 
@@ -371,20 +321,14 @@ protected:
 struct C_DownloadFrom_Definition : Command_L
 {
 public:
-   C_DownloadFrom_Definition(Generator<_str>* loc, _def* el,
-      const _bool& forc, Uroboros& uro)
-      : location(loc), elements(el), forced(forc), Command_L(uro) { };
-
-   ~C_DownloadFrom_Definition() {
-      delete location;
-      delete elements;
-   }
+   C_DownloadFrom_Definition(_genptr<_str>& loc, _defptr& el, const _bool& forc, Uroboros& uro)
+      : location(std::move(loc)), elements(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   _def* elements;
+   _genptr<_str> location;
+   _defptr elements;
    const _bool forced;
 };
 
@@ -392,74 +336,55 @@ protected:
 struct C_DownloadFrom_String_Stack : Command_L
 {
 public:
-   C_DownloadFrom_String_Stack(Generator<_str>* loc, Generator<_str>* el, Uroboros& uro)
-      : location(loc), element(el), Command_L(uro) { };
-
-   ~C_DownloadFrom_String_Stack() {
-      delete location;
-      delete element;
-   }
+   C_DownloadFrom_String_Stack(_genptr<_str>& loc, _genptr<_str>& el, Uroboros& uro)
+      : location(std::move(loc)), element(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_str>* element;
+   _genptr<_str> location;
+   _genptr<_str> element;
 };
 
 
 struct C_DownloadFrom_List_Stack : Command_L
 {
 public:
-   C_DownloadFrom_List_Stack(Generator<_str>* loc, Generator<_list>* el, Uroboros& uro)
-      : location(loc), elements(el), Command_L(uro) { };
-
-   ~C_DownloadFrom_List_Stack() {
-      delete location;
-      delete elements;
-   }
+   C_DownloadFrom_List_Stack(_genptr<_str>& loc, _genptr<_list>& el, Uroboros& uro)
+      : location(std::move(loc)), elements(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_list>* elements;
+   _genptr<_str> location;
+   _genptr<_list> elements;
 };
 
 
 struct C_DownloadFrom_Definition_Stack : Command_L
 {
 public:
-   C_DownloadFrom_Definition_Stack(Generator<_str>* loc, _def* el, Uroboros& uro)
-      : location(loc), elements(el), Command_L(uro) { };
-
-   ~C_DownloadFrom_Definition_Stack() {
-      delete location;
-      delete elements;
-   }
+   C_DownloadFrom_Definition_Stack(_genptr<_str>& loc, _defptr& el, Uroboros& uro)
+      : location(std::move(loc)), elements(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   _def* elements;
+   _genptr<_str> location;
+   _defptr elements;
 };
 
 
 struct C_Download_String : Command_L
 {
 public:
-   C_Download_String(Generator<_str>* el, const _bool& forc, Uroboros& uro)
-      : element(el), forced(forc), Command_L(uro) { };
-
-   ~C_Download_String() {
-      delete element;
-   }
+   C_Download_String(_genptr<_str>& el, const _bool& forc, Uroboros& uro)
+      : element(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* element;
+   _genptr<_str> element;
    const _bool forced;
 };
 
@@ -467,17 +392,13 @@ protected:
 struct C_Download_List : Command_L
 {
 public:
-   C_Download_List(Generator<_list>* el, const _bool& forc, Uroboros& uro)
-      : elements(el), forced(forc), Command_L(uro) { };
-
-   ~C_Download_List() {
-      delete elements;
-   }
+   C_Download_List(_genptr<_list>& el, const _bool& forc, Uroboros& uro)
+      : elements(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
    const _bool forced;
 };
 
@@ -485,52 +406,40 @@ protected:
 struct C_Download_String_Stack : Command_L
 {
 public:
-   C_Download_String_Stack(Generator<_str>* el, Uroboros& uro)
-      : element(el), Command_L(uro) { };
-
-   ~C_Download_String_Stack() {
-      delete element;
-   }
+   C_Download_String_Stack(_genptr<_str>& el, Uroboros& uro)
+      : element(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* element;
+   _genptr<_str> element;
 };
 
 
 struct C_Download_List_Stack : Command_L
 {
 public:
-   C_Download_List_Stack(Generator<_list>* el, Uroboros& uro)
-      : elements(el), Command_L(uro) { };
-
-   ~C_Download_List_Stack() {
-      delete elements;
-   }
+   C_Download_List_Stack(_genptr<_list>& el, Uroboros& uro)
+      : elements(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
 };
 
 
 struct C_CopyTo : Command_L
 {
 public:
-   C_CopyTo(Generator<_str>* loc, const _bool& save,
+   C_CopyTo(_genptr<_str>& loc, const _bool& save,
       const _bool& forc, Uroboros& uro)
-      : location(loc), saveChanges(save), forced(forc), Command_L(uro) { };
-
-   ~C_CopyTo() {
-      delete location;
-   }
+      : location(std::move(loc)), saveChanges(save), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
+   _genptr<_str> location;
    const _bool saveChanges;
    const _bool forced;
 };
@@ -539,17 +448,13 @@ protected:
 struct C_CopyTo_Stack : Command_L
 {
 public:
-   C_CopyTo_Stack(Generator<_str>* loc, const _bool& save, Uroboros& uro)
-      : location(loc), saveChanges(save), Command_L(uro) { };
-
-   ~C_CopyTo_Stack() {
-      delete location;
-   }
+   C_CopyTo_Stack(_genptr<_str>& loc, const _bool& save, Uroboros& uro)
+      : location(std::move(loc)), saveChanges(save), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
+   _genptr<_str> location;
    const _bool saveChanges;
 };
 
@@ -557,20 +462,15 @@ protected:
 struct C_CopyToAs : Command_L
 {
 public:
-   C_CopyToAs(Generator<_str>* loc, Generator<_str>* na,
+   C_CopyToAs(_genptr<_str>& loc, _genptr<_str>& na,
       const _bool& save, const _bool& forc, const _bool& extless, Uroboros& uro)
-      : location(loc), name(na), forced(forc), extensionless(extless), Command_L(uro) { };
-
-   ~C_CopyToAs() {
-      delete location;
-      delete name;
-   }
+      : location(std::move(loc)), name(std::move(na)), forced(forc), extensionless(extless), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_str>* name;
+   _genptr<_str> location;
+   _genptr<_str> name;
    const _bool forced;
    const _bool extensionless;
 };
@@ -579,20 +479,15 @@ protected:
 struct C_CopyToAs_Stack : Command_L
 {
 public:
-   C_CopyToAs_Stack(Generator<_str>* loc, Generator<_str>* na,
+   C_CopyToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na,
       const _bool& save, const _bool& extless, Uroboros& uro)
-      : location(loc), name(na), extensionless(extless), Command_L(uro) { };
-
-   ~C_CopyToAs_Stack() {
-      delete location;
-      delete name;
-   }
+      : location(std::move(loc)), name(std::move(na)), extensionless(extless), Command_L(uro) { };
 
    void run() override;
 
 protected:
-   Generator<_str>* location;
-   Generator<_str>* name;
+   _genptr<_str> location;
+   _genptr<_str> name;
    const _bool extensionless;
 };
 

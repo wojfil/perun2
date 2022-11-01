@@ -109,17 +109,13 @@ private:
 struct C_Create_String : Command_L
 {
 public:
-   C_Create_String(Generator<_str>* el, const _bool& forc, Uroboros& uro)
-      : element(el), forced(forc), Command_L(uro) { };
-
-   ~C_Create_String() {
-      delete element;
-   }
+   C_Create_String(_genptr<_str>& el, const _bool& forc, Uroboros& uro)
+      : element(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* element;
+   _genptr<_str> element;
    const _bool forced;
 };
 
@@ -127,17 +123,13 @@ private:
 struct C_CreateFile_String : Command_L
 {
 public:
-   C_CreateFile_String(Generator<_str>* el, const _bool& forc, Uroboros& uro)
-      : element(el), forced(forc), Command_L(uro) { };
-
-   ~C_CreateFile_String() {
-      delete element;
-   }
+   C_CreateFile_String(_genptr<_str>& el, const _bool& forc, Uroboros& uro)
+      : element(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* element;
+   _genptr<_str> element;
    const _bool forced;
 };
 
@@ -145,17 +137,13 @@ private:
 struct C_CreateDirectory_String : Command_L
 {
 public:
-   C_CreateDirectory_String(Generator<_str>* el, const _bool& forc, Uroboros& uro)
-      : element(el), forced(forc), Command_L(uro) { };
-
-   ~C_CreateDirectory_String() {
-      delete element;
-   }
+   C_CreateDirectory_String(_genptr<_str>& el, const _bool& forc, Uroboros& uro)
+      : element(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* element;
+   _genptr<_str> element;
    const _bool forced;
 };
 
@@ -163,51 +151,39 @@ private:
 struct C_Create_String_Stack : Command_L
 {
 public:
-   C_Create_String_Stack (Generator<_str>* el, Uroboros& uro)
-      : element(el), Command_L(uro) { };
-
-   ~C_Create_String_Stack() {
-      delete element;
-   }
+   C_Create_String_Stack (_genptr<_str>& el, Uroboros& uro)
+      : element(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* element;
+   _genptr<_str> element;
 };
 
 
 struct C_CreateFile_String_Stack  : Command_L
 {
 public:
-   C_CreateFile_String_Stack (Generator<_str>* el, Uroboros& uro)
-      : element(el), Command_L(uro) { };
-
-   ~C_CreateFile_String_Stack() {
-      delete element;
-   }
+   C_CreateFile_String_Stack (_genptr<_str>& el, Uroboros& uro)
+      : element(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* element;
+   _genptr<_str> element;
 };
 
 
 struct C_CreateDirectory_String_Stack  : Command_L
 {
 public:
-   C_CreateDirectory_String_Stack (Generator<_str>* el, Uroboros& uro)
-      : element(el), Command_L(uro) { };
-
-   ~C_CreateDirectory_String_Stack() {
-      delete element;
-   }
+   C_CreateDirectory_String_Stack (_genptr<_str>& el, Uroboros& uro)
+      : element(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_str>* element;
+   _genptr<_str> element;
 };
 
 
@@ -217,17 +193,13 @@ private:
 struct C_Create_List : Command_L
 {
 public:
-   C_Create_List(Generator<_list>* el, const _bool& forc, Uroboros& uro)
-      : elements(el), forced(forc), Command_L(uro) { };
-
-   ~C_Create_List() {
-      delete elements;
-   }
+   C_Create_List(_genptr<_list>& el, const _bool& forc, Uroboros& uro)
+      : elements(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
    const _bool forced;
 };
 
@@ -235,17 +207,13 @@ private:
 struct C_CreateFiles_List : Command_L
 {
 public:
-   C_CreateFiles_List(Generator<_list>* el, const _bool& forc, Uroboros& uro)
-      : elements(el), forced(forc), Command_L(uro) { };
-
-   ~C_CreateFiles_List() {
-      delete elements;
-   }
+   C_CreateFiles_List(_genptr<_list>& el, const _bool& forc, Uroboros& uro)
+      : elements(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
    const _bool forced;
 };
 
@@ -253,17 +221,13 @@ private:
 struct C_CreateDirectories_List : Command_L
 {
 public:
-   C_CreateDirectories_List(Generator<_list>* el, const _bool& forc, Uroboros& uro)
-      : elements(el), forced(forc), Command_L(uro) { };
-
-   ~C_CreateDirectories_List() {
-      delete elements;
-   }
+   C_CreateDirectories_List(_genptr<_list>& el, const _bool& forc, Uroboros& uro)
+      : elements(std::move(el)), forced(forc), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
    const _bool forced;
 };
 
@@ -271,51 +235,39 @@ private:
 struct C_Create_List_Stack : Command_L
 {
 public:
-   C_Create_List_Stack (Generator<_list>* el, Uroboros& uro)
-      : elements(el), Command_L(uro) { };
-
-   ~C_Create_List_Stack() {
-      delete elements;
-   }
+   C_Create_List_Stack (_genptr<_list>& el, Uroboros& uro)
+      : elements(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
 };
 
 
 struct C_CreateFiles_List_Stack  : Command_L
 {
 public:
-   C_CreateFiles_List_Stack (Generator<_list>* el, Uroboros& uro)
-      : elements(el), Command_L(uro) { };
-
-   ~C_CreateFiles_List_Stack() {
-      delete elements;
-   }
+   C_CreateFiles_List_Stack (_genptr<_list>& el, Uroboros& uro)
+      : elements(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
 };
 
 
 struct C_CreateDirectories_List_Stack  : Command_L
 {
 public:
-   C_CreateDirectories_List_Stack (Generator<_list>* el, Uroboros& uro)
-      : elements(el), Command_L(uro) { };
-
-   ~C_CreateDirectories_List_Stack() {
-      delete elements;
-   }
+   C_CreateDirectories_List_Stack (_genptr<_list>& el, Uroboros& uro)
+      : elements(std::move(el)), Command_L(uro) { };
 
    void run() override;
 
 private:
-   Generator<_list>* elements;
+   _genptr<_list> elements;
 };
 
 }

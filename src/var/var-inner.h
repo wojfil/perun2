@@ -16,6 +16,7 @@
 #define VAR_INNER_H_INCLUDED
 
 #include "var.h"
+#include "../datatype/gen-memory.h"
 #include "../datatype/generator.h"
 #include "../datatype/datatype.h"
 #include "../datatype/primitives.h"
@@ -41,9 +42,9 @@ public:
    _list getAlphabet();
    _list getAscii();
 
-   void createThisRef(Generator<_str>*& result);
-   void createThisRef(Generator<_num>*& result);
-   void createThisRef(Generator<_tim>*& result);
+   void createThisRef(_genptr<_str>& result);
+   void createThisRef(_genptr<_num>& result);
+   void createThisRef(_genptr<_tim>& result);
 
    void createThisVarRef(vars::Variable<_str>*& result);
    void createThisVarRef(vars::Variable<_num>*& result);

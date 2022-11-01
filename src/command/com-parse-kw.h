@@ -37,7 +37,7 @@ static Command* coreCommandSimpleNoSave(const Token& word, Uroboros& uro);
 static Command* kwCommandTime(const Token& word, Tokens& tks,
    const _int& line, Uroboros& uro);
 static Command* coreCommandTime(const Token& word,
-   Generator<_tim>* time, const _bool& saveChanges, Uroboros& uro);
+   _genptr<_tim>& time, const _bool& saveChanges, Uroboros& uro);
 
 static Command* c_open(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro);
 static Command* c_select(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro);

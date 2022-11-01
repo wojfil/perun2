@@ -25,7 +25,7 @@ namespace uro::gen
 struct Negation : UnaryOperation<_num>
 {
    Negation() = delete;
-   Negation(Generator<_num>* val);
+   Negation(_genptr<_num>& val);
    _num getValue() override;
 };
 
@@ -33,7 +33,7 @@ struct Negation : UnaryOperation<_num>
 struct Addition : BinaryOperation<_num>
 {
    Addition() = delete;
-   Addition(Generator<_num>* val1, Generator<_num>* val2);
+   Addition(_genptr<_num>& val1, _genptr<_num>& val2);
    _num getValue() override;
 };
 
@@ -41,7 +41,7 @@ struct Addition : BinaryOperation<_num>
 struct Subtraction : BinaryOperation<_num>
 {
    Subtraction() = delete;
-   Subtraction(Generator<_num>* val1, Generator<_num>* val2);
+   Subtraction(_genptr<_num>& val1, _genptr<_num>& val2);
    _num getValue() override;
 };
 
@@ -49,7 +49,7 @@ struct Subtraction : BinaryOperation<_num>
 struct Multiplication : BinaryOperation<_num>
 {
    Multiplication() = delete;
-   Multiplication(Generator<_num>* val1, Generator<_num>* val2);
+   Multiplication(_genptr<_num>& val1, _genptr<_num>& val2);
    _num getValue() override;
 };
 
@@ -57,7 +57,7 @@ struct Multiplication : BinaryOperation<_num>
 struct Division : BinaryOperation<_num>
 {
    Division() = delete;
-   Division(Generator<_num>* val1, Generator<_num>* val2);
+   Division(_genptr<_num>& val1, _genptr<_num>& val2);
    _num getValue() override;
 };
 
@@ -65,7 +65,7 @@ struct Division : BinaryOperation<_num>
 struct Modulo : BinaryOperation<_num>
 {
    Modulo() = delete;
-   Modulo(Generator<_num>* val1, Generator<_num>* val2);
+   Modulo(_genptr<_num>& val1, _genptr<_num>& val2);
    _num getValue() override;
 };
 
@@ -74,12 +74,11 @@ struct TimeMember : Generator<_num>
 {
 public:
    TimeMember() = delete;
-   TimeMember(Generator<_tim>* tim, const Period::PeriodUnit& pu);
-   ~TimeMember();
+   TimeMember(_genptr<_tim>& tim, const Period::PeriodUnit& pu);
    _num getValue() override;
 
 protected:
-   Generator<_tim>* time;
+   _genptr<_tim> time;
    const Period::PeriodUnit unit;
 };
 
@@ -88,12 +87,11 @@ struct TimeMemberAtIndex : Generator<_num>
 {
 public:
    TimeMemberAtIndex() = delete;
-   TimeMemberAtIndex(Generator<_tim>* tim, const Period::PeriodUnit& pu);
-   ~TimeMemberAtIndex();
+   TimeMemberAtIndex(_genptr<_tim>& tim, const Period::PeriodUnit& pu);
    _num getValue() override;
 
 protected:
-   Generator<_tim>* time;
+   _genptr<_tim> time;
    const Period::PeriodUnit unit;
 };
 

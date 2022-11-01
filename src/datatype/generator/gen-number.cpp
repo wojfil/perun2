@@ -19,22 +19,22 @@
 namespace uro::gen
 {
 
-Negation::Negation(Generator<_num>* val) 
+Negation::Negation(_genptr<_num>& val) 
    : UnaryOperation<_num>(val) { };
 
-Addition::Addition(Generator<_num>* val1, Generator<_num>* val2)
+Addition::Addition(_genptr<_num>& val1, _genptr<_num>& val2)
    : BinaryOperation<_num>(val1, val2) { };
 
-Subtraction::Subtraction(Generator<_num>* val1, Generator<_num>* val2)
+Subtraction::Subtraction(_genptr<_num>& val1, _genptr<_num>& val2)
    : BinaryOperation<_num>(val1, val2) { };
       
-Multiplication::Multiplication(Generator<_num>* val1, Generator<_num>* val2)
+Multiplication::Multiplication(_genptr<_num>& val1, _genptr<_num>& val2)
    : BinaryOperation<_num>(val1, val2) { };
 
-Division::Division(Generator<_num>* val1, Generator<_num>* val2)
+Division::Division(_genptr<_num>& val1, _genptr<_num>& val2)
    : BinaryOperation<_num>(val1, val2) { };
 
-Modulo::Modulo(Generator<_num>* val1, Generator<_num>* val2)
+Modulo::Modulo(_genptr<_num>& val1, _genptr<_num>& val2)
    : BinaryOperation<_num>(val1, val2) { };
 
 _num Negation::getValue()
@@ -67,13 +67,8 @@ _num Modulo::getValue()
    return this->value1->getValue() % this->value2->getValue();
 }
 
-TimeMember::TimeMember(Generator<_tim>* tim, const Period::PeriodUnit& pu) 
-   : time(tim), unit(pu) { };
-
-TimeMember::~TimeMember()
-{
-   delete this->time;
-}
+TimeMember::TimeMember(_genptr<_tim>& tim, const Period::PeriodUnit& pu) 
+   : time(std::move(tim)), unit(pu) { };
 
 _num TimeMember::getValue() 
 {
@@ -97,18 +92,11 @@ _num TimeMember::getValue()
    return _num();
 }
 
-TimeMemberAtIndex::TimeMemberAtIndex(Generator<_tim>* tim, const Period::PeriodUnit& pu) 
-   : time(tim), unit(pu) { };
-
-TimeMemberAtIndex::~TimeMemberAtIndex() 
-{
-   delete this->time;
-}
+TimeMemberAtIndex::TimeMemberAtIndex(_genptr<_tim>& tim, const Period::PeriodUnit& pu) 
+   : time(std::move(tim)), unit(pu) { };
 
 _num TimeMemberAtIndex::getValue() 
 {
-   const _tim t = this->time->getValue();
-
    switch (this->unit) {
       case Period::u_Years:
          return _num(static_cast<_nint>(this->time->getValue().year));

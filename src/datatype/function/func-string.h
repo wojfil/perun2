@@ -24,7 +24,7 @@ namespace uro::func
 struct F_After : Func_2<_str, _str>, Generator<_str>
 {
 public:
-   F_After(Generator<_str>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
+   F_After(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -32,7 +32,7 @@ public:
 struct F_Before : Func_2<_str, _str>, Generator<_str>
 {
 public:
-   F_Before(Generator<_str>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
+   F_Before(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -40,7 +40,7 @@ public:
 struct F_Digits : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Digits(Generator<_str>* a1) : Func_1(a1) { };
+   F_Digits(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -48,7 +48,7 @@ public:
 struct F_Fill : Func_2<_str, _num>, Generator<_str>
 {
 public:
-   F_Fill(Generator<_str>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
+   F_Fill(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -56,7 +56,7 @@ public:
 struct F_Letters : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Letters(Generator<_str>* a1) : Func_1(a1) { };
+   F_Letters(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -64,7 +64,7 @@ public:
 struct F_Lower : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Lower(Generator<_str>* a1) : Func_1(a1) { };
+   F_Lower(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -72,7 +72,7 @@ public:
 struct F_Trim : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Trim(Generator<_str>* a1) : Func_1(a1) { };
+   F_Trim(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -80,7 +80,7 @@ public:
 struct F_Upper : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Upper(Generator<_str>* a1) : Func_1(a1) { };
+   F_Upper(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -88,7 +88,7 @@ public:
 struct F_Repeat : Func_2<_str, _num>, Generator<_str>
 {
 public:
-   F_Repeat(Generator<_str>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
+   F_Repeat(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -96,7 +96,7 @@ public:
 struct F_Reverse : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Reverse(Generator<_str>* a1) : Func_1(a1) { };
+   F_Reverse(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -104,7 +104,7 @@ public:
 struct F_Left : Func_2<_str, _num>, Generator<_str>
 {
 public:
-   F_Left(Generator<_str>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
+   F_Left(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -112,7 +112,7 @@ public:
 struct F_Right : Func_2<_str, _num>, Generator<_str>
 {
 public:
-   F_Right(Generator<_str>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
+   F_Right(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -120,7 +120,7 @@ public:
 struct F_Substring_2 : Func_2<_str, _num>, Generator<_str>
 {
 public:
-   F_Substring_2(Generator<_str>* a1, Generator<_num>* a2) : Func_2(a1, a2) { };
+   F_Substring_2(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -128,7 +128,7 @@ public:
 struct F_Substring_3 : Func_3<_str, _num, _num>, Generator<_str>
 {
 public:
-   F_Substring_3(Generator<_str>* a1, Generator<_num>* a2, Generator<_num>* a3)
+   F_Substring_3(_genptr<_str>& a1, _genptr<_num>& a2, _genptr<_num>& a3)
       : Func_3(a1, a2, a3) { };
    _str getValue() override;
 };
@@ -137,7 +137,7 @@ public:
 struct F_ConcatenateUnit : Func_1<_list>, Generator<_str>
 {
 public:
-   F_ConcatenateUnit(Generator<_list>* a1) : Func_1(a1) { };
+   F_ConcatenateUnit(_genptr<_list>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -145,15 +145,15 @@ public:
 struct F_Concatenate : Generator<_str>
 {
 public:
-   F_Concatenate(std::vector<Generator<_str>*>* vals)
-      : values(vals), length(vals->size()) { };
-
-   ~F_Concatenate();
+   F_Concatenate(std::vector<_genptr<_str>>& vals) : length(vals.size()) 
+   {
+      transferGenPtrs(vals, values);
+   };
 
    _str getValue() override;
 
 private:
-   std::vector<Generator<_str>*>* values;
+   std::vector<_genptr<_str>> values;
    const _size length;
 };
 
@@ -161,38 +161,30 @@ private:
 struct F_FirstDef : Generator<_str>
 {
 public:
-   F_FirstDef(_def* def) : definition(def) { };
-   ~F_FirstDef() {
-      delete definition;
-   }
+   F_FirstDef(_defptr& def) : definition(std::move(def)) { };
 
    _str getValue() override;
 
 private:
-   _def* definition;
+   _defptr definition;
 };
 
 
 struct F_LastDef : Generator<_str>
 {
 public:
-   F_LastDef(_def* def) : definition(def) { };
-   ~F_LastDef() {
-      delete definition;
-   }
-
+   F_LastDef(_defptr& def) : definition(std::move(def)) { };
    _str getValue() override;
 
 private:
-   _def* definition;
+   _defptr definition;
 };
 
 
 struct F_Replace : Func_3<_str, _str, _str>, Generator<_str>
 {
 public:
-   F_Replace(Generator<_str>* a1, Generator<_str>* a2, Generator<_str>* a3)
-      : Func_3(a1, a2, a3) { };
+   F_Replace(_genptr<_str>& a1, _genptr<_str>& a2, _genptr<_str>& a3) : Func_3(a1, a2, a3) { };
    _str getValue() override;
 };
 
@@ -200,7 +192,7 @@ public:
 struct F_String_B : Func_1<_bool>, Generator<_str>
 {
 public:
-   F_String_B(Generator<_bool>* a1) : Func_1(a1) { };
+   F_String_B(_genptr<_bool>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -208,7 +200,7 @@ public:
 struct F_String_N : Func_1<_num>, Generator<_str>
 {
 public:
-   F_String_N(Generator<_num>* a1) : Func_1(a1) { };
+   F_String_N(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -216,7 +208,7 @@ public:
 struct F_String_T : Func_1<_tim>, Generator<_str>
 {
 public:
-   F_String_T(Generator<_tim>* a1) : Func_1(a1) { };
+   F_String_T(_genptr<_tim>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -224,7 +216,7 @@ public:
 struct F_String_P : Func_1<_per>, Generator<_str>
 {
 public:
-   F_String_P(Generator<_per>* a1) : Func_1(a1) { };
+   F_String_P(_genptr<_per>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -232,7 +224,7 @@ public:
 struct F_MonthName : Func_1<_num>, Generator<_str>
 {
 public:
-   F_MonthName(Generator<_num>* a1) : Func_1(a1) { };
+   F_MonthName(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -240,7 +232,7 @@ public:
 struct F_WeekDayName : Func_1<_num>, Generator<_str>
 {
 public:
-   F_WeekDayName(Generator<_num>* a1) : Func_1(a1) { };
+   F_WeekDayName(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -248,7 +240,7 @@ public:
 struct F_AfterDigits : Func_1<_str>, Generator<_str>
 {
 public:
-   F_AfterDigits(Generator<_str>* a1) : Func_1(a1) { };
+   F_AfterDigits(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -256,7 +248,7 @@ public:
 struct F_AfterLetters : Func_1<_str>, Generator<_str>
 {
 public:
-   F_AfterLetters(Generator<_str>* a1) : Func_1(a1) { };
+   F_AfterLetters(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -264,7 +256,7 @@ public:
 struct F_BeforeDigits : Func_1<_str>, Generator<_str>
 {
 public:
-   F_BeforeDigits(Generator<_str>* a1) : Func_1(a1) { };
+   F_BeforeDigits(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -272,7 +264,7 @@ public:
 struct F_BeforeLetters : Func_1<_str>, Generator<_str>
 {
 public:
-   F_BeforeLetters(Generator<_str>* a1) : Func_1(a1) { };
+   F_BeforeLetters(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -280,7 +272,7 @@ public:
 struct F_RandomChar : Func_1<_str>, Generator<_str>
 {
 public:
-   F_RandomChar(Generator<_str>* a1, Uroboros& uro)
+   F_RandomChar(_genptr<_str>& a1, Uroboros& uro)
       : Func_1(a1), math(&uro.math) { };
 
    _str getValue() override;
@@ -293,7 +285,7 @@ private:
 struct F_Capitalize : Func_1<_str>, Generator<_str>
 {
 public:
-   F_Capitalize(Generator<_str>* a1) : Func_1(a1) { };
+   F_Capitalize(_genptr<_str>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -301,7 +293,7 @@ public:
 struct F_Join : Func_2<_list, _str>, Generator<_str>
 {
 public:
-   F_Join(Generator<_list>* a1, Generator<_str>* a2) : Func_2(a1, a2) { };
+   F_Join(_genptr<_list>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
    _str getValue() override;
 };
 
@@ -309,7 +301,7 @@ public:
 struct F_Roman : Func_1<_num>, Generator<_str>
 {
 public:
-   F_Roman(Generator<_num>* a1) : Func_1(a1) { };
+   F_Roman(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -317,7 +309,7 @@ public:
 struct F_Binary : Func_1<_num>, Generator<_str>
 {
 public:
-   F_Binary(Generator<_num>* a1) : Func_1(a1) { };
+   F_Binary(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 
@@ -325,7 +317,7 @@ public:
 struct F_Hex : Func_1<_num>, Generator<_str>
 {
 public:
-   F_Hex(Generator<_num>* a1) : Func_1(a1) { };
+   F_Hex(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 

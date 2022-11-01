@@ -19,6 +19,7 @@
 #include "..\var\var.h"
 #include "..\util.h"
 #include "..\datatype\datatype.h"
+#include "..\datatype\gen-memory.h"
 
 
 namespace uro::comm
@@ -28,12 +29,8 @@ template <typename T>
 struct VarAssignment : Command
 {
 public:
-   VarAssignment<T> (vars::Variable<T>* var, Generator<T>* val)
-      : variable(var), value(val) { };
-
-   ~VarAssignment<T>() {
-      delete value;
-   }
+   VarAssignment<T> (vars::Variable<T>* var, _genptr<T>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override {
       (variable->value) = (value->getValue());
@@ -41,7 +38,7 @@ public:
 
 private:
    vars::Variable<T>* variable;
-   Generator<T>* value;
+   _genptr<T> value;
 };
 
 
@@ -49,12 +46,8 @@ template <typename T>
 struct VarAdd_ : Command
 {
 public:
-   VarAdd_<T> (vars::Variable<T>* var, Generator<T>* val)
-      : variable(var), value(val) { };
-
-   ~VarAdd_<T>() {
-      delete value;
-   }
+   VarAdd_<T> (vars::Variable<T>* var, _genptr<T>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override {
       (variable->value) += (value->getValue());
@@ -62,7 +55,7 @@ public:
 
 private:
    vars::Variable<T>* variable;
-   Generator<T>* value;
+   _genptr<T> value;
 };
 
 
@@ -70,12 +63,8 @@ template <typename T>
 struct VarSubtract : Command
 {
 public:
-   VarSubtract<T> (vars::Variable<T>* var, Generator<T>* val)
-      : variable(var), value(val) { };
-
-   ~VarSubtract<T>() {
-      delete value;
-   }
+   VarSubtract<T> (vars::Variable<T>* var, _genptr<T>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override {
       (variable->value) -= (value->getValue());
@@ -83,97 +72,77 @@ public:
 
 private:
    vars::Variable<T>* variable;
-   Generator<T>* value;
+   _genptr<T> value;
 };
 
 
 struct VarNumMultiply : Command
 {
 public:
-   VarNumMultiply(vars::Variable<_num>* var, Generator<_num>* val)
-      : variable(var), value(val) { };
-
-   ~VarNumMultiply() {
-      delete value;
-   }
+   VarNumMultiply(vars::Variable<_num>* var, _genptr<_num>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    vars::Variable<_num>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
 };
 
 
 struct VarNumDivide : Command
 {
 public:
-   VarNumDivide(vars::Variable<_num>* var, Generator<_num>* val)
-      : variable(var), value(val) { };
-
-   ~VarNumDivide() {
-      delete value;
-   }
+   VarNumDivide(vars::Variable<_num>* var, _genptr<_num>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    vars::Variable<_num>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
 };
 
 
 struct VarPerMultiply : Command
 {
 public:
-   VarPerMultiply(vars::Variable<_per>* var, Generator<_num>* val)
-      : variable(var), value(val) { };
-
-   ~VarPerMultiply() {
-      delete value;
-   }
+   VarPerMultiply(vars::Variable<_per>* var, _genptr<_num>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    vars::Variable<_per>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
 };
 
 
 struct VarPerDivide : Command
 {
 public:
-   VarPerDivide(vars::Variable<_per>* var, Generator<_num>* val)
-      : variable(var), value(val) { };
-
-   ~VarPerDivide() {
-      delete value;
-   }
+   VarPerDivide(vars::Variable<_per>* var, _genptr<_num>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    vars::Variable<_per>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
 };
 
 
 struct VarModulo : Command
 {
 public:
-   VarModulo(vars::Variable<_num>* var, Generator<_num>* val)
-      : variable(var), value(val) { };
-
-   ~VarModulo() {
-      delete value;
-   }
+   VarModulo(vars::Variable<_num>* var, _genptr<_num>& val)
+      : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    vars::Variable<_num>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
 };
 
 
@@ -202,74 +171,57 @@ private:
 struct VarTimeAdd : Command
 {
 public:
-   VarTimeAdd(vars::Variable<_tim>* var, Generator<_per>* per)
-      : variable(var), period(per) { };
-
-   ~VarTimeAdd() {
-      delete period;
-   }
+   VarTimeAdd(vars::Variable<_tim>* var, _genptr<_per>& per)
+      : variable(var), period(std::move(per)) { };
 
    void run() override;
 
 private:
    vars::Variable<_tim>* variable;
-   Generator<_per>* period;
+   _genptr<_per> period;
 };
 
 
 struct VarTimeSubtract : Command
 {
 public:
-   VarTimeSubtract(vars::Variable<_tim>* var, Generator<_per>* per)
-      : variable(var), period(per) { };
-
-   ~VarTimeSubtract() {
-      delete period;
-   }
+   VarTimeSubtract(vars::Variable<_tim>* var, _genptr<_per>& per)
+      : variable(var), period(std::move(per)) { };
 
    void run() override;
 
 private:
    vars::Variable<_tim>* variable;
-   Generator<_per>* period;
+   _genptr<_per> period;
 };
 
 
 struct VarCharAssignment: Command
 {
 public:
-   VarCharAssignment(vars::Variable<_str>* var, Generator<_str>* val, Generator<_num>* ind)
-      : variable(var), value(val), index(ind) { };
-
-   ~VarCharAssignment() {
-      delete value;
-      delete index;
-   }
+   VarCharAssignment(vars::Variable<_str>* var, _genptr<_str>& val, _genptr<_num>& ind)
+      : variable(var), value(std::move(val)), index(std::move(ind)) { };
 
    void run() override;
 
 private:
    vars::Variable<_str>* variable;
-   Generator<_str>* value;
-   Generator<_num>* index;
+   _genptr<_str> value;
+   _genptr<_num> index;
 };
 
 
 struct VarTimeUnitAssignment : Command
 {
 public:
-   VarTimeUnitAssignment(vars::Variable<_tim>* var, Generator<_num>* val,
-      const Period::PeriodUnit un) : variable(var), value(val), unit(un){ };
-
-   ~VarTimeUnitAssignment() {
-      delete value;
-   }
+   VarTimeUnitAssignment(vars::Variable<_tim>* var, _genptr<_num>& val,
+      const Period::PeriodUnit& un) : variable(var), value(std::move(val)), unit(un){ };
 
    void run() override;
 
 private:
    vars::Variable<_tim>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
    const Period::PeriodUnit unit;
 };
 
@@ -277,19 +229,15 @@ private:
 struct VarTimeUnitChange : Command
 {
 public:
-   VarTimeUnitChange(vars::Variable<_tim>* var, Generator<_num>* val,
-      const Period::PeriodUnit un, const bool neg)
-      : variable(var), value(val), unit(un), negative(neg) { };
-
-   ~VarTimeUnitChange() {
-      delete value;
-   }
+   VarTimeUnitChange(vars::Variable<_tim>* var, _genptr<_num>& val,
+      const Period::PeriodUnit& un, const bool neg)
+      : variable(var), value(std::move(val)), unit(un), negative(neg) { };
 
    void run() override;
 
 private:
    vars::Variable<_tim>* variable;
-   Generator<_num>* value;
+   _genptr<_num> value;
    const Period::PeriodUnit unit;
    const bool negative;
 };
@@ -298,7 +246,7 @@ private:
 struct VarTimeUnitIncrement : Command
 {
 public:
-   VarTimeUnitIncrement(vars::Variable<_tim>* var, const Period::PeriodUnit un)
+   VarTimeUnitIncrement(vars::Variable<_tim>* var, const Period::PeriodUnit& un)
       : variable(var), unit(un) { };
 
    void run() override;
@@ -312,7 +260,7 @@ private:
 struct VarTimeUnitDecrement : Command
 {
 public:
-   VarTimeUnitDecrement(vars::Variable<_tim>* var, const Period::PeriodUnit un)
+   VarTimeUnitDecrement(vars::Variable<_tim>* var, const Period::PeriodUnit& un)
       : variable(var), unit(un) { };
 
    void run() override;

@@ -26,13 +26,12 @@ struct IncreasedTime : Generator<_tim>
 {
 public:
    IncreasedTime() = delete;
-   IncreasedTime(Generator<_tim>* tim, Generator<_per>* per);
-   ~IncreasedTime();
+   IncreasedTime(_genptr<_tim>& tim, _genptr<_per>& per);
    _tim getValue() override;
 
 private:
-   Generator<_tim>* time;
-   Generator<_per>* period;
+   _genptr<_tim> time;
+   _genptr<_per> period;
 };
 
 
@@ -40,13 +39,12 @@ struct DecreasedTime : Generator<_tim>
 {
 public:
    DecreasedTime() = delete;
-   DecreasedTime(Generator<_tim>* tim, Generator<_per>* per);
-   ~DecreasedTime();
+   DecreasedTime(_genptr<_tim>& tim, _genptr<_per>& per);
    _tim getValue() override;
 
 private:
-   Generator<_tim>* time;
-   Generator<_per>* period;
+   _genptr<_tim> time;
+   _genptr<_per> period;
 };
 
 
@@ -82,7 +80,7 @@ struct TimeDate : UnaryOperation<_tim>
 {
 public:
    TimeDate() = delete;
-   TimeDate(Generator<_tim>* val);
+   TimeDate(_genptr<_tim>& val);
    _tim getValue() override;
 };
 
@@ -91,12 +89,11 @@ struct TimeDateAtIndex : Generator<_tim>
 {
 public:
    TimeDateAtIndex() = delete;
-   TimeDateAtIndex(Generator<_tim>* tim);
-   ~TimeDateAtIndex();
+   TimeDateAtIndex(_genptr<_tim>& tim);
    _tim getValue() override;
 
 private:
-   Generator<_tim>* time;
+   _genptr<_tim> time;
 };
 
 }

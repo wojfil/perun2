@@ -156,8 +156,8 @@ void Variables::takeBundlePointer(VarBundle<_list>*& bundle)
 }
 
 template <typename T>
-_bool getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const ThisState& thisState,
-   Hashes& hashes, InnerVariables& inner, VariablesContext& vc, Variables& vars, uro::Uroboros& uro)
+_bool getVarValueIncludingThis(const Token& tk, _genptr<T>& result, const ThisState& thisState,
+   const Hashes& hashes, InnerVariables& inner, VariablesContext& vc, Variables& vars, uro::Uroboros& uro)
 {
    if (tk.value.word.h == hashes.HASH_VAR_THIS) {
       if (inner.thisState == thisState) {
@@ -177,13 +177,13 @@ _bool getVarValueIncludingThis(const Token& tk, Generator<T>*& result, const Thi
    return bundle->getValue(vc, tk, result, inner);
 }
 
-_bool Variables::getVarValue(const Token& tk, Generator<_tim>*& result)
+_bool Variables::getVarValue(const Token& tk, _genptr<_tim>& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_Time,
       this->hashes, this->inner, this->vc, *this, this->uroboros);
 }
 
-_bool Variables::getVarValue(const Token& tk, Generator<_num>*& result)
+_bool Variables::getVarValue(const Token& tk, _genptr<_num>& result)
 {
    if (tk.value.word.h == this->hashes.HASH_VAR_INDEX) {
       if (this->uroboros.vars.inner.thisState == ThisState::ts_None && !this->vc.anyAggregate()) {
@@ -191,13 +191,13 @@ _bool Variables::getVarValue(const Token& tk, Generator<_num>*& result)
             L"' can be accessed only inside a loop"), tk.line);
       }
       else {
-         result = new gen::NumberIntRef(this->intVars[tk.value.word.h]);
+         result = std::make_unique<gen::NumberIntRef>(this->intVars[tk.value.word.h]); // here??
          return true;
       }
    }
    else if (this->intVars.find(tk.value.word.h) != this->intVars.end()) {
       this->vc.setAttribute(tk, this->uroboros);
-      result = new gen::NumberIntRef(this->intVars[tk.value.word.h]);
+      result = std::make_unique<gen::NumberIntRef>(this->intVars[tk.value.word.h]);
       return true;
    }
 
@@ -205,17 +205,16 @@ _bool Variables::getVarValue(const Token& tk, Generator<_num>*& result)
       this->hashes, this->inner, this->vc, *this, this->uroboros);
 }
 
-_bool Variables::getVarValue(const Token& tk, Generator<_str>*& result)
+_bool Variables::getVarValue(const Token& tk, _genptr<_str>& result)
 {
    return getVarValueIncludingThis(tk, result, ThisState::ts_String,
       this->hashes, this->inner, this->vc, *this, this->uroboros);
 }
 
-_bool Variables::getVarValue(const Token& tk, _def*& result)
+_bool Variables::getVarValue(const Token& tk, _defptr& result)
 {
    if (this->defGenerators.find(tk.value.word.h) != this->defGenerators.end()) {
-      result = this->defGenerators[tk.value.word.h]->generateDefault();
-      return true;
+      return this->defGenerators[tk.value.word.h]->generateDefault(result);
    }
 
    return false;

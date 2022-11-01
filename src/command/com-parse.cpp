@@ -153,7 +153,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       left.checkCommonExpressionExceptions(uro);
-      Generator<_num>* num;
+      _genptr<_num> num;
       if (!parse::parse(uro, left, num)) {
          throw SyntaxException(str(L"keyword '", leftLast.getOriginString(uro),
             L"' is not preceded by a valid number"), leftLast.line);
@@ -188,7 +188,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       left.checkCommonExpressionExceptions(uro);
-      Generator<_bool>* boo;
+      _genptr<_bool> boo;
       if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
             L"' is not followed by a valid condition"), leftFirst.line);
@@ -241,7 +241,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
       }
 
       left.checkCommonExpressionExceptions(uro);
-      Generator<_bool>* boo;
+      _genptr<_bool> boo;
       if (!parse::parse(uro, left, boo)) {
          throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro), L"' is not followed by a valid condition"),
             leftFirst.line);
@@ -297,7 +297,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
          }
 
          left.checkCommonExpressionExceptions(uro);
-         Generator<_bool>* boo;
+         _genptr<_bool> boo;
          if (!parse::parse(uro, left, boo)) {
             throw SyntaxException(str(L"keywords '", leftFirst.getOriginString(uro), L" ",
                ifToken.getOriginString(uro), L"' are not followed by a valid condition"), leftFirst.line);
@@ -329,7 +329,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    Tokens right(tks, rightStart, rightLen);
 
    // time list loop
-   Generator<_tlist>* tlist;
+   _genptr<_tlist> tlist;
    if (parse::parse(uro, left, tlist)) {
       uro.vars.inner.thisState = ThisState::ts_Time;
       Aggregate* aggr;
@@ -340,7 +340,7 @@ static Command* commandStruct(const Tokens& tks, const _int& sublen,
    }
 
    // number list loop
-   Generator<_nlist>* nlist;
+   _genptr<_nlist> nlist;
    if (parse::parse(uro, left, nlist)) {
       uro.vars.inner.thisState = ThisState::ts_Number;
       Aggregate* aggr;
@@ -364,7 +364,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    Command* com = nullptr;
 
    if (isInside && left.isEmpty()) {
-      Generator<_str>* tr;
+      _genptr<_str> tr;
       uro.vars.inner.createThisRef(tr);
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
@@ -380,7 +380,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    }
 
    // string loop
-   Generator<_str>* str;
+   _genptr<_str> str;
    if (parse::parse(uro, left, str)) {
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
@@ -401,7 +401,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    }
 
    // definition loop
-   _def* def;
+   _defptr def;
    if (parse::parse(uro, left, def)) {
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
@@ -413,11 +413,13 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
       }
 
       if (attr->isMarkedToEvaluate()) {
+         _genptr<_list> g(new gen::Cast_D_L(def, uro));
+
          if (isInside) {
-            return new CS_InsideList(new gen::Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+            return new CS_InsideList(g, com, attr, aggr, hasMemory, uro);
          }
          else {
-            return new CS_ListLoop(new gen::Cast_D_L(def, uro), com, attr, aggr, hasMemory, uro);
+            return new CS_ListLoop(g, com, attr, aggr, hasMemory, uro);
          }
       }
       else {
@@ -448,7 +450,7 @@ static Command* parseIterationLoop(const _bool& isInside, const Tokens& left, co
    }
 
    // list loop
-   Generator<_list>* lst;
+   _genptr<_list> lst;
    if (parse::parse(uro, left, lst)) {
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
@@ -706,7 +708,8 @@ static Command* commandMisc(const Tokens& tks, Uroboros& uro)
             tks2.trimRight();
 
             if (varSquareBrackets(tks2)) {
-               Generator<_num>* index = parseListElementIndex(tks2, uro);
+               _genptr<_num> index;
+               parseListElementIndex(index, tks2, uro);
                vars::ParseVariable<_nlist>* pv_nlist;
 
                if (!uro.vars.getVarPtr(first, pv_nlist)) {
@@ -828,7 +831,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
    if (first.type == Token::t_Word) {
       vars::ParseVariable<_num>* pv_num;
       if (uro.vars.getVarPtr(first, pv_num)) {
-         Generator<_num>* num;
+         _genptr<_num> num;
 
          if (!parse::parse(uro, right, num)) {
             throw SyntaxException(str(L"right side of operator ", toStr(sign),
@@ -859,7 +862,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          switch (sign) {
             case L'+':
             case L'-': {
-               Generator<_per>* per;
+               _genptr<_per> per;
 
                if (!parse::parse(uro, right, per)) {
                   throw SyntaxException(str(L"right side of operator ", toStr(sign),
@@ -894,7 +897,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
          }
 
          vars::Variable<_tim>* var = pv_tim->getVarPtr();
-         Generator<_per>* per;
+         _genptr<_per> per;
 
          if (!parse::parse(uro, right, per)) {
             throw SyntaxException(str(L"right side of operator '", first.getOriginString(uro),
@@ -935,7 +938,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             first.line);
       }
 
-      Generator<_num>* num;
+      _genptr<_num> num;
 
       if (!parse::parse(uro, right, num)) {
          throw SyntaxException(str(L"right side of operation '", first.getOriginString(uro), L".",
@@ -983,15 +986,15 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
    if (uro.vars.getVarPtr(first, pv_str)) {
       vars::Variable<_str>* var = pv_str->getVarPtr();
 
-      Generator<_str>* str_;
+      _genptr<_str> str_;
       if (parse::parse(uro, tks, str_)) {
          pv_str->makeNotConstant();
          return new VarAdd_<_str>(var, str_);
       }
 
-      Generator<_list>* list;
+      _genptr<_list> list;
+
       if (parse::parse(uro, tks, list)) {
-         delete list;
          throw SyntaxException(str(L"variable '", first.getOriginString(uro),
             L"' can be incremented only by a string"), line);
       }
@@ -1010,7 +1013,7 @@ static _bool makeVarAlteration(Uroboros& uro, const Tokens& tokens, const Token&
    vars::ParseVariable<T>*& varPtr, Command*& result, const _str& dataTypeName)
 {
    if (uro.vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
-      Generator<T>* value;
+      _genptr<T> value;
       if (parse::parse(uro, tokens, value)) {
          if (!value->isConstant()) {
             varPtr->makeNotConstant();
@@ -1032,7 +1035,7 @@ static _bool makeVarAlteration(Uroboros& uro, const Tokens& tokens, const Token&
 
 template <typename T>
 static Command* makeVarAssignment(const Token& token, Uroboros& uro,
-   vars::ParseVariable<T>* varPtr, Generator<T>* valuePtr)
+   vars::ParseVariable<T>* varPtr, _genptr<T>& valuePtr)
 {
    vars::VarBundle<T>* bundle;
    uro.vars.takeBundlePointer(bundle);
@@ -1132,42 +1135,42 @@ static Command* commandVarAssign(const Tokens& left, const Tokens& right, Urobor
    // or "resurrect" an existing variable from somewhere else out of reach
    ////
 
-   Generator<_bool>* boo;
+   _genptr<_bool> boo;
    if (parse::parse(uro, right, boo)) {
       return makeVarAssignment(first, uro, pv_boo, boo);
    }
 
-   Generator<_num>* num;
+   _genptr<_num> num;
    if (parse::parse(uro, right, num)) {
       return makeVarAssignment(first, uro, pv_num, num);
    }
 
-   Generator<_tim>* tim;
+   _genptr<_tim> tim;
    if (parse::parse(uro, right, tim)) {
       return makeVarAssignment(first, uro, pv_tim, tim);
    }
 
-   Generator<_per>* per;
+   _genptr<_per> per;
    if (parse::parse(uro, right, per)) {
       return makeVarAssignment(first, uro, pv_per, per);
    }
 
-   Generator<_str>* str_;
+   _genptr<_str> str_;
    if (parse::parse(uro, right, str_)) {
       return makeVarAssignment(first, uro, pv_str, str_);
    }
 
-   Generator<_nlist>* nlist;
+   _genptr<_nlist> nlist;
    if (parse::parse(uro, right, nlist)) {
       return makeVarAssignment(first, uro, pv_nlist, nlist);
    }
 
-   Generator<_tlist>* tlist;
+   _genptr<_tlist> tlist;
    if (parse::parse(uro, right, tlist)) {
       return makeVarAssignment(first, uro, pv_tlist, tlist);
    }
 
-   Generator<_list>* list;
+   _genptr<_list> list;
    if (parse::parse(uro, right, list)) {
       return makeVarAssignment(first, uro, pv_list, list);
    }
@@ -1216,8 +1219,9 @@ static Command* commandVarAssign_Element(const Tokens& left,
    vars::ParseVariable<_str>* pv_str;
    if (uro.vars.getVarPtr(first, pv_str)) {
       if (pv_str->isReachable()) {
-         Generator<_num>* index = parseListElementIndex(left, uro);
-         Generator<_str>* str_;
+         _genptr<_num> index;
+         parseListElementIndex(index, left, uro);
+         _genptr<_str> str_;
 
          if (parse::parse(uro, right, str_)) {
             pv_str->makeNotConstant();
@@ -1238,12 +1242,12 @@ static Command* commandVarAssign_Element(const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro)
+static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
    const Tokens tks2(tks, start, length);
-   Generator<_num>* index;
+   _genptr<_num> index;
 
    if (!parse::parse(uro, tks2, index)) {
       throw SyntaxException(
@@ -1251,7 +1255,8 @@ static Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro)
         tks.second().line);
    }
 
-   return index;
+   result = std::move(index);
+   return true;
 }
 
 static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Uroboros& uro)

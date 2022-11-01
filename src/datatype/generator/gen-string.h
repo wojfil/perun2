@@ -27,18 +27,15 @@ namespace uro::gen
 struct ConcatString : Generator<_str>
 {
 public:
-   ConcatString(std::vector<Generator<_str>*>* val) : value(val),
-      length(val->size()) { };
-
-   ~ConcatString()
-   {
-      langutil::deleteVectorPtr(value);
-   }
+   ConcatString(std::vector<_genptr<_str>>& val) : length(val.size()) 
+   { 
+      transferGenPtrs(val, this->value);
+   };
 
    _str getValue() override;
 
 private:
-   std::vector<Generator<_str>*>* value;
+   std::vector<_genptr<_str>> value;
    const _size length;
 };
 
@@ -46,20 +43,14 @@ private:
 struct StringBinary : Generator<_str>
 {
 public:
-   StringBinary (Generator<_bool>* cond, Generator<_str>* val)
-      : condition(cond), value(val) { };
-
-   ~StringBinary()
-   {
-      delete condition;
-      delete value;
-   }
+   StringBinary (_genptr<_bool>& cond, _genptr<_str>& val)
+      : condition(std::move(cond)), value(std::move(val)) { };
 
    _str getValue() override;
 
 private:
-   Generator<_bool>* condition;
-   Generator<_str>* value;
+   _genptr<_bool> condition;
+   _genptr<_str> value;
 };
 
 
@@ -77,59 +68,42 @@ private:
 struct RelativeLocation : Generator<_str>
 {
 public:
-   RelativeLocation(Generator<_str>* val, Uroboros& uro) 
-      : value(val), inner(uro.vars.inner) { };
-
-   ~RelativeLocation()
-   {
-      delete value;
-   }
+   RelativeLocation(_genptr<_str>& val, Uroboros& uro) 
+      : value(std::move(val)), inner(uro.vars.inner) { };
 
    _str getValue() override;
 
 private:
    InnerVariables& inner;
-   Generator<_str>* value;
+   _genptr<_str> value;
 };
 
 
 struct CharAtIndex : Generator<_str>
 {
 public:
-   CharAtIndex (Generator<_str>* val, Generator<_num>* ind)
-      : value(val), index(ind) { };
-
-   ~CharAtIndex()
-   {
-      delete value;
-      delete index;
-   }
+   CharAtIndex (_genptr<_str>& val, _genptr<_num>& ind)
+      : value(std::move(val)), index(std::move(ind)) { };
 
    _str getValue() override;
 
 private:
-   Generator<_str>* value;
-   Generator<_num>* index;
+   _genptr<_str> value;
+   _genptr<_num> index;
 };
 
 
 struct DefinitionElement : Generator<_str>
 {
 public:
-   DefinitionElement(_def* def, Generator<_num>* in)
-      : definition(def), index(in) {};
-
-   ~DefinitionElement()
-   {
-      delete definition;
-      delete index;
-   }
+   DefinitionElement(_defptr& def, _genptr<_num>& ind)
+      : definition(std::move(def)), index(std::move(ind)) {};
 
    _str getValue() override;
 
 private:
-   _def* definition;
-   Generator<_num>* index;
+   _defptr definition;
+   _genptr<_num> index;
 };
 
 }

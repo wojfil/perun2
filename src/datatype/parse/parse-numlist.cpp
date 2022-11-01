@@ -24,45 +24,33 @@
 namespace uro::parse
 {
 
-Generator<_nlist>* parseNumList(const Tokens& tks, Uroboros& uro)
+_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_nlist>* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return parseFilter<Generator<_nlist>*, _num>(tks, ThisState::ts_Number, uro);
+      return parseFilter<_genptr<_nlist>, _num>(result, tks, ThisState::ts_Number, uro);
    }
 
    if (len >= 3) {
-      Generator<_nlist>* nlisted = parseListed<_num>(tks, uro);
-      if (nlisted != nullptr) {
-         return nlisted;
+      if (tks.check(TI_HAS_CHAR_COMMA)) {
+         return parseListed<_num>(result, tks, uro);
       }
 
-      Generator<_nlist>* bin = parseBinary<_nlist>(tks, uro);
-      if (bin != nullptr) {
-         return bin;
-      }
-
-      Generator<_nlist>* tern = parseTernary<_nlist>(tks, uro);
-      if (tern != nullptr) {
-         return tern;
+      if (parseBinary<_nlist>(result, tks, uro) || parseTernary<_nlist>(result, tks, uro)) {
+         return true;
       }
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_nlist>* func = func::numListFunction(tks, uro);
-      if (func != nullptr) {
-         return func;
-      }
+      return func::numListFunction(result, tks, uro);
    }
 
-   return nullptr;
+   return false;
 }
 
 }

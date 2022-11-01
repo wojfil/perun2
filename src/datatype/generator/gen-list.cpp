@@ -20,26 +20,6 @@
 namespace uro::gen
 {
 
-Join_StrStr::~Join_StrStr() {
-   delete left;
-   delete right;
-}
-
-Join_StrList::~Join_StrList() {
-   delete left;
-   delete right;
-}
-
-Join_ListStr::~Join_ListStr() {
-   delete left;
-   delete right;
-}
-
-Join_ListList::~Join_ListList() {
-   delete left;
-   delete right;
-}
-
 _list Join_StrStr::getValue()
 {
    _list v;

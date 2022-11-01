@@ -19,33 +19,35 @@
 namespace uro::parse
 {
 
-void makeWhereFilter(Generator<_bool>* boo, Attribute* attr, const _bool& hasMemory, _def*& result, Uroboros& uro)
+void makeWhereFilter(_genptr<_bool>& boo, Attribute* attr, const _bool& hasMemory, _defptr& result, Uroboros& uro)
 {
-   result = new gen::Filter_WhereDef(result, boo, attr, hasMemory, uro);
+   result = std::make_unique<gen::Filter_WhereDef>(result, boo, attr, hasMemory, uro);
 }
 
-void makeWhereFilter(Generator<_bool>* boo, _def*& result, Uroboros& uro)
+void makeWhereFilter(_genptr<_bool>& boo, _defptr& result, Uroboros& uro)
 {
-   result = new gen::Filter_WhereDef(result, boo, uro);
+   result = std::make_unique<gen::Filter_WhereDef>(result, boo, uro);
 }
 
-void makeNumericFilter(const Keyword& kw, Generator<_num>* num, _def*& result, Uroboros& uro)
+void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _defptr& result, Uroboros& uro)
 {
+   _defptr prev = std::move(result);
+
    switch (kw) {
       case Keyword::kw_Every: {
-         result = new gen::Filter_EveryDef(result, num, uro);
+         result = std::make_unique<gen::Filter_EveryDef>(prev, num, uro);
          break;
       }
       case Keyword::kw_Final: {
-         result = new gen::Filter_FinalDef(result, num, uro);
+         result = std::make_unique<gen::Filter_FinalDef>(prev, num, uro);
          break;
       }
       case Keyword::kw_Limit: {
-         result = new gen::Filter_LimitDef(result, num, uro);
+         result = std::make_unique<gen::Filter_LimitDef>(prev, num, uro);
          break;
       }
       case Keyword::kw_Skip: {
-         result = new gen::Filter_SkipDef(result, num, uro);
+         result = std::make_unique<gen::Filter_SkipDef>(prev, num, uro);
          break;
       }
    }

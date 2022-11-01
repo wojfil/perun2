@@ -27,85 +27,76 @@
 namespace uro::parse
 {
 
-Generator<_str>* parseString(const Tokens& tks, Uroboros& uro)
+_bool parseString(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      Generator<_str>* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return nullptr;
+      return false;
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_str>* func = func::stringFunction(tks, uro);
-      if (func != nullptr) {
-         return func;
-      }
+      return func::stringFunction(result, tks, uro);
    }
    else if (tks.check(TI_HAS_CHAR_PLUS)) {
-      Generator<_str>* str = parseStringConcat(tks, uro);
-      if (str != nullptr) {
-         return str;
+      _genptr<_str> str;
+      if (parseStringConcat(str, tks, uro)) {
+         result = std::move(str);
+         return true;
       }
    }
 
    if (tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
-      Generator<_num>* num = parseListElementIndex(tks, uro);
+      _genptr<_num> num;
+      parseListElementIndex(num, tks, uro);
       const Token& f = tks.first();
-      Generator<_list>* list;
+      _genptr<_list> list;
 
       if (uro.vars.getVarValue(f, list)) {
-         return new gen::ListElement<_str>(list, num);
+         result = std::make_unique<gen::ListElement<_str>>(list, num);
+         return true;
       }
       else {
-         Generator<_str>* str;
+         _genptr<_str> str;
 
          if (uro.vars.getVarValue(f, str)) {
-            return new gen::CharAtIndex(str, num);
+            result = std::make_unique<gen::CharAtIndex>(str, num);
+            return true;
          }
          else {
-            _def* def;
+            _defptr def;
 
             if (uro.vars.getVarValue(f, def)) {
-               return new gen::DefinitionElement(def, num);
-            }
-            else {
-               delete num;
+               result = std::make_unique<gen::DefinitionElement>(def, num);
+               return true;
             }
          }
       }
    }
 
-   Generator<_str>* bin = parseBinary<_str>(tks, uro);
-   if (bin != nullptr) {
-      return bin;
+   if (parseBinary<_str>(result, tks, uro) || parseTernary<_str>(result, tks, uro)) {
+      return true;
    }
 
-   Generator<_str>* tern = parseTernary<_str>(tks, uro);
-   if (tern != nullptr) {
-      return tern;
-   }
-
-   return nullptr;
+   return false;
 }
 
 template <typename T>
-void concatParseOutcome(_bool& parsed, _bool& allConstants, Generator<T>* recentValue)
+void concatParseOutcome(_bool& parsed, _bool& allConstants, _genptr<T>& recentValue)
 {
    parsed = true;
    allConstants &= recentValue->isConstant();
 }
 
-// parse string cocatenation (by + is separator)
+// parse string concatenation (by the + separator)
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
+_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro)
 {
    enum PrevType {
       pt_String = 0,
@@ -117,13 +108,13 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
    const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
 
    PrevType prevType = pt_String;
-   Generator<_num>* prevNum = nullptr;
-   Generator<_tim>* prevTim = nullptr;
-   Generator<_per>* prevPer = nullptr;
+   _genptr<_num> prevNum;
+   _genptr<_tim> prevTim;
+   _genptr<_per> prevPer;
 
    const _size len = elements.size();
    _bool allConstants = true;
-   std::vector<Generator<_str>*>* result = new std::vector<Generator<_str>*>();
+   std::vector<_genptr<_str>> result;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
@@ -148,15 +139,14 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
             break;
          }
          case pt_Number: {
-            Generator<_num>* num;
+            _genptr<_num> num;
             if (parse(uro, tks, num)) {
-               Generator<_num>* add = new gen::Addition(prevNum, num);
-               prevNum = add;
+               _genptr<_num> pn = std::move(prevNum);
+               prevNum = std::make_unique<gen::Addition>(pn, num);
                concatParseOutcome(parsed, allConstants, num);
             }
             else {
-               result->push_back(new gen::Cast_N_S(prevNum));
-               prevNum = nullptr;
+               result.push_back(std::make_unique<gen::Cast_N_S>(prevNum));
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
@@ -169,14 +159,14 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
             break;
          }
          case pt_Time: {
-            Generator<_per>* per;
+            _genptr<_per> per;
             if (parse(uro, tks, per)) {
-               Generator<_tim>* incr = new gen::IncreasedTime(prevTim, per);
-               prevTim = incr;
+               _genptr<_tim> pt = std::move(prevTim);
+               prevTim = std::make_unique<gen::IncreasedTime>(prevTim, per);
                concatParseOutcome(parsed, allConstants, per);
             }
             else {
-               result->push_back(new gen::Cast_T_S(prevTim));
+               result.push_back(std::make_unique<gen::Cast_T_S>(prevTim));
                if (parse(uro, tks, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
@@ -189,15 +179,14 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
             break;
          }
          case pt_Period: {
-            Generator<_per>* per;
+            _genptr<_per> per;
             if (parse(uro, tks, per)) {
-               Generator<_per>* add = new gen::PeriodAddition(prevPer, per);
-               prevPer = add;
+               _genptr<_per> pp = std::move(prevPer);
+               prevPer = std::make_unique<gen::PeriodAddition>(pp, per);
                concatParseOutcome(parsed, allConstants, per);
             }
             else {
-               result->push_back(new gen::Cast_P_S(prevPer));
-               prevPer = nullptr;
+               result.push_back(std::make_unique<gen::Cast_P_S>(prevPer));
                if (parse(uro, tks, prevNum)) {
                   prevType = pt_Number;
                   concatParseOutcome(parsed, allConstants, prevNum);
@@ -213,64 +202,46 @@ Generator<_str>* parseStringConcat(const Tokens& tks, Uroboros& uro)
 
       if (!parsed) {
          prevType = pt_String;
-         Generator<_str>* str;
+         _genptr<_str> str;
 
          if (parse(uro, tks, str)) {
-            result->push_back(str);
+            result.push_back(std::move(str));
             allConstants &= str->isConstant();
          }
          else {
-            // parsing has failed
-            // so free memory
-            langutil::deleteVectorPtr(result);
-
-            switch (prevType) {
-               case pt_Number: {
-                  delete prevNum;
-                  break;
-               }
-               case pt_Time: {
-                  delete prevTim;
-                  break;
-               }
-               case pt_Period: {
-                  delete prevPer;
-                  break;
-               }
-            }
-
-            return nullptr;
+            return false;
          }
       }
    }
 
    switch (prevType) {
       case pt_Number: {
-         result->push_back(new gen::Cast_N_S(prevNum));
+         result.push_back(std::make_unique<gen::Cast_N_S>(prevNum));
          break;
       }
       case pt_Time: {
-         result->push_back(new gen::Cast_T_S(prevTim));
+         result.push_back(std::make_unique<gen::Cast_T_S>(prevTim));
          break;
       }
       case pt_Period: {
-         result->push_back(new gen::Cast_P_S(prevPer));
+         result.push_back(std::make_unique<gen::Cast_P_S>(prevPer));
          break;
       }
    }
 
-   Generator<_str>* concat = new gen::ConcatString(result);
+   _genptr<_str> concat(new gen::ConcatString(result));
 
    if (allConstants) {
-      // if all units of string concatenation are constant
-      // just transform the whole structure into one constant value
+      // if all units of string concatenation are constant values
+      // just transform the whole structure into one constant
       const _str cnst = concat->getValue();
-      delete concat;
-      return new gen::Constant<_str>(cnst);
+      res = std::make_unique<gen::Constant<_str>>(cnst);
    }
    else {
-      return concat;
+      res = std::move(concat);
    }
+
+   return true;
 }
 
 }

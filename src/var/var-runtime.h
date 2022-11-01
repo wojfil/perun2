@@ -54,16 +54,16 @@ public:
    void takeBundlePointer(VarBundle<_list>*& bundle);
 
    // get a reference to variable or 'this'
-   _bool getVarValue(const Token& tk, Generator<_tim>*& result);
-   _bool getVarValue(const Token& tk, Generator<_str>*& result);
-   _bool getVarValue(const Token& tk, Generator<_num>*& result);
+   _bool getVarValue(const Token& tk, _genptr<_tim>& result);
+   _bool getVarValue(const Token& tk, _genptr<_str>& result);
+   _bool getVarValue(const Token& tk, _genptr<_num>& result);
 
    // generate new definition
-   _bool getVarValue(const Token& tk, _def*& result);
+   _bool getVarValue(const Token& tk, _defptr& result);
 
    // usual variable value reference
    template <typename T>
-   _bool getVarValue(const Token& tk, Generator<T>*& result)
+   _bool getVarValue(const Token& tk, _genptr<T>& result)
    {
       VarBundle<T>* bundle;
       takeBundlePointer(bundle);

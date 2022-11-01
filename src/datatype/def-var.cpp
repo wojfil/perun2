@@ -20,13 +20,13 @@ namespace uro::gen
 
 void DefinitionRef::reset()
 {
-   definition->reset();
+   definition.reset();
 }
 
 _bool DefinitionRef::hasNext()
 {
-   if (definition->hasNext()) {
-      value = definition->getValue();
+   if (definition.hasNext()) {
+      value = definition.getValue();
       return true;
    }
 

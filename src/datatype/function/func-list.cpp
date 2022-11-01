@@ -86,7 +86,7 @@ _list F_Split::getValue()
          return r;
       }
       default: {
-         std::size_t index = v1.find(v2);
+         _size index = v1.find(v2);
          _list r;
 
          while (index != _str::npos) {

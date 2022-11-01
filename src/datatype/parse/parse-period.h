@@ -22,14 +22,14 @@
 namespace uro::parse
 {
 
-Generator<_per>* parsePeriod(const Tokens& tks, Uroboros& uro);
+_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
 
-static Generator<_per>* parsePeriodConst(const Tokens& tks, const _bool& negated, Uroboros& uro);
-static Generator<_per>* parsePeriodUnit(const Tokens& tks, Uroboros& uro);
+_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& negated, Uroboros& uro);
+_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
 static void unitNameException(const _str& name, const Tokens& tks);
-static Generator<_per>* parsePeriodExp(const Tokens& tks, Uroboros& uro);
-static Generator<_per>* parsePeriodExpDiff(const Tokens& tks, Uroboros& uro);
-static Generator<_per>* parseTimeDifference(const Tokens& tks, Uroboros& uro);
+_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
+_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
+_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
 
 }
 

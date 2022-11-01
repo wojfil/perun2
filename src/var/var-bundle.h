@@ -55,12 +55,12 @@ public:
           || this->specialVars.find(hash) != this->specialVars.end();
    }
 
-   _bool getValue(VariablesContext& vc, const Token& tk, Generator<T>*& result, const InnerVariables& inner)
+   _bool getValue(VariablesContext& vc, const Token& tk, _genptr<T>& result, const InnerVariables& inner)
    {
       if (this->userVars.find(tk.value.word.h) != this->userVars.end()) {
-         ParseVariable<T>* pv = &this->userVars[tk.value.word.h];
-         if (pv->isReachable()) {
-            result = new gen::GeneratorRef<T>(pv->getVarPtr());
+         ParseVariable<T>& pv = this->userVars[tk.value.word.h];
+         if (pv.isReachable()) {
+            result = std::make_unique<gen::GeneratorRef<T>>(*pv.getVarPtr());
             return true;
          }
       }
@@ -75,11 +75,11 @@ public:
                L"You should assign the value of '", name, L"' to a new temporary variable somewhere before"), tk.line);
          }
 
-         result = new gen::GeneratorRef<T>(this->internalVars[tk.value.word.h]);
+         result = std::make_unique<gen::GeneratorRef<T>>(*this->internalVars[tk.value.word.h]);
          return true;
       }
       else if (this->specialVars.find(tk.value.word.h) != this->specialVars.end()) {
-         result = new gen::GeneratorRef<T>(this->specialVars[tk.value.word.h]);
+         result = std::make_unique<gen::GeneratorRef<T>>(*this->specialVars[tk.value.word.h]);
          return true;
       }
 
@@ -98,7 +98,7 @@ public:
    }
 
    Command* makeVariableAssignment(const Token& token, ParseVariable<T>* varPtr,
-      Generator<T>* valuePtr, const _bool& isConstant)
+      _genptr<T>& valuePtr, const _bool& isConstant)
    {
       if (varPtr == nullptr) {
          const _size& hash = token.value.word.h;

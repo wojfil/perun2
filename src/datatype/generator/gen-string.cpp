@@ -24,7 +24,7 @@ _str ConcatString::getValue()
 {
    _stream ss;
    for (_size i = 0; i < length; i++) {
-      ss << (*value)[i]->getValue();
+      ss << value[i]->getValue();
    }
    return ss.str();
 }
@@ -73,7 +73,7 @@ _str DefinitionElement::getValue()
    while (definition->hasNext()) {
       if (n == 0LL) {
          const _str result = definition->getValue();
-         definition->reset();
+         definition.reset();
          return result;
       }
 

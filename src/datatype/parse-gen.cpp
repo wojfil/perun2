@@ -24,224 +24,161 @@
 namespace uro::parse
 {
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_bool>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_bool>& result)
 {
-   Generator<_bool>* boo = parseBool(tks, uro);
-   if (boo == nullptr) {
-      return false;
-   }
-   else {
-      result = boo;
-      return true;
-   }
+   return parseBool(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_num>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
 {
    // cast from "bool" to "Number"
-   Generator<_bool>* boo = parseBool(tks, uro);
-   if (boo != nullptr) {
-      result = new gen::Cast_B_N(boo);
+   _genptr<_bool> boo;
+   if (parseBool(boo, tks, uro)) {
+      result = std::make_unique<gen::Cast_B_N>(boo);
       return true;
    }
 
-   Generator<_num>* num = parseNumber(tks, uro);
-   if (num == nullptr) {
-      return false;
-   }
-   else {
-      result = num;
-      return true;
-   }
+   return parseNumber(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_str>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_str>& result)
 {
    // cast from "bool" to "string"
-   Generator<_bool>* boo = parseBool(tks, uro);
-   if (boo != nullptr) {
-      result = new gen::Cast_B_S(boo);
+   _genptr<_bool> boo;
+   if (parseBool(boo, tks, uro)) {
+      result = std::make_unique<gen::Cast_B_S>(boo);
       return true;
    }
 
    // cast from "number" to "string"
-   Generator<_num>* num = parseNumber(tks, uro);
-   if (num != nullptr) {
-      result = new gen::Cast_N_S(num);
+   _genptr<_num> num;
+   if (parseNumber(num, tks, uro)) {
+      result = std::make_unique<gen::Cast_N_S>(num);
       return true;
    }
 
    // cast from "time" to "string"
-   Generator<_tim>* tim = parseTime(tks, uro);
-   if (tim != nullptr) {
-      result = new gen::Cast_T_S(tim);
+   _genptr<_tim> tim;
+   if (parseTime(tim, tks, uro)) {
+      result = std::make_unique<gen::Cast_T_S>(tim);
       return true;
    }
 
    // cast from "period" to "string"
-   Generator<_per>* per = parsePeriod(tks, uro);
-   if (per != nullptr) {
-      result = new gen::Cast_P_S(per);
+   _genptr<_per> per;
+   if (parsePeriod(per, tks, uro)) {
+      result = std::make_unique<gen::Cast_P_S>(per);
       return true;
    }
 
-   Generator<_str>* str = parseString(tks, uro);
-   if (str == nullptr) {
-      return false;
-   }
-   else {
-      result = str;
-      return true;
-   }
+   return parseString(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_nlist>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_nlist>& result)
 {
    // cast from "bool" to "numList"
-   Generator<_bool>* boo = parseBool(tks, uro);
-   if (boo != nullptr) {
-      result = new gen::Cast_B_NL(boo);
+   _genptr<_bool> boo;
+   if (parseBool(boo, tks, uro)) {
+      result = std::make_unique<gen::Cast_B_NL>(boo);
       return true;
    }
 
    // cast from "Number" to "numList"
-   Generator<_num>* num = parseNumber(tks, uro);
-   if (num != nullptr) {
-      result = new gen::Cast_N_NL(num);
+   _genptr<_num> num;
+   if (parseNumber(num, tks, uro)) {
+      result = std::make_unique<gen::Cast_N_NL>(num);
       return true;
    }
 
-   Generator<_nlist>* nlist = parseNumList(tks, uro);
-   if (nlist == nullptr) {
-      return false;
-   }
-   else {
-      result = nlist;
-      return true;
-   }
+   return parseNumList(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_tlist>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tlist>& result)
 {
    // cast from "Time" to "timList"
-   Generator<_tim>* tim = parseTime(tks, uro);
-   if (tim != nullptr) {
-      result = new gen::Cast_T_TL(tim);
+   _genptr<_tim> tim;
+   if (parseTime(tim, tks, uro)) {
+      result = std::make_unique<gen::Cast_T_TL>(tim);
       return true;
    }
 
-   Generator<_tlist>* tlist = parseTimList(tks, uro);
-   if (tlist == nullptr) {
-      return false;
-   }
-   else {
-      result = tlist;
-      return true;
-   }
+   return parseTimList(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_list>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_list>& result)
 {
    // cast from "bool" to "list"
-   Generator<_bool>* boo = parseBool(tks, uro);
-   if (boo != nullptr) {
-      result = new gen::Cast_B_L(boo);
+   _genptr<_bool> boo;
+   if (parseBool(boo, tks, uro)) {
+      result = std::make_unique<gen::Cast_B_L>(boo);
       return true;
    }
 
    // cast from "number" to "list"
-   Generator<_num>* num = parseNumber(tks, uro);
-   if (num != nullptr) {
-      result = new gen::Cast_N_L(num);
+   _genptr<_num> num;
+   if (parseNumber(num, tks, uro)) {
+      result = std::make_unique<gen::Cast_N_L>(num);
       return true;
    }
 
    // cast from "time" to "list"
-   Generator<_tim>* tim = parseTime(tks, uro);
-   if (tim != nullptr) {
-      result = new gen::Cast_T_L(tim);
+   _genptr<_tim> tim;
+   if (parseTime(tim, tks, uro)) {
+      result = std::make_unique<gen::Cast_T_L>(tim);
       return true;
    }
 
    // cast from "period" to "list"
-   Generator<_per>* per = parsePeriod(tks, uro);
-   if (per != nullptr) {
-      result = new gen::Cast_P_L(per);
+   _genptr<_per> per;
+   if (parsePeriod(per, tks, uro)) {
+      result = std::make_unique<gen::Cast_P_L>(per);
       return true;
    }
 
    // cast from "numList" to "list"
-   Generator<_nlist>* nlis = parseNumList(tks, uro);
-   if (nlis != nullptr) {
-      result = new gen::Cast_NL_L(nlis);
+   _genptr<_nlist> nlis;
+   if (parseNumList(nlis, tks, uro)) {
+      result = std::make_unique<gen::Cast_NL_L>(nlis);
       return true;
    }
 
    // cast from "timList" to "list"
-   Generator<_tlist>* tlis = parseTimList(tks, uro);
-   if (tlis != nullptr) {
-      result = new gen::Cast_TL_L(tlis);
+   _genptr<_tlist> tlis;
+   if (parseTimList(tlis, tks, uro)) {
+      result = std::make_unique<gen::Cast_TL_L>(tlis);
       return true;
    }
 
    // cast from "string" to "list"
-   Generator<_str>* str = parseString(tks, uro);
-   if (str != nullptr) {
-      result = new gen::Cast_S_L(str);
+   _genptr<_str> str;
+   if (parseString(str, tks, uro)) {
+      result = std::make_unique<gen::Cast_S_L>(str);
       return true;
    }
 
    // cast from "definition" to "list"
-   _def* def = parseDefinition(tks, uro);
-   if (def != nullptr) {
-      result = new gen::Cast_D_L(def, uro);
+   _defptr def;
+   if (parseDefinition(def, tks, uro)) {
+      result = std::make_unique<gen::Cast_D_L>(def, uro);
       return true;
    }
 
-   Generator<_list>* list = parseList(tks, uro);
-   if (list == nullptr) {
-      return false;
-   }
-   else {
-      result = list;
-      return true;
-   }
+   return parseList(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_tim>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result)
 {
-   Generator<_tim>* tim = parseTime(tks, uro);
-   if (tim == nullptr) {
-      return false;
-   }
-   else {
-      result = tim;
-      return true;
-   }
+   return parseTime(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, Generator<_per>*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_per>& result)
 {
-   Generator<_per>* per = parsePeriod(tks, uro);
-   if (per == nullptr) {
-      return false;
-   }
-   else {
-      result = per;
-      return true;
-   }
+   return parsePeriod(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _def*& result)
+_bool parse(Uroboros& uro, const Tokens& tks, _defptr& result)
 {
-   _def* def = parseDefinition(tks, uro);
-   if (def == nullptr) {
-      return false;
-   }
-   else {
-      result = def;
-      return true;
-   }
+   return parseDefinition(result, tks, uro);
 }
 
 }

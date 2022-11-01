@@ -28,7 +28,7 @@ namespace uro::gen
 struct Not : UnaryOperation<_bool>
 {
 public:
-   Not(Generator<_bool>* val);
+   Not(_genptr<_bool>& val);
    _bool getValue() override;
 };
 
@@ -36,7 +36,7 @@ public:
 struct And : BinaryOperation<_bool>
 {
 public:
-   And(Generator<_bool>* val1, Generator<_bool>* val2);
+   And(_genptr<_bool>& val1, _genptr<_bool>& val2);
    _bool getValue() override;
 };
 
@@ -44,7 +44,7 @@ public:
 struct Or : BinaryOperation<_bool>
 {
 public:
-   Or(Generator<_bool>* val1, Generator<_bool>* val2);
+   Or(_genptr<_bool>& val1, _genptr<_bool>& val2);
    _bool getValue() override;
 };
 
@@ -52,7 +52,7 @@ public:
 struct Xor : BinaryOperation<_bool>
 {
 public:
-   Xor(Generator<_bool>* val1, Generator<_bool>* val2);
+   Xor(_genptr<_bool>& val1, _genptr<_bool>& val2);
    _bool getValue() override;
 };
 
@@ -63,14 +63,8 @@ template <typename T>
 struct InList : Generator<_bool>
 {
 public:
-   InList<T> (Generator<T>* val, Generator<std::vector<T>>* li)
-      : value(val), list(li) { };
-
-   ~InList<T>()
-   {
-      delete value;
-      delete list;
-   };
+   InList<T> (_genptr<T>& val, _genptr<std::vector<T>>& li)
+      : value(std::move(val)), list(std::move(li)) { };
 
    _bool getValue() override 
    {
@@ -88,8 +82,8 @@ public:
    };
 
 private:
-   Generator<T>* value;
-   Generator<std::vector<T>>* list;
+   _genptr<T> value;
+   _genptr<std::vector<T>> list;
 };
 
 
@@ -99,16 +93,11 @@ template <typename T>
 struct InConstList : Generator<_bool>
 {
 public:
-   InConstList<T> (Generator<T>* val, const std::vector<T>& li)
-      : value(val), list(li)
+   InConstList<T> (_genptr<T>& val, const std::vector<T>& li)
+      : value(std::move(val)), list(std::move(li))
    {
       std::sort(list.begin(), list.end());
       list.erase(std::unique(list.begin(), list.end()), list.end());
-   };
-
-   ~InConstList<T>() 
-   {
-      delete value;
    };
 
    _bool getValue() override
@@ -117,23 +106,22 @@ public:
    };
 
 private:
-   Generator<T>* value;
+   _genptr<T> value;
    std::vector<T> list;
 };
 
 
 // Time works quite differently than other data types
 // for example '3 June 2005' equals 'June 2005'
-// so let there be special a case struct
+// so let there be a special case struct
 struct InConstTimeList : Generator<_bool>
 {
 public:
-   InConstTimeList(Generator<_tim>* val, const _tlist& li);
-   ~InConstTimeList();
+   InConstTimeList(_genptr<_tim>& val, const _tlist& li);
    _bool getValue() override;
 
 private:
-   Generator<_tim>* value;
+   _genptr<_tim> value;
    const _tlist list;
 };
 

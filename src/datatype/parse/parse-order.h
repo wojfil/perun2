@@ -27,24 +27,7 @@ namespace uro::parse
 {
 
 void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro);
-
-template <typename T>
-void cleanAfterOrderParseFailure(T& result, Attribute* attr, const ThisState& state)
-{
-   if (state == ThisState::ts_String) {
-      delete attr;
-   }
-
-   delete result;
-}
-
-
-template <typename T>
-void orderUnitFailure(const Token& tk, T& result, Uroboros& uro)
-{
-   throw SyntaxException(str(L"keyword '", tk.getOriginString(uro),
-      L"' is not preceded by a value used for order"), tk.line);
-}
+void orderUnitFailure(const Token& tk, Uroboros& uro);
 
 
 template <typename T>
@@ -63,8 +46,7 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, T& result, Attribute* attr,
             if (order != nullptr) {
                delete order;
             }
-            cleanAfterOrderParseFailure(result, attr, state);
-            orderUnitFailure(last, result, uro);
+            orderUnitFailure(last, uro);
          }
       }
       else if (kw == Keyword::kw_Desc) {
@@ -75,8 +57,7 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, T& result, Attribute* attr,
             if (order != nullptr) {
                delete order;
             }
-            cleanAfterOrderParseFailure(result, attr, state);
-            orderUnitFailure(last, result, uro);
+            orderUnitFailure(last, uro);
          }
       }
    }
@@ -84,7 +65,7 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, T& result, Attribute* attr,
 
 
 template <typename T>
-void setOrderUnit(gen::Order*& order, Generator<T>* value, const _bool& desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::Order*& order, _genptr<T>& value, const _bool& desc, gen::OrderIndices* indices)
 {
    if (order == nullptr) {
       order = new gen::OrderUnit_Final<T>(value, desc, indices);
@@ -94,14 +75,15 @@ void setOrderUnit(gen::Order*& order, Generator<T>* value, const _bool& desc, ge
    }
 }
 
-void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _def*& result,
+void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _defptr& result,
    gen::OrderIndices* indices, gen::Order* order, Uroboros& uro);
 
 template <typename T>
 void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory,
-   Generator<std::vector<T>>*& result, gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
+   _genptr<std::vector<T>>& result, gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
 {
-   result = new gen::OrderBy_List<T>(result, attr, indices, order, uro);
+   _genptr<std::vector<T>> prev = std::move(result);
+   result = std::make_unique<gen::OrderBy_List<T>>(prev, attr, indices, order, uro);
 }
 
 
@@ -135,21 +117,21 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 
          switch (state) {
             case ThisState::ts_String: {
-               Generator<_str>* str;
+               _genptr<_str> str;
                uro.vars.inner.createThisRef(str);
                setSingleOrderFilter(attr, hasMemory, result, indices,
                   new gen::OrderUnit_Final<_str>(str, desc, indices), uro);
                break;
             }
             case ThisState::ts_Number: {
-               Generator<_num>* num;
+               _genptr<_num> num;
                uro.vars.inner.createThisRef(num);
                setSingleOrderFilter(attr, hasMemory, result, indices,
                   new gen::OrderUnit_Final<_num>(num, desc, indices), uro);
                break;
             }
             case ThisState::ts_Time: {
-               Generator<_tim>* tim;
+               _genptr<_tim> tim;
                uro.vars.inner.createThisRef(tim);
                setSingleOrderFilter(attr, hasMemory, result, indices,
                   new gen::OrderUnit_Final<_tim>(tim, desc, indices), uro);
@@ -163,14 +145,19 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {
-      cleanAfterOrderParseFailure(result, attr, state);
+      if (state == ThisState::ts_String) {
+         delete attr;
+      }
+
       throw SyntaxException(str(L"keyword '", orderKeyword.getOriginString(uro),
          L"' should be followed by a keyword 'by'"), first.line);
    }
 
    ts2.trimLeft();
    if (ts2.isEmpty()) {
-      cleanAfterOrderParseFailure(result, attr, state);
+      if (state == ThisState::ts_String) {
+         delete attr;
+      }
       throw SyntaxException(str(L"declaration of '", orderKeyword.getOriginString(uro),
          L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
    }
@@ -192,31 +179,31 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
       _bool desc;
       prepareOrderUnit(tk, desc, result, attr, state, order, indices, uro);
 
-      Generator<_bool>* uboo;
+      _genptr<_bool> uboo;
       if (parse(uro, tk, uboo)) {
          setOrderUnit(order, uboo, desc, indices);
          continue;
       }
 
-      Generator<_num>* unum;
+      _genptr<_num> unum;
       if (parse(uro, tk, unum)) {
          setOrderUnit(order, unum, desc, indices);
          continue;
       }
 
-      Generator<_per>* uper;
+      _genptr<_per> uper;
       if (parse(uro, tk, uper)) {
          setOrderUnit(order, uper, desc, indices);
          continue;
       }
 
-      Generator<_tim>* utim;
+      _genptr<_tim> utim;
       if (parse(uro, tk, utim)) {
          setOrderUnit(order, utim, desc, indices);
          continue;
       }
 
-      Generator<_str>* ustr;
+      _genptr<_str> ustr;
       if (parse(uro, tk, ustr)) {
          setOrderUnit(order, ustr, desc, indices);
          continue;
@@ -226,7 +213,9 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
             delete order;
          }
          delete indices;
-         cleanAfterOrderParseFailure(result, attr, state);
+         if (state == ThisState::ts_String) {
+            delete attr;
+         }
 
          throw SyntaxException(L"value of this order unit cannot be resolved to any valid data type. "
             L"Hint: if you use multiple variables for order, separate them by commas",

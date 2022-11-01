@@ -37,37 +37,57 @@ template <typename T>
 struct ExpElement
 {
 public:
+   ExpElement<T>() = delete;
 
-   ExpElement<T> (const T& cnst, const _int& li)
-      : generator(new gen::Constant<T>(cnst)), _hasValue(true), constant(cnst),
-      type(ElementType::et_Constant), _operator(0), line(li) {};
-   ExpElement<T> (const _char& op, const _int& li) : generator(nullptr), _hasValue(false),
-      _operator(op), type(ElementType::et_Operator), constant(T()), line(li) {};
-   ExpElement<T> (Generator<T>* gen, const _int& li) : generator(gen), _hasValue(true),
-      type(et_Generator), constant(T()), _operator(0), line(li) {};
+   ExpElement<T>(const T& cnst, const _int& li)
+      : generator(std::make_unique<gen::Constant<T>>(cnst)),
+      constant(cnst), type(ElementType::et_Constant), operator_(0), line(li) { };
 
-   ~ExpElement<T> () {
-      if (_hasValue) {
-         delete generator;
+   ExpElement<T>(const _char& op, const _int& li)
+      : generator(), operator_(op), type(ElementType::et_Operator), constant(T()), line(li) { };
+
+   ExpElement<T>(_genptr<T>& gen, const _int& li)
+      : generator(std::move(gen)), type(et_Generator), constant(T()), operator_(0), line(li) { };
+
+   ExpElement<T>(ExpElement<T>& element)
+      : generator(element.type == ElementType::et_Operator ? _genptr<T>() : std::move(element.generator)),
+      constant(element.constant), type(element.type), operator_(element.operator_), line(element.line) { };
+
+   ExpElement<T>& operator=(ExpElement<T>&&) noexcept { };
+
+   ExpElement<T>(ExpElement<T>&&) noexcept { };
+
+   void reinit(const T& cnst, const _int& li)
+   {
+      this->type = ElementType::et_Constant;
+      this->constant = cnst;
+      this->generator = std::make_unique<gen::Constant<T>>(cnst);
+   }
+
+   void reinit(_genptr<T>& gen, const _int& li)
+   {
+      this->type = ElementType::et_Generator;
+      this->generator = std::move(gen);
+   }
+
+   void reinit(ExpElement<T>& element)
+   {
+      this->line = element.line;
+      this->type = element.type;
+      this->constant = element.constant;
+      this->operator_ = element.operator_;
+
+      if (element.type != et_Operator) {
+         this->generator = std::move(element.generator);
       }
    }
 
-   Generator<T>* takeValue() {
-      _hasValue = false;
-      Generator<T>* v = generator;
-      generator = nullptr;
-      return v;
-   }
+   _char operator_;
+   T constant;
+   _genptr<T> generator;
 
-   _char _operator;
-   const T constant;
-   const ElementType type;
-   const _int line;
-
-private:
-
-   Generator<T>* generator;
-   _bool _hasValue;
+   ElementType type;
+   _int line;
 };
 
 }

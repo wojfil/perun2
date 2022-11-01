@@ -22,15 +22,15 @@
 namespace uro::parse
 {
 
-Generator<_tim>* parseTime(const Tokens& tks, Uroboros& uro);
+_bool parseTime(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro);
 
-Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro);
+_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro);
 static _tnum tokenToTimeNumber(const Token& tk);
 static void checkDayCorrectness(const _tnum& day, const _tnum& month, const _tnum& year, const Token& tk);
 static void clockUnitException(const _str& unit, const _tnum& value, const Token& tk);
-static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro);
+static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro);
 static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
-   Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks, _int& numReserve, Uroboros& uro);
+   _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks, _int& numReserve, Uroboros& uro);
 
 }
 

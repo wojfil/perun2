@@ -27,10 +27,17 @@ void resetOrderParseSettings(const ThisState& state, const ThisState& prevState,
    uro.vars.inner.thisState = prevState;
 }
 
-void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _def*& result,
+void orderUnitFailure(const Token& tk, Uroboros& uro)
+{
+   throw SyntaxException(str(L"keyword '", tk.getOriginString(uro),
+      L"' is not preceded by a value used for order"), tk.line);
+}
+
+void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _defptr& result,
    gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
 {
-   result = new gen::OrderBy_Definition(result, attr, hasMemory, indices, order, uro);
+   _defptr prev = std::move(result);
+   result = std::make_unique<gen::OrderBy_Definition>(prev, attr, hasMemory, indices, order, uro);
 }
 
 }

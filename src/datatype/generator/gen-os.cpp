@@ -29,7 +29,7 @@
 namespace uro::gen
 {
 
-#define P_OS_GEN_CORE_ARGS location, this->uroboros, pattern, isAbsolute
+#define P_OS_GEN_CORE_ARGS location, this->uroboros, pattern, isAbsolute, prefix
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
@@ -44,42 +44,50 @@ namespace uro::gen
 DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro)
    : element_(el), uroboros(uro) { };
 
-_def* DefinitionGenerator::generateDefault() const
+_bool DefinitionGenerator::generateDefault(_defptr& result) const
 {
-   return this->generatePattern(new LocationReference(this->uroboros),
-      this->element_, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
+   _genptr<_str> loc(new LocationReference(this->uroboros));
+   return this->generatePattern(result, loc, this->element_, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
 }
 
-_def* DefinitionGenerator::generatePattern(Generator<_str>* location, const OsElement& element,
+_bool DefinitionGenerator::generatePattern(_defptr& result, _genptr<_str>& location, const OsElement& element,
    const _str& pattern, const _bool& isAbsolute, const _str& prefix) const
 {
    switch (element) {
       case OsElement::oe_All: {
-         return new Uro_All(P_OS_GEN_CORE_ARGS, prefix);
+         result = std::make_unique<Uro_All>(P_OS_GEN_CORE_ARGS);
+         break;
       }
       case OsElement::oe_Directories: {
-         return new Uro_Directories(P_OS_GEN_CORE_ARGS, prefix);
+         result = std::make_unique<Uro_Directories>(P_OS_GEN_CORE_ARGS);
+         break;
       }
       case OsElement::oe_Files: {
-         return new Uro_Files(P_OS_GEN_CORE_ARGS, prefix);
+         result = std::make_unique<Uro_Files>(P_OS_GEN_CORE_ARGS);
+         break;
       }
       case OsElement::oe_RecursiveFiles: {
-         return new Uro_RecursiveFiles(P_OS_GEN_CORE_ARGS, prefix);
+         result = std::make_unique<Uro_RecursiveFiles>(P_OS_GEN_CORE_ARGS);
+         break;
       }
       case OsElement::oe_RecursiveDirectories: {
-         return new Uro_RecursiveDirectories(P_OS_GEN_CORE_ARGS, prefix);
+         result = std::make_unique<Uro_RecursiveDirectories>(P_OS_GEN_CORE_ARGS);
+         break;
       }
       case OsElement::oe_RecursiveAll: {
-         return new Uro_RecursiveAll(P_OS_GEN_CORE_ARGS, prefix);
+         result = std::make_unique<Uro_RecursiveAll>(P_OS_GEN_CORE_ARGS);
+         break;
       }
       default: {
-         return nullptr;
+         return false;
       }
    }
+
+   return true;
 }
 
 OsDefinition::OsDefinition(P_OS_GEN_ARGS)
-   : first(true), location(loc), uroboros(uro),
+   : first(true), location(std::move(loc)), uroboros(uro),
      inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs),
      hasPrefix(!pref.empty()), prefix(pref) { };
 

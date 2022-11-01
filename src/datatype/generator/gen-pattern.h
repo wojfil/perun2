@@ -45,7 +45,7 @@ public:
    PatternParser(Uroboros& uro)
       : uroboros(uro), defGenerator(OsElement::oe_None, uro) { };
 
-   _bool parse(const _str& originPattern, _def*& result, const _int& line) const;
+   _bool parse(const _str& originPattern, _defptr& result, const _int& line) const;
 
 private:
 

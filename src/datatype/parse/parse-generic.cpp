@@ -25,20 +25,20 @@
 namespace uro::parse
 {
 
-Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro)
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
    const Tokens tks2(tks, start, length);
 
-   Generator<_num>* num = parseNumber(tks2, uro);
-   if (num == nullptr) {
-      throw SyntaxException(
-         L"content of square brackets [] cannot be resolved to a number",
+   if (parse(uro, tks2, result))  {
+      return true;
+   }
+   else {
+      throw SyntaxException(L"content of square brackets [] cannot be resolved to a number",
          tks.first().line);
    }
 
-   return num;
 }
 
 void checkLimitBySize(const Tokens& tks, Uroboros& uro)

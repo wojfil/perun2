@@ -29,7 +29,7 @@ _list InnerVariables::getAlphabet()
    _list a(26);
 
    for (_size i = 0; i < 26; i++) {
-      a[i] = L'a' + i;
+      a[i] = toStr(L'a' + i);
    }
 
    return a;
@@ -49,19 +49,19 @@ _list InnerVariables::getAscii()
    };
 }
 
-void InnerVariables::createThisRef(Generator<_str>*& result)
+void InnerVariables::createThisRef(_genptr<_str>& result)
 {
-   result = new gen::GeneratorRef<_str>(&this_s);
+   result = std::make_unique<gen::GeneratorRef<_str>>(this_s);
 }
 
-void InnerVariables::createThisRef(Generator<_num>*& result)
+void InnerVariables::createThisRef(_genptr<_num>& result)
 {
-   result = new gen::GeneratorRef<_num>(&this_n);
+   result = std::make_unique<gen::GeneratorRef<_num>>(this_n);
 }
 
-void InnerVariables::createThisRef(Generator<_tim>*& result)
+void InnerVariables::createThisRef(_genptr<_tim>& result)
 {
-   result = new gen::GeneratorRef<_tim>(&this_t);
+   result = std::make_unique<gen::GeneratorRef<_tim>>(this_t);
 }
 
 void InnerVariables::createThisVarRef(vars::Variable<_str>*& result)

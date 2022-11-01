@@ -59,72 +59,72 @@ protected:
 struct CS_StringComArg : IterationLoop
 {
 public:
-   CS_StringComArg(Generator<_str>* str, Command* com, Uroboros& uro)
-      : IterationLoop(com, uro), string(str) { };
+   CS_StringComArg(_genptr<_str>& str, Command* com, Uroboros& uro)
+      : IterationLoop(com, uro), string(std::move(str)) { };
 
-   CS_StringComArg(Generator<_str>* str, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), string(str) { };
+   CS_StringComArg(_genptr<_str>& str, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
+      : IterationLoop(com, attr, hasmem, uro), string(std::move(str)) { };
 
-   CS_StringComArg(Generator<_str>* str, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), string(str) { };
+   CS_StringComArg(_genptr<_str>& str, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)) { };
 
-   ~CS_StringComArg() {
-      delete string;
+   ~CS_StringComArg() 
+   {
       delete command;
    };
 
    void run() override;
 
 private:
-   Generator<_str>* string;
+   _genptr<_str> string;
 };
 
 
 struct CS_ListComArg : IterationLoop
 {
 public:
-   CS_ListComArg(Generator<_list>* li, Command* com, Uroboros& uro)
-      : IterationLoop(com, uro), list(li) { };
+   CS_ListComArg(_genptr<_list>& li, Command* com, Uroboros& uro)
+      : IterationLoop(com, uro), list(std::move(li)) { };
 
-   CS_ListComArg(Generator<_list>* li, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), list(li) { };
+   CS_ListComArg(_genptr<_list>& li, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
+      : IterationLoop(com, attr, hasmem, uro), list(std::move(li)) { };
 
-   CS_ListComArg(Generator<_list>* li, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), list(li) { };
+   CS_ListComArg(_genptr<_list>& li, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)) { };
 
-   ~CS_ListComArg() {
-      delete list;
+   ~CS_ListComArg() 
+   {
       delete command;
    };
 
    void run() override;
 
 private:
-   Generator<_list>* list;
+   _genptr<_list> list;
 };
 
 
 struct CS_DefinitionComArg : IterationLoop
 {
 public:
-   CS_DefinitionComArg(_def* def, Command* com, Uroboros& uro)
-      : IterationLoop(com, uro), definition(def) { };
+   CS_DefinitionComArg(_defptr& def, Command* com, Uroboros& uro)
+      : IterationLoop(com, uro), definition(std::move(def)) { };
 
-   CS_DefinitionComArg(_def* def, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), definition(def) { };
+   CS_DefinitionComArg(_defptr& def, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
+      : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)) { };
 
-   CS_DefinitionComArg(_def* def, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(def) { };
+   CS_DefinitionComArg(_defptr& def, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)) { };
 
-   ~CS_DefinitionComArg() {
-      delete definition;
+   ~CS_DefinitionComArg()
+   {
       delete command;
    };
 
    void run() override;
 
 private:
-   _def* definition;
+   _defptr definition;
 };
 
 }

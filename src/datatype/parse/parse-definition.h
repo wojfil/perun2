@@ -22,12 +22,12 @@
 namespace uro::parse
 {
 
-_def* parseDefinition(const Tokens& tks, Uroboros& uro);
+_bool parseDefinition(_defptr& result, const Tokens& tks, Uroboros& uro);
 
 static _bool isDefinitionChain(const Tokens& tks, Uroboros& uro);
-static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro);
-static _def* parseDefTernary(const Tokens& tks, Uroboros& uro);
-static _def* parseDefBinary(const Tokens& tks, Uroboros& uro);
+static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, Uroboros& uro);
+static _bool parseDefTernary(_defptr& result, const Tokens& tks, Uroboros& uro);
+static _bool parseDefBinary(_defptr& result, const Tokens& tks, Uroboros& uro);
 
 }
 

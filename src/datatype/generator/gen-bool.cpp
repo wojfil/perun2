@@ -18,16 +18,16 @@
 namespace uro::gen
 {
 
-Not::Not(Generator<_bool>* val) 
+Not::Not(_genptr<_bool>& val) 
    : UnaryOperation<_bool>(val) { };
 
-And::And(Generator<_bool>* val1, Generator<_bool>* val2)
+And::And(_genptr<_bool>& val1, _genptr<_bool>& val2)
    : BinaryOperation<_bool>(val1, val2) { };
 
-Or::Or(Generator<_bool>* val1, Generator<_bool>* val2)
+Or::Or(_genptr<_bool>& val1, _genptr<_bool>& val2)
    : BinaryOperation<_bool>(val1, val2) { };
 
-Xor::Xor(Generator<_bool>* val1, Generator<_bool>* val2)
+Xor::Xor(_genptr<_bool>& val1, _genptr<_bool>& val2)
    : BinaryOperation<_bool>(val1, val2) { };
 
 _bool Not::getValue() 
@@ -50,13 +50,8 @@ _bool Xor::getValue()
    return value1->getValue() ^ value2->getValue();
 }
 
-InConstTimeList::InConstTimeList(Generator<_tim>* val, const _tlist& li)
-   : value(val), list(sortedAndUniqueTimeList(li)) { };
-
-InConstTimeList::~InConstTimeList() 
-{
-   delete value;
-}
+InConstTimeList::InConstTimeList(_genptr<_tim>& val, const _tlist& li)
+   : value(std::move(val)), list(sortedAndUniqueTimeList(li)) { };
 
 _bool InConstTimeList::getValue() 
 {

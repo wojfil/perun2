@@ -23,20 +23,14 @@
 namespace uro::parse
 {
 
-Generator<_num>* parseNumber(const Tokens& tks, Uroboros& uro);
+_bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
 
-static Generator<_num>* parseNumExp(const Tokens& tks, Uroboros& uro);
-static Generator<_num>* numExpTree(const std::vector<ExpElement<_num>*>& infList,
-   std::vector<ExpElement<_num>*>& pntList);
-static Generator<_num>* numExpIntegrateUnary(
-   const std::vector<ExpElement<_num>*>& elements,
-   std::vector<ExpElement<_num>*>& pntList);
-static Generator<_num>* numExpTreeMerge(
-   const std::vector<ExpElement<_num>*>& elements,
-   std::vector<ExpElement<_num>*>& pntList);
-static Generator<_num>* numExpTreeMerge2(
-   const std::vector<ExpElement<_num>*>& elements);
-static _bool isNumExpComputable(const std::vector<ExpElement<_num>*>& infList);
+static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
+static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList);
+static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
+static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
+static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
+static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList);
 static _bool isNumExpOperator(const _char& ch);
 static _bool isNumExpHighPriority(const _char& ch);
 void timeVariableMemberException(const Token& tk, Uroboros& uro);

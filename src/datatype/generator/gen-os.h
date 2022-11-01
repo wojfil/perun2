@@ -16,7 +16,7 @@
 #define GEN_OS_H_INCLUDED
 
 
-#include "../generator.h"
+#include "../gen-memory.h"
 #include "../datatype.h"
 #include "../../patterns.h"
 #include <windows.h>
@@ -31,7 +31,7 @@ struct InnerVariables;
 namespace uro::gen
 {
 
-#define P_OS_GEN_ARGS Generator<_str>* loc, Uroboros& uro, const _str& patt, const _bool& abs, const _str& pref
+#define P_OS_GEN_ARGS _genptr<_str>& loc, Uroboros& uro, const _str& patt, const _bool& abs, const _str& pref
 #define P_OS_GEN_ARGS_SHORT loc, uro, patt, abs, pref
 
 
@@ -53,8 +53,8 @@ public:
    DefinitionGenerator() = delete;
    DefinitionGenerator(const OsElement& el, Uroboros& uro);
 
-   _def* generateDefault() const;
-   _def* generatePattern(Generator<_str>* location, const OsElement& element, 
+   _bool generateDefault(_defptr& result) const;
+   _bool generatePattern(_defptr& result, _genptr<_str>& location, const OsElement& element, 
       const _str& pattern, const _bool& isAbsolute, const _str& prefix) const;
 
 private:
@@ -68,16 +68,11 @@ struct OsDefinition : _def
 public:
    OsDefinition() = delete;
    OsDefinition(P_OS_GEN_ARGS);
-
-   ~OsDefinition() {
-      delete location;
-   }
-
    _fdata* getDataPtr();
 
 protected:
    _bool first;
-   Generator<_str>* location;
+   _genptr<_str> location;
    Uroboros& uroboros;
    InnerVariables& inner;
    _fdata data;

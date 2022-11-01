@@ -29,221 +29,207 @@
 namespace uro::parse
 {
 
-Generator<_num>* parseListElementIndex(const Tokens& tks, Uroboros& uro);
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
 void checkLimitBySize(const Tokens& tks, Uroboros& uro);
 
 template <typename T>
-static Generator<T>* parseTernary(const Tokens& tks, Uroboros& uro)
+static _bool parseTernary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
-      return nullptr;
+      return false;
    }
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   Generator<_bool>* condition;
+   _genptr<_bool> condition;
    if (!parse(uro, std::get<0>(trio), condition)) {
-      return nullptr;
+      return false;
    }
 
-   Generator<T>* left;
+   _genptr<T> left;
    if (!parse(uro, std::get<1>(trio), left)) {
-      delete condition;
-      return nullptr;
+      return false;
    }
 
-   Generator<T>* right;
+   _genptr<T> right;
    if (!parse(uro, std::get<2>(trio), right)) {
-      delete condition;
-      delete left;
-      return nullptr;
+      return false;
    }
 
    if (condition->isConstant()) {
       if (condition->getValue()) {
-         delete condition;
-         delete right;
-
          if (left->isConstant()) {
-            const T v = left->getValue();
-            delete left;
-            return new gen::Constant<T>(v);
+            result = std::make_unique<gen::Constant<T>>(left->getValue());
          }
          else {
-            return left;
+            result = std::move(left);
          }
       }
       else {
-         delete condition;
-         delete left;
-
          if (right->isConstant()) {
-            const T v = right->getValue();
-            delete right;
-            return new gen::Constant<T>(v);
+            result = std::make_unique<gen::Constant<T>>(right->getValue());
          }
          else {
-            return right;
+            result = std::move(right);
          }
       }
+      return true;
    }
 
-   return new gen::Ternary<T>(condition, left, right);
+   result = std::make_unique<gen::Ternary<T>>(condition, left, right);
+   return true;
 }
 
 
 template <typename T>
-static Generator<T>* parseBinary(const Tokens& tks, Uroboros& uro)
+static _bool parseBinary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
-      return nullptr;
+      return false;
    }
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
 
-   Generator<_bool>* condition;
+   _genptr<_bool> condition;
    if (!parse(uro, pair.first, condition)) {
-      return nullptr;
+      return false;
    }
 
-   Generator<T>* value;
+   _genptr<T> value;
    if (!parse(uro, pair.second, value)) {
-      delete condition;
-      return nullptr;
+      return false;
    }
 
    if (condition->isConstant()) {
       if (condition->getValue()) {
          if (value->isConstant()) {
-            const T v = value->getValue();
-            delete condition;
-            delete value;
-            return new gen::Constant<T>(v);
+            result = std::make_unique<gen::Constant<T>>(value->getValue());
          }
          else {
-            delete condition;
-            return value;
+            result = std::move(value);
          }
       }
       else {
-         delete condition;
-         delete value;
-         return new gen::Constant<T>(T());
+         result = std::make_unique<gen::Constant<T>>(T());
       }
+
+      return true;
    }
 
-   return new gen::Binary<T>(condition, value);
+   result = std::make_unique<gen::Binary<T>>(condition, value);
+   return true;
 }
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedValues(const std::vector<Tokens>& elements, Uroboros& uro)
+static _bool parseListedValues(_genptr<std::vector<T>>& res,
+   const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
-   std::vector<Generator<T>*>* result = new std::vector<Generator<T>*>();
+   std::vector<_genptr<T>> result;
    _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      Generator<T>* value;
+      _genptr<T> value;
       if (parse(uro, tks, value)) {
-         result->push_back(value);
+         result.push_back(std::move(value));
          if (isConstant && !value->isConstant()) {
             isConstant = false;
          }
       }
       else {
-         langutil::deleteVectorPtr(result);
-         return nullptr;
+         return false;
       }
    }
 
-   Generator<std::vector<T>>* v = new gen::Listed<T>(result);
+   _genptr<std::vector<T>> v(new gen::Listed<T>(result));
+
    if (isConstant) {
-      Generator<std::vector<T>>* cnst = new gen::Constant<std::vector<T>>(v->getValue());
-      delete v;
-      return cnst;
+      res = std::make_unique<gen::Constant<std::vector<T>>>(v->getValue());
    }
    else {
-      return v;
+      res = std::move(v);
    }
+
+   return true;
 }
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListedLists(const std::vector<Tokens>& elements, Uroboros& uro)
+static _bool parseListedLists(_genptr<std::vector<T>>& res,
+   const std::vector<Tokens>& elements, Uroboros& uro)
 {
    const _size len = elements.size();
-   std::vector<Generator<std::vector<T>>*>* result
-      = new std::vector<Generator<std::vector<T>>*>();
+   std::vector<_genptr<std::vector<T>>> result;
    _bool isConstant = true;
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      Generator<std::vector<T>>* value;
+      _genptr<std::vector<T>> value;
       if (parse(uro, tks, value)) {
-         result->push_back(value);
+         result.push_back(std::move(value));
          if (isConstant && !value->isConstant()) {
             isConstant = false;
          }
       }
       else {
-         langutil::deleteVectorPtr(result);
-         return nullptr;
+         return false;
       }
    }
 
-   Generator<std::vector<T>>* v = new gen::ListedLists<T>(result);
+   _genptr<std::vector<T>> v(new gen::ListedLists<T>(result));
+
    if (isConstant) {
-      Generator<std::vector<T>>* cnst = new gen::Constant<std::vector<T>>(v->getValue());
-      delete v;
-      return cnst;
+      res = std::make_unique<gen::Constant<std::vector<T>>>(v->getValue());
    }
    else {
-      return v;
+      res = std::move(v);
    }
+
+   return true;
 }
 
 
 template <typename T>
-static Generator<std::vector<T>>* parseListed(const Tokens& tks, Uroboros& uro)
+static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
-      return nullptr;
+      return false;
    }
 
    const std::vector<Tokens> elements = tks.splitBySymbol(L',');
 
-   Generator<std::vector<T>>* units = parseListedValues<T>(elements, uro);
-   if (units != nullptr) {
-      return units;
+   if (parseListedValues<T>(result, elements, uro)) {
+      return true;
    }
 
-   return parseListedLists<T>(elements, uro);
+   return parseListedLists<T>(result, elements, uro);
 }
 
 
 template <typename T>
-static Generator<T>* parseCollectionElement(const Tokens& tks, Uroboros& uro)
+static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
-      return nullptr;
+      return false;
    }
 
-   Generator<_num>* num = parseListElementIndex(tks, uro);
+   _genptr<_num> num;
+   parseListElementIndex(num, tks, uro);
    const Token& f = tks.first();
-   Generator<std::vector<T>>* collection;
+   _genptr<std::vector<T>> collection;
    if (uro.vars.getVarValue(f, collection)) {
-      return new gen::ListElement<T>(collection, num);
+      result = std::make_unique<gen::ListElement<T>>(collection, num);
+      return true;
    }
    else {
-      delete num;
-      return nullptr;
+      return false;
    }
 }
 
 
-static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _def*& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _defptr& result, _fdata*& data)
 {
    if (parse::parse(uro, tks, result)) {
       data = result->getDataPtr();
@@ -255,7 +241,7 @@ static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _def*& result, _f
 
 
 template <typename T>
-static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, Generator<T>*& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _genptr<T>& result, _fdata*& data)
 {
    data = nullptr;
    return parse::parse(uro, tks, result);
@@ -282,10 +268,10 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
    for (_size i = 0; i < fplen; i++) {
       FilterPrototype<T>* fp = prototypes[i];
       if (i == lastWhereId) {
-         base = fp->build(base, attr, hasMemory, uro);
+         fp->build(base, attr, hasMemory, uro);
       }
       else {
-         base = fp->build(base, nullptr, hasMemory, uro);
+         fp->build(base, nullptr, hasMemory, uro);
       }
    }
 
@@ -309,7 +295,7 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
 
 
 template <typename T, typename T2>
-static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros& uro)
+static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, Uroboros& uro)
 {
    const _size firstKeywordId = tks.getFilterKeywordId();
 
@@ -328,7 +314,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros& uro)
    T base;
 
    if (!parseFilterBase(tks2, uro, base, fdata)) {
-      return nullptr;
+      return false;
    }
 
    // core
@@ -373,7 +359,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros& uro)
                checkLimitBySize(ts, uro);
             }
 
-            Generator<_num>* num;
+            _genptr<_num> num;
             if (!parse(uro, ts, num)) {
                langutil::deleteVector(prototypes);
                throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
@@ -391,7 +377,7 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros& uro)
                uro.vc.addAttribute(attr);
             }
 
-            Generator<_bool>* boo;
+            _genptr<_bool> boo;
             if (!parse(uro, ts, boo)) {
                langutil::deleteVector(prototypes);
                uro.vars.inner.thisState = prevThisState;
@@ -418,7 +404,8 @@ static T parseFilter(const Tokens& tks, const ThisState& state, Uroboros& uro)
    }
 
    buildFilterPrototypes(prototypes, attr, hasAttr, true, hasMemory, uro, base);
-   return base;
+   result = std::move(base);
+   return true;
 }
 
 }

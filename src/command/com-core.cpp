@@ -754,7 +754,12 @@ void C_DownloadFrom_Definition::run()
       _bool success = true;
       this->inner.location.value = srcLoc;
 
-      while (this->uroboros.state == State::s_Running && elements->hasNext()) {
+      while (elements->hasNext()) {
+         if (this->uroboros.state != State::s_Running) {
+            elements->reset();
+            break;
+         }
+
          const _str n = os_trim(elements->getValue());
          const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
@@ -941,7 +946,7 @@ void C_DownloadFrom_Definition_Stack::run()
                   newPath = os_stackPath(newPath);
 
                   if (!this->uroboros.state == State::s_Running) {
-                     elements->reset();
+                     elements.reset();
                      break;
                   }
                }

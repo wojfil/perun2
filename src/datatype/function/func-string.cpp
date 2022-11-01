@@ -22,7 +22,6 @@
 #include <cwctype>
 #include <cmath>
 #include <bitset>
-#include <iomanip>
 
 
 namespace uro::func
@@ -128,7 +127,7 @@ _str F_Fill::getValue()
 {
    const _str base = arg1->getValue();
    const _size len = base.size();
-   const _size min = arg2->getValue().toInt();
+   const _size min = static_cast<_size>(arg2->getValue().toInt());
 
    return len >= min
       ? base
@@ -394,17 +393,12 @@ _str F_ConcatenateUnit::getValue()
 }
 
 
-F_Concatenate::~F_Concatenate()
-{
-   langutil::deleteVectorPtr(values);
-}
-
 _str F_Concatenate::getValue()
 {
    _stream ss;
 
    for (_size i = 0; i < length; i++) {
-      ss << (*values)[i]->getValue();
+      ss << values[i]->getValue();
    }
 
    return ss.str();
@@ -806,7 +800,7 @@ _str F_Roman::getValue()
    }
 
    if (base.isDouble) {
-      _int oc = (_int)(std::fmod(base.value.d, 1.0L) * 12L);
+      _int oc = static_cast<_int>(std::fmod(base.value.d, 1.0L) * 12L);
       if (oc < 0) {
          oc *= -1;
       }

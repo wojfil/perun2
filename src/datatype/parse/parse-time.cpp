@@ -27,83 +27,73 @@
 namespace uro::parse
 {
 
-Generator<_tim>* parseTime(const Tokens& tks, Uroboros& uro)
+_bool parseTime(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (tks.first().isSymbol(L'-') || tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return nullptr;
+      return false;
    }
 
    if (len == 1) {
-      Generator<_tim>* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
    else if (len >= 2) {
-      Generator<_tim>* cnst = parseTimeConst(tks, uro);
-      if (cnst != nullptr) {
-         return cnst;
+      if (parseTimeConst(result, tks, uro)) {
+         return true;
       }
 
       const _bool hasPluses = tks.check(TI_HAS_CHAR_PLUS);
       const _bool hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
 
       if (hasMinuses || hasPluses) {
-         Generator<_per>* per;
+         _genptr<_per> per;
          if (parse(uro, tks, per)) {
-            delete per;
-            return nullptr;
+            return false;
          }
          else {
-            Generator<_tim>* exp = parseTimeExp(tks, uro);
-            if (exp != nullptr) {
-               return exp;
+            if (parseTimeExp(result, tks, uro)) {
+               return true;
             }
          }
       }
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      Generator<_tim>* func = func::timeFunction(tks, uro);
-      if (func != nullptr) {
-         return func;
-      }
+      return func::timeFunction(result, tks, uro);
    }
 
-   Generator<_tim>* el = parseCollectionElement<_tim>(tks, uro);
-   if (el != nullptr) {
-      return el;
+   if (parseCollectionElement<_tim>(result, tks, uro)) {
+      return true;
    }
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
-      Generator<_num>* num = parseListElementIndex(tksm, uro);
+      _genptr<_num> num;
+      parseListElementIndex(num, tksm, uro);
       const Token& f = tks.first();
-      Generator<_tlist>* tlist;
+      _genptr<_tlist> tlist;
       if (uro.vars.getVarValue(f, tlist)) {
          const Token& last = tks.last();
-         Generator<_tim>* tim = new gen::ListElement<_tim>(tlist, num);
+         _genptr<_tim> tim(new gen::ListElement<_tim>(tlist, num));
 
-         if (last.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE)
-            return new gen::TimeDateAtIndex(tim);
+         if (last.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {
+            result = std::make_unique<gen::TimeDateAtIndex>(tim);
+            return true;
+         }
          else
-            return nullptr;
-      }
-      else {
-         delete num;
+            return false;
       }
    }
 
-   Generator<_tim>* tern = parseTernary<_tim>(tks, uro);
-   if (tern != nullptr) {
-      return tern;
+   if (parseTernary<_tim>(result, tks, uro)) {
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
-Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
+_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -112,7 +102,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
 
    if (len == 2) {
       if (second.type != Token::t_Number) {
-         return nullptr;
+         return false;
       }
 
       if (first.type == Token::t_Word) {
@@ -121,19 +111,20 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
       }
 
       if (first.type != Token::t_Number || first.value.num.nm != NumberMode::nm_Month) {
-         return nullptr;
+         return false;
       }
 
       const _tnum month = static_cast<_tnum>(first.value.num.n.toInt());
       const _tnum year = tokenToTimeNumber(second);
-      return new gen::Constant<_tim>(_tim(month, year));
+      result = std::make_unique<gen::Constant<_tim>>(_tim(month, year));
+      return true;
    }
 
    // tt_Date:
    const Token& third = tks.at(2);
 
    if (first.type != Token::t_Number || third.type != Token::t_Number) {
-      return nullptr;
+      return false;
    }
 
    if (second.type == Token::t_Word) {
@@ -142,7 +133,7 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
    }
 
    if (second.type != Token::t_Number || second.value.num.nm != NumberMode::nm_Month) {
-      return nullptr;
+      return false;
    }
 
    const _tnum day = tokenToTimeNumber(first);
@@ -151,20 +142,18 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
    checkDayCorrectness(day, month, year, first);
 
    if (len == 3) {
-      return new gen::Constant<_tim>(_tim(day, month, year));
+      result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year));
+      return true;
    }
-
-   
-
 
    // tt_ShortClock
    if (!(len == 7 || len == 9)){
-      return nullptr;
+      return false;
    }
 
    if (!tks.at(3).isSymbol(L',') || !tks.at(5).isSymbol(L':') ||
        tks.at(4).type != Token::t_Number || tks.at(6).type != Token::t_Number){
-      return nullptr;
+      return false;
    }
 
    const _tnum hour = tokenToTimeNumber(tks.at(4));
@@ -179,12 +168,13 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
    }
 
    if (len == 7) {
-      return new gen::Constant<_tim>(_tim(day, month, year, hour, minute));
+      result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year, hour, minute));
+      return true;
    }
 
    // tt_Clock:
    if (!tks.at(7).isSymbol(L':') || tks.at(8).type != Token::t_Number) {
-      return nullptr;
+      return false;
    }
 
    const _tnum secs = tokenToTimeNumber(tks.at(8));
@@ -193,7 +183,8 @@ Generator<_tim>* parseTimeConst(const Tokens& tks, Uroboros& uro)
       clockUnitException(L"seconds", secs, tks.at(8));
    }
 
-   return new gen::Constant<_tim>(_tim(day, month, year, hour, minute, secs));
+   result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year, hour, minute, secs));
+   return true;
 }
 
 static _tnum tokenToTimeNumber(const Token& tk)
@@ -222,10 +213,10 @@ static void clockUnitException(const _str& unit, const _tnum& value,
       L") went out of range"), tk.line);
 }
 
-static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro)
+static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
 {
-   Generator<_tim>* prevTim = nullptr;
-   Generator<_tim>* time = nullptr;
+   _genptr<_tim> prevTim;
+   _genptr<_tim> time;
    BracketsInfo bi;
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
@@ -241,22 +232,17 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro)
             case L'+': {
                if (bi.isBracketFree()) {
                   if (sublen == 0) {
-                     if (time == nullptr) {
-                        throw SyntaxException(L"expression cannot start with +",
-                           t.line);
+                     if (time) {
+                        throw SyntaxException(L"adjacent + symbols", t.line);
                      }
                      else {
-                        delete time;
-                        throw SyntaxException(L"adjacent + symbols", t.line);
+                        throw SyntaxException(L"expression cannot start with +", t.line);
                      }
                   }
 
                   const Tokens tks2(tks, i - sublen, sublen);
-                  if (!timeExpUnit(sublen, subtract, prevSubtract,
-                     prevTim, time, tks2, numReserve, uro)) {
-
-                     langutil::deleteTwo(prevTim, time);
-                     return nullptr;
+                  if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2, numReserve, uro)) {
+                     return false;
                   }
                   if (numReserve == 0) {
                      prevSubtract = subtract;
@@ -274,8 +260,7 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro)
                   if (!timeExpUnit(sublen, subtract, prevSubtract,
                      prevTim, time, tks2, numReserve, uro))
                   {
-                     langutil::deleteTwo(prevTim, time);
-                     return nullptr;
+                     return false;
                   }
 
                   if (numReserve == 0) {
@@ -306,8 +291,6 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro)
    }
 
    if (sublen == 0) {
-      langutil::deleteTwo(prevTim, time);
-
       if (subtract)
          throw SyntaxException(L"expression cannot end with -", tks.last().line);
       else
@@ -316,49 +299,46 @@ static Generator<_tim>* parseTimeExp(const Tokens& tks, Uroboros& uro)
 
    const Tokens tks2(tks, 1 + end - sublen, sublen);
    if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2,
-      numReserve, uro) || numReserve != 0 || prevTim != nullptr)
+      numReserve, uro) || numReserve != 0 || prevTim)
    {
-      langutil::deleteTwo(prevTim, time);
-      return nullptr;
+      return false;
    }
 
-   return time;
+   result = std::move(time);
+   return true;
 }
 
 static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
-   Generator<_tim>*& prevTim, Generator<_tim>*& time, const Tokens& tks,
+   _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks,
    _int& numReserve, Uroboros& uro)
 {
-   Generator<_tim>* tim;
+   _genptr<_tim> tim;
    if (parse(uro, tks, tim)) {
       if (numReserve != 0) {
-         delete tim;
          return false;
       }
 
-      if (time == nullptr) {
-         time = tim;
+      if (!time) {
+         time = std::move(tim);
       }
-      else if (prevTim == nullptr) {
-         prevTim = tim;
+      else if (!prevTim) {
+         prevTim = std::move(tim);
       }
       else {
          if (subtract) {
-            Generator<_per>* diff = new gen::TimeDifference(prevTim, tim);
-            prevTim = nullptr;
+            _genptr<_per> diff(new gen::TimeDifference(prevTim, tim));
 
-            if (time == nullptr) {
-               delete diff;
-               return false;
-            }
-            else {
-               Generator<_tim>* prev = time;
+            if (time) {
+               _genptr<_tim> tim2 = std::move(time);
                if (prevSubtract) {
-                  time = new gen::DecreasedTime(prev, diff);
+                  time = std::make_unique<gen::DecreasedTime>(tim2, diff);
                }
                else {
-                  time = new gen::IncreasedTime(prev, diff);
+                  time = std::make_unique<gen::IncreasedTime>(tim2, diff);
                }
+            }
+            else {
+               return false;
             }
          }
          else {
@@ -370,37 +350,35 @@ static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtrac
       return true;
    }
 
-   if (prevTim != nullptr) {
+   if (prevTim) {
       return false;
    }
 
-   if (time == nullptr) {
+   if (!time) {
       return false;
    }
 
-   Generator<_num>* num;
+   _genptr<_num> num;
    if (parse(uro, tks, num)) {
       if (numReserve == 0 && subtract) {
          numReserve = 1;
       }
       numReserve += sublen + 1;
       sublen = 0;
-      delete num;
       return true;
    }
 
    if (numReserve == 0) {
-      Generator<_per>* per;
+      _genptr<_per> per;
       if (!parse(uro, tks, per)) {
          return false;
       }
 
-      Generator<_tim>* prev = time;
       if (subtract) {
-         time = new gen::DecreasedTime(prev, per);
+         time = std::make_unique<gen::DecreasedTime>(time, per);
       }
       else {
-         time = new gen::IncreasedTime(prev, per);
+         time = std::make_unique<gen::IncreasedTime>(time, per);
       }
    }
    else {
@@ -408,13 +386,12 @@ static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtrac
       const _int length = tks.getLength() + numReserve;
       const Tokens tks2(tks, start, length);
 
-      Generator<_per>* per;
+      _genptr<_per> per;
       if (!parse(uro, tks2, per)) {
          return false;
       }
 
-      Generator<_tim>* prev = time;
-      time = new gen::IncreasedTime(prev, per);
+      time = std::make_unique<gen::IncreasedTime>(time, per);
    }
 
    sublen = 0;

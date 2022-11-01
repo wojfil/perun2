@@ -16,7 +16,8 @@
 #define GEN_REF_H_INCLUDED
 
 #include "datatype.h"
-#include "generator.h"
+#include "gen-memory.h"
+#include "../var/var.h"
 
 
 namespace uro::gen
@@ -26,23 +27,21 @@ template <typename T>
 struct GeneratorRef : Generator<T>
 {
 public:
-   GeneratorRef(Generator<T>* val)
+   GeneratorRef(Generator<T>& val)
       : value(val) {};
 
    _bool isConstant() const override
    {
-      return this->value->isConstant();
+      return this->value.isConstant();
    };
 
    T getValue() override
    {
-      return this->value->getValue();
+      return this->value.getValue();
    };
 
 private:
-   Generator<T>* value;
-   // do not call "delete" here
-   // this struct is a weak reference to a generator
+   Generator<T>& value;
 };
 
 
@@ -51,11 +50,11 @@ private:
 struct NumberIntRef : Generator<_num>
 {
 public:
-   NumberIntRef(Generator<_numi>* val);
+   NumberIntRef(vars::Variable<_numi>* val);
    _num getValue() override;
 
 private:
-   Generator<_numi>* value;
+   vars::Variable<_numi>* value;
 };
 
 }

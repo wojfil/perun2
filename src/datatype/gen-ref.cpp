@@ -18,7 +18,7 @@
 namespace uro::gen
 {
 
-NumberIntRef::NumberIntRef(Generator<_numi>* val)
+NumberIntRef::NumberIntRef(vars::Variable<_numi>* val)
    : value(val) {};
 
 _num NumberIntRef::getValue()

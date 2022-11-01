@@ -15,7 +15,7 @@
 #ifndef GEN_LIKE_H
 #define GEN_LIKE_H
 
-#include "../generator.h"
+#include "../gen-memory.h"
 #include "../datatype.h"
 #include <unordered_set>
 #include <unordered_map>
@@ -51,17 +51,12 @@ LikeComparer* parseLikeCmp(const _str& pattern);
 struct LikeConst : Generator<_bool>
 {
 public:
-   LikeConst(Generator<_str>* val, const _str& pattern);
-
-   ~LikeConst() {
-      delete value;
-      delete comparer;
-   }
-
+   LikeConst(_genptr<_str>& val, const _str& pattern);
+   ~LikeConst();
    _bool getValue() override;
 
 private:
-   Generator<_str>* value;
+   _genptr<_str> value;
    const LikeComparer* comparer;
 };
 
@@ -70,26 +65,16 @@ private:
 struct Like : Generator<_bool>
 {
 public:
-   Like(Generator<_str>* val, Generator<_str>* pat) : value(val), pattern(pat),
-      comparer(nullptr), hasPrev(false), prevHash(0) { };
-
-   ~Like() {
-      delete value;
-      delete pattern;
-      if (hasPrev) {
-         delete comparer;
-      }
-   }
-
+   Like(_genptr<_str>& val, _genptr<_str>& pat);
+   ~Like();
    _bool getValue() override;
 
 private:
-   Generator<_str>* value;
-   Generator<_str>* pattern;
-
-   LikeComparer* comparer;
-   _bool hasPrev;
-   _size prevHash;
+   _genptr<_str> value;
+   _genptr<_str> pattern;
+   LikeComparer* comparer = nullptr;
+   _bool hasPrev = false;
+   _size prevHash = 0;
 };
 
 

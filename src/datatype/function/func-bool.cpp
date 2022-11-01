@@ -304,12 +304,6 @@ _bool F_ExistInside::getValue()
 }
 
 
-F_StartsWithChar::~F_StartsWithChar()
-{
-   delete value;
-}
-
-
 _bool F_StartsWithChar::getValue()
 {
    const _str v = value->getValue();
@@ -318,12 +312,6 @@ _bool F_StartsWithChar::getValue()
    return len == 0
       ? false
       : (v[0] == character);
-}
-
-
-F_EndsWithChar::~F_EndsWithChar()
-{
-   delete value;
 }
 
 
@@ -361,11 +349,6 @@ _bool F_Find_InThis::getValue()
 }
 
 
-F_StartsWithConst::~F_StartsWithConst()
-{
-   delete value;
-}
-
 _bool F_StartsWithConst::getValue()
 {
    const _str v = value->getValue();
@@ -381,12 +364,6 @@ _bool F_StartsWithConst::getValue()
    }
 
    return true;
-}
-
-
-F_EndsWithConst::~F_EndsWithConst()
-{
-   delete value;
 }
 
 

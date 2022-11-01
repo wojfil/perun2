@@ -26,38 +26,29 @@
 namespace uro::parse
 {
 
-_def* parseDefinition(const Tokens& tks, Uroboros& uro)
+_bool parseDefinition(_defptr& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      _def* unit = nullptr;
-      parseOneToken(uro, tks, unit);
-      return unit;
+      return parseOneToken(uro, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return parseFilter<_def*, _str>(tks, ThisState::ts_String, uro);
+      return parseFilter<_defptr, _str>(result, tks, ThisState::ts_String, uro);
    }
 
    if (isDefinitionChain(tks, uro)) {
-      _def* chain = parseDefinitionChain(tks, uro);
-      if (chain != nullptr) {
-         return chain;
+      if (parseDefinitionChain(result, tks, uro)) {
+         return true;
       }
    }
 
-   _def* bin = parseDefBinary(tks, uro);
-   if (bin != nullptr) {
-      return bin;
+   if (parseDefBinary(result, tks, uro) || parseDefTernary(result, tks, uro)) {
+      return true;
    }
 
-   _def* tern = parseDefTernary(tks, uro);
-   if (tern != nullptr) {
-      return tern;
-   }
-
-   return nullptr;
+   return false;
 }
 
 
@@ -72,9 +63,8 @@ static _bool isDefinitionChain(const Tokens& tks, Uroboros& uro)
 
    for (_size i = 0; i < len; i++) {
       const Tokens& tk = elements[i];
-      _def* def;
+      _defptr def;
       if (parse(uro, tk, def)) {
-         delete def;
          return true;
       }
    }
@@ -84,10 +74,9 @@ static _bool isDefinitionChain(const Tokens& tks, Uroboros& uro)
 
 // definition chain is a collection of strings, lists and definitions
 // separated by commas, that contain at least one definition
-
-// for the sake of optimization
-// definition chains are lazy evaluated
-static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
+// for the sake of Uroboros optimization
+// definition chains are lazy evaluated runtime
+static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, Uroboros& uro)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -99,9 +88,9 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
    const _size len = elements.size();
 
    ChainLink cl;
-   _def* prevDef;
-   Generator<_str>* prevStr;
-   Generator<_list>* prevList;
+   _defptr prevDef;
+   _genptr<_str> prevStr;
+   _genptr<_list> prevList;
 
    if (parse(uro, elements[0], prevDef)) {
       cl = ChainLink::cl_Definition;
@@ -115,7 +104,7 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
             cl = ChainLink::cl_List;
          }
          else {
-            return nullptr;
+            return false;
          }
       }
    }
@@ -125,26 +114,25 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
 
       switch (cl) {
          case cl_Definition: {
-            _def* def;
+            _defptr def;
             if (parse(uro, tk, def)) {
-               _def* pdef = prevDef;
-               prevDef = new gen::Join_DefDef(pdef, def, uro);
+               _defptr pdef = std::move(prevDef);
+               prevDef = std::make_unique<gen::Join_DefDef>(pdef, def, uro);
             }
             else {
-               Generator<_str>* str;
+               _genptr<_str> str;
                if (parse(uro, tk, str)) {
-                  _def* pdef = prevDef;
-                  prevDef = new gen::Join_DefStr(pdef, str, uro);
+                  _defptr pdef = std::move(prevDef);
+                  prevDef = std::make_unique<gen::Join_DefStr>(pdef, str, uro);
                }
                else {
-                  Generator<_list>* list;
+                  _genptr<_list> list;
                   if (parse(uro, tk, list)) {
-                     _def* pdef = prevDef;
-                     prevDef = new gen::Join_DefList(pdef, list, uro);
+                     _defptr pdef = std::move(prevDef);
+                     prevDef = std::make_unique<gen::Join_DefList>(pdef, list, uro);
                   }
                   else {
-                     delete prevDef;
-                     return nullptr;
+                     return false;
                   }
                }
             }
@@ -152,29 +140,28 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
             break;
          }
          case cl_String: {
-            _def* def;
+            _defptr def;
             if (parse(uro, tk, def)) {
-               prevDef = new gen::Join_StrDef(prevStr, def, uro);
-               prevStr = nullptr;
+               prevDef = std::make_unique<gen::Join_StrDef>(prevStr, def, uro);
+               prevStr.reset();
                cl = ChainLink::cl_Definition;
             }
             else {
-               Generator<_str>* str;
+               _genptr<_str> str;
                if (parse(uro, tk, str)) {
-                  prevList = new gen::Join_StrStr(prevStr, str);
-                  prevStr = nullptr;
+                  prevList = std::make_unique<gen::Join_StrStr>(prevStr, str);
+                  prevStr.reset();
                   cl = ChainLink::cl_List;
                }
                else {
-                  Generator<_list>* list;
+                  _genptr<_list> list;
                   if (parse(uro, tk, list)) {
-                     prevList = new gen::Join_StrList(prevStr, list);
-                     prevStr = nullptr;
+                     prevList = std::make_unique<gen::Join_StrList>(prevStr, list);
+                     prevStr.reset();
                      cl = ChainLink::cl_List;
                   }
                   else {
-                     delete prevStr;
-                     return nullptr;
+                     return false;
                   }
                }
             }
@@ -182,27 +169,26 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
             break;
          }
          case cl_List: {
-            _def* def;
+            _defptr def;
             if (parse(uro, tk, def)) {
-               prevDef = new gen::Join_ListDef(prevList, def, uro);
-               prevList = nullptr;
+               prevDef = std::make_unique<gen::Join_ListDef>(prevList, def, uro);
+               prevList.reset();
                cl = ChainLink::cl_Definition;
             }
             else {
-               Generator<_str>* str;
+               _genptr<_str> str;
                if (parse(uro, tk, str)) {
-                  Generator<_list>* plist = prevList;
-                  prevList = new gen::Join_ListStr(plist, str);
+                  _genptr<_list> plist(std::move(prevList));
+                  prevList = std::make_unique<gen::Join_ListStr>(plist, str);
                }
                else {
-                  Generator<_list>* list;
+                  _genptr<_list> list;
                   if (parse(uro, tk, list)) {
-                     Generator<_list>* plist = prevList;
-                     prevList = new gen::Join_ListList(plist, list);
+                     _genptr<_list> plist(std::move(prevList));
+                     prevList = std::make_unique<gen::Join_ListList>(plist, list);
                   }
                   else {
-                     delete prevList;
-                     return nullptr;
+                     return false;
                   }
                }
             }
@@ -211,74 +197,63 @@ static _def* parseDefinitionChain(const Tokens& tks, Uroboros& uro)
       }
    }
 
-   switch (cl) {
-      case cl_Definition: {
-         return new gen::DefinitionChain(prevDef, uro);
-      }
-      case cl_String: {
-         delete prevStr;
-         break;
-      }
-      case cl_List: {
-         delete prevList;
-         break;
-      }
+   if (cl == cl_Definition) {
+      result = std::make_unique<gen::DefinitionChain>(prevDef, uro);
+      return true;
    }
 
-   return nullptr;
+   return false;
 }
 
 
-_def* parseDefTernary(const Tokens& tks, Uroboros& uro)
+static _bool parseDefTernary(_defptr& result, const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
-      return nullptr;
+      return false;
    }
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   Generator<_bool>* condition;
+   _genptr<_bool> condition;
    if (!parse(uro, std::get<0>(trio), condition)) {
-      return nullptr;
+      return false;
    }
 
-   _def* left;
+   _defptr left;
    if (!parse(uro, std::get<1>(trio), left)) {
-      delete condition;
-      return nullptr;
+      return false;
    }
 
-   _def* right;
+   _defptr right;
    if (!parse(uro, std::get<2>(trio), right)) {
-      delete condition;
-      delete left;
-      return nullptr;
+      return false;
    }
 
-   return new gen::DefTernary(condition, left, right);
+   result = std::make_unique<gen::DefTernary>(condition, left, right);
+   return true;
 }
 
 
-static _def* parseDefBinary(const Tokens& tks, Uroboros& uro)
+static _bool parseDefBinary(_defptr& result, const Tokens& tks, Uroboros& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
-      return nullptr;
+      return false;
    }
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
 
-   Generator<_bool>* condition;
+   _genptr<_bool> condition;
    if (!parse(uro, pair.first, condition)) {
-      return nullptr;
+      return false;
    }
 
-   _def* value;
+   _defptr value;
    if (!parse(uro, pair.second, value)) {
-      delete condition;
-      return nullptr;
+      return false;
    }
 
-   return new gen::DefBinary(condition, value);
+   result = std::make_unique<gen::DefBinary>(condition, value);
+   return true;
 }
 
 }

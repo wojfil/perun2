@@ -28,13 +28,7 @@ template <typename T1, typename T2>
 struct Cast : Generator<T2>
 {
 public:
-   Cast (Generator<T1>* b)
-      : base(b) { };
-
-   ~Cast() override
-   {
-      delete base;
-   };
+   Cast (_genptr<T1>& b) : base(std::move(b)) { };
 
    _bool isConstant() const override
    {
@@ -42,117 +36,112 @@ public:
    };
 
 protected:
-   Generator<T1>* base;
+   _genptr<T1> base;
 };
 
 
 
 struct Cast_B_N : Cast<_bool, _num>
 {
-   Cast_B_N(Generator<_bool>* b) : Cast(b) { };
+   Cast_B_N(_genptr<_bool>& b) : Cast(b) { };
    _num getValue() override;
 };
 
 struct Cast_B_NL : Cast<_bool, _nlist>
 {
-   Cast_B_NL(Generator<_bool>* b) : Cast(b) { };
+   Cast_B_NL(_genptr<_bool>& b) : Cast(b) { };
    _nlist getValue() override;
 };
 
 struct Cast_B_S : Cast<_bool, _str>
 {
-   Cast_B_S(Generator<_bool>* b) : Cast(b) { };
+   Cast_B_S(_genptr<_bool>& b) : Cast(b) { };
    _str getValue() override;
 };
 
 struct Cast_B_L : Cast<_bool, _list>
 {
-   Cast_B_L(Generator<_bool>* b) : Cast(b) { };
+   Cast_B_L(_genptr<_bool>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_N_NL : Cast<_num, _nlist>
 {
-   Cast_N_NL(Generator<_num>* b) : Cast(b) { };
+   Cast_N_NL(_genptr<_num>& b) : Cast(b) { };
    _nlist getValue() override;
 };
 
 struct Cast_N_S : Cast<_num, _str>
 {
-   Cast_N_S(Generator<_num>* b) : Cast(b) { };
+   Cast_N_S(_genptr<_num>& b) : Cast(b) { };
    _str getValue() override;
 };
 
 struct Cast_N_L : Cast<_num, _list>
 {
-   Cast_N_L(Generator<_num>* b) : Cast(b) { };
+   Cast_N_L(_genptr<_num>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_T_S : Cast<_tim, _str>
 {
-   Cast_T_S(Generator<_tim>* b) : Cast(b) { };
+   Cast_T_S(_genptr<_tim>& b) : Cast(b) { };
    _str getValue() override;
 };
 
 struct Cast_T_L : Cast<_tim, _list>
 {
-   Cast_T_L(Generator<_tim>* b) : Cast(b) { };
+   Cast_T_L(_genptr<_tim>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_P_S : Cast<_per, _str>
 {
-   Cast_P_S(Generator<_per>* b) : Cast(b) { };
+   Cast_P_S(_genptr<_per>& b) : Cast(b) { };
    _str getValue() override;
 };
 
 struct Cast_P_L : Cast<_per, _list>
 {
-   Cast_P_L(Generator<_per>* b) : Cast(b) { };
+   Cast_P_L(_genptr<_per>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_NL_L : Cast<_nlist, _list>
 {
-   Cast_NL_L(Generator<_nlist>* b) : Cast(b) { };
+   Cast_NL_L(_genptr<_nlist>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_S_L : Cast<_str, _list>
 {
-   Cast_S_L(Generator<_str>* b) : Cast(b) { };
+   Cast_S_L(_genptr<_str>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_T_TL : Cast<_tim, _tlist>
 {
-   Cast_T_TL(Generator<_tim>* b) : Cast(b) { };
+   Cast_T_TL(_genptr<_tim>& b) : Cast(b) { };
    _tlist getValue() override;
 };
 
 struct Cast_TL_L : Cast<_tlist, _list>
 {
-   Cast_TL_L(Generator<_tlist>* b) : Cast(b) { };
+   Cast_TL_L(_genptr<_tlist>& b) : Cast(b) { };
    _list getValue() override;
 };
 
 struct Cast_D_L : Generator<_list>
 {
 public:
-   Cast_D_L(_def* b, Uroboros& uro)
-      : base(b), uroboros(uro) { };
-
-   ~Cast_D_L()
-   {
-      delete base;
-   }
+   Cast_D_L(_defptr& b, Uroboros& uro)
+      : base(std::move(b)), uroboros(uro) { };
 
    _list getValue() override;
 
 private:
    Uroboros& uroboros;
-   _def* base;
+   _defptr base;
 };
 
 }

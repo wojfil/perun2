@@ -20,13 +20,9 @@
 namespace uro::gen
 {
 
-DefFilter::DefFilter(_def* def, Uroboros& uro)
-   : first(true), definition(def), uroboros(uro) { };
+DefFilter::DefFilter(_defptr& def, Uroboros& uro)
+   : first(true), definition(std::move(def)), uroboros(uro) { };
 
-DefFilter::~DefFilter()
-{
-   delete definition;
-}
 
 _fdata* DefFilter::getDataPtr()
 {
@@ -39,6 +35,15 @@ void DefFilter::reset() {
       definition->reset();
    }
 }
+
+
+Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Attribute* attr, const _bool& hasMem, Uroboros& uro)
+   : DefFilter(def, uro), condition(std::move(cond)), attribute(attr), finished(true), inner(uro.vars.inner),
+      hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner)), hasAttribute(true) { };
+
+Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Uroboros& uro)
+   : DefFilter(def, uro), condition(std::move(cond)), attribute(nullptr), finished(true), inner(uro.vars.inner),
+      hasMemory(false), attrMemory(AttributeMemory(uro.vars.inner)), hasAttribute(false) { };
 
 
 void Filter_WhereDef::reset() {
@@ -78,7 +83,7 @@ _bool Filter_WhereDef::hasNext()
          this->attribute->run();
       }
 
-      const _bool con = condition->getValue();
+      const _bool con = this->condition->getValue();
 
       if (con) {
          this->inner.index.value = index;
@@ -93,14 +98,8 @@ _bool Filter_WhereDef::hasNext()
 }
 
 
-DefinitionChain::DefinitionChain(_def* def, Uroboros& uro)
-   : definition(def), inner(uro.vars.inner) { };
-
-
-DefinitionChain::~DefinitionChain()
-{
-   delete this->definition;
-};
+DefinitionChain::DefinitionChain(_defptr& def, Uroboros& uro)
+   : definition(std::move(def)), inner(uro.vars.inner) { };
 
 
 void DefinitionChain::reset()
@@ -152,15 +151,8 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel* ves, _def* def, _def* locs, Uroboros& uro, const _bool& abs, const _bool& fin)
-   : vessel(ves), definition(def), locations(locs), inner(uro.vars.inner), isAbsolute(abs), isFinal(fin) { };
-
-
-NestedDefiniton::~NestedDefiniton()
-{
-   delete this->definition;
-   delete this->locations;
-};
+NestedDefiniton::NestedDefiniton(LocationVessel* ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin)
+   : vessel(ves), definition(std::move(def)), locations(std::move(locs)), inner(uro.vars.inner), isAbsolute(abs), isFinal(fin) { };
 
 
 void NestedDefiniton::reset()
@@ -229,7 +221,7 @@ _fdata* NestedDefiniton::getDataPtr()
 _bool Filter_LimitDef::hasNext()
 {
    if (first) {
-      limit = number->getValue().toInt();
+      limit = this->number->getValue().toInt();
       if (limit <= 0LL) {
          return false;
       }
@@ -256,7 +248,7 @@ _bool Filter_LimitDef::hasNext()
 _bool Filter_SkipDef::hasNext()
 {
    if (first) {
-      limit = number->getValue().toInt();
+      limit = this->number->getValue().toInt();
       if (limit < 0LL) {
          limit = 0LL;
       }
@@ -288,7 +280,7 @@ _bool Filter_SkipDef::hasNext()
 _bool Filter_EveryDef::hasNext()
 {
    if (first) {
-      limit = number->getValue().toInt();
+      limit = this->number->getValue().toInt();
       if (limit < 1LL) {
          limit = 1LL;
       }
@@ -323,7 +315,7 @@ _bool Filter_EveryDef::hasNext()
 _bool Filter_FinalDef::hasNext()
 {
    if (first) {
-      const _nint limit = number->getValue().toInt();
+      const _nint limit = this->number->getValue().toInt();
       if (limit < 1LL) {
          return false;
       }
@@ -366,21 +358,13 @@ _bool Filter_FinalDef::hasNext()
    return false;
 };
 
-
-
-Join_DefStr::~Join_DefStr()
-{
-   delete left;
-   delete right;
-}
-
 void Join_DefStr::reset()
 {
    if (taken) {
       taken = false;
    }
    else {
-      left->reset();
+      this->left->reset();
    }
 }
 
@@ -396,21 +380,14 @@ _bool Join_DefStr::hasNext()
       return false;
    }
 
-   if (left->hasNext()) {
-      value = left->getValue();
+   if (this->left->hasNext()) {
+      value = this->left->getValue();
       return true;
    }
 
-   value = right->getValue();
+   value = this->right->getValue();
    taken = true;
    return true;
-}
-
-
-Join_StrDef::~Join_StrDef()
-{
-   delete left;
-   delete right;
 }
 
 
@@ -418,7 +395,7 @@ void Join_StrDef::reset()
 {
    if (!first) {
       first = true;
-      right->reset();
+      this->right->reset();
    }
 }
 
@@ -431,25 +408,18 @@ _bool Join_StrDef::hasNext()
    }
 
    if (first) {
-      value = left->getValue();
+      value = this->left->getValue();
       first = false;
       return true;
    }
 
-   if (right->hasNext()) {
-      value = right->getValue();
+   if (this->right->hasNext()) {
+      value = this->right->getValue();
       return true;
    }
 
    first = true;
    return false;
-}
-
-
-Join_DefList::~Join_DefList()
-{
-   delete left;
-   delete right;
 }
 
 
@@ -459,7 +429,7 @@ void Join_DefList::reset()
       taken = false;
    }
    else {
-      left->reset();
+      this->left->reset();
    }
 }
 
@@ -472,12 +442,12 @@ _bool Join_DefList::hasNext()
    }
 
    if (!taken) {
-      if (left->hasNext()) {
-         value = left->getValue();
+      if (this->left->hasNext()) {
+         value = this->left->getValue();
          return true;
       }
       else {
-         values = right->getValue();
+         values = this->right->getValue();
          length = values.size();
          index = 0;
          taken = true;
@@ -496,17 +466,10 @@ _bool Join_DefList::hasNext()
 }
 
 
-Join_ListDef::~Join_ListDef()
-{
-   delete left;
-   delete right;
-}
-
-
 void Join_ListDef::reset()
 {
    if (taken) {
-      right->reset();
+      this->right->reset();
       taken = false;
    }
    first = true;
@@ -521,7 +484,7 @@ _bool Join_ListDef::hasNext()
    }
 
    if (first) {
-      values = left->getValue();
+      values = this->left->getValue();
       length = values.size();
       index = 0;
       first = false;
@@ -538,8 +501,8 @@ _bool Join_ListDef::hasNext()
       }
    }
 
-   if (right->hasNext()) {
-      value = right->getValue();
+   if (this->right->hasNext()) {
+      value = this->right->getValue();
       return true;
    }
    else {
@@ -550,22 +513,15 @@ _bool Join_ListDef::hasNext()
 }
 
 
-Join_DefDef::~Join_DefDef()
-{
-   delete left;
-   delete right;
-}
-
-
 void Join_DefDef::reset()
 {
    if (!first) {
       if (taken) {
-         right->reset();
+         this->right->reset();
          taken = false;
       }
       else {
-         left->reset();
+         this->left->reset();
       }
       first = true;
    }
@@ -584,8 +540,8 @@ _bool Join_DefDef::hasNext()
    }
 
    if (!taken) {
-      if (left->hasNext()) {
-         value = left->getValue();
+      if (this->left->hasNext()) {
+         value = this->left->getValue();
          return true;
       }
       else {
@@ -594,8 +550,8 @@ _bool Join_DefDef::hasNext()
    }
 
    if (taken) {
-      if (right->hasNext()) {
-         value = right->getValue();
+      if (this->right->hasNext()) {
+         value = this->right->getValue();
          return true;
       }
       else {
@@ -607,14 +563,8 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_def* def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& fin)
-   : uroboros(uro), inner(uro.vars.inner), definition(def), suffix(suf), absoluteBase(abs), isFinal(fin) { };
-
-
-DefinitionSuffix::~DefinitionSuffix()
-{
-   delete this->definition;
-}
+DefinitionSuffix::DefinitionSuffix(_defptr& def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& fin)
+   : uroboros(uro), inner(uro.vars.inner), definition(std::move(def)), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 
 void DefinitionSuffix::reset()
@@ -666,10 +616,10 @@ void DefTernary::reset()
    if (!first) {
       first = true;
       if (isLeft) {
-         left->reset();
+         this->left->reset();
       }
       else {
-         right->reset();
+         this->right->reset();
       }
    }
 }
@@ -678,18 +628,18 @@ void DefTernary::reset()
 _bool DefTernary::hasNext()
 {
    if (first) {
-      isLeft = condition->getValue();
+      isLeft = this->condition->getValue();
    }
 
    if (isLeft) {
-      if (left->hasNext()) {
-         value = left->getValue();
+      if (this->left->hasNext()) {
+         value = this->left->getValue();
          return true;
       }
    }
    else {
-      if (right->hasNext()) {
-         value = right->getValue();
+      if (this->right->hasNext()) {
+         value = this->right->getValue();
          return true;
       }
    }
@@ -703,7 +653,7 @@ void DefBinary::reset()
 {
    if (!first) {
       first = true;
-      left->reset();
+      this->left->reset();
    }
 }
 
@@ -711,14 +661,14 @@ void DefBinary::reset()
 _bool DefBinary::hasNext()
 {
    if (first) {
-      if (!condition->getValue()) {
+      if (!this->condition->getValue()) {
          return false;
       }
       first = false;
    }
 
-   if (left->hasNext()) {
-      value = left->getValue();
+   if (this->left->hasNext()) {
+      value = this->left->getValue();
       return true;
    }
 

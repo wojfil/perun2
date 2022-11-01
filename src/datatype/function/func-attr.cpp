@@ -21,11 +21,6 @@
 namespace uro::func
 {
 
-AttrFunction::~AttrFunction()
-{
-   delete value;
-}
-
 _str AttrFunction::getPath()
 {
    const _str b = os_trim(this->value->getValue());
@@ -45,27 +40,6 @@ _str F_Path::getValue()
    return b.empty() || this->inner.location.value.empty()
       ? EMPTY_STRING
       : os_join(this->inner.location.value, b);
-}
-
-F_Path_2::~F_Path_2()
-{
-   delete value_1;
-   delete value_2;
-}
-
-F_Path_3::~F_Path_3()
-{
-   delete value_1;
-   delete value_2;
-   delete value_3;
-}
-
-F_Path_4::~F_Path_4()
-{
-   delete value_1;
-   delete value_2;
-   delete value_3;
-   delete value_4;
 }
 
 _str F_Path_2::getValue()
@@ -152,14 +126,9 @@ _str F_Path_4::getValue()
    }
 }
 
-F_Path_Multi::~F_Path_Multi()
-{
-   langutil::deleteVectorPtr(this->values);
-}
-
 _str F_Path_Multi::getValue()
 {
-   _str path = os_trim(((*values)[length - 1])->getValue());
+   _str path = os_trim((values[length - 1])->getValue());
    if (path.empty()) {
       return EMPTY_STRING;
    }
@@ -167,7 +136,7 @@ _str F_Path_Multi::getValue()
    _int index = length - 2;
 
    while (index >= 0 && !os_isAbsolute(path)) {
-      const _str p = os_trim(((*values)[index])->getValue());
+      const _str p = os_trim(values[index]->getValue());
       if (p.empty()) {
          return EMPTY_STRING;
       }
@@ -320,11 +289,6 @@ _bool F_Encrypted::getValue()
 {
    const _str p = this->getPath();
    return p.empty() ? false : os_encrypted(p);
-}
-
-F_Exist::~F_Exist()
-{
-   delete value;
 }
 
 _bool F_Exist::getValue()

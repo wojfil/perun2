@@ -25,12 +25,12 @@ namespace uro::gen
 struct DefinitionRef : Definition
 {
 public:
-   DefinitionRef(Definition* def) : definition(def) {};
+   DefinitionRef(Definition& def) : definition(def) {};
    void reset() override;
    _bool hasNext() override;
 
 private:
-   Definition* definition;
+   Definition& definition;
 };
 
 }

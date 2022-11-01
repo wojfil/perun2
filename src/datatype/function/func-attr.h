@@ -25,23 +25,22 @@ namespace uro::func
 struct AttrFunction
 {
 public:
-   AttrFunction(Generator<_str>* val, Uroboros& uro)
-      : value(val), uroboros(uro), inner(uro.vars.inner) { };
-
-   ~AttrFunction();
+   AttrFunction(_genptr<_str>& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
 
 protected:
+   _str getPath();
+
    Uroboros& uroboros;
    InnerVariables& inner;
-   _str getPath();
-   Generator<_str>* value;
+   _genptr<_str> value;
 };
 
 
 struct F_Path : AttrFunction, Generator<_str>
 {
 public:
-   F_Path(Generator<_str>* val, Uroboros& uro)
+   F_Path(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _str getValue() override;
@@ -51,65 +50,62 @@ public:
 struct F_Path_2 : Generator<_str>
 {
 public:
-   F_Path_2(Generator<_str>* val_1, Generator<_str>* val_2)
-      : value_1(val_1), value_2(val_2) { };
-   ~F_Path_2();
+   F_Path_2(_genptr<_str>& val_1, _genptr<_str>& val_2)
+      : value_1(std::move(val_1)), value_2(std::move(val_2)) { };
 
    _str getValue() override;
 
 private:
-   Generator<_str>* value_1;
-   Generator<_str>* value_2;
+   _genptr<_str> value_1;
+   _genptr<_str> value_2;
 };
 
 
 struct F_Path_3 : Generator<_str>
 {
 public:
-   F_Path_3(Generator<_str>* val_1, Generator<_str>* val_2, Generator<_str>* val_3)
-      : value_1(val_1), value_2(val_2), value_3(val_3) { };
-   ~F_Path_3();
+   F_Path_3(_genptr<_str>& val_1, _genptr<_str>& val_2, _genptr<_str>& val_3)
+      : value_1(std::move(val_1)), value_2(std::move(val_2)), value_3(std::move(val_3)) { };
 
    _str getValue() override;
 
 private:
-   Generator<_str>* value_1;
-   Generator<_str>* value_2;
-   Generator<_str>* value_3;
+   _genptr<_str> value_1;
+   _genptr<_str> value_2;
+   _genptr<_str> value_3;
 };
 
 
 struct F_Path_4 : Generator<_str>
 {
 public:
-   F_Path_4(Generator<_str>* val_1, Generator<_str>* val_2,
-      Generator<_str>* val_3, Generator<_str>* val_4)
-      : value_1(val_1), value_2(val_2),
-      value_3(val_3), value_4(val_4) { };
-
-   ~F_Path_4();
+   F_Path_4(_genptr<_str>& val_1, _genptr<_str>& val_2, _genptr<_str>& val_3, _genptr<_str>& val_4)
+      : value_1(std::move(val_1)), value_2(std::move(val_2)), 
+        value_3(std::move(val_3)), value_4(std::move(val_4)) { };
 
    _str getValue() override;
 
 private:
-   Generator<_str>* value_1;
-   Generator<_str>* value_2;
-   Generator<_str>* value_3;
-   Generator<_str>* value_4;
+   _genptr<_str> value_1;
+   _genptr<_str> value_2;
+   _genptr<_str> value_3;
+   _genptr<_str> value_4;
 };
 
 
 struct F_Path_Multi : Generator<_str>
 {
 public:
-   F_Path_Multi(std::vector<Generator<_str>*>* vals)
-      : values(vals), length(vals->size()) { };
-   ~F_Path_Multi();
+   F_Path_Multi(std::vector<_genptr<_str>>& vals)
+      : length(vals.size()) 
+   { 
+      transferGenPtrs(vals, this->values);
+   };
 
    _str getValue() override;
 
 private:
-   std::vector<Generator<_str>*>* values;
+   std::vector<_genptr<_str>> values;
    const _int length;
 };
 
@@ -117,7 +113,7 @@ private:
 struct F_Drive : AttrFunction, Generator<_str>
 {
 public:
-   F_Drive(Generator<_str>* val, Uroboros& uro)
+   F_Drive(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _str getValue() override;
@@ -127,7 +123,7 @@ public:
 struct F_Extension : AttrFunction, Generator<_str>
 {
 public:
-   F_Extension(Generator<_str>* val, Uroboros& uro)
+   F_Extension(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _str getValue() override;
@@ -137,7 +133,7 @@ public:
 struct F_Fullname : AttrFunction, Generator<_str>
 {
 public:
-   F_Fullname(Generator<_str>* val, Uroboros& uro)
+   F_Fullname(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _str getValue() override;
@@ -147,7 +143,7 @@ public:
 struct F_Name : AttrFunction, Generator<_str>
 {
 public:
-   F_Name(Generator<_str>* val, Uroboros& uro)
+   F_Name(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _str getValue() override;
@@ -157,7 +153,7 @@ public:
 struct F_Parent : AttrFunction, Generator<_str>
 {
 public:
-   F_Parent(Generator<_str>* val, Uroboros& uro)
+   F_Parent(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _str getValue() override;
@@ -167,7 +163,7 @@ public:
 struct F_Size : AttrFunction, Generator<_num>
 {
 public:
-   F_Size(Generator<_str>* val, Uroboros& uro)
+   F_Size(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _num getValue() override;
@@ -177,45 +173,37 @@ public:
 struct F_SizeDefinition : Generator<_num>
 {
 public:
-   F_SizeDefinition(_def* def, Uroboros& uro)
-      : definition(def), uroboros(uro), inner(uro.vars.inner) { };
-
-   ~F_SizeDefinition() {
-      delete definition;
-   }
+   F_SizeDefinition(_defptr& def, Uroboros& uro)
+      : definition(std::move(def)), uroboros(uro), inner(uro.vars.inner) { };
 
    _num getValue() override;
 
 private:
    Uroboros& uroboros;
    InnerVariables& inner;
-   _def* definition;
+   _defptr definition;
 };
 
 
 struct F_SizeList : Generator<_num>
 {
 public:
-   F_SizeList(Generator<_list>* vals, Uroboros& uro)
-      : values(vals), uroboros(uro), inner(uro.vars.inner) { };
-
-   ~F_SizeList() {
-      delete values;
-   }
+   F_SizeList(_genptr<_list>& vals, Uroboros& uro)
+      : values(std::move(vals)), uroboros(uro), inner(uro.vars.inner) { };
 
    _num getValue() override;
 
 private:
    Uroboros& uroboros;
    InnerVariables& inner;
-   Generator<_list>* values;
+   _genptr<_list> values;
 };
 
 
 struct F_Lifetime : AttrFunction, Generator<_per>
 {
 public:
-   F_Lifetime(Generator<_str>* val, Uroboros& uro)
+   F_Lifetime(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _per getValue() override;
@@ -225,7 +213,7 @@ public:
 struct F_Access : AttrFunction, Generator<_tim>
 {
 public:
-   F_Access(Generator<_str>* val, Uroboros& uro)
+   F_Access(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _tim getValue() override;
@@ -235,7 +223,7 @@ public:
 struct F_Change : AttrFunction, Generator<_tim>
 {
 public:
-   F_Change(Generator<_str>* val, Uroboros& uro)
+   F_Change(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _tim getValue() override;
@@ -245,7 +233,7 @@ public:
 struct F_Creation : AttrFunction, Generator<_tim>
 {
 public:
-   F_Creation(Generator<_str>* val, Uroboros& uro)
+   F_Creation(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _tim getValue() override;
@@ -255,7 +243,7 @@ public:
 struct F_Modification : AttrFunction, Generator<_tim>
 {
 public:
-   F_Modification(Generator<_str>* val, Uroboros& uro)
+   F_Modification(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _tim getValue() override;
@@ -265,7 +253,7 @@ public:
 struct F_Archive : AttrFunction, Generator<_bool>
 {
 public:
-   F_Archive(Generator<_str>* val, Uroboros& uro)
+   F_Archive(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -275,7 +263,7 @@ public:
 struct F_Compressed : AttrFunction, Generator<_bool>
 {
 public:
-   F_Compressed(Generator<_str>* val, Uroboros& uro)
+   F_Compressed(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -285,7 +273,7 @@ public:
 struct F_Empty : AttrFunction, Generator<_bool>
 {
 public:
-   F_Empty(Generator<_str>* val, Uroboros& uro)
+   F_Empty(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -295,7 +283,7 @@ public:
 struct F_Encrypted : AttrFunction, Generator<_bool>
 {
 public:
-   F_Encrypted(Generator<_str>* val, Uroboros& uro)
+   F_Encrypted(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -305,24 +293,22 @@ public:
 struct F_Exist : Generator<_bool>
 {
 public:
-   F_Exist(Generator<_list>* val, Uroboros& uro)
-      : value(val), uroboros(uro), inner(uro.vars.inner) { };
-
-   ~F_Exist();
+   F_Exist(_genptr<_list>& val, Uroboros& uro)
+      : value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
 
    _bool getValue() override;
 
 private:
    Uroboros& uroboros;
    InnerVariables& inner;
-   Generator<_list>* value;
+   _genptr<_list> value;
 };
 
 
 struct F_Exists : AttrFunction, Generator<_bool>
 {
 public:
-   F_Exists(Generator<_str>* val, Uroboros& uro)
+   F_Exists(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -332,7 +318,7 @@ public:
 struct F_Hidden : AttrFunction, Generator<_bool>
 {
 public:
-   F_Hidden(Generator<_str>* val, Uroboros& uro)
+   F_Hidden(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -342,7 +328,7 @@ public:
 struct F_IsDirectory : AttrFunction, Generator<_bool>
 {
 public:
-   F_IsDirectory(Generator<_str>* val, Uroboros& uro)
+   F_IsDirectory(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -352,7 +338,7 @@ public:
 struct F_IsFile : AttrFunction, Generator<_bool>
 {
 public:
-   F_IsFile(Generator<_str>* val, Uroboros& uro)
+   F_IsFile(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;
@@ -362,7 +348,7 @@ public:
 struct F_Readonly : AttrFunction, Generator<_bool>
 {
 public:
-   F_Readonly(Generator<_str>* val, Uroboros& uro)
+   F_Readonly(_genptr<_str>& val, Uroboros& uro)
       : AttrFunction(val, uro) { };
 
    _bool getValue() override;

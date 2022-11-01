@@ -29,7 +29,7 @@ _list InnerVariables::getAlphabet()
    _list a(26);
 
    for (_size i = 0; i < 26; i++) {
-      a[i] = toStr(L'a' + i);
+      a[i] = L'a' + i;
    }
 
    return a;

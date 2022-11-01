@@ -71,7 +71,7 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
             _defptr def;
 
             if (uro.vars.getVarValue(f, def)) {
-               result = std::make_unique<gen::DefinitionElement>(def, num);
+               result = std::make_unique<gen::DefinitionElement>(def, num, uro);
                return true;
             }
          }

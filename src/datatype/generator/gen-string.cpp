@@ -70,10 +70,15 @@ _str DefinitionElement::getValue()
       return EMPTY_STRING;
    }
 
-   while (definition->hasNext()) {
+   while (this->definition->hasNext()) {
+      if (this->uroboros.state != State::s_Running) {
+         this->definition.reset();
+         return EMPTY_STRING;
+      }
+
       if (n == 0LL) {
-         const _str result = definition->getValue();
-         definition.reset();
+         const _str result = this->definition->getValue();
+         this->definition.reset();
          return result;
       }
 

@@ -96,12 +96,13 @@ private:
 struct DefinitionElement : Generator<_str>
 {
 public:
-   DefinitionElement(_defptr& def, _genptr<_num>& ind)
-      : definition(std::move(def)), index(std::move(ind)) {};
+   DefinitionElement(_defptr& def, _genptr<_num>& ind, Uroboros& uro)
+      : definition(std::move(def)), index(std::move(ind)), uroboros(uro) {};
 
    _str getValue() override;
 
 private:
+   Uroboros& uroboros;
    _defptr definition;
    _genptr<_num> index;
 };

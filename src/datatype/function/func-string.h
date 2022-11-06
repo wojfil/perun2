@@ -303,6 +303,9 @@ struct F_Roman : Func_1<_num>, Generator<_str>
 public:
    F_Roman(_genptr<_num>& a1) : Func_1(a1) { };
    _str getValue() override;
+
+private:
+   inline void appendFraction(const _num& base, _stream& ss) const;
 };
 
 

@@ -765,7 +765,23 @@ _str F_Roman::getValue()
    _nint number = base.toInt();
 
    if (number == 0LL) {
-      return L"N";
+      if (base.isDouble) {
+         _stream ss;
+         appendFraction(base, ss);
+         _str result = ss.str();
+
+         if (result.empty()) {
+            result = L"N";
+         }
+         else if (base.value.d < 0L) {
+            result = str(L"-", result);
+         }
+
+         return result;
+      }
+      else {
+         return L"N";
+      }
    }
    else if (number >= 5000000LL || number <= -5000000LL) {
       return base.toString();
@@ -800,20 +816,27 @@ _str F_Roman::getValue()
    }
 
    if (base.isDouble) {
-      _int oc = static_cast<_int>(std::fmod(base.value.d, 1.0L) * 12L);
-      if (oc < 0) {
-         oc *= -1;
-      }
-      if (oc >= 6) {
-         oc -= 6;
-         ss << L'S';
-      }
-      for (_int i = 0; i < oc; i++) {
-         ss << L'·';
-      }
+      appendFraction(base, ss);
    }
 
    return ss.str();
+}
+
+
+inline void F_Roman::appendFraction(const _num& base, _stream& ss) const
+{
+   _int oc = static_cast<_int>(std::fmod(base.value.d, 1.0L) * 12L);
+   if (oc < 0) {
+      oc *= -1;
+   }
+   if (oc >= 6) {
+      oc -= 6;
+      ss << L'S';
+   }
+
+   if (oc > 0) {
+      ss << _str(oc,  L'·');
+   }
 }
 
 

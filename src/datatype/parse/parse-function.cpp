@@ -550,7 +550,6 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          functionArgNumberException(len, word, uro);
 
       return simpleNumberFunction(result, args[0], word, uro);
-      return true;
    }
    else if (name == uro.hashes.HASH_FUNC_LENGTH) {
       if (len != 1)
@@ -900,7 +899,6 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
       return stringTwoArgFunction(result, args, word, uro);
    }
    else if (uro.hashes.HASH_GROUP_FUNC_STR_STR.find(name) != uro.hashes.HASH_GROUP_FUNC_STR_STR.end()) {
-
       if (len != 1)
          functionArgNumberException(len, word, uro);
 

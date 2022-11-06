@@ -47,27 +47,38 @@ public:
       : generator(), operator_(op), type(ElementType::et_Operator), constant(T()), line(li) { };
 
    ExpElement<T>(_genptr<T>& gen, const _int& li)
-      : generator(std::move(gen)), type(et_Generator), constant(T()), operator_(0), line(li) { };
+      : generator(std::move(gen)), type(ElementType::et_Generator), constant(T()), operator_(0), line(li) { };
 
    ExpElement<T>(ExpElement<T>& element)
       : generator(element.type == ElementType::et_Operator ? _genptr<T>() : std::move(element.generator)),
       constant(element.constant), type(element.type), operator_(element.operator_), line(element.line) { };
 
-   ExpElement<T>& operator=(ExpElement<T>&&) noexcept { };
+   //ExpElement<T>& operator=(ExpElement<T>&&) noexcept { };
 
-   ExpElement<T>(ExpElement<T>&&) noexcept { };
+   ExpElement<T>(ExpElement<T>&& other) noexcept 
+   { 
+      operator_ = other.operator_;
+      constant = other.constant;
+      type = other.type;
+      line = other.line;
+      if (type != ElementType::et_Operator) {
+         generator = std::move(other.generator);
+      }
+   };
 
    void reinit(const T& cnst, const _int& li)
    {
       this->type = ElementType::et_Constant;
       this->constant = cnst;
       this->generator = std::make_unique<gen::Constant<T>>(cnst);
+      this->line = li;
    }
 
    void reinit(_genptr<T>& gen, const _int& li)
    {
       this->type = ElementType::et_Generator;
       this->generator = std::move(gen);
+      this->line = li;
    }
 
    void reinit(ExpElement<T>& element)
@@ -77,7 +88,7 @@ public:
       this->constant = element.constant;
       this->operator_ = element.operator_;
 
-      if (element.type != et_Operator) {
+      if (element.type != ElementType::et_Operator) {
          this->generator = std::move(element.generator);
       }
    }

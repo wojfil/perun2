@@ -67,7 +67,7 @@ public:
    {
       VarBundle<T>* bundle;
       takeBundlePointer(bundle);
-      return bundle->getValue(this->vc, tk, result, this->inner);
+      return bundle->getValue(tk, result);
    }
 
    _bool variableExists(const Token& tk);
@@ -97,8 +97,8 @@ private:
    VarBundle<_tlist> tlist;
    VarBundle<_list> list;
 
-   std::map<_size, gen::DefinitionGenerator*> defGenerators;
-   std::map<_size, Variable<_numi>*> intVars;
+   std::map<_size, std::unique_ptr<gen::DefinitionGenerator>> defGenerators;
+   std::map<_size, Variable<_numi>*> intVars; // dangling pointers to internal variables
 
 };
 

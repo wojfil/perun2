@@ -18,12 +18,17 @@
 namespace uro::gen
 {
 
-NumberIntRef::NumberIntRef(vars::Variable<_numi>* val)
-   : value(val) {};
+NumberIntRef::NumberIntRef(vars::Variable<_numi>& val)
+   : value(val) { };
+
+_bool NumberIntRef::isConstant() const
+{
+   return this->value.isConstant();
+}
 
 _num NumberIntRef::getValue()
 {
-   return value->getValue();
+   return this->value.getValue();
 }
 
 }

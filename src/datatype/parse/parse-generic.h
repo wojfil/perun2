@@ -133,10 +133,10 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
       const Tokens& tks = elements[i];
       _genptr<T> value;
       if (parse(uro, tks, value)) {
-         result.push_back(std::move(value));
          if (isConstant && !value->isConstant()) {
             isConstant = false;
          }
+         result.push_back(std::move(value));
       }
       else {
          return false;
@@ -168,10 +168,10 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
       const Tokens& tks = elements[i];
       _genptr<std::vector<T>> value;
       if (parse(uro, tks, value)) {
-         result.push_back(std::move(value));
          if (isConstant && !value->isConstant()) {
             isConstant = false;
          }
+         result.push_back(std::move(value));
       }
       else {
          return false;

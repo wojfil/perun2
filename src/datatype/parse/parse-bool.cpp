@@ -22,7 +22,6 @@
 #include "../generator/gen-like.h"
 #include "../../var/var-runtime.h"
 #include "../parse-gen.h"
-#include <vector>
 
 
 namespace uro::parse
@@ -61,37 +60,30 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
                if (!parseBoolExp(result, tks, uro)) {
                   throw SyntaxException(L"syntax of a boolean expression is not valid", tks.first().line);
                }
+               return true;
             }
          }
          bi.refresh(t);
       }
    }
 
-   _genptr<_bool> cmp;
-   if (parseComparisons(cmp, tks, uro)) {
-      result = std::move(cmp);
+   if (parseComparisons(result, tks, uro)) {
       return true;
    }
 
    if (tks.check(TI_HAS_KEYWORD_IN)) {
-      _genptr<_bool> boo;
-      if (parseIn(boo, tks, uro)) {
-         result = std::move(boo);
+      if (parseIn(result, tks, uro)) {
          return true;
       }
    }
 
    if (tks.check(TI_HAS_KEYWORD_LIKE)) {
-      _genptr<_bool> boo;
-      if (parseLike(boo, tks, uro)) {
-         result = std::move(boo);
+      if (parseLike(result, tks, uro)) {
          return true;
       }
    }
 
-   _genptr<_bool> tern;
-   if (parseTernary<_bool>(tern, tks, uro)) {
-      result = std::move(tern);
+   if (parseTernary<_bool>(result, tks, uro)) {
       return true;
    }
 
@@ -329,67 +321,63 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
       return true;
    }
 
-   ExpElement<_bool> firstElement(elements[0]);
-   _char oper;
+   _genptr<_bool> first = std::move(elements[0].generator);
+   _bool firstIsConstant = first->isConstant();
+   _char op;
 
    for (_size i = 1; i < len; i++) {
-      ExpElement<_bool>& secondElement = elements[i];
-      const ElementType& type = secondElement.type;
+      ExpElement<_bool>& e = elements[i];
 
-      if (type == ElementType::et_Operator) {
-         oper = secondElement.operator_;
+      if (e.type == ElementType::et_Operator) {
+         op = e.operator_;
       }
       else {
-         const _int line = firstElement.line;
-
-         if (type == ElementType::et_Constant && firstElement.type == ElementType::et_Constant) {
-            const _bool v1 = firstElement.constant;
-            const _bool v2 = secondElement.constant;
+         _genptr<_bool> second(std::move(e.generator));
+         
+         if (firstIsConstant && e.type == ElementType::et_Constant) {
             _bool value;
 
-            switch(oper) {
+            switch(op) {
                case L'&': {
-                  value = v1 && v2;
+                  value = first->getValue() && second->getValue();
                   break;
                }
                case L'|': {
-                  value = v1 || v2;
+                  value = first->getValue() || second->getValue();;
                   break;
                }
                case L'^': {
-                  value = v1 ^ v2;
+                  value = first->getValue() ^ second->getValue();;
                   break;
                }
             }
 
-            firstElement.reinit(value, line);
+            first = std::make_unique<gen::Constant<_bool>>(value);
          }
          else {
-            _genptr<_bool> first = std::move(firstElement.generator);
-            _genptr<_bool> second = std::move(secondElement.generator);
-            _genptr<_bool> bin;
+            _genptr<_bool> prev = std::move(first);
 
-            switch(oper) {
+            switch(op) {
                case L'&': {
-                  bin = std::make_unique<gen::And>(first, second);
+                  first = std::make_unique<gen::And>(prev, second);
                   break;
                }
                case L'|': {
-                  bin = std::make_unique<gen::Or>(first, second);
+                  first = std::make_unique<gen::Or>(prev, second);
                   break;
                }
                case L'^': {
-                  bin = std::make_unique<gen::Xor>(first, second);
+                  first = std::make_unique<gen::Xor>(prev, second);
                   break;
                }
             }
 
-            firstElement.reinit(bin, line);
+            firstIsConstant = false;
          }
       }
    }
 
-   result = std::move(firstElement.generator);
+   result = std::move(first);
    return true;
 }
 
@@ -403,7 +391,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
    // bool expressions can start with only two symbols: not or (
    const ExpElement<_bool>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
-      const _char op = first.operator_;
+      const _char& op = first.operator_;
       if (!(op == L'(' || op == L'!')) {
          return false;
       }
@@ -432,7 +420,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             }
             case L'(': {
                if (cop) {
-                  const _char op = curr.operator_;
+                  const _char& op = curr.operator_;
                   if (!(op == L'(' || op == L'!')) {
                      return false;
                   }
@@ -441,7 +429,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             }
             case L')': {
                if (cop) {
-                  const _char op = curr.operator_;
+                  const _char& op = curr.operator_;
                   if (op == L'(' || op == L'!') {
                      return false;
                   }
@@ -453,7 +441,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             }
             default: {
                if (cop) {
-                  const _char op = curr.operator_;
+                  const _char& op = curr.operator_;
                   if (!(op == L'(' || op == L'!')) {
                      return false;
                   }
@@ -465,7 +453,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
       else
       {
          if (cop) {
-            const _char op = curr.operator_;
+            const _char& op = curr.operator_;
             if (op == L'!' || op == L'(') {
                return false;
             }
@@ -915,7 +903,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
     || parseComparisonUnit<_num>(result, left, right, ct, uro)
     || parseComparisonUnit<_per>(result, left, right, ct, uro)
     || parseComparisonUnit<_tim>(result, left, right, ct, uro)
-    || parseComparisonUnit<_tim>(result, left, right, ct, uro)) {
+    || parseComparisonUnit<_str>(result, left, right, ct, uro)) {
       return true;
    }
 

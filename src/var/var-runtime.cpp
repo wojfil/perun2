@@ -18,6 +18,7 @@
 #include "../datatype/generator/gen-definition.h"
 #include "../datatype/generator/gen-string.h"
 #include "../datatype/gen-ref.h"
+#include "../datatype/gen-memory.h"
 #include "../exception.h"
 #include "../util.h"
 #include "../os.h"
@@ -42,24 +43,19 @@ Variables::Variables(uro::Uroboros& uro)
       { this->hashes.HASH_VAR_ARCHIVE, &this->inner.archive },
       { this->hashes.HASH_VAR_COMPRESSED, &this->inner.compressed },
       { this->hashes.HASH_VAR_ENCRYPTED, &this->inner.encrypted },
-   }, { }, uro),
+   }, uro),
    per ({
       { this->hashes.HASH_VAR_LIFETIME, &this->inner.lifetime }
-   }, { }, uro),
+   }, uro),
    tim ({
       { this->hashes.HASH_VAR_ACCESS, &this->inner.access },
       { this->hashes.HASH_VAR_CHANGE, &this->inner.change },
       { this->hashes.HASH_VAR_CREATION, &this->inner.creation },
       { this->hashes.HASH_VAR_MODIFICATION, &this->inner.modification }
-   }, {
-      { this->hashes.HASH_VAR_NOW, new gen::v_Now() },
-      { this->hashes.HASH_VAR_TODAY, new gen::v_Today() },
-      { this->hashes.HASH_VAR_YESTERDAY, new gen::v_Yesterday() },
-      { this->hashes.HASH_VAR_TOMORROW, new gen::v_Tomorrow() }
    }, uro),
    num ({
       { this->hashes.HASH_VAR_SIZE, &this->inner.size }
-   }, { }, uro),
+   }, uro),
    str_ ( {
       { this->hashes.HASH_VAR_DRIVE, &this->inner.drive },
       { this->hashes.HASH_VAR_EXTENSION, &this->inner.extension },
@@ -67,29 +63,58 @@ Variables::Variables(uro::Uroboros& uro)
       { this->hashes.HASH_VAR_NAME, &this->inner.name },
       { this->hashes.HASH_VAR_PARENT, &this->inner.parent },
       { this->hashes.HASH_VAR_PATH, &this->inner.path }
-   }, {
-      { this->hashes.HASH_VAR_DESKTOP, new gen::Constant<_str>(os_desktopPath()) },
-      { this->hashes.HASH_VAR_UROBOROS, new gen::Constant<_str>(this->uroPath) },
-      { this->hashes.HASH_VAR_LOCATION, &this->inner.location }
    }, uro),
-   nlist ( { }, { }, uro ),
-   tlist ( { }, { }, uro ),
-   list ( { },
-   {
-      { this->hashes.HASH_VAR_ALPHABET, new gen::Constant<_list>(inner.getAlphabet()) },
-      { this->hashes.HASH_VAR_ASCII, new gen::Constant<_list>(inner.getAscii()) },
-      { this->hashes.HASH_VAR_ARGUMENTS, new gen::Constant<_list>(uroboros.arguments.getArgs()) }
-   }, uro),
-   defGenerators({
-      { this->hashes.HASH_VAR_DIRECTORIES, new gen::DefinitionGenerator(gen::OsElement::oe_Directories, uro) },
-      { this->hashes.HASH_VAR_FILES, new gen::DefinitionGenerator(gen::OsElement::oe_Files, uro) },
-      { this->hashes.HASH_VAR_RECURSIVEFILES, new gen::DefinitionGenerator(gen::OsElement::oe_RecursiveFiles, uro) },
-      { this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, new gen::DefinitionGenerator(gen::OsElement::oe_RecursiveDirectories, uro) }
-   }),
+   nlist ( { }, uro ),
+   tlist ( { }, uro ),
+   list ( { }, uro),
+   /*defGenerators({
+      { this->hashes.HASH_VAR_DIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Directories, uro) },
+      { this->hashes.HASH_VAR_FILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Files, uro) },
+      { this->hashes.HASH_VAR_RECURSIVEFILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveFiles, uro) },
+      { this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveDirectories, uro) }
+   }),*/
    intVars({
       { this->hashes.HASH_VAR_INDEX, &this->inner.index },
       { this->hashes.HASH_VAR_DEPTH, &this->inner.depth }
-   }) { };
+   }) 
+   { 
+      _genptr<_tim> temp_now(new gen::v_Now());
+      _genptr<_tim> temp_today(new gen::v_Today());
+      _genptr<_tim> temp_yesterday(new gen::v_Yesterday());
+      _genptr<_tim> temp_tomorrow(new gen::v_Tomorrow());
+      this->tim.addSpecialVar(this->hashes.HASH_VAR_NOW, temp_now);
+      this->tim.addSpecialVar(this->hashes.HASH_VAR_TODAY, temp_today);
+      this->tim.addSpecialVar(this->hashes.HASH_VAR_YESTERDAY, temp_yesterday);
+      this->tim.addSpecialVar(this->hashes.HASH_VAR_TOMORROW, temp_tomorrow);
+
+      _genptr<_str> temp_desktop(new gen::Constant<_str>(os_desktopPath()));
+      _genptr<_str> temp_uroboros(new gen::Constant<_str>(this->uroPath));
+      _genptr<_str> temp_location(new gen::GeneratorRef<_str>(this->inner.location));
+      this->str_.addSpecialVar(this->hashes.HASH_VAR_DESKTOP, temp_desktop);
+      this->str_.addSpecialVar(this->hashes.HASH_VAR_UROBOROS, temp_uroboros);
+      this->str_.addSpecialVar(this->hashes.HASH_VAR_LOCATION, temp_location);
+
+      _genptr<_list> temp_alphabet(new gen::Constant<_list>(inner.getAlphabet()));
+      _genptr<_list> temp_ascii(new gen::Constant<_list>(inner.getAscii()));
+      _genptr<_list> temp_arguments(new gen::Constant<_list>(uroboros.arguments.getArgs()));
+      this->list.addSpecialVar(this->hashes.HASH_VAR_ALPHABET, temp_alphabet);
+      this->list.addSpecialVar(this->hashes.HASH_VAR_ASCII, temp_ascii);
+      this->list.addSpecialVar(this->hashes.HASH_VAR_ARGUMENTS, temp_arguments);
+
+      std::unique_ptr<gen::DefinitionGenerator> temp_d(new gen::DefinitionGenerator(gen::OsElement::oe_Directories, uro));
+      std::unique_ptr<gen::DefinitionGenerator> temp_f(new gen::DefinitionGenerator(gen::OsElement::oe_Files, uro));
+      std::unique_ptr<gen::DefinitionGenerator> temp_rf(new gen::DefinitionGenerator(gen::OsElement::oe_RecursiveFiles, uro));
+      std::unique_ptr<gen::DefinitionGenerator> temp_rd(new gen::DefinitionGenerator(gen::OsElement::oe_RecursiveDirectories, uro));
+      this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_DIRECTORIES, std::move(temp_d)));
+      this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_FILES, std::move(temp_f)));
+      this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_RECURSIVEFILES, std::move(temp_rf)));
+      this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, std::move(temp_rd)));
+
+      /*{ this->hashes.HASH_VAR_DIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Directories, uro) },
+      { this->hashes.HASH_VAR_FILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Files, uro) },
+      { this->hashes.HASH_VAR_RECURSIVEFILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveFiles, uro) },
+      { this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveDirectories, uro) }*/
+   };
 
 void Variables::varsLevelUp()
 {
@@ -174,7 +199,7 @@ _bool getVarValueIncludingThis(const Token& tk, _genptr<T>& result, const ThisSt
 
    VarBundle<T>* bundle;
    vars.takeBundlePointer(bundle);
-   return bundle->getValue(vc, tk, result, inner);
+   return bundle->getValue(tk, result);
 }
 
 _bool Variables::getVarValue(const Token& tk, _genptr<_tim>& result)
@@ -191,13 +216,13 @@ _bool Variables::getVarValue(const Token& tk, _genptr<_num>& result)
             L"' can be accessed only inside a loop"), tk.line);
       }
       else {
-         result = std::make_unique<gen::NumberIntRef>(this->intVars[tk.value.word.h]); // here??
+         result = std::make_unique<gen::NumberIntRef>(*this->intVars[tk.value.word.h]);
          return true;
       }
    }
    else if (this->intVars.find(tk.value.word.h) != this->intVars.end()) {
       this->vc.setAttribute(tk, this->uroboros);
-      result = std::make_unique<gen::NumberIntRef>(this->intVars[tk.value.word.h]);
+      result = std::make_unique<gen::NumberIntRef>(*this->intVars[tk.value.word.h]);
       return true;
    }
 

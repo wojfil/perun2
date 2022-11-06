@@ -28,7 +28,7 @@ struct GeneratorRef : Generator<T>
 {
 public:
    GeneratorRef(Generator<T>& val)
-      : value(val) {};
+      : value(val) { };
 
    _bool isConstant() const override
    {
@@ -45,16 +45,39 @@ private:
 };
 
 
+template <typename T>
+struct GeneratorPtrRef : Generator<T>
+{
+public:
+   GeneratorPtrRef(_genptr<T>& val)
+      : value(val) { };
+
+   _bool isConstant() const override
+   {
+      return this->value->isConstant();
+   };
+
+   T getValue() override
+   {
+      return this->value->getValue();
+   };
+
+private:
+   _genptr<T>& value;
+};
+
+
 // cast generator of int numbers
 // to a generator of numbers
 struct NumberIntRef : Generator<_num>
 {
 public:
-   NumberIntRef(vars::Variable<_numi>* val);
+   NumberIntRef(vars::Variable<_numi>& val);
+   _bool isConstant() const override;
    _num getValue() override;
 
 private:
-   vars::Variable<_numi>* value;
+   vars::Variable<_numi>& value;
 };
 
 }

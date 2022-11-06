@@ -142,8 +142,8 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro)
             _genptr<_num> num;
             if (parse(uro, tks, num)) {
                _genptr<_num> pn = std::move(prevNum);
-               prevNum = std::make_unique<gen::Addition>(pn, num);
                concatParseOutcome(parsed, allConstants, num);
+               prevNum = std::make_unique<gen::Addition>(pn, num);
             }
             else {
                result.push_back(std::make_unique<gen::Cast_N_S>(prevNum));
@@ -162,8 +162,8 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro)
             _genptr<_per> per;
             if (parse(uro, tks, per)) {
                _genptr<_tim> pt = std::move(prevTim);
-               prevTim = std::make_unique<gen::IncreasedTime>(prevTim, per);
                concatParseOutcome(parsed, allConstants, per);
+               prevTim = std::make_unique<gen::IncreasedTime>(pt, per);
             }
             else {
                result.push_back(std::make_unique<gen::Cast_T_S>(prevTim));
@@ -182,8 +182,8 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro)
             _genptr<_per> per;
             if (parse(uro, tks, per)) {
                _genptr<_per> pp = std::move(prevPer);
-               prevPer = std::make_unique<gen::PeriodAddition>(pp, per);
                concatParseOutcome(parsed, allConstants, per);
+               prevPer = std::make_unique<gen::PeriodAddition>(pp, per);
             }
             else {
                result.push_back(std::make_unique<gen::Cast_P_S>(prevPer));
@@ -205,8 +205,8 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro)
          _genptr<_str> str;
 
          if (parse(uro, tks, str)) {
-            result.push_back(std::move(str));
             allConstants &= str->isConstant();
+            result.push_back(std::move(str));
          }
          else {
             return false;

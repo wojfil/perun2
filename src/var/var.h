@@ -48,12 +48,16 @@ public:
 template <typename T>
 struct ParseVariable
 {
-
 public:
-   ParseVariable<T>() { };
 
-   Variable<T>* getVarPtr() {
+   Variable<T>* getVarPtr() const
+   {
       return &this->var;
+   }
+
+   Variable<T>& getVarRef()
+   {
+      return this->var;
    }
 
    void bracketsUp()
@@ -104,6 +108,7 @@ public:
    Variable<T> var;
 
 private:
+
    _int level = 0;
    _bool isReachable_ = true;
 };

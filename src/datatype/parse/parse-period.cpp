@@ -326,9 +326,6 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro
    }
 
    if (isTime) {
-      if (hasFirst) {
-         throw SyntaxException(L"time can be subtracted only from another time", tks.last().line);
-      }
       return false;
    }
 

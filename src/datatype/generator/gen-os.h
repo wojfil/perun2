@@ -54,7 +54,7 @@ public:
    DefinitionGenerator(const OsElement& el, Uroboros& uro);
 
    _bool generateDefault(_defptr& result) const;
-   _bool generatePattern(_defptr& result, _genptr<_str>& location, const OsElement& element, 
+   _bool generatePattern(_defptr& result, _genptr<_str>& location, const OsElement& element,
       const _str& pattern, const _bool& isAbsolute, const _str& prefix) const;
 
 private:

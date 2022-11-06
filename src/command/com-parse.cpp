@@ -623,7 +623,7 @@ static Command* commandMisc(const Tokens& tks, Uroboros& uro)
       Tokens& left = pair.first;
       Tokens& right = pair.second;
       right.checkCommonExpressionExceptions(uro);
-      
+
       if (left.isEmpty()) {
          if (right.isEmpty()) {
             throw SyntaxException(
@@ -696,10 +696,10 @@ static Command* commandMisc(const Tokens& tks, Uroboros& uro)
             pv_num->makeNotConstant();
 
             if (isIncrement) {
-               return new VarIncrement(pv_num->getVarPtr());
+               return new VarIncrement(pv_num->getVarRef());
             }
             else {
-               return new VarDecrement(pv_num->getVarPtr());
+               return new VarDecrement(pv_num->getVarRef());
             }
          }
          else {
@@ -764,10 +764,10 @@ static Command* commandMisc(const Tokens& tks, Uroboros& uro)
          pv_tim->makeNotConstant();
 
          if (isIncrement) {
-            return new VarTimeUnitIncrement(pv_tim->getVarPtr(), unit);
+            return new VarTimeUnitIncrement(pv_tim->getVarRef(), unit);
          }
          else {
-            return new VarTimeUnitDecrement(pv_tim->getVarPtr(), unit);
+            return new VarTimeUnitDecrement(pv_tim->getVarRef(), unit);
          }
       }
       else {
@@ -838,7 +838,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                L"= cannot be resolved to a number"), first.line);
          }
 
-         vars::Variable<_num>* var = pv_num->getVarPtr();
+         vars::Variable<_num>& var = pv_num->getVarRef();
          pv_num->makeNotConstant();
 
          switch (sign) {
@@ -857,7 +857,6 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
 
       vars::ParseVariable<_per>* pv_per;
       if (uro.vars.getVarPtr(first, pv_per)) {
-         vars::Variable<_per>* var = pv_per->getVarPtr();
 
          switch (sign) {
             case L'+':
@@ -870,6 +869,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                }
 
                pv_per->makeNotConstant();
+               vars::Variable<_per>& var = pv_per->getVarRef();
 
                if (sign == L'+')
                   return new VarAdd_<_per>(var, per);
@@ -896,7 +896,6 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
             }
          }
 
-         vars::Variable<_tim>* var = pv_tim->getVarPtr();
          _genptr<_per> per;
 
          if (!parse::parse(uro, right, per)) {
@@ -904,6 +903,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
                L" ", toStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
 
+         vars::Variable<_tim>& var = pv_tim->getVarRef();
          pv_tim->makeNotConstant();
 
          if (sign == L'+') {
@@ -947,7 +947,7 @@ static Command* commandVarChange(const Tokens& left, const Tokens& right,
       }
 
       const _size& h = first.value.twoWords.h2;
-      vars::Variable<_tim>* var = pv_tim->getVarPtr();
+      vars::Variable<_tim>& var = pv_tim->getVarRef();
       const bool negative = (sign == '-');
       pv_tim->makeNotConstant();
 
@@ -984,12 +984,10 @@ static Command* commandVarIncrement(const Token& first, const Tokens& tks,
 {
    vars::ParseVariable<_str>* pv_str;
    if (uro.vars.getVarPtr(first, pv_str)) {
-      vars::Variable<_str>* var = pv_str->getVarPtr();
-
       _genptr<_str> str_;
       if (parse::parse(uro, tks, str_)) {
          pv_str->makeNotConstant();
-         return new VarAdd_<_str>(var, str_);
+         return new VarAdd_<_str>(pv_str->getVarRef(), str_);
       }
 
       _genptr<_list> list;
@@ -1018,10 +1016,10 @@ static _bool makeVarAlteration(Uroboros& uro, const Tokens& tokens, const Token&
          if (!value->isConstant()) {
             varPtr->makeNotConstant();
          }
-         result = new VarAssignment<T>(varPtr->getVarPtr(), value);
          if (varPtr->var.isConstant()) {
             varPtr->var.value = value->getValue();
          }
+         result = new VarAssignment<T>(varPtr->getVarRef(), value);
          return true;
       }
       else {
@@ -1225,7 +1223,7 @@ static Command* commandVarAssign_Element(const Tokens& left,
 
          if (parse::parse(uro, right, str_)) {
             pv_str->makeNotConstant();
-            return new VarCharAssignment(pv_str->getVarPtr(), str_, index);
+            return new VarCharAssignment(pv_str->getVarRef(), str_, index);
          }
          else {
             throw SyntaxException(str(L"new value in character assignment of variable '",

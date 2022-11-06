@@ -30,9 +30,8 @@ template <typename T>
 struct VarBundle
 {
 public:
-   VarBundle(const std::map<_size, Variable<T>*>& iVars,
-      const std::map<_size, Generator<T>*>& sVars, uro::Uroboros& uro)
-    : userVars(), internalVars(iVars), specialVars(sVars), uroboros(uro) { };
+   VarBundle(const std::map<_size, Variable<T>*>& iVars, uro::Uroboros& uro)
+    : internalVars(iVars), uroboros(uro) { };
 
    void levelUp()
    {
@@ -55,31 +54,33 @@ public:
           || this->specialVars.find(hash) != this->specialVars.end();
    }
 
-   _bool getValue(VariablesContext& vc, const Token& tk, _genptr<T>& result, const InnerVariables& inner)
+   _bool getValue(const Token& tk, _genptr<T>& result)
    {
       if (this->userVars.find(tk.value.word.h) != this->userVars.end()) {
          ParseVariable<T>& pv = this->userVars[tk.value.word.h];
          if (pv.isReachable()) {
-            result = std::make_unique<gen::GeneratorRef<T>>(*pv.getVarPtr());
+            result = std::make_unique<gen::GeneratorRef<T>>(pv.getVarRef());
             return true;
          }
       }
       else if (this->internalVars.find(tk.value.word.h) != this->internalVars.end()) {
-         vc.setAttribute(tk, this->uroboros);
+         this->uroboros.vc.setAttribute(tk, this->uroboros);
+         const ThisState& state = this->uroboros.vars.inner.thisState;
 
-         if (inner.thisState != ThisState::ts_String) {
+         if (state != ThisState::ts_String) {
             const _str name = tk.getOriginString(this->uroboros);
             throw SyntaxException(str(L"the value of variable '", name,
                L"' is undefined here. Right there we are iterating over ",
-               (inner.thisState == ThisState::ts_Number) ? L"numbers. " : L"times. ",
+               (state == ThisState::ts_Number) ? L"numbers. " : L"times. ",
                L"You should assign the value of '", name, L"' to a new temporary variable somewhere before"), tk.line);
          }
 
-         result = std::make_unique<gen::GeneratorRef<T>>(*this->internalVars[tk.value.word.h]);
+         Variable<T>& v = *this->internalVars[tk.value.word.h];
+         result = std::make_unique<gen::GeneratorRef<T>>(v);
          return true;
       }
       else if (this->specialVars.find(tk.value.word.h) != this->specialVars.end()) {
-         result = std::make_unique<gen::GeneratorRef<T>>(*this->specialVars[tk.value.word.h]);
+         result = std::make_unique<gen::GeneratorPtrRef<T>>(this->specialVars[tk.value.word.h]);
          return true;
       }
 
@@ -107,11 +108,11 @@ public:
          if (isConstant) {
             userVars[hash].var.value = valuePtr->getValue();
          }
-         return new comm::VarAssignment<T>(userVars[hash].getVarPtr(), valuePtr);
+         return new comm::VarAssignment<T>(userVars[hash].getVarRef(), valuePtr);
       }
       else {
          varPtr->resurrect(isConstant);
-         return new comm::VarAssignment<T>(varPtr->getVarPtr(), valuePtr);
+         return new comm::VarAssignment<T>(varPtr->getVarRef(), valuePtr);
       }
    }
 
@@ -122,10 +123,15 @@ public:
       }
    }
 
+   void addSpecialVar(const _size& key, _genptr<T>& value)
+   {
+      specialVars.insert(std::make_pair(key, std::move(value)));
+   }
+
 private:
    std::map<_size, ParseVariable<T>> userVars;
-   std::map<_size, Variable<T>*> internalVars;
-   std::map<_size, Generator<T>*> specialVars;
+   std::map<_size, Variable<T>*> internalVars; // dangling pointers to internal variables
+   std::map<_size, _genptr<T>> specialVars;
    uro::Uroboros& uroboros;
 
 };

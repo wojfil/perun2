@@ -16,19 +16,19 @@ typedef std::unique_ptr<Definition> _defptr;
 
 
 template <typename T>
-void transferGenPtrs(std::vector<_genptr<T>>& source,
-   std::vector<_genptr<T>>& destination)
+void transferGenPtrs(std::vector<_genptr<T>>& source, std::vector<_genptr<T>>& destination)
 {
    const _size len = source.size();
    for (_size i = 0; i < len; i++) {
       _genptr<T>& s = source[i];
       destination.push_back(std::move(source[i]));
    }
-
-   source.clear();
 };
 
 
 }
+
+
+
 
 #endif // GEN_MEMORY_H_INCLUDED

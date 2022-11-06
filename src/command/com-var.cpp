@@ -20,52 +20,52 @@ namespace uro::comm
 
 void VarNumMultiply::run()
 {
-   (variable->value) *= (value->getValue());
+   variable.value *= value->getValue();
 };
 
 void VarNumDivide::run()
 {
-   (variable->value) /= (value->getValue());
+   variable.value /= value->getValue();
 };
 
 void VarPerMultiply::run()
 {
-   (variable->value) *= (value->getValue());
+   variable.value *= value->getValue();
 };
 
 void VarPerDivide::run()
 {
-   (variable->value) /= (value->getValue());
+   variable.value /= value->getValue();
 };
 
 void VarModulo::run()
 {
-   (variable->value) %= (value->getValue());
+   variable.value %= value->getValue();
 };
 
 void VarIncrement::run()
 {
-   (variable->value)++;
+   variable.value++;
 };
 
 void VarDecrement::run()
 {
-   (variable->value)--;
+   variable.value--;
 };
 
 void VarTimeAdd::run()
 {
-   (variable->value) += (period->getValue());
+   variable.value += period->getValue();
 }
 
 void VarTimeSubtract::run()
 {
-   (variable->value) -= (period->getValue());
+   variable.value -= period->getValue();
 }
 
 void VarCharAssignment::run()
 {
-   const _size len = variable->value.size();
+   const _size len = variable.value.size();
    const _nint n = index->getValue().toInt();
 
    if (n >= 0 && n < len) {
@@ -76,40 +76,40 @@ void VarCharAssignment::run()
          case 0: {
             if (len != 0) {
                if (n == 0) {
-                  variable->value = variable->value.substr(1);
+                  variable.value = variable.value.substr(1);
                }
                else if (n == len - 1) {
-                  variable->value = variable->value.substr(0, len - 1);
+                  variable.value = variable.value.substr(0, len - 1);
                }
                else {
-                  variable->value = str(variable->value.substr(0, n), variable->value.substr(n + 1));
+                  variable.value = str(variable.value.substr(0, n), variable.value.substr(n + 1));
                }
             }
             break;
          }
          case 1: {
-            variable->value[n] = v[0];
+            variable.value[n] = v[0];
             break;
          }
          default: {
             if (n == 0) {
                if (len == 1) {
-                  variable->value = v;
+                  variable.value = v;
                }
                else {
-                  variable->value = str(v, variable->value.substr(1));
+                  variable.value = str(v, variable.value.substr(1));
                }
             }
             else if (n == len - 1) {
                if (len == 1) {
-                  variable->value = v;
+                  variable.value = v;
                }
                else {
-                  variable->value = str(variable->value.substr(0, n), v);
+                  variable.value = str(variable.value.substr(0, n), v);
                }
             }
             else {
-               variable->value = str(variable->value.substr(0, n), v, variable->value.substr(n + 1));
+               variable.value = str(variable.value.substr(0, n), v, variable.value.substr(n + 1));
             }
             break;
          }
@@ -120,7 +120,7 @@ void VarCharAssignment::run()
       const _size vlen = v.size();
 
       if (!v.empty()) {
-         variable->value += v;
+         variable.value += v;
       }
    }
 }
@@ -131,27 +131,27 @@ void VarTimeUnitAssignment::run()
 
    switch (unit) {
       case Period::u_Years: {
-         variable->value.setYear(n);
+         variable.value.setYear(n);
          break;
       }
       case Period::u_Months: {
-         variable->value.setMonth(n);
+         variable.value.setMonth(n);
          break;
       }
       case Period::u_Days: {
-         variable->value.setDay(n);
+         variable.value.setDay(n);
          break;
       }
       case Period::u_Hours: {
-         variable->value.setHour(n);
+         variable.value.setHour(n);
          break;
       }
       case Period::u_Minutes: {
-         variable->value.setMinute(n);
+         variable.value.setMinute(n);
          break;
       }
       case Period::u_Seconds: {
-         variable->value.setSecond(n);
+         variable.value.setSecond(n);
          break;
       }
    }
@@ -163,31 +163,31 @@ void VarTimeUnitChange::run()
 
    switch (unit) {
       case Period::u_Years: {
-         variable->value.addYears(n);
+         variable.value.addYears(n);
          break;
       }
       case Period::u_Months: {
-         variable->value.addMonths(n);
+         variable.value.addMonths(n);
          break;
       }
       case Period::u_Weeks: {
-         variable->value.addWeeks(n);
+         variable.value.addWeeks(n);
          break;
       }
       case Period::u_Days: {
-         variable->value.addDays(n);
+         variable.value.addDays(n);
          break;
       }
       case Period::u_Hours: {
-         variable->value.addHours(n);
+         variable.value.addHours(n);
          break;
       }
       case Period::u_Minutes: {
-         variable->value.addMinutes(n);
+         variable.value.addMinutes(n);
          break;
       }
       case Period::u_Seconds: {
-         variable->value.addSeconds(n);
+         variable.value.addSeconds(n);
          break;
       }
    }
@@ -198,31 +198,31 @@ void VarTimeUnitIncrement::run()
 {
    switch (unit) {
       case Period::u_Years: {
-         variable->value.addYears(1);
+         variable.value.addYears(1);
          break;
       }
       case Period::u_Months: {
-         variable->value.addMonths(1);
+         variable.value.addMonths(1);
          break;
       }
       case Period::u_Weeks: {
-         variable->value.addWeeks(1);
+         variable.value.addWeeks(1);
          break;
       }
       case Period::u_Days: {
-         variable->value.addDays(1);
+         variable.value.addDays(1);
          break;
       }
       case Period::u_Hours: {
-         variable->value.addHours(1);
+         variable.value.addHours(1);
          break;
       }
       case Period::u_Minutes: {
-         variable->value.addMinutes(1);
+         variable.value.addMinutes(1);
          break;
       }
       case Period::u_Seconds: {
-         variable->value.addSeconds(1);
+         variable.value.addSeconds(1);
          break;
       }
    }
@@ -233,31 +233,31 @@ void VarTimeUnitDecrement::run()
 {
    switch (unit) {
       case Period::u_Years: {
-         variable->value.addYears(-1);
+         variable.value.addYears(-1);
          break;
       }
       case Period::u_Months: {
-         variable->value.addMonths(-1);
+         variable.value.addMonths(-1);
          break;
       }
       case Period::u_Weeks: {
-         variable->value.addWeeks(-1);
+         variable.value.addWeeks(-1);
          break;
       }
       case Period::u_Days: {
-         variable->value.addDays(-1);
+         variable.value.addDays(-1);
          break;
       }
       case Period::u_Hours: {
-         variable->value.addHours(-1);
+         variable.value.addHours(-1);
          break;
       }
       case Period::u_Minutes: {
-         variable->value.addMinutes(-1);
+         variable.value.addMinutes(-1);
          break;
       }
       case Period::u_Seconds: {
-         variable->value.addSeconds(-1);
+         variable.value.addSeconds(-1);
          break;
       }
    }

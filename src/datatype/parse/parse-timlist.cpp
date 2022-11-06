@@ -56,7 +56,7 @@ static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, Uroboros
    // a list separator or a date and clock separator within one time
    // so parsing goes a weird way
 
-   const std::vector<Tokens> elements =tks.splitBySymbol(L',');
+   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
 
    _genptr<_tlist> times;
    if (parseListedTimes(times, elements, uro)) {
@@ -80,10 +80,10 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
 
       if (parse(uro, tks, time)) {
          isPrev = true;
-         result.push_back(std::move(time));
          if (isConstant && !time->isConstant()) {
             isConstant = false;
          }
+         result.push_back(std::move(time));
       }
       else {
          if (isPrev) {
@@ -92,11 +92,11 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
             _genptr<_tim> time2;
 
             if (timeFromTwoSeqs(time2, elements[i - 1], tks, uro)) {
-               result.push_back(std::move(time2));
                isPrev = false;
                if (isConstant && !time2->isConstant()) {
                   isConstant = false;
                }
+               result.push_back(std::move(time2));
             }
             else {
                return false;
@@ -140,6 +140,10 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
       _genptr<_tim> time;
 
       if (parse(uro, tks, time)) {
+         if (isConstant && !time->isConstant()) {
+            isConstant = false;
+         }
+
          _genptr<_tlist> time2(new gen::Cast_T_TL(time));
          result.push_back(std::move(time2));
          isPrev = true;
@@ -149,6 +153,10 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
             _genptr<_tim> time2;
 
             if (timeFromTwoSeqs(time2, elements[i - 1], tks, uro)) {
+               if (isConstant && !time2->isConstant()) {
+                  isConstant = false;
+               }
+
                _genptr<_tlist>(std::move(result.back()));
                result.pop_back();
                result.push_back(std::make_unique<gen::Cast_T_TL>(time2));
@@ -159,6 +167,10 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
 
          _genptr<_tlist> tlist;
          if (parse(uro, tks, tlist)) {
+            if (isConstant && !tlist->isConstant()) {
+               isConstant = false;
+            }
+
             result.push_back(std::move(tlist));
             isPrev = false;
          }

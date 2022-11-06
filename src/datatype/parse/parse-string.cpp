@@ -15,7 +15,7 @@
 #include "parse-string.h"
 #include "parse-generic.h"
 #include "../cast.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "../generator/gen-string.h"
 #include "../generator/gen-number.h"
 #include "../generator/gen-time.h"

@@ -14,7 +14,7 @@
 
 #include "parse-time.h"
 #include "parse-generic.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "../generator/gen-time.h"
 #include "../generator/gen-period.h"
 #include "../generator/gen-generic.h"

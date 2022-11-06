@@ -14,7 +14,7 @@
 
 #include "parse-number.h"
 #include "parse-generic.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "../generator/gen-number.h"
 #include "../generator/gen-generic.h"
 #include "../parse-gen.h"

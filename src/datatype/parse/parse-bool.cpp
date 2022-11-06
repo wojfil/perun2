@@ -15,7 +15,7 @@
 #include "parse-bool.h"
 #include "parse-list.h"
 #include "parse-generic.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "../generator/gen-bool.h"
 #include "../../brackets.h"
 #include "../../lexer.h"
@@ -333,7 +333,7 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
       }
       else {
          _genptr<_bool> second(std::move(e.generator));
-         
+
          if (firstIsConstant && e.type == ElementType::et_Constant) {
             _bool value;
 

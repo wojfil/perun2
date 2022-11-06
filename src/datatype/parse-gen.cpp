@@ -18,7 +18,7 @@
 #include "../lexer.h"
 #include "../brackets.h"
 #include "../hash.h"
-#include "function.h"
+#include "parse/parse-function.h"
 
 
 namespace uro::parse

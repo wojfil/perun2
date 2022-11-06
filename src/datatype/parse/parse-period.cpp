@@ -19,7 +19,7 @@
 #include "../generator/gen-time.h"
 #include "../../brackets.h"
 #include "../../util.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "../../hash.h"
 #include "../parse-gen.h"
 

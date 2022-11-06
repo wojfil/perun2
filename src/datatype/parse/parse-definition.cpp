@@ -18,7 +18,7 @@
 #include "../order.h"
 #include "../generator/gen-definition.h"
 #include "../cast.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "parse-generic.h"
 #include "../parse-gen.h"
 

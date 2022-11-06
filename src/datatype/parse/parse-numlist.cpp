@@ -17,7 +17,7 @@
 #include "../generator/gen-generic.h"
 #include "../../lexer.h"
 #include "../../datatype/order.h"
-#include "../function.h"
+#include "../parse/parse-function.h"
 #include "../parse-gen.h"
 
 

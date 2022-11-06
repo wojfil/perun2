@@ -1,35 +1,19 @@
-/*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-    You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "function.h"
-#include "../exception.h"
-#include "function/func-bool.h"
-#include "function/func-number.h"
-#include "function/func-string.h"
-#include "function/func-time.h"
-#include "function/func-list.h"
-#include "function/func-aggr.h"
-#include "function/func-attr.h"
-#include "parse-gen.h"
-#include "../util.h"
-#include "generator/gen-generic.h"
-#include "generator/gen-number.h"
-#include "generator/gen-string.h"
-#include "generator/gen-definition.h"
-#include "../brackets.h"
-#include "../var/var-runtime.h"
-#include "math.h"
+#include "parse-function.h"
+#include "../../exception.h"
+#include "../../brackets.h"
+#include "../function/func-bool.h"
+#include "../function/func-number.h"
+#include "../function/func-string.h"
+#include "../function/func-time.h"
+#include "../function/func-list.h"
+#include "../function/func-aggr.h"
+#include "../function/func-attr.h"
+#include "../parse-gen.h"
+#include "../generator/gen-generic.h"
+#include "../generator/gen-number.h"
+#include "../generator/gen-string.h"
+#include "../generator/gen-definition.h"
+#include "../math.h"
 #include <cwctype>
 
 

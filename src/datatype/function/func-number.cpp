@@ -397,7 +397,7 @@ _num F_Truncate::getValue()
 
 _num F_Random::getValue()
 {
-   return this->math->randomDouble();
+   return this->math.randomDouble();
 }
 
 
@@ -406,11 +406,11 @@ _num F_RandomNumber::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      n.value.d *= this->math->randomDouble();
+      n.value.d *= this->math.randomDouble();
       return n;
    }
    else {
-      return _num(this->math->randomInt(n.value.i - 1LL));
+      return _num(this->math.randomInt(n.value.i - 1LL));
    }
 }
 

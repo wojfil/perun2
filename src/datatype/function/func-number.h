@@ -149,12 +149,12 @@ struct F_Random : Generator<_num>
 {
 public:
    F_Random(Uroboros& uro)
-      : math(&uro.math) { };
+      : math(uro.math) { };
 
    _num getValue() override;
 
 private:
-   Math* math;
+   Math& math;
 };
 
 
@@ -162,12 +162,12 @@ struct F_RandomNumber : Func_1<_num>, Generator<_num>
 {
 public:
    F_RandomNumber(_genptr<_num>& a1, Uroboros& uro)
-      : Func_1(a1), math(&uro.math) { };
+      : Func_1(a1), math(uro.math) { };
 
    _num getValue() override;
 
 private:
-   Math* math;
+   Math& math;
 };
 
 

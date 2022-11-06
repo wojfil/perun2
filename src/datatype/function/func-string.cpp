@@ -677,7 +677,7 @@ _str F_RandomChar::getValue()
          return value;
       }
       default: {
-         return _str(1, value[math->randomInt(len - 1)]);
+         return _str(1, value[math.randomInt(len - 1)]);
       }
    }
 }

@@ -29,24 +29,12 @@ struct CS_Condition : Command
 {
 public:
    CS_Condition();
-   //void setMain(_comptr& mainCom, _genptr<_bool>& mainCond);
-   //void setMain(_genptr<_bool>& mainCond);
-   //void setCommand(_comptr& com);
-   //_comptr& getMainCommand();
-   //_genptr<_bool>& getMainCondition();
-
-   _comptr* getCommandPtr() {
-      return &command;
-   };
-
+   _comptr* getCommandPtr();
    void run() override;
 
 private:
    _comptr command;
-   //_comptr mainCommand;
-   //_genptr<_bool> mainCondition;
 };
-
 
 
 struct If_Base : Command

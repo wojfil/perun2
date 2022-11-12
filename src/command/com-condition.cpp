@@ -23,32 +23,12 @@ namespace uro::comm
 CS_Condition::CS_Condition()
   : command(std::make_unique<C_DoNothing>()) { }
 
-/*void CS_Condition::setMain(_comptr& mainCom, _genptr<_bool>& mainCond)
-{
-   this->mainCommand = std::move(mainCom);
-   this->mainCondition = std::move(mainCond);
-}
 
-void CS_Condition::setMain(_genptr<_bool>& mainCond)
+_comptr* CS_Condition::getCommandPtr()
 {
-   this->mainCommand = std::make_unique<C_DoNothing>();
-   this->mainCondition = std::move(mainCond);
-}
+   return &this->command;
+};
 
-void CS_Condition::setCommand(_comptr& com)
-{
-   this->command = std::move(com);
-}
-
-_comptr& CS_Condition::getMainCommand()
-{
-   return this->mainCommand;
-}
-
-_genptr<_bool>& CS_Condition::getMainCondition()
-{
-   return this->mainCondition;
-}*/
 
 void CS_Condition::run()
 {

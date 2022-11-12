@@ -55,9 +55,9 @@ _str toStr(const T& n)
    return s.str();
 }
 
-// the following function is the default method of deterministic string concatenation in Uroboros
-// it is used virtually everywhere
-// any optimizations are welcome
+// the following function 
+// is the default method of deterministic string concatenation in Uroboros
+// is used virtually everywhere
 template<typename... Args>
 _str str(Args const&... args)
 {

@@ -287,7 +287,7 @@ void C_Select_List::run()
    std::map<_str, std::unordered_set<_str>> selectPaths;
    _str prevParent;
    std::unordered_set<_str>* prevSet;
-   bool isFirst = true;
+   _bool isFirst = true;
 
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);

@@ -43,7 +43,7 @@ void BracketsInfo::refresh(const Token& tk)
    }
 }
 
-bool BracketsInfo::isBracketFree() const
+_bool BracketsInfo::isBracketFree() const
 {
    return round == 0 && square == 0;
 }

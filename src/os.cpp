@@ -840,7 +840,7 @@ _bool os_dropDirectory(const _str& path, Uroboros& uro)
    if (hFind == INVALID_HANDLE_VALUE) return false;
       wcscpy(DirPath,FileName);
 
-   bool bSearch = true;
+   _bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
          if (!uro.state == State::s_Running) {
@@ -1101,7 +1101,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro
    if (hFind == INVALID_HANDLE_VALUE) return false;
       wcscpy(DirPath,FileName);
 
-   bool bSearch = true;
+   _bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
          if (!uro.state == State::s_Running) {

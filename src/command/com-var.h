@@ -230,7 +230,7 @@ struct VarTimeUnitChange : Command
 {
 public:
    VarTimeUnitChange(vars::Variable<_tim>& var, _genptr<_num>& val,
-      const Period::PeriodUnit& un, const bool neg)
+      const Period::PeriodUnit& un, const _bool& neg)
       : variable(var), value(std::move(val)), unit(un), negative(neg) { };
 
    void run() override;
@@ -239,7 +239,7 @@ private:
    vars::Variable<_tim>& variable;
    _genptr<_num> value;
    const Period::PeriodUnit unit;
-   const bool negative;
+   const _bool negative;
 };
 
 

@@ -25,7 +25,7 @@ struct BracketsInfo
 public:
    BracketsInfo() : round(0), square(0) { };
    void refresh(const Token& tk);
-   bool isBracketFree() const;
+   _bool isBracketFree() const;
 
 private:
    _int round;

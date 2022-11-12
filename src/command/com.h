@@ -15,6 +15,8 @@
 #ifndef COM_H
 #define COM_H
 
+#include <memory>
+
 
 namespace uro
 {
@@ -25,7 +27,10 @@ struct Command
    virtual ~Command() { };
 };
 
+typedef std::unique_ptr<Command> _comptr;
+
 }
+
 
 namespace uro::comm
 {
@@ -37,6 +42,8 @@ public:
 
    void run() override;
 };
+
+
 
 }
 

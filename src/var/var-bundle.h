@@ -98,7 +98,7 @@ public:
       }
    }
 
-   Command* makeVariableAssignment(const Token& token, ParseVariable<T>* varPtr,
+   _bool makeVariableAssignment(_comptr& result, const Token& token, ParseVariable<T>* varPtr,
       _genptr<T>& valuePtr, const _bool& isConstant)
    {
       if (varPtr == nullptr) {
@@ -108,12 +108,16 @@ public:
          if (isConstant) {
             userVars[hash].var.value = valuePtr->getValue();
          }
-         return new comm::VarAssignment<T>(userVars[hash].getVarRef(), valuePtr);
+         result = std::make_unique<comm::VarAssignment<T>>(userVars[hash].getVarRef(), valuePtr);
+         return true;
       }
       else {
          varPtr->resurrect(isConstant);
-         return new comm::VarAssignment<T>(varPtr->getVarRef(), valuePtr);
+         result = std::make_unique<comm::VarAssignment<T>>(varPtr->getVarRef(), valuePtr);
+         return true;
       }
+
+      return false;
    }
 
    void makeNotConstant()

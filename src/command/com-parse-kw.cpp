@@ -30,8 +30,8 @@
 namespace uro::comm
 {
 
-Command* keywordCommands(const Token& word, Tokens& tks,
-   const _int& line, const bool& force, const bool& stack, Uroboros& uro)
+_bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
+   const _int& line, const _bool& force, const _bool& stack, Uroboros& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete:
@@ -41,20 +41,20 @@ Command* keywordCommands(const Token& word, Tokens& tks,
       case Keyword::kw_Unlock:
       case Keyword::kw_Unhide: {
          checkUselessFlags(word, line, force, stack, uro);
-         return kwCommandSimple(word, tks, line, uro);
+         return kwCommandSimple(result, word, tks, line, uro);
       }
       case Keyword::kw_Open: {
          checkUselessFlags(word, line, force, stack, uro);
-         return c_open(word, tks, line, uro);
+         return c_open(result, word, tks, line, uro);
       }
       case Keyword::kw_Copy: {
-         return c_copy(word, tks, line, force, stack, uro);
+         return c_copy(result, word, tks, line, force, stack, uro);
       }
       case Keyword::kw_Create: {
-         return c_create(word, tks, line, force, stack, uro);
+         return c_create(result, word, tks, line, force, stack, uro);
       }
       case Keyword::kw_Download: {
-         return c_downloadFrom(word, tks, line, force, stack, uro);
+         return c_downloadFrom(result, word, tks, line, force, stack, uro);
       }
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
@@ -64,48 +64,49 @@ Command* keywordCommands(const Token& word, Tokens& tks,
       }
       case Keyword::kw_Error: {
          checkUselessFlags(word, line, force, stack, uro);
-         return c_error(word, tks, line, uro);
+         return c_error(result, word, tks, line, uro);
       }
       case Keyword::kw_Move: {
-         return c_moveTo(word, tks, line, force, stack, uro);
+         return c_moveTo(result, word, tks, line, force, stack, uro);
       }
       case Keyword::kw_Print: {
          checkUselessFlags(word, line, force, stack, uro);
-         return c_print(word, tks, line, true, uro);
+         return c_print(result, word, tks, line, true, uro);
       }
       case Keyword::kw_Reaccess:
       case Keyword::kw_Recreate:
       case Keyword::kw_Rechange:
       case Keyword::kw_Remodify: {
          checkUselessFlags(word, line, force, stack, uro);
-         return kwCommandTime(word, tks, line, uro);
+         return kwCommandTime(result, word, tks, line, uro);
       }
       case Keyword::kw_Rename: {
-         return c_rename(word, tks, line, force, stack, uro);
+         return c_rename(result, word, tks, line, force, stack, uro);
       }
       case Keyword::kw_Run: {
          checkUselessFlags(word, line, force, stack, uro);
-         return c_run(word, tks, line, uro);
+         return c_run(result, word, tks, line, uro);
       }
       case Keyword::kw_Select: {
          checkUselessFlags(word, line, force, stack, uro);
-         return c_select(word, tks, line, uro);
+         return c_select(result, word, tks, line, uro);
       }
       case Keyword::kw_Sleep: {
          checkUselessFlags(word, line, force, stack, uro);
-         return c_sleep(word, tks, line, uro);
+         return c_sleep(result, word, tks, line, uro);
       }
    }
 
    throw SyntaxException(str(L"command cannot start with a keyword '", word.getOriginString(uro), L"'"), line);
+   return false;
 }
 
-_bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Uroboros& uro,
+_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uroboros& uro,
    Attribute* attr, const _bool& hasMemory)
 {
    _genptr<_str> str_;
    if (parse::parse(uro, tks, str_)) {
-      result = new CS_StringComArg(str_, innerCommand, attr, hasMemory, uro);
+      result = std::make_unique<CS_StringComArg>(str_, innerCommand, attr, hasMemory, uro);
       return true;
    }
 
@@ -114,12 +115,12 @@ _bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Ur
       _fdata* fdata = def->getDataPtr();
 
       if (fdata == nullptr) {
-         result = new CS_DefinitionComArg(def, innerCommand, attr, hasMemory, uro);
+         result = std::make_unique<CS_DefinitionComArg>(def, innerCommand, attr, hasMemory, uro);
       }
       else {
          const _aunit aval = attr->getValue();
          delete attr;
-         result = new CS_DefinitionComArg(def, innerCommand,
+         result = std::make_unique<CS_DefinitionComArg>(def, innerCommand,
             new BridgeAttribute(aval, uro, fdata), hasMemory, uro);
       }
 
@@ -128,16 +129,15 @@ _bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Ur
 
    _genptr<_list> list;
    if (parse::parse(uro, tks, list)) {
-      result = new CS_ListComArg(list, innerCommand, attr, hasMemory, uro);
+      result = std::make_unique<CS_ListComArg>(list, innerCommand, attr, hasMemory, uro);
       return true;
    }
 
-   delete innerCommand;
    delete attr;
    return false;
 }
 
-_bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Uroboros& uro)
+_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uroboros& uro)
 {
    const _bool hasMemory = uro.vc.anyAttribute();
    Attribute* attr = new Attribute(uro);
@@ -145,93 +145,122 @@ _bool parseLooped(const Tokens& tks, Command* innerCommand, Command*& result, Ur
    return parseLooped(tks, innerCommand, result, uro, attr, hasMemory);
 }
 
-static Command* kwCommandSimple(const Token& word, Tokens& tks,
-   const _int& line, Uroboros& uro)
+static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, const _int& line, Uroboros& uro)
 {
    if (tks.isEmpty()) {
       uro.vc.setCoreComAttribute(word.getOriginString(uro), line);
-      return coreCommandSimpleSave(word, uro);
+      return coreCommandSimpleSave(result, word, uro);
    }
 
-   Command* result;
-   if (parseLooped(tks, coreCommandSimpleNoSave(word, uro), result, uro)) {
-      return result;
+   _comptr inner;
+   if (coreCommandSimpleNoSave(inner, word, uro) && parseLooped(tks, inner, result, uro)) {
+      return true;
    }
 
-   throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L"'"), line);
+   commandSyntaxException(word.getOriginString(uro), line);
+   return false;
 }
 
-static Command* coreCommandSimpleSave(const Token& word, Uroboros& uro)
+static _bool coreCommandSimpleSave(_comptr& result, const Token& word, Uroboros& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete: {
          Attribute* lastAttr = uro.vc.getLastAttribute();
-         return new C_Delete(lastAttr, uro);
+         result = std::make_unique<C_Delete>(lastAttr, uro);
+         break;
       }
       case Keyword::kw_Drop: {
          Attribute* lastAttr = uro.vc.getLastAttribute();
-         return new C_Drop(lastAttr, uro);
+         result = std::make_unique<C_Drop>(lastAttr, uro);
+         break;
       }
-      case Keyword::kw_Hide:
-         return new C_Hide(true, uro);
-      case Keyword::kw_Lock:
-         return new C_Lock(true, uro);
-      case Keyword::kw_Unlock:
-         return new C_Unlock(true, uro);
-      case Keyword::kw_Unhide:
-         return new C_Unhide(true, uro);
-      default:
-         return nullptr;
+      case Keyword::kw_Hide: {
+         result = std::make_unique<C_Hide>(true, uro);
+         break;
+      }
+      case Keyword::kw_Lock: {
+         result = std::make_unique<C_Lock>(true, uro);
+         break;
+      }
+      case Keyword::kw_Unlock: {
+         result = std::make_unique<C_Unlock>(true, uro);
+         break;
+      }
+      case Keyword::kw_Unhide: {
+         result = std::make_unique<C_Unhide>(true, uro);
+         break;
+      }
+      default: {
+         return false;
+      }
    }
+
+   return true;
 }
 
-static Command* coreCommandSimpleNoSave(const Token& word, Uroboros& uro)
+static _bool coreCommandSimpleNoSave(_comptr& result, const Token& word, Uroboros& uro)
 {
    switch (word.value.keyword.k) {
-      case Keyword::kw_Delete:
-         return new C_Delete(uro);
-      case Keyword::kw_Drop:
-         return new C_Drop(uro);
-      case Keyword::kw_Hide:
-         return new C_Hide(false, uro);
-      case Keyword::kw_Lock:
-         return new C_Lock(false, uro);
-      case Keyword::kw_Unlock:
-         return new C_Unlock(false, uro);
-      case Keyword::kw_Unhide:
-         return new C_Unhide(false, uro);
-      default:
-         return nullptr;
+      case Keyword::kw_Delete: {
+         result = std::make_unique<C_Delete>(uro);
+         break;
+      }
+      case Keyword::kw_Drop: {
+         result = std::make_unique<C_Drop>(uro);
+         break;
+      }
+      case Keyword::kw_Hide: {
+         result = std::make_unique<C_Hide>(false, uro);
+         break;
+      }
+      case Keyword::kw_Lock: {
+         result = std::make_unique<C_Lock>(false, uro);
+         break;
+      }
+      case Keyword::kw_Unlock: {
+         result = std::make_unique<C_Unlock>(false, uro);
+         break;
+      }
+      case Keyword::kw_Unhide: {
+         result = std::make_unique<C_Unhide>(false, uro);
+         break;
+      }
+      default: {
+         return false;
+      }
    }
+
+   return true;
 }
 
-static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, Uroboros& uro)
+static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int& line, Uroboros& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
    }
 
    if (!tks.check(TI_HAS_KEYWORD_TO)) {
-      throw SyntaxException(str(L"command '", word.getOriginString(uro),
-         L" to' does not contain keyword 'to'"), line);
+      throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' does not contain keyword 'to'"), line);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (right.isEmpty()) {
-      throw SyntaxException(str(L"command '", word.getOriginString(uro),
-         L" to' does not contain its time argument"), line);
+      throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' does not contain its time argument"), line);
    }
 
    if (left.isEmpty()) {
       uro.vc.setTimeComAttribute(word.getOriginString(uro), line);
       _genptr<_tim> tim;
       if (!parse::parse(uro, right, tim)) {
-         throw SyntaxException(str(L"time argument of command '", word.getOriginString(uro),
-            L" to' is not valid"), line);
+         throw SyntaxException(str(L"time argument of command '", word.getOriginString(uro), L" to' is not valid"), line);
       }
 
-      return coreCommandTime(word, tim, true, uro);
+      if (coreCommandTime(result, word, tim, true, uro)) {
+         return true;
+      }
+
+      commandSyntaxException(str(word.getOriginString(uro), L" to'"), line);
    }
 
    const _bool hasMemory = uro.vc.anyAttribute();
@@ -244,43 +273,54 @@ static Command* kwCommandTime(const Token& word, Tokens& tks, const _int& line, 
    _genptr<_tim> tim;
    if (!parse::parse(uro, right, tim)) {
       delete attr;
-      throw SyntaxException(str(L"time argument of command '", word.getOriginString(uro),
-         L" to' is not valid"), line);
+      throw SyntaxException(str(L"time argument of command '", word.getOriginString(uro), L" to' is not valid"), line);
    }
 
    uro.vars.inner.thisState = prevThisState;
    uro.vc.retreatAttribute();
 
-   Command* result;
-   if (parseLooped(left, coreCommandTime(word, tim, false, uro), result, uro, attr, hasMemory)) {
-      return result;
+   _comptr inner;
+   if (coreCommandTime(inner, word, tim, false, uro) && parseLooped(left, inner, result, uro, attr, hasMemory)) {
+      return true;
    }
 
-   throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to'"), line);
+   commandSyntaxException(word.getOriginString(uro), line);
+   return false;
 }
 
-static Command* coreCommandTime(const Token& word,
-   _genptr<_tim>& time, const _bool& saveChanges, Uroboros& uro)
+static _bool coreCommandTime(_comptr& result, const Token& word, _genptr<_tim>& time, const _bool& saveChanges, Uroboros& uro)
 {
    switch (word.value.keyword.k) {
-      case Keyword::kw_Reaccess:
-         return new C_ReaccessTo(time, saveChanges, uro);
-      case Keyword::kw_Rechange:
-         return new C_RechangeTo(time, saveChanges, uro);
-      case Keyword::kw_Recreate:
-         return new C_RecreateTo(time, saveChanges, uro);
-      case Keyword::kw_Remodify:
-         return new C_RemodifyTo(time, saveChanges, uro);
-      default:
-         return nullptr;
+      case Keyword::kw_Reaccess: {
+         result = std::make_unique<C_ReaccessTo>(time, saveChanges, uro);
+         break;
+      }
+      case Keyword::kw_Rechange: {
+         result = std::make_unique<C_RechangeTo>(time, saveChanges, uro);
+         break;
+      }
+      case Keyword::kw_Recreate: {
+         result = std::make_unique<C_RecreateTo>(time, saveChanges, uro);
+         break;
+      }
+      case Keyword::kw_Remodify: {
+         result = std::make_unique<C_RemodifyTo>(time, saveChanges, uro);
+         break;
+      }
+      default: {
+         return false;
+      }
    }
+
+   return true;
 }
 
-static Command* c_open(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
 {
    if (tks.isEmpty()) {
       uro.vc.setCoreComAttribute(word.getOriginString(uro), line);
-      return new C_Open(uro);
+      result = std::make_unique<C_Open>(uro);
+      return true;
    }
 
    if (tks.check(TI_HAS_KEYWORD_WITH)) {
@@ -310,28 +350,29 @@ static Command* c_open(const Token& word, const Tokens& tks, const _int& line, U
 
       if (left.isEmpty()) {
          uro.vc.setCoreComAttribute(str(word.getOriginString(uro), L" with"), line);
-         return new C_OpenWith(prog, uro);
+         result = std::make_unique<C_OpenWith>(prog, uro);
+         return true;
       }
       else {
-         Command* result;
-         if (parseLooped(left, new C_OpenWith(prog, uro), result, uro, attr, hasMemory)) {
-            return result;
+         _comptr inner(new C_OpenWith(prog, uro));
+         if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+            return true;
          }
 
          throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" with'"), line);
       }
    }
 
-   Command* result;
-   if (parseLooped(tks, new C_Open(uro), result, uro)) {
-      return result;
+   _comptr inner(new C_Open(uro));
+   if (parseLooped(tks, inner, result, uro)) {
+      return true;
    }
 
    commandSyntaxException(word.getOriginString(uro), line);
-   return nullptr;
+   return false;
 }
 
-static Command* c_select(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
 {
    if (uro.vc.anyAggregate()) {
       Aggregate* aggr = uro.vc.getLastAggregate();
@@ -340,17 +381,20 @@ static Command* c_select(const Token& word, const Tokens& tks, const _int& line,
       if (tks.isEmpty()) {
          _genptr<_str> str;
          uro.vars.inner.createThisRef(str);
-         return new C_AggrSelect_String(aggr, str, uro);
+         result = std::make_unique<C_AggrSelect_String>(aggr, str, uro);
+         return true;
       }
 
       _genptr<_str> str;
       if (parse::parse(uro, tks, str)) {
-         return new C_AggrSelect_String(aggr, str, uro);
+         result = std::make_unique<C_AggrSelect_String>(aggr, str, uro);
+         return true;
       }
 
       _genptr<_list> list;
       if (parse::parse(uro, tks, list)) {
-         return new C_AggrSelect_List(aggr, list, uro);
+         result = std::make_unique<C_AggrSelect_List>(aggr, list, uro);
+         return true;
       }
    }
    else {
@@ -360,30 +404,30 @@ static Command* c_select(const Token& word, const Tokens& tks, const _int& line,
 
       _genptr<_str> str;
       if (parse::parse(uro, tks, str)) {
-         return new C_Select_String(str, uro);
+         result = std::make_unique<C_Select_String>(str, uro);
+         return true;
       }
 
       _genptr<_list> list;
       if (parse::parse(uro, tks, list)) {
-         return new C_Select_List(list, uro);
+         result = std::make_unique<C_Select_List>(list, uro);
+         return true;
       }
    }
 
    commandSyntaxException(word.getOriginString(uro), line);
-   return nullptr;
+   return false;
 }
 
-static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros& uro)
+static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+   const _bool& force, const _bool& stack, Uroboros& uro)
 {
    if (tks.isEmpty()) {
-      throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"),
-         line);
+      throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
    }
 
    if (!tks.check(TI_HAS_KEYWORD_TO)) {
-      throw SyntaxException(str(L"command '", word.getOriginString(uro),  L" to' ",
-         L"does not contain keyword 'to'"), line);
+      throw SyntaxException(str(L"command '", word.getOriginString(uro),  L" to' does not contain keyword 'to'"), line);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_To);
@@ -415,11 +459,13 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
       lastAttr->markToEvaluate();
 
       if (stack) {
-         return new C_RenameTo_Stack(newName, true, extless, uro);
+         result = std::make_unique<C_RenameTo_Stack>(newName, true, extless, uro);
       }
       else {
-         return new C_RenameTo(newName, true, force, extless, uro);
+         result = std::make_unique<C_RenameTo>(newName, true, force, extless, uro);
       }
+
+      return true;
    }
 
    const _bool hasMemory = uro.vc.anyAttribute();
@@ -440,42 +486,54 @@ static Command* c_rename(const Token& word, const Tokens& tks, const _int& line,
 
    _genptr<_str> str_;
    if (parse::parse(uro, left, str_)) {
-      if (stack)
-         return new CS_StringComArg(str_,
-            new C_RenameTo_Stack(newName, false, extless, uro), attr, hasMemory, uro);
-      else
-         return new CS_StringComArg(str_,
-            new C_RenameTo(newName, false, force, extless, uro), attr, hasMemory, uro);
+      _comptr inner;
+
+      if (stack) {
+         inner = std::make_unique<C_RenameTo_Stack>(newName, false, extless, uro);
+      }
+      else {
+         inner = std::make_unique<C_RenameTo>(newName, false, force, extless, uro);
+      }
+
+      result = std::make_unique<CS_StringComArg>(str_, inner, attr, hasMemory, uro);
+      return true;
    }
 
    _genptr<_list> list;
    if (parse::parse(uro, left, list)) {
-      if (stack)
-         return new CS_ListComArg(list,
-            new C_RenameTo_Stack(newName, false, extless, uro), attr, hasMemory, uro);
-      else
-         return new CS_ListComArg(list,
-            new C_RenameTo(newName, false, force, extless, uro), attr, hasMemory, uro);
+      _comptr inner;
+
+      if (stack) {
+         inner = std::make_unique<C_RenameTo_Stack>(newName, false, extless, uro);
+      }
+      else {
+         inner = std::make_unique<C_RenameTo>(newName, false, force, extless, uro);
+      }
+
+      result = std::make_unique<CS_ListComArg>(list, inner, attr, hasMemory, uro);
+      return true;
    }
 
    delete attr;
    commandSyntaxException(str(word.getOriginString(uro), L" to"), line);
-   return nullptr;
+   return false;
 }
 
-static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros& uro)
+static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+   const _bool& force, const _bool& stack, Uroboros& uro)
 {
    if (tks.isEmpty()) {
       uro.vc.setCoreComAttribute(word.getOriginString(uro), line);
       Attribute* lastAttr = uro.vc.getLastAttribute();
 
       if (stack) {
-         return new C_Create_Stack(lastAttr, uro);
+         result = std::make_unique<C_Create_Stack>(lastAttr, uro);
       }
       else {
-         return new C_Create(force, lastAttr, uro);
+         result = std::make_unique<C_Create>(force, lastAttr, uro);
       }
+
+      return true;
    }
 
    const Token& f = tks.first();
@@ -491,21 +549,25 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
             Attribute* lastAttr = uro.vc.getLastAttribute();
 
             if (stack) {
-               return new C_CreateFile_Stack(lastAttr, uro);
+               result = std::make_unique<C_CreateFile_Stack>(lastAttr, uro);
             }
             else {
-               return new C_CreateFile(force, lastAttr, uro);
+               result = std::make_unique<C_CreateFile>(force, lastAttr, uro);
             }
+
+            return true;
          }
 
          _genptr<_str> str_;
          if (parse::parse(uro, tks2, str_)) {
             if (stack) {
-               return new C_CreateFile_String_Stack(str_, uro);
+               result = std::make_unique<C_CreateFile_String_Stack>(str_, uro);
             }
             else {
-               return new C_CreateFile_String(str_, force, uro);
+               result = std::make_unique<C_CreateFile_String>(str_, force, uro);
             }
+
+            return true;
          }
 
          throw SyntaxException(str(L"the argument of command '", word.getOriginString(uro), L" ",
@@ -533,11 +595,13 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
          _genptr<_list> list;
          if (parse::parse(uro, tks2, list)) {
             if (stack) {
-               return new C_CreateFiles_List_Stack(list, uro);
+               result = std::make_unique<C_CreateFiles_List_Stack>(list, uro);
             }
             else {
-               return new C_CreateFiles_List(list, force, uro);
+               result = std::make_unique<C_CreateFiles_List>(list, force, uro);
             }
+
+            return true;
          }
 
          throw SyntaxException(str(L"wrong syntax of command '",
@@ -548,21 +612,25 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
             uro.vc.setCoreComAttribute(str(word.getOriginString(uro), L" ", f.getOriginString(uro)), line);
             Attribute* lastAttr = uro.vc.getLastAttribute();
             if (stack) {
-               return new C_CreateDirectory_Stack(lastAttr, uro);
+               result = std::make_unique<C_CreateDirectory_Stack>(lastAttr, uro);
             }
             else {
-               return new C_CreateDirectory(force, lastAttr, uro);
+               result = std::make_unique<C_CreateDirectory>(force, lastAttr, uro);
             }
+
+            return true;
          }
 
          _genptr<_str> str_;
          if (parse::parse(uro, tks2, str_)) {
             if (stack) {
-               return new C_CreateDirectory_String_Stack(str_, uro);
+               result = std::make_unique<C_CreateDirectory_String_Stack>(str_, uro);
             }
             else {
-               return new C_CreateDirectory_String(str_, force, uro);
+               result = std::make_unique<C_CreateDirectory_String>(str_, force, uro);
             }
+
+            return true;
          }
 
          throw SyntaxException(str(L"argument of command '", word.getOriginString(uro), L" ",
@@ -590,11 +658,13 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
          _genptr<_list> list;
          if (parse::parse(uro, tks2, list)) {
             if (stack) {
-               return new C_CreateDirectories_List_Stack(list, uro);
+               result = std::make_unique<C_CreateDirectories_List_Stack>(list, uro);
             }
             else {
-               return new C_CreateDirectories_List(list, force, uro);
+               result = std::make_unique<C_CreateDirectories_List>(list, force, uro);
             }
+
+            return true;
          }
 
          throw SyntaxException(str(L"wrong syntax of command '",
@@ -605,11 +675,13 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
    _genptr<_str> str_;
    if (parse::parse(uro, tks, str_)) {
       if (stack) {
-         return new C_Create_String_Stack(str_, uro);
+         result = std::make_unique<C_Create_String_Stack>(str_, uro);
       }
       else {
-         return new C_Create_String(str_, force, uro);
+         result = std::make_unique<C_Create_String>(str_, force, uro);
       }
+
+      return true;
    }
 
    _defptr def;
@@ -621,19 +693,21 @@ static Command* c_create(const Token& word, const Tokens& tks, const _int& line,
    _genptr<_list> list;
    if (parse::parse(uro, tks, list)) {
       if (stack) {
-         return new C_Create_List_Stack(list, uro);
+         result = std::make_unique<C_Create_List_Stack>(list, uro);
       }
       else {
-         return new C_Create_List(list, force, uro);
+         result = std::make_unique<C_Create_List>(list, force, uro);
       }
+
+      return true;
    }
 
    commandSyntaxException(word.getOriginString(uro), line);
-   return nullptr;
+   return false;
 }
 
-static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros& uro)
+static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+   const _bool& force, const _bool& stack, Uroboros& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxException(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -692,11 +766,13 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
          uro.vc.setCoreComAttribute(str(word.getOriginString(uro), L" to as"), line);
          Attribute* lastAttr = uro.vc.getLastAttribute();
          if (stack) {
-            return new C_MoveToAs_Stack(dest, nname, extless, lastAttr, uro);
+            result = std::make_unique<C_MoveToAs_Stack>(dest, nname, extless, lastAttr, uro);
          }
          else {
-            return new C_MoveToAs(dest, nname, force, extless, lastAttr, uro);
+            result = std::make_unique<C_MoveToAs>(dest, nname, force, extless, lastAttr, uro);
          }
+
+         return true;
       }
 
       if (right.isEmpty()) {
@@ -713,11 +789,13 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
          uro.vc.setCoreComAttribute(str(word.getOriginString(uro), L" to"), line);
          Attribute* lastAttr = uro.vc.getLastAttribute();
          if (stack) {
-            return new C_MoveTo_Stack(str_, lastAttr, uro);
+            result = std::make_unique<C_MoveTo_Stack>(str_, lastAttr, uro);
          }
          else {
-            return new C_MoveTo(str_, force, lastAttr, uro);
+            result = std::make_unique<C_MoveTo>(str_, force, lastAttr, uro);
          }
+
+         return true;
       }
    }
 
@@ -777,23 +855,21 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
       uro.vars.inner.thisState = prevThisState;
       uro.vc.retreatAttribute();
 
-      Command* result;
+      _comptr inner;
+
       if (stack) {
-         if (parseLooped(left, new C_MoveToAs_Stack(dest, nname, extless, uro),
-            result, uro, attr, hasMemory))
-         {
-            return result;
-         }
+         inner = std::make_unique<C_MoveToAs_Stack>(dest, nname, extless, uro);
       }
       else {
-         if (parseLooped(left, new C_MoveToAs(dest, nname, force, extless, uro),
-            result, uro, attr, hasMemory))
-         {
-            return result;
-         }
+         inner = std::make_unique<C_MoveToAs>(dest, nname, force, extless, uro);  
       }
 
-      throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to as'"), line);
+      if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+         return true;
+      }
+
+      commandSyntaxException(str(word.getOriginString(uro), L" to as"), line);
+      return false;
    }
 
    const _bool hasMemory = uro.vc.anyAttribute();
@@ -812,23 +888,24 @@ static Command* c_moveTo(const Token& word, const Tokens& tks, const _int& line,
    uro.vars.inner.thisState = prevThisState;
    uro.vc.retreatAttribute();
 
-   Command* result;
+   _comptr inner;
    if (stack) {
-      if (parseLooped(left, new C_MoveTo_Stack(dest, uro), result, uro, attr, hasMemory)) {
-         return result;
-      }
+      inner = std::make_unique<C_MoveTo_Stack>(dest, uro);
    }
    else {
-      if (parseLooped(left, new C_MoveTo(dest, force, uro), result, uro, attr, hasMemory)) {
-         return result;
-      }
+      inner = std::make_unique<C_MoveTo>(dest, force, uro);
    }
 
-   throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to'"), line);
+   if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+      return true;
+   }
+
+   commandSyntaxException(str(word.getOriginString(uro), L" to"), line);
+   return false;
 }
 
-static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros& uro)
+static _bool c_downloadFrom(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+   const _bool& force, const _bool& stack, Uroboros& uro)
 {
    if (tks.check(TI_HAS_KEYWORD_FROM)) {
       P_DIVIDE_BY_KEYWORD(kw_From);
@@ -851,58 +928,69 @@ static Command* c_downloadFrom(const Token& word, const Tokens& tks, const _int&
       _genptr<_str> str_;
       if (parse::parse(uro, left, str_)) {
          if (stack)
-            return new C_DownloadFrom_String_Stack(loc, str_, uro);
+            result = std::make_unique<C_DownloadFrom_String_Stack>(loc, str_, uro);
          else
-            return new C_DownloadFrom_String(loc, str_, force, uro);
+            result = std::make_unique<C_DownloadFrom_String>(loc, str_, force, uro);
+
+         return true;
       }
 
       _defptr def;
       if (parse::parse(uro, left, def)) {
          if (stack)
-            return new C_DownloadFrom_Definition_Stack(loc, def, uro);
+            result = std::make_unique<C_DownloadFrom_Definition_Stack>(loc, def, uro);
          else
-            return new C_DownloadFrom_Definition(loc, def, force, uro);
+            result = std::make_unique<C_DownloadFrom_Definition>(loc, def, force, uro);
+
+         return true;
       }
 
       _genptr<_list> list;
       if (parse::parse(uro, left, list)) {
          if (stack)
-            return new C_DownloadFrom_List_Stack(loc, list, uro);
+            result = std::make_unique<C_DownloadFrom_List_Stack>(loc, list, uro);
          else
-            return new C_DownloadFrom_List(loc, list, force, uro);
+            result = std::make_unique<C_DownloadFrom_List>(loc, list, force, uro);
+
+         return true;
       }
 
-      throw SyntaxException(str(L"wrong syntax of command '",
-         word.getOriginString(uro), L" from'"), line);
+      commandSyntaxException(str(word.getOriginString(uro), L" from"), line);
+      return false;
    }
 
    _genptr<_str> str_;
    if (parse::parse(uro, tks, str_)) {
       if (stack)
-         return new C_Download_String_Stack(str_, uro);
+         result = std::make_unique<C_Download_String_Stack>(str_, uro);
       else
-         return new C_Download_String(str_, force, uro);
+         result = std::make_unique<C_Download_String>(str_, force, uro);
+
+      return true;
    }
 
    _defptr def;
    if (parse::parse(uro, tks, def)) {
-      throw SyntaxException(str(L"the argument of command '",
+      throw SyntaxException(str(L"the argument of command '", 
          word.getOriginString(uro), L"' cannot be of type 'definition'"), line);
    }
 
    _genptr<_list> list;
    if (parse::parse(uro, tks, list)) {
       if (stack)
-         return new C_Download_List_Stack(list, uro);
+         result = std::make_unique<C_Download_List_Stack>(list, uro);
       else
-         return new C_Download_List(list, force, uro);
+         result = std::make_unique<C_Download_List>(list, force, uro);
+
+      return true;
    }
 
-   throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L"'"), line);
+   commandSyntaxException(word.getOriginString(uro), line);
+   return false;
 }
 
-static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
-   const bool& force, const bool& stack, Uroboros& uro)
+static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+   const _bool& force, const _bool& stack, Uroboros& uro)
 {
    const _bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
    const _bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
@@ -930,17 +1018,20 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
          if (tks.isEmpty()) {
             _genptr<_str> str;
             uro.vars.inner.createThisRef(str);
-            return new C_AggrCopy_String(aggr, str, uro);
+            result = std::make_unique<C_AggrCopy_String>(aggr, str, uro);
+            return true;
          }
 
          _genptr<_str> str;
          if (parse::parse(uro, tks, str)) {
-            return new C_AggrCopy_String(aggr, str, uro);
+            result = std::make_unique<C_AggrCopy_String>(aggr, str, uro);
+            return true;
          }
 
          _genptr<_list> list;
          if (parse::parse(uro, tks, list)) {
-            return new C_AggrCopy_List(aggr, list, uro);
+            result = std::make_unique<C_AggrCopy_List>(aggr, list, uro);
+            return true;
          }
       }
       else {
@@ -950,12 +1041,14 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
          _genptr<_str> str;
          if (parse::parse(uro, tks, str)) {
-            return new C_Copy_String(str, uro);
+            result = std::make_unique<C_Copy_String>(str, uro);
+            return true;
          }
 
          _genptr<_list> list;
          if (parse::parse(uro, tks, list)) {
-            return new C_Copy_List(list, uro);
+            result = std::make_unique<C_Copy_List>(list, uro);
+            return true;
          }
       }
 
@@ -1006,11 +1099,13 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
 
          uro.vc.setCoreComAttribute(str(word.getOriginString(uro), L" to as"), line);
          if (stack) {
-            return new C_CopyToAs_Stack(dest, nname, true, extless, uro);
+            result = std::make_unique<C_CopyToAs_Stack>(dest, nname, true, extless, uro);
          }
          else {
-            return new C_CopyToAs(dest, nname, true, force, extless, uro);
+            result = std::make_unique<C_CopyToAs>(dest, nname, true, force, extless, uro);
          }
+
+         return true;
       }
 
       if (right.isEmpty()) {
@@ -1022,11 +1117,13 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       if (parse::parse(uro, right, str_)) {
          uro.vc.setCoreComAttribute(str(word.getOriginString(uro), L" to"), line);
          if (stack) {
-            return new C_CopyTo_Stack(str_, true, uro);
+            result = std::make_unique<C_CopyTo_Stack>(str_, true, uro);
          }
          else {
-            return new C_CopyTo(str_, true, force, uro);
+            result = std::make_unique<C_CopyTo>(str_, true, force, uro);
          }
+
+         return true;
       }
       else {
          throw SyntaxException(str(L"new location in command '",
@@ -1088,23 +1185,20 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
       uro.vars.inner.thisState = prevThisState;
       uro.vc.retreatAttribute();
 
-      Command* result;
+      _comptr inner;
       if (stack) {
-         if (parseLooped(left, new C_CopyToAs_Stack(dest, nname, false, extless, uro),
-            result, uro, attr, hasMemory))
-         {
-            return result;
-         }
+         inner = std::make_unique<C_CopyToAs_Stack>(dest, nname, false, extless, uro);
       }
       else {
-         if (parseLooped(left, new C_CopyToAs(dest, nname, false, force, extless, uro),
-            result, uro, attr, hasMemory))
-         {
-            return result;
-         }
+         inner = std::make_unique<C_CopyToAs>(dest, nname, false, force, extless, uro);
       }
 
-      throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to as'"), line);
+      if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+         return true;
+      }
+
+      commandSyntaxException(str(word.getOriginString(uro), L" to as"), line);
+      return false;
    }
 
    const _bool hasMemory = uro.vc.anyAttribute();
@@ -1123,58 +1217,62 @@ static Command* c_copy(const Token& word, const Tokens& tks, const _int& line,
    uro.vars.inner.thisState = prevThisState;
    uro.vc.retreatAttribute();
 
-   Command* result;
+   _comptr inner;
    if (stack) {
-      if (parseLooped(left, new C_CopyTo_Stack(dest, false, uro), result, uro, attr, hasMemory)) {
-         return result;
-      }
+      inner = std::make_unique<C_CopyTo_Stack>(dest, false, uro);
    }
    else {
-      if (parseLooped(left, new C_CopyTo(dest, false, force, uro), result, uro, attr, hasMemory)) {
-         return result;
-      }
+      inner = std::make_unique<C_CopyTo>(dest, false, force, uro);
    }
 
-   throw SyntaxException(str(L"wrong syntax of command '", word.getOriginString(uro), L" to'"), line);
+   if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+      return true;
+   }
+
+   commandSyntaxException(str(word.getOriginString(uro), L" to"), line);
+   return false;
 }
 
-Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _bool& directError, Uroboros& uro)
+_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool& directError, Uroboros& uro)
 {
    if (tks.isEmpty()) {
       switch (uro.vars.inner.thisState) {
          case ts_None: {
-         throw SyntaxException(str(L"command '", word.getOriginString(uro), L"' needs an argument here. "
-            L"Value of variable 'this' is undefined in this area"), line);
-            break;
+            throw SyntaxException(str(L"command '", word.getOriginString(uro), L"' needs an argument here. "
+               L"Value of variable 'this' is undefined in this area"), line);
+            return false;
          }
          case ts_String: {
-            return new C_PrintThis_Str(uro);
-            break;
+            result = std::make_unique<C_PrintThis_Str>(uro);
+            return true;
          }
          case ts_Time: {
-            return new C_PrintThis_Tim(uro);
-            break;
+            result = std::make_unique<C_PrintThis_Tim>(uro);
+            return true;
          }
          case ts_Number: {
-            return new C_PrintThis_Num(uro);
-            break;
+            result = std::make_unique<C_PrintThis_Num>(uro);
+            return true;
          }
       }
    }
 
    _genptr<_str> str;
    if (parse::parse(uro, tks, str)) {
-      return new C_PrintSingle(str, uro);
+      result = std::make_unique<C_PrintSingle>(str, uro);
+      return true;
    }
 
    _defptr def;
    if (parse::parse(uro, tks, def)) {
-      return new C_PrintDefinition(def, uro);
+      result = std::make_unique<C_PrintDefinition>(def, uro);
+      return true;
    }
 
    _genptr<_list> list;
    if (parse::parse(uro, tks, list)) {
-      return new C_PrintList(list, uro);
+      result = std::make_unique<C_PrintList>(list, uro);
+      return true;
    }
 
    if (directError) {
@@ -1184,26 +1282,28 @@ Command* c_print(const Token& word, const Tokens& tks, const _int& line, const _
       throw SyntaxException(L"wrong syntax. No command can be formed of this code", line);
    }
 
-   return nullptr;
+   return false;
 }
 
-static Command* c_sleep(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
 {
    _genptr<_per> per;
    if (parse::parse(uro, tks, per)) {
-      return new C_SleepPeriod(per, uro);
+      result = std::make_unique<C_SleepPeriod>(per, uro);
+      return true;
    }
 
    _genptr<_num> num;
    if (parse::parse(uro, tks, num)) {
-      return new C_SleepMs(num, uro);
+      result = std::make_unique<C_SleepMs>(num, uro);
+      return true;
    }
 
    commandSyntaxException(word.getOriginString(uro), line);
-   return nullptr;
+   return false;
 }
 
-static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
 {
    uro.vc.markAttributesToRun();
 
@@ -1249,12 +1349,14 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                   _genptr<_str> str_;
 
                   if (parse::parse(uro, right2, str_)) {
-                     return new C_RunWithUroborosWithString(str_, lastAttr, uro);
+                     result = std::make_unique<C_RunWithUroborosWithString>(str_, lastAttr, uro);
+                     return true;
                   }
                   else {
                      _genptr<_list> list;
                      if (parse::parse(uro, right2, list)) {
-                        return new C_RunWithUroborosWith(list, lastAttr, uro);
+                        result = std::make_unique<C_RunWithUroborosWith>(list, lastAttr, uro);
+                        return true;
                      }
                      else {
                         throw SyntaxException(str(L"last argument of command '",
@@ -1266,12 +1368,14 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
 
             _genptr<_str> str_;
             if (parse::parse(uro, right2, str_)) {
-               return new C_RunWithWithString(exec, str_, lastAttr, uro);
+               result = std::make_unique<C_RunWithWithString>(exec, str_, lastAttr, uro);
+               return true;
             }
             else {
                _genptr<_list> list;
                if (parse::parse(uro, right2, list)) {
-                  return new C_RunWithWith(exec, list, lastAttr, uro);
+                  result = std::make_unique<C_RunWithWith>(exec, list, lastAttr, uro);
+                  return true;
                }
                else {
                   throw SyntaxException(str(L"last argument of command '",
@@ -1293,10 +1397,12 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                if (right.getLength() == 1) {
                   const Token& cf = right.first();
                   if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
-                     return new C_RunWithUroboros(lastAttr, uro);
+                     result = std::make_unique<C_RunWithUroboros>(lastAttr, uro);
+                     return true;
                   }
                }
-               return new C_RunWith(exec, lastAttr, uro);
+               result = std::make_unique<C_RunWith>(exec, lastAttr, uro);
+               return true;
             }
             else {
                throw SyntaxException(str(L"last argument of command '",
@@ -1343,9 +1449,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                   const Token& cf = left2.first();
                   if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
 
-                     Command* result;
-                     if (parseLooped(left, new C_RunWithUroborosWithString(lastStr, uro), result, uro, attr, hasMemory)) {
-                        return result;
+                     _comptr inner(new C_RunWithUroborosWithString(lastStr, uro));
+                     if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+                        return true;
                      }
 
                      throw SyntaxException(str(L"first argument of command '", word.getOriginString(uro),
@@ -1353,9 +1459,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                   }
                }
 
-               Command* result;
-               if (parseLooped(left, new C_RunWithWithString(exec, lastStr, uro), result, uro, attr, hasMemory)) {
-                  return result;
+               _comptr inner(new C_RunWithWithString(exec, lastStr, uro));
+               if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+                  return true;
                }
 
                throw SyntaxException(str(L"first argument of command '", word.getOriginString(uro),
@@ -1378,9 +1484,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                      const Token& cf = left2.first();
                      if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
 
-                        Command* result;
-                        if (parseLooped(left, new C_RunWithUroborosWith(lastList, uro), result, uro, attr, hasMemory)) {
-                           return result;
+                        _comptr inner(new C_RunWithUroborosWith(lastList, uro));
+                        if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+                           return true;
                         }
 
                         throw SyntaxException(str(L"first argument of command '", word.getOriginString(uro),
@@ -1388,9 +1494,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                      }
                   }
 
-                  Command* result;
-                  if (parseLooped(left, new C_RunWithWith(exec, lastList, uro), result, uro, attr, hasMemory)) {
-                     return result;
+                  _comptr inner(new C_RunWithWith(exec, lastList, uro));
+                  if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+                     return true;
                   }
 
                   throw SyntaxException(str(L"first argument of command '", word.getOriginString(uro),
@@ -1420,9 +1526,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                const Token& cf = right.first();
                if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
 
-                  Command* result;
-                  if (parseLooped(left, new C_RunWithUroboros(uro), result, uro, attr, hasMemory)) {
-                     return result;
+                  _comptr inner(new C_RunWithUroboros(uro));
+                  if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+                     return true;
                   }
 
                   throw SyntaxException(str(L"first argument of command '", word.getOriginString(uro),
@@ -1430,9 +1536,9 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
                }
             }
 
-            Command* result;
-            if (parseLooped(left, new C_RunWith(exec, uro), result, uro, attr, hasMemory)) {
-               return result;
+            _comptr inner(new C_RunWith(exec, uro));
+            if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
+               return true;
             }
 
             throw SyntaxException(str(L"first argument of command '", word.getOriginString(uro),
@@ -1444,33 +1550,38 @@ static Command* c_run(const Token& word, const Tokens& tks, const _int& line, Ur
       Attribute* lastAttr = uro.vc.getLastAttribute();
       _genptr<_str> str;
       if (parse::parse(uro, tks, str)) {
-         return new C_Run(str, lastAttr, uro);
+         result = std::make_unique<C_Run>(str, lastAttr, uro);
+         return true;
       }
    }
 
    commandSyntaxException(word.getOriginString(uro), line);
-   return nullptr;
+   return false;
 }
 
-static Command* c_error(const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
 {
    if (tks.isEmpty()) {
-      return new C_Error(uro);
+      result = std::make_unique<C_Error>(uro);
+      return true;
    }
 
    _genptr<_num> num;
 
    if (parse::parse(uro, tks, num)) {
-      return new C_ErrorWithExitCode(num, uro);
+      result = std::make_unique<C_ErrorWithExitCode>(num, uro);
+      return true;
    }
    else {
       throw SyntaxException(str(L"the argument of command '", word.getOriginString(uro),
          L"' cannot be resolved to a number"), line);
    }
+
+   return false;
 }
 
 static void checkUselessFlags(const Token& word, const _int& line,
-   const bool& force, const bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, Uroboros& uro)
 {
    if (force) {
       throw SyntaxException(str(L"keyword '", word.getOriginString(uro),

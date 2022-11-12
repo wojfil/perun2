@@ -28,26 +28,22 @@
 namespace uro::comm
 {
 
+#define P_IL_ARGS_1 _comptr& com, Uroboros& uro
+#define P_IL_ARGS_2 _comptr& com, Attribute* attr, const _bool& hasmem, Uroboros& uro
+#define P_IL_ARGS_3 _comptr& com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro
+
+
 struct IterationLoop : Command
 {
 public:
-   IterationLoop(Command* com, Uroboros& uro)
-      : uroboros(uro), command(com), hasMemory(false), hasAttribute(false),
-        attrMemory(uro.vars.inner), inner(uro.vars.inner) { };
-
-   IterationLoop(Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : uroboros(uro), command(com), attribute(attr), attrMemory(AttributeMemory(attr, uro.vars.inner)),
-        hasMemory(hasmem), hasAttribute(true), inner(uro.vars.inner) { };
-
-   IterationLoop(Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : uroboros(uro), command(com), attribute(attr), attrMemory(AttributeMemory(memAttr, uro.vars.inner)),
-        hasMemory(hasmem), hasAttribute(true), inner(uro.vars.inner) { };
-
+   IterationLoop(P_IL_ARGS_1);
+   IterationLoop(P_IL_ARGS_2);
+   IterationLoop(P_IL_ARGS_3);
 
 protected:
    Uroboros& uroboros;
    InnerVariables& inner;
-   Command* command;
+   _comptr command;
    Attribute* attribute;
    AttributeMemory attrMemory;
    const _bool hasMemory;
@@ -59,20 +55,9 @@ protected:
 struct CS_StringComArg : IterationLoop
 {
 public:
-   CS_StringComArg(_genptr<_str>& str, Command* com, Uroboros& uro)
-      : IterationLoop(com, uro), string(std::move(str)) { };
-
-   CS_StringComArg(_genptr<_str>& str, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), string(std::move(str)) { };
-
-   CS_StringComArg(_genptr<_str>& str, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)) { };
-
-   ~CS_StringComArg() 
-   {
-      delete command;
-   };
-
+   CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_1);
+   CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_2);
+   CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_3);
    void run() override;
 
 private:
@@ -83,20 +68,9 @@ private:
 struct CS_ListComArg : IterationLoop
 {
 public:
-   CS_ListComArg(_genptr<_list>& li, Command* com, Uroboros& uro)
-      : IterationLoop(com, uro), list(std::move(li)) { };
-
-   CS_ListComArg(_genptr<_list>& li, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), list(std::move(li)) { };
-
-   CS_ListComArg(_genptr<_list>& li, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)) { };
-
-   ~CS_ListComArg() 
-   {
-      delete command;
-   };
-
+   CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_1);
+   CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_2);
+   CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_3);
    void run() override;
 
 private:
@@ -107,20 +81,9 @@ private:
 struct CS_DefinitionComArg : IterationLoop
 {
 public:
-   CS_DefinitionComArg(_defptr& def, Command* com, Uroboros& uro)
-      : IterationLoop(com, uro), definition(std::move(def)) { };
-
-   CS_DefinitionComArg(_defptr& def, Command* com, Attribute* attr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)) { };
-
-   CS_DefinitionComArg(_defptr& def, Command* com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)) { };
-
-   ~CS_DefinitionComArg()
-   {
-      delete command;
-   };
-
+   CS_DefinitionComArg(_defptr& def, P_IL_ARGS_1);
+   CS_DefinitionComArg(_defptr& def, P_IL_ARGS_2);
+   CS_DefinitionComArg(_defptr& def, P_IL_ARGS_3);
    void run() override;
 
 private:

@@ -21,6 +21,46 @@
 namespace uro::comm
 {
 
+IterationLoop::IterationLoop(P_IL_ARGS_1)
+   : uroboros(uro), command(std::move(com)), hasMemory(false), hasAttribute(false),
+     attrMemory(uro.vars.inner), inner(uro.vars.inner) { };
+
+IterationLoop::IterationLoop(P_IL_ARGS_2)
+   : uroboros(uro), command(std::move(com)), attribute(attr), attrMemory(AttributeMemory(attr, uro.vars.inner)),
+     hasMemory(hasmem), hasAttribute(true), inner(uro.vars.inner) { };
+
+IterationLoop::IterationLoop(P_IL_ARGS_3)
+   : uroboros(uro), command(std::move(com)), attribute(attr), attrMemory(AttributeMemory(memAttr, uro.vars.inner)),
+     hasMemory(hasmem), hasAttribute(true), inner(uro.vars.inner) { };
+
+CS_StringComArg::CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_1)
+   : IterationLoop(com, uro), string(std::move(str)) { };
+
+CS_StringComArg::CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_2)
+   : IterationLoop(com, attr, hasmem, uro), string(std::move(str)) { };
+
+CS_StringComArg::CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_3)
+   : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)) { };
+
+CS_ListComArg::CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_1)
+   : IterationLoop(com, uro), list(std::move(li)) { };
+
+CS_ListComArg::CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_2)
+   : IterationLoop(com, attr, hasmem, uro), list(std::move(li)) { };
+
+CS_ListComArg::CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_3)
+   : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)) { };
+
+CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, P_IL_ARGS_1)
+   : IterationLoop(com, uro), definition(std::move(def)) { };
+
+CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, P_IL_ARGS_2)
+   : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)) { };
+
+CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, P_IL_ARGS_3)
+   : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)) { };
+
+
 void CS_StringComArg::run()
 {
    if (this->uroboros.state == State::s_Running) {

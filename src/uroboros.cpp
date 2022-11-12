@@ -71,7 +71,9 @@ _bool Uroboros::uro_parse()
 {
    try {
       const Tokens tks(this->tokens);
-      this->commands = comm::parseCommands(tks, *this);
+      if (!comm::parseCommands(this->commands, tks, *this)) {
+         return false;
+      }
       this->conditionContext.deleteClosedUnits();
    }
    catch (const SyntaxException& ex) {
@@ -106,12 +108,10 @@ _bool Uroboros::uro_runCommands()
    }
    catch (const UroRuntimeException& re) {
       rawPrint(re.getMessage());
-      delete this->commands;
       this->exitCode = EXITCODE_RUNTIME_ERROR;
       return false;
    }
 
-   delete this->commands;
    return true;
 };
 

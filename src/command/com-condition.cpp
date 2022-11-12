@@ -21,32 +21,26 @@ namespace uro::comm
 {
 
 CS_Condition::CS_Condition()
-  : command(new C_DoNothing()) { }
+  : command(std::make_unique<C_DoNothing>()) { }
 
-CS_Condition::~CS_Condition()
+/*void CS_Condition::setMain(_comptr& mainCom, _genptr<_bool>& mainCond)
 {
-   delete this->command;
-}
-
-void CS_Condition::setMain(Command* mainCom, _genptr<_bool>& mainCond)
-{
-   this->mainCommand = mainCom;
+   this->mainCommand = std::move(mainCom);
    this->mainCondition = std::move(mainCond);
 }
 
 void CS_Condition::setMain(_genptr<_bool>& mainCond)
 {
-   this->mainCommand = new C_DoNothing();
+   this->mainCommand = std::make_unique<C_DoNothing>();
    this->mainCondition = std::move(mainCond);
 }
 
-void CS_Condition::setCommand(Command* com)
+void CS_Condition::setCommand(_comptr& com)
 {
-   delete this->command;
-   this->command = com;
+   this->command = std::move(com);
 }
 
-Command* CS_Condition::getMainCommand()
+_comptr& CS_Condition::getMainCommand()
 {
    return this->mainCommand;
 }
@@ -54,7 +48,7 @@ Command* CS_Condition::getMainCommand()
 _genptr<_bool>& CS_Condition::getMainCondition()
 {
    return this->mainCondition;
-}
+}*/
 
 void CS_Condition::run()
 {
@@ -62,17 +56,11 @@ void CS_Condition::run()
 }
 
 
-If_Base::If_Base(_genptr<_bool>& cond, Command* com)
-   : condition(std::move(cond)), mainCommand(com) { }
+If_Base::If_Base(_genptr<_bool>& cond, _comptr& com)
+   : condition(std::move(cond)), mainCommand(std::move(com)) { }
 
 
-If_Base::~If_Base()
-{
-   delete this->mainCommand;
-}
-
-
-If_Raw::If_Raw(_genptr<_bool>& cond, Command* com)
+If_Raw::If_Raw(_genptr<_bool>& cond, _comptr& com)
    : If_Base(cond, com) { }
 
 void If_Raw::run()
@@ -83,13 +71,9 @@ void If_Raw::run()
 }
 
 
-If_Else::If_Else(_genptr<_bool>& cond, Command* com, Command* alt)
-   : If_Base(cond, com), altCommand(alt) { }
+If_Else::If_Else(_genptr<_bool>& cond, _comptr& com, _comptr& alt)
+   : If_Base(cond, com), altCommand(std::move(alt)) { }
 
-If_Else::~If_Else()
-{
-   delete this->altCommand;
-}
 
 void If_Else::run()
 {
@@ -102,13 +86,9 @@ void If_Else::run()
 }
 
 
-If_ElseIf::If_ElseIf(_genptr<_bool>& cond, Command* com, _genptr<_bool>& altCond, Command* alt)
+If_ElseIf::If_ElseIf(_genptr<_bool>& cond, _comptr& com, _genptr<_bool>& altCond, _comptr& alt)
    : If_Base(cond, com), altCondition(std::move(altCond)), altCommand(std::move(alt)) { }
 
-If_ElseIf::~If_ElseIf()
-{
-   delete this->altCommand;
-}
 
 void If_ElseIf::run()
 {
@@ -121,14 +101,9 @@ void If_ElseIf::run()
 }
 
 
-If_ElseIfElse::If_ElseIfElse(_genptr<_bool>& cond, Command* com, _genptr<_bool>& altCond, Command* alt, Command* els)
-   : If_Base(cond, com), altCondition(std::move(altCond)), altCommand(alt), elseCommand(els) { }
+If_ElseIfElse::If_ElseIfElse(_genptr<_bool>& cond, _comptr& com, _genptr<_bool>& altCond, _comptr& alt, _comptr& els)
+   : If_Base(cond, com), altCondition(std::move(altCond)), altCommand(std::move(alt)), elseCommand(std::move(els)) { }
 
-If_ElseIfElse::~If_ElseIfElse()
-{
-   delete this->altCommand;
-   delete this->elseCommand;
-}
 
 void If_ElseIfElse::run()
 {
@@ -144,21 +119,16 @@ void If_ElseIfElse::run()
 }
 
 
-If_ManyAlternatives::If_ManyAlternatives(_genptr<_bool>& cond, Command* com,
-      std::vector<_genptr<_bool>>& altConds, const std::vector<Command*>& altComms)
-   : If_Base(cond, com), altCommands(altComms), altCount(altConds.size())
+If_ManyAlternatives::If_ManyAlternatives(_genptr<_bool>& cond, _comptr& com,
+      std::vector<_genptr<_bool>>& altConds, std::vector<_comptr>& altComms)
+   : If_Base(cond, com), altCount(altConds.size())
 {
    transferGenPtrs(altConds, this->altConditions);
+   langutil::transferUniquePtrs(altComms, this->altCommands);
 }
 
-If_ManyAlternatives::~If_ManyAlternatives()
-{
-   langutil::deleteVector(altCommands);
-}
-
-
-If_Alts::If_Alts(_genptr<_bool>& cond, Command* com, std::vector<_genptr<_bool>>& altConds,
-   const std::vector<Command*>& altComms)
+If_Alts::If_Alts(_genptr<_bool>& cond, _comptr& com, std::vector<_genptr<_bool>>& altConds,
+   std::vector<_comptr>& altComms)
    : If_ManyAlternatives(cond, com, altConds, altComms) { }
 
 void If_Alts::run()
@@ -177,14 +147,9 @@ void If_Alts::run()
 }
 
 
-If_AltsElse::If_AltsElse(_genptr<_bool>& cond, Command* com, std::vector<_genptr<_bool>>& altConds,
-   const std::vector<Command*>& altComms, Command* els)
-   : If_ManyAlternatives(cond, com, altConds, altComms), elseCommand(els) { }
-
-If_AltsElse::~If_AltsElse()
-{
-   delete this->elseCommand;
-}
+If_AltsElse::If_AltsElse(_genptr<_bool>& cond, _comptr& com, std::vector<_genptr<_bool>>& altConds,
+   std::vector<_comptr>& altComms, _comptr& els)
+   : If_ManyAlternatives(cond, com, altConds, altComms), elseCommand(std::move(els)) { }
 
 void If_AltsElse::run()
 {

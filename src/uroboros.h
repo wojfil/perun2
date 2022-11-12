@@ -72,7 +72,7 @@ public:
    _int exitCode = EXITCODE_OK;
 
 private:
-   Command* commands = nullptr;
+   _comptr commands;
    std::vector<Token> tokens;
 
    _bool uro_tokenize();

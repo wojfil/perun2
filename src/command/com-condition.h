@@ -21,6 +21,7 @@
 #include "../util.h"
 #include "../uroboros.h"
 
+
 namespace uro::comm
 {
 
@@ -28,19 +29,22 @@ struct CS_Condition : Command
 {
 public:
    CS_Condition();
-   ~CS_Condition();
-   void setMain(Command* mainCom, _genptr<_bool>& mainCond);
-   void setMain(_genptr<_bool>& mainCond);
-   void setCommand(Command* com);
-   Command* getMainCommand();
-   _genptr<_bool>& getMainCondition();
+   //void setMain(_comptr& mainCom, _genptr<_bool>& mainCond);
+   //void setMain(_genptr<_bool>& mainCond);
+   //void setCommand(_comptr& com);
+   //_comptr& getMainCommand();
+   //_genptr<_bool>& getMainCondition();
+
+   _comptr* getCommandPtr() {
+      return &command;
+   };
 
    void run() override;
 
 private:
-   Command* command;
-   Command* mainCommand = nullptr;
-   _genptr<_bool> mainCondition;
+   _comptr command;
+   //_comptr mainCommand;
+   //_genptr<_bool> mainCondition;
 };
 
 
@@ -48,19 +52,18 @@ private:
 struct If_Base : Command
 {
 public:
-   If_Base(_genptr<_bool>& cond, Command* com);
-   ~If_Base();
+   If_Base(_genptr<_bool>& cond, _comptr& com);
 
 protected:
    _genptr<_bool> condition;
-   Command* mainCommand;
+   _comptr mainCommand;
 };
 
 
 struct If_Raw : If_Base
 {
 public:
-   If_Raw(_genptr<_bool>& cond, Command* com);
+   If_Raw(_genptr<_bool>& cond, _comptr& com);
    void run() override;
 };
 
@@ -68,52 +71,48 @@ public:
 struct If_Else : If_Base
 {
 public:
-   If_Else(_genptr<_bool>& cond, Command* com, Command* alt);
-   ~If_Else();
+   If_Else(_genptr<_bool>& cond, _comptr& com, _comptr& alt);
    void run() override;
 
 private:
-   Command* altCommand;
+   _comptr altCommand;
 };
 
 
 struct If_ElseIf : If_Base
 {
 public:
-   If_ElseIf(_genptr<_bool>& cond, Command* com, _genptr<_bool>& altCond, Command* alt);
-   ~If_ElseIf();
+   If_ElseIf(_genptr<_bool>& cond, _comptr& com, _genptr<_bool>& altCond, _comptr& alt);
    void run() override;
 
 private:
    _genptr<_bool> altCondition;
-   Command* altCommand;
+   _comptr altCommand;
 };
 
 
 struct If_ElseIfElse : If_Base
 {
 public:
-   If_ElseIfElse(_genptr<_bool>& cond, Command* com, _genptr<_bool>& altCond, Command* alt, Command* els);
-   ~If_ElseIfElse();
+   If_ElseIfElse(_genptr<_bool>& cond, _comptr& com, _genptr<_bool>& altCond, _comptr& alt, _comptr& els);
    void run() override;
 
 private:
    _genptr<_bool> altCondition;
-   Command* altCommand;
-   Command* elseCommand;
+   _comptr altCommand;
+   _comptr elseCommand;
 };
 
 
 struct If_ManyAlternatives : If_Base
 {
 public:
-   If_ManyAlternatives(_genptr<_bool>& cond, Command* com,
-      std::vector<_genptr<_bool>>& altConds, const std::vector<Command*>& altComms);
-   ~If_ManyAlternatives();
+   If_ManyAlternatives(_genptr<_bool>& cond, _comptr& com,
+      std::vector<_genptr<_bool>>& altConds, std::vector<_comptr>& altComms);
 
 protected:
    std::vector<_genptr<_bool>> altConditions;
-   std::vector<Command*> altCommands;
+   std::vector<_comptr> altCommands;
    const _size altCount;
 };
 
@@ -121,8 +120,8 @@ protected:
 struct If_Alts : If_ManyAlternatives
 {
 public:
-   If_Alts(_genptr<_bool>& cond, Command* com, std::vector<_genptr<_bool>>& altConds,
-      const std::vector<Command*>& altComms);
+   If_Alts(_genptr<_bool>& cond, _comptr& com, std::vector<_genptr<_bool>>& altConds,
+      std::vector<_comptr>& altComms);
    void run() override;
 };
 
@@ -130,13 +129,12 @@ public:
 struct If_AltsElse : If_ManyAlternatives
 {
 public:
-   If_AltsElse(_genptr<_bool>& cond, Command* com, std::vector<_genptr<_bool>>& altConds,
-      const std::vector<Command*>& altComms, Command* els);
-   ~If_AltsElse();
+   If_AltsElse(_genptr<_bool>& cond, _comptr& com, std::vector<_genptr<_bool>>& altConds,
+      std::vector<_comptr>& altComms, _comptr& els);
    void run() override;
 
 private:
-   Command* elseCommand;
+   _comptr elseCommand;
 };
 
 }

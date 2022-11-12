@@ -21,8 +21,8 @@
 namespace uro::comm
 {
 
-ConditionUnit::ConditionUnit(CS_Condition* pntr)
-  : pointer(pntr) { };
+ConditionUnit::ConditionUnit(_comptr* ptr)
+  : pointer(ptr) { };
 
 
 void ConditionUnit::finish()
@@ -31,54 +31,52 @@ void ConditionUnit::finish()
       return;
    }
 
-   Command* mainCommand = this->pointer->getMainCommand();
-   _genptr<_bool> mainCondition = std::move(this->pointer->getMainCondition());
    const _size altCount = this->elseIfCommands.size();
 
    switch (altCount) {
       case 0: {
-         if (this->elseCommand == nullptr) {
-            this->pointer->setCommand(new If_Raw(mainCondition, mainCommand));
+         if (this->hasElse) {
+            (*this->pointer) = std::make_unique<If_Else>(this->mainCondition, this->mainCommand, this->elseCommand);
          }
          else {
-            this->pointer->setCommand(new If_Else(mainCondition, mainCommand, this->elseCommand));
+            (*this->pointer) = std::make_unique<If_Raw>(this->mainCondition, this->mainCommand);
          }
          break;
       }
       case 1: {
-         if (this->elseCommand == nullptr) {
-            this->pointer->setCommand(new If_ElseIf(mainCondition, mainCommand,
-               this->elseIfConditions[0], this->elseIfCommands[0]));
+         if (this->hasElse) {
+            (*this->pointer) = std::make_unique<If_ElseIfElse>(this->mainCondition, this->mainCommand, 
+               this->elseIfConditions[0], this->elseIfCommands[0], this->elseCommand);
          }
          else {
-            this->pointer->setCommand(new If_ElseIfElse(mainCondition, mainCommand, this->elseIfConditions[0],
-               this->elseIfCommands[0], this->elseCommand));
+            (*this->pointer) = std::make_unique<If_ElseIf>(this->mainCondition, this->mainCommand, 
+               this->elseIfConditions[0], this->elseIfCommands[0]);
          }
          break;
       }
       default: {
-         if (this->elseCommand == nullptr) {
-            this->pointer->setCommand(
-               new If_Alts(mainCondition, mainCommand, this->elseIfConditions, this->elseIfCommands));
+         if (this->hasElse) {
+            (*this->pointer) = std::make_unique<If_AltsElse>(this->mainCondition, this->mainCommand, 
+               this->elseIfConditions, this->elseIfCommands, this->elseCommand);
          }
          else {
-            this->pointer->setCommand(
-               new If_AltsElse(mainCondition, mainCommand, this->elseIfConditions,
-                  this->elseIfCommands, this->elseCommand));
+            (*this->pointer) = std::make_unique<If_Alts>(this->mainCondition, this->mainCommand, 
+               this->elseIfConditions, this->elseIfCommands);
          }
          break;
       }
    }
 }
 
-void ConditionUnit::setElse(Command* com)
+void ConditionUnit::setElse(_comptr& com)
 {
-   this->elseCommand = com;
+   this->hasElse = true;
+   this->elseCommand = std::move(com);
 }
 
-void ConditionUnit::addElseIf(Command* com, _genptr<_bool>& cond)
+void ConditionUnit::addElseIf(_comptr& com, _genptr<_bool>& cond)
 {
-   this->elseIfCommands.push_back(com);
+   this->elseIfCommands.push_back(std::move(com));
    this->elseIfConditions.push_back(std::move(cond));
 }
 
@@ -112,14 +110,25 @@ void ConditionUnit::lock()
    this->locked = true;
 }
 
+void ConditionUnit::setMain(_genptr<_bool>& mainCond)
+{
+   this->mainCommand = std::make_unique<C_DoNothing>();
+   this->mainCondition = std::move(mainCond);
+}
+
+void ConditionUnit::setMain(_comptr& mainCom, _genptr<_bool>& mainCond)
+{
+   this->mainCommand = std::move(mainCom);
+   this->mainCondition = std::move(mainCond);
+}
 
 
-void ConditionContext::add(CS_Condition* pntr)
+void ConditionContext::add(_comptr* pntr)
 {
    this->units.emplace_back(pntr);
 }
 
-void ConditionContext::addClosed(CS_Condition* pntr)
+void ConditionContext::addClosed(_comptr* pntr)
 {
    this->units.emplace_back(pntr);
    this->units.back().close();
@@ -165,7 +174,7 @@ _bool ConditionContext::isExpandable() const
    return cu.isClosed() && !cu.isLocked() && cu.pointer != nullptr;
 }
 
-void ConditionContext::addElse(Command* com, const _int& line)
+void ConditionContext::addElse(_comptr& com, const _int& line)
 {
    if (!this->isExpandable()) {
       throw SyntaxException(L"structure 'else' is not preceded by a structure 'if' ", line);
@@ -196,7 +205,7 @@ void ConditionContext::addEmptyElse(const _int& line)
    cu.closeElse();
 }
 
-void ConditionContext::addElseIf(_genptr<_bool>& cond, Command* com, const _int& line)
+void ConditionContext::addElseIf(_genptr<_bool>& cond, _comptr& com, const _int& line)
 {
    if (!this->isExpandable()) {
       throw SyntaxException(L"structure 'else if' is not preceded by a structure 'if'", line);
@@ -209,6 +218,18 @@ void ConditionContext::addElseIf(_genptr<_bool>& cond, Command* com, const _int&
    }
 
    cu.addElseIf(com, cond);
+}
+
+void ConditionContext::setMain(_genptr<_bool>& mainCond)
+{ 
+   ConditionUnit& cu = this->units.back();
+   cu.setMain(mainCond);
+}
+
+void ConditionContext::setMain(_comptr& mainCom, _genptr<_bool>& mainCond)
+{
+   ConditionUnit& cu = this->units.back();
+   cu.setMain(mainCom, mainCond);
 }
 
 }

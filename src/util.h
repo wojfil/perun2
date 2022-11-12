@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 
 
 namespace uro::langutil
@@ -84,6 +85,20 @@ void clearAndReserve(std::vector<T>& vec, const _size& length)
    vec.clear();
    vec.reserve(length);
 }
+
+
+template <typename T>
+void transferUniquePtrs(std::vector<std::unique_ptr<T>>& source, std::vector<std::unique_ptr<T>>& destination)
+{
+   const _size len = source.size();
+   for (_size i = 0; i < len; i++) {
+      std::unique_ptr<T>& s = source[i];
+      destination.push_back(std::move(s));
+   }
+};
+
+
+
 
 }
 

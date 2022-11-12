@@ -98,13 +98,13 @@ private:
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel* ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin);
+   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin);
    _bool hasNext() override;
    void reset() override;
    _fdata* getDataPtr();
 
 private:
-   LocationVessel* vessel;
+   LocationVessel& vessel;
    _defptr definition;
    _defptr locations;
    InnerVariables& inner;

@@ -184,14 +184,15 @@ exitAsteriskBeginning:
       }
       else {
          _defptr d;
-          this->defGenerator.generatePattern(d, base, gen::OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
+         this->defGenerator.generatePattern(d, base, gen::OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
          result = std::make_unique<gen::DefinitionSuffix>(d, this->uroboros, units[0].suffixPart, isAbsolute, false);
       }
 
       for (_size i = 1; i < ulen; i++) {
          const _bool isFinal = i == (ulen - 1);
-         gen::LocationVessel* vessel = new gen::LocationVessel(isAbsolute, this->uroboros);
-         _genptr<_str> vesselPtr(vessel);
+         std::unique_ptr<gen::LocationVessel> vessel(new gen::LocationVessel(isAbsolute, this->uroboros));
+         gen::LocationVessel& vesselRef = *(vessel.get());
+         _genptr<_str> vesselPtr = std::move(vessel);
          _defptr nextDef;
          const _str nextPatt = str(OS_SEPARATOR_STRING, units[i].asteriskPart);
 
@@ -206,7 +207,7 @@ exitAsteriskBeginning:
          }
 
          _defptr prev = std::move(result);
-         result = std::make_unique<gen::NestedDefiniton>(vessel, nextDef, prev, this->uroboros, isAbsolute, isFinal);
+         result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, this->uroboros, isAbsolute, isFinal);
       }
 
       return true;

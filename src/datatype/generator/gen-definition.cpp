@@ -150,7 +150,7 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel* ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin)
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin)
    : vessel(ves), definition(std::move(def)), locations(std::move(locs)), inner(uro.vars.inner), isAbsolute(abs), isFinal(fin) { };
 
 
@@ -172,7 +172,7 @@ _bool NestedDefiniton::hasNext()
    if (!this->locsOpened) {
       if (this->locations->hasNext()) {
          this->locsOpened = true;
-         this->vessel->setValue(this->locations->getValue());
+         this->vessel.setValue(this->locations->getValue());
          if (this->isFinal) {
             this->index.setToZero();
          }
@@ -187,7 +187,7 @@ _bool NestedDefiniton::hasNext()
          this->defOpened = true;
          this->value = this->isAbsolute
             ? this->definition->getValue()
-            : str(this->vessel->getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
+            : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
 
          
          if (this->isFinal) {
@@ -200,7 +200,7 @@ _bool NestedDefiniton::hasNext()
          this->defOpened = false;
          if (this->locations->hasNext()) {
             this->locsOpened = true;
-            this->vessel->setValue(this->locations->getValue());
+            this->vessel.setValue(this->locations->getValue());
          }
          else {
             this->locsOpened = false;

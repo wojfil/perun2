@@ -67,7 +67,7 @@ public:
    SideProcess sideProcess;
    const _uint32 flags;
    comm::ConditionContext conditionContext;
-   const parse::PatternParser patternParser;
+   const parse::AsteriskParser asteriskParser;
    State state = State::s_Running;
    _int exitCode = EXITCODE_OK;
 

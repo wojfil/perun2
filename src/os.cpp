@@ -1292,7 +1292,7 @@ _bool os_isInvaild(const _str& path)
 
 _uint32 os_patternInfo(const _str& pattern)
 {
-   _uint32 result = parse::PATTERN_INFO_NULL;
+   _uint32 result = parse::ASTERISK_INFO_NULL;
    const _size length = pattern.size();
 
    if (length == 0 || pattern[length - 1] == L'.') {
@@ -1300,7 +1300,7 @@ _uint32 os_patternInfo(const _str& pattern)
    }
 
    if (os_isAbsolute(pattern)) {
-      result |= parse::PATTERN_INFO_IS_ABSOLUTE;
+      result |= parse::ASTERISK_INFO_IS_ABSOLUTE;
       if (length < 4 || pattern[2] != OS_SEPARATOR) {
          return result;
       }
@@ -1317,7 +1317,7 @@ _uint32 os_patternInfo(const _str& pattern)
             countAstrisks++;
 
             if (prev == L'*') {
-               result |= parse::PATTERN_INFO_DOUBLE_ASTERISK;
+               result |= parse::ASTERISK_INFO_DOUBLE_ASTERISK;
             }
             break;
          }
@@ -1329,7 +1329,7 @@ _uint32 os_patternInfo(const _str& pattern)
             return result;
          }
          case L':': {
-            if (i != 1 || !(result & parse::PATTERN_INFO_IS_ABSOLUTE)) {
+            if (i != 1 || !(result & parse::ASTERISK_INFO_IS_ABSOLUTE)) {
                return result;
             }
             break;
@@ -1345,10 +1345,10 @@ _uint32 os_patternInfo(const _str& pattern)
    }
 
    if (countAstrisks == 1) {
-      result |= parse::PATTERN_INFO_ONE_ASTERISK;
+      result |= parse::ASTERISK_INFO_ONE_ASTERISK;
    }
 
-   result |= parse::PATTERN_INFO_VALID;
+   result |= parse::ASTERISK_INFO_VALID;
    return result;
 }
 

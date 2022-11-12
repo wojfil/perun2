@@ -25,7 +25,7 @@ namespace uro::parse
 #define P_PATTERN_START_ID (isAbsolute ? 3 : 0)
 
 
-_bool PatternParser::parse(const _str& originPattern, _defptr& result, const _int& line) const
+_bool AsteriskParser::parse(const _str& originPattern, _defptr& result, const _int& line) const
 {
    const _str pattern = os_trim(originPattern);
 
@@ -42,11 +42,11 @@ _bool PatternParser::parse(const _str& originPattern, _defptr& result, const _in
 
    const _uint32 info = os_patternInfo(pattern);
 
-   if ((info & PATTERN_INFO_VALID) == 0 || (info & PATTERN_INFO_DOUBLE_ASTERISK) != 0) {
+   if ((info & ASTERISK_INFO_VALID) == 0 || (info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0) {
       throw SyntaxException(str(L"asterisk pattern '", originPattern, L"' is not valid"), line);
    }
 
-   const _bool isAbsolute = info & PATTERN_INFO_IS_ABSOLUTE;
+   const _bool isAbsolute = info & ASTERISK_INFO_IS_ABSOLUTE;
    const _size totalLength = pattern.size();
    _int separatorId = -1;
 
@@ -57,12 +57,12 @@ _bool PatternParser::parse(const _str& originPattern, _defptr& result, const _in
             break;
          }
          case L'*': {
-            goto exitParseBeginning;
+            goto exitAsteriskBeginning;
          }
       }
    }
 
-exitParseBeginning:
+exitAsteriskBeginning:
 
    _str prefix;
    _genptr<_str> base;
@@ -90,7 +90,7 @@ exitParseBeginning:
    // the pattern contains only one asterisk
    // this is the simplest case
    // we can easily deduce the result
-   if ((info & PATTERN_INFO_ONE_ASTERISK) != 0) {
+   if ((info & ASTERISK_INFO_ONE_ASTERISK) != 0) {
       _int separatorId2 = -1;
 
       for (_size i = separatorId + ((isAbsolute && separatorId == -1) ? 4 : 1); i < totalLength; i++) {
@@ -128,7 +128,7 @@ exitParseBeginning:
    _bool hasAsterisk = false;
    _str asteriskPart;
    _str suffixPart;
-   std::vector<PatternUnit> units;
+   std::vector<AsteriskUnit> units;
 
    for (_size i = start; i < totalLength; i++) {
       switch (pattern[i]) {
@@ -159,7 +159,7 @@ exitParseBeginning:
    // the pattern contains multiple asterisks
    // but they all appear within one 'path segment' (there is no separator \ / between them)
    if (ulen == 1) {
-      const PatternUnit& u = units[0];
+      const AsteriskUnit& u = units[0];
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
@@ -176,7 +176,7 @@ exitParseBeginning:
 
    // the pattern contains multiple asterisks spread around
    // but there are no 'double asterisks' **
-   if ((info & PATTERN_INFO_DOUBLE_ASTERISK) == 0) {
+   if ((info & ASTERISK_INFO_DOUBLE_ASTERISK) == 0) {
       const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
 
       if (units[0].suffixPart.empty()) {
@@ -215,8 +215,8 @@ exitParseBeginning:
    return false;
 }
 
-void PatternParser::addUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
-   const _bool& hasAsterisk, std::vector<PatternUnit>& units) const
+void AsteriskParser::addUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
+   const _bool& hasAsterisk, std::vector<AsteriskUnit>& units) const
 {
    if (asteriskPart.empty()) {
       asteriskPart = part;

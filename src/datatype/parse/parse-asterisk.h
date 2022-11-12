@@ -21,28 +21,28 @@
 namespace uro::parse
 {
 
-inline constexpr _uint32 PATTERN_INFO_NULL =             0b0000000;
-inline constexpr _uint32 PATTERN_INFO_VALID =            0b0000001;
-inline constexpr _uint32 PATTERN_INFO_ONE_ASTERISK =     0b0000010;
-inline constexpr _uint32 PATTERN_INFO_DOUBLE_ASTERISK =  0b0000100;
-inline constexpr _uint32 PATTERN_INFO_IS_ABSOLUTE =      0b0001000;
+inline constexpr _uint32 ASTERISK_INFO_NULL =             0b0000000;
+inline constexpr _uint32 ASTERISK_INFO_VALID =            0b0000001;
+inline constexpr _uint32 ASTERISK_INFO_ONE_ASTERISK =     0b0000010;
+inline constexpr _uint32 ASTERISK_INFO_DOUBLE_ASTERISK =  0b0000100;
+inline constexpr _uint32 ASTERISK_INFO_IS_ABSOLUTE =      0b0001000;
 
 
-struct PatternUnit
+struct AsteriskUnit
 {
 public:
-   PatternUnit(const _str& ast, const _str& suf) : asteriskPart(ast), suffixPart(suf) { };
-   PatternUnit(const _str& ast) : asteriskPart(ast), suffixPart(_str()) { };
+   AsteriskUnit(const _str& ast, const _str& suf) : asteriskPart(ast), suffixPart(suf) { };
+   AsteriskUnit(const _str& ast) : asteriskPart(ast), suffixPart(_str()) { };
 
    const _str asteriskPart;
    const _str suffixPart;
 };
 
 
-struct PatternParser
+struct AsteriskParser
 {
 public:
-   PatternParser(Uroboros& uro)
+   AsteriskParser(Uroboros& uro)
       : uroboros(uro), defGenerator(gen::OsElement::oe_None, uro) { };
 
    _bool parse(const _str& originPattern, _defptr& result, const _int& line) const;
@@ -50,7 +50,7 @@ public:
 private:
 
    void addUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
-      const _bool& hasAsterisk, std::vector<PatternUnit>& units) const;
+      const _bool& hasAsterisk, std::vector<AsteriskUnit>& units) const;
 
    Uroboros& uroboros;
    const gen::DefinitionGenerator defGenerator;

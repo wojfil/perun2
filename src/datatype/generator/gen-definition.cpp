@@ -73,7 +73,6 @@ _bool Filter_WhereDef::hasNext()
 
    while (definition->hasNext()) {
       if (this->uroboros.state != State::s_Running) {
-         this->reset();
          break;
       }
 

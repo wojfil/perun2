@@ -52,7 +52,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
       switch (mode)  {
          case Mode::m_Normal: {
             if (c == L'"') {
-               throw SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
+               quotationLiteralException(line);
             }
             else if (isSymbol(c)) {
                if (i != 0 && prev == L'/') {
@@ -130,7 +130,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
          }
          case Mode::m_Word: {
             if (c == L'"') {
-               throw SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
+               quotationLiteralException(line);
             }
             else if (isAllowedInWord(c)) {
                wlen++;
@@ -491,6 +491,11 @@ inline static void invalidCharException(const _char& ch, const _int& line)
          throw SyntaxException(str(L"character '", toStr(ch), L"' is not allowed in Uroboros"), line);
       }
    }
+}
+
+inline static void quotationLiteralException(const _int& line)
+{
+   throw SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
 }
 
 }

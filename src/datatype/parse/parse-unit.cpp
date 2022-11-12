@@ -198,7 +198,7 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == L'*') {
-            return uro.patternParser.parse(L"**", result, tk.line);
+            return uro.asteriskParser.parse(L"**", result, tk.line);
          }
          else {
             return false;
@@ -206,14 +206,14 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
-            return uro.patternParser.parse(L"*", result, tk.line);
+            return uro.asteriskParser.parse(L"*", result, tk.line);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return uro.patternParser.parse(tk.getOriginString(uro), result, tk.line);
+         return uro.asteriskParser.parse(tk.getOriginString(uro), result, tk.line);
       }
       default: {
          return false;

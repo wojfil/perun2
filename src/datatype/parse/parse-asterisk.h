@@ -12,13 +12,13 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_PATTERN_H_INCLUDED
-#define GEN_PATTERN_H_INCLUDED
+#ifndef PARSE_ASTERISK_H_INCLUDED
+#define PARSE_ASTERISK_H_INCLUDED
 
-#include "gen-os.h"
+#include "../generator/gen-os.h"
 
 
-namespace uro::gen
+namespace uro::parse
 {
 
 inline constexpr _uint32 PATTERN_INFO_NULL =             0b0000000;
@@ -43,7 +43,7 @@ struct PatternParser
 {
 public:
    PatternParser(Uroboros& uro)
-      : uroboros(uro), defGenerator(OsElement::oe_None, uro) { };
+      : uroboros(uro), defGenerator(gen::OsElement::oe_None, uro) { };
 
    _bool parse(const _str& originPattern, _defptr& result, const _int& line) const;
 
@@ -53,9 +53,9 @@ private:
       const _bool& hasAsterisk, std::vector<PatternUnit>& units) const;
 
    Uroboros& uroboros;
-   const DefinitionGenerator defGenerator;
+   const gen::DefinitionGenerator defGenerator;
 };
 
 }
 
-#endif // GEN_PATTERN_H_INCLUDED
+#endif // PARSE_ASTERISK_H_INCLUDED

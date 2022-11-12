@@ -12,14 +12,14 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-pattern.h"
-#include "gen-string.h"
-#include "gen-generic.h"
-#include "gen-definition.h"
+#include "parse-asterisk.h"
+#include "../generator/gen-string.h"
+#include "../generator/gen-generic.h"
+#include "../generator/gen-definition.h"
 #include "../../os.h"
 
 
-namespace uro::gen
+namespace uro::parse
 {
 
 #define P_PATTERN_START_ID (isAbsolute ? 3 : 0)
@@ -30,14 +30,14 @@ _bool PatternParser::parse(const _str& originPattern, _defptr& result, const _in
    const _str pattern = os_trim(originPattern);
 
    if (pattern == L"*") {
-      _genptr<_str> loc(new LocationReference(this->uroboros));
+      _genptr<_str> loc(new gen::LocationReference(this->uroboros));
       return this->defGenerator.generatePattern(result, loc,
-         OsElement::oe_All, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
+         gen::OsElement::oe_All, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
    }
    else if (pattern == L"**") {
-      _genptr<_str> loc(new LocationReference(this->uroboros));
+      _genptr<_str> loc(new gen::LocationReference(this->uroboros));
       return this->defGenerator.generatePattern(result, loc,
-         OsElement::oe_RecursiveAll, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
+         gen::OsElement::oe_RecursiveAll, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
    }
 
    const _uint32 info = os_patternInfo(pattern);
@@ -69,20 +69,20 @@ exitParseBeginning:
 
    if (separatorId == -1) {
       if (isAbsolute) {
-         base = std::make_unique<Constant<_str>>(pattern.substr(0, 2));
+         base = std::make_unique<gen::Constant<_str>>(pattern.substr(0, 2));
       }
       else {
-         base = std::make_unique<LocationReference>(this->uroboros);
+         base = std::make_unique<gen::LocationReference>(this->uroboros);
       }
    }
    else {
       if (isAbsolute) {
-         base = std::make_unique<Constant<_str>>(pattern.substr(0, separatorId));
+         base = std::make_unique<gen::Constant<_str>>(pattern.substr(0, separatorId));
       }
       else {
          prefix = pattern.substr(0, separatorId);
-         _genptr<_str> loc(new Constant<_str>(prefix));
-         base = std::make_unique<RelativeLocation>(loc, this->uroboros);
+         _genptr<_str> loc(new gen::Constant<_str>(prefix));
+         base = std::make_unique<gen::RelativeLocation>(loc, this->uroboros);
          prefix += OS_SEPARATOR;
       }
    }
@@ -102,12 +102,12 @@ exitParseBeginning:
 
       if (separatorId2 == -1) {
          if (separatorId == -1) {
-            return this->defGenerator.generatePattern(result, base, OsElement::oe_All,
+            return this->defGenerator.generatePattern(result, base, gen::OsElement::oe_All,
                str(OS_SEPARATOR_STRING, isAbsolute ? pattern.substr(3) : pattern), isAbsolute, prefix);
          }
          else {
             const _str s = pattern.substr(separatorId);
-            return this->defGenerator.generatePattern(result, base, OsElement::oe_All, s, isAbsolute, prefix);
+            return this->defGenerator.generatePattern(result, base, gen::OsElement::oe_All, s, isAbsolute, prefix);
          }
       }
 
@@ -119,8 +119,8 @@ exitParseBeginning:
          : pattern.substr(patternStart, patternLength);
 
       _defptr d;
-      this->defGenerator.generatePattern(d, base, OsElement::oe_Directories, p, isAbsolute, prefix);
-      result = std::make_unique<DefinitionSuffix>(d, this->uroboros, suffix, isAbsolute, true);
+      this->defGenerator.generatePattern(d, base, gen::OsElement::oe_Directories, p, isAbsolute, prefix);
+      result = std::make_unique<gen::DefinitionSuffix>(d, this->uroboros, suffix, isAbsolute, true);
       return true;
    }
 
@@ -163,12 +163,12 @@ exitParseBeginning:
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
-         this->defGenerator.generatePattern(result, base, OsElement::oe_All, p, isAbsolute, prefix);
+         this->defGenerator.generatePattern(result, base, gen::OsElement::oe_All, p, isAbsolute, prefix);
       }
       else {
          _defptr d;
-         this->defGenerator.generatePattern(d, base, OsElement::oe_Directories, p, isAbsolute, prefix);
-         result = std::make_unique<DefinitionSuffix>(d, this->uroboros, u.suffixPart, isAbsolute, true);
+         this->defGenerator.generatePattern(d, base, gen::OsElement::oe_Directories, p, isAbsolute, prefix);
+         result = std::make_unique<gen::DefinitionSuffix>(d, this->uroboros, u.suffixPart, isAbsolute, true);
       }
 
       return true;
@@ -180,33 +180,33 @@ exitParseBeginning:
       const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
 
       if (units[0].suffixPart.empty()) {
-         this->defGenerator.generatePattern(result, base, OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
+         this->defGenerator.generatePattern(result, base, gen::OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
       }
       else {
          _defptr d;
-          this->defGenerator.generatePattern(d, base, OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
-         result = std::make_unique<DefinitionSuffix>(d, this->uroboros, units[0].suffixPart, isAbsolute, false);
+          this->defGenerator.generatePattern(d, base, gen::OsElement::oe_Directories, firstPatt, isAbsolute, prefix);
+         result = std::make_unique<gen::DefinitionSuffix>(d, this->uroboros, units[0].suffixPart, isAbsolute, false);
       }
 
       for (_size i = 1; i < ulen; i++) {
          const _bool isFinal = i == (ulen - 1);
-         LocationVessel* vessel = new LocationVessel(isAbsolute, this->uroboros);
+         gen::LocationVessel* vessel = new gen::LocationVessel(isAbsolute, this->uroboros);
          _genptr<_str> vesselPtr(vessel);
          _defptr nextDef;
          const _str nextPatt = str(OS_SEPARATOR_STRING, units[i].asteriskPart);
 
          if (units[i].suffixPart.empty()) {
             this->defGenerator.generatePattern(nextDef, vesselPtr,
-               isFinal ? OsElement::oe_All : OsElement::oe_Directories, nextPatt, isAbsolute, prefix);
+               isFinal ? gen::OsElement::oe_All : gen::OsElement::oe_Directories, nextPatt, isAbsolute, prefix);
          }
          else {
             _defptr d;
-            this->defGenerator.generatePattern(d, vesselPtr, OsElement::oe_Directories, nextPatt, isAbsolute, prefix);
-            nextDef = std::make_unique<DefinitionSuffix>(d, this->uroboros, units[i].suffixPart, isAbsolute, isFinal);
+            this->defGenerator.generatePattern(d, vesselPtr, gen::OsElement::oe_Directories, nextPatt, isAbsolute, prefix);
+            nextDef = std::make_unique<gen::DefinitionSuffix>(d, this->uroboros, units[i].suffixPart, isAbsolute, isFinal);
          }
 
          _defptr prev = std::move(result);
-         result = std::make_unique<NestedDefiniton>(vessel, nextDef, prev, this->uroboros, isAbsolute, isFinal);
+         result = std::make_unique<gen::NestedDefiniton>(vessel, nextDef, prev, this->uroboros, isAbsolute, isFinal);
       }
 
       return true;

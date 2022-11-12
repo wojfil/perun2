@@ -377,7 +377,6 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          const _size h1 = stringHash(os1);
          const _size h2 = stringHash(os2);
 
-
          return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, uro);
       }
       default: {
@@ -388,20 +387,12 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
    return Token(start, length, line, uro);
 }
 
-inline _ndouble stringToDouble(const _str& value)
-{
-   _stream ss(value);
-   _ndouble n;
-   ss >> n;
-   return n;
-}
-
-inline void bigNumberException(const _str& code, const _size& start, const _size& length, const _int& line)
+inline static void bigNumberException(const _str& code, const _size& start, const _size& length, const _int& line)
 {
    throw SyntaxException(str(L"number '", code.substr(start, length), L"' is too big to be stored in the memory"), line);
 }
 
-_nint getSuffixMultiplier(const _char& c1, const _char& c2)
+inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
 {
    if (!(c2 == L'b' || c2 == L'B')) {
       return -1LL;
@@ -423,7 +414,7 @@ _nint getSuffixMultiplier(const _char& c1, const _char& c2)
    }
 }
 
-inline _bool isSymbol(const _char& ch)
+inline static _bool isSymbol(const _char& ch)
 {
    switch (ch) {
       case L',':
@@ -451,12 +442,12 @@ inline _bool isSymbol(const _char& ch)
    }
 }
 
-_bool isNewLine(const _char& ch)
+inline static _bool isNewLine(const _char& ch)
 {
    return ch == L'\n';
 }
 
-inline _bool isAllowedInWord(const _char& ch)
+inline static _bool isAllowedInWord(const _char& ch)
 {
    if (std::iswalpha(ch) || std::iswdigit(ch)) {
       return true;
@@ -471,7 +462,7 @@ inline _bool isAllowedInWord(const _char& ch)
    }
 }
 
-inline _bool isDoubleChar(const _char& ch)
+inline static _bool isDoubleChar(const _char& ch)
 {
    switch (ch) {
       case L'+':
@@ -483,7 +474,7 @@ inline _bool isDoubleChar(const _char& ch)
    }
 }
 
-void invalidCharException(const _char& ch, const _int& line)
+inline static void invalidCharException(const _char& ch, const _int& line)
 {
    switch (ch) {
       case L'^': {

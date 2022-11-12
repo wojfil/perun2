@@ -42,7 +42,6 @@ typedef WIN32_FIND_DATAW            _fdata;
 typedef FILETIME                    _ftim;
 typedef std::wstringstream          _stream;
 
-
 static const _str EMPTY_STRING = L"";
 
 
@@ -51,11 +50,10 @@ _str toStr(const _char& ch);
 template<typename T>
 _str toStr(const T& n)
 {
-    std::wostringstream s;
-    s << n;
-    return s.str();
+   std::wostringstream s;
+   s << n;
+   return s.str();
 }
-
 
 // the following function is the default method of deterministic string concatenation in Uroboros
 // it is used virtually everywhere
@@ -77,6 +75,8 @@ _str str(Args const&... args)
 
    return result;
 }
+
+_ndouble stringToDouble(const _str& value);
 
 void toLower(_char& ch);
 void toLower(_str& value);

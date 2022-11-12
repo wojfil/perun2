@@ -47,10 +47,10 @@ DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro)
 _bool DefinitionGenerator::generateDefault(_defptr& result) const
 {
    _genptr<_str> loc(new LocationReference(this->uroboros));
-   return this->generatePattern(result, loc, this->element_, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
+   return this->generate(result, loc, this->element_, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
 }
 
-_bool DefinitionGenerator::generatePattern(_defptr& result, _genptr<_str>& location, const OsElement& element,
+_bool DefinitionGenerator::generate(_defptr& result, _genptr<_str>& location, const OsElement& element,
    const _str& pattern, const _bool& isAbsolute, const _str& prefix) const
 {
    switch (element) {

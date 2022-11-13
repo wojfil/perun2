@@ -46,11 +46,10 @@ inline constexpr _aunit ATTR_PATH =         0b00000000000000010000000000000000;
 inline constexpr _aunit ATTR_READONLY =     0b00000000000000100000000000000000;
 inline constexpr _aunit ATTR_SIZE =         0b00000000000001000000000000000000;
 
-// certain expression or syntax structure may require multiple file attributes:
+// certain expression or syntax structure may require multiple attributes of file:
 // for example - creation time, modification time, size and extension
 // instead of reading them one by one
-// all attributes from an expression are joined together and read at once
-// this approach introduces a lot of optimization - only one file system call is needed
+// all attributes from an expression are joined together and read at once at the beginning of expression evaluation
 
 struct Uroboros;
 
@@ -69,13 +68,14 @@ public:
    _aunit getValue() const;
    _bool isMarkedToEvaluate() const;
    void markToEvaluate();
+   _bool isMarkedToRun() const;
+   void markToRun();
 
    virtual void run() const;
 
-   _bool markToRun = false;
-
 protected:
-   _bool isMarkedToEvaluate_ = false;
+   _bool markedToEvaluate = false;
+   _bool markedToRun = false;
    _aunit value;
    Uroboros& uroboros;
 };
@@ -86,10 +86,8 @@ typedef std::unique_ptr<Attribute> _attrptr;
 // by Win32API functions 'FindFirstFile()' and 'FindNextFile()'
 // the result of their call is a WIN32_FIND_DATA struct filled with data
 // this struct already contains all the data we will ever need when operating with files
-// why not use this already obtained data in many other places?
 // BridgeAttribute contains a dangling pointer to this data
 // as a result, we do not have to load the same data multiple times
-// useful when IO is the bottleneck
 
 struct BridgeAttribute : Attribute
 {

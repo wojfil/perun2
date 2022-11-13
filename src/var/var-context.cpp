@@ -104,7 +104,7 @@ void VariablesContext::markAttributesToRun()
 {
    const _size len = this->attrs.size();
    for (_size i = 0; i < len; i++) {
-      (*(this->attrs[i])).markToRun = true;
+      (*(this->attrs[i])).markToRun();
    }
 }
 

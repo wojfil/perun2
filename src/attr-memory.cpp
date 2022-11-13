@@ -29,7 +29,7 @@ AttributeMemory::AttributeMemory(InnerVariables& iv)
 
 void AttributeMemory::load()
 {
-   if (!hasAttribute || attribute->markToRun) {
+   if (!hasAttribute || attribute->isMarkedToRun()) {
       return;
    }
 
@@ -124,7 +124,7 @@ void AttributeMemory::restore() const
       return;
    }
 
-   if (attribute->markToRun) {
+   if (attribute->isMarkedToRun()) {
       this->attribute->run();
       return;
    }

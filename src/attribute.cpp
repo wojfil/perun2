@@ -35,65 +35,65 @@ void Attribute::add(const Token& tk)
       return;
    }
 
-   if (value == ATTR_NULL) {
-      set(ATTR_PATH);
+   if (this->value == ATTR_NULL) {
+      this->set(ATTR_PATH);
    }
 
    if (h == hashes.HASH_VAR_DRIVE) {
-      set(ATTR_DRIVE);
+      this->set(ATTR_DRIVE);
       return;
    }
 
    if (h != hashes.HASH_VAR_PATH && h != hashes.HASH_VAR_FULLNAME) {
-      set(ATTR_EXISTS);
+      this->set(ATTR_EXISTS);
    }
 
    if (h == hashes.HASH_VAR_ACCESS){
-      set(ATTR_ACCESS);
+      this->set(ATTR_ACCESS);
    }
    else if (h == hashes.HASH_VAR_ARCHIVE)
-      set(ATTR_ARCHIVE);
+      this->set(ATTR_ARCHIVE);
    else if (h == hashes.HASH_VAR_COMPRESSED)
-      set(ATTR_COMPRESSED);
+      this->set(ATTR_COMPRESSED);
    else if (h == hashes.HASH_VAR_CREATION)
-      set(ATTR_CREATION);
+      this->set(ATTR_CREATION);
    else if (h == hashes.HASH_VAR_CHANGE)
-      set(ATTR_CHANGE);
+      this->set(ATTR_CHANGE);
    else if (h == hashes.HASH_VAR_DRIVE)
-      set(ATTR_DRIVE);
+      this->set(ATTR_DRIVE);
    else if (h == hashes.HASH_VAR_EMPTY)
-      set(ATTR_EMPTY);
+      this->set(ATTR_EMPTY);
    else if (h == hashes.HASH_VAR_ENCRYPTED)
-      set(ATTR_ENCRYPTED);
+      this->set(ATTR_ENCRYPTED);
    else if (h == hashes.HASH_VAR_EXTENSION) {
-      set(ATTR_EXTENSION);
+      this->set(ATTR_EXTENSION);
    }
    else if (h == hashes.HASH_VAR_FULLNAME)
-      set(ATTR_FULLNAME);
+      this->set(ATTR_FULLNAME);
    else if (h == hashes.HASH_VAR_HIDDEN)
-      set(ATTR_HIDDEN);
+      this->set(ATTR_HIDDEN);
    else if (h == hashes.HASH_VAR_LIFETIME) {
-      set(ATTR_CREATION);
-      set(ATTR_MODIFICATION);
-      set(ATTR_LIFETIME);
+      this->set(ATTR_CREATION);
+      this->set(ATTR_MODIFICATION);
+      this->set(ATTR_LIFETIME);
    }
    else if (h == hashes.HASH_VAR_MODIFICATION)
-      set(ATTR_MODIFICATION);
+      this->set(ATTR_MODIFICATION);
    else if (h == hashes.HASH_VAR_NAME)
-      set(ATTR_NAME);
+      this->set(ATTR_NAME);
    else if (h == hashes.HASH_VAR_PARENT)
-      set(ATTR_PARENT);
+      this->set(ATTR_PARENT);
    else if (h == hashes.HASH_VAR_PATH)
-      set(ATTR_PATH);
+      this->set(ATTR_PATH);
    else if (h == hashes.HASH_VAR_READONLY)
-      set(ATTR_READONLY);
+      this->set(ATTR_READONLY);
    else if (h == hashes.HASH_VAR_SIZE)
-      set(ATTR_SIZE);
+      this->set(ATTR_SIZE);
 }
 
 void Attribute::set(const _aunit& v)
 {
-   value |= v;
+   this->value |= v;
 }
 
 void Attribute::setCoreCommandBase()
@@ -116,27 +116,37 @@ void Attribute::setTimeCommandBase()
 
 _bool Attribute::has(const _aunit& v) const
 {
-   return value & v;
+   return this->value & v;
 }
 
 _bool Attribute::hasAny() const
 {
-   return value != ATTR_NULL;
+   return this->value != ATTR_NULL;
 }
 
 _aunit Attribute::getValue() const
 {
-   return value;
+   return this->value;
 }
 
 _bool Attribute::isMarkedToEvaluate() const
 {
-   return isMarkedToEvaluate_;
+   return this->markedToEvaluate;
 }
 
 void Attribute::markToEvaluate()
 {
-   isMarkedToEvaluate_ = true;
+   this->markedToEvaluate = true;
+}
+
+_bool Attribute::isMarkedToRun() const
+{
+   return this->markedToRun;
+}
+
+void Attribute::markToRun()
+{
+   this->markedToRun = true;
 }
 
 void Attribute::run() const

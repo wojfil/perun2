@@ -17,7 +17,7 @@
 
 #include "datatype/primitives.h"
 #include "token.h"
-#include <windows.h>
+#include <memory>
 
 
 namespace uro
@@ -79,6 +79,8 @@ protected:
    _aunit value;
    Uroboros& uroboros;
 };
+
+typedef std::unique_ptr<Attribute> _attrptr;
 
 // sometimes files and directories are taken from the file system
 // by Win32API functions 'FindFirstFile()' and 'FindNextFile()'

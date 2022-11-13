@@ -147,7 +147,7 @@ struct F_Concatenate : Generator<_str>
 public:
    F_Concatenate(std::vector<_genptr<_str>>& vals) : length(vals.size()) 
    {
-      transferGenPtrs(vals, values);
+      langutil::transferUniquePtrs(vals, values);
    };
 
    _str getValue() override;

@@ -20,7 +20,6 @@
 #include "vector"
 #include "../generator.h"
 #include "../datatype.h"
-#include "../gen-memory.h"
 #include "../../util.h"
 #include "../../uroboros.h"
 #include "../../var/var.h"
@@ -111,7 +110,7 @@ struct Listed : Generator<std::vector<T>>
 public:
    Listed(std::vector<_genptr<T>>& val) : length(val.size())
    {
-      transferGenPtrs(val, this->value);
+      langutil::transferUniquePtrs(val, this->value);
    };
 
    std::vector<T> getValue() override {
@@ -134,7 +133,7 @@ struct ListedLists : Generator<std::vector<T>>
 public:
    ListedLists(std::vector<_genptr<std::vector<T>>>& val) : length(val.size())
    {
-      transferGenPtrs(val, this->value);
+      langutil::transferUniquePtrs(val, this->value);
    };
 
    std::vector<T> getValue() override {

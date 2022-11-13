@@ -16,7 +16,6 @@
 #define GEN_REF_H_INCLUDED
 
 #include "datatype.h"
-#include "gen-memory.h"
 #include "../var/var.h"
 
 

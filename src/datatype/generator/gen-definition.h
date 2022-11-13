@@ -21,7 +21,6 @@
 #include "../../attribute.h"
 #include "../../attr-memory.h"
 #include "../../uroboros.h"
-#include "../gen-memory.h"
 #include <algorithm>
 #include <deque>
 

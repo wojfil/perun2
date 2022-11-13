@@ -15,7 +15,6 @@
 #ifndef GEN_LIKE_H
 #define GEN_LIKE_H
 
-#include "../gen-memory.h"
 #include "../datatype.h"
 #include <unordered_set>
 #include <unordered_map>

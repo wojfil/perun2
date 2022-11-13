@@ -29,7 +29,7 @@ struct ConcatString : Generator<_str>
 public:
    ConcatString(std::vector<_genptr<_str>>& val) : length(val.size()) 
    { 
-      transferGenPtrs(val, this->value);
+      langutil::transferUniquePtrs(val, this->value);
    };
 
    _str getValue() override;

@@ -18,7 +18,6 @@
 #include "../datatype/generator/gen-definition.h"
 #include "../datatype/generator/gen-string.h"
 #include "../datatype/gen-ref.h"
-#include "../datatype/gen-memory.h"
 #include "../exception.h"
 #include "../util.h"
 #include "../os.h"
@@ -76,8 +75,8 @@ Variables::Variables(uro::Uroboros& uro)
    intVars({
       { this->hashes.HASH_VAR_INDEX, &this->inner.index },
       { this->hashes.HASH_VAR_DEPTH, &this->inner.depth }
-   }) 
-   { 
+   })
+   {
       _genptr<_tim> temp_now(new gen::v_Now());
       _genptr<_tim> temp_today(new gen::v_Today());
       _genptr<_tim> temp_yesterday(new gen::v_Yesterday());

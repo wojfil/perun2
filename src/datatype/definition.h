@@ -18,6 +18,7 @@
 #include "generator.h"
 #include "primitives.h"
 #include <windows.h>
+#include <memory>
 
 
 namespace uro
@@ -48,6 +49,8 @@ public:
 protected:
    _str value;
 };
+
+typedef std::unique_ptr<Definition> _defptr;
 
 }
 

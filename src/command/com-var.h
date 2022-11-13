@@ -19,7 +19,6 @@
 #include "..\var\var.h"
 #include "..\util.h"
 #include "..\datatype\datatype.h"
-#include "..\datatype\gen-memory.h"
 
 
 namespace uro::comm

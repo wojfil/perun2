@@ -17,7 +17,6 @@
 
 #include "../datatype/primitives.h"
 #include "../datatype/generator.h"
-#include "../datatype/gen-memory.h"
 #include "com.h"
 #include <vector>
 
@@ -58,7 +57,7 @@ private:
    _comptr mainCommand;
    _genptr<_bool> mainCondition;
    _comptr elseCommand;
-   
+
    std::vector<_comptr> elseIfCommands;
    std::vector<_genptr<_bool>> elseIfConditions;
 };

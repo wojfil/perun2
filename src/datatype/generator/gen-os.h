@@ -15,8 +15,6 @@
 #ifndef GEN_OS_H_INCLUDED
 #define GEN_OS_H_INCLUDED
 
-
-#include "../gen-memory.h"
 #include "../datatype.h"
 #include "../../patterns.h"
 #include <windows.h>

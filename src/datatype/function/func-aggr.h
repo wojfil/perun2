@@ -15,8 +15,8 @@
 #ifndef FUNC_AGGR_H_INCLUDED
 #define FUNC_AGGR_H_INCLUDED
 
-#include "../gen-memory.h"
 #include "../datatype.h"
+#include "../../util.h"
 
 
 namespace uro::func
@@ -32,9 +32,9 @@ struct FuncAggr : Generator<_num>
 public:
    FuncAggr(_single& single, _multi& multi)
       : countSingle(single.size()), countMulti(multi.size())
-   { 
-      transferGenPtrs(single, this->singleValues);
-      transferGenPtrs(multi, this->multiValues);
+   {
+      langutil::transferUniquePtrs(single, this->singleValues);
+      langutil::transferUniquePtrs(multi, this->multiValues);
    };
 
 protected:

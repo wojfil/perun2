@@ -15,7 +15,6 @@
 #ifndef GEN_BOOL_COMPARE_H
 #define GEN_BOOL_COMPARE_H
 
-#include "../gen-memory.h"
 #include "../datatype.h"
 #include "../../uroboros.h"
 

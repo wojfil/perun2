@@ -16,7 +16,6 @@
 #define VAR_INNER_H_INCLUDED
 
 #include "var.h"
-#include "../datatype/gen-memory.h"
 #include "../datatype/generator.h"
 #include "../datatype/datatype.h"
 #include "../datatype/primitives.h"

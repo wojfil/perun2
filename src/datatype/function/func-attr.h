@@ -99,7 +99,7 @@ public:
    F_Path_Multi(std::vector<_genptr<_str>>& vals)
       : length(vals.size()) 
    { 
-      transferGenPtrs(vals, this->values);
+      langutil::transferUniquePtrs(vals, this->values);
    };
 
    _str getValue() override;

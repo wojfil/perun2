@@ -16,6 +16,7 @@
 #define GENERATOR_H
 
 #include "primitives.h"
+#include <memory>
 
 
 namespace uro
@@ -41,6 +42,10 @@ public:
       return false;
    };
 };
+
+
+template <typename T>
+using _genptr = std::unique_ptr<Generator<T>>;
 
 }
 

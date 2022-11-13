@@ -103,7 +103,7 @@ If_ManyAlternatives::If_ManyAlternatives(_genptr<_bool>& cond, _comptr& com,
       std::vector<_genptr<_bool>>& altConds, std::vector<_comptr>& altComms)
    : If_Base(cond, com), altCount(altConds.size())
 {
-   transferGenPtrs(altConds, this->altConditions);
+   langutil::transferUniquePtrs(altConds, this->altConditions);
    langutil::transferUniquePtrs(altComms, this->altCommands);
 }
 

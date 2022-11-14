@@ -66,12 +66,6 @@ Variables::Variables(uro::Uroboros& uro)
    nlist ( { }, uro ),
    tlist ( { }, uro ),
    list ( { }, uro),
-   /*defGenerators({
-      { this->hashes.HASH_VAR_DIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Directories, uro) },
-      { this->hashes.HASH_VAR_FILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Files, uro) },
-      { this->hashes.HASH_VAR_RECURSIVEFILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveFiles, uro) },
-      { this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveDirectories, uro) }
-   }),*/
    intVars({
       { this->hashes.HASH_VAR_INDEX, &this->inner.index },
       { this->hashes.HASH_VAR_DEPTH, &this->inner.depth }
@@ -108,11 +102,6 @@ Variables::Variables(uro::Uroboros& uro)
       this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_FILES, std::move(temp_f)));
       this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_RECURSIVEFILES, std::move(temp_rf)));
       this->defGenerators.insert(std::make_pair(this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, std::move(temp_rd)));
-
-      /*{ this->hashes.HASH_VAR_DIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Directories, uro) },
-      { this->hashes.HASH_VAR_FILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_Files, uro) },
-      { this->hashes.HASH_VAR_RECURSIVEFILES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveFiles, uro) },
-      { this->hashes.HASH_VAR_RECURSIVEDIRECTORIES, std::make_unique<gen::DefinitionGenerator>(gen::OsElement::oe_RecursiveDirectories, uro) }*/
    };
 
 void Variables::varsLevelUp()

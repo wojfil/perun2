@@ -30,7 +30,7 @@ namespace uro::vars
 
 Variables::Variables(uro::Uroboros& uro)
    : uroboros(uro), hashes(uro.hashes), vc(uro.vc), uroPath(os_uroborosPath()),
-   inner(os_trim(uro.arguments.getLocation()), str(os_quoteEmbraced(this->uroPath), L" -s ")),
+   inner(os_trim(uro.arguments.getLocation()), str(os_quoteEmbraced(this->uroPath), FLAG_SILENT_STR)),
    boo ({
       { this->hashes.HASH_VAR_EMPTY, &this->inner.empty },
       { this->hashes.HASH_VAR_EXISTS, &this->inner.exists },

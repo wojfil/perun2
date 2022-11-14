@@ -108,9 +108,9 @@ void VariablesContext::markAttributesToRun()
    }
 }
 
-void VariablesContext::addAggregate(comm::Aggregate* aggr)
+void VariablesContext::addAggregate(comm::_aggrptr& aggr)
 {
-   this->aggrs.push_back(aggr);
+   this->aggrs.push_back(aggr.get());
 
    // when we enter a loop
    // variables of constant values from the past

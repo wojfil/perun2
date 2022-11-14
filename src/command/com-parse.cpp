@@ -168,7 +168,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 
       Tokens right(tks, rightStart, rightLen);
 
-      Aggregate* aggr = new Aggregate(uro);
+      _aggrptr aggr(new Aggregate(uro));
       uro.vc.addAggregate(aggr);
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
@@ -206,7 +206,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 
       Tokens right(tks, rightStart, rightLen);
 
-      Aggregate* aggr = new Aggregate(uro);
+      _aggrptr aggr(new Aggregate(uro));
       uro.vc.addAggregate(aggr);
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
@@ -350,7 +350,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
    _genptr<_tlist> tlist;
    if (parse::parse(uro, left, tlist)) {
       uro.vars.inner.thisState = ThisState::ts_Time;
-      Aggregate* aggr;
+      _aggrptr aggr;
       _comptr base;
 
       if (parseLoopBase(base, right, uro, prevThisState, aggr)) {
@@ -366,7 +366,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
    _genptr<_nlist> nlist;
    if (parse::parse(uro, left, nlist)) {
       uro.vars.inner.thisState = ThisState::ts_Number;
-      Aggregate* aggr;
+      _aggrptr aggr;
       _comptr base;
 
       if (parseLoopBase(base, right, uro, prevThisState, aggr)) {
@@ -396,7 +396,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
-      Aggregate* aggr;
+      _aggrptr aggr;
 
       if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
          result = std::make_unique<CS_InsideString>(tr, com, attr, aggr, hasMemory, uro);
@@ -413,7 +413,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
-      Aggregate* aggr;
+      _aggrptr aggr;
 
       if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
          if (isInside) {
@@ -436,7 +436,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
-      Aggregate* aggr;
+      _aggrptr aggr;
 
       if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
          return false;
@@ -489,7 +489,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
       Attribute* attr;
-      Aggregate* aggr;
+      _aggrptr aggr;
 
       if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
          return false;
@@ -509,12 +509,12 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
 }
 
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
-   const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _bool& hasMemory)
+   const ThisState& prevState, Attribute*& attr, _aggrptr& aggr, _bool& hasMemory)
 {
    hasMemory = uro.vc.anyAttribute();
    attr = new Attribute(uro);
    uro.vc.addAttribute(attr);
-   aggr = new Aggregate(uro);
+   aggr = std::make_unique<Aggregate>(uro);
    uro.vc.addAggregate(aggr);
 
    const _bool success = parseCommandsAsMember(result, rightTokens, nullptr, uro);
@@ -525,26 +525,21 @@ static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros&
 
    if (!success) {
       delete attr;
-      delete aggr;
    }
 
    return success;
 }
 
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
-   const ThisState& prevState, Aggregate*& aggr)
+   const ThisState& prevState, _aggrptr& aggr)
 {
-   aggr = new Aggregate(uro);
+   aggr = std::make_unique<Aggregate>(uro);
    uro.vc.addAggregate(aggr);
 
    const _bool success = parseCommandsAsMember(result, rightTokens, nullptr, uro);
 
    uro.vars.inner.thisState = prevState;
    uro.vc.retreatAggregate();
-
-   if (!success) {
-      delete aggr;
-   }
 
    return success;
 }

@@ -42,7 +42,7 @@ public:
    Attribute* getLastAttribute();
    void markAttributesToRun();
 
-   void addAggregate(comm::Aggregate* aggr);
+   void addAggregate(comm::_aggrptr& aggr);
    void retreatAggregate();
    _bool anyAggregate();
    comm::Aggregate* getLastAggregate();

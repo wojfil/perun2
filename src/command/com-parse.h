@@ -36,9 +36,9 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const Tokens& left, const Tokens& right,
    const ThisState& prevState, Uroboros& uro);
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
-   const ThisState& prevState, Attribute*& attr, Aggregate*& aggr, _bool& hasMemory);
+   const ThisState& prevState, Attribute*& attr, _aggrptr& aggr, _bool& hasMemory);
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
-   const ThisState& prevState, Aggregate*& aggr);
+   const ThisState& prevState, _aggrptr& aggr);
 static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, Uroboros& uro);
 static _bool command(_comptr& result, Tokens& tks, Uroboros& uro);
 static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro);

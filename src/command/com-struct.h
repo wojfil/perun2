@@ -61,18 +61,13 @@ private:
 struct CS_Times : Command_L
 {
 public:
-   CS_Times(_genptr<_num>& ts, _comptr& com, Aggregate* aggr, Uroboros& uro)
-      : aggregate(aggr), times(std::move(ts)), command(std::move(com)), Command_L(uro)  { };
-
-   ~CS_Times()
-   {
-      delete aggregate;
-   };
+   CS_Times(_genptr<_num>& ts, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+      : aggregate(std::move(aggr)), times(std::move(ts)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
 
 private:
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _genptr<_num> times;
    _comptr command;
 };
@@ -81,18 +76,13 @@ private:
 struct CS_While : Command_L
 {
 public:
-   CS_While(_genptr<_bool>& cond, _comptr& com, Aggregate* aggr, Uroboros& uro)
-      : aggregate(aggr), condition(std::move(cond)), command(std::move(com)), Command_L(uro)  { };
-
-   ~CS_While()
-   {
-      delete aggregate;
-   };
+   CS_While(_genptr<_bool>& cond, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+      : aggregate(std::move(aggr)), condition(std::move(cond)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
 
 private:
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _genptr<_bool> condition;
    _comptr command;
 };
@@ -101,18 +91,13 @@ private:
 struct CS_TimeLoop : Command_L
 {
 public:
-   CS_TimeLoop(_genptr<_tlist>& tList, _comptr& com, Aggregate* aggr, Uroboros& uro)
-      : aggregate(aggr), timeList(std::move(tList)), command(std::move(com)), Command_L(uro)  { };
-
-   ~CS_TimeLoop()
-   {
-      delete aggregate;
-   };
+   CS_TimeLoop(_genptr<_tlist>& tList, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+      : aggregate(std::move(aggr)), timeList(std::move(tList)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
 
 private:
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _genptr<_tlist> timeList;
    _comptr command;
 };
@@ -121,18 +106,13 @@ private:
 struct CS_NumberLoop : Command_L
 {
 public:
-   CS_NumberLoop(_genptr<_nlist>& nList, _comptr& com, Aggregate* aggr, Uroboros& uro)
-      : aggregate(aggr), numberList(std::move(nList)), command(std::move(com)), Command_L(uro)  { };
-
-   ~CS_NumberLoop()
-   {
-      delete aggregate;
-   };
+   CS_NumberLoop(_genptr<_nlist>& nList, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+      : aggregate(std::move(aggr)), numberList(std::move(nList)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
 
 private:
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _genptr<_nlist> numberList;
    _comptr command;
 };
@@ -141,96 +121,76 @@ private:
 struct CS_StringLoop : IterationLoop
 {
 public:
-   CS_StringLoop(_genptr<_str>& str, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_StringLoop(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
       Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(aggr) { };
+      : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
-   CS_StringLoop(_genptr<_str>& str, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_StringLoop(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(aggr) { };
-
-   ~CS_StringLoop()
-   {
-      delete aggregate;
-   };
+      : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
    void run() override;
 
 private:
    _genptr<_str> string;
-   Aggregate* aggregate;
+   _aggrptr aggregate;
 };
 
 
 struct CS_DefinitionLoop : IterationLoop
 {
 public:
-   CS_DefinitionLoop(_defptr& def, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_DefinitionLoop(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
       Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(aggr) { };
+      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
-   CS_DefinitionLoop(_defptr& def, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_DefinitionLoop(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(aggr) { };
-
-   ~CS_DefinitionLoop()
-   {
-      delete aggregate;
-   };
+      : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
    void run() override;
 
 private:
    _defptr definition;
-   Aggregate* aggregate;
+   _aggrptr aggregate;
 };
 
 
 struct CS_ListLoop : IterationLoop
 {
 public:
-   CS_ListLoop(_genptr<_list>& li, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_ListLoop(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
       Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(aggr) { };
+      : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
-   CS_ListLoop(_genptr<_list>& li, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_ListLoop(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(aggr) { };
-
-   ~CS_ListLoop()
-   {
-      delete aggregate;
-   };
+      : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
    void run() override;
 
 private:
    _genptr<_list> list;
-   Aggregate* aggregate;
+   _aggrptr aggregate;
 };
 
 
 struct CS_InsideString : IterationLoop
 {
 public:
-   CS_InsideString(_genptr<_str>& str, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_InsideString(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
       Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(aggr) { };
+      : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
-   CS_InsideString(_genptr<_str>& str, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_InsideString(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(aggr) { };
-
-   ~CS_InsideString()
-   {
-      delete aggregate;
-   };
+      : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
    void run() override;
 
 private:
    _genptr<_str> string;
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _str prevLocation;
 };
 
@@ -238,24 +198,19 @@ private:
 struct CS_InsideDefinition : IterationLoop
 {
 public:
-   CS_InsideDefinition(_defptr& def, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_InsideDefinition(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
       Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(aggr) { };
+      : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
-   CS_InsideDefinition(_defptr& def, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_InsideDefinition(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(aggr) { };
-
-   ~CS_InsideDefinition() 
-   {
-      delete aggregate;
-   };
+      : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
    void run() override;
 
 private:
    _defptr definition;
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _str prevLocation;
 };
 
@@ -263,24 +218,19 @@ private:
 struct CS_InsideList : IterationLoop
 {
 public:
-   CS_InsideList(_genptr<_list>& li, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_InsideList(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
       Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(aggr) { };
+      : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
-   CS_InsideList(_genptr<_list>& li, _comptr& com, Attribute* attr, Aggregate* aggr,
+   CS_InsideList(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
-      : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(aggr) { };
-
-   ~CS_InsideList()
-   {
-      delete aggregate;
-   };
+      : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
    void run() override;
 
 private:
    _genptr<_list> list;
-   Aggregate* aggregate;
+   _aggrptr aggregate;
    _str prevLocation;
 };
 

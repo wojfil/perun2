@@ -23,7 +23,7 @@ namespace uro
 
 void cmd_version()
 {
-   rawPrint(L"Uroboros " VERSION_STR);
+   rawPrint(L"Uroboros " + VERSION_STR);
 }
 
 void cmd_docs()

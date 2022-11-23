@@ -61,6 +61,7 @@ enum Keyword
    kw_In,
    kw_Like,
       // command structs:
+   kw_Catch,
    kw_Else,
    kw_If,
    kw_Inside,

@@ -221,6 +221,13 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 
    const ThisState prevThisState = uro.vars.inner.thisState;
 
+   
+   // build "catch"
+   if (leftFirst.isKeyword(Keyword::kw_Catch)) {
+      throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
+         L"' is reserved for future use. Your current version of Uroboros does not support it"), leftFirst.line);
+   }
+
    // build "inside"
    if (leftFirst.isKeyword(Keyword::kw_Inside)) {
       left.trimLeft();
@@ -1327,6 +1334,7 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Uroboros& uro)
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Keyword) {
          switch (t.value.keyword.k) {
+            case Keyword::kw_Catch:
             case Keyword::kw_While:
             case Keyword::kw_Inside: {
                throw SyntaxException(str(L"a semicolon ; is missing before keyword '",

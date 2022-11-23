@@ -332,7 +332,7 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
       if (f.type == Token::t_Word) {
          if (f.value.word.h == uro.hashes.HASH_VAR_DEVICE) {
             throw SyntaxException(str(L"variable '", f.getOriginString(uro),
-               L"' is reserved for future use. Current version of Uroboros does not support it"), f.line);
+               L"' is reserved for future use. Your current version of Uroboros does not support it"), f.line);
          }
 
          if (f.value.word.h != uro.hashes.HASH_VAR_THIS && !uro.vars.variableExists(f)) {

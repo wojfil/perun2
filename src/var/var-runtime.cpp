@@ -83,9 +83,11 @@ Variables::Variables(uro::Uroboros& uro)
       _genptr<_str> temp_desktop(new gen::Constant<_str>(os_desktopPath()));
       _genptr<_str> temp_uroboros(new gen::Constant<_str>(this->uroPath));
       _genptr<_str> temp_location(new gen::GeneratorRef<_str>(this->inner.location));
+      _genptr<_str> temp_origin(new gen::Constant<_str>(this->inner.location.value));
       this->str_.addSpecialVar(this->hashes.HASH_VAR_DESKTOP, temp_desktop);
       this->str_.addSpecialVar(this->hashes.HASH_VAR_UROBOROS, temp_uroboros);
       this->str_.addSpecialVar(this->hashes.HASH_VAR_LOCATION, temp_location);
+      this->str_.addSpecialVar(this->hashes.HASH_VAR_ORIGIN, temp_origin);
 
       _genptr<_list> temp_alphabet(new gen::Constant<_list>(inner.getAlphabet()));
       _genptr<_list> temp_ascii(new gen::Constant<_list>(inner.getAscii()));

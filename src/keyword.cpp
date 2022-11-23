@@ -55,6 +55,7 @@ KeywordsData::KeywordsData() : KEYWORDS( {
    { L"in", Keyword::kw_In },
    { L"like", Keyword::kw_Like },
    // command structs:
+   { L"catch", Keyword::kw_Catch },
    { L"else", Keyword::kw_Else },
    { L"if", Keyword::kw_If },
    { L"inside", Keyword::kw_Inside },

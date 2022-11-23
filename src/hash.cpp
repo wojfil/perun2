@@ -100,6 +100,7 @@ Hashes::Hashes() :
    HASH_VAR_DESKTOP(rawStringHash(L"desktop")),
    HASH_VAR_UROBOROS(rawStringHash(L"uroboros")),
    HASH_VAR_DEVICE(rawStringHash(L"device")),
+   HASH_VAR_ORIGIN(rawStringHash(L"origin")),
 
    HASH_VAR_DIRECTORIES(rawStringHash(L"directories")),
    HASH_VAR_FILES(rawStringHash(L"files")),

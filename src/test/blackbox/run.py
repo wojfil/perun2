@@ -1,40 +1,41 @@
 import subprocess
 import os
 
-os.environ['PYTHONIOENCODING'] = 'utf-8'
-
 EMPTY_STRING = ""
 NOTHING = ""
-NEW_LINE = '\n'
+NEW_LINE = "\n"
+ENCODING = "utf-8"
 SEPARATOR = os.path.sep
 EXIT_CODE_OK = 0
 EXIT_CODE_RUNTIME_ERROR = 1
 EXIT_CODE_SYNTAX_ERROR = 2
 EXIT_CODE_CMD_ERROR = 3
 
+os.environ['PYTHONIOENCODING'] = ENCODING
+
 def makeProcess(code):
   return subprocess.Popen(['uro', '-d', 'res', '-c', code], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 def runTestCase(code, expectedOutput):
   p = makeProcess(code)
-  output = p.communicate()[0].decode("utf-8")
+  output = p.communicate()[0].decode(ENCODING)
   output = output.replace('\r\n', NEW_LINE).replace('\r', NEW_LINE)[:-1]
   if p.returncode != EXIT_CODE_OK:
     print("Test failed at running code: " + code)
-    print("  Received exit code: \n" + str(p.returncode))
-    print("  Received output: \n" + output)
-    print("  Expected output: \n" + expectedOutput)
+    print("  Received exit code:" + NEW_LINE + str(p.returncode))
+    print("  Received output:" + NEW_LINE + output)
+    print("  Expected output:" + NEW_LINE + expectedOutput)
   elif output != expectedOutput:
     print("Test failed at running code: " + code)
-    print("  Received output: \n" + output)
-    print("  Expected output: \n" + expectedOutput)
+    print("  Received output:" + NEW_LINE + output)
+    print("  Expected output:" + NEW_LINE + expectedOutput)
     
 def expectExitCode(code, exitCode, errorName):
   p = makeProcess(code)
   p.communicate()
   if p.returncode != exitCode:
     print("Test failed at expecting " + errorName + " from code: " + code)
-    print("  Received exit code: \n" + str(p.returncode))
+    print("  Received exit code:" + NEW_LINE + str(p.returncode))
 
 def expectSyntaxError(code):
   expectExitCode(code, EXIT_CODE_SYNTAX_ERROR, "syntax error")

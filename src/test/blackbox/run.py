@@ -6,11 +6,11 @@ os.environ['PYTHONIOENCODING'] = 'utf-8'
 EMPTY_STRING = ""
 NOTHING = ""
 NEW_LINE = '\n'
+SEPARATOR = os.path.sep
 EXIT_CODE_OK = 0
 EXIT_CODE_RUNTIME_ERROR = 1
 EXIT_CODE_SYNTAX_ERROR = 2
 EXIT_CODE_CMD_ERROR = 3
-SEPARATOR = os.path.sep
 
 def makeProcess(code):
   return subprocess.Popen(['uro', '-d', 'res', '-c', code], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -24,17 +24,23 @@ def runTestCase(code, expectedOutput):
     print("  Received exit code: \n" + str(p.returncode))
     print("  Received output: \n" + output)
     print("  Expected output: \n" + expectedOutput)
-  elif not output.__eq__(expectedOutput):
+  elif output != expectedOutput:
     print("Test failed at running code: " + code)
     print("  Received output: \n" + output)
     print("  Expected output: \n" + expectedOutput)
-  
-def expectSyntaxError(code):
+    
+def expectExitCode(code, exitCode, errorName):
   p = makeProcess(code)
   p.communicate()
-  if p.returncode != EXIT_CODE_SYNTAX_ERROR:
-    print("Test failed at expecting syntax error from code: " + code)
+  if p.returncode != exitCode:
+    print("Test failed at expecting " + errorName + " from code: " + code)
     print("  Received exit code: \n" + str(p.returncode))
+
+def expectSyntaxError(code):
+  expectExitCode(code, EXIT_CODE_SYNTAX_ERROR, "syntax error")
+    
+def expectRuntimeError(code):
+  expectExitCode(code, EXIT_CODE_RUNTIME_ERROR, "runtime error")
 
 def lines(*args):
   return NEW_LINE.join(args)

@@ -127,7 +127,13 @@ _str F_Fill::getValue()
 {
    const _str base = arg1->getValue();
    const _size len = base.size();
-   const _size min = static_cast<_size>(arg2->getValue().toInt());
+   const _nint v = arg2->getValue().toInt();
+
+   if (v <= 0) {
+      return base;
+   }
+
+   const _size min = static_cast<_size>(v);
 
    return len >= min
       ? base
@@ -187,7 +193,7 @@ _str F_Trim::getValue()
       }
    }
 
-   if (left == length - 1) {
+   if (left == length) {
       return EMPTY_STRING;
    }
 
@@ -532,57 +538,31 @@ _str F_String_P::getValue()
 
 _str F_MonthName::getValue()
 {
-   switch (arg1->getValue().toInt()) {
-      case 1LL:
-         return L"January";
-      case 2LL:
-         return L"February";
-      case 3LL:
-         return L"March";
-      case 4LL:
-         return L"April";
-      case 5LL:
-         return L"May";
-      case 6LL:
-         return L"June";
-      case 7LL:
-         return L"July";
-      case 8LL:
-         return L"August";
-      case 9LL:
-         return L"September";
-      case 10LL:
-         return L"October";
-      case 11LL:
-         return L"November";
-      case 12LL:
-         return L"December";
-      default:
-         return EMPTY_STRING;
-   }
+   return monthToString(static_cast<_tnum>(arg1->getValue().toInt()));
+}
+
+
+_str F_MonthNameFromTime::getValue()
+{
+   const _tim t = arg1->getValue();
+   return t.type == Time::tt_YearMonth
+      ? EMPTY_STRING
+      : monthToString(t.month);
 }
 
 
 _str F_WeekDayName::getValue()
 {
-   switch (arg1->getValue().toInt()) {
-      case 1LL:
-         return L"Monday";
-      case 2LL:
-         return L"Tuesday";
-      case 3LL:
-         return L"Wednesday";
-      case 4LL:
-         return L"Thursday";
-      case 5LL:
-         return L"Friday";
-      case 6LL:
-         return L"Saturday";
-      case 7LL:
-         return L"Sunday";
-      default:
-         return EMPTY_STRING;
-   }
+   return weekdayToString(static_cast<_tnum>(arg1->getValue().toInt()));
+}
+
+
+_str F_WeekDayNameFromTime::getValue()
+{
+   const _tim t = arg1->getValue();
+   return t.type == Time::tt_YearMonth
+      ? EMPTY_STRING
+      : weekdayToString(t.getWeekDay());
 }
 
 
@@ -747,7 +727,7 @@ _str F_Join::getValue()
             _stream ss;
             ss << values[0];
 
-            for (_size i = 0; i < length; i++) {
+            for (_size i = 1; i < length; i++) {
                ss << separator;
                ss << values[i];
             }

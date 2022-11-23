@@ -35,6 +35,10 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
       return parseOneToken(uro, tks, result);
    }
 
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
+      return func::periodFunction(result, tks, uro);
+   }
+
    if (tks.check(TI_HAS_CHAR_COMMA) || tks.check(TI_HAS_FILTER_KEYWORD)) {
       return false;
    }
@@ -80,10 +84,6 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
             return true;
          }
       }
-   }
-
-   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return func::periodFunction(result, tks, uro);
    }
 
    if (parseBinary<_per>(result, tks, uro) || parseTernary<_per>(result, tks, uro)) {

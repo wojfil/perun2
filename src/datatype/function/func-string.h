@@ -228,11 +228,26 @@ public:
    _str getValue() override;
 };
 
+struct F_MonthNameFromTime : Func_1<_tim>, Generator<_str>
+{
+public:
+   F_MonthNameFromTime(_genptr<_tim>& a1) : Func_1(a1) { };
+   _str getValue() override;
+};
+
 
 struct F_WeekDayName : Func_1<_num>, Generator<_str>
 {
 public:
    F_WeekDayName(_genptr<_num>& a1) : Func_1(a1) { };
+   _str getValue() override;
+};
+
+
+struct F_WeekDayNameFromTime : Func_1<_tim>, Generator<_str>
+{
+public:
+   F_WeekDayNameFromTime(_genptr<_tim>& a1) : Func_1(a1) { };
    _str getValue() override;
 };
 

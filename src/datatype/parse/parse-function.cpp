@@ -1182,6 +1182,12 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
          functionArgNumberException(len, word, uro);
       }
 
+      _genptr<_tim> tim;
+      if (parse::parse(uro, args[0], tim)) {
+         result = std::make_unique<F_MonthNameFromTime>(tim);
+         return true;
+      }
+
       _genptr<_num> num;
       if (parse::parse(uro, args[0], num)) {
          result = std::make_unique<F_MonthName>(num);
@@ -1194,6 +1200,12 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
    else if (name == uro.hashes.HASH_FUNC_WEEKDAYNAME) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
+      }
+
+      _genptr<_tim> tim;
+      if (parse::parse(uro, args[0], tim)) {
+         result = std::make_unique<F_WeekDayNameFromTime>(tim);
+         return true;
       }
 
       _genptr<_num> num;

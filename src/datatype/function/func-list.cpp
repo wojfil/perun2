@@ -163,14 +163,14 @@ _list F_Words::getValue()
    }
 }
 
-inline _num F_Numbers::fromChar(const _char& ch)
+inline _nint F_Numbers::fromChar(const _char& ch)
 {
-   return _num(static_cast<_nint>(ch - L'0'));
+   return static_cast<_nint>(ch - L'0');
 }
 
 _nlist F_Numbers::getValue()
 {
-   const _str value = arg1->getValue();
+   _str value = arg1->getValue();
    const _size len = value.size();
 
    switch (len) {
@@ -182,131 +182,54 @@ _nlist F_Numbers::getValue()
             ? _nlist{fromChar(value[0])}
             : _nlist();
       }
+      case 2: {
+         if (std::iswdigit(value[0])) {
+            return _nlist {std::iswdigit(value[1])
+               ? (10 * fromChar(value[0]) + fromChar(value[1]))
+               : fromChar(value[0])
+            };
+         }
+         else {
+            return std::iswdigit(value[1])
+               ? _nlist{fromChar(value[1])}
+               : _nlist();
+         }
+      }
       default: {
          _nlist numbers;
-         _bool digitSerie = false;
+         _bool prevDigit = false;
          _size start = 0;
-         _bool hasDot = false;
-         _size dotPoint = 0;
-         _bool splitted = false;
 
          for (_size i = 0; i < len; i++) {
-            const _char& ch = value[i];
-
-            if (std::iswdigit(ch)) {
-               if (!digitSerie) {
+            const _bool isDigit = std::iswdigit(value[i]);
+            if (isDigit) {
+               if (!prevDigit) {
                   start = i;
-                  digitSerie = true;
-                  hasDot = false;
-               }
-            }
-            else if (ch == L'.') {
-               if (digitSerie) {
-                  if (splitted) {
-                     const _size sub = i - start + 1;
-                     if (sub == 1) {
-                        numbers.emplace_back(fromChar(value[start]));
-                     }
-                     else {
-                        try {
-                           const _nint ii = std::stoll(value.substr(start, sub));
-                           numbers.emplace_back(ii);
-                        }
-                        catch (...) {
-                           throw UroRuntimeException(str(L"number '", value.substr(start, sub),
-                              L"' cannot be stored in the memory"));
-                        }
-                     }
-                     digitSerie = false;
-                  }
-                  else if (hasDot) {
-                     // split the number
-                     const _size len1 = dotPoint - start;
-                     if (len1 == 1) {
-                        numbers.emplace_back(fromChar(value[start]));
-                     }
-                     else {
-                        try {
-                           const _nint ii = std::stoll(value.substr(start, len1));
-                           numbers.emplace_back(ii);
-                        }
-                        catch (...) {
-                           throw UroRuntimeException(str(L"number '", value.substr(start, len1),
-                              L"' cannot be stored in the memory"));
-                        }
-                     }
-
-                     const _size len2 = i - dotPoint - 1;
-                     if (len2 == 1) {
-                        numbers.emplace_back(fromChar(value[dotPoint + 1]));
-                     }
-                     else {
-                        try {
-                           const _nint ii = std::stoll(value.substr(dotPoint + 1, len2));
-                           numbers.emplace_back(ii);
-                        }
-                        catch (...) {
-                           throw UroRuntimeException(str(L"number '", value.substr(dotPoint + 1, len2),
-                              L"' cannot be stored in the memory"));
-                        }
-                     }
-
-                     splitted = true;
-                     digitSerie = false;
-                  }
-                  else {
-                     hasDot = true;
-                     dotPoint = i;
-                  }
                }
             }
             else {
-               if (digitSerie) {
-                  const _size sub = i - start + 1;
-                  if (sub == 1) {
-                     numbers.emplace_back(fromChar(value[start]));
-                  }
-                  else {
-                     if (hasDot) {
-                        numbers.emplace_back(stringToDouble(value.substr(start, sub)));
-                     }
-                     else {
-                        try {
-                           const _nint ii = std::stoll(value.substr(start, sub));
-                           numbers.emplace_back(ii);
-                        }
-                        catch (...) {
-                           throw UroRuntimeException(str(L"number '", value.substr(start, sub),
-                              L"' cannot be stored in the memory"));
-                        }
-                     }
-                  }
-
-                  digitSerie = false;
-               }
-
-               splitted = false;
-            }
-         }
-
-         if (digitSerie) {
-            if (start == len - 1) {
-               numbers.emplace_back(fromChar(value[len - 1]));
-            }
-            else {
-               if (hasDot) {
-                  numbers.emplace_back(stringToDouble(value.substr(start)));
-               }
-               else {
+               if (prevDigit) {
                   try {
-                     const _nint ii = std::stoll(value.substr(start));
+                     const _nint ii = std::stoll(value.substr(start, i - start));
                      numbers.emplace_back(ii);
                   }
-                  catch (...) {
-                     throw UroRuntimeException(str(L"number '", value.substr(start),
-                        L"' cannot stored in the memory"));
+                  catch(...) {
+                     throw UroRuntimeException(str(L"number '", value.substr(start, i - start),
+                        L"' cannot be stored in the memory"));
                   }
                }
+            }
+            prevDigit = isDigit;
+         }
+
+         if (prevDigit) {
+            try {
+               const _nint ii = std::stoll(value.substr(start));
+               numbers.emplace_back(ii);
+            }
+            catch(...) {
+               throw UroRuntimeException(str(L"number '", value.substr(start),
+                  L"' cannot be stored in the memory"));
             }
          }
 

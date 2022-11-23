@@ -1,33 +1,43 @@
 import subprocess
 import os
 
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+
 EMPTY_STRING = ""
 NOTHING = ""
-SYNTAX_ERROR_EXIT_CODE = 2
+NEW_LINE = '\n'
+EXIT_CODE_OK = 0
+EXIT_CODE_RUNTIME_ERROR = 1
+EXIT_CODE_SYNTAX_ERROR = 2
+EXIT_CODE_CMD_ERROR = 3
 SEPARATOR = os.path.sep
 
-def getCmd(code):
-  return "uro -d res -c \"" + code + "\""
-
-def getCmdAsArgs(code):
-  return ['uro', '-d', 'res', '-c', code]
+def makeProcess(code):
+  return subprocess.Popen(['uro', '-d', 'res', '-c', code], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 def runTestCase(code, expectedOutput):
-  realOutput = subprocess.getoutput(getCmd(code))
-  if realOutput != expectedOutput:
+  p = makeProcess(code)
+  output = p.communicate()[0].decode("utf-8")
+  output = output.replace('\r\n', NEW_LINE).replace('\r', NEW_LINE)[:-1]
+  if p.returncode != EXIT_CODE_OK:
     print("Test failed at running code: " + code)
+    print("  Received exit code: \n" + str(p.returncode))
+    print("  Received output: \n" + output)
     print("  Expected output: \n" + expectedOutput)
-    print("  Received output: \n" + realOutput)
-
+  elif not output.__eq__(expectedOutput):
+    print("Test failed at running code: " + code)
+    print("  Received output: \n" + output)
+    print("  Expected output: \n" + expectedOutput)
+  
 def expectSyntaxError(code):
-  p = subprocess.Popen(getCmdAsArgs(code), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+  p = makeProcess(code)
   p.communicate()
-  if p.returncode != SYNTAX_ERROR_EXIT_CODE:
+  if p.returncode != EXIT_CODE_SYNTAX_ERROR:
     print("Test failed at expecting syntax error from code: " + code)
     print("  Received exit code: \n" + str(p.returncode))
 
 def lines(*args):
-  return "\n".join(args)
+  return NEW_LINE.join(args)
 
 def path(*args):
   return SEPARATOR.join(args)
@@ -38,6 +48,7 @@ print ("BLACK-BOX TESTS START")
 runTestCase("print 'hello world'", "hello world")
 runTestCase(" 'hello world'   ", "hello world")
 runTestCase("print 'hello' + ' ' + 'worlds'", "hello worlds")
+runTestCase("print 'tą żółć'   ", "tą żółć")
 runTestCase("print 2 +2*2", "6")
 runTestCase("print 2 + '5' ", "25")
 runTestCase("print ((((3))+(((2)))*2)) ", "7")

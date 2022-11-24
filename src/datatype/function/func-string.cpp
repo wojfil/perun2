@@ -129,7 +129,7 @@ _str F_Fill::getValue()
    const _size len = base.size();
    const _nint v = arg2->getValue().toInt();
 
-   if (v <= 0) {
+   if (v <= 0LL) {
       return base;
    }
 
@@ -319,7 +319,7 @@ _str F_Substring_2::getValue()
    const _nint length = static_cast<_nint>(value.size());
 
    if (index < 0LL) {
-      index *= -1;
+      index *= -1LL;
 
       return index >= length
          ? value
@@ -850,8 +850,8 @@ _str F_Hex::getValue()
 {
    _nint v = arg1->getValue().toInt();
 
-   if (v < 0) {
-      v *= -1;
+   if (v < 0LL) {
+      v *= -1LL;
       _stream oss;
       oss << std::hex << v;
       return str(L"-", oss.str());

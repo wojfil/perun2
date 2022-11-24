@@ -50,7 +50,7 @@ template <typename T>
 struct OrderUnit : Order
 {
 public:
-   OrderUnit(_genptr<T>& val, const _bool desc, OrderIndices* indie)
+   OrderUnit(_genptr<T>& val, const _bool& desc, OrderIndices* indie)
       : valueGenerator(std::move(val)), descending(desc), indices(indie) { };
 
 protected:
@@ -65,7 +65,7 @@ template <typename T>
 struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
-   OrderUnit_Middle(_genptr<T>& val, const _bool desc, Order* next, OrderIndices* indie)
+   OrderUnit_Middle(_genptr<T>& val, const _bool& desc, Order* next, OrderIndices* indie)
       : OrderUnit<T>(val, desc, indie), nextUnit(next) { };
 
    ~OrderUnit_Middle()
@@ -115,7 +115,7 @@ template <typename T>
 struct OrderUnit_Final : OrderUnit<T>
 {
 public:
-   OrderUnit_Final(_genptr<T>& val, const _bool desc, OrderIndices* indie)
+   OrderUnit_Final(_genptr<T>& val, const _bool& desc, OrderIndices* indie)
       : OrderUnit<T>(val, desc, indie) { };
 
    void clearValues(const _size& length) override

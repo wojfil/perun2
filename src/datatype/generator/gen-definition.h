@@ -314,7 +314,7 @@ struct DefTernary : _def
 {
 public:
    DefTernary(_genptr<_bool>& cond, _defptr& le, _defptr& ri)
-      : condition(std::move(cond)), left(std::move(le)), right(std::move(ri)), first(true), isLeft(true) {};
+      : condition(std::move(cond)), left(std::move(le)), right(std::move(ri)) { };
 
    void reset() override;
    _bool hasNext() override;
@@ -323,8 +323,8 @@ private:
    _genptr<_bool> condition;
    _defptr left;
    _defptr right;
-   _bool first;
-   _bool isLeft;
+   _bool first = true;
+   _bool isLeft = true;
 };
 
 
@@ -332,7 +332,7 @@ struct DefBinary : _def
 {
 public:
    DefBinary(_genptr<_bool>& cond, _defptr&le)
-      : condition(std::move(cond)), left(std::move(le)), first(true) {};
+      : condition(std::move(cond)), left(std::move(le)) { };
 
    void reset() override;
    _bool hasNext() override;
@@ -340,7 +340,7 @@ public:
 private:
    _genptr<_bool> condition;
    _defptr left;
-   _bool first;
+   _bool first = true;
 };
 
 }

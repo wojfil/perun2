@@ -36,7 +36,7 @@ public:
    void setCoreComAttribute(const _str& comName, const _int& line);
    void setTimeComAttribute(const _str& comName, const _int& line);
    void attributeException(const Token& tk, uro::Uroboros& uro);
-   void addAttribute(Attribute* attr);
+   void addAttribute(_attrptr& attr);
    void retreatAttribute();
    _bool anyAttribute();
    Attribute* getLastAttribute();

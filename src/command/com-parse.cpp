@@ -221,7 +221,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 
    const ThisState prevThisState = uro.vars.inner.thisState;
 
-   
+
    // build "catch"
    if (leftFirst.isKeyword(Keyword::kw_Catch)) {
       throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
@@ -247,7 +247,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
          return true;
       }
 
-      throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro), 
+      throw SyntaxException(str(L"keyword '", leftFirst.getOriginString(uro),
          L"' is not followed by a valid value for directories to visit"), leftFirst.line);
    }
 
@@ -402,7 +402,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
       uro.vars.inner.createThisRef(tr);
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
-      Attribute* attr;
+      _attrptr attr;
       _aggrptr aggr;
 
       if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
@@ -419,7 +419,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
    if (parse::parse(uro, left, str)) {
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
-      Attribute* attr;
+      _attrptr attr;
       _aggrptr aggr;
 
       if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
@@ -442,7 +442,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
    if (parse::parse(uro, left, def)) {
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
-      Attribute* attr;
+      _attrptr attr;
       _aggrptr aggr;
 
       if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
@@ -476,15 +476,13 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
       }
 
       const _aunit aval = attr->getValue();
-      delete attr;
+      _attrptr bridge(new BridgeAttribute(aval, uro, fdata));
 
       if (isInside) {
-         result = std::make_unique<CS_InsideDefinition>(def, com,
-            new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+         result = std::make_unique<CS_InsideDefinition>(def, com, bridge, aggr, hasMemory, uro);
       }
       else {
-         result = std::make_unique<CS_DefinitionLoop>(def, com,
-            new BridgeAttribute(aval, uro, fdata), aggr, hasMemory, uro);
+         result = std::make_unique<CS_DefinitionLoop>(def, com, bridge, aggr, hasMemory, uro);
       }
 
       return true;
@@ -495,7 +493,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
    if (parse::parse(uro, left, lst)) {
       uro.vars.inner.thisState = ThisState::ts_String;
       _bool hasMemory;
-      Attribute* attr;
+      _attrptr attr;
       _aggrptr aggr;
 
       if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
@@ -516,10 +514,10 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
 }
 
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
-   const ThisState& prevState, Attribute*& attr, _aggrptr& aggr, _bool& hasMemory)
+   const ThisState& prevState, _attrptr& attr, _aggrptr& aggr, _bool& hasMemory)
 {
    hasMemory = uro.vc.anyAttribute();
-   attr = new Attribute(uro);
+   attr = std::make_unique<Attribute>(uro);
    uro.vc.addAttribute(attr);
    aggr = std::make_unique<Aggregate>(uro);
    uro.vc.addAggregate(aggr);
@@ -529,10 +527,6 @@ static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros&
    uro.vars.inner.thisState = prevState;
    uro.vc.retreatAttribute();
    uro.vc.retreatAggregate();
-
-   if (!success) {
-      delete attr;
-   }
 
    return success;
 }
@@ -649,7 +643,7 @@ static _bool command(_comptr& result, Tokens& tks, Uroboros& uro)
    }
    else {
       tks.checkCommonExpressionExceptions(uro);
-      return c_print(result, Token(Keyword::kw_Print, f.line, static_cast<_size>(0), 
+      return c_print(result, Token(Keyword::kw_Print, f.line, static_cast<_size>(0),
          static_cast<_size>(0), uro), tks, f.line, false, uro);
    }
 }
@@ -879,7 +873,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          vars::Variable<_num>& var = pv_num->getVarRef();
          pv_num->makeNotConstant();
 
-         switch (sign) { 
+         switch (sign) {
             case L'+': {
                result = std::make_unique<VarAdd_<_num>>(var, num);
                break;
@@ -897,7 +891,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
                break;
             }
             case L'%': {
-               result = std::make_unique<VarModulo>(var, num); 
+               result = std::make_unique<VarModulo>(var, num);
                break;
             }
          }

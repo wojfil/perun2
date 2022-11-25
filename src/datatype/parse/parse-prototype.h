@@ -34,11 +34,11 @@ struct FilterPrototype
 public:
    virtual ~FilterPrototype() { };
    virtual FilterType getFilterType() = 0;
-   virtual void build(T& result, Attribute* attr, const _bool& hasMem, Uroboros& uro) = 0;
+   virtual void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) = 0;
 };
 
 template <typename T>
-void makeWhereFilter(_genptr<_bool>& boo, Attribute* attr,
+void makeWhereFilter(_genptr<_bool>& boo, _attrptr& attr,
    const _bool& hasMemory, _genptr<std::vector<T>>& result, Uroboros& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
@@ -49,10 +49,10 @@ template <typename T>
 void makeWhereFilter(_genptr<_bool>& boo, _genptr<std::vector<T>>& result, Uroboros& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
-   result = std::make_unique<gen::Filter_Where<T>>(prev, boo, nullptr, uro);
+   result = std::make_unique<gen::Filter_Where<T>>(prev, boo, uro);
 }
 
-void makeWhereFilter(_genptr<_bool>& boo, Attribute* attr, const _bool& hasMemory, _defptr& result, Uroboros& uro);
+void makeWhereFilter(_genptr<_bool>& boo, _attrptr& attr, const _bool& hasMemory, _defptr& result, Uroboros& uro);
 void makeWhereFilter(_genptr<_bool>& boo, _defptr& result, Uroboros& uro);
 
 template <typename T>
@@ -94,13 +94,13 @@ public:
       return FilterType::ft_Where;
    };
 
-   void build(T& result, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
+   void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) override
    {
-      if (attr == nullptr) {
-         makeWhereFilter(condition, result, uro);
+      if (attr) {
+         makeWhereFilter(condition, attr, hasMem, result, uro);
       }
       else {
-         makeWhereFilter(condition, attr, hasMem, result, uro);
+         makeWhereFilter(condition, result, uro);
       }
    };
 
@@ -121,7 +121,7 @@ public:
       return FilterType::ft_Numeric;
    };
 
-   void build(T& result, Attribute* attr, const _bool& hasMem, Uroboros& uro) override
+   void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) override
    {
       makeNumericFilter(keyword, value, result, uro);
    };

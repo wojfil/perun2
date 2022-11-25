@@ -183,9 +183,16 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, Attribute* attr, Uroboros& uro)
+   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, _attrptr& attr, Uroboros& uro)
       : list(std::move(li)), condition(std::move(cond)), uroboros(uro), inner(uro.vars.inner),
-        this_(nullptr), attribute(attr), hasAttribute(attr != nullptr)
+        this_(nullptr), attribute(std::move(attr)), hasAttribute(true)
+   {
+      uro.vars.inner.createThisVarRef(this_);
+   };
+
+   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, Uroboros& uro)
+      : list(std::move(li)), condition(std::move(cond)), uroboros(uro), inner(uro.vars.inner),
+        this_(nullptr), hasAttribute(false)
    {
       uro.vars.inner.createThisVarRef(this_);
    };
@@ -228,7 +235,7 @@ private:
    vars::Variable<T>* this_;
    _genptr<std::vector<T>> list;
    _genptr<_bool> condition;
-   Attribute* attribute;
+   _attrptr attribute;
    const _bool hasAttribute;
 };
 

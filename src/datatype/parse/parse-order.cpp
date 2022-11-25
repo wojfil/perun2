@@ -33,7 +33,38 @@ void orderUnitFailure(const Token& tk, Uroboros& uro)
       L"' is not preceded by a value used for order"), tk.line);
 }
 
-void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _defptr& result,
+void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderIndices* indices, Uroboros& uro)
+{
+   desc = false;
+   const Token& last = tks.last();
+
+   if (last.type == Token::t_Keyword) {
+      const Keyword& kw = last.value.keyword.k;
+      if (kw == Keyword::kw_Asc) {
+         tks.trimRight();
+         if (tks.isEmpty()) {
+            delete indices;
+            if (order != nullptr) {
+               delete order;
+            }
+            orderUnitFailure(last, uro);
+         }
+      }
+      else if (kw == Keyword::kw_Desc) {
+         desc = true;
+         tks.trimRight();
+         if (tks.isEmpty()) {
+            delete indices;
+            if (order != nullptr) {
+               delete order;
+            }
+            orderUnitFailure(last, uro);
+         }
+      }
+   }
+}
+
+void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& result,
    gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
 {
    _defptr prev = std::move(result);

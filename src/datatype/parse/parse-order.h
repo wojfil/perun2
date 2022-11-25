@@ -28,40 +28,7 @@ namespace uro::parse
 
 void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro);
 void orderUnitFailure(const Token& tk, Uroboros& uro);
-
-
-template <typename T>
-void prepareOrderUnit(Tokens& tks, _bool& desc, T& result, Attribute* attr,
-   const ThisState& state, gen::Order* order, gen::OrderIndices* indices, Uroboros& uro)
-{
-   desc = false;
-   const Token& last = tks.last();
-
-   if (last.type == Token::t_Keyword) {
-      const Keyword& kw = last.value.keyword.k;
-      if (kw == Keyword::kw_Asc) {
-         tks.trimRight();
-         if (tks.isEmpty()) {
-            delete indices;
-            if (order != nullptr) {
-               delete order;
-            }
-            orderUnitFailure(last, uro);
-         }
-      }
-      else if (kw == Keyword::kw_Desc) {
-         desc = true;
-         tks.trimRight();
-         if (tks.isEmpty()) {
-            delete indices;
-            if (order != nullptr) {
-               delete order;
-            }
-            orderUnitFailure(last, uro);
-         }
-      }
-   }
-}
+void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderIndices* indices, Uroboros& uro);
 
 
 template <typename T>
@@ -75,11 +42,11 @@ void setOrderUnit(gen::Order*& order, _genptr<T>& value, const _bool& desc, gen:
    }
 }
 
-void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory, _defptr& result,
+void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& result,
    gen::OrderIndices* indices, gen::Order* order, Uroboros& uro);
 
 template <typename T>
-void setSingleOrderFilter(Attribute* attr, const _bool& hasMemory,
+void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory,
    _genptr<std::vector<T>>& result, gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
@@ -94,14 +61,14 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    const ThisState prevThisState = uro.vars.inner.thisState;
    uro.vars.inner.thisState = state;
    const _bool hasMemory = uro.vc.anyAttribute();
-   Attribute* attr = nullptr;
+   _attrptr attr;
 
    if (state == ThisState::ts_String) {
       if (fdata == nullptr) {
-         attr = new Attribute(uro);
+         attr = std::make_unique<Attribute>(uro);
       }
       else {
-         attr = new BridgeAttribute(uro, fdata);
+         attr = std::make_unique<BridgeAttribute>(uro, fdata);
       }
 
       uro.vc.addAttribute(attr);
@@ -145,19 +112,12 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {
-      if (state == ThisState::ts_String) {
-         delete attr;
-      }
-
       throw SyntaxException(str(L"keyword '", orderKeyword.getOriginString(uro),
          L"' should be followed by a keyword 'by'"), first.line);
    }
 
    ts2.trimLeft();
    if (ts2.isEmpty()) {
-      if (state == ThisState::ts_String) {
-         delete attr;
-      }
       throw SyntaxException(str(L"declaration of '", orderKeyword.getOriginString(uro),
          L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
    }
@@ -177,7 +137,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    for (_int i = length - 1; i >= 0; i--) {
       Tokens& tk = tokensList[i];
       _bool desc;
-      prepareOrderUnit(tk, desc, result, attr, state, order, indices, uro);
+      prepareOrderUnit(tk, desc, order, indices, uro);
 
       _genptr<_bool> uboo;
       if (parse(uro, tk, uboo)) {
@@ -213,9 +173,6 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
             delete order;
          }
          delete indices;
-         if (state == ThisState::ts_String) {
-            delete attr;
-         }
 
          throw SyntaxException(L"value of this order unit cannot be resolved to any valid data type. "
             L"Hint: if you use multiple variables for order, separate them by commas",

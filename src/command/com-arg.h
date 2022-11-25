@@ -29,8 +29,8 @@ namespace uro::comm
 {
 
 #define P_IL_ARGS_1 _comptr& com, Uroboros& uro
-#define P_IL_ARGS_2 _comptr& com, Attribute* attr, const _bool& hasmem, Uroboros& uro
-#define P_IL_ARGS_3 _comptr& com, Attribute* attr, Attribute* memAttr, const _bool& hasmem, Uroboros& uro
+#define P_IL_ARGS_2 _comptr& com, _attrptr& attr, const _bool& hasmem, Uroboros& uro
+#define P_IL_ARGS_3 _comptr& com, _attrptr& attr, _attrptr& memAttr, const _bool& hasmem, Uroboros& uro
 
 
 struct IterationLoop : Command
@@ -44,7 +44,7 @@ protected:
    Uroboros& uroboros;
    InnerVariables& inner;
    _comptr command;
-   Attribute* attribute;
+   _attrptr attribute;
    AttributeMemory attrMemory;
    const _bool hasMemory;
    const _bool hasAttribute;

@@ -249,7 +249,7 @@ static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _genptr<T>& resul
 
 
 template <typename T>
-static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, Attribute*& attr,
+static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, _attrptr& attr,
    const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, Uroboros& uro, T& base)
 {
    const _size fplen = prototypes.size();
@@ -271,7 +271,8 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
          fp->build(base, attr, hasMemory, uro);
       }
       else {
-         fp->build(base, nullptr, hasMemory, uro);
+         _attrptr a;
+         fp->build(base, a, hasMemory, uro);
       }
    }
 
@@ -280,15 +281,15 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
 
    if (isFinal) {
       if (hasAttr && lastWhereId == -1) {
-         delete attr;
+         //delete attr;
       }
    }
    else {
       if (hasAttr) {
          if (lastWhereId == -1) {
-            delete attr;
+            //delete attr;
          }
-         attr = new Attribute(uro);
+         attr = std::make_unique<Attribute>(uro);
       }
    }
 };
@@ -329,19 +330,16 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
    // attribute
    const _bool hasAttr = (state == ThisState::ts_String);
-   Attribute* attr;
+   _attrptr attr;
    _bool hasBridgeAttr = (fdata != nullptr);
 
    if (hasAttr) {
       if (hasBridgeAttr) {
-         attr = new BridgeAttribute(uro, fdata);
+         attr = std::make_unique<BridgeAttribute>(uro, fdata);
       }
       else {
-         attr = new Attribute(uro);
+         attr = std::make_unique<Attribute>(uro);
       }
-   }
-   else {
-      attr = nullptr;
    }
 
    for (_size i = 0; i < flength; i++) {

@@ -102,7 +102,7 @@ _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
 }
 
 _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uroboros& uro,
-   Attribute* attr, const _bool& hasMemory)
+   _attrptr& attr, const _bool& hasMemory)
 {
    _genptr<_str> str_;
    if (parse::parse(uro, tks, str_)) {
@@ -119,9 +119,8 @@ _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uro
       }
       else {
          const _aunit aval = attr->getValue();
-         delete attr;
-         result = std::make_unique<CS_DefinitionComArg>(def, innerCommand,
-            new BridgeAttribute(aval, uro, fdata), hasMemory, uro);
+         _attrptr bridge(new BridgeAttribute(aval, uro, fdata));
+         result = std::make_unique<CS_DefinitionComArg>(def, innerCommand, bridge, hasMemory, uro);
       }
 
       return true;
@@ -133,14 +132,13 @@ _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uro
       return true;
    }
 
-   delete attr;
    return false;
 }
 
 _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uroboros& uro)
 {
    const _bool hasMemory = uro.vc.anyAttribute();
-   Attribute* attr = new Attribute(uro);
+   _attrptr attr(new Attribute(uro));
    attr->setCoreCommandBase();
    return parseLooped(tks, innerCommand, result, uro, attr, hasMemory);
 }
@@ -266,13 +264,12 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
    const _bool hasMemory = uro.vc.anyAttribute();
    const ThisState prevThisState = uro.vars.inner.thisState;
    uro.vars.inner.thisState = ThisState::ts_String;
-   Attribute* attr = new Attribute(uro);
+   _attrptr attr(new Attribute(uro));
    attr->setTimeCommandBase();
    uro.vc.addAttribute(attr);
 
    _genptr<_tim> tim;
    if (!parse::parse(uro, right, tim)) {
-      delete attr;
       throw SyntaxException(str(L"time argument of command '", word.getOriginString(uro), L" to' is not valid"), line);
    }
 
@@ -334,13 +331,12 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
       const _bool hasMemory = uro.vc.anyAttribute();
       const ThisState prevThisState = uro.vars.inner.thisState;
       uro.vars.inner.thisState = ThisState::ts_String;
-      Attribute* attr = new Attribute(uro);
+      _attrptr attr(new Attribute(uro));
       attr->setCoreCommandBase();
       uro.vc.addAttribute(attr);
 
       _genptr<_str> prog;
       if (!parse::parse(uro, right, prog)) {
-         delete attr;
          throw SyntaxException(str(L"last argument of command '", word.getOriginString(uro), L" with' "
             L"cannot be resolved to a string"), line);
       }
@@ -471,13 +467,12 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
    const _bool hasMemory = uro.vc.anyAttribute();
    const ThisState prevThisState = uro.vars.inner.thisState;
    uro.vars.inner.thisState = ThisState::ts_String;
-   Attribute* attr = new Attribute(uro);
+   _attrptr attr(new Attribute(uro));
    attr->setCoreCommandBase();
    uro.vc.addAttribute(attr);
 
    _genptr<_str> newName;
    if (!parse::parse(uro, right, newName)) {
-      delete attr;
       throw SyntaxException(str(L"declaration of new name in command '", word.getOriginString(uro), L" to' is not valid"), line);
    }
 
@@ -514,7 +509,6 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
       return true;
    }
 
-   delete attr;
    commandSyntaxException(str(word.getOriginString(uro), L" to"), line);
    return false;
 }
@@ -834,20 +828,18 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
       const _bool hasMemory = uro.vc.anyAttribute();
       const ThisState prevThisState = uro.vars.inner.thisState;
       uro.vars.inner.thisState = ThisState::ts_String;
-      Attribute* attr = new Attribute(uro);
+      _attrptr attr(new Attribute(uro));
       attr->setCoreCommandBase();
       uro.vc.addAttribute(attr);
 
       _genptr<_str> nname;
       if (!parse::parse(uro, postAs, nname)) {
-         delete attr;
          throw SyntaxException(str(L"new name in command '", word.getOriginString(uro),
             L" to as' cannot be resolved to a string"), line);
       }
 
       _genptr<_str> dest;
       if (!parse::parse(uro, preAs, dest)) {
-         delete attr;
          throw SyntaxException(str(L"new location in command '", word.getOriginString(uro),
             L" to' cannot be resolved to a string"), line);
       }
@@ -875,7 +867,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
    const _bool hasMemory = uro.vc.anyAttribute();
    const ThisState prevThisState = uro.vars.inner.thisState;
    uro.vars.inner.thisState = ThisState::ts_String;
-   Attribute* attr = new Attribute(uro);
+   _attrptr attr(new Attribute(uro));
    attr->setCoreCommandBase();
    uro.vc.addAttribute(attr);
 
@@ -1166,7 +1158,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
       const _bool hasMemory = uro.vc.anyAttribute();
       const ThisState prevThisState = uro.vars.inner.thisState;
       uro.vars.inner.thisState = ThisState::ts_String;
-      Attribute* attr = new Attribute(uro);
+      _attrptr attr(new Attribute(uro));
       attr->setCoreCommandBase();
       uro.vc.addAttribute(attr);
 
@@ -1204,7 +1196,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    const _bool hasMemory = uro.vc.anyAttribute();
    const ThisState prevThisState = uro.vars.inner.thisState;
    uro.vars.inner.thisState = ThisState::ts_String;
-   Attribute* attr = new Attribute(uro);
+   _attrptr attr(new Attribute(uro));
    attr->setCoreCommandBase();
    uro.vc.addAttribute(attr);
 
@@ -1430,7 +1422,7 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
             Attribute* lastAttr = uro.vc.getLastAttribute();
             const ThisState prevThisState = uro.vars.inner.thisState;
             uro.vars.inner.thisState = ThisState::ts_String;
-            Attribute* attr = new Attribute(uro);
+            _attrptr attr(new Attribute(uro));
             attr->setCoreCommandBase();
             uro.vc.addAttribute(attr);
 
@@ -1509,7 +1501,7 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
             Attribute* lastAttr = uro.vc.getLastAttribute();
             const ThisState prevThisState = uro.vars.inner.thisState;
             uro.vars.inner.thisState = ThisState::ts_String;
-            Attribute* attr = new Attribute(uro);
+            _attrptr attr(new Attribute(uro));
             attr->setCoreCommandBase();
             uro.vc.addAttribute(attr);
 

@@ -40,9 +40,9 @@ _tim os_tomorrow();
 
 void os_sleepForMs(const _nint& ms, Uroboros& uro);
 
-void os_loadAttributes(const Attribute* attr, Uroboros& uro);
-void os_loadEmptyAttributes(const Attribute* attr, InnerVariables& inner);
-void os_loadDataAttributes(const Attribute* attr, Uroboros& uro, _fdata* data);
+void os_loadAttributes(const _aunit& attr, Uroboros& uro);
+void os_loadEmptyAttributes(const _aunit& attr, InnerVariables& inner);
+void os_loadDataAttributes(const _aunit& attr, Uroboros& uro, _fdata* data);
 
 // file system variables:
 _tim os_access(const _str& path);

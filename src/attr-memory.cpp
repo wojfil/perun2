@@ -20,8 +20,8 @@
 namespace uro
 {
 
-AttributeMemory::AttributeMemory(Attribute* attr, InnerVariables& iv)
-   : attribute(attr), hasAttribute(true), inner(iv) { };
+AttributeMemory::AttributeMemory(_attrptr& attr, InnerVariables& iv)
+   : attribute(attr.get()), hasAttribute(attr.get() != nullptr), inner(iv) { };
 
 AttributeMemory::AttributeMemory(InnerVariables& iv)
    : attribute(nullptr), hasAttribute(false), inner(iv) { };

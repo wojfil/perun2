@@ -121,11 +121,11 @@ private:
 struct CS_StringLoop : IterationLoop
 {
 public:
-   CS_StringLoop(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+   CS_StringLoop(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
+      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
-   CS_StringLoop(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
+   CS_StringLoop(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
@@ -140,11 +140,11 @@ private:
 struct CS_DefinitionLoop : IterationLoop
 {
 public:
-   CS_DefinitionLoop(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+   CS_DefinitionLoop(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
+      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
-   CS_DefinitionLoop(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
+   CS_DefinitionLoop(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
@@ -159,11 +159,11 @@ private:
 struct CS_ListLoop : IterationLoop
 {
 public:
-   CS_ListLoop(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+   CS_ListLoop(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
+      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
-   CS_ListLoop(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
+   CS_ListLoop(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
@@ -178,11 +178,11 @@ private:
 struct CS_InsideString : IterationLoop
 {
 public:
-   CS_InsideString(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+   CS_InsideString(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
+      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
-   CS_InsideString(_genptr<_str>& str, _comptr& com, Attribute* attr, _aggrptr& aggr,
+   CS_InsideString(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
@@ -198,11 +198,11 @@ private:
 struct CS_InsideDefinition : IterationLoop
 {
 public:
-   CS_InsideDefinition(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+   CS_InsideDefinition(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
+      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
-   CS_InsideDefinition(_defptr& def, _comptr& com, Attribute* attr, _aggrptr& aggr,
+   CS_InsideDefinition(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
@@ -218,11 +218,11 @@ private:
 struct CS_InsideList : IterationLoop
 {
 public:
-   CS_InsideList(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
-      Attribute* memAttr, const _bool& hasmem, Uroboros& uro)
+   CS_InsideList(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
+      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
-   CS_InsideList(_genptr<_list>& li, _comptr& com, Attribute* attr, _aggrptr& aggr,
+   CS_InsideList(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
       const _bool& hasmem, Uroboros& uro)
       : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 

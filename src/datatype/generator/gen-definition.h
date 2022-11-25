@@ -45,7 +45,7 @@ protected:
 struct Filter_WhereDef : DefFilter
 {
 public:
-   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Attribute* attr, const _bool& hasMem, Uroboros& uro);
+   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, Uroboros& uro);
    Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Uroboros& uro);
 
    _bool hasNext() override;
@@ -55,7 +55,7 @@ private:
    InnerVariables& inner;
    _bool finished;
    _genptr<_bool> condition;
-   Attribute* attribute;
+   _attrptr attribute;
    const _bool hasMemory;
    const _bool hasAttribute;
    AttributeMemory attrMemory;

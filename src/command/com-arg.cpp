@@ -26,11 +26,11 @@ IterationLoop::IterationLoop(P_IL_ARGS_1)
      attrMemory(uro.vars.inner), inner(uro.vars.inner) { };
 
 IterationLoop::IterationLoop(P_IL_ARGS_2)
-   : uroboros(uro), command(std::move(com)), attribute(attr), attrMemory(AttributeMemory(attr, uro.vars.inner)),
+   : uroboros(uro), command(std::move(com)), attribute(std::move(attr)), attrMemory(AttributeMemory(attribute, uro.vars.inner)),
      hasMemory(hasmem), hasAttribute(true), inner(uro.vars.inner) { };
 
 IterationLoop::IterationLoop(P_IL_ARGS_3)
-   : uroboros(uro), command(std::move(com)), attribute(attr), attrMemory(AttributeMemory(memAttr, uro.vars.inner)),
+   : uroboros(uro), command(std::move(com)), attribute(std::move(attr)), attrMemory(AttributeMemory(memAttr, uro.vars.inner)),
      hasMemory(hasmem), hasAttribute(true), inner(uro.vars.inner) { };
 
 CS_StringComArg::CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_1)

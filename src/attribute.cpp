@@ -151,7 +151,7 @@ void Attribute::markToRun()
 
 void Attribute::run() const
 {
-   os_loadAttributes(this, this->uroboros);
+   os_loadAttributes(this->value, this->uroboros);
 }
 
 BridgeAttribute::BridgeAttribute(Uroboros& uro, _fdata* data)
@@ -162,7 +162,7 @@ BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros& uro, _fdata* data)
 
 void BridgeAttribute::run() const
 {
-   os_loadDataAttributes(this, this->uroboros, this->dataPnt);
+   os_loadDataAttributes(this->value, this->uroboros, this->dataPnt);
 }
 
 }

@@ -79,9 +79,9 @@ void VariablesContext::attributeException(const Token& tk, uro::Uroboros& uro)
       L"' is undefined here"), tk.line);
 }
 
-void VariablesContext::addAttribute(Attribute* attr)
+void VariablesContext::addAttribute(_attrptr& attr)
 {
-   this->attrs.push_back(attr);
+   this->attrs.push_back(attr.get());
 }
 
 void VariablesContext::retreatAttribute()

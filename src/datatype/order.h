@@ -146,16 +146,15 @@ template <typename T>
 struct OrderBy
 {
 public:
-   OrderBy(Attribute* attr, OrderIndices* indices, Order* ord, Uroboros& uro)
-      : attribute(attr), inner(uro.vars.inner),
-        hasAttribute(attr != nullptr), orderIndices(indices), order(ord)
+   OrderBy(_attrptr& attr, OrderIndices* indices, Order* ord, Uroboros& uro)
+      : attribute(std::move(attr)), inner(uro.vars.inner),
+        hasAttribute(attribute), orderIndices(indices), order(ord)
    {
       this->inner.createThisVarRef(thisReference);
    }
 
    ~OrderBy()
    {
-      delete attribute;
       delete orderIndices;
       delete order;
    }
@@ -191,7 +190,7 @@ public:
 protected:
    OrderIndices* orderIndices;
    Order* order;
-   Attribute* attribute;
+   _attrptr attribute;
    const _bool hasAttribute;
    InnerVariables& inner;
    vars::Variable<T>* thisReference;
@@ -203,7 +202,7 @@ template <typename T>
 struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
 {
 public:
-   OrderBy_List(_genptr<std::vector<T>>& bas, Attribute* attr, OrderIndices* indices, Order* ord, Uroboros& uro)
+   OrderBy_List(_genptr<std::vector<T>>& bas, _attrptr& attr, OrderIndices* indices, Order* ord, Uroboros& uro)
       : OrderBy<T>(attr, indices, ord, uro), base(std::move(bas)) { }
 
    std::vector<T> getValue() override
@@ -253,7 +252,7 @@ private:
 struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
-   OrderBy_Definition(_defptr& bas, Attribute* attr, const _bool& hasMem,
+   OrderBy_Definition(_defptr& bas, _attrptr& attr, const _bool& hasMem,
       OrderIndices* indices, Order* ord, Uroboros& uro);
 
    void reset() override;

@@ -34,11 +34,11 @@ void OrderIndices::prepare(const _size& length)
    this->values = new _size[length]();
 }
 
-OrderBy_Definition::OrderBy_Definition(_defptr& bas, Attribute* attr,
+OrderBy_Definition::OrderBy_Definition(_defptr& bas, _attrptr& attr,
    const _bool& hasMem, OrderIndices* indices, Order* ord, Uroboros& uro)
    : OrderBy<_str>(attr, indices, ord, uro), base(std::move(bas)),
      uroboros(uro), inner(uro.vars.inner),
-     hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner))
+     hasMemory(hasMem), attrMemory(AttributeMemory(attribute, uro.vars.inner))
 {
    this->resultPtr = &this->result;
 }

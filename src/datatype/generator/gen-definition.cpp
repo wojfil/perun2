@@ -37,12 +37,12 @@ void DefFilter::reset() {
 }
 
 
-Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Attribute* attr, const _bool& hasMem, Uroboros& uro)
-   : DefFilter(def, uro), condition(std::move(cond)), attribute(attr), finished(true), inner(uro.vars.inner),
+Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, Uroboros& uro)
+   : DefFilter(def, uro), condition(std::move(cond)), attribute(std::move(attr)), finished(true), inner(uro.vars.inner),
       hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner)), hasAttribute(true) { };
 
 Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Uroboros& uro)
-   : DefFilter(def, uro), condition(std::move(cond)), attribute(nullptr), finished(true), inner(uro.vars.inner),
+   : DefFilter(def, uro), condition(std::move(cond)), finished(true), inner(uro.vars.inner),
       hasMemory(false), attrMemory(AttributeMemory(uro.vars.inner)), hasAttribute(false) { };
 
 

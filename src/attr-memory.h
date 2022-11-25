@@ -29,7 +29,7 @@ namespace uro
 struct AttributeMemory
 {
 public:
-   AttributeMemory(Attribute* attr, InnerVariables& iv);
+   AttributeMemory(_attrptr& attr, InnerVariables& iv);
    AttributeMemory(InnerVariables& iv);
 
    void load();

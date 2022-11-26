@@ -29,7 +29,7 @@
 namespace uro::gen
 {
 
-#define P_OS_GEN_CORE_ARGS location, this->uroboros, pattern, isAbsolute, prefix
+#define P_OS_GEN_CORE_ARGS loc, this->uroboros, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
@@ -44,16 +44,11 @@ namespace uro::gen
 DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro)
    : element_(el), uroboros(uro) { };
 
-_bool DefinitionGenerator::generateDefault(_defptr& result) const
+_bool DefinitionGenerator::generate(_defptr& result) const
 {
    _genptr<_str> loc(new LocationReference(this->uroboros));
-   return this->generate(result, loc, this->element_, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
-}
 
-_bool DefinitionGenerator::generate(_defptr& result, _genptr<_str>& location, const OsElement& element,
-   const _str& pattern, const _bool& isAbsolute, const _str& prefix) const
-{
-   switch (element) {
+   switch (this->element_) {
       case OsElement::oe_All: {
          result = std::make_unique<Uro_All>(P_OS_GEN_CORE_ARGS);
          break;

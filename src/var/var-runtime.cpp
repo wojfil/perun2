@@ -229,7 +229,7 @@ _bool Variables::getVarValue(const Token& tk, _genptr<_str>& result)
 _bool Variables::getVarValue(const Token& tk, _defptr& result)
 {
    if (this->defGenerators.find(tk.value.word.h) != this->defGenerators.end()) {
-      return this->defGenerators[tk.value.word.h]->generateDefault(result);
+      return this->defGenerators[tk.value.word.h]->generate(result);
    }
 
    return false;

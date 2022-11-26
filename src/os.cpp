@@ -23,6 +23,7 @@
 #include "os.h"
 #include <time.h>
 #include "uroboros.h"
+#include "datatype/parse/parse-asterisk.h"
 #include <shlobj.h>
 #include <cwctype>
 #include <shellapi.h>
@@ -1350,9 +1351,9 @@ _uint32 os_patternInfo(const _str& pattern)
 }
 
 _bool os_bothAreSeparators(const _char& left, const _char& right)
-{ 
-   return (left == right) 
-      && (left == OS_SEPARATOR); 
+{
+   return (left == right)
+      && (left == OS_SEPARATOR);
 }
 
 _str os_trim(const _str& path)
@@ -1419,7 +1420,7 @@ exitEnd:
    }
 
    std::replace(result.begin(), result.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
-   result.erase(std::unique(result.begin(), result.end(), os_bothAreSeparators), result.end());   
+   result.erase(std::unique(result.begin(), result.end(), os_bothAreSeparators), result.end());
    os_escapeQuote(result);
    return result;
 }
@@ -1482,7 +1483,7 @@ _bool os_hasExtension(const _str& value)
 
 inline _bool os_isDriveLetter(const _char& ch)
 {
-   return (ch >= L'a' && ch <= L'z') 
+   return (ch >= L'a' && ch <= L'z')
        || (ch >= L'A' && ch <= L'Z');
 }
 
@@ -1909,7 +1910,7 @@ r_exitEnd:
          value = value.substr(start, end - start + 1);
       }
    }
-   
+
    return;
 }
 

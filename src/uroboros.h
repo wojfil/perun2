@@ -25,7 +25,6 @@
 #include "side-process.h"
 #include "command/com.h"
 #include "command/com-parse-unit.h"
-#include "datatype/parse/parse-asterisk.h"
 
 
 namespace uro
@@ -68,7 +67,6 @@ public:
    SideProcess sideProcess;
    const _uint32 flags;
    comm::ConditionContext conditionContext;
-   const parse::AsteriskParser asteriskParser;
    State state = State::s_Running;
    _int exitCode = EXITCODE_OK;
 

@@ -32,29 +32,18 @@ struct AsteriskUnit
 {
 public:
    AsteriskUnit(const _str& ast, const _str& suf) : asteriskPart(ast), suffixPart(suf) { };
-   AsteriskUnit(const _str& ast) : asteriskPart(ast), suffixPart(_str()) { };
+   AsteriskUnit(const _str& ast) : asteriskPart(ast) { };
 
    const _str asteriskPart;
    const _str suffixPart;
 };
 
 
-struct AsteriskParser
-{
-public:
-   AsteriskParser(Uroboros& uro)
-      : uroboros(uro), defGenerator(gen::OsElement::oe_None, uro) { };
+_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, Uroboros& uro);
 
-   _bool parse(const _str& originPattern, _defptr& result, const _int& line) const;
+void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
+   const _bool& hasAsterisk, std::vector<AsteriskUnit>& units);
 
-private:
-
-   void addUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
-      const _bool& hasAsterisk, std::vector<AsteriskUnit>& units) const;
-
-   Uroboros& uroboros;
-   const gen::DefinitionGenerator defGenerator;
-};
 
 }
 

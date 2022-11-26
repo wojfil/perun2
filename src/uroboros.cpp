@@ -33,7 +33,7 @@ namespace uro
 
 Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(vars::Variables(*this)),
    vc(vars::VariablesContext(this->hashes, this->vars)), flags(args.getFlags()),
-   terminator(Terminator(this)), asteriskParser(parse::AsteriskParser(*this)) { };
+   terminator(Terminator(this)) { };
 
 
 _bool Uroboros::run()

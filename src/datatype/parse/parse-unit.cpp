@@ -20,6 +20,7 @@
 #include "../generator/gen-os.h"
 #include "../../os.h"
 #include "parse-number.h"
+#include "parse-asterisk.h"
 
 
 namespace uro::parse
@@ -198,7 +199,7 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == L'*') {
-            return uro.asteriskParser.parse(L"**", result, tk.line);
+            return parseAsteriskPattern(result, L"**", tk.line, uro);
          }
          else {
             return false;
@@ -206,14 +207,14 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == L'*') {
-            return uro.asteriskParser.parse(L"*", result, tk.line);
+            return parseAsteriskPattern(result, L"*", tk.line, uro);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return uro.asteriskParser.parse(tk.getOriginString(uro), result, tk.line);
+         return parseAsteriskPattern(result, tk.getOriginString(uro), tk.line, uro);
       }
       default: {
          return false;

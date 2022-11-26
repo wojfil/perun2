@@ -35,8 +35,8 @@ void OrderIndices::prepare(const _size& length)
 }
 
 OrderBy_Definition::OrderBy_Definition(_defptr& bas, _attrptr& attr,
-   const _bool& hasMem, OrderIndices* indices, Order* ord, Uroboros& uro)
-   : OrderBy<_str>(attr, indices, ord, uro), base(std::move(bas)),
+   const _bool& hasMem, _indptr& inds, _ordptr& ord, Uroboros& uro)
+   : OrderBy<_str>(attr, inds, ord, uro), base(std::move(bas)),
      uroboros(uro), inner(uro.vars.inner),
      hasMemory(hasMem), attrMemory(AttributeMemory(attribute, uro.vars.inner))
 {
@@ -113,10 +113,10 @@ _bool OrderBy_Definition::hasNext()
          this->inner.depth.value.setToZero();
       }
 
-      this->orderIndices->prepare(this->length);
+      this->indices->prepare(this->length);
 
       for (_size i = 0; i < this->length; i++) {
-         this->orderIndices->values[i] = i;
+         this->indices->values[i] = i;
       }
 
       this->quicksort(0, this->length - 1);
@@ -138,7 +138,7 @@ _bool OrderBy_Definition::hasNext()
       this->thisReference->value = this->value;
       this->inner.index.value.value.i = static_cast<_nint>(this->index);
       if (this->hasVolatileDepth) {
-         this->inner.depth.value.value.i = this->depths[this->orderIndices->values[this->index]];
+         this->inner.depth.value.value.i = this->depths[this->indices->values[this->index]];
       }
       this->index++;
       return true;

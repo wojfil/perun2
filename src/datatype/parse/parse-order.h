@@ -28,26 +28,27 @@ namespace uro::parse
 
 void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro);
 void orderUnitFailure(const Token& tk, Uroboros& uro);
-void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderIndices* indices, Uroboros& uro);
+void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, Uroboros& uro);
 
 
 template <typename T>
-void setOrderUnit(gen::Order*& order, _genptr<T>& value, const _bool& desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::_ordptr& order, _genptr<T>& value, const _bool& desc, gen::_indptr& indices)
 {
-   if (order == nullptr) {
-      order = new gen::OrderUnit_Final<T>(value, desc, indices);
+   if (order) {
+      gen::_ordptr prev = std::move(order);
+      order = std::make_unique<gen::OrderUnit_Middle<T>>(value, desc, prev, indices);
    }
    else {
-      order = new gen::OrderUnit_Middle<T>(value, desc, order, indices);
+      order = std::make_unique<gen::OrderUnit_Final<T>>(value, desc, indices);
    }
 }
 
 void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& result,
-   gen::OrderIndices* indices, gen::Order* order, Uroboros& uro);
+   gen::_indptr& indices, gen::_ordptr& order, Uroboros& uro);
 
 template <typename T>
 void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory,
-   _genptr<std::vector<T>>& result, gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
+   _genptr<std::vector<T>>& result, gen::_indptr& indices, gen::_ordptr& order, Uroboros& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
    result = std::make_unique<gen::OrderBy_List<T>>(prev, attr, indices, order, uro);
@@ -80,28 +81,28 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
       const Keyword& kw = first.value.keyword.k;
       if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
          const _bool desc = kw == Keyword::kw_Desc;
-         gen::OrderIndices* indices = new gen::OrderIndices();
+         gen::_indptr indices(new gen::OrderIndices());
 
          switch (state) {
             case ThisState::ts_String: {
                _genptr<_str> str;
                uro.vars.inner.createThisRef(str);
-               setSingleOrderFilter(attr, hasMemory, result, indices,
-                  new gen::OrderUnit_Final<_str>(str, desc, indices), uro);
+               gen::_ordptr ord(new gen::OrderUnit_Final<_str>(str, desc, indices));
+               setSingleOrderFilter(attr, hasMemory, result, indices, ord, uro);
                break;
             }
             case ThisState::ts_Number: {
                _genptr<_num> num;
                uro.vars.inner.createThisRef(num);
-               setSingleOrderFilter(attr, hasMemory, result, indices,
-                  new gen::OrderUnit_Final<_num>(num, desc, indices), uro);
+               gen::_ordptr ord(new gen::OrderUnit_Final<_num>(num, desc, indices));
+               setSingleOrderFilter(attr, hasMemory, result, indices, ord, uro);
                break;
             }
             case ThisState::ts_Time: {
                _genptr<_tim> tim;
                uro.vars.inner.createThisRef(tim);
-               setSingleOrderFilter(attr, hasMemory, result, indices,
-                  new gen::OrderUnit_Final<_tim>(tim, desc, indices), uro);
+               gen::_ordptr ord(new gen::OrderUnit_Final<_tim>(tim, desc, indices));
+               setSingleOrderFilter(attr, hasMemory, result, indices, ord, uro);
                break;
             }
          }
@@ -131,8 +132,8 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    }
 
    const _int length = tokensList.size();
-   gen::Order* order = nullptr;
-   gen::OrderIndices* indices = new gen::OrderIndices();
+   gen::_ordptr order;
+   gen::_indptr indices(new gen::OrderIndices());
 
    for (_int i = length - 1; i >= 0; i--) {
       Tokens& tk = tokensList[i];
@@ -169,11 +170,6 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          continue;
       }
       else {
-         if (order != nullptr) {
-            delete order;
-         }
-         delete indices;
-
          throw SyntaxException(L"value of this order unit cannot be resolved to any valid data type. "
             L"Hint: if you use multiple variables for order, separate them by commas",
             tk.first().line);

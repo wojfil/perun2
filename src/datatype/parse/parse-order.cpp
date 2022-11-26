@@ -33,7 +33,7 @@ void orderUnitFailure(const Token& tk, Uroboros& uro)
       L"' is not preceded by a value used for order"), tk.line);
 }
 
-void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderIndices* indices, Uroboros& uro)
+void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, Uroboros& uro)
 {
    desc = false;
    const Token& last = tks.last();
@@ -43,10 +43,6 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderInd
       if (kw == Keyword::kw_Asc) {
          tks.trimRight();
          if (tks.isEmpty()) {
-            delete indices;
-            if (order != nullptr) {
-               delete order;
-            }
             orderUnitFailure(last, uro);
          }
       }
@@ -54,10 +50,6 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderInd
          desc = true;
          tks.trimRight();
          if (tks.isEmpty()) {
-            delete indices;
-            if (order != nullptr) {
-               delete order;
-            }
             orderUnitFailure(last, uro);
          }
       }
@@ -65,7 +57,7 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, gen::Order* order, gen::OrderInd
 }
 
 void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& result,
-   gen::OrderIndices* indices, gen::Order* order, Uroboros& uro)
+   gen::_indptr& indices, gen::_ordptr& order, Uroboros& uro)
 {
    _defptr prev = std::move(result);
    result = std::make_unique<gen::OrderBy_Definition>(prev, attr, hasMemory, indices, order, uro);

@@ -35,6 +35,8 @@ public:
    _size* values;
 };
 
+typedef std::unique_ptr<OrderIndices> _indptr;
+
 
 struct Order
 {
@@ -45,13 +47,15 @@ public:
    virtual _bool matchesSwap(const _int& start, const _int& end) const = 0;
 };
 
+typedef std::unique_ptr<Order> _ordptr;
+
 
 template <typename T>
 struct OrderUnit : Order
 {
 public:
-   OrderUnit(_genptr<T>& val, const _bool& desc, OrderIndices* indie)
-      : valueGenerator(std::move(val)), descending(desc), indices(indie) { };
+   OrderUnit(_genptr<T>& val, const _bool& desc, _indptr& inds)
+      : valueGenerator(std::move(val)), descending(desc), indices(inds.get()) { };
 
 protected:
    _genptr<T> valueGenerator;
@@ -65,13 +69,8 @@ template <typename T>
 struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
-   OrderUnit_Middle(_genptr<T>& val, const _bool& desc, Order* next, OrderIndices* indie)
-      : OrderUnit<T>(val, desc, indie), nextUnit(next) { };
-
-   ~OrderUnit_Middle()
-   {
-      delete nextUnit;
-   }
+   OrderUnit_Middle(_genptr<T>& val, const _bool& desc, _ordptr& next, _indptr& inds)
+      : OrderUnit<T>(val, desc, inds), nextUnit(std::move(next)) { };
 
    void clearValues(const _size& length) override
    {
@@ -107,7 +106,7 @@ public:
    }
 
 private:
-   Order* nextUnit;
+   _ordptr nextUnit;
 };
 
 
@@ -115,8 +114,8 @@ template <typename T>
 struct OrderUnit_Final : OrderUnit<T>
 {
 public:
-   OrderUnit_Final(_genptr<T>& val, const _bool& desc, OrderIndices* indie)
-      : OrderUnit<T>(val, desc, indie) { };
+   OrderUnit_Final(_genptr<T>& val, const _bool& desc, _indptr& inds)
+      : OrderUnit<T>(val, desc, inds) { };
 
    void clearValues(const _size& length) override
    {
@@ -146,19 +145,12 @@ template <typename T>
 struct OrderBy
 {
 public:
-   OrderBy(_attrptr& attr, OrderIndices* indices, Order* ord, Uroboros& uro)
+   OrderBy(_attrptr& attr, _indptr& inds, _ordptr& ord, Uroboros& uro)
       : attribute(std::move(attr)), inner(uro.vars.inner),
-        hasAttribute(attribute), orderIndices(indices), order(ord)
+        hasAttribute(attribute), indices(std::move(inds)), order(std::move(ord))
    {
       this->inner.createThisVarRef(thisReference);
    }
-
-   ~OrderBy()
-   {
-      delete orderIndices;
-      delete order;
-   }
-
 
    void quicksort(const _int& start, const _int& end)
    {
@@ -176,20 +168,20 @@ public:
       for (_int j = start; j <= end - 1; j++) {
          if (this->order->matchesSwap(j, end)) {
             i++;
-            std::swap(this->orderIndices->values[i], this->orderIndices->values[j]);
+            std::swap(this->indices->values[i], this->indices->values[j]);
             std::iter_swap(this->resultPtr->begin() + i, this->resultPtr->begin() + j);
          }
       }
 
       const _int ip = i + 1;
-      std::swap(this->orderIndices->values[ip], this->orderIndices->values[end]);
+      std::swap(this->indices->values[ip], this->indices->values[end]);
       std::iter_swap(this->resultPtr->begin() + ip, this->resultPtr->begin() + end);
       return ip;
    }
 
 protected:
-   OrderIndices* orderIndices;
-   Order* order;
+   _indptr indices;
+   _ordptr order;
    _attrptr attribute;
    const _bool hasAttribute;
    InnerVariables& inner;
@@ -202,8 +194,8 @@ template <typename T>
 struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
 {
 public:
-   OrderBy_List(_genptr<std::vector<T>>& bas, _attrptr& attr, OrderIndices* indices, Order* ord, Uroboros& uro)
-      : OrderBy<T>(attr, indices, ord, uro), base(std::move(bas)) { }
+   OrderBy_List(_genptr<std::vector<T>>& bas, _attrptr& attr, _indptr& inds, _ordptr& ord, Uroboros& uro)
+      : OrderBy<T>(attr, inds, ord, uro), base(std::move(bas)) { }
 
    std::vector<T> getValue() override
    {
@@ -215,7 +207,7 @@ public:
       }
 
       this->resultPtr = &result;
-      this->orderIndices->prepare(length);
+      this->indices->prepare(length);
       this->order->clearValues(length);
 
       const _numi prevIndex = this->inner.index.value;
@@ -231,7 +223,7 @@ public:
             this->attribute->run();
          }
 
-         this->orderIndices->values[i] = i;
+         this->indices->values[i] = i;
          this->order->addValues();
       }
 
@@ -252,8 +244,7 @@ private:
 struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
-   OrderBy_Definition(_defptr& bas, _attrptr& attr, const _bool& hasMem,
-      OrderIndices* indices, Order* ord, Uroboros& uro);
+   OrderBy_Definition(_defptr& bas, _attrptr& attr, const _bool& hasMem, _indptr& inds, _ordptr& ord, Uroboros& uro);
 
    void reset() override;
    _bool hasNext() override;

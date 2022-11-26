@@ -44,7 +44,8 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
    _int line = 1;
    _char prev = L' ';
    const _size len = code.length();
-   _size wpos = 0, wlen = 0;
+   _size wpos = 0;
+   _size wlen = 0;
    _bool prevSymbol = false;
 
    for (_size i = 0; i < len; i++) {

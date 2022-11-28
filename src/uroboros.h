@@ -38,11 +38,6 @@ inline constexpr _int EXITCODE_RUNTIME_ERROR =  1;
 inline constexpr _int EXITCODE_SYNTAX_ERROR =   2;
 inline constexpr _int EXITCODE_CLI_ERROR =      3;
 
-inline constexpr _uint32 FLAG_NULL =      0b000;
-inline constexpr _uint32 FLAG_NOOMIT =    0b001;
-inline constexpr _uint32 FLAG_SILENT =    0b010;
-inline constexpr _uint32 FLAG_GUI =       0b100;
-
 enum State
 {
    s_Running = 0,

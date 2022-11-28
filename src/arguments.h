@@ -20,12 +20,17 @@
 namespace uro
 {
 
-enum ArgsParseState {
+inline constexpr _uint32 FLAG_NULL =      0b000;
+inline constexpr _uint32 FLAG_NOOMIT =    0b001;
+inline constexpr _uint32 FLAG_SILENT =    0b010;
+inline constexpr _uint32 FLAG_GUI =       0b100;
+
+enum ArgsParseState 
+{
    aps_Ok = 0,
    aps_PrintInfo,
    aps_Failed
 };
-
 
 struct Arguments
 {

@@ -65,19 +65,19 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
 
             if (lowerArg == L"--version") {
                this->parseState = ArgsParseState::aps_PrintInfo;
-               cmd_version();
+               cmd::version();
             }
             else if (lowerArg == L"--docs") {
                this->parseState = ArgsParseState::aps_PrintInfo;
-               cmd_docs();
+               cmd::docs();
             }
             else if (lowerArg == L"--website") {
                this->parseState = ArgsParseState::aps_PrintInfo;
-               cmd_website();
+               cmd::website();
             }
             else if (lowerArg == L"--help") {
                this->parseState = ArgsParseState::aps_PrintInfo;
-               cmd_help();
+               cmd::help();
             }
             else {
                rawPrint(str(L"Command-line error: unknown option '", arg.substr(2), L"'."));

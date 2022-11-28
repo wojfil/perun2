@@ -18,25 +18,25 @@
 #include "uroboros.h"
 
 
-namespace uro
+namespace uro::cmd
 {
 
-void cmd_version()
+void version()
 {
-   rawPrint(L"Uroboros " + VERSION_STR);
+   rawPrint(str(L"Uroboros ", VERSION_STR));
 }
 
-void cmd_docs()
+void docs()
 {
    os_showWebsite(L"https://uroboros-lang.org/docs");
 }
 
-void cmd_website()
+void website()
 {
    os_showWebsite(L"https://uroboros-lang.org");
 }
 
-void cmd_help()
+void help()
 {
    rawPrint(EMPTY_STRING);
    rawPrint(L"In order to run a script, pass a file name or its path as an argument. Extension is not mandatory.");

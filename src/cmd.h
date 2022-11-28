@@ -18,13 +18,13 @@
 #include "datatype/primitives.h"
 
 
-namespace uro
+namespace uro::cmd
 {
 
-void cmd_version();
-void cmd_docs();
-void cmd_website();
-void cmd_help();
+void version();
+void docs();
+void website();
+void help();
 
 }
 

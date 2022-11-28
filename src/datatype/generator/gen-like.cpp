@@ -40,53 +40,52 @@ _bool LikeSet::contains(const _char& ch) const
       : this->values.find(ch) != this->values.end();
 }
 
-static LikeComparer* defaultLikeCmp(const _str& pattern)
-{
-   if (pattern.find(L'[') == _str::npos) {
-      return new LC_Default_NoBrackets(pattern);
-   }
-   else {
-      return bracketsLikeCmp(pattern);
-   }
-}
-
 static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId)
 {
-    std::unordered_set<_char> set;
-    _bool negated = false;
+   std::unordered_set<_char> set;
+   _bool negated = false;
 
-    if (pattern[startId] == L'^') {
-        negated = true;
-        startId++;
-    }
+   if (pattern[startId] == L'^') {
+      negated = true;
+      startId++;
+   }
 
-    for (_size i = startId; i <= endId; i++) {
-        if (i < endId - 1 && pattern[i + 1] == L'-') {
-            const _char& left = pattern[i];
-            const _char& right = pattern[i + 2];
+   for (_size i = startId; i <= endId; i++) {
+      if (i < endId - 1 && pattern[i + 1] == L'-') {
+         const _char& left = pattern[i];
+         const _char& right = pattern[i + 2];
 
-            if (left < right) {
-                for (_char ch = left; ch <= right; ch++) {
-                    set.insert(ch);
-                }
+         if (left < right) {
+            for (_char ch = left; ch <= right; ch++) {
+               set.insert(ch);
             }
-            else {
-                for (_char ch = right; ch <= left; ch++) {
-                    set.insert(ch);
-                }
+         }
+         else {
+            for (_char ch = right; ch <= left; ch++) {
+               set.insert(ch);
             }
+         }
 
-            i+= 2;
-        }
-        else {
-            set.insert(pattern[i]);
-        }
-    }
+         i+= 2;
+      }
+      else {
+         set.insert(pattern[i]);
+      }
+   }
 
-    return LikeSet(set, negated);
+   return LikeSet(set, negated);
 }
 
-static LikeComparer* bracketsLikeCmp(const _str& pattern)
+static void defaultLikeCmp(_likeptr& result, const _str& pattern)
+{
+   if (pattern.find(L'[') == _str::npos) {
+      result = std::make_unique<LC_Default_NoBrackets>(pattern);
+   }
+   else {
+      bracketsLikeCmp(result, pattern);
+   }
+}
+static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
 {
    std::unordered_map<_int, LikeSet> sets;
    const _size length = pattern.size();
@@ -101,7 +100,8 @@ static LikeComparer* bracketsLikeCmp(const _str& pattern)
 
          if (i == length) {
             ss << L'[';
-            return new LC_Default_WithBrackets(ss.str(), sets);
+            result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
+            return;
          }
 
          const _size startId = i;
@@ -110,12 +110,14 @@ static LikeComparer* bracketsLikeCmp(const _str& pattern)
             i++;
             if (i == length) {
                ss << pattern.substr(startId - 1);
-               return new LC_Default_WithBrackets(ss.str(), sets);
+               result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
+               return;
             }
          }
 
          if (startId == i) {
-            return new LC_Constant(false);
+            result = std::make_unique<LC_Constant>(false);
+            return;
          }
 
          sets.emplace(id, makeLikeSet(pattern, startId, i - 1));
@@ -128,94 +130,143 @@ static LikeComparer* bracketsLikeCmp(const _str& pattern)
       id++;
    }
 
-   return new LC_Default_WithBrackets(ss.str(), sets);
+   result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
 }
 
 
 // look for special case variants of the LIKE operator
 // if one is detected
 // return an optimized pattern comparer
-LikeComparer* parseLikeCmp(const _str& pattern)
+void parseLikeCmp(_likeptr& result, const _str& pattern)
 {
    const _size length = pattern.size();
 
    switch (length) {
       case 0: {
-         return new LC_Constant(false);
+         result = std::make_unique<LC_Constant>(false);
+         return;
       }
       case 1: {
          switch(pattern[0]) {
-            case L'%':
-               return new LC_Constant(true);
-            case L'_':
-               return new LC_ConstantLength(1);
-            case L'#':
-               return new LC_OnlyDigits(1);
-            default:
-               return new LC_Equals(pattern);
+            case L'%': {
+               result = std::make_unique<LC_Constant>(true);
+               break;
+            }
+            case L'_': {
+               result = std::make_unique<LC_ConstantLength>(1);
+               break;
+            }
+            case L'#': {
+               result = std::make_unique<LC_OnlyDigits>(1);
+               break;
+            }
+            default: {
+               result = std::make_unique<LC_Equals>(pattern);
+               break;
+            }
          }
+         return;
       }
       case 2: {
          const _char& fst = pattern[0];
          const _char& snd = pattern[1];
 
          if (fst == L'[' || fst == L']' || snd == L'[' || snd == L']') {
-            return defaultLikeCmp(pattern);
+            defaultLikeCmp(result, pattern);
+            return;
          }
 
          switch (fst) {
             case L'%': {
                switch (snd) {
-                  case L'%':
-                     return new LC_Constant(true);
-                  case L'_':
-                     return new LC_Default_NoBrackets(pattern);
-                  case L'#':
-                     return new LC_Default_NoBrackets(pattern);
-                  default:
-                     return new LC_EndsWithChar(pattern);
+                  case L'%': {
+                     result = std::make_unique<LC_Constant>(true);
+                     break;
+                  }
+                  case L'_': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  case L'#': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  default: {
+                     result = std::make_unique<LC_EndsWithChar>(pattern);
+                     break;
+                  }
                }
+               break;
             }
             case L'_': {
                switch (snd) {
-                  case L'%':
-                     return new LC_Default_NoBrackets(pattern);
-                  case L'_':
-                     return new LC_ConstantLength(2);
-                  case L'#':
-                     return new LC_Default_NoBrackets(pattern);
-                  default:
-                     return new LC_UnderscoreStart(pattern);
+                  case L'%': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  case L'_': {
+                     result = std::make_unique<LC_ConstantLength>(2);
+                     break;
+                  }
+                  case L'#': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  default: {
+                     result = std::make_unique<LC_UnderscoreStart>(pattern);
+                     break;
+                  }
                }
+               break;
             }
             case L'#': {
                switch (snd) {
-                  case L'%':
-                     return new LC_Default_NoBrackets(pattern);
-                  case L'_':
-                     return new LC_Default_NoBrackets(pattern);
-                  case L'#':
-                     return new LC_OnlyDigits(2);
-                  default:
-                     return new LC_Default_NoBrackets(pattern);
+                  case L'%': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  case L'_': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  case L'#': {
+                     result = std::make_unique<LC_OnlyDigits>(2);
+                     break;
+                  }
+                  default: {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
                }
+               break;
             }
             case L'^': {
-               return defaultLikeCmp(pattern);
+               defaultLikeCmp(result, pattern);
+               break;
             }
             default: {
                switch (snd) {
-                  case L'%':
-                     return new LC_StartsWithChar(pattern);
-                  case L'_':
-                     return new LC_UnderscoreEnd(pattern);
-                  case L'#':
-                     return new LC_Default_NoBrackets(pattern);
-                  default:
-                     return new LC_Equals(pattern);
+                  case L'%': {
+                     result = std::make_unique<LC_StartsWithChar>(pattern);
+                     break;
+                  }
+                  case L'_': {
+                     result = std::make_unique<LC_UnderscoreEnd>(pattern);
+                     break;
+                  }
+                  case L'#': {
+                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     break;
+                  }
+                  default: {
+                     result = std::make_unique<LC_Equals>(pattern);
+                     break;
+                  }
                }
+               break;
             }
          }
+         return;
       }
    }
 
@@ -233,11 +284,13 @@ LikeComparer* parseLikeCmp(const _str& pattern)
       switch (pattern[i]) {
          case L'[':
          case L']': {
-            return bracketsLikeCmp(pattern);
+            bracketsLikeCmp(result, pattern);
+            return;
          }
          case L'%':
          case L'^': {
-            return defaultLikeCmp(pattern);
+            defaultLikeCmp(result, pattern);
+            return;
          }
          case L'_': {
             underscoresWithin++;
@@ -261,13 +314,15 @@ LikeComparer* parseLikeCmp(const _str& pattern)
       }
       case L'[':
       case L']': {
-         return bracketsLikeCmp(pattern);
+         bracketsLikeCmp(result, pattern);
+         return;
       }
       case L'%':
       case L'^': {
          fieldFail = true;
          if (underscoresWithin != 0 || hashesWithin != 0) {
-            return defaultLikeCmp(pattern);
+            defaultLikeCmp(result, pattern);
+            return;
          }
          break;
       }
@@ -294,65 +349,89 @@ LikeComparer* parseLikeCmp(const _str& pattern)
 
       if (!fieldFail) {
          if (underscoresWithin == length) {
-            return new LC_ConstantLength(length);
+            result = std::make_unique<LC_ConstantLength>(length);
+            return;
          }
          else if (hashesWithin == length) {
-            return new LC_OnlyDigits(length);
+            result = std::make_unique<LC_OnlyDigits>(length);
+            return;
          }
 
          if (underscoresWithin > 0) {
             if (hashesWithin > 0) {
-                return new LC_Field_UH(pattern);
+               result = std::make_unique<LC_Field_UH>(pattern);
             }
             else {
-                return new LC_Field_U(pattern);
+               result = std::make_unique<LC_Field_U>(pattern);
             }
+
          }
          else {
             if (hashesWithin > 0) {
-                return new LC_Field_H(pattern);
+               result = std::make_unique<LC_Field_H>(pattern);
             }
             else {
-                return new LC_Equals(pattern);
+               result = std::make_unique<LC_Equals>(pattern);
             }
          }
+
+         return;
       }
    }
 
    if (underscoresWithin != 0 || hashesWithin != 0 || first == L'#' || last == L'#') {
-      return defaultLikeCmp(pattern);
+      defaultLikeCmp(result, pattern);
+      return;
    }
 
    // wildcard on start and end
    switch (first) {
       case L'%': {
          switch (last) {
-            case L'%':
-               return new LC_Contains(pattern);
-            case L'_':
-               return new LC_PercentUnderscore(pattern);
-            default:
-               return new LC_EndsWith(pattern);
+            case L'%': {
+               result = std::make_unique<LC_Contains>(pattern);
+               break;
+            }
+            case L'_': {
+               result = std::make_unique<LC_PercentUnderscore>(pattern);
+               break;
+            }
+            default: {
+               result = std::make_unique<LC_EndsWith>(pattern);
+               break;
+            }
          }
       }
       case L'_': {
          switch (last) {
-            case L'%':
-               return new LC_UnderscorePercent(pattern);
-            case L'_':
-               return new LC_UnderscoreStartEnd(pattern);
-            default:
-               return new LC_UnderscoreStart(pattern);
+            case L'%': {
+               result = std::make_unique<LC_UnderscorePercent>(pattern);
+               break;
+            }
+            case L'_': {
+               result = std::make_unique<LC_UnderscoreStartEnd>(pattern);
+               break;
+            }
+            default: {
+               result = std::make_unique<LC_UnderscoreStart>(pattern);
+               break;
+            }
          }
       }
       default: {
          switch (last) {
-            case L'%':
-               return new LC_StartsWith(pattern);
-            case L'_':
-               return new LC_UnderscoreEnd(pattern);
-            default:
-               return new LC_Equals(pattern);
+            case L'%': {
+               result = std::make_unique<LC_StartsWith>(pattern);
+               break;
+            }
+            case L'_': {
+               result = std::make_unique<LC_UnderscoreEnd>(pattern);
+               break;
+            }
+            default: {
+               result = std::make_unique<LC_Equals>(pattern);
+               break;
+            }
          }
       }
    }
@@ -360,27 +439,21 @@ LikeComparer* parseLikeCmp(const _str& pattern)
 
 
 LikeConst::LikeConst(_genptr<_str>& val, const _str& pattern)
-  : value(std::move(val)), comparer(parseLikeCmp(pattern)) { };
-
-LikeConst::~LikeConst()
-{
-   delete comparer;
+  : value(std::move(val))
+{ 
+   parseLikeCmp(comparer, pattern);
 };
+
 
 _bool LikeConst::getValue() 
 {
    return comparer->compareToPattern(value->getValue());
 };
 
+
 Like::Like(_genptr<_str>& val, _genptr<_str>& pat)
    : value(std::move(val)), pattern(std::move(pat)) { };
 
-Like::~Like()
-{
-   if (hasPrev) {
-      delete comparer;
-   }
-};
 
 // if the pattern of the operator LIKE is not a string literal
 // we have to generate a new pattern string for every its call
@@ -392,14 +465,9 @@ _bool Like::getValue() {
    const _str pat = pattern->getValue();
    const _size hsh = rawStringHash(pat);
 
-   if ((!hasPrev) || hsh != prevHash) {
-      if (hasPrev) {
-         delete comparer;
-      }
-
-      comparer = parseLikeCmp(pat);
+   if (hsh != prevHash) {
+      parseLikeCmp(comparer, pat);
       prevHash = hsh;
-      hasPrev = true;
    }
 
    return comparer->compareToPattern(value->getValue());

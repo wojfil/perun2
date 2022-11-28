@@ -40,10 +40,13 @@ struct LikeComparer
 };
 
 
-static LikeComparer* defaultLikeCmp(const _str& pattern);
+typedef std::unique_ptr<LikeComparer> _likeptr;
+
+
 static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId);
-static LikeComparer* bracketsLikeCmp(const _str& pattern);
-LikeComparer* parseLikeCmp(const _str& pattern);
+static void defaultLikeCmp(_likeptr& result, const _str& pattern);
+static void bracketsLikeCmp(_likeptr& result, const _str& pattern);
+void parseLikeCmp(_likeptr& result, const _str& pattern);
 
 
 // operator LIKE with pattern initialized with a string literal
@@ -51,12 +54,11 @@ struct LikeConst : Generator<_bool>
 {
 public:
    LikeConst(_genptr<_str>& val, const _str& pattern);
-   ~LikeConst();
    _bool getValue() override;
 
 private:
    _genptr<_str> value;
-   const LikeComparer* comparer;
+   _likeptr comparer;
 };
 
 
@@ -65,14 +67,12 @@ struct Like : Generator<_bool>
 {
 public:
    Like(_genptr<_str>& val, _genptr<_str>& pat);
-   ~Like();
    _bool getValue() override;
 
 private:
    _genptr<_str> value;
    _genptr<_str> pattern;
-   LikeComparer* comparer = nullptr;
-   _bool hasPrev = false;
+   _likeptr comparer;
    _size prevHash = 0;
 };
 

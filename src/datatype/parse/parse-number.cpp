@@ -26,8 +26,8 @@ namespace uro::parse
 {
 
 // within an expression, minus sign can either mean subtraction operation (x-y) or unary negation (-x)
-// this sign is used to distinguish them
-const _char UNARY_MINUS = L'~';
+// this sign is used internally to distinguish them
+inline constexpr _char UNARY_MINUS = L'~';
 
 
 _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)

@@ -401,6 +401,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                break;
             }
          }
+         break;
       }
       case L'_': {
          switch (last) {
@@ -417,6 +418,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                break;
             }
          }
+         break;
       }
       default: {
          switch (last) {
@@ -433,6 +435,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                break;
             }
          }
+         break;
       }
    }
 }

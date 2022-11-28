@@ -249,7 +249,7 @@ static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _genptr<T>& resul
 
 
 template <typename T>
-static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, _attrptr& attr,
+static void buildFilterPrototypes(std::vector<_fpptr<T>>& prototypes, _attrptr& attr,
    const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, Uroboros& uro, T& base)
 {
    const _size fplen = prototypes.size();
@@ -266,7 +266,7 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
    }
 
    for (_size i = 0; i < fplen; i++) {
-      FilterPrototype<T>* fp = prototypes[i];
+      _fpptr<T>& fp = prototypes[i];
       if (i == lastWhereId) {
          fp->build(base, attr, hasMemory, uro);
       }
@@ -276,7 +276,6 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
       }
    }
 
-   langutil::deleteVector(prototypes);
    prototypes.clear();
 
    if (hasAttr && !isFinal) {
@@ -316,7 +315,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
    const Tokens tks3(tks, start, length);
    std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(uro);
    const _size flength = filterTokens.size();
-   std::vector<FilterPrototype<T>*> prototypes;
+   std::vector<_fpptr<T>> prototypes;
 
    // attribute
    const _bool hasAttr = (state == ThisState::ts_String);
@@ -349,12 +348,12 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
             _genptr<_num> num;
             if (!parse(uro, ts, num)) {
-               langutil::deleteVector(prototypes);
                throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
                   L"' cannot be resolved to a number"), tsf.line);
             }
 
-            prototypes.push_back(new FP_Numeric<T>(num, kw));
+            _fpptr<T> unit(new FP_Numeric<T>(num, kw));
+            prototypes.push_back(std::move(unit));
             break;
          }
          case Keyword::kw_Where: {
@@ -367,13 +366,13 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
             _genptr<_bool> boo;
             if (!parse(uro, ts, boo)) {
-               langutil::deleteVector(prototypes);
                uro.vars.inner.thisState = prevThisState;
                throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
                   L"' cannot be resolved to a logic condition"), tsf.line);
             }
 
-            prototypes.push_back(new FP_Where<T>(boo));
+            _fpptr<T> unit(new FP_Where<T>(boo));
+            prototypes.push_back(std::move(unit));
             uro.vars.inner.thisState = prevThisState;
 
             if (hasAttr) {

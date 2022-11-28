@@ -17,6 +17,7 @@
 
 #include "../../uroboros.h"
 #include "../generator/gen-generic.h"
+#include <memory>
 
 
 namespace uro::parse
@@ -36,6 +37,9 @@ public:
    virtual FilterType getFilterType() = 0;
    virtual void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) = 0;
 };
+
+template <typename T>
+using _fpptr = std::unique_ptr<FilterPrototype<T>>;
 
 template <typename T>
 void makeWhereFilter(_genptr<_bool>& boo, _attrptr& attr,

@@ -279,18 +279,8 @@ static void buildFilterPrototypes(std::vector<FilterPrototype<T>*>& prototypes, 
    langutil::deleteVector(prototypes);
    prototypes.clear();
 
-   if (isFinal) {
-      if (hasAttr && lastWhereId == -1) {
-         //delete attr;
-      }
-   }
-   else {
-      if (hasAttr) {
-         if (lastWhereId == -1) {
-            //delete attr;
-         }
-         attr = std::make_unique<Attribute>(uro);
-      }
+   if (hasAttr && !isFinal) {
+      attr = std::make_unique<Attribute>(uro);
    }
 };
 

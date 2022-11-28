@@ -97,7 +97,7 @@ public:
    const _size HASH_VAR_DESKTOP;
    const _size HASH_VAR_UROBOROS;
    const _size HASH_VAR_DEVICE;
-   const _size HASH_VAR_ORIGIN;
+   const _size HASH_VAR_ROOT;
 
    const _size HASH_VAR_DIRECTORIES;
    const _size HASH_VAR_FILES;

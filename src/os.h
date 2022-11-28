@@ -131,7 +131,7 @@ _str os_uroborosPath();
 _str os_desktopPath();
 _str os_currentPath();
 
-_str os_readFile(const _str& path, _bool& result);
+_bool os_readFile(_str& result, const _str& path);
 void os_showWebsite(const _str& url);
 _bool os_find(const _str& path, const _str& value);
 

@@ -196,10 +196,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
          return;
       }
 
-      _bool result = true;
-      this->code = os_readFile(filePath, result);
-
-      if (!result) {
+      if (!os_readFile(this->code, filePath)) {
          rawPrint(L"Command-line error: input file cannot be opened.");
          return;
       }

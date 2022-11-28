@@ -22,12 +22,10 @@ namespace uro
 {
 
 Arguments::Arguments(const _str& loc, const _str& cod)
-   : location(loc), code(cod), args(_list()), flags(FLAG_NULL),
-   parseState(ArgsParseState::aps_Ok) { };
+   : location(loc), code(cod), parseState(ArgsParseState::aps_Ok) { };
 
 Arguments::Arguments(const _str& loc, const _str& cod, const _uint32& fls)
-   : location(loc), code(cod), args(_list()), flags(fls),
-   parseState(ArgsParseState::aps_Ok) { };
+   : location(loc), code(cod), flags(fls), parseState(ArgsParseState::aps_Ok) { };
 
 Arguments::Arguments(const _int& argc, _char** const argv[])
 {
@@ -39,10 +37,6 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
    _str value;
    _bool d_has = false;
    _str d_value;
-
-   this->flags = FLAG_NULL;
-   this->args = _list();
-   this->parseState = ArgsParseState::aps_Failed;
 
    if (argc == 1) {
       rawPrint(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");

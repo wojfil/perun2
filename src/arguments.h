@@ -54,10 +54,10 @@ public:
 private:
 
    _str code;
-   _uint32 flags;
+   _uint32 flags = FLAG_NULL;
    _list args;
    _str location;
-   ArgsParseState parseState;
+   ArgsParseState parseState = ArgsParseState::aps_Failed;
 };
 
 }

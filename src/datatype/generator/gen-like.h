@@ -26,11 +26,12 @@ namespace uro::gen
 struct LikeSet
 {
 public:
-    LikeSet(const std::unordered_set<_char>& vals, const _bool& neg);
-    _bool contains(const _char& ch) const;
+   LikeSet() = delete;
+   LikeSet(const std::unordered_set<_char>& vals, const _bool& neg);
+   _bool contains(const _char& ch) const;
 
-    const std::unordered_set<_char> values;
-    const _bool negated;
+   const std::unordered_set<_char> values;
+   const _bool negated;
 };
 
 
@@ -53,6 +54,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern);
 struct LikeConst : Generator<_bool>
 {
 public:
+   LikeConst() = delete;
    LikeConst(_genptr<_str>& val, const _str& pattern);
    _bool getValue() override;
 
@@ -81,6 +83,7 @@ private:
 struct LC_Default_WithBrackets : LikeComparer
 {
 public:
+   LC_Default_WithBrackets() = delete;
    LC_Default_WithBrackets(const _str& pat, const std::unordered_map<_int, LikeSet>& cs);
    _bool compareToPattern(const _str& value) const override;
 
@@ -95,6 +98,7 @@ private:
 struct LC_Default_NoBrackets : LikeComparer
 {
 public:
+   LC_Default_NoBrackets() = delete;
    LC_Default_NoBrackets(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -108,6 +112,7 @@ private:
 struct LC_StartsWith : LikeComparer
 {
 public:
+   LC_StartsWith() = delete;
    LC_StartsWith(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -121,6 +126,7 @@ private:
 struct LC_EndsWith : LikeComparer
 {
 public:
+   LC_EndsWith() = delete;
    LC_EndsWith(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -134,6 +140,7 @@ private:
 struct LC_Contains : LikeComparer
 {
 public:
+   LC_Contains() = delete;
    LC_Contains(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -147,6 +154,7 @@ private:
 struct LC_StartsWithChar : LikeComparer
 {
 public:
+   LC_StartsWithChar() = delete;
    LC_StartsWithChar(const _str& pat) : ch(pat[0]) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -159,6 +167,7 @@ private:
 struct LC_EndsWithChar : LikeComparer
 {
 public:
+   LC_EndsWithChar() = delete;
    LC_EndsWithChar(const _str& pat) : ch(pat[1]) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -171,6 +180,7 @@ private:
 struct LC_ContainsChar : LikeComparer
 {
 public:
+   LC_ContainsChar() = delete;
    LC_ContainsChar(const _str& pat) : ch(pat[1]) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -183,6 +193,7 @@ private:
 struct LC_UnderscoreStart : LikeComparer
 {
 public:
+   LC_UnderscoreStart() = delete;
    LC_UnderscoreStart(const _str& pat) : pattern(pat),
       length(pat.size()) {};
    _bool compareToPattern(const _str& value) const override;
@@ -197,6 +208,7 @@ private:
 struct LC_UnderscoreEnd : LikeComparer
 {
 public:
+   LC_UnderscoreEnd() = delete;
    LC_UnderscoreEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
    _bool compareToPattern(const _str& value) const override;
@@ -212,6 +224,7 @@ private:
 struct LC_UnderscoreStartEnd : LikeComparer
 {
 public:
+   LC_UnderscoreStartEnd() = delete;
    LC_UnderscoreStartEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
    _bool compareToPattern(const _str& value) const override;
@@ -227,6 +240,7 @@ private:
 struct LC_Equals : LikeComparer
 {
 public:
+   LC_Equals() = delete;
    LC_Equals(const _str& pat) : pattern(pat) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -239,6 +253,7 @@ private:
 struct LC_Constant : LikeComparer
 {
 public:
+   LC_Constant() = delete;
    LC_Constant(const _bool& cnst) : constant(cnst) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -252,6 +267,7 @@ private:
 struct LC_ConstantLength : LikeComparer
 {
 public:
+   LC_ConstantLength() = delete;
    LC_ConstantLength(const _size& len) : length(len) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -264,6 +280,7 @@ private:
 struct LC_UnderscorePercent : LikeComparer
 {
 public:
+   LC_UnderscorePercent() = delete;
    LC_UnderscorePercent(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -277,6 +294,7 @@ private:
 struct LC_PercentUnderscore : LikeComparer
 {
 public:
+   LC_PercentUnderscore() = delete;
    LC_PercentUnderscore(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -290,6 +308,7 @@ private:
 struct LC_OnlyDigits : LikeComparer
 {
 public:
+   LC_OnlyDigits() = delete;
    LC_OnlyDigits(const _size& len) : length(len) {};
    _bool compareToPattern(const _str& value) const override;
 
@@ -302,6 +321,7 @@ private:
 struct LC_Field_U : LikeComparer
 {
 public:
+   LC_Field_U() = delete;
    LC_Field_U(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -316,6 +336,7 @@ private:
 struct LC_Field_H : LikeComparer
 {
 public:
+   LC_Field_H() = delete;
    LC_Field_H(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 
@@ -330,6 +351,7 @@ private:
 struct LC_Field_UH : LikeComparer
 {
 public:
+   LC_Field_UH() = delete;
    LC_Field_UH(const _str& pat);
    _bool compareToPattern(const _str& value) const override;
 

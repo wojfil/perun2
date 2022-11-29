@@ -106,6 +106,7 @@ public:
    void reset() override;
 
 protected:
+   _bool isRoot = false;
    _bool goDeeper = false;
    std::vector<HANDLE> handles;
    _list paths;

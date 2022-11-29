@@ -322,14 +322,16 @@ _bool Uro_RecursiveFiles::hasNext()
       first = false;
       index.setToZero();
       this->inner.index.value = index;
+      isRoot = true;
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), pattern);
+            const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            isRoot = false;
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -432,14 +434,16 @@ _bool Uro_RecursiveDirectories::hasNext()
       first = false;
       index.setToZero();
       this->inner.index.value = index;
+      isRoot = true;
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), pattern);
+            const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            isRoot = false;
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -524,14 +528,16 @@ _bool Uro_RecursiveAll::hasNext()
       first = false;
       index.setToZero();
       this->inner.index.value = index;
+      isRoot = true;
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), pattern);
+            const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            isRoot = false;
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {

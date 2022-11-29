@@ -67,7 +67,7 @@ public:
    _fdata* getDataPtr();
 
 protected:
-   _bool first;
+   _bool first = true;
    _genptr<_str> location;
    Uroboros& uroboros;
    InnerVariables& inner;

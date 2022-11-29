@@ -82,8 +82,8 @@ _bool DefinitionGenerator::generate(_defptr& result) const
 }
 
 OsDefinition::OsDefinition(P_OS_GEN_ARGS)
-   : first(true), location(std::move(loc)), uroboros(uro),
-     inner(uro.vars.inner), flags(uro.flags), pattern(patt), isAbsolute(abs),
+   : location(std::move(loc)), uroboros(uro), inner(uro.vars.inner), 
+     flags(uro.flags), pattern(patt), isAbsolute(abs),
      hasPrefix(!pref.empty()), prefix(pref) { };
 
 

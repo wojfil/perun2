@@ -17,18 +17,15 @@
 
 #include <cstdlib>
 #include <cstdint>
-#include <string>
 #include <sstream>
 #include <windows.h>
+#include "chars.h"
 
 
 namespace uro
 {
 
 typedef bool                        _bool;
-typedef wchar_t                     _char;
-typedef std::wstring                _str;
-
 typedef int32_t                     _int;
 typedef uint32_t                    _uint32;
 typedef uint64_t                    _uint64;
@@ -36,6 +33,7 @@ typedef long unsigned int           _ulong;
 typedef int64_t                     _nint;
 typedef long double                 _ndouble;
 typedef std::size_t                 _size;
+typedef std::wstring                _str;
 
 typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
 typedef WIN32_FIND_DATAW            _fdata;
@@ -55,7 +53,7 @@ _str toStr(const T& n)
    return s.str();
 }
 
-// the following function 
+// the following function
 // is the default method of deterministic string concatenation in Uroboros
 // is used virtually everywhere
 template<typename... Args>
@@ -78,9 +76,7 @@ _str str(Args const&... args)
 
 _ndouble stringToDouble(const _str& value);
 
-void toLower(_char& ch);
 void toLower(_str& value);
-void toUpper(_char& ch);
 void toUpper(_str& value);
 
 }

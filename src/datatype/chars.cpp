@@ -12,41 +12,23 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "primitives.h"
+#include <cwctype>
+#include <clocale>
+#include <locale>
+#include "chars.h"
 
 
 namespace uro
 {
 
-_str toStr(const _char& ch) 
+void toLower(_char& ch)
 {
-   return _str(1, ch);
+   ch = std::tolower(ch, std::locale(""));
 }
 
-_ndouble stringToDouble(const _str& value)
+void toUpper(_char& ch)
 {
-   _stream ss(value);
-   _ndouble n;
-   ss >> n;
-   return n;
-}
-
-void toLower(_str& value)
-{
-   const _size len = value.size();
-
-   for (_size i = 0; i < len; i++) {
-      value[i] = std::tolower(value[i], std::locale(""));
-   }
-}
-
-void toUpper(_str& value)
-{
-   const _size len = value.size();
-
-   for (_size i = 0; i < len; i++) {
-      value[i] = std::toupper(value[i], std::locale(""));
-   }
+   ch = std::toupper(ch, std::locale(""));
 }
 
 }

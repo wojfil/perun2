@@ -17,6 +17,7 @@
 #include "../generator/gen-generic.h"
 #include "../generator/gen-definition.h"
 #include "../../os.h"
+#include "../../print.h"
 
 
 namespace uro::parse
@@ -43,7 +44,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 
    const _uint32 info = os_patternInfo(pattern);
 
-   if ((info & ASTERISK_INFO_VALID) == 0 || (info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0) {
+   if ((info & ASTERISK_INFO_VALID) == 0) {
       throw SyntaxException(str(L"asterisk pattern '", originPattern, L"' is not valid"), line);
       return false;
    }
@@ -158,10 +159,11 @@ exitAsteriskBeginning:
    }
 
    const _size ulen = units.size();
+   const _bool hasDoubleAst = (info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0;
 
    // the pattern contains multiple asterisks
    // but they all appear within one 'path segment' (there is no separator \ / between them)
-   if (ulen == 1) {
+   if (ulen == 1 && !hasDoubleAst) {
       const AsteriskUnit& u = units[0];
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
@@ -176,11 +178,20 @@ exitAsteriskBeginning:
       return true;
    }
 
-   // the pattern contains multiple asterisks spread around
-   // but there are no 'double asterisks' **
-   if ((info & ASTERISK_INFO_DOUBLE_ASTERISK) == 0) {
-      const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
+   // finally we build complex asterisk patterns
+   const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
 
+   if (hasDoubleAst && units[0].hasDoubleAst()) {
+      const std::vector<WordData> wd = units[0].getDoubleAstData();
+      const _size wlen = wd.size();
+
+      if (wlen > 1) {
+         return false;
+      }
+
+      return false;
+   }
+   else {
       if (units[0].suffixPart.empty()) {
          result = std::make_unique<gen::Uro_Directories>(base, uro, firstPatt, isAbsolute, prefix);
       }
@@ -188,6 +199,8 @@ exitAsteriskBeginning:
          _defptr d(new gen::Uro_Directories(base, uro, firstPatt, isAbsolute, prefix));
          result = std::make_unique<gen::DefinitionSuffix>(d, uro, units[0].suffixPart, isAbsolute, false);
       }
+   }
+
 
       for (_size i = 1; i < ulen; i++) {
          const _bool isFinal = i == (ulen - 1);
@@ -195,6 +208,16 @@ exitAsteriskBeginning:
          gen::LocationVessel& vesselRef = *(vessel.get());
          _genptr<_str> vesselPtr = std::move(vessel);
          _defptr nextDef;
+
+         if (hasDoubleAst && units[i].hasDoubleAst()) {
+            return false;
+         }
+
+
+
+
+
+
          const _str nextPatt = str(OS_SEPARATOR_STRING, units[i].asteriskPart);
 
          if (units[i].suffixPart.empty()) {
@@ -214,10 +237,8 @@ exitAsteriskBeginning:
          result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, uro, isAbsolute, isFinal);
       }
 
-      return true;
-   }
 
-   return false;
+   return true;
 }
 
 void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
@@ -241,6 +262,130 @@ void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& pa
          suffixPart = str(suffixPart, OS_SEPARATOR_STRING, part);
       }
    }
+}
+
+_bool AsteriskUnit::hasDoubleAst() const
+{
+   _bool prev = false;
+
+   for (const _char& ch : this->asteriskPart) {
+      if (ch == L'*') {
+         if (prev) {
+            return true;
+         }
+         else {
+            prev = true;
+         }
+      }
+      else {
+         prev = false;
+      }
+   }
+
+   return false;
+}
+
+std::vector<WordData> AsteriskUnit::getDoubleAstData() const
+{
+   enum Mode {
+      m_Normal = 0,
+      m_OneAsterisk,
+      m_MultiAterisks
+   }; // simple finite-state machine here
+
+   std::vector<WordData> result;
+   const _size length = this->asteriskPart.size();
+   _size start = 0;
+   Mode mode = Mode::m_Normal;
+   _bool anySingleAst = false;
+   _bool first = true;
+   _bool prefixAst = false;
+   _str prefix;
+
+   for (_size i = 0; i < length; i++) {
+      const _char& ch = this->asteriskPart[i];
+
+      switch (mode) {
+         case m_Normal: {
+            if (ch == L'*') {
+               mode = m_OneAsterisk;
+            }
+
+            break;
+         }
+         case m_OneAsterisk: {
+            if (ch == L'*') {
+               mode = m_MultiAterisks;
+               if (i == 1) {
+                  first = false;
+               }
+               else {
+                  const _str s = this->asteriskPart.substr(start, i - 1 - start);
+
+                  if (first) {
+                     first = false;
+                     prefix = s;
+                     prefixAst = anySingleAst;
+                  }
+                  else {
+                     if (result.empty()) {
+                        result.emplace_back(prefix, s, prefixAst, anySingleAst);
+                     }
+                     else {
+                        result.emplace_back(s, anySingleAst);
+                     }
+                  }
+               }
+               anySingleAst = false;
+            }
+            else {
+               mode = m_Normal;
+               anySingleAst = true;
+            }
+
+            break;
+         }
+         case m_MultiAterisks: {
+            if (ch != L'*') {
+               mode = m_Normal;
+               start = i;
+            }
+               
+            break;
+         }
+      }
+   }
+
+   switch (mode) {
+      case m_Normal:
+      case m_OneAsterisk: {
+         const _str s = this->asteriskPart.substr(start);
+
+         if (mode == Mode::m_OneAsterisk) {
+            anySingleAst = true;
+         }
+
+         if (result.empty()) {
+            result.emplace_back(prefix, s, prefixAst, anySingleAst);
+         }
+         else {
+            result.emplace_back(s, anySingleAst);
+         }
+
+         break;
+      }
+      case m_MultiAterisks: {
+         result.emplace_back();
+         break;
+      }
+   }
+/*
+   for (const WordData& wd : result) {
+      rawPrint(str(L"[", wd.prefix, L"],[", wd.suffix, L"] ", (wd.prefixHasAsterisks ? L"T" : L"F"), (wd.suffixHasAsterisks ? L"T" : L"F")));
+   }
+   rawPrint(L" END");*/
+
+   return result;
 }
 
 }

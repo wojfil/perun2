@@ -28,11 +28,34 @@ inline constexpr _uint32 ASTERISK_INFO_DOUBLE_ASTERISK =  0b0000100;
 inline constexpr _uint32 ASTERISK_INFO_IS_ABSOLUTE =      0b0001000;
 
 
+struct WordData
+{
+public:
+   WordData() 
+      : prefixHasAsterisks(false), suffixHasAsterisks(false) { };
+      
+   WordData(const _str& suff, const _bool& suffAst) 
+      : suffix(suff), prefixHasAsterisks(false), suffixHasAsterisks(suffAst) { };
+
+   WordData(const _str& pref, const _str& suff, const _bool& prefAst, const _bool& suffAst) 
+      : prefix(pref), suffix(suff), prefixHasAsterisks(prefAst) , suffixHasAsterisks(suffAst){ };
+
+   const _str prefix;
+   const _str suffix;
+   const _bool prefixHasAsterisks;
+   const _bool suffixHasAsterisks;
+};
+
+
 struct AsteriskUnit
 {
 public:
+   AsteriskUnit() = delete;
    AsteriskUnit(const _str& ast, const _str& suf) : asteriskPart(ast), suffixPart(suf) { };
    AsteriskUnit(const _str& ast) : asteriskPart(ast) { };
+
+   _bool hasDoubleAst() const;
+   std::vector<WordData> getDoubleAstData() const;
 
    const _str asteriskPart;
    const _str suffixPart;

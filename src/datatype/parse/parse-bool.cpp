@@ -153,19 +153,19 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, Uroboros& u
          sublen++;
 
          switch (t.value.ch) {
-            case L'(': {
+            case CHAR_OPENING_ROUND_BRACKET: {
                lv1++;
                break;
             }
-            case L')': {
+            case CHAR_CLOSING_ROUND_BRACKET: {
                lv1--;
                break;
             }
-            case L'[': {
+            case CHAR_OPENING_SQUARE_BRACKET: {
                lv2++;
                break;
             }
-            case L']': {
+            case CHAR_CLOSING_SQUARE_BRACKET: {
                lv2--;
                break;
             }
@@ -218,14 +218,14 @@ static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>&
       if (e.type == ElementType::et_Operator) {
          const _char op = e.operator_;
          switch (op) {
-            case L'(': {
+            case CHAR_OPENING_ROUND_BRACKET: {
                brackets++;
                if (brackets > 1) {
                   temp.emplace_back(e);
                }
                break;
             }
-            case L')': {
+            case CHAR_CLOSING_ROUND_BRACKET: {
                brackets--;
                if (brackets == 0) {
                   _genptr<_bool> res;
@@ -249,7 +249,7 @@ static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>&
                else {
                   temp.emplace_back(e);
                }
-               if (!anyNot && op == L'!') {
+               if (!anyNot && op == CHAR_EXCLAMATION_MARK) {
                   anyNot = true;
                }
                break;
@@ -282,7 +282,7 @@ static _bool boolExpIntegrateNegations(_genptr<_bool>& result,
    for (_size i = 0; i < len; i++) {
       ExpElement<_bool>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
-         if (e.operator_ == L'!') {
+         if (e.operator_ == CHAR_EXCLAMATION_MARK) {
             negate = true;
          }
          else {
@@ -338,15 +338,15 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
             _bool value;
 
             switch(op) {
-               case L'&': {
+               case CHAR_AMPERSAND: {
                   value = first->getValue() && second->getValue();
                   break;
                }
-               case L'|': {
+               case CHAR_VERTICAL_BAR: {
                   value = first->getValue() || second->getValue();;
                   break;
                }
-               case L'^': {
+               case CHAR_CARET: {
                   value = first->getValue() ^ second->getValue();;
                   break;
                }
@@ -358,15 +358,15 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
             _genptr<_bool> prev = std::move(first);
 
             switch(op) {
-               case L'&': {
+               case CHAR_AMPERSAND: {
                   first = std::make_unique<gen::And>(prev, second);
                   break;
                }
-               case L'|': {
+               case CHAR_VERTICAL_BAR: {
                   first = std::make_unique<gen::Or>(prev, second);
                   break;
                }
-               case L'^': {
+               case CHAR_CARET: {
                   first = std::make_unique<gen::Xor>(prev, second);
                   break;
                }
@@ -392,7 +392,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
    const ExpElement<_bool>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
       const _char& op = first.operator_;
-      if (!(op == L'(' || op == L'!')) {
+      if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK)) {
          return false;
       }
    }
@@ -400,7 +400,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
    // bool expressions can end with only one symbol: )
    const ExpElement<_bool>& last = infList[len - 1];
    if (last.type == ElementType::et_Operator) {
-      if (last.operator_ != L')') {
+      if (last.operator_ != CHAR_CLOSING_ROUND_BRACKET) {
          return false;
       }
    }
@@ -412,25 +412,25 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
 
       if (prev.type == ElementType::et_Operator) {
          switch (prev.operator_) {
-            case L'!': {
-               if (cop && curr.operator_ != L'(') {
+            case CHAR_EXCLAMATION_MARK: {
+               if (cop && curr.operator_ != CHAR_OPENING_ROUND_BRACKET) {
                   return false;
                }
                break;
             }
-            case L'(': {
+            case CHAR_OPENING_ROUND_BRACKET: {
                if (cop) {
                   const _char& op = curr.operator_;
-                  if (!(op == L'(' || op == L'!')) {
+                  if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK)) {
                      return false;
                   }
                }
                break;
             }
-            case L')': {
+            case CHAR_CLOSING_ROUND_BRACKET: {
                if (cop) {
                   const _char& op = curr.operator_;
-                  if (op == L'(' || op == L'!') {
+                  if (op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK) {
                      return false;
                   }
                }
@@ -442,7 +442,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             default: {
                if (cop) {
                   const _char& op = curr.operator_;
-                  if (!(op == L'(' || op == L'!')) {
+                  if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK)) {
                      return false;
                   }
                }
@@ -454,7 +454,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
       {
          if (cop) {
             const _char& op = curr.operator_;
-            if (op == L'!' || op == L'(') {
+            if (op == CHAR_EXCLAMATION_MARK || op == CHAR_OPENING_ROUND_BRACKET) {
                return false;
             }
          }
@@ -484,15 +484,15 @@ static _char toBoolExpOperator(const Token& tk)
 {
    switch (tk.value.keyword.k) {
       case Keyword::kw_And:
-         return L'&';
+         return CHAR_AMPERSAND;
       case Keyword::kw_Or:
-         return L'|';
+         return CHAR_VERTICAL_BAR;
       case Keyword::kw_Xor:
-         return L'^';
+         return CHAR_CARET;
       case Keyword::kw_Not:
-         return L'!';
+         return CHAR_EXCLAMATION_MARK;
       default:
-         return L' ';
+         return CHAR_SPACE;
    }
 }
 
@@ -576,7 +576,7 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
       uro.hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end())
    {
       if (pair.second.check(TI_HAS_CHAR_COMMA)) {
-         const std::vector<Tokens> elements = pair.second.splitBySymbol(L',');
+         const std::vector<Tokens> elements = pair.second.splitBySymbol(CHAR_COMMA);
          const _size elen = elements.size();
          for (_size i = 0; i < elen; i++) {
             const Tokens& t = elements[i];
@@ -770,10 +770,10 @@ static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, Uroboro
       if (t.type == Token::t_Symbol && bi.isBracketFree()) {
          const _char& ch = t.value.ch;
          switch (ch) {
-            case L'<':
-            case L'>':
-            case L'!':
-            case L'=': {
+            case CHAR_SMALLER:
+            case CHAR_GREATER:
+            case CHAR_EXCLAMATION_MARK:
+            case CHAR_EQUAL_SIGN: {
                return parseComparison(result, tks, ch, uro);
             }
          }
@@ -1191,7 +1191,7 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _cha
          L" comparison is empty"), tks.last().line);
    }
 
-   if (result.second.first().isSymbol(L'=')) {
+   if (result.second.first().isSymbol(CHAR_EQUAL_SIGN)) {
       if (result.second.getLength() == 1) {
          throw SyntaxException(str(L"right side of ", toStr(sign),
             L"= comparison is empty"), result.second.first().line);
@@ -1200,23 +1200,23 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _cha
       result.second.trimLeft();
       eq = true;
    }
-   else if (sign == L'!') {
+   else if (sign == CHAR_EXCLAMATION_MARK) {
       throw SyntaxException(L"expected = after exclamation mark. "
          L"For a simple negation, use keyword 'not' instead",
          result.second.first().line);
    }
 
    switch (sign) {
-      case L'<':
+      case CHAR_SMALLER:
          ctype = eq ? gen::CompType::ct_SmallerEquals : gen::CompType::ct_Smaller;
          break;
-      case L'>':
+      case CHAR_GREATER:
          ctype = eq ? gen::CompType::ct_BiggerEquals : gen::CompType::ct_Bigger;
          break;
-      case L'=':
+      case CHAR_EQUAL_SIGN:
          ctype = gen::CompType::ct_Equals;
          break;
-      case L'!': {
+      case CHAR_EXCLAMATION_MARK: {
          ctype = gen::CompType::ct_NotEquals;
          break;
       default:

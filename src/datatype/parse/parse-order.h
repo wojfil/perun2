@@ -125,7 +125,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 
    std::vector<Tokens> tokensList;
    if (ts2.check(TI_HAS_CHAR_COMMA)) {
-      tokensList = ts2.splitBySymbol(L',');
+      tokensList = ts2.splitBySymbol(CHAR_COMMA);
    }
    else {
       tokensList.emplace_back(ts2);

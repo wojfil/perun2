@@ -58,7 +58,7 @@ static _bool isDefinitionChain(const Tokens& tks, Uroboros& uro)
       return false;
    }
 
-   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
+   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
    const _size len = elements.size();
 
    for (_size i = 0; i < len; i++) {
@@ -84,7 +84,7 @@ static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, Uroboros& 
       cl_List
    };
 
-   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
+   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
    const _size len = elements.size();
 
    ChainLink cl;
@@ -240,7 +240,7 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, Uroboros& uro)
       return false;
    }
 
-   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
+   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_QUESTION_MARK);
 
    _genptr<_bool> condition;
    if (!parse(uro, pair.first, condition)) {

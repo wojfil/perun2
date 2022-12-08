@@ -88,7 +88,7 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
       return false;
    }
 
-   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'?');
+   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_QUESTION_MARK);
 
    _genptr<_bool> condition;
    if (!parse(uro, pair.first, condition)) {
@@ -198,7 +198,7 @@ static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, Uro
       return false;
    }
 
-   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
+   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
 
    if (parseListedValues<T>(result, elements, uro)) {
       return true;

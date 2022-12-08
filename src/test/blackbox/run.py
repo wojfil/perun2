@@ -1226,21 +1226,16 @@ runTestCase("inside 'many texts' { a= 0; files {if name[3] in 0,3 {a++}}; print 
 
 runTestCase("inside 'tree' { print '*.py' }", "test.py")
 runTestCase("print 'tree/*.py'", path("tree", "test.py"))
-print("1")
 runTestCase("inside 'tree' { print '*.js' order asc }", lines('038566.js', '274688.js', '483413.js', '593214.js', '646362.js', '917112.js'))
 (runTestCase("inside 'tree' { print '*.txt' order asc}", lines('012480.txt', '020217.txt', '047909.txt', '088310.txt', '105252.txt', 
 '210226.txt', '362312.txt', '449147.txt', '532624.txt', '558639.txt', '581940.txt', '917707.txt', '960542.txt', '987875.txt')))
 runTestCase("inside 'tree' { print '2*' order asc }", lines('210226.txt', '257953', '264026', '274688.js'))
-print("2")
 runTestCase("inside 'tree' { print '2*' order by isFile desc, name desc }", lines('274688.js', '210226.txt', '264026', '257953'))
-print("21")
 runTestCase("inside 'tree' { print '2*' order by isDirectory desc, name desc }", lines('264026', '257953', '274688.js', '210226.txt'))
-print("22")
 runTestCase("inside 'tree' { print '2*6' order asc }", '264026')
 runTestCase("inside 'tree' { print '012480.t*xt' order asc }", '012480.txt')
-print("3")
-runTestCase("inside 'tree' { print '2*0*6' order asc }", lines('210226.txt', '264026'))
-runTestCase("inside 'tree' { print '2*02*6' order asc }", lines('210226.txt', '264026'))
+runTestCase("inside 'tree' { print '2*0*6' order asc }", '264026')
+runTestCase("inside 'tree' { print '2*02*6' order asc }", '264026')
 runTestCase("inside 'tree' { print '2*4*6' order asc }", "264026")
 runTestCase("inside 'tree' { print '2*02*6.*txt' order asc }", "210226.txt")
 print("4")
@@ -1256,7 +1251,7 @@ runTestCase("inside 'tree' { print '029719\*.txt' order asc }", lines(path("0297
 runTestCase("inside 'tree' { print '029719\*.js' order asc }", path("029719", "011952.js"))
 print("6")
 runTestCase("inside 'tree' { print '029719/7*.txt' order asc }", path("029719", "743013.txt"))
-(runTestCase("inside 'tree' { print '029719\*\*7*.*' order asc }", lines(path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
+(runTestCase("inside 'tree' { print '029719\*\*7*' order asc }", lines(path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
 path("029719", "877639", "057239.cpp"), path("029719", "877639", "690072.js"))))
 (runTestCase("inside 'tree' { print '029719\*\*' order asc } ", lines(path("029719", "286109", "080295"), path("029719", "286109", "215429.txt"), 
 path("029719", "286109", "626654.cpp"), path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 

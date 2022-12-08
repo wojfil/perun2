@@ -151,7 +151,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
       return false;
    }
 
-   if (!tks.at(3).isSymbol(L',') || !tks.at(5).isSymbol(L':') ||
+   if (!tks.at(3).isSymbol(CHAR_COMMA) || !tks.at(5).isSymbol(CHAR_COLON) ||
        tks.at(4).type != Token::t_Number || tks.at(6).type != Token::t_Number){
       return false;
    }
@@ -173,7 +173,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    }
 
    // tt_Clock:
-   if (!tks.at(7).isSymbol(L':') || tks.at(8).type != Token::t_Number) {
+   if (!tks.at(7).isSymbol(CHAR_COLON) || tks.at(8).type != Token::t_Number) {
       return false;
    }
 

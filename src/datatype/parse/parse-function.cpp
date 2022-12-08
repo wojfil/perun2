@@ -39,7 +39,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
    const Tokens tks2(tks.getList(), start, length, tks.getInfo());
-   return tks2.splitBySymbol(L',');
+   return tks2.splitBySymbol(CHAR_COMMA);
 }
 
 _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
@@ -1683,7 +1683,7 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, 
 
    const Tokens right(tks, index + 1, tks.getLength() + start - index - 1);
 
-   if (right.first().isSymbol(L'(')) {
+   if (right.first().isSymbol(CHAR_OPENING_ROUND_BRACKET)) {
       return;
    }
 

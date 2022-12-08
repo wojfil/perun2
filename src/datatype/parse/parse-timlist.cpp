@@ -56,7 +56,7 @@ static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, Uroboros
    // a list separator or a date and clock separator within one time
    // so parsing goes a weird way
 
-   const std::vector<Tokens> elements = tks.splitBySymbol(L',');
+   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
 
    _genptr<_tlist> times;
    if (parseListedTimes(times, elements, uro)) {

@@ -31,7 +31,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
 {
    const _size len = tks.getLength();
 
-   if (tks.first().isSymbol(L'-') || tks.check(TI_HAS_FILTER_KEYWORD)) {
+   if (tks.first().isSymbol(CHAR_MINUS) || tks.check(TI_HAS_FILTER_KEYWORD)) {
       return false;
    }
 
@@ -229,7 +229,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
          switch (t.value.ch) {
-            case L'+': {
+            case CHAR_PLUS: {
                if (bi.isBracketFree()) {
                   if (sublen == 0) {
                      if (time) {
@@ -254,7 +254,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
                }
                break;
             }
-            case L'-': {
+            case CHAR_MINUS: {
                if (bi.isBracketFree() && sublen != 0) {
                   const Tokens tks2(tks, i - sublen, sublen);
                   if (!timeExpUnit(sublen, subtract, prevSubtract,

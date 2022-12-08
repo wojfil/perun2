@@ -25,10 +25,6 @@
 namespace uro::parse
 {
 
-// within an expression, minus sign can either mean subtraction operation (x-y) or unary negation (-x)
-// this sign is used internally to distinguish them
-inline constexpr _char UNARY_MINUS = L'~';
-
 
 _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 {
@@ -52,20 +48,20 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
       const _int start = tks.getStart();
       _bool anyOperator = false;
 
-      if (tks.first().isSymbol(L'*')) {
+      if (tks.first().isSymbol(CHAR_ASTERISK)) {
          return false;
       }
 
       for (_int i = start; i <= end; i++) {
          const Token& t = tks.listAt(i);
          if (t.type == Token::t_Symbol && isNumExpOperator(t.value.ch) && bi.isBracketFree()
-             && !(i == start && t.value.ch == L'-'))
+             && !(i == start && t.value.ch == CHAR_MINUS))
          {
             if (parseNumExp(result, tks, uro)) {
                return true;
             }
             else if (!tks.check(TI_HAS_COMPARISON_CHAR)) {
-               const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
+               const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
                const _size elen = elements.size();
 
                if (elen == 1) {
@@ -87,7 +83,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          bi.refresh(t);
       }
 
-      if (!anyOperator && tks.first().isSymbol(L'-')) {
+      if (!anyOperator && tks.first().isSymbol(CHAR_MINUS)) {
          Tokens tks2(tks);
          tks2.trimLeft();
          _genptr<_num> num;
@@ -171,7 +167,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
             if (sublen == 0) {
                // check if character '-' represents binary subtraction
                // or unary negation
-               const _char ch2 = (ch == L'-' && (prev || i == start)) ? UNARY_MINUS : ch;
+               const _char ch2 = (ch == CHAR_MINUS && (prev || i == start)) ? CHAR_UNARY_MINUS : ch;
                infList.emplace_back(ch2, t.line);
             }
             else {
@@ -322,7 +318,7 @@ static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& in
                else {
                   temp.emplace_back(e);
                }
-               if (!anyUnary && op == UNARY_MINUS) {
+               if (!anyUnary && op == CHAR_UNARY_MINUS) {
                   anyUnary = true;
                }
                break;
@@ -354,7 +350,7 @@ static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<
    for (_size i = 0; i < len; i++) {
       ExpElement<_num>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
-         if (e.operator_ == UNARY_MINUS) {
+         if (e.operator_ == CHAR_UNARY_MINUS) {
             minus = true;
          }
          else {
@@ -414,18 +410,18 @@ static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>
                _num value;
 
                switch(oper) {
-                  case L'*': {
+                  case CHAR_ASTERISK: {
                      value = v1 * v2;
                      break;
                   }
-                  case L'/': {
+                  case CHAR_SLASH: {
                      if (v2.isZero()) {
                         throw SyntaxException(L"inevitable division by zero", secondElement.line);
                      }
                      value = v1 / v2;
                      break;
                   }
-                  case L'%': {
+                  case CHAR_PERCENT: {
                      if (v2.isZero()) {
                         throw SyntaxException(L"inevitable modulo by zero", secondElement.line);
                      }
@@ -442,15 +438,15 @@ static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>
                _genptr<_num> bin;
 
                switch(oper) {
-                  case L'*': {
+                  case CHAR_ASTERISK: {
                      bin = std::make_unique<gen::Multiplication>(first, second);
                      break;
                   }
-                  case L'/': {
+                  case CHAR_SLASH: {
                      bin = std::make_unique<gen::Division>(first, second);
                      break;
                   }
-                  case L'%': {
+                  case CHAR_PERCENT: {
                      bin = std::make_unique<gen::Modulo>(first, second);
                      break;
                   }
@@ -497,11 +493,11 @@ static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num
             _num value;
 
             switch(op) {
-               case L'+': {
+               case CHAR_PLUS: {
                   value = first->getValue() + second->getValue();
                   break;
                }
-               case L'-': {
+               case CHAR_MINUS: {
                   value = first->getValue() - second->getValue();
                   break;
                }
@@ -513,11 +509,11 @@ static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num
             _genptr<_num> prev = std::move(first);
 
             switch(op) {
-               case L'+': {
+               case CHAR_PLUS: {
                   first = std::make_unique<gen::Addition>(prev, second);
                   break;
                }
-               case L'-': {
+               case CHAR_MINUS: {
                   first = std::make_unique<gen::Subtraction>(prev, second);
                   break;
                }
@@ -543,7 +539,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    const ExpElement<_num>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
       const _char& op = first.operator_;
-      if (!(op == L'(' || op == UNARY_MINUS)) {
+      if (!(op == L'(' || op == CHAR_UNARY_MINUS)) {
          return false;
       }
    }
@@ -563,7 +559,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
 
       if (prev.type == ElementType::et_Operator) {
          switch (prev.operator_) {
-            case UNARY_MINUS: {
+            case CHAR_UNARY_MINUS: {
                if (cop && curr.operator_ != L'(') {
                   return false;
                }
@@ -572,7 +568,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             case L'(': {
                if (cop) {
                   const _char op = curr.operator_;
-                  if (!(op == L'(' || op == UNARY_MINUS)) {
+                  if (!(op == L'(' || op == CHAR_UNARY_MINUS)) {
                      return false;
                   }
                }
@@ -581,7 +577,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             case L')': {
                if (cop) {
                   const _char op = curr.operator_;
-                  if (op == UNARY_MINUS || op == L'(') {
+                  if (op == CHAR_UNARY_MINUS || op == L'(') {
                      return false;
                   }
                }
@@ -593,7 +589,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             default: {
                if (cop) {
                   const _char op = curr.operator_;
-                  if (!(op == L'(' || op == UNARY_MINUS)) {
+                  if (!(op == L'(' || op == CHAR_UNARY_MINUS)) {
                      return false;
                   }
                }
@@ -604,7 +600,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
       else {
          if (cop) {
             const _char op = curr.operator_;
-            if (op == UNARY_MINUS || op == L'(') {
+            if (op == CHAR_UNARY_MINUS || op == L'(') {
                return false;
             }
          }
@@ -620,11 +616,11 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
 static _bool isNumExpOperator(const _char& ch)
 {
    switch (ch) {
-      case L'+':
-      case L'-':
-      case L'*':
-      case L'/':
-      case L'%':
+      case CHAR_PLUS:
+      case CHAR_MINUS:
+      case CHAR_ASTERISK:
+      case CHAR_SLASH:
+      case CHAR_PERCENT:
          return true;
       default:
          return false;
@@ -634,9 +630,9 @@ static _bool isNumExpOperator(const _char& ch)
 static _bool isNumExpHighPriority(const _char& ch)
 {
    switch (ch)  {
-      case L'*':
-      case L'/':
-      case L'%':
+      case CHAR_ASTERISK:
+      case CHAR_SLASH:
+      case CHAR_PERCENT:
          return true;
       default:
          return false;

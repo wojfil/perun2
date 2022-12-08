@@ -46,7 +46,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    Tokens tks2(tks);
    tks2.trimLeft();
 
-   const _bool startsWithMinus = tks.first().isSymbol(L'-');
+   const _bool startsWithMinus = tks.first().isSymbol(CHAR_MINUS);
    const _bool lastIsWord = tks.last().type == Token::t_Word;
    const _bool hasPluses =  tks.check(TI_HAS_CHAR_PLUS);
    const _bool hasMinuses = tks2.check(TI_HAS_CHAR_MINUS);
@@ -63,7 +63,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
             return true;
          }
       }
-      else if (len == 3 && tks.first().isSymbol(L'-')) {
+      else if (len == 3 && tks.first().isSymbol(CHAR_MINUS)) {
          if (parsePeriodConst(result, tks2, true, uro)) {
             return true;
          }
@@ -179,7 +179,7 @@ static void unitNameException(const _str& name, const Tokens& tks)
 
 _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
 {
-   const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
+   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
    const _size len = elements.size();
    _genptr<_per> res;
 
@@ -215,7 +215,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro
       return parse(uro, tks, result);
    }
 
-   _bool minusAwaits = tks.first().isSymbol(L'-');
+   _bool minusAwaits = tks.first().isSymbol(CHAR_MINUS);
 
    Tokens tks2(tks);
    if (minusAwaits) {
@@ -239,7 +239,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro
       }
    }
 
-   const std::vector<Tokens> elements = tks2.splitBySymbol(L'-');
+   const std::vector<Tokens> elements = tks2.splitBySymbol(CHAR_MINUS);
    const _size len = elements.size();
 
    _bool isTime;
@@ -335,7 +335,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro
 
 _bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
 {
-   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'-');
+   std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 
    if (pair.second.isEmpty()) {
       throw SyntaxException(L"expression cannot end with -", tks.last().line);

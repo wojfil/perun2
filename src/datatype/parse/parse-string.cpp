@@ -105,7 +105,7 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro)
       pt_Period
    };
 
-   const std::vector<Tokens> elements = tks.splitBySymbol(L'+');
+   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
 
    PrevType prevType = pt_String;
    _genptr<_num> prevNum;

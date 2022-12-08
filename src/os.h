@@ -22,6 +22,9 @@
 namespace uro
 {
 
+// theses constants refer to the default file path separator
+// in Windows OS, this separator is \ and the 'wrong separator' is /
+// example: C:\some\correct\path
 inline constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
 static const _str OS_SEPARATOR_STRING = toStr(OS_SEPARATOR);
 static const _str OS_SEPARATOR_ASTERISK = str(OS_SEPARATOR_STRING, toStr(CHAR_ASTERISK));

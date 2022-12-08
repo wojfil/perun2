@@ -13,6 +13,7 @@
 */
 
 #include "hash.h"
+#include "datatype/strings.h"
 #include <unordered_map>
 #include <algorithm>
 

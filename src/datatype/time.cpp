@@ -13,6 +13,7 @@
 */
 
 #include "time.h"
+#include "strings.h"
 #include <vector>
 #include <sstream>
 #include <math.h>

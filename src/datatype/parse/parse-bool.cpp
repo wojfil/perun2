@@ -887,7 +887,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
       }
       else if (isInteger1 && isVar2) {
          const _nint& nm = t1.value.num.n.value.i;
-         if (nm >= 1950LL && nm <= 2100) {
+         if (nm >= 1950LL && nm <= 2100LL) {
             throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro),
                L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro), L".year'"), tks.first().line);
          }

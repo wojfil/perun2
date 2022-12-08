@@ -99,14 +99,8 @@ _bool OrderBy_Definition::hasNext()
 
       this->length = this->result.size();
 
-      switch (this->length) {
-         case 0: {
-            return false;
-         }
-         case 1: {
-            this->value = this->base->getValue();
-            return true;
-         }
+      if (this->length == 0) {
+         return false;
       }
 
       if (!this->hasVolatileDepth) {

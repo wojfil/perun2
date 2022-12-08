@@ -12,32 +12,21 @@
     along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATATYPE_H
-#define DATATYPE_H
+#ifndef STRINGS_H_INCLUDED
+#define STRINGS_H_INCLUDED
 
-#include "number-int.h"
-#include "time.h"
-#include "definition.h"
-#include "chars.h"
-#include "strings.h"
-#include <unordered_set>
+#include "primitives.h"
 
 
 namespace uro
 {
+    
+static const _str EMPTY_STRING = L"";
 
-typedef Number                              _num;
-typedef NumberInt                           _numi;
-typedef Time                                _tim;
-typedef Period                              _per;
-typedef std::vector<Number>                 _nlist;
-typedef std::vector<Time>                   _tlist;
-typedef Definition                          _def;
-typedef std::vector<std::wstring>           _list;
-typedef std::unordered_set<std::wstring>    _set;
 
 
 
 }
 
-#endif /* DATATYPE_H */
+
+#endif // STRINGS_H_INCLUDED

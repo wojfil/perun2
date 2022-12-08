@@ -41,8 +41,6 @@ typedef WIN32_FIND_DATAW            _fdata;
 typedef FILETIME                    _ftim;
 typedef std::wstringstream          _stream;
 
-static const _str EMPTY_STRING = L"";
-
 
 _str toStr(const _char& ch);
 

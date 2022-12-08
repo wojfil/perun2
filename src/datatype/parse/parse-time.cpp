@@ -273,8 +273,10 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
                }
                break;
             }
-            case L'(': case L')':
-            case L'[': case L']': {
+            case CHAR_OPENING_ROUND_BRACKET: 
+            case CHAR_CLOSING_ROUND_BRACKET:
+            case CHAR_OPENING_SQUARE_BRACKET: 
+            case CHAR_CLOSING_SQUARE_BRACKET: {
                bi.refresh(t);
                sublen++;
                break;

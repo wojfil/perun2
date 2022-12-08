@@ -23,19 +23,19 @@ void BracketsInfo::refresh(const Token& tk)
 {
    if (tk.type == Token::t_Symbol) {
       switch (tk.value.ch) {
-         case '(':  {
+         case CHAR_OPENING_ROUND_BRACKET:  {
             round++;
             break;
          }
-         case ')':  {
+         case CHAR_CLOSING_ROUND_BRACKET:  {
             round--;
             break;
          }
-         case '[':  {
+         case CHAR_OPENING_SQUARE_BRACKET:  {
             square++;
             break;
          }
-         case ']':  {
+         case CHAR_CLOSING_SQUARE_BRACKET:  {
             square--;
             break;
          }
@@ -61,36 +61,36 @@ void checkBracketsThoroughly(const Tokens& tks)
       if (t.type != Token::t_Symbol) { continue; }
 
       switch(t.value.ch)  {
-         case '(': {
+         case CHAR_OPENING_ROUND_BRACKET: {
             lv1++;
             i1 = t.line;
             break;
          }
-         case ')': {
+         case CHAR_CLOSING_ROUND_BRACKET: {
             lv1--;
             if (lv1 < 0) {
                throw SyntaxException(L"unopened bracket ( is closed", t.line);
             }
             break;
          }
-         case '[': {
+         case CHAR_OPENING_SQUARE_BRACKET: {
             lv2++;
             i2 = t.line;
             break;
          }
-         case ']': {
+         case CHAR_CLOSING_SQUARE_BRACKET: {
             lv2--;
             if (lv2 < 0) {
                throw SyntaxException(L"unopened bracket [ is closed", t.line);
             }
             break;
          }
-         case '{': {
+         case CHAR_OPENING_CURLY_BRACKET: {
             lv3++;
             i3 = t.line;
             break;
          }
-         case '}': {
+         case CHAR_CLOSING_CURLY_BRACKET: {
             lv3--;
             if (lv3 < 0) {
                throw SyntaxException(L"unopened bracket { is closed", t.line);

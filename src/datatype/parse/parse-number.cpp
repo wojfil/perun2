@@ -204,7 +204,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
          }
 
          switch (ch) {
-            case L'(': {
+            case CHAR_OPENING_ROUND_BRACKET: {
                if (free) {
                   if (sublen == 1) {
                      const Token& pt = tks.listAt(i - 1);
@@ -218,19 +218,19 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
                prev = false;
                break;
             }
-            case L')': {
+            case CHAR_CLOSING_ROUND_BRACKET: {
                lv1--;
                sublen++;
                prev = false;
                break;
             }
-            case L'[': {
+            case CHAR_OPENING_SQUARE_BRACKET: {
                lv2++;
                sublen++;
                prev = false;
                break;
             }
-            case L']': {
+            case CHAR_CLOSING_SQUARE_BRACKET: {
                lv2--;
                sublen++;
                prev = false;
@@ -287,14 +287,14 @@ static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& in
       if (e.type == ElementType::et_Operator) {
          const _char op = e.operator_;
          switch (op) {
-            case L'(': {
+            case CHAR_OPENING_ROUND_BRACKET: {
                brackets++;
                if (brackets > 1) {
                   temp.emplace_back(e);
                }
                break;
             }
-            case L')': {
+            case CHAR_CLOSING_ROUND_BRACKET: {
                brackets--;
                if (brackets == 0) {
                   _genptr<_num> res;
@@ -539,7 +539,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    const ExpElement<_num>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
       const _char& op = first.operator_;
-      if (!(op == L'(' || op == CHAR_UNARY_MINUS)) {
+      if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_UNARY_MINUS)) {
          return false;
       }
    }
@@ -547,7 +547,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    // numeric expressions can end with only one symbol: )
    const ExpElement<_num>& last = infList[len - 1];
    if (last.type == ElementType::et_Operator) {
-      if (last.operator_ != L')') {
+      if (last.operator_ != CHAR_CLOSING_ROUND_BRACKET) {
          return false;
       }
    }
@@ -560,24 +560,24 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
       if (prev.type == ElementType::et_Operator) {
          switch (prev.operator_) {
             case CHAR_UNARY_MINUS: {
-               if (cop && curr.operator_ != L'(') {
+               if (cop && curr.operator_ != CHAR_OPENING_ROUND_BRACKET) {
                   return false;
                }
                break;
             }
-            case L'(': {
+            case CHAR_OPENING_ROUND_BRACKET: {
                if (cop) {
                   const _char op = curr.operator_;
-                  if (!(op == L'(' || op == CHAR_UNARY_MINUS)) {
+                  if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_UNARY_MINUS)) {
                      return false;
                   }
                }
                break;
             }
-            case L')': {
+            case CHAR_CLOSING_ROUND_BRACKET: {
                if (cop) {
                   const _char op = curr.operator_;
-                  if (op == CHAR_UNARY_MINUS || op == L'(') {
+                  if (op == CHAR_UNARY_MINUS || op == CHAR_OPENING_ROUND_BRACKET) {
                      return false;
                   }
                }
@@ -589,7 +589,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             default: {
                if (cop) {
                   const _char op = curr.operator_;
-                  if (!(op == L'(' || op == CHAR_UNARY_MINUS)) {
+                  if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_UNARY_MINUS)) {
                      return false;
                   }
                }
@@ -600,7 +600,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
       else {
          if (cop) {
             const _char op = curr.operator_;
-            if (op == CHAR_UNARY_MINUS || op == L'(') {
+            if (op == CHAR_UNARY_MINUS || op == CHAR_OPENING_ROUND_BRACKET) {
                return false;
             }
          }

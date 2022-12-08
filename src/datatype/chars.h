@@ -15,12 +15,11 @@
 #ifndef CHARS_H_INCLUDED
 #define CHARS_H_INCLUDED
 
-#include <string>
+#include "primitives.h"
+
 
 namespace uro
 {
-
-typedef wchar_t    _char;
 
 void toLower(_char& ch);
 void toUpper(_char& ch);

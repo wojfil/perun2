@@ -18,8 +18,8 @@
 #include <cstdlib>
 #include <cstdint>
 #include <sstream>
+#include <string>
 #include <windows.h>
-#include "chars.h"
 
 
 namespace uro
@@ -33,6 +33,7 @@ typedef long unsigned int           _ulong;
 typedef int64_t                     _nint;
 typedef long double                 _ndouble;
 typedef std::size_t                 _size;
+typedef wchar_t                     _char;
 typedef std::wstring                _str;
 
 typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;

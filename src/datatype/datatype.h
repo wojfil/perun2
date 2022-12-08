@@ -18,6 +18,7 @@
 #include "number-int.h"
 #include "time.h"
 #include "definition.h"
+#include "chars.h"
 #include <unordered_set>
 
 

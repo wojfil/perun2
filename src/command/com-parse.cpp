@@ -41,7 +41,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, Uroboros& uro)
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol)  {
          switch(t.value.ch) {
-            case L';': {
+            case CHAR_SEMICOLON: {
                if (depth == 0) {
                   if (sublen != 0) {
                      uro.conditionContext.lockLast();
@@ -57,7 +57,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, Uroboros& uro)
                }
                break;
             }
-            case L'{': {
+            case CHAR_OPENING_CURLY_BRACKET: {
                if (depth == 0) {
                   open = i;
                }
@@ -65,7 +65,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, Uroboros& uro)
                sublen++;
                break;
             }
-            case L'}': {
+            case CHAR_CLOSING_CURLY_BRACKET: {
                depth--;
                if (depth == 0) {
                   _comptr com;
@@ -651,7 +651,7 @@ static _bool command(_comptr& result, Tokens& tks, Uroboros& uro)
 static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
-      std::pair<Tokens, Tokens> pair = tks.divideBySymbol(L'=');
+      std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
       Tokens& left = pair.first;
       Tokens& right = pair.second;
       right.checkCommonExpressionExceptions(uro);
@@ -672,7 +672,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro)
             tks.last().line);
       }
 
-      if (right.first().isSymbol(L'=')) {
+      if (right.first().isSymbol(CHAR_EQUAL_SIGN)) {
          return false;
       }
 
@@ -680,11 +680,11 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro)
       if (leftLast.type == Token::t_Symbol) {
          const char& ch = leftLast.value.ch;
          switch (ch) {
-            case L'+':
-            case L'-':
-            case L'*':
-            case L'/':
-            case L'%': {
+            case CHAR_PLUS:
+            case CHAR_MINUS:
+            case CHAR_ASTERISK:
+            case CHAR_SLASH:
+            case CHAR_PERCENT: {
                left.trimRight();
                if (left.isEmpty()) {
                   throw SyntaxException(str(L"left side of the ", toStr(ch),
@@ -707,9 +707,9 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro)
    const Token& last = tks.last();
 
    if (last.type == Token::t_MultiSymbol &&
-       (last.value.chars.ch == L'+' || last.value.chars.ch == L'-'))
+       (last.value.chars.ch == CHAR_PLUS || last.value.chars.ch == CHAR_MINUS))
    {
-      const _bool isIncrement = last.value.chars.ch == L'+';
+      const _bool isIncrement = last.value.chars.ch == CHAR_PLUS;
       const _str op = isIncrement ? L"incremented by one" : L"decremented by one";
       const Token& first = tks.first();
 
@@ -874,23 +874,23 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          pv_num->makeNotConstant();
 
          switch (sign) {
-            case L'+': {
+            case CHAR_PLUS: {
                result = std::make_unique<VarAdd_<_num>>(var, num);
                break;
             }
-            case L'-': {
+            case CHAR_MINUS: {
                result = std::make_unique<VarSubtract<_num>>(var, num);
                break;
             }
-            case L'*': {
+            case CHAR_ASTERISK: {
                result = std::make_unique<VarNumMultiply>(var, num);
                break;
             }
-            case L'/': {
+            case CHAR_SLASH: {
                result = std::make_unique<VarNumDivide>(var, num);
                break;
             }
-            case L'%': {
+            case CHAR_PERCENT: {
                result = std::make_unique<VarModulo>(var, num);
                break;
             }
@@ -903,8 +903,8 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       if (uro.vars.getVarPtr(first, pv_per)) {
 
          switch (sign) {
-            case L'+':
-            case L'-': {
+            case CHAR_PLUS:
+            case CHAR_MINUS: {
                _genptr<_per> per;
 
                if (!parse::parse(uro, right, per)) {
@@ -915,7 +915,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
                pv_per->makeNotConstant();
                vars::Variable<_per>& var = pv_per->getVarRef();
 
-               if (sign == L'+') {
+               if (sign == CHAR_PLUS) {
                   result = std::make_unique<VarAdd_<_per>>(var, per);
                }
                else {
@@ -924,9 +924,9 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
                return true;
             }
-            case L'*':
-            case L'/':
-            case L'%': {
+            case CHAR_ASTERISK:
+            case CHAR_SLASH:
+            case CHAR_PERCENT: {
                throw SyntaxException(str(L"operation ",  toStr(sign),
                   L"= cannot be performed on a period"), first.line);
             }
@@ -936,9 +936,9 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       vars::ParseVariable<_tim>* pv_tim;
       if (uro.vars.getVarPtr(first, pv_tim)) {
          switch (sign) {
-            case L'*':
-            case L'/':
-            case L'%': {
+            case CHAR_ASTERISK:
+            case CHAR_SLASH:
+            case CHAR_PERCENT: {
                throw SyntaxException(str(L"operation ", toStr(sign),
                   L"= is not valid for a time variable"), first.line);
             }
@@ -954,7 +954,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          vars::Variable<_tim>& var = pv_tim->getVarRef();
          pv_tim->makeNotConstant();
 
-         if (sign == L'+') {
+         if (sign == CHAR_PLUS) {
             result = std::make_unique<VarTimeAdd>(var, per);
          }
          else {
@@ -964,7 +964,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          return true;
       }
 
-      if (sign == L'+') {
+      if (sign == CHAR_PLUS) {
          return commandVarIncrement(result, first, right, first.line, uro);
       }
 
@@ -973,9 +973,9 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
    }
    else if (first.type == Token::t_TwoWords) {
       switch (sign) {
-         case L'*':
-         case L'/':
-         case L'%': {
+         case CHAR_ASTERISK:
+         case CHAR_SLASH:
+         case CHAR_PERCENT: {
             throw SyntaxException(str(L"operation ", toStr(sign),
                L"= is not valid for a time variable"), first.line);
          }
@@ -1240,7 +1240,9 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
 static _bool varSquareBrackets(const Tokens& tks)
 {
    const _int length = tks.getLength();
-   if (length < 3 || !tks.second().isSymbol(L'[') || !tks.last().isSymbol(L']')) {
+   if (length < 3 || !tks.second().isSymbol(CHAR_OPENING_SQUARE_BRACKET) 
+      || !tks.last().isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) 
+   {
       return false;
    }
 

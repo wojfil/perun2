@@ -42,7 +42,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
    std::vector<Token> tokens;
    Mode mode = Mode::m_Normal;
    _int line = 1;
-   _char prev = L' ';
+   _char prev = CHAR_SPACE;
    const _size len = code.length();
    _size wpos = 0;
    _size wlen = 0;
@@ -52,17 +52,17 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
       const _char& c = code[i];
       switch (mode)  {
          case Mode::m_Normal: {
-            if (c == L'"') {
+            if (c == CHAR_QUOTATION_MARK) {
                quotationLiteralException(line);
             }
             else if (isSymbol(c)) {
-               if (i != 0 && prev == L'/') {
-                  if (c == L'*')  {
+               if (i != 0 && prev == CHAR_SLASH) {
+                  if (c == CHAR_ASTERISK)  {
                      mode = Mode::m_MultiComment;
                      tokens.pop_back();
                      prevSymbol = false;
                   }
-                  else if (c == L'/')  {
+                  else if (c == CHAR_SLASH)  {
                      mode = Mode::m_SingleComment;
                      tokens.pop_back();
                      prevSymbol = false;
@@ -111,26 +111,26 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                else if (isNewLine(c)) {
                   line++;
                }
-               else if (c == L'\'') {
+               else if (c == CHAR_APOSTROPHE) {
                   wpos = i + 1;
                   wlen = 0;
                   mode = Mode::m_ALiteral;
                   prevSymbol = false;
                }
-               else if (c == L'`') {
+               else if (c == CHAR_BACKTICK) {
                   wpos = i + 1;
                   wlen = 0;
                   mode = Mode::m_BLiteral;
                   prevSymbol = false;
                }
-               else if (c != L' ') {
+               else if (c != CHAR_SPACE) {
                   invalidCharException(c, line);
                }
             }
             break;
          }
          case Mode::m_Word: {
-            if (c == L'"') {
+            if (c == CHAR_QUOTATION_MARK) {
                quotationLiteralException(line);
             }
             else if (isAllowedInWord(c)) {
@@ -148,26 +148,26 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                else if (isNewLine(c)) {
                   line++;
                }
-               else if (c == L'\'') {
+               else if (c == CHAR_APOSTROPHE) {
                   wpos = i + 1;
                   mode = Mode::m_ALiteral;
                }
-               else if (c == L'`') {
+               else if (c == CHAR_BACKTICK) {
                   wpos = i + 1;
                   mode = Mode::m_BLiteral;
                }
-               else if (c != L' ') {
+               else if (c != CHAR_SPACE) {
                   invalidCharException(c, line);
                }
             }
             break;
          }
          case Mode::m_ALiteral: {
-            if (c == L'\'') {
+            if (c == CHAR_APOSTROPHE) {
                _int asteriskId = -1;
 
                for (_size i = wpos; i < wpos + wlen; i++) {
-                  if (code[i] == L'*') {
+                  if (code[i] == CHAR_ASTERISK) {
                      asteriskId = static_cast<_int>(i);
                      break;
                   }
@@ -193,7 +193,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
             break;
          }
          case Mode::m_BLiteral: {
-            if (c == L'`') {
+            if (c == CHAR_BACKTICK) {
                tokens.emplace_back(wpos, wlen, line, uro);
                wpos = i;
                wlen = 0;
@@ -218,7 +218,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
             if (isNewLine(c)){
                line++;
             }
-            else if (prev == L'*' && c == L'/') {
+            else if (prev == CHAR_ASTERISK && c == CHAR_SLASH) {
                mode = Mode::m_Normal;
             }
             break;
@@ -253,7 +253,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
       const _char& ch = code[i];
 
       if (!std::iswdigit(ch)) {
-         if (ch == L'.') {
+         if (ch == CHAR_DOT) {
             dots++;
          }
          else {
@@ -295,7 +295,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
       for (_size i = start; i < n; i++) {
          const _char& c = code[i];
-         if (!std::iswdigit(c) && c != L'.') {
+         if (!std::iswdigit(c) && c != CHAR_DOT) {
             nums = false;
             break;
          }
@@ -312,7 +312,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                   // and then divided back
                   _nint i = std::stoll(value2);
                   _nint i2 = i * mult;
-                  if (mult != 0 && i2 / mult != i) {
+                  if (mult != 0LL && i2 / mult != i) {
                      bigNumberException(code, start, length, line);
                   }
                   return Token(_num(i2), line, start, length, NumberMode::nm_Size, uro);
@@ -364,7 +364,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          _int pnt = start;
          for (_int i = start; i < start + length; i++) {
             const _char& c = code[i];
-            if (c == L'.') {
+            if (c == CHAR_DOT) {
                pnt = i;
             }
          }
@@ -395,20 +395,25 @@ inline static void bigNumberException(const _str& code, const _size& start, cons
 
 inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
 {
-   if (!(c2 == L'b' || c2 == L'B')) {
+   if (!(c2 == LETTER_b || c2 == LETTER_B)) {
       return -1LL;
    }
 
    switch (c1) {
-      case L'k': case L'K':
+      case LETTER_k: 
+      case LETTER_K:
          return 1024LL;
-      case L'm': case L'M':
+      case LETTER_m: 
+      case LETTER_M:
          return 1048576LL;
-      case L'g': case L'G':
+      case LETTER_g:
+      case LETTER_G:
          return 1073741824LL;
-      case L't': case L'T':
+      case LETTER_t:
+      case LETTER_T:
          return 1099511627776LL;
-      case L'p': case L'P':
+      case LETTER_p:
+      case LETTER_P:
          return 1125899906842624LL;
       default:
          return -1LL;
@@ -418,25 +423,25 @@ inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
 inline static _bool isSymbol(const _char& ch)
 {
    switch (ch) {
-      case L',':
-      case L'!':
-      case L'=':
-      case L'(':
-      case L')':
-      case L'{':
-      case L'}':
-      case L'[':
-      case L']':
-      case L':':
-      case L';':
-      case L'-':
-      case L'+':
-      case L'*':
-      case L'%':
-      case L'/':
-      case L'<':
-      case L'>':
-      case L'?':
+      case CHAR_COMMA:
+      case CHAR_EXCLAMATION_MARK:
+      case CHAR_EQUAL_SIGN:
+      case CHAR_OPENING_ROUND_BRACKET:
+      case CHAR_CLOSING_ROUND_BRACKET:
+      case CHAR_OPENING_CURLY_BRACKET:
+      case CHAR_CLOSING_CURLY_BRACKET:
+      case CHAR_OPENING_SQUARE_BRACKET:
+      case CHAR_CLOSING_SQUARE_BRACKET:
+      case CHAR_COLON:
+      case CHAR_SEMICOLON:
+      case CHAR_MINUS:
+      case CHAR_PLUS:
+      case CHAR_ASTERISK:
+      case CHAR_PERCENT:
+      case CHAR_SLASH:
+      case CHAR_SMALLER:
+      case CHAR_GREATER:
+      case CHAR_QUESTION_MARK:
          return true;
       default:
          return false;
@@ -445,7 +450,7 @@ inline static _bool isSymbol(const _char& ch)
 
 inline static _bool isNewLine(const _char& ch)
 {
-   return ch == L'\n';
+   return ch == CHAR_NEW_LINE;
 }
 
 inline static _bool isAllowedInWord(const _char& ch)
@@ -455,8 +460,8 @@ inline static _bool isAllowedInWord(const _char& ch)
    }
 
    switch (ch) {
-      case L'.':
-      case L'_':
+      case CHAR_DOT:
+      case CHAR_UNDERSCORE:
          return true;
       default:
          return false;
@@ -466,9 +471,9 @@ inline static _bool isAllowedInWord(const _char& ch)
 inline static _bool isDoubleChar(const _char& ch)
 {
    switch (ch) {
-      case L'+':
-      case L'-':
-      case L'*':
+      case CHAR_PLUS:
+      case CHAR_MINUS:
+      case CHAR_ASTERISK:
          return true;
       default:
          return false;
@@ -478,14 +483,14 @@ inline static _bool isDoubleChar(const _char& ch)
 inline static void invalidCharException(const _char& ch, const _int& line)
 {
    switch (ch) {
-      case L'^': {
+      case CHAR_CARET: {
          throw SyntaxException(L"you should use keyword 'xor' instead of character '^' as a boolean operator. "
             L"If your intention was to perform exponentiation, then function 'power()' is the right tool", line);
       }
-      case L'&': {
+      case CHAR_AMPERSAND: {
          throw SyntaxException(L"you should use keyword 'and' instead of character '&' as a boolean operator", line);
       }
-      case L'|': {
+      case CHAR_VERTICAL_BAR: {
          throw SyntaxException(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
       }
       default: {

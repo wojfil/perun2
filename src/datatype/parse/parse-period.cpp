@@ -110,7 +110,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
       const Period::PeriodUnit unit = uro.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
 
       if (num.isDouble) {
-         if (num.value.d == 1L) {
+         if (num.value.d == NDOUBLE_ONE) {
             result = std::make_unique<gen::Constant<_per>>(_per(negated ? -1 : 1, unit));
             return true;
          }
@@ -119,7 +119,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
          }
       }
       else {
-         if (num.value.i == 1LL) {
+         if (num.value.i == NINT_ONE) {
             result = std::make_unique<gen::Constant<_per>>(_per(negated ? -1 : 1, unit));
             return true;
          }

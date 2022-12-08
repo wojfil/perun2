@@ -34,6 +34,10 @@ inline constexpr _nint SIZE_UNIT_GB =      NINT_1024 * NINT_1024 * NINT_1024;
 inline constexpr _nint SIZE_UNIT_TB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
 inline constexpr _nint SIZE_UNIT_PB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
 
+inline constexpr _ndouble NDOUBLE_ZERO =            0L;
+inline constexpr _ndouble NDOUBLE_ONE =             1L;
+inline constexpr _ndouble NDOUBLE_MINUS_ONE =      -1L;
+
 }
 
 #endif // NUMBERS_H_INCLUDED

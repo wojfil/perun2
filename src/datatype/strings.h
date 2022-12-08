@@ -21,10 +21,12 @@
 namespace uro
 {
 
-static const _str EMPTY_STRING =      _str();
-static const _str STRING_0 =          toStr(DIGIT_0);
-static const _str STRING_1 =          toStr(DIGIT_1);
-static const _str STRING_MINUS =      toStr(CHAR_MINUS);
+static const _str EMPTY_STRING =              _str();
+static const _str STRING_0 =                  toStr(DIGIT_0);
+static const _str STRING_1 =                  toStr(DIGIT_1);
+static const _str STRING_MINUS =              toStr(CHAR_MINUS);
+static const _str STRING_ASTERISK =           toStr(CHAR_ASTERISK);
+static const _str STRING_DOUBLE_ASTERISK =    str(STRING_ASTERISK, STRING_ASTERISK);
 
 
 

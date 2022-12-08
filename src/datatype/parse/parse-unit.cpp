@@ -198,16 +198,16 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
          return uro.vars.getVarValue(tk, result);
       }
       case Token::t_MultiSymbol: {
-         if (tk.value.chars.ch == L'*') {
-            return parseAsteriskPattern(result, L"**", tk.line, uro);
+         if (tk.value.chars.ch == CHAR_ASTERISK) {
+            return parseAsteriskPattern(result, STRING_DOUBLE_ASTERISK, tk.line, uro);
          }
          else {
             return false;
          }
       }
       case Token::t_Symbol: {
-         if (tk.value.ch == L'*') {
-            return parseAsteriskPattern(result, L"*", tk.line, uro);
+         if (tk.value.ch == CHAR_ASTERISK) {
+            return parseAsteriskPattern(result, STRING_ASTERISK, tk.line, uro);
          }
          else {
             return false;

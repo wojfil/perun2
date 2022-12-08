@@ -30,13 +30,13 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 {
    const _str pattern = os_trim(originPattern);
 
-   if (pattern == L"*") {
+   if (pattern == STRING_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
       result = std::make_unique<gen::Uro_All>(loc, uro, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
       return true;
    }
 
-   if (pattern == L"**") {
+   if (pattern == STRING_DOUBLE_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
       result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
       return true;
@@ -59,7 +59,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
             separatorId = static_cast<_int>(i);
             break;
          }
-         case L'*': {
+         case CHAR_ASTERISK: {
             goto exitAsteriskBeginning;
          }
       }
@@ -142,7 +142,7 @@ exitAsteriskBeginning:
             hasAsterisk = false;
             break;
          }
-         case L'*': {
+         case CHAR_ASTERISK: {
             hasAsterisk = true;
             break;
          }
@@ -269,7 +269,7 @@ _bool AsteriskUnit::hasDoubleAst() const
    _bool prev = false;
 
    for (const _char& ch : this->asteriskPart) {
-      if (ch == L'*') {
+      if (ch == CHAR_ASTERISK) {
          if (prev) {
             return true;
          }
@@ -307,14 +307,14 @@ std::vector<WordData> AsteriskUnit::getDoubleAstData() const
 
       switch (mode) {
          case m_Normal: {
-            if (ch == L'*') {
+            if (ch == CHAR_ASTERISK) {
                mode = m_OneAsterisk;
             }
 
             break;
          }
          case m_OneAsterisk: {
-            if (ch == L'*') {
+            if (ch == CHAR_ASTERISK) {
                mode = m_MultiAterisks;
                if (i == 1) {
                   first = false;
@@ -346,7 +346,7 @@ std::vector<WordData> AsteriskUnit::getDoubleAstData() const
             break;
          }
          case m_MultiAterisks: {
-            if (ch != L'*') {
+            if (ch != CHAR_ASTERISK) {
                mode = m_Normal;
                start = i;
             }

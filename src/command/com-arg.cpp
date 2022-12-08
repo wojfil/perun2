@@ -95,7 +95,7 @@ void CS_ListComArg::run()
    const _list values = list->getValue();
    const _numi length = _numi(static_cast<_nint>(values.size()));
 
-   if (length.value.i == 0LL) {
+   if (length.value.i == NINT_ZERO) {
       return;
    }
 
@@ -105,7 +105,7 @@ void CS_ListComArg::run()
 
    P_MEMORY_LOAD;
 
-   _numi index(0LL);
+   _numi index;
    this->inner.index.value.setToZero();
    this->inner.depth.value.setToZero();
 

@@ -74,7 +74,7 @@ public:
 private:
    InnerVariables& inner;
    _defptr definition;
-   _nint index = 0LL;
+   _nint index = NINT_ZERO;
    _bool finished = true;
 };
 

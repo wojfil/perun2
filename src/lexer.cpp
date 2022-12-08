@@ -303,7 +303,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
       if (nums) {
          _nint mult = getSuffixMultiplier(c1, c2);
-         if (mult != NINT_MINUE_ONE) {
+         if (mult != NINT_MINUS_ONE) {
             _str value2 = code.substr(start, length - 2);
             if (dots == 0) {
                try {
@@ -396,7 +396,7 @@ inline static void bigNumberException(const _str& code, const _size& start, cons
 inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
 {
    if (!(c2 == LETTER_b || c2 == LETTER_B)) {
-      return NINT_MINUE_ONE;
+      return NINT_MINUS_ONE;
    }
 
    switch (c1) {
@@ -416,7 +416,7 @@ inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
       case LETTER_P:
          return SIZE_UNIT_PB;
       default:
-         return NINT_MINUE_ONE;
+         return NINT_MINUS_ONE;
    }
 }
 

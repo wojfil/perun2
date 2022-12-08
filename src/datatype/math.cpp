@@ -13,6 +13,8 @@
 */
 
 #include "math.h"
+#include "numbers.h"
+
 
 namespace uro
 {
@@ -35,7 +37,7 @@ _ndouble Math::randomDouble() {
 }
 
 _nint Math::randomInt(const _nint& limit) {
-   std::uniform_int_distribution<_nint> distribution(0LL, limit);
+   std::uniform_int_distribution<_nint> distribution(NINT_ZERO, limit);
    return distribution(generator);
 }
 

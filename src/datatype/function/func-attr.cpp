@@ -189,7 +189,7 @@ _num F_Size::getValue()
 
 _num F_SizeDefinition::getValue()
 {
-   _nint total = 0LL;
+   _nint total = NINT_ZERO;
 
    while (definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -211,11 +211,11 @@ _num F_SizeDefinition::getValue()
 _num F_SizeList::getValue()
 {
    _bool any = false;
-   _nint total = 0LL;
+   _nint total = NINT_ZERO;
    const _list vs = values->getValue();
    const _size len = vs.size();
    if (len == 0) {
-      return 0LL;
+      return NINT_ZERO;
    }
 
    for (_size i = 0; i < len; i++) {

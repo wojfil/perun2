@@ -22,7 +22,7 @@ namespace uro::func
 
 _num F_Average::getValue()
 {
-   _num sum(0LL);
+   _num sum;
    _int count = countSingle;
 
    for (_size i = 0; i < countSingle; i++) {
@@ -91,7 +91,7 @@ _num F_Max::getValue()
       }
    }
 
-   return init ? max : _num(0LL);
+   return init ? max : _num();
 }
 
 
@@ -166,13 +166,13 @@ _num F_Min::getValue()
       }
    }
 
-   return init ? min : _num(0LL);
+   return init ? min : _num();
 }
 
 
 _num F_Sum::getValue()
 {
-   _num sum(0LL);
+   _num sum;
 
    for (_size i = 0; i < countSingle; i++) {
       sum += singleValues[i]->getValue();

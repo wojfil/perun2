@@ -168,7 +168,7 @@ public:
 
       const _nint id = index->getValue().toInt();
 
-      return id < 0LL || id >= length
+      return id < NINT_ZERO || id >= length
          ? T()
          : lst[id];
    }
@@ -206,7 +206,7 @@ public:
       const T prevThis = this->this_->value;
 
       this->inner.index.value.setToZero();
-      _numi index(0LL);
+      _numi index(NINT_ZERO);
 
       while (this->uroboros.state == State::s_Running && index != length) {
          const T& unit = values[index.value.i];
@@ -251,7 +251,7 @@ public:
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
 
-      if (n <= 0LL) {
+      if (n <= NINT_ZERO) {
          return std::vector<T>();
       }
 
@@ -279,7 +279,7 @@ public:
       const _nint n = number->getValue().toInt();
       const std::vector<T> lst = list->getValue();
 
-      if (n <= 0LL) {
+      if (n <= NINT_ZERO) {
          return lst;
       }
 
@@ -305,7 +305,7 @@ public:
       const _nint n = number->getValue().toInt();
       const std::vector<T> lst = list->getValue();
 
-      if (n <= 1LL) {
+      if (n <= NINT_ONE) {
          return lst;
       }
 
@@ -336,7 +336,7 @@ public:
    std::vector<T> getValue() override {
       const _nint n = number->getValue().toInt();
 
-      if (n <= 0LL) {
+      if (n <= NINT_ZERO) {
          return std::vector<T>();
       }
 

@@ -105,7 +105,7 @@ void DefinitionChain::reset()
 {
    if (!this->finished) {
       this->finished = true;
-      this->index = 0LL;
+      this->index = NINT_ZERO;
       this->definition->reset();
    }
 };
@@ -122,7 +122,7 @@ _bool DefinitionChain::hasNext()
    }
 
    this->finished = true;
-   this->index = 0LL;
+   this->index = NINT_ZERO;
    return false;
 };
 
@@ -221,11 +221,11 @@ _bool Filter_LimitDef::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
-      if (limit <= 0LL) {
+      if (limit <= NINT_ZERO) {
          return false;
       }
 
-      counter = 0LL;
+      counter = NINT_ZERO;
       first = false;
    }
 
@@ -248,11 +248,11 @@ _bool Filter_SkipDef::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
-      if (limit < 0LL) {
-         limit = 0LL;
+      if (limit < NINT_ZERO) {
+         limit = NINT_ZERO;
       }
 
-      counter = 0LL;
+      counter = NINT_ZERO;
       first = false;
    }
 
@@ -280,8 +280,8 @@ _bool Filter_EveryDef::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
-      if (limit < 1LL) {
-         limit = 1LL;
+      if (limit < NINT_ONE) {
+         limit = NINT_ONE;
       }
 
       counter = limit;
@@ -295,7 +295,7 @@ _bool Filter_EveryDef::hasNext()
       }
 
       if (counter == limit) {
-         counter = 1LL;
+         counter = NINT_ONE;
          value = definition->getValue();
          this->inner.index.value = index;
          index++;
@@ -315,12 +315,12 @@ _bool Filter_FinalDef::hasNext()
 {
    if (first) {
       const _nint limit = this->number->getValue().toInt();
-      if (limit < 1LL) {
+      if (limit < NINT_ONE) {
          return false;
       }
 
       values.clear();
-      length = 0LL;
+      length = NINT_ZERO;
       
       while (definition->hasNext()) {
          if (this->uroboros.state != State::s_Running) {
@@ -337,7 +337,7 @@ _bool Filter_FinalDef::hasNext()
          values.emplace_back(definition->getValue());
       }
 
-      index = 0LL;
+      index = NINT_ZERO;
       first = false;
    }
 

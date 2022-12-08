@@ -23,7 +23,9 @@ namespace uro
 
 inline constexpr _nint NINT_ZERO =                 0LL;
 inline constexpr _nint NINT_ONE =                  1LL;
-inline constexpr _nint NINT_MINUE_ONE =           -1LL;
+inline constexpr _nint NINT_MINUS_ONE =           -1LL;
+inline constexpr _nint NINT_300 =                300LL;
+inline constexpr _nint NINT_THOUSAND =          1000LL;
 inline constexpr _nint NINT_1024 =              1024LL;
 
 inline constexpr _nint SIZE_UNIT_KB =      NINT_1024;

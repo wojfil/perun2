@@ -43,14 +43,14 @@ void CS_Block::run()
 void CS_Times::run()
 {
    _nint repeats = this->times->getValue().toInt();
-   if (repeats <= 0LL) {
+   if (repeats <= NINT_ZERO) {
       return;
    }
 
    const _numi prevIndex = this->inner.index.value;
    this->inner.index.value.setToZero();
 
-   while (this->uroboros.state == State::s_Running && repeats != 0LL) {
+   while (this->uroboros.state == State::s_Running && repeats != NINT_ZERO) {
       this->command->run();
       this->inner.index.value++;
       repeats--;
@@ -180,7 +180,7 @@ void CS_DefinitionLoop::run()
 
    P_MEMORY_LOAD;
 
-   _numi index(0LL);
+   _numi index = NINT_ZERO;
    this->inner.index.value.setToZero();
 
    while (this->definition->hasNext()) {
@@ -228,7 +228,7 @@ void CS_ListLoop::run()
 
    P_MEMORY_LOAD;
 
-   _numi index(0LL);
+   _numi index = NINT_ZERO;
    this->inner.index.value.setToZero();
    this->inner.depth.value.setToZero();
 
@@ -305,7 +305,7 @@ void CS_InsideDefinition::run()
    P_MEMORY_LOAD;
    this->prevLocation = this->inner.location.value;
 
-   _numi index(0LL);
+   _numi index = NINT_ZERO;
    this->inner.index.value.setToZero();
 
    while (definition->hasNext()) {
@@ -362,8 +362,8 @@ void CS_InsideList::run()
    P_MEMORY_LOAD;
    this->prevLocation = this->inner.location.value;
 
-   _numi index(0LL);
-   _nint outIndex = 0LL;
+   _numi index = NINT_ZERO;
+   _nint outIndex = NINT_ZERO;
    this->inner.index.value.setToZero();
    this->inner.depth.value.setToZero();
 

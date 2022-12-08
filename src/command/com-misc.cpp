@@ -68,7 +68,7 @@ void C_PrintThis_Tim::run()
 
 void C_SleepPeriod::run()
 {
-   os_sleepForMs(1000LL * this->value->getValue().toSeconds(), this->uroboros);
+   os_sleepForMs(NINT_THOUSAND * this->value->getValue().toSeconds(), this->uroboros);
 }
 
 void C_SleepMs::run()

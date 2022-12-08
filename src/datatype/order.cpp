@@ -49,7 +49,7 @@ void OrderBy_Definition::reset()
    this->result.clear();
    this->depths.clear();
    this->order->clearValues();
-   this->index = 0LL;
+   this->index = NINT_ZERO;
 
    this->hasVolatileDepth = false;
 
@@ -92,7 +92,7 @@ _bool OrderBy_Definition::hasNext()
          this->depths.emplace_back(depth.value.i);
          this->order->addValues();
 
-         if (!this->hasVolatileDepth && depth.value.i != 0LL) {
+         if (!this->hasVolatileDepth && depth.value.i != NINT_ZERO) {
             this->hasVolatileDepth = true;
          }
       }

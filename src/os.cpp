@@ -35,7 +35,7 @@
 namespace uro
 {
 
-inline constexpr _nint OS_SLEEP_UNIT = 300LL;
+inline constexpr _nint OS_SLEEP_UNIT = NINT_300;
 // while sleeping
 // check every 300 ms if the program received an interruption signal
 
@@ -75,7 +75,7 @@ _tim os_yesterday()
 
 void os_sleepForMs(const _nint& ms, Uroboros& uro)
 {
-   if (ms <= 0LL) {
+   if (ms <= NINT_ZERO) {
       return;
    }
 
@@ -84,7 +84,7 @@ void os_sleepForMs(const _nint& ms, Uroboros& uro)
 
    Sleep(remainder);
 
-   while (uro.state == State::s_Running && loops != 0LL) {
+   while (uro.state == State::s_Running && loops != NINT_ZERO) {
       Sleep(OS_SLEEP_UNIT);
       loops--;
    }
@@ -238,7 +238,7 @@ void os_loadAttributes(const _aunit& attr, Uroboros& uro)
             : _num(os_sizeDirectory(path, uro));
       }
       else {
-         inner.size.value = _num(-1LL);
+         inner.size.value = _num(NINT_MINUS_ONE);
       }
    }
 }
@@ -323,7 +323,7 @@ void os_loadEmptyAttributes(const _aunit& attr, InnerVariables& inner)
    }
 
    if (attr & ATTR_SIZE) {
-      inner.size.value = _num(-1LL);
+      inner.size.value = _num(NINT_MINUS_ONE);
    }
 }
 
@@ -695,12 +695,12 @@ _nint os_size(const _str& path, Uroboros& uro)
 {
    _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
-      return -1LL;
+      return NINT_MINUS_ONE;
    }
 
    const DWORD& dwAttrib = data.dwFileAttributes;
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
-      return -1LL;
+      return NINT_MINUS_ONE;
    }
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
@@ -710,7 +710,7 @@ _nint os_size(const _str& path, Uroboros& uro)
 
 _nint os_sizeDirectory(const _str& path, Uroboros& uro)
 {
-   _nint totalSize = 0LL;
+   _nint totalSize = NINT_ZERO;
    _fdata data;
    HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
 
@@ -721,7 +721,7 @@ _nint os_sizeDirectory(const _str& path, Uroboros& uro)
    do {
       if (!uro.state == State::s_Running) {
          FindClose(handle);
-         return -1LL;
+         return NINT_MINUS_ONE;
       }
       if (!os_isBrowsePath(data.cFileName)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {

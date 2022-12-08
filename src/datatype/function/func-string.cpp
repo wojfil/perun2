@@ -110,7 +110,7 @@ _str F_Digits::getValue()
       }
    }
 
-   _str s2(len2, L' ');
+   _str s2(len2, CHAR_SPACE);
    for (_size i = 0; i < len1; i++) {
       const _char& ch = s1[i];
       if (std::iswdigit(ch)) {
@@ -129,7 +129,7 @@ _str F_Fill::getValue()
    const _size len = base.size();
    const _nint v = arg2->getValue().toInt();
 
-   if (v <= 0LL) {
+   if (v <= NINT_ZERO) {
       return base;
    }
 
@@ -137,7 +137,7 @@ _str F_Fill::getValue()
 
    return len >= min
       ? base
-      : str(_str(min - len, '0'), base);
+      : str(_str(min - len, DIGIT_0), base);
 }
 
 
@@ -154,7 +154,7 @@ _str F_Letters::getValue()
       }
    }
 
-   _str s2(len2, L' ');
+   _str s2(len2, CHAR_SPACE);
    for (_size i = 0; i < len1; i++) {
       const _char& ch = s1[i];
       if (std::iswalpha(ch)) {
@@ -223,7 +223,7 @@ _str F_Upper::getValue()
 _str F_Repeat::getValue()
 {
    const _nint repeats = arg2->getValue().toInt();
-   if (repeats <= 0LL) {
+   if (repeats <= NINT_ZERO) {
       return EMPTY_STRING;
    }
 
@@ -254,7 +254,7 @@ _str F_Repeat::getValue()
    _str result;
    result.reserve(len * repeats);
 
-   for (_nint i = 0LL; i < repeats; i++) {
+   for (_nint i = NINT_ZERO; i < repeats; i++) {
       result += base;
    }
 
@@ -278,7 +278,7 @@ _str F_Reverse::getValue()
 _str F_Left::getValue()
 {
    const _nint left = arg2->getValue().toInt();
-   if (left <= 0LL) {
+   if (left <= NINT_ZERO) {
       return EMPTY_STRING;
    }
 
@@ -294,7 +294,7 @@ _str F_Left::getValue()
 _str F_Right::getValue()
 {
    const _nint right = arg2->getValue().toInt();
-   if (right <= 0LL) {
+   if (right <= NINT_ZERO) {
       return EMPTY_STRING;
    }
 
@@ -312,14 +312,14 @@ _str F_Substring_2::getValue()
    _nint index = arg2->getValue().toInt();
    const _str value = arg1->getValue();
 
-   if (index == 0LL) {
+   if (index == NINT_ZERO) {
       return value;
    }
 
    const _nint length = static_cast<_nint>(value.size());
 
-   if (index < 0LL) {
-      index *= -1LL;
+   if (index < NINT_ZERO) {
+      index *= NINT_MINUS_ONE;
 
       return index >= length
          ? value
@@ -340,16 +340,16 @@ _str F_Substring_3::getValue()
    _nint index2 = arg3->getValue().toInt();
    const _nint length = static_cast<_nint>(value.size());
 
-   if (index2 <= 0LL) {
+   if (index2 <= NINT_ZERO) {
       return EMPTY_STRING;
    }
 
-   if (index < 0LL) {
-      index *= -1LL;
+   if (index < NINT_ZERO) {
+      index *= NINT_MINUS_ONE;
 
       if (index >= length) {
          const _nint lets = length - index + index2;
-         return lets <= 0LL
+         return lets <= NINT_ZERO
             ? EMPTY_STRING
             : value.substr(0, lets);
       }
@@ -514,7 +514,7 @@ _str F_Replace::getValue()
 
 _str F_String_B::getValue()
 {
-   return arg1->getValue() ? L"1" : L"0";
+   return arg1->getValue() ? STRING_1 : STRING_0;
 }
 
 
@@ -744,23 +744,23 @@ _str F_Roman::getValue()
    const _num base = arg1->getValue();
    _nint number = base.toInt();
 
-   if (number == 0LL) {
+   if (number == NINT_ZERO) {
       if (base.isDouble) {
          _stream ss;
          appendFraction(base, ss);
          _str result = ss.str();
 
          if (result.empty()) {
-            result = L"N";
+            result = LETTER_N;
          }
          else if (base.value.d < 0L) {
-            result = str(L"-", result);
+            result = str(STRING_MINUS, result);
          }
 
          return result;
       }
       else {
-         return L"N";
+         return toStr(LETTER_N);
       }
    }
    else if (number >= 5000000LL || number <= -5000000LL) {
@@ -768,9 +768,9 @@ _str F_Roman::getValue()
    }
 
    _stream ss;
-   if (number < 0LL) {
-      ss << L"-";
-      number *= -1LL;
+   if (number < NINT_ZERO) {
+      ss << CHAR_MINUS;
+      number *= NINT_MINUS_ONE;
    }
 
    static const _nint num[] = { 1LL, 4LL, 5LL, 9LL, 10LL, 40LL, 50LL, 90LL, 100LL, 400LL, 500LL, 900LL, 1000LL,
@@ -811,11 +811,11 @@ inline void F_Roman::appendFraction(const _num& base, _stream& ss) const
    }
    if (oc >= 6) {
       oc -= 6;
-      ss << L'S';
+      ss << LETTER_S;
    }
 
    if (oc > 0) {
-      ss << _str(oc,  L'·');
+      ss << _str(oc,  CHAR_INTERPUNCT);
    }
 }
 
@@ -836,25 +836,25 @@ _str F_Binary::getValue()
    const _size len = str_.size();
 
    for (_size i = 0; i < len; i++) {
-      if (str_[i] != L'0') {
+      if (str_[i] != DIGIT_0) {
          return negative
-            ? str(L"-", str_.substr(i))
+            ? str(STRING_MINUS, str_.substr(i))
             : str_.substr(i);
       }
    }
 
-   return L"0";
+   return toStr(DIGIT_0);
 }
 
 _str F_Hex::getValue()
 {
    _nint v = arg1->getValue().toInt();
 
-   if (v < 0LL) {
-      v *= -1LL;
+   if (v < NINT_ZERO) {
+      v *= NINT_MINUS_ONE;
       _stream oss;
       oss << std::hex << v;
-      return str(L"-", oss.str());
+      return str(STRING_MINUS, oss.str());
    }
    else {
       _stream oss;

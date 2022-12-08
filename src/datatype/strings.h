@@ -15,13 +15,16 @@
 #ifndef STRINGS_H_INCLUDED
 #define STRINGS_H_INCLUDED
 
-#include "primitives.h"
+#include "chars.h"
 
 
 namespace uro
 {
-    
-static const _str EMPTY_STRING = L"";
+
+static const _str EMPTY_STRING =      _str();
+static const _str STRING_0 =          toStr(DIGIT_0);
+static const _str STRING_1 =          toStr(DIGIT_1);
+static const _str STRING_MINUS =      toStr(CHAR_MINUS);
 
 
 

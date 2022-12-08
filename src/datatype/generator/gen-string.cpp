@@ -66,7 +66,7 @@ _str DefinitionElement::getValue()
 {
    _nint n = index->getValue().toInt();
 
-   if (n < 0LL) {
+   if (n < NINT_ZERO) {
       return EMPTY_STRING;
    }
 
@@ -76,7 +76,7 @@ _str DefinitionElement::getValue()
          return EMPTY_STRING;
       }
 
-      if (n == 0LL) {
+      if (n == NINT_ZERO) {
          const _str result = this->definition->getValue();
          this->definition.reset();
          return result;

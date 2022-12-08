@@ -21,12 +21,12 @@ namespace uro::gen
 
 _num Cast_B_N::getValue()
 {
-   return _num ( this->base->getValue() ? 1LL : 0LL ) ;
+   return _num ( this->base->getValue() ? NINT_ONE : NINT_ZERO ) ;
 };
 
 _nlist Cast_B_NL::getValue()
 {
-   return _nlist { this->base->getValue() ? 1LL : 0LL };
+   return _nlist { this->base->getValue() ? NINT_ONE : NINT_ZERO };
 };
 
 _str Cast_B_S::getValue()

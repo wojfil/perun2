@@ -26,6 +26,11 @@ inline constexpr _nint NINT_ONE =                  1LL;
 inline constexpr _nint NINT_MINUE_ONE =           -1LL;
 inline constexpr _nint NINT_1024 =              1024LL;
 
+inline constexpr _nint SIZE_UNIT_KB =      NINT_1024;
+inline constexpr _nint SIZE_UNIT_MB =      NINT_1024 * NINT_1024;
+inline constexpr _nint SIZE_UNIT_GB =      NINT_1024 * NINT_1024 * NINT_1024;
+inline constexpr _nint SIZE_UNIT_TB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
+inline constexpr _nint SIZE_UNIT_PB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
 
 }
 

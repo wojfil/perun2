@@ -303,7 +303,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
       if (nums) {
          _nint mult = getSuffixMultiplier(c1, c2);
-         if (mult != -1) {
+         if (mult != NINT_MINUE_ONE) {
             _str value2 = code.substr(start, length - 2);
             if (dots == 0) {
                try {
@@ -312,7 +312,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                   // and then divided back
                   _nint i = std::stoll(value2);
                   _nint i2 = i * mult;
-                  if (mult != 0LL && i2 / mult != i) {
+                  if (mult != NINT_ZERO && i2 / mult != i) {
                      bigNumberException(code, start, length, line);
                   }
                   return Token(_num(i2), line, start, length, NumberMode::nm_Size, uro);
@@ -396,27 +396,27 @@ inline static void bigNumberException(const _str& code, const _size& start, cons
 inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
 {
    if (!(c2 == LETTER_b || c2 == LETTER_B)) {
-      return -1LL;
+      return NINT_MINUE_ONE;
    }
 
    switch (c1) {
       case LETTER_k: 
       case LETTER_K:
-         return 1024LL;
+         return SIZE_UNIT_KB;
       case LETTER_m: 
       case LETTER_M:
-         return 1048576LL;
+         return SIZE_UNIT_MB;
       case LETTER_g:
       case LETTER_G:
-         return 1073741824LL;
+         return SIZE_UNIT_GB;
       case LETTER_t:
       case LETTER_T:
-         return 1099511627776LL;
+         return SIZE_UNIT_TB;
       case LETTER_p:
       case LETTER_P:
-         return 1125899906842624LL;
+         return SIZE_UNIT_PB;
       default:
-         return -1LL;
+         return NINT_MINUE_ONE;
    }
 }
 

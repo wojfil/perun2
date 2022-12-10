@@ -47,8 +47,8 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
       const _str arg = _str((*argv)[i]);
       const _size len = arg.size();
 
-      if (options && len >= 2 && arg[0] == L'-') {
-         if (arg[1] == L'-') {
+      if (options && len >= 2 && arg[0] == CHAR_MINUS) {
+         if (arg[1] == CHAR_MINUS) {
             if (len == 2) {
                options = false;
                continue;
@@ -57,19 +57,19 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
             _str lowerArg = arg;
             toLower(lowerArg);
 
-            if (lowerArg == L"--version") {
+            if (lowerArg == STRING_ARG_VERSION) {
                this->parseState = ArgsParseState::aps_PrintInfo;
                cmd::version();
             }
-            else if (lowerArg == L"--docs") {
+            else if (lowerArg == STRING_ARG_DOCS) {
                this->parseState = ArgsParseState::aps_PrintInfo;
                cmd::docs();
             }
-            else if (lowerArg == L"--website") {
+            else if (lowerArg == STRING_ARG_WEBSITE) {
                this->parseState = ArgsParseState::aps_PrintInfo;
                cmd::website();
             }
-            else if (lowerArg == L"--help") {
+            else if (lowerArg == STRING_ARG_HELP) {
                this->parseState = ArgsParseState::aps_PrintInfo;
                cmd::help();
             }
@@ -82,33 +82,39 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
          else {
             for (_size j = 1; j < len; j++) {
                switch (arg[j]) {
-                  case L'c': case L'C': {
+                  case CHAR_FLAG_CODE: 
+                  case CHAR_FLAG_CODE_UPPER: {
                      hasCode = true;
                      break;
                   }
-                  case L'd': case L'D': {
+                  case CHAR_FLAG_DIRECTORY: 
+                  case CHAR_FLAG_DIRECTORY_UPPER: {
                      nextParseLocation = true;
                      break;
                   }
-                  case L'n': case L'N': {
+                  case CHAR_FLAG_NOOMIT: 
+                  case CHAR_FLAG_NOOMIT_UPPER: {
                      if (!(this->flags & FLAG_NOOMIT)) {
                         this->flags |= FLAG_NOOMIT;
                      }
                      break;
                   }
-                  case L's': case L'S': {
+                  case CHAR_FLAG_SILENT: 
+                  case CHAR_FLAG_SILENT_UPPER: {
                      if (!(this->flags & FLAG_SILENT)) {
                         this->flags |= FLAG_SILENT;
                      }
                      break;
                   }
-                  case L'g': case L'G': {
+                  case CHAR_FLAG_GUI: 
+                  case CHAR_FLAG_GUI_UPPER: {
                      if (!(this->flags & FLAG_GUI)) {
                         this->flags |= FLAG_GUI;
                      }
                      break;
                   }
-                  case L'h': case L'H': {
+                  case CHAR_FLAG_HERE: 
+                  case CHAR_FLAG_HERE_UPPER: {
                      here = true;
                      break;
                   }

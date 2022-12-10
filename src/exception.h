@@ -24,7 +24,7 @@ namespace uro
 class SyntaxError
 {
 public:
- SyntaxError(const _str& msg, const _int& li);
+   SyntaxError(const _str& msg, const _int& li);
    _str getMessage() const;
 
    static SyntaxError filterKeywordAtStart(const _str& value, const _int& line);
@@ -50,10 +50,10 @@ private:
    const _int line;
 };
 
-class UroRuntimeException
+class RuntimeError
 {
 public:
-   UroRuntimeException(const _str& msg);
+   RuntimeError(const _str& msg);
    _str getMessage() const;
 
 private:

@@ -242,11 +242,11 @@ void Time::setYear(const _tnum& y)
 void Time::setMonth(const _tnum& m)
 {
    if (m < 1) {
-      throw UroRuntimeException(str(L"value of month cannot be smaller than 1 (received: ",
+      throw RuntimeError(str(L"value of month cannot be smaller than 1 (received: ",
          toStr(m), L")"));
    }
    else if (m > 12) {
-      throw UroRuntimeException(str(L"value of month cannot be greater than 12 (received: ",
+      throw RuntimeError(str(L"value of month cannot be greater than 12 (received: ",
          toStr(m), L")"));
    }
 
@@ -256,14 +256,14 @@ void Time::setMonth(const _tnum& m)
 void Time::setDay(const _tnum& d)
 {
    if (d < 1) {
-      throw UroRuntimeException(str(L"value of day cannot be smaller than 1 (received: ",
+      throw RuntimeError(str(L"value of day cannot be smaller than 1 (received: ",
          toStr(d), L")"));
    }
 
    const _tnum inMonth = daysInMonth(month, year);
    if (d > inMonth) {
       const _str name = monthToString(month);
-      throw UroRuntimeException(str(name, L" ", toStr(year),
+      throw RuntimeError(str(name, L" ", toStr(year),
          L"contains only ", toStr(inMonth), L" days (received day: ",
          toStr(d), L")"));
    }
@@ -274,11 +274,11 @@ void Time::setDay(const _tnum& d)
 void Time::setHour(const _tnum& h)
 {
    if (h < 0) {
-      throw UroRuntimeException(str(L"value of hours cannot be smaller than 0 (received: ",
+      throw RuntimeError(str(L"value of hours cannot be smaller than 0 (received: ",
          toStr(h), L")"));
    }
    else if (h >= 24) {
-      throw UroRuntimeException(str(L"value of hours cannot be greater than 23 (received: ",
+      throw RuntimeError(str(L"value of hours cannot be greater than 23 (received: ",
          toStr(h), L")"));
    }
 
@@ -288,11 +288,11 @@ void Time::setHour(const _tnum& h)
 void Time::setMinute(const _tnum& m)
 {
    if (m < 0) {
-      throw UroRuntimeException(str(L"value of minutes cannot be smaller than 0 (received: ",
+      throw RuntimeError(str(L"value of minutes cannot be smaller than 0 (received: ",
          toStr(m), L")"));
    }
    else if (m >= 60) {
-      throw UroRuntimeException(str(L"value of minutes cannot be greater than 59 (received: ",
+      throw RuntimeError(str(L"value of minutes cannot be greater than 59 (received: ",
          toStr(m), L")"));
    }
 
@@ -302,11 +302,11 @@ void Time::setMinute(const _tnum& m)
 void Time::setSecond(const _tnum& s)
 {
    if (s < 0) {
-      throw UroRuntimeException(str(L"value of seconds cannot be smaller than 0 (received: ",
+      throw RuntimeError(str(L"value of seconds cannot be smaller than 0 (received: ",
          toStr(s), L")"));
    }
    else if (s >= 60) {
-      throw UroRuntimeException(str(L"value of seconds cannot be greater than 59 (received: ",
+      throw RuntimeError(str(L"value of seconds cannot be greater than 59 (received: ",
          toStr(s), L")"));
    }
 

@@ -567,7 +567,7 @@ Period& Period::operator /= (const Number& num)
    const _tnum n = static_cast<_tnum>(num.toInt());
 
    if (n == 0) {
-      throw UroRuntimeException(L"division by zero");
+      throw RuntimeError(L"division by zero");
    }
 
    if (periodType ==  PeriodType::pt_Unit) {

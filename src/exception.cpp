@@ -131,10 +131,10 @@ SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)
 
 
 
-UroRuntimeException::UroRuntimeException(const _str& msg)
+RuntimeError::RuntimeError(const _str& msg)
    : message(msg) { };
 
-_str UroRuntimeException::getMessage() const
+_str RuntimeError::getMessage() const
 {
    return str(L"Runtime error: ", message, L".");
 }

@@ -214,7 +214,7 @@ _nlist F_Numbers::getValue()
                      numbers.emplace_back(ii);
                   }
                   catch(...) {
-                     throw UroRuntimeException(str(L"number '", value.substr(start, i - start),
+                     throw RuntimeError(str(L"number '", value.substr(start, i - start),
                         L"' cannot be stored in the memory"));
                   }
                }
@@ -228,7 +228,7 @@ _nlist F_Numbers::getValue()
                numbers.emplace_back(ii);
             }
             catch(...) {
-               throw UroRuntimeException(str(L"number '", value.substr(start),
+               throw RuntimeError(str(L"number '", value.substr(start),
                   L"' cannot be stored in the memory"));
             }
          }

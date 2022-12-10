@@ -106,7 +106,7 @@ _bool Uroboros::uro_runCommands()
    try {
       this->commands->run();
    }
-   catch (const UroRuntimeException& re) {
+   catch (const RuntimeError& re) {
       rawPrint(re.getMessage());
       this->exitCode = EXITCODE_RUNTIME_ERROR;
       return false;

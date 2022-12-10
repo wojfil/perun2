@@ -192,7 +192,7 @@ Number& Number::operator /= (const Number& num)
 {
    if (num.isDouble) {
       if (num.value.d == 0L) {
-         throw UroRuntimeException(L"division by zero");
+         throw RuntimeError(L"division by zero");
       }
 
       if (isDouble) {
@@ -207,7 +207,7 @@ Number& Number::operator /= (const Number& num)
    else
    {
       if (num.value.i == 0LL) {
-         throw UroRuntimeException(L"division by zero");
+         throw RuntimeError(L"division by zero");
       }
 
       if (isDouble) {
@@ -232,7 +232,7 @@ Number& Number::operator %= (const Number& num)
 {
    if (num.isDouble) {
       if (num.value.d == 0L) {
-         throw UroRuntimeException(L"modulo by zero");
+         throw RuntimeError(L"modulo by zero");
       }
 
       if (isDouble) {
@@ -248,7 +248,7 @@ Number& Number::operator %= (const Number& num)
    else
    {
       if (num.value.i == 0LL) {
-         throw UroRuntimeException(L"modulo by zero");
+         throw RuntimeError(L"modulo by zero");
       }
 
       if (isDouble) {
@@ -363,7 +363,7 @@ Number Number::operator / (const Number& num) const
 {
    if (num.isDouble) {
       if (num.value.d == 0L) {
-         throw UroRuntimeException(L"division by zero");
+         throw RuntimeError(L"division by zero");
       }
       if (isDouble) {
          const _ndouble v = value.d / num.value.d;
@@ -377,7 +377,7 @@ Number Number::operator / (const Number& num) const
    else
    {
       if (num.value.i == 0LL) {
-         throw UroRuntimeException(L"division by zero");
+         throw RuntimeError(L"division by zero");
       }
       if (isDouble) {
          const _ndouble v = value.d / num.value.i;
@@ -399,7 +399,7 @@ Number Number::operator % (const Number& num) const
 {
    if (num.isDouble) {
       if (num.value.d == 0L) {
-         throw UroRuntimeException(L"modulo by zero");
+         throw RuntimeError(L"modulo by zero");
       }
       if (isDouble) {
          const _ndouble v = std::fmod(value.d, num.value.d);
@@ -412,7 +412,7 @@ Number Number::operator % (const Number& num) const
    }
    else {
       if (num.value.i == 0LL) {
-         throw UroRuntimeException(L"modulo by zero");
+         throw RuntimeError(L"modulo by zero");
       }
       if (isDouble) {
          const _ndouble v = std::fmod(value.d, num.value.i);

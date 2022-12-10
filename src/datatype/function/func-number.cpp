@@ -139,7 +139,7 @@ _num F_Number::getValue()
          return _num(i);
       }
       catch (...) {
-         throw UroRuntimeException(str(L"number '", s,
+         throw RuntimeError(str(L"number '", s,
             L"' is too big to be stored in the memory"));
       }
    }
@@ -212,7 +212,7 @@ _num F_Power::getValue()
                return _num(1LL);
             }
             else if (n2.value.d < 0L) {
-               throw UroRuntimeException(L"result of exponentiation cannot be expressed");
+               throw RuntimeError(L"result of exponentiation cannot be expressed");
             }
             else {
                return _num(0LL);
@@ -223,7 +223,7 @@ _num F_Power::getValue()
                return _num(1LL);
             }
             else if (n2.value.i <= 0LL) {
-               throw UroRuntimeException(L"result of exponentiation cannot be expressed");
+               throw RuntimeError(L"result of exponentiation cannot be expressed");
             }
             else {
                return _num(0LL);
@@ -301,7 +301,7 @@ _num F_Power::doublePower(const _ndouble& base, const _ndouble& exp)
    const _ndouble v = pow(base, exp);
 
    if (isnan(v)) {
-      throw UroRuntimeException(L"result of exponentiation cannot be expressed");
+      throw RuntimeError(L"result of exponentiation cannot be expressed");
    }
 
    return _num(v);
@@ -319,7 +319,7 @@ _num F_Sqrt::getValue()
          return _num(1LL);
       }
       else if (n.value.d < 0L) {
-         throw UroRuntimeException(str(L"square root of a negative number ",
+         throw RuntimeError(str(L"square root of a negative number ",
             n.toString()));
       }
 
@@ -330,7 +330,7 @@ _num F_Sqrt::getValue()
          return n;
       }
       else if (n.value.i < 0LL) {
-         throw UroRuntimeException(str(L"square root of a negative number ",
+         throw RuntimeError(str(L"square root of a negative number ",
             n.toString()));
       }
 
@@ -435,13 +435,13 @@ _num F_FromBinary::getValue()
       negative = true;
       i++;
       if (len > 62) {
-         throw UroRuntimeException(str(L"number '", baseString,
+         throw RuntimeError(str(L"number '", baseString,
             L"' is too big to be stored in the memory"));
       }
    }
    else {
       if (len > 63) {
-         throw UroRuntimeException(str(L"number '", baseString,
+         throw RuntimeError(str(L"number '", baseString,
             L"' is too big to be stored in the memory"));
       }
    }

@@ -27,10 +27,7 @@ inline static _bool isSymbol(const _char& ch);
 inline static _bool isNewLine(const _char& ch);
 inline static _bool isAllowedInWord(const _char& ch);
 inline static _bool isDoubleChar(const _char& ch);
-inline static void bigNumberException(const _str& code, const _size& start, const _size& length, const _int& line);
 inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2);
-inline static void invalidCharException(const _char& ch, const _int& line);
-inline static void quotationLiteralException(const _int& line);
 
 }
 

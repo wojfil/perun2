@@ -27,6 +27,14 @@ public:
    SyntaxException(const _str& msg, const _int& li);
    _str getMessage() const;
 
+   static SyntaxException invalidChar(const _char& value, const _int& line);
+   static SyntaxException missingTimeVariableMember(const _str& value, const _int& line);
+   static SyntaxException multipleDotsInNumber(const _str& value, const _int& line);
+   static SyntaxException multipleDotsInWord(const _str& value, const _int& line);
+   static SyntaxException numberTooBig(const _str& value, const _int& line);
+   static SyntaxException openedStringLteral(const _int& line);
+   static SyntaxException quotationMarkStringLteral(const _int& line);
+
 private:
    const _str message;
    const _int line;

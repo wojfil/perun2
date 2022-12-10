@@ -13,6 +13,8 @@
 */
 
 #include "exception.h"
+#include "datatype/chars.h"
+#include "datatype/primitives.h"
 
 
 namespace uro
@@ -21,17 +23,69 @@ namespace uro
 SyntaxException::SyntaxException(const _str& msg, const _int& li)
    : message(msg), line(li) { };
 
-UroRuntimeException::UroRuntimeException(const _str& msg)
-   : message(msg) { };
-
 _str SyntaxException::getMessage() const
 {
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
+SyntaxException SyntaxException::invalidChar(const _char& value, const _int& line)
+{
+   switch (value) {
+      case CHAR_CARET: {
+         return SyntaxException(L"you should use keyword 'xor' instead of character '^' as a boolean operator. "
+            L"If your intention was to perform exponentiation, then function 'power()' is the right tool", line);
+      }
+      case CHAR_AMPERSAND: {
+         return SyntaxException(L"you should use keyword 'and' instead of character '&' as a boolean operator", line);
+      }
+      case CHAR_VERTICAL_BAR: {
+         return SyntaxException(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
+      }
+      default: {
+         return SyntaxException(str(L"character '", toStr(value), L"' is not allowed in Uroboros"), line);
+      }
+   }
+}
+
+SyntaxException SyntaxException::missingTimeVariableMember(const _str& value, const _int& line)
+{
+   throw SyntaxException(str(L"a time variable member was expected after '", value, L"'"), line);
+}
+
+SyntaxException SyntaxException::multipleDotsInNumber(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"number '", value, L"' contains multiple dots"), line);
+}
+
+SyntaxException SyntaxException::multipleDotsInWord(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"word '", value, L"' cannot contain multiple dots"), line);
+}
+
+SyntaxException SyntaxException::numberTooBig(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"number '", value, L"' is too big to be stored in the memory"), line);
+}
+
+SyntaxException SyntaxException::openedStringLteral(const _int& line)
+{
+   return SyntaxException(L"an opened string literal is not closed", line);
+}
+
+SyntaxException SyntaxException::quotationMarkStringLteral(const _int& line)
+{
+   return SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
+}
+
+
+
+UroRuntimeException::UroRuntimeException(const _str& msg)
+   : message(msg) { };
+
 _str UroRuntimeException::getMessage() const
 {
    return str(L"Runtime error: ", message, L".");
 }
+
 
 }

@@ -53,7 +53,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
       switch (mode)  {
          case Mode::m_Normal: {
             if (c == CHAR_QUOTATION_MARK) {
-               quotationLiteralException(line);
+               throw SyntaxException::quotationMarkStringLteral(line);
             }
             else if (isSymbol(c)) {
                if (i != 0 && prev == CHAR_SLASH) {
@@ -124,14 +124,14 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                   prevSymbol = false;
                }
                else if (c != CHAR_SPACE) {
-                  invalidCharException(c, line);
+                  throw SyntaxException::invalidChar(c, line);
                }
             }
             break;
          }
          case Mode::m_Word: {
             if (c == CHAR_QUOTATION_MARK) {
-               quotationLiteralException(line);
+               throw SyntaxException::quotationMarkStringLteral(line);
             }
             else if (isAllowedInWord(c)) {
                wlen++;
@@ -157,7 +157,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                   mode = Mode::m_BLiteral;
                }
                else if (c != CHAR_SPACE) {
-                  invalidCharException(c, line);
+                  throw SyntaxException::invalidChar(c, line);
                }
             }
             break;
@@ -237,7 +237,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
       }
       case m_ALiteral:
       case m_BLiteral: {
-         throw SyntaxException(L"an opened string literal is not closed", line);
+         throw SyntaxException::openedStringLteral(line);
       }
    }
 
@@ -270,7 +270,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                return Token(_num(std::stoll(value)), line, start, length, NumberMode::nm_Normal, uro);
             }
             catch (...) {
-               bigNumberException(code, start, length, line);
+               throw SyntaxException::numberTooBig(code.substr(start, length), line);
             }
          }
          case 1: {
@@ -278,11 +278,11 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                return Token(_num(stringToDouble(value)), line, start, length, NumberMode::nm_Normal, uro);
             }
             catch (...) {
-               bigNumberException(code, start, length, line);
+               throw SyntaxException::numberTooBig(code.substr(start, length), line);
             }
          }
          default: {
-            throw SyntaxException(str(L"number '", value, L"' contains multiple dots"), line);
+            throw SyntaxException::multipleDotsInNumber(value, line);
          }
       }
    }
@@ -313,12 +313,12 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                   _nint i = std::stoll(value2);
                   _nint i2 = i * mult;
                   if (mult != NINT_ZERO && i2 / mult != i) {
-                     bigNumberException(code, start, length, line);
+                     throw SyntaxException::numberTooBig(code.substr(start, length), line);
                   }
                   return Token(_num(i2), line, start, length, NumberMode::nm_Size, uro);
                }
                catch (...) {
-                  bigNumberException(code, start, length, line);
+                  throw SyntaxException::numberTooBig(code.substr(start, length), line);
                }
             }
             else {
@@ -329,7 +329,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                   return Token(_num(d), line, start, length, NumberMode::nm_Size, uro);
                }
                catch (...) {
-                  bigNumberException(code, start, length, line);
+                  throw SyntaxException::numberTooBig(code.substr(start, length), line);
                }
             }
          }
@@ -370,7 +370,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          }
 
          if (pnt == length - 1) {
-            throw SyntaxException(str(L"a time variable member was expected after '", code.substr(start, length), L"'"), line);
+            throw SyntaxException::missingTimeVariableMember(code.substr(start, length), line);
          }
 
          const _str os1 = code.substr(start, pnt - start);
@@ -381,16 +381,11 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, uro);
       }
       default: {
-         throw SyntaxException(str(L"word '", code.substr(start, length), L"' cannot contain multiple dots"), line);
+         throw SyntaxException::multipleDotsInWord(code.substr(start, length), line);
       }
    }
 
    return Token(start, length, line, uro);
-}
-
-inline static void bigNumberException(const _str& code, const _size& start, const _size& length, const _int& line)
-{
-   throw SyntaxException(str(L"number '", code.substr(start, length), L"' is too big to be stored in the memory"), line);
 }
 
 inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
@@ -478,30 +473,6 @@ inline static _bool isDoubleChar(const _char& ch)
       default:
          return false;
    }
-}
-
-inline static void invalidCharException(const _char& ch, const _int& line)
-{
-   switch (ch) {
-      case CHAR_CARET: {
-         throw SyntaxException(L"you should use keyword 'xor' instead of character '^' as a boolean operator. "
-            L"If your intention was to perform exponentiation, then function 'power()' is the right tool", line);
-      }
-      case CHAR_AMPERSAND: {
-         throw SyntaxException(L"you should use keyword 'and' instead of character '&' as a boolean operator", line);
-      }
-      case CHAR_VERTICAL_BAR: {
-         throw SyntaxException(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
-      }
-      default: {
-         throw SyntaxException(str(L"character '", toStr(ch), L"' is not allowed in Uroboros"), line);
-      }
-   }
-}
-
-inline static void quotationLiteralException(const _int& line)
-{
-   throw SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
 }
 
 }

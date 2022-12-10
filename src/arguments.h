@@ -25,7 +25,13 @@ inline constexpr _uint32 FLAG_NOOMIT =    0b001;
 inline constexpr _uint32 FLAG_SILENT =    0b010;
 inline constexpr _uint32 FLAG_GUI =       0b100;
 
-static const _str FLAG_SILENT_STR = L" -s ";
+inline constexpr _char CHAR_FLAG_NOOMIT =           LETTER_n;
+inline constexpr _char CHAR_FLAG_SILENT =           LETTER_s;
+inline constexpr _char CHAR_FLAG_GUI =              LETTER_g;
+inline constexpr _char CHAR_FLAG_NOOMIT_UPPER =     LETTER_N;
+inline constexpr _char CHAR_FLAG_SILENT_UPPER =     LETTER_S;
+inline constexpr _char CHAR_FLAG_GUI_UPPER =        LETTER_G;
+
 
 enum ArgsParseState 
 {

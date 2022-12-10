@@ -68,7 +68,9 @@ inline constexpr _char LETTER_t =                    L't';
 inline constexpr _char LETTER_T =                    L'T';
 inline constexpr _char LETTER_p =                    L'p';
 inline constexpr _char LETTER_P =                    L'P';
+inline constexpr _char LETTER_n =                    L'n';
 inline constexpr _char LETTER_N =                    L'N';
+inline constexpr _char LETTER_s =                    L's';
 inline constexpr _char LETTER_S =                    L'S';
 
 inline constexpr _char DIGIT_0 =                     L'0';

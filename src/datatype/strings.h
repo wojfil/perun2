@@ -22,6 +22,7 @@ namespace uro
 {
 
 static const _str EMPTY_STRING =              _str();
+static const _str STRING_SPACE =              toStr(CHAR_SPACE);
 static const _str STRING_0 =                  toStr(DIGIT_0);
 static const _str STRING_1 =                  toStr(DIGIT_1);
 static const _str STRING_MINUS =              toStr(CHAR_MINUS);

@@ -165,12 +165,9 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
    if (hasCode) {
       this->code = value;
       if (d_has) {
-         if (os_isAbsolute(d_value)) {
-            this->location = d_value;
-         }
-         else {
-            this->location = str(cdLocation, OS_SEPARATOR_STRING, d_value);
-         }
+         this->location = os_isAbsolute(d_value)
+            ? d_value
+            : str(cdLocation, OS_SEPARATOR_STRING, d_value);
       }
       else {
          this->location = cdLocation;
@@ -210,12 +207,9 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
       const _str basisLocation = here ? cdLocation : os_parent(filePath);
 
       if (d_has) {
-         if (os_isAbsolute(d_value)) {
-            this->location = d_value;
-         }
-         else {
-            this->location = str(basisLocation, OS_SEPARATOR_STRING, d_value);
-         }
+         this->location = os_isAbsolute(d_value)
+            ? d_value
+            : str(basisLocation, OS_SEPARATOR_STRING, d_value);
       }
       else {
          this->location = basisLocation;

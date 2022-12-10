@@ -27,7 +27,17 @@ public:
    SyntaxException(const _str& msg, const _int& li);
    _str getMessage() const;
 
+   static SyntaxException filterKeywordAtStart(const _str& value, const _int& line);
+   static SyntaxException filterKeywordAtEnd(const _str& value, const _int& line);
+   static SyntaxException inevitableDivisionByZero(const _int& line);
+   static SyntaxException inevitableModuloByZero(const _int& line);
+   static SyntaxException invalidAsteriskPattern(const _str& value, const _int& line);
+   static SyntaxException invalidExpression(const _int& line);
+   static SyntaxException invalidFunctionName(const _int& line);
+   static SyntaxException invalidNumericalExpression(const _int& line);
    static SyntaxException invalidChar(const _char& value, const _int& line);
+   static SyntaxException keywordNotFollowedByBool(const _str& value, const _int& line);
+   static SyntaxException keywordNotFollowedByNumber(const _str& value, const _int& line);
    static SyntaxException missingTimeVariableMember(const _str& value, const _int& line);
    static SyntaxException multipleDotsInNumber(const _str& value, const _int& line);
    static SyntaxException multipleDotsInWord(const _str& value, const _int& line);

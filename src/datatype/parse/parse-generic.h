@@ -290,13 +290,11 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
    const _size firstKeywordId = tks.getFilterKeywordId();
 
    if (firstKeywordId == tks.getStart()) {
-      throw SyntaxException(str(L"filter keyword '", tks.first().getOriginString(uro),
-         L"' is not preceded by a collection of values"), tks.first().line);
+      throw SyntaxException::filterKeywordAtStart(tks.first().getOriginString(uro), tks.first().line);
    }
    else if (firstKeywordId == tks.getStart() + tks.getLength() - 1) {
       const Token& t = tks.listAt(firstKeywordId);
-      throw SyntaxException(str(L"filter keyword '", t.getOriginString(uro),
-         L"' cannot stand at the end of an expression"), t.line);
+      throw SyntaxException::filterKeywordAtEnd(t.getOriginString(uro), t.line);
    }
 
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
@@ -348,8 +346,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
             _genptr<_num> num;
             if (!parse(uro, ts, num)) {
-               throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
-                  L"' cannot be resolved to a number"), tsf.line);
+               throw SyntaxException::keywordNotFollowedByNumber(tsf.getOriginString(uro), tsf.line);
             }
 
             _fpptr<T> unit(new FP_Numeric<T>(num, kw));
@@ -366,9 +363,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
             _genptr<_bool> boo;
             if (!parse(uro, ts, boo)) {
-               uro.vars.inner.thisState = prevThisState;
-               throw SyntaxException(str(L"tokens after keyword '", tsf.getOriginString(uro),
-                  L"' cannot be resolved to a logic condition"), tsf.line);
+               throw SyntaxException::keywordNotFollowedByBool(tsf.getOriginString(uro), tsf.line);
             }
 
             _fpptr<T> unit(new FP_Where<T>(boo));

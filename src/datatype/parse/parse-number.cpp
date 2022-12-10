@@ -73,7 +73,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
                   _genptr<_str> str;
 
                   if (!parse(uro, tkse, str)) {
-                     throw SyntaxException(L"syntax of an expression is not valid", tkse.first().line);
+                     throw SyntaxException::invalidExpression(tkse.first().line);
                   }
                }
             }
@@ -209,7 +209,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
                   if (sublen == 1) {
                      const Token& pt = tks.listAt(i - 1);
                      if (pt.type != Token::t_Word) {
-                        throw SyntaxException(L"function name is not valid", t.line);
+                        throw SyntaxException::invalidFunctionName(t.line);
                      }
                   }
                }
@@ -267,8 +267,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
    }
 
    if (!isNumExpComputable(infList)) {
-      throw SyntaxException(L"syntax of a numeric expression is not valid",
-         tks.first().line);
+      throw SyntaxException::invalidNumericalExpression(tks.first().line);
    }
 
    return numExpTree(result, infList);
@@ -416,14 +415,14 @@ static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>
                   }
                   case CHAR_SLASH: {
                      if (v2.isZero()) {
-                        throw SyntaxException(L"inevitable division by zero", secondElement.line);
+                        throw SyntaxException::inevitableDivisionByZero(secondElement.line);
                      }
                      value = v1 / v2;
                      break;
                   }
                   case CHAR_PERCENT: {
                      if (v2.isZero()) {
-                        throw SyntaxException(L"inevitable modulo by zero", secondElement.line);
+                        throw SyntaxException::inevitableModuloByZero(secondElement.line);
                      }
                      value = v1 % v2;
                      break;

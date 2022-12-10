@@ -28,6 +28,48 @@ _str SyntaxException::getMessage() const
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
+
+
+SyntaxException SyntaxException::filterKeywordAtStart(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"filter keyword '", value, L"' is not preceded by a collection of values"), line);
+}
+
+SyntaxException SyntaxException::filterKeywordAtEnd(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"filter keyword '", value, L"' cannot stand at the end of an expression"), line);
+}
+
+SyntaxException SyntaxException::inevitableDivisionByZero(const _int& line)
+{
+   return SyntaxException(L"inevitable division by zero", line);
+}
+
+SyntaxException SyntaxException::inevitableModuloByZero(const _int& line)
+{
+   return SyntaxException(L"inevitable modulo by zero", line);
+}
+
+SyntaxException SyntaxException::invalidAsteriskPattern(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"asterisk pattern '", value, L"' is not valid"), line);
+}
+
+SyntaxException SyntaxException::invalidExpression(const _int& line)
+{
+   return SyntaxException(L"syntax of an expression is not valid", line);
+}
+
+SyntaxException SyntaxException::invalidFunctionName(const _int& line)
+{
+   return SyntaxException(L"function name is not valid", line);
+}
+   
+SyntaxException SyntaxException::invalidNumericalExpression(const _int& line)
+{
+   return SyntaxException(L"syntax of a numerical expression is not valid", line);
+}
+   
 SyntaxException SyntaxException::invalidChar(const _char& value, const _int& line)
 {
    switch (value) {
@@ -47,9 +89,19 @@ SyntaxException SyntaxException::invalidChar(const _char& value, const _int& lin
    }
 }
 
+SyntaxException SyntaxException::keywordNotFollowedByBool(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"tokens after keyword '",value, L"' cannot be resolved to a logical condition"), line);
+}
+
+SyntaxException SyntaxException::keywordNotFollowedByNumber(const _str& value, const _int& line)
+{
+   return SyntaxException(str(L"tokens after keyword '",value, L"' cannot be resolved to a number"), line);
+}
+
 SyntaxException SyntaxException::missingTimeVariableMember(const _str& value, const _int& line)
 {
-   throw SyntaxException(str(L"a time variable member was expected after '", value, L"'"), line);
+   return SyntaxException(str(L"a time variable member was expected after '", value, L"'"), line);
 }
 
 SyntaxException SyntaxException::multipleDotsInNumber(const _str& value, const _int& line)

@@ -33,12 +33,14 @@ _num F_Absolute::getValue()
    _num n = arg1->getValue();
 
    if (n.isDouble) {
-      if (n.value.d < 0L)
-         n.value.d *= -1L;
+      if (n.value.d < NDOUBLE_ZERO) {
+         n.value.d *= NDOUBLE_MINUS_ONE;
+      }
    }
    else {
-      if (n.value.i < 0LL)
-         n.value.i *= -1LL;
+      if (n.value.i < NINT_ZERO) {
+         n.value.i *= NINT_MINUS_ONE;
+      }
    }
 
    return n;
@@ -61,7 +63,7 @@ _num F_Ceil::getValue()
 
 _num F_CountDef::getValue()
 {
-   _nint n = 0LL;
+   _nint n = NINT_ZERO;
 
    while (definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -79,17 +81,17 @@ _num F_CountInside::getValue()
 {
    const _str& v = os_trim(value->getValue());
    if (v.empty() || os_isInvaild(v)) {
-      return _num(-1LL);
+      return _num(NINT_MINUS_ONE);
    }
 
    const _str path = os_join(this->inner.location.value, v);
    if (!os_directoryExists(path)) {
-      return _num(-1LL);
+      return _num(NINT_MINUS_ONE);
    }
 
    const _str prevLoc = this->inner.location.value;
    this->inner.location.value = path;
-   _nint n = 0LL;
+   _nint n = NINT_ZERO;
 
    while (definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -128,19 +130,18 @@ _num F_Number::getValue()
 {
    const _str s = this->arg1->getValue();
    if (!isNumber(s)) {
-      return _num(0LL);
+      return _num();
    }
 
-   _int dotIndex = s.find(L'.');
+   _int dotIndex = s.find(CHAR_DOT);
 
    if (dotIndex == _str::npos) {
       try {
-         _nint i = std::stoll(s);
+         const _nint i = std::stoll(s);
          return _num(i);
       }
       catch (...) {
-         throw RuntimeError(str(L"number '", s,
-            L"' is too big to be stored in the memory"));
+         throw RuntimeError(str(L"number '", s, L"' is too big to be stored in the memory"));
       }
    }
    else {
@@ -179,22 +180,22 @@ _num F_Power::getValue()
 
          // optimization for common cases
          switch (exp) {
-            case -1LL: {
-               return _num(1L / ((_ndouble) base));
+            case NINT_MINUS_ONE: {
+               return _num(NDOUBLE_ONE / ((_ndouble) base));
             }
-            case 0LL: {
-               return _num(1LL);
+            case NINT_ZERO: {
+               return _num(NINT_ONE);
             }
-            case 1LL: {
+            case NINT_ONE: {
                return _num(base);
             }
-            case 2LL: {
+            case NINT_TWO: {
                return _num(base * base);
             }
-            case 3LL: {
+            case NINT_THREE: {
                return _num(base * base * base);
             }
-            case 4LL: {
+            case NINT_FOUR: {
                const _ndouble b2 = base * base;
                return _num(b2 * b2);
             }
@@ -206,27 +207,27 @@ _num F_Power::getValue()
    else {
       _nint base = n1.value.i;
 
-      if (base == 0LL) {
+      if (base == NINT_ZERO) {
          if (n2.isDouble) {
-            if (n2.value.d == 0L) {
-               return _num(1LL);
+            if (n2.value.d == NDOUBLE_ZERO) {
+               return _num(NINT_ONE);
             }
-            else if (n2.value.d < 0L) {
+            else if (n2.value.d < NDOUBLE_ZERO) {
                throw RuntimeError(L"result of exponentiation cannot be expressed");
             }
             else {
-               return _num(0LL);
+               return _num();
             }
          }
          else {
-            if (n2.value.i == 0LL) {
-               return _num(1LL);
+            if (n2.value.i == NINT_ZERO) {
+               return _num(NINT_ONE);
             }
-            else if (n2.value.i <= 0LL) {
+            else if (n2.value.i <= NINT_ZERO) {
                throw RuntimeError(L"result of exponentiation cannot be expressed");
             }
             else {
-               return _num(0LL);
+               return _num();
             }
          }
       }
@@ -240,22 +241,22 @@ _num F_Power::getValue()
 
          // optimization for common cases
          switch (exp) {
-            case -1LL: {
-               return _num(1L / ((_ndouble) base));
+            case NINT_MINUS_ONE: {
+               return _num(NDOUBLE_ONE / ((_ndouble) base));
             }
-            case 0LL: {
-               return _num(1LL);
+            case NINT_ZERO: {
+               return _num(NINT_ONE);
             }
-            case 1LL: {
+            case NINT_ONE: {
                return _num(base);
             }
-            case 2LL: {
+            case NINT_TWO: {
                return _num(base * base);
             }
-            case 3LL: {
+            case NINT_THREE: {
                return _num(base * base * base);
             }
-            case 4LL: {
+            case NINT_FOUR: {
                const _nint b2 = base * base;
                return _num(b2 * b2);
             }
@@ -263,20 +264,20 @@ _num F_Power::getValue()
 
          // if the number is inver
          _bool inv = false;
-         if (exp < 0LL) {
-            exp *= -1LL;
+         if (exp < NINT_ZERO) {
+            exp *= NINT_MINUS_ONE;
             inv = true;
          }
 
          _bool neg = false;
-         if (base < 0LL) {
-            base *= -1LL;
-            neg = (exp % 2LL == 1LL);
+         if (base < NINT_ZERO) {
+            base *= NINT_MINUS_ONE;
+            neg = (exp % NINT_TWO == NINT_ONE);
          }
 
-         _nint result = 1;
+         _nint result = NINT_ONE;
          while (true) {
-            if (exp & 1) {
+            if (exp & NINT_ONE) {
                result *= base;
             }
             exp >>= 1;
@@ -287,7 +288,7 @@ _num F_Power::getValue()
          }
 
          if (inv) {
-            return _num((neg ? -1L : 1L) / ((_ndouble)result));
+            return _num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / ((_ndouble)result));
          }
          else {
             return _num(neg ? (-result) : result);
@@ -312,44 +313,42 @@ _num F_Sqrt::getValue()
    const _num n = arg1->getValue();
 
    if (n.isDouble) {
-      if (n.value.d == 0L) {
-         return _num(0LL);
+      if (n.value.d == NDOUBLE_ZERO) {
+         return _num();
       }
-      else if (n.value.d == 1L) {
-         return _num(1LL);
+      else if (n.value.d == NDOUBLE_ONE) {
+         return _num(NINT_ONE);
       }
-      else if (n.value.d < 0L) {
-         throw RuntimeError(str(L"square root of a negative number ",
-            n.toString()));
+      else if (n.value.d < NDOUBLE_ZERO) {
+         throw RuntimeError(str(L"square root of a negative number ", n.toString()));
       }
 
       return _num(sqrt(n.value.d));
    }
    else {
-      if (n.value.i == 0LL || n.value.i == 1LL) {
+      if (n.value.i == NINT_ZERO || n.value.i == NINT_ONE) {
          return n;
       }
-      else if (n.value.i < 0LL) {
-         throw RuntimeError(str(L"square root of a negative number ",
-            n.toString()));
+      else if (n.value.i < NINT_ZERO) {
+         throw RuntimeError(str(L"square root of a negative number ", n.toString()));
       }
 
       // look for perfect squares:
-      _nint left = 1LL;
+      _nint left = NINT_ONE;
       _nint right = n.value.i;
 
       while (left <= right) {
-         const _nint mid = (left + right) / 2;
+         const _nint mid = (left + right) / NINT_TWO;
 
          if (mid * mid == n.value.i) {
             return _num(mid);
          }
 
          if (mid * mid < n.value.i) {
-            left = mid + 1;
+            left = mid + NINT_ONE;
          }
          else {
-            right = mid - 1;
+            right = mid - NINT_ONE;
          }
       }
 
@@ -363,20 +362,20 @@ _num F_Sign::getValue()
    const _num n = arg1->getValue();
 
    if (n.isDouble) {
-      if (n.value.d > 0L)
-         return _num(1LL);
-      else if (n.value.d < 0L)
-         return _num(-1LL);
+      if (n.value.d > NDOUBLE_ZERO)
+         return _num(NINT_ONE);
+      else if (n.value.d < NDOUBLE_ZERO)
+         return _num(NINT_MINUS_ONE);
       else
-         return _num(0LL);
+         return _num();
    }
    else {
-      if (n.value.i > 0LL)
-         return _num(1LL);
-      else if (n.value.i < 0LL)
-         return _num(-1LL);
+      if (n.value.i > NINT_ZERO)
+         return _num(NINT_ONE);
+      else if (n.value.i < NINT_ZERO)
+         return _num(NINT_MINUS_ONE);
       else
-         return _num(0LL);
+         return _num();
    }
 }
 
@@ -410,7 +409,7 @@ _num F_RandomNumber::getValue()
       return n;
    }
    else {
-      return _num(this->math.randomInt(n.value.i - 1LL));
+      return _num(this->math.randomInt(n.value.i - NINT_ONE));
    }
 }
 
@@ -421,16 +420,16 @@ _num F_FromBinary::getValue()
    _size len = baseString.size();
 
    if (len == 0) {
-      return _num(0LL);
+      return _num();
    }
 
-   _nint result = 0LL;
+   _nint result = NINT_ZERO;
    _size i = 0;
    _bool negative = false;
 
    if (baseString[0] == L'-') {
       if (len == 1) {
-         return _num(0LL);
+         return _num();
       }
       negative = true;
       i++;
@@ -450,21 +449,21 @@ _num F_FromBinary::getValue()
       result = result << 1;
 
       switch (baseString[i]) {
-         case L'0': {
+         case DIGIT_0: {
             break;
          }
-         case L'1': {
+         case DIGIT_1: {
             result++;
             break;
          }
          default: {
-            return _num(0LL);
+            return _num();
          }
       }
    }
 
    if (negative) {
-      result *= -1;
+      result *= NINT_MINUS_ONE;
    }
 
    return _num(result);
@@ -475,7 +474,7 @@ _num F_FromHex::getValue()
 {
    const _str baseString = arg1->getValue();
    if (baseString.size() == 0) {
-      return _num(0LL);
+      return _num();
    }
 
    _nint x;

@@ -73,7 +73,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
                   _genptr<_str> str;
 
                   if (!parse(uro, tkse, str)) {
-                     throw SyntaxException::invalidExpression(tkse.first().line);
+                     throw SyntaxError::invalidExpression(tkse.first().line);
                   }
                }
             }
@@ -95,7 +95,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          else {
             _genptr<_per> per;
             if (!parse(uro, tks2, per)) {
-               throw SyntaxException(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
+               throw SyntaxError(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
             }
          }
       }
@@ -209,7 +209,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
                   if (sublen == 1) {
                      const Token& pt = tks.listAt(i - 1);
                      if (pt.type != Token::t_Word) {
-                        throw SyntaxException::invalidFunctionName(t.line);
+                        throw SyntaxError::invalidFunctionName(t.line);
                      }
                   }
                }
@@ -267,7 +267,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro
    }
 
    if (!isNumExpComputable(infList)) {
-      throw SyntaxException::invalidNumericalExpression(tks.first().line);
+      throw SyntaxError::invalidNumericalExpression(tks.first().line);
    }
 
    return numExpTree(result, infList);
@@ -415,14 +415,14 @@ static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>
                   }
                   case CHAR_SLASH: {
                      if (v2.isZero()) {
-                        throw SyntaxException::inevitableDivisionByZero(secondElement.line);
+                        throw SyntaxError::inevitableDivisionByZero(secondElement.line);
                      }
                      value = v1 / v2;
                      break;
                   }
                   case CHAR_PERCENT: {
                      if (v2.isZero()) {
-                        throw SyntaxException::inevitableModuloByZero(secondElement.line);
+                        throw SyntaxError::inevitableModuloByZero(secondElement.line);
                      }
                      value = v1 % v2;
                      break;
@@ -640,7 +640,7 @@ static _bool isNumExpHighPriority(const _char& ch)
 
 void timeVariableMemberException(const Token& tk, Uroboros& uro)
 {
-   throw SyntaxException(str(L"'", tk.getOriginString_2(uro),
+   throw SyntaxError(str(L"'", tk.getOriginString_2(uro),
       L"' is not a time variable member"), tk.line);
 }
 

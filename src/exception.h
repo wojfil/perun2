@@ -21,29 +21,29 @@
 namespace uro
 {
 
-class SyntaxException
+class SyntaxError
 {
 public:
-   SyntaxException(const _str& msg, const _int& li);
+ SyntaxError(const _str& msg, const _int& li);
    _str getMessage() const;
 
-   static SyntaxException filterKeywordAtStart(const _str& value, const _int& line);
-   static SyntaxException filterKeywordAtEnd(const _str& value, const _int& line);
-   static SyntaxException inevitableDivisionByZero(const _int& line);
-   static SyntaxException inevitableModuloByZero(const _int& line);
-   static SyntaxException invalidAsteriskPattern(const _str& value, const _int& line);
-   static SyntaxException invalidExpression(const _int& line);
-   static SyntaxException invalidFunctionName(const _int& line);
-   static SyntaxException invalidNumericalExpression(const _int& line);
-   static SyntaxException invalidChar(const _char& value, const _int& line);
-   static SyntaxException keywordNotFollowedByBool(const _str& value, const _int& line);
-   static SyntaxException keywordNotFollowedByNumber(const _str& value, const _int& line);
-   static SyntaxException missingTimeVariableMember(const _str& value, const _int& line);
-   static SyntaxException multipleDotsInNumber(const _str& value, const _int& line);
-   static SyntaxException multipleDotsInWord(const _str& value, const _int& line);
-   static SyntaxException numberTooBig(const _str& value, const _int& line);
-   static SyntaxException openedStringLteral(const _int& line);
-   static SyntaxException quotationMarkStringLteral(const _int& line);
+   static SyntaxError filterKeywordAtStart(const _str& value, const _int& line);
+   static SyntaxError filterKeywordAtEnd(const _str& value, const _int& line);
+   static SyntaxError inevitableDivisionByZero(const _int& line);
+   static SyntaxError inevitableModuloByZero(const _int& line);
+   static SyntaxError invalidAsteriskPattern(const _str& value, const _int& line);
+   static SyntaxError invalidExpression(const _int& line);
+   static SyntaxError invalidFunctionName(const _int& line);
+   static SyntaxError invalidNumericalExpression(const _int& line);
+   static SyntaxError invalidChar(const _char& value, const _int& line);
+   static SyntaxError keywordNotFollowedByBool(const _str& value, const _int& line);
+   static SyntaxError keywordNotFollowedByNumber(const _str& value, const _int& line);
+   static SyntaxError missingTimeVariableMember(const _str& value, const _int& line);
+   static SyntaxError multipleDotsInNumber(const _str& value, const _int& line);
+   static SyntaxError multipleDotsInWord(const _str& value, const _int& line);
+   static SyntaxError numberTooBig(const _str& value, const _int& line);
+   static SyntaxError openedStringLteral(const _int& line);
+   static SyntaxError quotationMarkStringLteral(const _int& line);
 
 private:
    const _str message;

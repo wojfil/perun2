@@ -177,13 +177,13 @@ _bool ConditionContext::isExpandable() const
 void ConditionContext::addElse(_comptr& com, const _int& line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxException(L"structure 'else' is not preceded by a structure 'if' ", line);
+      throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxException(L"structure 'if' already contains an assigned structure 'else'", line);
+      throw SyntaxError(L"structure 'if' already contains an assigned structure 'else'", line);
    }
 
    cu.setElse(com);
@@ -193,13 +193,13 @@ void ConditionContext::addElse(_comptr& com, const _int& line)
 void ConditionContext::addEmptyElse(const _int& line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxException(L"structure 'else' is not preceded by a structure 'if' ", line);
+      throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxException(L"structure 'if' already contains an assigned structure 'else'", line);
+      throw SyntaxError(L"structure 'if' already contains an assigned structure 'else'", line);
    }
 
    cu.closeElse();
@@ -208,13 +208,13 @@ void ConditionContext::addEmptyElse(const _int& line)
 void ConditionContext::addElseIf(_genptr<_bool>& cond, _comptr& com, const _int& line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxException(L"structure 'else if' is not preceded by a structure 'if'", line);
+      throw SyntaxError(L"structure 'else if' is not preceded by a structure 'if'", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxException(L"structure 'else if' should have appeared before the structure 'else'", line);
+      throw SyntaxError(L"structure 'else if' should have appeared before the structure 'else'", line);
    }
 
    cu.addElseIf(com, cond);

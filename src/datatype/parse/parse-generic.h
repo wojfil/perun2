@@ -290,11 +290,11 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
    const _size firstKeywordId = tks.getFilterKeywordId();
 
    if (firstKeywordId == tks.getStart()) {
-      throw SyntaxException::filterKeywordAtStart(tks.first().getOriginString(uro), tks.first().line);
+      throw SyntaxError::filterKeywordAtStart(tks.first().getOriginString(uro), tks.first().line);
    }
    else if (firstKeywordId == tks.getStart() + tks.getLength() - 1) {
       const Token& t = tks.listAt(firstKeywordId);
-      throw SyntaxException::filterKeywordAtEnd(t.getOriginString(uro), t.line);
+      throw SyntaxError::filterKeywordAtEnd(t.getOriginString(uro), t.line);
    }
 
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
@@ -346,7 +346,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
             _genptr<_num> num;
             if (!parse(uro, ts, num)) {
-               throw SyntaxException::keywordNotFollowedByNumber(tsf.getOriginString(uro), tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(uro), tsf.line);
             }
 
             _fpptr<T> unit(new FP_Numeric<T>(num, kw));
@@ -363,7 +363,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, U
 
             _genptr<_bool> boo;
             if (!parse(uro, ts, boo)) {
-               throw SyntaxException::keywordNotFollowedByBool(tsf.getOriginString(uro), tsf.line);
+               throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(uro), tsf.line);
             }
 
             _fpptr<T> unit(new FP_Where<T>(boo));

@@ -113,13 +113,13 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {
-      throw SyntaxException(str(L"keyword '", orderKeyword.getOriginString(uro),
+      throw SyntaxError(str(L"keyword '", orderKeyword.getOriginString(uro),
          L"' should be followed by a keyword 'by'"), first.line);
    }
 
    ts2.trimLeft();
    if (ts2.isEmpty()) {
-      throw SyntaxException(str(L"declaration of '", orderKeyword.getOriginString(uro),
+      throw SyntaxError(str(L"declaration of '", orderKeyword.getOriginString(uro),
          L" ", first.getOriginString(uro), L"' filter is empty"), first.line);
    }
 
@@ -170,7 +170,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
          continue;
       }
       else {
-         throw SyntaxException(L"value of this order unit cannot be resolved to any valid data type. "
+         throw SyntaxError(L"value of this order unit cannot be resolved to any valid data type. "
             L"Hint: if you use multiple variables for order, separate them by commas",
             tk.first().line);
       }

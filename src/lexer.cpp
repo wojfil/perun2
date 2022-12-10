@@ -53,7 +53,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
       switch (mode)  {
          case Mode::m_Normal: {
             if (c == CHAR_QUOTATION_MARK) {
-               throw SyntaxException::quotationMarkStringLteral(line);
+               throw SyntaxError::quotationMarkStringLteral(line);
             }
             else if (isSymbol(c)) {
                if (i != 0 && prev == CHAR_SLASH) {
@@ -124,14 +124,14 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                   prevSymbol = false;
                }
                else if (c != CHAR_SPACE) {
-                  throw SyntaxException::invalidChar(c, line);
+                  throw SyntaxError::invalidChar(c, line);
                }
             }
             break;
          }
          case Mode::m_Word: {
             if (c == CHAR_QUOTATION_MARK) {
-               throw SyntaxException::quotationMarkStringLteral(line);
+               throw SyntaxError::quotationMarkStringLteral(line);
             }
             else if (isAllowedInWord(c)) {
                wlen++;
@@ -157,7 +157,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
                   mode = Mode::m_BLiteral;
                }
                else if (c != CHAR_SPACE) {
-                  throw SyntaxException::invalidChar(c, line);
+                  throw SyntaxError::invalidChar(c, line);
                }
             }
             break;
@@ -237,7 +237,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
       }
       case m_ALiteral:
       case m_BLiteral: {
-         throw SyntaxException::openedStringLteral(line);
+         throw SyntaxError::openedStringLteral(line);
       }
    }
 
@@ -270,7 +270,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                return Token(_num(std::stoll(value)), line, start, length, NumberMode::nm_Normal, uro);
             }
             catch (...) {
-               throw SyntaxException::numberTooBig(code.substr(start, length), line);
+               throw SyntaxError::numberTooBig(code.substr(start, length), line);
             }
          }
          case 1: {
@@ -278,11 +278,11 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                return Token(_num(stringToDouble(value)), line, start, length, NumberMode::nm_Normal, uro);
             }
             catch (...) {
-               throw SyntaxException::numberTooBig(code.substr(start, length), line);
+               throw SyntaxError::numberTooBig(code.substr(start, length), line);
             }
          }
          default: {
-            throw SyntaxException::multipleDotsInNumber(value, line);
+            throw SyntaxError::multipleDotsInNumber(value, line);
          }
       }
    }
@@ -313,12 +313,12 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                   _nint i = std::stoll(value2);
                   _nint i2 = i * mult;
                   if (mult != NINT_ZERO && i2 / mult != i) {
-                     throw SyntaxException::numberTooBig(code.substr(start, length), line);
+                     throw SyntaxError::numberTooBig(code.substr(start, length), line);
                   }
                   return Token(_num(i2), line, start, length, NumberMode::nm_Size, uro);
                }
                catch (...) {
-                  throw SyntaxException::numberTooBig(code.substr(start, length), line);
+                  throw SyntaxError::numberTooBig(code.substr(start, length), line);
                }
             }
             else {
@@ -329,7 +329,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
                   return Token(_num(d), line, start, length, NumberMode::nm_Size, uro);
                }
                catch (...) {
-                  throw SyntaxException::numberTooBig(code.substr(start, length), line);
+                  throw SyntaxError::numberTooBig(code.substr(start, length), line);
                }
             }
          }
@@ -370,7 +370,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          }
 
          if (pnt == length - 1) {
-            throw SyntaxException::missingTimeVariableMember(code.substr(start, length), line);
+            throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
          }
 
          const _str os1 = code.substr(start, pnt - start);
@@ -381,7 +381,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
          return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, uro);
       }
       default: {
-         throw SyntaxException::multipleDotsInWord(code.substr(start, length), line);
+         throw SyntaxError::multipleDotsInWord(code.substr(start, length), line);
       }
    }
 

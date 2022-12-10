@@ -57,7 +57,7 @@ static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, cons
 
 static void checkUselessFlags(const Token& word, const _int& line,
    const _bool& force, const _bool& stack, Uroboros& uro);
-static void commandSyntaxException(const _str& name, const _int& line);
+static void commandSyntaxError(const _str& name, const _int& line);
 static void commandNoArgException(const _str& name, const _int& line);
 
 }

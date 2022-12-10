@@ -106,7 +106,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxException(str(L"'", first.getOriginString(uro),
+         throw SyntaxError(str(L"'", first.getOriginString(uro),
             L"' is not a valid month name"), first.line);
       }
 
@@ -128,7 +128,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxException(str(L"'", second.getOriginString(uro),
+      throw SyntaxError(str(L"'", second.getOriginString(uro),
          L"' is not a valid month name"), second.line);
    }
 
@@ -196,12 +196,12 @@ static void checkDayCorrectness(const _tnum& day, const _tnum& month,
    const _tnum& year, const Token& tk)
 {
    if (day < 1) {
-      throw SyntaxException(L"day cannot be smaller than 1", tk.line);
+      throw SyntaxError(L"day cannot be smaller than 1", tk.line);
    }
 
    const _tnum expected = daysInMonth(month, year);
    if (day > expected) {
-      throw SyntaxException(str(L"month ", monthToString(month), L" has only ",
+      throw SyntaxError(str(L"month ", monthToString(month), L" has only ",
          toStr(expected), L" days"), tk.line);
    }
 }
@@ -209,7 +209,7 @@ static void checkDayCorrectness(const _tnum& day, const _tnum& month,
 static void clockUnitException(const _str& unit, const _tnum& value,
    const Token& tk)
 {
-   throw SyntaxException(str(L"value of ", unit, L" (", toStr(value),
+   throw SyntaxError(str(L"value of ", unit, L" (", toStr(value),
       L") went out of range"), tk.line);
 }
 
@@ -233,10 +233,10 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
                if (bi.isBracketFree()) {
                   if (sublen == 0) {
                      if (time) {
-                        throw SyntaxException(L"adjacent + symbols", t.line);
+                        throw SyntaxError(L"adjacent + symbols", t.line);
                      }
                      else {
-                        throw SyntaxException(L"expression cannot start with +", t.line);
+                        throw SyntaxError(L"expression cannot start with +", t.line);
                      }
                   }
 
@@ -294,9 +294,9 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
 
    if (sublen == 0) {
       if (subtract)
-         throw SyntaxException(L"expression cannot end with -", tks.last().line);
+         throw SyntaxError(L"expression cannot end with -", tks.last().line);
       else
-         throw SyntaxException(L"expression cannot end with +", tks.last().line);
+         throw SyntaxError(L"expression cannot end with +", tks.last().line);
    }
 
    const Tokens tks2(tks, 1 + end - sublen, sublen);

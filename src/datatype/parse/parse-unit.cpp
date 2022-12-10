@@ -71,12 +71,12 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
          const Hashes& hs = uro.hashes;
 
          if (tk.value.twoWords.h1 == hs.HASH_NOTHING) {
-            throw SyntaxException(L"dot . should be preceded by a time variable name", tk.line);
+            throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
          _genptr<_tim> var;
          if (!uro.vars.getVarValue(tk, var)) {
-            throw SyntaxException(str(L"time variable from expression '", tk.getOriginString(uro),
+            throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(uro),
                L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
          }
 
@@ -160,12 +160,12 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result)
       }
       case Token::t_TwoWords: {
          if (tk.value.twoWords.h1 == uro.hashes.HASH_NOTHING) {
-            throw SyntaxException(L"dot . should be preceded by a time variable name", tk.line);
+            throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
          _genptr<_tim> var;
          if (!uro.vars.getVarValue(tk, var)) {
-            throw SyntaxException(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
+            throw SyntaxError(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
          }
 
          if (tk.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {

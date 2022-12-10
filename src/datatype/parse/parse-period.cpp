@@ -174,7 +174,7 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
 
 static void unitNameException(const _str& name, const Tokens& tks)
 {
-   throw SyntaxException(str(L"missing letter 's' at the end of the word '", name, L"'"), tks.last().line);
+   throw SyntaxError(str(L"missing letter 's' at the end of the word '", name, L"'"), tks.last().line);
 }
 
 _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
@@ -338,7 +338,7 @@ _bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, Uroboros& ur
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 
    if (pair.second.isEmpty()) {
-      throw SyntaxException(L"expression cannot end with -", tks.last().line);
+      throw SyntaxError(L"expression cannot end with -", tks.last().line);
    }
 
    if (pair.first.isEmpty()) {

@@ -39,7 +39,7 @@ _bool parseList(_genptr<_list>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
       else {
-         throw SyntaxException(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
+         throw SyntaxError(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
       }
    }
 

@@ -69,7 +69,7 @@ public:
 
          if (state != ThisState::ts_String) {
             const _str name = tk.getOriginString(this->uroboros);
-            throw SyntaxException(str(L"the value of variable '", name,
+            throw SyntaxError(str(L"the value of variable '", name,
                L"' is undefined here. Right there we are iterating over ",
                (state == ThisState::ts_Number) ? L"numbers. " : L"times. ",
                L"You should assign the value of '", name, L"' to a new temporary variable somewhere before"), tk.line);

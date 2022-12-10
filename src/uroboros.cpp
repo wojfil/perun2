@@ -51,13 +51,13 @@ _bool Uroboros::uro_tokenize()
    try {
       this->tokens = tokenize(this->arguments.getCode(), *this);
    }
-   catch (const SyntaxException& ex) {
+   catch (const SyntaxError& ex) {
       rawPrint(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
    catch (...) {
-      SyntaxException ex2(L"wrong syntax. No command can be formed of this code", 1);
+      SyntaxError ex2(L"wrong syntax. No command can be formed of this code", 1);
       rawPrint(ex2.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
@@ -76,13 +76,13 @@ _bool Uroboros::uro_parse()
       }
       this->conditionContext.deleteClosedUnits();
    }
-   catch (const SyntaxException& ex) {
+   catch (const SyntaxError& ex) {
       rawPrint(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
    catch (...) {
-      SyntaxException ex2(L"wrong syntax. No command can be formed of this code", 1);
+      SyntaxError ex2(L"wrong syntax. No command can be formed of this code", 1);
       rawPrint(ex2.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;

@@ -29,7 +29,7 @@ void resetOrderParseSettings(const ThisState& state, const ThisState& prevState,
 
 void orderUnitFailure(const Token& tk, Uroboros& uro)
 {
-   throw SyntaxException(str(L"keyword '", tk.getOriginString(uro),
+   throw SyntaxError(str(L"keyword '", tk.getOriginString(uro),
       L"' is not preceded by a value used for order"), tk.line);
 }
 

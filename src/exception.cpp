@@ -20,113 +20,113 @@
 namespace uro
 {
 
-SyntaxException::SyntaxException(const _str& msg, const _int& li)
+SyntaxError::SyntaxError(const _str& msg, const _int& li)
    : message(msg), line(li) { };
 
-_str SyntaxException::getMessage() const
+_str SyntaxError::getMessage() const
 {
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
 
 
-SyntaxException SyntaxException::filterKeywordAtStart(const _str& value, const _int& line)
+SyntaxError SyntaxError::filterKeywordAtStart(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"filter keyword '", value, L"' is not preceded by a collection of values"), line);
+   return SyntaxError(str(L"filter keyword '", value, L"' is not preceded by a collection of values"), line);
 }
 
-SyntaxException SyntaxException::filterKeywordAtEnd(const _str& value, const _int& line)
+SyntaxError SyntaxError::filterKeywordAtEnd(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"filter keyword '", value, L"' cannot stand at the end of an expression"), line);
+   return SyntaxError(str(L"filter keyword '", value, L"' cannot stand at the end of an expression"), line);
 }
 
-SyntaxException SyntaxException::inevitableDivisionByZero(const _int& line)
+SyntaxError SyntaxError::inevitableDivisionByZero(const _int& line)
 {
-   return SyntaxException(L"inevitable division by zero", line);
+   return SyntaxError(L"inevitable division by zero", line);
 }
 
-SyntaxException SyntaxException::inevitableModuloByZero(const _int& line)
+SyntaxError SyntaxError::inevitableModuloByZero(const _int& line)
 {
-   return SyntaxException(L"inevitable modulo by zero", line);
+   return SyntaxError(L"inevitable modulo by zero", line);
 }
 
-SyntaxException SyntaxException::invalidAsteriskPattern(const _str& value, const _int& line)
+SyntaxError SyntaxError::invalidAsteriskPattern(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"asterisk pattern '", value, L"' is not valid"), line);
+   return SyntaxError(str(L"asterisk pattern '", value, L"' is not valid"), line);
 }
 
-SyntaxException SyntaxException::invalidExpression(const _int& line)
+SyntaxError SyntaxError::invalidExpression(const _int& line)
 {
-   return SyntaxException(L"syntax of an expression is not valid", line);
+   return SyntaxError(L"syntax of an expression is not valid", line);
 }
 
-SyntaxException SyntaxException::invalidFunctionName(const _int& line)
+SyntaxError SyntaxError::invalidFunctionName(const _int& line)
 {
-   return SyntaxException(L"function name is not valid", line);
+   return SyntaxError(L"function name is not valid", line);
 }
    
-SyntaxException SyntaxException::invalidNumericalExpression(const _int& line)
+SyntaxError SyntaxError::invalidNumericalExpression(const _int& line)
 {
-   return SyntaxException(L"syntax of a numerical expression is not valid", line);
+   return SyntaxError(L"syntax of a numerical expression is not valid", line);
 }
    
-SyntaxException SyntaxException::invalidChar(const _char& value, const _int& line)
+SyntaxError SyntaxError::invalidChar(const _char& value, const _int& line)
 {
    switch (value) {
       case CHAR_CARET: {
-         return SyntaxException(L"you should use keyword 'xor' instead of character '^' as a boolean operator. "
+         return SyntaxError(L"you should use keyword 'xor' instead of character '^' as a boolean operator. "
             L"If your intention was to perform exponentiation, then function 'power()' is the right tool", line);
       }
       case CHAR_AMPERSAND: {
-         return SyntaxException(L"you should use keyword 'and' instead of character '&' as a boolean operator", line);
+         return SyntaxError(L"you should use keyword 'and' instead of character '&' as a boolean operator", line);
       }
       case CHAR_VERTICAL_BAR: {
-         return SyntaxException(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
+         return SyntaxError(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
       }
       default: {
-         return SyntaxException(str(L"character '", toStr(value), L"' is not allowed in Uroboros"), line);
+         return SyntaxError(str(L"character '", toStr(value), L"' is not allowed in Uroboros"), line);
       }
    }
 }
 
-SyntaxException SyntaxException::keywordNotFollowedByBool(const _str& value, const _int& line)
+SyntaxError SyntaxError::keywordNotFollowedByBool(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"tokens after keyword '",value, L"' cannot be resolved to a logical condition"), line);
+   return SyntaxError(str(L"tokens after keyword '",value, L"' cannot be resolved to a logical condition"), line);
 }
 
-SyntaxException SyntaxException::keywordNotFollowedByNumber(const _str& value, const _int& line)
+SyntaxError SyntaxError::keywordNotFollowedByNumber(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"tokens after keyword '",value, L"' cannot be resolved to a number"), line);
+   return SyntaxError(str(L"tokens after keyword '",value, L"' cannot be resolved to a number"), line);
 }
 
-SyntaxException SyntaxException::missingTimeVariableMember(const _str& value, const _int& line)
+SyntaxError SyntaxError::missingTimeVariableMember(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"a time variable member was expected after '", value, L"'"), line);
+   return SyntaxError(str(L"a time variable member was expected after '", value, L"'"), line);
 }
 
-SyntaxException SyntaxException::multipleDotsInNumber(const _str& value, const _int& line)
+SyntaxError SyntaxError::multipleDotsInNumber(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"number '", value, L"' contains multiple dots"), line);
+   return SyntaxError(str(L"number '", value, L"' contains multiple dots"), line);
 }
 
-SyntaxException SyntaxException::multipleDotsInWord(const _str& value, const _int& line)
+SyntaxError SyntaxError::multipleDotsInWord(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"word '", value, L"' cannot contain multiple dots"), line);
+   return SyntaxError(str(L"word '", value, L"' cannot contain multiple dots"), line);
 }
 
-SyntaxException SyntaxException::numberTooBig(const _str& value, const _int& line)
+SyntaxError SyntaxError::numberTooBig(const _str& value, const _int& line)
 {
-   return SyntaxException(str(L"number '", value, L"' is too big to be stored in the memory"), line);
+   return SyntaxError(str(L"number '", value, L"' is too big to be stored in the memory"), line);
 }
 
-SyntaxException SyntaxException::openedStringLteral(const _int& line)
+SyntaxError SyntaxError::openedStringLteral(const _int& line)
 {
-   return SyntaxException(L"an opened string literal is not closed", line);
+   return SyntaxError(L"an opened string literal is not closed", line);
 }
 
-SyntaxException SyntaxException::quotationMarkStringLteral(const _int& line)
+SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)
 {
-   return SyntaxException(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
+   return SyntaxError(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
 }
 
 

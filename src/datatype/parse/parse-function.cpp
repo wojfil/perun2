@@ -94,7 +94,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 
       _genptr<_str> str_;
       if (parse::parse(uro, args[0], str_)) {
-         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a collection"), word.line);
       }
 
@@ -149,7 +149,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 
       _genptr<_str> str1;
       if (parse::parse(uro, args[0], str1)) {
-         throw SyntaxException(str(L"first argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"first argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a collection"), word.line);
       }
 
@@ -248,7 +248,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
          }
       }
       else {
-         throw SyntaxException(str(L"first argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"first argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
@@ -561,7 +561,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string. "
             L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
       }
@@ -618,7 +618,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string nor a list"), word.line);
       }
    }
@@ -632,7 +632,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to a string"), word.line);
       }
    }
@@ -643,7 +643,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 
       _genptr<_str> str_;
       if (parse::parse(uro, args[0], str_)) {
-         throw SyntaxException(str(L"the argument of the function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"the argument of the function '", word.getOriginString(uro),
             L"' is not a collection. If you want to measure length of a string, use function 'length' instead"), word.line);
       }
 
@@ -671,7 +671,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
 
-      throw SyntaxException(str(L"the argument of the function '",
+      throw SyntaxError(str(L"the argument of the function '",
          word.getOriginString(uro), L"' cannot be resolved to any collection"), word.line);
    }
    else if (name == uro.hashes.HASH_FUNC_COUNTINSIDE) {
@@ -725,7 +725,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
    }
    else if (uro.hashes.HASH_GROUP_AGGRFUNC.find(name) != uro.hashes.HASH_GROUP_AGGRFUNC.end()) {
       if (len == 0) {
-         throw SyntaxException(str(L"aggregate function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"aggregate function '", word.getOriginString(uro),
             L"' needs at least one argument"), word.line);
       }
 
@@ -738,7 +738,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 
       _genptr<_str> str_;
       if (parse::parse(uro, args[0], str_)) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
@@ -838,7 +838,7 @@ static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args
             multis.push_back(std::move(nlist));
          }
          else {
-            throw SyntaxException(str(ordinalNumber(i + 1),
+            throw SyntaxError(str(ordinalNumber(i + 1),
                L" argument of aggregate function '", word.getOriginString(uro),
                L"' cannot be resolved to a number nor a numeric list"), word.line);
          }
@@ -906,7 +906,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
    }
    else if (name == uro.hashes.HASH_FUNC_REVERSED) {
       const _str sub = (word.getOriginString(uro)).substr(0, 7);
-      throw SyntaxException(str(L"the proper name for this function is '", sub, L"'"), word.line);
+      throw SyntaxError(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
    else if (uro.hashes.HASH_GROUP_FUNC_STR_STR_NUM.find(name) != uro.hashes.HASH_GROUP_FUNC_STR_STR_NUM.end()) {
       if (len != 2) {
@@ -959,7 +959,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
    }
    else if (name == uro.hashes.HASH_FUNC_SUBSTRING) {
       if (len < 2 || len > 3) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' can only take"
+         throw SyntaxError(str(L"function '", word.getOriginString(uro), L"' can only take"
             L" two or three arguments"), word.line);
       }
 
@@ -988,7 +988,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
    }
    else if (name == uro.hashes.HASH_FUNC_CONCATENATE) {
       if (len < 1) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"function '", word.getOriginString(uro),
             L"' needs at least one arguments"), word.line);
       }
 
@@ -1009,7 +1009,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
             values.push_back(std::make_unique<F_ConcatenateUnit>(list));
          }
          else {
-            throw SyntaxException(str(ordinalNumber(i + 1), L" argument of the function '",
+            throw SyntaxError(str(ordinalNumber(i + 1), L" argument of the function '",
                word.getOriginString(uro), L"' cannot be resolved to any data type"), word.line);
          }
       }
@@ -1024,7 +1024,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
 
       _genptr<_str> str_;
       if (parse::parse(uro, args[0], str_)) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
@@ -1060,7 +1060,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
       else {
-         throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"the argument of function '", word.getOriginString(uro),
             L"' cannot be resolved to any collection"), word.line);
       }
    }
@@ -1153,7 +1153,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
 
-      throw SyntaxException(str(L"the argument of function '", word.getOriginString(uro),
+      throw SyntaxError(str(L"the argument of function '", word.getOriginString(uro),
         L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
    }
    else if (uro.hashes.HASH_GROUP_FUNC_STR_NUM.find(name) != uro.hashes.HASH_GROUP_FUNC_STR_NUM.end()) {
@@ -1242,7 +1242,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
          return true;
       }
       else {
-         throw SyntaxException(str(L"wrong arguments of function '", word.getOriginString(uro), L"'"),
+         throw SyntaxError(str(L"wrong arguments of function '", word.getOriginString(uro), L"'"),
             word.line);
       }
    }
@@ -1257,7 +1257,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
       }
 
       if (len == 1) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"function '", word.getOriginString(uro),
             L"' cannot be called with one argument. If you want to join multiple strings without a separator, use function 'concatenate' instead"), word.line);
       }
 
@@ -1468,7 +1468,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
 
       _genptr<_str> str_;
       if (parse::parse(uro, args[0], str_)) {
-         throw SyntaxException(str(L"function '", word.getOriginString(uro),
+         throw SyntaxError(str(L"function '", word.getOriginString(uro),
             L"' can only take a collection of values as an argument"), word.line);
       }
 
@@ -1532,13 +1532,13 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 
 static void functionArgNumberException(const _int& argNumber, const Token& word, Uroboros& uro)
 {
-   throw SyntaxException(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
+   throw SyntaxError(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? EMPTY_STRING : L"s")), word.line);
 }
 
 static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, Uroboros& uro)
 {
-   throw SyntaxException(str(ordinalNumber(argNumber), L" argument of function '",
+   throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(uro), L"' cannot be resolved to a ", typeName), word.line);
 }
 
@@ -1617,7 +1617,7 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, Uroboros& uro)
       return true;
    }
 
-   throw SyntaxException(str(L"function with name '", word.getOriginString(uro),
+   throw SyntaxError(str(L"function with name '", word.getOriginString(uro),
       L"' does not exist"), word.line);
 }
 
@@ -1650,7 +1650,7 @@ _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, Uroboros& uro)
 static void checkFunctionAttribute(const Token& word, Uroboros& uro)
 {
    if (!uro.vc.anyAttribute() || uro.vars.inner.thisState != ThisState::ts_String) {
-      throw SyntaxException(str(L"function '", word.getOriginString(uro),
+      throw SyntaxError(str(L"function '", word.getOriginString(uro),
          L"' can be called only inside an iteration loop"), word.line);
    }
 }
@@ -1688,7 +1688,7 @@ static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, 
    }
 
    const Token& inToken = tks.listAt(index);
-   throw SyntaxException(str(L"the right side of the operator '", inToken.getOriginString(uro),
+   throw SyntaxError(str(L"the right side of the operator '", inToken.getOriginString(uro),
       L"' used in function '", word.getOriginString(uro),
       L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);

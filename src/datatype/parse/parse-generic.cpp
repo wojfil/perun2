@@ -35,7 +35,7 @@ _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& 
       return true;
    }
    else {
-      throw SyntaxException(L"content of square brackets [] cannot be resolved to a number",
+      throw SyntaxError(L"content of square brackets [] cannot be resolved to a number",
          tks.first().line);
    }
 
@@ -46,7 +46,7 @@ void checkLimitBySize(const Tokens& tks, Uroboros& uro)
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
       if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
-         throw SyntaxException(str(L"collection cannot be limited by file size '", tk.getOriginString(uro),
+         throw SyntaxError(str(L"collection cannot be limited by file size '", tk.getOriginString(uro),
             L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition"),
             tk.line);
       }

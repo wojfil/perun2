@@ -141,7 +141,7 @@ std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword& kw) const
       }
    }
 
-   throw new SyntaxException(L"keyword not found", first().line);
+   throw new SyntaxError(L"keyword not found", first().line);
 }
 
 std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
@@ -164,7 +164,7 @@ std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
       }
    }
 
-   throw new SyntaxException(str(L"symbol '", toStr(symbol), L"' not found"), first().line);
+   throw new SyntaxError(str(L"symbol '", toStr(symbol), L"' not found"), first().line);
 }
 
 std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
@@ -179,10 +179,10 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
          if (sublen == 0) {
             if (result.empty()) {
-               throw SyntaxException(str(L"expression cannot this->start with a ", toStr(symbol), L" symbol"), t.line);
+               throw SyntaxError(str(L"expression cannot this->start with a ", toStr(symbol), L" symbol"), t.line);
             }
             else {
-               throw SyntaxException(str(L"adjacent ", toStr(symbol), L" symbols"), t.line);
+               throw SyntaxError(str(L"adjacent ", toStr(symbol), L" symbols"), t.line);
             }
          }
 
@@ -197,7 +197,7 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
 
    if (sublen == 0) {
       if (!isEmpty()) {
-         throw SyntaxException(str(L"expression cannot this->end with a ", toStr(symbol), L" symbol"), last().line);
+         throw SyntaxError(str(L"expression cannot this->end with a ", toStr(symbol), L" symbol"), last().line);
       }
    }
    else {
@@ -254,7 +254,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros& uro) const
          if (sublen == 0) {
             const Token& prev = this->listAt(i - 1);
 
-            throw SyntaxException(str(L"adjacent filter keywords '", prev.getOriginString(uro),
+            throw SyntaxError(str(L"adjacent filter keywords '", prev.getOriginString(uro),
                L"' and '", t.getOriginString(uro), L"'"), t.line);
          }
 
@@ -268,7 +268,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros& uro) const
    }
 
    if (sublen == 0) {
-      throw SyntaxException(str(L"expression cannot end with a filter keyword '",
+      throw SyntaxError(str(L"expression cannot end with a filter keyword '",
          last().getOriginString(uro), L"'"), last().line);
    }
    else {
@@ -316,7 +316,7 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
 
 void negationByExclamationException(const _int& line)
 {
-   throw SyntaxException(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
+   throw SyntaxError(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
 }
 
 void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
@@ -331,21 +331,21 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
       const Token& f = first();
       if (f.type == Token::t_Word) {
          if (f.value.word.h == uro.hashes.HASH_VAR_DEVICE) {
-            throw SyntaxException(str(L"variable '", f.getOriginString(uro),
+            throw SyntaxError(str(L"variable '", f.getOriginString(uro),
                L"' is reserved for future use. Your current version of Uroboros does not support it"), f.line);
          }
 
          if (f.value.word.h != uro.hashes.HASH_VAR_THIS && !uro.vars.variableExists(f)) {
             if (!(this->start > 0 && this->list[this->start - 1].isKeyword(Keyword::kw_Create)
             && (f.value.word.h == uro.hashes.HASH_VAR_FILE || f.value.word.h == uro.hashes.HASH_VAR_DIRECTORY))) {
-               throw SyntaxException(str(L"variable '", f.getOriginString(uro), L"' does not exist or is unreachable here"), f.line);
+               throw SyntaxError(str(L"variable '", f.getOriginString(uro), L"' does not exist or is unreachable here"), f.line);
             }
          }
       }
    }
 
    if (this->list[this->start].isSymbol(L'[')) {
-      throw SyntaxException(
+      throw SyntaxError(
          L"a collection variable was expected before [ bracket. "
          L"If your intention was to define an array, then you should write values inside a pair of round brackets () and separate them by commas", 
          this->list[this->start].line);
@@ -362,26 +362,26 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
          switch (t.value.chars.ch) {
             case L'+': {
                if (i == this->start) {
-                  throw SyntaxException(L"expression cannot start with incrementation signs ++", t.line);
+                  throw SyntaxError(L"expression cannot start with incrementation signs ++", t.line);
                }
                else {
-                  throw SyntaxException(L"incrementation signs ++ cannot appear inside an expression", t.line);
+                  throw SyntaxError(L"incrementation signs ++ cannot appear inside an expression", t.line);
                }
                break;
             }
             case L'-': {
                if (i == this->start) {
-                  throw SyntaxException(L"expression cannot start with decrementation signs --", t.line);
+                  throw SyntaxError(L"expression cannot start with decrementation signs --", t.line);
                }
                else {
-                  throw SyntaxException(L"decrementation signs -- cannot appear inside an expression", t.line);
+                  throw SyntaxError(L"decrementation signs -- cannot appear inside an expression", t.line);
                }
                break;
             }
          }
       }
       else if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
-         throw SyntaxException(str(L"expected ; before keyword '", t.getOriginString(uro), L"'"), t.line);
+         throw SyntaxError(str(L"expected ; before keyword '", t.getOriginString(uro), L"'"), t.line);
       }
 
       prevExclamantion = t.isSymbol(L'!');
@@ -537,7 +537,7 @@ void Tokens::setData()
                   indepRound = true;
                }
                else if (round < 0) {
-                  throw SyntaxException(L"unopened bracket ( is closed", t.line);
+                  throw SyntaxError(L"unopened bracket ( is closed", t.line);
                }
                break;
             }
@@ -556,7 +556,7 @@ void Tokens::setData()
                   firstSquare = true;
                }
                else if (square < 0) {
-                  throw SyntaxException(L"unopened bracket [ is closed", t.line);
+                  throw SyntaxError(L"unopened bracket [ is closed", t.line);
                }
                break;
             }
@@ -565,10 +565,10 @@ void Tokens::setData()
    }
 
    if (round != 0) {
-      throw SyntaxException(L"bracket ( is not closed", this->list[this->end].line);
+      throw SyntaxError(L"bracket ( is not closed", this->list[this->end].line);
    }
    else if (square != 0) {
-      throw SyntaxException(L"bracket [ is not closed", this->list[this->end].line);
+      throw SyntaxError(L"bracket [ is not closed", this->list[this->end].line);
    }
 
    if (indepRound) {
@@ -587,25 +587,25 @@ void Tokens::setData()
 
    if ((this->info & TI_HAS_CHAR_QUESTION_MARK) != TI_NULL) {
       if (firstQuestionMarkId == this->start) {
-         throw SyntaxException(L"sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
+         throw SyntaxError(L"sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
       }
 
       if ((this->info & TI_HAS_CHAR_COLON) == TI_NULL) {
          if (firstQuestionMarkId == this->end) {
-            throw SyntaxException(L"sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(L"sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
          }
 
          this->info |= TI_IS_POSSIBLE_BINARY;
       }
       else {
          if (firstQuestionMarkId > firstColonId) {
-            throw SyntaxException(L"signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(L"signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
          }
          else if (firstColonId == this->end) {
-            throw SyntaxException(L"sign : is followed by empty space", this->list[firstColonId].line);
+            throw SyntaxError(L"sign : is followed by empty space", this->list[firstColonId].line);
          }
          else if (firstQuestionMarkId + 1 == firstColonId) {
-            throw SyntaxException(L"empty space between signs ? and :", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(L"empty space between signs ? and :", this->list[firstQuestionMarkId].line);
          }
 
          this->info |= TI_IS_POSSIBLE_TERNARY;
@@ -618,10 +618,10 @@ void Tokens::setData()
 
       if (last.isSymbol(L']')) {
          if (this->length == 3) {
-            throw SyntaxException(L"empty space between square brackets []", last.line);
+            throw SyntaxError(L"empty space between square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
-            throw SyntaxException(L"square brackets [] can be preceded only by a variable name", first.line);
+            throw SyntaxError(L"square brackets [] can be preceded only by a variable name", first.line);
          }
 
          this->info |= TI_IS_POSSIBLE_LIST_ELEM;
@@ -629,10 +629,10 @@ void Tokens::setData()
 
       if (this->list[this->end - 1].isSymbol(L']')) {
          if (this->length == 3) {
-            throw SyntaxException(L"empty space between square brackets []", last.line);
+            throw SyntaxError(L"empty space between square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
-            throw SyntaxException(L"square brackets [] can be preceded only by a variable name", first.line);
+            throw SyntaxError(L"square brackets [] can be preceded only by a variable name", first.line);
          }
 
          if (last.value.twoWords.h1 == rawStringHash(EMPTY_STRING)) {

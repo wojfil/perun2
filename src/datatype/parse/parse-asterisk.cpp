@@ -45,7 +45,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
    const _uint32 info = os_patternInfo(pattern);
 
    if ((info & ASTERISK_INFO_VALID) == 0) {
-      throw SyntaxException::invalidAsteriskPattern(originPattern, line);
+      throw SyntaxError::invalidAsteriskPattern(originPattern, line);
       return false;
    }
 

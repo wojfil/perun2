@@ -69,7 +69,7 @@ void checkBracketsThoroughly(const Tokens& tks)
          case CHAR_CLOSING_ROUND_BRACKET: {
             lv1--;
             if (lv1 < 0) {
-               throw SyntaxException(L"unopened bracket ( is closed", t.line);
+               throw SyntaxError(L"unopened bracket ( is closed", t.line);
             }
             break;
          }
@@ -81,7 +81,7 @@ void checkBracketsThoroughly(const Tokens& tks)
          case CHAR_CLOSING_SQUARE_BRACKET: {
             lv2--;
             if (lv2 < 0) {
-               throw SyntaxException(L"unopened bracket [ is closed", t.line);
+               throw SyntaxError(L"unopened bracket [ is closed", t.line);
             }
             break;
          }
@@ -93,14 +93,14 @@ void checkBracketsThoroughly(const Tokens& tks)
          case CHAR_CLOSING_CURLY_BRACKET: {
             lv3--;
             if (lv3 < 0) {
-               throw SyntaxException(L"unopened bracket { is closed", t.line);
+               throw SyntaxError(L"unopened bracket { is closed", t.line);
             }
             if (lv1 != 0) {
-               throw SyntaxException(
+               throw SyntaxError(
                L"bracket ( has to be closed before opening curly bracket {", i1);
             }
             if (lv2 != 0) {
-               throw SyntaxException(
+               throw SyntaxError(
                L"bracket [ has to be closed before opening curly bracket {", i2);
             }
             break;
@@ -109,13 +109,13 @@ void checkBracketsThoroughly(const Tokens& tks)
    }
 
    if (lv1 != 0) {
-      throw SyntaxException(L"bracket ( is not closed", i1);
+      throw SyntaxError(L"bracket ( is not closed", i1);
    }
    else if (lv2 != 0) {
-      throw SyntaxException(L"bracket [ is not closed", i2);
+      throw SyntaxError(L"bracket [ is not closed", i2);
    }
    else if (lv3 != 0) {
-      throw SyntaxException(L"bracket { is not closed", i3);
+      throw SyntaxError(L"bracket { is not closed", i3);
    }
 }
 

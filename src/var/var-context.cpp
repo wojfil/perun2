@@ -44,7 +44,7 @@ void VariablesContext::setCoreComAttribute(const _str& comName, const _int& line
    const _size size = this->attrs.size();
 
    if (size == 0) {
-      throw SyntaxException(str(L"the subject of command '", comName,
+      throw SyntaxError(str(L"the subject of command '", comName,
          L"' is undefined here"), line);
    }
 
@@ -59,7 +59,7 @@ void VariablesContext::setTimeComAttribute(const _str& comName, const _int& line
    const _size size = this->attrs.size();
 
    if (size == 0) {
-      throw SyntaxException(str(L"the subject of command '", comName,
+      throw SyntaxError(str(L"the subject of command '", comName,
          L" to' is undefined here"), line);
    }
 
@@ -75,7 +75,7 @@ void VariablesContext::setTimeComAttribute(const _str& comName, const _int& line
 
 void VariablesContext::attributeException(const Token& tk, uro::Uroboros& uro)
 {
-   throw SyntaxException(str(L"the value of variable '", tk.getOriginString(uro),
+   throw SyntaxError(str(L"the value of variable '", tk.getOriginString(uro),
       L"' is undefined here"), tk.line);
 }
 

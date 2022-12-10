@@ -58,7 +58,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
                && (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like))))
             {
                if (!parseBoolExp(result, tks, uro)) {
-                  throw SyntaxException(L"syntax of a boolean expression is not valid", tks.first().line);
+                  throw SyntaxError(L"syntax of a boolean expression is not valid", tks.first().line);
                }
                return true;
             }
@@ -198,7 +198,7 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, Uroboros& u
    }
 
    if (!isBoolExpComputable(infList)) {
-      throw SyntaxException(L"syntax of a boolean expression is not valid",
+      throw SyntaxError(L"syntax of a boolean expression is not valid",
          tks.first().line);
    }
 
@@ -672,7 +672,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft, Urobor
 {
    const _str side = isLeft ? L"left" : L"right";
 
-   throw SyntaxException(str(side, L" side of operator '", oper.getOriginString(uro), L"' is empty"),
+   throw SyntaxError(str(side, L" side of operator '", oper.getOriginString(uro), L"' is empty"),
       oper.line);
 }
 
@@ -681,24 +681,24 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
 {
    if (timeMember == L"year") {
       if (negated) {
-         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", toStr(numVar.value.num.n.value.i),
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", toStr(numVar.value.num.n.value.i),
             L"', write '", timeVar.getOriginString(uro), L".year != ",
             toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" in ", toStr(numVar.value.num.n.value.i),
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" in ", toStr(numVar.value.num.n.value.i),
             L"', write '", timeVar.getOriginString(uro), L".year = ",
             toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
    }
    else {
       if (negated) {
-         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", numVar.getOriginString(uro),
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", numVar.getOriginString(uro),
             L"', write '", timeVar.getOriginString(uro), L".", timeMember,
             L" != ", numVar.getOriginString(uro), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"instead of '", timeVar.getOriginString(uro), L" in ", numVar.getOriginString(uro),
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" in ", numVar.getOriginString(uro),
             L"', write '", timeVar.getOriginString(uro), L".", timeMember,
             L" = ", numVar.getOriginString(uro), L"'"), tks.first().line);
       }
@@ -861,12 +861,12 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
       const _str s = _str(1, sign);
 
       if (isVar1 && (isWeek2 || isMonth2)) {
-         throw SyntaxException(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
             L"', write '", t1.getOriginString(uro), L".", (isWeek2 ? L"weekDay" : L"month"),
             L" ", s, L" ", t2.getOriginString(uro), L"'"), tks.first().line);
       }
       else if ((isWeek1 || isMonth1) && isVar2) {
-         throw SyntaxException(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
             L"', write '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro), L".",
             (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
       }
@@ -877,22 +877,22 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
       if (isVar1 && isInteger2) {
          const _nint& nm = t2.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxException(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", toStr(nm),
+            throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", toStr(nm),
                L"', write '", t1.getOriginString(uro), L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
          }
          else {
-            throw SyntaxException(str(L"time variable '", t1.getOriginString(uro),
+            throw SyntaxError(str(L"time variable '", t1.getOriginString(uro),
                L"' cannot be compared with a number"), tks.first().line);
          }
       }
       else if (isInteger1 && isVar2) {
          const _nint& nm = t1.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxException(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro),
+            throw SyntaxError(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro),
                L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro), L".year'"), tks.first().line);
          }
          else {
-            throw SyntaxException(str(L"time variable '", t2.getOriginString(uro),
+            throw SyntaxError(str(L"time variable '", t2.getOriginString(uro),
                L"' cannot be compared with a number"), tks.first().line);
          }
       }
@@ -1177,23 +1177,23 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _cha
 
    if (result.first.isEmpty()) {
       if (result.second.isEmpty()) {
-         throw SyntaxException(str(L"both sides of ", toStr(sign),
+         throw SyntaxError(str(L"both sides of ", toStr(sign),
             L" comparison are empty"), tks.first().line);
       }
       else {
-         throw SyntaxException(str(L"left side of ", toStr(sign),
+         throw SyntaxError(str(L"left side of ", toStr(sign),
             L" comparison is empty"), tks.first().line);
       }
    }
 
    if (result.second.isEmpty()) {
-      throw SyntaxException(str(L"right side of ", toStr(sign),
+      throw SyntaxError(str(L"right side of ", toStr(sign),
          L" comparison is empty"), tks.last().line);
    }
 
    if (result.second.first().isSymbol(CHAR_EQUAL_SIGN)) {
       if (result.second.getLength() == 1) {
-         throw SyntaxException(str(L"right side of ", toStr(sign),
+         throw SyntaxError(str(L"right side of ", toStr(sign),
             L"= comparison is empty"), result.second.first().line);
       }
 
@@ -1201,7 +1201,7 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _cha
       eq = true;
    }
    else if (sign == CHAR_EXCLAMATION_MARK) {
-      throw SyntaxException(L"expected = after exclamation mark. "
+      throw SyntaxError(L"expected = after exclamation mark. "
          L"For a simple negation, use keyword 'not' instead",
          result.second.first().line);
    }

@@ -203,7 +203,7 @@ _bool Variables::getVarValue(const Token& tk, _genptr<_num>& result)
 {
    if (tk.value.word.h == this->hashes.HASH_VAR_INDEX) {
       if (this->uroboros.vars.inner.thisState == ThisState::ts_None && !this->vc.anyAggregate()) {
-         throw SyntaxException(str(L"variable '", tk.getOriginString(this->uroboros),
+         throw SyntaxError(str(L"variable '", tk.getOriginString(this->uroboros),
             L"' can be accessed only inside a loop"), tk.line);
       }
       else {

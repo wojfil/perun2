@@ -539,9 +539,7 @@ _bool os_emptyDirectory(const _str& path)
 
 _str os_extension(const _str& value)
 {
-   const _int len = value.length();
-
-   for (_int i = len - 1; i >= 0; i--) {
+   for (_int i = value.size() - 1; i >= 0; i--) {
       const _char& ch = value[i];
       if (ch == CHAR_DOT) {
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
@@ -563,9 +561,7 @@ _str os_extension(const _str& value)
 
 _str os_fullname(const _str& value)
 {
-   const _int len = value.length();
-
-   for (_int i = len - 1; i >= 0; i--) {
+   for (_int i = value.size() - 1; i >= 0; i--) {
       const _char& ch = value[i];
       if (ch == OS_SEPARATOR) {
          return value.substr(i + 1);
@@ -645,8 +641,7 @@ _tim os_modification(const _str& path)
 
 _str os_name(const _str& value)
 {
-   const _int len = value.length();
-   _int i = len - 1;
+   _int i = value.size() - 1;
    _int dot = -1;
    _bool sep = false;
 
@@ -675,9 +670,7 @@ _str os_name(const _str& value)
 
 _str os_parent(const _str& path)
 {
-   const _int len = path.size();
-
-   for (_int i = len - 1; i >= 0; i--) {
+   for (_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == OS_SEPARATOR) {
          return path.substr(0, i);
       }
@@ -1358,7 +1351,7 @@ _bool os_bothAreSeparators(const _char& left, const _char& right)
 
 _str os_trim(const _str& path)
 {
-   const _int len = path.length();
+   const _int len = path.size();
    _int start = 0;
 
    while (start < len) {
@@ -1463,7 +1456,7 @@ _bool os_isAbsolute(const _str& path)
 
 _bool os_hasExtension(const _str& value)
 {
-   const _int len = value.length();
+   const _int len = value.size();
 
    for (_int i = len - 1; i >= 0; i--) {
       const _char& ch = value[i];
@@ -1498,9 +1491,7 @@ _bool os_hasParentDirectory(const _str& path)
       return false;
    }
 
-   const _int len = path.size();
-
-   for (_int i = len - 1; i >= 1; i--) {
+   for (_int i = path.size() - 1; i >= 1; i--) {
       const _char& ch = path[i];
       if (ch == OS_SEPARATOR) {
          return true;
@@ -1550,9 +1541,7 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
 
 _str os_stackPathBase(const _str& path)
 {
-   const _int len = path.length();
-
-   for (_int i = len - 1; i >= 0; i--) {
+   for (_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == CHAR_DOT) {
          return path.substr(0, i);
       }
@@ -1601,7 +1590,7 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
 
 _bool os_pathWasStacked(const _str& basePath)
 {
-   const _size len = basePath.length();
+   const _size len = basePath.size();
    if (len < 4 || basePath[len - 1] != CHAR_CLOSING_ROUND_BRACKET) {
       return false;
    }
@@ -1638,7 +1627,7 @@ _bool os_pathWasStacked(const _str& basePath)
 
 void os_getStackedData(const _str& path, _nint& index, _str& basePath)
 {
-   const _size len = path.length();
+   const _size len = path.size();
 
    for (_int i = len - 2; i >= 0; i--) {
       switch (path[i]) {
@@ -1851,7 +1840,7 @@ _str os_makeArg(const _str& value)
 
 void os_rawTrim(_str& value)
 {
-   const _int len = value.length();
+   const _int len = value.size();
    _int start = 0;
 
    while (start < len) {

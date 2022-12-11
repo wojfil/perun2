@@ -485,7 +485,7 @@ _tim os_creation(const _str& path)
 _str os_drive(const _str& path)
 {
    return os_isAbsolute(path)
-      ? str(toStr(std::towupper(path[0])), L":")
+      ? str(toStr(std::towupper(path[0])), STRING_COLON)
       : EMPTY_STRING;
 }
 
@@ -543,7 +543,7 @@ _str os_extension(const _str& value)
 
    for (_int i = len - 1; i >= 0; i--) {
       const _char& ch = value[i];
-      if (ch == L'.') {
+      if (ch == CHAR_DOT) {
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
             return EMPTY_STRING;
          }
@@ -652,7 +652,7 @@ _str os_name(const _str& value)
 
    for (; i >= 0; i--) {
       const _char& ch = value[i];
-      if (dot == -1 && ch == L'.') {
+      if (dot == -1 && ch == CHAR_DOT) {
          dot = i;
       }
       else if (ch == OS_SEPARATOR) {
@@ -1262,21 +1262,21 @@ _bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();
 
-   if (length == 0 || path[length - 1] == L'.') {
+   if (length == 0 || path[length - 1] == CHAR_DOT) {
       return true;
    }
 
    for (_size i = 0; i < length; i++) {
       switch (path[i]) {
-         case L'<':
-         case L'>':
-         case L'|':
-         case L'?':
-         case L'*':
-         case L'"': {
+         case CHAR_SMALLER:
+         case CHAR_GREATER:
+         case CHAR_VERTICAL_BAR:
+         case CHAR_QUESTION_MARK:
+         case CHAR_ASTERISK:
+         case CHAR_QUOTATION_MARK: {
             return true;
          }
-         case L':': {
+         case CHAR_COLON: {
             if (i != 1 || !os_isAbsolute(path)) {
                return true;
             }
@@ -1293,7 +1293,7 @@ _uint32 os_patternInfo(const _str& pattern)
    _uint32 result = parse::ASTERISK_INFO_NULL;
    const _size length = pattern.size();
 
-   if (length == 0 || pattern[length - 1] == L'.') {
+   if (length == 0 || pattern[length - 1] == CHAR_DOT) {
       return result;
    }
 
@@ -1311,22 +1311,22 @@ _uint32 os_patternInfo(const _str& pattern)
       const _char& ch = pattern[i];
 
       switch (ch) {
-         case L'*': {
+         case CHAR_ASTERISK: {
             countAstrisks++;
 
-            if (prev == L'*') {
+            if (prev == CHAR_ASTERISK) {
                result |= parse::ASTERISK_INFO_DOUBLE_ASTERISK;
             }
             break;
          }
-         case L'<':
-         case L'>':
-         case L'|':
-         case L'?':
-         case L'"': {
+         case CHAR_SMALLER:
+         case CHAR_GREATER:
+         case CHAR_VERTICAL_BAR:
+         case CHAR_QUESTION_MARK:
+         case CHAR_QUOTATION_MARK: {
             return result;
          }
-         case L':': {
+         case CHAR_COLON: {
             if (i != 1 || !(result & parse::ASTERISK_INFO_IS_ABSOLUTE)) {
                return result;
             }
@@ -1365,7 +1365,7 @@ _str os_trim(const _str& path)
       switch (path[start]) {
          case OS_WRONG_SEPARATOR:
          case OS_SEPARATOR:
-         case L' ': {
+         case CHAR_SPACE: {
             break;
          }
          default: {
@@ -1394,7 +1394,7 @@ exitStart:
       switch (path[end]) {
          case OS_WRONG_SEPARATOR:
          case OS_SEPARATOR:
-         case L' ': {
+         case CHAR_SPACE: {
             break;
          }
          default: {
@@ -1428,7 +1428,7 @@ exitEnd:
 inline void os_escapeQuote(_str& path)
 {
    const _size length = path.size();
-   if (path[0] == L'"' && path[length - 1] == L'"') {
+   if (path[0] == CHAR_QUOTATION_MARK && path[length - 1] == CHAR_QUOTATION_MARK) {
       path = path.substr(1, length - 2);
    }
 }
@@ -1458,7 +1458,7 @@ _bool os_isAbsolute(const _str& path)
       }
    }
 
-   return path[1] == L':' && os_isDriveLetter(path[0]);
+   return path[1] == CHAR_COLON && os_isDriveLetter(path[0]);
 }
 
 _bool os_hasExtension(const _str& value)
@@ -1468,7 +1468,7 @@ _bool os_hasExtension(const _str& value)
    for (_int i = len - 1; i >= 0; i--) {
       const _char& ch = value[i];
 
-      if (ch == L'.') {
+      if (ch == CHAR_DOT) {
          return (i == len - 1 || i == 0)
             ? false
             : value[i - 1] != OS_SEPARATOR;
@@ -1483,8 +1483,8 @@ _bool os_hasExtension(const _str& value)
 
 inline _bool os_isDriveLetter(const _char& ch)
 {
-   return (ch >= L'a' && ch <= L'z')
-       || (ch >= L'A' && ch <= L'Z');
+   return (ch >= LETTER_a && ch <= LETTER_z)
+       || (ch >= LETTER_A && ch <= LETTER_Z);
 }
 
 _bool os_isPath(const _str value)
@@ -1522,7 +1522,7 @@ _str os_stackPath(const _str& path)
 
    while (os_exists(newPath))
    {
-      newPath = str(path, L"(", toStr(index),  L")");
+      newPath = str(path, STRING_OPENING_ROUND_BRACKET, toStr(index), STRING_CLOSING_ROUND_BRACKET);
       index++;
    }
 
@@ -1536,11 +1536,12 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
    }
 
    _nint index = 2LL;
-   _str newPath = str(basePath, L".", extension);
+   _str newPath = str(basePath, STRING_DOT, extension);
 
    while (os_exists(newPath))
    {
-      newPath = str(basePath, L"(", toStr(index), L").", extension);
+      newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, toStr(index), 
+         STRING_CLOSING_ROUND_BRACKET, STRING_DOT, extension);
       index++;
    }
 
@@ -1552,7 +1553,7 @@ _str os_stackPathBase(const _str& path)
    const _int len = path.length();
 
    for (_int i = len - 1; i >= 0; i--) {
-      if (path[i] == L'.') {
+      if (path[i] == CHAR_DOT) {
          return path.substr(0, i);
       }
    }
@@ -1566,12 +1567,14 @@ _str os_stackPathStacked(const _str& path)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, L"(", toStr(index), L")");
+   _str newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
+      toStr(index), STRING_CLOSING_ROUND_BRACKET);
 
    while (os_exists(newPath))
    {
       index++;
-      newPath = str(basePath, L"(", toStr(index), L")");
+      newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
+         toStr(index), STRING_CLOSING_ROUND_BRACKET);
    }
 
    return newPath;
@@ -1583,12 +1586,14 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, L"(", toStr(index), L").", extension);
+   _str newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
+      toStr(index), STRING_CLOSING_ROUND_BRACKET, STRING_DOT, extension);
 
    while (os_exists(newPath))
    {
       index++;
-      newPath = str(basePath, L"(", toStr(index), L").", extension);
+      newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
+         toStr(index), STRING_CLOSING_ROUND_BRACKET, STRING_DOT, extension);
    }
 
    return newPath;
@@ -1597,17 +1602,17 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
 _bool os_pathWasStacked(const _str& basePath)
 {
    const _size len = basePath.length();
-   if (len < 4 || basePath[len - 1] != L')') {
+   if (len < 4 || basePath[len - 1] != CHAR_CLOSING_ROUND_BRACKET) {
       return false;
    }
 
    for (_int i = len - 2; i >= 0; i--) {
       switch (basePath[i]) {
-         case L'0': case L'1': case L'2': case L'3': case L'4':
-         case L'5': case L'6': case L'7': case L'8': case L'9': {
+         case DIGIT_0: case DIGIT_1: case DIGIT_2: case DIGIT_3: case DIGIT_4:
+         case DIGIT_5: case DIGIT_6: case DIGIT_7: case DIGIT_8: case DIGIT_9: {
             break;
          }
-         case L'(': {
+         case CHAR_OPENING_ROUND_BRACKET: {
             if (i == (len - 2) || i == 0) {
                return false;
             }
@@ -1637,8 +1642,8 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
 
    for (_int i = len - 2; i >= 0; i--) {
       switch (path[i]) {
-         case L'0': case L'1': case L'2': case L'3': case L'4':
-         case L'5': case L'6': case L'7': case L'8': case L'9': {
+         case DIGIT_0: case DIGIT_1: case DIGIT_2: case DIGIT_3: case DIGIT_4:
+         case DIGIT_5: case DIGIT_6: case DIGIT_7: case DIGIT_8: case DIGIT_9: {
             break;
          }
          default: {
@@ -1753,10 +1758,10 @@ inline _bool os_isBrowsePath(const _str& path)
    // return path == L"." || path == L"..";
    switch (path.size()) {
       case 1: {
-         return path[0] == L'.';
+         return path[0] == CHAR_DOT;
       }
       case 2: {
-         return path[0] == L'.' && path[1] == L'.';
+         return path[0] == CHAR_DOT && path[1] == CHAR_DOT;
       }
       default: {
          return false;
@@ -1809,11 +1814,11 @@ _str os_makeArg(const _str& value)
 
    for (_size i = 0; i < len; i++) {
       switch (value[i]) {
-         case L' ': {
+         case CHAR_SPACE: {
             anySpace = true;
             break;
          }
-         case L'"': {
+         case CHAR_QUOTATION_MARK: {
             quotes++;
             break;
          }
@@ -1822,7 +1827,7 @@ _str os_makeArg(const _str& value)
 
    if (quotes == 0) {
       return anySpace
-         ? str(L"\"", value, L"\"")
+         ? str(STRING_QUOTATION_MARK, value, STRING_QUOTATION_MARK)
          : value;
    }
    else {
@@ -1831,14 +1836,14 @@ _str os_makeArg(const _str& value)
 
       for (_size i = 0; i < len; i++) {
          const _char& ch = value[i];
-         if (ch == L'"') {
-            result.push_back(L'\\');
+         if (ch == CHAR_QUOTATION_MARK) {
+            result.push_back(CHAR_BACKSLASH);
          }
          result.push_back(ch);
       }
 
       return anySpace
-         ? str(L"\"", result, L"\"")
+         ? str(STRING_QUOTATION_MARK, result, STRING_QUOTATION_MARK)
          : result;
    }
 }
@@ -1853,7 +1858,7 @@ void os_rawTrim(_str& value)
       switch (value[start]) {
          case OS_WRONG_SEPARATOR:
          case OS_SEPARATOR:
-         case L' ': {
+         case CHAR_SPACE: {
             break;
          }
          default: {
@@ -1883,7 +1888,7 @@ r_exitStart:
       switch (value[end]) {
          case OS_WRONG_SEPARATOR:
          case OS_SEPARATOR:
-         case L' ': {
+         case CHAR_SPACE: {
             break;
          }
          default: {
@@ -1914,9 +1919,9 @@ r_exitEnd:
 
 _str os_quoteEmbraced(const _str& value)
 {
-   return value.find(L' ') == _str::npos
+   return value.find(CHAR_SPACE) == _str::npos
       ? value
-      : str(L"\"", value, L"\"");
+      : str(STRING_QUOTATION_MARK, value, STRING_QUOTATION_MARK);
 }
 
 }

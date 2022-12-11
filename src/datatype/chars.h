@@ -84,6 +84,8 @@ inline constexpr _char LETTER_e =                    L'e';
 inline constexpr _char LETTER_E =                    L'E';
 inline constexpr _char LETTER_f =                    L'f';
 inline constexpr _char LETTER_F =                    L'F';
+inline constexpr _char LETTER_z =                    L'z';
+inline constexpr _char LETTER_Z =                    L'Z';
 
 inline constexpr _char DIGIT_0 =                     L'0';
 inline constexpr _char DIGIT_1 =                     L'1';

@@ -20,7 +20,6 @@
 #include "var-bundle.h"
 #include "var-inner.h"
 #include "var-context.h"
-#include "../datatype/def-var.h"
 #include "../datatype/generator/gen-os.h"
 #include "../hash.h"
 #include "../token.h"

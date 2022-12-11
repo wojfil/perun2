@@ -19,6 +19,7 @@
 #include <io.h>
 #include <stdio.h>
 #include "../../datatype/generator/gen-like.h"
+#include "../../datatype/primitives.h"
 
 #include "test-like.h"
 #include "test-in.h"

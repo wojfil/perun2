@@ -4,6 +4,7 @@ g++ test-main.cpp test.h test-like.h test-like.cpp test-in.h test-in.cpp ^
  ../../datatype/generator/gen-bool.h ../../datatype/generator/gen-generic.h ^
  ../../datatype/number.h ../../datatype/number.cpp ../../datatype/time.h ../../datatype/time.cpp ^
  ../../datatype/period.h ../../datatype/period.cpp ../../datatype/datatype.h ../../exception.h ../../exception.cpp ^
+ ../../datatype/primitives.h ../../datatype/primitives.cpp ^
  -o test -municode -unicode
  
 test.exe

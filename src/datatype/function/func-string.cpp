@@ -780,9 +780,9 @@ _str F_Roman::getValue()
       _nint div = number / ROMAN_NUMBER_LITERALS[i];
       number = number % ROMAN_NUMBER_LITERALS[i];
       while (div--) {
-         ss << (isBig && i == 12) 
+         ss << ((isBig && i == 12) 
             ? ROMAN_VINCULUM_THOUSAND 
-            : ROMAN_STRING_LITERALS[i];
+            : ROMAN_STRING_LITERALS[i]);
       }
       i--;
    }

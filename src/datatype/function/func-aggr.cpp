@@ -119,12 +119,7 @@ _num F_Median::getValue()
 
    if (len % 2 == 0) {
       _num result = elements[half] + elements[half - 1];
-      if (result.isDouble) {
-         result.value.d *= NDOUBLE_HALF;
-      }
-      else {
-         result.value.i /= NINT_TWO;
-      }
+      result /= _num(NINT_TWO);
       return result;
    }
    else {

@@ -18,7 +18,6 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "gen-generic.h"
-#include "gen-bool-compare.h"
 #include <algorithm>
 
 

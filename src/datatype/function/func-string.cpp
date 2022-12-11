@@ -753,7 +753,7 @@ _str F_Roman::getValue()
          if (result.empty()) {
             result = LETTER_N;
          }
-         else if (base.value.d < 0L) {
+         else if (base.value.d < NDOUBLE_ZERO) {
             result = str(STRING_MINUS, result);
          }
 
@@ -763,7 +763,7 @@ _str F_Roman::getValue()
          return toStr(LETTER_N);
       }
    }
-   else if (number >= 5000000LL || number <= -5000000LL) {
+   else if (number >= ROMAN_MAXIMUM || number <= -ROMAN_MAXIMUM) {
       return base.toString();
    }
 
@@ -773,24 +773,16 @@ _str F_Roman::getValue()
       number *= NINT_MINUS_ONE;
    }
 
-   static const _nint num[] = { 1LL, 4LL, 5LL, 9LL, 10LL, 40LL, 50LL, 90LL, 100LL, 400LL, 500LL, 900LL, 1000LL,
-      4000LL, 5000LL, 9000LL, 10000LL, 40000LL, 50000LL, 90000LL, 100000LL, 400000LL, 500000LL, 900000LL, 1000000LL
-   };
-   static const _str sym[] = { L"I", L"IV", L"V", L"IX", L"X", L"XL", L"L", L"XC", L"C", L"CD", L"D", L"CM", L"M",
-      (L"I" L"̅" L"V" L"̅"), (L"V" L"̅"), (L"I" L"̅" L"X" L"̅"), (L"X" L"̅"),
-      (L"X" L"̅" L"L" L"̅"), (L"L" L"̅"), (L"X" L"̅" L"C" L"̅"),
-      (L"C" L"̅"), (L"C" L"̅" L"D" L"̅"), (L"D" L"̅"),
-      (L"C" L"̅" L"M" L"̅"), (L"M" L"̅")
-   };
-
-   const _bool isBig = number > 3999LL;
+   const _bool isBig = number >= ROMAN_VINCULUM_THRESHOLD;
    _int i = 24;
 
    while (number > 0) {
-      _nint div = number / num[i];
-      number = number % num[i];
+      _nint div = number / ROMAN_NUMBER_LITERALS[i];
+      number = number % ROMAN_NUMBER_LITERALS[i];
       while (div--) {
-         ss << ((isBig && i == 12) ? (L"I" L"̅") : sym[i]);
+         ss << (isBig && i == 12) 
+            ? ROMAN_VINCULUM_THOUSAND 
+            : ROMAN_STRING_LITERALS[i];
       }
       i--;
    }
@@ -805,7 +797,7 @@ _str F_Roman::getValue()
 
 inline void F_Roman::appendFraction(const _num& base, _stream& ss) const
 {
-   _int oc = static_cast<_int>(std::fmod(base.value.d, 1.0L) * 12L);
+   _int oc = static_cast<_int>(std::fmod(base.value.d, NDOUBLE_ONE) * NDOUBLE_TWELVE);
    if (oc < 0) {
       oc *= -1;
    }

@@ -165,7 +165,7 @@ _list F_Words::getValue()
 
 inline _nint F_Numbers::fromChar(const _char& ch)
 {
-   return static_cast<_nint>(ch - L'0');
+   return static_cast<_nint>(ch - DIGIT_0);
 }
 
 _nlist F_Numbers::getValue()
@@ -185,7 +185,7 @@ _nlist F_Numbers::getValue()
       case 2: {
          if (std::iswdigit(value[0])) {
             return _nlist {std::iswdigit(value[1])
-               ? (10 * fromChar(value[0]) + fromChar(value[1]))
+               ? (NINT_TEN * fromChar(value[0]) + fromChar(value[1]))
                : fromChar(value[0])
             };
          }

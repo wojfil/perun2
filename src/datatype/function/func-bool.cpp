@@ -161,7 +161,7 @@ _bool isNumber(const _str& value)
 
    for (_size i = 0; i < len; i++) {
       const _char& ch = value[i];
-      if (ch == L'.') {
+      if (ch == CHAR_DOT) {
          if (hasDot) {
             return false;
          }
@@ -169,7 +169,7 @@ _bool isNumber(const _str& value)
             hasDot = true;
          }
       }
-      else if (ch == L'-') {
+      else if (ch == CHAR_MINUS) {
          if (i != 0) {
             return false;
          }
@@ -433,8 +433,8 @@ _bool F_IsBinary::getValue()
    const _size len = value.size();
    for (_size i = 0; i < len; i++) {
       switch (value[i]) {
-         case L'0':
-         case L'1':{
+         case DIGIT_0:
+         case DIGIT_1:{
             break;
          }
          default: {
@@ -457,10 +457,10 @@ _bool F_IsHex::getValue()
    const _size len = value.size();
    for (_size i = 0; i < len; i++) {
       switch (value[i]) {
-         case L'0': case L'1': case L'2': case L'3': case L'4':
-         case L'5': case L'6': case L'7': case L'8': case L'9':
-         case L'a': case L'b': case L'c': case L'd': case L'e': case L'f':
-         case L'A': case L'B': case L'C': case L'D': case L'E': case L'F': {
+         case DIGIT_0: case DIGIT_1: case DIGIT_2: case DIGIT_3: case DIGIT_4:
+         case DIGIT_5: case DIGIT_6: case DIGIT_7: case DIGIT_8: case DIGIT_9:
+         case LETTER_a: case LETTER_b: case LETTER_c: case LETTER_d: case LETTER_e: case LETTER_f:
+         case LETTER_A: case LETTER_B: case LETTER_C: case LETTER_D: case LETTER_E: case LETTER_F: {
             break;
          }
          default: {

@@ -29,7 +29,13 @@ static const _str STRING_MINUS =              toStr(CHAR_MINUS);
 static const _str STRING_ASTERISK =           toStr(CHAR_ASTERISK);
 static const _str STRING_DOUBLE_ASTERISK =    str(STRING_ASTERISK, STRING_ASTERISK);
 
-
+static const _str ROMAN_VINCULUM_THOUSAND = L"I" L"̅";
+static const _str ROMAN_STRING_LITERALS[] = { L"I", L"IV", L"V", L"IX", L"X", L"XL", L"L", L"XC", L"C", L"CD", L"D", L"CM", L"M",
+      (L"I" L"̅" L"V" L"̅"), (L"V" L"̅"), (L"I" L"̅" L"X" L"̅"), (L"X" L"̅"),
+      (L"X" L"̅" L"L" L"̅"), (L"L" L"̅"), (L"X" L"̅" L"C" L"̅"),
+      (L"C" L"̅"), (L"C" L"̅" L"D" L"̅"), (L"D" L"̅"),
+      (L"C" L"̅" L"M" L"̅"), (L"M" L"̅")
+};
 
 
 }

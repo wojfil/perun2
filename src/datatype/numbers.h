@@ -21,12 +21,16 @@
 namespace uro
 {
 
+// here all number literals, that are of type _nint or _ndouble
+// their literals should not be hardcoded in the source code
+
 inline constexpr _nint NINT_ZERO =                 0LL;
 inline constexpr _nint NINT_ONE =                  1LL;
 inline constexpr _nint NINT_MINUS_ONE =           -1LL;
 inline constexpr _nint NINT_TWO =                  2LL;
 inline constexpr _nint NINT_THREE =                3LL;
 inline constexpr _nint NINT_FOUR =                 4LL;
+inline constexpr _nint NINT_TEN =                 10LL;
 inline constexpr _nint NINT_300 =                300LL;
 inline constexpr _nint NINT_THOUSAND =          1000LL;
 inline constexpr _nint NINT_1024 =              1024LL;
@@ -38,8 +42,19 @@ inline constexpr _nint SIZE_UNIT_TB =      NINT_1024 * NINT_1024 * NINT_1024 * N
 inline constexpr _nint SIZE_UNIT_PB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
 
 inline constexpr _ndouble NDOUBLE_ZERO =            0L;
+inline constexpr _ndouble NDOUBLE_HALF =          0.5L;
 inline constexpr _ndouble NDOUBLE_ONE =             1L;
 inline constexpr _ndouble NDOUBLE_MINUS_ONE =      -1L;
+inline constexpr _ndouble NDOUBLE_TWELVE =         12L;
+
+
+inline constexpr _nint ROMAN_VINCULUM_THRESHOLD = 4000LL;
+inline constexpr _nint ROMAN_MAXIMUM = 5000000LL;
+static const _nint ROMAN_NUMBER_LITERALS[] = { 1LL, 4LL, 5LL, 9LL, 10LL, 40LL, 50LL, 90LL, 100LL, 400LL, 500LL, 900LL, 1000LL,
+    4000LL, 5000LL, 9000LL, 10000LL, 40000LL, 50000LL, 90000LL, 100000LL, 400000LL, 500000LL, 900000LL, 1000000LL
+};
+
+
 
 }
 

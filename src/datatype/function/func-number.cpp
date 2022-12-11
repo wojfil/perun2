@@ -427,7 +427,7 @@ _num F_FromBinary::getValue()
    _size i = 0;
    _bool negative = false;
 
-   if (baseString[0] == L'-') {
+   if (baseString[0] == CHAR_MINUS) {
       if (len == 1) {
          return _num();
       }

@@ -78,9 +78,23 @@ inline constexpr _char LETTER_h =                    L'h';
 inline constexpr _char LETTER_H =                    L'H';
 inline constexpr _char LETTER_c =                    L'c';
 inline constexpr _char LETTER_C =                    L'C';
+inline constexpr _char LETTER_a =                    L'a';
+inline constexpr _char LETTER_A =                    L'A';
+inline constexpr _char LETTER_e =                    L'e';
+inline constexpr _char LETTER_E =                    L'E';
+inline constexpr _char LETTER_f =                    L'f';
+inline constexpr _char LETTER_F =                    L'F';
 
 inline constexpr _char DIGIT_0 =                     L'0';
 inline constexpr _char DIGIT_1 =                     L'1';
+inline constexpr _char DIGIT_2 =                     L'2';
+inline constexpr _char DIGIT_3 =                     L'3';
+inline constexpr _char DIGIT_4 =                     L'4';
+inline constexpr _char DIGIT_5 =                     L'5';
+inline constexpr _char DIGIT_6 =                     L'6';
+inline constexpr _char DIGIT_7 =                     L'7';
+inline constexpr _char DIGIT_8 =                     L'8';
+inline constexpr _char DIGIT_9 =                     L'9';
 
 
 inline constexpr _char CHAR_UNARY_MINUS =            L'~';

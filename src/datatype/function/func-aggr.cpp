@@ -117,9 +117,19 @@ _num F_Median::getValue()
    const _size len = elements.size();
    const _size half = len / 2;
 
-   return len % 2 == 0
-      ? _num((elements[half] + elements[half - 1]) / 2)
-      : elements[half];
+   if (len % 2 == 0) {
+      _num result = elements[half] + elements[half - 1];
+      if (result.isDouble) {
+         result.value.d *= NDOUBLE_HALF;
+      }
+      else {
+         result.value.i /= NINT_TWO;
+      }
+      return result;
+   }
+   else {
+      return elements[half];
+   }
 }
 
 

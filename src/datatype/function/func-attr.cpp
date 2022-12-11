@@ -183,7 +183,7 @@ _str F_Parent::getValue()
 _num F_Size::getValue()
 {
    const _str p = this->getPath();
-   return p.empty() ? _num(-1LL) : _num(os_size(p, this->uroboros));
+   return p.empty() ? _num(NINT_MINUS_ONE) : _num(os_size(p, this->uroboros));
 }
 
 
@@ -194,12 +194,12 @@ _num F_SizeDefinition::getValue()
    while (definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
          definition->reset();
-         return _num(-1LL);
+         return _num(NINT_MINUS_ONE);
       }
 
       const _str v = definition->getValue();
       const _nint s = os_size(os_join(this->inner.location.value, v), this->uroboros);
-      if (s != -1LL) {
+      if (s != NINT_MINUS_ONE) {
          total += s;
       }
    }
@@ -215,25 +215,25 @@ _num F_SizeList::getValue()
    const _list vs = values->getValue();
    const _size len = vs.size();
    if (len == 0) {
-      return NINT_ZERO;
+      return _num();
    }
 
    for (_size i = 0; i < len; i++) {
       if (!this->uroboros.state == State::s_Running) {
-         return _num(-1LL);
+         return _num(NINT_MINUS_ONE);
       }
 
       const _str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvaild(v)) {
          const _nint s = os_size(os_join(this->inner.location.value, v), this->uroboros);
-         if (s != -1LL) {
+         if (s != NINT_MINUS_ONE) {
             total += s;
             any = true;
          }
       }
    }
 
-   return any ? _num(total) : _num(-1LL);
+   return any ? _num(total) : _num(NINT_MINUS_ONE);
 }
 
 

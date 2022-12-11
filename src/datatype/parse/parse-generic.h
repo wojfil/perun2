@@ -20,6 +20,7 @@
 #include "../../var/var-runtime.h"
 #include "../order.h"
 #include "../generator/gen-generic.h"
+#include "../generator/gen-generic-filter.h"
 #include "../generator/gen-list.h"
 #include "parse-prototype.h"
 #include "parse-order.h"

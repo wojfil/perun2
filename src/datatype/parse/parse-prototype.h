@@ -17,6 +17,7 @@
 
 #include "../../uroboros.h"
 #include "../generator/gen-generic.h"
+#include "../generator/gen-generic-filter.h"
 #include <memory>
 
 
@@ -90,7 +91,7 @@ template <typename T>
 struct FP_Where : FilterPrototype<T>
 {
 public:
-   FP_Where(_genptr<_bool>& cond) 
+   FP_Where(_genptr<_bool>& cond)
       : condition(std::move(cond)) { };
 
    FilterType getFilterType() override

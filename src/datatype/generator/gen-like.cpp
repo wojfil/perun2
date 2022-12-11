@@ -21,14 +21,6 @@
 namespace uro::gen
 {
 
-// these two non-printable chars are used internally for the Like operator
-// they symbolize:
-// 1) lack of char
-// 2) there is a set of characters at this position
-inline constexpr _char LIKE_CHAR_NONE = L'\0';
-inline constexpr _char LIKE_CHAR_SET = L'\1';
-
-
 LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _bool& neg)
    : values(vals), negated(neg) { };
 
@@ -45,13 +37,13 @@ static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endI
    std::unordered_set<_char> set;
    _bool negated = false;
 
-   if (pattern[startId] == L'^') {
+   if (pattern[startId] == WILDCARD_SET_EXCLUSION) {
       negated = true;
       startId++;
    }
 
    for (_size i = startId; i <= endId; i++) {
-      if (i < endId - 1 && pattern[i + 1] == L'-') {
+      if (i < endId - 1 && pattern[i + 1] == WILDCARD_SET_RANGE) {
          const _char& left = pattern[i];
          const _char& right = pattern[i + 2];
 
@@ -78,7 +70,7 @@ static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endI
 
 static void defaultLikeCmp(_likeptr& result, const _str& pattern)
 {
-   if (pattern.find(L'[') == _str::npos) {
+   if (pattern.find(WILDCARD_SET_START) == _str::npos) {
       result = std::make_unique<LC_Default_NoBrackets>(pattern);
    }
    else {
@@ -95,18 +87,18 @@ static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
    for (_size i = 0; i < length; i++) {
       const _char& ch = pattern[i];
 
-      if (ch == L'[') {
+      if (ch == WILDCARD_SET_START) {
          i++;
 
          if (i == length) {
-            ss << L'[';
+            ss << WILDCARD_SET_START;
             result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
             return;
          }
 
          const _size startId = i;
 
-         while (pattern[i] != L']') {
+         while (pattern[i] != WILDCARD_SET_END) {
             i++;
             if (i == length) {
                ss << pattern.substr(startId - 1);
@@ -121,7 +113,7 @@ static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
          }
 
          sets.emplace(id, makeLikeSet(pattern, startId, i - 1));
-         ss << LIKE_CHAR_SET;
+         ss << WILDCARD_SET;
       }
       else {
          ss << ch;
@@ -148,15 +140,15 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
       }
       case 1: {
          switch(pattern[0]) {
-            case L'%': {
+            case WILDCARD_MULTIPLE_CHARS: {
                result = std::make_unique<LC_Constant>(true);
                break;
             }
-            case L'_': {
+            case WILDCARD_ONE_CHAR: {
                result = std::make_unique<LC_ConstantLength>(1);
                break;
             }
-            case L'#': {
+            case WILDCARD_ONE_DIGIT: {
                result = std::make_unique<LC_OnlyDigits>(1);
                break;
             }
@@ -171,23 +163,23 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
          const _char& fst = pattern[0];
          const _char& snd = pattern[1];
 
-         if (fst == L'[' || fst == L']' || snd == L'[' || snd == L']') {
+         if (fst == WILDCARD_SET_START || fst == WILDCARD_SET_END || snd == WILDCARD_SET_START || snd == WILDCARD_SET_END) {
             defaultLikeCmp(result, pattern);
             return;
          }
 
          switch (fst) {
-            case L'%': {
+            case WILDCARD_MULTIPLE_CHARS: {
                switch (snd) {
-                  case L'%': {
+                  case WILDCARD_MULTIPLE_CHARS: {
                      result = std::make_unique<LC_Constant>(true);
                      break;
                   }
-                  case L'_': {
+                  case WILDCARD_ONE_CHAR: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
-                  case L'#': {
+                  case WILDCARD_ONE_DIGIT: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
@@ -198,17 +190,17 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                }
                break;
             }
-            case L'_': {
+            case WILDCARD_ONE_CHAR: {
                switch (snd) {
-                  case L'%': {
+                  case WILDCARD_MULTIPLE_CHARS: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
-                  case L'_': {
+                  case WILDCARD_ONE_CHAR: {
                      result = std::make_unique<LC_ConstantLength>(2);
                      break;
                   }
-                  case L'#': {
+                  case WILDCARD_ONE_DIGIT: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
@@ -219,17 +211,17 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                }
                break;
             }
-            case L'#': {
+            case WILDCARD_ONE_DIGIT: {
                switch (snd) {
-                  case L'%': {
+                  case WILDCARD_MULTIPLE_CHARS: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
-                  case L'_': {
+                  case WILDCARD_ONE_CHAR: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
-                  case L'#': {
+                  case WILDCARD_ONE_DIGIT: {
                      result = std::make_unique<LC_OnlyDigits>(2);
                      break;
                   }
@@ -240,21 +232,21 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                }
                break;
             }
-            case L'^': {
+            case WILDCARD_SET_EXCLUSION: {
                defaultLikeCmp(result, pattern);
                break;
             }
             default: {
                switch (snd) {
-                  case L'%': {
+                  case WILDCARD_MULTIPLE_CHARS: {
                      result = std::make_unique<LC_StartsWithChar>(pattern);
                      break;
                   }
-                  case L'_': {
+                  case WILDCARD_ONE_CHAR: {
                      result = std::make_unique<LC_UnderscoreEnd>(pattern);
                      break;
                   }
-                  case L'#': {
+                  case WILDCARD_ONE_DIGIT: {
                      result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
@@ -282,21 +274,21 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
 
    for (_size i = 1; i < limit; i++) {
       switch (pattern[i]) {
-         case L'[':
-         case L']': {
+         case WILDCARD_SET_START:
+         case WILDCARD_SET_END: {
             bracketsLikeCmp(result, pattern);
             return;
          }
-         case L'%':
-         case L'^': {
+         case WILDCARD_MULTIPLE_CHARS:
+         case WILDCARD_SET_EXCLUSION: {
             defaultLikeCmp(result, pattern);
             return;
          }
-         case L'_': {
+         case WILDCARD_ONE_CHAR: {
             underscoresWithin++;
             break;
          }
-         case L'#':  {
+         case WILDCARD_ONE_DIGIT:  {
             hashesWithin++;
             break;
          }
@@ -304,21 +296,21 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
    }
 
    switch (first) {
-      case L'_':  {
+      case WILDCARD_ONE_CHAR:  {
          underscoresWithin++;
          break;
       }
-      case L'#':  {
+      case WILDCARD_ONE_DIGIT:  {
          hashesWithin++;
          break;
       }
-      case L'[':
-      case L']': {
+      case WILDCARD_SET_START:
+      case WILDCARD_SET_END: {
          bracketsLikeCmp(result, pattern);
          return;
       }
-      case L'%':
-      case L'^': {
+      case WILDCARD_MULTIPLE_CHARS:
+      case WILDCARD_SET_EXCLUSION: {
          fieldFail = true;
          if (underscoresWithin != 0 || hashesWithin != 0) {
             defaultLikeCmp(result, pattern);
@@ -330,18 +322,18 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
 
    if (!fieldFail) {
       switch (last) {
-         case L'_':  {
+         case WILDCARD_ONE_CHAR:  {
             underscoresWithin++;
             break;
          }
-         case L'#':  {
+         case WILDCARD_ONE_DIGIT:  {
             hashesWithin++;
             break;
          }
-         case L'[':
-         case L']':
-         case L'%':
-         case L'^': {
+         case WILDCARD_SET_START:
+         case WILDCARD_SET_END:
+         case WILDCARD_MULTIPLE_CHARS:
+         case WILDCARD_SET_EXCLUSION: {
             fieldFail = true;
             break;
          }
@@ -379,20 +371,20 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
       }
    }
 
-   if (underscoresWithin != 0 || hashesWithin != 0 || first == L'#' || last == L'#') {
+   if (underscoresWithin != 0 || hashesWithin != 0 || first == WILDCARD_ONE_DIGIT || last == WILDCARD_ONE_DIGIT) {
       defaultLikeCmp(result, pattern);
       return;
    }
 
    // wildcard on start and end
    switch (first) {
-      case L'%': {
+      case WILDCARD_MULTIPLE_CHARS: {
          switch (last) {
-            case L'%': {
+            case WILDCARD_MULTIPLE_CHARS: {
                result = std::make_unique<LC_Contains>(pattern);
                break;
             }
-            case L'_': {
+            case WILDCARD_ONE_CHAR: {
                result = std::make_unique<LC_PercentUnderscore>(pattern);
                break;
             }
@@ -403,13 +395,13 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
          }
          break;
       }
-      case L'_': {
+      case WILDCARD_ONE_CHAR: {
          switch (last) {
-            case L'%': {
+            case WILDCARD_MULTIPLE_CHARS: {
                result = std::make_unique<LC_UnderscorePercent>(pattern);
                break;
             }
-            case L'_': {
+            case WILDCARD_ONE_CHAR: {
                result = std::make_unique<LC_UnderscoreStartEnd>(pattern);
                break;
             }
@@ -422,11 +414,11 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
       }
       default: {
          switch (last) {
-            case L'%': {
+            case WILDCARD_MULTIPLE_CHARS: {
                result = std::make_unique<LC_StartsWith>(pattern);
                break;
             }
-            case L'_': {
+            case WILDCARD_ONE_CHAR: {
                result = std::make_unique<LC_UnderscoreEnd>(pattern);
                break;
             }
@@ -490,7 +482,7 @@ _bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
    _bool end = false;
    _int lastWildCard = -1;
    _int id = 0;
-   _char p = LIKE_CHAR_NONE;
+   _char p = WILDCARD_NONE;
    _size setId = 0;
 
    for (_int i = 0; i < vlen; i++) {
@@ -499,33 +491,33 @@ _bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
       if (!end) {
          p = pattern[id];
 
-         if (!wildCardOn && p == L'%') {
+         if (!wildCardOn && p == WILDCARD_MULTIPLE_CHARS) {
             lastWildCard = id;
             wildCardOn = true;
-            while (id < this->patternLen && pattern[id] == L'%') {
+            while (id < this->patternLen && pattern[id] == WILDCARD_MULTIPLE_CHARS) {
                id++;
             }
             if (id >= this->patternLen) {
-               p = LIKE_CHAR_NONE;
+               p = WILDCARD_NONE;
             }
             else {
                p = pattern[id];
             }
          }
-         else if (p == L'_') {
+         else if (p == WILDCARD_ONE_CHAR) {
             charWildCardOn = true;
             id++;
          }
       }
 
       if (wildCardOn) {
-         if (p == L'#') {
+         if (p == WILDCARD_ONE_DIGIT) {
             if (std::iswdigit(c)) {
                wildCardOn = false;
                id++;
             }
          }
-         else if (p == LIKE_CHAR_SET) {
+         else if (p == WILDCARD_SET) {
             if (end) {
                return false;
             }
@@ -543,7 +535,7 @@ _bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
          charWildCardOn = false;
       }
       else {
-         if (p == L'#') {
+         if (p == WILDCARD_ONE_DIGIT) {
             if (std::iswdigit(c)) {
                id++;
                if (id > this->patternLen) {
@@ -560,7 +552,7 @@ _bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
                }
             }
          }
-         else if (p == LIKE_CHAR_SET) {
+         else if (p == WILDCARD_SET) {
             if (end) {
                return false;
             }
@@ -600,7 +592,7 @@ _bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
    if (isMatch && !end) {
       _bool onlyWildCards = true;
       for (_int i = id; i < this->patternLen; i++) {
-         if (pattern[i] != L'%') {
+         if (pattern[i] != WILDCARD_MULTIPLE_CHARS) {
             onlyWildCards = false;
             break;
          }
@@ -627,7 +619,7 @@ _bool LC_Default_NoBrackets::compareToPattern(const _str& value) const
    _bool end = false;
    _int lastWildCard = -1;
    _int id = 0;
-   _char p = LIKE_CHAR_NONE;
+   _char p = WILDCARD_NONE;
 
    for (_int i = 0; i < vlen; i++) {
       const _char& c = value[i];
@@ -635,27 +627,27 @@ _bool LC_Default_NoBrackets::compareToPattern(const _str& value) const
       if (!end) {
          p = pattern[id];
 
-         if (!wildCardOn && p == L'%') {
+         if (!wildCardOn && p == WILDCARD_MULTIPLE_CHARS) {
             lastWildCard = id;
             wildCardOn = true;
-            while (id < this->patternLen && pattern[id] == L'%') {
+            while (id < this->patternLen && pattern[id] == WILDCARD_MULTIPLE_CHARS) {
                id++;
             }
             if (id >= this->patternLen) {
-               p = LIKE_CHAR_NONE;
+               p = WILDCARD_NONE;
             }
             else {
                p = pattern[id];
             }
          }
-         else if (p == L'_') {
+         else if (p == WILDCARD_ONE_CHAR) {
             charWildCardOn = true;
             id++;
          }
       }
 
       if (wildCardOn) {
-         if (p == L'#') {
+         if (p == WILDCARD_ONE_DIGIT) {
             if (std::iswdigit(c)) {
                wildCardOn = false;
                id++;
@@ -670,7 +662,7 @@ _bool LC_Default_NoBrackets::compareToPattern(const _str& value) const
          charWildCardOn = false;
       }
       else {
-         if (p == L'#') {
+         if (p == WILDCARD_ONE_DIGIT) {
             if (std::iswdigit(c)) {
                id++;
                if (id > this->patternLen) {
@@ -707,7 +699,7 @@ _bool LC_Default_NoBrackets::compareToPattern(const _str& value) const
    if (isMatch && !end) {
       _bool onlyWildCards = true;
       for (_int i = id; i < this->patternLen; i++) {
-         if (pattern[i] != L'%') {
+         if (pattern[i] != WILDCARD_MULTIPLE_CHARS) {
             onlyWildCards = false;
             break;
          }
@@ -950,7 +942,7 @@ LC_Field_U::LC_Field_U(const _str& pat)
    : pattern(pat), length(pat.size()), isUnderscore(std::vector<_bool>(length))
 {
    for (_size i = 0; i < length; i++) {
-      isUnderscore[i] = (pat[i] == L'_');
+      isUnderscore[i] = (pat[i] == WILDCARD_ONE_CHAR);
    }
 }
 
@@ -975,7 +967,7 @@ LC_Field_H::LC_Field_H(const _str& pat)
    : pattern(pat), length(pat.size()), isHash(std::vector<_bool>(length))
 {
    for (_size i = 0; i < length; i++) {
-      isHash[i] = (pat[i] == L'#');
+      isHash[i] = (pat[i] == WILDCARD_ONE_DIGIT);
    }
 }
 
@@ -1006,8 +998,8 @@ LC_Field_UH::LC_Field_UH(const _str& pat)
      isUnderscore(std::vector<_bool>(length)), isHash(std::vector<_bool>(length))
 {
    for (_size i = 0; i < length; i++) {
-      isUnderscore[i] = (pat[i] == L'_');
-      isHash[i] = (pat[i] == L'#');
+      isUnderscore[i] = (pat[i] == WILDCARD_ONE_CHAR);
+      isHash[i] = (pat[i] == WILDCARD_ONE_DIGIT);
    }
 }
 

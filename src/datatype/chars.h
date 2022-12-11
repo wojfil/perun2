@@ -55,6 +55,10 @@ inline constexpr _char CHAR_SPACE =                  L' ';
 inline constexpr _char CHAR_QUOTATION_MARK =         L'"';
 inline constexpr _char CHAR_APOSTROPHE =             L'\'';
 inline constexpr _char CHAR_INTERPUNCT =             L'·';
+inline constexpr _char CHAR_HASH =                   L'#';
+
+inline constexpr _char CHAR_NULL =                   L'\0';
+inline constexpr _char CHAR_NULL_2 =                 L'\1';
 
 inline constexpr _char LETTER_b =                    L'b';
 inline constexpr _char LETTER_B =                    L'B';
@@ -98,11 +102,9 @@ inline constexpr _char DIGIT_7 =                     L'7';
 inline constexpr _char DIGIT_8 =                     L'8';
 inline constexpr _char DIGIT_9 =                     L'9';
 
-
 inline constexpr _char CHAR_UNARY_MINUS =            L'~';
 // within a numerical expression, the minus sign means either subtraction operation (x-y) or unary negation (-x)
-// the sign above is used by the interpreter to distinguish them
-// is used safely internally and wlll not cause collisions if the ~ character is added as a regular language operator
+// the sign above is used internally by the interpreter to distinguish them
 
 
 }

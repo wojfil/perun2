@@ -166,9 +166,9 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
             if (c == CHAR_APOSTROPHE) {
                _int asteriskId = -1;
 
-               for (_size i = wpos; i < wpos + wlen; i++) {
-                  if (code[i] == CHAR_ASTERISK) {
-                     asteriskId = static_cast<_int>(i);
+               for (_size j = wpos; j < wpos + wlen; j++) {
+                  if (code[j] == CHAR_ASTERISK) {
+                     asteriskId = static_cast<_int>(j);
                      break;
                   }
                }

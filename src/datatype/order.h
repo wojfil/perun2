@@ -28,8 +28,8 @@ namespace uro::gen
 struct OrderIndices
 {
 public:
-   OrderIndices();
-   ~OrderIndices();
+   OrderIndices() noexcept;
+   ~OrderIndices() noexcept;
    void prepare(const _size& length);
 
    _size* values;

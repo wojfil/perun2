@@ -20,10 +20,10 @@
 namespace uro::gen
 {
 
-OrderIndices::OrderIndices()
+OrderIndices::OrderIndices() noexcept
    : values(new _size[0]()) { }
 
-OrderIndices::~OrderIndices()
+OrderIndices::~OrderIndices() noexcept
 {
    delete[] this->values;
 }

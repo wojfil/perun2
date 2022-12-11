@@ -28,7 +28,7 @@ void Math::init() {
    generator = std::mt19937(rd());
 
    if (anyRandomDouble) {
-      doubleDist = std::uniform_real_distribution<>(0.0L, 1.0L);
+      doubleDist = std::uniform_real_distribution<>(NDOUBLE_ZERO, NDOUBLE_ONE);
    }
 }
 

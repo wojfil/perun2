@@ -1517,7 +1517,7 @@ _str os_stackPath(const _str& path)
       return os_stackPathStacked(path);
    }
 
-   _nint index = 2LL;
+   _nint index = NINT_TWO;
    _str newPath = path;
 
    while (os_exists(newPath))
@@ -1535,7 +1535,7 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
       return os_stackPathExtStacked(basePath, extension);
    }
 
-   _nint index = 2LL;
+   _nint index = NINT_TWO;
    _str newPath = str(basePath, STRING_DOT, extension);
 
    while (os_exists(newPath))
@@ -1654,7 +1654,7 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
                index = std::stoll(numStr);
             }
             catch (...) {
-               index = 2LL;
+               index = NINT_TWO;
             }
 
             return;

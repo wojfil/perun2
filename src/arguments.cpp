@@ -39,7 +39,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
    _str d_value;
 
    if (argc == 1) {
-      rawPrint(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
+      cmd::error::noArguments();
       return;
    }
 
@@ -74,7 +74,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
                cmd::help();
             }
             else {
-               rawPrint(str(L"Command-line error: unknown option '", arg.substr(2), L"'."));
+               cmd::error::unknownOption(arg.substr(2));
             }
 
             return;
@@ -119,7 +119,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
                      break;
                   }
                   default: {
-                     rawPrint(str(L"Command-line error: unknown option '", toStr(arg[j]), L"'."));
+                     cmd::error::unknownOption(toStr(arg[j]));
                      return;
                   }
                }
@@ -151,12 +151,12 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
    }
 
    if (nextParseLocation) {
-      rawPrint(L"Command-line error: destination directory has not been defined.");
+      cmd::error::noDestination();
       return;
    }
 
    if (!hasValue) {
-      rawPrint(L"Command-line error: an argument is missing.");
+      cmd::error::noMainArgument();
       return;
    }
 
@@ -176,7 +176,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
    else {
       _str filePath = os_trim(value);
       if (filePath.empty()) {
-         rawPrint(L"Command-line error: no input file.");
+         cmd::error::noInput();
          return;
       }
 
@@ -185,8 +185,10 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
       }
 
       if (os_hasExtension(filePath)) {
-         if (os_extension(filePath) != OS_UROEXT) {
-            rawPrint(str(L"Command-line error: wrong input file extension. Only '", OS_UROEXT, L"' is allowed."));
+         const _str extension = os_extension(filePath);
+
+         if (extension != OS_UROEXT) {
+            cmd::error::wrongFileExtension(OS_UROEXT);
             return;
          }
       }
@@ -195,12 +197,12 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
       }
 
       if (!os_exists(filePath)) {
-         rawPrint(str(L"Command-line error: input file '", os_fullname(filePath), L"' does not exist."));
+         cmd::error::fileNotFound(os_fullname(filePath));
          return;
       }
 
       if (!os_readFile(this->code, filePath)) {
-         rawPrint(L"Command-line error: input file cannot be opened.");
+         cmd::error::fileReadFailure(os_fullname(filePath));
          return;
       }
 

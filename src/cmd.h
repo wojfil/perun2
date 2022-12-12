@@ -26,6 +26,18 @@ void docs();
 void website();
 void help();
 
+namespace error
+{
+   void noArguments();
+   void unknownOption(const _str& option);
+   void noDestination();
+   void noMainArgument();
+   void noInput();
+   void fileNotFound(const _str& fileName);
+   void wrongFileExtension(const _str& expected);
+   void fileReadFailure(const _str& fileName);
+}
+
 }
 
 #endif // CMD_H_INCLUDED

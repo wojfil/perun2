@@ -55,4 +55,47 @@ void help()
    rawPrint(L"  -g           For internal use only. Set up log message communication with GUI.");
 }
 
+namespace error
+{
+   void noArguments()
+   {
+      rawPrint(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
+   }
+
+   void unknownOption(const _str& option)
+   {
+      rawPrint(str(L"Command-line error: unknown option '", option, L"'."));
+   }
+
+   void noDestination()
+   {
+      rawPrint(L"Command-line error: destination directory has not been defined.");
+   }
+
+   void noMainArgument()
+   {
+      rawPrint(L"Command-line error: main argument is missing.");
+   }
+
+   void noInput()
+   {
+      rawPrint(L"Command-line error: no input file.");
+   }
+
+   void fileNotFound(const _str& fileName)
+   {
+      rawPrint(str(L"Command-line error: input file '", fileName, L"' does not exist."));
+   }
+
+   void wrongFileExtension(const _str& expected)
+   {
+      rawPrint(str(L"Command-line error: wrong input file extension. Only '", expected, L"' is allowed."));
+   }
+
+   void fileReadFailure(const _str& fileName)
+   {
+      rawPrint(str(L"Command-line error: input file '", fileName, L"' could not be read."));
+   }
+}
+
 }

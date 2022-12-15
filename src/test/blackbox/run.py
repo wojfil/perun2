@@ -1735,6 +1735,6 @@ if __name__ == '__main__':
   expectSyntaxError("inside 'defchain' { directories where existsInside(('h', 'h')) }")
   expectSyntaxError("inside 'defchain' { directories where existsInside() }")
 
-print ("BLACK-BOX TESTS END")
-print ("All tests have passed successfully if there is no error message above.")
-input("Press Enter to continue...")
+  print ("BLACK-BOX TESTS END")
+  print ("All tests have passed successfully if there is no error message above.")
+  input("Press Enter to continue...")

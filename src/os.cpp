@@ -1664,7 +1664,7 @@ _str os_desktopPath()
    _char path[MAX_PATH];
    return SHGetSpecialFolderPathW(0, path, CSIDL_DESKTOP, FALSE)
       ? _str(path)
-      : _str();
+      : EMPTY_STRING;
 }
 
 _str os_currentPath()

@@ -25,6 +25,7 @@
 namespace uro
 {
 
+typedef int                         _exitint;
 typedef bool                        _bool;
 typedef int32_t                     _int;
 typedef uint32_t                    _uint32;

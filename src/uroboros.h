@@ -32,10 +32,10 @@ namespace uro
 
 static const _str VERSION_STR = L"1.0.6";
 
-inline constexpr _int EXITCODE_OK =             0;
-inline constexpr _int EXITCODE_RUNTIME_ERROR =  1;
-inline constexpr _int EXITCODE_SYNTAX_ERROR =   2;
-inline constexpr _int EXITCODE_CLI_ERROR =      3;
+inline constexpr _exitint EXITCODE_OK =             0;
+inline constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;
+inline constexpr _exitint EXITCODE_SYNTAX_ERROR =   2;
+inline constexpr _exitint EXITCODE_CLI_ERROR =      3;
 
 enum State
 {
@@ -62,7 +62,7 @@ public:
    const _uint32 flags;
    comm::ConditionContext conditionContext;
    State state = State::s_Running;
-   _int exitCode = EXITCODE_OK;
+   _exitint exitCode = EXITCODE_OK;
 
 private:
    _comptr commands;

@@ -19,19 +19,12 @@
 namespace uro
 {
 
-Period::Period()
-{
-   init();
-   periodUnit = PeriodUnit::u_Years;
-   periodType = PeriodType::pt_Unit;
-}
+Period::Period() 
+   : periodUnit(PeriodUnit::u_Years), periodType(PeriodType::pt_Unit) { }
 
 Period::Period(const _tnum& val, const PeriodUnit& unit)
+   : periodUnit(unit), periodType(PeriodType::pt_Unit)
 {
-   init();
-   periodUnit = unit;
-   periodType = PeriodType::pt_Unit;
-
    switch (periodUnit) {
       case PeriodUnit::u_Years: {
          years = val;
@@ -62,21 +55,6 @@ Period::Period(const _tnum& val, const PeriodUnit& unit)
          break;
       }
    }
-}
-
-void Period::init()
-{
-   years = 0;
-   months = 0;
-   weeks = 0;
-   days = 0;
-   hours = 0;
-   minutes = 0;
-   seconds = 0;
-   years_sec = 0;
-   months_sec = 0;
-   years_ad = 0;
-   months_ad = 0;
 }
 
 _nint Period::toSeconds() const

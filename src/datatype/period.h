@@ -54,21 +54,20 @@ public:
    Period();
    Period(const _tnum& val, const PeriodUnit& unit);
 
-   _tnum years;
-   _tnum months;
-   _tnum weeks;
-   _tnum days;
-   _tnum hours;
-   _tnum minutes;
-   _tnum seconds;
-   _tnum years_sec; // years with known amount of days
-   _tnum months_sec; // months with known amount of days
-   _tnum years_ad; // days in years from variable 'years_sec'
-   _tnum months_ad; // days in months from variable 'months_sec'
+   _tnum years = 0;
+   _tnum months = 0;
+   _tnum weeks = 0;
+   _tnum days = 0;
+   _tnum hours = 0;
+   _tnum minutes = 0;
+   _tnum seconds = 0;
+   _tnum years_sec = 0; // years with known amount of days
+   _tnum months_sec = 0; // months with known amount of days
+   _tnum years_ad = 0; // days in years from variable 'years_sec'
+   _tnum months_ad = 0; // days in months from variable 'months_sec'
    PeriodUnit periodUnit;
    PeriodType periodType;
 
-   void init();
    _nint toSeconds() const;
    _str toString() const;
 

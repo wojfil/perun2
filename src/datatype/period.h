@@ -18,15 +18,11 @@
 #include <vector>
 #include "number.h"
 #include "../exception.h"
+#include "time-const.h"
 
 
 namespace uro
 {
-
-// _tnum is a data structure used for every element of Time and Period
-// let it be "int" as default
-// it can be anything, but necessarily non-unsigned
-typedef _int _tnum;
 
 struct Period
 {

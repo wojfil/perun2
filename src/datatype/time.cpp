@@ -23,16 +23,6 @@
 namespace uro
 {
 
-const _tnum FIRST_YEAR = 1601;
-const _tnum LAST_YEAR = 30000;
-
-const _tnum FEBRUARY = 2;
-const _tnum DAYS_IN_NORMAL_YEAR = 365;
-const _tnum DAYS_IN_LEAP_YEAR = 366;
-const _tnum MONTHS_IN_YEAR = 12;
-const _tnum HOURS_IN_DAY = 24;
-const _tnum MINUTES_IN_HOUR = 60;
-const _tnum SECONDS_IN_MINUTE = 60;
 
 
 Time::Time() : day(1), month(1), year(FIRST_YEAR), hour(0), minute(0), second(0),

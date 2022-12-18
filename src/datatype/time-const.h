@@ -12,16 +12,16 @@ namespace uro
 // it can be anything, but necessarily non-unsigned
 typedef _int _tnum;
 
-inline constexpr _tnum FIRST_YEAR = 1601;
-inline constexpr _tnum LAST_YEAR = 30000;
+inline constexpr _tnum TNUM_FIRST_YEAR = 1601;
+inline constexpr _tnum TNUM_LAST_YEAR = 30000;
 
-inline constexpr _tnum FEBRUARY = 2;
-inline constexpr _tnum DAYS_IN_NORMAL_YEAR = 365;
-inline constexpr _tnum DAYS_IN_LEAP_YEAR = 366;
-inline constexpr _tnum MONTHS_IN_YEAR = 12;
-inline constexpr _tnum HOURS_IN_DAY = 24;
-inline constexpr _tnum MINUTES_IN_HOUR = 60;
-inline constexpr _tnum SECONDS_IN_MINUTE = 60;
+inline constexpr _tnum TNUM_FEBRUARY = 2;
+inline constexpr _tnum TNUM_DAYS_IN_NORMAL_YEAR = 365;
+inline constexpr _tnum TNUM_DAYS_IN_LEAP_YEAR = 366;
+inline constexpr _tnum TNUM_MONTHS_IN_YEAR = 12;
+inline constexpr _tnum TNUM_HOURS_IN_DAY = 24;
+inline constexpr _tnum TNUM_MINUTES_IN_HOUR = 60;
+inline constexpr _tnum TNUM_SECONDS_IN_MINUTE = 60;
 
 
 

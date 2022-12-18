@@ -25,7 +25,7 @@ namespace uro
 
 
 
-Time::Time() : day(1), month(1), year(FIRST_YEAR), hour(0), minute(0), second(0),
+Time::Time() : day(1), month(1), year(TNUM_FIRST_YEAR), hour(0), minute(0), second(0),
    type(TimeType::tt_Clock) { };
 
 Time::Time(_tnum mo, _tnum ye) : day(0), month(mo), year(ye), hour(0), minute(0), second(0),
@@ -77,7 +77,7 @@ _str Time::toString() const
 void Time::addYears(const _tnum& y)
 {
    year += y;
-   if (type != tt_YearMonth && month == FEBRUARY
+   if (type != tt_YearMonth && month == TNUM_FEBRUARY
        && day == 29 && !isLeapYear(year))
    {
       day = 28;
@@ -330,7 +330,7 @@ _bool Time::equalsExactly(const Time& tim) const
 
 _bool Time::isEmpty() const
 {
-   return year == FIRST_YEAR
+   return year == TNUM_FIRST_YEAR
        && type == TimeType::tt_Clock
        && month == 1
        && day == 1
@@ -341,12 +341,12 @@ _bool Time::isEmpty() const
 
 void Time::setValue(const Time& tim)
 {
-   year = tim.year >= FIRST_YEAR
+   year = tim.year >= TNUM_FIRST_YEAR
       ? tim.year
-      : FIRST_YEAR;
+      : TNUM_FIRST_YEAR;
 
-   if (year > LAST_YEAR) {
-      year = LAST_YEAR;
+   if (year > TNUM_LAST_YEAR) {
+      year = TNUM_LAST_YEAR;
    }
 
    month = tim.month;
@@ -761,15 +761,15 @@ inline Period timeDifference(const Time& min, const Time& max)
    p.months_sec = max.month - min.month;
 
    if (p.months_sec < 0) {
-      p.months_sec += MONTHS_IN_YEAR;
+      p.months_sec += TNUM_MONTHS_IN_YEAR;
       p.years_sec--;
 
       p.months_ad = (isLeapYear(max.year)
             ? MDAYS_LEAP[max.month - 1]
             : MDAYS_NORMAL[max.month - 1])
          + (isLeapYear(min.year)
-            ? (DAYS_IN_LEAP_YEAR - MDAYS_LEAP[min.month - 1])
-            : (DAYS_IN_NORMAL_YEAR - MDAYS_NORMAL[min.month - 1]));
+            ? (TNUM_DAYS_IN_LEAP_YEAR - MDAYS_LEAP[min.month - 1])
+            : (TNUM_DAYS_IN_NORMAL_YEAR - MDAYS_NORMAL[min.month - 1]));
 
       if (p.years_sec != 0) {
          p.years_ad = daysInYears(min.year + 1, max.year - 1);
@@ -781,7 +781,7 @@ inline Period timeDifference(const Time& min, const Time& max)
          : MDAYS_NORMAL[max.month - 1] - MDAYS_NORMAL[min.month - 1];
 
       if (p.years_sec != 0) {
-         p.years_ad = (min.month <= FEBRUARY)
+         p.years_ad = (min.month <= TNUM_FEBRUARY)
             ? daysInYears(min.year, max.year - 1)
             : daysInYears(min.year + 1, max.year);
       }
@@ -853,11 +853,11 @@ inline Period timeDifference(const Time& min, const Time& max)
          p.hours = max.hour - min.hour;
          p.minutes = max.minute - min.minute;
          if (p.minutes < 0) {
-            p.minutes += MINUTES_IN_HOUR;
+            p.minutes += TNUM_MINUTES_IN_HOUR;
             p.hours--;
          }
          if (p.hours < 0) {
-            p.hours += HOURS_IN_DAY;
+            p.hours += TNUM_HOURS_IN_DAY;
             decrementDay(p, min);
          }
 
@@ -891,15 +891,15 @@ inline Period timeDifference(const Time& min, const Time& max)
          p.seconds = max.second - min.second;
 
          if (p.seconds < 0) {
-            p.seconds += SECONDS_IN_MINUTE;
+            p.seconds += TNUM_SECONDS_IN_MINUTE;
             p.minutes--;
          }
          if (p.minutes < 0) {
-            p.minutes += MINUTES_IN_HOUR;
+            p.minutes += TNUM_MINUTES_IN_HOUR;
             p.hours--;
          }
          if (p.hours < 0) {
-            p.hours += HOURS_IN_DAY;
+            p.hours += TNUM_HOURS_IN_DAY;
             decrementDay(p, min);
          }
 
@@ -914,10 +914,12 @@ inline Period timeDifference(const Time& min, const Time& max)
 inline _tnum daysInYears(const _tnum& min, const _tnum& max)
 {
    if (min == max) {
-      return isLeapYear(min) ? DAYS_IN_LEAP_YEAR : DAYS_IN_NORMAL_YEAR;
+      return isLeapYear(min) 
+         ? TNUM_DAYS_IN_LEAP_YEAR 
+         : TNUM_DAYS_IN_NORMAL_YEAR;
    }
    else {
-      return DAYS_IN_NORMAL_YEAR * (max - min + 1)
+      return TNUM_DAYS_IN_NORMAL_YEAR * (max - min + 1)
          + (max / 4) - (min / 4)
          - (max / 100) + (min / 100)
          + (max / 400) - (min / 400)
@@ -930,9 +932,9 @@ inline void decrementMonth(Period& p, const Time& t, const _bool& addDays)
    if (p.months_sec == 0) {
       p.years_sec--;
       p.years_ad -= isLeapYear(t.year)
-         ? DAYS_IN_LEAP_YEAR
-         : DAYS_IN_NORMAL_YEAR;
-      p.months_sec = MONTHS_IN_YEAR - 1;
+         ? TNUM_DAYS_IN_LEAP_YEAR
+         : TNUM_DAYS_IN_NORMAL_YEAR;
+      p.months_sec = TNUM_MONTHS_IN_YEAR - 1;
    }
    else {
       p.months_sec--;
@@ -959,12 +961,12 @@ inline void shortClockTillMidnight(Period& p, const Time& t)
          p.days++;
       }
       else {
-         p.hours = HOURS_IN_DAY - t.hour;
+         p.hours = TNUM_HOURS_IN_DAY - t.hour;
       }
    }
    else {
-      p.minutes = MINUTES_IN_HOUR - t.minute;
-      p.hours = HOURS_IN_DAY - t.hour - 1;
+      p.minutes = TNUM_MINUTES_IN_HOUR - t.minute;
+      p.hours = TNUM_HOURS_IN_DAY - t.hour - 1;
    }
 }
 
@@ -977,9 +979,9 @@ inline void clockTillMidnight(Period& p, const Time& t)
       shortClockTillMidnight(p, t);
    }
    else {
-      p.seconds = SECONDS_IN_MINUTE - t.second;
-      p.minutes = MINUTES_IN_HOUR - t.minute - 1;
-      p.hours = HOURS_IN_DAY - t.hour - 1;
+      p.seconds = TNUM_SECONDS_IN_MINUTE - t.second;
+      p.minutes = TNUM_MINUTES_IN_HOUR - t.minute - 1;
+      p.hours = TNUM_HOURS_IN_DAY - t.hour - 1;
    }
 }
 

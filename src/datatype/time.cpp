@@ -24,7 +24,6 @@ namespace uro
 {
 
 
-
 Time::Time() : day(1), month(1), year(TNUM_FIRST_YEAR), hour(0), minute(0), second(0),
    type(TimeType::tt_Clock) { };
 
@@ -46,27 +45,27 @@ Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi, _tnum sec) :
 _str Time::toString() const
 {
    if (this->isEmpty()) {
-      return L"no time";
+      return STRING_NO_TIME;
    }
 
    _stream ss;
 
    if (type != tt_YearMonth) {
       ss << day;
-      ss << L' ';
+      ss << CHAR_SPACE;
    }
 
    ss << monthToString(month);
-   ss << L' ';
+   ss << CHAR_SPACE;
    ss << year;
 
    if (type == tt_ShortClock || type == tt_Clock) {
-      ss << L", ";
+      ss << STRING_COMMA_SPACE;
       ss << fillTimeUnit(hour);
-      ss << L':';
+      ss << CHAR_COLON;
       ss << fillTimeUnit(minute);
       if (type == tt_Clock) {
-         ss << L':';
+         ss << CHAR_COLON;
          ss << fillTimeUnit(second);
       }
    }
@@ -78,25 +77,25 @@ void Time::addYears(const _tnum& y)
 {
    year += y;
    if (type != tt_YearMonth && month == TNUM_FEBRUARY
-       && day == 29 && !isLeapYear(year))
+       && day == TNUM_DAYS_IN_LEAP_FEBRUARY && !isLeapYear(year))
    {
-      day = 28;
+      day = TNUM_DAYS_IN_LEAP_FEBRUARY;
    }
 }
 
 void Time::addMonths(const _tnum& m)
 {
-   const _tnum m2 = m % 12;
-   const _tnum y = m / 12;
+   const _tnum m2 = m % TNUM_MONTHS_IN_YEAR;
+   const _tnum y = m / TNUM_MONTHS_IN_YEAR;
    month += m2;
    year += y;
 
-   if (month > 12) {
-      month -= 12;
+   if (month > TNUM_MONTHS_IN_YEAR) {
+      month -= TNUM_MONTHS_IN_YEAR;
       year++;
    }
 
-   if (type != tt_YearMonth && day >= 29) {
+   if (type != tt_YearMonth && day >= TNUM_DAYS_IN_LEAP_FEBRUARY) {
       const _tnum max = daysInMonth(month, year);
       if (day > max) {
          day = max;
@@ -106,7 +105,7 @@ void Time::addMonths(const _tnum& m)
 
 void Time::addWeeks(const _tnum& w)
 {
-   addDays(w * 7);
+   addDays(w * TNUM_DAYS_IN_WEEK);
 }
 
 // todo:  possible optimization
@@ -133,7 +132,7 @@ void Time::addDays(const _tnum& d)
             d2 -= dif + 1;
             month++;
             if (month == 13) {
-               month = 1;
+               month = TNUM_JANUARY;
                year++;
             }
             day = 1;
@@ -152,7 +151,7 @@ void Time::addDays(const _tnum& d)
             d2 -= day;
             month--;
             if (month == 0) {
-               month = 12;
+               month = TNUM_DECEMBER;
                year--;
             }
             day = daysInMonth(month, year);
@@ -165,15 +164,15 @@ void Time::addHours(const _tnum& h)
 {
    initClock(false, h);
 
-   const _tnum h2 = h % 24;
-   _tnum d = h / 24;
+   const _tnum h2 = h % TNUM_HOURS_IN_DAY;
+   _tnum d = h / TNUM_HOURS_IN_DAY;
    hour += h2;
-   if (hour >= 24) {
-      hour -= 24;
+   if (hour >= TNUM_HOURS_IN_DAY) {
+      hour -= TNUM_HOURS_IN_DAY;
       d++;
    }
    else if (hour < 0) {
-      hour += 24;
+      hour += TNUM_HOURS_IN_DAY;
       d--;
    }
 
@@ -186,15 +185,15 @@ void Time::addMinutes(const _tnum& m)
 {
    initClock(false, m);
 
-   const _tnum m2 = m % 60;
-   _tnum h = m / 60;
+   const _tnum m2 = m % TNUM_MINUTES_IN_HOUR;
+   _tnum h = m / TNUM_MINUTES_IN_HOUR;
    minute += m2;
-   if (minute >= 60) {
-      minute -= 60;
+   if (minute >= TNUM_MINUTES_IN_HOUR) {
+      minute -= TNUM_MINUTES_IN_HOUR;
       h++;
    }
    else if (minute < 0) {
-      minute += 60;
+      minute += TNUM_MINUTES_IN_HOUR;
       h--;
    }
 
@@ -207,15 +206,15 @@ void Time::addSeconds(const _tnum& s)
 {
    initClock(true, s);
 
-   const _tnum s2 = s % 60;
-   _tnum m = s / 60;
+   const _tnum s2 = s % TNUM_SECONDS_IN_MINUTE;
+   _tnum m = s / TNUM_SECONDS_IN_MINUTE;
    second += s2;
-   if (second >= 60) {
-      second -= 60;
+   if (second >= TNUM_SECONDS_IN_MINUTE) {
+      second -= TNUM_SECONDS_IN_MINUTE;
       m++;
    }
    else if (second < 0) {
-      second += 60;
+      second += TNUM_SECONDS_IN_MINUTE;
       m--;
    }
 
@@ -231,11 +230,11 @@ void Time::setYear(const _tnum& y)
 
 void Time::setMonth(const _tnum& m)
 {
-   if (m < 1) {
+   if (m < TNUM_JANUARY) {
       throw RuntimeError(str(L"value of month cannot be smaller than 1 (received: ",
          toStr(m), L")"));
    }
-   else if (m > 12) {
+   else if (m > TNUM_DECEMBER) {
       throw RuntimeError(str(L"value of month cannot be greater than 12 (received: ",
          toStr(m), L")"));
    }
@@ -245,7 +244,7 @@ void Time::setMonth(const _tnum& m)
 
 void Time::setDay(const _tnum& d)
 {
-   if (d < 1) {
+   if (d < TNUM_JANUARY) {
       throw RuntimeError(str(L"value of day cannot be smaller than 1 (received: ",
          toStr(d), L")"));
    }
@@ -267,7 +266,7 @@ void Time::setHour(const _tnum& h)
       throw RuntimeError(str(L"value of hours cannot be smaller than 0 (received: ",
          toStr(h), L")"));
    }
-   else if (h >= 24) {
+   else if (h >= TNUM_HOURS_IN_DAY) {
       throw RuntimeError(str(L"value of hours cannot be greater than 23 (received: ",
          toStr(h), L")"));
    }
@@ -281,7 +280,7 @@ void Time::setMinute(const _tnum& m)
       throw RuntimeError(str(L"value of minutes cannot be smaller than 0 (received: ",
          toStr(m), L")"));
    }
-   else if (m >= 60) {
+   else if (m >= TNUM_MINUTES_IN_HOUR) {
       throw RuntimeError(str(L"value of minutes cannot be greater than 59 (received: ",
          toStr(m), L")"));
    }
@@ -295,7 +294,7 @@ void Time::setSecond(const _tnum& s)
       throw RuntimeError(str(L"value of seconds cannot be smaller than 0 (received: ",
          toStr(s), L")"));
    }
-   else if (s >= 60) {
+   else if (s >= TNUM_SECONDS_IN_MINUTE) {
       throw RuntimeError(str(L"value of seconds cannot be greater than 59 (received: ",
          toStr(s), L")"));
    }
@@ -392,7 +391,7 @@ Time& Time::operator += (const Period& per)
       addDays(d);
 
    if (per.weeks != 0)
-      addDays(per.weeks * 7);
+      addDays(per.weeks * TNUM_DAYS_IN_WEEK);
 
    if (per.months != 0)
       addMonths(per.months);
@@ -553,7 +552,6 @@ _bool Time::operator < (const Time& tim) const
    return second < tim.second;
 }
 
-// the same as for < operator, but with reversed comparisons
 _bool Time::operator > (const Time& tim) const
 {
    if (year > tim.year) { return true; }
@@ -657,29 +655,29 @@ _tnum toTimeNumber(const Number& num)
 _str monthToString(const _tnum& month)
 {
    switch (month) {
-      case 1:
+      case TNUM_JANUARY:
          return L"January";
-      case 2:
+      case TNUM_FEBRUARY:
          return L"February";
-      case 3:
+      case TNUM_MARCH:
          return L"March";
-      case 4:
+      case TNUM_APRIL:
          return L"April";
-      case 5:
+      case TNUM_MAY:
          return L"May";
-      case 6:
+      case TNUM_JUNE:
          return L"June";
-      case 7:
+      case TNUM_JULY:
          return L"July";
-      case 8:
+      case TNUM_AUGUST:
          return L"August";
-      case 9:
+      case TNUM_SEPTEMBER:
          return L"September";
-      case 10:
+      case TNUM_OCTOBER:
          return L"October";
-      case 11:
+      case TNUM_NOVEMBER:
          return L"November";
-      case 12:
+      case TNUM_DECEMBER:
          return L"December";
       default:
          return EMPTY_STRING;
@@ -689,19 +687,19 @@ _str monthToString(const _tnum& month)
 _str weekdayToString(const _tnum& wday)
 {
    switch (wday) {
-      case 1:
+      case TNUM_MONDAY:
          return L"Monday";
-      case 2:
+      case TNUM_TUESDAY:
          return L"Tuesday";
-      case 3:
+      case TNUM_WEDNESDAY:
          return L"Wednesday";
-      case 4:
+      case TNUM_THURSDAY:
          return L"Thursday";
-      case 5:
+      case TNUM_FRIDAY:
          return L"Friday";
-      case 6:
+      case TNUM_SATURDAY:
          return L"Saturday";
-      case 7:
+      case TNUM_SUNDAY:
          return L"Sunday";
       default:
          return EMPTY_STRING;
@@ -711,7 +709,7 @@ _str weekdayToString(const _tnum& wday)
 inline _str fillTimeUnit(const _tnum& val)
 {
    return val <= 9
-      ? str(L"0" + toStr(val))
+      ? str(STRING_0, toStr(val))
       : toStr(val);
 }
 
@@ -729,20 +727,20 @@ inline _bool isLeapYear(const _tnum& year)
 _tnum daysInMonth(const _tnum& month, const _tnum& year)
 {
    switch (month) {
-      case 0: // 0th month = December
-      case 1:
-      case 3:
-      case 5:
-      case 7:
-      case 8:
-      case 10:
-      case 12:
-      case 13: // 13th month = January
-         return 31;
-      case 2:
-         return isLeapYear(year) ? 29 : 28;
+      case TNUM_ZERO: // 0th month = December
+      case TNUM_JANUARY:
+      case TNUM_MARCH:
+      case TNUM_MAY:
+      case TNUM_JULY:
+      case TNUM_AUGUST:
+      case TNUM_OCTOBER:
+      case TNUM_DECEMBER:
+      case TNUM_13: // 13th month = January
+         return TNUM_DAYS_IN_JANUARY;
+      case TNUM_FEBRUARY:
+         return isLeapYear(year) ? TNUM_DAYS_IN_LEAP_FEBRUARY : TNUM_DAYS_IN_FEBRUARY;
       default:
-         return 30;
+         return TNUM_DAYS_IN_APRIL;
    }
 }
 

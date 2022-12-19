@@ -28,6 +28,7 @@ static const _str STRING_1 =                  toStr(DIGIT_1);
 static const _str STRING_MINUS =              toStr(CHAR_MINUS);
 static const _str STRING_ASTERISK =           toStr(CHAR_ASTERISK);
 static const _str STRING_DOUBLE_ASTERISK =    str(STRING_ASTERISK, STRING_ASTERISK);
+static const _str STRING_COMMA_SPACE =        str(STRING_COMMA, STRING_SPACE);
 static const _str STRING_QUOTATION_MARK =     toStr(CHAR_QUOTATION_MARK);
 static const _str STRING_COLON =              toStr(CHAR_COLON);
 static const _str STRING_DOT =                toStr(CHAR_DOT);
@@ -42,6 +43,9 @@ static const _str ROMAN_STRING_LITERALS[] = { L"I", L"IV", L"V", L"IX", L"X", L"
       (L"C" L"̅"), (L"C" L"̅" L"D" L"̅"), (L"D" L"̅"),
       (L"C" L"̅" L"M" L"̅"), (L"M" L"̅")
 };
+
+static const _str STRING_NO_TIME =            L"no time";
+
 
 
 }

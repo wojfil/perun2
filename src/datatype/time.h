@@ -43,9 +43,9 @@ struct Time
    _tnum year;
    _tnum day;
    _tnum month;
-   _tnum hour;
-   _tnum minute;
-   _tnum second;
+   _tnum hour = 0;
+   _tnum minute = 0;
+   _tnum second = 0;
    TimeType type;
 
    _str toString() const;

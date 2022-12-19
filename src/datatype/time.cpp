@@ -23,23 +23,20 @@
 namespace uro
 {
 
+Time::Time() 
+   : day(1), month(1), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
 
-Time::Time() : day(1), month(1), year(TNUM_FIRST_YEAR), hour(0), minute(0), second(0),
-   type(TimeType::tt_Clock) { };
+Time::Time(_tnum mo, _tnum ye) 
+   : day(0), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
 
-Time::Time(_tnum mo, _tnum ye) : day(0), month(mo), year(ye), hour(0), minute(0), second(0),
-   type(TimeType::tt_YearMonth) { };
+Time::Time(_tnum da, _tnum mo, _tnum ye) 
+   : day(da), month(mo), year(ye), type(TimeType::tt_Date) { };
 
-Time::Time(_tnum da, _tnum mo, _tnum ye) : day(da), month(mo), year(ye), hour(0), minute(0), second(0),
-   type(TimeType::tt_Date) { };
+Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi) 
+   : day(da), month(mo), year(ye), hour(ho), minute(mi), type(TimeType::tt_ShortClock) { };
 
-Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi) :
-   day(da), month(mo), year(ye), hour(ho), minute(mi), second(0),
-   type(TimeType::tt_ShortClock) { };
-
-Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi, _tnum sec) :
-   day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec),
-   type(TimeType::tt_Clock) { };
+Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi, _tnum sec) 
+   : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_Clock) { };
 
 
 _str Time::toString() const

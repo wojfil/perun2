@@ -95,7 +95,7 @@ _str Period::toString() const
    if (y != 0 || years != 0) {
       if (!first) ss << L' ';
       ss << y;
-      if (y == 1 || y == -1)
+      if (y == TNUM_ONE || y == TNUM_MINUS_ONE)
          ss << L" year";
       else
          ss << L" years";
@@ -105,7 +105,7 @@ _str Period::toString() const
    if (m != 0 || months != 0) {
       if (!first) ss << L' ';
       ss << m;
-      if (m == 1 || m == -1)
+      if (m == TNUM_ONE || m == TNUM_MINUS_ONE)
          ss << L" month";
       else
          ss << L" months";
@@ -115,7 +115,7 @@ _str Period::toString() const
    if (weeks != 0) {
       if (!first) ss << L' ';
       ss << weeks;
-      if (weeks == 1 || weeks == -1)
+      if (weeks == TNUM_ONE || weeks == TNUM_MINUS_ONE)
          ss << L" week";
       else
          ss << L" weeks";
@@ -125,7 +125,7 @@ _str Period::toString() const
    if (days != 0) {
       if (!first) ss << L' ';
       ss << days;
-      if (days == 1 || days == -1)
+      if (days == TNUM_ONE || days == TNUM_MINUS_ONE)
          ss << L" day";
       else
          ss << L" days";
@@ -135,7 +135,7 @@ _str Period::toString() const
    if (hours != 0) {
       if (!first) ss << L' ';
       ss << hours;
-      if (hours == 1 || hours == -1)
+      if (hours == TNUM_ONE || hours == TNUM_MINUS_ONE)
          ss << L" hour";
       else
          ss << L" hours";
@@ -145,7 +145,7 @@ _str Period::toString() const
    if (minutes != 0) {
       if (!first) ss << L' ';
       ss << minutes;
-      if (minutes == 1 || minutes == -1)
+      if (minutes == TNUM_ONE || minutes == TNUM_MINUS_ONE)
          ss << L" minute";
       else
          ss << L" minutes";
@@ -155,7 +155,7 @@ _str Period::toString() const
    if (seconds != 0) {
       if (!first) ss << L' ';
       ss << seconds;
-      if (seconds == 1 || seconds == -1)
+      if (seconds == TNUM_ONE || seconds == TNUM_MINUS_ONE)
          ss << L" second";
       else
          ss << L" seconds";
@@ -169,14 +169,14 @@ _str Period::toString() const
 
 inline _bool Period::isNegativeDifference() const
 {
-   return years < 0
-       || months < 0
-       || months_ad < 0
-       || years_ad < 0
-       || days < 0
-       || hours < 0
-       || minutes < 0
-       || seconds < 0;
+   return years < TNUM_ZERO
+       || months < TNUM_ZERO
+       || months_ad < TNUM_ZERO
+       || years_ad < TNUM_ZERO
+       || days < TNUM_ZERO
+       || hours < TNUM_ZERO
+       || minutes < TNUM_ZERO
+       || seconds < TNUM_ZERO;
 }
 
 void Period::reverse()
@@ -184,63 +184,63 @@ void Period::reverse()
    if (periodType == PeriodType::pt_Unit) {
       switch (periodUnit) {
          case PeriodUnit::u_Years: {
-            years *= -1;
+            years *= TNUM_MINUS_ONE;
             break;
          }
          case PeriodUnit::u_Months: {
-            months *= -1;
+            months *= TNUM_MINUS_ONE;
             break;
          }
          case PeriodUnit::u_Weeks: {
-            weeks *= -1;
+            weeks *= TNUM_MINUS_ONE;
             break;
          }
          case PeriodUnit::u_Days: {
-            days *= -1;
+            days *= TNUM_MINUS_ONE;
             break;
          }
          case PeriodUnit::u_Hours: {
-            hours *= -1;
+            hours *= TNUM_MINUS_ONE;
             break;
          }
          case PeriodUnit::u_Minutes: {
-            minutes *= -1;
+            minutes *= TNUM_MINUS_ONE;
             break;
          }
          case PeriodUnit::u_Seconds: {
-            seconds *= -1;
+            seconds *= TNUM_MINUS_ONE;
             break;
          }
       }
    }
    else {
-      years *= -1;
-      months *= -1;
-      weeks *= -1;
-      days *= -1;
-      hours *= -1;
-      minutes *= -1;
-      seconds *= -1;
-      years_sec *= -1;
-      months_sec *= -1;
-      years_ad *= -1;
-      months_ad *= -1;
+      years *= TNUM_MINUS_ONE;
+      months *= TNUM_MINUS_ONE;
+      weeks *= TNUM_MINUS_ONE;
+      days *= TNUM_MINUS_ONE;
+      hours *= TNUM_MINUS_ONE;
+      minutes *= TNUM_MINUS_ONE;
+      seconds *= TNUM_MINUS_ONE;
+      years_sec *= TNUM_MINUS_ONE;
+      months_sec *= TNUM_MINUS_ONE;
+      years_ad *= TNUM_MINUS_ONE;
+      months_ad *= TNUM_MINUS_ONE;
    }
 }
 
 inline void Period::checkDifference()
 {
    if (isNegativeDifference()) {
-      if (years > 0 || months > 0 || days > 0 || hours > 0
-       || minutes > 0 || seconds > 0 || months <= -12 || days <= -28
-       || hours <= -24 || minutes <= -60 || seconds <= -60) {
+      if (years > TNUM_ZERO || months > TNUM_ZERO || days > TNUM_ZERO || hours > TNUM_ZERO
+       || minutes > TNUM_ZERO || seconds > TNUM_ZERO || months <= -TNUM_MONTHS_IN_YEAR || days <= -TNUM_DAYS_IN_FEBRUARY
+       || hours <= -TNUM_HOURS_IN_DAY || minutes <= -TNUM_MINUTES_IN_HOUR || seconds <= -TNUM_SECONDS_IN_MINUTE) {
          periodType = PeriodType::pt_Mingled;
       }
    }
    else {
-      if (years < 0 || months < 0 || days < 0 || hours < 0
-       || minutes < 0 || seconds < 0 || months >= 12 || days >= 28
-       || hours >= 24 || minutes >= 60 || seconds >= 60) {
+      if (years < TNUM_ZERO || months < TNUM_ZERO || days < TNUM_ZERO || hours < TNUM_ZERO
+       || minutes < TNUM_ZERO || seconds < TNUM_ZERO || months >= TNUM_MONTHS_IN_YEAR || days >= TNUM_DAYS_IN_FEBRUARY
+       || hours >= TNUM_HOURS_IN_DAY || minutes >= TNUM_MINUTES_IN_HOUR || seconds >= TNUM_SECONDS_IN_MINUTE) {
          periodType = PeriodType::pt_Mingled;
       }
    }
@@ -304,49 +304,49 @@ inline void Period::addUnit(const Period& per)
       switch (per.periodUnit) {
          case PeriodUnit::u_Years: {
             years += per.years;
-            if (years != 0 && periodUnit != per.periodUnit) {
+            if (years != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Months: {
             months += per.months;
-            if (months != 0 && periodUnit != per.periodUnit) {
+            if (months != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Weeks: {
             weeks += per.weeks;
-            if (weeks != 0 && periodUnit != per.periodUnit) {
+            if (weeks != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Days: {
             days += per.days;
-            if (days != 0 && periodUnit != per.periodUnit) {
+            if (days != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Hours: {
             hours += per.hours;
-            if (hours != 0 && periodUnit != per.periodUnit) {
+            if (hours != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Minutes: {
             minutes += per.minutes;
-            if (minutes != 0 && periodUnit != per.periodUnit) {
+            if (minutes != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Seconds: {
             seconds += per.seconds;
-            if (seconds != 0 && periodUnit != per.periodUnit) {
+            if (seconds != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
@@ -397,49 +397,49 @@ inline void Period::subtractUnit(const Period& per)
       switch (per.periodUnit) {
          case PeriodUnit::u_Years: {
             years -= per.years;
-            if (years != 0 && periodUnit != per.periodUnit) {
+            if (years != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Months: {
             months -= per.months;
-            if (months != 0 && periodUnit != per.periodUnit) {
+            if (months != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Weeks: {
             weeks -= per.weeks;
-            if (weeks != 0 && periodUnit != per.periodUnit) {
+            if (weeks != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Days: {
             days -= per.days;
-            if (days != 0 && periodUnit != per.periodUnit) {
+            if (days != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Hours: {
             hours -= per.hours;
-            if (hours != 0 && periodUnit != per.periodUnit) {
+            if (hours != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Minutes: {
             minutes -= per.minutes;
-            if (minutes != 0 && periodUnit != per.periodUnit) {
+            if (minutes != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
          }
          case PeriodUnit::u_Seconds: {
             seconds -= per.seconds;
-            if (seconds != 0 && periodUnit != per.periodUnit) {
+            if (seconds != TNUM_ZERO && periodUnit != per.periodUnit) {
                periodType = PeriodType::pt_Mingled;
             }
             break;
@@ -544,7 +544,7 @@ Period& Period::operator /= (const Number& num)
 {
    const _tnum n = static_cast<_tnum>(num.toInt());
 
-   if (n == 0) {
+   if (n == TNUM_ZERO) {
       throw RuntimeError(L"division by zero");
    }
 
@@ -639,13 +639,13 @@ _bool Period::operator == (const Period& per) const
       case PeriodType::pt_Unit: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodUnitsCmp(per) == 0;
+               return periodUnitsCmp(per) == TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffUnitCmp(per, *this) == 0;
+               return periodDiffUnitCmp(per, *this) == TNUM_ZERO;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) == 0;
+               return periodCmp(per) == TNUM_ZERO;
             }
          }
          break;
@@ -653,21 +653,21 @@ _bool Period::operator == (const Period& per) const
       case PeriodType::pt_Difference: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodDiffUnitCmp(*this, per) == 0;
+               return periodDiffUnitCmp(*this, per) == TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffsCmp(per) == 0;
+               return periodDiffsCmp(per) == TNUM_ZERO;
                break;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) == 0;
+               return periodCmp(per) == TNUM_ZERO;
             }
          }
          break;
       }
    }
 
-   return periodCmp(per) == 0;
+   return periodCmp(per) == TNUM_ZERO;
 }
 
 _bool Period::operator != (const Period& per) const
@@ -864,11 +864,11 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Years:
                return years - per.years;
             case PeriodUnit::u_Months:
-               return years * 12 - per.months;
+               return years * TNUM_MONTHS_IN_YEAR - per.months;
             case PeriodUnit::u_Weeks:
-               return years * 365 - per.weeks * 7;
+               return years * TNUM_DAYS_IN_NORMAL_YEAR - per.weeks * 7;
             case PeriodUnit::u_Days:
-               return years * 365 - per.days;
+               return years * TNUM_DAYS_IN_NORMAL_YEAR - per.days;
             case PeriodUnit::u_Hours:
                return years * 8760 - per.hours;
             case PeriodUnit::u_Minutes:
@@ -881,13 +881,13 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
       case PeriodUnit::u_Months: {
          switch (per.periodUnit) {
             case PeriodUnit::u_Years:
-               return months - 12 * per.years;
+               return months - TNUM_MONTHS_IN_YEAR * per.years;
             case PeriodUnit::u_Months:
                return months - per.months;
             case PeriodUnit::u_Weeks:
-               return months * 30 - 7 * per.weeks;
+               return months * TNUM_DAYS_IN_NORMAL_MONTH - TNUM_DAYS_IN_WEEK* per.weeks;
             case PeriodUnit::u_Days:
-               return months * 30 - per.days;
+               return months * TNUM_DAYS_IN_NORMAL_MONTH - per.days;
             case PeriodUnit::u_Hours:
                return months * 720 - per.hours;
             case PeriodUnit::u_Minutes:
@@ -900,13 +900,13 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
       case PeriodUnit::u_Weeks: {
          switch (per.periodUnit) {
             case PeriodUnit::u_Years:
-               return weeks * 7 - 365 * per.years;
+               return weeks * TNUM_DAYS_IN_WEEK- TNUM_DAYS_IN_NORMAL_YEAR * per.years;
             case PeriodUnit::u_Months:
-               return weeks * 7 - 30 * per.months;
+               return weeks * TNUM_DAYS_IN_WEEK- TNUM_DAYS_IN_NORMAL_MONTH * per.months;
             case PeriodUnit::u_Weeks:
                return weeks - per.weeks;
             case PeriodUnit::u_Days:
-               return weeks * 7 - per.days;
+               return weeks * TNUM_DAYS_IN_WEEK- per.days;
             case PeriodUnit::u_Hours:
                return weeks * 168 - per.hours;
             case PeriodUnit::u_Minutes:
@@ -919,15 +919,15 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
       case PeriodUnit::u_Days: {
          switch (per.periodUnit) {
             case PeriodUnit::u_Years:
-               return days - 365 * per.years;
+               return days - TNUM_DAYS_IN_NORMAL_YEAR * per.years;
             case PeriodUnit::u_Months:
-               return days - 30 * per.months;
+               return days - TNUM_DAYS_IN_NORMAL_MONTH * per.months;
             case PeriodUnit::u_Weeks:
-               return days - 7 * per.weeks;
+               return days - TNUM_DAYS_IN_WEEK* per.weeks;
             case PeriodUnit::u_Days:
                return days - per.days;
             case PeriodUnit::u_Hours:
-               return days * 24 - per.hours;
+               return days * TNUM_HOURS_IN_DAY - per.hours;
             case PeriodUnit::u_Minutes:
                return days * 1440 - per.minutes;
             case PeriodUnit::u_Seconds:
@@ -944,7 +944,7 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Weeks:
                return hours - 168 * per.weeks;
             case PeriodUnit::u_Days:
-               return hours - 24 * per.days;
+               return hours - TNUM_HOURS_IN_DAY * per.days;
             case PeriodUnit::u_Hours:
                return hours - per.hours;
             case PeriodUnit::u_Minutes:
@@ -1002,14 +1002,18 @@ inline _tnum Period::periodDiffsCmp(const Period& diff) const
    _tnum value = days + months_ad + years_ad
       - diff.days - diff.months_ad - diff.years_ad;
 
-   if (value != 0) return value;
+   if (value != TNUM_ZERO) {
+      return value;
+   }
 
    value = hours - diff.hours;
-   if (value != 0) return value;
+   if (value != TNUM_ZERO) {
+      return value;
+   }
 
    value = minutes - diff.minutes;
 
-   return value == 0
+   return value == TNUM_ZERO
       ? seconds - diff.seconds
       : value;
 }
@@ -1018,7 +1022,7 @@ inline _tnum Period::periodCmp(const Period& per) const
 {
    _tnum s = (hours - per.hours) * 3600
       + (minutes - per.minutes) * 60 + seconds - per.seconds;
-   _tnum d = (s / 86400) + days - per.days + 7 * (weeks - per.weeks);
+   _tnum d = (s / 86400) + days - per.days + TNUM_DAYS_IN_WEEK* (weeks - per.weeks);
    s %= 86400;
 
    _tnum y1 = years - per.years;
@@ -1026,69 +1030,69 @@ inline _tnum Period::periodCmp(const Period& per) const
    _tnum m1 = months - per.months;
    _tnum m2 = months_sec - per.months_sec;
 
-   const _bool noYear = (y1 == 0) && (y2 == 0);
-   const _bool noMonth = (m1 == 0) && (m2 == 0);
+   const _bool noYear = (y1 == TNUM_ZERO) && (y2 == TNUM_ZERO);
+   const _bool noMonth = (m1 == TNUM_ZERO) && (m2 == TNUM_ZERO);
 
    if (noYear || noMonth) {
       d += months_ad - per.months_ad + years_ad - per.years_ad;
 
       if (noYear) {
          if (noMonth) {
-            return d == 0 ? s : d;
+            return d == TNUM_ZERO ? s : d;
          }
 
          if (m1 == -m2) {
-            return d == 0 ? s : d;
+            return d == TNUM_ZERO ? s : d;
          }
 
-         d += m1 * 30;
-         return d == 0 ? s : d;
+         d += m1 * TNUM_DAYS_IN_NORMAL_MONTH;
+         return d == TNUM_ZERO ? s : d;
       }
 
       if (noMonth) {
          if (y1 == -y2) {
-            return d == 0 ? s : d;
+            return d == TNUM_ZERO ? s : d;
          }
 
-         d += y1 * 365;
-         return d == 0 ? s : d;
+         d += y1 * TNUM_DAYS_IN_NORMAL_YEAR;
+         return d == TNUM_ZERO ? s : d;
       }
    }
 
-   if (m2 == 0 && y2 == 0) {
+   if (m2 == TNUM_ZERO && y2 == TNUM_ZERO) {
       d += months_ad - per.months_ad + years_ad - per.years_ad;
-      if ((y1 * 12) == -m1) {
-         return d == 0 ? s : d;
+      if ((y1 * TNUM_MONTHS_IN_YEAR) == -m1) {
+         return d == TNUM_ZERO ? s : d;
       }
 
       if (y1 >= 0) {
          if (m1 >= 0) {
-            d += 365 * y1 + 30 * m1;
+            d += TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1;
          }
          else {
-            const _tnum x = (-m1) / 12;
+            const _tnum x = (-m1) / TNUM_MONTHS_IN_YEAR;
             const _tnum mx = x > y1 ? y1 : x;
 
-            d += mx == 0
-               ? (365 * y1 + 30 * m1)
-               : (365 * (y1 - mx) + 30 * (m1 + 12 * mx));
+            d += mx == TNUM_ZERO
+               ? (TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1)
+               : (TNUM_DAYS_IN_NORMAL_YEAR * (y1 - mx) + TNUM_DAYS_IN_NORMAL_MONTH * (m1 + TNUM_MONTHS_IN_YEAR * mx));
          }
       }
       else {
          if (m1 >= 0) {
-            const _tnum x = m1 / 12;
+            const _tnum x = m1 / TNUM_MONTHS_IN_YEAR;
             const _tnum mx = x > (-y1) ? (-y1) : x;
 
-            d += mx == 0
-               ? (365 * y1 + 30 * m1)
-               : (365 * (y1 + mx) + 30 * (m1 - 12 * mx));
+            d += mx == TNUM_ZERO
+               ? (TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1)
+               : (TNUM_DAYS_IN_NORMAL_YEAR * (y1 + mx) + TNUM_DAYS_IN_NORMAL_MONTH * (m1 - TNUM_MONTHS_IN_YEAR * mx));
          }
          else {
-            d += 365 * y1 + 30 * m1;
+            d += TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1;
          }
       }
 
-      return d == 0 ? s : d;
+      return d == TNUM_ZERO ? s : d;
    }
 
    // final
@@ -1113,33 +1117,33 @@ inline _tnum Period::periodCmp(const Period& per) const
 
    if (!ney)
    {
-      if ((m1 > 0 && y2 < 0 && m1 >= (-y2 * 12)) ||
-         (m1 < 0 && y2 > 0 && (-m1) >= y2 * 12))
+      if ((m1 > 0 && y2 < 0 && m1 >= (-y2 * TNUM_MONTHS_IN_YEAR)) ||
+         (m1 < 0 && y2 > 0 && (-m1) >= y2 * TNUM_MONTHS_IN_YEAR))
       {
          ney = true;
-         m1 += y2 * 12;
+         m1 += y2 * TNUM_MONTHS_IN_YEAR;
          y2 = 0;
       }
    }
 
    if (!nem) {
-      if ((y1 > 0 && m2 < 0 && (y1 * 12) >= (-m2)))
+      if ((y1 > 0 && m2 < 0 && (y1 * TNUM_MONTHS_IN_YEAR) >= (-m2)))
       {
-         const _tnum a = ((-m2) / 12)
-            + (((-m2) % 12) == 0 ? 0 : 1);
+         const _tnum a = ((-m2) / TNUM_MONTHS_IN_YEAR)
+            + (((-m2) % TNUM_MONTHS_IN_YEAR) == TNUM_ZERO ? 0 : 1);
 
          y1 -= a;
-         m1 += m2 + a * 12;
+         m1 += m2 + a * TNUM_MONTHS_IN_YEAR;
          m2 = 0;
          nem = true;
       }
-      else if (y1 < 0 && m2 > 0 && (-y1 * 12) >= m2)
+      else if (y1 < 0 && m2 > 0 && (-y1 * TNUM_MONTHS_IN_YEAR) >= m2)
       {
-         const _tnum a = (m2 / 12)
-            + ((m2 % 12) == 0 ? 0 : 1);
+         const _tnum a = (m2 / TNUM_MONTHS_IN_YEAR)
+            + ((m2 % TNUM_MONTHS_IN_YEAR) == TNUM_ZERO ? 0 : 1);
 
          y1 += a;
-         m1 -= m2 + 12 * a;
+         m1 -= m2 + TNUM_MONTHS_IN_YEAR * a;
          m2 = 0;
          nem = true;
       }
@@ -1152,38 +1156,38 @@ inline _tnum Period::periodCmp(const Period& per) const
       d += months_ad - per.months_ad;
    }
 
-   if ((y1 * 12) == -m1) {
-      return d == 0 ? s : d;
+   if ((y1 * TNUM_MONTHS_IN_YEAR) == -m1) {
+      return d == TNUM_ZERO ? s : d;
    }
 
    if (y1 >= 0) {
       if (m1 >= 0) {
-         d += 365 * y1 + 30 * m1;
+         d += TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1;
       }
       else {
-         const _tnum x = (-m1) / 12;
+         const _tnum x = (-m1) / TNUM_MONTHS_IN_YEAR;
          const _tnum mx = x > y1 ? y1 : x;
 
-         d += mx == 0
-            ? (365 * y1 + 30 * m1)
-            : (365 * (y1 - mx) + 30 * (m1 + 12 * mx));
+         d += mx == TNUM_ZERO
+            ? (TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1)
+            : (TNUM_DAYS_IN_NORMAL_YEAR * (y1 - mx) + TNUM_DAYS_IN_NORMAL_MONTH * (m1 + TNUM_MONTHS_IN_YEAR * mx));
       }
    }
    else {
       if (m1 >= 0) {
-         const _tnum x = m1 / 12;
+         const _tnum x = m1 / TNUM_MONTHS_IN_YEAR;
          const _tnum mx = x > (-y1) ? (-y1) : x;
 
-         d += mx == 0
-            ? (365 * y1 + 30 * m1)
-            : (365 * (y1 + mx) + 30 * (m1 - 12 * mx));
+         d += mx == TNUM_ZERO
+            ? (TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1)
+            : (TNUM_DAYS_IN_NORMAL_YEAR * (y1 + mx) + TNUM_DAYS_IN_NORMAL_MONTH * (m1 - TNUM_MONTHS_IN_YEAR * mx));
       }
       else {
-         d += 365 * y1 + 30 * m1;
+         d += TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1;
       }
    }
 
-   return d == 0 ? s : d;
+   return d == TNUM_ZERO ? s : d;
 }
 
 inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit)
@@ -1191,92 +1195,92 @@ inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit)
    switch (unit.periodUnit) {
       case Period::u_Years: {
          const _tnum v = diff.years + diff.years_sec - unit.years;
-         if (v != 0) {
+         if (v != TNUM_ZERO) {
             return v;
          }
 
-         if (diff.months != 0) return diff.months;
-         if (diff.months_sec != 0) return diff.months_sec;
-         if (diff.months_ad != 0) return diff.months_ad;
-         if (diff.days != 0) return diff.days;
-         if (diff.hours != 0) return diff.hours;
-         if (diff.minutes != 0) return diff.minutes;
-         if (diff.seconds != 0) return diff.seconds;
+         if (diff.months != TNUM_ZERO) return diff.months;
+         if (diff.months_sec != TNUM_ZERO) return diff.months_sec;
+         if (diff.months_ad != TNUM_ZERO) return diff.months_ad;
+         if (diff.days != TNUM_ZERO) return diff.days;
+         if (diff.hours != TNUM_ZERO) return diff.hours;
+         if (diff.minutes != TNUM_ZERO) return diff.minutes;
+         if (diff.seconds != TNUM_ZERO) return diff.seconds;
 
-         return 0;
+         return TNUM_ZERO;
       }
       case Period::u_Months: {
-         const _tnum v = 12 * (diff.years + diff.years_sec)
+         const _tnum v = TNUM_MONTHS_IN_YEAR * (diff.years + diff.years_sec)
             + diff.months + diff.months_sec - unit.months;
 
-         if (v != 0) {
+         if (v != TNUM_ZERO) {
             return v;
          }
 
-         if (diff.days != 0) return diff.days;
-         if (diff.hours != 0) return diff.hours;
-         if (diff.minutes != 0) return diff.minutes;
-         if (diff.seconds != 0) return diff.seconds;
+         if (diff.days != TNUM_ZERO) return diff.days;
+         if (diff.hours != TNUM_ZERO) return diff.hours;
+         if (diff.minutes != TNUM_ZERO) return diff.minutes;
+         if (diff.seconds != TNUM_ZERO) return diff.seconds;
 
-         return 0;
+         return TNUM_ZERO;
       }
       case Period::u_Weeks: {
-         const _tnum v = 365 * diff.years + diff.years_ad + 30
-            * diff.months + diff.months_ad + diff.days - 7 * unit.weeks;
+         const _tnum v = TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad + TNUM_DAYS_IN_NORMAL_MONTH
+            * diff.months + diff.months_ad + diff.days - TNUM_DAYS_IN_WEEK* unit.weeks;
 
-         if (v != 0) {
+         if (v != TNUM_ZERO) {
             return v;
          }
 
-         if (diff.hours != 0) return diff.hours;
-         if (diff.minutes != 0) return diff.minutes;
-         if (diff.seconds != 0) return diff.seconds;
+         if (diff.hours != TNUM_ZERO) return diff.hours;
+         if (diff.minutes != TNUM_ZERO) return diff.minutes;
+         if (diff.seconds != TNUM_ZERO) return diff.seconds;
 
-         return 0;
+         return TNUM_ZERO;
       }
       case Period::u_Days: {
-         const _tnum v = 365 * diff.years + diff.years_ad + 30 * diff.months
+         const _tnum v = TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad + TNUM_DAYS_IN_NORMAL_MONTH * diff.months
             + diff.months_ad + diff.days - unit.days;
 
-         if (v != 0) {
+         if (v != TNUM_ZERO) {
             return v;
          }
 
-         if (diff.hours != 0) return diff.hours;
-         if (diff.minutes != 0) return diff.minutes;
-         if (diff.seconds != 0) return diff.seconds;
+         if (diff.hours != TNUM_ZERO) return diff.hours;
+         if (diff.minutes != TNUM_ZERO) return diff.minutes;
+         if (diff.seconds != TNUM_ZERO) return diff.seconds;
 
-         return 0;
+         return TNUM_ZERO;
       }
       case Period::u_Hours: {
-         const _tnum v = 24 * (365 * diff.years + diff.years_ad
-            + 30 * diff.months + diff.months_ad + diff.days)
+         const _tnum v = TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
+            + TNUM_DAYS_IN_NORMAL_MONTH * diff.months + diff.months_ad + diff.days)
             + diff.hours - unit.hours;
 
-         if (v != 0) {
+         if (v != TNUM_ZERO) {
             return v;
          }
 
-         if (diff.minutes != 0) return diff.minutes;
-         if (diff.seconds != 0) return diff.seconds;
+         if (diff.minutes != TNUM_ZERO) return diff.minutes;
+         if (diff.seconds != TNUM_ZERO) return diff.seconds;
 
-         return 0;
+         return TNUM_ZERO;
       }
       case Period::u_Minutes: {
-         const _tnum v = 60 * (24 * (365 * diff.years + diff.years_ad
-            + 30 * diff.months + diff.months_ad + diff.days) + diff.hours)
+         const _tnum v = 60 * (TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
+            + TNUM_DAYS_IN_NORMAL_MONTH * diff.months + diff.months_ad + diff.days) + diff.hours)
             + diff.minutes - unit.minutes;
 
-         return v == 0 ? diff.seconds : v;
+         return v == TNUM_ZERO ? diff.seconds : v;
       }
       case Period::u_Seconds: {
-         return 60 * (60 * (24 * (365 * diff.years + diff.years_ad
-            + 30 * diff.months + diff.months_ad + diff.days)
+         return 60 * (60 * (TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
+            + TNUM_DAYS_IN_NORMAL_MONTH * diff.months + diff.months_ad + diff.days)
             + diff.hours) + diff.minutes) + diff.seconds - unit.seconds;
       }
    }
 
-   return 0;
+   return TNUM_ZERO;
 }
 
 }

@@ -15,7 +15,7 @@ typedef _int _tnum;
 inline constexpr _tnum TNUM_FIRST_YEAR = 1601;
 inline constexpr _tnum TNUM_LAST_YEAR = 30000;
 
-inline constexpr _tnum TNUM_FEBRUARY = 2;
+inline constexpr _tnum TNUM_DAYS_IN_NORMAL_MONTH = 30;
 inline constexpr _tnum TNUM_DAYS_IN_NORMAL_YEAR = 365;
 inline constexpr _tnum TNUM_DAYS_IN_LEAP_YEAR = 366;
 inline constexpr _tnum TNUM_MONTHS_IN_YEAR = 12;
@@ -29,6 +29,8 @@ inline constexpr _tnum TNUM_DAYS_IN_APRIL = 30;
 inline constexpr _tnum TNUM_DAYS_IN_LEAP_FEBRUARY = 29;
 
 inline constexpr _tnum TNUM_ZERO = 0;
+inline constexpr _tnum TNUM_ONE = 1;
+inline constexpr _tnum TNUM_MINUS_ONE = -1;
 inline constexpr _tnum TNUM_13 = 13;
 
 inline constexpr _tnum TNUM_JANUARY = 1;

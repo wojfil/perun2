@@ -93,7 +93,7 @@ struct InConstList : Generator<_bool>
 {
 public:
    InConstList<T> (_genptr<T>& val, const std::vector<T>& li)
-      : value(std::move(val)), list(std::move(li))
+      : value(std::move(val)), list(li)
    {
       std::sort(list.begin(), list.end());
       list.erase(std::unique(list.begin(), list.end()), list.end());

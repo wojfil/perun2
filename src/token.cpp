@@ -201,7 +201,7 @@ _str Token::getOriginString(Uroboros& uro) const
          return getCodeSubstr(value.twoWords.os1, uro);
       }
       default: {
-         return _str();
+         return EMPTY_STRING;
       }
    }
 }
@@ -210,7 +210,7 @@ _str Token::getOriginString_2(Uroboros& uro) const
 {
    return type == Token::Type::t_TwoWords
       ? getCodeSubstr(value.twoWords.os2, uro)
-      : _str();
+      : EMPTY_STRING;
 }
 
 _str Token::getCodeSubstr(const _osi& osi, Uroboros& uro) const

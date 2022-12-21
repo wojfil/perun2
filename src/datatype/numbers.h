@@ -16,6 +16,7 @@
 #define NUMBERS_H_INCLUDED
 
 #include "primitives.h"
+#include "time-const.h"
 
 
 namespace uro
@@ -36,10 +37,10 @@ inline constexpr _nint NINT_THOUSAND =          1000LL;
 inline constexpr _nint NINT_1024 =              1024LL;
 
 inline constexpr _nint SIZE_UNIT_KB =      NINT_1024;
-inline constexpr _nint SIZE_UNIT_MB =      NINT_1024 * NINT_1024;
-inline constexpr _nint SIZE_UNIT_GB =      NINT_1024 * NINT_1024 * NINT_1024;
-inline constexpr _nint SIZE_UNIT_TB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
-inline constexpr _nint SIZE_UNIT_PB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
+inline constexpr _nint SIZE_UNIT_MB =      SIZE_UNIT_KB * SIZE_UNIT_KB;
+inline constexpr _nint SIZE_UNIT_GB =      SIZE_UNIT_MB * SIZE_UNIT_KB;
+inline constexpr _nint SIZE_UNIT_TB =      SIZE_UNIT_GB * SIZE_UNIT_KB;
+inline constexpr _nint SIZE_UNIT_PB =      SIZE_UNIT_TB * SIZE_UNIT_KB;
 
 inline constexpr _nint NINT_SECONDS_IN_MINUTE =      static_cast<_nint>(TNUM_SECONDS_IN_MINUTE);
 inline constexpr _nint NINT_SECONDS_IN_HOUR =        static_cast<_nint>(TNUM_SECONDS_IN_HOUR);

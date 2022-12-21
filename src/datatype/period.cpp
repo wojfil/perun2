@@ -13,6 +13,8 @@
 */
 
 #include "period.h"
+#include "chars.h"
+#include "numbers.h"
 #include <sstream>
 
 
@@ -62,23 +64,23 @@ _nint Period::toSeconds() const
    _nint secs = static_cast<_nint>(seconds);
    const _tnum d = days + years_ad + months_ad;
 
-   if (years != 0) { // year is 365 days
-      secs += 31536000LL * static_cast<_nint>(years);
+   if (years != TNUM_ZERO) {
+      secs += NINT_SECONDS_IN_YEAR * static_cast<_nint>(years);
    }
-   if (months != 0) { // month is 30 days
-      secs += 2592000LL * static_cast<_nint>(months);
+   if (months != TNUM_ZERO) {
+      secs += NINT_SECONDS_IN_MONTH * static_cast<_nint>(months);
    }
-   if (weeks != 0) { // week is 7 days
-      secs += 604800LL * static_cast<_nint>(weeks);
+   if (weeks != TNUM_ZERO) {
+      secs += NINT_SECONDS_IN_WEEK * static_cast<_nint>(weeks);
    }
-   if (d != 0) {
-      secs += 86400LL * static_cast<_nint>(d);
+   if (d != TNUM_ZERO) {
+      secs += NINT_SECONDS_IN_DAY * static_cast<_nint>(d);
    }
-   if (hours != 0) {
-      secs += 3600LL * static_cast<_nint>(hours);
+   if (hours != TNUM_ZERO) {
+      secs += NINT_SECONDS_IN_HOUR * static_cast<_nint>(hours);
    }
-   if (minutes != 0) {
-      secs += 60LL * static_cast<_nint>(minutes);
+   if (minutes != TNUM_ZERO) {
+      secs += NINT_SECONDS_IN_MINUTE * static_cast<_nint>(minutes);
    }
 
    return secs;
@@ -92,8 +94,8 @@ _str Period::toString() const
    const _tnum y = years + years_sec;
    const _tnum m = months + months_sec;
 
-   if (y != 0 || years != 0) {
-      if (!first) ss << L' ';
+   if (y != TNUM_ZERO || years != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << y;
       if (y == TNUM_ONE || y == TNUM_MINUS_ONE)
          ss << L" year";
@@ -102,8 +104,8 @@ _str Period::toString() const
       if (first) first = false;
    }
 
-   if (m != 0 || months != 0) {
-      if (!first) ss << L' ';
+   if (m != TNUM_ZERO || months != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << m;
       if (m == TNUM_ONE || m == TNUM_MINUS_ONE)
          ss << L" month";
@@ -112,8 +114,8 @@ _str Period::toString() const
       if (first) first = false;
    }
 
-   if (weeks != 0) {
-      if (!first) ss << L' ';
+   if (weeks != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << weeks;
       if (weeks == TNUM_ONE || weeks == TNUM_MINUS_ONE)
          ss << L" week";
@@ -122,8 +124,8 @@ _str Period::toString() const
       if (first) first = false;
    }
 
-   if (days != 0) {
-      if (!first) ss << L' ';
+   if (days != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << days;
       if (days == TNUM_ONE || days == TNUM_MINUS_ONE)
          ss << L" day";
@@ -132,8 +134,8 @@ _str Period::toString() const
       if (first) first = false;
    }
 
-   if (hours != 0) {
-      if (!first) ss << L' ';
+   if (hours != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << hours;
       if (hours == TNUM_ONE || hours == TNUM_MINUS_ONE)
          ss << L" hour";
@@ -142,8 +144,8 @@ _str Period::toString() const
       if (first) first = false;
    }
 
-   if (minutes != 0) {
-      if (!first) ss << L' ';
+   if (minutes != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << minutes;
       if (minutes == TNUM_ONE || minutes == TNUM_MINUS_ONE)
          ss << L" minute";
@@ -152,8 +154,8 @@ _str Period::toString() const
       if (first) first = false;
    }
 
-   if (seconds != 0) {
-      if (!first) ss << L' ';
+   if (seconds != TNUM_ZERO) {
+      if (!first) ss << CHAR_SPACE;
       ss << seconds;
       if (seconds == TNUM_ONE || seconds == TNUM_MINUS_ONE)
          ss << L" second";
@@ -676,13 +678,13 @@ _bool Period::operator != (const Period& per) const
       case PeriodType::pt_Unit: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodUnitsCmp(per) != 0;
+               return periodUnitsCmp(per) != TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffUnitCmp(per, *this) != 0;
+               return periodDiffUnitCmp(per, *this) != TNUM_ZERO;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) != 0;
+               return periodCmp(per) != TNUM_ZERO;
             }
          }
          break;
@@ -690,21 +692,21 @@ _bool Period::operator != (const Period& per) const
       case PeriodType::pt_Difference: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodDiffUnitCmp(*this, per) != 0;
+               return periodDiffUnitCmp(*this, per) != TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffsCmp(per) != 0;
+               return periodDiffsCmp(per) != TNUM_ZERO;
                break;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) != 0;
+               return periodCmp(per) != TNUM_ZERO;
             }
          }
          break;
       }
    }
 
-   return periodCmp(per) != 0;
+   return periodCmp(per) != TNUM_ZERO;
 }
 
 _bool Period::operator < (const Period& per) const
@@ -713,13 +715,13 @@ _bool Period::operator < (const Period& per) const
       case PeriodType::pt_Unit: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodUnitsCmp(per) < 0;
+               return periodUnitsCmp(per) < TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffUnitCmp(per, *this) < 0;
+               return periodDiffUnitCmp(per, *this) < TNUM_ZERO;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) < 0;
+               return periodCmp(per) < TNUM_ZERO;
             }
          }
          break;
@@ -727,21 +729,21 @@ _bool Period::operator < (const Period& per) const
       case PeriodType::pt_Difference: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodDiffUnitCmp(*this, per) < 0;
+               return periodDiffUnitCmp(*this, per) < TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffsCmp(per) < 0;
+               return periodDiffsCmp(per) < TNUM_ZERO;
                break;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) < 0;
+               return periodCmp(per) < TNUM_ZERO;
             }
          }
          break;
       }
    }
 
-   return periodCmp(per) < 0;
+   return periodCmp(per) < TNUM_ZERO;
 }
 
 _bool Period::operator > (const Period& per) const
@@ -750,13 +752,13 @@ _bool Period::operator > (const Period& per) const
       case PeriodType::pt_Unit: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodUnitsCmp(per) > 0;
+               return periodUnitsCmp(per) > TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffUnitCmp(per, *this) > 0;
+               return periodDiffUnitCmp(per, *this) > TNUM_ZERO;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) > 0;
+               return periodCmp(per) > TNUM_ZERO;
             }
          }
          break;
@@ -764,21 +766,21 @@ _bool Period::operator > (const Period& per) const
       case PeriodType::pt_Difference: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodDiffUnitCmp(*this, per) > 0;
+               return periodDiffUnitCmp(*this, per) > TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffsCmp(per) > 0;
+               return periodDiffsCmp(per) > TNUM_ZERO;
                break;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) > 0;
+               return periodCmp(per) > TNUM_ZERO;
             }
          }
          break;
       }
    }
 
-   return periodCmp(per) > 0;
+   return periodCmp(per) > TNUM_ZERO;
 }
 
 _bool Period::operator <= (const Period& per) const
@@ -787,13 +789,13 @@ _bool Period::operator <= (const Period& per) const
       case PeriodType::pt_Unit: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodUnitsCmp(per) <= 0;
+               return periodUnitsCmp(per) <= TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffUnitCmp(per, *this) <= 0;
+               return periodDiffUnitCmp(per, *this) <= TNUM_ZERO;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) <= 0;
+               return periodCmp(per) <= TNUM_ZERO;
             }
          }
          break;
@@ -801,21 +803,21 @@ _bool Period::operator <= (const Period& per) const
       case PeriodType::pt_Difference: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodDiffUnitCmp(*this, per) <= 0;
+               return periodDiffUnitCmp(*this, per) <= TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffsCmp(per) <= 0;
+               return periodDiffsCmp(per) <= TNUM_ZERO;
                break;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) <= 0;
+               return periodCmp(per) <= TNUM_ZERO;
             }
          }
          break;
       }
    }
 
-   return periodCmp(per) <= 0;
+   return periodCmp(per) <= TNUM_ZERO;
 }
 
 _bool Period::operator >= (const Period& per) const
@@ -824,13 +826,13 @@ _bool Period::operator >= (const Period& per) const
       case PeriodType::pt_Unit: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodUnitsCmp(per) >= 0;
+               return periodUnitsCmp(per) >= TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffUnitCmp(per, *this) >= 0;
+               return periodDiffUnitCmp(per, *this) >= TNUM_ZERO;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) >= 0;
+               return periodCmp(per) >= TNUM_ZERO;
             }
          }
          break;
@@ -838,21 +840,21 @@ _bool Period::operator >= (const Period& per) const
       case PeriodType::pt_Difference: {
          switch (per.periodType) {
             case PeriodType::pt_Unit: {
-               return periodDiffUnitCmp(*this, per) >= 0;
+               return periodDiffUnitCmp(*this, per) >= TNUM_ZERO;
             }
             case PeriodType::pt_Difference: {
-               return periodDiffsCmp(per) >= 0;
+               return periodDiffsCmp(per) >= TNUM_ZERO;
                break;
             }
             case PeriodType::pt_Mingled: {
-               return periodCmp(per) >= 0;
+               return periodCmp(per) >= TNUM_ZERO;
             }
          }
          break;
       }
    }
 
-   return periodCmp(per) >= 0;
+   return periodCmp(per) >= TNUM_ZERO;
 }
 
 // all 49 possibilities hardcoded
@@ -866,7 +868,7 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Months:
                return years * TNUM_MONTHS_IN_YEAR - per.months;
             case PeriodUnit::u_Weeks:
-               return years * TNUM_DAYS_IN_NORMAL_YEAR - per.weeks * 7;
+               return years * TNUM_DAYS_IN_NORMAL_YEAR - per.weeks * TNUM_DAYS_IN_WEEK;
             case PeriodUnit::u_Days:
                return years * TNUM_DAYS_IN_NORMAL_YEAR - per.days;
             case PeriodUnit::u_Hours:
@@ -885,11 +887,11 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Months:
                return months - per.months;
             case PeriodUnit::u_Weeks:
-               return months * TNUM_DAYS_IN_NORMAL_MONTH - TNUM_DAYS_IN_WEEK* per.weeks;
+               return months * TNUM_DAYS_IN_NORMAL_MONTH - TNUM_DAYS_IN_WEEK * per.weeks;
             case PeriodUnit::u_Days:
                return months * TNUM_DAYS_IN_NORMAL_MONTH - per.days;
             case PeriodUnit::u_Hours:
-               return months * 720 - per.hours;
+               return months * TNUM_HOURS_IN_MONTH - per.hours;
             case PeriodUnit::u_Minutes:
                return months * 43200 - per.minutes;
             case PeriodUnit::u_Seconds:
@@ -940,7 +942,7 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Years:
                return hours - 8760 * per.years;
             case PeriodUnit::u_Months:
-               return hours - 720 * per.months;
+               return hours - TNUM_HOURS_IN_MONTH * per.months;
             case PeriodUnit::u_Weeks:
                return hours - 168 * per.weeks;
             case PeriodUnit::u_Days:
@@ -948,9 +950,9 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Hours:
                return hours - per.hours;
             case PeriodUnit::u_Minutes:
-               return hours * 60 - per.minutes;
+               return hours * TNUM_MINUTES_IN_HOUR - per.minutes;
             case PeriodUnit::u_Seconds:
-               return hours * 3600 - per.seconds;
+               return hours * TNUM_SECONDS_IN_HOUR - per.seconds;
          }
          break;
       }
@@ -969,7 +971,7 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Minutes:
                return minutes - per.minutes;
             case PeriodUnit::u_Seconds:
-               return minutes * 60 - per.seconds;
+               return minutes * TNUM_SECONDS_IN_MINUTE - per.seconds;
          }
          break;
       }
@@ -984,7 +986,7 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Days:
                return seconds - 86400 * per.days;
             case PeriodUnit::u_Hours:
-               return seconds - 3600 * per.hours;
+               return seconds - TNUM_SECONDS_IN_HOUR * per.hours;
             case PeriodUnit::u_Minutes:
                return seconds - 60 * per.minutes;
             case PeriodUnit::u_Seconds:
@@ -994,7 +996,7 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
       }
    }
 
-   return 0;
+   return TNUM_ZERO;
 }
 
 inline _tnum Period::periodDiffsCmp(const Period& diff) const
@@ -1020,7 +1022,7 @@ inline _tnum Period::periodDiffsCmp(const Period& diff) const
 
 inline _tnum Period::periodCmp(const Period& per) const
 {
-   _tnum s = (hours - per.hours) * 3600
+   _tnum s = (hours - per.hours) * TNUM_SECONDS_IN_HOUR
       + (minutes - per.minutes) * 60 + seconds - per.seconds;
    _tnum d = (s / 86400) + days - per.days + TNUM_DAYS_IN_WEEK* (weeks - per.weeks);
    s %= 86400;
@@ -1104,7 +1106,7 @@ inline _tnum Period::periodCmp(const Period& per) const
    {
       ney = true;
       y1 += y2;
-      y2 = 0;
+      y2 = TNUM_ZERO;
    }
 
    if ((m1 > 0 && m2 < 0 && m1 >= (-m2)) ||
@@ -1112,7 +1114,7 @@ inline _tnum Period::periodCmp(const Period& per) const
    {
       nem = true;
       m1 += m2;
-      m2 = 0;
+      m2 = TNUM_ZERO;
    }
 
    if (!ney)
@@ -1122,7 +1124,7 @@ inline _tnum Period::periodCmp(const Period& per) const
       {
          ney = true;
          m1 += y2 * TNUM_MONTHS_IN_YEAR;
-         y2 = 0;
+         y2 = TNUM_ZERO;
       }
    }
 
@@ -1134,7 +1136,7 @@ inline _tnum Period::periodCmp(const Period& per) const
 
          y1 -= a;
          m1 += m2 + a * TNUM_MONTHS_IN_YEAR;
-         m2 = 0;
+         m2 = TNUM_ZERO;
          nem = true;
       }
       else if (y1 < 0 && m2 > 0 && (-y1 * TNUM_MONTHS_IN_YEAR) >= m2)
@@ -1144,7 +1146,7 @@ inline _tnum Period::periodCmp(const Period& per) const
 
          y1 += a;
          m1 -= m2 + TNUM_MONTHS_IN_YEAR * a;
-         m2 = 0;
+         m2 = TNUM_ZERO;
          nem = true;
       }
    }

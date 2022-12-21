@@ -28,6 +28,14 @@ inline constexpr _tnum TNUM_DAYS_IN_FEBRUARY =              28;
 inline constexpr _tnum TNUM_DAYS_IN_APRIL =                 30;
 inline constexpr _tnum TNUM_DAYS_IN_LEAP_FEBRUARY =         29;
 
+inline constexpr _tnum TNUM_SECONDS_IN_HOUR =              TNUM_SECONDS_IN_MINUTE * TNUM_MINUTES_IN_HOUR;
+inline constexpr _tnum TNUM_SECONDS_IN_DAY =               TNUM_SECONDS_IN_HOUR * TNUM_HOURS_IN_DAY;
+inline constexpr _tnum TNUM_SECONDS_IN_WEEK =              TNUM_SECONDS_IN_DAY * TNUM_DAYS_IN_WEEK;
+inline constexpr _tnum TNUM_SECONDS_IN_MONTH =             TNUM_SECONDS_IN_DAY * TNUM_DAYS_IN_NORMAL_MONTH;
+inline constexpr _tnum TNUM_SECONDS_IN_YEAR =              TNUM_SECONDS_IN_DAY * TNUM_DAYS_IN_NORMAL_YEAR;
+inline constexpr _tnum TNUM_HOURS_IN_MONTH =               TNUM_HOURS_IN_DAY * TNUM_DAYS_IN_NORMAL_MONTH;
+
+
 inline constexpr _tnum TNUM_ZERO =                           0;
 inline constexpr _tnum TNUM_ONE =                            1;
 inline constexpr _tnum TNUM_MINUS_ONE =                     -1;

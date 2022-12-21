@@ -41,11 +41,20 @@ inline constexpr _nint SIZE_UNIT_GB =      NINT_1024 * NINT_1024 * NINT_1024;
 inline constexpr _nint SIZE_UNIT_TB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
 inline constexpr _nint SIZE_UNIT_PB =      NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024 * NINT_1024;
 
+inline constexpr _nint NINT_SECONDS_IN_MINUTE =      static_cast<_nint>(TNUM_SECONDS_IN_MINUTE);
+inline constexpr _nint NINT_SECONDS_IN_HOUR =        static_cast<_nint>(TNUM_SECONDS_IN_HOUR);
+inline constexpr _nint NINT_SECONDS_IN_DAY =         static_cast<_nint>(TNUM_SECONDS_IN_DAY);
+inline constexpr _nint NINT_SECONDS_IN_WEEK =        static_cast<_nint>(TNUM_SECONDS_IN_WEEK);
+inline constexpr _nint NINT_SECONDS_IN_MONTH =       static_cast<_nint>(TNUM_SECONDS_IN_MONTH);
+inline constexpr _nint NINT_SECONDS_IN_YEAR =        static_cast<_nint>(TNUM_SECONDS_IN_YEAR);
+
+
 inline constexpr _ndouble NDOUBLE_ZERO =            0L;
 inline constexpr _ndouble NDOUBLE_HALF =          0.5L;
 inline constexpr _ndouble NDOUBLE_ONE =             1L;
 inline constexpr _ndouble NDOUBLE_MINUS_ONE =      -1L;
 inline constexpr _ndouble NDOUBLE_TWELVE =         12L;
+
 
 
 inline constexpr _nint ROMAN_VINCULUM_THRESHOLD = 4000LL;

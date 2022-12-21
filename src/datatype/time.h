@@ -31,21 +31,21 @@ struct Time
       tt_Date = 1,          // contains day, month and year
       tt_ShortClock = 2,    // contains day, month, year, hour, minute
       tt_Clock = 3          // contains day, month, year, hour, minute, second
-      // these numbers are important and do not delete them
+      // these numbers above are important and do not delete them
    };
 
    Time();
-   Time(_tnum mo, _tnum ye);
-   Time(_tnum da, _tnum mo, _tnum ye);
-   Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi);
-   Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi, _tnum sec);
+   Time(const _tnum& mo, const _tnum& ye);
+   Time(const _tnum& da, const _tnum& mo, const _tnum& ye);
+   Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi);
+   Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi, const _tnum& sec);
 
    _tnum year;
    _tnum day;
    _tnum month;
-   _tnum hour = 0;
-   _tnum minute = 0;
-   _tnum second = 0;
+   _tnum hour = TNUM_ZERO;
+   _tnum minute = TNUM_ZERO;
+   _tnum second = TNUM_ZERO;
    TimeType type;
 
    _str toString() const;

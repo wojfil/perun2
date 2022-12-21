@@ -24,18 +24,18 @@ namespace uro
 {
 
 Time::Time() 
-   : day(1), month(1), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
+   : day(TNUM_ONE), month(TNUM_ONE), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
 
-Time::Time(_tnum mo, _tnum ye) 
-   : day(0), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
+Time::Time(const _tnum& mo, const _tnum& ye) 
+   : day(TNUM_ZERO), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
 
-Time::Time(_tnum da, _tnum mo, _tnum ye) 
+Time::Time(const _tnum& da, const _tnum& mo, const _tnum& ye) 
    : day(da), month(mo), year(ye), type(TimeType::tt_Date) { };
 
-Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi) 
+Time::Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi) 
    : day(da), month(mo), year(ye), hour(ho), minute(mi), type(TimeType::tt_ShortClock) { };
 
-Time::Time(_tnum da, _tnum mo, _tnum ye, _tnum ho, _tnum mi, _tnum sec) 
+Time::Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi, const _tnum& sec) 
    : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_Clock) { };
 
 
@@ -112,42 +112,42 @@ void Time::addWeeks(const _tnum& w)
 void Time::addDays(const _tnum& d)
 {
    if (type == tt_YearMonth) {
-      day = d < 0 ? 1 : daysInMonth(month, year);
+      day = d < TNUM_ZERO ? TNUM_ONE : daysInMonth(month, year);
       type = tt_Date;
    }
 
-   if (d > 0) {
+   if (d > TNUM_ZERO) {
       _tnum d2 = d;
 
-      while (d2 != 0) {
+      while (d2 != TNUM_ZERO) {
          const _tnum dif = daysInMonth(month, year) - day;
          if (d2 <= dif) {
             day += d2;
-            d2 = 0;
+            d2 = TNUM_ZERO;
          }
          else {
-            d2 -= dif + 1;
+            d2 -= dif + TNUM_ONE;
             month++;
-            if (month == 13) {
+            if (month == TNUM_13) {
                month = TNUM_JANUARY;
                year++;
             }
-            day = 1;
+            day = TNUM_ONE;
          }
       }
    }
-   else if (d < 0) {
+   else if (d < TNUM_ZERO) {
       _tnum d2 = -d;
 
-      while (d2 != 0) {
+      while (d2 != TNUM_ZERO) {
          if (d2 < day) {
             day -= d2;
-            d2 = 0;
+            d2 = TNUM_ZERO;
          }
          else {
             d2 -= day;
             month--;
-            if (month == 0) {
+            if (month == TNUM_ZERO) {
                month = TNUM_DECEMBER;
                year--;
             }
@@ -168,12 +168,12 @@ void Time::addHours(const _tnum& h)
       hour -= TNUM_HOURS_IN_DAY;
       d++;
    }
-   else if (hour < 0) {
+   else if (hour < TNUM_ZERO) {
       hour += TNUM_HOURS_IN_DAY;
       d--;
    }
 
-   if (d != 0) {
+   if (d != TNUM_ZERO) {
       addDays(d);
    }
 }
@@ -189,12 +189,12 @@ void Time::addMinutes(const _tnum& m)
       minute -= TNUM_MINUTES_IN_HOUR;
       h++;
    }
-   else if (minute < 0) {
+   else if (minute < TNUM_ZERO) {
       minute += TNUM_MINUTES_IN_HOUR;
       h--;
    }
 
-   if (h != 0) {
+   if (h != TNUM_ZERO) {
       addHours(h);
    }
 }
@@ -210,12 +210,12 @@ void Time::addSeconds(const _tnum& s)
       second -= TNUM_SECONDS_IN_MINUTE;
       m++;
    }
-   else if (second < 0) {
+   else if (second < TNUM_ZERO) {
       second += TNUM_SECONDS_IN_MINUTE;
       m--;
    }
 
-   if (m != 0) {
+   if (m != TNUM_ZERO) {
       addMinutes(m);
    }
 }
@@ -259,7 +259,7 @@ void Time::setDay(const _tnum& d)
 
 void Time::setHour(const _tnum& h)
 {
-   if (h < 0) {
+   if (h < TNUM_ZERO) {
       throw RuntimeError(str(L"value of hours cannot be smaller than 0 (received: ",
          toStr(h), L")"));
    }
@@ -273,7 +273,7 @@ void Time::setHour(const _tnum& h)
 
 void Time::setMinute(const _tnum& m)
 {
-   if (m < 0) {
+   if (m < TNUM_ZERO) {
       throw RuntimeError(str(L"value of minutes cannot be smaller than 0 (received: ",
          toStr(m), L")"));
    }
@@ -287,7 +287,7 @@ void Time::setMinute(const _tnum& m)
 
 void Time::setSecond(const _tnum& s)
 {
-   if (s < 0) {
+   if (s < TNUM_ZERO) {
       throw RuntimeError(str(L"value of seconds cannot be smaller than 0 (received: ",
          toStr(s), L")"));
    }
@@ -328,11 +328,11 @@ _bool Time::isEmpty() const
 {
    return year == TNUM_FIRST_YEAR
        && type == TimeType::tt_Clock
-       && month == 1
-       && day == 1
-       && hour == 0
-       && minute == 0
-       && second == 0;
+       && month == TNUM_ONE
+       && day == TNUM_ONE
+       && hour == TNUM_ZERO
+       && minute == TNUM_ZERO
+       && second == TNUM_ZERO;
 }
 
 void Time::setValue(const Time& tim)
@@ -375,54 +375,53 @@ Time& Time::operator += (const Period& per)
 {
    const _tnum d = per.days + per.years_ad + per.months_ad;
 
-   if (per.seconds != 0)
+   if (per.seconds != TNUM_ZERO)
       addSeconds(per.seconds);
 
-   if (per.minutes != 0)
+   if (per.minutes != TNUM_ZERO)
       addMinutes(per.minutes);
 
-   if (per.hours != 0)
+   if (per.hours != TNUM_ZERO)
       addHours(per.hours);
 
-   if (d != 0)
+   if (d != TNUM_ZERO)
       addDays(d);
 
-   if (per.weeks != 0)
+   if (per.weeks != TNUM_ZERO)
       addDays(per.weeks * TNUM_DAYS_IN_WEEK);
 
-   if (per.months != 0)
+   if (per.months != TNUM_ZERO)
       addMonths(per.months);
 
-   if (per.years != 0)
+   if (per.years != TNUM_ZERO)
       addYears(per.years);
 
    return *this;
 }
 
-// the same, but reversed
 Time& Time::operator -= (const Period& per)
 {
    const _tnum d = -per.days - per.years_ad - per.months_ad;
 
-   if (per.seconds != 0)
+   if (per.seconds != TNUM_ZERO)
       addSeconds(-per.seconds);
 
-   if (per.minutes != 0)
+   if (per.minutes != TNUM_ZERO)
       addMinutes(-per.minutes);
 
-   if (per.hours != 0)
+   if (per.hours != TNUM_ZERO)
       addHours(-per.hours);
 
-   if (d != 0)
+   if (d != TNUM_ZERO)
       addDays(d);
 
-   if (per.weeks != 0)
-      addDays(-per.weeks * 7);
+   if (per.weeks != TNUM_ZERO)
+      addDays(-per.weeks * TNUM_DAYS_IN_WEEK);
 
-   if (per.months != 0)
+   if (per.months != TNUM_ZERO)
       addMonths(-per.months);
 
-   if (per.years != 0)
+   if (per.years != TNUM_ZERO)
       addYears(-per.years);
 
    return *this;
@@ -432,30 +431,30 @@ Time& Time::operator -= (const Period& per)
 void Time::initClock(const _bool& withSeconds, const _tnum& recentChange)
 {
    if (type == tt_YearMonth || type == tt_Date) {
-      hour = 0;
-      minute = 0;
+      hour = TNUM_ZERO;
+      minute = TNUM_ZERO;
 
       if (withSeconds) {
-         second = 0;
+         second = TNUM_ZERO;
       }
 
       if (type == tt_YearMonth) {
-         day = 1;
-         if (recentChange > 0) {
+         day = TNUM_ONE;
+         if (recentChange > TNUM_ZERO) {
             month++;
-            if (month == 13) {
-               month = 1;
+            if (month == TNUM_13) {
+               month = TNUM_ONE;
                year++;
             }
          }
       }
-      else if (recentChange > 0) {
+      else if (recentChange > TNUM_ZERO) {
          day++;
          if (day > daysInMonth(month, year)) {
-            day = 1;
+            day = TNUM_ONE;
             month++;
-            if (month == 13) {
-               month = 1;
+            if (month == TNUM_13) {
+               month = TNUM_ONE;
                year++;
             }
          }

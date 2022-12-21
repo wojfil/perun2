@@ -62,17 +62,16 @@ template <typename T>
 struct InList : Generator<_bool>
 {
 public:
-   InList<T> (_genptr<T>& val, _genptr<std::vector<T>>& li)
+   InList<T>(_genptr<T>& val, _genptr<std::vector<T>>& li)
       : value(std::move(val)), list(std::move(li)) { };
 
    _bool getValue() override 
    {
-      const std::vector<T> vs = list->getValue();
-      const T v = value->getValue();
-      const _size len = vs.size();
+      const std::vector<T> multipleValues = list->getValue();
+      const T singleValue = value->getValue();
 
-      for (_size i = 0; i < len; i++) {
-         if (vs[i] == v) {
+      for (const T& mv : multipleValues) {
+         if (mv == singleValue) {
             return true;
          }
       }
@@ -92,7 +91,7 @@ template <typename T>
 struct InConstList : Generator<_bool>
 {
 public:
-   InConstList<T> (_genptr<T>& val, const std::vector<T>& li)
+   InConstList<T>(_genptr<T>& val, const std::vector<T>& li)
       : value(std::move(val)), list(li)
    {
       std::sort(list.begin(), list.end());

@@ -1239,27 +1239,24 @@ if __name__ == '__main__':
   run_test_case("inside 'tree' { print '2*02*6' order asc }", '264026')
   run_test_case("inside 'tree' { print '2*4*6' order asc }", "264026")
   run_test_case("inside 'tree' { print '2*02*6.*txt' order asc }", "210226.txt")
-  print("4")
-  run_test_case("inside 'tree' { print '*2.*' order asc }", lines("105252.txt", "362312.txt", "646362.js", "917112.js", "960542.txt"))
+  run_test_case("inside 'tree' { print '*2*' where isFile order asc skip 2 every 3 }", lines("105252.txt", "362312.txt", "646362.js"))
   run_test_case("inside 'tree' { print '*14.*' order asc }", "593214.js")
   (run_test_case("inside 'tree' { print '*4*' order asc}", lines("012480.txt", "047909.txt", "264026", "274688.js", "449147.txt", 
   "483413.js", "532624.txt", "561442", "581940.txt", "593214.js", "646362.js", "674295", "960542.txt")))
-  print("5")
   run_test_case("inside 'tree' { print '*4*7*' order asc }", lines("047909.txt", "449147.txt"))
   run_test_case("inside 'tree' { print '4*7*' order asc} ", "449147.txt")
-  run_test_case("inside 'tree' { print '029719\*' order asc }", lines(path("029719", "011952.js"), path("029719", "636110.txt"), path("029719", "743013.txt")))
+  (run_test_case("inside 'tree' { print '029719\*' order asc }", lines(path("029719", "011952.js"), path("029719", "286109"), 
+  path("029719", "559227"), path("029719", "636110.txt"), path("029719", "743013.txt"), path("029719","877639"))))
   run_test_case("inside 'tree' { print '029719\*.txt' order asc }", lines(path("029719", "636110.txt"), path("029719", "743013.txt")))
   run_test_case("inside 'tree' { print '029719\*.js' order asc }", path("029719", "011952.js"))
-  print("6")
   run_test_case("inside 'tree' { print '029719/7*.txt' order asc }", path("029719", "743013.txt"))
-  (run_test_case("inside 'tree' { print '029719\*\*7*' order asc }", lines(path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
-  path("029719", "877639", "057239.cpp"), path("029719", "877639", "690072.js"))))
+  (run_test_case("inside 'tree' { print '029719\*\*7*' order asc }", lines(path("029719", "286109", "660170.js"), 
+  path("029719", "286109", "677910.txt"), path("029719", "286109", "687411"), path("029719", "877639", "057239.cpp"), path("029719", "877639", "690072.js"))))
   (run_test_case("inside 'tree' { print '029719\*\*' order asc } ", lines(path("029719", "286109", "080295"), path("029719", "286109", "215429.txt"), 
   path("029719", "286109", "626654.cpp"), path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
   path("029719", "286109", "687411"), path("029719", "559227", "438292.txt"), path("029719", "559227", "488903"), 
   path("029719", "559227", "539553"), path("029719", "877639", "057239.cpp"), 
   path("029719", "877639", "402318"), path("029719", "877639", "690072.js"))))
-  print("7")
   (run_test_case("inside 'tree' { print '029719\*\*' where isFile order asc }", lines(path("029719", "286109", "215429.txt"), 
   path("029719", "286109", "626654.cpp"), path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
   path("029719", "559227", "438292.txt"), path("029719", "877639", "057239.cpp"), path("029719", "877639", "690072.js"))))
@@ -1269,7 +1266,6 @@ if __name__ == '__main__':
   (run_test_case("inside 'tree' { print '029719\*\*2*' order asc }", lines(path("029719", "286109", "080295"), 
   path("029719", "286109", "215429.txt"), path("029719", "286109", "626654.cpp"), path("029719", "559227", "438292.txt"), 
   path("029719", "877639", "057239.cpp"), path("029719", "877639", "402318"), path("029719", "877639", "690072.js"))))
-  print("8")
   (run_test_case("print 'tree/029719\*\*2*' order asc", lines(path("tree", "029719", "286109", "080295"), 
   path("tree", "029719", "286109", "215429.txt"), path("tree", "029719", "286109", "626654.cpp"), path("tree", "029719", "559227", "438292.txt"), 
   path("tree", "029719", "877639", "057239.cpp"), path("tree", "029719", "877639", "402318"), path("tree", "029719", "877639", "690072.js"))))
@@ -1280,8 +1276,7 @@ if __name__ == '__main__':
   path("029719", "286109", "687411"), path("029719", "877639", "690072.js"), path("264026", "786669", "396758"), path("561442", "413938", "560857.txt"))))
   (run_test_case("inside 'tree' { print '*/*/6*7*' order asc }", lines(path("029719", "286109", "660170.js"), 
   path("029719", "286109", "677910.txt"), path("029719", "286109", "687411"), path("029719", "877639", "690072.js"))))
-
-  print("9")
+  
   run_test_case("inside 'modificables' { 'existing_empty_dir' {exists } }", "1")
   run_test_case("inside 'modificables' { 'non_existing_empty_dir' {exists } }", "0")
   run_test_case("inside 'modificables' { 'existing_empty_dir' {isDirectory } }", "1")

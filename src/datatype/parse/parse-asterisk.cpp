@@ -222,14 +222,14 @@ exitAsteriskBeginning:
 
          if (units[i].suffixPart.empty()) {
             if (isFinal) {
-               nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, nextPatt, isAbsolute, prefix);
+               nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, nextPatt, isAbsolute, EMPTY_STRING);
             }
             else {
-               nextDef = std::make_unique<gen::Uro_Directories>(vesselPtr, uro, nextPatt, isAbsolute, prefix);
+               nextDef = std::make_unique<gen::Uro_Directories>(vesselPtr, uro, nextPatt, isAbsolute, EMPTY_STRING);
             }
          }
          else {
-            _defptr d(new gen::Uro_Directories(vesselPtr, uro, nextPatt, isAbsolute, prefix));
+            _defptr d(new gen::Uro_Directories(vesselPtr, uro, nextPatt, isAbsolute, EMPTY_STRING));
             nextDef = std::make_unique<gen::DefinitionSuffix>(d, uro, units[i].suffixPart, isAbsolute, isFinal);
          }
 

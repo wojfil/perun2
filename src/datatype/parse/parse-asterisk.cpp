@@ -23,8 +23,6 @@
 namespace uro::parse
 {
 
-#define P_PATTERN_START_ID (isAbsolute ? 3 : 0)
-
 
 _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, Uroboros& uro)
 {
@@ -51,9 +49,10 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 
    const _bool isAbsolute = info & ASTERISK_INFO_IS_ABSOLUTE;
    const _size totalLength = pattern.size();
+   const _size patternStart = isAbsolute ? 3 : 0;
    _int separatorId = -1;
 
-   for (_size i = P_PATTERN_START_ID; i < totalLength; i++) {
+   for (_size i = patternStart; i < totalLength; i++) {
       switch (pattern[i]) {
          case OS_SEPARATOR: {
             separatorId = static_cast<_int>(i);
@@ -117,7 +116,7 @@ exitAsteriskBeginning:
       }
 
       const _str suffix = str(OS_SEPARATOR_STRING, pattern.substr(separatorId2 + 1));
-      const _int patternStart = separatorId == -1 ? P_PATTERN_START_ID : separatorId;
+      const _int patternStart = separatorId == -1 ? patternStart : separatorId;
       const _int patternLength = separatorId2 - patternStart;
       const _str p = (separatorId == -1)
          ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart, patternLength))
@@ -128,7 +127,7 @@ exitAsteriskBeginning:
       return true;
    }
 
-   _size start = separatorId == -1 ? P_PATTERN_START_ID : static_cast<_size>(separatorId + 1);
+   _size start = separatorId == -1 ? patternStart : static_cast<_size>(separatorId + 1);
    _bool hasAsterisk = false;
    _str asteriskPart;
    _str suffixPart;

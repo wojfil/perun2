@@ -28,7 +28,15 @@ _str SyntaxError::getMessage() const
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
+SyntaxError SyntaxError::expressionCannotEndWith(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"expression cannot end with ", toStr(value)), line);
+}
 
+SyntaxError SyntaxError::expressionCannotStartWith(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"expression cannot start with ", toStr(value)), line);
+}
 
 SyntaxError SyntaxError::filterKeywordAtStart(const _str& value, const _int& line)
 {
@@ -102,6 +110,11 @@ SyntaxError SyntaxError::keywordNotFollowedByNumber(const _str& value, const _in
 SyntaxError SyntaxError::missingTimeVariableMember(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"a time variable member was expected after '", value, L"'"), line);
+}
+
+SyntaxError SyntaxError::missingLetterS(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"missing letter 's' at the end of the word '", value, L"'"), line);
 }
 
 SyntaxError SyntaxError::multipleDotsInNumber(const _str& value, const _int& line)

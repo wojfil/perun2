@@ -111,20 +111,20 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
 
       if (num.isDouble) {
          if (num.value.d == NDOUBLE_ONE) {
-            result = std::make_unique<gen::Constant<_per>>(_per(negated ? -1 : 1, unit));
+            result = std::make_unique<gen::Constant<_per>>(_per(negated ? TNUM_MINUS_ONE : TNUM_ONE, unit));
             return true;
          }
          else {
-            unitNameException(last.getOriginString(uro), tks);
+            throw SyntaxError::missingLetterS(last.getOriginString(uro), last.line);
          }
       }
       else {
          if (num.value.i == NINT_ONE) {
-            result = std::make_unique<gen::Constant<_per>>(_per(negated ? -1 : 1, unit));
+            result = std::make_unique<gen::Constant<_per>>(_per(negated ? TNUM_MINUS_ONE : TNUM_ONE, unit));
             return true;
          }
          else {
-            unitNameException(last.getOriginString(uro), tks);
+            throw SyntaxError::missingLetterS(last.getOriginString(uro), last.line);
          }
       }
    }
@@ -138,7 +138,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
          : static_cast<_tnum>(num.value.i);
 
       if (negated) {
-         v *= -1;
+         v *= TNUM_MINUS_ONE;
       }
 
       result = std::make_unique<gen::Constant<_per>>(_per(v, unit));
@@ -160,7 +160,8 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    }
 
    if (uro.hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != uro.hashes.HASH_GROUP_PERIOD_SINGLE.end()) {
-      unitNameException(tks.last().getOriginString(uro), tks);
+      const Token& last = tks.last();
+      throw SyntaxError::missingLetterS(last.getOriginString(uro), last.line);
    }
 
    if (uro.hashes.HASH_GROUP_PERIOD_MULTI.find(h) != uro.hashes.HASH_GROUP_PERIOD_MULTI.end()) {
@@ -170,11 +171,6 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    }
 
    return false;
-}
-
-static void unitNameException(const _str& name, const Tokens& tks)
-{
-   throw SyntaxError(str(L"missing letter 's' at the end of the word '", name, L"'"), tks.last().line);
 }
 
 _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
@@ -338,7 +334,7 @@ _bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, Uroboros& ur
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 
    if (pair.second.isEmpty()) {
-      throw SyntaxError(L"expression cannot end with -", tks.last().line);
+      throw SyntaxError::expressionCannotEndWith(CHAR_MINUS, tks.last().line);
    }
 
    if (pair.first.isEmpty()) {

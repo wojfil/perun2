@@ -27,6 +27,8 @@ public:
    SyntaxError(const _str& msg, const _int& li);
    _str getMessage() const;
 
+   static SyntaxError expressionCannotEndWith(const _char& value, const _int& line);
+   static SyntaxError expressionCannotStartWith(const _char& value, const _int& line);
    static SyntaxError filterKeywordAtStart(const _str& value, const _int& line);
    static SyntaxError filterKeywordAtEnd(const _str& value, const _int& line);
    static SyntaxError inevitableDivisionByZero(const _int& line);
@@ -39,6 +41,7 @@ public:
    static SyntaxError keywordNotFollowedByBool(const _str& value, const _int& line);
    static SyntaxError keywordNotFollowedByNumber(const _str& value, const _int& line);
    static SyntaxError missingTimeVariableMember(const _str& value, const _int& line);
+   static SyntaxError missingLetterS(const _str& value, const _int& line);
    static SyntaxError multipleDotsInNumber(const _str& value, const _int& line);
    static SyntaxError multipleDotsInWord(const _str& value, const _int& line);
    static SyntaxError numberTooBig(const _str& value, const _int& line);

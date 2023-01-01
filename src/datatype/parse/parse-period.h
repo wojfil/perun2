@@ -26,7 +26,6 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
 
 _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& negated, Uroboros& uro);
 _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
-static void unitNameException(const _str& name, const Tokens& tks);
 _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
 _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);
 _bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, Uroboros& uro);

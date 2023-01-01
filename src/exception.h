@@ -27,25 +27,32 @@ public:
    SyntaxError(const _str& msg, const _int& li);
    _str getMessage() const;
 
+   static SyntaxError adjacentSymbols(const _char& value, const _int& line);
+   static SyntaxError dayCannotBeSmallerThanOne(const _int& line);
    static SyntaxError expressionCannotEndWith(const _char& value, const _int& line);
    static SyntaxError expressionCannotStartWith(const _char& value, const _int& line);
    static SyntaxError filterKeywordAtStart(const _str& value, const _int& line);
    static SyntaxError filterKeywordAtEnd(const _str& value, const _int& line);
+   static SyntaxError hoursOutOfRange(const _str& value, const _int& line);
    static SyntaxError inevitableDivisionByZero(const _int& line);
    static SyntaxError inevitableModuloByZero(const _int& line);
    static SyntaxError invalidAsteriskPattern(const _str& value, const _int& line);
+   static SyntaxError invalidChar(const _char& value, const _int& line);
    static SyntaxError invalidExpression(const _int& line);
    static SyntaxError invalidFunctionName(const _int& line);
+   static SyntaxError invalidMonthName(const _str& value, const _int& line);
    static SyntaxError invalidNumericalExpression(const _int& line);
-   static SyntaxError invalidChar(const _char& value, const _int& line);
    static SyntaxError keywordNotFollowedByBool(const _str& value, const _int& line);
    static SyntaxError keywordNotFollowedByNumber(const _str& value, const _int& line);
+   static SyntaxError minutesOutOfRange(const _str& value, const _int& line);
    static SyntaxError missingTimeVariableMember(const _str& value, const _int& line);
    static SyntaxError missingLetterS(const _str& value, const _int& line);
+   static SyntaxError monthHasFewerDays(const _str& month, const _str& value, const _int& line);
    static SyntaxError multipleDotsInNumber(const _str& value, const _int& line);
    static SyntaxError multipleDotsInWord(const _str& value, const _int& line);
    static SyntaxError numberTooBig(const _str& value, const _int& line);
    static SyntaxError openedStringLteral(const _int& line);
+   static SyntaxError secondsOutOfRange(const _str& value, const _int& line);
    static SyntaxError quotationMarkStringLteral(const _int& line);
 
 private:

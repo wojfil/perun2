@@ -28,6 +28,16 @@ _str SyntaxError::getMessage() const
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
+SyntaxError SyntaxError::adjacentSymbols(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"adjacent ", value, L" symbols"), line);
+}
+
+SyntaxError SyntaxError::dayCannotBeSmallerThanOne(const _int& line)
+{
+   return SyntaxError(L"day cannot be smaller than 1", line);
+}
+
 SyntaxError SyntaxError::expressionCannotEndWith(const _char& value, const _int& line)
 {
    return SyntaxError(str(L"expression cannot end with ", toStr(value)), line);
@@ -48,6 +58,11 @@ SyntaxError SyntaxError::filterKeywordAtEnd(const _str& value, const _int& line)
    return SyntaxError(str(L"filter keyword '", value, L"' cannot stand at the end of an expression"), line);
 }
 
+SyntaxError SyntaxError::hoursOutOfRange(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"value of hours (", value, L") went out of range"), line);
+}
+
 SyntaxError SyntaxError::inevitableDivisionByZero(const _int& line)
 {
    return SyntaxError(L"inevitable division by zero", line);
@@ -61,21 +76,6 @@ SyntaxError SyntaxError::inevitableModuloByZero(const _int& line)
 SyntaxError SyntaxError::invalidAsteriskPattern(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"asterisk pattern '", value, L"' is not valid"), line);
-}
-
-SyntaxError SyntaxError::invalidExpression(const _int& line)
-{
-   return SyntaxError(L"syntax of an expression is not valid", line);
-}
-
-SyntaxError SyntaxError::invalidFunctionName(const _int& line)
-{
-   return SyntaxError(L"function name is not valid", line);
-}
-   
-SyntaxError SyntaxError::invalidNumericalExpression(const _int& line)
-{
-   return SyntaxError(L"syntax of a numerical expression is not valid", line);
 }
    
 SyntaxError SyntaxError::invalidChar(const _char& value, const _int& line)
@@ -97,6 +97,26 @@ SyntaxError SyntaxError::invalidChar(const _char& value, const _int& line)
    }
 }
 
+SyntaxError SyntaxError::invalidExpression(const _int& line)
+{
+   return SyntaxError(L"syntax of an expression is not valid", line);
+}
+
+SyntaxError SyntaxError::invalidFunctionName(const _int& line)
+{
+   return SyntaxError(L"function name is not valid", line);
+}
+   
+SyntaxError SyntaxError::invalidMonthName(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"'", value, L"' is not a valid month name"), line);
+}
+
+SyntaxError SyntaxError::invalidNumericalExpression(const _int& line)
+{
+   return SyntaxError(L"syntax of a numerical expression is not valid", line);
+}
+
 SyntaxError SyntaxError::keywordNotFollowedByBool(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"tokens after keyword '",value, L"' cannot be resolved to a logical condition"), line);
@@ -107,6 +127,11 @@ SyntaxError SyntaxError::keywordNotFollowedByNumber(const _str& value, const _in
    return SyntaxError(str(L"tokens after keyword '",value, L"' cannot be resolved to a number"), line);
 }
 
+SyntaxError SyntaxError::minutesOutOfRange(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"value of minutes (", value, L") went out of range"), line);
+}
+
 SyntaxError SyntaxError::missingTimeVariableMember(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"a time variable member was expected after '", value, L"'"), line);
@@ -115,6 +140,11 @@ SyntaxError SyntaxError::missingTimeVariableMember(const _str& value, const _int
 SyntaxError SyntaxError::missingLetterS(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"missing letter 's' at the end of the word '", value, L"'"), line);
+}
+
+SyntaxError SyntaxError::monthHasFewerDays(const _str& month, const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"month ", month, L" has only ", value, L" days"), line);
 }
 
 SyntaxError SyntaxError::multipleDotsInNumber(const _str& value, const _int& line)
@@ -135,6 +165,11 @@ SyntaxError SyntaxError::numberTooBig(const _str& value, const _int& line)
 SyntaxError SyntaxError::openedStringLteral(const _int& line)
 {
    return SyntaxError(L"an opened string literal is not closed", line);
+}
+
+SyntaxError SyntaxError::secondsOutOfRange(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"value of seconds (", value, L") went out of range"), line);
 }
 
 SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)

@@ -106,8 +106,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxError(str(L"'", first.getOriginString(uro),
-            L"' is not a valid month name"), first.line);
+         throw SyntaxError::invalidMonthName(first.getOriginString(uro), first.line);
       }
 
       if (first.type != Token::t_Number || first.value.num.nm != NumberMode::nm_Month) {
@@ -128,8 +127,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxError(str(L"'", second.getOriginString(uro),
-         L"' is not a valid month name"), second.line);
+      throw SyntaxError::invalidMonthName(second.getOriginString(uro), second.line);
    }
 
    if (second.type != Token::t_Number || second.value.num.nm != NumberMode::nm_Month) {
@@ -160,11 +158,12 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    const _tnum minute = tokenToTimeNumber(tks.at(6));
 
    if (hour < 0 || hour >= 24) {
-      clockUnitException(L"hours", hour, tks.at(4));
+
+      throw SyntaxError::hoursOutOfRange(toStr(hour), tks.at(4).line);
    }
 
    if (minute < 0 || minute >= 60) {
-      clockUnitException(L"minutes", minute, tks.at(6));
+      throw SyntaxError::minutesOutOfRange(toStr(minute), tks.at(6).line);
    }
 
    if (len == 7) {
@@ -180,7 +179,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    const _tnum secs = tokenToTimeNumber(tks.at(8));
 
    if (secs < 0 || secs >= 60) {
-      clockUnitException(L"seconds", secs, tks.at(8));
+      throw SyntaxError::secondsOutOfRange(toStr(secs), tks.at(8).line);
    }
 
    result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year, hour, minute, secs));
@@ -196,21 +195,13 @@ static void checkDayCorrectness(const _tnum& day, const _tnum& month,
    const _tnum& year, const Token& tk)
 {
    if (day < 1) {
-      throw SyntaxError(L"day cannot be smaller than 1", tk.line);
+      throw SyntaxError::dayCannotBeSmallerThanOne(tk.line);
    }
 
    const _tnum expected = daysInMonth(month, year);
    if (day > expected) {
-      throw SyntaxError(str(L"month ", monthToString(month), L" has only ",
-         toStr(expected), L" days"), tk.line);
+      throw SyntaxError::monthHasFewerDays(monthToString(month), toStr(expected), tk.line);
    }
-}
-
-static void clockUnitException(const _str& unit, const _tnum& value,
-   const Token& tk)
-{
-   throw SyntaxError(str(L"value of ", unit, L" (", toStr(value),
-      L") went out of range"), tk.line);
 }
 
 static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
@@ -233,10 +224,10 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
                if (bi.isBracketFree()) {
                   if (sublen == 0) {
                      if (time) {
-                        throw SyntaxError(L"adjacent + symbols", t.line);
+                        throw SyntaxError::adjacentSymbols(CHAR_PLUS, t.line);
                      }
                      else {
-                        throw SyntaxError(L"expression cannot start with +", t.line);
+                        throw SyntaxError::expressionCannotStartWith(CHAR_PLUS, t.line);
                      }
                   }
 
@@ -257,9 +248,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
             case CHAR_MINUS: {
                if (bi.isBracketFree() && sublen != 0) {
                   const Tokens tks2(tks, i - sublen, sublen);
-                  if (!timeExpUnit(sublen, subtract, prevSubtract,
-                     prevTim, time, tks2, numReserve, uro))
-                  {
+                  if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2, numReserve, uro)) {
                      return false;
                   }
 
@@ -293,10 +282,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
    }
 
    if (sublen == 0) {
-      if (subtract)
-         throw SyntaxError(L"expression cannot end with -", tks.last().line);
-      else
-         throw SyntaxError(L"expression cannot end with +", tks.last().line);
+      throw SyntaxError::expressionCannotEndWith(subtract ? CHAR_MINUS : CHAR_PLUS, tks.last().line);
    }
 
    const Tokens tks2(tks, 1 + end - sublen, sublen);

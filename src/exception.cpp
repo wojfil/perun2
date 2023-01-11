@@ -30,7 +30,7 @@ _str SyntaxError::getMessage() const
 
 SyntaxError SyntaxError::adjacentSymbols(const _char& value, const _int& line)
 {
-   return SyntaxError(str(L"adjacent ", value, L" symbols"), line);
+   return SyntaxError(str(L"adjacent ", toStr(value), L" symbols"), line);
 }
 
 SyntaxError SyntaxError::dayCannotBeSmallerThanOne(const _int& line)
@@ -77,7 +77,7 @@ SyntaxError SyntaxError::invalidAsteriskPattern(const _str& value, const _int& l
 {
    return SyntaxError(str(L"asterisk pattern '", value, L"' is not valid"), line);
 }
-   
+
 SyntaxError SyntaxError::invalidChar(const _char& value, const _int& line)
 {
    switch (value) {
@@ -106,7 +106,7 @@ SyntaxError SyntaxError::invalidFunctionName(const _int& line)
 {
    return SyntaxError(L"function name is not valid", line);
 }
-   
+
 SyntaxError SyntaxError::invalidMonthName(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"'", value, L"' is not a valid month name"), line);

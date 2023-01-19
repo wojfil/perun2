@@ -930,8 +930,9 @@ inline void decrementMonth(Period& p, const Time& t, const _bool& addDays)
    const _tnum d = daysInMonth(t.month, t.year);
    p.months_ad -= d;
 
-   if (addDays)
+   if (addDays) {
       p.days += d;
+   }
 }
 
 inline void decrementDay(Period& p, const Time& t)

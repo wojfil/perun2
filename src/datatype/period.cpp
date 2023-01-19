@@ -15,6 +15,7 @@
 #include "period.h"
 #include "chars.h"
 #include "numbers.h"
+#include "strings.h"
 #include <sstream>
 
 
@@ -165,7 +166,7 @@ _str Period::toString() const
    }
 
    return first
-      ? L"no period"
+      ? STRING_NO_PERIOD
       : ss.str();
 }
 

@@ -45,7 +45,8 @@ static const _str ROMAN_STRING_LITERALS[] = { L"I", L"IV", L"V", L"IX", L"X", L"
       (L"C" L"̅" L"M" L"̅"), (L"M" L"̅")
 };
 
-static const _str STRING_NO_TIME =            L"no time";
+static const _str STRING_NO_TIME =              L"no time";
+static const _str STRING_NO_PERIOD =            L"no period";
 
 
 

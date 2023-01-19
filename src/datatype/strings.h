@@ -56,6 +56,18 @@ static const _str STRING_WEEKDAY_FRIDAY =       L"Friday";
 static const _str STRING_WEEKDAY_SATURDAY =     L"Saturday";
 static const _str STRING_WEEKDAY_SUNDAY =       L"Sunday";
 
+static const _str STRING_MONTH_JANUARY =        L"January";
+static const _str STRING_MONTH_FEBRUARY =       L"February";
+static const _str STRING_MONTH_MARCH =          L"March";
+static const _str STRING_MONTH_APRIL =          L"April";
+static const _str STRING_MONTH_MAY =            L"May";
+static const _str STRING_MONTH_JUNE =           L"June";
+static const _str STRING_MONTH_JULY =           L"July";
+static const _str STRING_MONTH_AUGUST =         L"August";
+static const _str STRING_MONTH_SEPTEMBER =      L"September";
+static const _str STRING_MONTH_OCTOBER =        L"October";
+static const _str STRING_MONTH_NOVEMBER =       L"November";
+static const _str STRING_MONTH_DECEMBER =       L"December";
 
 }
 

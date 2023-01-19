@@ -652,29 +652,29 @@ _str monthToString(const _tnum& month)
 {
    switch (month) {
       case TNUM_JANUARY:
-         return L"January";
+         return STRING_MONTH_JANUARY;
       case TNUM_FEBRUARY:
-         return L"February";
+         return STRING_MONTH_FEBRUARY;
       case TNUM_MARCH:
-         return L"March";
+         return STRING_MONTH_MARCH;
       case TNUM_APRIL:
-         return L"April";
+         return STRING_MONTH_APRIL;
       case TNUM_MAY:
-         return L"May";
+         return STRING_MONTH_MAY;
       case TNUM_JUNE:
-         return L"June";
+         return STRING_MONTH_JUNE;
       case TNUM_JULY:
-         return L"July";
+         return STRING_MONTH_JULY;
       case TNUM_AUGUST:
-         return L"August";
+         return STRING_MONTH_AUGUST;
       case TNUM_SEPTEMBER:
-         return L"September";
+         return STRING_MONTH_SEPTEMBER;
       case TNUM_OCTOBER:
-         return L"October";
+         return STRING_MONTH_OCTOBER;
       case TNUM_NOVEMBER:
-         return L"November";
+         return STRING_MONTH_NOVEMBER;
       case TNUM_DECEMBER:
-         return L"December";
+         return STRING_MONTH_DECEMBER;
       default:
          return EMPTY_STRING;
    }

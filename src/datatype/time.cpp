@@ -684,19 +684,19 @@ _str weekdayToString(const _tnum& wday)
 {
    switch (wday) {
       case TNUM_MONDAY:
-         return L"Monday";
+         return STRING_WEEKDAY_MONDAY;
       case TNUM_TUESDAY:
-         return L"Tuesday";
+         return STRING_WEEKDAY_TUESDAY;
       case TNUM_WEDNESDAY:
-         return L"Wednesday";
+         return STRING_WEEKDAY_WEDNESDAY;
       case TNUM_THURSDAY:
-         return L"Thursday";
+         return STRING_WEEKDAY_THURSDAY;
       case TNUM_FRIDAY:
-         return L"Friday";
+         return STRING_WEEKDAY_FRIDAY;
       case TNUM_SATURDAY:
-         return L"Saturday";
+         return STRING_WEEKDAY_SATURDAY;
       case TNUM_SUNDAY:
-         return L"Sunday";
+         return STRING_WEEKDAY_SUNDAY;
       default:
          return EMPTY_STRING;
    }

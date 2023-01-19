@@ -48,6 +48,13 @@ static const _str ROMAN_STRING_LITERALS[] = { L"I", L"IV", L"V", L"IX", L"X", L"
 static const _str STRING_NO_TIME =              L"no time";
 static const _str STRING_NO_PERIOD =            L"no period";
 
+static const _str STRING_WEEKDAY_MONDAY =       L"Monday";
+static const _str STRING_WEEKDAY_TUESDAY =      L"Tuesday";
+static const _str STRING_WEEKDAY_WEDNESDAY =    L"Wednesday";
+static const _str STRING_WEEKDAY_THURSDAY =     L"Thursday";
+static const _str STRING_WEEKDAY_FRIDAY =       L"Friday";
+static const _str STRING_WEEKDAY_SATURDAY =     L"Saturday";
+static const _str STRING_WEEKDAY_SUNDAY =       L"Sunday";
 
 
 }

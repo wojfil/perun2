@@ -53,7 +53,12 @@ inline constexpr _tnum TNUM_HOURS_IN_MONTH =               TNUM_HOURS_IN_DAY * T
 inline constexpr _tnum TNUM_ZERO =                           0;
 inline constexpr _tnum TNUM_ONE =                            1;
 inline constexpr _tnum TNUM_MINUS_ONE =                     -1;
+inline constexpr _tnum TNUM_THREE =                          3;
+inline constexpr _tnum TNUM_FOUR =                           4;
+inline constexpr _tnum TNUM_NINE =                           9;
 inline constexpr _tnum TNUM_13 =                            13;
+inline constexpr _tnum TNUM_100 =                          100;
+inline constexpr _tnum TNUM_400 =                          400;
 
 inline constexpr _tnum TNUM_JANUARY =                        1;
 inline constexpr _tnum TNUM_FEBRUARY =                       2;
@@ -78,10 +83,11 @@ inline constexpr _tnum TNUM_SUNDAY =                         7;
 
 
 // commulative days in months
-inline constexpr _tnum MDAYS_NORMAL[12] =
+inline constexpr _tnum TNUM_CUMUL_DAYS_NORMAL[12] =
    { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
-inline constexpr _tnum MDAYS_LEAP[12] =
+inline constexpr _tnum TNUM_CUMUL_DAYS_LEAP[12] =
    { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 };
+inline constexpr _tnum TNUM_WEEKDAY_DATA[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
 
 }
 

@@ -872,11 +872,11 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Days:
                return years * TNUM_DAYS_IN_NORMAL_YEAR - per.days;
             case PeriodUnit::u_Hours:
-               return years * 8760 - per.hours;
+               return years * TNUM_HOURS_IN_YEAR - per.hours;
             case PeriodUnit::u_Minutes:
-               return years * 525600 - per.minutes;
+               return years * TNUM_MINUTES_IN_YEAR - per.minutes;
             case PeriodUnit::u_Seconds:
-               return years * 31536000 - per.seconds;
+               return years * TNUM_SECONDS_IN_YEAR - per.seconds;
          }
          break;
       }
@@ -893,9 +893,9 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Hours:
                return months * TNUM_HOURS_IN_MONTH - per.hours;
             case PeriodUnit::u_Minutes:
-               return months * 43200 - per.minutes;
+               return months * TNUM_MINUTES_IN_MONTH - per.minutes;
             case PeriodUnit::u_Seconds:
-               return months * 2592000 - per.seconds;
+               return months * TNUM_SECONDS_IN_MONTH - per.seconds;
          }
          break;
       }
@@ -910,11 +910,11 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Days:
                return weeks * TNUM_DAYS_IN_WEEK- per.days;
             case PeriodUnit::u_Hours:
-               return weeks * 168 - per.hours;
+               return weeks * TNUM_HOURS_IN_WEEK - per.hours;
             case PeriodUnit::u_Minutes:
-               return weeks * 10080 - per.minutes;
+               return weeks * TNUM_MINUTES_IN_WEEK - per.minutes;
             case PeriodUnit::u_Seconds:
-               return weeks * 604800 - per.seconds;
+               return weeks * TNUM_SECONDS_IN_WEEK - per.seconds;
          }
          break;
       }
@@ -931,20 +931,20 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
             case PeriodUnit::u_Hours:
                return days * TNUM_HOURS_IN_DAY - per.hours;
             case PeriodUnit::u_Minutes:
-               return days * 1440 - per.minutes;
+               return days * TNUM_MINUTES_IN_DAY - per.minutes;
             case PeriodUnit::u_Seconds:
-               return days * 86400 - per.seconds;
+               return days * TNUM_SECONDS_IN_DAY - per.seconds;
          }
          break;
       }
       case PeriodUnit::u_Hours: {
          switch (per.periodUnit) {
             case PeriodUnit::u_Years:
-               return hours - 8760 * per.years;
+               return hours - TNUM_HOURS_IN_YEAR * per.years;
             case PeriodUnit::u_Months:
                return hours - TNUM_HOURS_IN_MONTH * per.months;
             case PeriodUnit::u_Weeks:
-               return hours - 168 * per.weeks;
+               return hours - TNUM_HOURS_IN_WEEK * per.weeks;
             case PeriodUnit::u_Days:
                return hours - TNUM_HOURS_IN_DAY * per.days;
             case PeriodUnit::u_Hours:
@@ -959,15 +959,15 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
       case PeriodUnit::u_Minutes: {
          switch (per.periodUnit) {
             case PeriodUnit::u_Years:
-               return minutes - 525600 * per.years;
+               return minutes - TNUM_MINUTES_IN_YEAR * per.years;
             case PeriodUnit::u_Months:
-               return minutes - 43200 * per.months;
+               return minutes - TNUM_MINUTES_IN_MONTH * per.months;
             case PeriodUnit::u_Weeks:
-               return minutes - 10080 * per.weeks;
+               return minutes - TNUM_MINUTES_IN_WEEK * per.weeks;
             case PeriodUnit::u_Days:
-               return minutes - 1440 * per.days;
+               return minutes - TNUM_MINUTES_IN_DAY * per.days;
             case PeriodUnit::u_Hours:
-               return minutes - 60 * per.hours;
+               return minutes - TNUM_MINUTES_IN_HOUR * per.hours;
             case PeriodUnit::u_Minutes:
                return minutes - per.minutes;
             case PeriodUnit::u_Seconds:
@@ -978,17 +978,17 @@ inline _tnum Period::periodUnitsCmp(const Period& per) const
       case PeriodUnit::u_Seconds: {
          switch (per.periodUnit) {
             case PeriodUnit::u_Years:
-               return seconds - 31536000 * per.years;
+               return seconds - TNUM_SECONDS_IN_YEAR * per.years;
             case PeriodUnit::u_Months:
-               return seconds - 2592000 * per.months;
+               return seconds - TNUM_SECONDS_IN_MONTH * per.months;
             case PeriodUnit::u_Weeks:
-               return seconds - 604800 * per.weeks;
+               return seconds - TNUM_SECONDS_IN_WEEK * per.weeks;
             case PeriodUnit::u_Days:
-               return seconds - 86400 * per.days;
+               return seconds - TNUM_SECONDS_IN_DAY * per.days;
             case PeriodUnit::u_Hours:
                return seconds - TNUM_SECONDS_IN_HOUR * per.hours;
             case PeriodUnit::u_Minutes:
-               return seconds - 60 * per.minutes;
+               return seconds - TNUM_SECONDS_IN_MINUTE * per.minutes;
             case PeriodUnit::u_Seconds:
                return seconds - per.seconds;
          }
@@ -1023,9 +1023,9 @@ inline _tnum Period::periodDiffsCmp(const Period& diff) const
 inline _tnum Period::periodCmp(const Period& per) const
 {
    _tnum s = (hours - per.hours) * TNUM_SECONDS_IN_HOUR
-      + (minutes - per.minutes) * 60 + seconds - per.seconds;
-   _tnum d = (s / 86400) + days - per.days + TNUM_DAYS_IN_WEEK* (weeks - per.weeks);
-   s %= 86400;
+      + (minutes - per.minutes) * TNUM_SECONDS_IN_MINUTE + seconds - per.seconds;
+   _tnum d = (s / TNUM_SECONDS_IN_DAY) + days - per.days + TNUM_DAYS_IN_WEEK* (weeks - per.weeks);
+   s %= TNUM_SECONDS_IN_DAY;
 
    _tnum y1 = years - per.years;
    _tnum y2 = years_sec - per.years_sec;
@@ -1067,8 +1067,8 @@ inline _tnum Period::periodCmp(const Period& per) const
          return d == TNUM_ZERO ? s : d;
       }
 
-      if (y1 >= 0) {
-         if (m1 >= 0) {
+      if (y1 >= TNUM_ZERO) {
+         if (m1 >= TNUM_ZERO) {
             d += TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1;
          }
          else {
@@ -1081,7 +1081,7 @@ inline _tnum Period::periodCmp(const Period& per) const
          }
       }
       else {
-         if (m1 >= 0) {
+         if (m1 >= TNUM_ZERO) {
             const _tnum x = m1 / TNUM_MONTHS_IN_YEAR;
             const _tnum mx = x > (-y1) ? (-y1) : x;
 
@@ -1101,16 +1101,16 @@ inline _tnum Period::periodCmp(const Period& per) const
    _bool ney = false;
    _bool nem = false;
 
-   if ((y1 > 0 && y2 < 0 && y1 >= (-y2)) ||
-       (y1 < 0 && y2 > 0 && (-y1) >= y2))
+   if ((y1 > TNUM_ZERO && y2 < TNUM_ZERO && y1 >= (-y2)) ||
+       (y1 < TNUM_ZERO && y2 > TNUM_ZERO && (-y1) >= y2))
    {
       ney = true;
       y1 += y2;
       y2 = TNUM_ZERO;
    }
 
-   if ((m1 > 0 && m2 < 0 && m1 >= (-m2)) ||
-       (m1 < 0 && m2 > 0 && (-m1) >= m2))
+   if ((m1 > TNUM_ZERO && m2 < TNUM_ZERO && m1 >= (-m2)) ||
+       (m1 < TNUM_ZERO && m2 > TNUM_ZERO && (-m1) >= m2))
    {
       nem = true;
       m1 += m2;
@@ -1119,8 +1119,8 @@ inline _tnum Period::periodCmp(const Period& per) const
 
    if (!ney)
    {
-      if ((m1 > 0 && y2 < 0 && m1 >= (-y2 * TNUM_MONTHS_IN_YEAR)) ||
-         (m1 < 0 && y2 > 0 && (-m1) >= y2 * TNUM_MONTHS_IN_YEAR))
+      if ((m1 > TNUM_ZERO && y2 < TNUM_ZERO && m1 >= (-y2 * TNUM_MONTHS_IN_YEAR)) ||
+         (m1 < TNUM_ZERO && y2 > TNUM_ZERO && (-m1) >= y2 * TNUM_MONTHS_IN_YEAR))
       {
          ney = true;
          m1 += y2 * TNUM_MONTHS_IN_YEAR;
@@ -1129,20 +1129,20 @@ inline _tnum Period::periodCmp(const Period& per) const
    }
 
    if (!nem) {
-      if ((y1 > 0 && m2 < 0 && (y1 * TNUM_MONTHS_IN_YEAR) >= (-m2)))
+      if ((y1 > TNUM_ZERO && m2 < TNUM_ZERO && (y1 * TNUM_MONTHS_IN_YEAR) >= (-m2)))
       {
          const _tnum a = ((-m2) / TNUM_MONTHS_IN_YEAR)
-            + (((-m2) % TNUM_MONTHS_IN_YEAR) == TNUM_ZERO ? 0 : 1);
+            + (((-m2) % TNUM_MONTHS_IN_YEAR) == TNUM_ZERO ? TNUM_ZERO : TNUM_ONE);
 
          y1 -= a;
          m1 += m2 + a * TNUM_MONTHS_IN_YEAR;
          m2 = TNUM_ZERO;
          nem = true;
       }
-      else if (y1 < 0 && m2 > 0 && (-y1 * TNUM_MONTHS_IN_YEAR) >= m2)
+      else if (y1 < TNUM_ZERO && m2 > TNUM_ZERO && (-y1 * TNUM_MONTHS_IN_YEAR) >= m2)
       {
          const _tnum a = (m2 / TNUM_MONTHS_IN_YEAR)
-            + ((m2 % TNUM_MONTHS_IN_YEAR) == TNUM_ZERO ? 0 : 1);
+            + ((m2 % TNUM_MONTHS_IN_YEAR) == TNUM_ZERO ? TNUM_ZERO : TNUM_ONE);
 
          y1 += a;
          m1 -= m2 + TNUM_MONTHS_IN_YEAR * a;
@@ -1162,8 +1162,8 @@ inline _tnum Period::periodCmp(const Period& per) const
       return d == TNUM_ZERO ? s : d;
    }
 
-   if (y1 >= 0) {
-      if (m1 >= 0) {
+   if (y1 >= TNUM_ZERO) {
+      if (m1 >= TNUM_ZERO) {
          d += TNUM_DAYS_IN_NORMAL_YEAR * y1 + TNUM_DAYS_IN_NORMAL_MONTH * m1;
       }
       else {
@@ -1176,7 +1176,7 @@ inline _tnum Period::periodCmp(const Period& per) const
       }
    }
    else {
-      if (m1 >= 0) {
+      if (m1 >= TNUM_ZERO) {
          const _tnum x = m1 / TNUM_MONTHS_IN_YEAR;
          const _tnum mx = x > (-y1) ? (-y1) : x;
 
@@ -1269,14 +1269,14 @@ inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit)
          return TNUM_ZERO;
       }
       case Period::u_Minutes: {
-         const _tnum v = 60 * (TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
+         const _tnum v = TNUM_MINUTES_IN_HOUR * (TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
             + TNUM_DAYS_IN_NORMAL_MONTH * diff.months + diff.months_ad + diff.days) + diff.hours)
             + diff.minutes - unit.minutes;
 
          return v == TNUM_ZERO ? diff.seconds : v;
       }
       case Period::u_Seconds: {
-         return 60 * (60 * (TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
+         return TNUM_SECONDS_IN_MINUTE * (TNUM_MINUTES_IN_HOUR * (TNUM_HOURS_IN_DAY * (TNUM_DAYS_IN_NORMAL_YEAR * diff.years + diff.years_ad
             + TNUM_DAYS_IN_NORMAL_MONTH * diff.months + diff.months_ad + diff.days)
             + diff.hours) + diff.minutes) + diff.seconds - unit.seconds;
       }

@@ -50,17 +50,17 @@ public:
    Period();
    Period(const _tnum& val, const PeriodUnit& unit);
 
-   _tnum years = 0;
-   _tnum months = 0;
-   _tnum weeks = 0;
-   _tnum days = 0;
-   _tnum hours = 0;
-   _tnum minutes = 0;
-   _tnum seconds = 0;
-   _tnum years_sec = 0; // years with known amount of days
-   _tnum months_sec = 0; // months with known amount of days
-   _tnum years_ad = 0; // days in years from variable 'years_sec'
-   _tnum months_ad = 0; // days in months from variable 'months_sec'
+   _tnum years = TNUM_ZERO;
+   _tnum months = TNUM_ZERO;
+   _tnum weeks = TNUM_ZERO;
+   _tnum days = TNUM_ZERO;
+   _tnum hours = TNUM_ZERO;
+   _tnum minutes = TNUM_ZERO;
+   _tnum seconds = TNUM_ZERO;
+   _tnum years_sec = TNUM_ZERO; // years with known amount of days
+   _tnum months_sec = TNUM_ZERO; // months with known amount of days
+   _tnum years_ad = TNUM_ZERO; // days in years from variable 'years_sec'
+   _tnum months_ad = TNUM_ZERO; // days in months from variable 'months_sec'
    PeriodUnit periodUnit;
    PeriodType periodType;
 

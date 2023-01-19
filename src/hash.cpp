@@ -302,28 +302,28 @@ Hashes::Hashes() :
    }),
 
    HASH_MAP_MONTHS({
-      { this->HASH_VAR_JANUARY,   1 },
-      { this->HASH_VAR_FEBRUARY,  2 },
-      { this->HASH_VAR_MARCH,     3 },
-      { this->HASH_VAR_APRIL,     4 },
-      { this->HASH_VAR_MAY,       5 },
-      { this->HASH_VAR_JUNE,      6 },
-      { this->HASH_VAR_JULY,      7 },
-      { this->HASH_VAR_AUGUST,    8 },
-      { this->HASH_VAR_SEPTEMBER, 9 },
-      { this->HASH_VAR_OCTOBER,  10 },
-      { this->HASH_VAR_NOVEMBER, 11 },
-      { this->HASH_VAR_DECEMBER, 12 }
+      { this->HASH_VAR_JANUARY,    TNUM_JANUARY },
+      { this->HASH_VAR_FEBRUARY,   TNUM_FEBRUARY },
+      { this->HASH_VAR_MARCH,      TNUM_MARCH },
+      { this->HASH_VAR_APRIL,      TNUM_APRIL },
+      { this->HASH_VAR_MAY,        TNUM_MAY },
+      { this->HASH_VAR_JUNE,       TNUM_JUNE },
+      { this->HASH_VAR_JULY,       TNUM_JULY },
+      { this->HASH_VAR_AUGUST,     TNUM_AUGUST },
+      { this->HASH_VAR_SEPTEMBER,  TNUM_SEPTEMBER },
+      { this->HASH_VAR_OCTOBER,    TNUM_OCTOBER },
+      { this->HASH_VAR_NOVEMBER,   TNUM_NOVEMBER },
+      { this->HASH_VAR_DECEMBER,   TNUM_DECEMBER }
    }),
 
    HASH_MAP_WEEKDAYS({
-      { this->HASH_VAR_MONDAY,    1 },
-      { this->HASH_VAR_TUESDAY,   2 },
-      { this->HASH_VAR_WEDNESDAY, 3 },
-      { this->HASH_VAR_THURSDAY,  4 },
-      { this->HASH_VAR_FRIDAY,    5 },
-      { this->HASH_VAR_SATURDAY,  6 },
-      { this->HASH_VAR_SUNDAY,    7 }
+      { this->HASH_VAR_MONDAY,     TNUM_MONDAY },
+      { this->HASH_VAR_TUESDAY,    TNUM_TUESDAY },
+      { this->HASH_VAR_WEDNESDAY,  TNUM_WEDNESDAY },
+      { this->HASH_VAR_THURSDAY,   TNUM_THURSDAY },
+      { this->HASH_VAR_FRIDAY,     TNUM_FRIDAY },
+      { this->HASH_VAR_SATURDAY,   TNUM_SATURDAY },
+      { this->HASH_VAR_SUNDAY,     TNUM_SUNDAY }
    }),
 
    HASH_MAP_PERIOD_UNITS({

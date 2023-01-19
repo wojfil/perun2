@@ -740,12 +740,6 @@ _tnum daysInMonth(const _tnum& month, const _tnum& year)
    }
 }
 
-// commulative days in months
-const _tnum MDAYS_NORMAL[12] =
-   { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
-const _tnum MDAYS_LEAP[12] =
-   { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 };
-
 
 inline Period timeDifference(const Time& min, const Time& max)
 {

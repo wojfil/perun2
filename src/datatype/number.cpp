@@ -41,7 +41,7 @@ Number::Number(const _ndouble& val)
 _str Number::toString() const
 {
    if (isDouble)  {
-      const _str str = std::to_wstring(value.d);
+      const _str str = toStr(value.d);
       const _int len = str.size();
       _int i;
 

@@ -16,13 +16,15 @@
 #include "number.h"
 #include "../exception.h"
 #include "primitives.h"
+#include "strings.h"
+#include "numbers.h"
 
 
 namespace uro
 {
 
 Number::Number()
-   : value(0LL), isDouble(false) { }
+   : value(NINT_ZERO), isDouble(false) { }
 
 Number::Number(const _int& val)
    : value(static_cast<_nint>(val)), isDouble(false) { }
@@ -45,10 +47,10 @@ _str Number::toString() const
 
       for (i = len - 1; i >= 0; i--)  {
          const _char& ch = str[i];
-         if (ch != L'0') {
-            if (ch == L'.') {
+         if (ch != DIGIT_0) {
+            if (ch == CHAR_DOT) {
                return i == 0
-                  ? L"0"
+                  ? STRING_0
                   : str.substr(0, i);
             }
             else {
@@ -57,7 +59,7 @@ _str Number::toString() const
          }
       }
 
-      return L"0";
+      return STRING_0;
    }
    else {
       return toStr(value.i);
@@ -74,44 +76,44 @@ _nint Number::toInt() const
 _bool Number::isZero() const
 {
    return isDouble
-      ? (value.d == 0L)
-      : (value.i == 0LL);
+      ? (value.d == NDOUBLE_ZERO)
+      : (value.i == NINT_ZERO);
 }
 
 _bool Number::isMinusOne() const
 {
    return isDouble
-      ? (value.d == -1L)
-      : (value.i == -1LL);
+      ? (value.d == NDOUBLE_MINUS_ONE)
+      : (value.i == NINT_MINUS_ONE);
 }
 
 void Number::makeOpposite()
 {
    if (isDouble) {
-      value.d *= -1L;
+      value.d *= NDOUBLE_MINUS_ONE;
    }
    else {
-      value.i *= -1LL;
+      value.i *= NINT_MINUS_ONE;
    }
 }
 
 void Number::setToZero()
 {
    if (isDouble) {
-      value.d = 0L;
+      value.d = NDOUBLE_ZERO;
    }
    else {
-      value.i = 0LL;
+      value.i = NINT_ZERO;
    }
 }
 
 void Number::setToMinusOne()
 {
    if (isDouble) {
-      value.d = -1L;
+      value.d = NDOUBLE_MINUS_ONE;
    }
    else {
-      value.i = -1LL;
+      value.i = NINT_MINUS_ONE;
    }
 }
 
@@ -161,8 +163,8 @@ Number& Number::operator -= (const Number& num)
 
 Number& Number::operator *= (const Number& num)
 {
-   if (!num.isDouble && num.value.i == 0LL) {
-      value.i = 0LL;
+   if (!num.isDouble && num.value.i == NINT_ZERO) {
+      value.i = NINT_ZERO;
       isDouble = false;
       return *this;
    }
@@ -191,7 +193,7 @@ Number& Number::operator *= (const Number& num)
 Number& Number::operator /= (const Number& num)
 {
    if (num.isDouble) {
-      if (num.value.d == 0L) {
+      if (num.value.d == NDOUBLE_ZERO) {
          throw RuntimeError(L"division by zero");
       }
 
@@ -206,7 +208,7 @@ Number& Number::operator /= (const Number& num)
    }
    else
    {
-      if (num.value.i == 0LL) {
+      if (num.value.i == NINT_ZERO) {
          throw RuntimeError(L"division by zero");
       }
 
@@ -214,7 +216,7 @@ Number& Number::operator /= (const Number& num)
          value.d /= num.value.i;
       }
       else {
-         if (value.i % num.value.i == 0) {
+         if (value.i % num.value.i == NINT_ZERO) {
             value.i /= num.value.i;
          }
          else {
@@ -231,7 +233,7 @@ Number& Number::operator /= (const Number& num)
 Number& Number::operator %= (const Number& num)
 {
    if (num.isDouble) {
-      if (num.value.d == 0L) {
+      if (num.value.d == NDOUBLE_ZERO) {
          throw RuntimeError(L"modulo by zero");
       }
 
@@ -247,7 +249,7 @@ Number& Number::operator %= (const Number& num)
    }
    else
    {
-      if (num.value.i == 0LL) {
+      if (num.value.i == NINT_ZERO) {
          throw RuntimeError(L"modulo by zero");
       }
 
@@ -265,7 +267,7 @@ Number& Number::operator %= (const Number& num)
 Number& Number::operator ++ (int)
 {
    if (isDouble) {
-      value.d += 1L;
+      value.d += NDOUBLE_ONE;
    }
    else {
       value.i++;
@@ -276,7 +278,7 @@ Number& Number::operator ++ (int)
 Number& Number::operator -- (int)
 {
    if (isDouble) {
-      value.d -= 1L;
+      value.d -= NDOUBLE_ONE;
    }
    else {
       value.i--;
@@ -362,7 +364,7 @@ Number Number::operator * (const Number& num) const
 Number Number::operator / (const Number& num) const
 {
    if (num.isDouble) {
-      if (num.value.d == 0L) {
+      if (num.value.d == NDOUBLE_ZERO) {
          throw RuntimeError(L"division by zero");
       }
       if (isDouble) {
@@ -376,7 +378,7 @@ Number Number::operator / (const Number& num) const
    }
    else
    {
-      if (num.value.i == 0LL) {
+      if (num.value.i == NINT_ZERO) {
          throw RuntimeError(L"division by zero");
       }
       if (isDouble) {
@@ -384,7 +386,7 @@ Number Number::operator / (const Number& num) const
          return Number(v);
       }
       else {
-         if (value.i % num.value.i == 0) {
+         if (value.i % num.value.i == NINT_ZERO) {
             return Number(value.i / num.value.i);
          }
          else {
@@ -398,7 +400,7 @@ Number Number::operator / (const Number& num) const
 Number Number::operator % (const Number& num) const
 {
    if (num.isDouble) {
-      if (num.value.d == 0L) {
+      if (num.value.d == NDOUBLE_ZERO) {
          throw RuntimeError(L"modulo by zero");
       }
       if (isDouble) {
@@ -411,7 +413,7 @@ Number Number::operator % (const Number& num) const
       }
    }
    else {
-      if (num.value.i == 0LL) {
+      if (num.value.i == NINT_ZERO) {
          throw RuntimeError(L"modulo by zero");
       }
       if (isDouble) {

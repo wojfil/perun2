@@ -42,10 +42,8 @@ _str Number::toString() const
 {
    if (isDouble)  {
       const _str str = toStr(value.d);
-      const _int len = str.size();
-      _int i;
 
-      for (i = len - 1; i >= 0; i--)  {
+      for (_int i = str.size() - 1; i >= 0; i--)  {
          const _char& ch = str[i];
          if (ch != DIGIT_0) {
             if (ch == CHAR_DOT) {

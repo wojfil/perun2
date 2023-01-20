@@ -68,21 +68,22 @@ void VarCharAssignment::run()
    const _size len = variable.value.size();
    const _nint n = index->getValue().toInt();
 
-   if (n >= 0 && n < len) {
+   if (n >= NINT_ZERO && n < static_cast<_nint>(len)) {
       const _str v = value->getValue();
       const _size vlen = v.size();
 
       switch (vlen) {
          case 0: {
             if (len != 0) {
-               if (n == 0) {
+               if (n == NINT_ZERO) {
                   variable.value = variable.value.substr(1);
                }
-               else if (n == len - 1) {
+               else if (n == static_cast<_nint>(len) - NINT_ONE) {
                   variable.value = variable.value.substr(0, len - 1);
                }
                else {
-                  variable.value = str(variable.value.substr(0, n), variable.value.substr(n + 1));
+                  variable.value = str(variable.value.substr(0, static_cast<_size>(n)), 
+                     variable.value.substr(static_cast<_size>(n) + 1));
                }
             }
             break;
@@ -92,7 +93,7 @@ void VarCharAssignment::run()
             break;
          }
          default: {
-            if (n == 0) {
+            if (n == NINT_ZERO) {
                if (len == 1) {
                   variable.value = v;
                }
@@ -100,22 +101,23 @@ void VarCharAssignment::run()
                   variable.value = str(v, variable.value.substr(1));
                }
             }
-            else if (n == len - 1) {
+            else if (n == static_cast<_nint>(len) - NINT_ONE) {
                if (len == 1) {
                   variable.value = v;
                }
                else {
-                  variable.value = str(variable.value.substr(0, n), v);
+                  variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v);
                }
             }
             else {
-               variable.value = str(variable.value.substr(0, n), v, variable.value.substr(n + 1));
+               variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v, 
+                  variable.value.substr(static_cast<_size>(n) + 1));
             }
             break;
          }
       }
    }
-   else if (n == len) {
+   else if (n == static_cast<_nint>(len)) {
       const _str v = value->getValue();
       const _size vlen = v.size();
 
@@ -159,7 +161,7 @@ void VarTimeUnitAssignment::run()
 
 void VarTimeUnitChange::run()
 {
-   const _tnum n = toTimeNumber(value->getValue()) * (negative ? -1 : 1);
+   const _tnum n = toTimeNumber(value->getValue()) * (negative ? TNUM_MINUS_ONE : TNUM_ONE);
 
    switch (unit) {
       case Period::u_Years: {
@@ -198,31 +200,31 @@ void VarTimeUnitIncrement::run()
 {
    switch (unit) {
       case Period::u_Years: {
-         variable.value.addYears(1);
+         variable.value.addYears(TNUM_ONE);
          break;
       }
       case Period::u_Months: {
-         variable.value.addMonths(1);
+         variable.value.addMonths(TNUM_ONE);
          break;
       }
       case Period::u_Weeks: {
-         variable.value.addWeeks(1);
+         variable.value.addWeeks(TNUM_ONE);
          break;
       }
       case Period::u_Days: {
-         variable.value.addDays(1);
+         variable.value.addDays(TNUM_ONE);
          break;
       }
       case Period::u_Hours: {
-         variable.value.addHours(1);
+         variable.value.addHours(TNUM_ONE);
          break;
       }
       case Period::u_Minutes: {
-         variable.value.addMinutes(1);
+         variable.value.addMinutes(TNUM_ONE);
          break;
       }
       case Period::u_Seconds: {
-         variable.value.addSeconds(1);
+         variable.value.addSeconds(TNUM_ONE);
          break;
       }
    }
@@ -233,31 +235,31 @@ void VarTimeUnitDecrement::run()
 {
    switch (unit) {
       case Period::u_Years: {
-         variable.value.addYears(-1);
+         variable.value.addYears(TNUM_MINUS_ONE);
          break;
       }
       case Period::u_Months: {
-         variable.value.addMonths(-1);
+         variable.value.addMonths(TNUM_MINUS_ONE);
          break;
       }
       case Period::u_Weeks: {
-         variable.value.addWeeks(-1);
+         variable.value.addWeeks(TNUM_MINUS_ONE);
          break;
       }
       case Period::u_Days: {
-         variable.value.addDays(-1);
+         variable.value.addDays(TNUM_MINUS_ONE);
          break;
       }
       case Period::u_Hours: {
-         variable.value.addHours(-1);
+         variable.value.addHours(TNUM_MINUS_ONE);
          break;
       }
       case Period::u_Minutes: {
-         variable.value.addMinutes(-1);
+         variable.value.addMinutes(TNUM_MINUS_ONE);
          break;
       }
       case Period::u_Seconds: {
-         variable.value.addSeconds(-1);
+         variable.value.addSeconds(TNUM_MINUS_ONE);
          break;
       }
    }

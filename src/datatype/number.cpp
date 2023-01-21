@@ -85,6 +85,13 @@ _bool Number::isZero() const
       : (value.i == NINT_ZERO);
 }
 
+_bool Number::isOne() const
+{
+   return isDouble
+      ? (value.d == NDOUBLE_ONE)
+      : (value.i == NINT_ONE);
+}
+
 _bool Number::isMinusOne() const
 {
    return isDouble

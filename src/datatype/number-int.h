@@ -33,6 +33,7 @@ struct NumberInt : Number
    _str toString() const;
    _nint toInt() const;
    _bool isZero() const;
+   _bool isOne() const;
    _bool isMinusOne() const;
    void makeOpposite();
    void setToZero();

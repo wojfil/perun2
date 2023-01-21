@@ -13,6 +13,7 @@
 */
 
 #include "number-int.h"
+#include "numbers.h"
 
 
 namespace uro
@@ -36,27 +37,32 @@ _nint NumberInt::toInt() const
 
 _bool NumberInt::isZero() const
 {
-   return value.i == 0LL;
+   return value.i == NINT_ZERO;
+}
+
+_bool NumberInt::isOne() const
+{
+   return value.i == NINT_ONE;
 }
 
 _bool NumberInt::isMinusOne() const
 {
-   return value.i == -1LL;
+   return value.i == NINT_MINUS_ONE;
 }
 
 void NumberInt::makeOpposite()
 {
-   value.i *= -1LL;
+   value.i *= NINT_MINUS_ONE;
 }
 
 void NumberInt::setToZero()
 {
-   value.i = 0LL;
+   value.i = NINT_ZERO;
 }
 
 void NumberInt::setToMinusOne()
 {
-   value.i = -1LL;
+   value.i = NINT_MINUS_ONE;
 }
 
 NumberInt& NumberInt::operator ++ (int)

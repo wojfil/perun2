@@ -42,8 +42,9 @@ _str Number::toString() const
 {
    if (isDouble)  {
       const _str str = toStr(value.d);
+      const _size len = str.size();
 
-      for (_int i = str.size() - 1; i >= 0; i--)  {
+      for (_int i = len - 1; i >= 0; i--)  {
          const _char& ch = str[i];
          if (ch != DIGIT_0) {
             if (ch == CHAR_DOT) {
@@ -52,7 +53,13 @@ _str Number::toString() const
                   : str.substr(0, i);
             }
             else {
-               return str.substr(0, i + 1);
+               for (_size j = 0; j < len; j++) {
+                  if (str[j] == CHAR_DOT) {
+                     return str.substr(0, i + 1);
+                  }
+               }
+
+               return str;
             }
          }
       }

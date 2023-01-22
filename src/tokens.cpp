@@ -291,13 +291,13 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
             if (hasPercent) {
-               if (t.value.ch == L':') {
+               if (t.value.ch == CHAR_COLON) {
                   loop = false;
                   colonId = i;
                }
             }
             else {
-               if (t.value.ch == L'?') {
+               if (t.value.ch == CHAR_PERCENT) {
                   hasPercent = true;
                   percentId = i;
                }
@@ -323,7 +323,7 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
 {
    _bool prevExclamantion = false;
 
-   if (first().isSymbol(L'!')) {
+   if (first().isSymbol(CHAR_EXCLAMATION_MARK)) {
       negationByExclamationException(first().line);
    }
 
@@ -344,7 +344,7 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
       }
    }
 
-   if (this->list[this->start].isSymbol(L'[')) {
+   if (this->list[this->start].isSymbol(CHAR_OPENING_SQUARE_BRACKET)) {
       throw SyntaxError(
          L"a collection variable was expected before [ bracket. "
          L"If your intention was to define an array, then you should write values inside a pair of round brackets () and separate them by commas", 
@@ -354,13 +354,13 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
    for (_int i = this->start; i <= this->end; i++) {
       const Token& t = this->list[i];
 
-      if (prevExclamantion && !t.isSymbol(L'=')) {
+      if (prevExclamantion && !t.isSymbol(CHAR_EQUAL_SIGN)) {
          negationByExclamationException(this->list[i - 1].line);
       }
 
       if (t.type == Token::t_MultiSymbol) {
          switch (t.value.chars.ch) {
-            case L'+': {
+            case CHAR_PLUS: {
                if (i == this->start) {
                   throw SyntaxError(L"expression cannot start with incrementation signs ++", t.line);
                }
@@ -369,7 +369,7 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
                }
                break;
             }
-            case L'-': {
+            case CHAR_MINUS: {
                if (i == this->start) {
                   throw SyntaxError(L"expression cannot start with decrementation signs --", t.line);
                }
@@ -384,7 +384,7 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
          throw SyntaxError(str(L"expected ; before keyword '", t.getOriginString(uro), L"'"), t.line);
       }
 
-      prevExclamantion = t.isSymbol(L'!');
+      prevExclamantion = t.isSymbol(CHAR_EXCLAMATION_MARK);
    }
 }
 
@@ -393,7 +393,9 @@ void Tokens::setData()
    this->info = TI_NULL;
 
    while (this->length >= 2) {
-      if (this->list[this->start].isSymbol(L'(') && this->list[this->end].isSymbol(L')')) {
+      if (this->list[this->start].isSymbol(CHAR_OPENING_ROUND_BRACKET) 
+       && this->list[this->end].isSymbol(CHAR_CLOSING_ROUND_BRACKET)) 
+      {
          _int lvl = 0;
          _bool b = true;
 
@@ -401,11 +403,11 @@ void Tokens::setData()
             const Token& t = this->list[i];
             if (t.type == Token::t_Symbol) {
                switch (t.value.ch) {
-                  case L'(': {
+                  case CHAR_OPENING_ROUND_BRACKET: {
                      lvl++;
                      break;
                   }
-                  case L')': {
+                  case CHAR_CLOSING_ROUND_BRACKET: {
                      lvl--;
                      if (lvl == 0 && i != this->end)
                      {
@@ -446,40 +448,40 @@ void Tokens::setData()
          switch (t.type) {
             case Token::t_Symbol: {
                switch (t.value.ch) {
-                  case L'?': {
+                  case CHAR_PERCENT: {
                      this->info |= TI_HAS_CHAR_QUESTION_MARK;
                      if (firstQuestionMarkId == -1) {
                         firstQuestionMarkId = i;
                      }
                      break;
                   }
-                  case L',': {
+                  case CHAR_COMMA: {
                      this->info |= TI_HAS_CHAR_COMMA;
                      break;
                   }
-                  case L':': {
+                  case CHAR_COLON: {
                      this->info |= TI_HAS_CHAR_COLON;
                      if (firstColonId == -1) {
                         firstColonId = i;
                      }
                      break;
                   }
-                  case L'+': {
+                  case CHAR_PLUS: {
                      this->info |= TI_HAS_CHAR_PLUS;
                      break;
                   }
-                  case L'-': {
+                  case CHAR_MINUS: {
                      this->info |= TI_HAS_CHAR_MINUS;
                      break;
                   }
-                  case L'=': {
+                  case CHAR_EQUAL_SIGN: {
                      this->info |= TI_HAS_CHAR_EQUALS;
                      this->info |= TI_HAS_COMPARISON_CHAR;
                      break;
                   }
-                  case L'<':
-                  case L'>':
-                  case L'!': {
+                  case CHAR_SMALLER:
+                  case CHAR_GREATER:
+                  case CHAR_EXCLAMATION_MARK: {
                      this->info |= TI_HAS_COMPARISON_CHAR;
                      break;
                   }
@@ -580,7 +582,9 @@ void Tokens::setData()
    }
 
    if (this->length >= 3 && !indepRound) {
-      if (this->list[this->start].type == Token::t_Word && this->list[this->start + 1].isSymbol(L'(') && this->list[this->end].isSymbol(L')')) {
+      if (this->list[this->start].type == Token::t_Word 
+         && this->list[this->start + 1].isSymbol(CHAR_OPENING_ROUND_BRACKET) && this->list[this->end].isSymbol(CHAR_CLOSING_ROUND_BRACKET)) 
+      {
          this->info |= TI_IS_POSSIBLE_FUNCTION;
       }
    }
@@ -612,11 +616,11 @@ void Tokens::setData()
       }
    }
 
-   if (!indepSquare && this->length >= 3 && this->list[this->start + 1].isSymbol(L'[')) {
+   if (!indepSquare && this->length >= 3 && this->list[this->start + 1].isSymbol(CHAR_OPENING_SQUARE_BRACKET)) {
       const Token& first = this->list[this->start];
       const Token& last = this->list[this->end];
 
-      if (last.isSymbol(L']')) {
+      if (last.isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
             throw SyntaxError(L"empty space between square brackets []", last.line);
          }
@@ -627,7 +631,7 @@ void Tokens::setData()
          this->info |= TI_IS_POSSIBLE_LIST_ELEM;
       }
 
-      if (this->list[this->end - 1].isSymbol(L']')) {
+      if (this->list[this->end - 1].isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
             throw SyntaxError(L"empty space between square brackets []", last.line);
          }

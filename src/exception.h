@@ -66,6 +66,9 @@ public:
    RuntimeError(const _str& msg);
    _str getMessage() const;
 
+   static RuntimeError divisionByZero();
+   static RuntimeError moduloByZero();
+
 private:
    const _str message;
 };

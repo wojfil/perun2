@@ -206,7 +206,7 @@ Number& Number::operator /= (const Number& num)
 {
    if (num.isDouble) {
       if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError(L"division by zero");
+         throw RuntimeError::divisionByZero();
       }
 
       if (isDouble) {
@@ -221,7 +221,7 @@ Number& Number::operator /= (const Number& num)
    else
    {
       if (num.value.i == NINT_ZERO) {
-         throw RuntimeError(L"division by zero");
+         throw RuntimeError::divisionByZero();
       }
 
       if (isDouble) {
@@ -246,7 +246,7 @@ Number& Number::operator %= (const Number& num)
 {
    if (num.isDouble) {
       if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError(L"modulo by zero");
+         throw RuntimeError::moduloByZero();
       }
 
       if (isDouble) {
@@ -262,7 +262,7 @@ Number& Number::operator %= (const Number& num)
    else
    {
       if (num.value.i == NINT_ZERO) {
-         throw RuntimeError(L"modulo by zero");
+         throw RuntimeError::moduloByZero();
       }
 
       if (isDouble) {
@@ -377,7 +377,7 @@ Number Number::operator / (const Number& num) const
 {
    if (num.isDouble) {
       if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError(L"division by zero");
+         throw RuntimeError::divisionByZero();
       }
       if (isDouble) {
          const _ndouble v = value.d / num.value.d;
@@ -391,7 +391,7 @@ Number Number::operator / (const Number& num) const
    else
    {
       if (num.value.i == NINT_ZERO) {
-         throw RuntimeError(L"division by zero");
+         throw RuntimeError::divisionByZero();
       }
       if (isDouble) {
          const _ndouble v = value.d / num.value.i;
@@ -413,7 +413,7 @@ Number Number::operator % (const Number& num) const
 {
    if (num.isDouble) {
       if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError(L"modulo by zero");
+         throw RuntimeError::moduloByZero();
       }
       if (isDouble) {
          const _ndouble v = std::fmod(value.d, num.value.d);
@@ -426,7 +426,7 @@ Number Number::operator % (const Number& num) const
    }
    else {
       if (num.value.i == NINT_ZERO) {
-         throw RuntimeError(L"modulo by zero");
+         throw RuntimeError::moduloByZero();
       }
       if (isDouble) {
          const _ndouble v = std::fmod(value.d, num.value.i);

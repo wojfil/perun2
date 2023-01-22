@@ -178,13 +178,22 @@ SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)
 }
 
 
-
 RuntimeError::RuntimeError(const _str& msg)
    : message(msg) { };
 
 _str RuntimeError::getMessage() const
 {
    return str(L"Runtime error: ", message, L".");
+}
+
+RuntimeError RuntimeError::divisionByZero()
+{
+   return RuntimeError(L"division by zero");
+}
+
+RuntimeError RuntimeError::moduloByZero()
+{
+   return RuntimeError(L"modulo by zero");
 }
 
 

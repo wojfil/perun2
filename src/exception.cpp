@@ -33,19 +33,49 @@ SyntaxError SyntaxError::adjacentSymbols(const _char& value, const _int& line)
    return SyntaxError(str(L"adjacent ", toStr(value), L" symbols"), line);
 }
 
+SyntaxError SyntaxError::adjacentFilterKeywords(const _str& value1, const _str& value2, const _int& line)
+{
+   return SyntaxError(str(L"adjacent filter keywords '", value1, L"' and '", value2, L"'"), line);
+}
+
 SyntaxError SyntaxError::dayCannotBeSmallerThanOne(const _int& line)
 {
    return SyntaxError(L"day cannot be smaller than 1", line);
 }
 
+SyntaxError SyntaxError::decrementationInsideExpression(const _int& line)
+{
+   return SyntaxError(L"decrementation signs -- cannot appear inside an expression", line);
+}
+
+SyntaxError SyntaxError::expectedSemicolonBeforeKeyword(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"expected ; before keyword '", value, L"'"), line);
+}
+
 SyntaxError SyntaxError::expressionCannotEndWith(const _char& value, const _int& line)
 {
-   return SyntaxError(str(L"expression cannot end with ", toStr(value)), line);
+   return SyntaxError(str(L"expression cannot end with a ", toStr(value), L" symbol"), line);
+}
+
+SyntaxError SyntaxError::expressionCannotEndWithFilterKeyword(const _str& value, const _int& line)
+{
+   return SyntaxError(str(L"expression cannot end with a filter keyword '", value, L"'"), line);
 }
 
 SyntaxError SyntaxError::expressionCannotStartWith(const _char& value, const _int& line)
 {
-   return SyntaxError(str(L"expression cannot start with ", toStr(value)), line);
+   return SyntaxError(str(L"expression cannot start with a ", toStr(value), L" symbol"), line);
+}
+
+SyntaxError SyntaxError::expressionCannotStartWithIncrementation(const _int& line)
+{
+   return SyntaxError(L"expression cannot start with incrementation signs ++", line);
+}
+
+SyntaxError SyntaxError::expressionCannotStartWithDecrementation(const _int& line)
+{
+   return SyntaxError(L"expression cannot start with decrementation signs --", line);
 }
 
 SyntaxError SyntaxError::filterKeywordAtStart(const _str& value, const _int& line)
@@ -61,6 +91,11 @@ SyntaxError SyntaxError::filterKeywordAtEnd(const _str& value, const _int& line)
 SyntaxError SyntaxError::hoursOutOfRange(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"value of hours (", value, L") went out of range"), line);
+}
+
+SyntaxError SyntaxError::incrementationInsideExpression(const _int& line)
+{
+   return SyntaxError(L"incrementation signs ++ cannot appear inside an expression", line);
 }
 
 SyntaxError SyntaxError::inevitableDivisionByZero(const _int& line)
@@ -117,6 +152,11 @@ SyntaxError SyntaxError::invalidNumericalExpression(const _int& line)
    return SyntaxError(L"syntax of a numerical expression is not valid", line);
 }
 
+SyntaxError SyntaxError::keywordNotFound(const _int& line)
+{
+   return SyntaxError(L"keyword not found", line);
+}
+
 SyntaxError SyntaxError::keywordNotFollowedByBool(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"tokens after keyword '",value, L"' cannot be resolved to a logical condition"), line);
@@ -157,6 +197,11 @@ SyntaxError SyntaxError::multipleDotsInWord(const _str& value, const _int& line)
    return SyntaxError(str(L"word '", value, L"' cannot contain multiple dots"), line);
 }
 
+SyntaxError SyntaxError::negationByExclamation(const _int& line)
+{
+   return SyntaxError(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
+}
+
 SyntaxError SyntaxError::numberTooBig(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"number '", value, L"' is too big to be stored in the memory"), line);
@@ -170,6 +215,11 @@ SyntaxError SyntaxError::openedStringLteral(const _int& line)
 SyntaxError SyntaxError::secondsOutOfRange(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"value of seconds (", value, L") went out of range"), line);
+}
+
+SyntaxError SyntaxError::symbolNotFound(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"symbol '", toStr(value), L"' not found"), line);
 }
 
 SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)

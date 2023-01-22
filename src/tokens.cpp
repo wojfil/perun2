@@ -141,7 +141,7 @@ std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword& kw) const
       }
    }
 
-   throw new SyntaxError(L"keyword not found", first().line);
+   throw SyntaxError::keywordNotFound(first().line);
 }
 
 std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
@@ -164,7 +164,7 @@ std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
       }
    }
 
-   throw new SyntaxError(str(L"symbol '", toStr(symbol), L"' not found"), first().line);
+   throw SyntaxError::symbolNotFound(symbol, first().line);
 }
 
 std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
@@ -179,10 +179,10 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
          if (sublen == 0) {
             if (result.empty()) {
-               throw SyntaxError(str(L"expression cannot this->start with a ", toStr(symbol), L" symbol"), t.line);
+               throw SyntaxError::expressionCannotStartWith(symbol, t.line);
             }
             else {
-               throw SyntaxError(str(L"adjacent ", toStr(symbol), L" symbols"), t.line);
+               throw SyntaxError::adjacentSymbols(symbol, t.line);
             }
          }
 
@@ -197,7 +197,7 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
 
    if (sublen == 0) {
       if (!isEmpty()) {
-         throw SyntaxError(str(L"expression cannot this->end with a ", toStr(symbol), L" symbol"), last().line);
+         throw SyntaxError::expressionCannotEndWith(symbol, last().line);
       }
    }
    else {
@@ -253,9 +253,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros& uro) const
       if (t.isFilterKeyword() && bi.isBracketFree()) {
          if (sublen == 0) {
             const Token& prev = this->listAt(i - 1);
-
-            throw SyntaxError(str(L"adjacent filter keywords '", prev.getOriginString(uro),
-               L"' and '", t.getOriginString(uro), L"'"), t.line);
+            throw SyntaxError::adjacentFilterKeywords(prev.getOriginString(uro), t.getOriginString(uro), t.line);
          }
 
          result.emplace_back(*this, i - sublen - 1, sublen + 1);
@@ -268,8 +266,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros& uro) const
    }
 
    if (sublen == 0) {
-      throw SyntaxError(str(L"expression cannot end with a filter keyword '",
-         last().getOriginString(uro), L"'"), last().line);
+      throw SyntaxError::expressionCannotEndWithFilterKeyword(last().getOriginString(uro), last().line);
    }
    else {
       result.emplace_back(*this, this->end - sublen, sublen + 1);
@@ -314,17 +311,12 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
    );
 }
 
-void negationByExclamationException(const _int& line)
-{
-   throw SyntaxError(L"you should use keyword 'not' instead of character '!' for boolean negation", line);
-}
-
 void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
 {
    _bool prevExclamantion = false;
 
    if (first().isSymbol(CHAR_EXCLAMATION_MARK)) {
-      negationByExclamationException(first().line);
+      throw SyntaxError::negationByExclamation(first().line);
    }
 
    if (this->length == 1) {
@@ -355,33 +347,33 @@ void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
       const Token& t = this->list[i];
 
       if (prevExclamantion && !t.isSymbol(CHAR_EQUAL_SIGN)) {
-         negationByExclamationException(this->list[i - 1].line);
+         throw SyntaxError::negationByExclamation(this->list[i - 1].line);
       }
 
       if (t.type == Token::t_MultiSymbol) {
          switch (t.value.chars.ch) {
             case CHAR_PLUS: {
                if (i == this->start) {
-                  throw SyntaxError(L"expression cannot start with incrementation signs ++", t.line);
+                  throw SyntaxError::expressionCannotStartWithIncrementation(t.line);
                }
                else {
-                  throw SyntaxError(L"incrementation signs ++ cannot appear inside an expression", t.line);
+                  throw SyntaxError::incrementationInsideExpression(t.line);
                }
                break;
             }
             case CHAR_MINUS: {
                if (i == this->start) {
-                  throw SyntaxError(L"expression cannot start with decrementation signs --", t.line);
+                  throw SyntaxError::expressionCannotStartWithDecrementation(t.line);
                }
                else {
-                  throw SyntaxError(L"decrementation signs -- cannot appear inside an expression", t.line);
+                  throw SyntaxError::decrementationInsideExpression(t.line);
                }
                break;
             }
          }
       }
       else if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
-         throw SyntaxError(str(L"expected ; before keyword '", t.getOriginString(uro), L"'"), t.line);
+         throw SyntaxError::expectedSemicolonBeforeKeyword(t.getOriginString(uro), t.line);
       }
 
       prevExclamantion = t.isSymbol(CHAR_EXCLAMATION_MARK);
@@ -528,11 +520,11 @@ void Tokens::setData()
 
       if (t.type == Token::t_Symbol) {
          switch (t.value.ch) {
-            case '(':  {
+            case CHAR_OPENING_ROUND_BRACKET:  {
                round++;
                break;
             }
-            case ')':  {
+            case CHAR_CLOSING_ROUND_BRACKET:  {
                round--;
                
                if (round == 0 && i != this->end) {
@@ -543,7 +535,7 @@ void Tokens::setData()
                }
                break;
             }
-            case '[':  {
+            case CHAR_OPENING_SQUARE_BRACKET:  {
                square++;
                
                if (firstSquare && square == 1) {
@@ -551,7 +543,7 @@ void Tokens::setData()
                }
                break;
             }
-            case ']':  {
+            case CHAR_CLOSING_SQUARE_BRACKET:  {
                square--;
 
                if (!firstSquare && square == 0) {

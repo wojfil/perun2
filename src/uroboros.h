@@ -68,10 +68,10 @@ private:
    _comptr commands;
    std::vector<Token> tokens;
 
-   _bool uro_tokenize();
-   _bool uro_parse();
-   _bool uro_postParse();
-   _bool uro_runCommands();
+   _bool preParse();
+   _bool parse();
+   _bool postParse();
+   _bool runCommands();
 
 };
 

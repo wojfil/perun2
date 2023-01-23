@@ -13,6 +13,7 @@
 */
 
 #include "keyword.h"
+#include "datatype/strings.h"
 
 
 namespace uro
@@ -20,69 +21,69 @@ namespace uro
 
 KeywordsData::KeywordsData() : KEYWORDS( {
    // core commands:
-   { L"copy", Keyword::kw_Copy },
-   { L"create", Keyword::kw_Create },
-   { L"delete", Keyword::kw_Delete },
-   { L"download", Keyword::kw_Download },
-   { L"drop", Keyword::kw_Drop },
-   { L"hide", Keyword::kw_Hide },
-   { L"lock", Keyword::kw_Lock },
-   { L"move", Keyword::kw_Move },
-   { L"open", Keyword::kw_Open },
-   { L"reaccess", Keyword::kw_Reaccess },
-   { L"recreate", Keyword::kw_Recreate },
-   { L"rechange", Keyword::kw_Rechange },
-   { L"remodify", Keyword::kw_Remodify },
-   { L"rename", Keyword::kw_Rename },
-   { L"select", Keyword::kw_Select },
-   { L"unhide", Keyword::kw_Unhide },
-   { L"unlock", Keyword::kw_Unlock },
+   { STRING_COPY, Keyword::kw_Copy },
+   { STRING_CREATE, Keyword::kw_Create },
+   { STRING_DELETE, Keyword::kw_Delete },
+   { STRING_DOWNLOAD, Keyword::kw_Download },
+   { STRING_DROP, Keyword::kw_Drop },
+   { STRING_HIDE, Keyword::kw_Hide },
+   { STRING_LOCK, Keyword::kw_Lock },
+   { STRING_MOVE, Keyword::kw_Move },
+   { STRING_OPEN, Keyword::kw_Open },
+   { STRING_REACCESS, Keyword::kw_Reaccess },
+   { STRING_RECREATE, Keyword::kw_Recreate },
+   { STRING_RECHANGE, Keyword::kw_Rechange },
+   { STRING_REMODIFY, Keyword::kw_Remodify },
+   { STRING_RENAME, Keyword::kw_Rename },
+   { STRING_SELECT, Keyword::kw_Select },
+   { STRING_UNHIDE, Keyword::kw_Unhide },
+   { STRING_UNLOCK, Keyword::kw_Unlock },
    // core command flags:
-   { L"force", Keyword::kw_Force },
-   { L"stack", Keyword::kw_Stack },
+   { STRING_FORCE, Keyword::kw_Force },
+   { STRING_STACK, Keyword::kw_Stack },
    // logic:
-   { L"true", Keyword::kw_True },
-   { L"false", Keyword::kw_False },
-   { L"and", Keyword::kw_And },
-   { L"or", Keyword::kw_Or },
-   { L"xor", Keyword::kw_Xor },
-   { L"not", Keyword::kw_Not },
+   { STRING_TRUE, Keyword::kw_True },
+   { STRING_FALSE, Keyword::kw_False },
+   { STRING_AND, Keyword::kw_And },
+   { STRING_OR, Keyword::kw_Or },
+   { STRING_XOR, Keyword::kw_Xor },
+   { STRING_NOT, Keyword::kw_Not },
    // other commands:
-   { L"print", Keyword::kw_Print },
-   { L"run", Keyword::kw_Run },
-   { L"sleep", Keyword::kw_Sleep },
+   { STRING_PRINT, Keyword::kw_Print },
+   { STRING_RUN, Keyword::kw_Run },
+   { STRING_SLEEP, Keyword::kw_Sleep },
    // expression elements:
-   { L"in", Keyword::kw_In },
-   { L"like", Keyword::kw_Like },
+   { STRING_IN, Keyword::kw_In },
+   { STRING_LIKE, Keyword::kw_Like },
    // command structs:
-   { L"catch", Keyword::kw_Catch },
-   { L"else", Keyword::kw_Else },
-   { L"if", Keyword::kw_If },
-   { L"inside", Keyword::kw_Inside },
-   { L"times", Keyword::kw_Times },
-   { L"while", Keyword::kw_While },
+   { STRING_CATCH, Keyword::kw_Catch },
+   { STRING_ELSE, Keyword::kw_Else },
+   { STRING_IF, Keyword::kw_If },
+   { STRING_INSIDE, Keyword::kw_Inside },
+   { STRING_TIMES, Keyword::kw_Times },
+   { STRING_WHILE, Keyword::kw_While },
    // filthers:
-   { L"every", Keyword::kw_Every },
-   { L"final", Keyword::kw_Final },
-   { L"limit", Keyword::kw_Limit },
-   { L"order", Keyword::kw_Order },
-   { L"skip", Keyword::kw_Skip },
-   { L"where", Keyword::kw_Where },
+   { STRING_EVERY, Keyword::kw_Every },
+   { STRING_FINAL, Keyword::kw_Final },
+   { STRING_LIMIT, Keyword::kw_Limit },
+   { STRING_ORDER, Keyword::kw_Order },
+   { STRING_SKIP, Keyword::kw_Skip },
+   { STRING_WHERE, Keyword::kw_Where },
    // rest:
-   { L"as", Keyword::kw_As },
-   { L"by", Keyword::kw_By },
-   { L"from", Keyword::kw_From },
-   { L"to", Keyword::kw_To },
-   { L"extensionless", Keyword::kw_Extensionless },
-   { L"with", Keyword::kw_With },
+   { STRING_AS, Keyword::kw_As },
+   { STRING_BY, Keyword::kw_By },
+   { STRING_FROM, Keyword::kw_From },
+   { STRING_TO, Keyword::kw_To },
+   { STRING_EXTENSIONLESS, Keyword::kw_Extensionless },
+   { STRING_WITH, Keyword::kw_With },
    // order:
-   { L"asc", Keyword::kw_Asc },
-   { L"desc", Keyword::kw_Desc },
+   { STRING_ASC, Keyword::kw_Asc },
+   { STRING_DESC, Keyword::kw_Desc },
    // one-word command:
-   { L"break", Keyword::kw_Break },
-   { L"continue", Keyword::kw_Continue },
-   { L"exit", Keyword::kw_Exit },
-   { L"error", Keyword::kw_Error }
+   { STRING_BREAK, Keyword::kw_Break },
+   { STRING_CONTINUE, Keyword::kw_Continue },
+   { STRING_EXIT, Keyword::kw_Exit },
+   { STRING_ERROR, Keyword::kw_Error }
 }) { };
 
 }

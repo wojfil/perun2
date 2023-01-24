@@ -36,7 +36,7 @@ struct FilterPrototype
 public:
    virtual ~FilterPrototype() { };
    virtual FilterType getFilterType() = 0;
-   virtual void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) = 0;
+   virtual void build(T& result, _attrptr& attr, const _bool& hasMem, _uro& uro) = 0;
 };
 
 template <typename T>
@@ -44,24 +44,24 @@ using _fpptr = std::unique_ptr<FilterPrototype<T>>;
 
 template <typename T>
 void makeWhereFilter(_genptr<_bool>& boo, _attrptr& attr,
-   const _bool& hasMemory, _genptr<std::vector<T>>& result, Uroboros& uro)
+   const _bool& hasMemory, _genptr<std::vector<T>>& result, _uro& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
    result = std::make_unique<gen::Filter_Where<T>>(prev, boo, attr, uro);
 }
 
 template <typename T>
-void makeWhereFilter(_genptr<_bool>& boo, _genptr<std::vector<T>>& result, Uroboros& uro)
+void makeWhereFilter(_genptr<_bool>& boo, _genptr<std::vector<T>>& result, _uro& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
    result = std::make_unique<gen::Filter_Where<T>>(prev, boo, uro);
 }
 
-void makeWhereFilter(_genptr<_bool>& boo, _attrptr& attr, const _bool& hasMemory, _defptr& result, Uroboros& uro);
-void makeWhereFilter(_genptr<_bool>& boo, _defptr& result, Uroboros& uro);
+void makeWhereFilter(_genptr<_bool>& boo, _attrptr& attr, const _bool& hasMemory, _defptr& result, _uro& uro);
+void makeWhereFilter(_genptr<_bool>& boo, _defptr& result, _uro& uro);
 
 template <typename T>
-void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _genptr<std::vector<T>>& result, Uroboros& uro)
+void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _genptr<std::vector<T>>& result, _uro& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
 
@@ -85,7 +85,7 @@ void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _genptr<std::vecto
    }
 }
 
-void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _defptr& result, Uroboros& uro);
+void makeNumericFilter(const Keyword& kw, _genptr<_num>& num, _defptr& result, _uro& uro);
 
 template <typename T>
 struct FP_Where : FilterPrototype<T>
@@ -99,7 +99,7 @@ public:
       return FilterType::ft_Where;
    };
 
-   void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) override
+   void build(T& result, _attrptr& attr, const _bool& hasMem, _uro& uro) override
    {
       if (attr) {
          makeWhereFilter(condition, attr, hasMem, result, uro);
@@ -126,7 +126,7 @@ public:
       return FilterType::ft_Numeric;
    };
 
-   void build(T& result, _attrptr& attr, const _bool& hasMem, Uroboros& uro) override
+   void build(T& result, _attrptr& attr, const _bool& hasMem, _uro& uro) override
    {
       makeNumericFilter(keyword, value, result, uro);
    };

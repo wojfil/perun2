@@ -18,7 +18,7 @@
 namespace uro::parse
 {
 
-void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro)
+void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, _uro& uro)
 {
    if (state == ThisState::ts_String) {
       uro.vc.retreatAttribute();
@@ -27,13 +27,13 @@ void resetOrderParseSettings(const ThisState& state, const ThisState& prevState,
    uro.vars.inner.thisState = prevState;
 }
 
-void orderUnitFailure(const Token& tk, Uroboros& uro)
+void orderUnitFailure(const Token& tk, _uro& uro)
 {
    throw SyntaxError(str(L"keyword '", tk.getOriginString(uro),
       L"' is not preceded by a value used for order"), tk.line);
 }
 
-void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, Uroboros& uro)
+void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, _uro& uro)
 {
    desc = false;
    const Token& last = tks.last();
@@ -57,7 +57,7 @@ void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indpt
 }
 
 void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& result,
-   gen::_indptr& indices, gen::_ordptr& order, Uroboros& uro)
+   gen::_indptr& indices, gen::_ordptr& order, _uro& uro)
 {
    _defptr prev = std::move(result);
    result = std::make_unique<gen::OrderBy_Definition>(prev, attr, hasMemory, indices, order, uro);

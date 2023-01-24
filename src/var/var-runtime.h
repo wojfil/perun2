@@ -24,17 +24,20 @@
 #include "../hash.h"
 #include "../token.h"
 
+namespace uro
+{
+struct _uro;
+}
 
 namespace uro::vars
 {
 
-struct Uroboros;
 
 struct Variables
 {
 public:
 
-   Variables(uro::Uroboros& uro);
+   Variables(uro::_uro& uro);
 
    const _str uroPath;
    InnerVariables inner;
@@ -83,7 +86,7 @@ public:
 
 private:
 
-   uro::Uroboros& uroboros;
+   _uro& uroboros;
    Hashes& hashes;
    VariablesContext& vc;
 

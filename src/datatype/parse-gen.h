@@ -39,15 +39,15 @@
 namespace uro::parse
 {
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_bool>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_num>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_str>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_nlist>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tlist>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_list>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_per>& result);
-_bool parse(Uroboros& uro, const Tokens& tks, _defptr& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_bool>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_num>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_str>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_nlist>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_tlist>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_list>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_tim>& result);
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_per>& result);
+_bool parse(_uro& uro, const Tokens& tks, _defptr& result);
 
 }
 

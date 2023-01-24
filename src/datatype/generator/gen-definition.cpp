@@ -21,7 +21,7 @@
 namespace uro::gen
 {
 
-DefFilter::DefFilter(_defptr& def, Uroboros& uro)
+DefFilter::DefFilter(_defptr& def, _uro& uro)
    : first(true), definition(std::move(def)), uroboros(uro) { };
 
 
@@ -38,11 +38,11 @@ void DefFilter::reset() {
 }
 
 
-Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, Uroboros& uro)
+Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, _uro& uro)
    : DefFilter(def, uro), condition(std::move(cond)), attribute(std::move(attr)), finished(true), inner(uro.vars.inner),
       hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner)), hasAttribute(true) { };
 
-Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Uroboros& uro)
+Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _uro& uro)
    : DefFilter(def, uro), condition(std::move(cond)), finished(true), inner(uro.vars.inner),
       hasMemory(false), attrMemory(AttributeMemory(uro.vars.inner)), hasAttribute(false) { };
 
@@ -98,7 +98,7 @@ _bool Filter_WhereDef::hasNext()
 }
 
 
-DefinitionChain::DefinitionChain(_defptr& def, Uroboros& uro)
+DefinitionChain::DefinitionChain(_defptr& def, _uro& uro)
    : definition(std::move(def)), inner(uro.vars.inner) { };
 
 
@@ -128,7 +128,7 @@ _bool DefinitionChain::hasNext()
 };
 
 
-LocationVessel::LocationVessel(const _bool& abs, Uroboros& uro)
+LocationVessel::LocationVessel(const _bool& abs, _uro& uro)
    : isAbsolute(abs), inner(uro.vars.inner) { };
 
 
@@ -151,7 +151,7 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin)
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, _uro& uro, const _bool& abs, const _bool& fin)
    : vessel(ves), definition(std::move(def)), locations(std::move(locs)), inner(uro.vars.inner), isAbsolute(abs), isFinal(fin) { };
 
 
@@ -576,7 +576,7 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_defptr& def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& fin)
+DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin)
    : uroboros(uro), inner(uro.vars.inner), definition(std::move(def)), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 

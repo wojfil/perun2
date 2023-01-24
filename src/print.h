@@ -29,11 +29,11 @@ namespace uro
 extern _int g_guiMes;
 
 void rawPrint(const _str& value);
-void print(const Uroboros& uro, const _str& value);
-void commandLog(const Uroboros& uro, const _str& value);
+void print(const _uro& uro, const _str& value);
+void commandLog(const _uro& uro, const _str& value);
 
 template<typename... Args>
-void commandLog(const Uroboros& uro, Args const&... args)
+void commandLog(const _uro& uro, Args const&... args)
 {
    if (!(uro.flags & FLAG_SILENT)) {
       using value_type = std::common_type_t<Args const&...>;

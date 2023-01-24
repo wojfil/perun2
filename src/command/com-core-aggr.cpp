@@ -137,22 +137,22 @@ void C_AggrSelect_List::run()
 
 
 
-void logCopyError(Uroboros& uro, const _str& name)
+void logCopyError(_uro& uro, const _str& name)
 {
    commandLog(uro, L"Failed to copy ", getCCNameShort(name));
 }
 
-void logCopySuccess(Uroboros& uro, const _str& name)
+void logCopySuccess(_uro& uro, const _str& name)
 {
    commandLog(uro, L"Copy ", getCCNameShort(name));
 }
 
-void logSelectError(Uroboros& uro, const _str& name)
+void logSelectError(_uro& uro, const _str& name)
 {
    commandLog(uro, L"Failed to select ", getCCNameShort(name));
 }
 
-void logSelectSuccess(Uroboros& uro, const _str& name)
+void logSelectSuccess(_uro& uro, const _str& name)
 {
    commandLog(uro, L"Select ", getCCNameShort(name));
 }

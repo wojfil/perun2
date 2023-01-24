@@ -51,7 +51,7 @@ inline constexpr _tinfo TI_IS_POSSIBLE_TERNARY =     0b00010000000000000000000;
 inline constexpr _tinfo TI_IS_LIST_ELEM_MEMBER =     0b00100000000000000000000;
 
 
-struct Uroboros;
+struct _uro;
 
 struct Tokens
 {
@@ -84,10 +84,10 @@ public:
    std::vector<Tokens> splitBySymbol(const _char& symbol) const;
    _int countSymbols(const _char& symbol) const;
    _int getFilterKeywordId() const;
-   std::vector<Tokens> splitByFiltherKeywords(Uroboros& uro) const;
+   std::vector<Tokens> splitByFiltherKeywords(_uro& uro) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 
-   void checkCommonExpressionExceptions(Uroboros& uro) const;
+   void checkCommonExpressionExceptions(_uro& uro) const;
 
 private:
    _int start;

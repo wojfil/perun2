@@ -57,7 +57,7 @@ private:
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference(Uroboros& uro) : inner(uro.vars.inner) { };
+   LocationReference(_uro& uro) : inner(uro.vars.inner) { };
    _str getValue() override;
 
 private:
@@ -68,7 +68,7 @@ private:
 struct RelativeLocation : Generator<_str>
 {
 public:
-   RelativeLocation(_genptr<_str>& val, Uroboros& uro) 
+   RelativeLocation(_genptr<_str>& val, _uro& uro) 
       : value(std::move(val)), inner(uro.vars.inner) { };
 
    _str getValue() override;
@@ -96,13 +96,13 @@ private:
 struct DefinitionElement : Generator<_str>
 {
 public:
-   DefinitionElement(_defptr& def, _genptr<_num>& ind, Uroboros& uro)
+   DefinitionElement(_defptr& def, _genptr<_num>& ind, _uro& uro)
       : definition(std::move(def)), index(std::move(ind)), uroboros(uro) {};
 
    _str getValue() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _defptr definition;
    _genptr<_num> index;
 };

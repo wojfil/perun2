@@ -42,7 +42,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
    return tks2.splitBySymbol(CHAR_COMMA);
 }
 
-_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
+_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -491,7 +491,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
    return false;
 };
 
-_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, Uroboros& uro)
+_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, _uro& uro)
 {
    _genptr<_str> arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -538,7 +538,7 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
    return true;
 }
 
-_bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
+_bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -787,7 +787,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, Uroboros& uro)
+static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, _uro& uro)
 {
    _genptr<_num> arg;
    if (!parse::parse(uro, tks, arg)) {
@@ -816,7 +816,7 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
    return true;
 }
 
-static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, Uroboros& uro)
+static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, _uro& uro)
 {
    const _size& name = word.value.word.h;
 
@@ -861,7 +861,7 @@ static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args
    return true;
 }
 
-_bool periodFunction(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
+_bool periodFunction(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -885,7 +885,7 @@ _bool periodFunction(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-_bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
+_bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1279,7 +1279,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, Uroboros& uro)
+static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, _uro& uro)
 {
    _genptr<_str> arg1;
    if (!parse::parse(uro, args[0], arg1)) {
@@ -1303,7 +1303,7 @@ static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Token
    return true;
 }
 
-static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, Uroboros& uro)
+static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, _uro& uro)
 {
    _genptr<_str> arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -1350,7 +1350,7 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
    return true;
 }
 
-_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
+_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1508,7 +1508,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, Uroboros& uro)
+static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, _uro& uro)
 {
    _genptr<_num> arg1;
    if (!parse::parse(uro, tks, arg1)) {
@@ -1530,13 +1530,13 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 }
 
 
-static void functionArgNumberException(const _int& argNumber, const Token& word, Uroboros& uro)
+static void functionArgNumberException(const _int& argNumber, const Token& word, _uro& uro)
 {
    throw SyntaxError(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? EMPTY_STRING : L"s")), word.line);
 }
 
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, Uroboros& uro)
+static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, _uro& uro)
 {
    throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(uro), L"' cannot be resolved to a ", typeName), word.line);
@@ -1574,7 +1574,7 @@ static _str ordinalNumber(const _int& number)
    }
 }
 
-_bool listFunction(_genptr<_list>& result, const Tokens& tks, Uroboros& uro)
+_bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1622,7 +1622,7 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, Uroboros& uro)
 }
 
 
-_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, Uroboros& uro)
+_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
    const _size& name = word.value.word.h;
@@ -1647,7 +1647,7 @@ _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, Uroboros& uro)
 }
 
 
-static void checkFunctionAttribute(const Token& word, Uroboros& uro)
+static void checkFunctionAttribute(const Token& word, _uro& uro)
 {
    if (!uro.vc.anyAttribute() || uro.vars.inner.thisState != ThisState::ts_String) {
       throw SyntaxError(str(L"function '", word.getOriginString(uro),
@@ -1655,7 +1655,7 @@ static void checkFunctionAttribute(const Token& word, Uroboros& uro)
    }
 }
 
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Uroboros& uro)
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, _uro& uro)
 {
    BracketsInfo bi;
    _int end = tks.getEnd();

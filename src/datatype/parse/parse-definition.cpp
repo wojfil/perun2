@@ -26,7 +26,7 @@
 namespace uro::parse
 {
 
-_bool parseDefinition(_defptr& result, const Tokens& tks, Uroboros& uro)
+_bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
 {
    const _size len = tks.getLength();
 
@@ -52,7 +52,7 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, Uroboros& uro)
 }
 
 
-static _bool isDefinitionChain(const Tokens& tks, Uroboros& uro)
+static _bool isDefinitionChain(const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -76,7 +76,7 @@ static _bool isDefinitionChain(const Tokens& tks, Uroboros& uro)
 // separated by commas, that contain at least one definition
 // for the sake of Uroboros optimization
 // definition chains are lazy evaluated runtime
-static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, Uroboros& uro)
+static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, _uro& uro)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -206,7 +206,7 @@ static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, Uroboros& 
 }
 
 
-static _bool parseDefTernary(_defptr& result, const Tokens& tks, Uroboros& uro)
+static _bool parseDefTernary(_defptr& result, const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -234,7 +234,7 @@ static _bool parseDefTernary(_defptr& result, const Tokens& tks, Uroboros& uro)
 }
 
 
-static _bool parseDefBinary(_defptr& result, const Tokens& tks, Uroboros& uro)
+static _bool parseDefBinary(_defptr& result, const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;

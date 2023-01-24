@@ -31,7 +31,7 @@ namespace uro::comm
 {
 
 _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
-   const _int& line, const _bool& force, const _bool& stack, Uroboros& uro)
+   const _int& line, const _bool& force, const _bool& stack, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete:
@@ -101,7 +101,7 @@ _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
    return false;
 }
 
-_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uroboros& uro,
+_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, _uro& uro,
    _attrptr& attr, const _bool& hasMemory)
 {
    _genptr<_str> str_;
@@ -135,7 +135,7 @@ _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uro
    return false;
 }
 
-_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uroboros& uro)
+_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, _uro& uro)
 {
    const _bool hasMemory = uro.vc.anyAttribute();
    _attrptr attr(new Attribute(uro));
@@ -143,7 +143,7 @@ _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, Uro
    return parseLooped(tks, innerCommand, result, uro, attr, hasMemory);
 }
 
-static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, const _int& line, Uroboros& uro)
+static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, const _int& line, _uro& uro)
 {
    if (tks.isEmpty()) {
       uro.vc.setCoreComAttribute(word.getOriginString(uro), line);
@@ -159,7 +159,7 @@ static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, co
    return false;
 }
 
-static _bool coreCommandSimpleSave(_comptr& result, const Token& word, Uroboros& uro)
+static _bool coreCommandSimpleSave(_comptr& result, const Token& word, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete: {
@@ -196,7 +196,7 @@ static _bool coreCommandSimpleSave(_comptr& result, const Token& word, Uroboros&
    return true;
 }
 
-static _bool coreCommandSimpleNoSave(_comptr& result, const Token& word, Uroboros& uro)
+static _bool coreCommandSimpleNoSave(_comptr& result, const Token& word, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete: {
@@ -231,7 +231,7 @@ static _bool coreCommandSimpleNoSave(_comptr& result, const Token& word, Uroboro
    return true;
 }
 
-static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int& line, Uroboros& uro)
+static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int& line, _uro& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -285,7 +285,7 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
    return false;
 }
 
-static _bool coreCommandTime(_comptr& result, const Token& word, _genptr<_tim>& time, const _bool& saveChanges, Uroboros& uro)
+static _bool coreCommandTime(_comptr& result, const Token& word, _genptr<_tim>& time, const _bool& saveChanges, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Reaccess: {
@@ -312,7 +312,7 @@ static _bool coreCommandTime(_comptr& result, const Token& word, _genptr<_tim>& 
    return true;
 }
 
-static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
    if (tks.isEmpty()) {
       uro.vc.setCoreComAttribute(word.getOriginString(uro), line);
@@ -368,7 +368,7 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
    return false;
 }
 
-static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
    if (uro.vc.anyAggregate()) {
       Aggregate* aggr = uro.vc.getLastAggregate();
@@ -416,7 +416,7 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, _uro& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -514,7 +514,7 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, _uro& uro)
 {
    if (tks.isEmpty()) {
       uro.vc.setCoreComAttribute(word.getOriginString(uro), line);
@@ -701,7 +701,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, _uro& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -897,7 +897,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_downloadFrom(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, _uro& uro)
 {
    if (tks.check(TI_HAS_KEYWORD_FROM)) {
       P_DIVIDE_BY_KEYWORD(kw_From);
@@ -982,7 +982,7 @@ static _bool c_downloadFrom(_comptr& result, const Token& word, const Tokens& tk
 }
 
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, _uro& uro)
 {
    const _bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
    const _bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
@@ -1225,7 +1225,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    return false;
 }
 
-_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool& directError, Uroboros& uro)
+_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool& directError, _uro& uro)
 {
    if (tks.isEmpty()) {
       switch (uro.vars.inner.thisState) {
@@ -1277,7 +1277,7 @@ _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int&
    return false;
 }
 
-static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
    _genptr<_per> per;
    if (parse::parse(uro, tks, per)) {
@@ -1295,7 +1295,7 @@ static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, cons
    return false;
 }
 
-static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
    uro.vc.markAttributesToRun();
 
@@ -1551,7 +1551,7 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
    return false;
 }
 
-static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
    if (tks.isEmpty()) {
       result = std::make_unique<C_Error>(uro);
@@ -1573,7 +1573,7 @@ static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, cons
 }
 
 static void checkUselessFlags(const Token& word, const _int& line,
-   const _bool& force, const _bool& stack, Uroboros& uro)
+   const _bool& force, const _bool& stack, _uro& uro)
 {
    if (force) {
       throw SyntaxError(str(L"keyword '", word.getOriginString(uro),

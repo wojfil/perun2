@@ -19,9 +19,9 @@
 namespace uro
 {
 
-Uroboros* Terminator::uroboros = nullptr;
+_uro* Terminator::uroboros = nullptr;
 
-Terminator::Terminator(Uroboros* uro)
+Terminator::Terminator(_uro* uro)
 {
    Terminator::uroboros = uro;
    SetConsoleCtrlHandler(HandlerRoutine, TRUE);

@@ -29,29 +29,29 @@
 namespace uro::comm
 {
 
-_bool parseCommands(_comptr& result, const Tokens& tks, Uroboros& uro);
+_bool parseCommands(_comptr& result, const Tokens& tks, _uro& uro);
 
 static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& sublen,
-   const _int& index, const _int& open, Uroboros& uro);
+   const _int& index, const _int& open, _uro& uro);
 static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const Tokens& left, const Tokens& right,
-   const ThisState& prevState, Uroboros& uro);
-static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
+   const ThisState& prevState, _uro& uro);
+static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
    const ThisState& prevState, _attrptr& attr, _aggrptr& aggr, _bool& hasMemory);
-static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
+static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
    const ThisState& prevState, _aggrptr& aggr);
-static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, Uroboros& uro);
-static _bool command(_comptr& result, Tokens& tks, Uroboros& uro);
-static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro);
+static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, _uro& uro);
+static _bool command(_comptr& result, Tokens& tks, _uro& uro);
+static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro);
 static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right,
-   const _char& sign, Uroboros& uro);
+   const _char& sign, _uro& uro);
 static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks,
-   const _int& line, Uroboros& uro);
-static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, Uroboros& uro);
+   const _int& line, _uro& uro);
+static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _uro& uro);
 
 static _bool varSquareBrackets(const Tokens& tks);
-static _bool commandVarAssign_Element(_comptr& result, const Tokens& left, const Tokens& right, Uroboros& uro);
-static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
-static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, Uroboros& uro);
+static _bool commandVarAssign_Element(_comptr& result, const Tokens& left, const Tokens& right, _uro& uro);
+static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro);
+static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, _uro& uro);
 
 }
 

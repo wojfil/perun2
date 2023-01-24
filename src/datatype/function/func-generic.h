@@ -101,7 +101,7 @@ struct F_RandomElement : Func_1<std::vector<T>>, Generator<T>
 {
 public:
 
-   F_RandomElement<T> (_genptr<std::vector<T>>& a1, Uroboros& uro)
+   F_RandomElement<T> (_genptr<std::vector<T>>& a1, _uro& uro)
       : Func_1<std::vector<T>>(a1), math(uro.math) {};
 
    T getValue() override {

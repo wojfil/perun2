@@ -62,7 +62,7 @@ public:
 };
 
 
-_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, Uroboros& uro);
+_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, _uro& uro);
 
 void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
    const _bool& hasAsterisk, std::vector<AsteriskUnit>& units);

@@ -24,12 +24,12 @@
 namespace uro::parse
 {
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_bool>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_bool>& result)
 {
    return parseBool(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_num>& result)
 {
    // cast from "bool" to "Number"
    _genptr<_bool> boo;
@@ -41,7 +41,7 @@ _bool parse(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
    return parseNumber(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_str>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_str>& result)
 {
    // cast from "bool" to "string"
    _genptr<_bool> boo;
@@ -74,7 +74,7 @@ _bool parse(Uroboros& uro, const Tokens& tks, _genptr<_str>& result)
    return parseString(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_nlist>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_nlist>& result)
 {
    // cast from "bool" to "numList"
    _genptr<_bool> boo;
@@ -93,7 +93,7 @@ _bool parse(Uroboros& uro, const Tokens& tks, _genptr<_nlist>& result)
    return parseNumList(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tlist>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_tlist>& result)
 {
    // cast from "Time" to "timList"
    _genptr<_tim> tim;
@@ -105,7 +105,7 @@ _bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tlist>& result)
    return parseTimList(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_list>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_list>& result)
 {
    // cast from "bool" to "list"
    _genptr<_bool> boo;
@@ -166,17 +166,17 @@ _bool parse(Uroboros& uro, const Tokens& tks, _genptr<_list>& result)
    return parseList(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
 {
    return parseTime(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _genptr<_per>& result)
+_bool parse(_uro& uro, const Tokens& tks, _genptr<_per>& result)
 {
    return parsePeriod(result, tks, uro);
 }
 
-_bool parse(Uroboros& uro, const Tokens& tks, _defptr& result)
+_bool parse(_uro& uro, const Tokens& tks, _defptr& result)
 {
    return parseDefinition(result, tks, uro);
 }

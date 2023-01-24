@@ -52,13 +52,13 @@ public:
 struct F_CountDef : Generator<_num>
 {
 public:
-   F_CountDef(_defptr& def, Uroboros& uro)
+   F_CountDef(_defptr& def, _uro& uro)
       : definition(std::move(def)), uroboros(uro) { };
 
    _num getValue() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _defptr definition;
 };
 
@@ -66,13 +66,13 @@ private:
 struct F_CountInside : Generator<_num>
 {
 public:
-   F_CountInside(_defptr& def, _genptr<_str>& val, Uroboros& uro)
+   F_CountInside(_defptr& def, _genptr<_str>& val, _uro& uro)
       : definition(std::move(def)), value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
 
    _num getValue() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    InnerVariables& inner;
    _defptr definition;
    _genptr<_str> value;
@@ -148,7 +148,7 @@ public:
 struct F_Random : Generator<_num>
 {
 public:
-   F_Random(Uroboros& uro)
+   F_Random(_uro& uro)
       : math(uro.math) { };
 
    _num getValue() override;
@@ -161,7 +161,7 @@ private:
 struct F_RandomNumber : Func_1<_num>, Generator<_num>
 {
 public:
-   F_RandomNumber(_genptr<_num>& a1, Uroboros& uro)
+   F_RandomNumber(_genptr<_num>& a1, _uro& uro)
       : Func_1(a1), math(uro.math) { };
 
    _num getValue() override;

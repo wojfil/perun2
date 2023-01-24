@@ -145,7 +145,7 @@ template <typename T>
 struct OrderBy
 {
 public:
-   OrderBy(_attrptr& attr, _indptr& inds, _ordptr& ord, Uroboros& uro)
+   OrderBy(_attrptr& attr, _indptr& inds, _ordptr& ord, _uro& uro)
       : attribute(std::move(attr)), inner(uro.vars.inner),
         hasAttribute(attribute), indices(std::move(inds)), order(std::move(ord))
    {
@@ -194,7 +194,7 @@ template <typename T>
 struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
 {
 public:
-   OrderBy_List(_genptr<std::vector<T>>& bas, _attrptr& attr, _indptr& inds, _ordptr& ord, Uroboros& uro)
+   OrderBy_List(_genptr<std::vector<T>>& bas, _attrptr& attr, _indptr& inds, _ordptr& ord, _uro& uro)
       : OrderBy<T>(attr, inds, ord, uro), base(std::move(bas)) { }
 
    std::vector<T> getValue() override
@@ -244,7 +244,7 @@ private:
 struct OrderBy_Definition : OrderBy<_str>, _def
 {
 public:
-   OrderBy_Definition(_defptr& bas, _attrptr& attr, const _bool& hasMem, _indptr& inds, _ordptr& ord, Uroboros& uro);
+   OrderBy_Definition(_defptr& bas, _attrptr& attr, const _bool& hasMem, _indptr& inds, _ordptr& ord, _uro& uro);
 
    void reset() override;
    _bool hasNext() override;
@@ -252,7 +252,7 @@ public:
 private:
    _defptr base;
    _bool first = true;
-   Uroboros& uroboros;
+   _uro& uroboros;
    InnerVariables& inner;
    const _bool hasMemory;
    AttributeMemory attrMemory;

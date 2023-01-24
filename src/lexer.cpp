@@ -28,7 +28,7 @@ namespace uro
 // meanwhile, omit comments
 // both // singleline
 // and /* multiline */
-std::vector<Token> tokenize(const _str& code, Uroboros& uro)
+std::vector<Token> tokenize(const _str& code, _uro& uro)
 {
    enum Mode {
       m_Normal = 0,
@@ -244,7 +244,7 @@ std::vector<Token> tokenize(const _str& code, Uroboros& uro)
    return tokens;
 }
 
-static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, Uroboros& uro)
+static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, _uro& uro)
 {
    _int dots = 0;
    _bool nums = true;

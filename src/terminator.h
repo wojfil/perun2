@@ -21,15 +21,15 @@
 namespace uro
 {
 
-struct Uroboros;
+struct _uro;
 
 struct Terminator
 {
 public:
-   Terminator(Uroboros* uro);
+   Terminator(_uro* uro);
 
 private:
-   static Uroboros* uroboros;
+   static _uro* uroboros;
    static _int HandlerRoutine(_ulong dwCtrlType);
 };
 

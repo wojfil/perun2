@@ -21,12 +21,12 @@
 namespace uro::parse
 {
 
-_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, Uroboros& uro);
+_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _uro& uro);
 
-static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, Uroboros& uro);
-static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, Uroboros& uro);
-static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, Uroboros& uro);
-static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, Uroboros& uro);
+static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _uro& uro);
+static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _uro& uro);
+static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, _uro& uro);
+static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _uro& uro);
 
 }
 

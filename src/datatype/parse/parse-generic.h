@@ -30,11 +30,11 @@
 namespace uro::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
-void checkLimitBySize(const Tokens& tks, Uroboros& uro);
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro);
+void checkLimitBySize(const Tokens& tks, _uro& uro);
 
 template <typename T>
-static _bool parseTernary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -83,7 +83,7 @@ static _bool parseTernary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
 
 
 template <typename T>
-static _bool parseBinary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -124,7 +124,7 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
 
 template <typename T>
 static _bool parseListedValues(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, Uroboros& uro)
+   const std::vector<Tokens>& elements, _uro& uro)
 {
    const _size len = elements.size();
    std::vector<_genptr<T>> result;
@@ -159,7 +159,7 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
 
 template <typename T>
 static _bool parseListedLists(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, Uroboros& uro)
+   const std::vector<Tokens>& elements, _uro& uro)
 {
    const _size len = elements.size();
    std::vector<_genptr<std::vector<T>>> result;
@@ -193,7 +193,7 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
 
 
 template <typename T>
-static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -210,7 +210,7 @@ static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, Uro
 
 
 template <typename T>
-static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _uro& uro)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return false;
@@ -230,7 +230,7 @@ static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, Urobo
 }
 
 
-static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _defptr& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, _uro& uro, _defptr& result, _fdata*& data)
 {
    if (parse::parse(uro, tks, result)) {
       data = result->getDataPtr();
@@ -242,7 +242,7 @@ static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _defptr& result, 
 
 
 template <typename T>
-static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _genptr<T>& result, _fdata*& data)
+static _bool parseFilterBase(const Tokens& tks, _uro& uro, _genptr<T>& result, _fdata*& data)
 {
    data = nullptr;
    return parse::parse(uro, tks, result);
@@ -251,7 +251,7 @@ static _bool parseFilterBase(const Tokens& tks, Uroboros& uro, _genptr<T>& resul
 
 template <typename T>
 static void buildFilterPrototypes(std::vector<_fpptr<T>>& prototypes, _attrptr& attr,
-   const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, Uroboros& uro, T& base)
+   const _bool& hasAttr, const _bool& isFinal, const _bool& hasMemory, _uro& uro, T& base)
 {
    const _size fplen = prototypes.size();
    _int lastWhereId = -1;
@@ -286,7 +286,7 @@ static void buildFilterPrototypes(std::vector<_fpptr<T>>& prototypes, _attrptr& 
 
 
 template <typename T, typename T2>
-static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, Uroboros& uro)
+static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, _uro& uro)
 {
    const _size firstKeywordId = tks.getFilterKeywordId();
 

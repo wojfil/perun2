@@ -23,9 +23,9 @@
 namespace uro::parse
 {
 
-_bool parseBool(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro);
+_bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
 
-static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro);
+static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
 static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& infList);
 static _bool boolExpIntegrateNegations(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& elements);
 static _bool boolExpTreeMerge(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& elements);
@@ -33,17 +33,17 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList);
 _bool isBoolExpOperator(const Token& tk);
 static _char toBoolExpOperator(const Token& tk);
 
-static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro);
-static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro);
+static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
+static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
 static _bool parseInTimList(_genptr<_bool>& result, const bool& negated, 
-   const std::pair<Tokens, Tokens>& pair, Uroboros& uro);
-static void emptyOperSideException(const Token& oper, const bool& isLeft, Uroboros& uro);
+   const std::pair<Tokens, Tokens>& pair, _uro& uro);
+static void emptyOperSideException(const Token& oper, const bool& isLeft, _uro& uro);
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool& negated, const Tokens& tks, Uroboros& uro);
-static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro);
+   const _str& timeMember, const _bool& negated, const Tokens& tks, _uro& uro);
+static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
 static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, Uroboros& uro);
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, Uroboros& uro);
+   const Tokens& right, const gen::CompType& ct, _uro& uro);
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, _uro& uro);
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype);
 
 }

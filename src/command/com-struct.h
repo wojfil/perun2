@@ -30,7 +30,7 @@ namespace uro::comm
 struct CS_Pair : Command_L
 {
 public:
-   CS_Pair(_comptr& fst, _comptr& snd, Uroboros& uro)
+   CS_Pair(_comptr& fst, _comptr& snd, _uro& uro)
       : first(std::move(fst)), second(std::move(snd)), Command_L(uro) { };
 
    void run() override;
@@ -44,7 +44,7 @@ private:
 struct CS_Block : Command_L
 {
 public:
-   CS_Block(std::vector<_comptr>& coms, Uroboros& uro)
+   CS_Block(std::vector<_comptr>& coms, _uro& uro)
       : length(coms.size()), Command_L(uro) 
    { 
       langutil::transferUniquePtrs(coms, commands);
@@ -61,7 +61,7 @@ private:
 struct CS_Times : Command_L
 {
 public:
-   CS_Times(_genptr<_num>& ts, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+   CS_Times(_genptr<_num>& ts, _comptr& com, _aggrptr& aggr, _uro& uro)
       : aggregate(std::move(aggr)), times(std::move(ts)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
@@ -76,7 +76,7 @@ private:
 struct CS_While : Command_L
 {
 public:
-   CS_While(_genptr<_bool>& cond, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+   CS_While(_genptr<_bool>& cond, _comptr& com, _aggrptr& aggr, _uro& uro)
       : aggregate(std::move(aggr)), condition(std::move(cond)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
@@ -91,7 +91,7 @@ private:
 struct CS_TimeLoop : Command_L
 {
 public:
-   CS_TimeLoop(_genptr<_tlist>& tList, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+   CS_TimeLoop(_genptr<_tlist>& tList, _comptr& com, _aggrptr& aggr, _uro& uro)
       : aggregate(std::move(aggr)), timeList(std::move(tList)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
@@ -106,7 +106,7 @@ private:
 struct CS_NumberLoop : Command_L
 {
 public:
-   CS_NumberLoop(_genptr<_nlist>& nList, _comptr& com, _aggrptr& aggr, Uroboros& uro)
+   CS_NumberLoop(_genptr<_nlist>& nList, _comptr& com, _aggrptr& aggr, _uro& uro)
       : aggregate(std::move(aggr)), numberList(std::move(nList)), command(std::move(com)), Command_L(uro)  { };
 
    void run() override;
@@ -122,11 +122,11 @@ struct CS_StringLoop : IterationLoop
 {
 public:
    CS_StringLoop(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
+      _attrptr& memAttr, const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
    CS_StringLoop(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      const _bool& hasmem, Uroboros& uro)
+      const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
    void run() override;
@@ -141,11 +141,11 @@ struct CS_DefinitionLoop : IterationLoop
 {
 public:
    CS_DefinitionLoop(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
+      _attrptr& memAttr, const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
    CS_DefinitionLoop(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      const _bool& hasmem, Uroboros& uro)
+      const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
    void run() override;
@@ -160,11 +160,11 @@ struct CS_ListLoop : IterationLoop
 {
 public:
    CS_ListLoop(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
+      _attrptr& memAttr, const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
    CS_ListLoop(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      const _bool& hasmem, Uroboros& uro)
+      const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
    void run() override;
@@ -179,11 +179,11 @@ struct CS_InsideString : IterationLoop
 {
 public:
    CS_InsideString(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
+      _attrptr& memAttr, const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
    CS_InsideString(_genptr<_str>& str, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      const _bool& hasmem, Uroboros& uro)
+      const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, hasmem, uro), string(std::move(str)), aggregate(std::move(aggr)) { };
 
    void run() override;
@@ -199,11 +199,11 @@ struct CS_InsideDefinition : IterationLoop
 {
 public:
    CS_InsideDefinition(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
+      _attrptr& memAttr, const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
    CS_InsideDefinition(_defptr& def, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      const _bool& hasmem, Uroboros& uro)
+      const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, hasmem, uro), definition(std::move(def)), aggregate(std::move(aggr)) { };
 
    void run() override;
@@ -219,11 +219,11 @@ struct CS_InsideList : IterationLoop
 {
 public:
    CS_InsideList(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      _attrptr& memAttr, const _bool& hasmem, Uroboros& uro)
+      _attrptr& memAttr, const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, memAttr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
    CS_InsideList(_genptr<_list>& li, _comptr& com, _attrptr& attr, _aggrptr& aggr,
-      const _bool& hasmem, Uroboros& uro)
+      const _bool& hasmem, _uro& uro)
       : IterationLoop(com, attr, hasmem, uro), list(std::move(li)), aggregate(std::move(aggr)) { };
 
    void run() override;

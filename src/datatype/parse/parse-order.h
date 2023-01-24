@@ -26,9 +26,9 @@
 namespace uro::parse
 {
 
-void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, Uroboros& uro);
-void orderUnitFailure(const Token& tk, Uroboros& uro);
-void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, Uroboros& uro);
+void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, _uro& uro);
+void orderUnitFailure(const Token& tk, _uro& uro);
+void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, _uro& uro);
 
 
 template <typename T>
@@ -44,11 +44,11 @@ void setOrderUnit(gen::_ordptr& order, _genptr<T>& value, const _bool& desc, gen
 }
 
 void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& result,
-   gen::_indptr& indices, gen::_ordptr& order, Uroboros& uro);
+   gen::_indptr& indices, gen::_ordptr& order, _uro& uro);
 
 template <typename T>
 void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory,
-   _genptr<std::vector<T>>& result, gen::_indptr& indices, gen::_ordptr& order, Uroboros& uro)
+   _genptr<std::vector<T>>& result, gen::_indptr& indices, gen::_ordptr& order, _uro& uro)
 {
    _genptr<std::vector<T>> prev = std::move(result);
    result = std::make_unique<gen::OrderBy_List<T>>(prev, attr, indices, order, uro);
@@ -57,7 +57,7 @@ void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory,
 
 template <typename T, typename T2>
 void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeyword,
-   Tokens& ts2, _fdata* fdata, Uroboros& uro)
+   Tokens& ts2, _fdata* fdata, _uro& uro)
 {
    const ThisState prevThisState = uro.vars.inner.thisState;
    uro.vars.inner.thisState = state;

@@ -20,10 +20,10 @@
 namespace uro
 {
 
-Attribute::Attribute(Uroboros& uro)
+Attribute::Attribute(_uro& uro)
    : value(ATTR_NULL), uroboros(uro) { };
 
-Attribute::Attribute(const _aunit& val, Uroboros& uro)
+Attribute::Attribute(const _aunit& val, _uro& uro)
    : value(val), uroboros(uro) { };
 
 void Attribute::add(const Token& tk)
@@ -154,10 +154,10 @@ void Attribute::run() const
    os_loadAttributes(this->value, this->uroboros);
 }
 
-BridgeAttribute::BridgeAttribute(Uroboros& uro, _fdata* data)
+BridgeAttribute::BridgeAttribute(_uro& uro, _fdata* data)
    : Attribute(uro), dataPnt(data) { };
 
-BridgeAttribute::BridgeAttribute(const _aunit& val, Uroboros& uro, _fdata* data)
+BridgeAttribute::BridgeAttribute(const _aunit& val, _uro& uro, _fdata* data)
    : Attribute(val, uro), dataPnt(data) { };
 
 void BridgeAttribute::run() const

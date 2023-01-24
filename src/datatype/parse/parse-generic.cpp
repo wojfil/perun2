@@ -25,7 +25,7 @@
 namespace uro::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
@@ -41,7 +41,7 @@ _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& 
 
 }
 
-void checkLimitBySize(const Tokens& tks, Uroboros& uro)
+void checkLimitBySize(const Tokens& tks, _uro& uro)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();

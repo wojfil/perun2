@@ -22,7 +22,7 @@
 namespace uro::comm
 {
 
-Aggregate::Aggregate(Uroboros& uro)
+Aggregate::Aggregate(_uro& uro)
    : failedCopy(0), failedSelect(0), value(AGGR_NULL),
      inner(uro.vars.inner), uroboros(uro) { };
 

@@ -26,7 +26,7 @@
 namespace uro::parse
 {
 
-_bool parseList(_genptr<_list>& result, const Tokens& tks, Uroboros& uro)
+_bool parseList(_genptr<_list>& result, const Tokens& tks, _uro& uro)
 {
    const _size len = tks.getLength();
 

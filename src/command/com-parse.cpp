@@ -29,7 +29,7 @@
 namespace uro::comm
 {
 
-_bool parseCommands(_comptr& result, const Tokens& tks, Uroboros& uro)
+_bool parseCommands(_comptr& result, const Tokens& tks, _uro& uro)
 {
    std::vector<_comptr> commands;
    _int sublen = 0;
@@ -110,7 +110,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Uroboros& uro)
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, _uro& uro)
 {
    const _int end = tks.getEnd();
 
@@ -126,7 +126,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Uroboros& uro)
 
 // can return nullptr
 static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& sublen,
-   const _int& index, const _int& open, Uroboros& uro)
+   const _int& index, const _int& open, _uro& uro)
 {
    const _int leftStart = index - sublen;
    const _int leftLen = open - leftStart;
@@ -393,7 +393,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 }
 
 static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const Tokens& left, const Tokens& right,
-   const ThisState& prevState, Uroboros& uro)
+   const ThisState& prevState, _uro& uro)
 {
    _comptr com;
 
@@ -513,7 +513,7 @@ static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const To
    return false;
 }
 
-static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
+static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
    const ThisState& prevState, _attrptr& attr, _aggrptr& aggr, _bool& hasMemory)
 {
    hasMemory = uro.vc.anyAttribute();
@@ -531,7 +531,7 @@ static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros&
    return success;
 }
 
-static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros& uro,
+static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
    const ThisState& prevState, _aggrptr& aggr)
 {
    aggr = std::make_unique<Aggregate>(uro);
@@ -545,7 +545,7 @@ static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, Uroboros&
    return success;
 }
 
-static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, Uroboros& uro)
+static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, _uro& uro)
 {
    uro.conditionContext.add(cond);
    uro.vars.varsLevelUp();
@@ -555,7 +555,7 @@ static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* 
    return success;
 }
 
-static _bool command(_comptr& result, Tokens& tks, Uroboros& uro)
+static _bool command(_comptr& result, Tokens& tks, _uro& uro)
 {
    const Token& f = tks.first();
 
@@ -648,7 +648,7 @@ static _bool command(_comptr& result, Tokens& tks, Uroboros& uro)
    }
 }
 
-static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro)
+static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
@@ -811,7 +811,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const _char& sign, Uroboros& uro)
+static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const _char& sign, _uro& uro)
 {
    const Token& first = left.first();
 
@@ -1041,7 +1041,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
    return false;
 }
 
-static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int& line, Uroboros& uro)
+static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int& line, _uro& uro)
 {
    vars::ParseVariable<_str>* pv_str;
    if (uro.vars.getVarPtr(first, pv_str)) {
@@ -1069,7 +1069,7 @@ static _bool commandVarIncrement(_comptr& result, const Token& first, const Toke
 }
 
 template <typename T>
-static _bool makeVarAlteration(Uroboros& uro, const Tokens& tokens, const Token& first,
+static _bool makeVarAlteration(_uro& uro, const Tokens& tokens, const Token& first,
    vars::ParseVariable<T>*& varPtr, _comptr& result, const _str& dataTypeName)
 {
    if (uro.vars.getVarPtr(first, varPtr) && varPtr->isReachable()) {
@@ -1094,7 +1094,7 @@ static _bool makeVarAlteration(Uroboros& uro, const Tokens& tokens, const Token&
 }
 
 template <typename T>
-static _bool makeVarAssignment(_comptr& result, const Token& token, Uroboros& uro,
+static _bool makeVarAssignment(_comptr& result, const Token& token, _uro& uro,
    vars::ParseVariable<T>* varPtr, _genptr<T>& valuePtr)
 {
    vars::VarBundle<T>* bundle;
@@ -1103,7 +1103,7 @@ static _bool makeVarAssignment(_comptr& result, const Token& token, Uroboros& ur
    return bundle->makeVariableAssignment(result, token, varPtr, valuePtr, isConstant);
 }
 
-static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, Uroboros& uro)
+static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _uro& uro)
 {
    const Token& first = left.first();
 
@@ -1260,7 +1260,7 @@ static _bool varSquareBrackets(const Tokens& tks)
 }
 
 static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
-   const Tokens& right, Uroboros& uro)
+   const Tokens& right, _uro& uro)
 {
    const Token& first = left.first();
 
@@ -1303,7 +1303,7 @@ static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
@@ -1320,7 +1320,7 @@ static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, Uro
    return true;
 }
 
-static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Uroboros& uro)
+static void checkNoSemicolonBeforeBrackets(const Tokens& tks, _uro& uro)
 {
    const _int end = tks.getEnd();
    const _int start = tks.getStart() + 1;

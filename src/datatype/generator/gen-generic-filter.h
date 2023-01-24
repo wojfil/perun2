@@ -25,14 +25,14 @@ template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
 public:
-   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, _attrptr& attr, Uroboros& uro)
+   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, _attrptr& attr, _uro& uro)
       : list(std::move(li)), condition(std::move(cond)), uroboros(uro), inner(uro.vars.inner),
         this_(nullptr), attribute(std::move(attr)), hasAttribute(true)
    {
       uro.vars.inner.createThisVarRef(this_);
    };
 
-   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, Uroboros& uro)
+   Filter_Where(_genptr<std::vector<T>>& li, _genptr<_bool>& cond, _uro& uro)
       : list(std::move(li)), condition(std::move(cond)), uroboros(uro), inner(uro.vars.inner),
         this_(nullptr), hasAttribute(false)
    {
@@ -72,7 +72,7 @@ public:
    }
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    InnerVariables& inner;
    vars::Variable<T>* this_;
    _genptr<std::vector<T>> list;

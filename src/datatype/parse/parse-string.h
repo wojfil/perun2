@@ -22,8 +22,8 @@
 namespace uro::parse
 {
 
-_bool parseString(_genptr<_str>& result, const Tokens& tks, Uroboros& uro);
-_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, Uroboros& uro);
+_bool parseString(_genptr<_str>& result, const Tokens& tks, _uro& uro);
+_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro);
 
 }
 

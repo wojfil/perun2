@@ -241,7 +241,7 @@ _int Tokens::getFilterKeywordId() const
    return -1;
 }
 
-std::vector<Tokens> Tokens::splitByFiltherKeywords(Uroboros& uro) const
+std::vector<Tokens> Tokens::splitByFiltherKeywords(_uro& uro) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
@@ -311,7 +311,7 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
    );
 }
 
-void Tokens::checkCommonExpressionExceptions(Uroboros& uro) const
+void Tokens::checkCommonExpressionExceptions(_uro& uro) const
 {
    _bool prevExclamantion = false;
 

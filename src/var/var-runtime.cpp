@@ -28,7 +28,7 @@
 namespace uro::vars
 {
 
-Variables::Variables(uro::Uroboros& uro)
+Variables::Variables(uro::_uro& uro)
    : uroboros(uro), hashes(uro.hashes), vc(uro.vc), uroPath(os_uroborosPath()),
    inner(os_trim(uro.arguments.getLocation()), 
    str(os_quoteEmbraced(this->uroPath), STRING_SPACE, STRING_MINUS, toStr(CHAR_FLAG_SILENT), STRING_MINUS)),
@@ -173,7 +173,7 @@ void Variables::takeBundlePointer(VarBundle<_list>*& bundle)
 
 template <typename T>
 _bool getVarValueIncludingThis(const Token& tk, _genptr<T>& result, const ThisState& thisState,
-   const Hashes& hashes, InnerVariables& inner, VariablesContext& vc, Variables& vars, uro::Uroboros& uro)
+   const Hashes& hashes, InnerVariables& inner, VariablesContext& vc, Variables& vars, uro::_uro& uro)
 {
    if (tk.value.word.h == hashes.HASH_VAR_THIS) {
       if (inner.thisState == thisState) {

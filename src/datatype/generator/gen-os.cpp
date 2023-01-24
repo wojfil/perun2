@@ -41,7 +41,7 @@ namespace uro::gen
    } \
 
 
-DefinitionGenerator::DefinitionGenerator(const OsElement& el, Uroboros& uro)
+DefinitionGenerator::DefinitionGenerator(const OsElement& el, _uro& uro)
    : element_(el), uroboros(uro) { };
 
 _bool DefinitionGenerator::generate(_defptr& result) const

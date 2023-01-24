@@ -73,7 +73,7 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint& ms, Uroboros& uro)
+void os_sleepForMs(const _nint& ms, _uro& uro)
 {
    if (ms <= NINT_ZERO) {
       return;
@@ -91,7 +91,7 @@ void os_sleepForMs(const _nint& ms, Uroboros& uro)
 }
 
 // explanation of attributes is in file 'attribute.h'
-void os_loadAttributes(const _aunit& attr, Uroboros& uro)
+void os_loadAttributes(const _aunit& attr, _uro& uro)
 {
    InnerVariables& inner = uro.vars.inner;
    inner.trimmed = os_trim(inner.this_s.value);
@@ -327,7 +327,7 @@ void os_loadEmptyAttributes(const _aunit& attr, InnerVariables& inner)
    }
 }
 
-void os_loadDataAttributes(const _aunit& attr, Uroboros& uro, _fdata* data)
+void os_loadDataAttributes(const _aunit& attr, _uro& uro, _fdata* data)
 {
    const DWORD& dwAttrib = data->dwFileAttributes;
    InnerVariables& inner = uro.vars.inner;
@@ -684,7 +684,7 @@ _bool os_readonly(const _str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-_nint os_size(const _str& path, Uroboros& uro)
+_nint os_size(const _str& path, _uro& uro)
 {
    _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
@@ -701,7 +701,7 @@ _nint os_size(const _str& path, Uroboros& uro)
       : os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
 }
 
-_nint os_sizeDirectory(const _str& path, Uroboros& uro)
+_nint os_sizeDirectory(const _str& path, _uro& uro)
 {
    _nint totalSize = NINT_ZERO;
    _fdata data;
@@ -784,14 +784,14 @@ _bool os_delete(const _str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-_bool os_drop(const _str& path, Uroboros& uro)
+_bool os_drop(const _str& path, _uro& uro)
 {
    return os_isFile(path)
       ? os_dropFile(path)
       : os_dropDirectory(path, uro);
 }
 
-_bool os_drop(const _str& path, const _bool& isFile, Uroboros& uro)
+_bool os_drop(const _str& path, const _bool& isFile, _uro& uro)
 {
    return isFile
       ? os_dropFile(path)
@@ -813,7 +813,7 @@ _bool os_dropFile(const _str& path)
    return false;
 }
 
-_bool os_dropDirectory(const _str& path, Uroboros& uro)
+_bool os_dropDirectory(const _str& path, _uro& uro)
 {
    HANDLE hFind;
    _fdata FindFileData;
@@ -1045,7 +1045,7 @@ _bool os_moveTo(const _str& oldPath, const _str& newPath)
    return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, Uroboros& uro)
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, _uro& uro)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
@@ -1068,7 +1068,7 @@ _bool os_copyToFile(const _str& oldPath, const _str& newPath)
    return CopyFileW(oldPath.c_str(), newPath.c_str(), true) != 0;
 }
 
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, Uroboros& uro)
+_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _uro& uro)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1187,7 +1187,7 @@ _bool os_select(const _str& parent, const _set& paths)
    return hr == S_OK;
 }
 
-_bool os_run(const _str& comm, Uroboros& uro)
+_bool os_run(const _str& comm, _uro& uro)
 {
    uro.sideProcess.running = true;
    STARTUPINFO si;

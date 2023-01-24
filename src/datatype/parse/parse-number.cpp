@@ -30,7 +30,7 @@ inline constexpr _char CHAR_UNARY_MINUS = CHAR_TILDE;
 // the sign above is used internally by the interpreter to distinguish them
 
 
-_bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
+_bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 {
    const _size len = tks.getLength();
 
@@ -154,7 +154,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 {
    std::vector<ExpElement<_num>> infList; // infix notation list
    const _int start = tks.getStart();
@@ -642,7 +642,7 @@ static _bool isNumExpHighPriority(const _char& ch)
    }
 }
 
-void timeVariableMemberException(const Token& tk, Uroboros& uro)
+void timeVariableMemberException(const Token& tk, _uro& uro)
 {
    throw SyntaxError(str(L"'", tk.getOriginString_2(uro),
       L"' is not a time variable member"), tk.line);

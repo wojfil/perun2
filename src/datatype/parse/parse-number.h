@@ -23,9 +23,9 @@
 namespace uro::parse
 {
 
-_bool parseNumber(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
+_bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro);
 
-static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, Uroboros& uro);
+static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro);
 static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList);
 static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
 static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
@@ -33,7 +33,7 @@ static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num
 static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList);
 static _bool isNumExpOperator(const _char& ch);
 static _bool isNumExpHighPriority(const _char& ch);
-void timeVariableMemberException(const Token& tk, Uroboros& uro);
+void timeVariableMemberException(const Token& tk, _uro& uro);
 
 }
 

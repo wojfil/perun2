@@ -22,14 +22,14 @@
 
 namespace uro
 {
-struct Uroboros;
+struct _uro;
 struct InnerVariables;
 }
 
 namespace uro::gen
 {
 
-#define P_OS_GEN_ARGS _genptr<_str>& loc, Uroboros& uro, const _str& patt, const _bool& abs, const _str& pref
+#define P_OS_GEN_ARGS _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool& abs, const _str& pref
 #define P_OS_GEN_ARGS_SHORT loc, uro, patt, abs, pref
 
 
@@ -49,12 +49,12 @@ struct DefinitionGenerator
 {
 public:
    DefinitionGenerator() = delete;
-   DefinitionGenerator(const OsElement& el, Uroboros& uro);
+   DefinitionGenerator(const OsElement& el, _uro& uro);
 
    _bool generate(_defptr& result) const;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    const OsElement element_;
 };
 
@@ -69,7 +69,7 @@ public:
 protected:
    _bool first = true;
    _genptr<_str> location;
-   Uroboros& uroboros;
+   _uro& uroboros;
    InnerVariables& inner;
    _fdata data;
    _numi index;

@@ -26,7 +26,7 @@ void rawPrint(const _str& value)
    std::wcout << value << L"\n";
 }
 
-void print(const Uroboros& uro,const _str& value)
+void print(const _uro& uro, const _str& value)
 {
    std::wcout << value << L"\n";
    if (uro.flags & FLAG_GUI) {
@@ -38,7 +38,7 @@ void print(const Uroboros& uro,const _str& value)
    }
 }
 
-void commandLog(const Uroboros& uro,const _str& value)
+void commandLog(const _uro& uro,const _str& value)
 {
    if (!(uro.flags & FLAG_SILENT)) {
       std::wcout << value << L"\n";

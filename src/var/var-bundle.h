@@ -30,7 +30,7 @@ template <typename T>
 struct VarBundle
 {
 public:
-   VarBundle(const std::map<_size, Variable<T>*>& iVars, uro::Uroboros& uro)
+   VarBundle(const std::map<_size, Variable<T>*>& iVars, uro::_uro& uro)
     : internalVars(iVars), uroboros(uro) { };
 
    void levelUp()
@@ -136,7 +136,7 @@ private:
    std::map<_size, ParseVariable<T>> userVars;
    std::map<_size, Variable<T>*> internalVars; // dangling pointers to internal variables
    std::map<_size, _genptr<T>> specialVars;
-   uro::Uroboros& uroboros;
+   uro::_uro& uroboros;
 
 };
 

@@ -27,7 +27,7 @@
 namespace uro::parse
 {
 
-_bool parseBool(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
+_bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    const _size len = tks.getLength();
 
@@ -94,7 +94,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    std::vector<ExpElement<_bool>> infList; // infix notation list
    const _int start = tks.getStart();
@@ -498,7 +498,7 @@ static _char toBoolExpOperator(const Token& tk)
 
 template <typename T>
 static _bool parseIn_Unit(_genptr<_bool>& result, const _bool& negated,
-   const std::pair<Tokens, Tokens>& pair, Uroboros& uro)
+   const std::pair<Tokens, Tokens>& pair, _uro& uro)
 {
    _genptr<T> valLeft;
    if (!parse(uro, pair.first, valLeft)) {
@@ -543,7 +543,7 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool& negated,
    }
 }
 
-static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
@@ -626,7 +626,7 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
 
 
 static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
-   const std::pair<Tokens, Tokens>& pair, Uroboros& uro)
+   const std::pair<Tokens, Tokens>& pair, _uro& uro)
 {
    _genptr<_tim> tim;
    if (!parse(uro, pair.first, tim)) {
@@ -668,7 +668,7 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    }
 }
 
-static void emptyOperSideException(const Token& oper, const bool& isLeft, Uroboros& uro)
+static void emptyOperSideException(const Token& oper, const bool& isLeft, _uro& uro)
 {
    const _str side = isLeft ? L"left" : L"right";
 
@@ -677,7 +677,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft, Urobor
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool& negated, const Tokens& tks, Uroboros& uro)
+   const _str& timeMember, const _bool& negated, const Tokens& tks, _uro& uro)
 {
    if (timeMember == L"year") {
       if (negated) {
@@ -705,7 +705,7 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
    }
 }
 
-static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
@@ -760,7 +760,7 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
    }
 }
 
-static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    BracketsInfo bi;
    const _int end = tks.getEnd();
@@ -823,7 +823,7 @@ static _bool comparison(_genptr<_bool>& result, _genptr<T>& val1,
 
 template <typename T>
 _bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, Uroboros& uro)
+   const Tokens& right, const gen::CompType& ct, _uro& uro)
 {
    _genptr<T> v1;
    _genptr<T> v2;
@@ -834,7 +834,7 @@ _bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
    return false;
 }
 
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, Uroboros& uro)
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, _uro& uro)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -912,7 +912,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
 }
 
 _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& list, const gen::CompType& ct,
-   const _bool& reversed, Uroboros& uro)
+   const _bool& reversed, _uro& uro)
 {
    switch (ct) {
       case gen::ct_Equals: {
@@ -980,7 +980,7 @@ _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& li
 
 template <typename T>
 _bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, Uroboros& uro)
+   const Tokens& right, const gen::CompType& ct, _uro& uro)
 {
    _genptr<std::vector<T>> leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1023,7 +1023,7 @@ _bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
 
 template <typename T>
 _bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, const Tokens& right,
-   const gen::CompType& ct, Uroboros& uro)
+   const gen::CompType& ct, _uro& uro)
 {
    _genptr<T> leftValue;
    if (parse(uro, left, leftValue)) {
@@ -1106,7 +1106,7 @@ _bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, cons
 }
 
 static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, Uroboros& uro)
+   const Tokens& right, const gen::CompType& ct, _uro& uro)
 {
    _defptr leftDef;
    _defptr rightDef;

@@ -27,7 +27,7 @@
 namespace uro::parse
 {
 
-_bool parseTime(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
+_bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 {
    const _size len = tks.getLength();
 
@@ -93,7 +93,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
+_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -204,7 +204,7 @@ static void checkDayCorrectness(const _tnum& day, const _tnum& month,
    }
 }
 
-static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& uro)
+static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 {
    _genptr<_tim> prevTim;
    _genptr<_tim> time;
@@ -298,7 +298,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, Uroboros& ur
 
 static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
    _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks,
-   _int& numReserve, Uroboros& uro)
+   _int& numReserve, _uro& uro)
 {
    _genptr<_tim> tim;
    if (parse(uro, tks, tim)) {

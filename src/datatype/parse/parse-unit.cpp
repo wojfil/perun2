@@ -26,7 +26,7 @@
 namespace uro::parse
 {
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_bool>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -55,7 +55,7 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_bool>& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
 {
    const Token& tk = tks.first();
 
@@ -110,7 +110,7 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_num>& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_str>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_str>& result)
 {
    const Token& tk = tks.first();
 
@@ -132,25 +132,25 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_str>& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_nlist>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_tlist>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_list>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_list>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
 {
    const Token& tk = tks.first();
 
@@ -182,14 +182,14 @@ _bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_tim>& result)
    }
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _genptr<_per>& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word && uro.vars.getVarValue(tk, result);
 };
 
-_bool parseOneToken(Uroboros& uro, const Tokens& tks, _defptr& result)
+_bool parseOneToken(_uro& uro, const Tokens& tks, _defptr& result)
 {
    const Token& tk = tks.first();
 

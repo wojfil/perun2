@@ -46,30 +46,30 @@ TokenValue::TokenValue(const _size& h1, const _size& h2, const _size& os_id1,
    const _size& os_len1, const _size& os_id2, const _size& os_len2)
    : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
-Token::Token(const _char& v, const _int& li, Uroboros& uro)
+Token::Token(const _char& v, const _int& li, _uro& uro)
    : line(li), type(t_Symbol), value(v) { };
 
-Token::Token(const _char& v, const _int& am, const _int& li, Uroboros& uro)
+Token::Token(const _char& v, const _int& am, const _int& li, _uro& uro)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
 Token::Token(const _num& v, const _int& li, const _size& os_id, const _size& os_len,
-   const NumberMode& nm, Uroboros& uro)
+   const NumberMode& nm, _uro& uro)
    : line(li), type(t_Number), value(v, os_id, os_len, nm) { };
 
-Token::Token(const _size& os_id, const _size& os_len, const _int& li, Uroboros& uro)
+Token::Token(const _size& os_id, const _size& os_len, const _int& li, _uro& uro)
    : line(li), type(t_Quotation), value(os_id, os_len) { };
 
-Token::Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, Uroboros& uro)
+Token::Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, _uro& uro)
    : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros& uro)
+Token::Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
    : line(li), type(t_Word), value(v, os_id, os_len) { };
 
-Token::Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, Uroboros& uro)
+Token::Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
 Token::Token(const _size& v1, const _size& v2, const _int& li, const _size& os_id1, const _size& os_len1,
-   const _size& os_id2, const _size& os_len2, Uroboros& uro)
+   const _size& os_id2, const _size& os_len2, _uro& uro)
    : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 
 _bool Token::isSymbol(const _char& ch) const
@@ -173,7 +173,7 @@ _bool Token::isMonth() const
    return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
 }
 
-_str Token::getOriginString(Uroboros& uro) const
+_str Token::getOriginString(_uro& uro) const
 {
    switch (type) {
       case Token::Type::t_Symbol: {
@@ -206,14 +206,14 @@ _str Token::getOriginString(Uroboros& uro) const
    }
 }
 
-_str Token::getOriginString_2(Uroboros& uro) const
+_str Token::getOriginString_2(_uro& uro) const
 {
    return type == Token::Type::t_TwoWords
       ? getCodeSubstr(value.twoWords.os2, uro)
       : EMPTY_STRING;
 }
 
-_str Token::getCodeSubstr(const _osi& osi, Uroboros& uro) const
+_str Token::getCodeSubstr(const _osi& osi, _uro& uro) const
 {
    return uro.arguments.getCode().substr(osi.index, osi.length);
 }

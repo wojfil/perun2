@@ -27,7 +27,7 @@
 namespace uro::parse
 {
 
-_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
+_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
    const _size len = tks.getLength();
 
@@ -93,7 +93,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& negated, Uroboros& uro)
+_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& negated, _uro& uro)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -148,7 +148,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
    return false;
 }
 
-_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
+_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
    const _size& h = tks.last().value.word.h;
    Tokens tks2(tks);
@@ -173,7 +173,7 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    return false;
 }
 
-_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
+_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
    const _size len = elements.size();
@@ -204,7 +204,7 @@ _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
    return true;
 }
 
-_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
+_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
    const _int baseLen = tks.getLength();
    if (baseLen == 1) {
@@ -329,7 +329,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, Uroboros& uro
    return true;
 }
 
-_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, Uroboros& uro)
+_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 

@@ -48,7 +48,7 @@ private:
 struct F_AnyInside : Generator<_bool>
 {
 public:
-   F_AnyInside(_defptr& def, _genptr<_str>& val, Uroboros& uro)
+   F_AnyInside(_defptr& def, _genptr<_str>& val, _uro& uro)
       : definition(std::move(def)), value(std::move(val)), inner(uro.vars.inner) { };
 
    _bool getValue() override;
@@ -113,13 +113,13 @@ public:
 struct F_ContainsDef : Generator<_bool>
 {
 public:
-   F_ContainsDef(_defptr& def, _genptr<_str>& val, Uroboros& uro)
+   F_ContainsDef(_defptr& def, _genptr<_str>& val, _uro& uro)
       : definition(std::move(def)), value(std::move(val)), uroboros(uro) { };
 
    _bool getValue() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _defptr definition;
    _genptr<_str> value;
 };
@@ -171,7 +171,7 @@ public:
 struct F_ExistsInside : Func_2<_str, _str>, Generator<_bool>
 {
 public:
-   F_ExistsInside(_genptr<_str>& a1, _genptr<_str>& a2, Uroboros& uro)
+   F_ExistsInside(_genptr<_str>& a1, _genptr<_str>& a2, _uro& uro)
       : Func_2(a1, a2), inner(uro.vars.inner) { };
    _bool getValue() override;
 
@@ -183,7 +183,7 @@ private:
 struct F_ExistInside : Func_2<_list, _str>, Generator<_bool>
 {
 public:
-   F_ExistInside(_genptr<_list>& a1, _genptr<_str>& a2, Uroboros& uro)
+   F_ExistInside(_genptr<_list>& a1, _genptr<_str>& a2, _uro& uro)
       : Func_2(a1, a2), inner(uro.vars.inner) { };
    _bool getValue() override;
 
@@ -253,7 +253,7 @@ private:
 struct F_Find : Func_2<_str, _str>, Generator<_bool>
 {
 public:
-   F_Find(_genptr<_str>& a1, _genptr<_str>& a2, Uroboros& uro)
+   F_Find(_genptr<_str>& a1, _genptr<_str>& a2, _uro& uro)
       : Func_2(a1, a2), inner(uro.vars.inner) { };
    _bool getValue() override;
 
@@ -265,12 +265,12 @@ private:
 struct F_Find_InThis : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_Find_InThis(_genptr<_str>& a1, Uroboros& uro) 
+   F_Find_InThis(_genptr<_str>& a1, _uro& uro) 
       : Func_1(a1), uroboros(uro), inner(uro.vars.inner) { };
    _bool getValue() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    InnerVariables& inner;
 };
 

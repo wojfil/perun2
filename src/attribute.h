@@ -51,13 +51,13 @@ inline constexpr _aunit ATTR_SIZE =         0b00000000000001000000000000000000;
 // instead of reading them one by one
 // all attributes from an expression are joined together and read at once at the beginning of expression evaluation
 
-struct Uroboros;
+struct _uro;
 
 struct Attribute
 {
 public:
-   Attribute(Uroboros& uro);
-   Attribute(const _aunit& val, Uroboros& uro);
+   Attribute(_uro& uro);
+   Attribute(const _aunit& val, _uro& uro);
 
    void add(const Token& tk);
    void set(const _aunit& v);
@@ -77,7 +77,7 @@ protected:
    _bool markedToEvaluate = false;
    _bool markedToRun = false;
    _aunit value;
-   Uroboros& uroboros;
+   _uro& uroboros;
 };
 
 typedef std::unique_ptr<Attribute> _attrptr;
@@ -92,8 +92,8 @@ typedef std::unique_ptr<Attribute> _attrptr;
 struct BridgeAttribute : Attribute
 {
 public:
-   BridgeAttribute(Uroboros& uro, _fdata* data);
-   BridgeAttribute(const _aunit& val, Uroboros& uro, _fdata* data);
+   BridgeAttribute(_uro& uro, _fdata* data);
+   BridgeAttribute(const _aunit& val, _uro& uro, _fdata* data);
    void run() const;
 
 private:

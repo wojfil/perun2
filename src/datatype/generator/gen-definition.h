@@ -31,12 +31,12 @@ namespace uro::gen
 struct DefFilter : _def
 {
 public:
-   DefFilter(_defptr& def, Uroboros& uro);
+   DefFilter(_defptr& def, _uro& uro);
    void reset() override;
    _fdata* getDataPtr();
 
 protected:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _bool first;
    _defptr definition;
 };
@@ -45,8 +45,8 @@ protected:
 struct Filter_WhereDef : DefFilter
 {
 public:
-   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, Uroboros& uro);
-   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, Uroboros& uro);
+   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, _uro& uro);
+   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _uro& uro);
 
    _bool hasNext() override;
    void reset() override;
@@ -66,7 +66,7 @@ private:
 struct DefinitionChain : _def
 {
 public:
-   DefinitionChain(_defptr& def, Uroboros& uro);
+   DefinitionChain(_defptr& def, _uro& uro);
 
    _bool hasNext() override;
    void reset() override;
@@ -82,7 +82,7 @@ private:
 struct LocationVessel : Generator<_str>
 {
 public:
-   LocationVessel(const _bool& abs, Uroboros& uro);
+   LocationVessel(const _bool& abs, _uro& uro);
    _str getValue() override;
    const _str& getRawValue() const;
    void setValue(const _str& val);
@@ -97,7 +97,7 @@ private:
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, Uroboros& uro, const _bool& abs, const _bool& fin);
+   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, _uro& uro, const _bool& abs, const _bool& fin);
    _bool hasNext() override;
    void reset() override;
    _fdata* getDataPtr();
@@ -119,7 +119,7 @@ private:
 struct Filter_LimitDef : DefFilter
 {
 public:
-   Filter_LimitDef(_defptr& def, _genptr<_num>& num, Uroboros& uro)
+   Filter_LimitDef(_defptr& def, _genptr<_num>& num, _uro& uro)
       : DefFilter(def, uro), number(std::move(num)) { };
 
    _bool hasNext() override;
@@ -134,7 +134,7 @@ private:
 struct Filter_SkipDef : DefFilter
 {
 public:
-   Filter_SkipDef(_defptr& def, _genptr<_num>& num, Uroboros& uro)
+   Filter_SkipDef(_defptr& def, _genptr<_num>& num, _uro& uro)
       : DefFilter(def, uro), number(std::move(num)), inner(uro.vars.inner) { };
 
    _bool hasNext() override;
@@ -150,7 +150,7 @@ private:
 struct Filter_EveryDef : DefFilter
 {
 public:
-   Filter_EveryDef(_defptr& def, _genptr<_num>& num, Uroboros& uro)
+   Filter_EveryDef(_defptr& def, _genptr<_num>& num, _uro& uro)
       : DefFilter(def, uro), number(std::move(num)), inner(uro.vars.inner) { };
 
 
@@ -168,7 +168,7 @@ private:
 struct Filter_FinalDef : DefFilter
 {
 public:
-   Filter_FinalDef(_defptr& def, _genptr<_num>& num, Uroboros& uro)
+   Filter_FinalDef(_defptr& def, _genptr<_num>& num, _uro& uro)
       : DefFilter(def, uro), number(std::move(num)), inner(uro.vars.inner) { };
 
 
@@ -189,14 +189,14 @@ struct Join_DefStr : _def
 {
 
 public:
-   Join_DefStr(_defptr& lef, _genptr<_str>& rig, Uroboros& uro)
+   Join_DefStr(_defptr& lef, _genptr<_str>& rig, _uro& uro)
         : left(std::move(lef)), right(std::move(rig)), taken(false), uroboros(uro) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _defptr left;
    _genptr<_str> right;
    _bool taken;
@@ -207,14 +207,14 @@ struct Join_StrDef : _def
 {
 
 public:
-   Join_StrDef(_genptr<_str>& lef, _defptr& rig, Uroboros& uro)
+   Join_StrDef(_genptr<_str>& lef, _defptr& rig, _uro& uro)
         : left(std::move(lef)), right(std::move(rig)), first(true), uroboros(uro) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _genptr<_str> left;
    _defptr right;
    _bool first;
@@ -225,14 +225,14 @@ struct Join_DefList : _def
 {
 
 public:
-   Join_DefList(_defptr& lef, _genptr<_list>& rig, Uroboros& uro)
+   Join_DefList(_defptr& lef, _genptr<_list>& rig, _uro& uro)
         : left(std::move(lef)), right(std::move(rig)), taken(false), uroboros(uro) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _defptr left;
    _genptr<_list> right;
    _bool taken;
@@ -246,14 +246,14 @@ struct Join_ListDef : _def
 {
 
 public:
-   Join_ListDef(_genptr<_list>& lef, _defptr& rig, Uroboros& uro)
+   Join_ListDef(_genptr<_list>& lef, _defptr& rig, _uro& uro)
         : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), uroboros(uro) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _genptr<_list> left;
    _defptr right;
    _bool first;
@@ -268,14 +268,14 @@ struct Join_DefDef : _def
 {
 
 public:
-   Join_DefDef(_defptr& lef, _defptr& rig, Uroboros& uro)
+   Join_DefDef(_defptr& lef, _defptr& rig, _uro& uro)
         : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), uroboros(uro) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    _defptr left;
    _defptr right;
    _bool first;
@@ -286,13 +286,13 @@ private:
 struct DefinitionSuffix : _def
 {
 public:
-   DefinitionSuffix(_defptr& def, Uroboros& uro, const _str& suf, const _bool& abs, const _bool& fin);
+   DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin);
 
    _bool hasNext() override;
    void reset() override;
 
 private:
-   Uroboros& uroboros;
+   _uro& uroboros;
    InnerVariables& inner;
    _defptr definition;
    _bool first = true;

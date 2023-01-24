@@ -35,7 +35,7 @@ void OrderIndices::prepare(const _size& length)
 }
 
 OrderBy_Definition::OrderBy_Definition(_defptr& bas, _attrptr& attr,
-   const _bool& hasMem, _indptr& inds, _ordptr& ord, Uroboros& uro)
+   const _bool& hasMem, _indptr& inds, _ordptr& ord, _uro& uro)
    : OrderBy<_str>(attr, inds, ord, uro), base(std::move(bas)),
      uroboros(uro), inner(uro.vars.inner),
      hasMemory(hasMem), attrMemory(AttributeMemory(attribute, uro.vars.inner))

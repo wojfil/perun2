@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <vector>
@@ -31,12 +31,12 @@
 namespace uro
 {
 
-Uroboros::Uroboros(const Arguments& args) : arguments(args), vars(vars::Variables(*this)),
+_uro::_uro(const Arguments& args) : arguments(args), vars(vars::Variables(*this)),
    vc(vars::VariablesContext(this->hashes, this->vars)), flags(args.getFlags()),
    terminator(Terminator(this)) { };
 
 
-_bool Uroboros::run()
+_bool _uro::run()
 {
    return this->preParse()
        && this->parse()
@@ -44,7 +44,7 @@ _bool Uroboros::run()
        && this->runCommands();
 };
 
-_bool Uroboros::preParse()
+_bool _uro::preParse()
 {
    this->exitCode = EXITCODE_OK;
 
@@ -67,7 +67,7 @@ _bool Uroboros::preParse()
 };
 
 
-_bool Uroboros::parse()
+_bool _uro::parse()
 {
    try {
       const Tokens tks(this->tokens);
@@ -91,7 +91,7 @@ _bool Uroboros::parse()
    return true;
 };
 
-_bool Uroboros::postParse()
+_bool _uro::postParse()
 {
    this->math.init();
 
@@ -101,7 +101,7 @@ _bool Uroboros::postParse()
    return true;
 };
 
-_bool Uroboros::runCommands()
+_bool _uro::runCommands()
 {
    try {
       this->commands->run();

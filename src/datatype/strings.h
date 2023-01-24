@@ -60,6 +60,11 @@ static const _str STRING_NO_TIME =              L"no time";
 static const _str STRING_NO_PERIOD =            L"no period";
 static const _str STRING_NOTHING =              L"nothing";
 
+static const _str STRING_VERSION =              L"version";
+static const _str STRING_DOCS =                 L"docs";
+static const _str STRING_WEBSITE =              L"website";
+static const _str STRING_HELP =                 L"help";
+
 static const _str STRING_WEEKDAY_MONDAY =       L"Monday";
 static const _str STRING_WEEKDAY_TUESDAY =      L"Tuesday";
 static const _str STRING_WEEKDAY_WEDNESDAY =    L"Wednesday";

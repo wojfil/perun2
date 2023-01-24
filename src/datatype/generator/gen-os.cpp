@@ -29,7 +29,7 @@
 namespace uro::gen
 {
 
-#define P_OS_GEN_CORE_ARGS loc, this->uroboros, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING
+#define P_OS_GEN_CORE_ARGS loc, this->uroboros, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
@@ -66,11 +66,11 @@ _bool DefinitionGenerator::generate(_defptr& result) const
          break;
       }
       case OsElement::oe_RecursiveDirectories: {
-         result = std::make_unique<Uro_RecursiveDirectories>(P_OS_GEN_CORE_ARGS, false);
+         result = std::make_unique<Uro_RecursiveDirectories>(P_OS_GEN_CORE_ARGS, gen::os::NO_ROOT);
          break;
       }
       case OsElement::oe_RecursiveAll: {
-         result = std::make_unique<Uro_RecursiveAll>(P_OS_GEN_CORE_ARGS, false);
+         result = std::make_unique<Uro_RecursiveAll>(P_OS_GEN_CORE_ARGS, gen::os::NO_ROOT);
          break;
       }
       default: {
@@ -336,7 +336,7 @@ _bool Uro_RecursiveFiles::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
+            const _str p = str(paths.back(), isRoot ? pattern : gen::os::DEFAULT_PATTERN);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
             isRoot = false;
 
@@ -460,7 +460,7 @@ _bool Uro_RecursiveDirectories::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
+            const _str p = str(paths.back(), isRoot ? pattern : gen::os::DEFAULT_PATTERN);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
             isRoot = false;
 
@@ -570,7 +570,7 @@ _bool Uro_RecursiveAll::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            //const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
+            //const _str p = str(paths.back(), isRoot ? pattern : gen::os::DEFAULT_PATTERN);
             const _str p = str(paths.back(), pattern);
 
             handles.emplace_back(FindFirstFile(p.c_str(), &data));

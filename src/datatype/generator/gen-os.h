@@ -17,6 +17,7 @@
 
 #include "../datatype.h"
 #include "../../patterns.h"
+#include "../../os.h"
 #include <windows.h>
 
 
@@ -31,6 +32,18 @@ namespace uro::gen
 
 #define P_OS_GEN_ARGS _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool& abs, const _str& pref
 #define P_OS_GEN_ARGS_SHORT loc, uro, patt, abs, pref
+
+namespace os
+{
+   inline constexpr _bool IS_ABSOLUTE_PATH =            true;
+   inline constexpr _bool IS_RELATIVE_PATH =            false;
+   static const _str NO_PREFIX =                        EMPTY_STRING;
+   static const _str DEFAULT_PATTERN =                  OS_SEPARATOR_ASTERISK;
+   inline constexpr _bool CONTAINS_ROOT =               true;
+   inline constexpr _bool NO_ROOT =                     false;
+   inline constexpr _bool IS_FINAL =                    true;
+   inline constexpr _bool IS_NOT_FINAL =                false;
+}
 
 
 enum OsElement

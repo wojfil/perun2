@@ -23,20 +23,21 @@
 namespace uro::parse
 {
 
-
 _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, _uro& uro)
 {
    const _str pattern = os_trim(originPattern);
 
    if (pattern == STRING_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_All>(loc, uro, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
+      result = std::make_unique<gen::Uro_All>(loc, uro, gen::os::DEFAULT_PATTERN, 
+         gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
    if (pattern == STRING_DOUBLE_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING, false);
+      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, gen::os::DEFAULT_PATTERN, 
+         gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX, gen::os::NO_ROOT);
       return true;
    }
 
@@ -123,7 +124,7 @@ exitAsteriskBeginning:
          : pattern.substr(patternStart, patternLength);
 
       _defptr d(new gen::Uro_Directories(base, uro, p, isAbsolute, prefix));
-      result = std::make_unique<gen::DefinitionSuffix>(d, uro, suffix, isAbsolute, true);
+      result = std::make_unique<gen::DefinitionSuffix>(d, uro, suffix, isAbsolute, gen::os::IS_FINAL);
       return true;
    }
 
@@ -166,7 +167,7 @@ exitAsteriskBeginning:
       if (hasDoubleAst) {
          /*_str p = str(OS_SEPARATOR_STRING, pattern);
          p.pop_back();
-         result = std::make_unique<gen::Uro_RecursiveAll>(base, uro, p, false, EMPTY_STRING, false);*/
+         result = std::make_unique<gen::Uro_RecursiveAll>(base, uro, p, false, gen::os::NO_PREFIX, false);*/
 
          /*std::unique_ptr<gen::LocationVessel> vessel(new gen::LocationVessel(isAbsolute, uro));
          gen::LocationVessel& vesselRef = *(vessel.get());
@@ -174,10 +175,10 @@ exitAsteriskBeginning:
 
 
 
-         _defptr prev = std::make_unique<gen::Uro_RecursiveAll>(base, uro, OS_SEPARATOR_ASTERISK, isAbsolute, EMPTY_STRING, true);
+         _defptr prev = std::make_unique<gen::Uro_RecursiveAll>(base, uro, gen::os::DEFAULT_PATTERN, isAbsolute, gen::os::NO_PREFIX, true);
          _defptr nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, 
             str(OS_SEPARATOR_STRING, L"*.txt"), 
-            isAbsolute, EMPTY_STRING);
+            isAbsolute, gen::os::NO_PREFIX);
 
          result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, uro, isAbsolute, true);*/
 
@@ -192,7 +193,7 @@ exitAsteriskBeginning:
          }
          else {
             _defptr d(new gen::Uro_Directories(base, uro, p, isAbsolute, prefix));
-            result = std::make_unique<gen::DefinitionSuffix>(d, uro, u.suffixPart, isAbsolute, true);
+            result = std::make_unique<gen::DefinitionSuffix>(d, uro, u.suffixPart, isAbsolute, gen::os::IS_FINAL);
          }
       }
       return true;
@@ -217,7 +218,7 @@ exitAsteriskBeginning:
       }
       else {
          _defptr d(new gen::Uro_Directories(base, uro, firstPatt, isAbsolute, prefix));
-         result = std::make_unique<gen::DefinitionSuffix>(d, uro, units[0].suffixPart, isAbsolute, false);
+         result = std::make_unique<gen::DefinitionSuffix>(d, uro, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL);
       }
    }
 
@@ -242,14 +243,14 @@ exitAsteriskBeginning:
 
          if (units[i].suffixPart.empty()) {
             if (isFinal) {
-               nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, nextPatt, isAbsolute, EMPTY_STRING);
+               nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
             }
             else {
-               nextDef = std::make_unique<gen::Uro_Directories>(vesselPtr, uro, nextPatt, isAbsolute, EMPTY_STRING);
+               nextDef = std::make_unique<gen::Uro_Directories>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
             }
          }
          else {
-            _defptr d(new gen::Uro_Directories(vesselPtr, uro, nextPatt, isAbsolute, EMPTY_STRING));
+            _defptr d(new gen::Uro_Directories(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX));
             nextDef = std::make_unique<gen::DefinitionSuffix>(d, uro, units[i].suffixPart, isAbsolute, isFinal);
          }
 

@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef ARGUMENTS_H_INCLUDED
@@ -60,13 +60,13 @@ struct Arguments
 {
 public:
 
-   // Uroboros arguments parsed from the command-line
+   // Uroboros2 arguments parsed from the command-line
    Arguments(const _int& argc, _char** const argv[]);
 
-   // Uroboros arguments made from code and location
+   // Uroboros2 arguments made from code and location
    Arguments(const _str& loc, const _str& cod);
 
-   // Uroboros arguments made from code, location and flags
+   // Uroboros2 arguments made from code, location and flags
    Arguments(const _str& loc, const _str& cod, const _uint32& fls);
 
    _uint32 getFlags() const;

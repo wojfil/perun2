@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef COM_MISC_H
@@ -269,12 +269,12 @@ private:
 };
 
 
-struct C_RunWithUroboros : Command_L
+struct C_RunWithUroboros2 : Command_L
 {
 public:
-   C_RunWithUroboros(_uro& uro)
+   C_RunWithUroboros2(_uro& uro)
       : attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-   C_RunWithUroboros(Attribute* attr, _uro& uro)
+   C_RunWithUroboros2(Attribute* attr, _uro& uro)
       : attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
@@ -285,13 +285,13 @@ private:
 };
 
 
-struct C_RunWithUroborosWithString : Command_L
+struct C_RunWithUroboros2WithString : Command_L
 {
 public:
-   C_RunWithUroborosWithString(_genptr<_str>& arg, _uro& uro)
+   C_RunWithUroboros2WithString(_genptr<_str>& arg, _uro& uro)
       : argument(std::move(arg)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWithString(_genptr<_str>& arg, Attribute* attr, _uro& uro)
+   C_RunWithUroboros2WithString(_genptr<_str>& arg, Attribute* attr, _uro& uro)
       : argument(std::move(arg)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;
@@ -303,13 +303,13 @@ private:
 };
 
 
-struct C_RunWithUroborosWith : Command_L
+struct C_RunWithUroboros2With : Command_L
 {
 public:
-   C_RunWithUroborosWith(_genptr<_list>& args, _uro& uro)
+   C_RunWithUroboros2With(_genptr<_list>& args, _uro& uro)
       : arguments(std::move(args)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
 
-   C_RunWithUroborosWith(_genptr<_list>& args, Attribute* attr, _uro& uro)
+   C_RunWithUroboros2With(_genptr<_list>& args, Attribute* attr, _uro& uro)
       : arguments(std::move(args)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
 
    void run() override;

@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "com-parse-kw.h"
@@ -1341,18 +1341,18 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
                   _genptr<_str> str_;
 
                   if (parse::parse(uro, right2, str_)) {
-                     result = std::make_unique<C_RunWithUroborosWithString>(str_, lastAttr, uro);
+                     result = std::make_unique<C_RunWithUroboros2WithString>(str_, lastAttr, uro);
                      return true;
                   }
                   else {
                      _genptr<_list> list;
                      if (parse::parse(uro, right2, list)) {
-                        result = std::make_unique<C_RunWithUroborosWith>(list, lastAttr, uro);
+                        result = std::make_unique<C_RunWithUroboros2With>(list, lastAttr, uro);
                         return true;
                      }
                      else {
                         throw SyntaxError(str(L"last argument of command '",
-                           word.getOriginString(uro), L" with Uroboros with' cannot be resolved to a list"), line);
+                           word.getOriginString(uro), L" with Uroboros2 with' cannot be resolved to a list"), line);
                      }
                   }
                }
@@ -1389,7 +1389,7 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
                if (right.getLength() == 1) {
                   const Token& cf = right.first();
                   if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
-                     result = std::make_unique<C_RunWithUroboros>(lastAttr, uro);
+                     result = std::make_unique<C_RunWithUroboros2>(lastAttr, uro);
                      return true;
                   }
                }
@@ -1441,13 +1441,13 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
                   const Token& cf = left2.first();
                   if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
 
-                     _comptr inner(new C_RunWithUroborosWithString(lastStr, uro));
+                     _comptr inner(new C_RunWithUroboros2WithString(lastStr, uro));
                      if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
                         return true;
                      }
 
                      throw SyntaxError(str(L"first argument of command '", word.getOriginString(uro),
-                        L" with Uroboros with' cannot be resolved to a list"), line);
+                        L" with Uroboros2 with' cannot be resolved to a list"), line);
                   }
                }
 
@@ -1476,13 +1476,13 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
                      const Token& cf = left2.first();
                      if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
 
-                        _comptr inner(new C_RunWithUroborosWith(lastList, uro));
+                        _comptr inner(new C_RunWithUroboros2With(lastList, uro));
                         if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
                            return true;
                         }
 
                         throw SyntaxError(str(L"first argument of command '", word.getOriginString(uro),
-                           L" with Uroboros with' cannot be resolved to a list"), line);
+                           L" with Uroboros2 with' cannot be resolved to a list"), line);
                      }
                   }
 
@@ -1518,13 +1518,13 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
                const Token& cf = right.first();
                if (cf.type == Token::t_Word && cf.value.word.h == uro.hashes.HASH_VAR_UROBOROS) {
 
-                  _comptr inner(new C_RunWithUroboros(uro));
+                  _comptr inner(new C_RunWithUroboros2(uro));
                   if (parseLooped(left, inner, result, uro, attr, hasMemory)) {
                      return true;
                   }
 
                   throw SyntaxError(str(L"first argument of command '", word.getOriginString(uro),
-                     L" with Uroboros' cannot be resolved to a list"), line);
+                     L" with Uroboros2' cannot be resolved to a list"), line);
                }
             }
 

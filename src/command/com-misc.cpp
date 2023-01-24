@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "com-misc.h"
@@ -245,10 +245,10 @@ void C_RunWithWith::run()
    }
 }
 
-void C_RunWithUroboros::run()
+void C_RunWithUroboros2::run()
 {
    if (!this->inner.exists.value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros2");
       this->inner.success.value = false;
       return;
    }
@@ -258,10 +258,10 @@ void C_RunWithUroboros::run()
    this->inner.success.value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->inner.trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Run ", getCCName(this->inner.trimmed), L" with Uroboros2");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros2");
    }
 
    if (hasAttribute) {
@@ -269,10 +269,10 @@ void C_RunWithUroboros::run()
    }
 }
 
-void C_RunWithUroborosWithString::run()
+void C_RunWithUroboros2WithString::run()
 {
    if (!this->inner.exists.value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros2");
       this->inner.success.value = false;
       return;
    }
@@ -285,10 +285,10 @@ void C_RunWithUroborosWithString::run()
    this->inner.success.value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->inner.trimmed), L" with Uroboros with '", rawArg, L"'");
+      commandLog(this->uroboros, L"Run ", getCCName(this->inner.trimmed), L" with Uroboros2 with '", rawArg, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros with '", rawArg, L"'");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros2 with '", rawArg, L"'");
    }
 
    if (hasAttribute) {
@@ -296,10 +296,10 @@ void C_RunWithUroborosWithString::run()
    }
 }
 
-void C_RunWithUroborosWith::run()
+void C_RunWithUroboros2With::run()
 {
    if (!this->inner.exists.value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros");
+      commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros2");
       this->inner.success.value = false;
       return;
    }
@@ -313,17 +313,17 @@ void C_RunWithUroborosWith::run()
       this->inner.success.value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", getCCName(this->inner.trimmed), L" with Uroboros");
+         commandLog(this->uroboros, L"Run ", getCCName(this->inner.trimmed), L" with Uroboros2");
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros");
+         commandLog(this->uroboros, L"Failed to run ", getCCName(this->inner.trimmed), L" with Uroboros2");
       }
    }
    else {
       _stream comStream;
       _stream logStream;
       const _str& first = rawArgs[0];
-      logStream << str(getCCName(this->inner.trimmed), L" with Uroboros with '", first, L"'");
+      logStream << str(getCCName(this->inner.trimmed), L" with Uroboros2 with '", first, L"'");
       comStream << str(this->inner.urocom, os_quoteEmbraced(this->inner.trimmed), L" ", os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {

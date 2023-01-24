@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "cmd.h"
@@ -23,7 +23,7 @@ namespace uro::cmd
 
 void version()
 {
-   rawPrint(str(L"Uroboros ", VERSION_STR));
+   rawPrint(str(L"Uroboros2 version ", VERSION_STR));
 }
 
 void docs()
@@ -45,9 +45,9 @@ void help()
    rawPrint(L"Options:");
    rawPrint(L"  --help       Display this information again.");
    rawPrint(L"  --version    Display interpreter version information.");
-   rawPrint(L"  --website    Enter the official Uroboros website.");
-   rawPrint(L"  --docs       Enter the official Uroboros documentation.");
-   rawPrint(L"  -c           Pass Uroboros code as an argument instead of file name.");
+   rawPrint(L"  --website    Enter the official Uroboros2 website.");
+   rawPrint(L"  --docs       Enter the official Uroboros2 documentation.");
+   rawPrint(L"  -c           Pass Uroboros2 code as an argument instead of file name.");
    rawPrint(L"  -d <name>    Set working location to certain value.");
    rawPrint(L"  -h           Set working location to the place where this command was called from.");
    rawPrint(L"  -n           Run in noomit mode (iterate over all file system elements with no exceptions).");

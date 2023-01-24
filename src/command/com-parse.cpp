@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros.
-    Uroboros is free software: you can redistribute it and/or modify
+    This file is part of Uroboros2.
+    Uroboros2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros is distributed in the hope that it will be useful,
+    Uroboros2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros. If not, see <http://www.gnu.org/licenses/>.
+    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "com-parse.h"
@@ -225,7 +225,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
    // build "catch"
    if (leftFirst.isKeyword(Keyword::kw_Catch)) {
       throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(uro),
-         L"' is reserved for future use. Your current version of Uroboros does not support it"), leftFirst.line);
+         L"' is reserved for future use. Your current version of Uroboros2 does not support it"), leftFirst.line);
    }
 
    // build "inside"
@@ -749,7 +749,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
                }
 
                throw SyntaxError(str(L"an element of variable '", first.getOriginString(uro),
-                  L"' cannot be ", op, L", because collections in Uroboros are immutable"),
+                  L"' cannot be ", op, L", because collections in Uroboros2 are immutable"),
                   first.line);
             }
             else {
@@ -850,7 +850,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
                vars::ParseVariable<_tlist>* pv_tlist;
                if (uro.vars.getVarPtr(first, pv_tlist)) {
                   throw SyntaxError(str(L"operation ", toStr(sign),
-                     L"= cannot be performed on a time list variable member. Collections in Uroboros are immutable"), first.line);
+                     L"= cannot be performed on a time list variable member. Collections in Uroboros2 are immutable"), first.line);
                }
             }
          }
@@ -1130,7 +1130,7 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
             }
             else {
                throw SyntaxError(str(L"unknown collection variable '", first.getOriginString(uro),
-                  L"'. Collection variables are immutable in Uroboros anyways"), first.line);
+                  L"'. Collection variables are immutable in Uroboros2 anyways"), first.line);
             }
          }
       }

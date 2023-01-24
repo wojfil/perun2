@@ -30,7 +30,7 @@
 namespace uro
 {
 
-static const _str VERSION_STR = L"1.0.6";
+static const _str VERSION_STR = L"2.0.0";
 
 inline constexpr _exitint EXITCODE_OK =             0;
 inline constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;

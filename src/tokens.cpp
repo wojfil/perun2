@@ -278,25 +278,25 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(_uro& uro) const
 std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
 {
    BracketsInfo bi;
-   _bool hasPercent = false;
+   _bool hasQuestionMark = false;
    _bool loop = true;
-   _int percentId = -1;
+   _int questionMarkId = -1;
    _int colonId = -1;
 
    for (_int i = this->start; loop && i <= this->end; i++) {
       const Token& t = this->listAt(i);
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
-            if (hasPercent) {
+            if (hasQuestionMark) {
                if (t.value.ch == CHAR_COLON) {
                   loop = false;
                   colonId = i;
                }
             }
             else {
-               if (t.value.ch == CHAR_PERCENT) {
-                  hasPercent = true;
-                  percentId = i;
+               if (t.value.ch == CHAR_QUESTION_MARK) {
+                  hasQuestionMark = true;
+                  questionMarkId = i;
                }
             }
          }
@@ -305,8 +305,8 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
    }
 
    return std::make_tuple(
-      Tokens(this->list, this->start, percentId - this->start),
-      Tokens(this->list, percentId + 1, colonId - percentId - 1),
+      Tokens(this->list, this->start, questionMarkId - this->start),
+      Tokens(this->list, questionMarkId + 1, colonId - questionMarkId - 1),
       Tokens(this->list, colonId + 1, this->length + this->start - colonId - 1)
    );
 }
@@ -440,7 +440,7 @@ void Tokens::setData()
          switch (t.type) {
             case Token::t_Symbol: {
                switch (t.value.ch) {
-                  case CHAR_PERCENT: {
+                  case CHAR_QUESTION_MARK: {
                      this->info |= TI_HAS_CHAR_QUESTION_MARK;
                      if (firstQuestionMarkId == -1) {
                         firstQuestionMarkId = i;

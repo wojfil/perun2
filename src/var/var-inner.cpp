@@ -20,33 +20,22 @@
 namespace uro
 {
 
+inline constexpr _size LETTERS_IN_ENGLISH_ALPHABET = 26;
+
+
 InnerVariables::InnerVariables(const _str& loc, const _str& ucom)
    : thisState(ThisState::ts_None), urocom(ucom),
-     depth(_numi(0LL)), location(loc) { }
+     depth(_numi(NINT_ZERO)), location(loc) { }
 
 _list InnerVariables::getAlphabet()
 {
-   _list a(26);
+   _list a(LETTERS_IN_ENGLISH_ALPHABET);
 
-   for (_size i = 0; i < 26; i++) {
-      a[i] = L'a' + i;
+   for (_size i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
+      a[i] = LETTER_a + i;
    }
 
    return a;
-}
-
-_list InnerVariables::getAscii()
-{
-   return {
-      L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ",
-      L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ",
-      L" ", L"!", L"\"", L"#", L"$", L"%", L"&", L"'", L"(", L")", L"*", L"+", L",", L"-", L".", L"/",
-      L"0", L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9", L":", L";", L"<", L"=", L">", L"?",
-      L"@", L"A", L"B", L"C", L"D", L"E", L"F", L"G", L"H", L"I", L"J", L"K", L"L", L"M", L"N", L"O",
-      L"P", L"Q", L"R", L"S", L"T", L"U", L"V", L"W", L"X", L"Y", L"Z", L"[", L"\\", L"]", L"^", L"_",
-      L"`", L"a", L"b", L"c", L"d", L"e", L"f", L"g", L"h", L"i", L"j", L"k", L"l", L"m", L"n", L"o",
-      L"p", L"q", L"r", L"s", L"t", L"u", L"v", L"w", L"x", L"y", L"z", L"{", L"|", L"}", L"~", L" "
-   };
 }
 
 void InnerVariables::createThisRef(_genptr<_str>& result)

@@ -39,7 +39,6 @@ public:
 
    InnerVariables(const _str& loc, const _str& ucom);
    _list getAlphabet();
-   _list getAscii();
 
    void createThisRef(_genptr<_str>& result);
    void createThisRef(_genptr<_num>& result);

@@ -31,11 +31,10 @@ typedef Number                              _num;
 typedef NumberInt                           _numi;
 typedef Time                                _tim;
 typedef Period                              _per;
-typedef std::vector<Number>                 _nlist;
-typedef std::vector<Time>                   _tlist;
+typedef std::vector<_num>                   _nlist;
+typedef std::vector<_tim>                   _tlist;
 typedef Definition                          _def;
-typedef std::vector<std::wstring>           _list;
-typedef std::unordered_set<std::wstring>    _set;
+typedef std::unordered_set<_str>            _set;
 
 
 

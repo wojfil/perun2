@@ -91,7 +91,7 @@ Variables::Variables(uro::_uro& uro)
       this->str_.addSpecialVar(this->hashes.HASH_VAR_ROOT, temp_root);
 
       _genptr<_list> temp_alphabet(new gen::Constant<_list>(inner.getAlphabet()));
-      _genptr<_list> temp_ascii(new gen::Constant<_list>(inner.getAscii()));
+      _genptr<_list> temp_ascii(new gen::Constant<_list>(STRINGS_ASCII));
       _genptr<_list> temp_arguments(new gen::Constant<_list>(uroboros.arguments.getArgs()));
       this->list.addSpecialVar(this->hashes.HASH_VAR_ALPHABET, temp_alphabet);
       this->list.addSpecialVar(this->hashes.HASH_VAR_ASCII, temp_ascii);

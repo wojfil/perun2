@@ -19,6 +19,7 @@
 #include <cstdint>
 #include <sstream>
 #include <string>
+#include <vector>
 #include <windows.h>
 
 
@@ -36,6 +37,7 @@ typedef long double                 _ndouble;
 typedef std::size_t                 _size;
 typedef wchar_t                     _char;
 typedef std::wstring                _str;
+typedef std::vector<_str>           _list;
 
 typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
 typedef WIN32_FIND_DATAW            _fdata;

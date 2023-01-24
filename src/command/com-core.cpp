@@ -1400,28 +1400,28 @@ void C_CopyToAs_Stack::run()
 _str getCCName(const _str& path)
 {
    if (path.empty()) {
-      return L"nothing";
+      return STRING_NOTHING;
    }
 
    return os_hasParentDirectory(path) || path.size() != 2
-      ? str(L"'", os_fullname(path), L"'")
-      : str(L"'", path, OS_SEPARATOR_APOSTROPHE);
+      ? str(STRING_APOSTROPHE, os_fullname(path), STRING_APOSTROPHE)
+      : str(STRING_APOSTROPHE, path, OS_SEPARATOR_APOSTROPHE);
 }
 
 _str getCCNameShort(const _str& path)
 {
    if (path.empty()) {
-      return L"nothing";
+      return STRING_NOTHING;
    }
 
    const _str f = os_fullname(path);
    if (f.empty()) {
-      return L"nothing";
+      return STRING_NOTHING;
    }
 
-   return f.size() == 2 && f[1] == L':' && os_isDriveLetter(f[0])
-      ? str(L"'", f, OS_SEPARATOR_APOSTROPHE)
-      : str(L"'", f, L"'");
+   return f.size() == 2 && f[1] == CHAR_COLON && os_isDriveLetter(f[0])
+      ? str(STRING_APOSTROPHE, f, OS_SEPARATOR_APOSTROPHE)
+      : str(STRING_APOSTROPHE, f, STRING_APOSTROPHE);
 }
 
 }

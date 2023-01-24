@@ -14,7 +14,7 @@
 
 #include "order.h"
 #include "../util.h"
-#include "../patterns.h"
+#include "../datatype/patterns.h"
 
 
 namespace uro::gen

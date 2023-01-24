@@ -16,7 +16,7 @@
 #define GEN_OS_H_INCLUDED
 
 #include "../datatype.h"
-#include "../../patterns.h"
+#include "../patterns.h"
 #include "../../os.h"
 #include <windows.h>
 

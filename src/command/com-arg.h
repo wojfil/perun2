@@ -22,7 +22,7 @@
 #include "../datatype/generator.h"
 #include "com-aggregate.h"
 #include "../uroboros.h"
-#include "../patterns.h"
+#include "../datatype/patterns.h"
 
 
 namespace uro::comm

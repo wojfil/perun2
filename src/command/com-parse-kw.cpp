@@ -24,7 +24,7 @@
 #include "com-create.h"
 #include "../datatype/generator/gen-string.h"
 #include "../hash.h"
-#include "../patterns.h"
+#include "../datatype/patterns.h"
 
 
 namespace uro::comm

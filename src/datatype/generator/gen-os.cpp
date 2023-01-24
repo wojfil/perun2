@@ -66,11 +66,11 @@ _bool DefinitionGenerator::generate(_defptr& result) const
          break;
       }
       case OsElement::oe_RecursiveDirectories: {
-         result = std::make_unique<Uro_RecursiveDirectories>(P_OS_GEN_CORE_ARGS);
+         result = std::make_unique<Uro_RecursiveDirectories>(P_OS_GEN_CORE_ARGS, false);
          break;
       }
       case OsElement::oe_RecursiveAll: {
-         result = std::make_unique<Uro_RecursiveAll>(P_OS_GEN_CORE_ARGS);
+         result = std::make_unique<Uro_RecursiveAll>(P_OS_GEN_CORE_ARGS, false);
          break;
       }
       default: {
@@ -311,13 +311,20 @@ _bool Uro_Directories::hasNext()
    return false;
 }
 
+
+void OsDefinitionRecursive::setDepth()
+{
+   this->inner.depth.value = this->depth;
+}
+
 _bool Uro_RecursiveFiles::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
       P_MEMORY_LOAD;
-      this->inner.depth.value.setToZero();
+      this->depth.setToZero();
+      this->setDepth();
       goDeeper = true;
       first = false;
       index.setToZero();
@@ -342,7 +349,8 @@ _bool Uro_RecursiveFiles::hasNext()
                }
                else {
                   bases.pop_back();
-                  this->inner.depth.value--;
+                  this->depth--;
+                  this->setDepth();
                }
             }
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -367,7 +375,8 @@ _bool Uro_RecursiveFiles::hasNext()
             }
             else {
                bases.pop_back();
-               this->inner.depth.value--;
+               this->depth--;
+               this->setDepth();
             }
          }
       }
@@ -380,7 +389,7 @@ _bool Uro_RecursiveFiles::hasNext()
                   if ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
                      paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
-                     if (this->inner.depth.value.isZero()) {
+                     if (this->depth.isZero()) {
                         bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                      }
                      else {
@@ -388,11 +397,12 @@ _bool Uro_RecursiveFiles::hasNext()
                      }
 
                      goDeeper = true;
-                     this->inner.depth.value++;
+                     this->depth++;
+                     this->setDepth();
                   }
                }
                else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
-                  value = this->inner.depth.value.isZero() ? v : str(bases.back(), v);
+                  value = this->depth.isZero() ? v : str(bases.back(), v);
                   this->inner.index.value = index;
                   index++;
 
@@ -413,7 +423,8 @@ _bool Uro_RecursiveFiles::hasNext()
             }
             else {
                bases.pop_back();
-               this->inner.depth.value--;
+               this->depth--;
+               this->setDepth();
             }
          }
       }
@@ -429,12 +440,20 @@ _bool Uro_RecursiveDirectories::hasNext()
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
       P_MEMORY_LOAD;
-      this->inner.depth.value.setToMinusOne();
+      this->depth.setToMinusOne();
+      this->setDepth();
       goDeeper = true;
       first = false;
       index.setToZero();
       this->inner.index.value = index;
       isRoot = true;
+
+      if (this->includesRoot) {
+         this->value = this->isAbsolute ? this->baseLocation : STRING_DOT;
+         this->depth++;
+         this->setDepth();
+         return true;
+      }
    }
 
    while (this->uroboros.state == State::s_Running) {
@@ -454,7 +473,8 @@ _bool Uro_RecursiveDirectories::hasNext()
                }
                else {
                   bases.pop_back();
-                  this->inner.depth.value--;
+                  this->depth--;
+                  this->setDepth();
                }
             }
          }
@@ -465,7 +485,8 @@ _bool Uro_RecursiveDirectories::hasNext()
             }
             else {
                bases.pop_back();
-               this->inner.depth.value--;
+               this->depth--;
+               this->setDepth();
             }
          }
       }
@@ -476,10 +497,14 @@ _bool Uro_RecursiveDirectories::hasNext()
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
             {
-               value = this->inner.depth.value.isMinusOne() ? v : str(bases.back(), v);
+               const _bool isBase = this->includesRoot
+                  ? this->depth.value.i <= NINT_ZERO
+                  : this->depth.isMinusOne();
+
+               value = isBase ? v : str(bases.back(), v);
                paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
-               if (this->inner.depth.value.isMinusOne()) {
+               if (isBase) {
                   bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                }
                else {
@@ -487,7 +512,8 @@ _bool Uro_RecursiveDirectories::hasNext()
                }
 
                goDeeper = true;
-               this->inner.depth.value++;
+               this->depth++;
+               this->setDepth();
                this->inner.index.value = index;
                index++;
 
@@ -507,7 +533,8 @@ _bool Uro_RecursiveDirectories::hasNext()
             }
             else {
                bases.pop_back();
-               this->inner.depth.value--;
+               this->depth--;
+               this->setDepth();
             }
          }
       }
@@ -523,19 +550,29 @@ _bool Uro_RecursiveAll::hasNext()
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
       P_MEMORY_LOAD;
-      this->inner.depth.value.setToMinusOne();
+      this->depth.setToMinusOne();
+      this->setDepth();
       goDeeper = true;
       first = false;
       index.setToZero();
       this->inner.index.value = index;
       isRoot = true;
+      
+      if (this->includesRoot) {
+         this->value = this->isAbsolute ? this->baseLocation : STRING_DOT;
+         this->depth++;
+         this->setDepth();
+         return true;
+      }
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
+            //const _str p = str(paths.back(), isRoot ? pattern : OS_SEPARATOR_ASTERISK);
+            const _str p = str(paths.back(), pattern);
+
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
             isRoot = false;
 
@@ -548,7 +585,8 @@ _bool Uro_RecursiveAll::hasNext()
                }
                else {
                   bases.pop_back();
-                  this->inner.depth.value--;
+                  this->depth--;
+                  this->setDepth();
                }
             }
          }
@@ -559,7 +597,8 @@ _bool Uro_RecursiveAll::hasNext()
             }
             else {
                bases.pop_back();
-               this->inner.depth.value--;
+               this->depth--;
+               this->setDepth();
             }
          }
       }
@@ -573,13 +612,18 @@ _bool Uro_RecursiveAll::hasNext()
                {
                   if (this->prevFile) {
                      this->prevFile = false;
-                     this->inner.depth.value--;
+                     this->depth--;
+                     this->setDepth();
                   }
 
-                  value = this->inner.depth.value.isMinusOne() ? v : str(bases.back(), v);
+                  const _bool isBase = this->includesRoot 
+                     ? this->depth.isZero() 
+                     : this->depth.isMinusOne();
+
+                  value = isBase ? v : str(bases.back(), v);
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
-                  if (this->inner.depth.value.isMinusOne()) {
+                  if (isBase) {
                      bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                   }
                   else {
@@ -587,7 +631,8 @@ _bool Uro_RecursiveAll::hasNext()
                   }
 
                   goDeeper = true;
-                  this->inner.depth.value++;
+                  this->depth++;
+                  this->setDepth();
                   this->inner.index.value = index;
                   index++;
 
@@ -601,10 +646,12 @@ _bool Uro_RecursiveAll::hasNext()
                {
                   if (!this->prevFile) {
                      this->prevFile = true;
-                     this->inner.depth.value++;
+                     this->depth++;
+                     this->setDepth();
                   }
 
-                  value = this->inner.depth.value.isZero() ? v : str(bases.back(), v);
+                  const _bool isBase = this->includesRoot ? this->depth.isOne() : this->depth.isZero();
+                  value = isBase ? v : str(bases.back(), v);
                   this->inner.index.value = index;
                   index++;
 
@@ -625,7 +672,8 @@ _bool Uro_RecursiveAll::hasNext()
             }
             else {
                bases.pop_back();
-               this->inner.depth.value--;
+               this->depth--;
+               this->setDepth();
             }
          }
       }

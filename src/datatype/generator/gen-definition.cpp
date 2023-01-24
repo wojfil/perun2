@@ -15,6 +15,7 @@
 #include "gen-definition.h"
 #include "../../os.h"
 #include "../../uroboros.h"
+#include "../../print.h"
 
 
 namespace uro::gen
@@ -171,6 +172,7 @@ _bool NestedDefiniton::hasNext()
 {
    if (!this->locsOpened) {
       if (this->locations->hasNext()) {
+         this->locDepth = this->inner.depth.value;
          this->locsOpened = true;
          this->vessel.setValue(this->locations->getValue());
          if (this->isFinal) {
@@ -185,20 +187,32 @@ _bool NestedDefiniton::hasNext()
    while (true) {
       if (this->definition->hasNext()) {
          this->defOpened = true;
-         this->value = this->isAbsolute
-            ? this->definition->getValue()
-            : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
 
-         
+         if (this->isAbsolute) {
+            this->value = this->definition->getValue();
+         }
+         else {
+            this->value = this->vessel.getRawValue() == STRING_DOT
+               ? this->definition->getValue()
+               : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
+         }
+         //this->value = this->isAbsolute
+          //  ? this->definition->getValue()
+         //   : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
+
          if (this->isFinal) {
             this->inner.index.value = index;
             index++;
          }
+
+         this->inner.depth.value = this->locDepth;
          return true;
       }
       else {
          this->defOpened = false;
+
          if (this->locations->hasNext()) {
+            this->locDepth = this->inner.depth.value;
             this->locsOpened = true;
             this->vessel.setValue(this->locations->getValue());
          }

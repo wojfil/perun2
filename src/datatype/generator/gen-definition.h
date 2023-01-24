@@ -110,6 +110,7 @@ private:
    _numi index;
    _bool defOpened = false;
    _bool locsOpened = false;
+   _numi locDepth;
    const _bool isAbsolute;
    const _bool isFinal;
 };

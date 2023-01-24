@@ -106,6 +106,9 @@ public:
    void reset() override;
 
 protected:
+   void setDepth();
+
+   _numi depth;
    _bool isRoot = false;
    _bool goDeeper = false;
    std::vector<HANDLE> handles;
@@ -158,9 +161,13 @@ struct Uro_RecursiveDirectories : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveDirectories() = delete;
-   Uro_RecursiveDirectories(P_OS_GEN_ARGS) : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT) { };
+   Uro_RecursiveDirectories(P_OS_GEN_ARGS, const _bool& root) 
+      : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT), includesRoot(root) { };
 
    _bool hasNext() override;
+
+private:
+   const _bool includesRoot;
 };
 
 
@@ -168,12 +175,14 @@ struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveAll() = delete;
-   Uro_RecursiveAll(P_OS_GEN_ARGS) : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT) { };
+   Uro_RecursiveAll(P_OS_GEN_ARGS, const _bool& root) 
+      : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT), includesRoot(root) { };
 
    _bool hasNext() override;
 
 private:
    _bool prevFile = false;
+   const _bool includesRoot;
 };
 
 }

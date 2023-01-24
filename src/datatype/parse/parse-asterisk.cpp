@@ -36,7 +36,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 
    if (pattern == STRING_DOUBLE_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING);
+      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, OS_SEPARATOR_ASTERISK, false, EMPTY_STRING, false);
       return true;
    }
 
@@ -162,18 +162,39 @@ exitAsteriskBeginning:
 
    // the pattern contains multiple asterisks
    // but they all appear within one 'path segment' (there is no separator \ / between them)
-   if (ulen == 1 && !hasDoubleAst) {
-      const AsteriskUnit& u = units[0];
-      const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
+   if (ulen == 1) {
+      if (hasDoubleAst) {
+         /*_str p = str(OS_SEPARATOR_STRING, pattern);
+         p.pop_back();
+         result = std::make_unique<gen::Uro_RecursiveAll>(base, uro, p, false, EMPTY_STRING, false);*/
 
-      if (u.suffixPart.empty()) {
-         result = std::make_unique<gen::Uro_All>(base, uro, p, isAbsolute, prefix);
+         /*std::unique_ptr<gen::LocationVessel> vessel(new gen::LocationVessel(isAbsolute, uro));
+         gen::LocationVessel& vesselRef = *(vessel.get());
+         _genptr<_str> vesselPtr = std::move(vessel);
+
+
+
+         _defptr prev = std::make_unique<gen::Uro_RecursiveAll>(base, uro, OS_SEPARATOR_ASTERISK, isAbsolute, EMPTY_STRING, true);
+         _defptr nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, 
+            str(OS_SEPARATOR_STRING, L"*.txt"), 
+            isAbsolute, EMPTY_STRING);
+
+         result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, uro, isAbsolute, true);*/
+
+         return false;
       }
       else {
-         _defptr d(new gen::Uro_Directories(base, uro, p, isAbsolute, prefix));
-         result = std::make_unique<gen::DefinitionSuffix>(d, uro, u.suffixPart, isAbsolute, true);
-      }
+         const AsteriskUnit& u = units[0];
+         const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
+         if (u.suffixPart.empty()) {
+            result = std::make_unique<gen::Uro_All>(base, uro, p, isAbsolute, prefix);
+         }
+         else {
+            _defptr d(new gen::Uro_Directories(base, uro, p, isAbsolute, prefix));
+            result = std::make_unique<gen::DefinitionSuffix>(d, uro, u.suffixPart, isAbsolute, true);
+         }
+      }
       return true;
    }
 

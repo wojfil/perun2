@@ -141,7 +141,7 @@ _num F_Number::getValue()
          return _num(i);
       }
       catch (...) {
-         throw RuntimeError(str(L"number '", s, L"' is too big to be stored in the memory"));
+         throw RuntimeError::numberTooBig(s);
       }
    }
    else {
@@ -181,7 +181,7 @@ _num F_Power::getValue()
          // optimization for common cases
          switch (exp) {
             case NINT_MINUS_ONE: {
-               return _num(NDOUBLE_ONE / ((_ndouble) base));
+               return _num(NDOUBLE_ONE / static_cast<_ndouble>(base));
             }
             case NINT_ZERO: {
                return _num(NINT_ONE);
@@ -201,7 +201,7 @@ _num F_Power::getValue()
             }
          }
 
-         return doublePower(base, (_ndouble)exp);
+         return doublePower(base, static_cast<_ndouble>(exp));
       }
    }
    else {
@@ -213,7 +213,7 @@ _num F_Power::getValue()
                return _num(NINT_ONE);
             }
             else if (n2.value.d < NDOUBLE_ZERO) {
-               throw RuntimeError(L"result of exponentiation cannot be expressed");
+               throw RuntimeError::wrongResultOfExponentiation();
             }
             else {
                return _num();
@@ -224,7 +224,7 @@ _num F_Power::getValue()
                return _num(NINT_ONE);
             }
             else if (n2.value.i <= NINT_ZERO) {
-               throw RuntimeError(L"result of exponentiation cannot be expressed");
+               throw RuntimeError::wrongResultOfExponentiation();
             }
             else {
                return _num();
@@ -234,7 +234,7 @@ _num F_Power::getValue()
 
       if (n2.isDouble) {
          const _ndouble& exp = n2.value.d;
-         return doublePower((_ndouble)base, exp);
+         return doublePower(static_cast<_ndouble>(base), exp);
       }
       else {
          _nint exp = n2.value.i;
@@ -242,7 +242,7 @@ _num F_Power::getValue()
          // optimization for common cases
          switch (exp) {
             case NINT_MINUS_ONE: {
-               return _num(NDOUBLE_ONE / ((_ndouble) base));
+               return _num(NDOUBLE_ONE / static_cast<_ndouble>(base));
             }
             case NINT_ZERO: {
                return _num(NINT_ONE);
@@ -288,7 +288,7 @@ _num F_Power::getValue()
          }
 
          if (inv) {
-            return _num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / ((_ndouble)result));
+            return _num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / static_cast<_ndouble>(result));
          }
          else {
             return _num(neg ? (-result) : result);
@@ -302,7 +302,7 @@ _num F_Power::doublePower(const _ndouble& base, const _ndouble& exp)
    const _ndouble v = pow(base, exp);
 
    if (isnan(v)) {
-      throw RuntimeError(L"result of exponentiation cannot be expressed");
+      throw RuntimeError::wrongResultOfExponentiation();
    }
 
    return _num(v);
@@ -320,7 +320,7 @@ _num F_Sqrt::getValue()
          return _num(NINT_ONE);
       }
       else if (n.value.d < NDOUBLE_ZERO) {
-         throw RuntimeError(str(L"square root of a negative number ", n.toString()));
+         throw RuntimeError::squareRootOfNegativeNumber(n.toString());
       }
 
       return _num(sqrt(n.value.d));
@@ -330,7 +330,7 @@ _num F_Sqrt::getValue()
          return n;
       }
       else if (n.value.i < NINT_ZERO) {
-         throw RuntimeError(str(L"square root of a negative number ", n.toString()));
+         throw RuntimeError::squareRootOfNegativeNumber(n.toString());
       }
 
       // look for perfect squares:
@@ -352,7 +352,7 @@ _num F_Sqrt::getValue()
          }
       }
 
-      return _num((_ndouble)sqrt(n.value.i));
+      return _num(static_cast<_ndouble>(sqrt(n.value.i)));
    }
 }
 
@@ -433,15 +433,13 @@ _num F_FromBinary::getValue()
       }
       negative = true;
       i++;
-      if (len > 62) {
-         throw RuntimeError(str(L"number '", baseString,
-            L"' is too big to be stored in the memory"));
+      if (len > BITS_IN_NINT - 2) {
+         throw RuntimeError::numberTooBig(baseString);
       }
    }
    else {
-      if (len > 63) {
-         throw RuntimeError(str(L"number '", baseString,
-            L"' is too big to be stored in the memory"));
+      if (len > BITS_IN_NINT - 1) {
+         throw RuntimeError::numberTooBig(baseString);
       }
    }
 

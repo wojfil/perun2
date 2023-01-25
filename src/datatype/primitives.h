@@ -32,12 +32,14 @@ typedef int32_t                     _int;
 typedef uint32_t                    _uint32;
 typedef uint64_t                    _uint64;
 typedef long unsigned int           _ulong;
-typedef int64_t                     _nint;
-typedef long double                 _ndouble;
 typedef std::size_t                 _size;
 typedef wchar_t                     _char;
 typedef std::wstring                _str;
 typedef std::vector<_str>           _list;
+
+typedef int64_t                     _nint;
+typedef long double                 _ndouble;
+inline constexpr _size BITS_IN_NINT = static_cast<_size>(sizeof(_nint) * 8);
 
 typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
 typedef WIN32_FIND_DATAW            _fdata;

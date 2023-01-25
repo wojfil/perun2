@@ -246,5 +246,19 @@ RuntimeError RuntimeError::moduloByZero()
    return RuntimeError(L"modulo by zero");
 }
 
+RuntimeError RuntimeError::numberTooBig(const _str& value)
+{
+   return RuntimeError(str(L"number '", value, L"' is too big to be stored in the memory"));
+}
+
+RuntimeError RuntimeError::squareRootOfNegativeNumber(const _str& value)
+{
+   return RuntimeError(str(L"square root of a negative number ", value));
+}
+
+RuntimeError RuntimeError::wrongResultOfExponentiation()
+{
+   return RuntimeError(L"result of exponentiation cannot be expressed");
+}
 
 }

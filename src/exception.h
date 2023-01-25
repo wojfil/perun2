@@ -78,6 +78,9 @@ public:
 
    static RuntimeError divisionByZero();
    static RuntimeError moduloByZero();
+   static RuntimeError numberTooBig(const _str& value);
+   static RuntimeError squareRootOfNegativeNumber(const _str& value);
+   static RuntimeError wrongResultOfExponentiation();
 
 private:
    const _str message;

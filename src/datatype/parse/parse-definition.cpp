@@ -38,17 +38,11 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
       return parseFilter<_defptr, _str>(result, tks, ThisState::ts_String, uro);
    }
 
-   if (isDefinitionChain(tks, uro)) {
-      if (parseDefinitionChain(result, tks, uro)) {
-         return true;
-      }
-   }
-
-   if (parseDefBinary(result, tks, uro) || parseDefTernary(result, tks, uro)) {
+   if (isDefinitionChain(tks, uro) && parseDefinitionChain(result, tks, uro)) {
       return true;
    }
 
-   return false;
+   return parseDefBinary(result, tks, uro) || parseDefTernary(result, tks, uro);
 }
 
 

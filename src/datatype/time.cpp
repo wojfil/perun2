@@ -76,7 +76,7 @@ void Time::addYears(const _tnum& y)
    if (type != tt_YearMonth && month == TNUM_FEBRUARY
        && day == TNUM_DAYS_IN_LEAP_FEBRUARY && !isLeapYear(year))
    {
-      day = TNUM_DAYS_IN_LEAP_FEBRUARY;
+      day = TNUM_DAYS_IN_FEBRUARY;
    }
 }
 

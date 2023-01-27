@@ -71,7 +71,7 @@ static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endI
 static void defaultLikeCmp(_likeptr& result, const _str& pattern)
 {
    if (pattern.find(WILDCARD_SET_START) == _str::npos) {
-      result = std::make_unique<LC_Default_NoBrackets>(pattern);
+      result = std::make_unique<LC_Default>(pattern);
    }
    else {
       bracketsLikeCmp(result, pattern);
@@ -92,7 +92,7 @@ static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
 
          if (i == length) {
             ss << WILDCARD_SET_START;
-            result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
+            result = std::make_unique<LC_Default>(ss.str(), sets);
             return;
          }
 
@@ -102,7 +102,7 @@ static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
             i++;
             if (i == length) {
                ss << pattern.substr(startId - 1);
-               result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
+               result = std::make_unique<LC_Default>(ss.str(), sets);
                return;
             }
          }
@@ -122,7 +122,7 @@ static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
       id++;
    }
 
-   result = std::make_unique<LC_Default_WithBrackets>(ss.str(), sets);
+   result = std::make_unique<LC_Default>(ss.str(), sets);
 }
 
 
@@ -175,12 +175,9 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                      result = std::make_unique<LC_Constant>(true);
                      break;
                   }
-                  case WILDCARD_ONE_CHAR: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
-                     break;
-                  }
+                  case WILDCARD_ONE_CHAR:
                   case WILDCARD_ONE_DIGIT: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     result = std::make_unique<LC_Default>(pattern);
                      break;
                   }
                   default: {
@@ -192,16 +189,13 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
             }
             case WILDCARD_ONE_CHAR: {
                switch (snd) {
-                  case WILDCARD_MULTIPLE_CHARS: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                  case WILDCARD_MULTIPLE_CHARS:
+                  case WILDCARD_ONE_DIGIT: {
+                     result = std::make_unique<LC_Default>(pattern);
                      break;
                   }
                   case WILDCARD_ONE_CHAR: {
                      result = std::make_unique<LC_ConstantLength>(2);
-                     break;
-                  }
-                  case WILDCARD_ONE_DIGIT: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
                      break;
                   }
                   default: {
@@ -212,23 +206,11 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                break;
             }
             case WILDCARD_ONE_DIGIT: {
-               switch (snd) {
-                  case WILDCARD_MULTIPLE_CHARS: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
-                     break;
-                  }
-                  case WILDCARD_ONE_CHAR: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
-                     break;
-                  }
-                  case WILDCARD_ONE_DIGIT: {
-                     result = std::make_unique<LC_OnlyDigits>(2);
-                     break;
-                  }
-                  default: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
-                     break;
-                  }
+               if (snd == WILDCARD_ONE_DIGIT) {
+                  result = std::make_unique<LC_OnlyDigits>(2);
+               }
+               else {
+                  result = std::make_unique<LC_Default>(pattern);
                }
                break;
             }
@@ -247,7 +229,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
                      break;
                   }
                   case WILDCARD_ONE_DIGIT: {
-                     result = std::make_unique<LC_Default_NoBrackets>(pattern);
+                     result = std::make_unique<LC_Default>(pattern);
                      break;
                   }
                   default: {
@@ -469,11 +451,13 @@ _bool Like::getValue() {
 };
 
 
-LC_Default_WithBrackets::LC_Default_WithBrackets(const _str& pat, const std::unordered_map<_int, LikeSet>& cs)
+LC_Default::LC_Default(const _str& pat, const std::unordered_map<_int, LikeSet>& cs)
    : pattern(pat), charSets(cs), patternLen(pat.size()) { };
 
+LC_Default::LC_Default(const _str& pat)
+   : pattern(pat), charSets({}), patternLen(pat.size()) { };
 
-_bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
+_bool LC_Default::compareToPattern(const _str& value) const
 {
    const _int vlen = value.size();
    _bool isMatch = true;
@@ -573,113 +557,6 @@ _bool LC_Default_WithBrackets::compareToPattern(const _str& value) const
             }
          }
          else if (p == c) {
-            id++;
-         }
-         else {
-            if (lastWildCard >= 0) {
-               id = lastWildCard;
-            }
-            else {
-               isMatch = false;
-               break;
-            }
-         }
-      }
-   }
-
-   end = (id >= this->patternLen);
-
-   if (isMatch && !end) {
-      _bool onlyWildCards = true;
-      for (_int i = id; i < this->patternLen; i++) {
-         if (pattern[i] != WILDCARD_MULTIPLE_CHARS) {
-            onlyWildCards = false;
-            break;
-         }
-      }
-      if (onlyWildCards) {
-         end = true;
-      }
-   }
-
-   return isMatch && end;
-}
-
-
-LC_Default_NoBrackets::LC_Default_NoBrackets(const _str& pat)
-   : pattern(pat), patternLen(pat.size()) { };
-
-
-_bool LC_Default_NoBrackets::compareToPattern(const _str& value) const
-{
-   const _int vlen = value.size();
-   _bool isMatch = true;
-   _bool wildCardOn = false; // %
-   _bool charWildCardOn = false; // _
-   _bool end = false;
-   _int lastWildCard = -1;
-   _int id = 0;
-   _char p = WILDCARD_NONE;
-
-   for (_int i = 0; i < vlen; i++) {
-      const _char& c = value[i];
-      end = (id >= this->patternLen);
-      if (!end) {
-         p = pattern[id];
-
-         if (!wildCardOn && p == WILDCARD_MULTIPLE_CHARS) {
-            lastWildCard = id;
-            wildCardOn = true;
-            while (id < this->patternLen && pattern[id] == WILDCARD_MULTIPLE_CHARS) {
-               id++;
-            }
-            if (id >= this->patternLen) {
-               p = WILDCARD_NONE;
-            }
-            else {
-               p = pattern[id];
-            }
-         }
-         else if (p == WILDCARD_ONE_CHAR) {
-            charWildCardOn = true;
-            id++;
-         }
-      }
-
-      if (wildCardOn) {
-         if (p == WILDCARD_ONE_DIGIT) {
-            if (std::iswdigit(c)) {
-               wildCardOn = false;
-               id++;
-            }
-         }
-         else if (c == p) {
-            wildCardOn = false;
-            id++;
-         }
-      }
-      else if (charWildCardOn) {
-         charWildCardOn = false;
-      }
-      else {
-         if (p == WILDCARD_ONE_DIGIT) {
-            if (std::iswdigit(c)) {
-               id++;
-               if (id > this->patternLen) {
-                  return false;
-               }
-            }
-            else {
-               if (lastWildCard >= 0) {
-                  id = lastWildCard;
-               }
-               else {
-                  isMatch = false;
-                  break;
-               }
-            }
-         }
-         else if (c == p) {
             id++;
          }
          else {

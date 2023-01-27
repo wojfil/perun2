@@ -96,32 +96,19 @@ private:
 };
 
 
-//  %exa[m-v]__pl_e%
-struct LC_Default_WithBrackets : LikeComparer
+//  %exa[m-v]__pl_e%            complex pattern like this
+struct LC_Default : LikeComparer
 {
 public:
-   LC_Default_WithBrackets() = delete;
-   LC_Default_WithBrackets(const _str& pat, const std::unordered_map<_int, LikeSet>& cs);
+   LC_Default() = delete;
+   LC_Default(const _str& pat);
+   LC_Default(const _str& pat, const std::unordered_map<_int, LikeSet>& cs);
    _bool compareToPattern(const _str& value) const override;
 
 private:
    const _str pattern;
    const _size patternLen;
    const std::unordered_map<_int, LikeSet> charSets;
-};
-
-
-//  %exam__pl_e%
-struct LC_Default_NoBrackets : LikeComparer
-{
-public:
-   LC_Default_NoBrackets() = delete;
-   LC_Default_NoBrackets(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
-
-private:
-   const _str pattern;
-   const _size patternLen;
 };
 
 

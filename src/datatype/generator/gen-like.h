@@ -114,6 +114,7 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
+   void clearCharStates(const _str& value);
    LikeCharState checkState(const _size& n, const _size& m);
 
    const _str pattern;

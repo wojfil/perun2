@@ -452,6 +452,21 @@ LC_Default::LC_Default(const _str& pat)
    : pattern(pat), charSets({}), patternLen(pat.size()) { };
 
 
+void LC_Default::clearCharStates(const _str& value)
+{
+   this->charStates.clear();
+
+   for (_size i = 0; i <= value.size(); i++) {
+      this->charStates.emplace_back();
+      this->charStates.back().reserve(patternLen);
+
+      for (_size j = 0; j <= this->patternLen; j++) {
+         this->charStates[i].push_back(LikeCharState::lcs_Unknown);
+      }
+   }
+}
+
+
 LikeCharState LC_Default::checkState(const _size& n, const _size& m)
 {
    if (this->charStates[n][m] >= LikeCharState::lcs_NotMatches) {
@@ -514,17 +529,7 @@ LikeCharState LC_Default::checkState(const _size& n, const _size& m)
 _bool LC_Default::compareToPattern(const _str& value)
 {
    this->valuePtr = &value;
-   this->charStates.clear();
-
-   for (_size i = 0; i <= value.size(); i++) {
-      this->charStates.emplace_back();
-      this->charStates.back().reserve(patternLen);
-
-      for (_size j = 0; j <= this->patternLen; j++) {
-         this->charStates[i].push_back(LikeCharState::lcs_Unknown);
-      }
-   }
-
+   this->clearCharStates(value);
    return this->checkState(value.size(), this->patternLen) == LikeCharState::lcs_Matches;
 }
 

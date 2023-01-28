@@ -210,7 +210,7 @@ void test_like()
    testCase_like(187, L"[e-gs-u]%[e-gs-u]", L"z", false);
    testCase_like(188, L"[e-gs-u]%[e-gs-u]", L"", false);
    testCase_like(189, L"[e-gs-u]%[e-gs-u]", L"alone", false);
-   testCase_like(190, L"[e-gs-u]%[e-gs-u]", L"faces", false);
+   testCase_like(190, L"[e-gs-u]%[e-gs-u]", L"faces", true);
    testCase_like(191, L"[e-gs-u]%[e-gs-u]", L"-faces", false);
    testCase_like(192, L"[e-gs-u]%[e-gs-u]", L"early", false);
    testCase_like(193, L"[e-gs-u]%[e-gs-u]", L"historias", false);
@@ -337,7 +337,7 @@ void test_like()
    testCase_like(314, L"-^", L"-^h", false);
    testCase_like(315, L"e#", L"e55", false);
    testCase_like(316, L"e##", L"e55", true);
-   testCase_like(317, L"e%57", L"e557", false);
+   testCase_like(317, L"e%57", L"e557", true);
    testCase_like(318, L"%[c-a]%", L"co", true);
    testCase_like(319, L"%[c-a]%", L"do", false);
    testCase_like(320, L"%[c-a]%", L"c", true);

@@ -29,15 +29,14 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 
    if (pattern == STRING_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_All>(loc, uro, gen::os::DEFAULT_PATTERN, 
+      result = std::make_unique<gen::Uro_All>(loc, uro, gen::os::DEFAULT_PATTERN,
          gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
    if (pattern == STRING_DOUBLE_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, gen::os::DEFAULT_PATTERN, 
-         gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX, gen::os::NO_ROOT);
+      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
@@ -176,8 +175,8 @@ exitAsteriskBeginning:
 
 
          _defptr prev = std::make_unique<gen::Uro_RecursiveAll>(base, uro, gen::os::DEFAULT_PATTERN, isAbsolute, gen::os::NO_PREFIX, true);
-         _defptr nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, 
-            str(OS_SEPARATOR_STRING, L"*.txt"), 
+         _defptr nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro,
+            str(OS_SEPARATOR_STRING, L"*.txt"),
             isAbsolute, gen::os::NO_PREFIX);
 
          result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, uro, isAbsolute, true);*/
@@ -371,7 +370,7 @@ std::vector<WordData> AsteriskUnit::getDoubleAstData() const
                mode = m_Normal;
                start = i;
             }
-               
+
             break;
          }
       }

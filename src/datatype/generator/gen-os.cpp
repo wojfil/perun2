@@ -29,7 +29,8 @@
 namespace uro::gen
 {
 
-#define P_OS_GEN_CORE_ARGS loc, this->uroboros, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
+#define P_GEN_OS_ARGS_DEFAULT loc, this->uroboros, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
+#define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->uroboros, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
@@ -50,27 +51,27 @@ _bool DefinitionGenerator::generate(_defptr& result) const
 
    switch (this->element_) {
       case OsElement::oe_All: {
-         result = std::make_unique<Uro_All>(P_OS_GEN_CORE_ARGS);
+         result = std::make_unique<Uro_All>(P_GEN_OS_ARGS_DEFAULT_EXT);
          break;
       }
       case OsElement::oe_Directories: {
-         result = std::make_unique<Uro_Directories>(P_OS_GEN_CORE_ARGS);
+         result = std::make_unique<Uro_Directories>(P_GEN_OS_ARGS_DEFAULT_EXT);
          break;
       }
       case OsElement::oe_Files: {
-         result = std::make_unique<Uro_Files>(P_OS_GEN_CORE_ARGS);
+         result = std::make_unique<Uro_Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
          break;
       }
       case OsElement::oe_RecursiveFiles: {
-         result = std::make_unique<Uro_RecursiveFiles>(P_OS_GEN_CORE_ARGS);
+         result = std::make_unique<Uro_RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
          break;
       }
       case OsElement::oe_RecursiveDirectories: {
-         result = std::make_unique<Uro_RecursiveDirectories>(P_OS_GEN_CORE_ARGS, gen::os::NO_ROOT);
+         result = std::make_unique<Uro_RecursiveDirectories>(P_GEN_OS_ARGS_DEFAULT);
          break;
       }
       case OsElement::oe_RecursiveAll: {
-         result = std::make_unique<Uro_RecursiveAll>(P_OS_GEN_CORE_ARGS, gen::os::NO_ROOT);
+         result = std::make_unique<Uro_RecursiveAll>(P_GEN_OS_ARGS_DEFAULT);
          break;
       }
       default: {
@@ -81,9 +82,9 @@ _bool DefinitionGenerator::generate(_defptr& result) const
    return true;
 }
 
-OsDefinition::OsDefinition(P_OS_GEN_ARGS)
+OsDefinition::OsDefinition(P_GEN_OS_ARGS)
    : location(std::move(loc)), uroboros(uro), inner(uro.vars.inner), 
-     flags(uro.flags), pattern(patt), isAbsolute(abs),
+     flags(uro.flags), isAbsolute(abs),
      hasPrefix(!pref.empty()), prefix(pref) { };
 
 
@@ -329,16 +330,14 @@ _bool Uro_RecursiveFiles::hasNext()
       first = false;
       index.setToZero();
       this->inner.index.value = index;
-      isRoot = true;
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), isRoot ? pattern : gen::os::DEFAULT_PATTERN);
+            const _str p = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
-            isRoot = false;
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -446,23 +445,14 @@ _bool Uro_RecursiveDirectories::hasNext()
       first = false;
       index.setToZero();
       this->inner.index.value = index;
-      isRoot = true;
-
-      if (this->includesRoot) {
-         this->value = this->isAbsolute ? this->baseLocation : STRING_DOT;
-         this->depth++;
-         this->setDepth();
-         return true;
-      }
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), isRoot ? pattern : gen::os::DEFAULT_PATTERN);
+            const _str p = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
-            isRoot = false;
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -497,10 +487,7 @@ _bool Uro_RecursiveDirectories::hasNext()
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
             {
-               const _bool isBase = this->includesRoot
-                  ? this->depth.value.i <= NINT_ZERO
-                  : this->depth.isMinusOne();
-
+               const _bool isBase = this->depth.isMinusOne();
                value = isBase ? v : str(bases.back(), v);
                paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
@@ -556,25 +543,14 @@ _bool Uro_RecursiveAll::hasNext()
       first = false;
       index.setToZero();
       this->inner.index.value = index;
-      isRoot = true;
-      
-      if (this->includesRoot) {
-         this->value = this->isAbsolute ? this->baseLocation : STRING_DOT;
-         this->depth++;
-         this->setDepth();
-         return true;
-      }
    }
 
    while (this->uroboros.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            //const _str p = str(paths.back(), isRoot ? pattern : gen::os::DEFAULT_PATTERN);
-            const _str p = str(paths.back(), pattern);
-
+            const _str p = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
-            isRoot = false;
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -616,9 +592,7 @@ _bool Uro_RecursiveAll::hasNext()
                      this->setDepth();
                   }
 
-                  const _bool isBase = this->includesRoot 
-                     ? this->depth.isZero() 
-                     : this->depth.isMinusOne();
+                  const _bool isBase = this->depth.isMinusOne();
 
                   value = isBase ? v : str(bases.back(), v);
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
@@ -650,7 +624,7 @@ _bool Uro_RecursiveAll::hasNext()
                      this->setDepth();
                   }
 
-                  const _bool isBase = this->includesRoot ? this->depth.isOne() : this->depth.isZero();
+                  const _bool isBase = this->depth.isZero();
                   value = isBase ? v : str(bases.back(), v);
                   this->inner.index.value = index;
                   index++;

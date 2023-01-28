@@ -30,8 +30,11 @@ struct InnerVariables;
 namespace uro::gen
 {
 
-#define P_OS_GEN_ARGS _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool& abs, const _str& pref
-#define P_OS_GEN_ARGS_SHORT loc, uro, patt, abs, pref
+#define P_GEN_OS_ARGS _genptr<_str>& loc, _uro& uro, const _bool& abs, const _str& pref
+#define P_GEN_OS_ARGS_2 loc, uro, abs, pref
+#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool& abs, const _str& pref
+#define P_GEN_OS_ARGS_EXT_2 loc, uro, patt, abs, pref
+
 
 namespace os
 {
@@ -39,8 +42,6 @@ namespace os
    inline constexpr _bool IS_RELATIVE_PATH =            false;
    static const _str NO_PREFIX =                        EMPTY_STRING;
    static const _str DEFAULT_PATTERN =                  OS_SEPARATOR_ASTERISK;
-   inline constexpr _bool CONTAINS_ROOT =               true;
-   inline constexpr _bool NO_ROOT =                     false;
    inline constexpr _bool IS_FINAL =                    true;
    inline constexpr _bool IS_NOT_FINAL =                false;
 }
@@ -76,7 +77,7 @@ struct OsDefinition : _def
 {
 public:
    OsDefinition() = delete;
-   OsDefinition(P_OS_GEN_ARGS);
+   OsDefinition(P_GEN_OS_ARGS);
    _fdata* getDataPtr();
 
 protected:
@@ -89,7 +90,6 @@ protected:
    _str baseLocation;
    P_MEMORY_MEMBER;
 
-   const _str pattern;
    const _uint32 flags;
    const _bool isAbsolute;
    const _bool hasPrefix;
@@ -101,12 +101,14 @@ struct OsDefinitionPlain : OsDefinition
 {
 public:
    OsDefinitionPlain() = delete;
-   OsDefinitionPlain(P_OS_GEN_ARGS) : OsDefinition(P_OS_GEN_ARGS_SHORT) { };
+   OsDefinitionPlain(P_GEN_OS_ARGS_EXT) 
+      : OsDefinition(P_GEN_OS_ARGS_2), pattern(patt) { };
 
    void reset() override;
 
 protected:
    HANDLE handle;
+   const _str pattern;
 };
 
 
@@ -114,7 +116,8 @@ struct OsDefinitionRecursive : OsDefinition
 {
 public:
    OsDefinitionRecursive() = delete;
-   OsDefinitionRecursive(P_OS_GEN_ARGS) : OsDefinition(P_OS_GEN_ARGS_SHORT) { };
+   OsDefinitionRecursive(P_GEN_OS_ARGS) 
+      : OsDefinition(P_GEN_OS_ARGS_2) { };
 
    void reset() override;
 
@@ -122,7 +125,6 @@ protected:
    void setDepth();
 
    _numi depth;
-   _bool isRoot = false;
    _bool goDeeper = false;
    std::vector<HANDLE> handles;
    _list paths;
@@ -134,7 +136,8 @@ struct Uro_Files : OsDefinitionPlain
 {
 public:
    Uro_Files() = delete;
-   Uro_Files(P_OS_GEN_ARGS) : OsDefinitionPlain(P_OS_GEN_ARGS_SHORT) {};
+   Uro_Files(P_GEN_OS_ARGS_EXT) 
+      : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
 };
@@ -144,7 +147,8 @@ struct Uro_Directories : OsDefinitionPlain
 {
 public:
    Uro_Directories() = delete;
-   Uro_Directories(P_OS_GEN_ARGS) : OsDefinitionPlain(P_OS_GEN_ARGS_SHORT) {};
+   Uro_Directories(P_GEN_OS_ARGS_EXT) 
+      : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
 };
@@ -154,7 +158,8 @@ struct Uro_All : OsDefinitionPlain
 {
 public:
    Uro_All() = delete;
-   Uro_All(P_OS_GEN_ARGS) : OsDefinitionPlain(P_OS_GEN_ARGS_SHORT) {};
+   Uro_All(P_GEN_OS_ARGS_EXT) 
+      : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
 };
@@ -164,7 +169,8 @@ struct Uro_RecursiveFiles : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveFiles() = delete;
-   Uro_RecursiveFiles(P_OS_GEN_ARGS) : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT) { };
+   Uro_RecursiveFiles(P_GEN_OS_ARGS) 
+      : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
 };
@@ -174,13 +180,10 @@ struct Uro_RecursiveDirectories : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveDirectories() = delete;
-   Uro_RecursiveDirectories(P_OS_GEN_ARGS, const _bool& root) 
-      : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT), includesRoot(root) { };
+   Uro_RecursiveDirectories(P_GEN_OS_ARGS) 
+      : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
-
-private:
-   const _bool includesRoot;
 };
 
 
@@ -188,14 +191,13 @@ struct Uro_RecursiveAll : OsDefinitionRecursive
 {
 public:
    Uro_RecursiveAll() = delete;
-   Uro_RecursiveAll(P_OS_GEN_ARGS, const _bool& root) 
-      : OsDefinitionRecursive(P_OS_GEN_ARGS_SHORT), includesRoot(root) { };
+   Uro_RecursiveAll(P_GEN_OS_ARGS) 
+      : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
 
 private:
    _bool prevFile = false;
-   const _bool includesRoot;
 };
 
 }

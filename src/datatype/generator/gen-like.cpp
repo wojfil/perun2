@@ -828,14 +828,7 @@ _bool LC_Field_H::compareToPattern(const _str& value)
 
 
 LC_Field_UH::LC_Field_UH(const _str& pat)
-   : pattern(pat), length(pat.size()),
-     isUnderscore(std::vector<_bool>(length)), isHash(std::vector<_bool>(length))
-{
-   for (_size i = 0; i < length; i++) {
-      isUnderscore[i] = (pat[i] == WILDCARD_ONE_CHAR);
-      isHash[i] = (pat[i] == WILDCARD_ONE_DIGIT);
-   }
-}
+   : pattern(pat), length(pat.size()) { }
 
 
 _bool LC_Field_UH::compareToPattern(const _str& value)
@@ -845,14 +838,21 @@ _bool LC_Field_UH::compareToPattern(const _str& value)
    }
 
    for (_size i = 0; i < length; i++) {
-      if (!isUnderscore[i]) {
-         if (isHash[i]) {
+      switch (pattern[i]) {
+         case WILDCARD_ONE_CHAR: {
+            break;
+         }
+         case WILDCARD_ONE_DIGIT: {
             if (!std::iswdigit(value[i])) {
                return false;
             }
+            break;
          }
-         else if (value[i] != pattern[i]) {
-            return false;
+         default: {
+            if (value[i] != pattern[i]) {
+               return false;
+            }
+            break;
          }
       }
    }

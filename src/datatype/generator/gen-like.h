@@ -375,8 +375,6 @@ public:
 private:
    const _size length;
    const _str pattern;
-   std::vector<_bool> isUnderscore;
-   std::vector<_bool> isHash;
 };
 
 }

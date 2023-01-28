@@ -51,27 +51,27 @@ _bool DefinitionGenerator::generate(_defptr& result) const
 
    switch (this->element_) {
       case OsElement::oe_All: {
-         result = std::make_unique<Uro_All>(P_GEN_OS_ARGS_DEFAULT_EXT);
+         result = std::make_unique<All>(P_GEN_OS_ARGS_DEFAULT_EXT);
          break;
       }
       case OsElement::oe_Directories: {
-         result = std::make_unique<Uro_Directories>(P_GEN_OS_ARGS_DEFAULT_EXT);
+         result = std::make_unique<Directories>(P_GEN_OS_ARGS_DEFAULT_EXT);
          break;
       }
       case OsElement::oe_Files: {
-         result = std::make_unique<Uro_Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
+         result = std::make_unique<Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
          break;
       }
       case OsElement::oe_RecursiveFiles: {
-         result = std::make_unique<Uro_RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
+         result = std::make_unique<RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
          break;
       }
       case OsElement::oe_RecursiveDirectories: {
-         result = std::make_unique<Uro_RecursiveDirectories>(P_GEN_OS_ARGS_DEFAULT);
+         result = std::make_unique<RecursiveDirectories>(P_GEN_OS_ARGS_DEFAULT);
          break;
       }
       case OsElement::oe_RecursiveAll: {
-         result = std::make_unique<Uro_RecursiveAll>(P_GEN_OS_ARGS_DEFAULT);
+         result = std::make_unique<RecursiveAll>(P_GEN_OS_ARGS_DEFAULT);
          break;
       }
       default: {
@@ -119,7 +119,7 @@ void OsDefinitionRecursive::reset()
    }
 }
 
-_bool Uro_All::hasNext()
+_bool All::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -186,7 +186,7 @@ _bool Uro_All::hasNext()
    return false;
 }
 
-_bool Uro_Files::hasNext()
+_bool Files::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -249,7 +249,7 @@ _bool Uro_Files::hasNext()
    return false;
 }
 
-_bool Uro_Directories::hasNext()
+_bool Directories::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -318,7 +318,7 @@ void OsDefinitionRecursive::setDepth()
    this->inner.depth.value = this->depth;
 }
 
-_bool Uro_RecursiveFiles::hasNext()
+_bool RecursiveFiles::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -433,7 +433,7 @@ _bool Uro_RecursiveFiles::hasNext()
    return false;
 }
 
-_bool Uro_RecursiveDirectories::hasNext()
+_bool RecursiveDirectories::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -531,7 +531,7 @@ _bool Uro_RecursiveDirectories::hasNext()
    return false;
 }
 
-_bool Uro_RecursiveAll::hasNext()
+_bool RecursiveAll::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());

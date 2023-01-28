@@ -132,66 +132,66 @@ protected:
 };
 
 
-struct Uro_Files : OsDefinitionPlain
+struct Files : OsDefinitionPlain
 {
 public:
-   Uro_Files() = delete;
-   Uro_Files(P_GEN_OS_ARGS_EXT) 
+   Files() = delete;
+   Files(P_GEN_OS_ARGS_EXT) 
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
 };
 
 
-struct Uro_Directories : OsDefinitionPlain
+struct Directories : OsDefinitionPlain
 {
 public:
-   Uro_Directories() = delete;
-   Uro_Directories(P_GEN_OS_ARGS_EXT) 
+   Directories() = delete;
+   Directories(P_GEN_OS_ARGS_EXT) 
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
 };
 
 
-struct Uro_All : OsDefinitionPlain
+struct All : OsDefinitionPlain
 {
 public:
-   Uro_All() = delete;
-   Uro_All(P_GEN_OS_ARGS_EXT) 
+   All() = delete;
+   All(P_GEN_OS_ARGS_EXT) 
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
 };
 
 
-struct Uro_RecursiveFiles : OsDefinitionRecursive
+struct RecursiveFiles : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveFiles() = delete;
-   Uro_RecursiveFiles(P_GEN_OS_ARGS) 
+   RecursiveFiles() = delete;
+   RecursiveFiles(P_GEN_OS_ARGS) 
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
 };
 
 
-struct Uro_RecursiveDirectories : OsDefinitionRecursive
+struct RecursiveDirectories : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveDirectories() = delete;
-   Uro_RecursiveDirectories(P_GEN_OS_ARGS) 
+   RecursiveDirectories() = delete;
+   RecursiveDirectories(P_GEN_OS_ARGS) 
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
 };
 
 
-struct Uro_RecursiveAll : OsDefinitionRecursive
+struct RecursiveAll : OsDefinitionRecursive
 {
 public:
-   Uro_RecursiveAll() = delete;
-   Uro_RecursiveAll(P_GEN_OS_ARGS) 
+   RecursiveAll() = delete;
+   RecursiveAll(P_GEN_OS_ARGS) 
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;

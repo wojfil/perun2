@@ -29,14 +29,14 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 
    if (pattern == STRING_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_All>(loc, uro, gen::os::DEFAULT_PATTERN,
+      result = std::make_unique<gen::All>(loc, uro, gen::os::DEFAULT_PATTERN,
          gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
    if (pattern == STRING_DOUBLE_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
-      result = std::make_unique<gen::Uro_RecursiveAll>(loc, uro, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
+      result = std::make_unique<gen::RecursiveAll>(loc, uro, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
@@ -104,12 +104,12 @@ exitAsteriskBeginning:
 
       if (separatorId2 == -1) {
          if (separatorId == -1) {
-            result = std::make_unique<gen::Uro_All>(base, uro,
+            result = std::make_unique<gen::All>(base, uro,
                str(OS_SEPARATOR_STRING, isAbsolute ? pattern.substr(3) : pattern), isAbsolute, prefix);
          }
          else {
             const _str s = pattern.substr(separatorId);
-            result = std::make_unique<gen::Uro_All>(base, uro, s, isAbsolute, prefix);
+            result = std::make_unique<gen::All>(base, uro, s, isAbsolute, prefix);
          }
 
          return true;
@@ -122,7 +122,7 @@ exitAsteriskBeginning:
          ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart, patternLength))
          : pattern.substr(patternStart, patternLength);
 
-      _defptr d(new gen::Uro_Directories(base, uro, p, isAbsolute, prefix));
+      _defptr d(new gen::Directories(base, uro, p, isAbsolute, prefix));
       result = std::make_unique<gen::DefinitionSuffix>(d, uro, suffix, isAbsolute, gen::os::IS_FINAL);
       return true;
    }
@@ -172,10 +172,10 @@ exitAsteriskBeginning:
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
-         result = std::make_unique<gen::Uro_All>(base, uro, p, isAbsolute, prefix);
+         result = std::make_unique<gen::All>(base, uro, p, isAbsolute, prefix);
       }
       else {
-         _defptr d(new gen::Uro_Directories(base, uro, p, isAbsolute, prefix));
+         _defptr d(new gen::Directories(base, uro, p, isAbsolute, prefix));
          result = std::make_unique<gen::DefinitionSuffix>(d, uro, u.suffixPart, isAbsolute, gen::os::IS_FINAL);
       }
       return true;
@@ -185,10 +185,10 @@ exitAsteriskBeginning:
    const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
 
    if (units[0].suffixPart.empty()) {
-      result = std::make_unique<gen::Uro_Directories>(base, uro, firstPatt, isAbsolute, prefix);
+      result = std::make_unique<gen::Directories>(base, uro, firstPatt, isAbsolute, prefix);
    }
    else {
-      _defptr d(new gen::Uro_Directories(base, uro, firstPatt, isAbsolute, prefix));
+      _defptr d(new gen::Directories(base, uro, firstPatt, isAbsolute, prefix));
       result = std::make_unique<gen::DefinitionSuffix>(d, uro, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL);
    }
 
@@ -203,14 +203,14 @@ exitAsteriskBeginning:
 
       if (units[i].suffixPart.empty()) {
          if (isFinal) {
-            nextDef = std::make_unique<gen::Uro_All>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
+            nextDef = std::make_unique<gen::All>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
          }
          else {
-            nextDef = std::make_unique<gen::Uro_Directories>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
+            nextDef = std::make_unique<gen::Directories>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
          }
       }
       else {
-         _defptr d(new gen::Uro_Directories(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX));
+         _defptr d(new gen::Directories(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX));
          nextDef = std::make_unique<gen::DefinitionSuffix>(d, uro, units[i].suffixPart, isAbsolute, isFinal);
       }
 

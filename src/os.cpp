@@ -1681,7 +1681,6 @@ _size os_readFile_size(const _str& path)
     return fileinfo.st_size;
 }
 
-//_str os_readFile(const _str& path, _bool& result)
 _bool os_readFile(_str& result, const _str& path)
 {
    FILE* f = _wfopen(path.c_str(), L"rtS, ccs=UTF-8");

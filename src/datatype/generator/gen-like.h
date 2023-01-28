@@ -148,8 +148,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str end;
+   const _size length;
+   const _str end;
 };
 
 
@@ -162,8 +162,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str string;
+   const _size length;
+   const _str string;
 };
 
 
@@ -302,8 +302,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str start;
+   const _size length;
+   const _str start;
 };
 
 
@@ -316,8 +316,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str end;
+   const _size length;
+   const _str end;
 };
 
 
@@ -343,8 +343,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str pattern;
+   const _size length;
+   const _str pattern;
    std::vector<_bool> isUnderscore;
 };
 
@@ -358,8 +358,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str pattern;
+   const _size length;
+   const _str pattern;
    std::vector<_bool> isHash;
 };
 
@@ -373,8 +373,8 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   _size length;
-   _str pattern;
+   const _size length;
+   const _str pattern;
    std::vector<_bool> isUnderscore;
    std::vector<_bool> isHash;
 };

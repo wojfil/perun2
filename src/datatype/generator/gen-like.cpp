@@ -454,14 +454,27 @@ LC_Default::LC_Default(const _str& pat)
 
 void LC_Default::clearCharStates(const _str& value)
 {
-   this->charStates.clear();
+   if (this->charStates.empty()) {
+      this->charStates.emplace_back(this->patternLen + 1, LikeCharState::lcs_Unknown);
+   }
 
-   for (_size i = 0; i <= value.size(); i++) {
-      this->charStates.emplace_back();
-      this->charStates.back().reserve(patternLen);
+   const _size prevSize = this->charStates.size() - 1;
+   const _size nextSize = value.size();
 
-      for (_size j = 0; j <= this->patternLen; j++) {
-         this->charStates[i].push_back(LikeCharState::lcs_Unknown);
+   if (nextSize > prevSize) {
+      this->charStates.reserve(nextSize + 1);
+
+      for (_size i = 0; i <= prevSize; i++) {
+         std::fill(this->charStates[i].begin(), this->charStates[i].end(), LikeCharState::lcs_Unknown);
+      }
+
+      while (this->charStates.size() < nextSize + 1) {
+         this->charStates.emplace_back(this->patternLen + 1, LikeCharState::lcs_Unknown);
+      }
+   }
+   else {
+      for (_size i = 0; i <= nextSize; i++) {
+         std::fill(this->charStates[i].begin(), this->charStates[i].end(), LikeCharState::lcs_Unknown);
       }
    }
 }
@@ -486,7 +499,7 @@ LikeCharState LC_Default::checkState(const _size& n, const _size& m)
    LikeCharState ans = LikeCharState::lcs_NotMatches;
 
    if (this->pattern[m - 1] == WILDCARD_MULTIPLE_CHARS) {
-      ans = std::max(ans, this->checkState(n, m-1));
+      ans = std::max(ans, this->checkState(n, m - 1));
       if (n > 0) {
          ans = std::max(ans, this->checkState(n - 1, m));
       }

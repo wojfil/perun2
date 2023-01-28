@@ -54,7 +54,7 @@ private:
 
 struct LikeComparer
 {
-   virtual _bool compareToPattern(const _str& value) const = 0;
+   virtual _bool compareToPattern(const _str& value) = 0;
 };
 
 
@@ -95,19 +95,32 @@ private:
 };
 
 
+enum LikeCharState
+{
+   // these numbers are important
+   lcs_Unknown = -1,
+   lcs_NotMatches = 0,
+   lcs_Matches = 1
+};
+
+
 //  %exa[m-v]__pl_e%            complex pattern like this
 struct LC_Default : LikeComparer
 {
 public:
    LC_Default() = delete;
    LC_Default(const _str& pat);
-   LC_Default(const _str& pat, const std::unordered_map<_int, LikeSet>& cs);
-   _bool compareToPattern(const _str& value) const override;
+   LC_Default(const _str& pat, const std::unordered_map<_size, LikeSet>& cs);
+   _bool compareToPattern(const _str& value) override;
 
 private:
+   LikeCharState checkState(const _size& n, const _size& m);
+
    const _str pattern;
    const _size patternLen;
-   const std::unordered_map<_int, LikeSet> charSets;
+   const std::unordered_map<_size, LikeSet> charSets;
+   _str const* valuePtr = nullptr;
+   std::vector<std::vector<LikeCharState>> charStates;
 };
 
 
@@ -117,7 +130,7 @@ struct LC_StartsWith : LikeComparer
 public:
    LC_StartsWith() = delete;
    LC_StartsWith(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -131,7 +144,7 @@ struct LC_EndsWith : LikeComparer
 public:
    LC_EndsWith() = delete;
    LC_EndsWith(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -145,7 +158,7 @@ struct LC_Contains : LikeComparer
 public:
    LC_Contains() = delete;
    LC_Contains(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -159,7 +172,7 @@ struct LC_StartsWithChar : LikeComparer
 public:
    LC_StartsWithChar() = delete;
    LC_StartsWithChar(const _str& pat) : ch(pat[0]) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _char ch;
@@ -172,7 +185,7 @@ struct LC_EndsWithChar : LikeComparer
 public:
    LC_EndsWithChar() = delete;
    LC_EndsWithChar(const _str& pat) : ch(pat[1]) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _char ch;
@@ -185,7 +198,7 @@ struct LC_ContainsChar : LikeComparer
 public:
    LC_ContainsChar() = delete;
    LC_ContainsChar(const _str& pat) : ch(pat[1]) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _char ch;
@@ -199,7 +212,7 @@ public:
    LC_UnderscoreStart() = delete;
    LC_UnderscoreStart(const _str& pat) : pattern(pat),
       length(pat.size()) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _str pattern;
@@ -214,7 +227,7 @@ public:
    LC_UnderscoreEnd() = delete;
    LC_UnderscoreEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _str pattern;
@@ -230,7 +243,7 @@ public:
    LC_UnderscoreStartEnd() = delete;
    LC_UnderscoreStartEnd(const _str& pat) : pattern(pat),
       length(pat.size()), lengthMinusOne(pat.size() - 1) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _str pattern;
@@ -245,7 +258,7 @@ struct LC_Equals : LikeComparer
 public:
    LC_Equals() = delete;
    LC_Equals(const _str& pat) : pattern(pat) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _str pattern;
@@ -258,7 +271,7 @@ struct LC_Constant : LikeComparer
 public:
    LC_Constant() = delete;
    LC_Constant(const _bool& cnst) : constant(cnst) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _bool constant;
@@ -272,7 +285,7 @@ struct LC_ConstantLength : LikeComparer
 public:
    LC_ConstantLength() = delete;
    LC_ConstantLength(const _size& len) : length(len) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _size length;
@@ -285,7 +298,7 @@ struct LC_UnderscorePercent : LikeComparer
 public:
    LC_UnderscorePercent() = delete;
    LC_UnderscorePercent(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -299,7 +312,7 @@ struct LC_PercentUnderscore : LikeComparer
 public:
    LC_PercentUnderscore() = delete;
    LC_PercentUnderscore(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -313,7 +326,7 @@ struct LC_OnlyDigits : LikeComparer
 public:
    LC_OnlyDigits() = delete;
    LC_OnlyDigits(const _size& len) : length(len) {};
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    const _size length;
@@ -326,7 +339,7 @@ struct LC_Field_U : LikeComparer
 public:
    LC_Field_U() = delete;
    LC_Field_U(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -341,7 +354,7 @@ struct LC_Field_H : LikeComparer
 public:
    LC_Field_H() = delete;
    LC_Field_H(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;
@@ -356,7 +369,7 @@ struct LC_Field_UH : LikeComparer
 public:
    LC_Field_UH() = delete;
    LC_Field_UH(const _str& pat);
-   _bool compareToPattern(const _str& value) const override;
+   _bool compareToPattern(const _str& value) override;
 
 private:
    _size length;

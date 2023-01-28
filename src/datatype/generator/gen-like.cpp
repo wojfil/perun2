@@ -70,11 +70,11 @@ static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endI
 
 static void defaultLikeCmp(_likeptr& result, const _str& pattern)
 {
-   std::unordered_map<_int, LikeSet> sets;
+   std::unordered_map<_size, LikeSet> sets;
    const _size length = pattern.size();
    _stream ss;
-   _int id = 0;
    _bool prevWasMulti = false;
+   _size resultLength = 0;
 
    for (_size i = 0; i < length; i++) {
       const _char& ch = pattern[i];
@@ -104,19 +104,19 @@ static void defaultLikeCmp(_likeptr& result, const _str& pattern)
             return;
          }
 
-         sets.emplace(id, makeLikeSet(pattern, startId, i - 1));
+         sets.emplace(resultLength, makeLikeSet(pattern, startId, i - 1));
          ss << WILDCARD_SET;
+         resultLength++;
          prevWasMulti = false;
       }
       else {
          const _bool isMulti = (ch == WILDCARD_MULTIPLE_CHARS);
          if (!(isMulti && prevWasMulti)) {
             ss << ch;
+            resultLength++;
          }
          prevWasMulti = isMulti;
       }
-
-      id++;
    }
 
    result = std::make_unique<LC_Default>(ss.str(), sets);
@@ -445,142 +445,87 @@ _bool Like::getValue() {
 };
 
 
-LC_Default::LC_Default(const _str& pat, const std::unordered_map<_int, LikeSet>& cs)
+LC_Default::LC_Default(const _str& pat, const std::unordered_map<_size, LikeSet>& cs)
    : pattern(pat), charSets(cs), patternLen(pat.size()) { };
 
 LC_Default::LC_Default(const _str& pat)
    : pattern(pat), charSets({}), patternLen(pat.size()) { };
 
-_bool LC_Default::compareToPattern(const _str& value) const
+
+LikeCharState LC_Default::checkState(const _size& n, const _size& m)
 {
-   const _int vlen = value.size();
-   _bool isMatch = true;
-   _bool wildCardOn = false; // %
-   _bool charWildCardOn = false; // _
-   _bool end = false;
-   _int lastWildCard = -1;
-   _int id = 0;
-   _char p = WILDCARD_NONE;
-   _size setId = 0;
+   if (this->charStates[n][m] >= LikeCharState::lcs_NotMatches) {
+      return this->charStates[n][m];
+   }
 
-   for (_int i = 0; i < vlen; i++) {
-      const _char& c = value[i];
-      end = (id >= this->patternLen);
-      if (!end) {
-         p = pattern[id];
+   if (n == 0 && m == 0) {
+      this->charStates[n][m] = LikeCharState::lcs_Matches;
+      return this->charStates[n][m];
+   }
 
-         if (!wildCardOn && p == WILDCARD_MULTIPLE_CHARS) {
-            lastWildCard = id;
-            wildCardOn = true;
-            while (id < this->patternLen && pattern[id] == WILDCARD_MULTIPLE_CHARS) {
-               id++;
-            }
-            if (id >= this->patternLen) {
-               p = WILDCARD_NONE;
-            }
-            else {
-               p = pattern[id];
-            }
-         }
-         else if (p == WILDCARD_ONE_CHAR) {
-            charWildCardOn = true;
-            id++;
-         }
-      }
+   if (n > 0 && m == 0) {
+      this->charStates[n][m] = LikeCharState::lcs_NotMatches;
+      return this->charStates[n][m];
+   }
 
-      if (wildCardOn) {
-         if (p == WILDCARD_ONE_DIGIT) {
-            if (std::iswdigit(c)) {
-               wildCardOn = false;
-               id++;
-            }
-         }
-         else if (p == WILDCARD_SET) {
-            if (end) {
-               return false;
-            }
-            else if (charSets.at(id).contains(c)) {
-               wildCardOn = false;
-               id++;
-            }
-         }
-         else if (p == c) {
-            wildCardOn = false;
-            id++;
-         }
-      }
-      else if (charWildCardOn) {
-         charWildCardOn = false;
-      }
-      else {
-         if (p == WILDCARD_ONE_DIGIT) {
-            if (std::iswdigit(c)) {
-               id++;
-               if (id > this->patternLen) {
-                  return false;
-               }
-            }
-            else {
-               if (lastWildCard >= 0) {
-                  id = lastWildCard;
-               }
-               else {
-                  isMatch = false;
-                  break;
-               }
-            }
-         }
-         else if (p == WILDCARD_SET) {
-            if (end) {
-               return false;
-            }
-            else if (charSets.at(id).contains(c)) {
-               id++;
-               if (id > this->patternLen) {
-                  return false;
-               }
-            }
-            else {
-               if (lastWildCard >= 0) {
-                  id = lastWildCard;
-               }
-               else {
-                  isMatch = false;
-                  break;
-               }
-            }
-         }
-         else if (p == c) {
-            id++;
-         }
-         else {
-            if (lastWildCard >= 0) {
-               id = lastWildCard;
-            }
-            else {
-               isMatch = false;
-               break;
-            }
-         }
+   LikeCharState ans = LikeCharState::lcs_NotMatches;
+
+   if (this->pattern[m - 1] == WILDCARD_MULTIPLE_CHARS) {
+      ans = std::max(ans, this->checkState(n, m-1));
+      if (n > 0) {
+         ans = std::max(ans, this->checkState(n - 1, m));
       }
    }
 
-   end = (id >= this->patternLen);
+   if (n > 0) {
+      const _char& pch = this->pattern[m - 1];
 
-   if (isMatch && !end) {
-      _bool onlyWildCards = true;
-      for (_int i = id; i < this->patternLen; i++) {
-         if (pattern[i] != WILDCARD_MULTIPLE_CHARS) {
-            onlyWildCards = false;
+      switch (pch) {
+         case WILDCARD_ONE_CHAR: {
+            ans = std::max(ans, this->checkState(n - 1, m - 1));
+            break;
+         }
+         case WILDCARD_ONE_DIGIT: {
+            if (std::iswdigit((*this->valuePtr)[n - 1])) {
+               ans = std::max(ans, this->checkState(n - 1, m - 1));
+            }
+            break;
+         }
+         case WILDCARD_SET: {
+            if (this->charSets.at(m - 1).contains((*this->valuePtr)[n - 1])) {
+               ans = std::max(ans, this->checkState(n - 1, m - 1));
+            }
+            break;
+         }
+         default: {
+            if (pch == (*this->valuePtr)[n - 1]) {
+               ans = std::max(ans, this->checkState(n - 1, m - 1));
+            }
             break;
          }
       }
-      if (onlyWildCards) {
-         end = true;
+   }
+
+   this->charStates[n][m] = ans;
+   return this->charStates[n][m];
+}
+
+
+_bool LC_Default::compareToPattern(const _str& value)
+{
+   this->valuePtr = &value;
+   this->charStates.clear();
+
+   for (_size i = 0; i <= value.size(); i++) {
+      this->charStates.emplace_back();
+      this->charStates.back().reserve(patternLen);
+
+      for (_size j = 0; j <= this->patternLen; j++) {
+         this->charStates[i].push_back(LikeCharState::lcs_Unknown);
       }
    }
 
-   return isMatch && end;
+   return this->checkState(value.size(), this->patternLen) == LikeCharState::lcs_Matches;
 }
 
 
@@ -588,7 +533,7 @@ LC_StartsWith::LC_StartsWith(const _str& pat)
    : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
-_bool LC_StartsWith::compareToPattern(const _str& value) const
+_bool LC_StartsWith::compareToPattern(const _str& value)
 {
    if (value.size() < length) {
       return false;
@@ -608,7 +553,7 @@ LC_EndsWith::LC_EndsWith(const _str& pat)
    : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
-_bool LC_EndsWith::compareToPattern(const _str& value) const
+_bool LC_EndsWith::compareToPattern(const _str& value)
 {
    const _size vlength = value.size();
 
@@ -632,7 +577,7 @@ LC_Contains::LC_Contains(const _str& pat)
    : length(pat.size() - 2), string(pat.substr(1, length)) { };
 
 
-_bool LC_Contains::compareToPattern(const _str& value) const
+_bool LC_Contains::compareToPattern(const _str& value)
 {
    return value.size() < length
       ? false
@@ -640,7 +585,7 @@ _bool LC_Contains::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_StartsWithChar::compareToPattern(const _str& value) const
+_bool LC_StartsWithChar::compareToPattern(const _str& value)
 {
    return value.empty()
       ? false
@@ -648,7 +593,7 @@ _bool LC_StartsWithChar::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_EndsWithChar::compareToPattern(const _str& value) const
+_bool LC_EndsWithChar::compareToPattern(const _str& value)
 {
    const _size len = value.size();
 
@@ -658,7 +603,7 @@ _bool LC_EndsWithChar::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_ContainsChar::compareToPattern(const _str& value) const
+_bool LC_ContainsChar::compareToPattern(const _str& value)
 {
    const _size len = value.size();
 
@@ -676,7 +621,7 @@ _bool LC_ContainsChar::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_UnderscoreStart::compareToPattern(const _str& value) const
+_bool LC_UnderscoreStart::compareToPattern(const _str& value)
 {
    const _size vlength = value.size();
 
@@ -694,7 +639,7 @@ _bool LC_UnderscoreStart::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_UnderscoreEnd::compareToPattern(const _str& value) const
+_bool LC_UnderscoreEnd::compareToPattern(const _str& value)
 {
    const _size vlength = value.size();
 
@@ -712,7 +657,7 @@ _bool LC_UnderscoreEnd::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_UnderscoreStartEnd::compareToPattern(const _str& value) const
+_bool LC_UnderscoreStartEnd::compareToPattern(const _str& value)
 {
    const _size vlength = value.size();
 
@@ -730,19 +675,19 @@ _bool LC_UnderscoreStartEnd::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_Equals::compareToPattern(const _str& value) const
+_bool LC_Equals::compareToPattern(const _str& value)
 {
    return value == pattern;
 }
 
 
-_bool LC_Constant::compareToPattern(const _str& value) const
+_bool LC_Constant::compareToPattern(const _str& value)
 {
    return constant;
 }
 
 
-_bool LC_ConstantLength::compareToPattern(const _str& value) const
+_bool LC_ConstantLength::compareToPattern(const _str& value)
 {
    return value.size() == length;
 }
@@ -752,7 +697,7 @@ LC_UnderscorePercent::LC_UnderscorePercent(const _str& pat)
    : length(pat.size() - 1), start(pat.substr(0, length)) { };
 
 
-_bool LC_UnderscorePercent::compareToPattern(const _str& value) const
+_bool LC_UnderscorePercent::compareToPattern(const _str& value)
 {
    if (value.size() < length) {
       return false;
@@ -772,7 +717,7 @@ LC_PercentUnderscore::LC_PercentUnderscore(const _str& pat)
    : length(pat.size() - 1), end(pat.substr(1, length)) { };
 
 
-_bool LC_PercentUnderscore::compareToPattern(const _str& value) const
+_bool LC_PercentUnderscore::compareToPattern(const _str& value)
 {
    const _size vlength = value.size();
 
@@ -793,7 +738,7 @@ _bool LC_PercentUnderscore::compareToPattern(const _str& value) const
 }
 
 
-_bool LC_OnlyDigits::compareToPattern(const _str& value) const
+_bool LC_OnlyDigits::compareToPattern(const _str& value)
 {
    const _size vlength = value.size();
    if (vlength != length) {
@@ -818,7 +763,7 @@ LC_Field_U::LC_Field_U(const _str& pat)
 }
 
 
-_bool LC_Field_U::compareToPattern(const _str& value) const
+_bool LC_Field_U::compareToPattern(const _str& value)
 {
    if (value.size() != length) {
       return false;
@@ -843,7 +788,7 @@ LC_Field_H::LC_Field_H(const _str& pat)
 }
 
 
-_bool LC_Field_H::compareToPattern(const _str& value) const
+_bool LC_Field_H::compareToPattern(const _str& value)
 {
    if (value.size() != length) {
       return false;
@@ -875,7 +820,7 @@ LC_Field_UH::LC_Field_UH(const _str& pat)
 }
 
 
-_bool LC_Field_UH::compareToPattern(const _str& value) const
+_bool LC_Field_UH::compareToPattern(const _str& value)
 {
    if (value.size() != length) {
       return false;

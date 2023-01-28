@@ -15,10 +15,34 @@
 #ifndef GEN_DOUBLE_ASTERISK_H_INCLUDED
 #define GEN_DOUBLE_ASTERISK_H_INCLUDED
 
+#include "gen-os.h"
+#include <memory>
+
+
 
 namespace uro::gen
 {
 
+typedef std::unique_ptr<RecursiveAll> _rallptr;
+
+    
+struct DoubleAsteriskPattern : Definition
+{
+public:
+   DoubleAsteriskPattern(_rallptr& def, _uro& uro);
+
+   _bool hasNext() override;
+   void reset() override;
+
+private:
+   _bool matchesPattern();
+
+   _rallptr definition;
+   InnerVariables& inner;
+   _uro& uroboros;
+   _bool first = true;
+   _numi index = 0LL;
+};
 
 
 }

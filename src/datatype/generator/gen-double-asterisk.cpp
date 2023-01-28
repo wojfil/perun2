@@ -13,11 +13,50 @@
 */
 
 #include "gen-double-asterisk.h"
+#include "../../uroboros.h"
 
 
 namespace uro::gen
 {
 
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro)
+   : definition(std::move(def)), inner(uro.vars.inner), uroboros(uro) { };
+
+
+void DoubleAsteriskPattern::reset() {
+   if (!first) {
+      first = true;
+      definition->reset();
+   }
+}
+
+
+_bool DoubleAsteriskPattern::hasNext()
+{
+   if (first) {
+      index.setToZero();
+      first = false;
+   }
+
+   while (definition->hasNext() && this->uroboros.state == State::s_Running) {
+      value = definition->getValue();
+
+      if (matchesPattern()) {
+         this->inner.index.value = index;
+         index++;
+         return true;
+      }
+   }
+
+   first = true;
+   return false;
+}
+
+_bool DoubleAsteriskPattern::matchesPattern()
+{
+   // todo
+   return true;
+}
 
 
 }

@@ -70,19 +70,11 @@ static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endI
 
 static void defaultLikeCmp(_likeptr& result, const _str& pattern)
 {
-   if (pattern.find(WILDCARD_SET_START) == _str::npos) {
-      result = std::make_unique<LC_Default>(pattern);
-   }
-   else {
-      bracketsLikeCmp(result, pattern);
-   }
-}
-static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
-{
    std::unordered_map<_int, LikeSet> sets;
    const _size length = pattern.size();
    _stream ss;
    _int id = 0;
+   _bool prevWasMulti = false;
 
    for (_size i = 0; i < length; i++) {
       const _char& ch = pattern[i];
@@ -114,9 +106,14 @@ static void bracketsLikeCmp(_likeptr& result, const _str& pattern)
 
          sets.emplace(id, makeLikeSet(pattern, startId, i - 1));
          ss << WILDCARD_SET;
+         prevWasMulti = false;
       }
       else {
-         ss << ch;
+         const _bool isMulti = (ch == WILDCARD_MULTIPLE_CHARS);
+         if (!(isMulti && prevWasMulti)) {
+            ss << ch;
+         }
+         prevWasMulti = isMulti;
       }
 
       id++;
@@ -257,10 +254,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
    for (_size i = 1; i < limit; i++) {
       switch (pattern[i]) {
          case WILDCARD_SET_START:
-         case WILDCARD_SET_END: {
-            bracketsLikeCmp(result, pattern);
-            return;
-         }
+         case WILDCARD_SET_END:
          case WILDCARD_MULTIPLE_CHARS:
          case WILDCARD_SET_EXCLUSION: {
             defaultLikeCmp(result, pattern);
@@ -288,7 +282,7 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
       }
       case WILDCARD_SET_START:
       case WILDCARD_SET_END: {
-         bracketsLikeCmp(result, pattern);
+         defaultLikeCmp(result, pattern);
          return;
       }
       case WILDCARD_MULTIPLE_CHARS:

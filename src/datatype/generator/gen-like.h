@@ -63,7 +63,6 @@ typedef std::unique_ptr<LikeComparer> _likeptr;
 
 static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId);
 static void defaultLikeCmp(_likeptr& result, const _str& pattern);
-static void bracketsLikeCmp(_likeptr& result, const _str& pattern);
 void parseLikeCmp(_likeptr& result, const _str& pattern);
 
 

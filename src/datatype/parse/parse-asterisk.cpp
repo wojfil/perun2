@@ -16,8 +16,8 @@
 #include "../generator/gen-string.h"
 #include "../generator/gen-generic.h"
 #include "../generator/gen-definition.h"
+#include "../generator/gen-double-asterisk.h"
 #include "../../os.h"
-#include "../../print.h"
 
 
 namespace uro::parse
@@ -128,6 +128,11 @@ exitAsteriskBeginning:
    }
 
    _size start = separatorId == -1 ? patternStart : static_cast<_size>(separatorId + 1);
+
+   if ((info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0) {
+      return parseDoubleAsterisk(result, base, pattern, start, isAbsolute, uro);
+   }
+
    _bool hasAsterisk = false;
    _str asteriskPart;
    _str suffixPart;
@@ -159,11 +164,6 @@ exitAsteriskBeginning:
 
    const _size ulen = units.size();
    const _bool hasDoubleAst = (info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0;
-
-   if ((info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0) {
-      // todo 
-      return false;
-   }
 
    // the pattern contains multiple asterisks
    // but they all appear within one 'path segment' (there is no separator \ / between them)
@@ -221,6 +221,7 @@ exitAsteriskBeginning:
    return true;
 }
 
+
 void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
    const _bool& hasAsterisk, std::vector<AsteriskUnit>& units)
 {
@@ -242,6 +243,105 @@ void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& pa
          suffixPart = str(suffixPart, OS_SEPARATOR_STRING, part);
       }
    }
+}
+
+
+_bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, 
+   const _size& start, const _bool& isAbsolute, _uro& uro)
+{
+   enum Mode {
+      m_Normal,
+      m_SingleAsterisk,
+      m_DoubleAsterisk
+   };
+
+   Mode mode = Mode::m_Normal;
+   const _size totalLength = pattern.size();
+   _size defaultDepth = 0;
+   _str finalPattern = pattern.substr(0, start);
+
+   for (_size i = start; i < totalLength; i++) {
+      const _size& ch = pattern[i];
+
+      switch (mode) {
+         case Mode::m_Normal: {
+            switch (ch) {
+               case OS_SEPARATOR: {
+                  finalPattern += ch;
+                  defaultDepth++;
+                  break;
+               }
+               case CHAR_ASTERISK: {
+                  mode = Mode::m_SingleAsterisk;
+                  break;
+               }
+               default: {
+                  finalPattern += ch;
+                  break;
+               }
+            }
+            break;
+         }
+         case Mode::m_SingleAsterisk: {
+            switch (ch) {
+               case OS_SEPARATOR: {
+                  finalPattern += gen::WILDCARD_SINGLE_ASTERISK;
+                  finalPattern += ch;
+                  defaultDepth++;
+                  mode = Mode::m_Normal;
+                  break;
+               }
+               case CHAR_ASTERISK: {
+                  mode = Mode::m_DoubleAsterisk;
+                  break;
+               }
+               default: {
+                  finalPattern += gen::WILDCARD_SINGLE_ASTERISK;
+                  finalPattern += ch;
+                  mode = Mode::m_Normal;
+                  break;
+               }
+            }
+            break;
+         }
+         case Mode::m_DoubleAsterisk: {
+            switch (ch) {
+               case OS_SEPARATOR: {
+                  finalPattern += gen::WILDCARD_DOUBLE_ASTERISK;
+                  finalPattern += ch;
+                  defaultDepth++;
+                  mode = Mode::m_Normal;
+                  break;
+               }
+               case CHAR_ASTERISK: {
+                  break;
+               }
+               default: {
+                  finalPattern += gen::WILDCARD_DOUBLE_ASTERISK;
+                  finalPattern += ch;
+                  mode = Mode::m_Normal;
+                  break;
+               }
+            }
+            break;
+         }
+      }
+   }
+
+   switch (mode) {
+      case Mode::m_SingleAsterisk: {
+         finalPattern += gen::WILDCARD_SINGLE_ASTERISK;
+         break;
+      }
+      case Mode::m_DoubleAsterisk: {
+         finalPattern += gen::WILDCARD_DOUBLE_ASTERISK;
+         break;
+      }
+   }
+
+   gen::_rallptr loc = std::make_unique<gen::RecursiveAll>(base, uro, isAbsolute, gen::os::NO_PREFIX);
+   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, uro, defaultDepth, start);
+   return true;
 }
 
 }

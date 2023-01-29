@@ -23,13 +23,19 @@
 namespace uro::gen
 {
 
+// these wildcards are used only internally
+// they should be characters restricted for a file name
+inline constexpr _char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
+inline constexpr _char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
+
+
 typedef std::unique_ptr<RecursiveAll> _rallptr;
 
-    
+
 struct DoubleAsteriskPattern : Definition
 {
 public:
-   DoubleAsteriskPattern(_rallptr& def, _uro& uro);
+   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _size& dpth, const _size& start);
 
    _bool hasNext() override;
    void reset() override;
@@ -37,11 +43,13 @@ public:
 private:
    _bool matchesPattern();
 
+   const _size defaultDepth;
+   const _size startId;
    _rallptr definition;
    InnerVariables& inner;
    _uro& uroboros;
    _bool first = true;
-   _numi index = 0LL;
+   _numi index = NINT_ZERO;
 };
 
 

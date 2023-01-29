@@ -19,8 +19,9 @@
 namespace uro::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro)
-   : definition(std::move(def)), inner(uro.vars.inner), uroboros(uro) { };
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _size& dpth, const _size& start)
+   : definition(std::move(def)), inner(uro.vars.inner), uroboros(uro),
+     defaultDepth(dpth), startId(start) { };
 
 
 void DoubleAsteriskPattern::reset() {
@@ -41,7 +42,7 @@ _bool DoubleAsteriskPattern::hasNext()
    while (definition->hasNext() && this->uroboros.state == State::s_Running) {
       value = definition->getValue();
 
-      if (matchesPattern()) {
+      if (this->matchesPattern()) {
          this->inner.index.value = index;
          index++;
          return true;

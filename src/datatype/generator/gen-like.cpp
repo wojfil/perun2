@@ -432,7 +432,8 @@ Like::Like(_genptr<_str>& val, _genptr<_str>& pat)
 // so, for every call, generate a pattern string and its hash
 // if the hash is the same as hash from the previously used pattern
 // then just use previous pattern comparer
-_bool Like::getValue() {
+_bool Like::getValue() 
+{
    const _str pat = pattern->getValue();
    const _size hsh = rawStringHash(pat);
 

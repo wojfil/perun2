@@ -31,4 +31,9 @@ void toUpper(_char& ch)
    ch = std::toupper(ch, std::locale(""));
 }
 
+_bool charsEqualInsensitive(const _char& ch1, const _char& ch2)
+{
+   return _wcsicmp(&ch1, &ch2) == 0;
+}
+
 }

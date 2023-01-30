@@ -25,24 +25,36 @@ namespace uro::gen
 
 // these wildcards are used only internally
 // they should be characters restricted for a file name
+// so no collision happens
 inline constexpr _char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
 inline constexpr _char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
 
-
 typedef std::unique_ptr<RecursiveAll> _rallptr;
+
+enum CharState
+{
+   // these numbers are important
+   cs_Unknown = -1,
+   cs_NotMatches = 0,
+   cs_Matches = 1
+};
 
 
 struct DoubleAsteriskPattern : Definition
 {
 public:
-   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _size& dpth, const _size& start);
+   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size& dpth, const _size& start);
 
    _bool hasNext() override;
    void reset() override;
 
 private:
    _bool matchesPattern();
+   void clearCharStates();
+   CharState checkState(const _size& n, const _size& m);
 
+   const _str pattern;
+   const _size patternLength;
    const _size defaultDepth;
    const _size startId;
    _rallptr definition;
@@ -50,6 +62,10 @@ private:
    _uro& uroboros;
    _bool first = true;
    _numi index = NINT_ZERO;
+
+   std::vector<std::vector<CharState>> charStates;
+   _str const* valuePtr = nullptr;
+
 };
 
 

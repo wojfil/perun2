@@ -45,6 +45,7 @@ typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
 typedef WIN32_FIND_DATAW            _fdata;
 typedef FILETIME                    _ftim;
 typedef std::wstringstream          _stream;
+typedef std::wostringstream         _ostream;
 
 
 _str toStr(const _char& ch);
@@ -52,7 +53,7 @@ _str toStr(const _char& ch);
 template<typename T>
 _str toStr(const T& n)
 {
-   std::wostringstream s;
+   _ostream s;
    s << n;
    return s.str();
 }

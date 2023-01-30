@@ -41,7 +41,9 @@ Number::Number(const _ndouble& val)
 _str Number::toString() const
 {
    if (isDouble)  {
-      const _str str = toStr(value.d);
+      _ostream stream;
+      stream << std::fixed << value.d;
+      const _str str = stream.str();
       const _size len = str.size();
 
       for (_int i = len - 1; i >= 0; i--)  {

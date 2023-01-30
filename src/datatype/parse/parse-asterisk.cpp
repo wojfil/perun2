@@ -256,13 +256,10 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    };
 
    Mode mode = Mode::m_Normal;
-   const _size totalLength = pattern.size();
    _size defaultDepth = 0;
    _str finalPattern = pattern.substr(0, start);
 
-   for (_size i = start; i < totalLength; i++) {
-      const _size& ch = pattern[i];
-
+   for (const _size& ch : pattern) {
       switch (mode) {
          case Mode::m_Normal: {
             switch (ch) {

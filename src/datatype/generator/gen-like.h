@@ -114,7 +114,7 @@ public:
    _bool compareToPattern(const _str& value) override;
 
 private:
-   void clearCharStates(const _str& value);
+   void clearCharStates();
    LikeCharState checkState(const _size& n, const _size& m);
 
    const _str pattern;
@@ -226,14 +226,12 @@ struct LC_UnderscoreEnd : LikeComparer
 {
 public:
    LC_UnderscoreEnd() = delete;
-   LC_UnderscoreEnd(const _str& pat) : pattern(pat),
-      length(pat.size()), lengthMinusOne(pat.size() - 1) {};
+   LC_UnderscoreEnd(const _str& pat) : pattern(pat), length(pat.size()) {};
    _bool compareToPattern(const _str& value) override;
 
 private:
    const _str pattern;
    const _size length;
-   const _size lengthMinusOne;
 };
 
 
@@ -242,14 +240,12 @@ struct LC_UnderscoreStartEnd : LikeComparer
 {
 public:
    LC_UnderscoreStartEnd() = delete;
-   LC_UnderscoreStartEnd(const _str& pat) : pattern(pat),
-      length(pat.size()), lengthMinusOne(pat.size() - 1) {};
+   LC_UnderscoreStartEnd(const _str& pat) : pattern(pat), length(pat.size()) {};
    _bool compareToPattern(const _str& value) override;
 
 private:
    const _str pattern;
    const _size length;
-   const _size lengthMinusOne;
 };
 
 

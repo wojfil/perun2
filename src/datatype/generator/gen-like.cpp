@@ -453,14 +453,14 @@ LC_Default::LC_Default(const _str& pat)
    : pattern(pat), charSets({}), patternLen(pat.size()) { };
 
 
-void LC_Default::clearCharStates(const _str& value)
+void LC_Default::clearCharStates()
 {
    if (this->charStates.empty()) {
       this->charStates.emplace_back(this->patternLen + 1, LikeCharState::lcs_Unknown);
    }
 
    const _size prevSize = this->charStates.size() - 1;
-   const _size nextSize = value.size();
+   const _size nextSize = (*this->valuePtr).size();
 
    if (nextSize > prevSize) {
       this->charStates.reserve(nextSize + 1);
@@ -543,7 +543,7 @@ LikeCharState LC_Default::checkState(const _size& n, const _size& m)
 _bool LC_Default::compareToPattern(const _str& value)
 {
    this->valuePtr = &value;
-   this->clearCharStates(value);
+   this->clearCharStates();
    return this->checkState(value.size(), this->patternLen) == LikeCharState::lcs_Matches;
 }
 
@@ -666,7 +666,7 @@ _bool LC_UnderscoreEnd::compareToPattern(const _str& value)
       return false;
    }
 
-   for (_size i = 0; i < lengthMinusOne; i++) {
+   for (_size i = 0; i < length - 1; i++) {
       if (value[i] != pattern[i]) {
          return false;
       }
@@ -684,7 +684,7 @@ _bool LC_UnderscoreStartEnd::compareToPattern(const _str& value)
       return false;
    }
 
-   for (_size i = 1; i < lengthMinusOne; i++) {
+   for (_size i = 1; i < length - 1; i++) {
       if (value[i] != pattern[i]) {
          return false;
       }
@@ -744,10 +744,9 @@ _bool LC_PercentUnderscore::compareToPattern(const _str& value)
       return false;
    }
 
-   const _size vlengthMinusOne = vlength - 1;
    const _size shift = vlength - length;
 
-   for (_size i = vlength - length; i < vlengthMinusOne; i++) {
+   for (_size i = vlength - length; i < vlength - 1; i++) {
       if (end[i - shift] != value[i]) {
          return false;
       }
@@ -765,8 +764,9 @@ _bool LC_OnlyDigits::compareToPattern(const _str& value)
    }
 
    for (_size i = 0; i < length; i++) {
-      if (!std::iswdigit(value[i]))
+      if (!std::iswdigit(value[i])) {
          return false;
+      }
    }
 
    return true;

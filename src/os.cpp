@@ -530,10 +530,9 @@ _bool os_emptyDirectory(const _str& path)
          FindClose(handle);
          return false;
       }
-      else {
-         FindClose(handle);
-         return true;
-      }
+
+      FindClose(handle);
+      return true;
    }
 }
 
@@ -545,11 +544,10 @@ _str os_extension(const _str& value)
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
             return EMPTY_STRING;
          }
-         else {
-            _str result = value.substr(i + 1);
-            toLower(result);
-            return result;
-         }
+
+         _str result = value.substr(i + 1);
+         toLower(result);
+         return result;
       }
       else if (ch == OS_SEPARATOR) {
          return EMPTY_STRING;
@@ -661,11 +659,10 @@ _str os_name(const _str& value)
          ? value.substr(i + 1)
          : value.substr(i + 1, dot - i - 1);
    }
-   else {
-      return dot == -1
-         ? value
-         : value.substr(0, dot);
-   }
+
+   return dot == -1
+      ? value
+      : value.substr(0, dot);
 }
 
 _str os_parent(const _str& path)

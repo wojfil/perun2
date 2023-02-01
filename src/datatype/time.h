@@ -22,6 +22,9 @@
 namespace uro
 {
 
+inline constexpr _bool TIME_WITH_SECONDS = true;
+inline constexpr _bool TIME_WITHOUT_SECONDS = false;
+
 struct Time
 {
    // time can be defined in 4 forms:

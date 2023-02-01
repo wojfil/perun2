@@ -159,7 +159,7 @@ void Time::addDays(const _tnum& d)
 
 void Time::addHours(const _tnum& h)
 {
-   initClock(false, h);
+   initClock(TIME_WITHOUT_SECONDS, h);
 
    const _tnum h2 = h % TNUM_HOURS_IN_DAY;
    _tnum d = h / TNUM_HOURS_IN_DAY;
@@ -180,7 +180,7 @@ void Time::addHours(const _tnum& h)
 
 void Time::addMinutes(const _tnum& m)
 {
-   initClock(false, m);
+   initClock(TIME_WITHOUT_SECONDS, m);
 
    const _tnum m2 = m % TNUM_MINUTES_IN_HOUR;
    _tnum h = m / TNUM_MINUTES_IN_HOUR;
@@ -201,7 +201,7 @@ void Time::addMinutes(const _tnum& m)
 
 void Time::addSeconds(const _tnum& s)
 {
-   initClock(true, s);
+   initClock(TIME_WITH_SECONDS, s);
 
    const _tnum s2 = s % TNUM_SECONDS_IN_MINUTE;
    _tnum m = s / TNUM_SECONDS_IN_MINUTE;

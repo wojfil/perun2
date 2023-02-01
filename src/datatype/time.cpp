@@ -313,6 +313,10 @@ Time Time::toDate() const
 
 _tnum Time::getWeekDay() const
 {
+   if (type == TimeType::tt_YearMonth) {
+      return TNUM_MINUS_ONE;
+   }
+
    const _tnum y = year - (month < TNUM_THREE);
    const _tnum wd = (y + y / TNUM_FOUR - y / TNUM_100 + y / TNUM_400 
       + TNUM_WEEKDAY_DATA[month - TNUM_ONE] + day) % TNUM_DAYS_IN_WEEK;

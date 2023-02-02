@@ -60,10 +60,14 @@ public:
    static SyntaxError multipleDotsInWord(const _str& value, const _int& line);
    static SyntaxError negationByExclamation(const _int& line);
    static SyntaxError numberTooBig(const _str& value, const _int& line);
+   static SyntaxError numericIterationHere(const _str& value, const _int& line);
    static SyntaxError openedStringLteral(const _int& line);
    static SyntaxError secondsOutOfRange(const _str& value, const _int& line);
    static SyntaxError symbolNotFound(const _char& value, const _int& line);
+   static SyntaxError timeIterationHere(const _str& value, const _int& line);
    static SyntaxError quotationMarkStringLteral(const _int& line);
+   static SyntaxError undefinedVarValue(const _str& value, const _int& line);
+   
 
 private:
    const _str message;

@@ -6,7 +6,7 @@ They test the entire process of code interpretation, as one failure somewhere in
 
 ## Remarks
 
-Tests should be platform independent. For example, path separator may differ between operating systems and be / or \.
+Tests should be platform independent. For example, path separator may differ between operating systems and be / or \\.
 If certain test requires it, use function *path()* or the constant value *SEPARATOR*.
 The same goes for case size of file names - just use lowercase every time they are involved.
 If the output is a collection of files, their order may vary between environments.

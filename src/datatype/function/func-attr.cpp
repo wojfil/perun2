@@ -21,26 +21,6 @@
 namespace uro::func
 {
 
-_str AttrFunction::getPath()
-{
-   const _str b = os_trim(this->value->getValue());
-
-   if (os_isInvaild(b)) {
-      return EMPTY_STRING;
-   }
-
-   const _str p = os_join(this->inner.location.value, b);
-   return os_isAbsolute(p) ? p : EMPTY_STRING;
-}
-
-_str F_Path::getValue()
-{
-   const _str b = os_trim(this->value->getValue());
-
-   return b.empty() || this->inner.location.value.empty()
-      ? EMPTY_STRING
-      : os_join(this->inner.location.value, b);
-}
 
 _str F_Path_2::getValue()
 {
@@ -148,44 +128,6 @@ _str F_Path_Multi::getValue()
    return path;
 }
 
-_str F_Drive::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? EMPTY_STRING : os_drive(p);
-}
-
-_str F_Extension::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? EMPTY_STRING : os_extension(p);
-}
-
-_str F_Fullname::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? EMPTY_STRING : os_fullname(p);
-}
-
-_str F_Name::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? EMPTY_STRING : os_name(p);
-}
-
-_str F_Parent::getValue()
-{
-   const _str p = this->getPath();
-   return (p.empty() || !os_hasParentDirectory(p))
-      ? EMPTY_STRING
-      : os_parent(p);
-}
-
-_num F_Size::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? _num(NINT_MINUS_ONE) : _num(os_size(p, this->uroboros));
-}
-
 
 _num F_SizeDefinition::getValue()
 {
@@ -198,7 +140,7 @@ _num F_SizeDefinition::getValue()
       }
 
       const _str v = definition->getValue();
-      const _nint s = os_size(os_join(this->inner.location.value, v), this->uroboros);
+      const _nint s = os_size(os_join(this->context->location->value, v), this->uroboros);
       if (s != NINT_MINUS_ONE) {
          total += s;
       }
@@ -225,7 +167,7 @@ _num F_SizeList::getValue()
 
       const _str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvaild(v)) {
-         const _nint s = os_size(os_join(this->inner.location.value, v), this->uroboros);
+         const _nint s = os_size(os_join(this->context->location->value, v), this->uroboros);
          if (s != NINT_MINUS_ONE) {
             total += s;
             any = true;
@@ -234,129 +176,6 @@ _num F_SizeList::getValue()
    }
 
    return any ? _num(total) : _num(NINT_MINUS_ONE);
-}
-
-
-_per F_Lifetime::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? _per() : os_lifetime(p);
-}
-
-_tim F_Access::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? _tim() : os_access(p);
-}
-
-_tim F_Change::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? _tim() : os_change(p);
-}
-
-_tim F_Creation::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? _tim() : os_creation(p);
-}
-
-_tim F_Modification::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? _tim() : os_modification(p);
-}
-
-_bool F_Archive::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_archive(p);
-}
-
-_bool F_Compressed::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_compressed(p);
-}
-
-_bool F_Empty::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_empty(p);
-}
-
-_bool F_Encrypted::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_encrypted(p);
-}
-
-_bool F_Exist::getValue()
-{
-   if (this->inner.location.value.empty()) {
-      return false;
-   }
-
-   const _list v = value->getValue();
-   const _size len = v.size();
-
-   switch (len) {
-      case 0: {
-         return true;
-      }
-      case 1: {
-         const _str b = os_trim(v[0]);
-         if (b.empty()) {
-            return false;
-         }
-
-         return os_exists(os_join(this->inner.location.value, b));
-      }
-      default: {
-         for (_size i = 0; i < len; i++) {
-            const _str b = os_trim(v[i]);
-            if (b.empty()) {
-               return false;
-            }
-
-            if (!os_exists(os_join(this->inner.location.value, b))) {
-               return false;
-            }
-         }
-
-         return true;
-      }
-   }
-}
-
-_bool F_Exists::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_exists(p);
-}
-
-_bool F_Hidden::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_hidden(p);
-}
-
-_bool F_IsDirectory::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_isDirectory(p);
-}
-
-_bool F_IsFile::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_isFile(p);
-}
-
-_bool F_Readonly::getValue()
-{
-   const _str p = this->getPath();
-   return p.empty() ? false : os_readonly(p);
 }
 
 }

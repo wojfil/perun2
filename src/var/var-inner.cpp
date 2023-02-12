@@ -23,11 +23,11 @@ namespace uro
 inline constexpr _size LETTERS_IN_ENGLISH_ALPHABET = 26;
 
 
-InnerVariables::InnerVariables(const _str& loc, const _str& ucom)
+/*InnerVariables::InnerVariables(const _str& loc, const _str& ucom)
    : thisState(ThisState::ts_None), urocom(ucom),
-     depth(_numi(NINT_ZERO)), location(loc) { }
+     depth(_numi(NINT_ZERO)), location(loc) { }*/
 
-_list InnerVariables::getAlphabet()
+_list getAlphabet()
 {
    _list a(LETTERS_IN_ENGLISH_ALPHABET);
 
@@ -38,7 +38,7 @@ _list InnerVariables::getAlphabet()
    return a;
 }
 
-void InnerVariables::createThisRef(_genptr<_str>& result)
+/*void InnerVariables::createThisRef(_genptr<_str>& result)
 {
    result = std::make_unique<gen::GeneratorRef<_str>>(this_s);
 }
@@ -66,6 +66,6 @@ void InnerVariables::createThisVarRef(vars::Variable<_num>*& result)
 void InnerVariables::createThisVarRef(vars::Variable<_tim>*& result)
 {
    result = &this_t;
-}
+}*/
 
 }

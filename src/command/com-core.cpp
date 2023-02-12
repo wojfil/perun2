@@ -21,6 +21,8 @@
 namespace uro::comm
 {
 
+
+
 ////
 //   simple commands:
 ////
@@ -28,17 +30,15 @@ namespace uro::comm
 void C_Delete::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_delete(this->inner.path.value);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_delete(this->context->v_path->value);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Delete ", getCCName(this->inner.path.value));
-         if (hasAttribute) {
-            this->attribute->run();
-         }
+         commandLog(this->uroboros, L"Delete ", getCCName(this->context->v_path->value));
+         this->context->reloadData();
       }
       else {
-         commandLog(this->uroboros, L"Failed to delete ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to delete ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -46,17 +46,17 @@ void C_Delete::run()
 void C_Drop::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_drop(this->inner.path.value, this->inner.isfile.value, this->uroboros);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->uroboros);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Drop ", getCCName(this->inner.path.value));
-         if (hasAttribute) {
-            this->attribute->run();
+         commandLog(this->uroboros, L"Drop ", getCCName(this->context->v_path->value));
+         if (saveChanges) {
+            this->context->reloadData();
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to drop ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to drop ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -64,17 +64,17 @@ void C_Drop::run()
 void C_Hide::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_hide(this->inner.path.value);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_hide(this->context->v_path->value);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Hide ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Hide ", getCCName(this->context->v_path->value));
          if (saveChanges) {
-            this->inner.hidden.value = true;
+            this->context->v_hidden->value = true;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to hide ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to hide ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -82,17 +82,17 @@ void C_Hide::run()
 void C_Lock::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_lock(this->inner.path.value);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_lock(this->context->v_path->value);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Lock ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Lock ", getCCName(this->context->v_path->value));
          if (saveChanges) {
-            this->inner.readonly.value = true;
+            this->context->v_readonly->value = true;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to lock ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to lock ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -100,14 +100,14 @@ void C_Lock::run()
 void C_Open::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_open(this->inner.path.value);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_open(this->context->v_path->value);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Open ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Open ", getCCName(this->context->v_path->value));
       }
       else {
-         commandLog(this->uroboros, L"Failed to open ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -115,17 +115,17 @@ void C_Open::run()
 void C_Unlock::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_unlock(this->inner.path.value);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_unlock(this->context->v_path->value);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Unlock ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Unlock ", getCCName(this->context->v_path->value));
          if (saveChanges) {
-            this->inner.readonly.value = false;
+            this->context->v_readonly->value = false;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to unlock ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to unlock ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -133,17 +133,17 @@ void C_Unlock::run()
 void C_Unhide::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->inner.exists.value && os_unhide(this->inner.path.value);
-      this->inner.success.value = s;
+      const _bool s = this->context->v_exists->value && os_unhide(this->context->v_path->value);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Unhide ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Unhide ", getCCName(this->context->v_path->value));
          if (saveChanges) {
-            this->inner.hidden.value = false;
+            this->context->v_hidden->value = false;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to unhide ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to unhide ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -153,62 +153,62 @@ void C_OpenWith::run()
    if (this->uroboros.state == State::s_Running) {
       const _str pro = os_trim(program->getValue());
 
-      if (!this->inner.exists.value || pro.empty()) {
-         commandLog(this->uroboros, L"Failed to open ", getCCName(this->inner.path.value), L" with ", getCCNameShort(pro));
-         this->inner.success.value = false;
+      if (!this->context->v_exists->value || pro.empty()) {
+         commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _str proPath = os_join(this->inner.location.value, pro);
+      const _str proPath = os_join(this->locationContext->location->value, pro);
       if (os_exists(proPath)) {
-         const _bool s = os_openWith(proPath, os_quoteEmbraced(this->inner.path.value));
-         this->inner.success.value = s;
+         const _bool s = os_openWith(proPath, os_quoteEmbraced(this->context->v_path->value));
+         this->uroboros.contextes.success->value = s;
 
          if (s) {
-            commandLog(this->uroboros, L"Open ", getCCName(this->inner.path.value), L" with ", getCCName(proPath));
+            commandLog(this->uroboros, L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
          }
          else {
-            commandLog(this->uroboros, L"Failed to open ", getCCName(this->inner.path.value), L" with ", getCCName(proPath));
+            commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
          }
       }
       else {
-         if (!os_hasParentDirectory(this->inner.path.value)) {
-            commandLog(this->uroboros, L"Failed to open ", getCCName(this->inner.path.value), L" with '", pro, L"'");
-            this->inner.success.value = false;
+         if (!os_hasParentDirectory(this->context->v_path->value)) {
+            commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->uroboros.contextes.success->value = false;
             return;
          }
 
-         const _str com = str(pro, L" ", os_quoteEmbraced(this->inner.path.value));
-         const _bool s = os_process(com, os_parent(this->inner.path.value));
-         this->inner.success.value = s;
+         const _str com = str(pro, L" ", os_quoteEmbraced(this->context->v_path->value));
+         const _bool s = os_process(com, os_parent(this->context->v_path->value));
+         this->uroboros.contextes.success->value = s;
 
          if (s) {
-            commandLog(this->uroboros, L"Open ", getCCName(this->inner.path.value), L" with '", pro, L"'");
+            commandLog(this->uroboros, L"Open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
          else {
-            commandLog(this->uroboros, L"Failed to open ", getCCName(this->inner.path.value), L" with '", pro, L"'");
+            commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
       }
    }
-}
+};
 
 void C_ReaccessTo::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _tim t = this->inner.access.value;
+      _tim t = this->context->v_access->value;
       t.setValue(time->getValue());
-      this->inner.success.value = this->inner.exists.value
-         && os_setTime(this->inner.path.value, this->inner.creation.value, t, this->inner.modification.value);
+      this->uroboros.contextes.success->value = this->context->v_exists->value
+         && os_setTime(this->context->v_path->value, this->context->v_creation->value, t, this->context->v_modification->value);
 
-      if (this->inner.success.value) {
-         commandLog(this->uroboros, L"Reaccess ", getCCName(this->inner.path.value), L" to ", t.toString());
+      if (this->uroboros.contextes.success->value) {
+         commandLog(this->uroboros, L"Reaccess ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
-            this->inner.access.value = t;
+            this->context->v_access->value = t;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to reaccess ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to reaccess ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -216,21 +216,21 @@ void C_ReaccessTo::run()
 void C_RechangeTo::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _tim t = this->inner.change.value;
+      _tim t = this->context->v_change->value;
       t.setValue(time->getValue());
-      this->inner.success.value = this->inner.exists.value
-         && os_setTime(this->inner.path.value, this->inner.creation.value, this->inner.access.value, t);
+      this->uroboros.contextes.success->value = this->context->v_exists->value
+         && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
-      if (this->inner.success.value) {
-         commandLog(this->uroboros, L"Rechange ", getCCName(this->inner.path.value), L" to ", t.toString());
+      if (this->uroboros.contextes.success->value) {
+         commandLog(this->uroboros, L"Rechange ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
-            this->inner.change.value = t;
-            this->inner.modification.value = t;
+            this->context->v_change->value = t;
+            this->context->v_modification->value = t;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to rechange ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to rechange ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -238,20 +238,20 @@ void C_RechangeTo::run()
 void C_RecreateTo::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _tim t = this->inner.creation.value;
+      _tim t = this->context->v_creation->value;
       t.setValue(time->getValue());
-      this->inner.success.value = this->inner.exists.value
-         && os_setTime(this->inner.path.value, t, this->inner.access.value, this->inner.modification.value);
+      this->uroboros.contextes.success->value = this->context->v_exists->value
+         && os_setTime(this->context->v_path->value, t, this->context->v_access->value, this->context->v_modification->value);
 
-      if (this->inner.success.value) {
-         commandLog(this->uroboros, L"Recreate ", getCCName(this->inner.path.value),  L" to ", t.toString());
+      if (this->uroboros.contextes.success->value) {
+         commandLog(this->uroboros, L"Recreate ", getCCName(this->context->v_path->value),  L" to ", t.toString());
 
          if (saveChanges) {
-            this->inner.creation.value = t;
+            this->context->v_creation->value = t;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to recreate ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to recreate ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -259,21 +259,21 @@ void C_RecreateTo::run()
 void C_RemodifyTo::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _tim t = this->inner.modification.value;
+      _tim t = this->context->v_modification->value;
       t.setValue(time->getValue());
-      this->inner.success.value = this->inner.exists.value
-         && os_setTime(this->inner.path.value, this->inner.creation.value, this->inner.access.value, t);
+      this->uroboros.contextes.success->value = this->context->v_exists->value
+         && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
-      if (this->inner.success.value) {
-         commandLog(this->uroboros, L"Remodify ", getCCName(this->inner.path.value), L" to ", t.toString());
+      if (this->uroboros.contextes.success->value) {
+         commandLog(this->uroboros, L"Remodify ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
-            this->inner.modification.value = t;
-            this->inner.change.value = t;
+            this->context->v_modification->value = t;
+            this->context->v_change->value = t;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to remodify ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to remodify ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -283,46 +283,46 @@ void C_RenameTo::run()
    if (this->uroboros.state == State::s_Running) {
       _str n = os_fullname(os_trim(name->getValue()));
 
-      if (!this->inner.exists.value || os_isInvaild(n)
-          || !os_hasParentDirectory(this->inner.path.value) || os_isAbsolute(n)) {
+      if (!this->context->v_exists->value || os_isInvaild(n)
+          || !os_hasParentDirectory(this->context->v_path->value) || os_isAbsolute(n)) {
 
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->inner.path.value));
-         this->inner.success.value = false;
+         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(this->inner.path.value);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(this->context->v_path->value);
 
       if (!extensionless && hasExt && !os_hasExtension(n)) {
-         n += str(L".", os_extension(this->inner.path.value));
+         n += str(L".", os_extension(this->context->v_path->value));
       }
 
-      const _str base = os_parent(this->inner.path.value);
+      const _str base = os_parent(this->context->v_path->value);
       const _str newPath = str(base, OS_SEPARATOR_STRING, n);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to rename ", getCCName(this->inner.path.value));
-            this->inner.success.value = false;
+            commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
-      const _bool s = os_moveTo(this->inner.path.value, newPath);
-      this->inner.success.value = s;
+      const _bool s = os_moveTo(this->context->v_path->value, newPath);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Rename ", getCCName(this->inner.path.value), L" to '", n, L"'");
+         commandLog(this->uroboros, L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
 
          if (saveChanges) {
-            this->inner.fullname.value = n;
-            this->inner.name.value = hasExt ? os_name(newPath) : n;
-            this->inner.path.value = newPath;
-            this->inner.this_s.value = newPath;
+            this->context->v_fullname->value = n;
+            this->context->v_name->value = hasExt ? os_name(newPath) : n;
+            this->context->v_path->value = newPath;
+            this->context->this_->value = newPath;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -330,17 +330,17 @@ void C_RenameTo::run()
 void C_RenameTo_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str n = os_fullname(os_trim(name->getValue()));
-      if (!this->inner.exists.value || os_isInvaild(n)
+      if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
          commandLog(this->uroboros, L"Failed to rename ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
       const _str parent = os_parent(oldPath);
       _str newPath;
       _bool s;
@@ -368,7 +368,7 @@ void C_RenameTo_Stack::run()
          n = os_fullname(newPath);
 
          if (s && saveChanges) {
-            this->inner.extension.value = ex;
+            this->context->v_extension->value = ex;
          }
       }
       else {
@@ -377,20 +377,20 @@ void C_RenameTo_Stack::run()
          s = os_moveTo(oldPath, newPath);
       }
 
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Rename ", getCCName(this->inner.path.value), L" to '", n, L"'");
+         commandLog(this->uroboros, L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
 
          if (saveChanges) {
-            this->inner.fullname.value = n;
-            this->inner.name.value = hasExt ? os_name(n) : n;
-            this->inner.path.value = newPath;
-            this->inner.this_s.value = newPath;
+            this->context->v_fullname->value = n;
+            this->context->v_name->value = hasExt ? os_name(n) : n;
+            this->context->v_path->value = newPath;
+            this->context->this_->value = newPath;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->inner.path.value));
+         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -398,48 +398,47 @@ void C_RenameTo_Stack::run()
 void C_MoveTo::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(n)
+      if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
 
          commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _str newLoc = os_join(this->inner.location.value, n);
+      const _str newLoc = os_join(this->locationContext->location->value, n);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
       const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
             commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _bool s = os_moveTo(oldPath, newPath);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
-         if (hasAttribute) {
-            this->inner.this_s.value = newPath;
-            this->attribute->run();
+         if (this->saveChanges) {
+            this->context->loadData(newPath);
          }
       }
       else {
@@ -451,28 +450,28 @@ void C_MoveTo::run()
 void C_MoveTo_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      _str newLoc = os_join(this->inner.location.value, n);
+      _str newLoc = os_join(this->locationContext->location->value, n);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (hasExt) {
@@ -486,14 +485,13 @@ void C_MoveTo_Stack::run()
       }
 
       const _bool s = os_moveTo(oldPath, newPath);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
-         if (hasAttribute) {
-            this->inner.this_s.value = newPath;
-            this->attribute->run();
+         if (this->saveChanges) {
+            this->context->loadData(newPath);
          }
       }
       else {
@@ -505,30 +503,30 @@ void C_MoveTo_Stack::run()
 void C_MoveToAs::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(fulln)
+      if (!this->context->v_exists->value || os_isInvaild(fulln)
            || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
          commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
          fulln += str(L".", os_extension(oldPath));
       }
 
-      const _str newLoc = os_join(this->inner.location.value, loc);
+      const _str newLoc = os_join(this->locationContext->location->value, loc);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
@@ -538,20 +536,19 @@ void C_MoveToAs::run()
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
             commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _bool s = os_moveTo(oldPath, newPath);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
-         if (hasAttribute) {
-            this->inner.this_s.value = newPath;
-            this->attribute->run();
+         if (this->saveChanges) {
+            this->context->loadData(newPath);
          }
       }
       else {
@@ -563,29 +560,29 @@ void C_MoveToAs::run()
 void C_MoveToAs_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str& oldPath = this->inner.path.value;
+      const _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(fulln)
+      if (!this->context->v_exists->value || os_isInvaild(fulln)
           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
          commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _str newLoc = os_join(this->inner.location.value, loc);
+      const _str newLoc = os_join(this->locationContext->location->value, loc);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
       _str newPath;
       _bool s;
 
@@ -619,14 +616,13 @@ void C_MoveToAs_Stack::run()
          s = os_moveTo(oldPath, newPath);
       }
 
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
-         if (hasAttribute) {
-            this->inner.this_s.value = newPath;
-            this->attribute->run();
+         if (this->saveChanges) {
+            this->context->loadData(newPath);
          }
       }
       else {
@@ -638,13 +634,13 @@ void C_MoveToAs_Stack::run()
 void C_DownloadFrom_String::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
       const _str name = os_trim(element->getValue());
       const _str src = os_trim(location->getValue());
 
       if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
          commandLog(this->uroboros, L"Failed to download ", getCCName(name));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -653,7 +649,7 @@ void C_DownloadFrom_String::run()
 
       if (!os_exists(oldPath)) {
          commandLog(this->uroboros, L"Failed to download ", getCCName(name));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -662,13 +658,13 @@ void C_DownloadFrom_String::run()
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
             commandLog(this->uroboros, L"Failed to download ", getCCName(name));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Download ", getCCName(name), L" from ", getCCName(srcLoc));
@@ -682,11 +678,11 @@ void C_DownloadFrom_String::run()
 void C_DownloadFrom_List::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         this->inner.success.value = true;
+         this->uroboros.contextes.success->value = true;
          return;
       }
 
@@ -697,7 +693,7 @@ void C_DownloadFrom_List::run()
          for (_size i = 0; i < len; i++) {
             commandLog(this->uroboros, L"Failed to download ", getCCNameShort(os_trim(names[i])));
          }
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -734,25 +730,25 @@ void C_DownloadFrom_List::run()
          }
       }
 
-      this->inner.success.value = success;
+      this->uroboros.contextes.success->value = success;
    }
 }
 
 void C_DownloadFrom_Definition::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str dest = this->inner.location.value;
+      const _str dest = this->locContext->location->value;
       const _str src = os_trim(location->getValue());
-      const _str srcLoc = os_join(this->inner.location.value, src);
+      const _str srcLoc = os_join(this->locContext->location->value, src);
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          commandLog(this->uroboros, L"Failed to download");
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
       _bool success = true;
-      this->inner.location.value = srcLoc;
+      this->locContext->location->value = srcLoc;
 
       while (elements->hasNext()) {
          if (this->uroboros.state != State::s_Running) {
@@ -790,21 +786,21 @@ void C_DownloadFrom_Definition::run()
          }
       }
 
-      this->inner.success.value = success;
-      this->inner.location.value = dest;
+      this->uroboros.contextes.success->value = success;
+      this->locContext->location->value = dest;
    }
 }
 
 void C_DownloadFrom_String_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
       const _str name = os_trim(element->getValue());
       const _str src = os_trim(location->getValue());
 
       if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
          commandLog(this->uroboros, L"Failed to download ", getCCNameShort(name));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -813,7 +809,7 @@ void C_DownloadFrom_String_Stack::run()
 
       if (!os_exists(oldPath)) {
          commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -831,7 +827,7 @@ void C_DownloadFrom_String_Stack::run()
       }
 
       const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
@@ -845,11 +841,11 @@ void C_DownloadFrom_String_Stack::run()
 void C_DownloadFrom_List_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
       const _list names = elements->getValue();
       const _size len = names.size();
       if (len == 0) {
-         this->inner.success.value = true;
+         this->uroboros.contextes.success->value = true;
          return;
       }
 
@@ -860,7 +856,7 @@ void C_DownloadFrom_List_Stack::run()
          for (_size i = 0; i < len; i++) {
             commandLog(this->uroboros, L"Failed to download ", getCCNameShort(os_trim(names[i])));
          }
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -900,26 +896,26 @@ void C_DownloadFrom_List_Stack::run()
          }
       }
 
-      this->inner.success.value = success;
+      this->uroboros.contextes.success->value = success;
    }
 }
 
 void C_DownloadFrom_Definition_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str dest = this->inner.location.value;
+      const _str dest = this->locContext->location->value;
       const _str src = os_trim(location->getValue());
       const _str srcLoc = os_join(dest, src);
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          commandLog(this->uroboros, L"Failed to download");
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
       _bool success = true;
       const _str f = os_fullname(srcLoc);
-      this->inner.location.value = srcLoc;
+      this->locContext->location->value = srcLoc;
 
       while (elements->hasNext()) {
          if (!this->uroboros.state == State::s_Running) {
@@ -964,8 +960,8 @@ void C_DownloadFrom_Definition_Stack::run()
          }
       }
 
-      this->inner.success.value = success;
-      this->inner.location.value = dest;
+      this->uroboros.contextes.success->value = success;
+      this->locContext->location->value = dest;
    }
 }
 
@@ -973,12 +969,12 @@ void C_Download_String::run()
 {
    if (this->uroboros.state == State::s_Running) {
       const _str oldElement = os_trim(element->getValue());
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
 
       if (os_isInvaild(oldElement) || !os_directoryExists(dest) || !os_isPath(oldElement))
       {
          commandLog(this->uroboros, L"Failed to download ", getCCNameShort(oldElement));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -986,7 +982,7 @@ void C_Download_String::run()
 
       if (!os_exists(oldPath)) {
          commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -995,13 +991,13 @@ void C_Download_String::run()
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
             commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Download ", getCCName(oldPath));
@@ -1019,18 +1015,18 @@ void C_Download_List::run()
       const _size len = oldPaths.size();
 
       if (len == 0) {
-         this->inner.success.value = true;
+         this->uroboros.contextes.success->value = true;
          return;
       }
 
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
             const _str p = os_trim(oldPaths[i]);
             commandLog(this->uroboros, L"Failed to download ", getCCNameShort(p));
          }
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -1067,7 +1063,7 @@ void C_Download_List::run()
          }
       }
 
-      this->inner.success.value = success;
+      this->uroboros.contextes.success->value = success;
    }
 }
 
@@ -1075,12 +1071,12 @@ void C_Download_String_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
       const _str oldElement = os_trim(element->getValue());
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
 
       if (os_isInvaild(oldElement) || !os_isPath(oldElement) || !os_directoryExists(dest))
       {
          commandLog(this->uroboros, L"Failed to download ", getCCNameShort(oldElement));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -1088,7 +1084,7 @@ void C_Download_String_Stack::run()
 
       if (!os_exists(oldPath)) {
          commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -1109,7 +1105,7 @@ void C_Download_String_Stack::run()
       }
 
       const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Download ", getCCName(oldPath));
@@ -1127,18 +1123,18 @@ void C_Download_List_Stack::run()
       const _size len = oldPaths.size();
 
       if (len == 0) {
-         this->inner.success.value = true;
+         this->uroboros.contextes.success->value = true;
          return;
       }
 
-      const _str& dest = this->inner.location.value;
+      const _str& dest = this->locContext->location->value;
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
             const _str p = os_trim(oldPaths[i]);
             commandLog(this->uroboros, L"Failed to download ", getCCNameShort(p));
          }
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
@@ -1180,46 +1176,46 @@ void C_Download_List_Stack::run()
          }
       }
 
-      this->inner.success.value = success;
+      this->uroboros.contextes.success->value = success;
    }
 }
 
 void C_CopyTo::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _str newLoc = os_join(this->inner.location.value, n);
+      const _str newLoc = os_join(this->locationContext->location->value, n);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
       const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
             commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->inner.isfile.value, this->uroboros);
-      this->inner.success.value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
@@ -1233,28 +1229,28 @@ void C_CopyTo::run()
 void C_CopyTo_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      _str newLoc = os_join(this->inner.location.value, n);
+      _str newLoc = os_join(this->locationContext->location->value, n);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
       const _str fulln = os_fullname(oldPath);
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (hasExt) {
@@ -1267,8 +1263,8 @@ void C_CopyTo_Stack::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->inner.isfile.value, this->uroboros);
-      this->inner.success.value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
@@ -1282,29 +1278,29 @@ void C_CopyTo_Stack::run()
 void C_CopyToAs::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      _str& oldPath = this->inner.path.value;
+      _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
+      if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
          commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
          fulln += str(L".", os_extension(oldPath));
       }
 
-      const _str newLoc = os_join(this->inner.location.value, loc);
+      const _str newLoc = os_join(this->locationContext->location->value, loc);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
@@ -1314,13 +1310,13 @@ void C_CopyToAs::run()
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
             commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->inner.isfile.value, this->uroboros);
-      this->inner.success.value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
@@ -1334,28 +1330,28 @@ void C_CopyToAs::run()
 void C_CopyToAs_Stack::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str& oldPath = this->inner.path.value;
+      const _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
-      if (!this->inner.exists.value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
+      if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
          commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-         this->inner.success.value = false;
+         this->uroboros.contextes.success->value = false;
          return;
       }
 
-      const _str newLoc = os_join(this->inner.location.value, loc);
+      const _str newLoc = os_join(this->locationContext->location->value, loc);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
             commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
-            this->inner.success.value = false;
+            this->uroboros.contextes.success->value = false;
             return;
          }
       }
 
-      const _bool hasExt = this->inner.isfile.value && os_hasExtension(oldPath);
+      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
       _str newPath;
 
       if (hasExt) {
@@ -1385,8 +1381,8 @@ void C_CopyToAs_Stack::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->inner.isfile.value, this->uroboros);
-      this->inner.success.value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
+      this->uroboros.contextes.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");

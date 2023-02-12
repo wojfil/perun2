@@ -21,18 +21,17 @@
 namespace uro::comm
 {
 
-void CS_Pair::run()
+void CS_Block::run()
 {
-   if (this->uroboros.state == State::s_Running) {
-      this->first->run();
+   for (_size i = 0; this->uroboros.state == State::s_Running && i < this->length; i++) {
+      (this->commands[i])->run();
    }
-   if (this->uroboros.state == State::s_Running) {
-      this->second->run();
-   }
+
+   this->context->runAggregate();
 }
 
 
-void CS_Block::run()
+void CS_RawBlock::run()
 {
    for (_size i = 0; this->uroboros.state == State::s_Running && i < this->length; i++) {
       (this->commands[i])->run();
@@ -47,36 +46,32 @@ void CS_Times::run()
       return;
    }
 
-   const _numi prevIndex = this->inner.index.value;
-   this->inner.index.value.setToZero();
+   this->context->resetIndex();
 
    while (this->uroboros.state == State::s_Running && repeats != NINT_ZERO) {
       this->command->run();
-      this->inner.index.value++;
+      this->context->incrementIndex();
       repeats--;
 
       P_CHECK_LOOP_BREAK;
    }
 
-   this->aggregate->run();
-   this->inner.index.value = prevIndex;
+   this->context->runAggregate();
 }
 
 
 void CS_While::run()
 {
-   const _numi prevIndex = this->inner.index.value;
-   this->inner.index.value.setToZero();
+   this->context->resetIndex();
 
    while (this->uroboros.state == State::s_Running && this->condition->getValue()) {
       this->command->run();
-      this->inner.index.value++;
+      this->context->incrementIndex();
 
       P_CHECK_LOOP_BREAK;
    }
 
-   this->aggregate->run();
-   this->inner.index.value = prevIndex;
+   this->context->runAggregate();
 }
 
 
@@ -89,24 +84,19 @@ void CS_TimeLoop::run()
       return;
    }
 
-   const _numi prevIndex = this->inner.index.value;
-   const _tim prevThis = this->inner.this_t.value;
-
-   this->inner.index.value.setToZero();
+   this->context->resetIndex();
    _size index = 0;
 
    while (this->uroboros.state == State::s_Running && index != length) {
-      this->inner.this_t.value = values[index];
+      this->context->this_->value = values[index];
       this->command->run();
-      this->inner.index.value++;
+      this->context->incrementIndex();
       index++;
 
       P_CHECK_LOOP_BREAK;
    }
 
-   this->aggregate->run();
-   this->inner.index.value = prevIndex;
-   this->inner.this_t.value = prevThis;
+   this->context->runAggregate();
 }
 
 
@@ -119,69 +109,40 @@ void CS_NumberLoop::run()
       return;
    }
 
-   const _numi prevIndex = this->inner.index.value;
-   const _num prevThis = this->inner.this_n.value;
-
-   this->inner.index.value.setToZero();
+   this->context->resetIndex();
 
    _size index = 0;
    while (this->uroboros.state == State::s_Running && index != length) {
-      this->inner.this_n.value = values[index];
+      this->context->this_->value = values[index];
       this->command->run();
-      this->inner.index.value++;
+      this->context->incrementIndex();
       index++;
 
       P_CHECK_LOOP_BREAK;
    }
 
-   this->aggregate->run();
-   this->inner.index.value = prevIndex;
-   this->inner.this_n.value = prevThis;
+   this->context->runAggregate();
 }
 
 
 void CS_StringLoop::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      if (this->hasMemory) {
-         this->attrMemory.load();
-      }
-
-      P_MEMORY_LOAD;
-
-      const _str val = this->string->getValue();
-      this->inner.this_s.value = val;
-      this->inner.index.value.setToZero();
-      this->inner.depth.value.setToZero();
-
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
+      this->context->resetIndexAndDepth();
+      this->context->loadData(this->string->getValue());
       this->command->run();
 
       P_CHECK_SOFT_LOOP_BREAK;
 
-      this->aggregate->run();
-
-      P_MEMORY_RESTORE;
-
-      if (this->hasMemory) {
-         this->attrMemory.restore();
-      }
+      this->context->runAggregate();
    }
 }
 
 
 void CS_DefinitionLoop::run()
 {
-   if (this->hasMemory) {
-      this->attrMemory.load();
-   }
-
-   P_MEMORY_LOAD;
-
-   _numi index = NINT_ZERO;
-   this->inner.index.value.setToZero();
+   _num index = NINT_ZERO;
+   this->context->resetIndexAndDepth();
 
    while (this->definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -189,107 +150,61 @@ void CS_DefinitionLoop::run()
          break;
       }
 
-      this->inner.this_s.value = this->definition->getValue();
-
-      if (this->hasAttribute) {
-         this->attribute->run();
+      if (this->hasContext) {
+         this->context->loadData(this->definition->getValue());
       }
-
+      
       this->command->run();
 
       P_CHECK_LOOP_BREAK;
 
       index++;
-      this->inner.index.value = index;
+      this->context->index->value = index;
    }
 
-   this->aggregate->run();
-
-   P_MEMORY_RESTORE;
-
-   if (this->hasMemory) {
-      this->attrMemory.restore();
-   }
+   this->context->runAggregate();
 }
 
 
 void CS_ListLoop::run()
 {
    const _list values = this->list->getValue();
-   const _numi length = _numi(static_cast<_nint>(values.size()));
+   const _num length = _numi(static_cast<_nint>(values.size()));
 
    if (length == 0) {
       return;
    }
 
-   if (this->hasMemory) {
-      this->attrMemory.load();
-   }
-
-   P_MEMORY_LOAD;
-
-   _numi index = NINT_ZERO;
-   this->inner.index.value.setToZero();
-   this->inner.depth.value.setToZero();
+   _num index = NINT_ZERO;
+   this->context->resetIndexAndDepth();
 
    while (this->uroboros.state == State::s_Running && index != length) {
-      this->inner.this_s.value = values[index.value.i];
-
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
-
+      this->context->loadData(values[index.value.i]);
       this->command->run();
       index++;
-      this->inner.index.value = index;
+      this->context->index->value = index;
 
       P_CHECK_LOOP_BREAK;
    }
 
-   this->aggregate->run();
-
-   P_MEMORY_RESTORE;
-
-   if (this->hasMemory) {
-      this->attrMemory.restore();
-   }
+   this->context->runAggregate();
 }
 
-
+/*
 void CS_InsideString::run()
 {
    if (this->uroboros.state == State::s_Running) {
       const _str val = os_trim(this->string->getValue());
-      const _str newLocation = os_join(this->inner.location.value, val);
+      const _str newLocation = os_join(this->prevLocation->location->value, val);
 
       if (!val.empty() && os_directoryExists(newLocation)) {
-         if (this->hasMemory) {
-            this->attrMemory.load();
-         }
-
-         P_MEMORY_LOAD;
-         this->prevLocation = this->inner.location.value;
-
-         this->inner.this_s.value = newLocation;
-         this->inner.index.value.setToZero();
-         this->inner.depth.value.setToZero();
-         this->inner.location.value = newLocation;
-
-         if (this->hasAttribute) {
-            this->attribute->run();
-         }
-
+         this->context->resetIndexAndDepth();
+         this->context->loadData(newLocation);
          this->command->run();
-         this->aggregate->run();
 
          P_CHECK_SOFT_LOOP_BREAK;
 
-         P_MEMORY_RESTORE;
-         this->inner.location.value = this->prevLocation;
-
-         if (this->hasMemory) {
-            this->attrMemory.restore();
-         }
+         this->context->runAggregate();
       }
 
    }
@@ -298,15 +213,8 @@ void CS_InsideString::run()
 
 void CS_InsideDefinition::run()
 {
-   if (this->hasMemory) {
-      this->attrMemory.load();
-   }
-
-   P_MEMORY_LOAD;
-   this->prevLocation = this->inner.location.value;
-
-   _numi index = NINT_ZERO;
-   this->inner.index.value.setToZero();
+   _num index = NINT_ZERO;
+   this->context->resetIndexAndDepth();
 
    while (definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -314,89 +222,53 @@ void CS_InsideDefinition::run()
          break;
       }
 
-      const _str newLocation = os_join(this->prevLocation, this->definition->getValue());
+      const _str newLocation = os_join(this->prevLocation->location->value, this->definition->getValue());
 
       if (os_directoryExists(newLocation)) {
-         this->inner.location.value = newLocation;
-         this->inner.this_s.value = newLocation;
-
-         if (this->hasAttribute) {
-            this->attribute->run();
-         }
-
+         this->context->loadData(newLocation);
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
 
          index++;
-         this->inner.index.value = index;
+         this->context->index->value = index;
       }
-
-      this->inner.location.value = this->prevLocation;
    }
 
-   this->aggregate->run();
-
-   P_MEMORY_RESTORE;
-   this->inner.location.value = this->prevLocation;
-
-   if (this->hasMemory) {
-      this->attrMemory.restore();
-   }
+   this->context->runAggregate();
 }
 
 
 void CS_InsideList::run()
 {
    const _list values = this->list->getValue();
-   const _numi length = _numi(static_cast<_nint>(values.size()));
+   const _num length = _num(static_cast<_nint>(values.size()));
 
    if (length.value.i == 0) {
       return;
    }
 
-   if (this->hasMemory) {
-      this->attrMemory.load();
-   }
-
-   P_MEMORY_LOAD;
-   this->prevLocation = this->inner.location.value;
-
-   _numi index = NINT_ZERO;
+   _num index = NINT_ZERO;
    _nint outIndex = NINT_ZERO;
-   this->inner.index.value.setToZero();
-   this->inner.depth.value.setToZero();
+   this->context->resetIndexAndDepth();
 
    while (this->uroboros.state == State::s_Running && index != length) {
       const _str v = os_trim(values[index.value.i]);
-      const _str newLocation = os_join(this->prevLocation, v);
+      const _str newLocation = os_join(this->prevLocation->location->value, v);
       if (!v.empty() && os_directoryExists(newLocation)) {
-         this->inner.this_s.value = newLocation;
-         this->inner.location.value = newLocation;
-
-         if (this->hasAttribute) {
-            this->attribute->run();
-         }
-
+         this->context->loadData(newLocation);
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
 
          outIndex++;
-         this->inner.index.value = outIndex;
+         this->context->index->value = outIndex;
       }
 
       index++;
    }
 
-   this->aggregate->run();
-
-   P_MEMORY_RESTORE;
-   this->inner.location.value = this->prevLocation;
-
-   if (this->hasMemory) {
-      this->attrMemory.restore();
-   }
-}
+   this->context->runAggregate();
+}*/
 
 }

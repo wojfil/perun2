@@ -21,13 +21,38 @@
 namespace uro::gen
 {
 
-DefFilter::DefFilter(_defptr& def, _uro& uro)
-   : first(true), definition(std::move(def)), uroboros(uro) { };
 
-
-_fdata* DefFilter::getDataPtr()
+DefWithContext::DefWithContext(_defptr& def, _fcptr& ctx)
+   : definition(std::move(def)), context(std::move(ctx)) { };
+   
+void DefWithContext::reset()
 {
-   return this->definition->getDataPtr();
+   this->definition->reset();
+}
+
+_bool DefWithContext::hasNext()
+{
+   if (this->definition->hasNext()) {
+      this->value = this->definition->getValue();
+      this->context->loadData(this->value);
+      return true;
+   }
+
+   return false;
+}
+
+FileContext* DefWithContext::getFileContext()
+{
+   return this->context.get();
+}
+
+
+DefFilter::DefFilter(_defptr& def, FileContext* ctx, _uro& uro)
+   : first(true), definition(std::move(def)), uroboros(uro), context(ctx) { };
+
+FileContext* DefFilter::getFileContext()
+{
+   return this->definition->getFileContext();
 }
 
 void DefFilter::reset() {
@@ -38,13 +63,8 @@ void DefFilter::reset() {
 }
 
 
-Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, _uro& uro)
-   : DefFilter(def, uro), condition(std::move(cond)), attribute(std::move(attr)), finished(true), inner(uro.vars.inner),
-      hasMemory(hasMem), attrMemory(AttributeMemory(attr, uro.vars.inner)), hasAttribute(true) { };
-
-Filter_WhereDef::Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _uro& uro)
-   : DefFilter(def, uro), condition(std::move(cond)), finished(true), inner(uro.vars.inner),
-      hasMemory(false), attrMemory(AttributeMemory(uro.vars.inner)), hasAttribute(false) { };
+Filter_WhereDef::Filter_WhereDef(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro)
+   : DefFilter(def, ctx, uro), condition(std::move(cond)) { };
 
 
 void Filter_WhereDef::reset() {
@@ -52,10 +72,6 @@ void Filter_WhereDef::reset() {
       first = true;
       if (!finished) {
          definition->reset();
-      }
-
-      if (hasMemory) {
-         attrMemory.restore();
       }
    }
 }
@@ -66,9 +82,6 @@ _bool Filter_WhereDef::hasNext()
    if (first) {
       finished = false;
       first = false;
-      if (hasMemory) {
-         attrMemory.load();
-      }
       index.setToZero();
    }
 
@@ -78,15 +91,10 @@ _bool Filter_WhereDef::hasNext()
       }
 
       value = definition->getValue();
-
-      if (this->hasAttribute) {
-         this->attribute->run();
-      }
-
       const _bool con = this->condition->getValue();
 
       if (con) {
-         this->inner.index.value = index;
+         this->context->index->value = index;
          index++;
          return true;
       }
@@ -99,7 +107,13 @@ _bool Filter_WhereDef::hasNext()
 
 
 DefinitionChain::DefinitionChain(_defptr& def, _uro& uro)
-   : definition(std::move(def)), inner(uro.vars.inner) { };
+   : definition(std::move(def)), uroboros(uro), context(std::make_unique<FileContext>(uro)) { };
+
+
+FileContext* DefinitionChain::getFileContext()
+{
+   return this->context.get();
+}
 
 
 void DefinitionChain::reset()
@@ -117,7 +131,8 @@ _bool DefinitionChain::hasNext()
    if (this->definition->hasNext()) {
       this->finished = false;
       this->value = this->definition->getValue();
-      this->inner.index.value.value.i = this->index;
+      this->context->loadData(this->value);
+      this->context->index->value.value.i = this->index;
       this->index++;
       return true;
    }
@@ -128,15 +143,15 @@ _bool DefinitionChain::hasNext()
 };
 
 
-LocationVessel::LocationVessel(const _bool& abs, _uro& uro)
-   : isAbsolute(abs), inner(uro.vars.inner) { };
+LocationVessel::LocationVessel(const _bool& abs, LocationContext* ctx)
+   : isAbsolute(abs), context(ctx) { };
 
 
 _str LocationVessel::getValue()
 {
    return this->isAbsolute
       ? this->value
-      : str(this->inner.location.value, OS_SEPARATOR_STRING, this->value);
+      : str(this->context->location->value, OS_SEPARATOR_STRING, this->value);
 };
 
 const _str& LocationVessel::getRawValue() const
@@ -151,8 +166,9 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, _uro& uro, const _bool& abs, const _bool& fin)
-   : vessel(ves), definition(std::move(def)), locations(std::move(locs)), inner(uro.vars.inner), isAbsolute(abs), isFinal(fin) { };
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool& abs, const _bool& fin)
+   : vessel(ves), definition(std::move(def)), locations(std::move(locs)), 
+     context(definition->getFileContext()), isAbsolute(abs), isFinal(fin) { };
 
 
 void NestedDefiniton::reset()
@@ -172,7 +188,7 @@ _bool NestedDefiniton::hasNext()
 {
    if (!this->locsOpened) {
       if (this->locations->hasNext()) {
-         this->locDepth = this->inner.depth.value;
+         this->locDepth = this->context->v_depth->value;
          this->locsOpened = true;
          this->vessel.setValue(this->locations->getValue());
          if (this->isFinal) {
@@ -196,23 +212,20 @@ _bool NestedDefiniton::hasNext()
                ? this->definition->getValue()
                : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
          }
-         //this->value = this->isAbsolute
-          //  ? this->definition->getValue()
-         //   : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
 
          if (this->isFinal) {
-            this->inner.index.value = index;
+            this->context->index->value = index;
             index++;
          }
 
-         this->inner.depth.value = this->locDepth;
+         this->context->v_depth->value = this->locDepth;
          return true;
       }
       else {
          this->defOpened = false;
 
          if (this->locations->hasNext()) {
-            this->locDepth = this->inner.depth.value;
+            this->locDepth = this->context->v_depth->value;
             this->locsOpened = true;
             this->vessel.setValue(this->locations->getValue());
          }
@@ -226,9 +239,9 @@ _bool NestedDefiniton::hasNext()
    return false;
 };
 
-_fdata* NestedDefiniton::getDataPtr()
+FileContext* NestedDefiniton::getFileContext()
 {
-   return this->definition->getDataPtr();
+   return this->definition->getFileContext();
 }
 
 _bool Filter_LimitDef::hasNext()
@@ -276,7 +289,7 @@ _bool Filter_SkipDef::hasNext()
       }
 
       if (counter == limit) {
-         this->inner.index.value -= limit;
+         this->context->index->value -= limit;
          value = definition->getValue();
          return true;
       }
@@ -311,7 +324,7 @@ _bool Filter_EveryDef::hasNext()
       if (counter == limit) {
          counter = NINT_ONE;
          value = definition->getValue();
-         this->inner.index.value = index;
+         this->context->index->value = index;
          index++;
          return true;
       }
@@ -362,7 +375,7 @@ _bool Filter_FinalDef::hasNext()
 
    if (index < length) {
       value = values[static_cast<_size>(index)];
-      this->inner.index.value.value.i = index;
+      this->context->index->value.value.i = index;
       index++;
       return true;
    }
@@ -577,7 +590,8 @@ _bool Join_DefDef::hasNext()
 
 
 DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin)
-   : uroboros(uro), inner(uro.vars.inner), definition(std::move(def)), suffix(suf), absoluteBase(abs), isFinal(fin) { };
+   : definition(std::move(def)), fileContext(definition->getFileContext()), 
+     locContext(uro.contextes.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 
 void DefinitionSuffix::reset()
@@ -599,20 +613,14 @@ _bool DefinitionSuffix::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros.state != State::s_Running) {
-         this->definition->reset();
-         this->first = true;
-         break;
-      }
-
       this->value = str(this->definition->getValue(), this->suffix);
       const _str path = this->absoluteBase 
          ? this->value 
-         : str(this->inner.location.value, OS_SEPARATOR_STRING, this->value);
+         : str(this->locContext->location->value, OS_SEPARATOR_STRING, this->value);
 
       if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {
          if (this->isFinal) {
-            this->inner.index.value = index;
+            this->fileContext->index->value = index;
             index++;
          }
          return true;

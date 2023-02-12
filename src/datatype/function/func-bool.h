@@ -22,41 +22,20 @@
 namespace uro::func
 {
 
-template <typename T>
-struct F_Any : Func_1<std::vector<T>>, Generator<_bool>
+
+struct F_Any : Generator<_bool>
 {
 public:
-   F_Any<T>(_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) { };
-   _bool getValue() override {
-      return this->arg1->getValue().size() > 0;
-   }
-};
-
-
-struct F_AnyDef : Generator<_bool>
-{
-public:
-   F_AnyDef() = delete;
-   F_AnyDef(_defptr& def) : definition(std::move(def)) { };
-   _bool getValue() override;
-
-private:
-   _defptr definition;
-};
-
-
-struct F_AnyInside : Generator<_bool>
-{
-public:
-   F_AnyInside(_defptr& def, _genptr<_str>& val, _uro& uro)
-      : definition(std::move(def)), value(std::move(val)), inner(uro.vars.inner) { };
+   F_Any() = delete;
+   F_Any(_defptr& def, _lcptr& lctx, FileContext* fctx)
+      : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx) { };
 
    _bool getValue() override;
 
 private:
-   InnerVariables& inner;
+   _lcptr locContext;
+   FileContext* fileContext;
    _defptr definition;
-   _genptr<_str> value;
 };
 
 
@@ -168,27 +147,29 @@ public:
 };
 
 
-struct F_ExistsInside : Func_2<_str, _str>, Generator<_bool>
+struct F_Exists : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_ExistsInside(_genptr<_str>& a1, _genptr<_str>& a2, _uro& uro)
-      : Func_2(a1, a2), inner(uro.vars.inner) { };
+   F_Exists(_genptr<_str>& a1, LocationContext* lctx, FileContext* fctx)
+      : Func_1(a1), locContext(lctx), fileContext(fctx) { };
    _bool getValue() override;
 
 private:
-   InnerVariables& inner;
+   _lcptr locContext;
+   FileContext* fileContext;
 };
 
 
-struct F_ExistInside : Func_2<_list, _str>, Generator<_bool>
+struct F_Exist: Func_1<_list>, Generator<_bool>
 {
 public:
-   F_ExistInside(_genptr<_list>& a1, _genptr<_str>& a2, _uro& uro)
-      : Func_2(a1, a2), inner(uro.vars.inner) { };
+   F_Exist(_genptr<_list>& a1, LocationContext* lctx, FileContext* fctx)
+      : Func_1(a1), locContext(lctx), fileContext(fctx) { };
    _bool getValue() override;
 
 private:
-   InnerVariables& inner;
+   LocationContext* locContext;
+   FileContext* fileContext;
 };
 
 
@@ -250,28 +231,16 @@ private:
 };
 
 
-struct F_Find : Func_2<_str, _str>, Generator<_bool>
+
+struct F_Find : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_Find(_genptr<_str>& a1, _genptr<_str>& a2, _uro& uro)
-      : Func_2(a1, a2), inner(uro.vars.inner) { };
+   F_Find(_genptr<_str>& a1,  FileContext* ctx)
+      : Func_1(a1), context(ctx) { };
    _bool getValue() override;
 
 private:
-   InnerVariables& inner;
-};
-
-
-struct F_Find_InThis : Func_1<_str>, Generator<_bool>
-{
-public:
-   F_Find_InThis(_genptr<_str>& a1, _uro& uro) 
-      : Func_1(a1), uroboros(uro), inner(uro.vars.inner) { };
-   _bool getValue() override;
-
-private:
-   _uro& uroboros;
-   InnerVariables& inner;
+   FileContext* context;
 };
 
 

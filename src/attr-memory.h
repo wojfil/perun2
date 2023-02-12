@@ -25,7 +25,7 @@ namespace uro
 
 // this struct is a consequence of using struct Attribute in iteration loops with other nested iteration loops
 // sometimes attributes have to be saved in the memory and rolled back later
-
+/*
 struct AttributeMemory
 {
 public:
@@ -64,7 +64,7 @@ private:
    _bool prev_readonly;
    _num prev_size;
 };
-
+*/
 }
 
 #endif // ATTR_MEMORY_H_INCLUDED

@@ -57,24 +57,22 @@ private:
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference(_uro& uro) : inner(uro.vars.inner) { };
+   LocationReference(_uro& uro);
    _str getValue() override;
 
 private:
-   InnerVariables& inner;
+   LocationContext& context;
 };
 
 
 struct RelativeLocation : Generator<_str>
 {
 public:
-   RelativeLocation(_genptr<_str>& val, _uro& uro) 
-      : value(std::move(val)), inner(uro.vars.inner) { };
-
+   RelativeLocation(_genptr<_str>& val, _uro& uro);
    _str getValue() override;
 
 private:
-   InnerVariables& inner;
+   LocationContext& context;
    _genptr<_str> value;
 };
 

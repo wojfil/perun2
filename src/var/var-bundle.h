@@ -26,7 +26,7 @@
 namespace uro::vars
 {
 
-template <typename T>
+/*template <typename T>
 struct VarBundle
 {
 public:
@@ -138,7 +138,7 @@ private:
    std::map<_size, _genptr<T>> specialVars;
    uro::_uro& uroboros;
 
-};
+};*/
 
 }
 

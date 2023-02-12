@@ -19,7 +19,7 @@
 
 namespace uro::gen
 {
-
+/*
 OrderIndices::OrderIndices() noexcept
    : values(new _size[0]()) { }
 
@@ -138,5 +138,5 @@ _bool OrderBy_Definition::hasNext()
       return true;
    }
 }
-
+*/
 }

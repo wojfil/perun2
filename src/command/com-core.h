@@ -25,93 +25,86 @@
 namespace uro::comm
 {
 
-// simple commands:
-
-struct C_Simple : Command_L
+struct CoreCommand : Command
 {
 public:
-   C_Simple(const _bool& save, _uro& uro)
-      : saveChanges(save), Command_L(uro) { };
+   CoreCommand() = delete;
+   CoreCommand(FileContext* ctx, _uro& uro)
+      : saveChanges(true), context(ctx), uroboros(uro), locationContext(uro.contextes.getLocationContext()) { };
+   CoreCommand(const _bool& save, FileContext* ctx, _uro& uro)
+      : saveChanges(save), context(ctx), uroboros(uro), locationContext(uro.contextes.getLocationContext()) { };
 
 protected:
+
+   FileContext* context;
    const _bool saveChanges;
+   _uro& uroboros;
+   LocationContext const* locationContext;
 };
 
-struct C_Delete : Command_L
+struct C_Delete : CoreCommand
 {
 public:
-   C_Delete(_uro& uro)
-      : attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-   C_Delete(Attribute* attr, _uro& uro)
-      : attribute(attr), hasAttribute(true), Command_L(uro) { };
+   C_Delete(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
-
-private:
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
-struct C_Drop : Command_L
+struct C_Drop : CoreCommand
 {
 public:
-   C_Drop(_uro& uro)
-      : attribute(nullptr), hasAttribute(false), Command_L(uro)  { };
-   C_Drop(Attribute* attr, _uro& uro)
-      : attribute(attr), hasAttribute(true), Command_L(uro) { };
+   C_Drop(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
-
-private:
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
-struct C_Hide : C_Simple
+struct C_Hide : CoreCommand
 {
-   C_Hide(const _bool& save, _uro& uro)
-      : C_Simple(save, uro) { };
+   C_Hide(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
 };
 
-struct C_Lock : C_Simple
+struct C_Lock : CoreCommand
 {
-   C_Lock(const _bool& save, _uro& uro)
-      : C_Simple(save, uro) { };
+   C_Lock(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
 };
 
-struct C_Open : C_Simple
+struct C_Open : CoreCommand
 {
-   C_Open(_uro& uro)
-      : C_Simple(true, uro) { };
+   C_Open(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
 };
 
-struct C_Unlock : C_Simple
+struct C_Unlock : CoreCommand
 {
-   C_Unlock(const _bool& save, _uro& uro)
-      : C_Simple(save, uro) { };
+   C_Unlock(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
 };
 
-struct C_Unhide : C_Simple
+struct C_Unhide : CoreCommand
 {
-   C_Unhide(const _bool& save, _uro& uro)
-      : C_Simple(save, uro) { };
+   C_Unhide(const _bool& save, FileContext* ctx, _uro& uro)
+      : CoreCommand(save, ctx, uro) { };
 
    void run() override;
 };
 
-struct C_OpenWith : Command_L
+struct C_OpenWith : CoreCommand
 {
 public:
-   C_OpenWith(_genptr<_str>& pro, _uro& uro)
-      : program(std::move(pro)), Command_L(uro) { };
+   C_OpenWith(_genptr<_str>& pro, const _bool& save, FileContext* ctx, _uro& uro)
+      : program(std::move(pro)), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 
@@ -126,22 +119,21 @@ protected:
 
 
 
-struct C_TimeAlter : Command_L
+struct C_TimeAlter : CoreCommand
 {
 public:
-   C_TimeAlter(_genptr<_tim>& ti, const _bool& save, _uro& uro)
-      : time(std::move(ti)), saveChanges(save), Command_L(uro) { };
+   C_TimeAlter(_genptr<_tim>& ti, const _bool& save, FileContext* ctx, _uro& uro)
+      : time(std::move(ti)), CoreCommand(save, ctx, uro) { };
 
 protected:
    _genptr<_tim> time;
-   const _bool saveChanges;
 };
 
 
 struct C_ReaccessTo : C_TimeAlter
 {
-   C_ReaccessTo(_genptr<_tim>& ti, const _bool& save, _uro& uro)
-      : C_TimeAlter(ti, save, uro) { };
+   C_ReaccessTo(_genptr<_tim>& ti, const _bool& save, FileContext* ctx, _uro& uro)
+      : C_TimeAlter(ti, save, ctx, uro) { };
 
    void run() override;
 };
@@ -149,8 +141,8 @@ struct C_ReaccessTo : C_TimeAlter
 
 struct C_RechangeTo : C_TimeAlter
 {
-   C_RechangeTo(_genptr<_tim>& ti, const _bool& save, _uro& uro)
-      : C_TimeAlter(ti, save, uro) { };
+   C_RechangeTo(_genptr<_tim>& ti, const _bool& save, FileContext* ctx, _uro& uro)
+      : C_TimeAlter(ti, save, ctx, uro) { };
 
    void run() override;
 };
@@ -158,8 +150,8 @@ struct C_RechangeTo : C_TimeAlter
 
 struct C_RecreateTo : C_TimeAlter
 {
-   C_RecreateTo(_genptr<_tim>& ti, const _bool& save, _uro& uro)
-      : C_TimeAlter(ti, save, uro) { };
+   C_RecreateTo(_genptr<_tim>& ti, const _bool& save, FileContext* ctx, _uro& uro)
+      : C_TimeAlter(ti, save, ctx, uro) { };
 
    void run() override;
 };
@@ -167,19 +159,19 @@ struct C_RecreateTo : C_TimeAlter
 
 struct C_RemodifyTo : C_TimeAlter
 {
-   C_RemodifyTo(_genptr<_tim>& ti, const _bool& save, _uro& uro)
-      : C_TimeAlter(ti, save, uro) { };
+   C_RemodifyTo(_genptr<_tim>& ti, const _bool& save, FileContext* ctx, _uro& uro)
+      : C_TimeAlter(ti, save, ctx, uro) { };
 
    void run() override;
 };
 
 
-struct C_RenameTo : Command_L
+struct C_RenameTo : CoreCommand
 {
 public:
    C_RenameTo(_genptr<_str>& na, const _bool& save, const _bool& forc,
-      const _bool& extless, _uro& uro)
-      : name(std::move(na)), saveChanges(save), forced(forc), extensionless(extless), Command_L(uro) { };
+      const _bool& extless, FileContext* ctx, _uro& uro)
+      : name(std::move(na)), saveChanges(save), forced(forc), extensionless(extless), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 
@@ -191,11 +183,11 @@ protected:
 };
 
 
-struct C_RenameTo_Stack : Command_L
+struct C_RenameTo_Stack : CoreCommand
 {
 public:
-   C_RenameTo_Stack(_genptr<_str>& na, const _bool& save, const _bool& extless, _uro& uro)
-      : name(std::move(na)), saveChanges(save), extensionless(extless), Command_L(uro) { };
+   C_RenameTo_Stack(_genptr<_str>& na, const _bool& save, const _bool& extless, FileContext* ctx, _uro& uro)
+      : name(std::move(na)), saveChanges(save), extensionless(extless), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 
@@ -206,93 +198,83 @@ protected:
 };
 
 
-struct C_MoveTo : Command_L
+struct C_MoveTo : CoreCommand
 {
 public:
-   C_MoveTo(_genptr<_str>& loc, const _bool& forc, _uro& uro)
-      : location(std::move(loc)), hasAttribute(false), attribute(nullptr), forced(forc), Command_L(uro) { };
-
-   C_MoveTo(_genptr<_str>& loc, const _bool& forc, Attribute* attr, _uro& uro)
-      : location(std::move(loc)), hasAttribute(true), attribute(attr), forced(forc), Command_L(uro) { };
+   C_MoveTo(_genptr<_str>& loc, const _bool& forc, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), forced(forc), CoreCommand(ctx, uro) { };
 
    void run() override;
 
 protected:
    _genptr<_str> location;
-   const _bool hasAttribute;
-   Attribute* attribute;
    const _bool forced;
 };
 
 
-struct C_MoveTo_Stack : Command_L
+struct C_MoveTo_Stack : CoreCommand
 {
 public:
-   C_MoveTo_Stack(_genptr<_str>& loc, _uro& uro)
-      : location(std::move(loc)), hasAttribute(false), attribute(nullptr), Command_L(uro) { };
-
-   C_MoveTo_Stack(_genptr<_str>& loc, Attribute* attr, _uro& uro)
-      : location(std::move(loc)), hasAttribute(true), attribute(attr), Command_L(uro) { };
+   C_MoveTo_Stack(_genptr<_str>& loc, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), CoreCommand(ctx, uro) { };
 
    void run() override;
 
 protected:
    _genptr<_str> location;
-   const _bool hasAttribute;
-   Attribute* attribute;
 };
 
 
-struct C_MoveToAs : Command_L
+struct C_MoveToAs : CoreCommand
 {
 public:
    C_MoveToAs(_genptr<_str>& loc, _genptr<_str>& na, const _bool& forc,
-      const _bool& extless, _uro& uro)
-      : location(std::move(loc)), name(std::move(na)), hasAttribute(false),
-        attribute(nullptr), forced(forc), extensionless(extless), Command_L(uro) { };
-
-   C_MoveToAs(_genptr<_str>& loc, _genptr<_str>& na, const _bool& forc,
-      const _bool& extless, Attribute* attr, _uro& uro)
-      : location(std::move(loc)), name(std::move(na)), hasAttribute(true),
-        attribute(attr), forced(forc), extensionless(extless), Command_L(uro) { };
+      const _bool& extless, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), name(std::move(na)),
+        forced(forc), extensionless(extless), CoreCommand(ctx, uro) { };
 
    void run() override;
 
 protected:
    _genptr<_str> location;
    _genptr<_str> name;
-   const _bool hasAttribute;
-   Attribute* attribute;
    const _bool forced;
    const _bool extensionless;
 };
 
 
-struct C_MoveToAs_Stack : Command_L
+struct C_MoveToAs_Stack : CoreCommand
 {
 public:
-   C_MoveToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na, const _bool& extless, _uro& uro)
-      : location(std::move(loc)), name(std::move(na)), hasAttribute(false), attribute(nullptr), extensionless(extless), Command_L(uro) { };
-
-   C_MoveToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na, const _bool& extless, Attribute* attr, _uro& uro)
-      : location(std::move(loc)), name(std::move(na)), hasAttribute(true), attribute(attr), extensionless(extless), Command_L(uro) { };
+   C_MoveToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na, const _bool& extless, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(ctx, uro) { };
 
    void run() override;
 
 protected:
    _genptr<_str> location;
    _genptr<_str> name;
-   const _bool hasAttribute;
-   Attribute* attribute;
    const _bool extensionless;
 };
 
 
-struct C_DownloadFrom_String : Command_L
+struct C_DownloadBase : Command
+{
+public:
+   C_DownloadBase(_uro& uro)
+      : uroboros(uro), locContext(uro.contextes.getLocationContext()) { };
+
+protected:
+   LocationContext* locContext;
+   _uro& uroboros;
+};
+
+
+struct C_DownloadFrom_String : C_DownloadBase
 {
 public:
    C_DownloadFrom_String(_genptr<_str>& loc, _genptr<_str>& el, const _bool& forc, _uro& uro)
-      : location(std::move(loc)), element(std::move(el)), forced(forc), Command_L(uro) { };
+      : location(std::move(loc)), element(std::move(el)), forced(forc), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -303,11 +285,11 @@ protected:
 };
 
 
-struct C_DownloadFrom_List : Command_L
+struct C_DownloadFrom_List : C_DownloadBase
 {
 public:
    C_DownloadFrom_List(_genptr<_str>& loc, _genptr<_list>& el, const _bool& forc, _uro& uro)
-      : location(std::move(loc)), elements(std::move(el)), forced(forc), Command_L(uro) { };
+      : location(std::move(loc)), elements(std::move(el)), forced(forc), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -318,11 +300,11 @@ protected:
 };
 
 
-struct C_DownloadFrom_Definition : Command_L
+struct C_DownloadFrom_Definition : C_DownloadBase
 {
 public:
    C_DownloadFrom_Definition(_genptr<_str>& loc, _defptr& el, const _bool& forc, _uro& uro)
-      : location(std::move(loc)), elements(std::move(el)), forced(forc), Command_L(uro) { };
+      : location(std::move(loc)), elements(std::move(el)), forced(forc), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -333,11 +315,11 @@ protected:
 };
 
 
-struct C_DownloadFrom_String_Stack : Command_L
+struct C_DownloadFrom_String_Stack : C_DownloadBase
 {
 public:
    C_DownloadFrom_String_Stack(_genptr<_str>& loc, _genptr<_str>& el, _uro& uro)
-      : location(std::move(loc)), element(std::move(el)), Command_L(uro) { };
+      : location(std::move(loc)), element(std::move(el)), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -347,11 +329,11 @@ protected:
 };
 
 
-struct C_DownloadFrom_List_Stack : Command_L
+struct C_DownloadFrom_List_Stack : C_DownloadBase
 {
 public:
    C_DownloadFrom_List_Stack(_genptr<_str>& loc, _genptr<_list>& el, _uro& uro)
-      : location(std::move(loc)), elements(std::move(el)), Command_L(uro) { };
+      : location(std::move(loc)), elements(std::move(el)), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -361,11 +343,11 @@ protected:
 };
 
 
-struct C_DownloadFrom_Definition_Stack : Command_L
+struct C_DownloadFrom_Definition_Stack : C_DownloadBase
 {
 public:
    C_DownloadFrom_Definition_Stack(_genptr<_str>& loc, _defptr& el, _uro& uro)
-      : location(std::move(loc)), elements(std::move(el)), Command_L(uro) { };
+      : location(std::move(loc)), elements(std::move(el)), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -375,11 +357,11 @@ protected:
 };
 
 
-struct C_Download_String : Command_L
+struct C_Download_String : C_DownloadBase
 {
 public:
    C_Download_String(_genptr<_str>& el, const _bool& forc, _uro& uro)
-      : element(std::move(el)), forced(forc), Command_L(uro) { };
+      : element(std::move(el)), forced(forc), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -389,11 +371,11 @@ protected:
 };
 
 
-struct C_Download_List : Command_L
+struct C_Download_List : C_DownloadBase
 {
 public:
    C_Download_List(_genptr<_list>& el, const _bool& forc, _uro& uro)
-      : elements(std::move(el)), forced(forc), Command_L(uro) { };
+      : elements(std::move(el)), forced(forc), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -403,11 +385,11 @@ protected:
 };
 
 
-struct C_Download_String_Stack : Command_L
+struct C_Download_String_Stack : C_DownloadBase
 {
 public:
    C_Download_String_Stack(_genptr<_str>& el, _uro& uro)
-      : element(std::move(el)), Command_L(uro) { };
+      : element(std::move(el)), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -416,11 +398,11 @@ protected:
 };
 
 
-struct C_Download_List_Stack : Command_L
+struct C_Download_List_Stack : C_DownloadBase
 {
 public:
    C_Download_List_Stack(_genptr<_list>& el, _uro& uro)
-      : elements(std::move(el)), Command_L(uro) { };
+      : elements(std::move(el)), C_DownloadBase(uro) { };
 
    void run() override;
 
@@ -429,12 +411,12 @@ protected:
 };
 
 
-struct C_CopyTo : Command_L
+struct C_CopyTo : CoreCommand
 {
 public:
    C_CopyTo(_genptr<_str>& loc, const _bool& save,
-      const _bool& forc, _uro& uro)
-      : location(std::move(loc)), saveChanges(save), forced(forc), Command_L(uro) { };
+      const _bool& forc, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), saveChanges(save), forced(forc), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 
@@ -445,11 +427,11 @@ protected:
 };
 
 
-struct C_CopyTo_Stack : Command_L
+struct C_CopyTo_Stack : CoreCommand
 {
 public:
-   C_CopyTo_Stack(_genptr<_str>& loc, const _bool& save, _uro& uro)
-      : location(std::move(loc)), saveChanges(save), Command_L(uro) { };
+   C_CopyTo_Stack(_genptr<_str>& loc, const _bool& save, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), saveChanges(save), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 
@@ -459,12 +441,12 @@ protected:
 };
 
 
-struct C_CopyToAs : Command_L
+struct C_CopyToAs : CoreCommand
 {
 public:
    C_CopyToAs(_genptr<_str>& loc, _genptr<_str>& na,
-      const _bool& save, const _bool& forc, const _bool& extless, _uro& uro)
-      : location(std::move(loc)), name(std::move(na)), forced(forc), extensionless(extless), Command_L(uro) { };
+      const _bool& save, const _bool& forc, const _bool& extless, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), name(std::move(na)), forced(forc), extensionless(extless), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 
@@ -476,12 +458,12 @@ protected:
 };
 
 
-struct C_CopyToAs_Stack : Command_L
+struct C_CopyToAs_Stack : CoreCommand
 {
 public:
    C_CopyToAs_Stack(_genptr<_str>& loc, _genptr<_str>& na,
-      const _bool& save, const _bool& extless, _uro& uro)
-      : location(std::move(loc)), name(std::move(na)), extensionless(extless), Command_L(uro) { };
+      const _bool& save, const _bool& extless, FileContext* ctx, _uro& uro)
+      : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(save, ctx, uro) { };
 
    void run() override;
 

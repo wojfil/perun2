@@ -19,6 +19,7 @@
 #include "../datatype/datatype.h"
 #include "../datatype/generator.h"
 #include "com-aggregate.h"
+#include "com-core.h"
 #include "../attribute.h"
 #include "../uroboros.h"
 #include "../var/var.h"
@@ -72,12 +73,12 @@ private:
 struct C_PrintThis_Str : Command
 {
 public:
-   C_PrintThis_Str(_uro& uro)
-      : uroboros(uro), variable(uro.vars.inner.this_s) { };
+   C_PrintThis_Str(_uro& uro, FileContext& ctx)
+      : uroboros(uro), context(ctx) { };
    void run() override;
 
 private:
-   uro::vars::Variable<_str>& variable;
+   FileContext& context;
    _uro& uroboros;
 };
 
@@ -85,12 +86,12 @@ private:
 struct C_PrintThis_Num : Command
 {
 public:
-   C_PrintThis_Num(_uro& uro)
-      : uroboros(uro), variable(uro.vars.inner.this_n) { };
+   C_PrintThis_Num(_uro& uro, NumericContext& ctx)
+      : uroboros(uro), context(ctx) { };
    void run() override;
 
 private:
-   uro::vars::Variable<_num>& variable;
+   NumericContext& context;
    _uro& uroboros;
 };
 
@@ -98,12 +99,12 @@ private:
 struct C_PrintThis_Tim : Command
 {
 public:
-   C_PrintThis_Tim(_uro& uro)
-      : uroboros(uro), variable(uro.vars.inner.this_t) { };
+   C_PrintThis_Tim(_uro& uro, TimeContext& ctx)
+      : uroboros(uro), context(ctx) { };
    void run() override;
 
 private:
-   uro::vars::Variable<_tim>& variable;
+   TimeContext& context;
    _uro& uroboros;
 };
 
@@ -198,126 +199,112 @@ private:
 };
 
 
-struct C_Run : Command_L
+struct RunBase
 {
 public:
-   C_Run(_genptr<_str>& val, Attribute* attr, _uro& uro)
-      : value(std::move(val)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   RunBase() = delete;
+   RunBase(_uro& uro);
+
+protected:
+   void reloadContextes();
+   _str getLocation();
+   _str getUro2Cmd();
+
+   const _str uro2Base;
+
+private:
+   LocationContext* locationCtx;
+   std::vector<FileContext*> fileCtxs;
+};
+
+
+struct C_Run : CoreCommand, RunBase
+{
+public:
+   C_Run(_genptr<_str>& val, FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro), value(std::move(val)) { };
 
    void run() override;
 
 private:
    _genptr<_str> value;
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 
-struct C_RunWith : Command_L
+struct C_RunWith : CoreCommand, RunBase
 {
 public:
-   C_RunWith(_genptr<_str>& val, _uro& uro)
-      : value(std::move(val)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-
-   C_RunWith(_genptr<_str>& val, Attribute* attr, _uro& uro)
-      : value(std::move(val)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   C_RunWith(_genptr<_str>& val, FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro), value(std::move(val)) { };
 
    void run() override;
 
 private:
    _genptr<_str> value;
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 
-struct C_RunWithWithString : Command_L
+struct C_RunWithWithString : CoreCommand, RunBase
 {
 public:
-   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, _uro& uro)
-      : value(std::move(val)), argument(std::move(arg)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-
-   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, Attribute* attr, _uro& uro)
-      : value(std::move(val)), argument(std::move(arg)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro), value(std::move(val)), argument(std::move(arg)) { };
 
    void run() override;
 
 private:
    _genptr<_str> value;
    _genptr<_str> argument;
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 
-struct C_RunWithWith : Command_L
+struct C_RunWithWith : CoreCommand, RunBase
 {
 public:
-   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& args, _uro& uro)
-      : value(std::move(val)), arguments(std::move(args)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-
-   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& args, Attribute* attr, _uro& uro)
-      : value(std::move(val)), arguments(std::move(args)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& arg, FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro), value(std::move(val)), arguments(std::move(arg)) { };
 
    void run() override;
 
 private:
    _genptr<_str> value;
    _genptr<_list> arguments;
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 
-struct C_RunWithUroboros2 : Command_L
+struct C_RunWithUroboros2 : CoreCommand, RunBase
 {
 public:
-   C_RunWithUroboros2(_uro& uro)
-      : attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-   C_RunWithUroboros2(Attribute* attr, _uro& uro)
-      : attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   C_RunWithUroboros2(FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro) { };
 
    void run() override;
-
-private:
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 
-struct C_RunWithUroboros2WithString : Command_L
+struct C_RunWithUroboros2WithString : CoreCommand, RunBase
 {
 public:
-   C_RunWithUroboros2WithString(_genptr<_str>& arg, _uro& uro)
-      : argument(std::move(arg)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-
-   C_RunWithUroboros2WithString(_genptr<_str>& arg, Attribute* attr, _uro& uro)
-      : argument(std::move(arg)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   C_RunWithUroboros2WithString(_genptr<_str>& arg, FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro), argument(std::move(arg)) { };
 
    void run() override;
 
 private:
    _genptr<_str> argument;
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 
-struct C_RunWithUroboros2With : Command_L
+struct C_RunWithUroboros2With : CoreCommand, RunBase
 {
 public:
-   C_RunWithUroboros2With(_genptr<_list>& args, _uro& uro)
-      : arguments(std::move(args)), attribute(nullptr), hasAttribute(false), Command_L(uro) { };
-
-   C_RunWithUroboros2With(_genptr<_list>& args, Attribute* attr, _uro& uro)
-      : arguments(std::move(args)), attribute(attr), hasAttribute(attr != nullptr), Command_L(uro) { };
+   C_RunWithUroboros2With(_genptr<_list>& arg, FileContext* ctx, _uro& uro)
+      : CoreCommand(ctx, uro), RunBase(uro), arguments(std::move(arg)) { };
 
    void run() override;
 
 private:
    _genptr<_list> arguments;
-   Attribute* attribute;
-   const _bool hasAttribute;
 };
 
 }

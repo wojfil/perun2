@@ -18,13 +18,13 @@
 #include "../datatype.h"
 #include "../patterns.h"
 #include "../../os.h"
+#include "../../context.h"
 #include <windows.h>
 
 
 namespace uro
 {
 struct _uro;
-struct InnerVariables;
 }
 
 namespace uro::gen
@@ -47,30 +47,6 @@ namespace os
 }
 
 
-enum OsElement
-{
-   oe_None = 0,
-   oe_All,
-   oe_Directories,
-   oe_Files,
-   oe_RecursiveAll,
-   oe_RecursiveDirectories,
-   oe_RecursiveFiles
-};
-
-
-struct DefinitionGenerator
-{
-public:
-   DefinitionGenerator() = delete;
-   DefinitionGenerator(const OsElement& el, _uro& uro);
-
-   _bool generate(_defptr& result) const;
-
-private:
-   _uro& uroboros;
-   const OsElement element_;
-};
 
 
 struct OsDefinition : _def
@@ -78,13 +54,13 @@ struct OsDefinition : _def
 public:
    OsDefinition() = delete;
    OsDefinition(P_GEN_OS_ARGS);
-   _fdata* getDataPtr();
+   FileContext* getFileContext() override;
 
 protected:
    _bool first = true;
    _genptr<_str> location;
    _uro& uroboros;
-   InnerVariables& inner;
+   _fcptr context;
    _fdata data;
    _numi index;
    _str baseLocation;
@@ -101,7 +77,7 @@ struct OsDefinitionPlain : OsDefinition
 {
 public:
    OsDefinitionPlain() = delete;
-   OsDefinitionPlain(P_GEN_OS_ARGS_EXT) 
+   OsDefinitionPlain(P_GEN_OS_ARGS_EXT)
       : OsDefinition(P_GEN_OS_ARGS_2), pattern(patt) { };
 
    void reset() override;
@@ -116,7 +92,7 @@ struct OsDefinitionRecursive : OsDefinition
 {
 public:
    OsDefinitionRecursive() = delete;
-   OsDefinitionRecursive(P_GEN_OS_ARGS) 
+   OsDefinitionRecursive(P_GEN_OS_ARGS)
       : OsDefinition(P_GEN_OS_ARGS_2) { };
 
    void reset() override;
@@ -136,7 +112,7 @@ struct Files : OsDefinitionPlain
 {
 public:
    Files() = delete;
-   Files(P_GEN_OS_ARGS_EXT) 
+   Files(P_GEN_OS_ARGS_EXT)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
@@ -147,7 +123,7 @@ struct Directories : OsDefinitionPlain
 {
 public:
    Directories() = delete;
-   Directories(P_GEN_OS_ARGS_EXT) 
+   Directories(P_GEN_OS_ARGS_EXT)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
@@ -158,7 +134,7 @@ struct All : OsDefinitionPlain
 {
 public:
    All() = delete;
-   All(P_GEN_OS_ARGS_EXT) 
+   All(P_GEN_OS_ARGS_EXT)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
    _bool hasNext() override;
@@ -169,7 +145,7 @@ struct RecursiveFiles : OsDefinitionRecursive
 {
 public:
    RecursiveFiles() = delete;
-   RecursiveFiles(P_GEN_OS_ARGS) 
+   RecursiveFiles(P_GEN_OS_ARGS)
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
@@ -180,7 +156,7 @@ struct RecursiveDirectories : OsDefinitionRecursive
 {
 public:
    RecursiveDirectories() = delete;
-   RecursiveDirectories(P_GEN_OS_ARGS) 
+   RecursiveDirectories(P_GEN_OS_ARGS)
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;
@@ -191,7 +167,7 @@ struct RecursiveAll : OsDefinitionRecursive
 {
 public:
    RecursiveAll() = delete;
-   RecursiveAll(P_GEN_OS_ARGS) 
+   RecursiveAll(P_GEN_OS_ARGS)
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
    _bool hasNext() override;

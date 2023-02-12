@@ -34,9 +34,9 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
       return parseOneToken(uro, tks, result);
    }
 
-   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
+  /* if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       return parseFilter<_defptr, _str>(result, tks, ThisState::ts_String, uro);
-   }
+   }*/
 
    if (isDefinitionChain(tks, uro) && parseDefinitionChain(result, tks, uro)) {
       return true;

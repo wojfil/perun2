@@ -73,7 +73,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
       parseListElementIndex(num, tksm, uro);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
-      if (uro.vars.getVarValue(f, tlist)) {
+      if (uro.contextes.getVariable(f, tlist, uro)) {
          const Token& last = tks.last();
          _genptr<_tim> tim(new gen::ListElement<_tim>(tlist, num));
 

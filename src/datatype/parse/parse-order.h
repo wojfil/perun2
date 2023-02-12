@@ -25,7 +25,7 @@
 
 namespace uro::parse
 {
-
+/*
 void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, _uro& uro);
 void orderUnitFailure(const Token& tk, _uro& uro);
 void prepareOrderUnit(Tokens& tks, _bool& desc, gen::_ordptr& order, gen::_indptr& indices, _uro& uro);
@@ -178,7 +178,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 
    setSingleOrderFilter(attr, hasMemory, result, indices, order, uro);
    resetOrderParseSettings(state, prevThisState, uro);
-}
+}*/
 
 }
 

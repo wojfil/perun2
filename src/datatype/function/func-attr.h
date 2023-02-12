@@ -22,30 +22,6 @@
 namespace uro::func
 {
 
-struct AttrFunction
-{
-public:
-   AttrFunction(_genptr<_str>& val, _uro& uro)
-      : value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
-
-protected:
-   _str getPath();
-
-   _uro& uroboros;
-   InnerVariables& inner;
-   _genptr<_str> value;
-};
-
-
-struct F_Path : AttrFunction, Generator<_str>
-{
-public:
-   F_Path(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _str getValue() override;
-};
-
 
 struct F_Path_2 : Generator<_str>
 {
@@ -80,7 +56,7 @@ struct F_Path_4 : Generator<_str>
 {
 public:
    F_Path_4(_genptr<_str>& val_1, _genptr<_str>& val_2, _genptr<_str>& val_3, _genptr<_str>& val_4)
-      : value_1(std::move(val_1)), value_2(std::move(val_2)), 
+      : value_1(std::move(val_1)), value_2(std::move(val_2)),
         value_3(std::move(val_3)), value_4(std::move(val_4)) { };
 
    _str getValue() override;
@@ -97,8 +73,8 @@ struct F_Path_Multi : Generator<_str>
 {
 public:
    F_Path_Multi(std::vector<_genptr<_str>>& vals)
-      : length(vals.size()) 
-   { 
+      : length(vals.size())
+   {
       langutil::transferUniquePtrs(vals, this->values);
    };
 
@@ -110,77 +86,18 @@ private:
 };
 
 
-struct F_Drive : AttrFunction, Generator<_str>
-{
-public:
-   F_Drive(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _str getValue() override;
-};
-
-
-struct F_Extension : AttrFunction, Generator<_str>
-{
-public:
-   F_Extension(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _str getValue() override;
-};
-
-
-struct F_Fullname : AttrFunction, Generator<_str>
-{
-public:
-   F_Fullname(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _str getValue() override;
-};
-
-
-struct F_Name : AttrFunction, Generator<_str>
-{
-public:
-   F_Name(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _str getValue() override;
-};
-
-
-struct F_Parent : AttrFunction, Generator<_str>
-{
-public:
-   F_Parent(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _str getValue() override;
-};
-
-
-struct F_Size : AttrFunction, Generator<_num>
-{
-public:
-   F_Size(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _num getValue() override;
-};
-
-
 struct F_SizeDefinition : Generator<_num>
 {
 public:
    F_SizeDefinition(_defptr& def, _uro& uro)
-      : definition(std::move(def)), uroboros(uro), inner(uro.vars.inner) { };
+      : definition(std::move(def)), uroboros(uro), 
+        context(uro.contextes.getLocationContext()) { };
 
    _num getValue() override;
 
 private:
    _uro& uroboros;
-   InnerVariables& inner;
+   LocationContext* context;
    _defptr definition;
 };
 
@@ -189,170 +106,17 @@ struct F_SizeList : Generator<_num>
 {
 public:
    F_SizeList(_genptr<_list>& vals, _uro& uro)
-      : values(std::move(vals)), uroboros(uro), inner(uro.vars.inner) { };
+      : values(std::move(vals)), uroboros(uro), 
+        context(uro.contextes.getLocationContext()) { };
 
    _num getValue() override;
 
 private:
    _uro& uroboros;
-   InnerVariables& inner;
+   LocationContext* context;
    _genptr<_list> values;
 };
 
-
-struct F_Lifetime : AttrFunction, Generator<_per>
-{
-public:
-   F_Lifetime(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _per getValue() override;
-};
-
-
-struct F_Access : AttrFunction, Generator<_tim>
-{
-public:
-   F_Access(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _tim getValue() override;
-};
-
-
-struct F_Change : AttrFunction, Generator<_tim>
-{
-public:
-   F_Change(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _tim getValue() override;
-};
-
-
-struct F_Creation : AttrFunction, Generator<_tim>
-{
-public:
-   F_Creation(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _tim getValue() override;
-};
-
-
-struct F_Modification : AttrFunction, Generator<_tim>
-{
-public:
-   F_Modification(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _tim getValue() override;
-};
-
-
-struct F_Archive : AttrFunction, Generator<_bool>
-{
-public:
-   F_Archive(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_Compressed : AttrFunction, Generator<_bool>
-{
-public:
-   F_Compressed(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_Empty : AttrFunction, Generator<_bool>
-{
-public:
-   F_Empty(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_Encrypted : AttrFunction, Generator<_bool>
-{
-public:
-   F_Encrypted(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_Exist : Generator<_bool>
-{
-public:
-   F_Exist(_genptr<_list>& val, _uro& uro)
-      : value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
-
-   _bool getValue() override;
-
-private:
-   _uro& uroboros;
-   InnerVariables& inner;
-   _genptr<_list> value;
-};
-
-
-struct F_Exists : AttrFunction, Generator<_bool>
-{
-public:
-   F_Exists(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_Hidden : AttrFunction, Generator<_bool>
-{
-public:
-   F_Hidden(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_IsDirectory : AttrFunction, Generator<_bool>
-{
-public:
-   F_IsDirectory(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_IsFile : AttrFunction, Generator<_bool>
-{
-public:
-   F_IsFile(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
-
-
-struct F_Readonly : AttrFunction, Generator<_bool>
-{
-public:
-   F_Readonly(_genptr<_str>& val, _uro& uro)
-      : AttrFunction(val, uro) { };
-
-   _bool getValue() override;
-};
 
 }
 

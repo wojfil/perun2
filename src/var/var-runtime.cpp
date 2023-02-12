@@ -28,7 +28,7 @@
 namespace uro::vars
 {
 
-Variables::Variables(uro::_uro& uro)
+/*Variables::Variables(uro::_uro& uro)
    : uroboros(uro), hashes(uro.hashes), vc(uro.vc), uroPath(os_uroborosPath()),
    inner(os_trim(uro.arguments.getLocation()), 
    str(os_quoteEmbraced(this->uroPath), STRING_SPACE, STRING_MINUS, toStr(CHAR_FLAG_SILENT), STRING_SPACE)),
@@ -263,6 +263,6 @@ void Variables::makeAllNotConstant()
    this->nlist.makeNotConstant();
    this->tlist.makeNotConstant();
    this->list.makeNotConstant();
-}
+}*/
 
 }

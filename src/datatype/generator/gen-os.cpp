@@ -29,8 +29,6 @@
 namespace uro::gen
 {
 
-#define P_GEN_OS_ARGS_DEFAULT loc, this->uroboros, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
-#define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->uroboros, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
@@ -42,55 +40,15 @@ namespace uro::gen
    } \
 
 
-DefinitionGenerator::DefinitionGenerator(const OsElement& el, _uro& uro)
-   : element_(el), uroboros(uro) { };
-
-_bool DefinitionGenerator::generate(_defptr& result) const
-{
-   _genptr<_str> loc(new LocationReference(this->uroboros));
-
-   switch (this->element_) {
-      case OsElement::oe_All: {
-         result = std::make_unique<All>(P_GEN_OS_ARGS_DEFAULT_EXT);
-         break;
-      }
-      case OsElement::oe_Directories: {
-         result = std::make_unique<Directories>(P_GEN_OS_ARGS_DEFAULT_EXT);
-         break;
-      }
-      case OsElement::oe_Files: {
-         result = std::make_unique<Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
-         break;
-      }
-      case OsElement::oe_RecursiveFiles: {
-         result = std::make_unique<RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
-         break;
-      }
-      case OsElement::oe_RecursiveDirectories: {
-         result = std::make_unique<RecursiveDirectories>(P_GEN_OS_ARGS_DEFAULT);
-         break;
-      }
-      case OsElement::oe_RecursiveAll: {
-         result = std::make_unique<RecursiveAll>(P_GEN_OS_ARGS_DEFAULT);
-         break;
-      }
-      default: {
-         return false;
-      }
-   }
-
-   return true;
-}
-
 OsDefinition::OsDefinition(P_GEN_OS_ARGS)
-   : location(std::move(loc)), uroboros(uro), inner(uro.vars.inner), 
+   : location(std::move(loc)), uroboros(uro), context(std::make_unique<FileContext>(uro)), 
      flags(uro.flags), isAbsolute(abs),
      hasPrefix(!pref.empty()), prefix(pref) { };
 
 
-_fdata* OsDefinition::getDataPtr()
+FileContext* OsDefinition::getFileContext() 
 {
-   return &data;
+   return this->context.get();
 }
 
 void OsDefinitionPlain::reset()
@@ -98,7 +56,6 @@ void OsDefinitionPlain::reset()
    if (!first) {
       first = true;
       FindClose(handle);
-      P_MEMORY_RESTORE;
    }
 }
 
@@ -115,7 +72,6 @@ void OsDefinitionRecursive::reset()
          }
          handles.clear();
       }
-      P_MEMORY_RESTORE;
    }
 }
 
@@ -132,10 +88,9 @@ _bool All::hasNext()
 
          first = false;
          value = data.cFileName;
-         P_MEMORY_LOAD;
-         this->inner.depth.value.setToZero();
+         this->context->v_depth->value.setToZero();
          index.setToZero();
-         this->inner.index.value = index;
+         this->context->index->value = index;
 
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -143,13 +98,13 @@ _bool All::hasNext()
             if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
                || (!isDir && os_extension(value) != OS_UROEXT))
             {
-               this->inner.index.value = index;
+               this->context->index->value = index;
                index++;
-               this->inner.depth.value.setToZero();
+               this->context->v_depth->value.setToZero();
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->inner.this_s.value = value;
+               this->context->loadData(value);
                return true;
             }
          }
@@ -168,13 +123,13 @@ _bool All::hasNext()
          if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
             || (!isDir && os_extension(value) != OS_UROEXT))
          {
-            this->inner.index.value = index;
+            this->context->index->value = index;
             index++;
-            this->inner.depth.value.setToZero();
+            this->context->v_depth->value.setToZero();
 
             P_OS_GEN_VALUE_ALTERATION;
 
-            this->inner.this_s.value = value;
+            this->context->loadData(value);
             return true;
          }
       }
@@ -182,7 +137,6 @@ _bool All::hasNext()
 
    first = true;
    FindClose(handle);
-   P_MEMORY_RESTORE;
    return false;
 }
 
@@ -199,22 +153,21 @@ _bool Files::hasNext()
 
          first = false;
          value = data.cFileName;
-         P_MEMORY_LOAD;
-         this->inner.depth.value.setToZero();
+         this->context->v_depth->value.setToZero();
          index.setToZero();
-         this->inner.index.value = index;
+         this->context->index->value = index;
 
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
-               this->inner.index.value = index;
+               this->context->index->value = index;
                index++;
-               this->inner.depth.value.setToZero();
+               this->context->v_depth->value.setToZero();
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->inner.this_s.value = value;
+               this->context->loadData(value);
                return true;
             }
          }
@@ -231,13 +184,13 @@ _bool Files::hasNext()
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
-            this->inner.index.value = index;
+            this->context->index->value = index;
             index++;
-            this->inner.depth.value.setToZero();
+            this->context->v_depth->value.setToZero();
 
             P_OS_GEN_VALUE_ALTERATION;
 
-            this->inner.this_s.value = value;
+            this->context->loadData(value);
             return true;
          }
       }
@@ -245,7 +198,6 @@ _bool Files::hasNext()
 
    first = true;
    FindClose(handle);
-   P_MEMORY_RESTORE;
    return false;
 }
 
@@ -262,22 +214,21 @@ _bool Directories::hasNext()
 
          first = false;
          value = data.cFileName;
-         P_MEMORY_LOAD;
-         this->inner.depth.value.setToZero();
+         this->context->v_depth->value.setToZero();
          index.setToZero();
-         this->inner.index.value = index;
+         this->context->index->value = index;
 
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
-               this->inner.index.value = index;
+               this->context->index->value = index;
                index++;
-               this->inner.depth.value.setToZero();
+               this->context->v_depth->value.setToZero();
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->inner.this_s.value = value;
+               this->context->loadData(value);
                return true;
             }
          }
@@ -294,13 +245,13 @@ _bool Directories::hasNext()
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
-            this->inner.index.value = index;
+            this->context->index->value = index;
             index++;
-            this->inner.depth.value.setToZero();
+            this->context->v_depth->value.setToZero();
 
             P_OS_GEN_VALUE_ALTERATION;
 
-            this->inner.this_s.value = value;
+            this->context->loadData(value);
             return true;
          }
       }
@@ -308,14 +259,13 @@ _bool Directories::hasNext()
 
    first = true;
    FindClose(handle);
-   P_MEMORY_RESTORE;
    return false;
 }
 
 
 void OsDefinitionRecursive::setDepth()
 {
-   this->inner.depth.value = this->depth;
+   this->context->v_depth->value = this->depth;
 }
 
 _bool RecursiveFiles::hasNext()
@@ -323,13 +273,12 @@ _bool RecursiveFiles::hasNext()
    if (first) {
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
-      P_MEMORY_LOAD;
       this->depth.setToZero();
       this->setDepth();
       goDeeper = true;
       first = false;
       index.setToZero();
-      this->inner.index.value = index;
+      this->context->index->value = index;
    }
 
    while (this->uroboros.state == State::s_Running) {
@@ -357,12 +306,12 @@ _bool RecursiveFiles::hasNext()
 
                if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
                   value = v;
-                  this->inner.index.value = index;
+                  this->context->index->value = index;
                   index++;
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->inner.this_s.value = value;
+                  this->context->loadData(value);
                   return true;
                }
             }
@@ -402,12 +351,12 @@ _bool RecursiveFiles::hasNext()
                }
                else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
                   value = this->depth.isZero() ? v : str(bases.back(), v);
-                  this->inner.index.value = index;
+                  this->context->index->value = index;
                   index++;
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->inner.this_s.value = value;
+                  this->context->loadData(value);
                   return true;
                }
             }
@@ -438,13 +387,12 @@ _bool RecursiveDirectories::hasNext()
    if (first) {
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
-      P_MEMORY_LOAD;
       this->depth.setToMinusOne();
       this->setDepth();
       goDeeper = true;
       first = false;
       index.setToZero();
-      this->inner.index.value = index;
+      this->context->index->value = index;
    }
 
    while (this->uroboros.state == State::s_Running) {
@@ -501,12 +449,12 @@ _bool RecursiveDirectories::hasNext()
                goDeeper = true;
                this->depth++;
                this->setDepth();
-               this->inner.index.value = index;
+               this->context->index->value = index;
                index++;
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->inner.this_s.value = value;
+               this->context->loadData(value);
                return true;
             }
          }
@@ -536,13 +484,12 @@ _bool RecursiveAll::hasNext()
    if (first) {
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
-      P_MEMORY_LOAD;
       this->depth.setToMinusOne();
       this->setDepth();
       goDeeper = true;
       first = false;
       index.setToZero();
-      this->inner.index.value = index;
+      this->context->index->value = index;
    }
 
    while (this->uroboros.state == State::s_Running) {
@@ -607,12 +554,12 @@ _bool RecursiveAll::hasNext()
                   goDeeper = true;
                   this->depth++;
                   this->setDepth();
-                  this->inner.index.value = index;
+                  this->context->index->value = index;
                   index++;
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->inner.this_s.value = value;
+                  this->context->loadData(value);
                   return true;
                }
                else if ((!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
@@ -626,12 +573,12 @@ _bool RecursiveAll::hasNext()
 
                   const _bool isBase = this->depth.isZero();
                   value = isBase ? v : str(bases.back(), v);
-                  this->inner.index.value = index;
+                  this->context->index->value = index;
                   index++;
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->inner.this_s.value = value;
+                  this->context->loadData(value);
                   return true;
                }
             }

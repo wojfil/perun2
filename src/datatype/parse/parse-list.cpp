@@ -33,7 +33,7 @@ _bool parseList(_genptr<_list>& result, const Tokens& tks, _uro& uro)
    if (len == 1) {
       return parseOneToken(uro, tks, result);
    }
-
+/*
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       if (parseFilter<_genptr<_list>, _str>(result, tks, ThisState::ts_String, uro)) {
          return true;
@@ -41,7 +41,7 @@ _bool parseList(_genptr<_list>& result, const Tokens& tks, _uro& uro)
       else {
          throw SyntaxError(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
       }
-   }
+   }*/
 
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {

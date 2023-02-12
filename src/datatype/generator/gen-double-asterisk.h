@@ -58,7 +58,7 @@ private:
    const _size defaultDepth;
    const _size startId;
    _rallptr definition;
-   InnerVariables& inner;
+   FileContext* context;
    _uro& uroboros;
    _bool first = true;
    _numi index = NINT_ZERO;

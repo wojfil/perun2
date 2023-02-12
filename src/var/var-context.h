@@ -23,7 +23,7 @@
 
 namespace uro::vars
 {
-
+/*
 struct Variables;
 
 struct VariablesContext
@@ -55,7 +55,7 @@ private:
    std::vector<comm::Aggregate*> aggrs;
 
 };
-
+*/
 }
 
 #endif // VAR_GROUP_H_INCLUDED

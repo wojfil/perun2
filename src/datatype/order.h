@@ -24,7 +24,7 @@
 
 namespace uro::gen
 {
-
+/*
 struct OrderIndices
 {
 public:
@@ -266,7 +266,7 @@ private:
    _bool hasVolatileDepth;
    std::vector<_nint> depths;
 };
-
+*/
 }
 
 #endif /* ORDER_H */

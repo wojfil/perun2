@@ -38,44 +38,19 @@ public:
 };
 
 
-template <typename T>
-struct F_Count : Func_1<std::vector<T>>, Generator<_num>
+struct F_Count : Generator<_num>
 {
 public:
-   F_Count<T>(_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) { };
-   _num getValue() override {
-      return _num(static_cast<_nint>(this->arg1->getValue().size()));
-   }
-};
-
-
-struct F_CountDef : Generator<_num>
-{
-public:
-   F_CountDef(_defptr& def, _uro& uro)
-      : definition(std::move(def)), uroboros(uro) { };
+   F_Count(_defptr& def, _lcptr& lctx, FileContext* fctx, _uro& uro)
+      : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx), uroboros(uro) { };
 
    _num getValue() override;
 
 private:
-   _uro& uroboros;
+   _lcptr locContext;
+   FileContext* fileContext;
    _defptr definition;
-};
-
-
-struct F_CountInside : Generator<_num>
-{
-public:
-   F_CountInside(_defptr& def, _genptr<_str>& val, _uro& uro)
-      : definition(std::move(def)), value(std::move(val)), uroboros(uro), inner(uro.vars.inner) { };
-
-   _num getValue() override;
-
-private:
    _uro& uroboros;
-   InnerVariables& inner;
-   _defptr definition;
-   _genptr<_str> value;
 };
 
 

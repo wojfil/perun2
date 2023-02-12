@@ -19,7 +19,7 @@
 
 namespace uro
 {
-
+/*
 AttributeMemory::AttributeMemory(_attrptr& attr, InnerVariables& iv)
    : attribute(attr.get()), hasAttribute(attr.get() != nullptr), inner(iv) { };
 
@@ -211,6 +211,6 @@ void AttributeMemory::restore() const
    if (attribute->has(ATTR_SIZE)) {
       inner.size.value = prev_size;
    }
-}
+}*/
 
 }

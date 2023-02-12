@@ -31,7 +31,7 @@ void C_AggrCopy_String::run()
       aggregate->invalidCopy.insert(os_fullname(n));
    }
    else {
-      aggregate->copyPaths.insert(os_join(this->inner.location.value, n));
+      aggregate->copyPaths.insert(os_join(this->locationContext->location->value, n));
    }
 }
 
@@ -49,7 +49,7 @@ void C_AggrCopy_List::run()
          aggregate->invalidCopy.insert(os_fullname(n));
       }
       else {
-         aggregate->copyPaths.insert(os_join(this->inner.location.value, n));
+         aggregate->copyPaths.insert(os_join(this->locationContext->location->value, n));
       }
    }
 }
@@ -65,7 +65,7 @@ void C_AggrSelect_String::run()
       aggregate->invalidSelect.insert(os_fullname(n));
    }
    else {
-      const _str path = os_join(this->inner.location.value, n);
+      const _str path = os_join(this->locationContext->location->value, n);
 
       if (os_hasParentDirectory(path)) {
          const _str parent = os_parent(path);
@@ -103,7 +103,7 @@ void C_AggrSelect_List::run()
          aggregate->invalidSelect.insert(os_fullname(n));
       }
       else {
-         const _str path = os_join(this->inner.location.value, n);
+         const _str path = os_join(this->locationContext->location->value, n);
 
          if (os_hasParentDirectory(path)) {
             const _str parent = os_parent(path);
@@ -164,11 +164,11 @@ void C_Copy_String::run()
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
       logCopyError(this->uroboros, n);
-      this->inner.success.value = false;
+      this->uroboros.contextes.success->value = false;
       return;
    }
 
-   const _str path = os_join(this->inner.location.value, n);
+   const _str path = os_join(this->locationContext->location->value, n);
    if (os_exists(path)) {
       std::unordered_set<_str> set;
       set.insert(path);
@@ -179,12 +179,12 @@ void C_Copy_String::run()
       else {
          logCopyError(this->uroboros, path);
       }
-      this->inner.success.value = s;
+      this->uroboros.contextes.success->value = s;
 
    }
    else {
       logCopyError(this->uroboros, path);
-      this->inner.success.value = false;
+      this->uroboros.contextes.success->value = false;
    }
 }
 
@@ -194,7 +194,7 @@ void C_Copy_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      this->inner.success.value = true;
+      this->uroboros.contextes.success->value = true;
       return;
    }
 
@@ -208,7 +208,7 @@ void C_Copy_List::run()
          anyFailure = true;
       }
       else {
-         const _str path = os_join(this->inner.location.value, n);
+         const _str path = os_join(this->locationContext->location->value, n);
          if (os_exists(path)) {
             set.insert(path);
          }
@@ -233,7 +233,7 @@ void C_Copy_List::run()
       }
    }
 
-   this->inner.success.value = !anyFailure;
+   this->uroboros.contextes.success->value = !anyFailure;
 }
 
 void C_Select_String::run()
@@ -241,11 +241,11 @@ void C_Select_String::run()
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
       logSelectError(this->uroboros, n);
-      this->inner.success.value = false;
+      this->uroboros.contextes.success->value = false;
       return;
    }
 
-   const _str path = os_join(this->inner.location.value, n);
+   const _str path = os_join(this->locationContext->location->value, n);
    _bool success = false;
 
    if (os_exists(path) && os_hasParentDirectory(path)) {
@@ -271,7 +271,7 @@ void C_Select_String::run()
       logSelectError(this->uroboros, path);
    }
 
-   this->inner.success.value = success;
+   this->uroboros.contextes.success->value = success;
 }
 
 void C_Select_List::run()
@@ -280,7 +280,7 @@ void C_Select_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      this->inner.success.value = true;
+      this->uroboros.contextes.success->value = true;
       return;
    }
 
@@ -297,7 +297,7 @@ void C_Select_List::run()
          continue;
       }
 
-      const _str path = os_join(this->inner.location.value, n);
+      const _str path = os_join(this->locationContext->location->value, n);
 
       if (!os_exists(path) || !os_hasParentDirectory(path)) {
          logSelectError(this->uroboros, path);
@@ -334,7 +334,7 @@ void C_Select_List::run()
    }
 
    if (selectPaths.empty()) {
-      this->inner.success.value = false;
+      this->uroboros.contextes.success->value = false;
    }
    else {
       _bool anyFailed = false;
@@ -361,7 +361,7 @@ void C_Select_List::run()
          }
       }
 
-      this->inner.success.value = !anyFailed;
+      this->uroboros.contextes.success->value = !anyFailed;
    }
 }
 

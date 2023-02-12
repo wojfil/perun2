@@ -23,7 +23,7 @@
 namespace uro
 {
    struct _uro;
-   struct InnerVariables;
+   struct Contextes;
 }
 
 namespace uro::comm
@@ -43,6 +43,7 @@ inline constexpr _uint32 AGGR_SELECT =    0b010;
 struct Aggregate
 {
 public:
+   Aggregate() = delete;
    Aggregate(_uro& uro);
    void set (const _uint32& v);
    void run();
@@ -56,7 +57,7 @@ public:
 
 private:
    _uro& uroboros;
-   InnerVariables& inner;
+   Contextes& contextes;
    _uint32 value;
    inline _bool has(const _uint32& v) const;
 };

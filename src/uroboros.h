@@ -22,6 +22,7 @@
 #include "datatype/math.h"
 #include "terminator.h"
 #include "keyword.h"
+#include "context.h"
 #include "side-process.h"
 #include "command/com.h"
 #include "command/com-parse-unit.h"
@@ -54,8 +55,7 @@ public:
    const Arguments& arguments;
    Hashes hashes;
    Math math;
-   vars::Variables vars;
-   vars::VariablesContext vc;
+   Contextes contextes;
    Terminator terminator;
    const KeywordsData keywordsData;
    SideProcess sideProcess;

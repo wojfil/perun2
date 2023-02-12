@@ -23,7 +23,7 @@
 
 namespace uro::parse
 {
-
+/*
 enum FilterType
 {
    ft_Where,
@@ -134,7 +134,7 @@ public:
 private:
    _genptr<_num> value;
    const Keyword keyword;
-};
+};*/
 
 }
 

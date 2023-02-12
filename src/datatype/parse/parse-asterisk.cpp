@@ -194,7 +194,8 @@ exitAsteriskBeginning:
 
    for (_size i = 1; i < ulen; i++) {
       const _bool isFinal = i == (ulen - 1);
-      std::unique_ptr<gen::LocationVessel> vessel(new gen::LocationVessel(isAbsolute, uro));
+      LocationContext* locContext = uro.contextes.getLocationContext();
+      std::unique_ptr<gen::LocationVessel> vessel(new gen::LocationVessel(isAbsolute, locContext));
       gen::LocationVessel& vesselRef = *(vessel.get());
       _genptr<_str> vesselPtr = std::move(vessel);
       _defptr nextDef;
@@ -215,7 +216,7 @@ exitAsteriskBeginning:
       }
 
       _defptr prev = std::move(result);
-      result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, uro, isAbsolute, isFinal);
+      result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, isAbsolute, isFinal);
    }
 
    return true;

@@ -20,7 +20,7 @@
 
 namespace uro::gen
 {
-
+/*
 template <typename T>
 struct Filter_Where : Generator<std::vector<T>>
 {
@@ -73,12 +73,9 @@ public:
 
 private:
    _uro& uroboros;
-   InnerVariables& inner;
    vars::Variable<T>* this_;
    _genptr<std::vector<T>> list;
    _genptr<_bool> condition;
-   _attrptr attribute;
-   const _bool hasAttribute;
 };
 
 
@@ -192,7 +189,7 @@ public:
 private:
    _genptr<std::vector<T>> list;
    _genptr<_num> number;
-};
+};*/
 
 }
 

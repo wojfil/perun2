@@ -25,20 +25,21 @@ namespace uro
 {
 
 // parsing context of the variable "this"
-enum ThisState
+/*enum ThisState
 {
    ts_None = 0,
    ts_String,
    ts_Time,
    ts_Number
-};
+};*/
 
-struct InnerVariables
+_list getAlphabet();
+
+/*struct InnerVariables
 {
 public:
 
    InnerVariables(const _str& loc, const _str& ucom);
-   _list getAlphabet();
 
    void createThisRef(_genptr<_str>& result);
    void createThisRef(_genptr<_num>& result);
@@ -82,7 +83,7 @@ public:
 
    _str trimmed;
    const _str urocom;
-};
+};*/
 
 }
 

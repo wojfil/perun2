@@ -21,39 +21,21 @@
 namespace uro::func
 {
 
-_bool F_AnyDef::getValue()
+
+
+_bool F_Any::getValue()
 {
-   const _bool any = definition->hasNext();
-
-   if (any) {
-      definition->reset();
-   }
-
-   return any;
-}
-
-
-_bool F_AnyInside::getValue()
-{
-   const _str v = os_trim(this->value->getValue());
-   if (os_isInvaild(v)) {
+   if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
 
-   const _str path = os_join(this->inner.location.value, v);
-   if (!os_directoryExists(path)) {
-      return false;
-   }
-
-   const _str prevLoc = this->inner.location.value;
-   this->inner.location.value = path;
-
+   this->locContext->loadData(this->fileContext->this_->value);
    const _bool any = this->definition->hasNext();
+
    if (any) {
       this->definition->reset();
    }
 
-   this->inner.location.value = prevLoc;
    return any;
 }
 
@@ -241,55 +223,36 @@ _bool F_EndsWith::getValue()
 }
 
 
-_bool F_ExistsInside::getValue()
+_bool F_Exists::getValue()
 {
-   const _str p = os_trim(this->arg2->getValue());
-   if (os_isInvaild(p)) {
+   if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
+      return false;
+   }
+   
+   const _str base = os_join(this->locContext->location->value, this->fileContext->this_->value);
+   const _str value = os_trim(this->arg1->getValue());
+
+   if (os_isInvaild(value)) {
       return false;
    }
 
-   const _str base = os_join(this->inner.location.value, p);
-   if (!os_directoryExists(base)) {
-      return false;
-   }
-
-   const _str v = os_trim(this->arg1->getValue());
-
-   if (os_isInvaild(v)) {
-      return false;
-   }
-
-   const _str path = os_join(base, v);
-   return os_exists(path);
+   return os_exists(os_join(base, value));
 }
 
 
-_bool F_ExistInside::getValue()
+_bool F_Exist::getValue()
 {
-   const _str p = os_trim(this->arg2->getValue());
-   if (os_isInvaild(p)) {
+   if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
-
-   const _str base = os_join(this->inner.location.value, p);
-   if (!os_directoryExists(base)) {
-      return false;
-   }
-
-   const _list vs = this->arg1->getValue();
-   const _size len = vs.size();
-
-   if (len == 0) {
-      return true;
-   }
-
-   if (len == 1) {
-      const _str& v = vs[0];
-      return !os_isInvaild(v) && os_exists(os_join(base, v));
-   }
+   
+   const _str base = os_join(this->locContext->location->value, this->fileContext->this_->value);
+   const _list values = this->arg1->getValue();
+   const _size len = values.size();
 
    for (_size i = 0; i < len; i++) {
-      const _str& v = os_trim(vs[i]);
+      const _str& v = os_trim(values[i]);
+      
       if (os_isInvaild(v)) {
           return false;
       }
@@ -328,24 +291,16 @@ _bool F_EndsWithChar::getValue()
 
 _bool F_Find::getValue()
 {
-   const _str v = os_trim(this->arg1->getValue());
-
-   if (os_isInvaild(v)) {
+   if (!this->context->v_exists->value || !this->context->v_isfile->value) {
       return false;
    }
 
-   const _str path = os_join(this->inner.location.value, v);
-   return os_find(path, this->arg2->getValue());
-}
-
-
-_bool F_Find_InThis::getValue()
-{
-   if (!this->inner.exists.value || this->inner.isdirectory.value) {
-      return false;
+   const _str value = this->arg1->getValue();
+   if (value.empty()) {
+      return true;
    }
 
-   return os_find(this->inner.path.value, this->arg1->getValue());
+   return os_find(this->context->v_path->value, value);
 }
 
 

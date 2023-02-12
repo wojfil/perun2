@@ -31,9 +31,8 @@
 namespace uro
 {
 
-_uro::_uro(const Arguments& args) : arguments(args), vars(vars::Variables(*this)),
-   vc(vars::VariablesContext(this->hashes, this->vars)), flags(args.getFlags()),
-   terminator(Terminator(this)) { };
+_uro::_uro(const Arguments& args) : arguments(args), contextes(*this),
+   flags(args.getFlags()), terminator(Terminator(this)) { };
 
 
 _bool _uro::run()

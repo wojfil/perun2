@@ -22,6 +22,78 @@
 namespace uro::vars
 {
 
+   enum VarType
+   {
+      vt_User,       // variable created by user
+      vt_Attribute,  // file attribute
+      vt_Special     // other inner vars: global constant, index, this, success...
+   };
+
+   template <typename T>
+   struct Variable : Generator<T>
+   {
+      Variable() = delete;
+      Variable(const VarType& vt)
+         : type(vt) { };
+      Variable(const VarType& vt, const T& val)
+         : type(vt), value(val) { };
+
+      _bool isConstant() const override
+      {
+         return this->isConstant_;
+      };
+
+      T getValue() override
+      {
+         return this->value;
+      };
+
+      /*_bool isMutable() const
+      {
+         return this->type == VarType::vt_User;
+      }*/
+
+      _bool isImmutable() const
+      {
+         return this->type != VarType::vt_User;
+      }
+
+      void makeNotConstant()
+      {
+         this->isConstant_ = false;
+      }
+
+
+      T value;
+      _bool isConstant_ = false;
+      const VarType type;
+   };
+
+
+   template <typename T>
+   struct VariableReference : Generator<T>
+   {
+      VariableReference() = delete;
+      VariableReference(Variable<T>* var)
+         : variable(*var) { };
+
+      _bool isConstant() const override
+      {
+         return this->variable.isConstant_;
+      };
+
+      T getValue() override
+      {
+         return this->variable.getValue();
+      };
+
+   private:
+      Variable<T>& variable;
+   };
+
+
+
+/*
 template <typename T>
 struct Variable : Generator<T>
 {
@@ -111,7 +183,7 @@ private:
 
    _int level = 0;
    _bool isReachable_ = true;
-};
+};*/
 
 }
 

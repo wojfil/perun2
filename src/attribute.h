@@ -56,10 +56,11 @@ struct _uro;
 struct Attribute
 {
 public:
+   Attribute() = delete;
    Attribute(_uro& uro);
    Attribute(const _aunit& val, _uro& uro);
 
-   void add(const Token& tk);
+   void add(const _size& val);
    void set(const _aunit& v);
    void setCoreCommandBase();
    void setTimeCommandBase();
@@ -81,24 +82,6 @@ protected:
 };
 
 typedef std::unique_ptr<Attribute> _attrptr;
-
-// sometimes files and directories are taken from the file system
-// by Win32API functions 'FindFirstFile()' and 'FindNextFile()'
-// the result of their call is a WIN32_FIND_DATA struct filled with data
-// this struct already contains all the data we will ever need when operating with files
-// BridgeAttribute contains a dangling pointer to this data
-// as a result, we do not have to load the same data multiple times
-
-struct BridgeAttribute : Attribute
-{
-public:
-   BridgeAttribute(_uro& uro, _fdata* data);
-   BridgeAttribute(const _aunit& val, _uro& uro, _fdata* data);
-   void run() const;
-
-private:
-   _fdata* dataPnt;
-};
 
 }
 

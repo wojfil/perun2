@@ -28,38 +28,52 @@
 namespace uro::gen
 {
 
+
+struct DefWithContext : _def
+{
+public:
+   DefWithContext() = delete;
+   DefWithContext(_defptr& def, _fcptr& ctx);
+
+   void reset() override;
+   _bool hasNext() override;
+   FileContext* getFileContext() override;
+
+private:
+   _defptr definition;
+   _fcptr context;
+};
+
+
 struct DefFilter : _def
 {
 public:
-   DefFilter(_defptr& def, _uro& uro);
+   DefFilter() = delete;
+   DefFilter(_defptr& def, FileContext* ctx, _uro& uro);
+
    void reset() override;
-   _fdata* getDataPtr();
+   FileContext* getFileContext() override;
 
 protected:
    _uro& uroboros;
    _bool first;
    _defptr definition;
+   FileContext* context;
 };
 
 
 struct Filter_WhereDef : DefFilter
 {
 public:
-   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _attrptr& attr, const _bool& hasMem, _uro& uro);
-   Filter_WhereDef(_defptr& def, _genptr<_bool>& cond, _uro& uro);
+   Filter_WhereDef(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro);
 
    _bool hasNext() override;
    void reset() override;
 
 private:
-   InnerVariables& inner;
-   _bool finished;
+   _bool finished = true;
    _genptr<_bool> condition;
-   _attrptr attribute;
-   const _bool hasMemory;
-   const _bool hasAttribute;
-   AttributeMemory attrMemory;
-   _numi index;
+   _num index;
 };
 
 
@@ -67,50 +81,52 @@ struct DefinitionChain : _def
 {
 public:
    DefinitionChain(_defptr& def, _uro& uro);
+   FileContext* getFileContext() override;
 
    _bool hasNext() override;
    void reset() override;
 
 private:
-   InnerVariables& inner;
    _defptr definition;
    _nint index = NINT_ZERO;
    _bool finished = true;
+   _fcptr context;
+   _uro& uroboros;
 };
 
 
 struct LocationVessel : Generator<_str>
 {
 public:
-   LocationVessel(const _bool& abs, _uro& uro);
+   LocationVessel(const _bool& abs, LocationContext* ctx);
    _str getValue() override;
    const _str& getRawValue() const;
    void setValue(const _str& val);
 
 private:
-   InnerVariables& inner;
    _str value;
    const _bool isAbsolute;
+   LocationContext* context;
 };
 
 
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, _uro& uro, const _bool& abs, const _bool& fin);
+   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool& abs, const _bool& fin);
    _bool hasNext() override;
    void reset() override;
-   _fdata* getDataPtr();
+   FileContext* getFileContext() override;
 
 private:
    LocationVessel& vessel;
    _defptr definition;
    _defptr locations;
-   InnerVariables& inner;
-   _numi index;
+   _num index;
    _bool defOpened = false;
    _bool locsOpened = false;
-   _numi locDepth;
+   _num locDepth;
+   FileContext* context;
    const _bool isAbsolute;
    const _bool isFinal;
 };
@@ -119,8 +135,8 @@ private:
 struct Filter_LimitDef : DefFilter
 {
 public:
-   Filter_LimitDef(_defptr& def, _genptr<_num>& num, _uro& uro)
-      : DefFilter(def, uro), number(std::move(num)) { };
+   Filter_LimitDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+      : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
    _bool hasNext() override;
 
@@ -134,13 +150,12 @@ private:
 struct Filter_SkipDef : DefFilter
 {
 public:
-   Filter_SkipDef(_defptr& def, _genptr<_num>& num, _uro& uro)
-      : DefFilter(def, uro), number(std::move(num)), inner(uro.vars.inner) { };
+   Filter_SkipDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+      : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
    _bool hasNext() override;
 
 private:
-   InnerVariables& inner;
    _nint counter;
    _nint limit;
    _genptr<_num> number;
@@ -150,14 +165,13 @@ private:
 struct Filter_EveryDef : DefFilter
 {
 public:
-   Filter_EveryDef(_defptr& def, _genptr<_num>& num, _uro& uro)
-      : DefFilter(def, uro), number(std::move(num)), inner(uro.vars.inner) { };
+   Filter_EveryDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+      : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
 
    _bool hasNext() override;
 
 private:
-   InnerVariables& inner;
    _nint counter;
    _nint limit;
    _genptr<_num> number;
@@ -168,14 +182,13 @@ private:
 struct Filter_FinalDef : DefFilter
 {
 public:
-   Filter_FinalDef(_defptr& def, _genptr<_num>& num, _uro& uro)
-      : DefFilter(def, uro), number(std::move(num)), inner(uro.vars.inner) { };
+   Filter_FinalDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+      : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
 
    _bool hasNext() override;
 
 private:
-   InnerVariables& inner;
    _genptr<_num> number;
 
    std::deque<_str> values;
@@ -292,9 +305,9 @@ public:
    void reset() override;
 
 private:
-   _uro& uroboros;
-   InnerVariables& inner;
    _defptr definition;
+   FileContext* fileContext;
+   LocationContext* locContext;
    _bool first = true;
    _numi index;
    const _str suffix;
@@ -308,7 +321,7 @@ private:
 
 
 // ternary and binary works with Definitions in its own way
-// so instead of using templates from 'gen.generic.h'
+// so instead of using templates from 'gen-generic.h'
 // here are special structs
 
 struct DefTernary : _def
@@ -332,7 +345,7 @@ private:
 struct DefBinary : _def
 {
 public:
-   DefBinary(_genptr<_bool>& cond, _defptr&le)
+   DefBinary(_genptr<_bool>& cond, _defptr& le)
       : condition(std::move(cond)), left(std::move(le)) { };
 
    void reset() override;

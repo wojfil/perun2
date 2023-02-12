@@ -91,7 +91,7 @@ void os_sleepForMs(const _nint& ms, _uro& uro)
 }
 
 // explanation of attributes is in file 'attribute.h'
-void os_loadAttributes(const _aunit& attr, _uro& uro)
+/*void os_loadAttributes(const _aunit& attr, _uro& uro)
 {
    InnerVariables& inner = uro.vars.inner;
    inner.trimmed = os_trim(inner.this_s.value);
@@ -425,7 +425,7 @@ void os_loadDataAttributes(const _aunit& attr, _uro& uro, _fdata* data)
          ? _num(os_bigInteger(data->nFileSizeLow, data->nFileSizeHigh))
          : _num(os_sizeDirectory(path, uro));
    }
-}
+}*/
 
 _tim os_access(const _str& path)
 {
@@ -1184,7 +1184,7 @@ _bool os_select(const _str& parent, const _set& paths)
    return hr == S_OK;
 }
 
-_bool os_run(const _str& comm, _uro& uro)
+_bool os_run(const _str& comm, const _str& location, _uro& uro)
 {
    uro.sideProcess.running = true;
    STARTUPINFO si;
@@ -1197,9 +1197,9 @@ _bool os_run(const _str& comm, _uro& uro)
    _char cmd[len];
    wcscpy(cmd, comm.c_str());
 
-   const _size lenloc = uro.vars.inner.location.value.size() + 1;
+   const _size lenloc = location.size() + 1;
    _char loc[lenloc];
-   wcscpy(loc, uro.vars.inner.location.value.c_str());
+   wcscpy(loc, location.c_str());
 
    CreateProcessW
    (

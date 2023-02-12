@@ -61,8 +61,13 @@ _num F_Ceil::getValue()
 }
 
 
-_num F_CountDef::getValue()
+_num F_Count::getValue()
 {
+   if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
+      return false;
+   }
+
+   this->locContext->loadData(this->fileContext->this_->value);
    _nint n = NINT_ZERO;
 
    while (definition->hasNext()) {
@@ -73,35 +78,6 @@ _num F_CountDef::getValue()
       n++;
    }
 
-   return _num(n);
-}
-
-
-_num F_CountInside::getValue()
-{
-   const _str& v = os_trim(value->getValue());
-   if (v.empty() || os_isInvaild(v)) {
-      return _num(NINT_MINUS_ONE);
-   }
-
-   const _str path = os_join(this->inner.location.value, v);
-   if (!os_directoryExists(path)) {
-      return _num(NINT_MINUS_ONE);
-   }
-
-   const _str prevLoc = this->inner.location.value;
-   this->inner.location.value = path;
-   _nint n = NINT_ZERO;
-
-   while (definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
-         definition->reset();
-         break;
-      }
-      n++;
-   }
-
-   this->inner.location.value = prevLoc;
    return _num(n);
 }
 

@@ -26,12 +26,11 @@ Attribute::Attribute(_uro& uro)
 Attribute::Attribute(const _aunit& val, _uro& uro)
    : value(val), uroboros(uro) { };
 
-void Attribute::add(const Token& tk)
+void Attribute::add(const _size& val)
 {
-   const _size& h = tk.value.word.h;
    const Hashes& hashes = this->uroboros.hashes;
 
-   if (hashes.HASH_GROUP_ATTR.find(h) == hashes.HASH_GROUP_ATTR.end()) {
+   if (hashes.HASH_GROUP_ATTR.find(val) == hashes.HASH_GROUP_ATTR.end()) {
       return;
    }
 
@@ -39,55 +38,55 @@ void Attribute::add(const Token& tk)
       this->set(ATTR_PATH);
    }
 
-   if (h == hashes.HASH_VAR_DRIVE) {
+   if (val == hashes.HASH_VAR_DRIVE) {
       this->set(ATTR_DRIVE);
       return;
    }
 
-   if (h != hashes.HASH_VAR_PATH && h != hashes.HASH_VAR_FULLNAME) {
+   if (val != hashes.HASH_VAR_PATH && val != hashes.HASH_VAR_FULLNAME) {
       this->set(ATTR_EXISTS);
    }
 
-   if (h == hashes.HASH_VAR_ACCESS){
+   if (val == hashes.HASH_VAR_ACCESS){
       this->set(ATTR_ACCESS);
    }
-   else if (h == hashes.HASH_VAR_ARCHIVE)
+   else if (val == hashes.HASH_VAR_ARCHIVE)
       this->set(ATTR_ARCHIVE);
-   else if (h == hashes.HASH_VAR_COMPRESSED)
+   else if (val == hashes.HASH_VAR_COMPRESSED)
       this->set(ATTR_COMPRESSED);
-   else if (h == hashes.HASH_VAR_CREATION)
+   else if (val == hashes.HASH_VAR_CREATION)
       this->set(ATTR_CREATION);
-   else if (h == hashes.HASH_VAR_CHANGE)
+   else if (val == hashes.HASH_VAR_CHANGE)
       this->set(ATTR_CHANGE);
-   else if (h == hashes.HASH_VAR_DRIVE)
+   else if (val == hashes.HASH_VAR_DRIVE)
       this->set(ATTR_DRIVE);
-   else if (h == hashes.HASH_VAR_EMPTY)
+   else if (val == hashes.HASH_VAR_EMPTY)
       this->set(ATTR_EMPTY);
-   else if (h == hashes.HASH_VAR_ENCRYPTED)
+   else if (val == hashes.HASH_VAR_ENCRYPTED)
       this->set(ATTR_ENCRYPTED);
-   else if (h == hashes.HASH_VAR_EXTENSION) {
+   else if (val == hashes.HASH_VAR_EXTENSION) {
       this->set(ATTR_EXTENSION);
    }
-   else if (h == hashes.HASH_VAR_FULLNAME)
+   else if (val == hashes.HASH_VAR_FULLNAME)
       this->set(ATTR_FULLNAME);
-   else if (h == hashes.HASH_VAR_HIDDEN)
+   else if (val == hashes.HASH_VAR_HIDDEN)
       this->set(ATTR_HIDDEN);
-   else if (h == hashes.HASH_VAR_LIFETIME) {
+   else if (val == hashes.HASH_VAR_LIFETIME) {
       this->set(ATTR_CREATION);
       this->set(ATTR_MODIFICATION);
       this->set(ATTR_LIFETIME);
    }
-   else if (h == hashes.HASH_VAR_MODIFICATION)
+   else if (val == hashes.HASH_VAR_MODIFICATION)
       this->set(ATTR_MODIFICATION);
-   else if (h == hashes.HASH_VAR_NAME)
+   else if (val == hashes.HASH_VAR_NAME)
       this->set(ATTR_NAME);
-   else if (h == hashes.HASH_VAR_PARENT)
+   else if (val == hashes.HASH_VAR_PARENT)
       this->set(ATTR_PARENT);
-   else if (h == hashes.HASH_VAR_PATH)
+   else if (val == hashes.HASH_VAR_PATH)
       this->set(ATTR_PATH);
-   else if (h == hashes.HASH_VAR_READONLY)
+   else if (val == hashes.HASH_VAR_READONLY)
       this->set(ATTR_READONLY);
-   else if (h == hashes.HASH_VAR_SIZE)
+   else if (val == hashes.HASH_VAR_SIZE)
       this->set(ATTR_SIZE);
 }
 
@@ -151,18 +150,7 @@ void Attribute::markToRun()
 
 void Attribute::run() const
 {
-   os_loadAttributes(this->value, this->uroboros);
-}
-
-BridgeAttribute::BridgeAttribute(_uro& uro, _fdata* data)
-   : Attribute(uro), dataPnt(data) { };
-
-BridgeAttribute::BridgeAttribute(const _aunit& val, _uro& uro, _fdata* data)
-   : Attribute(val, uro), dataPnt(data) { };
-
-void BridgeAttribute::run() const
-{
-   os_loadDataAttributes(this->value, this->uroboros, this->dataPnt);
+   //os_loadAttributes(this->value, this->uroboros);
 }
 
 }

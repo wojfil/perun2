@@ -15,6 +15,7 @@
 #include "gen-string.h"
 #include "../../var/var-runtime.h"
 #include "../../os.h"
+#include "../../uroboros.h"
 
 
 namespace uro::gen
@@ -36,14 +37,21 @@ _str StringBinary::getValue()
       : EMPTY_STRING;
 }
 
+
+LocationReference::LocationReference(_uro& uro) 
+   : context(*uro.contextes.getLocationContext()) { };
+
 _str LocationReference::getValue()
 {
-   return this->inner.location.value;
+   return this->context.location->value;
 }
+
+RelativeLocation::RelativeLocation(_genptr<_str>& val, _uro& uro) 
+   : value(std::move(val)), context(*uro.contextes.getLocationContext()) { };
 
 _str RelativeLocation::getValue()
 {
-   return str(this->inner.location.value, OS_SEPARATOR_STRING, this->value->getValue());
+   return str(this->context.location->value, OS_SEPARATOR_STRING, this->value->getValue());
 }
 
 _str CharAtIndex::getValue()

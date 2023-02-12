@@ -95,7 +95,7 @@ public:
    const _size HASH_VAR_ARGUMENTS;
 
    const _size HASH_VAR_DESKTOP;
-   const _size HASH_VAR_UROBOROS;
+   const _size HASH_VAR_UROBOROS2;
    const _size HASH_VAR_DEVICE;
    const _size HASH_VAR_ROOT;
 
@@ -222,7 +222,7 @@ public:
    const std::unordered_set<_size> HASH_GROUP_PERIOD_MULTI;
    const std::unordered_set<_size> HASH_GROUP_TIME_ATTR;
    const std::unordered_set<_size> HASH_GROUP_ATTR;
-   const std::unordered_set<_size> HASH_GROUP_INNERVAR;
+   const std::unordered_set<_size> HASH_GROUP_VARS_IMMUTABLES;
    const std::unordered_set<_size> HASH_GROUP_FUNC_BOO_STR;
    const std::unordered_set<_size> HASH_GROUP_FUNC_NUM_NUM;
    const std::unordered_set<_size> HASH_GROUP_AGGRFUNC;

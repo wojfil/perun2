@@ -115,7 +115,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
       parseListElementIndex(num, tksm, uro);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
-      if (uro.vars.getVarValue(f, tlist)) {
+      if (uro.contextes.getVariable(f, tlist, uro)) {
          const Token& last = tks.last();
          const _size& h = last.value.twoWords.h2;
          const Hashes& hs = uro.hashes;

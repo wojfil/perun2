@@ -19,7 +19,7 @@
 
 namespace uro::vars
 {
-
+/*
 VariablesContext::VariablesContext(Hashes& hsh, Variables& vars)
    : hashes(hsh), variables(vars) { }
 
@@ -132,6 +132,6 @@ comm::Aggregate* VariablesContext::getLastAggregate()
 {
    const _size len = this->aggrs.size();
    return len == 0 ? nullptr : this->aggrs[len - 1];
-}
+}*/
 
 }

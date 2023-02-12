@@ -17,7 +17,7 @@
 
 namespace uro::parse
 {
-
+/*
 void resetOrderParseSettings(const ThisState& state, const ThisState& prevState, _uro& uro)
 {
    if (state == ThisState::ts_String) {
@@ -61,6 +61,6 @@ void setSingleOrderFilter(_attrptr& attr, const _bool& hasMemory, _defptr& resul
 {
    _defptr prev = std::move(result);
    result = std::make_unique<gen::OrderBy_Definition>(prev, attr, hasMemory, indices, order, uro);
-}
+}*/
 
 }

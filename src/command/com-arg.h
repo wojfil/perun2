@@ -28,36 +28,24 @@
 namespace uro::comm
 {
 
-#define P_IL_ARGS_1 _comptr& com, _uro& uro
-#define P_IL_ARGS_2 _comptr& com, _attrptr& attr, const _bool& hasmem, _uro& uro
-#define P_IL_ARGS_3 _comptr& com, _attrptr& attr, _attrptr& memAttr, const _bool& hasmem, _uro& uro
-
-
 struct IterationLoop : Command
 {
 public:
-   IterationLoop(P_IL_ARGS_1);
-   IterationLoop(P_IL_ARGS_2);
-   IterationLoop(P_IL_ARGS_3);
+   IterationLoop(_comptr& com, _uro& uro);
+   IterationLoop(_comptr& com, _fcptr& ctx, _uro& uro);
 
 protected:
    _uro& uroboros;
-   InnerVariables& inner;
    _comptr command;
-   _attrptr attribute;
-   AttributeMemory attrMemory;
-   const _bool hasMemory;
-   const _bool hasAttribute;
-   P_MEMORY_MEMBER;
+   _fcptr context;
+   const _bool hasContext;
 };
 
 
 struct CS_StringComArg : IterationLoop
 {
 public:
-   CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_1);
-   CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_2);
-   CS_StringComArg(_genptr<_str>& str, P_IL_ARGS_3);
+   CS_StringComArg(_genptr<_str>& str, _comptr& com, _fcptr& ctx, _uro& uro);
    void run() override;
 
 private:
@@ -68,9 +56,7 @@ private:
 struct CS_ListComArg : IterationLoop
 {
 public:
-   CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_1);
-   CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_2);
-   CS_ListComArg(_genptr<_list>& li, P_IL_ARGS_3);
+   CS_ListComArg(_genptr<_list>& li, _comptr& com, _fcptr& ctx, _uro& uro);
    void run() override;
 
 private:
@@ -81,14 +67,14 @@ private:
 struct CS_DefinitionComArg : IterationLoop
 {
 public:
-   CS_DefinitionComArg(_defptr& def, P_IL_ARGS_1);
-   CS_DefinitionComArg(_defptr& def, P_IL_ARGS_2);
-   CS_DefinitionComArg(_defptr& def, P_IL_ARGS_3);
+   CS_DefinitionComArg(_defptr& def, _comptr& com, _uro& uro);
+   CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx, _uro& uro);
    void run() override;
 
 private:
    _defptr definition;
 };
+
 
 }
 

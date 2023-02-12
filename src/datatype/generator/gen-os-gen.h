@@ -12,46 +12,42 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEFINITION_H
-#define DEFINITION_H
+#ifndef GEN_OS_GEN_H_INCLUDED
+#define GEN_OS_GEN_H_INCLUDED
 
-#include "generator.h"
-#include "primitives.h"
-#include <windows.h>
-#include <memory>
+#include "../datatype.h"
 
-
-namespace uro
+namespace uro::gen
 {
 
-struct FileContext;
+struct _uro;
 
-// this data structure is the crucial for Uroboros2
-// as it represents a lazy evaluated collection of strings
-// this is what file system elements usually are
-struct Definition : Generator<_str>
+enum OsElement
 {
-public:
-    virtual _bool hasNext() = 0;
-    virtual void reset() = 0;
-
-   _str getValue() override
-   {
-      return value;
-   }
-
-   virtual FileContext* getFileContext()
-   {
-      // designed to be overriden
-      return nullptr;
-   };
-
-protected:
-   _str value;
+   oe_None = 0,
+   oe_All,
+   oe_Directories,
+   oe_Files,
+   oe_RecursiveAll,
+   oe_RecursiveDirectories,
+   oe_RecursiveFiles
 };
 
-typedef std::unique_ptr<Definition> _defptr;
+
+struct DefinitionGenerator
+{
+public:
+   DefinitionGenerator() = delete;
+   DefinitionGenerator(const OsElement& el, _uro& uro)
+      : element_(el), uroboros(uro) { };
+
+   _bool generate(_defptr& result) const;
+
+private:
+   _uro& uroboros;
+   const OsElement element_;
+};
 
 }
 
-#endif /* DEFINITION_H */
+#endif // GEN_OS_GEN_H_INCLUDED

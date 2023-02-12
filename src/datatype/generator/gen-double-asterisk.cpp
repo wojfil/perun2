@@ -20,7 +20,7 @@ namespace uro::gen
 {
 
 DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size& dpth, const _size& start)
-   : definition(std::move(def)), inner(uro.vars.inner), uroboros(uro), defaultDepth(dpth), startId(start),
+   : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), defaultDepth(dpth), startId(start),
       pattern(pat), patternLength(pat.size()) { };
 
 
@@ -43,8 +43,8 @@ _bool DoubleAsteriskPattern::hasNext()
       value = definition->getValue();
 
       if (this->matchesPattern()) {
-         this->inner.index.value = index;
-         this->inner.depth.value -= static_cast<_nint>(defaultDepth);
+         this->context->index->value = index;
+         this->context->v_depth->value -= static_cast<_nint>(defaultDepth);
          index++;
          return true;
       }

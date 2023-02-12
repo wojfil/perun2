@@ -33,12 +33,12 @@ _bool parseCommands(_comptr& result, const Tokens& tks, _uro& uro);
 
 static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& sublen,
    const _int& index, const _int& open, _uro& uro);
-static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const Tokens& left, const Tokens& right,
+/*static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const Tokens& left, const Tokens& right,
    const ThisState& prevState, _uro& uro);
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
    const ThisState& prevState, _attrptr& attr, _aggrptr& aggr, _bool& hasMemory);
 static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
-   const ThisState& prevState, _aggrptr& aggr);
+   const ThisState& prevState, _aggrptr& aggr);*/
 static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, _uro& uro);
 static _bool command(_comptr& result, Tokens& tks, _uro& uro);
 static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro);

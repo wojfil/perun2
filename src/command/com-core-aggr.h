@@ -16,7 +16,6 @@
 #define COM_CORE_AGGR_H
 
 #include "com-core.h"
-#include "com-listener.h"
 #include "com-aggregate.h"
 
 
@@ -24,13 +23,14 @@ namespace uro::comm
 {
 
 template <typename T>
-struct C_AggrDelivery : Command_L
+struct C_AggrDelivery : Command
 {
 public:
    C_AggrDelivery(Aggregate* aggr, _genptr<T>& val, _uro& uro)
-      : aggregate(aggr), value(std::move(val)), Command_L(uro) {};
+      : aggregate(aggr), value(std::move(val)), locationContext(uro.contextes.getLocationContext()) { };
 
 protected:
+   LocationContext* locationContext;
    Aggregate* aggregate;
    _genptr<T> value;
 };
@@ -83,14 +83,17 @@ void logSelectSuccess(_uro& uro, const _str& name);
 
 
 template <typename T>
-struct C_Aggr : Command_L
+struct C_Aggr : Command
 {
 public:
    C_Aggr(_genptr<T>& val, _uro& uro)
-      : value(std::move(val)), Command_L(uro) {};
+      : value(std::move(val)), uroboros(uro), 
+        locationContext(uro.contextes.getLocationContext()) { };
 
 protected:
+   LocationContext* locationContext;
    _genptr<T> value;
+   _uro& uroboros;
 };
 
 

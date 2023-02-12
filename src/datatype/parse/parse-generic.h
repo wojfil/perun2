@@ -220,7 +220,7 @@ static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _uro&
    parseListElementIndex(num, tks, uro);
    const Token& f = tks.first();
    _genptr<std::vector<T>> collection;
-   if (uro.vars.getVarValue(f, collection)) {
+   if (uro.contextes.getVariable(f, collection, uro)) {
       result = std::make_unique<gen::ListElement<T>>(collection, num);
       return true;
    }
@@ -229,7 +229,7 @@ static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _uro&
    }
 }
 
-
+/*
 static _bool parseFilterBase(const Tokens& tks, _uro& uro, _defptr& result, _fdata*& data)
 {
    if (parse::parse(uro, tks, result)) {
@@ -389,7 +389,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, _
    buildFilterPrototypes(prototypes, attr, hasAttr, true, hasMemory, uro, base);
    result = std::move(base);
    return true;
-}
+}*/
 
 }
 

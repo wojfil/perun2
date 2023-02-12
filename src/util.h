@@ -15,9 +15,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <vector>
 #include <map>
 #include <memory>
+#include "datatype/primitives.h"
 
 
 namespace uro::langutil

@@ -23,16 +23,16 @@
 #include "../datatype/generator/gen-os.h"
 #include "../hash.h"
 #include "../token.h"
-
+/*
 namespace uro
 {
 struct _uro;
 }
-
+*/
 namespace uro::vars
 {
 
-
+/*
 struct Variables
 {
 public:
@@ -103,7 +103,7 @@ private:
    std::map<_size, Variable<_numi>*> intVars; // dangling pointers to internal variables
 
 };
-
+*/
 
 }
 

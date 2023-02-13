@@ -60,7 +60,7 @@ _bool os_emptyDirectory(const _str& path);
 _bool os_encrypted(const _str& path);
 _str os_extension(const _str& value);
 _str os_fullname(const _str& value);
-_bool os_hasAttribute(const _str& path, const ULONG& attribute);
+_bool os_hasAttribute(const _str& path, const _ulong& attribute);
 _bool os_hidden(const _str& path);
 _bool os_isFile(const _str& path);
 _bool os_isDirectory(const _str& path);

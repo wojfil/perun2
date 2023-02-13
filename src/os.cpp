@@ -569,7 +569,7 @@ _str os_fullname(const _str& value)
    return value;
 }
 
-_bool os_hasAttribute(const _str& path, const ULONG& attribute)
+_bool os_hasAttribute(const _str& path, const _ulong& attribute)
 {
    DWORD dwAttrib = GetFileAttributesW(path.c_str());
 

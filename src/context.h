@@ -110,32 +110,7 @@ namespace uro
       _varptr<_num> index;
    };
 
-   template <typename T>
-   struct ThisContext : IndexContext
-   {
-   public:
-      ThisContext<T>(_uro& uro)
-         : IndexContext(uro),
-           this_(std::make_unique<vars::Variable<T>>(vars::VarType::vt_Special)) { };
-
-      _varptr<T> this_;
-   };
-
-   struct NumericContext : ThisContext<_num>
-   {
-   public:
-      NumericContext() = delete;
-      NumericContext(_uro& uro);
-   };
-
-   struct TimeContext : ThisContext<_tim>
-   {
-   public:
-      TimeContext() = delete;
-      TimeContext(_uro& uro);
-   };
-
-   struct FileContext : ThisContext<_str>
+   struct FileContext : IndexContext
    {
    public:
       FileContext() = delete;
@@ -147,6 +122,7 @@ namespace uro
       void loadAttributes();
       void resetIndexAndDepth();
 
+      _varptr<_str> this_;
       _attrptr attribute;
       VarsContext fileVars;
       _str trimmed;
@@ -183,7 +159,6 @@ namespace uro
       {
          this->fileVars.addVar<T>(hsh, vars::VarType::vt_Attribute);
       }
-
    };
 
    struct LocationContext
@@ -220,8 +195,6 @@ namespace uro
    typedef std::unique_ptr<UserVarsContext>        _ucptr;
    typedef std::unique_ptr<AggregateContext>       _acptr;
    typedef std::unique_ptr<IndexContext>           _icptr;
-   typedef std::unique_ptr<NumericContext>         _ncptr;
-   typedef std::unique_ptr<TimeContext>            _tcptr;
    typedef std::unique_ptr<FileContext>            _fcptr;
    typedef std::unique_ptr<LocationContext>        _lcptr;
 
@@ -233,7 +206,6 @@ namespace uro
       Contextes(_uro& uro);
 
       _bool getVariable(const Token& tk, vars::Variable<_bool>*& result, _uro& uro);
-      _bool getVariable(const Token& tk, vars::Variable<_tim>*& result, _uro& uro);
       _bool getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro);
       _bool getVariable(const Token& tk, vars::Variable<_str>*& result, _uro& uro);
       _bool getVariable(const Token& tk, _defptr& result, _uro& uro);
@@ -268,14 +240,6 @@ namespace uro
       void addIndexContext(IndexContext* ctx);
       void retreatIndexContext();
 
-      // context of iteration over numbers: 2,3,4 { print this * 2 }
-      void addNumericContext(NumericContext* ctx);
-      void retreatNumericContext();
-
-      // context of iteration over times: 2 june 2004, 12 april 2011 { print this.year }
-      void addTimeContext(TimeContext* ctx);
-      void retreatTimeContext();
-
       // context of iteration over file system elements or strings: files where extension = 'pdf'
       void addFileContext(FileContext* ctx);
       void retreatFileContext();
@@ -298,8 +262,6 @@ namespace uro
       _bool hasFileContext() const;
       FileContext* getFileContext();
       std::vector<FileContext*>& getFileContexts();
-      TimeContext* getTimeContext();
-      NumericContext* getNumericContext();
       _bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
@@ -308,9 +270,6 @@ namespace uro
 
    private:
       const Hashes& hashes;
-
-      void retreatIterationContext();
-
 
       template <typename T>
       _bool findVar(const Token& tk, vars::Variable<T>*& result, _uro& uro)
@@ -338,17 +297,7 @@ namespace uro
             }
 
             FileContext* lastFileCtx = this->fileContexts.back();
-            if (lastFileCtx != nullptr) {
-               return lastFileCtx->fileVars.takeVar(var, result);
-            }
-
-            NumericContext* lastNumericCtx = this->numericContexts.back();
-            if (lastNumericCtx == nullptr) {
-               throw SyntaxError::timeIterationHere(tk.getOriginString(uro), tk.line);
-            }
-            else {
-               throw SyntaxError::numericIterationHere(tk.getOriginString(uro), tk.line);
-            }
+            return lastFileCtx->fileVars.takeVar(var, result);
          }
 
          return false;
@@ -363,9 +312,6 @@ namespace uro
       std::vector<AggregateContext*> aggregateContexts;
       std::vector<LocationContext*> locationContexts;
       std::vector<IndexContext*> indexContexts;
-
-      std::vector<NumericContext*> numericContexts;
-      std::vector<TimeContext*> timeContexts;
       std::vector<FileContext*> fileContexts;
 
    };

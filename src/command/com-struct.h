@@ -96,38 +96,6 @@ private:
 };
 
 
-struct CS_TimeLoop : Command
-{
-public:
-   CS_TimeLoop(_genptr<_tlist>& tList, _comptr& com, _tcptr& ctx, _uro& uro)
-      : context(std::move(ctx)), timeList(std::move(tList)), command(std::move(com)), uroboros(uro)  { };
-
-   void run() override;
-
-private:
-   _genptr<_tlist> timeList;
-   _comptr command;
-   _uro& uroboros;
-   _tcptr context;
-};
-
-
-struct CS_NumberLoop : Command
-{
-public:
-   CS_NumberLoop(_genptr<_nlist>& nlist, _comptr& com, _ncptr& ctx, _uro& uro)
-      : context(std::move(ctx)), numberList(std::move(nlist)), command(std::move(com)), uroboros(uro)  { };
-
-   void run() override;
-
-private:
-   _genptr<_nlist> numberList;
-   _comptr command;
-   _uro& uroboros;
-   _ncptr context;
-};
-
-
 struct CS_StringLoop : IterationLoop
 {
 public:

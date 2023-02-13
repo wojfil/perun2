@@ -13,6 +13,7 @@
 */
 
 #include "gen-os-gen.h"
+#include "gen-os.h"
 #include "gen-string.h"
 
 
@@ -21,7 +22,7 @@ namespace uro::gen
 
 #define P_GEN_OS_ARGS_DEFAULT loc, this->uroboros, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
 #define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->uroboros, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
-   
+
 
 _bool DefinitionGenerator::generate(_defptr& result) const
 {
@@ -58,7 +59,7 @@ _bool DefinitionGenerator::generate(_defptr& result) const
    }
 
    return true;
-}
+};
 
 
 }

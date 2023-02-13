@@ -42,24 +42,19 @@ namespace uro
       : AggregateContext(uro), 
         index(std::make_unique<vars::Variable<_num>>(vars::VarType::vt_Special)) { };
 
-   NumericContext::NumericContext(_uro& uro)
-      : ThisContext<_num>(uro) { };
-
-   TimeContext::TimeContext(_uro& uro)
-      : ThisContext<_tim>(uro) { };
-
    FileContext::FileContext(_uro& uro) 
-      : ThisContext<_str>(uro), attribute(std::make_unique<Attribute>(uro))
-   { 
+      : IndexContext(uro), attribute(std::make_unique<Attribute>(uro)),
+      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special))
+   {
       this->initVars(uro); 
    };
 
    FileContext::FileContext(_attrptr& attr, _uro& uro)
-      : ThisContext<_str>(uro), attribute(std::move(attr))
+      : IndexContext(uro), attribute(std::move(attr)),
+      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special))
    { 
       this->initVars(uro); 
    };
-
 
    void IndexContext::resetIndex()
    {
@@ -190,43 +185,11 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contextes::getVariable(const Token& tk, vars::Variable<_tim>*& result, _uro& uro)
-   {
-      const _size& var = tk.value.word.h;
-
-      if (var == this->hashes.HASH_VAR_THIS) {
-         if (this->timeContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
-            return false;
-         }
-
-         TimeContext* last = this->timeContexts.back();
-         if (last != nullptr) {
-            result = last->this_.get();
-            return true;
-         }
-      }
-
-      return findVar(tk, result, uro);
-   }
-
    _bool Contextes::getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
-      if (var == this->hashes.HASH_VAR_THIS) {
-         if (this->numericContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
-            return false;
-         }
-
-         NumericContext* last = this->numericContexts.back();
-         if (last != nullptr) {
-            result = last->this_.get();
-            return true;
-         }
-      }
-      else if (var == this->hashes.HASH_VAR_INDEX) {
+      if (var == this->hashes.HASH_VAR_INDEX) {
          if (this->indexContexts.empty()) {
             throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
             return false;
@@ -318,58 +281,17 @@ namespace uro
       this->indexContexts.pop_back();
    }
 
-   void Contextes::addNumericContext(NumericContext* ctx)
-   {
-      this->aggregateContexts.push_back(ctx);
-      this->indexContexts.push_back(ctx);
-
-      this->numericContexts.push_back(ctx);
-      this->timeContexts.push_back(nullptr);
-      this->fileContexts.push_back(nullptr);
-   }
-
-   void Contextes::retreatNumericContext()
-   {
-      this->retreatIterationContext();
-   }
-
-   void Contextes::addTimeContext(TimeContext* ctx)
-   {
-      this->aggregateContexts.push_back(ctx);
-      this->indexContexts.push_back(ctx);
-
-      this->numericContexts.push_back(nullptr);
-      this->timeContexts.push_back(ctx);
-      this->fileContexts.push_back(nullptr);
-   }
-
-   void Contextes::retreatTimeContext()
-   {
-      this->retreatIterationContext();
-   }
-
    void Contextes::addFileContext(FileContext* ctx)
    {
       this->aggregateContexts.push_back(ctx);
       this->indexContexts.push_back(ctx);
-
-      this->numericContexts.push_back(nullptr);
-      this->timeContexts.push_back(nullptr);
       this->fileContexts.push_back(ctx);
    }
 
    void Contextes::retreatFileContext()
    {
-      this->retreatIterationContext();
-   }
-
-   void Contextes::retreatIterationContext()
-   {
       this->aggregateContexts.pop_back();
       this->indexContexts.pop_back();
-
-      this->numericContexts.pop_back();
-      this->timeContexts.pop_back();
       this->fileContexts.pop_back();
    }
 
@@ -442,16 +364,6 @@ namespace uro
    std::vector<FileContext*>& Contextes::getFileContexts() 
    {
       return this->fileContexts;
-   }
-      
-   TimeContext* Contextes::getTimeContext() 
-   {
-      return this->timeContexts.back();
-   }
-
-   NumericContext* Contextes::getNumericContext() 
-   {
-      return this->numericContexts.back();
    }
 
    _bool Contextes::hasIndexContext() const

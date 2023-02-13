@@ -70,41 +70,15 @@ private:
 };
 
 
-struct C_PrintThis_Str : Command
+struct C_PrintThis : Command
 {
 public:
-   C_PrintThis_Str(_uro& uro, FileContext& ctx)
+   C_PrintThis(_uro& uro, FileContext& ctx)
       : uroboros(uro), context(ctx) { };
    void run() override;
 
 private:
    FileContext& context;
-   _uro& uroboros;
-};
-
-
-struct C_PrintThis_Num : Command
-{
-public:
-   C_PrintThis_Num(_uro& uro, NumericContext& ctx)
-      : uroboros(uro), context(ctx) { };
-   void run() override;
-
-private:
-   NumericContext& context;
-   _uro& uroboros;
-};
-
-
-struct C_PrintThis_Tim : Command
-{
-public:
-   C_PrintThis_Tim(_uro& uro, TimeContext& ctx)
-      : uroboros(uro), context(ctx) { };
-   void run() override;
-
-private:
-   TimeContext& context;
    _uro& uroboros;
 };
 

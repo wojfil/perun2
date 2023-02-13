@@ -75,56 +75,6 @@ void CS_While::run()
 }
 
 
-void CS_TimeLoop::run()
-{
-   const _tlist values = this->timeList->getValue();
-   const _size length = values.size();
-
-   if (length == 0) {
-      return;
-   }
-
-   this->context->resetIndex();
-   _size index = 0;
-
-   while (this->uroboros.state == State::s_Running && index != length) {
-      this->context->this_->value = values[index];
-      this->command->run();
-      this->context->incrementIndex();
-      index++;
-
-      P_CHECK_LOOP_BREAK;
-   }
-
-   this->context->runAggregate();
-}
-
-
-void CS_NumberLoop::run()
-{
-   const _nlist values = this->numberList->getValue();
-   const _size length = values.size();
-
-   if (length == 0) {
-      return;
-   }
-
-   this->context->resetIndex();
-
-   _size index = 0;
-   while (this->uroboros.state == State::s_Running && index != length) {
-      this->context->this_->value = values[index];
-      this->command->run();
-      this->context->incrementIndex();
-      index++;
-
-      P_CHECK_LOOP_BREAK;
-   }
-
-   this->context->runAggregate();
-}
-
-
 void CS_StringLoop::run()
 {
    if (this->uroboros.state == State::s_Running) {

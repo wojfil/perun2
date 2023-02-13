@@ -22,14 +22,16 @@
 #include "datatype/math.h"
 #include "terminator.h"
 #include "keyword.h"
-#include "context.h"
 #include "side-process.h"
 #include "command/com.h"
 #include "command/com-parse-unit.h"
+#include "context.h"
 
 
 namespace uro
 {
+
+struct Contextes;
 
 static const _str VERSION_STR = L"2.0.0";
 

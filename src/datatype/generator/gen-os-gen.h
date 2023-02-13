@@ -16,11 +16,16 @@
 #define GEN_OS_GEN_H_INCLUDED
 
 #include "../datatype.h"
+#include "gen-string.h"
+
+
+namespace uro
+{
+  struct _uro;
+}
 
 namespace uro::gen
 {
-
-struct _uro;
 
 enum OsElement
 {
@@ -40,7 +45,6 @@ public:
    DefinitionGenerator() = delete;
    DefinitionGenerator(const OsElement& el, _uro& uro)
       : element_(el), uroboros(uro) { };
-
    _bool generate(_defptr& result) const;
 
 private:

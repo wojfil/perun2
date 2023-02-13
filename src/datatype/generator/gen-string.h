@@ -18,8 +18,12 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../../util.h"
-#include "../../uroboros.h"
 
+namespace uro
+{
+   struct _uro;
+   struct LocationContext;
+}
 
 namespace uro::gen
 {
@@ -27,8 +31,8 @@ namespace uro::gen
 struct ConcatString : Generator<_str>
 {
 public:
-   ConcatString(std::vector<_genptr<_str>>& val) : length(val.size()) 
-   { 
+   ConcatString(std::vector<_genptr<_str>>& val) : length(val.size())
+   {
       langutil::transferUniquePtrs(val, this->value);
    };
 

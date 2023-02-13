@@ -351,38 +351,6 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
    left.checkCommonExpressionExceptions(uro);
    Tokens right(tks, rightStart, rightLen);
 
-   // time list loop
-   _genptr<_tlist> tlist;
-   if (parse::parse(uro, left, tlist)) {
-      _tcptr context = std::make_unique<TimeContext>(uro);
-      uro.contextes.addTimeContext(context.get());
-      _comptr com;
-      const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatTimeContext();
-
-      if (success) {
-         result = std::make_unique<CS_TimeLoop>(tlist, com, context, uro);
-      }
-
-      return success;
-   }
-
-   // number list loop
-   _genptr<_nlist> nlist;
-   if (parse::parse(uro, left, nlist)) {
-      _ncptr context = std::make_unique<NumericContext>(uro);
-      uro.contextes.addNumericContext(context.get());
-      _comptr com;
-      const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatNumericContext();
-
-      if (success) {
-         result = std::make_unique<CS_NumberLoop>(nlist, com, context, uro);
-      }
-
-      return success;
-   }
-
    // string loop
    _genptr<_str> str_;
    if (parse::parse(uro, left, str_)) {

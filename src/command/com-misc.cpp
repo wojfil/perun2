@@ -51,19 +51,9 @@ void C_PrintDefinition::run()
    }
 }
 
-void C_PrintThis_Str::run()
+void C_PrintThis::run()
 {
    print(this->uroboros, this->context.this_->value);
-}
-
-void C_PrintThis_Num::run()
-{
-   print(this->uroboros, this->context.this_->value.toString());
-}
-
-void C_PrintThis_Tim::run()
-{
-   print(this->uroboros, this->context.this_->value.toString());
 }
 
 void C_SleepPeriod::run()

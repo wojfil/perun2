@@ -1208,22 +1208,10 @@ _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int&
 
       FileContext* fc = uro.contextes.getFileContext();
       if (fc != nullptr) {
-         result = std::make_unique<C_PrintThis_Str>(uro, *fc);
+         result = std::make_unique<C_PrintThis>(uro, *fc);
          return true;
       }
-
-      TimeContext* tc = uro.contextes.getTimeContext();
-      if (tc != nullptr) {
-         result = std::make_unique<C_PrintThis_Tim>(uro, *tc);
-         return true;
-      }
-
-      NumericContext* nc = uro.contextes.getNumericContext();
-      if (nc != nullptr) {
-         result = std::make_unique<C_PrintThis_Num>(uro, *nc);
-         return true;
-      }
-
+      
       commandSyntaxError(word.getOriginString(uro), line);
    }
 

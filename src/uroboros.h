@@ -40,6 +40,7 @@ inline constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;
 inline constexpr _exitint EXITCODE_SYNTAX_ERROR =   2;
 inline constexpr _exitint EXITCODE_CLI_ERROR =      3;
 
+
 enum State
 {
    s_Running = 0,
@@ -48,9 +49,19 @@ enum State
    s_Exit
 };
 
+
+enum ParseState
+{
+   ps_NotParsed,
+   ps_ParsingSuccess,
+   ps_ParsingFailure
+};
+
+
 struct _uro
 {
 public:
+   _uro() = delete;
    _uro(const Arguments& args);
    _bool run();
 
@@ -67,6 +78,7 @@ public:
    _exitint exitCode = EXITCODE_OK;
 
 private:
+   ParseState parseState = ParseState::ps_NotParsed;
    _comptr commands;
    std::vector<Token> tokens;
 
@@ -74,8 +86,28 @@ private:
    _bool parse();
    _bool postParse();
    _bool runCommands();
-
 };
+
+
+// this is the facade for Uroboros2
+// create an object once
+// and run() it multiple times
+// the structure is cached, so the syntax analysis is performed only once
+struct Uroboros2
+{
+public:
+   Uroboros2(const _int& argc, _char* const argv[]);
+   Uroboros2(const _str& location, const _str& code);
+   Uroboros2(const _str& location, const _str& code, const _uint32& flags);
+   
+   _bool run();
+   _exitint getExitCode() const;
+
+private:
+   Arguments arguments;
+   _uro process;
+};
+
 
 }
 

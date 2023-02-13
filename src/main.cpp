@@ -39,22 +39,7 @@ namespace uro
 uro::_exitint wmain(uro::_int argc, uro::_char* argv[], uro::_char* envp[])
 {
    uro::consoleInit();
-   uro::Arguments arguments(argc, &argv);
-
-   switch (arguments.getParseState())
-   {
-      case uro::ArgsParseState::aps_Failed:
-      {
-         return uro::EXITCODE_CLI_ERROR;
-      }
-      case uro::ArgsParseState::aps_PrintInfo:
-      {
-         return uro::EXITCODE_OK;
-      }
-   }
-
-   uro::_uro uroboros(arguments);
+   uro::Uroboros2 uroboros(argc, argv);
    uroboros.run();
-
-   return uroboros.exitCode;
+   return uroboros.getExitCode();
 }

@@ -37,16 +37,35 @@ _uro::_uro(const Arguments& args) : arguments(args), contextes(*this),
 
 _bool _uro::run()
 {
-   return this->preParse()
-       && this->parse()
-       && this->postParse()
-       && this->runCommands();
+   switch (this->parseState) {
+      case ParseState::ps_NotParsed: {
+         const _bool parsed = this->preParse() && this->parse() && this->postParse();
+         if (parsed) {
+            this->parseState = ParseState::ps_ParsingSuccess;
+            return this->runCommands();
+         }
+         else {
+            this->parseState = ParseState::ps_ParsingFailure;
+            return false;
+         }
+         break;
+      }
+      case ParseState::ps_ParsingSuccess: {
+         this->exitCode = EXITCODE_OK;
+         return this->runCommands();
+         break;
+      }
+      case ParseState::ps_ParsingFailure: {
+         return false;
+         break;
+      }
+   }
+
+   return false;
 };
 
 _bool _uro::preParse()
 {
-   this->exitCode = EXITCODE_OK;
-
    try {
       this->tokens = tokenize(this->arguments.getCode(), *this);
    }
@@ -94,7 +113,7 @@ _bool _uro::postParse()
 {
    this->math.init();
 
-   // this is potential direction of optimizations
+   // this is a potential direction of optimizations
    // next iteration of syntax analysis after successful parsing of commands
 
    return true;
@@ -113,5 +132,24 @@ _bool _uro::runCommands()
 
    return true;
 };
+
+Uroboros2::Uroboros2(const _int& argc, _char* const argv[])
+   : arguments(argc, argv), process(this->arguments) { };
+
+Uroboros2::Uroboros2(const _str& location, const _str& code)
+   : arguments(location, code), process(this->arguments) { };
+
+Uroboros2::Uroboros2(const _str& location, const _str& code, const _uint32& flags)
+   : arguments(location, code, flags), process(this->arguments) { };
+
+_bool Uroboros2::run()
+{
+   return this->process.run();
+}
+
+_exitint Uroboros2::getExitCode() const
+{
+   return this->process.exitCode;
+}
 
 }

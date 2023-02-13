@@ -27,7 +27,7 @@ Arguments::Arguments(const _str& loc, const _str& cod)
 Arguments::Arguments(const _str& loc, const _str& cod, const _uint32& fls)
    : location(loc), code(cod), flags(fls), parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(const _int& argc, _char** const argv[])
+Arguments::Arguments(const _int& argc, _char* const argv[])
 {
    _bool options = true;
    _bool nextParseLocation = false;
@@ -44,7 +44,7 @@ Arguments::Arguments(const _int& argc, _char** const argv[])
    }
 
    for (_int i = 1; i < argc; i++) {
-      const _str arg = _str((*argv)[i]);
+      const _str arg = _str(argv[i]);
       const _size len = arg.size();
 
       if (options && len >= 2 && arg[0] == CHAR_MINUS) {

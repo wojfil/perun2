@@ -99,6 +99,10 @@ public:
    Uroboros2(const _int& argc, _char* const argv[]);
    Uroboros2(const _str& location, const _str& code);
    Uroboros2(const _str& location, const _str& code, const _uint32& flags);
+
+   Uroboros2() = delete;
+   Uroboros2(Uroboros2 const&) = delete;
+   Uroboros2& operator= (Uroboros2 const&) = delete;
    
    _bool run();
    _exitint getExitCode() const;

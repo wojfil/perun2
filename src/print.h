@@ -17,14 +17,15 @@
 
 #include "datatype/primitives.h"
 #include "uroboros.h"
+#include "os.h"
 #include <iostream>
 
 
 namespace uro
 {
 
-#define GUIMES_LIMIT 219
-#define GUIMES_TIME 40
+inline constexpr _int GUI_WAIT_LIMIT = 219;
+inline constexpr _int GUI_WAIT_TIME = 40;
 
 extern _int g_guiMes;
 
@@ -41,22 +42,25 @@ void commandLog(const _uro& uro, Args const&... args)
          std::wcout << arg;
       }
 
-      std::wcout << L"\n";
+      std::wcout << CHAR_NEW_LINE;
 
       if (uro.flags & FLAG_GUI) {
-      // this is ugly solution for a rare bug in Windows GUI
-      // (user interaction gets frozen while runtime)
-      // delete this if the bug is solved properly
+      // if this program was started by the GUI application
+      // all logs are sent to GUI's TextField and printed there
+      // sometimes, the flow of messages may slow GUI down
+      // solution? from time to time, sleep for few milliseconds
+      // as a result, GUI app never lags nor freezes
+      // a bit of efficiency is sacrificed for the sake of user convenience
+      // delete this if a better solution is found
          g_guiMes++;
-         if (g_guiMes == GUIMES_LIMIT) {
+         if (g_guiMes == GUI_WAIT_LIMIT) {
             g_guiMes = 0;
-            Sleep(GUIMES_TIME);
+            os_rawSleepForMs(GUI_WAIT_TIME);
          }
       }
    }
 }
 
 }
-
 
 #endif /* PRINT_H */

@@ -90,6 +90,11 @@ void os_sleepForMs(const _nint& ms, _uro& uro)
    }
 }
 
+void os_rawSleepForMs(const _nint& ms)
+{
+   Sleep(ms);
+}
+
 // explanation of attributes is in file 'attribute.h'
 /*void os_loadAttributes(const _aunit& attr, _uro& uro)
 {

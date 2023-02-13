@@ -42,6 +42,7 @@ _tim os_yesterday();
 _tim os_tomorrow();
 
 void os_sleepForMs(const _nint& ms, _uro& uro);
+void os_rawSleepForMs(const _nint& ms);
 
 /*void os_loadAttributes(const _aunit& attr, _uro& uro);
 void os_loadEmptyAttributes(const _aunit& attr, InnerVariables& inner);

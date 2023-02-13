@@ -23,30 +23,30 @@ _int g_guiMes;
 
 void rawPrint(const _str& value)
 {
-   std::wcout << value << L"\n";
+   std::wcout << value << CHAR_NEW_LINE;
 }
 
 void print(const _uro& uro, const _str& value)
 {
-   std::wcout << value << L"\n";
-   if (uro.flags & FLAG_GUI) {
+   std::wcout << value << CHAR_NEW_LINE;
+   if (uro.flags & FLAG_GUI) { // explanation in print.h
       g_guiMes++;
-      if (g_guiMes == GUIMES_LIMIT) {
+      if (g_guiMes == GUI_WAIT_LIMIT) {
          g_guiMes = 0;
-         Sleep(GUIMES_TIME);
+         os_rawSleepForMs(GUI_WAIT_TIME);
       }
    }
 }
 
-void commandLog(const _uro& uro,const _str& value)
+void commandLog(const _uro& uro, const _str& value)
 {
    if (!(uro.flags & FLAG_SILENT)) {
-      std::wcout << value << L"\n";
-      if (uro.flags & FLAG_GUI) {
+      std::wcout << value << CHAR_NEW_LINE;
+      if (uro.flags & FLAG_GUI) { // explanation in print.h
          g_guiMes++;
-         if (g_guiMes == GUIMES_LIMIT) {
+         if (g_guiMes == GUI_WAIT_LIMIT) {
             g_guiMes = 0;
-            Sleep(GUIMES_TIME);
+            os_rawSleepForMs(GUI_WAIT_TIME);
          }
       }
    }

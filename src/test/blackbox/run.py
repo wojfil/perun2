@@ -1276,6 +1276,40 @@ if __name__ == '__main__':
   path("029719", "286109", "687411"), path("029719", "877639", "690072.js"), path("264026", "786669", "396758"), path("561442", "413938", "560857.txt"))))
   (run_test_case("inside 'tree' { print '*/*/6*7*' order asc }", lines(path("029719", "286109", "660170.js"), 
   path("029719", "286109", "677910.txt"), path("029719", "286109", "687411"), path("029719", "877639", "690072.js"))))
+  (run_test_case("inside 'tree' { print '**.js' where depth = 1 order asc }", lines(path("029719", "011952.js"),
+  path("089212", "238781.js"), path("089212", "532245.js"), path("561442", "345559.js"),
+  path("561442", "567635.js"), path("702035", "465580.js"), path("702035", "643304.js"), path("702035", "691437.js"))))
+  (run_test_case("inside 'tree' { print '*/*.js' order asc }", lines(path("029719", "011952.js"),
+  path("089212", "238781.js"), path("089212", "532245.js"), path("561442", "345559.js"),
+  path("561442", "567635.js"), path("702035", "465580.js"), path("702035", "643304.js"), path("702035", "691437.js"))))
+  (run_test_case("inside 'tree' { print '**.js' where depth = 2 order asc }", lines(path("829131", "667797", "828412.js"),
+  path("829131", "372165", "260134.js"), path("702035", "250274", "575573.js"), path("530856", "197877", "788392.js"),
+  path("029719", "877639", "690072.js"), path("029719", "286109", "660170.js"))))
+  (run_test_case("inside 'tree' { print '*/*/*.js' order asc }", lines(path("829131", "667797", "828412.js"),
+  path("829131", "372165", "260134.js"), path("702035", "250274", "575573.js"), path("530856", "197877", "788392.js"),
+  path("029719", "877639", "690072.js"), path("029719", "286109", "660170.js"))))
+  (run_test_case("inside 'tree' { print '*/*2*/*.js' order asc }", lines(path("829131", "372165", "260134.js"),
+  path("702035", "250274", "575573.js"), path("029719", "286109", "660170.js"))))
+  (run_test_case("inside 'tree' { print '*/*7/*.js' order asc }", lines(path("829131", "667797", "828412.js"),
+  path("530856", "197877", "788392.js"))))
+  (run_test_case("inside 'tree' { print '**.txt' where name[0] = 7 order desc }", lines(
+  path("829131", "863770", "571186.txt"), "581940.txt", path("561442", "413938", "560857.txt"),
+  path("561442", "413938", "512316.txt"), "558639.txt", "532624.txt")))
+  (run_test_case("inside 'tree' { print '*/**.txt' order desc every 16 }", lines(
+  path("829131", "863770", "877450.txt"), path("674295", "056884.txt"),
+  path("264026", "789148", "268141.txt"), path("029719", "743013.txt"))))
+  (run_test_case("inside 'tree' { print '*/**.txt' order desc where index % 16 = 0 }", lines(
+  path("829131", "863770", "877450.txt"), path("674295", "056884.txt"),
+  path("264026", "789148", "268141.txt"), path("029719", "743013.txt"))))
+  (run_test_case("inside 'tree' { print '829131/863770/*' order asc }", lines(path("829131", "863770", "571186.txt"),
+  path("829131", "863770", "783877.txt"), path("829131", "863770", "877450.txt"))))
+  (run_test_case("inside 'tree' { print '829131/**' order asc }", lines(path("829131", "372165"),
+  path("829131", "372165", "260134.js"), path("829131", "429798"), path("829131", "429798", "702683.h"),
+  path("829131", "429798", "968092.h"), path("829131", "429798", "990148.txt"), path("829131", "667797"),
+  path("829131", "667797", "080298.txt"), path("829131", "667797", "828412.js"), path("829131", "863770"),
+  path("829131", "863770", "571186.txt"), path("829131", "863770", "783877.txt"), path("829131", "863770", "877450.txt"))))
+  (run_test_case("inside 'tree' { print '829131/**.h' order asc }", lines(
+  path("829131", "429798", "702683.h"), path("829131", "429798", "968092.h"))))
   
   run_test_case("inside 'modificables' { 'existing_empty_dir' {exists } }", "1")
   run_test_case("inside 'modificables' { 'non_existing_empty_dir' {exists } }", "0")

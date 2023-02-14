@@ -242,6 +242,11 @@ SyntaxError SyntaxError::undefinedVarValue(const _str& value, const _int& line)
    return SyntaxError(str(L"value of variable '", value, L"' is undefined here"), line);
 }
 
+SyntaxError SyntaxError::wrongSyntax(const _int& line)
+{
+   return SyntaxError(L"wrong syntax. No command can be formed of this code", line);
+}
+
 
 RuntimeError::RuntimeError(const _str& msg)
    : message(msg) { };

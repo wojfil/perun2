@@ -75,8 +75,8 @@ _bool _uro::preParse()
       return false;
    }
    catch (...) {
-      SyntaxError ex2(L"wrong syntax. No command can be formed of this code", 1);
-      rawPrint(ex2.getMessage());
+      SyntaxError ex = SyntaxError::wrongSyntax(1);
+      rawPrint(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
@@ -100,8 +100,8 @@ _bool _uro::parse()
       return false;
    }
    catch (...) {
-      SyntaxError ex2(L"wrong syntax. No command can be formed of this code", 1);
-      rawPrint(ex2.getMessage());
+      SyntaxError ex = SyntaxError::wrongSyntax(1);
+      rawPrint(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }

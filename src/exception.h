@@ -67,6 +67,7 @@ public:
    static SyntaxError timeIterationHere(const _str& value, const _int& line);
    static SyntaxError quotationMarkStringLteral(const _int& line);
    static SyntaxError undefinedVarValue(const _str& value, const _int& line);
+   static SyntaxError wrongSyntax(const _int& line);
    
 
 private:

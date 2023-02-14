@@ -1237,7 +1237,7 @@ _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int&
       commandSyntaxError(word.getOriginString(uro), line);
    }
    else {
-      throw SyntaxError(L"wrong syntax. No command can be formed of this code", line);
+      throw SyntaxError::wrongSyntax(line);
    }
 
    return false;

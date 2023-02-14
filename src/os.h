@@ -29,12 +29,12 @@ inline constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
 inline constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
 
 static const _str OS_SEPARATOR_STRING = toStr(OS_SEPARATOR);
-static const _str OS_SEPARATOR_ASTERISK = str(OS_SEPARATOR_STRING, toStr(CHAR_ASTERISK));
-static const _str OS_SEPARATOR_APOSTROPHE = str(OS_SEPARATOR_STRING, toStr(CHAR_APOSTROPHE));
+static const _str OS_SEPARATOR_ASTERISK = str(OS_SEPARATOR_STRING, STRING_ASTERISK);
+static const _str OS_SEPARATOR_APOSTROPHE = str(OS_SEPARATOR_STRING, STRING_ASTERISK);
 
-static const _str OS_UROEXT = L"uro";
-static const _str OS_DOT_UROEXT = L".uro";
-static const _str OS_GIT_DIRECTORY = L".git";
+static const _str OS_UROEXT = STRING_URO;
+static const _str OS_DOT_UROEXT = str(STRING_DOT, STRING_URO);
+static const _str OS_GIT_DIRECTORY = str(STRING_DOT, STRING_GIT);
 
 _tim os_now();
 _tim os_today();

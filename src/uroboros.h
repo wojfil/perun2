@@ -31,7 +31,7 @@
 namespace uro
 {
 
-struct Contextes;
+struct Contexts;
 
 static const _str VERSION_STR = L"2.0.0";
 
@@ -68,7 +68,7 @@ public:
    const Arguments& arguments;
    Hashes hashes;
    Math math;
-   Contextes contextes;
+   Contexts contexts;
    Terminator terminator;
    const KeywordsData keywordsData;
    SideProcess sideProcess;

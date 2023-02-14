@@ -199,11 +199,11 @@ namespace uro
    typedef std::unique_ptr<LocationContext>        _lcptr;
 
 
-   struct Contextes : GlobalContext
+   struct Contexts : GlobalContext
    {
    public:
-      Contextes() = delete;
-      Contextes(_uro& uro);
+      Contexts() = delete;
+      Contexts(_uro& uro);
 
       _bool getVariable(const Token& tk, vars::Variable<_bool>*& result, _uro& uro);
       _bool getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro);

@@ -30,9 +30,9 @@ struct CoreCommand : Command
 public:
    CoreCommand() = delete;
    CoreCommand(FileContext* ctx, _uro& uro)
-      : saveChanges(true), context(ctx), uroboros(uro), locationContext(uro.contextes.getLocationContext()) { };
+      : saveChanges(true), context(ctx), uroboros(uro), locationContext(uro.contexts.getLocationContext()) { };
    CoreCommand(const _bool& save, FileContext* ctx, _uro& uro)
-      : saveChanges(save), context(ctx), uroboros(uro), locationContext(uro.contextes.getLocationContext()) { };
+      : saveChanges(save), context(ctx), uroboros(uro), locationContext(uro.contexts.getLocationContext()) { };
 
 protected:
 
@@ -262,7 +262,7 @@ struct C_DownloadBase : Command
 {
 public:
    C_DownloadBase(_uro& uro)
-      : uroboros(uro), locContext(uro.contextes.getLocationContext()) { };
+      : uroboros(uro), locContext(uro.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locContext;

@@ -91,7 +91,7 @@ struct F_SizeDefinition : Generator<_num>
 public:
    F_SizeDefinition(_defptr& def, _uro& uro)
       : definition(std::move(def)), uroboros(uro), 
-        context(uro.contextes.getLocationContext()) { };
+        context(uro.contexts.getLocationContext()) { };
 
    _num getValue() override;
 
@@ -107,7 +107,7 @@ struct F_SizeList : Generator<_num>
 public:
    F_SizeList(_genptr<_list>& vals, _uro& uro)
       : values(std::move(vals)), uroboros(uro), 
-        context(uro.contextes.getLocationContext()) { };
+        context(uro.contexts.getLocationContext()) { };
 
    _num getValue() override;
 

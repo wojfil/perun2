@@ -24,7 +24,7 @@ namespace uro::comm
 
 Aggregate::Aggregate(_uro& uro)
    : failedCopy(0), failedSelect(0), value(AGGR_NULL),
-     contextes(uro.contextes), uroboros(uro) { };
+     contexts(uro.contexts), uroboros(uro) { };
 
 void Aggregate::set(const _uint32& v)
 {
@@ -139,13 +139,13 @@ void Aggregate::run()
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
                   logCopySuccess(this->uroboros, *it);
                }
-               this->contextes.success->value = !selectFailure;
+               this->contexts.success->value = !selectFailure;
             }
             else {
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
                   logCopyError(this->uroboros, *it);
                }
-               this->contextes.success->value = false;
+               this->contexts.success->value = false;
             }
          }
 
@@ -153,7 +153,7 @@ void Aggregate::run()
       }
    }
    else {
-      this->contextes.success->value = !selectFailure;
+      this->contexts.success->value = !selectFailure;
    }
 }
 

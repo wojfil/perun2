@@ -161,7 +161,7 @@ namespace uro
    };
    
    
-   Contextes::Contextes(_uro& uro) 
+   Contexts::Contexts(_uro& uro) 
       : GlobalContext(uro), hashes(uro.hashes)
    { 
       this->locationContexts.push_back(&this->rootLocation);
@@ -173,7 +173,7 @@ namespace uro
       this->addOsGen(hashes.HASH_VAR_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, uro);
    };
    
-   _bool Contextes::getVariable(const Token& tk, vars::Variable<_bool>*& result, _uro& uro)
+   _bool Contexts::getVariable(const Token& tk, vars::Variable<_bool>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
@@ -185,7 +185,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contextes::getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro)
+   _bool Contexts::getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
@@ -205,7 +205,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contextes::getVariable(const Token& tk, vars::Variable<_str>*& result, _uro& uro)
+   _bool Contexts::getVariable(const Token& tk, vars::Variable<_str>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
       
@@ -237,7 +237,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contextes::getVariable(const Token& tk, _defptr& result, _uro& uro)
+   _bool Contexts::getVariable(const Token& tk, _defptr& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
       auto v = this->osGenerators.find(var);
@@ -249,65 +249,65 @@ namespace uro
       return false;
    }
 
-   void Contextes::addUserVarsContext(UserVarsContext* ctx)
+   void Contexts::addUserVarsContext(UserVarsContext* ctx)
    {
       this->userVarsContexts.push_back(ctx);
    }
 
-   void Contextes::retreatUserVarsContext()
+   void Contexts::retreatUserVarsContext()
    {
       this->userVarsContexts.pop_back();
    }
    
-   void Contextes::addAggregateContext(AggregateContext* ctx)
+   void Contexts::addAggregateContext(AggregateContext* ctx)
    {
       this->aggregateContexts.push_back(ctx);
    }
 
-   void Contextes::retreatAggregateContext()
+   void Contexts::retreatAggregateContext()
    {
       this->aggregateContexts.pop_back();
    }
 
-   void Contextes::addIndexContext(IndexContext* ctx)
+   void Contexts::addIndexContext(IndexContext* ctx)
    {
       this->aggregateContexts.push_back(ctx);
       this->indexContexts.push_back(ctx);
    }
 
-   void Contextes::retreatIndexContext()
+   void Contexts::retreatIndexContext()
    {
       this->aggregateContexts.pop_back();
       this->indexContexts.pop_back();
    }
 
-   void Contextes::addFileContext(FileContext* ctx)
+   void Contexts::addFileContext(FileContext* ctx)
    {
       this->aggregateContexts.push_back(ctx);
       this->indexContexts.push_back(ctx);
       this->fileContexts.push_back(ctx);
    }
 
-   void Contextes::retreatFileContext()
+   void Contexts::retreatFileContext()
    {
       this->aggregateContexts.pop_back();
       this->indexContexts.pop_back();
       this->fileContexts.pop_back();
    }
 
-   void Contextes::addLocationContext(LocationContext* ctx)
+   void Contexts::addLocationContext(LocationContext* ctx)
    {
       this->locationContexts.push_back(ctx);
    }
 
-   void Contextes::retreatLocationContext()
+   void Contexts::retreatLocationContext()
    {
       this->locationContexts.pop_back();
    }
 
 
 
-   void Contextes::markAllAttributesToRun()
+   void Contexts::markAllAttributesToRun()
    {
       for (FileContext*& fc : this->fileContexts) {
          if (fc != nullptr) {
@@ -317,37 +317,37 @@ namespace uro
    }
 
    
-   _bool Contextes::nextContextWillBeAggregate()
+   _bool Contexts::nextContextWillBeAggregate()
    {
       return this->aggregateContexts.size() == 1;
    }
 
-   _bool Contextes::hasAggregate()
+   _bool Contexts::hasAggregate()
    {
       return this->aggregateContexts.size() > 1;
    }
 
-   comm::Aggregate* Contextes::getAggregate()
+   comm::Aggregate* Contexts::getAggregate()
    {
       return &this->aggregateContexts[1]->aggregate;
    }
 
-   LocationContext* Contextes::getLocationContext() 
+   LocationContext* Contexts::getLocationContext() 
    {
       return this->locationContexts.back();
    }
 
-   AggregateContext* Contextes::getAggregateContext() 
+   AggregateContext* Contexts::getAggregateContext() 
    {
       return this->aggregateContexts.back();
    }
 
-   _bool Contextes::hasIterationContext() const
+   _bool Contexts::hasIterationContext() const
    {
       return !this->fileContexts.empty();
    }
 
-   _bool Contextes::hasFileContext() const
+   _bool Contexts::hasFileContext() const
    {
       if (this->fileContexts.empty()) {
          return false;
@@ -356,32 +356,32 @@ namespace uro
       return this->fileContexts.back() != nullptr;
    }
       
-   FileContext* Contextes::getFileContext() 
+   FileContext* Contexts::getFileContext() 
    {
       return this->fileContexts.back();
    }
 
-   std::vector<FileContext*>& Contextes::getFileContexts() 
+   std::vector<FileContext*>& Contexts::getFileContexts() 
    {
       return this->fileContexts;
    }
 
-   _bool Contextes::hasIndexContext() const
+   _bool Contexts::hasIndexContext() const
    {
       return !this->indexContexts.empty();
    }
 
-   void Contextes::addOsGen(const _size& hash, const gen::OsElement& element, _uro& uro)
+   void Contexts::addOsGen(const _size& hash, const gen::OsElement& element, _uro& uro)
    {
       osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, uro)));   
    }
    
-   void Contextes::makeLocationContext(_lcptr& result)
+   void Contexts::makeLocationContext(_lcptr& result)
    {  
       result = std::make_unique<LocationContext>(this->locationContexts.back());
    }
 
-   UserVarsContext* Contextes::getUserVarsContext()
+   UserVarsContext* Contexts::getUserVarsContext()
    {
       return this->userVarsContexts.back();
    }

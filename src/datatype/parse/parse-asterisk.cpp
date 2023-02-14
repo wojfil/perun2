@@ -194,7 +194,7 @@ exitAsteriskBeginning:
 
    for (_size i = 1; i < ulen; i++) {
       const _bool isFinal = i == (ulen - 1);
-      LocationContext* locContext = uro.contextes.getLocationContext();
+      LocationContext* locContext = uro.contexts.getLocationContext();
       std::unique_ptr<gen::LocationVessel> vessel(new gen::LocationVessel(isAbsolute, locContext));
       gen::LocationVessel& vesselRef = *(vessel.get());
       _genptr<_str> vesselPtr = std::move(vessel);

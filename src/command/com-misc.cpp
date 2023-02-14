@@ -97,12 +97,12 @@ void C_ErrorWithExitCode::run()
 }
 
 RunBase::RunBase(_uro& uro)
-   : fileCtxs(uro.contextes.getFileContexts()), 
-     locationCtx(uro.contextes.getLocationContext()),
+   : fileCtxs(uro.contexts.getFileContexts()), 
+     locationCtx(uro.contexts.getLocationContext()),
      uro2Base(str(os_quoteEmbraced(os_uroborosPath()), 
       STRING_SPACE, STRING_MINUS, toStr(CHAR_FLAG_SILENT), STRING_SPACE)) { };
 
-void RunBase::reloadContextes()
+void RunBase::reloadContexts()
 {
    for (FileContext*& fc : this->fileCtxs) {
       if (fc != nullptr) {
@@ -123,13 +123,13 @@ void C_Run::run()
 
    if (command.empty()) {
       commandLog(this->uroboros, L"Failed to run an empty command");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
    const _str loc = this->getLocation();
    const _bool s = os_run(command, loc, this->uroboros);
-   this->uroboros.contextes.success->value = s;
+   this->uroboros.contexts.success->value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Run '", command, L"'");
@@ -138,7 +138,7 @@ void C_Run::run()
       commandLog(this->uroboros, L"Failed to run '", command, L"'");
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 void C_RunWith::run()
@@ -148,14 +148,14 @@ void C_RunWith::run()
 
    if (!this->context->v_exists->value || base.empty()) {
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
    const _str com = str(base, L" ", os_quoteEmbraced(this->context->trimmed));
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->uroboros);
-   this->uroboros.contextes.success->value = s;
+   this->uroboros.contexts.success->value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -164,7 +164,7 @@ void C_RunWith::run()
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 void C_RunWithWithString::run()
@@ -174,7 +174,7 @@ void C_RunWithWithString::run()
 
    if (!this->context->v_exists->value || base.empty()) {
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
@@ -184,7 +184,7 @@ void C_RunWithWithString::run()
 
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->uroboros);
-   this->uroboros.contextes.success->value = s;
+   this->uroboros.contexts.success->value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
@@ -193,7 +193,7 @@ void C_RunWithWithString::run()
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 void C_RunWithWith::run()
@@ -203,7 +203,7 @@ void C_RunWithWith::run()
 
    if (!this->context->v_exists->value || base.empty()) {
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
@@ -214,7 +214,7 @@ void C_RunWithWith::run()
       const _str com = str(base, L" ", os_quoteEmbraced(this->context->trimmed));
       const _str loc = this->getLocation();
       const _bool s = os_run(com, loc, this->uroboros);
-      this->uroboros.contextes.success->value = s;
+      this->uroboros.contexts.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -239,7 +239,7 @@ void C_RunWithWith::run()
       const _str com = comStream.str();
       const _str loc = this->getLocation();
       const _bool s = os_run(com, loc, this->uroboros);
-      this->uroboros.contextes.success->value = s;
+      this->uroboros.contexts.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Run ", logStream.str());
@@ -249,21 +249,21 @@ void C_RunWithWith::run()
       }
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 void C_RunWithUroboros2::run()
 {
    if (!this->context->v_exists->value) {
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
    const _str com = str(this->uro2Base, os_quoteEmbraced(this->context->trimmed));
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->uroboros);
-   this->uroboros.contextes.success->value = s;
+   this->uroboros.contexts.success->value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with Uroboros2");
@@ -272,14 +272,14 @@ void C_RunWithUroboros2::run()
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 void C_RunWithUroboros2WithString::run()
 {
    if (!this->context->v_exists->value) {
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
@@ -289,7 +289,7 @@ void C_RunWithUroboros2WithString::run()
 
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->uroboros);
-   this->uroboros.contextes.success->value = s;
+   this->uroboros.contexts.success->value = s;
 
    if (s) {
       commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with Uroboros2 with '", rawArg, L"'");
@@ -298,14 +298,14 @@ void C_RunWithUroboros2WithString::run()
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2 with '", rawArg, L"'");
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 void C_RunWithUroboros2With::run()
 {
    if (!this->context->v_exists->value) {
       commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
@@ -316,7 +316,7 @@ void C_RunWithUroboros2With::run()
       const _str com = str(this->uro2Base, os_quoteEmbraced(this->context->trimmed));
       const _str loc = this->getLocation();
       const _bool s = os_run(com, loc, this->uroboros);
-      this->uroboros.contextes.success->value = s;
+      this->uroboros.contexts.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with Uroboros2");
@@ -341,7 +341,7 @@ void C_RunWithUroboros2With::run()
       const _str com = comStream.str();
       const _str loc = this->getLocation();
       const _bool s = os_run(com, loc, this->uroboros);
-      this->uroboros.contextes.success->value = s;
+      this->uroboros.contexts.success->value = s;
 
       if (s) {
          commandLog(this->uroboros, L"Run ", logStream.str());
@@ -351,7 +351,7 @@ void C_RunWithUroboros2With::run()
       }
    }
 
-   this->reloadContextes();
+   this->reloadContexts();
 }
 
 }

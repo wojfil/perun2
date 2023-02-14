@@ -103,7 +103,7 @@ _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
 
 static void checkFileContextExistence(const _str& commandName, const _int line, _uro& uro)
 {
-   if (!uro.contextes.hasFileContext()) {
+   if (!uro.contexts.hasFileContext()) {
       throw SyntaxError(str(L"the subject of command '", commandName, L"' is undefined here"), line);
    }
 }
@@ -149,7 +149,7 @@ static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, co
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       return coreCommandSimple(result, word, ctx, true, uro);
    }
@@ -223,7 +223,7 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
 
    if (left.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setTimeCommandBase();
 
       _genptr<_tim> tim;
@@ -242,14 +242,14 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
    attr->setTimeCommandBase();
    _fcptr ctx = std::make_unique<FileContext>(attr, uro);
 
-   uro.contextes.addFileContext(ctx.get());
+   uro.contexts.addFileContext(ctx.get());
 
    _genptr<_tim> tim;
    if (!parse::parse(uro, right, tim)) {
       throw SyntaxError(str(L"time argument of command '", word.getOriginString(uro), L" to' is not valid"), line);
    }
 
-   uro.contextes.retreatFileContext();
+   uro.contexts.retreatFileContext();
 
    _comptr inner;
    if (coreCommandTime(inner, word, ctx.get(), tim, false, uro) && parseLooped(left, inner, ctx, result, uro)) {
@@ -292,7 +292,7 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       result = std::make_unique<C_Open>(true, ctx, uro);
       return true;
@@ -308,7 +308,7 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
 
       _fcptr ctx;
       makeCoreCommandContext(ctx, uro);
-      uro.contextes.addFileContext(ctx.get());
+      uro.contexts.addFileContext(ctx.get());
 
       _genptr<_str> prog;
       if (!parse::parse(uro, right, prog)) {
@@ -316,11 +316,11 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
             L"cannot be resolved to a string"), line);
       }
 
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
 
       if (left.isEmpty()) {
          checkFileContextExistence(str(word.getOriginString(uro), L" with"), line, uro);
-         FileContext* ctx = uro.contextes.getFileContext();
+         FileContext* ctx = uro.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
          result = std::make_unique<C_OpenWith>(prog, true, ctx, uro);
          return true;
@@ -349,12 +349,12 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
 
 static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
-   if (uro.contextes.hasAggregate()) {
-      Aggregate* aggr = uro.contextes.getAggregate();
+   if (uro.contexts.hasAggregate()) {
+      Aggregate* aggr = uro.contexts.getAggregate();
       aggr->set(AGGR_SELECT);
 
       if (tks.isEmpty()) {
-         FileContext* fc = uro.contextes.getFileContext();
+         FileContext* fc = uro.contexts.getFileContext();
          _genptr<_str> str = std::make_unique<vars::VariableReference<_str>>(fc->this_.get());
          result = std::make_unique<C_AggrSelect_String>(aggr, str, uro);
          return true;
@@ -424,7 +424,7 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
 
    if (left.isEmpty()) {
       checkFileContextExistence(str(word.getOriginString(uro), L" to"), line, uro);
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       ctx->attribute->markToEvaluate();
 
@@ -445,14 +445,14 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
-   uro.contextes.addFileContext(ctx.get());
+   uro.contexts.addFileContext(ctx.get());
 
    _genptr<_str> newName;
    if (!parse::parse(uro, right, newName)) {
       throw SyntaxError(str(L"declaration of new name in command '", word.getOriginString(uro), L" to' is not valid"), line);
    }
 
-   uro.contextes.retreatFileContext();
+   uro.contexts.retreatFileContext();
 
    _genptr<_str> str_;
    if (parse::parse(uro, left, str_)) {
@@ -493,7 +493,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
 
       if (stack) {
@@ -516,7 +516,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
       if (fk == uro.hashes.HASH_VAR_FILE) {
          if (tks2.isEmpty()) {
             checkFileContextExistence(str(word.getOriginString(uro), L" ", f.getOriginString(uro)), line, uro);
-            FileContext* ctx = uro.contextes.getFileContext();
+            FileContext* ctx = uro.contexts.getFileContext();
             ctx->attribute->setCoreCommandBase();
 
             if (stack) {
@@ -581,7 +581,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
       else if (fk == uro.hashes.HASH_VAR_DIRECTORY) {
          if (tks2.isEmpty()) {
             checkFileContextExistence(str(word.getOriginString(uro), L" ", f.getOriginString(uro)), line, uro);
-            FileContext* ctx = uro.contextes.getFileContext();
+            FileContext* ctx = uro.contexts.getFileContext();
             ctx->attribute->setCoreCommandBase();
 
             if (stack) {
@@ -737,7 +737,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
          }
 
          checkFileContextExistence(str(word.getOriginString(uro), L" to as"), line, uro);
-         FileContext* ctx = uro.contextes.getFileContext();
+         FileContext* ctx = uro.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
 
          if (stack) {
@@ -762,7 +762,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
       }
       else {
          checkFileContextExistence(str(word.getOriginString(uro), L" to"), line, uro);
-         FileContext* ctx = uro.contextes.getFileContext();
+         FileContext* ctx = uro.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
 
          if (stack) {
@@ -810,7 +810,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
 
       _fcptr ctx;
       makeCoreCommandContext(ctx, uro);
-      uro.contextes.addFileContext(ctx.get());
+      uro.contexts.addFileContext(ctx.get());
 
       _genptr<_str> nname;
       if (!parse::parse(uro, postAs, nname)) {
@@ -824,7 +824,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
             L" to' cannot be resolved to a string"), line);
       }
 
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
       _comptr inner;
 
       if (stack) {
@@ -844,7 +844,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
-   uro.contextes.addFileContext(ctx.get());
+   uro.contexts.addFileContext(ctx.get());
 
    _genptr<_str> dest;
    if (!parse::parse(uro, right, dest)) {
@@ -852,7 +852,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
          L" to' cannot be resolved to a string"), line);
    }
 
-   uro.contextes.retreatFileContext();
+   uro.contexts.retreatFileContext();
 
    _comptr inner;
    if (stack) {
@@ -977,12 +977,12 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
          L"' cannot be preceded by a flag 'stack'"), line);
       }
 
-      if (uro.contextes.hasAggregate()) {
-         Aggregate* aggr = uro.contextes.getAggregate();
+      if (uro.contexts.hasAggregate()) {
+         Aggregate* aggr = uro.contexts.getAggregate();
          aggr->set(AGGR_COPY);
 
          if (tks.isEmpty()) {
-            FileContext* fc = uro.contextes.getFileContext();
+            FileContext* fc = uro.contexts.getFileContext();
             _genptr<_str> str = std::make_unique<vars::VariableReference<_str>>(fc->this_.get());
             result = std::make_unique<C_AggrCopy_String>(aggr, str, uro);
             return true;
@@ -1064,7 +1064,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
          }
 
          checkFileContextExistence(str(word.getOriginString(uro), L" to as"), line, uro);
-         FileContext* ctx = uro.contextes.getFileContext();
+         FileContext* ctx = uro.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
 
          if (stack) {
@@ -1085,7 +1085,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
       _genptr<_str> str_;
       if (parse::parse(uro, right, str_)) {
          checkFileContextExistence(str(word.getOriginString(uro), L" to"), line, uro);
-         FileContext* ctx = uro.contextes.getFileContext();
+         FileContext* ctx = uro.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
 
          if (stack) {
@@ -1137,7 +1137,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
 
       _fcptr ctx;
       makeCoreCommandContext(ctx, uro);
-      uro.contextes.addFileContext(ctx.get());
+      uro.contexts.addFileContext(ctx.get());
 
       _genptr<_str> nname;
       if (!parse::parse(uro, postAs, nname)) {
@@ -1151,7 +1151,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
             L" to' cannot be resolved to a string"), line);
       }
 
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
 
       _comptr inner;
       if (stack) {
@@ -1171,7 +1171,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
-   uro.contextes.addFileContext(ctx.get());
+   uro.contexts.addFileContext(ctx.get());
 
    _genptr<_str> dest;
    if (!parse::parse(uro, right, dest)) {
@@ -1179,7 +1179,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
          L" to' cannot be resolved to a string"), line);
    }
 
-   uro.contextes.retreatFileContext();
+   uro.contexts.retreatFileContext();
 
    _comptr inner;
    if (stack) {
@@ -1200,13 +1200,13 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
 _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool& directError, _uro& uro)
 {
    if (tks.isEmpty()) {
-      if (!uro.contextes.hasIterationContext()) {
+      if (!uro.contexts.hasIterationContext()) {
          throw SyntaxError(str(L"command '", word.getOriginString(uro), L"' needs an argument here. "
             L"Value of variable 'this' is undefined in this area"), line);
          return false;
       }
 
-      FileContext* fc = uro.contextes.getFileContext();
+      FileContext* fc = uro.contexts.getFileContext();
       if (fc != nullptr) {
          result = std::make_unique<C_PrintThis>(uro, *fc);
          return true;
@@ -1284,10 +1284,10 @@ static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, cons
 
 static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
 {
-   uro.contextes.markAllAttributesToRun();
+   uro.contexts.markAllAttributesToRun();
 
    if (!tks.check(TI_HAS_KEYWORD_WITH)) {
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       _genptr<_str> str;
       if (parse::parse(uro, tks, str)) {
          result = std::make_unique<C_Run>(str, ctx, uro);
@@ -1327,13 +1327,13 @@ static _bool c_runContextless(_comptr& result, const Token& word, const Tokens& 
 
 static _bool c_runContextless_simple(_comptr& result, const Token& word, const Tokens& right, const _int& line, _uro& uro)
 {
-   if (!uro.contextes.hasFileContext()) {
+   if (!uro.contexts.hasFileContext()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro),
          L" with' needs first argument here"), line);
    }
 
    checkFileContextExistence(str(word.getOriginString(uro), L" with"), line, uro);
-   FileContext* ctx = uro.contextes.getFileContext();
+   FileContext* ctx = uro.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
    _genptr<_str> exec;
@@ -1358,12 +1358,12 @@ static _bool c_runContextless_simple(_comptr& result, const Token& word, const T
 
 static _bool c_runContextless_with(_comptr& result, const Token& word, const Tokens& right, const _int& line, _uro& uro)
 {
-   if (!uro.contextes.hasFileContext()) {
+   if (!uro.contexts.hasFileContext()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" with with' needs first argument here"), line);
    }
 
    checkFileContextExistence(str(word.getOriginString(uro), L" with with"), line, uro);
-   FileContext* ctx = uro.contextes.getFileContext();
+   FileContext* ctx = uro.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
    std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_With);
@@ -1441,7 +1441,7 @@ static _bool c_runContextfull_simple(_comptr& result, const Token& word, const T
 {
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
-   uro.contextes.addFileContext(ctx.get());
+   uro.contexts.addFileContext(ctx.get());
 
    _genptr<_str> exec;
    if (!parse::parse(uro, right, exec)) {
@@ -1449,7 +1449,7 @@ static _bool c_runContextfull_simple(_comptr& result, const Token& word, const T
          L" with' cannot be resolved to a string"), line);
    }
 
-   uro.contextes.retreatFileContext();
+   uro.contexts.retreatFileContext();
 
    if (right.getLength() == 1) {
       const Token& cf = right.first();
@@ -1491,7 +1491,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
-   uro.contextes.addFileContext(ctx.get());
+   uro.contexts.addFileContext(ctx.get());
 
    _genptr<_str> exec;
    if (!parse::parse(uro, left2, exec)) {
@@ -1501,7 +1501,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
 
    _genptr<_str> lastStr;
    if (parse::parse(uro, right2, lastStr)) {
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
 
       if (left2.getLength() == 1) {
          const Token& cf = left2.first();
@@ -1528,12 +1528,12 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
       _genptr<_list> lastList;
 
       if (!parse::parse(uro, right2, lastList)) {
-         uro.contextes.retreatFileContext();
+         uro.contexts.retreatFileContext();
          throw SyntaxError(str(L"last argument of command '", word.getOriginString(uro),
             L" with with' cannot be resolved to a list"), line);
       }
       else {
-         uro.contextes.retreatFileContext();
+         uro.contexts.retreatFileContext();
 
          if (left2.getLength() == 1) {
             const Token& cf = left2.first();

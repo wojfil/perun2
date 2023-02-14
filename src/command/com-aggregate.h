@@ -23,7 +23,7 @@
 namespace uro
 {
    struct _uro;
-   struct Contextes;
+   struct Contexts;
 }
 
 namespace uro::comm
@@ -57,7 +57,7 @@ public:
 
 private:
    _uro& uroboros;
-   Contextes& contextes;
+   Contexts& contexts;
    _uint32 value;
    inline _bool has(const _uint32& v) const;
 };

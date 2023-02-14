@@ -180,7 +180,7 @@ public:
    RunBase(_uro& uro);
 
 protected:
-   void reloadContextes();
+   void reloadContexts();
    _str getLocation();
    _str getUro2Cmd();
 

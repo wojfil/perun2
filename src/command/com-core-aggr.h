@@ -27,7 +27,7 @@ struct C_AggrDelivery : Command
 {
 public:
    C_AggrDelivery(Aggregate* aggr, _genptr<T>& val, _uro& uro)
-      : aggregate(aggr), value(std::move(val)), locationContext(uro.contextes.getLocationContext()) { };
+      : aggregate(aggr), value(std::move(val)), locationContext(uro.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locationContext;
@@ -88,7 +88,7 @@ struct C_Aggr : Command
 public:
    C_Aggr(_genptr<T>& val, _uro& uro)
       : value(std::move(val)), uroboros(uro), 
-        locationContext(uro.contextes.getLocationContext()) { };
+        locationContext(uro.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locationContext;

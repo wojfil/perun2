@@ -32,7 +32,7 @@ namespace uro::comm
 _bool parseCommands(_comptr& result, const Tokens& tks, _uro& uro)
 {
    _ucptr context = std::make_unique<UserVarsContext>();
-   uro.contextes.addUserVarsContext(context.get());
+   uro.contexts.addUserVarsContext(context.get());
 
    std::vector<_comptr> commands;
    _int sublen = 0;
@@ -108,7 +108,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, _uro& uro)
       result = std::make_unique<CS_RawBlock>(commands, uro);
    }
 
-   uro.contextes.retreatUserVarsContext();
+   uro.contexts.retreatUserVarsContext();
    return true;
 }
 
@@ -142,10 +142,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       }
 
       _acptr context = std::make_unique<AggregateContext>(uro);
-      uro.contextes.addAggregateContext(context.get());
+      uro.contexts.addAggregateContext(context.get());
       Tokens right(tks, rightStart, rightLen);
       const _bool b = parseCommandsAsMember(result, right, nullptr, uro);
-      uro.contextes.retreatAggregateContext();
+      uro.contexts.retreatAggregateContext();
       return b;
    }
 
@@ -175,10 +175,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       Tokens right(tks, rightStart, rightLen);
 
       _icptr context = std::make_unique<IndexContext>(uro);
-      uro.contextes.addIndexContext(context.get());
+      uro.contexts.addIndexContext(context.get());
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatIndexContext();
+      uro.contexts.retreatIndexContext();
 
       if (success) {
          result = std::make_unique<CS_Times>(num, com, context, uro);
@@ -213,10 +213,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       Tokens right(tks, rightStart, rightLen);
 
       _icptr context = std::make_unique<IndexContext>(uro);
-      uro.contextes.addIndexContext(context.get());
+      uro.contexts.addIndexContext(context.get());
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatIndexContext();
+      uro.contexts.retreatIndexContext();
 
       if (success) {
          result = std::make_unique<CS_While>(boo, com, context, uro);
@@ -355,10 +355,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
    _genptr<_str> str_;
    if (parse::parse(uro, left, str_)) {
       _fcptr context = std::make_unique<FileContext>(uro);
-      uro.contextes.addFileContext(context.get());
+      uro.contexts.addFileContext(context.get());
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
 
       if (success) {
          result = std::make_unique<CS_StringLoop>(str_, com, context, uro);
@@ -373,10 +373,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       FileContext* fc = def->getFileContext();
 
       if (fc != nullptr) {
-         uro.contextes.addFileContext(fc);
+         uro.contexts.addFileContext(fc);
          _comptr com;
          const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-         uro.contextes.retreatFileContext();
+         uro.contexts.retreatFileContext();
 
          if (success) {
             /*if (fc->attribute->isMarkedToEvaluate()) {
@@ -392,10 +392,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       }
 
       _fcptr context = std::make_unique<FileContext>(uro);
-      uro.contextes.addFileContext(context.get());
+      uro.contexts.addFileContext(context.get());
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
 
       if (success) {
          /*if (fc->attribute->isMarkedToEvaluate()) {
@@ -414,10 +414,10 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
    _genptr<_list> list;
    if (parse::parse(uro, left, list)) {
       _fcptr context = std::make_unique<FileContext>(uro);
-      uro.contextes.addFileContext(context.get());
+      uro.contexts.addFileContext(context.get());
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-      uro.contextes.retreatFileContext();
+      uro.contexts.retreatFileContext();
 
       if (success) {
          result = std::make_unique<CS_ListLoop>(list, com, context, uro);
@@ -603,7 +603,7 @@ static _bool command(_comptr& result, Tokens& tks, _uro& uro)
       switch (f.value.keyword.k) {
          case Keyword::kw_Break:
          case Keyword::kw_Continue: {
-            if (uro.contextes.hasIndexContext()) {
+            if (uro.contexts.hasIndexContext()) {
                if (f.value.keyword.k == Keyword::kw_Break) {
                   result = std::make_unique<C_Break>(uro);
                   return true;
@@ -757,7 +757,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
          if (tks.getLength() == 2) {
             vars::Variable<_num>* pv_num;
 
-            if (!uro.contextes.getVariable(first, pv_num, uro) || pv_num->isImmutable()) {
+            if (!uro.contexts.getVariable(first, pv_num, uro) || pv_num->isImmutable()) {
                throw SyntaxError(str(L"variable '", first.getOriginString(uro),
                   L"' cannot be ", op), first.line);
             }
@@ -783,7 +783,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
                parseListElementIndex(index, tks2, uro);
                vars::Variable<_nlist>* pv_nlist;
 
-               if (!uro.contextes.getVariable(first, pv_nlist, uro) || pv_nlist->isImmutable()) {
+               if (!uro.contexts.getVariable(first, pv_nlist, uro) || pv_nlist->isImmutable()) {
                   throw SyntaxError(str(L"variable '", first.getOriginString(uro),
                      L"' cannot be ", op), first.line);
                }
@@ -804,7 +804,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
 
          vars::Variable<_tim>* pv_tim;
 
-         if (!uro.contextes.getVariable(first, pv_tim, uro)) {
+         if (!uro.contexts.getVariable(first, pv_tim, uro)) {
             throw SyntaxError(str(L"time variable from expression '", first.getOriginString(uro),
                L"' does not exist or is unreachable here"), first.line);
          }
@@ -865,9 +865,9 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          vars::Variable<_nlist>* pv_nlist;
          vars::Variable<_tlist>* pv_tlist;
 
-         if (uro.contextes.getVariable(first, pv_list, uro)
-          || uro.contextes.getVariable(first, pv_nlist, uro)
-          || uro.contextes.getVariable(first, pv_tlist, uro))
+         if (uro.contexts.getVariable(first, pv_list, uro)
+          || uro.contexts.getVariable(first, pv_nlist, uro)
+          || uro.contexts.getVariable(first, pv_tlist, uro))
          {
             throw SyntaxError(str(L"collection variable '", first.getOriginString(uro),
                L"' is immutable, so its elements cannot be modified"), right.first().line);
@@ -875,7 +875,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
          vars::Variable<_str>* pv_str;
 
-         if (uro.contextes.getVariable(first, pv_str, uro)) {
+         if (uro.contexts.getVariable(first, pv_str, uro)) {
             throw SyntaxError(str(L"operation ", toStr(sign),
                L"= cannot be performed on a character from string variable"), first.line);
          }
@@ -892,7 +892,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
             if (varSquareBrackets(aro)) {
                vars::Variable<_tlist>* pv_tlist;
-               if (uro.contextes.getVariable(first, pv_tlist, uro)) {
+               if (uro.contexts.getVariable(first, pv_tlist, uro)) {
                   throw SyntaxError(str(L"operation ", toStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Uroboros2 are immutable"), first.line);
                }
@@ -906,7 +906,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
    if (first.type == Token::t_Word) {
       vars::Variable<_num>* pv_num;
-      if (uro.contextes.getVariable(first, pv_num, uro)) {
+      if (uro.contexts.getVariable(first, pv_num, uro)) {
          _genptr<_num> num;
 
          if (!parse::parse(uro, right, num)) {
@@ -948,7 +948,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       vars::Variable<_per>* pv_per;
-      if (uro.contextes.getVariable(first, pv_per, uro)) {
+      if (uro.contexts.getVariable(first, pv_per, uro)) {
          switch (sign) {
             case CHAR_PLUS:
             case CHAR_MINUS: {
@@ -985,7 +985,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       vars::Variable<_tim>* pv_tim;
-      if (uro.contextes.getVariable(first, pv_tim, uro)) {
+      if (uro.contexts.getVariable(first, pv_tim, uro)) {
          switch (sign) {
             case CHAR_ASTERISK:
             case CHAR_SLASH:
@@ -1037,7 +1037,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       vars::Variable<_tim>* pv_tim;
-      if (!uro.contextes.getVariable(first, pv_tim, uro)) {
+      if (!uro.contexts.getVariable(first, pv_tim, uro)) {
          throw SyntaxError(str(L"'", first.getOriginString(uro),
             L"' is not a time variable for the ", toStr(sign), L"= operation"),
             first.line);
@@ -1103,7 +1103,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int& line, _uro& uro)
 {
    vars::Variable<_str>* pv_str;
-   if (uro.contextes.getVariable(first, pv_str, uro)) {
+   if (uro.contexts.getVariable(first, pv_str, uro)) {
       _genptr<_str> str_;
       if (parse::parse(uro, tks, str_)) {
          pv_str->makeNotConstant();
@@ -1136,7 +1136,7 @@ template <typename T>
 static _bool makeVarAlteration(_uro& uro, const Tokens& tokens, const Token& first,
    vars::Variable<T>*& varPtr, _comptr& result, const _str& dataTypeName)
 {
-   if (uro.contextes.getVariable(first, varPtr, uro)) {
+   if (uro.contexts.getVariable(first, varPtr, uro)) {
       if (varPtr->isImmutable()) {
          throw SyntaxError(str(L"variable '", first.getOriginString(uro), L"' is immutable"), first.line);
       }
@@ -1172,8 +1172,8 @@ static _bool makeVarAssignment(_comptr& result, const Token& token, _uro& uro,
 
 
 
-   UserVarsContext* uvc = uro.contextes.getUserVarsContext();
-   const _bool isConstant = !uro.contextes.hasAggregate() && valuePtr->isConstant();
+   UserVarsContext* uvc = uro.contexts.getUserVarsContext();
+   const _bool isConstant = !uro.contexts.hasAggregate() && valuePtr->isConstant();
    _varptrs<T>* allVarsOfThisType;
    uvc->userVars.takeVarsPtr(allVarsOfThisType);
    const _size& hash = token.value.word.h;
@@ -1207,9 +1207,9 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
             vars::Variable<_tlist>* pv_tlist;
             vars::Variable<_list>* pv_list;
 
-            if (uro.contextes.getVariable(first, pv_nlist, uro) ||
-                uro.contextes.getVariable(first, pv_tlist, uro) ||
-                uro.contextes.getVariable(first, pv_list, uro))
+            if (uro.contexts.getVariable(first, pv_nlist, uro) ||
+                uro.contexts.getVariable(first, pv_tlist, uro) ||
+                uro.contexts.getVariable(first, pv_list, uro))
             {
                throw SyntaxError(str(L"collection variable '", first.getOriginString(uro),
                   L"' is immutable, so its elements cannot me modified"), first.line);
@@ -1356,16 +1356,16 @@ static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
    vars::Variable<_nlist>* pv_nlist;
    vars::Variable<_tlist>* pv_tlist;
 
-   if (uro.contextes.getVariable(first, pv_list, uro) ||
-       uro.contextes.getVariable(first, pv_nlist, uro) ||
-       uro.contextes.getVariable(first, pv_tlist, uro))
+   if (uro.contexts.getVariable(first, pv_list, uro) ||
+       uro.contexts.getVariable(first, pv_nlist, uro) ||
+       uro.contexts.getVariable(first, pv_tlist, uro))
    {
       throw SyntaxError(str(L"collection variable '", first.getOriginString(uro),
          L"' is immutable, so its elements cannot me modified"), first.line);
    }
 
    vars::Variable<_str>* pv_str;
-   if (uro.contextes.getVariable(first, pv_str, uro)) {
+   if (uro.contexts.getVariable(first, pv_str, uro)) {
       if (! pv_str->isImmutable()) {
          _genptr<_num> index;
          parseListElementIndex(index, left, uro);

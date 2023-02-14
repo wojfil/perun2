@@ -164,7 +164,7 @@ void C_Copy_String::run()
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
       logCopyError(this->uroboros, n);
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
@@ -179,12 +179,12 @@ void C_Copy_String::run()
       else {
          logCopyError(this->uroboros, path);
       }
-      this->uroboros.contextes.success->value = s;
+      this->uroboros.contexts.success->value = s;
 
    }
    else {
       logCopyError(this->uroboros, path);
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
    }
 }
 
@@ -194,7 +194,7 @@ void C_Copy_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      this->uroboros.contextes.success->value = true;
+      this->uroboros.contexts.success->value = true;
       return;
    }
 
@@ -233,7 +233,7 @@ void C_Copy_List::run()
       }
    }
 
-   this->uroboros.contextes.success->value = !anyFailure;
+   this->uroboros.contexts.success->value = !anyFailure;
 }
 
 void C_Select_String::run()
@@ -241,7 +241,7 @@ void C_Select_String::run()
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
       logSelectError(this->uroboros, n);
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
       return;
    }
 
@@ -271,7 +271,7 @@ void C_Select_String::run()
       logSelectError(this->uroboros, path);
    }
 
-   this->uroboros.contextes.success->value = success;
+   this->uroboros.contexts.success->value = success;
 }
 
 void C_Select_List::run()
@@ -280,7 +280,7 @@ void C_Select_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      this->uroboros.contextes.success->value = true;
+      this->uroboros.contexts.success->value = true;
       return;
    }
 
@@ -334,7 +334,7 @@ void C_Select_List::run()
    }
 
    if (selectPaths.empty()) {
-      this->uroboros.contextes.success->value = false;
+      this->uroboros.contexts.success->value = false;
    }
    else {
       _bool anyFailed = false;
@@ -361,7 +361,7 @@ void C_Select_List::run()
          }
       }
 
-      this->uroboros.contextes.success->value = !anyFailed;
+      this->uroboros.contexts.success->value = !anyFailed;
    }
 }
 

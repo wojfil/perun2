@@ -64,8 +64,8 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       checkFunctionAttribute(word, uro);
 
-      FileContext* fctx = uro.contextes.getFileContext();
-      LocationContext* lctx = uro.contextes.getLocationContext();
+      FileContext* fctx = uro.contexts.getFileContext();
+      LocationContext* lctx = uro.contexts.getLocationContext();
       fctx->attribute->setCoreCommandBase();
             
       _genptr<_list> list;
@@ -83,18 +83,18 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       checkFunctionAttribute(word, uro);
 
-      FileContext* fctx = uro.contextes.getFileContext();
+      FileContext* fctx = uro.contexts.getFileContext();
       fctx->attribute->setCoreCommandBase();
       _lcptr lctx;
-      uro.contextes.makeLocationContext(lctx);
-      uro.contextes.addLocationContext(lctx.get());
+      uro.contexts.makeLocationContext(lctx);
+      uro.contexts.addLocationContext(lctx.get());
             
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
          functionArgException(0, L"definition", word, uro);
       }
 
-      uro.contextes.retreatLocationContext();
+      uro.contexts.retreatLocationContext();
       result = std::make_unique<F_Any>(def, lctx, fctx);
       return true;
    }
@@ -176,8 +176,8 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       checkFunctionAttribute(word, uro);
 
-      FileContext* fctx = uro.contextes.getFileContext();
-      LocationContext* lctx = uro.contextes.getLocationContext();
+      FileContext* fctx = uro.contexts.getFileContext();
+      LocationContext* lctx = uro.contexts.getLocationContext();
       fctx->attribute->setCoreCommandBase();
             
       _genptr<_str> str_;
@@ -318,7 +318,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       checkFunctionAttribute(word, uro);
 
-      FileContext* ctx = uro.contextes.getFileContext();
+      FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
             
       _genptr<_str> str_;
@@ -450,18 +450,18 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 
       checkFunctionAttribute(word, uro);
 
-      FileContext* fctx = uro.contextes.getFileContext();
+      FileContext* fctx = uro.contexts.getFileContext();
       fctx->attribute->setCoreCommandBase();
       _lcptr lctx;
-      uro.contextes.makeLocationContext(lctx);
-      uro.contextes.addLocationContext(lctx.get());
+      uro.contexts.makeLocationContext(lctx);
+      uro.contexts.addLocationContext(lctx.get());
             
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
          functionArgException(0, L"definition", word, uro);
       }
 
-      uro.contextes.retreatLocationContext();
+      uro.contexts.retreatLocationContext();
       result = std::make_unique<F_Count>(def, lctx, fctx, uro);
       return true;
    }
@@ -1352,7 +1352,7 @@ _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _uro& uro)
 
 static void checkFunctionAttribute(const Token& word, _uro& uro)
 {
-   if (!uro.contextes.hasFileContext()) {
+   if (!uro.contexts.hasFileContext()) {
       throw SyntaxError(str(L"function '", word.getOriginString(uro),
          L"' can be called only within a loop iterating over strings"), word.line);
    }

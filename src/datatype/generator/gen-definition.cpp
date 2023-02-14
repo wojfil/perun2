@@ -591,7 +591,7 @@ _bool Join_DefDef::hasNext()
 
 DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin)
    : definition(std::move(def)), fileContext(definition->getFileContext()), 
-     locContext(uro.contextes.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
+     locContext(uro.contexts.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 
 void DefinitionSuffix::reset()

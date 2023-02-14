@@ -99,7 +99,7 @@ struct C_CreateCertain : Command
 {
 public:
    C_CreateCertain(_uro& uro)
-      : uroboros(uro), locContext(uro.contextes.getLocationContext()) { };
+      : uroboros(uro), locContext(uro.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locContext;

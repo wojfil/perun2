@@ -91,7 +91,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
-         functionArgException(0, L"definition", word, uro);
+         functionArgException(0, STRING_DEFINITION, word, uro);
       }
 
       uro.contexts.retreatLocationContext();
@@ -458,7 +458,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
             
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
-         functionArgException(0, L"definition", word, uro);
+         functionArgException(0, STRING_DEFINITION, word, uro);
       }
 
       uro.contexts.retreatLocationContext();

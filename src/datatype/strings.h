@@ -88,6 +88,7 @@ static const _str STRING_MONTH_DECEMBER =       L"December";
 
 static const _str STRING_BOOL =                 L"bool";
 static const _str STRING_PERIOD =               L"period";
+static const _str STRING_DEFINITION =           L"definition";
 static const _str STRING_NUMERIC_LIST =         L"numeric list";
 static const _str STRING_TIME_LIST =            L"time list";
 static const _str STRING_LIST =                 L"list";

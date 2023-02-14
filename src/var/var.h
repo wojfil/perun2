@@ -48,11 +48,6 @@ namespace uro::vars
          return this->value;
       };
 
-      /*_bool isMutable() const
-      {
-         return this->type == VarType::vt_User;
-      }*/
-
       _bool isImmutable() const
       {
          return this->type != VarType::vt_User;

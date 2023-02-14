@@ -239,7 +239,7 @@ void os_rawSleepForMs(const _nint& ms)
    if (attr & ATTR_SIZE) {
       if (exists) {
          inner.size.value = isFile
-            ? _num(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
+            ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
             : _num(os_sizeDirectory(path, uro));
       }
       else {
@@ -427,7 +427,7 @@ void os_loadDataAttributes(const _aunit& attr, _uro& uro, _fdata* data)
 
    if (attr & ATTR_SIZE) {
       inner.size.value = inner.isfile.value
-         ? _num(os_bigInteger(data->nFileSizeLow, data->nFileSizeHigh))
+         ? _num(static_cast<_nint>(os_bigInteger(data->nFileSizeLow, data->nFileSizeHigh)))
          : _num(os_sizeDirectory(path, uro));
    }
 }*/
@@ -700,7 +700,7 @@ _nint os_size(const _str& path, _uro& uro)
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
       ? os_sizeDirectory(path, uro)
-      : os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
+      : static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
 _nint os_sizeDirectory(const _str& path, _uro& uro)
@@ -723,7 +723,7 @@ _nint os_sizeDirectory(const _str& path, _uro& uro)
             totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, data.cFileName), uro);
          }
          else {
-            totalSize += os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh);
+            totalSize += static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
          }
       }
    } while (FindNextFile(handle, &data));
@@ -1747,9 +1747,9 @@ _bool os_find(const _str& path, const _str& value)
    return result;
 }
 
-inline _nint os_bigInteger(const _uint32& low, const _uint32& high)
+inline _uint64 os_bigInteger(const _uint32& low, const _uint32& high)
 {
-   _nint n = high;
+   _uint64 n = high;
    n <<= sizeof(high) * 8;
    n |= low;
    return n;

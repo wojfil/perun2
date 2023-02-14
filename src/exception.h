@@ -29,6 +29,8 @@ public:
 
    static SyntaxError adjacentSymbols(const _char& value, const _int& line);
    static SyntaxError adjacentFilterKeywords(const _str& value1, const _str& value2, const _int& line);
+   static SyntaxError bracketIsNotClosed(const _char& value, const _int& line);
+   static SyntaxError bracketShouldBeClosedBeforeCurlyBracket(const _char& value, const _int& line);
    static SyntaxError dayCannotBeSmallerThanOne(const _int& line);
    static SyntaxError decrementationInsideExpression(const _int& line);
    static SyntaxError expectedSemicolonBeforeKeyword(const _str& value, const _int& line);
@@ -65,8 +67,8 @@ public:
    static SyntaxError symbolNotFound(const _char& value, const _int& line);
    static SyntaxError quotationMarkStringLteral(const _int& line);
    static SyntaxError undefinedVarValue(const _str& value, const _int& line);
+   static SyntaxError unopenedBracketIsClosed(const _char& value, const _int& line);
    static SyntaxError wrongSyntax(const _int& line);
-   
 
 private:
    const _str message;

@@ -531,7 +531,7 @@ void Tokens::setData()
                   indepRound = true;
                }
                else if (round < 0) {
-                  throw SyntaxError(L"unopened bracket ( is closed", t.line);
+                  throw SyntaxError::unopenedBracketIsClosed(CHAR_OPENING_ROUND_BRACKET, t.line);
                }
                break;
             }
@@ -550,7 +550,7 @@ void Tokens::setData()
                   firstSquare = true;
                }
                else if (square < 0) {
-                  throw SyntaxError(L"unopened bracket [ is closed", t.line);
+                  throw SyntaxError::unopenedBracketIsClosed(CHAR_OPENING_SQUARE_BRACKET, t.line);
                }
                break;
             }
@@ -559,10 +559,10 @@ void Tokens::setData()
    }
 
    if (round != 0) {
-      throw SyntaxError(L"bracket ( is not closed", this->list[this->end].line);
+      throw SyntaxError::bracketIsNotClosed(CHAR_OPENING_ROUND_BRACKET, this->list[this->end].line);
    }
    else if (square != 0) {
-      throw SyntaxError(L"bracket [ is not closed", this->list[this->end].line);
+      throw SyntaxError::bracketIsNotClosed(CHAR_OPENING_SQUARE_BRACKET, this->list[this->end].line);
    }
 
    if (indepRound) {

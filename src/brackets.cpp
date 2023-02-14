@@ -50,72 +50,72 @@ _bool BracketsInfo::isBracketFree() const
 
 void checkBracketsThoroughly(const Tokens& tks)
 {
-   // 1 = ()
-   // 2 = []
-   // 3 = {}
-   _int lv1 = 0, lv2 = 0, lv3 = 0, i1 = 0, i2 = 0, i3 = 0;
+   _int roundLvl = 0;
+   _int squareLvl = 0;
+   _int curlyLvl = 0;
+   _int roundId = 0;
+   _int squareId = 0;
+   _int curlyId = 0;
    const _int end = tks.getEnd();
 
    for (_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type != Token::t_Symbol) { continue; }
 
-      switch(t.value.ch)  {
+      switch (t.value.ch)  {
          case CHAR_OPENING_ROUND_BRACKET: {
-            lv1++;
-            i1 = t.line;
+            roundLvl++;
+            roundId = t.line;
             break;
          }
          case CHAR_CLOSING_ROUND_BRACKET: {
-            lv1--;
-            if (lv1 < 0) {
-               throw SyntaxError(L"unopened bracket ( is closed", t.line);
+            roundLvl--;
+            if (roundLvl < 0) {
+               throw SyntaxError::unopenedBracketIsClosed(CHAR_OPENING_ROUND_BRACKET, t.line);
             }
             break;
          }
          case CHAR_OPENING_SQUARE_BRACKET: {
-            lv2++;
-            i2 = t.line;
+            squareLvl++;
+            squareId = t.line;
             break;
          }
          case CHAR_CLOSING_SQUARE_BRACKET: {
-            lv2--;
-            if (lv2 < 0) {
-               throw SyntaxError(L"unopened bracket [ is closed", t.line);
+            squareLvl--;
+            if (squareLvl < 0) {
+               throw SyntaxError::unopenedBracketIsClosed(CHAR_OPENING_SQUARE_BRACKET, t.line);
             }
             break;
          }
          case CHAR_OPENING_CURLY_BRACKET: {
-            lv3++;
-            i3 = t.line;
+            curlyLvl++;
+            curlyId = t.line;
             break;
          }
          case CHAR_CLOSING_CURLY_BRACKET: {
-            lv3--;
-            if (lv3 < 0) {
-               throw SyntaxError(L"unopened bracket { is closed", t.line);
+            curlyLvl--;
+            if (curlyLvl < 0) {
+               throw SyntaxError::unopenedBracketIsClosed(CHAR_OPENING_CURLY_BRACKET, t.line);
             }
-            if (lv1 != 0) {
-               throw SyntaxError(
-               L"bracket ( has to be closed before opening curly bracket {", i1);
+            if (roundLvl != 0) {
+               throw SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(CHAR_OPENING_ROUND_BRACKET, roundId);
             }
-            if (lv2 != 0) {
-               throw SyntaxError(
-               L"bracket [ has to be closed before opening curly bracket {", i2);
+            if (squareLvl != 0) {
+               throw SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(CHAR_OPENING_SQUARE_BRACKET, squareId);
             }
             break;
          }
       }
    }
 
-   if (lv1 != 0) {
-      throw SyntaxError(L"bracket ( is not closed", i1);
+   if (roundLvl != 0) {
+      throw SyntaxError::bracketIsNotClosed(CHAR_OPENING_ROUND_BRACKET, roundId);
    }
-   else if (lv2 != 0) {
-      throw SyntaxError(L"bracket [ is not closed", i2);
+   else if (squareLvl != 0) {
+      throw SyntaxError::bracketIsNotClosed(CHAR_OPENING_SQUARE_BRACKET, squareId);
    }
-   else if (lv3 != 0) {
-      throw SyntaxError(L"bracket { is not closed", i3);
+   else if (curlyLvl != 0) {
+      throw SyntaxError::bracketIsNotClosed(CHAR_OPENING_CURLY_BRACKET, curlyId);
    }
 }
 

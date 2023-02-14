@@ -33,6 +33,17 @@ SyntaxError SyntaxError::adjacentSymbols(const _char& value, const _int& line)
    return SyntaxError(str(L"adjacent ", toStr(value), L" symbols"), line);
 }
 
+SyntaxError SyntaxError::bracketIsNotClosed(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"bracket ", toStr(value), L" is not closed"), line);
+}
+
+SyntaxError SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"bracket ", toStr(value), 
+      L" should to be closed before the opening of curly bracket {"), line);
+}
+
 SyntaxError SyntaxError::adjacentFilterKeywords(const _str& value1, const _str& value2, const _int& line)
 {
    return SyntaxError(str(L"adjacent filter keywords '", value1, L"' and '", value2, L"'"), line);
@@ -230,6 +241,11 @@ SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)
 SyntaxError SyntaxError::undefinedVarValue(const _str& value, const _int& line)
 {
    return SyntaxError(str(L"value of variable '", value, L"' is undefined here"), line);
+}
+
+SyntaxError SyntaxError::unopenedBracketIsClosed(const _char& value, const _int& line)
+{
+   return SyntaxError(str(L"unopened bracket ", toStr(value), L" is closed"), line);
 }
 
 SyntaxError SyntaxError::wrongSyntax(const _int& line)

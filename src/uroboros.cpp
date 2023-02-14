@@ -134,7 +134,12 @@ _bool _uro::runCommands()
 };
 
 Uroboros2::Uroboros2(const _int& argc, _char* const argv[])
-   : arguments(argc, argv), process(this->arguments) { };
+   : arguments(argc, argv), process(this->arguments)
+{ 
+   if (this->process.exitCode == EXITCODE_CLI_ERROR) {
+      this->process.parseState = ParseState::ps_ParsingFailure;
+   }
+};
 
 Uroboros2::Uroboros2(const _str& location, const _str& code)
    : arguments(location, code), process(this->arguments) { };

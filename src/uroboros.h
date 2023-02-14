@@ -76,9 +76,9 @@ public:
    comm::ConditionContext conditionContext;
    State state = State::s_Running;
    _exitint exitCode = EXITCODE_OK;
+   ParseState parseState = ParseState::ps_NotParsed;
 
 private:
-   ParseState parseState = ParseState::ps_NotParsed;
    _comptr commands;
    std::vector<Token> tokens;
 

@@ -70,7 +70,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _genptr<_list> list;
       if (!parse::parse(uro, args[0], list)) {
-         functionArgException(0, L"list", word, uro);
+         functionArgException(0, STRING_LIST, word, uro);
       }
 
       result = std::make_unique<F_Exist>(list, lctx, fctx);
@@ -111,7 +111,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             return true;
          }
          else {
-            functionArgException(2, L"string", word, uro);
+            functionArgException(2, STRING_STRING, word, uro);
          }
       }
 
@@ -125,7 +125,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             return true;
          }
          else {
-            functionArgException(2, L"string", word, uro);
+            functionArgException(2, STRING_STRING, word, uro);
          }
       }
 
@@ -137,7 +137,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             return true;
          }
          else {
-            functionArgException(2, L"time", word, uro);
+            functionArgException(2, STRING_TIME, word, uro);
          }
       }
 
@@ -149,7 +149,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             return true;
          }
          else {
-            functionArgException(2, L"number", word, uro);
+            functionArgException(2, STRING_NUMBER, word, uro);
          }
       }
 
@@ -161,7 +161,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             return true;
          }
          else {
-            functionArgException(2, L"string", word, uro);
+            functionArgException(2, STRING_STRING, word, uro);
          }
       }
       else {
@@ -182,7 +182,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _genptr<_str> str_;
       if (!parse::parse(uro, args[0], str_)) {
-         functionArgException(0, L"string", word, uro);
+         functionArgException(0, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_Exists>(str_, lctx, fctx);
@@ -195,7 +195,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       if (args[1].getLength() == 1) {
@@ -247,7 +247,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
          return true;
       }
       else {
-         functionArgException(2, L"string", word, uro);
+         functionArgException(2, STRING_STRING, word, uro);
       }
    }
    else if (name == uro.hashes.HASH_FUNC_ENDSWITH) {
@@ -257,7 +257,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       if (args[1].getLength() == 1) {
@@ -305,7 +305,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str2;
       if (!parse::parse(uro, args[1], str2)) {
-         functionArgException(2, L"string", word, uro);
+         functionArgException(2, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_EndsWith>(str, str2);
@@ -323,7 +323,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _genptr<_str> str_;
       if (!parse::parse(uro, args[0], str_)) {
-         functionArgException(0, L"string", word, uro);
+         functionArgException(0, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_Find>(str_, ctx);
@@ -337,7 +337,7 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
 {
    _genptr<_str> arg1;
    if (!parse::parse(uro, tks, arg1)) {
-      functionArgException(1, L"string", word, uro);
+      functionArgException(1, STRING_STRING, word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -405,7 +405,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
          return true;
       }
       else {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
    }
    else if (name == uro.hashes.HASH_VAR_SIZE) {
@@ -471,12 +471,12 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> arg1;
       if (!parse::parse(uro, args[0], arg1)) {
-         functionArgException(1, L"number", word, uro);
+         functionArgException(1, STRING_NUMBER, word, uro);
       }
 
       _genptr<_num> arg2;
       if (!parse::parse(uro, args[1], arg2)) {
-         functionArgException(2, L"number", word, uro);
+         functionArgException(2, STRING_NUMBER, word, uro);
       }
 
       result = std::make_unique<F_Power>(arg1, arg2);
@@ -550,7 +550,7 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
 {
    _genptr<_num> arg;
    if (!parse::parse(uro, tks, arg)) {
-      functionArgException(1, L"number", word, uro);
+      functionArgException(1, STRING_NUMBER, word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -655,12 +655,12 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       _genptr<_num> num;
       if (!parse::parse(uro, args[1], num)) {
-         functionArgException(2, L"number", word, uro);
+         functionArgException(2, STRING_NUMBER, word, uro);
       }
 
       if (name == uro.hashes.HASH_FUNC_REPEAT)
@@ -681,17 +681,17 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str1;
       if (!parse::parse(uro, args[0], str1)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       _genptr<_str> str2;
       if (!parse::parse(uro, args[1], str2)) {
-         functionArgException(2, L"string", word, uro);
+         functionArgException(2, STRING_STRING, word, uro);
       }
 
       _genptr<_str> str3;
       if (!parse::parse(uro, args[2], str3)) {
-         functionArgException(3, L"string", word, uro);
+         functionArgException(3, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_Replace>(str1, str2, str3);
@@ -705,12 +705,12 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       _genptr<_num> num;
       if (!parse::parse(uro, args[1], num)) {
-         functionArgException(2, L"number", word, uro);
+         functionArgException(2, STRING_NUMBER, word, uro);
       }
 
       if (len == 2) {
@@ -720,7 +720,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> num2;
       if (!parse::parse(uro, args[2], num2)) {
-         functionArgException(3, L"number", word, uro);
+         functionArgException(3, STRING_NUMBER, word, uro);
       }
 
       result = std::make_unique<F_Substring_3>(str, num, num2);
@@ -815,7 +815,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
          for (_size i = 0; i < len; i++) {
             _genptr<_str> str;
             if (!parse::parse(uro, args[i], str)) {
-               functionArgException(i + 1, L"string", word, uro);
+               functionArgException(i + 1, STRING_STRING, word, uro);
             }
 
             values.push_back(std::move(str));
@@ -827,12 +827,12 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
       else {
          _genptr<_str> str1;
          if (!parse::parse(uro, args[0], str1)) {
-            functionArgException(1, L"string", word, uro);
+            functionArgException(1, STRING_STRING, word, uro);
          }
 
          _genptr<_str> str2;
          if (!parse::parse(uro, args[1], str2)) {
-            functionArgException(2, L"string", word, uro);
+            functionArgException(2, STRING_STRING, word, uro);
          }
 
          if (len == 2) {
@@ -842,7 +842,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
          _genptr<_str> str3;
          if (!parse::parse(uro, args[2], str3)) {
-            functionArgException(3, L"string", word, uro);
+            functionArgException(3, STRING_STRING, word, uro);
          }
 
          if (len == 3) {
@@ -852,7 +852,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
          _genptr<_str> str4;
          if (!parse::parse(uro, args[3], str4)) {
-            functionArgException(4, L"string", word, uro);
+            functionArgException(4, STRING_STRING, word, uro);
          }
 
          result = std::make_unique<F_Path_4>(str1, str2, str3, str4);
@@ -909,7 +909,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
          return true;
       }
       else {
-         functionArgException(1, L"number", word, uro);
+         functionArgException(1, STRING_NUMBER, word, uro);
       }
    }
    else if (name == uro.hashes.HASH_FUNC_MONTHNAME) {
@@ -929,7 +929,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
          return true;
       }
       else {
-         functionArgException(1, L"number", word, uro);
+         functionArgException(1, STRING_NUMBER, word, uro);
       }
    }
    else if (name == uro.hashes.HASH_FUNC_WEEKDAYNAME) {
@@ -949,7 +949,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
          return true;
       }
       else {
-         functionArgException(1, L"number", word, uro);
+         functionArgException(1, STRING_NUMBER, word, uro);
       }
    }
    else if (name == uro.hashes.HASH_FUNC_RANDOM) {
@@ -988,7 +988,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_list> list;
       if (!parse::parse(uro, args[0], list)) {
-         functionArgException(1, L"list", word, uro);
+         functionArgException(1, STRING_LIST, word, uro);
       }
 
       if (len == 1) {
@@ -1004,7 +1004,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[1], str)) {
-         functionArgException(2, L"string", word, uro);
+         functionArgException(2, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_Join>(list, str);
@@ -1018,12 +1018,12 @@ static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Token
 {
    _genptr<_str> arg1;
    if (!parse::parse(uro, args[0], arg1)) {
-      functionArgException(1, L"string", word, uro);
+      functionArgException(1, STRING_STRING, word, uro);
    }
 
    _genptr<_str> arg2;
    if (!parse::parse(uro, args[1], arg2)) {
-      functionArgException(2, L"string", word, uro);
+      functionArgException(2, STRING_STRING, word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -1042,7 +1042,7 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
 {
    _genptr<_str> arg1;
    if (!parse::parse(uro, tks, arg1)) {
-      functionArgException(1, L"string", word, uro);
+      functionArgException(1, STRING_STRING, word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -1095,17 +1095,17 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> arg1;
       if (!parse::parse(uro, args[0], arg1)) {
-         functionArgException(1, L"number", word, uro);
+         functionArgException(1, STRING_NUMBER, word, uro);
       }
 
       _genptr<_num> arg2;
       if (!parse::parse(uro, args[1], arg2)) {
-         functionArgException(2, L"number", word, uro);
+         functionArgException(2, STRING_NUMBER, word, uro);
       }
 
       _genptr<_num> arg3;
       if (!parse::parse(uro, args[2], arg3)) {
-         functionArgException(3, L"number", word, uro);
+         functionArgException(3, STRING_NUMBER, word, uro);
       }
 
       result = std::make_unique<F_Time_3>(arg1, arg2, arg3);
@@ -1118,12 +1118,12 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> arg1;
       if (!parse::parse(uro, args[0], arg1)) {
-         functionArgException(1, L"number", word, uro);
+         functionArgException(1, STRING_NUMBER, word, uro);
       }
 
       _genptr<_num> arg2;
       if (!parse::parse(uro, args[1], arg2)) {
-         functionArgException(2, L"number", word, uro);
+         functionArgException(2, STRING_NUMBER, word, uro);
       }
 
       if (len == 2) {
@@ -1133,7 +1133,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> arg3;
       if (!parse::parse(uro, args[2], arg3)) {
-         functionArgException(3, L"number", word, uro);
+         functionArgException(3, STRING_NUMBER, word, uro);
       }
 
       if (len == 3) {
@@ -1143,12 +1143,12 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> arg4;
       if (!parse::parse(uro, args[3], arg4)) {
-         functionArgException(4, L"number", word, uro);
+         functionArgException(4, STRING_NUMBER, word, uro);
       }
 
       _genptr<_num> arg5;
       if (!parse::parse(uro, args[4], arg5)) {
-         functionArgException(5, L"number", word, uro);
+         functionArgException(5, STRING_NUMBER, word, uro);
       }
 
       if (len == 5) {
@@ -1158,7 +1158,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_num> arg6;
       if (!parse::parse(uro, args[5], arg6)) {
-         functionArgException(6, L"number", word, uro);
+         functionArgException(6, STRING_NUMBER, word, uro);
       }
 
       result = std::make_unique<F_Time_6>(arg1, arg2, arg3, arg4, arg5, arg6);
@@ -1215,7 +1215,7 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 {
    _genptr<_num> arg1;
    if (!parse::parse(uro, tks, arg1)) {
-      functionArgException(1, L"number", word, uro);
+      functionArgException(1, STRING_NUMBER, word, uro);
    }
 
    const _size& name = word.value.word.h;
@@ -1291,7 +1291,7 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       if (name == uro.hashes.HASH_FUNC_CHARACTERS)
@@ -1308,12 +1308,12 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str1;
       if (!parse::parse(uro, args[0], str1)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       _genptr<_str> str2;
       if (!parse::parse(uro, args[1], str2)) {
-         functionArgException(2, L"string", word, uro);
+         functionArgException(2, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_Split>(str1, str2);
@@ -1339,7 +1339,7 @@ _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _uro& uro)
 
       _genptr<_str> str;
       if (!parse::parse(uro, args[0], str)) {
-         functionArgException(1, L"string", word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
       result = std::make_unique<F_Numbers>(str);

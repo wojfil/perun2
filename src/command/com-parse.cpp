@@ -1237,42 +1237,42 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
    }
 
    vars::Variable<_bool>* pv_boo = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_boo, result, L"bool")) {
+   if (makeVarAlteration(uro, right, first, pv_boo, result, STRING_BOOL)) {
       return true;
    }
 
    vars::Variable<_num>* pv_num = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_num, result, L"number")) {
+   if (makeVarAlteration(uro, right, first, pv_num, result, STRING_NUMBER)) {
       return true;
    }
 
    vars::Variable<_tim>* pv_tim = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_tim, result, L"time")) {
+   if (makeVarAlteration(uro, right, first, pv_tim, result, STRING_TIME)) {
       return true;
    }
 
    vars::Variable<_per>* pv_per = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_per, result, L"period")) {
+   if (makeVarAlteration(uro, right, first, pv_per, result, STRING_PERIOD)) {
       return true;
    }
 
    vars::Variable<_str>* pv_str = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_str, result, L"string")) {
+   if (makeVarAlteration(uro, right, first, pv_str, result, STRING_STRING)) {
       return true;
    }
 
    vars::Variable<_nlist>* pv_nlist = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_nlist, result, L"numeric list")) {
+   if (makeVarAlteration(uro, right, first, pv_nlist, result, STRING_NUMERIC_LIST)) {
       return true;
    }
 
    vars::Variable<_tlist>* pv_tlist = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_tlist, result, L"time list")) {
+   if (makeVarAlteration(uro, right, first, pv_tlist, result, STRING_TIME_LIST)) {
       return true;
    }
 
    vars::Variable<_list>* pv_list = nullptr;
-   if (makeVarAlteration(uro, right, first, pv_list, result, L"list")) {
+   if (makeVarAlteration(uro, right, first, pv_list, result, STRING_LIST)) {
       return true;
    }
 

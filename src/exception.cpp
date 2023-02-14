@@ -207,11 +207,6 @@ SyntaxError SyntaxError::numberTooBig(const _str& value, const _int& line)
    return SyntaxError(str(L"number '", value, L"' is too big to be stored in the memory"), line);
 }
 
-SyntaxError SyntaxError::numericIterationHere(const _str& value, const _int& line)
-{
-   return SyntaxError(str(L"value of variable '", value, L"' is undefined here, as we are iterating over numbers"), line);
-}
-
 SyntaxError SyntaxError::openedStringLteral(const _int& line)
 {
    return SyntaxError(L"an opened string literal is not closed", line);
@@ -225,11 +220,6 @@ SyntaxError SyntaxError::secondsOutOfRange(const _str& value, const _int& line)
 SyntaxError SyntaxError::symbolNotFound(const _char& value, const _int& line)
 {
    return SyntaxError(str(L"symbol '", toStr(value), L"' not found"), line);
-}
-
-SyntaxError SyntaxError::timeIterationHere(const _str& value, const _int& line)
-{
-   return SyntaxError(str(L"value of variable '", value, L"' is undefined here, as we are iterating over times"), line);
 }
 
 SyntaxError SyntaxError::quotationMarkStringLteral(const _int& line)

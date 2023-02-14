@@ -1487,6 +1487,19 @@ _bool os_isPath(const _str value)
    return value.find(OS_SEPARATOR) != _str::npos;
 }
 
+_bool os_isExplorableDirectory(const _str& name)
+{
+   // this is an equivalent to
+   // return name != L".git" && name != L".svn";
+   if (name.size() == 4) {
+      return name != OS_GIT_DIRECTORY 
+          && name != OS_SVN_DIRECTORY;
+   }
+   else {
+      return true;
+   }
+}
+
 _bool os_hasParentDirectory(const _str& path)
 {
    if (!os_isAbsolute(path)) {

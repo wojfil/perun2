@@ -66,6 +66,7 @@ static const _str STRING_WEBSITE =              L"website";
 static const _str STRING_HELP =                 L"help";
 static const _str STRING_URO =                  L"uro";
 static const _str STRING_GIT =                  L"git";
+static const _str STRING_SVN =                  L"svn";
 
 static const _str STRING_WEEKDAY_MONDAY =       L"Monday";
 static const _str STRING_WEEKDAY_TUESDAY =      L"Tuesday";

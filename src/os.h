@@ -35,6 +35,7 @@ static const _str OS_SEPARATOR_APOSTROPHE = str(OS_SEPARATOR_STRING, STRING_ASTE
 static const _str OS_UROEXT = STRING_URO;
 static const _str OS_DOT_UROEXT = str(STRING_DOT, STRING_URO);
 static const _str OS_GIT_DIRECTORY = str(STRING_DOT, STRING_GIT);
+static const _str OS_SVN_DIRECTORY = str(STRING_DOT, STRING_SVN);
 
 _tim os_now();
 _tim os_today();
@@ -120,6 +121,7 @@ _bool os_isAbsolute(const _str& path);
 _bool os_hasExtension(const _str& value);
 inline _bool os_isDriveLetter(const _char& ch);
 _bool os_isPath(const _str value);
+_bool os_isExplorableDirectory(const _str& name);
 
 _bool os_hasParentDirectory(const _str& path);
 _str os_stackPath(const _str& path);

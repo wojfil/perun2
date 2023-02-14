@@ -95,7 +95,7 @@ _bool All::hasNext()
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
+            if ((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
                || (!isDir && os_extension(value) != OS_UROEXT))
             {
                this->context->index->value = index;
@@ -120,7 +120,7 @@ _bool All::hasNext()
       if (!os_isBrowsePath(value)) {
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if ((this->flags & FLAG_NOOMIT) || (isDir && value != OS_GIT_DIRECTORY)
+         if ((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
             || (!isDir && os_extension(value) != OS_UROEXT))
          {
             this->context->index->value = index;
@@ -221,7 +221,7 @@ _bool Directories::hasNext()
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
+            if (isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value))) {
                this->context->index->value = index;
                index++;
                this->context->v_depth->value.setToZero();
@@ -244,7 +244,7 @@ _bool Directories::hasNext()
       if (!os_isBrowsePath(value)) {
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if (isDir && ((this->flags & FLAG_NOOMIT) || value != OS_GIT_DIRECTORY)) {
+         if (isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value))) {
             this->context->index->value = index;
             index++;
             this->context->v_depth->value.setToZero();
@@ -334,7 +334,7 @@ _bool RecursiveFiles::hasNext()
 
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                  if ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY) {
+                  if ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)) {
                      paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                      if (this->depth.isZero()) {
@@ -433,7 +433,7 @@ _bool RecursiveDirectories::hasNext()
             const _str& v = data.cFileName;
 
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
+                && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
             {
                const _bool isBase = this->depth.isMinusOne();
                value = isBase ? v : str(bases.back(), v);
@@ -531,7 +531,7 @@ _bool RecursiveAll::hasNext()
 
             if (!os_isBrowsePath(v)) {
                if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                  && ((this->flags & FLAG_NOOMIT) || v != OS_GIT_DIRECTORY))
+                  && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
                {
                   if (this->prevFile) {
                      this->prevFile = false;

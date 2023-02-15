@@ -23,13 +23,12 @@ namespace uro
 struct BracketsInfo
 {
 public:
-   BracketsInfo() : round(0), square(0) { };
    void refresh(const Token& tk);
    _bool isBracketFree() const;
 
 private:
-   _int round;
-   _int square;
+   _int round = 0;
+   _int square = 0;
 };
 
 void checkBracketsThoroughly(const Tokens& tks);

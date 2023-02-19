@@ -21,21 +21,22 @@
 namespace uro
 {
 
-static const _str EMPTY_STRING =              _str();
-static const _str STRING_SPACE =              toStr(CHAR_SPACE);
-static const _str STRING_0 =                  toStr(DIGIT_0);
-static const _str STRING_1 =                  toStr(DIGIT_1);
-static const _str STRING_MINUS =              toStr(CHAR_MINUS);
-static const _str STRING_ASTERISK =           toStr(CHAR_ASTERISK);
-static const _str STRING_APOSTROPHE =         toStr(CHAR_APOSTROPHE);
-static const _str STRING_COMMA =              toStr(CHAR_COMMA);
-static const _str STRING_DOUBLE_ASTERISK =    str(STRING_ASTERISK, STRING_ASTERISK);
-static const _str STRING_COMMA_SPACE =        str(STRING_COMMA, STRING_SPACE);
-static const _str STRING_QUOTATION_MARK =     toStr(CHAR_QUOTATION_MARK);
-static const _str STRING_COLON =              toStr(CHAR_COLON);
-static const _str STRING_DOT =                toStr(CHAR_DOT);
-static const _str STRING_OPENING_ROUND_BRACKET =     toStr(STRING_OPENING_ROUND_BRACKET);
-static const _str STRING_CLOSING_ROUND_BRACKET =     toStr(STRING_CLOSING_ROUND_BRACKET);
+static const _str EMPTY_STRING =                   _str();
+static const _str STRING_CHAR_SPACE =              toStr(CHAR_SPACE);
+static const _str STRING_CHAR_0 =                  toStr(DIGIT_0);
+static const _str STRING_CHAR_1 =                  toStr(DIGIT_1);
+static const _str STRING_CHAR_MINUS =              toStr(CHAR_MINUS);
+static const _str STRING_CHAR_ASTERISK =           toStr(CHAR_ASTERISK);
+static const _str STRING_CHAR_APOSTROPHE =         toStr(CHAR_APOSTROPHE);
+static const _str STRING_CHAR_COMMA =              toStr(CHAR_COMMA);
+static const _str STRING_CHAR_QUOTATION_MARK =     toStr(CHAR_QUOTATION_MARK);
+static const _str STRING_CHAR_COLON =              toStr(CHAR_COLON);
+static const _str STRING_CHAR_DOT =                toStr(CHAR_DOT);
+static const _str STRING_CHAR_OPENING_ROUND_BRACKET =     toStr(CHAR_OPENING_ROUND_BRACKET);
+static const _str STRING_CHAR_CLOSING_ROUND_BRACKET =     toStr(CHAR_CLOSING_ROUND_BRACKET);
+
+static const _str STRING_DOUBLE_ASTERISK =         str(STRING_CHAR_ASTERISK, STRING_CHAR_ASTERISK);
+static const _str STRING_COMMA_SPACE =             str(STRING_CHAR_COMMA, STRING_CHAR_SPACE);
 
 static const _str ROMAN_VINCULUM_THOUSAND = L"I" L"̅";
 static const _str ROMAN_STRING_LITERALS[] = { L"I", L"IV", L"V", L"IX", L"X", L"XL", L"L", L"XC", L"C", L"CD", L"D", L"CM", L"M",

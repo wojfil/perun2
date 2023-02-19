@@ -709,7 +709,7 @@ _str weekdayToString(const _tnum& wday)
 inline _str fillTimeUnit(const _tnum& val)
 {
    return val <= TNUM_NINE
-      ? str(STRING_0, toStr(val))
+      ? str(STRING_CHAR_0, toStr(val))
       : toStr(val);
 }
 

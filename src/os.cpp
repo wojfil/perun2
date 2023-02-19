@@ -393,7 +393,7 @@ _tim os_creation(const _str& path)
 _str os_drive(const _str& path)
 {
    return os_isAbsolute(path)
-      ? str(toStr(std::towupper(path[0])), STRING_COLON)
+      ? str(toStr(std::towupper(path[0])), STRING_CHAR_COLON)
       : EMPTY_STRING;
 }
 
@@ -1395,7 +1395,7 @@ _bool os_isExplorableDirectory(const _str& name)
    // this is an equivalent to
    // return name != L".git" && name != L".svn";
    if (name.size() == 4) {
-      return name != OS_GIT_DIRECTORY 
+      return name != OS_GIT_DIRECTORY
           && name != OS_SVN_DIRECTORY;
    }
    else {
@@ -1431,7 +1431,7 @@ _str os_stackPath(const _str& path)
 
    while (os_exists(newPath))
    {
-      newPath = str(path, STRING_OPENING_ROUND_BRACKET, toStr(index), STRING_CLOSING_ROUND_BRACKET);
+      newPath = str(path, STRING_CHAR_OPENING_ROUND_BRACKET, toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET);
       index++;
    }
 
@@ -1445,12 +1445,12 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
    }
 
    _nint index = NINT_TWO;
-   _str newPath = str(basePath, STRING_DOT, extension);
+   _str newPath = str(basePath, STRING_CHAR_DOT, extension);
 
    while (os_exists(newPath))
    {
-      newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, toStr(index), 
-         STRING_CLOSING_ROUND_BRACKET, STRING_DOT, extension);
+      newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET, toStr(index),
+         STRING_CHAR_CLOSING_ROUND_BRACKET, STRING_CHAR_DOT, extension);
       index++;
    }
 
@@ -1474,14 +1474,14 @@ _str os_stackPathStacked(const _str& path)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
-      toStr(index), STRING_CLOSING_ROUND_BRACKET);
+   _str newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
+      toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET);
 
    while (os_exists(newPath))
    {
       index++;
-      newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
-         toStr(index), STRING_CLOSING_ROUND_BRACKET);
+      newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
+         toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET);
    }
 
    return newPath;
@@ -1493,14 +1493,14 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
-      toStr(index), STRING_CLOSING_ROUND_BRACKET, STRING_DOT, extension);
+   _str newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
+      toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET, STRING_CHAR_DOT, extension);
 
    while (os_exists(newPath))
    {
       index++;
-      newPath = str(basePath, STRING_OPENING_ROUND_BRACKET, 
-         toStr(index), STRING_CLOSING_ROUND_BRACKET, STRING_DOT, extension);
+      newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
+         toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET, STRING_CHAR_DOT, extension);
    }
 
    return newPath;
@@ -1733,7 +1733,7 @@ _str os_makeArg(const _str& value)
 
    if (quotes == 0) {
       return anySpace
-         ? str(STRING_QUOTATION_MARK, value, STRING_QUOTATION_MARK)
+         ? str(STRING_CHAR_QUOTATION_MARK, value, STRING_CHAR_QUOTATION_MARK)
          : value;
    }
    else {
@@ -1749,7 +1749,7 @@ _str os_makeArg(const _str& value)
       }
 
       return anySpace
-         ? str(STRING_QUOTATION_MARK, result, STRING_QUOTATION_MARK)
+         ? str(STRING_CHAR_QUOTATION_MARK, result, STRING_CHAR_QUOTATION_MARK)
          : result;
    }
 }
@@ -1827,7 +1827,7 @@ _str os_quoteEmbraced(const _str& value)
 {
    return value.find(CHAR_SPACE) == _str::npos
       ? value
-      : str(STRING_QUOTATION_MARK, value, STRING_QUOTATION_MARK);
+      : str(STRING_CHAR_QUOTATION_MARK, value, STRING_CHAR_QUOTATION_MARK);
 }
 
 }

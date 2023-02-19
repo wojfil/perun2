@@ -1400,8 +1400,8 @@ _str getCCName(const _str& path)
    }
 
    return os_hasParentDirectory(path) || path.size() != 2
-      ? str(STRING_APOSTROPHE, os_fullname(path), STRING_APOSTROPHE)
-      : str(STRING_APOSTROPHE, path, OS_SEPARATOR_APOSTROPHE);
+      ? str(STRING_CHAR_APOSTROPHE, os_fullname(path), STRING_CHAR_APOSTROPHE)
+      : str(STRING_CHAR_APOSTROPHE, path, OS_SEPARATOR_APOSTROPHE);
 }
 
 _str getCCNameShort(const _str& path)
@@ -1416,8 +1416,8 @@ _str getCCNameShort(const _str& path)
    }
 
    return f.size() == 2 && f[1] == CHAR_COLON && os_isDriveLetter(f[0])
-      ? str(STRING_APOSTROPHE, f, OS_SEPARATOR_APOSTROPHE)
-      : str(STRING_APOSTROPHE, f, STRING_APOSTROPHE);
+      ? str(STRING_CHAR_APOSTROPHE, f, OS_SEPARATOR_APOSTROPHE)
+      : str(STRING_CHAR_APOSTROPHE, f, STRING_CHAR_APOSTROPHE);
 }
 
 }

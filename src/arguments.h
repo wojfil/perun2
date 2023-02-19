@@ -43,10 +43,10 @@ inline constexpr _char CHAR_FLAG_HERE_UPPER =       LETTER_H;
 inline constexpr _char CHAR_FLAG_CODE =             LETTER_c;
 inline constexpr _char CHAR_FLAG_CODE_UPPER =       LETTER_C;
 
-static const _str STRING_ARG_VERSION =              str(STRING_MINUS, STRING_MINUS, STRING_VERSION);
-static const _str STRING_ARG_DOCS =                 str(STRING_MINUS, STRING_MINUS, STRING_DOCS);
-static const _str STRING_ARG_WEBSITE =              str(STRING_MINUS, STRING_MINUS, STRING_WEBSITE);
-static const _str STRING_ARG_HELP =                 str(STRING_MINUS, STRING_MINUS, STRING_HELP);
+static const _str STRING_ARG_VERSION =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_VERSION);
+static const _str STRING_ARG_DOCS =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_DOCS);
+static const _str STRING_ARG_WEBSITE =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_WEBSITE);
+static const _str STRING_ARG_HELP =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_HELP);
 
 
 enum ArgsParseState 

@@ -514,7 +514,7 @@ _str F_Replace::getValue()
 
 _str F_String_B::getValue()
 {
-   return arg1->getValue() ? STRING_1 : STRING_0;
+   return arg1->getValue() ? STRING_CHAR_1 : STRING_CHAR_0;
 }
 
 
@@ -754,7 +754,7 @@ _str F_Roman::getValue()
             result = LETTER_N;
          }
          else if (base.value.d < NDOUBLE_ZERO) {
-            result = str(STRING_MINUS, result);
+            result = str(STRING_CHAR_MINUS, result);
          }
 
          return result;
@@ -830,7 +830,7 @@ _str F_Binary::getValue()
    for (_size i = 0; i < len; i++) {
       if (str_[i] != DIGIT_0) {
          return negative
-            ? str(STRING_MINUS, str_.substr(i))
+            ? str(STRING_CHAR_MINUS, str_.substr(i))
             : str_.substr(i);
       }
    }
@@ -846,7 +846,7 @@ _str F_Hex::getValue()
       v *= NINT_MINUS_ONE;
       _stream oss;
       oss << std::hex << v;
-      return str(STRING_MINUS, oss.str());
+      return str(STRING_CHAR_MINUS, oss.str());
    }
    else {
       _stream oss;

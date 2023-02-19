@@ -207,7 +207,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _defptr& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == CHAR_ASTERISK) {
-            return parseAsteriskPattern(result, STRING_ASTERISK, tk.line, uro);
+            return parseAsteriskPattern(result, STRING_CHAR_ASTERISK, tk.line, uro);
          }
          else {
             return false;

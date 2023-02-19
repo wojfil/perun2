@@ -208,7 +208,7 @@ _bool NestedDefiniton::hasNext()
             this->value = this->definition->getValue();
          }
          else {
-            this->value = this->vessel.getRawValue() == STRING_DOT
+            this->value = this->vessel.getRawValue() == STRING_CHAR_DOT
                ? this->definition->getValue()
                : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
          }

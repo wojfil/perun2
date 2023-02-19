@@ -100,7 +100,7 @@ RunBase::RunBase(_uro& uro)
    : fileCtxs(uro.contexts.getFileContexts()), 
      locationCtx(uro.contexts.getLocationContext()),
      uro2Base(str(os_quoteEmbraced(os_uroborosPath()), 
-      STRING_SPACE, STRING_MINUS, toStr(CHAR_FLAG_SILENT), STRING_SPACE)) { };
+      STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE)) { };
 
 void RunBase::reloadContexts()
 {

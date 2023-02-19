@@ -31,12 +31,12 @@ _nlist Cast_B_NL::getValue()
 
 _str Cast_B_S::getValue()
 {
-   return this->base->getValue() ? STRING_1 : STRING_0;
+   return this->base->getValue() ? STRING_CHAR_1 : STRING_CHAR_0;
 };
 
 _list Cast_B_L::getValue()
 {
-   return _list { this->base->getValue() ? STRING_1 : STRING_0 };
+   return _list { this->base->getValue() ? STRING_CHAR_1 : STRING_CHAR_0 };
 };
 
 _nlist Cast_N_NL::getValue(){

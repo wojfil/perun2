@@ -27,7 +27,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 {
    const _str pattern = os_trim(originPattern);
 
-   if (pattern == STRING_ASTERISK) {
+   if (pattern == STRING_CHAR_ASTERISK) {
       _genptr<_str> loc(new gen::LocationReference(uro));
       result = std::make_unique<gen::All>(loc, uro, gen::os::DEFAULT_PATTERN,
          gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);

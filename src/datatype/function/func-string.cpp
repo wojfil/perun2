@@ -137,7 +137,7 @@ _str F_Fill::getValue()
 
    return len >= min
       ? base
-      : str(_str(min - len, DIGIT_0), base);
+      : str(_str(min - len, CHAR_0), base);
 }
 
 
@@ -828,14 +828,14 @@ _str F_Binary::getValue()
    const _size len = str_.size();
 
    for (_size i = 0; i < len; i++) {
-      if (str_[i] != DIGIT_0) {
+      if (str_[i] != CHAR_0) {
          return negative
             ? str(STRING_CHAR_MINUS, str_.substr(i))
             : str_.substr(i);
       }
    }
 
-   return toStr(DIGIT_0);
+   return toStr(CHAR_0);
 }
 
 _str F_Hex::getValue()

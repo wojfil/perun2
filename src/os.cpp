@@ -1515,8 +1515,8 @@ _bool os_pathWasStacked(const _str& basePath)
 
    for (_int i = len - 2; i >= 0; i--) {
       switch (basePath[i]) {
-         case DIGIT_0: case DIGIT_1: case DIGIT_2: case DIGIT_3: case DIGIT_4:
-         case DIGIT_5: case DIGIT_6: case DIGIT_7: case DIGIT_8: case DIGIT_9: {
+         case CHAR_0: case CHAR_1: case CHAR_2: case CHAR_3: case CHAR_4:
+         case CHAR_5: case CHAR_6: case CHAR_7: case CHAR_8: case CHAR_9: {
             break;
          }
          case CHAR_OPENING_ROUND_BRACKET: {
@@ -1549,8 +1549,8 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
 
    for (_int i = len - 2; i >= 0; i--) {
       switch (path[i]) {
-         case DIGIT_0: case DIGIT_1: case DIGIT_2: case DIGIT_3: case DIGIT_4:
-         case DIGIT_5: case DIGIT_6: case DIGIT_7: case DIGIT_8: case DIGIT_9: {
+         case CHAR_0: case CHAR_1: case CHAR_2: case CHAR_3: case CHAR_4:
+         case CHAR_5: case CHAR_6: case CHAR_7: case CHAR_8: case CHAR_9: {
             break;
          }
          default: {

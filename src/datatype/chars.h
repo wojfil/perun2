@@ -93,16 +93,16 @@ inline constexpr _char CHAR_F =                    L'F';
 inline constexpr _char CHAR_z =                    L'z';
 inline constexpr _char CHAR_Z =                    L'Z';
 
-inline constexpr _char DIGIT_0 =                     L'0';
-inline constexpr _char DIGIT_1 =                     L'1';
-inline constexpr _char DIGIT_2 =                     L'2';
-inline constexpr _char DIGIT_3 =                     L'3';
-inline constexpr _char DIGIT_4 =                     L'4';
-inline constexpr _char DIGIT_5 =                     L'5';
-inline constexpr _char DIGIT_6 =                     L'6';
-inline constexpr _char DIGIT_7 =                     L'7';
-inline constexpr _char DIGIT_8 =                     L'8';
-inline constexpr _char DIGIT_9 =                     L'9';
+inline constexpr _char CHAR_0 =                     L'0';
+inline constexpr _char CHAR_1 =                     L'1';
+inline constexpr _char CHAR_2 =                     L'2';
+inline constexpr _char CHAR_3 =                     L'3';
+inline constexpr _char CHAR_4 =                     L'4';
+inline constexpr _char CHAR_5 =                     L'5';
+inline constexpr _char CHAR_6 =                     L'6';
+inline constexpr _char CHAR_7 =                     L'7';
+inline constexpr _char CHAR_8 =                     L'8';
+inline constexpr _char CHAR_9 =                     L'9';
 
 }
 

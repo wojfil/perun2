@@ -48,7 +48,7 @@ _str Number::toString() const
 
       for (_int i = len - 1; i >= 0; i--)  {
          const _char& ch = str[i];
-         if (ch != DIGIT_0) {
+         if (ch != CHAR_0) {
             if (ch == CHAR_DOT) {
                return i == 0
                   ? STRING_CHAR_0

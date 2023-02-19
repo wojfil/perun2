@@ -165,7 +165,7 @@ _list F_Words::getValue()
 
 inline _nint F_Numbers::fromChar(const _char& ch)
 {
-   return static_cast<_nint>(ch - DIGIT_0);
+   return static_cast<_nint>(ch - CHAR_0);
 }
 
 _nlist F_Numbers::getValue()

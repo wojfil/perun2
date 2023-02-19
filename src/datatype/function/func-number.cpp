@@ -423,10 +423,10 @@ _num F_FromBinary::getValue()
       result = result << 1;
 
       switch (baseString[i]) {
-         case DIGIT_0: {
+         case CHAR_0: {
             break;
          }
-         case DIGIT_1: {
+         case CHAR_1: {
             result++;
             break;
          }

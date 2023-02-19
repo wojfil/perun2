@@ -71,14 +71,13 @@ public:
    void markToEvaluate();
    _bool isMarkedToRun() const;
    void markToRun();
-
-   virtual void run() const;
+   
+   _uro& uroboros;
 
 protected:
    _bool markedToEvaluate = false;
    _bool markedToRun = false;
    _aunit value;
-   _uro& uroboros;
 };
 
 typedef std::unique_ptr<Attribute> _attrptr;

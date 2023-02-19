@@ -21,20 +21,14 @@
 namespace uro::comm
 {
 
-IterationLoop::IterationLoop(_comptr& com, _uro& uro)
-   : command(std::move(com)), uroboros(uro), hasContext(false) { };
-   
 IterationLoop::IterationLoop(_comptr& com, _fcptr& ctx, _uro& uro)
-   : command(std::move(com)), context(std::move(ctx)), uroboros(uro), hasContext(true) { };
+   : command(std::move(com)), context(std::move(ctx)), uroboros(uro) { };
 
 CS_StringComArg::CS_StringComArg(_genptr<_str>& str, _comptr& com, _fcptr& ctx, _uro& uro)
    : IterationLoop(com, ctx, uro), string(std::move(str)) { };
 
 CS_ListComArg::CS_ListComArg(_genptr<_list>& li, _comptr& com, _fcptr& ctx, _uro& uro)
    : IterationLoop(com, ctx, uro), list(std::move(li)) { };
-
-CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, _comptr& com, _uro& uro)
-   : IterationLoop(com, uro), definition(std::move(def)) { };
 
 CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx, _uro& uro)
    : IterationLoop(com, ctx, uro), definition(std::move(def)) { };
@@ -81,10 +75,7 @@ void CS_DefinitionComArg::run()
          break;
       }
       
-      if (this->hasContext) {
-         this->context->loadData(this->definition->getValue());
-      }
-
+      this->context->loadData(this->definition->getValue());
       this->command->run();
       index++;
       this->context->index->value = index;

@@ -21,6 +21,15 @@
 namespace uro::comm
 {
 
+
+void CS_RawBlock::run()
+{
+   for (_size i = 0; this->uroboros.state == State::s_Running && i < this->length; i++) {
+      (this->commands[i])->run();
+   }
+}
+
+
 void CS_Block::run()
 {
    for (_size i = 0; this->uroboros.state == State::s_Running && i < this->length; i++) {
@@ -28,14 +37,6 @@ void CS_Block::run()
    }
 
    this->context->runAggregate();
-}
-
-
-void CS_RawBlock::run()
-{
-   for (_size i = 0; this->uroboros.state == State::s_Running && i < this->length; i++) {
-      (this->commands[i])->run();
-   }
 }
 
 
@@ -100,16 +101,34 @@ void CS_DefinitionLoop::run()
          break;
       }
 
-      if (this->hasContext) {
-         this->context->loadData(this->definition->getValue());
-      }
-      
+      this->context->loadData(this->definition->getValue());
       this->command->run();
 
       P_CHECK_LOOP_BREAK;
 
       index++;
       this->context->index->value = index;
+   }
+
+   this->context->runAggregate();
+}
+
+
+CS_ContextlessLoop::CS_ContextlessLoop(_defptr& def, _comptr& com, _uro& uro)
+   : definition(std::move(def)), command(std::move(com)), uroboros(uro), 
+     context(this->definition->getFileContext()) { };
+
+
+void CS_ContextlessLoop::run()
+{
+   while (this->definition->hasNext()) {
+      if (!this->uroboros.state == State::s_Running) {
+         this->definition->reset();
+         break;
+      }
+
+      this->command->run();
+      P_CHECK_LOOP_BREAK;
    }
 
    this->context->runAggregate();
@@ -129,7 +148,7 @@ void CS_ListLoop::run()
    this->context->resetIndexAndDepth();
 
    while (this->uroboros.state == State::s_Running && index != length) {
-      this->context->loadData(values[index.value.i]);
+      this->context->loadData(values[static_cast<_size>(index.value.i)]);
       this->command->run();
       index++;
       this->context->index->value = index;
@@ -140,23 +159,35 @@ void CS_ListLoop::run()
    this->context->runAggregate();
 }
 
-/*
+
+void CS_InsideThis::run()
+{
+   if (this->uroboros.state == State::s_Running) {
+      if (this->fileContext->v_exists->value && this->fileContext->v_isdirectory->value) {
+
+         this->locContext->loadData(this->fileContext->this_->value);
+         this->command->run();
+
+         P_CHECK_SOFT_LOOP_BREAK;
+      }
+   }
+}
+
+
 void CS_InsideString::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      const _str val = os_trim(this->string->getValue());
-      const _str newLocation = os_join(this->prevLocation->location->value, val);
+      this->context->resetIndexAndDepth();
+      this->context->loadData(this->string->getValue());
 
-      if (!val.empty() && os_directoryExists(newLocation)) {
-         this->context->resetIndexAndDepth();
-         this->context->loadData(newLocation);
+      if (this->context->v_exists->value && this->context->v_isdirectory->value) {
+         this->locContext->loadData(this->context->this_->value);
          this->command->run();
 
          P_CHECK_SOFT_LOOP_BREAK;
 
          this->context->runAggregate();
       }
-
    }
 }
 
@@ -172,10 +203,10 @@ void CS_InsideDefinition::run()
          break;
       }
 
-      const _str newLocation = os_join(this->prevLocation->location->value, this->definition->getValue());
+      this->context->loadData(this->definition->getValue());
 
-      if (os_directoryExists(newLocation)) {
-         this->context->loadData(newLocation);
+      if (this->context->v_exists->value && this->context->v_isdirectory->value) {
+         this->locContext->loadData(this->definition->getValue());
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
@@ -186,6 +217,31 @@ void CS_InsideDefinition::run()
    }
 
    this->context->runAggregate();
+}
+
+
+CS_InsideContextless::CS_InsideContextless(_defptr& def, _comptr& com, _lcptr& lctx, _uro& uro)
+   : definition(std::move(def)), command(std::move(com)), locContext(std::move(lctx)), uroboros(uro), 
+     fileContext(this->definition->getFileContext()) { };
+
+
+void CS_InsideContextless::run()
+{
+   while (definition->hasNext()) {
+      if (!this->uroboros.state == State::s_Running) {
+         this->definition->reset();
+         break;
+      }
+
+      if (this->fileContext->v_exists->value && this->fileContext->v_isdirectory->value) {
+         this->locContext->loadData(this->definition->getValue());
+         this->command->run();
+
+         P_CHECK_LOOP_BREAK;
+      }
+   }
+
+   this->fileContext->runAggregate();
 }
 
 
@@ -203,10 +259,9 @@ void CS_InsideList::run()
    this->context->resetIndexAndDepth();
 
    while (this->uroboros.state == State::s_Running && index != length) {
-      const _str v = os_trim(values[index.value.i]);
-      const _str newLocation = os_join(this->prevLocation->location->value, v);
-      if (!v.empty() && os_directoryExists(newLocation)) {
-         this->context->loadData(newLocation);
+      this->context->loadData(values[static_cast<_size>(index.value.i)]);
+      if (this->context->v_exists->value && this->context->v_isdirectory->value) {
+         this->locContext->loadData(this->context->this_->value);
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
@@ -219,6 +274,6 @@ void CS_InsideList::run()
    }
 
    this->context->runAggregate();
-}*/
+}
 
 }

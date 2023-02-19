@@ -192,7 +192,7 @@ static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, _uro& uro)
    }
 
    if (cl == cl_Definition) {
-      result = std::make_unique<gen::DefinitionChain>(prevDef, uro);
+      result = std::move(prevDef);
       return true;
    }
 

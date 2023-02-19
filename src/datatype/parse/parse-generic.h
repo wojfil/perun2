@@ -220,7 +220,7 @@ static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _uro&
    parseListElementIndex(num, tks, uro);
    const Token& f = tks.first();
    _genptr<std::vector<T>> collection;
-   if (uro.contexts.getVariable(f, collection, uro)) {
+   if (uro.contexts.makeVarRef(f, collection, uro)) {
       result = std::make_unique<gen::ListElement<T>>(collection, num);
       return true;
    }

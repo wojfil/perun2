@@ -60,7 +60,7 @@ protected:
    _bool first = true;
    _genptr<_str> location;
    _uro& uroboros;
-   _fcptr context;
+   FileContext context;
    _fdata data;
    _numi index;
    _str baseLocation;

@@ -31,14 +31,12 @@ namespace uro::comm
 struct IterationLoop : Command
 {
 public:
-   IterationLoop(_comptr& com, _uro& uro);
    IterationLoop(_comptr& com, _fcptr& ctx, _uro& uro);
 
 protected:
    _uro& uroboros;
    _comptr command;
    _fcptr context;
-   const _bool hasContext;
 };
 
 
@@ -67,7 +65,6 @@ private:
 struct CS_DefinitionComArg : IterationLoop
 {
 public:
-   CS_DefinitionComArg(_defptr& def, _comptr& com, _uro& uro);
    CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx, _uro& uro);
    void run() override;
 

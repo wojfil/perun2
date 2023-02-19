@@ -69,9 +69,6 @@ namespace uro
       {
          _varptrs<T2>* vars;
          this->takeVarsPtr(vars);
-         //_varptr<T2> ptr = std::make_unique<vars::Variable<T2>>(type);
-         //vars->insert(std::make_pair<_size, vars::Variable<T2>>(var, std::move(ptr)));
-
          vars->insert(std::make_pair(var, std::make_unique<vars::Variable<T2>>(type)));
       }
 
@@ -125,6 +122,7 @@ namespace uro
       _varptr<_str> this_;
       _attrptr attribute;
       VarsContext fileVars;
+      LocationContext* const locContext;
       _str trimmed;
 
       vars::Variable<_bool>* v_archive;
@@ -151,7 +149,6 @@ namespace uro
       vars::Variable<_str>* v_path;
 
    private:
-
       void initVars(_uro& uro);
 
       template <typename T>
@@ -183,7 +180,6 @@ namespace uro
       VarsContext globalVars;
 
    private:
-
       template <typename T>
       void addVar(const _size& hsh)
       {
@@ -205,30 +201,32 @@ namespace uro
       Contexts() = delete;
       Contexts(_uro& uro);
 
-      _bool getVariable(const Token& tk, vars::Variable<_bool>*& result, _uro& uro);
-      _bool getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro);
-      _bool getVariable(const Token& tk, vars::Variable<_str>*& result, _uro& uro);
-      _bool getVariable(const Token& tk, _defptr& result, _uro& uro);
+      _bool getVar(const Token& tk, vars::Variable<_bool>*& result, _uro& uro);
+      _bool getVar(const Token& tk, vars::Variable<_num>*& result, _uro& uro);
+      _bool getVar(const Token& tk, vars::Variable<_str>*& result, _uro& uro);
 
       template <typename T>
-      _bool getVariable(const Token& tk, _genptr<T>& result, _uro& uro)
+      _bool getVar(const Token& tk, vars::Variable<T>*& result, _uro& uro)
       {
-         vars::Variable<T>* varPtr;
-         if (findVar(tk, varPtr, uro)) {
-            result = std::make_unique<vars::VariableReference<T>>(varPtr);
+         return findVar(tk, result, uro);
+      };
+
+      _bool makeVarRef(const Token& tk, _defptr& result, _uro& uro);
+
+      template <typename T>
+      _bool makeVarRef(const Token& tk, _genptr<T>& result, _uro& uro)
+      {
+         vars::Variable<T>* var;
+         if (getVar(tk, var, uro)) {
+            result = std::make_unique<vars::VariableReference<T>>(var);
             return true;
          }
 
          return false;
-      }
+      };
 
-      template <typename T>
-      _bool getVariable(const Token& tk, vars::Variable<T>*& result, _uro& uro)
-      {
-         return findVar(tk, result, uro);
-      }
 
-      // context of a user variables - every structure of { } brackets
+      // context of user variables - every structure of { } brackets
       void addUserVarsContext(UserVarsContext* ctx);
       void retreatUserVarsContext();
 
@@ -244,10 +242,9 @@ namespace uro
       void addFileContext(FileContext* ctx);
       void retreatFileContext();
 
-      // context of some functions: select directories where any(files)
+      // working location context
       void addLocationContext(LocationContext* ctx);
       void retreatLocationContext();
-
 
       void markAllAttributesToRun();
 
@@ -297,7 +294,10 @@ namespace uro
             }
 
             FileContext* lastFileCtx = this->fileContexts.back();
-            return lastFileCtx->fileVars.takeVar(var, result);
+            if (lastFileCtx->fileVars.takeVar(var, result)) {
+               lastFileCtx->attribute->add(var);
+               return true;
+            }
          }
 
          return false;
@@ -313,10 +313,7 @@ namespace uro
       std::vector<LocationContext*> locationContexts;
       std::vector<IndexContext*> indexContexts;
       std::vector<FileContext*> fileContexts;
-
    };
-
-
 }
 
 #endif // CONTEXT_H_INCLUDED

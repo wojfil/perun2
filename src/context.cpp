@@ -29,7 +29,7 @@ namespace uro
 
    LocationContext::LocationContext(LocationContext* prev)
       : location(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
-        prevLocation(nullptr) { };
+        prevLocation(prev) { };
 
    void LocationContext::loadData(const _str& newThis)
    {
@@ -44,14 +44,16 @@ namespace uro
 
    FileContext::FileContext(_uro& uro) 
       : IndexContext(uro), attribute(std::make_unique<Attribute>(uro)),
-      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special))
+      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
+      locContext(uro.contexts.getLocationContext())
    {
       this->initVars(uro); 
    };
 
    FileContext::FileContext(_attrptr& attr, _uro& uro)
       : IndexContext(uro), attribute(std::move(attr)),
-      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special))
+      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
+      locContext(uro.contexts.getLocationContext())
    { 
       this->initVars(uro); 
    };
@@ -129,7 +131,9 @@ namespace uro
 
    void FileContext::loadAttributes()
    {
-      // todo load attributes
+      if (this->attribute->hasAny()) {
+         os_loadAttributes(*this);
+      }
    }
 
    void FileContext::resetIndexAndDepth()
@@ -173,7 +177,7 @@ namespace uro
       this->addOsGen(hashes.HASH_VAR_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, uro);
    };
    
-   _bool Contexts::getVariable(const Token& tk, vars::Variable<_bool>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, vars::Variable<_bool>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
@@ -185,7 +189,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contexts::getVariable(const Token& tk, vars::Variable<_num>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, vars::Variable<_num>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
@@ -205,7 +209,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contexts::getVariable(const Token& tk, vars::Variable<_str>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, vars::Variable<_str>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
       
@@ -237,7 +241,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contexts::getVariable(const Token& tk, _defptr& result, _uro& uro)
+   _bool Contexts::makeVarRef(const Token& tk, _defptr& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
       auto v = this->osGenerators.find(var);

@@ -101,13 +101,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, _uro& uro)
       commands.push_back(std::move(com));
    }
 
-   if (commands.size() == 1) {
-      result = std::move(commands[0]);
-   }
-   else {
-      result = std::make_unique<CS_RawBlock>(commands, uro);
-   }
-
+   result = std::make_unique<CS_RawBlock>(commands, context, uro);
    uro.contexts.retreatUserVarsContext();
    return true;
 }
@@ -227,7 +221,16 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 
    // build "inside"
    if (leftFirst.isKeyword(Keyword::kw_Inside)) {
-      throw SyntaxError(L"not implemented", leftFirst.line);
+      if (rightLen == 0) {
+         return false;
+      }
+
+      left.trimLeft();
+      Tokens right(tks, rightStart, rightLen);
+      return parseInsideLoop(result, leftFirst, left, right, uro);
+
+
+
       /*left.trimLeft();
       if (left.isEmpty() && uro.vars.inner.thisState != ThisState::ts_String) {
          throw SyntaxError(str(L"argumentless structure '", leftFirst.getOriginString(uro),
@@ -350,7 +353,11 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
 
    left.checkCommonExpressionExceptions(uro);
    Tokens right(tks, rightStart, rightLen);
+   return parseIterationLoop(result, left, right, uro);
+}
 
+static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, _uro& uro)
+{
    // string loop
    _genptr<_str> str_;
    if (parse::parse(uro, left, str_)) {
@@ -373,38 +380,49 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       FileContext* fc = def->getFileContext();
 
       if (fc != nullptr) {
-         uro.contexts.addFileContext(fc);
-         _comptr com;
-         const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
-         uro.contexts.retreatFileContext();
+         if (fc->attribute->isMarkedToEvaluate()) {
+            _fcptr nextFc = std::make_unique<FileContext>(uro);
+            uro.contexts.addFileContext(nextFc.get());
+            _comptr com;
+            const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+            uro.contexts.retreatFileContext();
 
-         if (success) {
-            /*if (fc->attribute->isMarkedToEvaluate()) {
+            if (success) {
                _genptr<_list> g(new gen::Cast_D_L(def, uro));
-               result = std::make_unique<CS_ListLoop>(g, com, uro);
+               result = std::make_unique<CS_ListLoop>(g, com, nextFc, uro);
             }
-            else {*/
-               result = std::make_unique<CS_DefinitionLoop>(def, com, uro);
-            //}
-         }
 
-         return success;
+            return success;
+
+         }
+         else {
+            uro.contexts.addFileContext(fc);
+            _comptr com;
+            const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+            uro.contexts.retreatFileContext();
+
+            if (success) {
+               result = std::make_unique<CS_ContextlessLoop>(def, com, uro);
+            }
+
+            return success;
+         }
       }
 
-      _fcptr context = std::make_unique<FileContext>(uro);
-      uro.contexts.addFileContext(context.get());
+      _fcptr ctx = std::make_unique<FileContext>(uro);
+      uro.contexts.addFileContext(ctx.get());
       _comptr com;
       const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
       uro.contexts.retreatFileContext();
 
       if (success) {
-         /*if (fc->attribute->isMarkedToEvaluate()) {
+         if (ctx->attribute->isMarkedToEvaluate()) {
             _genptr<_list> g(new gen::Cast_D_L(def, uro));
-            result = std::make_unique<CS_ListLoop>(g, com, uro);
+            result = std::make_unique<CS_ListLoop>(g, com, ctx, uro);
          }
-         else {*/
-            result = std::make_unique<CS_DefinitionLoop>(def, com, context, uro);
-         //}
+         else {
+            result = std::make_unique<CS_DefinitionLoop>(def, com, ctx, uro);
+         }
       }
 
       return success;
@@ -426,166 +444,164 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& suble
       return success;
    }
 
-
-
-
-
-   throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", tks.first().line);
+   throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-/*
-static _bool parseIterationLoop(_comptr& result, const _bool& isInside, const Tokens& left, const Tokens& right,
-   const ThisState& prevState, _uro& uro)
+static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, _uro& uro)
 {
-   _comptr com;
-
-   if (isInside && left.isEmpty()) {
-      _genptr<_str> tr;
-      uro.vars.inner.createThisRef(tr);
-      uro.vars.inner.thisState = ThisState::ts_String;
-      _bool hasMemory;
-      _attrptr attr;
-      _aggrptr aggr;
-
-      if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
-         result = std::make_unique<CS_InsideString>(tr, com, attr, aggr, hasMemory, uro);
-         return true;
+   // inside { }
+   if (left.isEmpty()) {
+      if (!uro.contexts.hasFileContext()) {
+         throw SyntaxError(str(L"argumentless structure '", keyword.getOriginString(uro),
+            L"' can be created only within an iteratiion loop"), keyword.line);
       }
-      else {
-         return false;
+
+      FileContext* fc = uro.contexts.getFileContext();
+      fc->attribute->setCoreCommandBase();
+
+      _lcptr locContext;
+      uro.contexts.makeLocationContext(locContext);
+      uro.contexts.addLocationContext(locContext.get());
+
+      _comptr com;
+      const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+
+      uro.contexts.retreatLocationContext();
+
+      if (success) {
+         result = std::make_unique<CS_InsideThis>(com, locContext, fc, uro);
       }
+
+      return success;
    }
 
-   // string loop
-   _genptr<_str> str;
-   if (parse::parse(uro, left, str)) {
-      uro.vars.inner.thisState = ThisState::ts_String;
-      _bool hasMemory;
-      _attrptr attr;
-      _aggrptr aggr;
+   // inside string { }
+   _genptr<_str> str_;
+   if (parse::parse(uro, left, str_)) {
+      _fcptr context = std::make_unique<FileContext>(uro);
+      context->attribute->setCoreCommandBase();
+      uro.contexts.addFileContext(context.get());
 
-      if (parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
-         if (isInside) {
-            result = std::make_unique<CS_InsideString>(str, com, attr, aggr, hasMemory, uro);
-         }
-         else {
-            result = std::make_unique<CS_StringLoop>(str, com, attr, aggr, hasMemory, uro);
-         }
+      _lcptr locContext;
+      uro.contexts.makeLocationContext(locContext);
+      uro.contexts.addLocationContext(locContext.get());
 
-         return true;
+      _comptr com;
+      const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+
+      uro.contexts.retreatFileContext();
+      uro.contexts.retreatLocationContext();
+
+      if (success) {
+         result = std::make_unique<CS_InsideString>(str_, com, locContext, context, uro);
       }
-      else {
-         return false;
-      }
+
+      return success;
    }
 
-   // definition loop
+   // inside definition { }
    _defptr def;
    if (parse::parse(uro, left, def)) {
-      uro.vars.inner.thisState = ThisState::ts_String;
-      _bool hasMemory;
-      _attrptr attr;
-      _aggrptr aggr;
+      FileContext* fc = def->getFileContext();
 
-      if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
-         return false;
-      }
+      if (fc != nullptr) {
+         if (fc->attribute->isMarkedToEvaluate()) {
+            _fcptr nextFc = std::make_unique<FileContext>(uro);
+            nextFc->attribute->setCoreCommandBase();
+            uro.contexts.addFileContext(nextFc.get());
 
-      if (attr->isMarkedToEvaluate()) {
-         _genptr<_list> g(new gen::Cast_D_L(def, uro));
+            _lcptr locContext;
+            uro.contexts.makeLocationContext(locContext);
+            uro.contexts.addLocationContext(locContext.get());
 
-         if (isInside) {
-            result = std::make_unique<CS_InsideList>(g, com, attr, aggr, hasMemory, uro);
+            _comptr com;
+            const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+
+            uro.contexts.retreatFileContext();
+            uro.contexts.retreatLocationContext();
+
+            if (success) {
+               _genptr<_list> g(new gen::Cast_D_L(def, uro));
+               result = std::make_unique<CS_InsideList>(g, com, locContext, nextFc, uro);
+            }
+
+            return success;
          }
          else {
-            result = std::make_unique<CS_ListLoop>(g, com, attr, aggr, hasMemory, uro);
-         }
+            fc->attribute->setCoreCommandBase();
+            uro.contexts.addFileContext(fc);
 
-         return true;
+            _lcptr locContext;
+            uro.contexts.makeLocationContext(locContext);
+            uro.contexts.addLocationContext(locContext.get());
+
+            _comptr com;
+            const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+
+            uro.contexts.retreatFileContext();
+            uro.contexts.retreatLocationContext();
+
+            if (success) {
+               result = std::make_unique<CS_InsideContextless>(def, com, locContext, uro);
+            }
+
+            return success;
+         }
       }
 
-      _fdata* fdata = def->getDataPtr();
+      _fcptr ctx = std::make_unique<FileContext>(uro);
+      ctx->attribute->setCoreCommandBase();
+      uro.contexts.addFileContext(ctx.get());
 
-      if (fdata == nullptr) {
-         if (isInside) {
-            result = std::make_unique<CS_InsideDefinition>(def, com, attr, aggr, hasMemory, uro);
+      _lcptr locContext;
+      uro.contexts.makeLocationContext(locContext);
+      uro.contexts.addLocationContext(locContext.get());
+
+      _comptr com;
+      const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+
+      uro.contexts.retreatFileContext();
+      uro.contexts.retreatLocationContext();
+
+      if (success) {
+         if (ctx->attribute->isMarkedToEvaluate()) {
+            _genptr<_list> g(new gen::Cast_D_L(def, uro));
+            result = std::make_unique<CS_InsideList>(g, com, locContext, ctx, uro);
          }
          else {
-            result = std::make_unique<CS_DefinitionLoop>(def, com, attr, aggr, hasMemory, uro);
+            result = std::make_unique<CS_InsideDefinition>(def, com, locContext, ctx, uro);
          }
-
-         return true;
       }
 
-      const _aunit aval = attr->getValue();
-      _attrptr bridge(new BridgeAttribute(aval, uro, fdata));
-
-      if (isInside) {
-         result = std::make_unique<CS_InsideDefinition>(def, com, bridge, aggr, hasMemory, uro);
-      }
-      else {
-         result = std::make_unique<CS_DefinitionLoop>(def, com, bridge, aggr, hasMemory, uro);
-      }
-
-      return true;
+      return success;
    }
 
-   // list loop
-   _genptr<_list> lst;
-   if (parse::parse(uro, left, lst)) {
-      uro.vars.inner.thisState = ThisState::ts_String;
-      _bool hasMemory;
-      _attrptr attr;
-      _aggrptr aggr;
+   // inside list { }
+   _genptr<_list> list;
+   if (parse::parse(uro, left, list)) {
+      _fcptr context = std::make_unique<FileContext>(uro);
+      context->attribute->setCoreCommandBase();
+      uro.contexts.addFileContext(context.get());
 
-      if (!parseLoopBase(com, right, uro, prevState, attr, aggr, hasMemory)) {
-         return false;
+      _lcptr locContext;
+      uro.contexts.makeLocationContext(locContext);
+      uro.contexts.addLocationContext(locContext.get());
+
+      _comptr com;
+      const _bool success = parseCommandsAsMember(com, right, nullptr, uro);
+
+      uro.contexts.retreatFileContext();
+      uro.contexts.retreatLocationContext();
+
+      if (success) {
+         result = std::make_unique<CS_InsideList>(list, com, locContext, context, uro);
       }
 
-      if (isInside) {
-         result = std::make_unique<CS_InsideList>(lst, com, attr, aggr, hasMemory, uro);
-      }
-      else {
-         result = std::make_unique<CS_ListLoop>(lst, com, attr, aggr, hasMemory, uro);
-      }
-
-      return true;
+      return success;
    }
 
-   return false;
+   throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
-
-static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
-   const ThisState& prevState, _attrptr& attr, _aggrptr& aggr, _bool& hasMemory)
-{
-   hasMemory = uro.vc.anyAttribute();
-   attr = std::make_unique<Attribute>(uro);
-   uro.vc.addAttribute(attr);
-   aggr = std::make_unique<Aggregate>(uro);
-   uro.vc.addAggregate(aggr);
-
-   const _bool success = parseCommandsAsMember(result, rightTokens, nullptr, uro);
-
-   uro.vars.inner.thisState = prevState;
-   uro.vc.retreatAttribute();
-   uro.vc.retreatAggregate();
-
-   return success;
-}
-
-static _bool parseLoopBase(_comptr& result, const Tokens& rightTokens, _uro& uro,
-   const ThisState& prevState, _aggrptr& aggr)
-{
-   aggr = std::make_unique<Aggregate>(uro);
-   uro.vc.addAggregate(aggr);
-
-   const _bool success = parseCommandsAsMember(result, rightTokens, nullptr, uro);
-
-   uro.vars.inner.thisState = prevState;
-   uro.vc.retreatAggregate();
-
-   return success;
-}*/
 
 static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, _uro& uro)
 {
@@ -757,7 +773,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
          if (tks.getLength() == 2) {
             vars::Variable<_num>* pv_num;
 
-            if (!uro.contexts.getVariable(first, pv_num, uro) || pv_num->isImmutable()) {
+            if (!uro.contexts.getVar(first, pv_num, uro) || pv_num->isImmutable()) {
                throw SyntaxError(str(L"variable '", first.getOriginString(uro),
                   L"' cannot be ", op), first.line);
             }
@@ -783,7 +799,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
                parseListElementIndex(index, tks2, uro);
                vars::Variable<_nlist>* pv_nlist;
 
-               if (!uro.contexts.getVariable(first, pv_nlist, uro) || pv_nlist->isImmutable()) {
+               if (!uro.contexts.getVar(first, pv_nlist, uro) || pv_nlist->isImmutable()) {
                   throw SyntaxError(str(L"variable '", first.getOriginString(uro),
                      L"' cannot be ", op), first.line);
                }
@@ -804,7 +820,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
 
          vars::Variable<_tim>* pv_tim;
 
-         if (!uro.contexts.getVariable(first, pv_tim, uro)) {
+         if (!uro.contexts.getVar(first, pv_tim, uro)) {
             throw SyntaxError(str(L"time variable from expression '", first.getOriginString(uro),
                L"' does not exist or is unreachable here"), first.line);
          }
@@ -865,9 +881,9 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          vars::Variable<_nlist>* pv_nlist;
          vars::Variable<_tlist>* pv_tlist;
 
-         if (uro.contexts.getVariable(first, pv_list, uro)
-          || uro.contexts.getVariable(first, pv_nlist, uro)
-          || uro.contexts.getVariable(first, pv_tlist, uro))
+         if (uro.contexts.getVar(first, pv_list, uro)
+          || uro.contexts.getVar(first, pv_nlist, uro)
+          || uro.contexts.getVar(first, pv_tlist, uro))
          {
             throw SyntaxError(str(L"collection variable '", first.getOriginString(uro),
                L"' is immutable, so its elements cannot be modified"), right.first().line);
@@ -875,7 +891,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
          vars::Variable<_str>* pv_str;
 
-         if (uro.contexts.getVariable(first, pv_str, uro)) {
+         if (uro.contexts.getVar(first, pv_str, uro)) {
             throw SyntaxError(str(L"operation ", toStr(sign),
                L"= cannot be performed on a character from string variable"), first.line);
          }
@@ -892,7 +908,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
             if (varSquareBrackets(aro)) {
                vars::Variable<_tlist>* pv_tlist;
-               if (uro.contexts.getVariable(first, pv_tlist, uro)) {
+               if (uro.contexts.getVar(first, pv_tlist, uro)) {
                   throw SyntaxError(str(L"operation ", toStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Uroboros2 are immutable"), first.line);
                }
@@ -906,7 +922,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
    if (first.type == Token::t_Word) {
       vars::Variable<_num>* pv_num;
-      if (uro.contexts.getVariable(first, pv_num, uro)) {
+      if (uro.contexts.getVar(first, pv_num, uro)) {
          _genptr<_num> num;
 
          if (!parse::parse(uro, right, num)) {
@@ -948,7 +964,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       vars::Variable<_per>* pv_per;
-      if (uro.contexts.getVariable(first, pv_per, uro)) {
+      if (uro.contexts.getVar(first, pv_per, uro)) {
          switch (sign) {
             case CHAR_PLUS:
             case CHAR_MINUS: {
@@ -985,7 +1001,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       vars::Variable<_tim>* pv_tim;
-      if (uro.contexts.getVariable(first, pv_tim, uro)) {
+      if (uro.contexts.getVar(first, pv_tim, uro)) {
          switch (sign) {
             case CHAR_ASTERISK:
             case CHAR_SLASH:
@@ -1037,7 +1053,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       vars::Variable<_tim>* pv_tim;
-      if (!uro.contexts.getVariable(first, pv_tim, uro)) {
+      if (!uro.contexts.getVar(first, pv_tim, uro)) {
          throw SyntaxError(str(L"'", first.getOriginString(uro),
             L"' is not a time variable for the ", toStr(sign), L"= operation"),
             first.line);
@@ -1103,7 +1119,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int& line, _uro& uro)
 {
    vars::Variable<_str>* pv_str;
-   if (uro.contexts.getVariable(first, pv_str, uro)) {
+   if (uro.contexts.getVar(first, pv_str, uro)) {
       _genptr<_str> str_;
       if (parse::parse(uro, tks, str_)) {
          pv_str->makeNotConstant();
@@ -1136,7 +1152,7 @@ template <typename T>
 static _bool makeVarAlteration(_uro& uro, const Tokens& tokens, const Token& first,
    vars::Variable<T>*& varPtr, _comptr& result, const _str& dataTypeName)
 {
-   if (uro.contexts.getVariable(first, varPtr, uro)) {
+   if (uro.contexts.getVar(first, varPtr, uro)) {
       if (varPtr->isImmutable()) {
          throw SyntaxError(str(L"variable '", first.getOriginString(uro), L"' is immutable"), first.line);
       }
@@ -1207,9 +1223,9 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
             vars::Variable<_tlist>* pv_tlist;
             vars::Variable<_list>* pv_list;
 
-            if (uro.contexts.getVariable(first, pv_nlist, uro) ||
-                uro.contexts.getVariable(first, pv_tlist, uro) ||
-                uro.contexts.getVariable(first, pv_list, uro))
+            if (uro.contexts.getVar(first, pv_nlist, uro) ||
+                uro.contexts.getVar(first, pv_tlist, uro) ||
+                uro.contexts.getVar(first, pv_list, uro))
             {
                throw SyntaxError(str(L"collection variable '", first.getOriginString(uro),
                   L"' is immutable, so its elements cannot me modified"), first.line);
@@ -1356,16 +1372,16 @@ static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
    vars::Variable<_nlist>* pv_nlist;
    vars::Variable<_tlist>* pv_tlist;
 
-   if (uro.contexts.getVariable(first, pv_list, uro) ||
-       uro.contexts.getVariable(first, pv_nlist, uro) ||
-       uro.contexts.getVariable(first, pv_tlist, uro))
+   if (uro.contexts.getVar(first, pv_list, uro) ||
+       uro.contexts.getVar(first, pv_nlist, uro) ||
+       uro.contexts.getVar(first, pv_tlist, uro))
    {
       throw SyntaxError(str(L"collection variable '", first.getOriginString(uro),
          L"' is immutable, so its elements cannot me modified"), first.line);
    }
 
    vars::Variable<_str>* pv_str;
-   if (uro.contexts.getVariable(first, pv_str, uro)) {
+   if (uro.contexts.getVar(first, pv_str, uro)) {
       if (! pv_str->isImmutable()) {
          _genptr<_num> index;
          parseListElementIndex(index, left, uro);

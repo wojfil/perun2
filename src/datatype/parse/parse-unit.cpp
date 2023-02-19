@@ -47,7 +47,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_bool>& result)
          }
       }
       case Token::t_Word: {
-         return uro.contexts.getVariable(tk, result, uro);
+         return uro.contexts.makeVarRef(tk, result, uro);
       }
       default: {
          return false;
@@ -65,7 +65,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
          return true;
       }
       case Token::t_Word: {
-         return uro.contexts.getVariable(tk, result, uro);
+         return uro.contexts.makeVarRef(tk, result, uro);
       }
       case Token::t_TwoWords: {
          const Hashes& hs = uro.hashes;
@@ -75,7 +75,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
          }
 
          _genptr<_tim> var;
-         if (!uro.contexts.getVariable(tk, var, uro)) {
+         if (!uro.contexts.makeVarRef(tk, var, uro)) {
             throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(uro),
                L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
          }
@@ -124,7 +124,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_str>& result)
          return true;
       }
       case Token::t_Word: {
-         return uro.contexts.getVariable(tk, result, uro);
+         return uro.contexts.makeVarRef(tk, result, uro);
       }
       default: {
          return false;
@@ -135,19 +135,19 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_str>& result)
 _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && uro.contexts.getVariable(tk, result, uro);
+   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
 };
 
 _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && uro.contexts.getVariable(tk, result, uro);
+   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
 };
 
 _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_list>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && uro.contexts.getVariable(tk, result, uro);
+   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
 };
 
 _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
@@ -156,7 +156,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
 
    switch (tk.type) {
       case Token::t_Word: {
-         return uro.contexts.getVariable(tk, result, uro);
+         return uro.contexts.makeVarRef(tk, result, uro);
       }
       case Token::t_TwoWords: {
          if (tk.value.twoWords.h1 == uro.hashes.HASH_NOTHING) {
@@ -164,7 +164,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
          }
 
          _genptr<_tim> var;
-         if (!uro.contexts.getVariable(tk, var, uro)) {
+         if (!uro.contexts.makeVarRef(tk, var, uro)) {
             throw SyntaxError(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
          }
 
@@ -186,7 +186,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
-   return tk.type == Token::t_Word && uro.contexts.getVariable(tk, result, uro);
+   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
 };
 
 _bool parseOneToken(_uro& uro, const Tokens& tks, _defptr& result)
@@ -195,7 +195,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _defptr& result)
 
    switch (tk.type) {
       case Token::t_Word: {
-         return uro.contexts.getVariable(tk, result, uro);
+         return uro.contexts.makeVarRef(tk, result, uro);
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == CHAR_ASTERISK) {

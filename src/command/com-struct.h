@@ -27,6 +27,25 @@ namespace uro::comm
 {
 
 
+struct CS_RawBlock : Command
+{
+public:
+   CS_RawBlock(std::vector<_comptr>& coms, _ucptr& ctx, _uro& uro)
+      : length(coms.size()), context(std::move(ctx)), uroboros(uro)
+   {
+      langutil::transferUniquePtrs(coms, commands);
+   };
+
+   void run() override;
+
+private:
+   std::vector<_comptr> commands;
+   const _size length;
+   _uro& uroboros;
+   _ucptr context;
+};
+
+
 struct CS_Block : Command
 {
 public:
@@ -43,24 +62,6 @@ private:
    const _size length;
    _uro& uroboros;
    _acptr context;
-};
-
-
-struct CS_RawBlock : Command
-{
-public:
-   CS_RawBlock(std::vector<_comptr>& coms, _uro& uro)
-      : length(coms.size()), uroboros(uro)
-   {
-      langutil::transferUniquePtrs(coms, commands);
-   };
-
-   void run() override;
-
-private:
-   std::vector<_comptr> commands;
-   const _size length;
-   _uro& uroboros;
 };
 
 
@@ -113,15 +114,29 @@ struct CS_DefinitionLoop : IterationLoop
 {
 public:
    CS_DefinitionLoop(_defptr& def, _comptr& com, _fcptr& ctx, _uro& uro)
-      : IterationLoop(com, ctx, uro), definition(std::move(def)){ };
-      
-   CS_DefinitionLoop(_defptr& def, _comptr& com, _uro& uro)
-      : IterationLoop(com, uro), definition(std::move(def)){ };
+      : IterationLoop(com, ctx, uro), definition(std::move(def)) { };
 
    void run() override;
 
 private:
    _defptr definition;
+};
+
+
+// this is a definition loop
+// but does not own its context
+// the real context is somwhere else and this struct has a dangling pointer to it
+struct CS_ContextlessLoop : Command
+{
+public:
+   CS_ContextlessLoop(_defptr& def, _comptr& com, _uro& uro);
+   void run() override;
+
+private:
+   _defptr definition;
+   _comptr command;
+   _uro& uroboros;
+   FileContext* const context;
 };
 
 
@@ -137,27 +152,39 @@ private:
    _genptr<_list> list;
 };
 
-/*
-struct InideLoop : Command
+
+struct CS_Inside : IterationLoop
 {
 public:
-   InideLoop(_comptr& com, _fcptr& fctx, _lcptr& lctx, LocationContext* prev, _uro& uro)
-      : command(std::move(com)), fileContext(std::move(fctx)), locContext(std::move(lctx)), prevLocation(prev), uroboros(uro) { };
+   CS_Inside(_comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
+      : IterationLoop(com, fctx, uro), locContext(std::move(lctx)) { };
 
 protected:
-   _uro& uroboros;
-   _comptr command;
-   _fcptr fileContext;
    _lcptr locContext;
-   LocationContext* prevLocation;
 };
 
 
-struct CS_InsideString : InideLoop
+struct CS_InsideThis : Command
 {
 public:
-   CS_InsideString(_genptr<_str>& str, _comptr& com, _incptr& ctx, LocationContext* prev, _uro& uro)
-      : InideLoop(com, ctx, prev, uro), string(std::move(str)) { };
+   CS_InsideThis(_comptr& com, _lcptr& lctx, FileContext* fctx, _uro& uro)
+      : command(std::move(com)), locContext(std::move(lctx)), fileContext(fctx), uroboros(uro) { };
+
+   void run() override;
+
+private:
+   _comptr command;
+   _lcptr locContext;
+   FileContext* const fileContext;
+   _uro& uroboros;
+};
+
+
+struct CS_InsideString : CS_Inside
+{
+public:
+   CS_InsideString(_genptr<_str>& str, _comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
+      : CS_Inside(com, lctx, fctx, uro), string(std::move(str)) { };
 
    void run() override;
 
@@ -166,12 +193,11 @@ private:
 };
 
 
-struct CS_InsideDefinition : InideLoop
+struct CS_InsideDefinition : CS_Inside
 {
 public:
-   CS_InsideDefinition(_defptr& def, _comptr& com, _incptr& ctx, LocationContext* prev, _uro& uro)
-      : InideLoop(com, ctx, prev, uro), definition(std::move(def)) { };
-
+   CS_InsideDefinition(_defptr& def, _comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
+      : CS_Inside(com, lctx, fctx, uro), definition(std::move(def)) { };
 
    void run() override;
 
@@ -180,18 +206,34 @@ private:
 };
 
 
-struct CS_InsideList : InideLoop
+// analogous to CS_ContextlessLoop
+struct CS_InsideContextless : Command
 {
 public:
-   CS_InsideList(_genptr<_list>& li, _comptr& com, _incptr& ctx, LocationContext* prev, _uro& uro)
-      : InideLoop(com, ctx, prev, uro), list(std::move(li)) { };
+   CS_InsideContextless(_defptr& def, _comptr& com, _lcptr& lctx, _uro& uro);
 
+   void run() override;
+
+private:
+   _defptr definition;
+   _comptr command;
+   _lcptr locContext;
+   FileContext* const fileContext;
+   _uro& uroboros;
+};
+
+
+struct CS_InsideList : CS_Inside
+{
+public:
+   CS_InsideList(_genptr<_list>& li, _comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
+      : CS_Inside(com, lctx, fctx, uro), list(std::move(li)) { };
 
    void run() override;
 
 private:
    _genptr<_list> list;
-};*/
+};
 
 }
 

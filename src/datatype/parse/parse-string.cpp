@@ -56,21 +56,21 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, _uro& uro)
       const Token& f = tks.first();
       _genptr<_list> list;
 
-      if (uro.contexts.getVariable(f, list, uro)) {
+      if (uro.contexts.makeVarRef(f, list, uro)) {
          result = std::make_unique<gen::ListElement<_str>>(list, num);
          return true;
       }
       else {
          _genptr<_str> str;
 
-         if (uro.contexts.getVariable(f, str, uro)) {
+         if (uro.contexts.makeVarRef(f, str, uro)) {
             result = std::make_unique<gen::CharAtIndex>(str, num);
             return true;
          }
          else {
             _defptr def;
 
-            if (uro.contexts.getVariable(f, def, uro)) {
+            if (uro.contexts.makeVarRef(f, def, uro)) {
                result = std::make_unique<gen::DefinitionElement>(def, num, uro);
                return true;
             }

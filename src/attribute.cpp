@@ -148,9 +148,4 @@ void Attribute::markToRun()
    this->markedToRun = true;
 }
 
-void Attribute::run() const
-{
-   //os_loadAttributes(this->value, this->uroboros);
-}
-
 }

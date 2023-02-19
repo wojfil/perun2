@@ -96,13 +96,14 @@ void os_rawSleepForMs(const _nint& ms)
 }
 
 // explanation of attributes is in file 'attribute.h'
-/*void os_loadAttributes(const _aunit& attr, _uro& uro)
+void os_loadAttributes(FileContext& context)
 {
-   InnerVariables& inner = uro.vars.inner;
-   inner.trimmed = os_trim(inner.this_s.value);
+   const _aunit attr = context.attribute->getValue();
 
-   if (os_isInvaild(inner.trimmed)) {
-      os_loadEmptyAttributes(attr, inner);
+   context.trimmed = os_trim(context.this_->value);
+
+   if (os_isInvaild(context.trimmed)) {
+      os_loadEmptyAttributes(context);
       return;
    }
 
@@ -110,20 +111,20 @@ void os_rawSleepForMs(const _nint& ms)
 
    // "drive", "path", "parent" and "fullname" do not require access to the file system
    if (attr & ATTR_PATH) {
-      path = os_join(inner.location.value, inner.trimmed);
-      inner.path.value = path;
+      path = os_join(context.locContext->location->value, context.trimmed);
+      context.v_path->value = path;
    }
 
    if (attr & ATTR_FULLNAME) {
-      inner.fullname.value = os_fullname(inner.trimmed);
+      context.v_fullname->value = os_fullname(context.trimmed);
    }
 
    if (attr & ATTR_PARENT) {
-      inner.parent.value = os_parent(path);
+      context.v_parent->value = os_parent(path);
    }
 
    if (attr & ATTR_DRIVE) {
-      inner.drive.value = os_drive(path);
+      context.v_drive->value = os_drive(path);
    }
 
    if (!attr & ATTR_EXISTS) {
@@ -135,7 +136,7 @@ void os_rawSleepForMs(const _nint& ms)
    const _bool gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
    const DWORD& dwAttrib = data.dwFileAttributes;
    const _bool exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
-   inner.exists.value = exists;
+   context.v_exists->value = exists;
 
    _bool isDir;
    _bool isFile;
@@ -145,29 +146,29 @@ void os_rawSleepForMs(const _nint& ms)
       isFile = !isDir;
    }
    else {
-      isFile = os_hasExtension(inner.trimmed);
+      isFile = os_hasExtension(context.trimmed);
       isDir = !isFile;
    }
 
-   inner.isfile.value = isFile;
-   inner.isdirectory.value = isDir;
+   context.v_isfile->value = isFile;
+   context.v_isdirectory->value = isDir;
 
    if (attr & ATTR_ACCESS) {
-      inner.access.value = exists
+      context.v_access->value = exists
          ? os_convertToUroTime(&data.ftLastAccessTime)
          : _tim();
    }
 
    if (attr & ATTR_ARCHIVE) {
-      inner.archive.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
+      context.v_archive->value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
    }
 
    if (attr & ATTR_COMPRESSED) {
-      inner.compressed.value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
+      context.v_compressed->value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
    }
 
    if (attr & ATTR_CREATION) {
-      inner.creation.value = exists
+      context.v_creation->value = exists
          ? os_convertToUroTime(&data.ftCreationTime)
          : _tim();
    }
@@ -180,257 +181,159 @@ void os_rawSleepForMs(const _nint& ms)
          : _tim();
 
       if (hasChange) {
-         inner.change.value = time;
+         context.v_change->value = time;
       }
       if (hasMod) {
-         inner.modification.value = time;
+         context.v_modification->value = time;
       }
    }
 
    if (attr & ATTR_LIFETIME) {
       if (exists) {
-         inner.lifetime.value = inner.creation.value < inner.modification.value
-            ? (os_now() - inner.creation.value)
-            : (os_now() - inner.modification.value);
+         context.v_lifetime->value = context.v_creation->value < context.v_modification->value
+            ? (os_now() - context.v_creation->value)
+            : (os_now() - context.v_modification->value);
       }
       else {
-         inner.lifetime.value = _per();
+         context.v_lifetime->value = _per();
       }
    }
 
    if (attr & ATTR_EMPTY) {
       if (exists) {
-         inner.empty.value = isFile
+         context.v_empty->value = isFile
             ? os_emptyFile(data)
             : os_emptyDirectory(path);
       }
       else {
-         inner.empty.value = false;
+         context.v_empty->value = false;
       }
    }
 
    if (attr & ATTR_ENCRYPTED) {
-      inner.encrypted.value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
+      context.v_encrypted->value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
    }
 
    if (attr & ATTR_EXTENSION) {
-      inner.extension.value = isFile ? os_extension(inner.trimmed) : EMPTY_STRING;
+      context.v_extension->value = isFile ? os_extension(context.trimmed) : EMPTY_STRING;
    }
 
    if (attr & ATTR_HIDDEN) {
-      inner.hidden.value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
+      context.v_hidden->value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
    }
 
    if (attr & ATTR_NAME) {
       if (isDir) {
-         inner.name.value = os_fullname(inner.trimmed);
+         context.v_name->value = os_fullname(context.trimmed);
       }
       else {
-         inner.name.value = os_hasExtension(inner.trimmed)
-            ? os_name(inner.trimmed)
-            : os_fullname(inner.trimmed);
+         context.v_name->value = os_hasExtension(context.trimmed)
+            ? os_name(context.trimmed)
+            : os_fullname(context.trimmed);
       }
    }
 
    if (attr & ATTR_READONLY) {
-      inner.readonly.value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
+      context.v_readonly->value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
    }
 
    if (attr & ATTR_SIZE) {
       if (exists) {
-         inner.size.value = isFile
+         context.v_size->value = isFile
             ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : _num(os_sizeDirectory(path, uro));
+            : _num(os_sizeDirectory(path, context.attribute->uroboros));
       }
       else {
-         inner.size.value = _num(NINT_MINUS_ONE);
+         context.v_size->value = _num(NINT_MINUS_ONE);
       }
    }
 }
 
 // attributes of something, that cannot exist (empty string, contains not allowed chars, ...)
-void os_loadEmptyAttributes(const _aunit& attr, InnerVariables& inner)
+void os_loadEmptyAttributes(FileContext& context)
 {
+   const _aunit attr = context.attribute->getValue();
+
    if (attr & ATTR_PATH) {
-      inner.path.value.clear();
+      context.v_path->value.clear();
    }
 
    if (attr & ATTR_FULLNAME) {
-      inner.fullname.value.clear();
+      context.v_fullname->value.clear();
    }
 
    if (attr & ATTR_DRIVE) {
-      inner.drive.value.clear();
+      context.v_drive->value.clear();
    }
 
    if (!attr & ATTR_EXISTS) {
       return;
    }
 
-   inner.exists.value = false;
-   inner.isfile.value = false;
-   inner.isdirectory.value = false;
+   context.v_exists->value = false;
+   context.v_isfile->value = false;
+   context.v_isdirectory->value = false;
 
    if (attr & ATTR_ACCESS) {
-      inner.access.value = _tim();
+      context.v_access->value = _tim();
    }
 
    if (attr & ATTR_ARCHIVE) {
-      inner.archive.value = false;
+      context.v_archive->value = false;
    }
 
    if (attr & ATTR_COMPRESSED) {
-      inner.compressed.value = false;
+      context.v_compressed->value = false;
    }
 
    if (attr & ATTR_CHANGE) {
-      inner.change.value = _tim();
+      context.v_change->value = _tim();
    }
 
    if (attr & ATTR_CREATION) {
-      inner.creation.value = _tim();
+      context.v_creation->value = _tim();
    }
 
    if (attr & ATTR_EMPTY) {
-      inner.empty.value = false;
+      context.v_empty->value = false;
    }
 
    if (attr & ATTR_ENCRYPTED) {
-      inner.encrypted.value = false;
+      context.v_encrypted->value = false;
    }
 
    if (attr & ATTR_EXTENSION) {
-      inner.extension.value.clear();
+      context.v_extension->value.clear();
    }
 
    if (attr & ATTR_HIDDEN) {
-      inner.hidden.value = false;
+      context.v_hidden->value = false;
    }
 
    if (attr & ATTR_LIFETIME) {
-      inner.lifetime.value = _per();
+      context.v_lifetime->value = _per();
    }
 
    if (attr & ATTR_MODIFICATION) {
-      inner.modification.value = _tim();
+      context.v_modification->value = _tim();
    }
 
    if (attr & ATTR_NAME) {
-      inner.name.value.clear();
+      context.v_name->value.clear();
    }
 
    if (attr & ATTR_PARENT) {
-      inner.parent.value.clear();
+      context.v_parent->value.clear();
    }
 
    if (attr & ATTR_READONLY) {
-      inner.readonly.value = false;
+      context.v_readonly->value = false;
    }
 
    if (attr & ATTR_SIZE) {
-      inner.size.value = _num(NINT_MINUS_ONE);
+      context.v_size->value = _num(NINT_MINUS_ONE);
    }
 }
-
-void os_loadDataAttributes(const _aunit& attr, _uro& uro, _fdata* data)
-{
-   const DWORD& dwAttrib = data->dwFileAttributes;
-   InnerVariables& inner = uro.vars.inner;
-   inner.trimmed = inner.this_s.value;
-   inner.path.value = os_join(inner.location.value, inner.trimmed);
-
-   const _str& path = inner.path.value;
-
-   if (attr & ATTR_FULLNAME) {
-      inner.fullname.value = os_fullname(inner.trimmed);
-   }
-
-   if (attr & ATTR_PARENT) {
-      inner.parent.value = os_parent(path);
-   }
-
-   if (attr & ATTR_DRIVE) {
-      inner.drive.value = os_drive(path);
-   }
-
-   inner.exists.value = true;
-   inner.isdirectory.value = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
-   inner.isfile.value = !inner.isdirectory.value;
-
-   if (attr & ATTR_ACCESS) {
-      inner.access.value = os_convertToUroTime(&data->ftLastAccessTime);
-   }
-
-   if (attr & ATTR_ARCHIVE) {
-      inner.archive.value = dwAttrib & FILE_ATTRIBUTE_ARCHIVE;
-   }
-
-   if (attr & ATTR_COMPRESSED) {
-      inner.compressed.value = dwAttrib & FILE_ATTRIBUTE_COMPRESSED;
-   }
-
-   if (attr & ATTR_CREATION) {
-      inner.creation.value = os_convertToUroTime(&data->ftCreationTime);
-   }
-
-   const _bool hasMod = attr & ATTR_MODIFICATION;
-   const _bool hasChange = attr & ATTR_CHANGE;
-   if (hasMod || hasChange) {
-      const _tim time = os_convertToUroTime(&data->ftLastWriteTime);
-
-      if (hasChange) {
-         inner.change.value = time;
-      }
-      if (hasMod) {
-         inner.modification.value = time;
-      }
-   }
-
-   if (attr & ATTR_LIFETIME) {
-      inner.lifetime.value = inner.creation.value < inner.modification.value
-         ? (os_now() - inner.creation.value)
-         : (os_now() - inner.modification.value);
-   }
-
-   if (attr & ATTR_EMPTY) {
-      inner.empty.value = inner.isfile.value
-         ? (data->nFileSizeLow == 0 && data->nFileSizeHigh == 0)
-         : os_emptyDirectory(path);
-   }
-
-   if (attr & ATTR_ENCRYPTED) {
-      inner.encrypted.value = dwAttrib & FILE_ATTRIBUTE_ENCRYPTED;
-   }
-
-   if (attr & ATTR_EXTENSION) {
-      inner.extension.value = inner.isfile.value ? os_extension(inner.trimmed) : EMPTY_STRING;
-   }
-
-   if (attr & ATTR_HIDDEN) {
-      inner.hidden.value = dwAttrib & FILE_ATTRIBUTE_HIDDEN;
-   }
-
-   if (attr & ATTR_NAME) {
-      if (inner.isfile.value) {
-         inner.name.value = os_hasExtension(inner.trimmed)
-            ? os_name(inner.trimmed)
-            : os_fullname(inner.trimmed);
-      }
-      else {
-         inner.name.value = os_fullname(inner.trimmed);
-      }
-   }
-
-   if (attr & ATTR_READONLY) {
-      inner.readonly.value = dwAttrib & FILE_ATTRIBUTE_READONLY;
-   }
-
-   if (attr & ATTR_SIZE) {
-      inner.size.value = inner.isfile.value
-         ? _num(static_cast<_nint>(os_bigInteger(data->nFileSizeLow, data->nFileSizeHigh)))
-         : _num(os_sizeDirectory(path, uro));
-   }
-}*/
 
 _tim os_access(const _str& path)
 {

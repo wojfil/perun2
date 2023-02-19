@@ -45,9 +45,8 @@ _tim os_tomorrow();
 void os_sleepForMs(const _nint& ms, _uro& uro);
 void os_rawSleepForMs(const _nint& ms);
 
-/*void os_loadAttributes(const _aunit& attr, _uro& uro);
-void os_loadEmptyAttributes(const _aunit& attr, InnerVariables& inner);
-void os_loadDataAttributes(const _aunit& attr, _uro& uro, _fdata* data);*/
+void os_loadAttributes(FileContext& context);
+void os_loadEmptyAttributes(FileContext& context);
 
 // file system variables:
 _tim os_access(const _str& path);

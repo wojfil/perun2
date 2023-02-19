@@ -1381,8 +1381,8 @@ _bool os_hasExtension(const _str& value)
 
 inline _bool os_isDriveLetter(const _char& ch)
 {
-   return (ch >= LETTER_a && ch <= LETTER_z)
-       || (ch >= LETTER_A && ch <= LETTER_Z);
+   return (ch >= CHAR_a && ch <= CHAR_z)
+       || (ch >= CHAR_A && ch <= CHAR_Z);
 }
 
 _bool os_isPath(const _str value)

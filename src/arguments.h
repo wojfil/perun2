@@ -25,23 +25,23 @@ inline constexpr _uint32 FLAG_NOOMIT =    0b001;
 inline constexpr _uint32 FLAG_SILENT =    0b010;
 inline constexpr _uint32 FLAG_GUI =       0b100;
 
-inline constexpr _char CHAR_FLAG_NOOMIT =           LETTER_n;
-inline constexpr _char CHAR_FLAG_NOOMIT_UPPER =     LETTER_N;
+inline constexpr _char CHAR_FLAG_NOOMIT =           CHAR_n;
+inline constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
 
-inline constexpr _char CHAR_FLAG_SILENT =           LETTER_s;
-inline constexpr _char CHAR_FLAG_SILENT_UPPER =     LETTER_S;
+inline constexpr _char CHAR_FLAG_SILENT =           CHAR_s;
+inline constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
 
-inline constexpr _char CHAR_FLAG_GUI =              LETTER_g;
-inline constexpr _char CHAR_FLAG_GUI_UPPER =        LETTER_G;
+inline constexpr _char CHAR_FLAG_GUI =              CHAR_g;
+inline constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
 
-inline constexpr _char CHAR_FLAG_DIRECTORY =        LETTER_d;
-inline constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  LETTER_D;
+inline constexpr _char CHAR_FLAG_DIRECTORY =        CHAR_d;
+inline constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
 
-inline constexpr _char CHAR_FLAG_HERE =             LETTER_h;
-inline constexpr _char CHAR_FLAG_HERE_UPPER =       LETTER_H;
+inline constexpr _char CHAR_FLAG_HERE =             CHAR_h;
+inline constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
 
-inline constexpr _char CHAR_FLAG_CODE =             LETTER_c;
-inline constexpr _char CHAR_FLAG_CODE_UPPER =       LETTER_C;
+inline constexpr _char CHAR_FLAG_CODE =             CHAR_c;
+inline constexpr _char CHAR_FLAG_CODE_UPPER =       CHAR_C;
 
 static const _str STRING_ARG_VERSION =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_VERSION);
 static const _str STRING_ARG_DOCS =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_DOCS);

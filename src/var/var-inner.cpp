@@ -32,7 +32,7 @@ _list getAlphabet()
    _list a(LETTERS_IN_ENGLISH_ALPHABET);
 
    for (_size i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
-      a[i] = LETTER_a + i;
+      a[i] = CHAR_a + i;
    }
 
    return a;

@@ -414,8 +414,8 @@ _bool F_IsHex::getValue()
       switch (value[i]) {
          case DIGIT_0: case DIGIT_1: case DIGIT_2: case DIGIT_3: case DIGIT_4:
          case DIGIT_5: case DIGIT_6: case DIGIT_7: case DIGIT_8: case DIGIT_9:
-         case LETTER_a: case LETTER_b: case LETTER_c: case LETTER_d: case LETTER_e: case LETTER_f:
-         case LETTER_A: case LETTER_B: case LETTER_C: case LETTER_D: case LETTER_E: case LETTER_F: {
+         case CHAR_a: case CHAR_b: case CHAR_c: case CHAR_d: case CHAR_e: case CHAR_f:
+         case CHAR_A: case CHAR_B: case CHAR_C: case CHAR_D: case CHAR_E: case CHAR_F: {
             break;
          }
          default: {

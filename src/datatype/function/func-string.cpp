@@ -751,7 +751,7 @@ _str F_Roman::getValue()
          _str result = ss.str();
 
          if (result.empty()) {
-            result = LETTER_N;
+            result = CHAR_N;
          }
          else if (base.value.d < NDOUBLE_ZERO) {
             result = str(STRING_CHAR_MINUS, result);
@@ -760,7 +760,7 @@ _str F_Roman::getValue()
          return result;
       }
       else {
-         return toStr(LETTER_N);
+         return toStr(CHAR_N);
       }
    }
    else if (number >= ROMAN_MAXIMUM || number <= -ROMAN_MAXIMUM) {
@@ -803,7 +803,7 @@ inline void F_Roman::appendFraction(const _num& base, _stream& ss) const
    }
    if (oc >= 6) {
       oc -= 6;
-      ss << LETTER_S;
+      ss << CHAR_S;
    }
 
    if (oc > 0) {

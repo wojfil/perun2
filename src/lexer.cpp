@@ -390,25 +390,25 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
 inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
 {
-   if (!(c2 == LETTER_b || c2 == LETTER_B)) {
+   if (!(c2 == CHAR_b || c2 == CHAR_B)) {
       return NINT_MINUS_ONE;
    }
 
    switch (c1) {
-      case LETTER_k: 
-      case LETTER_K:
+      case CHAR_k: 
+      case CHAR_K:
          return SIZE_UNIT_KB;
-      case LETTER_m: 
-      case LETTER_M:
+      case CHAR_m: 
+      case CHAR_M:
          return SIZE_UNIT_MB;
-      case LETTER_g:
-      case LETTER_G:
+      case CHAR_g:
+      case CHAR_G:
          return SIZE_UNIT_GB;
-      case LETTER_t:
-      case LETTER_T:
+      case CHAR_t:
+      case CHAR_T:
          return SIZE_UNIT_TB;
-      case LETTER_p:
-      case LETTER_P:
+      case CHAR_p:
+      case CHAR_P:
          return SIZE_UNIT_PB;
       default:
          return NINT_MINUS_ONE;

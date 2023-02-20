@@ -36,9 +36,9 @@ public:
 
    virtual _bool isConstant() const
    {
-      // artificially implemented simple reflection for parsing
-      // constant generators are detected
-      // and this knowledge is used for optimizations
+      // simple reflection for parsing
+      // detect generators that return deterministic values
+      // and use this knowledge for optimizations
       return false;
    };
 };

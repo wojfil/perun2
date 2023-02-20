@@ -1434,7 +1434,6 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks, _uro& uro)
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Keyword) {
          switch (t.value.keyword.k) {
-            case Keyword::kw_Catch:
             case Keyword::kw_While:
             case Keyword::kw_Inside: {
                throw SyntaxError(str(L"a semicolon ; is missing before keyword '",

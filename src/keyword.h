@@ -15,12 +15,14 @@
 #ifndef KEYWORD_H_INCLUDED
 #define KEYWORD_H_INCLUDED
 
-#include <map>
+#include <unordered_map>
 #include "datatype/primitives.h"
 
 
 namespace uro
 {
+
+struct _uro;
 
 enum Keyword
 {
@@ -61,7 +63,6 @@ enum Keyword
    kw_In,
    kw_Like,
       // command structs:
-   kw_Catch,
    kw_Else,
    kw_If,
    kw_Inside,
@@ -95,9 +96,10 @@ enum Keyword
 struct KeywordsData
 {
 public:
-   KeywordsData();
+   KeywordsData() = delete;
+   KeywordsData(_uro& uro);
 
-   const std::map<_str, Keyword> KEYWORDS;
+   const std::unordered_map<_size, Keyword> KEYWORDS;
 };
 
 }

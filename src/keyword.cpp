@@ -14,76 +14,76 @@
 
 #include "keyword.h"
 #include "datatype/strings.h"
+#include "uroboros.h"
 
 
 namespace uro
 {
 
-KeywordsData::KeywordsData() : KEYWORDS( {
+KeywordsData::KeywordsData(_uro& uro) : KEYWORDS( {
    // core commands:
-   { STRING_COPY, Keyword::kw_Copy },
-   { STRING_CREATE, Keyword::kw_Create },
-   { STRING_DELETE, Keyword::kw_Delete },
-   { STRING_DOWNLOAD, Keyword::kw_Download },
-   { STRING_DROP, Keyword::kw_Drop },
-   { STRING_HIDE, Keyword::kw_Hide },
-   { STRING_LOCK, Keyword::kw_Lock },
-   { STRING_MOVE, Keyword::kw_Move },
-   { STRING_OPEN, Keyword::kw_Open },
-   { STRING_REACCESS, Keyword::kw_Reaccess },
-   { STRING_RECREATE, Keyword::kw_Recreate },
-   { STRING_RECHANGE, Keyword::kw_Rechange },
-   { STRING_REMODIFY, Keyword::kw_Remodify },
-   { STRING_RENAME, Keyword::kw_Rename },
-   { STRING_SELECT, Keyword::kw_Select },
-   { STRING_UNHIDE, Keyword::kw_Unhide },
-   { STRING_UNLOCK, Keyword::kw_Unlock },
+   { uro.hashes.HASH_KW_COPY, Keyword::kw_Copy },
+   { uro.hashes.HASH_KW_CREATE, Keyword::kw_Create },
+   { uro.hashes.HASH_KW_DELETE, Keyword::kw_Delete },
+   { uro.hashes.HASH_KW_DOWNLOAD, Keyword::kw_Download },
+   { uro.hashes.HASH_KW_DROP, Keyword::kw_Drop },
+   { uro.hashes.HASH_KW_HIDE, Keyword::kw_Hide },
+   { uro.hashes.HASH_KW_LOCK, Keyword::kw_Lock },
+   { uro.hashes.HASH_KW_MOVE, Keyword::kw_Move },
+   { uro.hashes.HASH_KW_OPEN, Keyword::kw_Open },
+   { uro.hashes.HASH_KW_REACCESS, Keyword::kw_Reaccess },
+   { uro.hashes.HASH_KW_RECREATE, Keyword::kw_Recreate },
+   { uro.hashes.HASH_KW_RECHANGE, Keyword::kw_Rechange },
+   { uro.hashes.HASH_KW_REMODIFY, Keyword::kw_Remodify },
+   { uro.hashes.HASH_KW_RENAME, Keyword::kw_Rename },
+   { uro.hashes.HASH_KW_SELECT, Keyword::kw_Select },
+   { uro.hashes.HASH_KW_UNHIDE, Keyword::kw_Unhide },
+   { uro.hashes.HASH_KW_UNLOCK, Keyword::kw_Unlock },
    // core command flags:
-   { STRING_FORCE, Keyword::kw_Force },
-   { STRING_STACK, Keyword::kw_Stack },
+   { uro.hashes.HASH_KW_FORCE, Keyword::kw_Force },
+   { uro.hashes.HASH_KW_STACK, Keyword::kw_Stack },
    // logic:
-   { STRING_TRUE, Keyword::kw_True },
-   { STRING_FALSE, Keyword::kw_False },
-   { STRING_AND, Keyword::kw_And },
-   { STRING_OR, Keyword::kw_Or },
-   { STRING_XOR, Keyword::kw_Xor },
-   { STRING_NOT, Keyword::kw_Not },
+   { uro.hashes.HASH_KW_TRUE, Keyword::kw_True },
+   { uro.hashes.HASH_KW_FALSE, Keyword::kw_False },
+   { uro.hashes.HASH_KW_AND, Keyword::kw_And },
+   { uro.hashes.HASH_KW_OR, Keyword::kw_Or },
+   { uro.hashes.HASH_KW_XOR, Keyword::kw_Xor },
+   { uro.hashes.HASH_KW_NOT, Keyword::kw_Not },
    // other commands:
-   { STRING_PRINT, Keyword::kw_Print },
-   { STRING_RUN, Keyword::kw_Run },
-   { STRING_SLEEP, Keyword::kw_Sleep },
+   { uro.hashes.HASH_KW_PRINT, Keyword::kw_Print },
+   { uro.hashes.HASH_KW_RUN, Keyword::kw_Run },
+   { uro.hashes.HASH_KW_SLEEP, Keyword::kw_Sleep },
    // expression elements:
-   { STRING_IN, Keyword::kw_In },
-   { STRING_LIKE, Keyword::kw_Like },
+   { uro.hashes.HASH_KW_IN, Keyword::kw_In },
+   { uro.hashes.HASH_KW_LIKE, Keyword::kw_Like },
    // command structs:
-   { STRING_CATCH, Keyword::kw_Catch },
-   { STRING_ELSE, Keyword::kw_Else },
-   { STRING_IF, Keyword::kw_If },
-   { STRING_INSIDE, Keyword::kw_Inside },
-   { STRING_TIMES, Keyword::kw_Times },
-   { STRING_WHILE, Keyword::kw_While },
+   { uro.hashes.HASH_KW_ELSE, Keyword::kw_Else },
+   { uro.hashes.HASH_KW_IF, Keyword::kw_If },
+   { uro.hashes.HASH_KW_INSIDE, Keyword::kw_Inside },
+   { uro.hashes.HASH_KW_TIMES, Keyword::kw_Times },
+   { uro.hashes.HASH_KW_WHILE, Keyword::kw_While },
    // filthers:
-   { STRING_EVERY, Keyword::kw_Every },
-   { STRING_FINAL, Keyword::kw_Final },
-   { STRING_LIMIT, Keyword::kw_Limit },
-   { STRING_ORDER, Keyword::kw_Order },
-   { STRING_SKIP, Keyword::kw_Skip },
-   { STRING_WHERE, Keyword::kw_Where },
+   { uro.hashes.HASH_KW_EVERY, Keyword::kw_Every },
+   { uro.hashes.HASH_KW_FINAL, Keyword::kw_Final },
+   { uro.hashes.HASH_KW_LIMIT, Keyword::kw_Limit },
+   { uro.hashes.HASH_KW_ORDER, Keyword::kw_Order },
+   { uro.hashes.HASH_KW_SKIP, Keyword::kw_Skip },
+   { uro.hashes.HASH_KW_WHERE, Keyword::kw_Where },
    // rest:
-   { STRING_AS, Keyword::kw_As },
-   { STRING_BY, Keyword::kw_By },
-   { STRING_FROM, Keyword::kw_From },
-   { STRING_TO, Keyword::kw_To },
-   { STRING_EXTENSIONLESS, Keyword::kw_Extensionless },
-   { STRING_WITH, Keyword::kw_With },
+   { uro.hashes.HASH_KW_AS, Keyword::kw_As },
+   { uro.hashes.HASH_KW_BY, Keyword::kw_By },
+   { uro.hashes.HASH_KW_FROM, Keyword::kw_From },
+   { uro.hashes.HASH_KW_TO, Keyword::kw_To },
+   { uro.hashes.HASH_KW_EXTENSIONLESS, Keyword::kw_Extensionless },
+   { uro.hashes.HASH_KW_WITH, Keyword::kw_With },
    // order:
-   { STRING_ASC, Keyword::kw_Asc },
-   { STRING_DESC, Keyword::kw_Desc },
+   { uro.hashes.HASH_KW_ASC, Keyword::kw_Asc },
+   { uro.hashes.HASH_KW_DESC, Keyword::kw_Desc },
    // one-word command:
-   { STRING_BREAK, Keyword::kw_Break },
-   { STRING_CONTINUE, Keyword::kw_Continue },
-   { STRING_EXIT, Keyword::kw_Exit },
-   { STRING_ERROR, Keyword::kw_Error }
+   { uro.hashes.HASH_KW_BREAK, Keyword::kw_Break },
+   { uro.hashes.HASH_KW_CONTINUE, Keyword::kw_Continue },
+   { uro.hashes.HASH_KW_EXIT, Keyword::kw_Exit },
+   { uro.hashes.HASH_KW_ERROR, Keyword::kw_Error }
 }) { };
 
 }

@@ -352,7 +352,7 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
             return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, uro);
          }
 
-         auto fk = uro.keywordsData.KEYWORDS.find(lower);
+         auto fk = uro.keywordsData.KEYWORDS.find(hsh);
          if (fk == uro.keywordsData.KEYWORDS.end()) {
             return Token(hsh, line, start, length, uro);
          }

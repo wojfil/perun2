@@ -167,6 +167,7 @@ public:
    _bool isExpForbiddenKeyword() const;
    _bool isSymbol(const _char& ch) const;
    _bool isKeyword(const Keyword& kw) const;
+   _bool isNegatableKeywordOperator() const;
    _bool isLogicConstant() const;
    _bool isWeekDay() const;
    _bool isMonth() const;

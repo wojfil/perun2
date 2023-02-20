@@ -53,8 +53,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
          const Token& t = tks.listAt(i);
          if (t.type == Token::t_Keyword && isBoolExpOperator(t) && bi.isBracketFree())
          {
-            if (!(t.isKeyword(Keyword::kw_Not) && i != end
-               && (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like))))
+            if (!(t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()))
             {
                if (!parseBoolExp(result, tks, uro)) {
                   throw SyntaxError(L"syntax of a boolean expression is not valid", tks.first().line);
@@ -105,8 +104,7 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       if (t.type == Token::t_Keyword) {
          const _bool free = (lv1 == 0) && (lv2 == 0);
          if (isBoolExpOperator(t)) {
-            if (t.isKeyword(Keyword::kw_Not) && i != end &&
-                (tks.listAt(i + 1).isKeyword(Keyword::kw_In) || tks.listAt(i + 1).isKeyword(Keyword::kw_Like)))
+            if (t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator())
             {
                sublen++;
             }

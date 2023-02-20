@@ -82,6 +82,22 @@ _bool Token::isKeyword(const Keyword& kw) const
    return type == t_Keyword && value.keyword.k == kw;
 }
 
+// this keyword is a binary operator and can be preceded by a Not keyword
+_bool Token::isNegatableKeywordOperator() const
+{
+   if (type != t_Keyword) {
+      return false;
+   }
+
+   switch (value.keyword.k) {
+      case Keyword::kw_In:
+      case Keyword::kw_Like:
+         return true;
+      default:
+         return false;
+   }
+}
+
 _bool Token::isLogicConstant() const
 {
    return type == t_Keyword

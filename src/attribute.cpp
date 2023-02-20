@@ -90,7 +90,7 @@ void Attribute::add(const _size& val)
       this->set(ATTR_SIZE);
 }
 
-void Attribute::set(const _aunit& v)
+inline void Attribute::set(const _aunit& v)
 {
    this->value |= v;
 }
@@ -113,7 +113,7 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-_bool Attribute::has(const _aunit& v) const
+inline _bool Attribute::has(const _aunit& v) const
 {
    return this->value & v;
 }

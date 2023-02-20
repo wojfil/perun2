@@ -61,13 +61,13 @@ struct _uro
 public:
    _uro() = delete;
    _uro(const Arguments& args);
+   ~_uro() noexcept;
    _bool run();
 
    const Arguments& arguments;
    Hashes hashes;
    Math math;
    Contexts contexts;
-   Terminator terminator;
    const KeywordsData keywordsData;
    SideProcess sideProcess;
    const _uint32 flags;

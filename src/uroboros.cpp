@@ -31,8 +31,15 @@ namespace uro
 {
 
 _uro::_uro(const Arguments& args) : arguments(args), contexts(*this),
-   flags(args.getFlags()), terminator(Terminator(this)), keywordsData(*this) { };
+   flags(args.getFlags()), keywordsData(*this) 
+{ 
+   Terminator::addPtr(this);
+};
 
+_uro::~_uro() noexcept
+{
+   Terminator::removePtr(this);
+}
 
 _bool _uro::run()
 {

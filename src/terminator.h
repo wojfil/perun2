@@ -16,6 +16,7 @@
 #define TERMINATOR_H_INCLUDED
 
 #include "datatype/primitives.h"
+#include <unordered_set>
 
 
 namespace uro
@@ -23,13 +24,20 @@ namespace uro
 
 struct _uro;
 
+// Terminator keeps track of every initialized instance of Uroboros2
+// it overrides the default Ctrl+C command-line exit command
+// when this event happens, all Uroboros2 instances are stopped softly (as their commands are designed to be atomic)
 struct Terminator
 {
 public:
-   Terminator(_uro* uro);
+   Terminator() = delete;
+
+   static void addPtr(_uro* uro);
+   static void removePtr(_uro* uro);
 
 private:
-   static _uro* uroboros;
+   static _bool initialized;
+   static std::unordered_set<_uro*> pointers;
    static _int HandlerRoutine(_ulong dwCtrlType);
 };
 

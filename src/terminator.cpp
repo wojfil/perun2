@@ -19,27 +19,41 @@
 namespace uro
 {
 
-_uro* Terminator::uroboros = nullptr;
+_bool Terminator::initialized = false;
+std::unordered_set<_uro*> Terminator::pointers = std::unordered_set<_uro*>();
 
-Terminator::Terminator(_uro* uro)
+void Terminator::addPtr(_uro* uro)
 {
-   Terminator::uroboros = uro;
-   SetConsoleCtrlHandler(HandlerRoutine, TRUE);
-};
+   if (!initialized) {
+      initialized = true;
+      SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+   }
+
+   pointers.insert(uro);
+}
+
+void Terminator::removePtr(_uro* uro)
+{
+   pointers.erase(uro);
+}
 
 _int Terminator::HandlerRoutine(_ulong dwCtrlType)
 {
-  switch (dwCtrlType) {
-    case CTRL_C_EVENT:
-      Terminator::uroboros->state = State::s_Exit;
-      if (Terminator::uroboros->sideProcess.running) {
-         Terminator::uroboros->sideProcess.running = false;
-         TerminateProcess(Terminator::uroboros->sideProcess.info.hProcess, 0);
+   switch (dwCtrlType) {
+      case CTRL_C_EVENT: {
+         for (_uro* uro : pointers) {
+            uro->state = State::s_Exit;
+            if (uro->sideProcess.running) {
+               uro->sideProcess.running = false;
+               TerminateProcess(uro->sideProcess.info.hProcess, 0);
+            }
+         }
+         return TRUE;
       }
-      return TRUE;
-    default:
-      return FALSE;
-    }
+      default: {
+         return FALSE;
+      }
+   }
 }
 
 }

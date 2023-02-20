@@ -12,16 +12,16 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PRINT_H
-#define PRINT_H
+#ifndef COM_PRINT_H_INCLUDED
+#define COM_PRINT_H_INCLUDED
 
-#include "datatype/primitives.h"
-#include "uroboros.h"
-#include "os.h"
+#include "../datatype/primitives.h"
+#include "../uroboros.h"
+#include "../os.h"
 #include <iostream>
 
 
-namespace uro
+namespace uro::comm
 {
 
 inline constexpr _int GUI_WAIT_LIMIT = 219;
@@ -51,6 +51,7 @@ void commandLog(const _uro& uro, Args const&... args)
       // solution? from time to time, sleep for few milliseconds
       // as a result, GUI app never lags nor freezes
       // a bit of efficiency is sacrificed for the sake of user convenience
+      // very ugly solution indeed
       // delete this if a better solution is found
          g_guiMes++;
          if (g_guiMes == GUI_WAIT_LIMIT) {
@@ -63,4 +64,4 @@ void commandLog(const _uro& uro, Args const&... args)
 
 }
 
-#endif /* PRINT_H */
+#endif // COM_PRINT_H_INCLUDED

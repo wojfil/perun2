@@ -17,7 +17,7 @@
 #include <thread>
 #include <algorithm>
 #include "../os.h"
-#include "../print.h"
+#include "com-print.h"
 #include "../uroboros.h"
 #include "com-core.h"
 #include <sstream>

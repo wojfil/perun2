@@ -14,7 +14,7 @@
 
 #include "com-create.h"
 #include "../uroboros.h"
-#include "../print.h"
+#include "com-print.h"
 #include "../os.h"
 
 

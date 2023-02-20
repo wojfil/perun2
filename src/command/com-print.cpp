@@ -12,11 +12,10 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "print.h"
-#include "os.h"
+#include "com-print.h"
+#include "../os.h"
 
-
-namespace uro
+namespace uro::comm
 {
 
 _int g_guiMes;

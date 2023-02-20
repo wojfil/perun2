@@ -15,7 +15,6 @@
 #include "gen-definition.h"
 #include "../../os.h"
 #include "../../uroboros.h"
-#include "../../print.h"
 
 
 namespace uro::gen

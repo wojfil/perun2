@@ -13,7 +13,7 @@
 */
 
 #include "com-core-aggr.h"
-#include "../print.h"
+#include "com-print.h"
 #include "../uroboros.h"
 #include "../os.h"
 

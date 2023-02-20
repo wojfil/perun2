@@ -21,6 +21,8 @@
 namespace uro
 {
 
+inline constexpr _size LETTERS_IN_ENGLISH_ALPHABET = 26;
+
 static const _str EMPTY_STRING =                   _str();
 static const _str STRING_CHAR_SPACE =              toStr(CHAR_SPACE);
 static const _str STRING_CHAR_0 =                  toStr(CHAR_0);

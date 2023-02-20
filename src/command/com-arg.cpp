@@ -13,7 +13,6 @@
 */
 
 #include "com-arg.h"
-#include "..\var\var-runtime.h"
 #include "..\os.h"
 #include "..\uroboros.h"
 
@@ -74,7 +73,7 @@ void CS_DefinitionComArg::run()
          this->definition->reset();
          break;
       }
-      
+
       this->context->loadData(this->definition->getValue());
       this->command->run();
       index++;

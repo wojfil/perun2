@@ -13,7 +13,6 @@
 */
 
 #include "func-attr.h"
-#include "..\..\var\var-runtime.h"
 #include "..\..\os.h"
 #include "..\..\util.h"
 

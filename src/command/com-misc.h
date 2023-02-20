@@ -22,7 +22,6 @@
 #include "com-core.h"
 #include "../attribute.h"
 #include "../uroboros.h"
-#include "../var/var.h"
 
 
 namespace uro::comm

@@ -771,7 +771,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
 
       if (first.type == Token::t_Word) {
          if (tks.getLength() == 2) {
-            vars::Variable<_num>* pv_num;
+            Variable<_num>* pv_num;
 
             if (!uro.contexts.getVar(first, pv_num, uro) || pv_num->isImmutable()) {
                throw SyntaxError(str(L"variable '", first.getOriginString(uro),
@@ -797,7 +797,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
             if (varSquareBrackets(tks2)) {
                _genptr<_num> index;
                parseListElementIndex(index, tks2, uro);
-               vars::Variable<_nlist>* pv_nlist;
+               Variable<_nlist>* pv_nlist;
 
                if (!uro.contexts.getVar(first, pv_nlist, uro) || pv_nlist->isImmutable()) {
                   throw SyntaxError(str(L"variable '", first.getOriginString(uro),
@@ -818,7 +818,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
             throw SyntaxError(L"the dot . should be preceded by a time variable name", first.line);
          }
 
-         vars::Variable<_tim>* pv_tim;
+         Variable<_tim>* pv_tim;
 
          if (!uro.contexts.getVar(first, pv_tim, uro)) {
             throw SyntaxError(str(L"time variable from expression '", first.getOriginString(uro),
@@ -877,9 +877,9 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
    if (left.getLength() > 1) {
       if (varSquareBrackets(left)) {
-         vars::Variable<_list>* pv_list;
-         vars::Variable<_nlist>* pv_nlist;
-         vars::Variable<_tlist>* pv_tlist;
+         Variable<_list>* pv_list;
+         Variable<_nlist>* pv_nlist;
+         Variable<_tlist>* pv_tlist;
 
          if (uro.contexts.getVar(first, pv_list, uro)
           || uro.contexts.getVar(first, pv_nlist, uro)
@@ -889,7 +889,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
                L"' is immutable, so its elements cannot be modified"), right.first().line);
          }
 
-         vars::Variable<_str>* pv_str;
+         Variable<_str>* pv_str;
 
          if (uro.contexts.getVar(first, pv_str, uro)) {
             throw SyntaxError(str(L"operation ", toStr(sign),
@@ -907,7 +907,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
             aro.trimRight();
 
             if (varSquareBrackets(aro)) {
-               vars::Variable<_tlist>* pv_tlist;
+               Variable<_tlist>* pv_tlist;
                if (uro.contexts.getVar(first, pv_tlist, uro)) {
                   throw SyntaxError(str(L"operation ", toStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Uroboros2 are immutable"), first.line);
@@ -921,7 +921,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
    }
 
    if (first.type == Token::t_Word) {
-      vars::Variable<_num>* pv_num;
+      Variable<_num>* pv_num;
       if (uro.contexts.getVar(first, pv_num, uro)) {
          _genptr<_num> num;
 
@@ -934,7 +934,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
             throw SyntaxError(str(L"variable '", first.getOriginString(uro), L"' is immutable"), first.line);
          }
 
-         vars::Variable<_num>& var = *pv_num;
+         Variable<_num>& var = *pv_num;
          pv_num->makeNotConstant();
 
          switch (sign) {
@@ -963,7 +963,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          return true;
       }
 
-      vars::Variable<_per>* pv_per;
+      Variable<_per>* pv_per;
       if (uro.contexts.getVar(first, pv_per, uro)) {
          switch (sign) {
             case CHAR_PLUS:
@@ -980,7 +980,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
                }
 
                pv_per->makeNotConstant();
-               vars::Variable<_per>& var = *pv_per;
+               Variable<_per>& var = *pv_per;
 
                if (sign == CHAR_PLUS) {
                   result = std::make_unique<VarAdd_<_per>>(var, per);
@@ -1000,7 +1000,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          }
       }
 
-      vars::Variable<_tim>* pv_tim;
+      Variable<_tim>* pv_tim;
       if (uro.contexts.getVar(first, pv_tim, uro)) {
          switch (sign) {
             case CHAR_ASTERISK:
@@ -1018,7 +1018,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
                L" ", toStr(sign), L"=' cannot be resolved to a period"), first.line);
          }
 
-         vars::Variable<_tim>& var = *pv_tim;
+         Variable<_tim>& var = *pv_tim;
          pv_tim->makeNotConstant();
 
          if (pv_tim->isImmutable()) {
@@ -1052,7 +1052,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
          }
       }
 
-      vars::Variable<_tim>* pv_tim;
+      Variable<_tim>* pv_tim;
       if (!uro.contexts.getVar(first, pv_tim, uro)) {
          throw SyntaxError(str(L"'", first.getOriginString(uro),
             L"' is not a time variable for the ", toStr(sign), L"= operation"),
@@ -1072,7 +1072,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       }
 
       const _size& h = first.value.twoWords.h2;
-      vars::Variable<_tim>& var = *pv_tim;
+      Variable<_tim>& var = *pv_tim;
       const _bool negative = (sign == '-');
       pv_tim->makeNotConstant();
 
@@ -1118,7 +1118,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
 static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int& line, _uro& uro)
 {
-   vars::Variable<_str>* pv_str;
+   Variable<_str>* pv_str;
    if (uro.contexts.getVar(first, pv_str, uro)) {
       _genptr<_str> str_;
       if (parse::parse(uro, tks, str_)) {
@@ -1150,7 +1150,7 @@ static _bool commandVarIncrement(_comptr& result, const Token& first, const Toke
 
 template <typename T>
 static _bool makeVarAlteration(_uro& uro, const Tokens& tokens, const Token& first,
-   vars::Variable<T>*& varPtr, _comptr& result, const _str& dataTypeName)
+   Variable<T>*& varPtr, _comptr& result, const _str& dataTypeName)
 {
    if (uro.contexts.getVar(first, varPtr, uro)) {
       if (varPtr->isImmutable()) {
@@ -1179,9 +1179,9 @@ static _bool makeVarAlteration(_uro& uro, const Tokens& tokens, const Token& fir
 
 template <typename T>
 static _bool makeVarAssignment(_comptr& result, const Token& token, _uro& uro,
-   vars::Variable<T>* varPtr, _genptr<T>& valuePtr)
+   Variable<T>* varPtr, _genptr<T>& valuePtr)
 {
-   /*vars::VarBundle<T>* bundle;
+   /*VarBundle<T>* bundle;
    uro.vars.takeBundlePointer(bundle);
    const _bool isConstant = !uro.vc.anyAggregate() && valuePtr->isConstant();
    return bundle->makeVariableAssignment(result, token, varPtr, valuePtr, isConstant);*/
@@ -1193,7 +1193,7 @@ static _bool makeVarAssignment(_comptr& result, const Token& token, _uro& uro,
    _varptrs<T>* allVarsOfThisType;
    uvc->userVars.takeVarsPtr(allVarsOfThisType);
    const _size& hash = token.value.word.h;
-   allVarsOfThisType->insert(std::make_pair(hash, std::make_unique<vars::Variable<T>>(vars::VarType::vt_User)));
+   allVarsOfThisType->insert(std::make_pair(hash, std::make_unique<Variable<T>>(VarType::vt_User)));
 
    (*allVarsOfThisType)[hash]->isConstant_ = isConstant;
    if (isConstant) {
@@ -1219,9 +1219,9 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
          le.trimRight();
 
          if (varSquareBrackets(le)) {
-            vars::Variable<_nlist>* pv_nlist;
-            vars::Variable<_tlist>* pv_tlist;
-            vars::Variable<_list>* pv_list;
+            Variable<_nlist>* pv_nlist;
+            Variable<_tlist>* pv_tlist;
+            Variable<_list>* pv_list;
 
             if (uro.contexts.getVar(first, pv_nlist, uro) ||
                 uro.contexts.getVar(first, pv_tlist, uro) ||
@@ -1252,42 +1252,42 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
       throw SyntaxError(str(L"variable '", first.getOriginString(uro), L"' is immutable"), first.line);
    }
 
-   vars::Variable<_bool>* pv_boo = nullptr;
+   Variable<_bool>* pv_boo = nullptr;
    if (makeVarAlteration(uro, right, first, pv_boo, result, STRING_BOOL)) {
       return true;
    }
 
-   vars::Variable<_num>* pv_num = nullptr;
+   Variable<_num>* pv_num = nullptr;
    if (makeVarAlteration(uro, right, first, pv_num, result, STRING_NUMBER)) {
       return true;
    }
 
-   vars::Variable<_tim>* pv_tim = nullptr;
+   Variable<_tim>* pv_tim = nullptr;
    if (makeVarAlteration(uro, right, first, pv_tim, result, STRING_TIME)) {
       return true;
    }
 
-   vars::Variable<_per>* pv_per = nullptr;
+   Variable<_per>* pv_per = nullptr;
    if (makeVarAlteration(uro, right, first, pv_per, result, STRING_PERIOD)) {
       return true;
    }
 
-   vars::Variable<_str>* pv_str = nullptr;
+   Variable<_str>* pv_str = nullptr;
    if (makeVarAlteration(uro, right, first, pv_str, result, STRING_STRING)) {
       return true;
    }
 
-   vars::Variable<_nlist>* pv_nlist = nullptr;
+   Variable<_nlist>* pv_nlist = nullptr;
    if (makeVarAlteration(uro, right, first, pv_nlist, result, STRING_NUMERIC_LIST)) {
       return true;
    }
 
-   vars::Variable<_tlist>* pv_tlist = nullptr;
+   Variable<_tlist>* pv_tlist = nullptr;
    if (makeVarAlteration(uro, right, first, pv_tlist, result, STRING_TIME_LIST)) {
       return true;
    }
 
-   vars::Variable<_list>* pv_list = nullptr;
+   Variable<_list>* pv_list = nullptr;
    if (makeVarAlteration(uro, right, first, pv_list, result, STRING_LIST)) {
       return true;
    }
@@ -1368,9 +1368,9 @@ static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
 {
    const Token& first = left.first();
 
-   vars::Variable<_list>* pv_list;
-   vars::Variable<_nlist>* pv_nlist;
-   vars::Variable<_tlist>* pv_tlist;
+   Variable<_list>* pv_list;
+   Variable<_nlist>* pv_nlist;
+   Variable<_tlist>* pv_tlist;
 
    if (uro.contexts.getVar(first, pv_list, uro) ||
        uro.contexts.getVar(first, pv_nlist, uro) ||
@@ -1380,7 +1380,7 @@ static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
          L"' is immutable, so its elements cannot me modified"), first.line);
    }
 
-   vars::Variable<_str>* pv_str;
+   Variable<_str>* pv_str;
    if (uro.contexts.getVar(first, pv_str, uro)) {
       if (! pv_str->isImmutable()) {
          _genptr<_num> index;

@@ -12,22 +12,22 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef VAR_H
-#define VAR_H
+#ifndef VAR_H_INCLUDED
+#define VAR_H_INCLUDED
 
-#include "../datatype/generator.h"
-#include "../datatype/primitives.h"
+#include "datatype/generator.h"
+#include "datatype/primitives.h"
 
 
-namespace uro::vars
+namespace uro
 {
-
    enum VarType
    {
       vt_User,       // variable created by user
       vt_Attribute,  // file attribute
       vt_Special     // other inner vars: global constant, index, this, success...
    };
+
 
    template <typename T>
    struct Variable : Generator<T>
@@ -85,101 +85,6 @@ namespace uro::vars
    private:
       Variable<T>& variable;
    };
-
-
-
-/*
-template <typename T>
-struct Variable : Generator<T>
-{
-public:
-   Variable<T>() {};
-   Variable<T>(T val) : value(val) {};
-   ~Variable<T>() override {};
-
-   _bool isConstant() const override
-   {
-      return this->isConstant_;
-   };
-
-
-   T getValue() override {
-      return this->value;
-   };
-
-   T value;
-   _bool isConstant_ = false;
-};
-
-
-template <typename T>
-struct ParseVariable
-{
-public:
-
-   Variable<T>* getVarPtr() const
-   {
-      return &this->var;
-   }
-
-   Variable<T>& getVarRef()
-   {
-      return this->var;
-   }
-
-   void bracketsUp()
-   {
-      if (this->isReachable_) {
-         this->level++;
-      }
-   }
-
-   void bracketsDown()
-   {
-      if (this->isReachable_) {
-         this->level--;
-         if (this->level < 0) {
-            this->isReachable_ = false;
-         }
-      }
-   }
-
-   void resurrect(const _bool& isConst)
-   {
-      this->isReachable_ = true;
-      this->var.isConstant_ = isConst;
-      if (this->level < 0) {
-         this->level = 0;
-      }
-   }
-
-   _bool isReachable() const
-   {
-      return this->isReachable_;
-   }
-
-   void makeNotConstant()
-   {
-      this->var.isConstant_ = false;
-   }
-
-   void actualizeConstantness(const _bool& isConst)
-   {
-      if (this->var.isConstant_) {
-         if (!isConst) {
-            this->var.isConstant_ = false;
-         }
-      }
-   }
-
-   Variable<T> var;
-
-private:
-
-   _int level = 0;
-   _bool isReachable_ = true;
-};*/
-
 }
 
-#endif /* VAR_H */
+#endif // VAR_H_INCLUDED

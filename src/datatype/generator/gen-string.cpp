@@ -13,7 +13,6 @@
 */
 
 #include "gen-string.h"
-#include "../../var/var-runtime.h"
 #include "../../os.h"
 #include "../../uroboros.h"
 
@@ -38,7 +37,7 @@ _str StringBinary::getValue()
 }
 
 
-LocationReference::LocationReference(_uro& uro) 
+LocationReference::LocationReference(_uro& uro)
    : context(*uro.contexts.getLocationContext()) { };
 
 _str LocationReference::getValue()
@@ -46,7 +45,7 @@ _str LocationReference::getValue()
    return this->context.location->value;
 }
 
-RelativeLocation::RelativeLocation(_genptr<_str>& val, _uro& uro) 
+RelativeLocation::RelativeLocation(_genptr<_str>& val, _uro& uro)
    : value(std::move(val)), context(*uro.contexts.getLocationContext()) { };
 
 _str RelativeLocation::getValue()

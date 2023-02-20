@@ -17,7 +17,7 @@
 
 #include "../generator.h"
 #include "gen-generic.h"
-#include "../../var/var.h"
+#include "../../var.h"
 
 
 namespace uro::gen
@@ -49,34 +49,34 @@ private:
 };
 
 
-struct v_Now : vars::Variable<_tim>
+struct v_Now : Variable<_tim>
 {
 public:
-   v_Now() : vars::Variable<_tim>(vars::VarType::vt_Special) { };
+   v_Now() : Variable<_tim>(VarType::vt_Special) { };
    _tim getValue() override;
 };
 
 
-struct v_Today : vars::Variable<_tim>
+struct v_Today : Variable<_tim>
 {
 public:
-   v_Today() : vars::Variable<_tim>(vars::VarType::vt_Special) { };
+   v_Today() : Variable<_tim>(VarType::vt_Special) { };
    _tim getValue() override;
 };
 
 
-struct v_Yesterday : vars::Variable<_tim>
+struct v_Yesterday : Variable<_tim>
 {
 public:
-   v_Yesterday() : vars::Variable<_tim>(vars::VarType::vt_Special) { };
+   v_Yesterday() : Variable<_tim>(VarType::vt_Special) { };
    _tim getValue() override;
 };
 
 
-struct v_Tomorrow : vars::Variable<_tim>
+struct v_Tomorrow : Variable<_tim>
 {
 public:
-   v_Tomorrow() : vars::Variable<_tim>(vars::VarType::vt_Special) { };
+   v_Tomorrow() : Variable<_tim>(VarType::vt_Special) { };
    _tim getValue() override;
 };
 

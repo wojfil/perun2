@@ -16,7 +16,6 @@
 #define PARSE_ORDER_H_INCLUDED
 
 
-#include "../../var/var-inner.h"
 #include "../../uroboros.h"
 #include "../../tokens.h"
 #include "../generator/gen-definition.h"

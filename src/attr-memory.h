@@ -17,7 +17,6 @@
 
 #include "attribute.h"
 #include "datatype/datatype.h"
-#include "var/var-inner.h"
 
 
 namespace uro

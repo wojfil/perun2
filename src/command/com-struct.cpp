@@ -13,7 +13,6 @@
 */
 
 #include "com-struct.h"
-#include "..\var\var-runtime.h"
 #include "..\os.h"
 #include "..\uroboros.h"
 
@@ -115,7 +114,7 @@ void CS_DefinitionLoop::run()
 
 
 CS_ContextlessLoop::CS_ContextlessLoop(_defptr& def, _comptr& com, _uro& uro)
-   : definition(std::move(def)), command(std::move(com)), uroboros(uro), 
+   : definition(std::move(def)), command(std::move(com)), uroboros(uro),
      context(this->definition->getFileContext()) { };
 
 
@@ -221,7 +220,7 @@ void CS_InsideDefinition::run()
 
 
 CS_InsideContextless::CS_InsideContextless(_defptr& def, _comptr& com, _lcptr& lctx, _uro& uro)
-   : definition(std::move(def)), command(std::move(com)), locContext(std::move(lctx)), uroboros(uro), 
+   : definition(std::move(def)), command(std::move(com)), locContext(std::move(lctx)), uroboros(uro),
      fileContext(this->definition->getFileContext()) { };
 
 

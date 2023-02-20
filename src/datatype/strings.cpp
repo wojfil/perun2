@@ -12,23 +12,11 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-ref.h"
+#include "strings.h"
 
-
-namespace uro::gen
+namespace uro
 {
 
-NumberIntRef::NumberIntRef(vars::Variable<_numi>& val)
-   : value(val) { };
 
-_bool NumberIntRef::isConstant() const
-{
-   return this->value.isConstant();
-}
-
-_num NumberIntRef::getValue()
-{
-   return this->value.getValue();
-}
 
 }

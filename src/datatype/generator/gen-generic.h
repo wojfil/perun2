@@ -21,7 +21,6 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../../util.h"
-#include "../../var/var.h"
 
 
 namespace uro::gen
@@ -175,21 +174,6 @@ public:
 private:
    _genptr<std::vector<T>> list;
    _genptr<_num> index;
-};
-
-
-template <typename T>
-struct VarReference : Generator<T>
-{
-public:
-   VarReference(vars::Variable<T>* var) : variable(var) { };
-
-   T getValue() override {
-      return variable->value;
-   }
-
-private:
-   vars::Variable<T>* variable;
 };
 
 }

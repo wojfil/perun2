@@ -355,7 +355,7 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
 
       if (tks.isEmpty()) {
          FileContext* fc = uro.contexts.getFileContext();
-         _genptr<_str> str = std::make_unique<vars::VariableReference<_str>>(fc->this_.get());
+         _genptr<_str> str = std::make_unique<VariableReference<_str>>(fc->this_.get());
          result = std::make_unique<C_AggrSelect_String>(aggr, str, uro);
          return true;
       }
@@ -983,7 +983,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
 
          if (tks.isEmpty()) {
             FileContext* fc = uro.contexts.getFileContext();
-            _genptr<_str> str = std::make_unique<vars::VariableReference<_str>>(fc->this_.get());
+            _genptr<_str> str = std::make_unique<VariableReference<_str>>(fc->this_.get());
             result = std::make_unique<C_AggrCopy_String>(aggr, str, uro);
             return true;
          }

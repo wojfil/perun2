@@ -13,7 +13,6 @@
 */
 
 #include "func-bool.h"
-#include "..\..\var\var-runtime.h"
 #include "..\..\os.h"
 #include <cwctype>
 
@@ -228,7 +227,7 @@ _bool F_Exists::getValue()
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
-   
+
    const _str base = os_join(this->locContext->location->value, this->fileContext->this_->value);
    const _str value = os_trim(this->arg1->getValue());
 
@@ -245,14 +244,14 @@ _bool F_Exist::getValue()
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
-   
+
    const _str base = os_join(this->locContext->location->value, this->fileContext->this_->value);
    const _list values = this->arg1->getValue();
    const _size len = values.size();
 
    for (_size i = 0; i < len; i++) {
       const _str& v = os_trim(values[i]);
-      
+
       if (os_isInvaild(v)) {
           return false;
       }

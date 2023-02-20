@@ -15,8 +15,6 @@
 #ifndef UROBOROS_H
 #define UROBOROS_H
 
-#include "var/var-runtime.h"
-#include "var/var-context.h"
 #include "arguments.h"
 #include "hash.h"
 #include "datatype/math.h"
@@ -103,7 +101,7 @@ public:
    Uroboros2() = delete;
    Uroboros2(Uroboros2 const&) = delete;
    Uroboros2& operator= (Uroboros2 const&) = delete;
-   
+
    _bool run();
    _exitint getExitCode() const;
 

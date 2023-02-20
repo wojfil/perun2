@@ -18,7 +18,7 @@
 #include "datatype/datatype.h"
 #include "command/com-aggregate.h"
 #include "datatype/generator/gen-os-gen.h"
-#include "var/var.h"
+#include "var.h"
 #include "attribute.h"
 #include <unordered_map>
 #include <memory>
@@ -31,7 +31,7 @@ namespace uro
    struct Hashes;
 
    template <typename T>
-   using _varptr = std::unique_ptr<vars::Variable<T>>;
+   using _varptr = std::unique_ptr<Variable<T>>;
 
    template <typename T>
    using _varptrs = std::unordered_map<_size, _varptr<T>>;
@@ -51,7 +51,7 @@ namespace uro
       void takeVarsPtr(_varptrs<_list>*& result) { result = &this->lists; };
 
       template <typename T2>
-      _bool takeVar(const _size& var, vars::Variable<T2>*& result)
+      _bool takeVar(const _size& var, Variable<T2>*& result)
       {
          _varptrs<T2>* vars;
          this->takeVarsPtr(vars);
@@ -65,11 +65,11 @@ namespace uro
       }
 
       template <typename T2>
-      void addVar(const _size& var, const vars::VarType& type)
+      void addVar(const _size& var, const VarType& type)
       {
          _varptrs<T2>* vars;
          this->takeVarsPtr(vars);
-         vars->insert(std::make_pair(var, std::make_unique<vars::Variable<T2>>(type)));
+         vars->insert(std::make_pair(var, std::make_unique<Variable<T2>>(type)));
       }
 
       _varptrs<_bool> bools;
@@ -125,28 +125,28 @@ namespace uro
       LocationContext* const locContext;
       _str trimmed;
 
-      vars::Variable<_bool>* v_archive;
-      vars::Variable<_bool>* v_compressed;
-      vars::Variable<_bool>* v_empty;
-      vars::Variable<_bool>* v_encrypted;
-      vars::Variable<_bool>* v_exists;
-      vars::Variable<_bool>* v_hidden;
-      vars::Variable<_bool>* v_isdirectory;
-      vars::Variable<_bool>* v_isfile;
-      vars::Variable<_bool>* v_readonly;
-      vars::Variable<_tim>* v_access;
-      vars::Variable<_tim>* v_change;
-      vars::Variable<_tim>* v_creation;
-      vars::Variable<_tim>* v_modification;
-      vars::Variable<_per>* v_lifetime;
-      vars::Variable<_num>* v_size;
-      vars::Variable<_num>* v_depth;
-      vars::Variable<_str>* v_drive;
-      vars::Variable<_str>* v_extension;
-      vars::Variable<_str>* v_fullname;
-      vars::Variable<_str>* v_name;
-      vars::Variable<_str>* v_parent;
-      vars::Variable<_str>* v_path;
+      Variable<_bool>* v_archive;
+      Variable<_bool>* v_compressed;
+      Variable<_bool>* v_empty;
+      Variable<_bool>* v_encrypted;
+      Variable<_bool>* v_exists;
+      Variable<_bool>* v_hidden;
+      Variable<_bool>* v_isdirectory;
+      Variable<_bool>* v_isfile;
+      Variable<_bool>* v_readonly;
+      Variable<_tim>* v_access;
+      Variable<_tim>* v_change;
+      Variable<_tim>* v_creation;
+      Variable<_tim>* v_modification;
+      Variable<_per>* v_lifetime;
+      Variable<_num>* v_size;
+      Variable<_num>* v_depth;
+      Variable<_str>* v_drive;
+      Variable<_str>* v_extension;
+      Variable<_str>* v_fullname;
+      Variable<_str>* v_name;
+      Variable<_str>* v_parent;
+      Variable<_str>* v_path;
 
    private:
       void initVars(_uro& uro);
@@ -154,7 +154,7 @@ namespace uro
       template <typename T>
       void addVar(const _size& hsh)
       {
-         this->fileVars.addVar<T>(hsh, vars::VarType::vt_Attribute);
+         this->fileVars.addVar<T>(hsh, VarType::vt_Attribute);
       }
    };
 
@@ -183,10 +183,11 @@ namespace uro
       template <typename T>
       void addVar(const _size& hsh)
       {
-         this->globalVars.addVar<T>(hsh, vars::VarType::vt_Special);
+         this->globalVars.addVar<T>(hsh, VarType::vt_Special);
       }
-   };
 
+      _list getAlphabet() const;
+   };
 
    typedef std::unique_ptr<UserVarsContext>        _ucptr;
    typedef std::unique_ptr<AggregateContext>       _acptr;
@@ -201,12 +202,12 @@ namespace uro
       Contexts() = delete;
       Contexts(_uro& uro);
 
-      _bool getVar(const Token& tk, vars::Variable<_bool>*& result, _uro& uro);
-      _bool getVar(const Token& tk, vars::Variable<_num>*& result, _uro& uro);
-      _bool getVar(const Token& tk, vars::Variable<_str>*& result, _uro& uro);
+      _bool getVar(const Token& tk, Variable<_bool>*& result, _uro& uro);
+      _bool getVar(const Token& tk, Variable<_num>*& result, _uro& uro);
+      _bool getVar(const Token& tk, Variable<_str>*& result, _uro& uro);
 
       template <typename T>
-      _bool getVar(const Token& tk, vars::Variable<T>*& result, _uro& uro)
+      _bool getVar(const Token& tk, Variable<T>*& result, _uro& uro)
       {
          return findVar(tk, result, uro);
       };
@@ -216,9 +217,9 @@ namespace uro
       template <typename T>
       _bool makeVarRef(const Token& tk, _genptr<T>& result, _uro& uro)
       {
-         vars::Variable<T>* var;
+         Variable<T>* var;
          if (getVar(tk, var, uro)) {
-            result = std::make_unique<vars::VariableReference<T>>(var);
+            result = std::make_unique<VariableReference<T>>(var);
             return true;
          }
 
@@ -269,7 +270,7 @@ namespace uro
       const Hashes& hashes;
 
       template <typename T>
-      _bool findVar(const Token& tk, vars::Variable<T>*& result, _uro& uro)
+      _bool findVar(const Token& tk, Variable<T>*& result, _uro& uro)
       {
          const _size& var = tk.value.word.h;
 

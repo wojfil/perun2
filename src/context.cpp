@@ -15,7 +15,7 @@
 #include "context.h"
 #include "uroboros.h"
 #include "datatype/generator/gen-time.h"
-
+#include "os.h"
 
 namespace uro
 {
@@ -24,11 +24,11 @@ namespace uro
       : aggregate(uro) { };
 
    LocationContext::LocationContext()
-      : location(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
+      : location(std::make_unique<Variable<_str>>(VarType::vt_Special)),
         prevLocation(nullptr) { };
 
    LocationContext::LocationContext(LocationContext* prev)
-      : location(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
+      : location(std::make_unique<Variable<_str>>(VarType::vt_Special)),
         prevLocation(prev) { };
 
    void LocationContext::loadData(const _str& newThis)
@@ -39,23 +39,23 @@ namespace uro
    }
 
    IndexContext::IndexContext(_uro& uro)
-      : AggregateContext(uro), 
-        index(std::make_unique<vars::Variable<_num>>(vars::VarType::vt_Special)) { };
+      : AggregateContext(uro),
+        index(std::make_unique<Variable<_num>>(VarType::vt_Special)) { };
 
-   FileContext::FileContext(_uro& uro) 
+   FileContext::FileContext(_uro& uro)
       : IndexContext(uro), attribute(std::make_unique<Attribute>(uro)),
-      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
+      this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
       locContext(uro.contexts.getLocationContext())
    {
-      this->initVars(uro); 
+      this->initVars(uro);
    };
 
    FileContext::FileContext(_attrptr& attr, _uro& uro)
       : IndexContext(uro), attribute(std::move(attr)),
-      this_(std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special)),
+      this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
       locContext(uro.contexts.getLocationContext())
-   { 
-      this->initVars(uro); 
+   {
+      this->initVars(uro);
    };
 
    void IndexContext::resetIndex()
@@ -67,7 +67,7 @@ namespace uro
    {
       this->index->value.value.i++;
    }
-   
+
    void FileContext::initVars(_uro& uro)
    {
       this->addVar<_bool>(uro.hashes.HASH_VAR_ARCHIVE);
@@ -117,7 +117,7 @@ namespace uro
       this->v_path = this->fileVars.strings.at(uro.hashes.HASH_VAR_PATH).get();
    }
 
-   
+
    void FileContext::loadData(const _str& newThis)
    {
       this->this_->value = newThis;
@@ -149,25 +149,33 @@ namespace uro
       this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
       this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
 
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_DESKTOP, 
-         std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special, os_desktopPath())));
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_UROBOROS2, 
-         std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special, os_uroborosPath())));
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_ROOT, 
-         std::make_unique<vars::Variable<_str>>(vars::VarType::vt_Special, uro.arguments.getLocation())));
+      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_DESKTOP,
+         std::make_unique<Variable<_str>>(VarType::vt_Special, os_desktopPath())));
+      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_UROBOROS2,
+         std::make_unique<Variable<_str>>(VarType::vt_Special, os_uroborosPath())));
+      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_ROOT,
+         std::make_unique<Variable<_str>>(VarType::vt_Special, uro.arguments.getLocation())));
 
-      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ALPHABET, 
-         std::make_unique<vars::Variable<_list>>(vars::VarType::vt_Special, getAlphabet())));
-      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ASCII, 
-         std::make_unique<vars::Variable<_list>>(vars::VarType::vt_Special, STRINGS_ASCII)));
-      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ARGUMENTS, 
-         std::make_unique<vars::Variable<_list>>(vars::VarType::vt_Special, uro.arguments.getArgs())));
+      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ALPHABET,
+         std::make_unique<Variable<_list>>(VarType::vt_Special, this->getAlphabet())));
+      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ASCII,
+         std::make_unique<Variable<_list>>(VarType::vt_Special, STRINGS_ASCII)));
+      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ARGUMENTS,
+         std::make_unique<Variable<_list>>(VarType::vt_Special, uro.arguments.getArgs())));
    };
-   
-   
-   Contexts::Contexts(_uro& uro) 
+
+   _list GlobalContext::getAlphabet() const
+   {
+      _list a(LETTERS_IN_ENGLISH_ALPHABET);
+      for (_size i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
+         a[i] = CHAR_a + i;
+      }
+      return a;
+   }
+
+   Contexts::Contexts(_uro& uro)
       : GlobalContext(uro), hashes(uro.hashes)
-   { 
+   {
       this->locationContexts.push_back(&this->rootLocation);
       this->locationContexts.back()->location->value = uro.arguments.getLocation();
 
@@ -176,8 +184,8 @@ namespace uro
       this->addOsGen(hashes.HASH_VAR_DIRECTORIES, gen::OsElement::oe_Directories, uro);
       this->addOsGen(hashes.HASH_VAR_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, uro);
    };
-   
-   _bool Contexts::getVar(const Token& tk, vars::Variable<_bool>*& result, _uro& uro)
+
+   _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
@@ -189,7 +197,7 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contexts::getVar(const Token& tk, vars::Variable<_num>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
 
@@ -209,10 +217,10 @@ namespace uro
       return findVar(tk, result, uro);
    }
 
-   _bool Contexts::getVar(const Token& tk, vars::Variable<_str>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, _uro& uro)
    {
       const _size& var = tk.value.word.h;
-      
+
       if (var == this->hashes.HASH_VAR_THIS) {
          if (this->fileContexts.empty()) {
             throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
@@ -262,7 +270,7 @@ namespace uro
    {
       this->userVarsContexts.pop_back();
    }
-   
+
    void Contexts::addAggregateContext(AggregateContext* ctx)
    {
       this->aggregateContexts.push_back(ctx);
@@ -320,7 +328,7 @@ namespace uro
       }
    }
 
-   
+
    _bool Contexts::nextContextWillBeAggregate()
    {
       return this->aggregateContexts.size() == 1;
@@ -336,12 +344,12 @@ namespace uro
       return &this->aggregateContexts[1]->aggregate;
    }
 
-   LocationContext* Contexts::getLocationContext() 
+   LocationContext* Contexts::getLocationContext()
    {
       return this->locationContexts.back();
    }
 
-   AggregateContext* Contexts::getAggregateContext() 
+   AggregateContext* Contexts::getAggregateContext()
    {
       return this->aggregateContexts.back();
    }
@@ -359,13 +367,13 @@ namespace uro
 
       return this->fileContexts.back() != nullptr;
    }
-      
-   FileContext* Contexts::getFileContext() 
+
+   FileContext* Contexts::getFileContext()
    {
       return this->fileContexts.back();
    }
 
-   std::vector<FileContext*>& Contexts::getFileContexts() 
+   std::vector<FileContext*>& Contexts::getFileContexts()
    {
       return this->fileContexts;
    }
@@ -377,11 +385,11 @@ namespace uro
 
    void Contexts::addOsGen(const _size& hash, const gen::OsElement& element, _uro& uro)
    {
-      osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, uro)));   
+      osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, uro)));
    }
-   
+
    void Contexts::makeLocationContext(_lcptr& result)
-   {  
+   {
       result = std::make_unique<LocationContext>(this->locationContexts.back());
    }
 

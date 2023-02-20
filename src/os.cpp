@@ -98,8 +98,7 @@ void os_rawSleepForMs(const _nint& ms)
 // explanation of attributes is in file 'attribute.h'
 void os_loadAttributes(FileContext& context)
 {
-   const _aunit attr = context.attribute->getValue();
-
+   const _attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
 
    if (os_isInvaild(context.trimmed)) {
@@ -110,24 +109,24 @@ void os_loadAttributes(FileContext& context)
    _str path;
 
    // "drive", "path", "parent" and "fullname" do not require access to the file system
-   if (attr & ATTR_PATH) {
+   if (attribute->has(ATTR_PATH)) {
       path = os_join(context.locContext->location->value, context.trimmed);
       context.v_path->value = path;
    }
 
-   if (attr & ATTR_FULLNAME) {
+   if (attribute->has(ATTR_FULLNAME)) {
       context.v_fullname->value = os_fullname(context.trimmed);
    }
 
-   if (attr & ATTR_PARENT) {
+   if (attribute->has(ATTR_PARENT)) {
       context.v_parent->value = os_parent(path);
    }
 
-   if (attr & ATTR_DRIVE) {
+   if (attribute->has(ATTR_DRIVE)) {
       context.v_drive->value = os_drive(path);
    }
 
-   if (!attr & ATTR_EXISTS) {
+   if (!attribute->has(ATTR_EXISTS)) {
       return;
    }
 
@@ -153,28 +152,28 @@ void os_loadAttributes(FileContext& context)
    context.v_isfile->value = isFile;
    context.v_isdirectory->value = isDir;
 
-   if (attr & ATTR_ACCESS) {
+   if (attribute->has(ATTR_ACCESS)) {
       context.v_access->value = exists
          ? os_convertToUroTime(&data.ftLastAccessTime)
          : _tim();
    }
 
-   if (attr & ATTR_ARCHIVE) {
+   if (attribute->has(ATTR_ARCHIVE)) {
       context.v_archive->value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
    }
 
-   if (attr & ATTR_COMPRESSED) {
+   if (attribute->has(ATTR_COMPRESSED)) {
       context.v_compressed->value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
    }
 
-   if (attr & ATTR_CREATION) {
+   if (attribute->has(ATTR_CREATION)) {
       context.v_creation->value = exists
          ? os_convertToUroTime(&data.ftCreationTime)
          : _tim();
    }
 
-   const _bool hasMod = attr & ATTR_MODIFICATION;
-   const _bool hasChange = attr & ATTR_CHANGE;
+   const _bool hasMod = attribute->has(ATTR_MODIFICATION);
+   const _bool hasChange = attribute->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
       const _tim time = exists
          ? os_convertToUroTime(&data.ftLastWriteTime)
@@ -188,7 +187,7 @@ void os_loadAttributes(FileContext& context)
       }
    }
 
-   if (attr & ATTR_LIFETIME) {
+   if (attribute->has(ATTR_LIFETIME)) {
       if (exists) {
          context.v_lifetime->value = context.v_creation->value < context.v_modification->value
             ? (os_now() - context.v_creation->value)
@@ -199,7 +198,7 @@ void os_loadAttributes(FileContext& context)
       }
    }
 
-   if (attr & ATTR_EMPTY) {
+   if (attribute->has(ATTR_EMPTY)) {
       if (exists) {
          context.v_empty->value = isFile
             ? os_emptyFile(data)
@@ -210,19 +209,19 @@ void os_loadAttributes(FileContext& context)
       }
    }
 
-   if (attr & ATTR_ENCRYPTED) {
+   if (attribute->has(ATTR_ENCRYPTED)) {
       context.v_encrypted->value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
    }
 
-   if (attr & ATTR_EXTENSION) {
+   if (attribute->has(ATTR_EXTENSION)) {
       context.v_extension->value = isFile ? os_extension(context.trimmed) : EMPTY_STRING;
    }
 
-   if (attr & ATTR_HIDDEN) {
+   if (attribute->has(ATTR_HIDDEN)) {
       context.v_hidden->value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
    }
 
-   if (attr & ATTR_NAME) {
+   if (attribute->has(ATTR_NAME)) {
       if (isDir) {
          context.v_name->value = os_fullname(context.trimmed);
       }
@@ -233,11 +232,11 @@ void os_loadAttributes(FileContext& context)
       }
    }
 
-   if (attr & ATTR_READONLY) {
+   if (attribute->has(ATTR_READONLY)) {
       context.v_readonly->value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
    }
 
-   if (attr & ATTR_SIZE) {
+   if (attribute->has(ATTR_SIZE)) {
       if (exists) {
          context.v_size->value = isFile
             ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
@@ -252,21 +251,21 @@ void os_loadAttributes(FileContext& context)
 // attributes of something, that cannot exist (empty string, contains not allowed chars, ...)
 void os_loadEmptyAttributes(FileContext& context)
 {
-   const _aunit attr = context.attribute->getValue();
+   const _attrptr& attribute = context.attribute;
 
-   if (attr & ATTR_PATH) {
+   if (attribute->has(ATTR_PATH)) {
       context.v_path->value.clear();
    }
 
-   if (attr & ATTR_FULLNAME) {
+   if (attribute->has(ATTR_FULLNAME)) {
       context.v_fullname->value.clear();
    }
 
-   if (attr & ATTR_DRIVE) {
+   if (attribute->has(ATTR_DRIVE)) {
       context.v_drive->value.clear();
    }
 
-   if (!attr & ATTR_EXISTS) {
+   if (!attribute->has(ATTR_EXISTS)) {
       return;
    }
 
@@ -274,63 +273,63 @@ void os_loadEmptyAttributes(FileContext& context)
    context.v_isfile->value = false;
    context.v_isdirectory->value = false;
 
-   if (attr & ATTR_ACCESS) {
+   if (attribute->has(ATTR_ACCESS)) {
       context.v_access->value = _tim();
    }
 
-   if (attr & ATTR_ARCHIVE) {
+   if (attribute->has(ATTR_ARCHIVE)) {
       context.v_archive->value = false;
    }
 
-   if (attr & ATTR_COMPRESSED) {
+   if (attribute->has(ATTR_COMPRESSED)) {
       context.v_compressed->value = false;
    }
 
-   if (attr & ATTR_CHANGE) {
+   if (attribute->has(ATTR_CHANGE)) {
       context.v_change->value = _tim();
    }
 
-   if (attr & ATTR_CREATION) {
+   if (attribute->has(ATTR_CREATION)) {
       context.v_creation->value = _tim();
    }
 
-   if (attr & ATTR_EMPTY) {
+   if (attribute->has(ATTR_EMPTY)) {
       context.v_empty->value = false;
    }
 
-   if (attr & ATTR_ENCRYPTED) {
+   if (attribute->has(ATTR_ENCRYPTED)) {
       context.v_encrypted->value = false;
    }
 
-   if (attr & ATTR_EXTENSION) {
+   if (attribute->has(ATTR_EXTENSION)) {
       context.v_extension->value.clear();
    }
 
-   if (attr & ATTR_HIDDEN) {
+   if (attribute->has(ATTR_HIDDEN)) {
       context.v_hidden->value = false;
    }
 
-   if (attr & ATTR_LIFETIME) {
+   if (attribute->has(ATTR_LIFETIME)) {
       context.v_lifetime->value = _per();
    }
 
-   if (attr & ATTR_MODIFICATION) {
+   if (attribute->has(ATTR_MODIFICATION)) {
       context.v_modification->value = _tim();
    }
 
-   if (attr & ATTR_NAME) {
+   if (attribute->has(ATTR_NAME)) {
       context.v_name->value.clear();
    }
 
-   if (attr & ATTR_PARENT) {
+   if (attribute->has(ATTR_PARENT)) {
       context.v_parent->value.clear();
    }
 
-   if (attr & ATTR_READONLY) {
+   if (attribute->has(ATTR_READONLY)) {
       context.v_readonly->value = false;
    }
 
-   if (attr & ATTR_SIZE) {
+   if (attribute->has(ATTR_SIZE)) {
       context.v_size->value = _num(NINT_MINUS_ONE);
    }
 }

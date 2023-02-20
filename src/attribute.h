@@ -64,7 +64,7 @@ public:
    inline void set(const _aunit& v);
    void setCoreCommandBase();
    void setTimeCommandBase();
-   inline _bool has(const _aunit& v) const;
+   _bool has(const _aunit& v) const;
    _bool hasAny() const;
    _aunit getValue() const;
    _bool isMarkedToEvaluate() const;

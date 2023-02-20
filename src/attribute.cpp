@@ -113,7 +113,7 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-inline _bool Attribute::has(const _aunit& v) const
+_bool Attribute::has(const _aunit& v) const
 {
    return this->value & v;
 }

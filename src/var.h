@@ -32,11 +32,15 @@ namespace uro
    template <typename T>
    struct Variable : Generator<T>
    {
-      Variable() = delete;
+   public:
       Variable(const VarType& vt)
          : type(vt) { };
       Variable(const VarType& vt, const T& val)
          : type(vt), value(val) { };
+
+      Variable() = delete;
+      Variable(Variable const&) = delete;
+      Variable& operator= (Variable const&) = delete;
 
       _bool isConstant() const override
       {
@@ -58,7 +62,6 @@ namespace uro
          this->isConstant_ = false;
       }
 
-
       T value;
       _bool isConstant_ = false;
       const VarType type;
@@ -68,13 +71,17 @@ namespace uro
    template <typename T>
    struct VariableReference : Generator<T>
    {
-      VariableReference() = delete;
+   public:
       VariableReference(Variable<T>* var)
          : variable(*var) { };
 
+      VariableReference() = delete;
+      VariableReference(VariableReference const&) = delete;
+      VariableReference& operator= (VariableReference const&) = delete;
+
       _bool isConstant() const override
       {
-         return this->variable.isConstant_;
+         return this->variable.isConstant();
       };
 
       T getValue() override

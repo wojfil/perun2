@@ -62,9 +62,8 @@ protected:
    _uro& uroboros;
    FileContext context;
    _fdata data;
-   _numi index;
+   _num index;
    _str baseLocation;
-   P_MEMORY_MEMBER;
 
    const _uint32 flags;
    const _bool isAbsolute;
@@ -100,7 +99,7 @@ public:
 protected:
    void setDepth();
 
-   _numi depth;
+   _num depth;
    _bool goDeeper = false;
    std::vector<HANDLE> handles;
    _list paths;

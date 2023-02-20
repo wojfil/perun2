@@ -137,7 +137,7 @@ void CS_ContextlessLoop::run()
 void CS_ListLoop::run()
 {
    const _list values = this->list->getValue();
-   const _num length = _numi(static_cast<_nint>(values.size()));
+   const _num length = static_cast<_nint>(values.size());
 
    if (length == 0) {
       return;

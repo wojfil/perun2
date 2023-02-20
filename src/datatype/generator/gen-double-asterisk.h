@@ -61,7 +61,7 @@ private:
    FileContext* context;
    _uro& uroboros;
    _bool first = true;
-   _numi index = NINT_ZERO;
+   _num index = NINT_ZERO;
 
    std::vector<std::vector<CharState>> charStates;
    _str const* valuePtr = nullptr;

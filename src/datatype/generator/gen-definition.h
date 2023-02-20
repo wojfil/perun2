@@ -175,7 +175,7 @@ private:
    _nint counter;
    _nint limit;
    _genptr<_num> number;
-   _numi index;
+   _num index;
 };
 
 
@@ -309,14 +309,12 @@ private:
    FileContext* fileContext;
    LocationContext* locContext;
    _bool first = true;
-   _numi index;
+   _num index;
    const _str suffix;
    const _bool absoluteBase;
    const _bool isFinal;
    // DefSuffix is final, if it appears at the end of a pattern
-   // if not, we can introduce optimalizations:
-   // 1) return only directories
-   // 2) do not calculate indexes (the last Definition of the pattern does that anyways)
+   // if not, we can optimize and return only directories
 };
 
 

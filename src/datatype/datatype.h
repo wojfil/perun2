@@ -15,7 +15,6 @@
 #ifndef DATATYPE_H
 #define DATATYPE_H
 
-#include "number-int.h"
 #include "time.h"
 #include "definition.h"
 #include "chars.h"
@@ -28,7 +27,6 @@ namespace uro
 {
 
 typedef Number                              _num;
-typedef NumberInt                           _numi;
 typedef Time                                _tim;
 typedef Period                              _per;
 typedef std::vector<_num>                   _nlist;

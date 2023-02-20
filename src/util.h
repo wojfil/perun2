@@ -23,29 +23,6 @@
 namespace uro::langutil
 {
 
-// delete all elements from a vector of pointers
-template <typename T>
-void deleteVector(std::vector<T*>& vec)
-{
-   for (auto p : vec) {
-      delete p;
-   }
-}
-
-
-// delete all elements from a vector of pointers
-// finally, delete the vector itself
-template <typename T>
-void deleteVectorPtr(std::vector<T*>*& vec)
-{
-   for (auto p : *vec) {
-      delete p;
-   }
-   vec->clear();
-   delete vec;
-}
-
-
 // add a vector at the end of another vector
 template <typename T>
 void appendVector(std::vector<T>& dest, const std::vector<T>& source)
@@ -55,30 +32,8 @@ void appendVector(std::vector<T>& dest, const std::vector<T>& source)
 }
 
 
-// delete all elements from a map of pointers
-template <typename T1, typename T2>
-void deleteMap(std::map<T1, T2*>& map)
-{
-   for (const auto& kv : map) {
-      delete kv.second;
-   }
-}
-
-// delete two
-template <typename T1, typename T2>
-void deleteTwo(T1* value1, T2* value2)
-{
-   if (value1 != nullptr) {
-      delete value1;
-   }
-
-   if (value2 != nullptr) {
-      delete value2;
-   }
-}
-
 // delete previous content of vector
-// and reserve known new memory
+// and reserve deterministic new memory
 template <typename T>
 void clearAndReserve(std::vector<T>& vec, const _size& length)
 {
@@ -98,9 +53,6 @@ void transferUniquePtrs(std::vector<std::unique_ptr<T>>& source, std::vector<std
 };
 
 
-
-
 }
-
 
 #endif /* UTIL_H */

@@ -388,7 +388,7 @@ static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Token
             uro.contexts.retreatFileContext();
 
             if (success) {
-               _genptr<_list> g(new gen::Cast_D_L(def, uro));
+               _genptr<_list> g = std::make_unique<gen::Cast_D_L>(def, uro);
                result = std::make_unique<CS_ListLoop>(g, com, nextFc, uro);
             }
 
@@ -417,7 +417,7 @@ static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Token
 
       if (success) {
          if (ctx->attribute->isMarkedToEvaluate()) {
-            _genptr<_list> g(new gen::Cast_D_L(def, uro));
+            _genptr<_list> g = std::make_unique<gen::Cast_D_L>(def, uro);
             result = std::make_unique<CS_ListLoop>(g, com, ctx, uro);
          }
          else {
@@ -521,7 +521,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
             uro.contexts.retreatLocationContext();
 
             if (success) {
-               _genptr<_list> g(new gen::Cast_D_L(def, uro));
+               _genptr<_list> g = std::make_unique<gen::Cast_D_L>(def, uro);
                result = std::make_unique<CS_InsideList>(g, com, locContext, nextFc, uro);
             }
 
@@ -565,7 +565,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
 
       if (success) {
          if (ctx->attribute->isMarkedToEvaluate()) {
-            _genptr<_list> g(new gen::Cast_D_L(def, uro));
+            _genptr<_list> g = std::make_unique<gen::Cast_D_L>(def, uro);
             result = std::make_unique<CS_InsideList>(g, com, locContext, ctx, uro);
          }
          else {

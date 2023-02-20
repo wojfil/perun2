@@ -294,7 +294,7 @@ static _bool boolExpIntegrateNegations(_genptr<_bool>& result,
             }
             else {
                _genptr<_bool> n = std::move(e.generator);
-               _genptr<_bool> no(new gen::Not(n));
+               _genptr<_bool> no = std::make_unique<gen::Not>(n);
                newList.emplace_back(no, e.line);
             }
 
@@ -521,13 +521,13 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool& negated,
    if (parse(uro, pair.second, valRight)) {
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
-         _genptr<_bool> in(new gen::InConstList<T>(valLeft, vs));
+         _genptr<_bool> in = std::make_unique<gen::InConstList<T>>(valLeft, vs);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
       }
       else {
-         _genptr<_bool> in(new gen::InList<T>(valLeft, valRight));
+         _genptr<_bool> in = std::make_unique<gen::InList<T>>(valLeft, valRight);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
@@ -646,13 +646,13 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    if (parse(uro, pair.second, tlist)) {
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
-         _genptr<_bool> in(new gen::InConstTimeList(tim, vs));
+         _genptr<_bool> in = std::make_unique<gen::InConstTimeList>(tim, vs);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
       }
       else {
-         _genptr<_bool> in(new gen::InList<_tim>(tim, tlist));
+         _genptr<_bool> in = std::make_unique<gen::InList<_tim>>(tim, tlist);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
@@ -732,7 +732,7 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
          const _str cnst = pattern->getValue();
 
          if (neg) {
-            _genptr<_bool> b(new gen::LikeConst(value, cnst));
+            _genptr<_bool> b = std::make_unique<gen::LikeConst>(value, cnst);
             result = std::make_unique<gen::Not>(b);
          }
          else {
@@ -743,7 +743,7 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       }
 
       if (neg) {
-         _genptr<_bool> b(new gen::Like(value, pattern));
+         _genptr<_bool> b = std::make_unique<gen::Like>(value, pattern);
          result = std::make_unique<gen::Not>(b);
       }
       else {

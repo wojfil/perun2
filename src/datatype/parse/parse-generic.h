@@ -143,7 +143,7 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
       }
    }
 
-   _genptr<std::vector<T>> v(new gen::Listed<T>(result));
+   _genptr<std::vector<T>> v = std::make_unique<gen::Listed<T>>(result);
 
    if (isConstant) {
       res = std::make_unique<gen::Constant<std::vector<T>>>(v->getValue());
@@ -178,7 +178,7 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
       }
    }
 
-   _genptr<std::vector<T>> v(new gen::ListedLists<T>(result));
+   _genptr<std::vector<T>> v = std::make_unique<gen::ListedLists<T>>(result);
 
    if (isConstant) {
       res = std::make_unique<gen::Constant<std::vector<T>>>(v->getValue());
@@ -349,7 +349,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, _
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(uro), tsf.line);
             }
 
-            _fpptr<T> unit(new FP_Numeric<T>(num, kw));
+            _fpptr<T> unit = std::make_unique<FP_Numeric<T>>(num, kw);
             prototypes.push_back(std::move(unit));
             break;
          }
@@ -366,7 +366,7 @@ static _bool parseFilter(T& result, const Tokens& tks, const ThisState& state, _
                throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(uro), tsf.line);
             }
 
-            _fpptr<T> unit(new FP_Where<T>(boo));
+            _fpptr<T> unit = std::make_unique<FP_Where<T>>(boo);
             prototypes.push_back(std::move(unit));
             uro.vars.inner.thisState = prevThisState;
 

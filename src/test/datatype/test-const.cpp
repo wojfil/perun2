@@ -24,7 +24,7 @@ using namespace uro;
 template <typename T>
 void testCase_const(const _int& caseId, const T& value)
 {
-    _genptr<T> v(new gen::Constant<T>(value));
+    _genptr<T> v = std::make_unique<gen::Constant<T>>(value);
 	const _bool result  = v->getValue() == value;
     VERIFY(result, caseId);
 }

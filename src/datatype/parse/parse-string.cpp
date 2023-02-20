@@ -229,7 +229,7 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
       }
    }
 
-   _genptr<_str> concat(new gen::ConcatString(result));
+   _genptr<_str> concat = std::make_unique<gen::ConcatString>(result);
 
    if (allConstants) {
       // if all units of string concatenation are constant values

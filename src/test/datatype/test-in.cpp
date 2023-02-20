@@ -24,12 +24,12 @@ using namespace uro;
 template <typename T>
 void testCase_in(const _int& caseId, const T& value, const std::vector<T>& collection, const _bool& expectedResult)
 {
-    _genptr<T> v(new gen::Constant<T>(value));
-    _genptr<T> v2(new gen::Constant<T>(value));
-    _genptr<std::vector<T>> c(new gen::Constant<std::vector<T>>(collection));
+    _genptr<T> v = std::make_unique<gen::Constant<T>>(value);
+    _genptr<T> v2 = std::make_unique<gen::Constant<T>>(value);
+    _genptr<std::vector<T>> c = std::make_unique<gen::Constant<std::vector<T>>>(collection);
 
-    _genptr<_bool> inConst(new gen::InConstList<T>(v, collection));
-    _genptr<_bool> inVar(new gen::InList<T>(v2, c));
+    _genptr<_bool> inConst = std::make_unique<gen::InConstList<T>>(v, collection);
+    _genptr<_bool> inVar = std::make_unique<gen::InList<T>>(v2, c);
 
 	const _bool resultConst = inConst->getValue();
 	const _bool resultVar   = inVar->getValue();

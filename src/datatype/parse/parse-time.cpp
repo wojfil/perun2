@@ -75,7 +75,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
       _genptr<_tlist> tlist;
       if (uro.contexts.makeVarRef(f, tlist, uro)) {
          const Token& last = tks.last();
-         _genptr<_tim> tim(new gen::ListElement<_tim>(tlist, num));
+         _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
          if (last.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {
             result = std::make_unique<gen::TimeDateAtIndex>(tim);
@@ -314,7 +314,7 @@ static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtrac
       }
       else {
          if (subtract) {
-            _genptr<_per> diff(new gen::TimeDifference(prevTim, tim));
+            _genptr<_per> diff = std::make_unique<gen::TimeDifference>(prevTim, tim);
 
             if (time) {
                _genptr<_tim> tim2 = std::move(time);

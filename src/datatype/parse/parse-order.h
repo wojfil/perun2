@@ -80,27 +80,27 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
       const Keyword& kw = first.value.keyword.k;
       if (kw == Keyword::kw_Asc || kw == Keyword::kw_Desc) {
          const _bool desc = kw == Keyword::kw_Desc;
-         gen::_indptr indices(new gen::OrderIndices());
+         gen::_indptr indices = std::make_unique<gen::OrderIndices>();
 
          switch (state) {
             case ThisState::ts_String: {
                _genptr<_str> str;
                uro.vars.inner.createThisRef(str);
-               gen::_ordptr ord(new gen::OrderUnit_Final<_str>(str, desc, indices));
+               gen::_ordptr ord = std::make_unique<gen::OrderUnit_Final<_str>>(str, desc, indices);
                setSingleOrderFilter(attr, hasMemory, result, indices, ord, uro);
                break;
             }
             case ThisState::ts_Number: {
                _genptr<_num> num;
                uro.vars.inner.createThisRef(num);
-               gen::_ordptr ord(new gen::OrderUnit_Final<_num>(num, desc, indices));
+               gen::_ordptr ord = std::make_unique<gen::OrderUnit_Final<_num>>(num, desc, indices);
                setSingleOrderFilter(attr, hasMemory, result, indices, ord, uro);
                break;
             }
             case ThisState::ts_Time: {
                _genptr<_tim> tim;
                uro.vars.inner.createThisRef(tim);
-               gen::_ordptr ord(new gen::OrderUnit_Final<_tim>(tim, desc, indices));
+               gen::_ordptr ord = std::make_unique<gen::OrderUnit_Final<_tim>>(tim, desc, indices));
                setSingleOrderFilter(attr, hasMemory, result, indices, ord, uro);
                break;
             }
@@ -132,7 +132,7 @@ void addOrderByFilter(T& result, const ThisState& state, const Token& orderKeywo
 
    const _int length = tokensList.size();
    gen::_ordptr order;
-   gen::_indptr indices(new gen::OrderIndices());
+   gen::_indptr indices = std::make_unique<gen::OrderIndices>();
 
    for (_int i = length - 1; i >= 0; i--) {
       Tokens& tk = tokensList[i];

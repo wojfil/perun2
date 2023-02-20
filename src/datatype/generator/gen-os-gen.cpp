@@ -26,7 +26,7 @@ namespace uro::gen
 
 _bool DefinitionGenerator::generate(_defptr& result) const
 {
-   _genptr<_str> loc(new LocationReference(this->uroboros));
+   _genptr<_str> loc = std::make_unique<LocationReference>(this->uroboros);
 
    switch (this->element_) {
       case OsElement::oe_All: {

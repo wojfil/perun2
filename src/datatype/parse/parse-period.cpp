@@ -267,7 +267,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, _uro& uro)
       if (isTime) {
          _genptr<_tim> time2;
          if (parse(uro, el, time2)) {
-            _genptr<_per> per(new gen::TimeDifference(time, time2));
+            _genptr<_per> per = std::make_unique<gen::TimeDifference>(time, time2);
 
             if (hasFirst) {
                _genptr<_per> res2 = std::move(res);
@@ -289,7 +289,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, _uro& uro)
          else {
             _genptr<_per> per3;
             if (parse(uro, el, per3)) {
-               _genptr<_tim> tim3(new gen::DecreasedTime(time, per3));
+               _genptr<_tim> tim3 = std::make_unique<gen::DecreasedTime>(time, per3);
                time = std::move(tim3);
             }
             else {
@@ -300,7 +300,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, _uro& uro)
       else {
          _genptr<_per> per;
          if (parse(uro, el, per)) {
-            _genptr<_per> sub(new gen::PeriodSubtraction(res, per));
+            _genptr<_per> sub = std::make_unique<gen::PeriodSubtraction>(res, per);
 
             if (minusAwaits) {
                res = std::make_unique<gen::NegatedPeriod>(sub);

@@ -108,7 +108,7 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
       }
    }
 
-   _genptr<_tlist> v(new gen::Listed<_tim>(result));
+   _genptr<_tlist> v = std::make_unique<gen::Listed<_tim>>(result);
 
    if (isConstant) {
       res = std::make_unique<gen::Constant<_tlist>>(v->getValue());
@@ -144,7 +144,7 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
             isConstant = false;
          }
 
-         _genptr<_tlist> time2(new gen::Cast_T_TL(time));
+         _genptr<_tlist> time2 = std::make_unique<gen::Cast_T_TL>(time);
          result.push_back(std::move(time2));
          isPrev = true;
       }
@@ -180,7 +180,7 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
       }
    }
 
-   _genptr<_tlist> v(new gen::ListedLists<_tim>(result));
+   _genptr<_tlist> v = std::make_unique<gen::ListedLists<_tim>>(result);
 
    if (isConstant) {
       res = std::make_unique<gen::Constant<_tlist>>(v->getValue());

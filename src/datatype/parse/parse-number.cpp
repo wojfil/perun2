@@ -368,7 +368,7 @@ static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<
             }
             else {
                _genptr<_num> n = std::move(e.generator);
-               _genptr<_num> neg(new gen::Negation(n));
+               _genptr<_num> neg = std::make_unique<gen::Negation>(n);
                newList.emplace_back(neg, e.line);
             }
 

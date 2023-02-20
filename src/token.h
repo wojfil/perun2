@@ -27,7 +27,6 @@ struct _uro;
 
 // Token represents the smallest syntax unit of the language
 
-
 // if Token is a number, it can be
 // 1) normal number   : 50, 0.34, -45.231, ...
 // 2) file size       : 12mb, 100gb, 10kb, ...
@@ -57,7 +56,7 @@ public:
 };
 
 
-#define _osi OriginStringInfo
+typedef OriginStringInfo _osi;
 
 
 union TokenValue

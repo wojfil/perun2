@@ -105,43 +105,6 @@ _bool Filter_WhereDef::hasNext()
 }
 
 
-DefinitionChain::DefinitionChain(_defptr& def, _uro& uro)
-   : definition(std::move(def)), uroboros(uro), context(std::make_unique<FileContext>(uro)) { };
-
-
-FileContext* DefinitionChain::getFileContext()
-{
-   return this->context.get();
-}
-
-
-void DefinitionChain::reset()
-{
-   if (!this->finished) {
-      this->finished = true;
-      this->index = NINT_ZERO;
-      this->definition->reset();
-   }
-};
-
-
-_bool DefinitionChain::hasNext()
-{
-   if (this->definition->hasNext()) {
-      this->finished = false;
-      this->value = this->definition->getValue();
-      this->context->loadData(this->value);
-      this->context->index->value.value.i = this->index;
-      this->index++;
-      return true;
-   }
-
-   this->finished = true;
-   this->index = NINT_ZERO;
-   return false;
-};
-
-
 LocationVessel::LocationVessel(const _bool& abs, LocationContext* ctx)
    : isAbsolute(abs), context(ctx) { };
 

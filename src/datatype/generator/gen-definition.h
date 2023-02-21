@@ -76,24 +76,6 @@ private:
 };
 
 
-struct DefinitionChain : _def
-{
-public:
-   DefinitionChain(_defptr& def, _uro& uro);
-   FileContext* getFileContext() override;
-
-   _bool hasNext() override;
-   void reset() override;
-
-private:
-   _defptr definition;
-   _nint index = NINT_ZERO;
-   _bool finished = true;
-   _fcptr context;
-   _uro& uroboros;
-};
-
-
 struct LocationVessel : Generator<_str>
 {
 public:

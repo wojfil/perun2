@@ -38,33 +38,13 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
       return parseFilter<_defptr, _str>(result, tks, ThisState::ts_String, uro);
    }*/
 
-   if (isDefinitionChain(tks, uro) && parseDefinitionChain(result, tks, uro)) {
+   if (tks.check(TI_HAS_CHAR_COMMA) && parseDefinitionChain(result, tks, uro)) {
       return true;
    }
 
    return parseDefBinary(result, tks, uro) || parseDefTernary(result, tks, uro);
 }
 
-
-static _bool isDefinitionChain(const Tokens& tks, _uro& uro)
-{
-   if (!tks.check(TI_HAS_CHAR_COMMA)) {
-      return false;
-   }
-
-   const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
-   const _size len = elements.size();
-
-   for (_size i = 0; i < len; i++) {
-      const Tokens& tk = elements[i];
-      _defptr def;
-      if (parse(uro, tk, def)) {
-         return true;
-      }
-   }
-
-   return false;
-}
 
 // definition chain is a collection of strings, lists and definitions
 // separated by commas, that contain at least one definition

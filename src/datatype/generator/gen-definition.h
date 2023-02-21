@@ -19,7 +19,6 @@
 #include "gen-os.h"
 #include "../cast.h"
 #include "../../attribute.h"
-#include "../../attr-memory.h"
 #include "../../uroboros.h"
 #include <algorithm>
 #include <deque>

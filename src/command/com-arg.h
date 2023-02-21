@@ -17,7 +17,6 @@
 
 #include "com.h"
 #include "../attribute.h"
-#include "../attr-memory.h"
 #include "../datatype/datatype.h"
 #include "../datatype/generator.h"
 #include "com-aggregate.h"

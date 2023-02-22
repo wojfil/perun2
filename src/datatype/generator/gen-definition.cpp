@@ -21,6 +21,9 @@ namespace uro::gen
 {
 
 
+DefWithContext::DefWithContext(_defptr& def, _uro& uro)
+   : definition(std::move(def)), context(std::make_unique<FileContext>(uro)) { };
+
 DefWithContext::DefWithContext(_defptr& def, _fcptr& ctx)
    : definition(std::move(def)), context(std::move(ctx)) { };
    
@@ -300,6 +303,12 @@ _bool Filter_EveryDef::hasNext()
 };
 
 
+FileContext* Filter_FinalDef::getFileContext()
+{
+   return this->nextContext.get();
+}
+
+
 _bool Filter_FinalDef::hasNext()
 {
    if (first) {
@@ -337,6 +346,7 @@ _bool Filter_FinalDef::hasNext()
 
    if (index < length) {
       value = values[static_cast<_size>(index)];
+      nextContext->loadData(value);
       this->context->index->value.value.i = index;
       index++;
       return true;

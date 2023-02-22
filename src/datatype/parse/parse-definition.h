@@ -27,6 +27,7 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro);
 static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, _uro& uro);
 static _bool parseDefTernary(_defptr& result, const Tokens& tks, _uro& uro);
 static _bool parseDefBinary(_defptr& result, const Tokens& tks, _uro& uro);
+static _bool parseListFilter(_defptr& result, const Tokens& tks, _uro& uro);
 
 }
 

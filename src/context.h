@@ -117,6 +117,7 @@ namespace uro
       virtual void loadData(const _str& newThis);
       void reloadData();
       void loadAttributes();
+      void resetDepth();
       void resetIndexAndDepth();
 
       _varptr<_str> this_;

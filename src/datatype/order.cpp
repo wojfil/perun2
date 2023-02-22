@@ -19,7 +19,7 @@
 
 namespace uro::gen
 {
-/*
+
 OrderIndices::OrderIndices() noexcept
    : values(new _size[0]()) { }
 
@@ -34,11 +34,8 @@ void OrderIndices::prepare(const _size& length)
    this->values = new _size[length]();
 }
 
-OrderBy_Definition::OrderBy_Definition(_defptr& bas, _attrptr& attr,
-   const _bool& hasMem, _indptr& inds, _ordptr& ord, _uro& uro)
-   : OrderBy<_str>(attr, inds, ord, uro), base(std::move(bas)),
-     uroboros(uro), inner(uro.vars.inner),
-     hasMemory(hasMem), attrMemory(AttributeMemory(attribute, uro.vars.inner))
+OrderBy_Definition::OrderBy_Definition(_defptr& bas, _fcptr& ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro)
+   : OrderBy(ctx, inds, ord), base(std::move(bas)), uroboros(uro), nextContext(std::move(nextCtx))
 {
    this->resultPtr = &this->result;
 }
@@ -52,15 +49,11 @@ void OrderBy_Definition::reset()
    this->index = NINT_ZERO;
 
    this->hasVolatileDepth = false;
+   this->context->resetIndexAndDepth();
 
    if (!this->first) {
       this->base->reset();
       this->first = true;
-      P_MEMORY_RESTORE;
-
-      if (this->hasMemory) {
-         this->attrMemory.restore();
-      }
    }
 }
 
@@ -68,11 +61,6 @@ _bool OrderBy_Definition::hasNext()
 {
    if (this->first) {
       this->reset();
-      P_MEMORY_LOAD;
-
-      if (this->hasMemory) {
-         this->attrMemory.load();
-      }
 
       while (this->base->hasNext()) {
          if (this->uroboros.state != State::s_Running) {
@@ -80,14 +68,11 @@ _bool OrderBy_Definition::hasNext()
             return false;
          }
 
-         this->thisReference->value = this->base->getValue();
+         this->value = this->base->getValue();
+         this->context->loadData(this->value);
 
-         if (this->hasAttribute) {
-            this->attribute->run();
-         }
-
-         this->result.emplace_back(this->base->getValue());
-         const _numi& depth = this->inner.depth.value;
+         this->result.emplace_back(this->value);
+         const _num& depth = this->context->v_depth->value;
 
          this->depths.emplace_back(depth.value.i);
          this->order->addValues();
@@ -104,7 +89,7 @@ _bool OrderBy_Definition::hasNext()
       }
 
       if (!this->hasVolatileDepth) {
-         this->inner.depth.value.setToZero();
+         this->context->resetDepth();
       }
 
       this->indices->prepare(this->length);
@@ -119,24 +104,20 @@ _bool OrderBy_Definition::hasNext()
 
    if (this->index == this->length) {
       this->first = true;
-      P_MEMORY_RESTORE;
-
-      if (this->hasMemory) {
-         this->attrMemory.restore();
-      }
-
       return false;
    }
    else {
       this->value = this->result[this->index];
-      this->thisReference->value = this->value;
-      this->inner.index.value.value.i = static_cast<_nint>(this->index);
+      this->nextContext->loadData(this->value);
+
+      this->nextContext->index->value.value.i = static_cast<_nint>(this->index);
       if (this->hasVolatileDepth) {
-         this->inner.depth.value.value.i = this->depths[this->indices->values[this->index]];
+         this->nextContext->v_depth->value.value.i = this->depths[this->indices->values[this->index]];
       }
       this->index++;
+
       return true;
    }
 }
-*/
+
 }

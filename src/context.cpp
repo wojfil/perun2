@@ -136,6 +136,11 @@ namespace uro
       }
    }
 
+   void FileContext::resetDepth()
+   {
+      this->v_depth->value.setToZero();
+   }
+
    void FileContext::resetIndexAndDepth()
    {
       this->resetIndex();

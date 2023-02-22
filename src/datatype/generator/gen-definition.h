@@ -32,6 +32,7 @@ struct DefWithContext : _def
 {
 public:
    DefWithContext() = delete;
+   DefWithContext(_defptr& def, _uro& uro);
    DefWithContext(_defptr& def, _fcptr& ctx);
 
    void reset() override;
@@ -149,7 +150,6 @@ public:
    Filter_EveryDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
       : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
-
    _bool hasNext() override;
 
 private:
@@ -163,13 +163,14 @@ private:
 struct Filter_FinalDef : DefFilter
 {
 public:
-   Filter_FinalDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
-      : DefFilter(def, ctx, uro), number(std::move(num)) { };
+   Filter_FinalDef(_defptr& def, _genptr<_num>& num, _fcptr& ctx, _uro& uro)
+      : DefFilter(def, ctx.get(), uro), nextContext(std::move(ctx)), number(std::move(num)) { };
 
-
+   FileContext* getFileContext() override;
    _bool hasNext() override;
 
 private:
+   _fcptr nextContext;
    _genptr<_num> number;
 
    std::deque<_str> values;

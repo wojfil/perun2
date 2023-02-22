@@ -23,7 +23,7 @@
 
 namespace uro::gen
 {
-/*
+
 struct OrderIndices
 {
 public:
@@ -140,16 +140,11 @@ public:
 };
 
 
-template <typename T>
 struct OrderBy
 {
 public:
-   OrderBy(_attrptr& attr, _indptr& inds, _ordptr& ord, _uro& uro)
-      : attribute(std::move(attr)), inner(uro.vars.inner),
-        hasAttribute(attribute), indices(std::move(inds)), order(std::move(ord))
-   {
-      this->inner.createThisVarRef(thisReference);
-   }
+   OrderBy(_fcptr& ctx, _indptr& inds, _ordptr& ord)
+      : context(std::move(ctx)), indices(std::move(inds)), order(std::move(ord)) { };
 
    void quicksort(const _int& start, const _int& end)
    {
@@ -179,26 +174,22 @@ public:
    }
 
 protected:
+   _fcptr context;
    _indptr indices;
    _ordptr order;
-   _attrptr attribute;
-   const _bool hasAttribute;
-   InnerVariables& inner;
-   vars::Variable<T>* thisReference;
-   std::vector<T>* resultPtr;
+   _list* resultPtr = nullptr;
 };
 
 
-template <typename T>
-struct OrderBy_List : OrderBy<T>, Generator<std::vector<T>>
+struct OrderBy_List : OrderBy, Generator<_list>
 {
 public:
-   OrderBy_List(_genptr<std::vector<T>>& bas, _attrptr& attr, _indptr& inds, _ordptr& ord, _uro& uro)
-      : OrderBy<T>(attr, inds, ord, uro), base(std::move(bas)) { }
+   OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, _uro& uro)
+      : OrderBy(ctx, inds, ord), base(std::move(bas)) { }
 
-   std::vector<T> getValue() override
+   _list getValue() override
    {
-      std::vector<T> result = this->base->getValue();
+      _list result = this->base->getValue();
       const _size length = result.size();
 
       if (length == 0) {
@@ -208,64 +199,46 @@ public:
       this->resultPtr = &result;
       this->indices->prepare(length);
       this->order->clearValues(length);
-
-      const _numi prevIndex = this->inner.index.value;
-      const _numi prevDepth = this->inner.depth.value;
-      const T prevThis = this->thisReference->value;
-      this->inner.depth.value.setToZero();
+      this->context->resetIndexAndDepth();
 
       for (_size i = 0; i < length; i++) {
-         this->thisReference->value = result[i];
-         this->inner.index.value = _numi(static_cast<_nint>(i));
-
-         if (this->hasAttribute) {
-            this->attribute->run();
-         }
-
+         this->context->loadData(result[i]);
          this->indices->values[i] = i;
          this->order->addValues();
+         this->context->incrementIndex();
       }
 
       this->quicksort(0, length - 1);
-
-      this->inner.index.value = prevIndex;
-      this->inner.depth.value = prevDepth;
-      this->thisReference->value = prevThis;
-
       return result;
    }
 
 private:
-   _genptr<std::vector<T>> base;
+   _genptr<_list> base;
 };
 
 
-struct OrderBy_Definition : OrderBy<_str>, _def
+struct OrderBy_Definition : OrderBy, _def
 {
 public:
-   OrderBy_Definition(_defptr& bas, _attrptr& attr, const _bool& hasMem, _indptr& inds, _ordptr& ord, _uro& uro);
+   OrderBy_Definition(_defptr& bas, _fcptr& ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro);
 
    void reset() override;
    _bool hasNext() override;
 
 private:
+   _fcptr nextContext;
    _defptr base;
    _bool first = true;
    _uro& uroboros;
-   InnerVariables& inner;
-   const _bool hasMemory;
-   AttributeMemory attrMemory;
 
    _size length;
    _size index;
    _list result;
 
-   P_MEMORY_MEMBER;
-
    _bool hasVolatileDepth;
    std::vector<_nint> depths;
 };
-*/
+
 }
 
 #endif /* ORDER_H */

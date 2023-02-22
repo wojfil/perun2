@@ -34,9 +34,9 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
       return parseOneToken(uro, tks, result);
    }
 
-  /* if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return parseFilter<_defptr, _str>(result, tks, ThisState::ts_String, uro);
-   }*/
+   if (tks.check(TI_HAS_FILTER_KEYWORD)) {
+      return parseListFilter(result, tks, uro);
+   }
 
    if (tks.check(TI_HAS_CHAR_COMMA) && parseDefinitionChain(result, tks, uro)) {
       return true;
@@ -227,6 +227,121 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, _uro& uro)
    }
 
    result = std::make_unique<gen::DefBinary>(condition, value);
+   return true;
+}
+
+
+static _bool parseListFilter(_defptr& result, const Tokens& tks, _uro& uro)
+{
+   const _size firstKeywordId = tks.getFilterKeywordId();
+
+   if (firstKeywordId == tks.getStart()) {
+      throw SyntaxError::filterKeywordAtStart(tks.first().getOriginString(uro), tks.first().line);
+   }
+   else if (firstKeywordId == tks.getStart() + tks.getLength() - 1) {
+      const Token& t = tks.listAt(firstKeywordId);
+      throw SyntaxError::filterKeywordAtEnd(t.getOriginString(uro), t.line);
+   }
+
+   const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
+   _defptr base;
+   if (!parse(uro, tks2, base)) {
+      return false;
+   }
+
+   // core
+   const _int kw = firstKeywordId - tks.getStart() + 1;
+   const _int start = tks.getStart() + kw;
+   const _int length = tks.getLength() - kw;
+   const Tokens tks3(tks, start, length);
+   std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(uro);
+   const _size flength = filterTokens.size();
+
+   FileContext* contextPtr = base->getFileContext();
+   if (contextPtr == nullptr) {
+      _defptr prev = std::move(base);
+      base = std::make_unique<gen::DefWithContext>(prev, uro);
+      contextPtr = base->getFileContext();
+   }
+
+   uro.contexts.addFileContext(contextPtr);
+
+   for (_size i = 0; i < flength; i++) {
+      Tokens& ts = filterTokens[i];
+      const Token tsf = ts.first();
+      const Keyword& kw = tsf.value.keyword.k;
+      ts.trimLeft();
+
+      switch (kw) {
+         case Keyword::kw_Final: {
+            uro.contexts.retreatFileContext();
+
+            _genptr<_num> num;
+            if (!parse(uro, ts, num)) {
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(uro), tsf.line);
+            }
+
+            _fcptr nextContext = std::make_unique<FileContext>(uro);
+            uro.contexts.addFileContext(nextContext.get());
+            _defptr prev = std::move(base);
+            base = std::make_unique<gen::Filter_FinalDef>(prev, num, nextContext, uro);
+            break;
+         }
+         case Keyword::kw_Every:
+         case Keyword::kw_Limit:
+         case Keyword::kw_Skip: {
+            if (kw == Keyword::kw_Limit) {
+               checkLimitBySize(ts, uro);
+            }
+
+            uro.contexts.retreatFileContext();
+
+            _genptr<_num> num;
+            if (!parse(uro, ts, num)) {
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(uro), tsf.line);
+            }
+
+            uro.contexts.addFileContext(contextPtr);
+            _defptr prev = std::move(base);
+
+            switch(kw) {
+               case Keyword::kw_Every: {
+                  base = std::make_unique<gen::Filter_EveryDef>(prev, num, contextPtr, uro);
+                  break;
+               }
+               case Keyword::kw_Limit: {
+                  base = std::make_unique<gen::Filter_LimitDef>(prev, num, contextPtr, uro);
+                  break;
+               }
+               case Keyword::kw_Skip: {
+                  base = std::make_unique<gen::Filter_SkipDef>(prev, num, contextPtr, uro);
+                  break;
+               }
+            }
+            
+            break;
+         }
+         case Keyword::kw_Where: {
+            _genptr<_bool> boo;
+            if (!parse(uro, ts, boo)) {
+               throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(uro), tsf.line);
+            }
+
+            _defptr prev = std::move(base);
+            base = std::make_unique<gen::Filter_WhereDef>(boo, prev, contextPtr, uro);
+            break;
+         }
+         case Keyword::kw_Order: {
+            // todo
+
+
+            break;
+         }
+      }
+   }
+
+   uro.contexts.retreatFileContext();
+   result = std::move(base);
    return true;
 }
 

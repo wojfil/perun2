@@ -50,10 +50,10 @@ namespace uro
       void takeVarsPtr(_varptrs<_nlist>*& result) { result = &this->numLists; };
       void takeVarsPtr(_varptrs<_list>*& result) { result = &this->lists; };
 
-      template <typename T2>
-      _bool takeVar(const _size& var, Variable<T2>*& result)
+      template <typename T>
+      _bool takeVar(const _size& var, Variable<T>*& result)
       {
-         _varptrs<T2>* vars;
+         _varptrs<T>* vars;
          this->takeVarsPtr(vars);
          auto v = vars->find(var);
          if (v != vars->end()) {
@@ -64,12 +64,13 @@ namespace uro
          return false;
       }
 
-      template <typename T2>
-      void addVar(const _size& var, const VarType& type)
+      template <typename T>
+      Variable<T>* insertVar(const _size& var, const VarType& type)
       {
-         _varptrs<T2>* vars;
+         _varptrs<T>* vars;
          this->takeVarsPtr(vars);
-         vars->insert(std::make_pair(var, std::make_unique<Variable<T2>>(type)));
+         auto a = vars->insert(std::make_pair(var, std::make_unique<Variable<T>>(type)));
+         return a.first->second.get();
       }
 
       _varptrs<_bool> bools;
@@ -153,9 +154,9 @@ namespace uro
       void initVars(_uro& uro);
 
       template <typename T>
-      void addVar(const _size& hsh)
+      Variable<T>* insertVar(const _size& hsh)
       {
-         this->fileVars.addVar<T>(hsh, VarType::vt_Attribute);
+         return this->fileVars.insertVar<T>(hsh, VarType::vt_Attribute);
       }
    };
 
@@ -182,9 +183,9 @@ namespace uro
 
    private:
       template <typename T>
-      void addVar(const _size& hsh)
+      Variable<T>* insertVar(const _size& hsh)
       {
-         this->globalVars.addVar<T>(hsh, VarType::vt_Special);
+         return this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
       }
 
       _list getAlphabet() const;

@@ -70,51 +70,28 @@ namespace uro
 
    void FileContext::initVars(_uro& uro)
    {
-      this->addVar<_bool>(uro.hashes.HASH_VAR_ARCHIVE);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_COMPRESSED);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_EMPTY);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_ENCRYPTED);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_EXISTS);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_HIDDEN);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_ISDIRECTORY);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_ISFILE);
-      this->addVar<_bool>(uro.hashes.HASH_VAR_READONLY);
-      this->addVar<_tim>(uro.hashes.HASH_VAR_ACCESS);
-      this->addVar<_tim>(uro.hashes.HASH_VAR_CHANGE);
-      this->addVar<_tim>(uro.hashes.HASH_VAR_CREATION);
-      this->addVar<_tim>(uro.hashes.HASH_VAR_MODIFICATION);
-      this->addVar<_per>(uro.hashes.HASH_VAR_LIFETIME);
-      this->addVar<_num>(uro.hashes.HASH_VAR_SIZE);
-      this->addVar<_num>(uro.hashes.HASH_VAR_DEPTH);
-      this->addVar<_str>(uro.hashes.HASH_VAR_DRIVE);
-      this->addVar<_str>(uro.hashes.HASH_VAR_EXTENSION);
-      this->addVar<_str>(uro.hashes.HASH_VAR_FULLNAME);
-      this->addVar<_str>(uro.hashes.HASH_VAR_NAME);
-      this->addVar<_str>(uro.hashes.HASH_VAR_PARENT);
-      this->addVar<_str>(uro.hashes.HASH_VAR_PATH);
-
-      this->v_archive = this->fileVars.bools.at(uro.hashes.HASH_VAR_ARCHIVE).get();
-      this->v_compressed = this->fileVars.bools.at(uro.hashes.HASH_VAR_COMPRESSED).get();
-      this->v_empty = this->fileVars.bools.at(uro.hashes.HASH_VAR_EMPTY).get();
-      this->v_encrypted = this->fileVars.bools.at(uro.hashes.HASH_VAR_ENCRYPTED).get();
-      this->v_exists = this->fileVars.bools.at(uro.hashes.HASH_VAR_EXISTS).get();
-      this->v_hidden = this->fileVars.bools.at(uro.hashes.HASH_VAR_HIDDEN).get();
-      this->v_isdirectory = this->fileVars.bools.at(uro.hashes.HASH_VAR_ISDIRECTORY).get();
-      this->v_isfile = this->fileVars.bools.at(uro.hashes.HASH_VAR_ISFILE).get();
-      this->v_readonly = this->fileVars.bools.at(uro.hashes.HASH_VAR_READONLY).get();
-      this->v_access = this->fileVars.times.at(uro.hashes.HASH_VAR_ACCESS).get();
-      this->v_change = this->fileVars.times.at(uro.hashes.HASH_VAR_CHANGE).get();
-      this->v_creation = this->fileVars.times.at(uro.hashes.HASH_VAR_CREATION).get();
-      this->v_modification = this->fileVars.times.at(uro.hashes.HASH_VAR_MODIFICATION).get();
-      this->v_lifetime = this->fileVars.periods.at(uro.hashes.HASH_VAR_LIFETIME).get();
-      this->v_size = this->fileVars.numbers.at(uro.hashes.HASH_VAR_SIZE).get();
-      this->v_depth = this->fileVars.numbers.at(uro.hashes.HASH_VAR_DEPTH).get();
-      this->v_drive = this->fileVars.strings.at(uro.hashes.HASH_VAR_DRIVE).get();
-      this->v_extension = this->fileVars.strings.at(uro.hashes.HASH_VAR_EXTENSION).get();
-      this->v_fullname = this->fileVars.strings.at(uro.hashes.HASH_VAR_FULLNAME).get();
-      this->v_name = this->fileVars.strings.at(uro.hashes.HASH_VAR_NAME).get();
-      this->v_parent = this->fileVars.strings.at(uro.hashes.HASH_VAR_PARENT).get();
-      this->v_path = this->fileVars.strings.at(uro.hashes.HASH_VAR_PATH).get();
+      this->v_archive = this->insertVar<_bool>(uro.hashes.HASH_VAR_ARCHIVE);
+      this->v_compressed = this->insertVar<_bool>(uro.hashes.HASH_VAR_COMPRESSED);
+      this->v_empty = this->insertVar<_bool>(uro.hashes.HASH_VAR_EMPTY);
+      this->v_encrypted = this->insertVar<_bool>(uro.hashes.HASH_VAR_ENCRYPTED);
+      this->v_exists = this->insertVar<_bool>(uro.hashes.HASH_VAR_EXISTS);
+      this->v_hidden = this->insertVar<_bool>(uro.hashes.HASH_VAR_HIDDEN);
+      this->v_isdirectory = this->insertVar<_bool>(uro.hashes.HASH_VAR_ISDIRECTORY);
+      this->v_isfile = this->insertVar<_bool>(uro.hashes.HASH_VAR_ISFILE);
+      this->v_readonly = this->insertVar<_bool>(uro.hashes.HASH_VAR_READONLY);
+      this->v_access = this->insertVar<_tim>(uro.hashes.HASH_VAR_ACCESS);
+      this->v_change = this->insertVar<_tim>(uro.hashes.HASH_VAR_CHANGE);
+      this->v_creation = this->insertVar<_tim>(uro.hashes.HASH_VAR_CREATION);
+      this->v_modification = this->insertVar<_tim>(uro.hashes.HASH_VAR_MODIFICATION);
+      this->v_lifetime = this->insertVar<_per>(uro.hashes.HASH_VAR_LIFETIME);
+      this->v_size = this->insertVar<_num>(uro.hashes.HASH_VAR_SIZE);
+      this->v_depth = this->insertVar<_num>(uro.hashes.HASH_VAR_DEPTH);
+      this->v_drive = this->insertVar<_str>(uro.hashes.HASH_VAR_DRIVE);
+      this->v_extension = this->insertVar<_str>(uro.hashes.HASH_VAR_EXTENSION);
+      this->v_fullname = this->insertVar<_str>(uro.hashes.HASH_VAR_FULLNAME);
+      this->v_name = this->insertVar<_str>(uro.hashes.HASH_VAR_NAME);
+      this->v_parent = this->insertVar<_str>(uro.hashes.HASH_VAR_PARENT);
+      this->v_path = this->insertVar<_str>(uro.hashes.HASH_VAR_PATH);
    }
 
 

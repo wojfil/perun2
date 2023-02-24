@@ -322,10 +322,6 @@ void Tokens::checkCommonExpressionExceptions(_uro& uro) const
    if (this->length == 1) {
       const Token& f = first();
       if (f.type == Token::t_Word) {
-         if (f.value.word.h == uro.hashes.HASH_VAR_DEVICE) {
-            throw SyntaxError(str(L"variable '", f.getOriginString(uro),
-               L"' is reserved for future use. Your current version of Uroboros2 does not support it"), f.line);
-         }
 
          /*if (f.value.word.h != uro.hashes.HASH_VAR_THIS && !uro.vars.variableExists(f)) {
             if (!(this->start > 0 && this->list[this->start - 1].isKeyword(Keyword::kw_Create)

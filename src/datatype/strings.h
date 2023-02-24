@@ -153,7 +153,6 @@ static const _str STRING_ASCII =                L"ascii";
 static const _str STRING_ARGUMENTS =            L"arguments";
 static const _str STRING_DESKTOP =              L"desktop";
 static const _str STRING_UROBOROS2 =            L"uroboros2";
-static const _str STRING_DEVICE =               L"device";
 static const _str STRING_ROOT =                 L"root";
 static const _str STRING_DIRECTORIES =          L"directories";
 static const _str STRING_FILES =                L"files";

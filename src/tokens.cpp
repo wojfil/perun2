@@ -321,14 +321,9 @@ void Tokens::checkCommonExpressionExceptions(_uro& uro) const
 
    if (this->length == 1) {
       const Token& f = first();
-      if (f.type == Token::t_Word) {
-
-         /*if (f.value.word.h != uro.hashes.HASH_VAR_THIS && !uro.vars.variableExists(f)) {
-            if (!(this->start > 0 && this->list[this->start - 1].isKeyword(Keyword::kw_Create)
-            && (f.value.word.h == uro.hashes.HASH_VAR_FILE || f.value.word.h == uro.hashes.HASH_VAR_DIRECTORY))) {
-               throw SyntaxError(str(L"variable '", f.getOriginString(uro), L"' does not exist or is unreachable here"), f.line);
-            }
-         }*/
+      if (f.type == Token::t_Word && (!uro.contexts.varExists(f, uro))) {
+         throw SyntaxError(str(L"variable '", f.getOriginString(uro), 
+            L"' does not exist or is unreachable here. Look for a typo"), f.line);
       }
    }
 

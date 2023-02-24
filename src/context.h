@@ -265,6 +265,7 @@ namespace uro
       _bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
+      _bool varExists(const Token& tk, _uro& uro);
 
       _varptr<_bool> success;
 

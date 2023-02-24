@@ -380,4 +380,24 @@ namespace uro
       return this->userVarsContexts.back();
    }
 
+   _bool Contexts::varExists(const Token& tk, _uro& uro)
+   {
+      Variable<_bool>* b;
+      Variable<_tim>* t;
+      Variable<_per>* p;
+      Variable<_str>* s;
+      Variable<_num>* n;
+      Variable<_tlist>* tl;
+      Variable<_nlist>* nl;
+      Variable<_list>* l;
+
+      return this->getVar(tk, b, uro)
+          || this->getVar(tk, t, uro)
+          || this->getVar(tk, p, uro)
+          || this->getVar(tk, s, uro)
+          || this->getVar(tk, n, uro)
+          || this->getVar(tk, tl, uro)
+          || this->getVar(tk, nl, uro)
+          || this->getVar(tk, l, uro);
+   }
 }

@@ -340,7 +340,7 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
       functionArgException(1, STRING_STRING, word, uro);
    }
 
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
 
    if (name == uro.hashes.HASH_FUNC_ISLOWER)
       result = std::make_unique<F_IsLower>(arg1);
@@ -365,7 +365,7 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
 _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -553,7 +553,7 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
       functionArgException(1, STRING_NUMBER, word, uro);
    }
 
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
 
    if (name == uro.hashes.HASH_FUNC_ABSOLUTE)
       result = std::make_unique<F_Absolute>(arg);
@@ -577,7 +577,7 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
 
 static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, _uro& uro)
 {
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
 
    std::vector<_genptr<_num>> singles;
    std::vector<_genptr<_nlist>> multis;
@@ -628,7 +628,7 @@ _bool periodFunction(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -1026,7 +1026,7 @@ static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Token
       functionArgException(2, STRING_STRING, word, uro);
    }
 
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
 
    if (name == uro.hashes.HASH_FUNC_AFTER)
       result = std::make_unique<F_After>(arg1, arg2);
@@ -1045,7 +1045,7 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
       functionArgException(1, STRING_STRING, word, uro);
    }
 
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
 
    if (name == uro.hashes.HASH_FUNC_DIGITS)
       result = std::make_unique<F_Digits>(arg1);
@@ -1078,7 +1078,7 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
 _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -1218,7 +1218,7 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
       functionArgException(1, STRING_NUMBER, word, uro);
    }
 
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
 
    if (name == uro.hashes.HASH_FUNC_CHRISTMAS)
       result = std::make_unique<F_Christmas>(arg1);
@@ -1280,7 +1280,7 @@ static _str ordinalNumber(const _int& number)
 _bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
@@ -1328,7 +1328,7 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro)
 _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.word.h;
+   const _hash& name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 

@@ -26,7 +26,7 @@ Attribute::Attribute(_uro& uro)
 Attribute::Attribute(const _aunit& val, _uro& uro)
    : value(val), uroboros(uro) { };
 
-void Attribute::add(const _size& val)
+void Attribute::add(const _hash& val)
 {
    const Hashes& hashes = this->uroboros.hashes;
 

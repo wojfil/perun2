@@ -22,7 +22,7 @@ namespace uro
 {
 
 // case-insensitive hash of a string
-_size stringHash(const _str& value)
+_hash stringHash(const _str& value)
 {
    _str lower;
    lower.resize(value.size());
@@ -31,7 +31,7 @@ _size stringHash(const _str& value)
 }
 
 // call this if the string is guaranteed to be lowercase
-_size rawStringHash(const _str& value)
+_hash rawStringHash(const _str& value)
 {
    return std::hash<_str>{}(value);
 }

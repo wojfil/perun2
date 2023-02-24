@@ -16,6 +16,7 @@
 #define GEN_LIKE_H
 
 #include "../datatype.h"
+#include "../../hash.h"
 #include <unordered_set>
 #include <unordered_map>
 
@@ -91,7 +92,7 @@ private:
    _genptr<_str> value;
    _genptr<_str> pattern;
    _likeptr comparer;
-   _size prevHash = 0;
+   _hash prevHash = 0;
 };
 
 

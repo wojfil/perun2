@@ -338,9 +338,8 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
    switch (dots) {
       case 0: {
-         _str lower = code.substr(start, length);
-         toLower(lower);
-         const _size hsh = rawStringHash(lower);
+         const _str word = code.substr(start, length);
+         const _hash hsh = stringHash(word);
 
          auto fm = uro.hashes.HASH_MAP_MONTHS.find(hsh);
          if (fm != uro.hashes.HASH_MAP_MONTHS.end()) {
@@ -375,8 +374,8 @@ static Token wordToken(const _str& code, const _size& start, const _size& length
 
          const _str os1 = code.substr(start, pnt - start);
          const _str os2 = code.substr(pnt + 1, start + length - pnt - 1);
-         const _size h1 = stringHash(os1);
-         const _size h2 = stringHash(os2);
+         const _hash h1 = stringHash(os1);
+         const _hash h2 = stringHash(os2);
 
          return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, uro);
       }

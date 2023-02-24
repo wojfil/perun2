@@ -102,7 +102,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
       return false;
    }
 
-   const _size& h = last.value.word.h;
+   const _hash& h = last.value.word.h;
    const _num& num = first.value.num.n;
 
    if (uro.hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != uro.hashes.HASH_GROUP_PERIOD_SINGLE.end())
@@ -150,7 +150,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& ne
 
 _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _uro& uro)
 {
-   const _size& h = tks.last().value.word.h;
+   const _hash& h = tks.last().value.word.h;
    Tokens tks2(tks);
    tks2.trimRight();
 

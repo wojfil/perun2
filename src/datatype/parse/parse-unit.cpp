@@ -80,7 +80,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
                L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
          }
 
-         const _size& h = tk.value.twoWords.h2;
+         const _hash& h = tk.value.twoWords.h2;
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Years);

@@ -829,7 +829,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
             throw SyntaxError(str(L"variable '", first.getOriginString(uro), L"' is immutable"), first.line);
          }
 
-         const _size& h = first.value.twoWords.h2;
+         const _hash& h = first.value.twoWords.h2;
          Period::PeriodUnit unit;
 
          if (h == uro.hashes.HASH_PER_YEAR || h == uro.hashes.HASH_PER_YEARS)
@@ -1071,7 +1071,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
             L"=' cannot be resolved to a number"), first.line);
       }
 
-      const _size& h = first.value.twoWords.h2;
+      const _hash& h = first.value.twoWords.h2;
       Variable<_tim>& var = *pv_tim;
       const _bool negative = (sign == '-');
       pv_tim->makeNotConstant();
@@ -1192,7 +1192,7 @@ static _bool makeVarAssignment(_comptr& result, const Token& token, _uro& uro,
    const _bool isConstant = !uro.contexts.hasAggregate() && valuePtr->isConstant();
    _varptrs<T>* allVarsOfThisType;
    uvc->userVars.takeVarsPtr(allVarsOfThisType);
-   const _size& hash = token.value.word.h;
+   const _hash& hash = token.value.word.h;
    allVarsOfThisType->insert(std::make_pair(hash, std::make_unique<Variable<T>>(VarType::vt_User)));
 
    (*allVarsOfThisType)[hash]->isConstant_ = isConstant;

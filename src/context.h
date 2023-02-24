@@ -34,7 +34,7 @@ namespace uro
    using _varptr = std::unique_ptr<Variable<T>>;
 
    template <typename T>
-   using _varptrs = std::unordered_map<_size, _varptr<T>>;
+   using _varptrs = std::unordered_map<_hash, _varptr<T>>;
 
 
    struct VarsContext
@@ -51,7 +51,7 @@ namespace uro
       void takeVarsPtr(_varptrs<_list>*& result) { result = &this->lists; };
 
       template <typename T>
-      _bool takeVar(const _size& var, Variable<T>*& result)
+      _bool takeVar(const _hash& var, Variable<T>*& result)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -65,7 +65,7 @@ namespace uro
       }
 
       template <typename T>
-      Variable<T>* insertVar(const _size& var, const VarType& type)
+      Variable<T>* insertVar(const _hash& var, const VarType& type)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -154,7 +154,7 @@ namespace uro
       void initVars(_uro& uro);
 
       template <typename T>
-      Variable<T>* insertVar(const _size& hsh)
+      Variable<T>* insertVar(const _hash& hsh)
       {
          return this->fileVars.insertVar<T>(hsh, VarType::vt_Attribute);
       }
@@ -183,7 +183,7 @@ namespace uro
 
    private:
       template <typename T>
-      Variable<T>* insertVar(const _size& hsh)
+      Variable<T>* insertVar(const _hash& hsh)
       {
          return this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
       }
@@ -275,7 +275,7 @@ namespace uro
       template <typename T>
       _bool findVar(const Token& tk, Variable<T>*& result, _uro& uro)
       {
-         const _size& var = tk.value.word.h;
+         const _hash& var = tk.value.word.h;
 
          // look in global variables
          if (this->globalVars.takeVar(var, result)) {
@@ -307,10 +307,10 @@ namespace uro
          return false;
       }
 
-      void addOsGen(const _size& hash, const gen::OsElement& element, _uro& uro);
+      void addOsGen(const _hash& hash, const gen::OsElement& element, _uro& uro);
 
       LocationContext rootLocation;
-      std::unordered_map<_size, gen::DefinitionGenerator> osGenerators;
+      std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;
 
       std::vector<UserVarsContext*> userVarsContexts;
       std::vector<AggregateContext*> aggregateContexts;

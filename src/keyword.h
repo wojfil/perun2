@@ -16,7 +16,7 @@
 #define KEYWORD_H_INCLUDED
 
 #include <unordered_map>
-#include "datatype/primitives.h"
+#include "hash.h"
 
 
 namespace uro
@@ -99,7 +99,7 @@ public:
    KeywordsData() = delete;
    KeywordsData(_uro& uro);
 
-   const std::unordered_map<_size, Keyword> KEYWORDS;
+   const std::unordered_map<_hash, Keyword> KEYWORDS;
 };
 
 }

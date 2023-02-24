@@ -36,13 +36,13 @@ TokenValue::TokenValue(const _size& os_id, const _size& os_len)
 TokenValue::TokenValue(const _size& os_id, const _size& os_len, const _int& id)
    : pattern({ _osi(os_id, os_len), id }) { };
 
-TokenValue::TokenValue(const _size& h, const _size& os_id, const _size& os_len)
+TokenValue::TokenValue(const _hash& h, const _size& os_id, const _size& os_len)
    : word({ h, _osi(os_id, os_len) }) { };
 
 TokenValue::TokenValue(const Keyword& k, const _size& os_id, const _size& os_len)
    : keyword({ k, _osi(os_id, os_len) }) { };
 
-TokenValue::TokenValue(const _size& h1, const _size& h2, const _size& os_id1,
+TokenValue::TokenValue(const _hash& h1, const _hash& h2, const _size& os_id1,
    const _size& os_len1, const _size& os_id2, const _size& os_len2)
    : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
@@ -62,13 +62,13 @@ Token::Token(const _size& os_id, const _size& os_len, const _int& li, _uro& uro)
 Token::Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, _uro& uro)
    : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const _size& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
+Token::Token(const _hash& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
    : line(li), type(t_Word), value(v, os_id, os_len) { };
 
 Token::Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
-Token::Token(const _size& v1, const _size& v2, const _int& li, const _size& os_id1, const _size& os_len1,
+Token::Token(const _hash& v1, const _hash& v2, const _int& li, const _size& os_id1, const _size& os_len1,
    const _size& os_id2, const _size& os_len2, _uro& uro)
    : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 

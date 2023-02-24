@@ -15,7 +15,7 @@
 #ifndef ATTRIB_H
 #define ATTRIB_H
 
-#include "datatype/primitives.h"
+#include "hash.h"
 #include "token.h"
 #include <memory>
 
@@ -60,7 +60,7 @@ public:
    Attribute(_uro& uro);
    Attribute(const _aunit& val, _uro& uro);
 
-   void add(const _size& val);
+   void add(const _hash& val);
    inline void set(const _aunit& v);
    void setCoreCommandBase();
    void setTimeCommandBase();

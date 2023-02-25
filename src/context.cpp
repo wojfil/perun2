@@ -391,7 +391,8 @@ namespace uro
       Variable<_nlist>* nl;
       Variable<_list>* l;
 
-      return this->getVar(tk, b, uro)
+      return osGenerators.find(tk.value.word.h) != osGenerators.end()
+          || this->getVar(tk, b, uro)
           || this->getVar(tk, t, uro)
           || this->getVar(tk, p, uro)
           || this->getVar(tk, s, uro)

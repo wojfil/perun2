@@ -50,15 +50,15 @@ public:
 
    _set copyPaths;
    std::unordered_map<_str, _set> selectPaths;
-   _uint32 failedCopy;
-   _uint32 failedSelect;
+   _uint32 failedCopy = 0;
+   _uint32 failedSelect = 0;
    _set invalidCopy;
    _set invalidSelect;
 
 private:
    _uro& uroboros;
    Contexts& contexts;
-   _uint32 value;
+   _uint32 value = AGGR_NULL;
    inline _bool has(const _uint32& v) const;
 };
 

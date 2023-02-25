@@ -22,8 +22,7 @@ namespace uro::comm
 {
 
 Aggregate::Aggregate(_uro& uro)
-   : failedCopy(0), failedSelect(0), value(AGGR_NULL),
-     contexts(uro.contexts), uroboros(uro) { };
+   : contexts(uro.contexts), uroboros(uro) { };
 
 void Aggregate::set(const _uint32& v)
 {
@@ -34,7 +33,7 @@ void Aggregate::set(const _uint32& v)
 
 void Aggregate::run()
 {
-   if (value == 0) {
+   if (value == AGGR_NULL) {
       return;
    }
 

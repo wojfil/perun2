@@ -26,9 +26,9 @@ namespace uro
 
 struct FileContext;
 
-// this data structure is the crucial for Uroboros2
+// this data structure is crucial for Uroboros2
 // as it represents a lazy evaluated collection of strings
-// this is what file system elements usually are
+// this is what file system elements (as their names and paths) usually are
 struct Definition : Generator<_str>
 {
 public:

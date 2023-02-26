@@ -40,6 +40,10 @@ OrderBy_Definition::OrderBy_Definition(_defptr& bas, FileContext* ctx, _fcptr& n
    this->resultPtr = &this->result;
 }
 
+FileContext* OrderBy_Definition::getFileContext()  
+{
+   return this->nextContext.get(); 
+};
 
 void OrderBy_Definition::reset()
 {
@@ -69,7 +73,6 @@ _bool OrderBy_Definition::hasNext()
          }
 
          this->value = this->base->getValue();
-         //this->context->loadData(this->value);
 
          this->result.emplace_back(this->value);
          const _num& depth = this->fileContext->v_depth->value;

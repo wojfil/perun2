@@ -27,11 +27,8 @@ namespace uro::gen
 
 struct Join_StrStr : Generator<_list>
 {
-
 public:
-   Join_StrStr(_genptr<_str>& lef, _genptr<_str>& rig)
-        : left(std::move(lef)), right(std::move(rig)) { };
-
+   Join_StrStr(_genptr<_str>& lef, _genptr<_str>& rig);
    _list getValue() override;
 
 private:
@@ -42,11 +39,8 @@ private:
 
 struct Join_StrList : Generator<_list>
 {
-
 public:
-   Join_StrList(_genptr<_str>& lef, _genptr<_list>& rig)
-        : left(std::move(lef)), right(std::move(rig)) { };
-
+   Join_StrList(_genptr<_str>& lef, _genptr<_list>& rig);
    _list getValue() override;
 
 private:
@@ -57,11 +51,8 @@ private:
 
 struct Join_ListStr : Generator<_list>
 {
-
 public:
-   Join_ListStr(_genptr<_list>& lef, _genptr<_str>& rig)
-        : left(std::move(lef)), right(std::move(rig)) { };
-
+   Join_ListStr(_genptr<_list>& lef, _genptr<_str>& rig);
    _list getValue() override;
 
 private:
@@ -72,17 +63,77 @@ private:
 
 struct Join_ListList : Generator<_list>
 {
-
 public:
-   Join_ListList(_genptr<_list>& lef, _genptr<_list>& rig)
-        : left(std::move(lef)), right(std::move(rig)) { };
-
+   Join_ListList(_genptr<_list>& lef, _genptr<_list>& rig);
    _list getValue() override;
 
 private:
    _genptr<_list> left;
    _genptr<_list> right;
 };
+
+
+struct ListFilter_Where : Generator<_list>
+{
+public:
+   ListFilter_Where(_genptr<_bool>& cond, _genptr<_list>& li, _fcptr& ctx, _uro& uro);
+   _list getValue() override;
+
+private:
+   _genptr<_bool> condition;
+   _genptr<_list> list;
+   _fcptr context;
+   _uro& uroboros;
+};
+
+
+struct ListFilter_Limit : Generator<_list>
+{
+public:
+   ListFilter_Limit(_genptr<_list>& li, _genptr<_num>& num);
+   _list getValue() override;
+
+private:
+   _genptr<_list> list;
+   _genptr<_num> number;
+};
+
+
+struct ListFilter_Skip : Generator<_list>
+{
+public:
+   ListFilter_Skip(_genptr<_list>& li, _genptr<_num>& num);
+   _list getValue() override;
+
+private:
+   _genptr<_list> list;
+   _genptr<_num> number;
+};
+
+
+struct ListFilter_Every : Generator<_list>
+{
+public:
+   ListFilter_Every(_genptr<_list>& li, _genptr<_num>& num);
+   _list getValue() override;
+
+private:
+   _genptr<_list> list;
+   _genptr<_num> number;
+};
+
+
+struct ListFilter_Final : Generator<_list>
+{
+public:
+   ListFilter_Final(_genptr<_list>& li, _genptr<_num>& num);
+   _list getValue() override;
+
+private:
+   _genptr<_list> list;
+   _genptr<_num> number;
+};
+
 
 }
 

@@ -24,6 +24,8 @@ namespace uro::parse
 
 _bool parseList(_genptr<_list>& result, const Tokens& tks, _uro& uro);
 
+static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, _uro& uro);
+
 }
 
 #endif /* PARSE_LIST_H */

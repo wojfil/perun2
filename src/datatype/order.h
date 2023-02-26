@@ -53,6 +53,7 @@ template <typename T>
 struct OrderUnit : Order
 {
 public:
+   OrderUnit() = delete;
    OrderUnit(_genptr<T>& val, const _bool& desc, _indptr& inds)
       : valueGenerator(std::move(val)), descending(desc), indices(inds.get()) { };
 
@@ -68,6 +69,7 @@ template <typename T>
 struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
+   OrderUnit_Middle() = delete;
    OrderUnit_Middle(_genptr<T>& val, const _bool& desc, _ordptr& next, _indptr& inds)
       : OrderUnit<T>(val, desc, inds), nextUnit(std::move(next)) { };
 
@@ -113,6 +115,7 @@ template <typename T>
 struct OrderUnit_Final : OrderUnit<T>
 {
 public:
+   OrderUnit_Final() = delete;
    OrderUnit_Final(_genptr<T>& val, const _bool& desc, _indptr& inds)
       : OrderUnit<T>(val, desc, inds) { };
 
@@ -143,6 +146,7 @@ public:
 struct OrderBy
 {
 public:
+   OrderBy() = delete;
    OrderBy(_indptr& inds, _ordptr& ord)
       : indices(std::move(inds)), order(std::move(ord)) { };
 
@@ -180,11 +184,12 @@ protected:
 };
 
 
-/*struct OrderBy_List : OrderBy, Generator<_list>
+struct OrderBy_List : OrderBy, Generator<_list>
 {
 public:
-   OrderBy_List(_genptr<_list>& bas, _indptr& inds, _ordptr& ord, _uro& uro)
-      : OrderBy(inds, ord), base(std::move(bas)) { }
+   OrderBy_List() = delete;
+   OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, _uro& uro)
+      : OrderBy(inds, ord), context(std::move(ctx)), base(std::move(bas)) { };
 
    _list getValue() override
    {
@@ -212,14 +217,17 @@ public:
    }
 
 private:
+   _fcptr context;
    _genptr<_list> base;
-};*/
+};
 
 
 struct OrderBy_Definition : OrderBy, _def
 {
 public:
+   OrderBy_Definition() = delete;
    OrderBy_Definition(_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro);
+   FileContext* getFileContext() override;
 
    void reset() override;
    _bool hasNext() override;

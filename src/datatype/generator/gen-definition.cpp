@@ -318,6 +318,7 @@ _bool DefFilter_Final::hasNext()
       }
 
       values.clear();
+      depths.clear();
       length = NINT_ZERO;
       
       while (definition->hasNext()) {
@@ -328,11 +329,14 @@ _bool DefFilter_Final::hasNext()
 
          if (length == limit) {
             values.pop_front();
+            depths.pop_front();
          }
          else {
             length++;
          }
+
          values.emplace_back(definition->getValue());
+         depths.emplace_back(prevContext->v_depth->value.value.i);
       }
 
       index = NINT_ZERO;
@@ -348,6 +352,7 @@ _bool DefFilter_Final::hasNext()
       value = values[static_cast<_size>(index)];
       nextContext->loadData(value);
       this->context->index->value.value.i = index;
+      this->context->v_depth->value.value.i = depths[static_cast<_size>(index)];
       index++;
       return true;
    }

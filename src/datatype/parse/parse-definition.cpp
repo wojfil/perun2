@@ -274,7 +274,7 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, _uro& uro)
             _fcptr nextContext = std::make_unique<FileContext>(uro);
             uro.contexts.addFileContext(nextContext.get());
             _defptr prev = std::move(base);
-            base = std::make_unique<gen::DefFilter_Final>(prev, num, nextContext, uro);
+            base = std::make_unique<gen::DefFilter_Final>(prev, num, nextContext, contextPtr, uro);
             break;
          }
          case Keyword::kw_Every:

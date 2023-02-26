@@ -163,17 +163,19 @@ private:
 struct DefFilter_Final : DefFilter
 {
 public:
-   DefFilter_Final(_defptr& def, _genptr<_num>& num, _fcptr& ctx, _uro& uro)
-      : DefFilter(def, ctx.get(), uro), nextContext(std::move(ctx)), number(std::move(num)) { };
+   DefFilter_Final(_defptr& def, _genptr<_num>& num, _fcptr& ctx, FileContext* pcxt, _uro& uro)
+      : DefFilter(def, ctx.get(), uro), nextContext(std::move(ctx)), prevContext(pcxt), number(std::move(num)) { };
 
    FileContext* getFileContext() override;
    _bool hasNext() override;
 
 private:
    _fcptr nextContext;
+   FileContext* prevContext;
    _genptr<_num> number;
 
    std::deque<_str> values;
+   std::deque<_nint> depths;
    _nint length;
    _nint index;
 };

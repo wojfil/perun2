@@ -65,11 +65,11 @@ void DefFilter::reset() {
 }
 
 
-Filter_WhereDef::Filter_WhereDef(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro)
+DefFilter_Where::DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro)
    : DefFilter(def, ctx, uro), condition(std::move(cond)) { };
 
 
-void Filter_WhereDef::reset() {
+void DefFilter_Where::reset() {
    if (!first) {
       first = true;
       if (!finished) {
@@ -79,7 +79,7 @@ void Filter_WhereDef::reset() {
 }
 
 
-_bool Filter_WhereDef::hasNext()
+_bool DefFilter_Where::hasNext()
 {
    if (first) {
       finished = false;
@@ -209,7 +209,7 @@ FileContext* NestedDefiniton::getFileContext()
    return this->definition->getFileContext();
 }
 
-_bool Filter_LimitDef::hasNext()
+_bool DefFilter_Limit::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
@@ -236,7 +236,7 @@ _bool Filter_LimitDef::hasNext()
 };
 
 
-_bool Filter_SkipDef::hasNext()
+_bool DefFilter_Skip::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
@@ -268,7 +268,7 @@ _bool Filter_SkipDef::hasNext()
 };
 
 
-_bool Filter_EveryDef::hasNext()
+_bool DefFilter_Every::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
@@ -303,13 +303,13 @@ _bool Filter_EveryDef::hasNext()
 };
 
 
-FileContext* Filter_FinalDef::getFileContext()
+FileContext* DefFilter_Final::getFileContext()
 {
    return this->nextContext.get();
 }
 
 
-_bool Filter_FinalDef::hasNext()
+_bool DefFilter_Final::hasNext()
 {
    if (first) {
       const _nint limit = this->number->getValue().toInt();

@@ -62,10 +62,10 @@ protected:
 };
 
 
-struct Filter_WhereDef : DefFilter
+struct DefFilter_Where : DefFilter
 {
 public:
-   Filter_WhereDef(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro);
+   DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro);
 
    _bool hasNext() override;
    void reset() override;
@@ -114,10 +114,10 @@ private:
 };
 
 
-struct Filter_LimitDef : DefFilter
+struct DefFilter_Limit : DefFilter
 {
 public:
-   Filter_LimitDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+   DefFilter_Limit(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
       : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
    _bool hasNext() override;
@@ -129,10 +129,10 @@ private:
 };
 
 
-struct Filter_SkipDef : DefFilter
+struct DefFilter_Skip : DefFilter
 {
 public:
-   Filter_SkipDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+   DefFilter_Skip(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
       : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
    _bool hasNext() override;
@@ -144,10 +144,10 @@ private:
 };
 
 
-struct Filter_EveryDef : DefFilter
+struct DefFilter_Every : DefFilter
 {
 public:
-   Filter_EveryDef(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
+   DefFilter_Every(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
       : DefFilter(def, ctx, uro), number(std::move(num)) { };
 
    _bool hasNext() override;
@@ -160,10 +160,10 @@ private:
 };
 
 
-struct Filter_FinalDef : DefFilter
+struct DefFilter_Final : DefFilter
 {
 public:
-   Filter_FinalDef(_defptr& def, _genptr<_num>& num, _fcptr& ctx, _uro& uro)
+   DefFilter_Final(_defptr& def, _genptr<_num>& num, _fcptr& ctx, _uro& uro)
       : DefFilter(def, ctx.get(), uro), nextContext(std::move(ctx)), number(std::move(num)) { };
 
    FileContext* getFileContext() override;

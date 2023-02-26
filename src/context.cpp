@@ -310,20 +310,14 @@ namespace uro
       }
    }
 
-
-   _bool Contexts::nextContextWillBeAggregate()
-   {
-      return this->aggregateContexts.size() == 1;
-   }
-
    _bool Contexts::hasAggregate()
    {
-      return this->aggregateContexts.size() > 1;
+      return this->aggregateContexts.size() >= 1;
    }
 
    comm::Aggregate* Contexts::getAggregate()
    {
-      return &this->aggregateContexts[1]->aggregate;
+      return &this->aggregateContexts[0]->aggregate;
    }
 
    LocationContext* Contexts::getLocationContext()

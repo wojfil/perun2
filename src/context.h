@@ -252,7 +252,6 @@ namespace uro
       void markAllAttributesToRun();
 
       // for aggregates
-      _bool nextContextWillBeAggregate();
       _bool hasAggregate();
       comm::Aggregate* getAggregate();
 

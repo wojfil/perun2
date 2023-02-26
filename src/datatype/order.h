@@ -143,8 +143,8 @@ public:
 struct OrderBy
 {
 public:
-   OrderBy(_fcptr& ctx, _indptr& inds, _ordptr& ord)
-      : context(std::move(ctx)), indices(std::move(inds)), order(std::move(ord)) { };
+   OrderBy(_indptr& inds, _ordptr& ord)
+      : indices(std::move(inds)), order(std::move(ord)) { };
 
    void quicksort(const _int& start, const _int& end)
    {
@@ -174,18 +174,17 @@ public:
    }
 
 protected:
-   _fcptr context;
    _indptr indices;
    _ordptr order;
    _list* resultPtr = nullptr;
 };
 
 
-struct OrderBy_List : OrderBy, Generator<_list>
+/*struct OrderBy_List : OrderBy, Generator<_list>
 {
 public:
-   OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, _uro& uro)
-      : OrderBy(ctx, inds, ord), base(std::move(bas)) { }
+   OrderBy_List(_genptr<_list>& bas, _indptr& inds, _ordptr& ord, _uro& uro)
+      : OrderBy(inds, ord), base(std::move(bas)) { }
 
    _list getValue() override
    {
@@ -214,18 +213,19 @@ public:
 
 private:
    _genptr<_list> base;
-};
+};*/
 
 
 struct OrderBy_Definition : OrderBy, _def
 {
 public:
-   OrderBy_Definition(_defptr& bas, _fcptr& ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro);
+   OrderBy_Definition(_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro);
 
    void reset() override;
    _bool hasNext() override;
 
 private:
+   FileContext* fileContext;
    _fcptr nextContext;
    _defptr base;
    _bool first = true;

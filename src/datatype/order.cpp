@@ -34,8 +34,8 @@ void OrderIndices::prepare(const _size& length)
    this->values = new _size[length]();
 }
 
-OrderBy_Definition::OrderBy_Definition(_defptr& bas, _fcptr& ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro)
-   : OrderBy(ctx, inds, ord), base(std::move(bas)), uroboros(uro), nextContext(std::move(nextCtx))
+OrderBy_Definition::OrderBy_Definition(_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro)
+   : OrderBy(inds, ord), fileContext(ctx), base(std::move(bas)), uroboros(uro), nextContext(std::move(nextCtx))
 {
    this->resultPtr = &this->result;
 }
@@ -49,7 +49,7 @@ void OrderBy_Definition::reset()
    this->index = NINT_ZERO;
 
    this->hasVolatileDepth = false;
-   this->context->resetIndexAndDepth();
+   this->fileContext->resetIndexAndDepth();
 
    if (!this->first) {
       this->base->reset();
@@ -69,10 +69,10 @@ _bool OrderBy_Definition::hasNext()
          }
 
          this->value = this->base->getValue();
-         this->context->loadData(this->value);
+         //this->context->loadData(this->value);
 
          this->result.emplace_back(this->value);
-         const _num& depth = this->context->v_depth->value;
+         const _num& depth = this->fileContext->v_depth->value;
 
          this->depths.emplace_back(depth.value.i);
          this->order->addValues();
@@ -89,7 +89,7 @@ _bool OrderBy_Definition::hasNext()
       }
 
       if (!this->hasVolatileDepth) {
-         this->context->resetDepth();
+         this->fileContext->resetDepth();
       }
 
       this->indices->prepare(this->length);

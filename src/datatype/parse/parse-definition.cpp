@@ -21,6 +21,7 @@
 #include "../parse/parse-function.h"
 #include "parse-generic.h"
 #include "../parse-gen.h"
+#include "parse-order.h"
 
 
 namespace uro::parse
@@ -332,9 +333,18 @@ static _bool parseListFilter(_defptr& result, const Tokens& tks, _uro& uro)
             break;
          }
          case Keyword::kw_Order: {
-            // todo
+            gen::_ordptr order;
+            gen::_indptr indices = std::make_unique<gen::OrderIndices>();
+            parseOrder(order, indices, ts, tsf, uro);
 
-
+            // retreat previous context
+            // and add a new one instead
+            FileContext* prevContext = contextPtr;
+            uro.contexts.retreatFileContext();
+            _fcptr nextContext = std::make_unique<FileContext>(uro);
+            uro.contexts.addFileContext(nextContext.get());
+            _defptr prev = std::move(base);
+            base = std::make_unique<gen::OrderBy_Definition>(prev, contextPtr, nextContext, indices, order, uro);
             break;
          }
       }

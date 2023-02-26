@@ -156,7 +156,7 @@ namespace uro
    }
 
    Contexts::Contexts(_uro& uro)
-      : GlobalContext(uro), hashes(uro.hashes)
+      : GlobalContext(uro), hashes(uro.hashes), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
    {
       this->locationContexts.push_back(&this->rootLocation);
       this->locationContexts.back()->location->value = uro.arguments.getLocation();

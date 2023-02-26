@@ -49,7 +49,7 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
 
 // Definition chain is a collection of Strings, Lists and Definitions
 // separated by commas, that contains at least one Definition
-// as a result, multiple elements are transformed into one Definition
+// as a result, multiple elements are transformed into one Definition and lazy evaluation is preserved
 static _bool parseDefChain(_defptr& result, const Tokens& tks, _uro& uro)
 {
    enum ChainLink {

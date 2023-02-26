@@ -233,16 +233,7 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, _uro& uro)
 
 static _bool parseDefFilter(_defptr& result, const Tokens& tks, _uro& uro)
 {
-   const _size firstKeywordId = tks.getFilterKeywordId();
-
-   if (firstKeywordId == tks.getStart()) {
-      throw SyntaxError::filterKeywordAtStart(tks.first().getOriginString(uro), tks.first().line);
-   }
-   else if (firstKeywordId == tks.getStart() + tks.getLength() - 1) {
-      const Token& t = tks.listAt(firstKeywordId);
-      throw SyntaxError::filterKeywordAtEnd(t.getOriginString(uro), t.line);
-   }
-
+   const _size firstKeywordId = tks.getFilterKeywordId(uro);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
    _defptr base;
    if (!parse(uro, tks2, base)) {

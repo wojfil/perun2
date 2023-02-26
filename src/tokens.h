@@ -83,7 +83,7 @@ public:
    std::pair<Tokens, Tokens> divideBySymbol(const _char& symbol) const;
    std::vector<Tokens> splitBySymbol(const _char& symbol) const;
    _int countSymbols(const _char& symbol) const;
-   _int getFilterKeywordId() const;
+   _int getFilterKeywordId(_uro& uro) const;
    std::vector<Tokens> splitByFiltherKeywords(_uro& uro) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 

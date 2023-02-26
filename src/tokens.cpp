@@ -226,7 +226,7 @@ _int Tokens::countSymbols(const _char& symbol) const
    return count;
 }
 
-_int Tokens::getFilterKeywordId() const
+_int Tokens::getFilterKeywordId(_uro& uro) const
 {
    BracketsInfo bi;
 
@@ -234,6 +234,13 @@ _int Tokens::getFilterKeywordId() const
       const Token& t = this->listAt(i);
 
       if (t.isFilterKeyword() && bi.isBracketFree()) {
+         if (i == this->start) {
+            throw SyntaxError::filterKeywordAtStart(t.getOriginString(uro), t.line);
+         }
+         else if (i == this->start + getLength() - 1) {
+            throw SyntaxError::filterKeywordAtEnd(t.getOriginString(uro), t.line);
+         }
+
          return i;
       }
    }

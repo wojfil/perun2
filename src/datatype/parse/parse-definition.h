@@ -24,10 +24,10 @@ namespace uro::parse
 
 _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro);
 
-static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, _uro& uro);
+static _bool parseDefChain(_defptr& result, const Tokens& tks, _uro& uro);
 static _bool parseDefTernary(_defptr& result, const Tokens& tks, _uro& uro);
 static _bool parseDefBinary(_defptr& result, const Tokens& tks, _uro& uro);
-static _bool parseListFilter(_defptr& result, const Tokens& tks, _uro& uro);
+static _bool parseDefFilter(_defptr& result, const Tokens& tks, _uro& uro);
 
 }
 

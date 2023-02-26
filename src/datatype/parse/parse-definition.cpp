@@ -36,10 +36,10 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return parseListFilter(result, tks, uro);
+      return parseDefFilter(result, tks, uro);
    }
 
-   if (tks.check(TI_HAS_CHAR_COMMA) && parseDefinitionChain(result, tks, uro)) {
+   if (tks.check(TI_HAS_CHAR_COMMA) && parseDefChain(result, tks, uro)) {
       return true;
    }
 
@@ -47,11 +47,10 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _uro& uro)
 }
 
 
-// definition chain is a collection of strings, lists and definitions
-// separated by commas, that contain at least one definition
-// for the sake of Uroboros2 optimization
-// definition chains are lazy evaluated runtime
-static _bool parseDefinitionChain(_defptr& result, const Tokens& tks, _uro& uro)
+// Definition chain is a collection of Strings, Lists and Definitions
+// separated by commas, that contains at least one Definition
+// as a result, multiple elements are transformed into one Definition
+static _bool parseDefChain(_defptr& result, const Tokens& tks, _uro& uro)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -232,7 +231,7 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, _uro& uro)
 }
 
 
-static _bool parseListFilter(_defptr& result, const Tokens& tks, _uro& uro)
+static _bool parseDefFilter(_defptr& result, const Tokens& tks, _uro& uro)
 {
    const _size firstKeywordId = tks.getFilterKeywordId();
 
@@ -250,7 +249,6 @@ static _bool parseListFilter(_defptr& result, const Tokens& tks, _uro& uro)
       return false;
    }
 
-   // core
    const _int kw = firstKeywordId - tks.getStart() + 1;
    const _int start = tks.getStart() + kw;
    const _int length = tks.getLength() - kw;

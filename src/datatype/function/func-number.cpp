@@ -67,7 +67,7 @@ _num F_Count::getValue()
       return false;
    }
 
-   this->locContext->loadData(this->fileContext->this_->value);
+   this->locContext->loadData(this->fileContext->trimmed);
    _nint n = NINT_ZERO;
 
    while (definition->hasNext()) {

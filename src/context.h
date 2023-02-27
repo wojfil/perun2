@@ -123,7 +123,7 @@ namespace uro
       _attrptr attribute;
       VarsContext fileVars;
       LocationContext* const locContext;
-      _str trimmed;
+      _str trimmed; // the value of this_, but with trimmed spaces and with proper path separators... used only internally
 
       Variable<_bool>* v_archive;
       Variable<_bool>* v_compressed;
@@ -163,7 +163,7 @@ namespace uro
    public:
       LocationContext();
       LocationContext(LocationContext* prev);
-      void loadData(const _str& newThis);
+      void loadData(const _str& trimmedValue);
 
       _varptr<_str> location;
 

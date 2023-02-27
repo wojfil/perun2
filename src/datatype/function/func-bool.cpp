@@ -28,7 +28,7 @@ _bool F_Any::getValue()
       return false;
    }
 
-   this->locContext->loadData(this->fileContext->this_->value);
+   this->locContext->loadData(this->fileContext->trimmed);
    const _bool any = this->definition->hasNext();
 
    if (any) {
@@ -228,7 +228,7 @@ _bool F_Exists::getValue()
       return false;
    }
 
-   const _str base = os_join(this->locContext->location->value, this->fileContext->this_->value);
+   const _str base = os_join(this->locContext->location->value, this->fileContext->trimmed);
    const _str value = os_trim(this->arg1->getValue());
 
    if (os_isInvaild(value)) {
@@ -245,7 +245,7 @@ _bool F_Exist::getValue()
       return false;
    }
 
-   const _str base = os_join(this->locContext->location->value, this->fileContext->this_->value);
+   const _str base = os_join(this->locContext->location->value, this->fileContext->trimmed);
    const _list values = this->arg1->getValue();
    const _size len = values.size();
 

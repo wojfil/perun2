@@ -31,11 +31,11 @@ namespace uro
       : location(std::make_unique<Variable<_str>>(VarType::vt_Special)),
         prevLocation(prev) { };
 
-   void LocationContext::loadData(const _str& newThis)
+   void LocationContext::loadData(const _str& trimmedValue)
    {
       this->location->value = this->prevLocation == nullptr
-         ? newThis
-         : os_join(this->prevLocation->location->value, newThis);
+         ? trimmedValue
+         : os_join(this->prevLocation->location->value, trimmedValue);
    }
 
    IndexContext::IndexContext(_uro& uro)

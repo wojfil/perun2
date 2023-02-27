@@ -164,7 +164,7 @@ void CS_InsideThis::run()
    if (this->uroboros.state == State::s_Running) {
       if (this->fileContext->v_exists->value && this->fileContext->v_isdirectory->value) {
 
-         this->locContext->loadData(this->fileContext->this_->value);
+         this->locContext->loadData(this->fileContext->trimmed);
          this->command->run();
 
          P_CHECK_SOFT_LOOP_BREAK;
@@ -180,7 +180,7 @@ void CS_InsideString::run()
       this->context->loadData(this->string->getValue());
 
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
-         this->locContext->loadData(this->context->this_->value);
+         this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
          P_CHECK_SOFT_LOOP_BREAK;
@@ -205,7 +205,7 @@ void CS_InsideDefinition::run()
       this->context->loadData(this->definition->getValue());
 
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
-         this->locContext->loadData(this->definition->getValue());
+         this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
@@ -233,7 +233,7 @@ void CS_InsideContextless::run()
       }
 
       if (this->fileContext->v_exists->value && this->fileContext->v_isdirectory->value) {
-         this->locContext->loadData(this->definition->getValue());
+         this->locContext->loadData(os_trim(this->definition->getValue()));
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
@@ -260,7 +260,7 @@ void CS_InsideList::run()
    while (this->uroboros.state == State::s_Running && index != length) {
       this->context->loadData(values[static_cast<_size>(index.value.i)]);
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
-         this->locContext->loadData(this->context->this_->value);
+         this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
          P_CHECK_LOOP_BREAK;

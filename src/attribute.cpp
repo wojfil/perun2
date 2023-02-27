@@ -21,7 +21,7 @@ namespace uro
 {
 
 Attribute::Attribute(_uro& uro)
-   : value(ATTR_NULL), uroboros(uro) { };
+   : uroboros(uro) { };
 
 Attribute::Attribute(const _aunit& val, _uro& uro)
    : value(val), uroboros(uro) { };

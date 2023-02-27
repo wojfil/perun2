@@ -78,7 +78,7 @@ public:
 protected:
    _bool markedToEvaluate = false;
    _bool markedToRun = false;
-   _aunit value;
+   _aunit value = ATTR_NULL;
 };
 
 typedef std::unique_ptr<Attribute> _attrptr;

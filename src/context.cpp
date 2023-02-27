@@ -124,7 +124,7 @@ namespace uro
          std::make_unique<Variable<_str>>(VarType::vt_Special, os_desktopPath())));
       this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_UROBOROS2,
          std::make_unique<Variable<_str>>(VarType::vt_Special, os_uroborosPath())));
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_ROOT,
+      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_ORIGIN,
          std::make_unique<Variable<_str>>(VarType::vt_Special, uro.arguments.getLocation())));
 
       this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ALPHABET,

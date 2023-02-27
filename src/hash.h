@@ -98,7 +98,7 @@ public:
 
    const _hash HASH_VAR_DESKTOP;
    const _hash HASH_VAR_UROBOROS2;
-   const _hash HASH_VAR_ROOT;
+   const _hash HASH_VAR_ORIGIN;
 
    const _hash HASH_VAR_DIRECTORIES;
    const _hash HASH_VAR_FILES;

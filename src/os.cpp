@@ -108,7 +108,7 @@ void os_loadAttributes(FileContext& context)
 
    _str path;
 
-   // "drive", "path", "parent" and "fullname" do not require access to the file system
+   // "drive", "depth", "path", "parent" and "fullname" do not require access to the file system
    if (attribute->has(ATTR_PATH)) {
       path = os_join(context.locContext->location->value, context.trimmed);
       context.v_path->value = path;
@@ -124,6 +124,10 @@ void os_loadAttributes(FileContext& context)
 
    if (attribute->has(ATTR_DRIVE)) {
       context.v_drive->value = os_drive(path);
+   }
+
+   if (attribute->has(ATTR_DEPTH)) {
+      context.v_depth->value = os_depth(context.trimmed);
    }
 
    if (!attribute->has(ATTR_EXISTS)) {
@@ -261,6 +265,10 @@ void os_loadEmptyAttributes(FileContext& context)
       context.v_fullname->value.clear();
    }
 
+   if (attribute->has(ATTR_DEPTH)) {
+      context.v_depth->value = _num(NINT_MINUS_ONE);
+   }
+
    if (attribute->has(ATTR_DRIVE)) {
       context.v_drive->value.clear();
    }
@@ -387,6 +395,19 @@ _tim os_creation(const _str& path)
    }
 
    return os_convertToUroTime(&data.ftCreationTime);
+}
+
+_num os_depth(const _str& value)
+{
+   _nint result = NINT_ZERO;
+
+   for (const _char& ch : value) {
+      if (ch == OS_SEPARATOR) {
+         result++;
+      }
+   }
+
+   return result;
 }
 
 _str os_drive(const _str& path)

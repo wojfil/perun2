@@ -113,17 +113,6 @@ namespace uro
       }
    }
 
-   void FileContext::resetDepth()
-   {
-      this->v_depth->value.setToZero();
-   }
-
-   void FileContext::resetIndexAndDepth()
-   {
-      this->resetIndex();
-      this->v_depth->value.setToZero();
-   }
-
    GlobalContext::GlobalContext(_uro& uro)
    {
       this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_NOW, std::make_unique<gen::v_Now>()));

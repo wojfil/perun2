@@ -35,7 +35,7 @@ CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx
 void CS_StringComArg::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      this->context->resetIndexAndDepth();
+      this->context->resetIndex();
       this->context->loadData(this->string->getValue());
       this->command->run();
    }
@@ -52,7 +52,7 @@ void CS_ListComArg::run()
    }
 
    _num index;
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
 
    while (this->uroboros.state == State::s_Running && index != length) {
       this->context->loadData(values[index.value.i]);
@@ -66,7 +66,7 @@ void CS_ListComArg::run()
 void CS_DefinitionComArg::run()
 {
    _num index;
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
 
    while (this->definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {

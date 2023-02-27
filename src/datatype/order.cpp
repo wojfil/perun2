@@ -48,12 +48,8 @@ FileContext* OrderBy_Definition::getFileContext()
 void OrderBy_Definition::reset()
 {
    this->result.clear();
-   this->depths.clear();
    this->order->clearValues();
    this->index = NINT_ZERO;
-
-   this->hasVolatileDepth = false;
-   this->fileContext->resetIndexAndDepth();
 
    if (!this->first) {
       this->base->reset();
@@ -73,26 +69,14 @@ _bool OrderBy_Definition::hasNext()
          }
 
          this->value = this->base->getValue();
-
          this->result.emplace_back(this->value);
-         const _num& depth = this->fileContext->v_depth->value;
-
-         this->depths.emplace_back(depth.value.i);
          this->order->addValues();
-
-         if (!this->hasVolatileDepth && depth.value.i != NINT_ZERO) {
-            this->hasVolatileDepth = true;
-         }
       }
 
       this->length = this->result.size();
 
       if (this->length == 0) {
          return false;
-      }
-
-      if (!this->hasVolatileDepth) {
-         this->fileContext->resetDepth();
       }
 
       this->indices->prepare(this->length);
@@ -112,13 +96,8 @@ _bool OrderBy_Definition::hasNext()
    else {
       this->value = this->result[this->index];
       this->nextContext->loadData(this->value);
-
       this->nextContext->index->value.value.i = static_cast<_nint>(this->index);
-      if (this->hasVolatileDepth) {
-         this->nextContext->v_depth->value.value.i = this->depths[this->indices->values[this->index]];
-      }
       this->index++;
-
       return true;
    }
 }

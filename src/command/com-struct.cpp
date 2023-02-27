@@ -78,7 +78,7 @@ void CS_While::run()
 void CS_StringLoop::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      this->context->resetIndexAndDepth();
+      this->context->resetIndex();
       this->context->loadData(this->string->getValue());
       this->command->run();
 
@@ -92,7 +92,7 @@ void CS_StringLoop::run()
 void CS_DefinitionLoop::run()
 {
    _num index = NINT_ZERO;
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
 
    while (this->definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -144,7 +144,7 @@ void CS_ListLoop::run()
    }
 
    _num index = NINT_ZERO;
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
 
    while (this->uroboros.state == State::s_Running && index != length) {
       this->context->loadData(values[static_cast<_size>(index.value.i)]);
@@ -176,7 +176,7 @@ void CS_InsideThis::run()
 void CS_InsideString::run()
 {
    if (this->uroboros.state == State::s_Running) {
-      this->context->resetIndexAndDepth();
+      this->context->resetIndex();
       this->context->loadData(this->string->getValue());
 
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
@@ -194,7 +194,7 @@ void CS_InsideString::run()
 void CS_InsideDefinition::run()
 {
    _num index = NINT_ZERO;
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
 
    while (definition->hasNext()) {
       if (!this->uroboros.state == State::s_Running) {
@@ -255,7 +255,7 @@ void CS_InsideList::run()
 
    _num index = NINT_ZERO;
    _nint outIndex = NINT_ZERO;
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
 
    while (this->uroboros.state == State::s_Running && index != length) {
       this->context->loadData(values[static_cast<_size>(index.value.i)]);

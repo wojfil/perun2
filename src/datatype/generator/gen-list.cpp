@@ -88,7 +88,7 @@ _list ListFilter_Where::getValue()
    _list result;
    const _nint length = static_cast<_nint>(values.size());
 
-   this->context->resetIndexAndDepth();
+   this->context->resetIndex();
    _nint index = NINT_ZERO;
 
    while (this->uroboros.state == State::s_Running && index != length) {

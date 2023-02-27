@@ -43,6 +43,11 @@ void Attribute::add(const _hash& val)
       return;
    }
 
+   if (val == hashes.HASH_VAR_DEPTH) {
+      this->set(ATTR_DEPTH);
+      return;
+   }
+
    if (val != hashes.HASH_VAR_PATH && val != hashes.HASH_VAR_FULLNAME) {
       this->set(ATTR_EXISTS);
    }

@@ -175,7 +175,6 @@ private:
    _genptr<_num> number;
 
    std::deque<_str> values;
-   std::deque<_nint> depths;
    _nint length;
    _nint index;
 };

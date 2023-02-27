@@ -97,9 +97,6 @@ public:
    void reset() override;
 
 protected:
-   void setDepth();
-
-   _num depth;
    _bool goDeeper = false;
    std::vector<HANDLE> handles;
    _list paths;

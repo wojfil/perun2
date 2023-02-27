@@ -26,7 +26,7 @@ DefWithContext::DefWithContext(_defptr& def, _uro& uro)
 
 DefWithContext::DefWithContext(_defptr& def, _fcptr& ctx)
    : definition(std::move(def)), context(std::move(ctx)) { };
-   
+
 void DefWithContext::reset()
 {
    this->definition->reset();
@@ -132,7 +132,7 @@ void LocationVessel::setValue(const _str& val)
 
 
 NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool& abs, const _bool& fin)
-   : vessel(ves), definition(std::move(def)), locations(std::move(locs)), 
+   : vessel(ves), definition(std::move(def)), locations(std::move(locs)),
      context(definition->getFileContext()), isAbsolute(abs), isFinal(fin) { };
 
 
@@ -153,7 +153,6 @@ _bool NestedDefiniton::hasNext()
 {
    if (!this->locsOpened) {
       if (this->locations->hasNext()) {
-         this->locDepth = this->context->v_depth->value;
          this->locsOpened = true;
          this->vessel.setValue(this->locations->getValue());
          if (this->isFinal) {
@@ -180,17 +179,16 @@ _bool NestedDefiniton::hasNext()
 
          if (this->isFinal) {
             this->context->index->value = index;
+            this->context->loadData(this->value);
             index++;
          }
 
-         this->context->v_depth->value = this->locDepth;
          return true;
       }
       else {
          this->defOpened = false;
 
          if (this->locations->hasNext()) {
-            this->locDepth = this->context->v_depth->value;
             this->locsOpened = true;
             this->vessel.setValue(this->locations->getValue());
          }
@@ -200,7 +198,7 @@ _bool NestedDefiniton::hasNext()
          }
       }
    }
-   
+
    return false;
 };
 
@@ -318,9 +316,8 @@ _bool DefFilter_Final::hasNext()
       }
 
       values.clear();
-      depths.clear();
       length = NINT_ZERO;
-      
+
       while (definition->hasNext()) {
          if (this->uroboros.state != State::s_Running) {
             definition->reset();
@@ -329,14 +326,12 @@ _bool DefFilter_Final::hasNext()
 
          if (length == limit) {
             values.pop_front();
-            depths.pop_front();
          }
          else {
             length++;
          }
 
          values.emplace_back(definition->getValue());
-         depths.emplace_back(prevContext->v_depth->value.value.i);
       }
 
       index = NINT_ZERO;
@@ -352,7 +347,6 @@ _bool DefFilter_Final::hasNext()
       value = values[static_cast<_size>(index)];
       nextContext->loadData(value);
       this->context->index->value.value.i = index;
-      this->context->v_depth->value.value.i = depths[static_cast<_size>(index)];
       index++;
       return true;
    }
@@ -563,11 +557,14 @@ _bool Join_DefDef::hasNext()
          return false;
       }
    }
+
+   this->first = true;
+   return false;
 }
 
 
 DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin)
-   : definition(std::move(def)), fileContext(definition->getFileContext()), 
+   : definition(std::move(def)), fileContext(definition->getFileContext()),
      locContext(uro.contexts.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 
@@ -591,8 +588,8 @@ _bool DefinitionSuffix::hasNext()
 
    while (definition->hasNext()) {
       this->value = str(this->definition->getValue(), this->suffix);
-      const _str path = this->absoluteBase 
-         ? this->value 
+      const _str path = this->absoluteBase
+         ? this->value
          : str(this->locContext->location->value, OS_SEPARATOR_STRING, this->value);
 
       if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {

@@ -203,7 +203,7 @@ public:
       this->resultPtr = &result;
       this->indices->prepare(length);
       this->order->clearValues(length);
-      this->context->resetIndexAndDepth();
+      this->context->resetIndex();
 
       for (_size i = 0; i < length; i++) {
          this->context->loadData(result[i]);
@@ -242,9 +242,6 @@ private:
    _size length;
    _size index;
    _list result;
-
-   _bool hasVolatileDepth;
-   std::vector<_nint> depths;
 };
 
 }

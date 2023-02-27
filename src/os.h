@@ -54,6 +54,7 @@ _bool os_archive(const _str& path);
 _tim os_change(const _str& path);
 _bool os_compressed(const _str& path);
 _tim os_creation(const _str& path);
+_num os_depth(const _str& value);
 _str os_drive(const _str& path);
 _bool os_empty(const _str& path);
 _bool os_emptyFile(const _adata& data);

@@ -412,9 +412,14 @@ _num os_depth(const _str& value)
 
 _str os_drive(const _str& path)
 {
-   return os_isAbsolute(path)
-      ? str(toStr(std::towupper(path[0])), STRING_CHAR_COLON)
-      : EMPTY_STRING;
+   if (os_isAbsolute(path)) {
+      _char letter = path[0];
+      toUpper(letter);
+      return str(toStr(letter), STRING_CHAR_COLON);
+   }
+   else {
+      return EMPTY_STRING;
+   }
 }
 
 _bool os_empty(const _str& path)

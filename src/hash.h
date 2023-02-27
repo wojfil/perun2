@@ -135,7 +135,6 @@ public:
    const _hash HASH_FUNC_ISHEX;
 
    const _hash HASH_FUNC_EXIST;
-   const _hash HASH_FUNC_ANY;
    const _hash HASH_FUNC_ANYINSIDE;
    const _hash HASH_FUNC_CONTAINS;
    const _hash HASH_FUNC_EXISTSINSIDE;

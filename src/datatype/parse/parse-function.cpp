@@ -76,7 +76,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       result = std::make_unique<F_Exist>(list, lctx, fctx);
       return true;
    }
-   else if (name == uro.hashes.HASH_FUNC_ANY) {
+   else if (name == uro.hashes.HASH_FUNC_ANYINSIDE) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -443,7 +443,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
             L"' cannot be resolved to a string"), word.line);
       }
    }
-   else if (name == uro.hashes.HASH_FUNC_COUNT) {
+   else if (name == uro.hashes.HASH_FUNC_COUNTINSIDE) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }

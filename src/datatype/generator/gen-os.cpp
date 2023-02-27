@@ -318,7 +318,6 @@ _bool RecursiveFiles::hasNext()
                      paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
 
                      if (this->bases.empty()) {
-                     //if (this->depth.isZero()) {
                         bases.emplace_back(str(v, OS_SEPARATOR_STRING));
                      }
                      else {
@@ -330,7 +329,6 @@ _bool RecursiveFiles::hasNext()
                }
                else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
                   value = this->bases.empty() ? v : str(bases.back(), v);
-                  //value = this->depth.isZero() ? v : str(bases.back(), v);
                   this->context.index->value = index;
                   index++;
 
@@ -407,7 +405,6 @@ _bool RecursiveDirectories::hasNext()
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
             {
-               //const _bool isBase = this->depth.isMinusOne();
                const _bool isBase = this->bases.empty();
                value = isBase ? v : str(bases.back(), v);
                paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
@@ -501,7 +498,6 @@ _bool RecursiveAll::hasNext()
                   }
 
                   const _bool isBase = this->bases.empty();
-                  //const _bool isBase = this->depth.isMinusOne();
 
                   value = isBase ? v : str(bases.back(), v);
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
@@ -530,7 +526,6 @@ _bool RecursiveAll::hasNext()
                   }
 
                   const _bool isBase = this->bases.empty();
-                  //const _bool isBase = this->depth.isZero();
                   value = isBase ? v : str(bases.back(), v);
                   this->context.index->value = index;
                   index++;

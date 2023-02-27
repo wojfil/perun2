@@ -243,6 +243,9 @@ _int Tokens::getFilterKeywordId(_uro& uro) const
 
          return i;
       }
+      else {
+         bi.refresh(t);
+      }
    }
 
    return -1;

@@ -94,7 +94,6 @@ exitAsteriskBeginning:
    // we can easily deduce the result
    if ((info & ASTERISK_INFO_ONE_ASTERISK) != 0) {
       _int separatorId2 = -1;
-
       for (_size i = separatorId + ((isAbsolute && separatorId == -1) ? 4 : 1); i < totalLength; i++) {
          if (pattern[i] == OS_SEPARATOR) {
             separatorId2 = static_cast<_int>(i);
@@ -116,11 +115,11 @@ exitAsteriskBeginning:
       }
 
       const _str suffix = str(OS_SEPARATOR_STRING, pattern.substr(separatorId2 + 1));
-      const _int patternStart = separatorId == -1 ? patternStart : separatorId;
-      const _int patternLength = separatorId2 - patternStart;
+      const _int patternStart2 = separatorId == -1 ? patternStart : separatorId;
+      const _int patternLength = separatorId2 - patternStart2;
       const _str p = (separatorId == -1)
-         ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart, patternLength))
-         : pattern.substr(patternStart, patternLength);
+         ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart2, patternLength))
+         : pattern.substr(patternStart2, patternLength);
 
       _defptr d = std::make_unique<gen::Directories>(base, uro, p, isAbsolute, prefix);
       result = std::make_unique<gen::DefinitionSuffix>(d, uro, suffix, isAbsolute, gen::os::IS_FINAL);

@@ -32,10 +32,6 @@ _bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _uro& uro)
       return parseOneToken(uro, tks, result);
    }
 
-   /*if (tks.check(TI_HAS_FILTER_KEYWORD)) {
-      return parseFilter<_genptr<_tlist>, _tim>(result, tks, ThisState::ts_Time, uro);
-   }*/
-
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {
          return parseTimListed(result, tks, uro);

@@ -220,7 +220,6 @@ Hashes::Hashes() :
    HASH_KW_COPY(rawStringHash(STRING_COPY)),
    HASH_KW_CREATE(rawStringHash(STRING_CREATE)),
    HASH_KW_DELETE(rawStringHash(STRING_DELETE)),
-   HASH_KW_DOWNLOAD(rawStringHash(STRING_DOWNLOAD)),
    HASH_KW_DROP(rawStringHash(STRING_DROP)),
    HASH_KW_HIDE(rawStringHash(STRING_HIDE)),
    HASH_KW_LOCK(rawStringHash(STRING_LOCK)),

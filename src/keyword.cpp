@@ -25,7 +25,6 @@ KeywordsData::KeywordsData(_uro& uro) : KEYWORDS( {
    { uro.hashes.HASH_KW_COPY, Keyword::kw_Copy },
    { uro.hashes.HASH_KW_CREATE, Keyword::kw_Create },
    { uro.hashes.HASH_KW_DELETE, Keyword::kw_Delete },
-   { uro.hashes.HASH_KW_DOWNLOAD, Keyword::kw_Download },
    { uro.hashes.HASH_KW_DROP, Keyword::kw_Drop },
    { uro.hashes.HASH_KW_HIDE, Keyword::kw_Hide },
    { uro.hashes.HASH_KW_LOCK, Keyword::kw_Lock },

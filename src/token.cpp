@@ -114,7 +114,6 @@ _bool Token::isCommandKeyword() const
       case Keyword::kw_Copy:
       case Keyword::kw_Create:
       case Keyword::kw_Delete:
-      case Keyword::kw_Download:
       case Keyword::kw_Drop:
       case Keyword::kw_Hide:
       case Keyword::kw_Lock:

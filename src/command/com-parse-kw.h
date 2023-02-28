@@ -47,8 +47,6 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
    const _bool& force, const _bool& stack, _uro& uro);
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
    const _bool& force, const _bool& stack, _uro& uro);
-static _bool c_downloadFrom(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-    const _bool& force, const _bool& stack, _uro& uro);
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
    const _bool& force, const _bool& stack, _uro& uro);
 

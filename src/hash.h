@@ -219,7 +219,6 @@ public:
    const _hash HASH_KW_COPY;
    const _hash HASH_KW_CREATE;
    const _hash HASH_KW_DELETE;
-   const _hash HASH_KW_DOWNLOAD;
    const _hash HASH_KW_DROP;
    const _hash HASH_KW_HIDE;
    const _hash HASH_KW_LOCK;

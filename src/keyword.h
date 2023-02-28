@@ -31,7 +31,6 @@ enum Keyword
    kw_Copy = 0,
    kw_Create,
    kw_Delete,
-   kw_Download,
    kw_Drop,
    kw_Hide,
    kw_Lock,

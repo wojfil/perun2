@@ -253,7 +253,6 @@ static const _str STRING_NUMBERS =              L"numbers";
 static const _str STRING_COPY =                 L"copy";
 static const _str STRING_CREATE =               L"create";
 static const _str STRING_DELETE =               L"delete";
-static const _str STRING_DOWNLOAD =             L"download";
 static const _str STRING_DROP =                 L"drop";
 static const _str STRING_HIDE =                 L"hide";
 static const _str STRING_LOCK =                 L"lock";

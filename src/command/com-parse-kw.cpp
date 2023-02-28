@@ -53,9 +53,6 @@ _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
       case Keyword::kw_Create: {
          return c_create(result, word, tks, line, force, stack, uro);
       }
-      case Keyword::kw_Download: {
-         return c_downloadFrom(result, word, tks, line, force, stack, uro);
-      }
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
       case Keyword::kw_Exit: {
@@ -867,91 +864,6 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
    }
 
    commandSyntaxError(str(word.getOriginString(uro), L" to"), line);
-   return false;
-}
-
-static _bool c_downloadFrom(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro)
-{
-   if (tks.check(TI_HAS_KEYWORD_FROM)) {
-      P_DIVIDE_BY_KEYWORD(kw_From);
-
-      if (left.isEmpty()) {
-         throw SyntaxError(str(L"command '", word.getOriginString(uro), L" from' does not "
-            L"contain a declaration of elements to download"), line);
-      }
-      if (right.isEmpty()) {
-         throw SyntaxError(str(L"command '", word.getOriginString(uro), L" from' does not "
-            L"contain a declaration of location"), line);
-      }
-
-      _genptr<_str> loc;
-      if (!parse::parse(uro, right, loc)) {
-         throw SyntaxError(str(L"location in command '", word.getOriginString(uro),
-            L" from' cannot be resolved to a string"), line);
-      }
-
-      _genptr<_str> str_;
-      if (parse::parse(uro, left, str_)) {
-         if (stack)
-            result = std::make_unique<C_DownloadFrom_String_Stack>(loc, str_, uro);
-         else
-            result = std::make_unique<C_DownloadFrom_String>(loc, str_, force, uro);
-
-         return true;
-      }
-
-      _defptr def;
-      if (parse::parse(uro, left, def)) {
-         if (stack)
-            result = std::make_unique<C_DownloadFrom_Definition_Stack>(loc, def, uro);
-         else
-            result = std::make_unique<C_DownloadFrom_Definition>(loc, def, force, uro);
-
-         return true;
-      }
-
-      _genptr<_list> list;
-      if (parse::parse(uro, left, list)) {
-         if (stack)
-            result = std::make_unique<C_DownloadFrom_List_Stack>(loc, list, uro);
-         else
-            result = std::make_unique<C_DownloadFrom_List>(loc, list, force, uro);
-
-         return true;
-      }
-
-      commandSyntaxError(str(word.getOriginString(uro), L" from"), line);
-      return false;
-   }
-
-   _genptr<_str> str_;
-   if (parse::parse(uro, tks, str_)) {
-      if (stack)
-         result = std::make_unique<C_Download_String_Stack>(str_, uro);
-      else
-         result = std::make_unique<C_Download_String>(str_, force, uro);
-
-      return true;
-   }
-
-   _defptr def;
-   if (parse::parse(uro, tks, def)) {
-      throw SyntaxError(str(L"the argument of command '",
-         word.getOriginString(uro), L"' cannot be of type 'definition'"), line);
-   }
-
-   _genptr<_list> list;
-   if (parse::parse(uro, tks, list)) {
-      if (stack)
-         result = std::make_unique<C_Download_List_Stack>(list, uro);
-      else
-         result = std::make_unique<C_Download_List>(list, force, uro);
-
-      return true;
-   }
-
-   commandSyntaxError(word.getOriginString(uro), line);
    return false;
 }
 

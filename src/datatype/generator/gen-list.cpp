@@ -86,6 +86,7 @@ _list ListFilter_Where::getValue()
 {
    const _list values = list->getValue();
    _list result;
+   result.reserve(values.size());
    const _nint length = static_cast<_nint>(values.size());
 
    this->context->resetIndex();

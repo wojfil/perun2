@@ -66,14 +66,12 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
             }
             else if (!tks.check(TI_HAS_COMPARISON_CHAR)) {
                const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
-               const _size elen = elements.size();
 
-               if (elen == 1) {
+               if (elements.size() == 1) {
                   break;
                }
 
-               for (_size i = 0; i < elen; i++) {
-                  const Tokens& tkse = elements[i];
+               for (const Tokens& tkse : elements) {
                   _genptr<_str> str;
 
                   if (!parse(uro, tkse, str)) {

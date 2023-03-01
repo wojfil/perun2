@@ -223,7 +223,7 @@ exitAsteriskBeginning:
 
 
 void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
-   const _bool& hasAsterisk, std::vector<AsteriskUnit>& units)
+   const _bool hasAsterisk, std::vector<AsteriskUnit>& units)
 {
    if (asteriskPart.empty()) {
       asteriskPart = part;
@@ -247,7 +247,7 @@ void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& pa
 
 
 _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, 
-   const _size& start, const _bool& isAbsolute, _uro& uro)
+   const _size& start, const _bool isAbsolute, _uro& uro)
 {
    enum Mode {
       m_Normal,

@@ -21,7 +21,7 @@
 namespace uro::gen
 {
 
-LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _bool& neg)
+LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _bool neg)
    : values(vals), negated(neg) { };
 
 

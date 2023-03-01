@@ -28,29 +28,29 @@ namespace uro::comm
 {
 
 _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
-   const _int& line, const _bool& force, const _bool& stack, _uro& uro);
+   const _int& line, const _bool force, const _bool stack, _uro& uro);
 
 static void checkFileContextExistence(const _str& commandName, const _int line, _uro& uro);
 
 static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks,
    const _int& line, _uro& uro);
-static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* context, const _bool& saveChanges,_uro& uro);
+static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* context, const _bool saveChanges,_uro& uro);
 static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int& line, _uro& uro);
 static _bool coreCommandTime(_comptr& result, const Token& word, FileContext* context,
-    _genptr<_tim>& time, const _bool& saveChanges, _uro& uro);
+    _genptr<_tim>& time, const _bool saveChanges, _uro& uro);
 
 static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro);
 static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro);
 static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro);
+   const _bool force, const _bool stack, _uro& uro);
 static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro);
+   const _bool force, const _bool stack, _uro& uro);
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro);
+   const _bool force, const _bool stack, _uro& uro);
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro);
+   const _bool force, const _bool stack, _uro& uro);
 
-_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool& directError, _uro& uro);
+_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool directError, _uro& uro);
 static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro);
 static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro);
 
@@ -67,7 +67,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
 
 
 static void checkUselessFlags(const Token& word, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro);
+   const _bool force, const _bool stack, _uro& uro);
 static void commandSyntaxError(const _str& name, const _int& line);
 static void commandNoArgException(const _str& name, const _int& line);
 

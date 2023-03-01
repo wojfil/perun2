@@ -108,7 +108,7 @@ _bool DefFilter_Where::hasNext()
 }
 
 
-LocationVessel::LocationVessel(const _bool& abs, LocationContext* ctx)
+LocationVessel::LocationVessel(const _bool abs, LocationContext* ctx)
    : isAbsolute(abs), context(ctx) { };
 
 
@@ -131,7 +131,7 @@ void LocationVessel::setValue(const _str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool& abs, const _bool& fin)
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool abs, const _bool fin)
    : vessel(ves), definition(std::move(def)), locations(std::move(locs)),
      context(definition->getFileContext()), isAbsolute(abs), isFinal(fin) { };
 
@@ -563,7 +563,7 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin)
+DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool abs, const _bool fin)
    : definition(std::move(def)), fileContext(definition->getFileContext()),
      locContext(uro.contexts.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 

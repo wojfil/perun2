@@ -28,7 +28,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _uro& uro);
 static _tnum tokenToTimeNumber(const Token& tk);
 static void checkDayCorrectness(const _tnum& day, const _tnum& month, const _tnum& year, const Token& tk);
 static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro);
-static _bool timeExpUnit(_int& sublen, const _bool& subtract, _bool& prevSubtract,
+static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract,
    _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks, _int& numReserve, _uro& uro);
 
 }

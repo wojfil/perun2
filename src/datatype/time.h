@@ -52,7 +52,7 @@ struct Time
    TimeType type;
 
    _str toString() const;
-   void initClock(const _bool& withSeconds, const _tnum& recentChange);
+   void initClock(const _bool withSeconds, const _tnum& recentChange);
 
    void addYears(const _tnum& y);
    void addMonths(const _tnum& m);
@@ -98,7 +98,7 @@ inline _bool isLeapYear(const _tnum& year);
 _tnum daysInMonth(const _tnum& month, const _tnum& year);
 inline Period timeDifference(const Time& min, const Time& max);
 inline _tnum daysInYears(const _tnum& min, const _tnum& max);
-inline void decrementMonth(Period& p, const Time& t, const _bool& addDays);
+inline void decrementMonth(Period& p, const Time& t, const _bool addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);

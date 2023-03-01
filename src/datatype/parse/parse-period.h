@@ -24,7 +24,7 @@ namespace uro::parse
 
 _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _uro& uro);
 
-_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& negated, _uro& uro);
+_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool negated, _uro& uro);
 _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _uro& uro);
 _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, _uro& uro);
 _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, _uro& uro);

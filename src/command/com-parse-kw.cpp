@@ -31,7 +31,7 @@ namespace uro::comm
 {
 
 _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
-   const _int& line, const _bool& force, const _bool& stack, _uro& uro)
+   const _int& line, const _bool force, const _bool stack, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete:
@@ -167,7 +167,7 @@ static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, co
    return false;
 }
 
-static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* context, const _bool& saveChanges, _uro& uro)
+static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* context, const _bool saveChanges, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete: {
@@ -258,7 +258,7 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
 }
 
 static _bool coreCommandTime(_comptr& result, const Token& word, FileContext* context,
-   _genptr<_tim>& time, const _bool& saveChanges, _uro& uro)
+   _genptr<_tim>& time, const _bool saveChanges, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Reaccess: {
@@ -392,7 +392,7 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro)
+   const _bool force, const _bool stack, _uro& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -486,7 +486,7 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro)
+   const _bool force, const _bool stack, _uro& uro)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
@@ -677,7 +677,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro)
+   const _bool force, const _bool stack, _uro& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -868,7 +868,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
 }
 
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro)
+   const _bool force, const _bool stack, _uro& uro)
 {
    const _bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
    const _bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
@@ -1109,7 +1109,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    return false;
 }
 
-_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool& directError, _uro& uro)
+_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool directError, _uro& uro)
 {
    if (tks.isEmpty()) {
       if (!uro.contexts.hasIterationContext()) {
@@ -1474,7 +1474,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
 }
 
 static void checkUselessFlags(const Token& word, const _int& line,
-   const _bool& force, const _bool& stack, _uro& uro)
+   const _bool force, const _bool stack, _uro& uro)
 {
    if (force) {
       throw SyntaxError(str(L"keyword '", word.getOriginString(uro),

@@ -54,7 +54,7 @@ struct OrderUnit : Order
 {
 public:
    OrderUnit() = delete;
-   OrderUnit(_genptr<T>& val, const _bool& desc, _indptr& inds)
+   OrderUnit(_genptr<T>& val, const _bool desc, _indptr& inds)
       : valueGenerator(std::move(val)), descending(desc), indices(inds.get()) { };
 
 protected:
@@ -70,7 +70,7 @@ struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
    OrderUnit_Middle() = delete;
-   OrderUnit_Middle(_genptr<T>& val, const _bool& desc, _ordptr& next, _indptr& inds)
+   OrderUnit_Middle(_genptr<T>& val, const _bool desc, _ordptr& next, _indptr& inds)
       : OrderUnit<T>(val, desc, inds), nextUnit(std::move(next)) { };
 
    void clearValues(const _size& length) override
@@ -116,7 +116,7 @@ struct OrderUnit_Final : OrderUnit<T>
 {
 public:
    OrderUnit_Final() = delete;
-   OrderUnit_Final(_genptr<T>& val, const _bool& desc, _indptr& inds)
+   OrderUnit_Final(_genptr<T>& val, const _bool desc, _indptr& inds)
       : OrderUnit<T>(val, desc, inds) { };
 
    void clearValues(const _size& length) override

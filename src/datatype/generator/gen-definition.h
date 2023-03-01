@@ -80,7 +80,7 @@ private:
 struct LocationVessel : Generator<_str>
 {
 public:
-   LocationVessel(const _bool& abs, LocationContext* ctx);
+   LocationVessel(const _bool abs, LocationContext* ctx);
    _str getValue() override;
    const _str& getRawValue() const;
    void setValue(const _str& val);
@@ -95,7 +95,7 @@ private:
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool& abs, const _bool& fin);
+   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool abs, const _bool fin);
    _bool hasNext() override;
    void reset() override;
    FileContext* getFileContext() override;
@@ -282,7 +282,7 @@ private:
 struct DefinitionSuffix : _def
 {
 public:
-   DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool& abs, const _bool& fin);
+   DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool abs, const _bool fin);
 
    _bool hasNext() override;
    void reset() override;

@@ -93,7 +93,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _uro& uro)
    return false;
 }
 
-_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool& negated, _uro& uro)
+_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool negated, _uro& uro)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();

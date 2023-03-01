@@ -42,9 +42,9 @@ public:
 
 _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, _uro& uro);
 void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
-   const _bool& hasAsterisk, std::vector<AsteriskUnit>& units);
+   const _bool hasAsterisk, std::vector<AsteriskUnit>& units);
 _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, 
-   const _size& start, const _bool& isAbsolute, _uro& uro);
+   const _size& start, const _bool isAbsolute, _uro& uro);
 
 }
 

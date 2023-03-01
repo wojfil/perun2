@@ -28,7 +28,7 @@ namespace uro::parse
 _bool parseOrder(gen::_ordptr& resultOrder, gen::_indptr& indices, Tokens& tks, const Token& keyword, _uro& uro);
 
 template <typename T>
-void setOrderUnit(gen::_ordptr& order, _genptr<T>& value, const _bool& desc, gen::_indptr& indices)
+void setOrderUnit(gen::_ordptr& order, _genptr<T>& value, const _bool desc, gen::_indptr& indices)
 {
    if (order) {
       gen::_ordptr prev = std::move(order);

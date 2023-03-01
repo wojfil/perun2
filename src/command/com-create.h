@@ -27,7 +27,7 @@ namespace uro::comm
 struct C_Create : CoreCommand
 {
 public:
-   C_Create(const _bool& force, FileContext* ctx, _uro& uro)
+   C_Create(const _bool force, FileContext* ctx, _uro& uro)
       : forced(force), CoreCommand(true, ctx, uro) { };
 
    void run() override;
@@ -50,7 +50,7 @@ public:
 struct C_CreateFile : CoreCommand
 {
 public:
-   C_CreateFile(const _bool& force, FileContext* ctx, _uro& uro)
+   C_CreateFile(const _bool force, FileContext* ctx, _uro& uro)
       : forced(force), CoreCommand(true, ctx, uro) { };
 
    void run() override;
@@ -73,7 +73,7 @@ public:
 struct C_CreateDirectory : CoreCommand
 {
 public:
-   C_CreateDirectory(const _bool& force, FileContext* ctx, _uro& uro)
+   C_CreateDirectory(const _bool force, FileContext* ctx, _uro& uro)
       : forced(force), CoreCommand(true, ctx, uro) { };
 
    void run() override;
@@ -110,7 +110,7 @@ protected:
 struct C_Create_String : C_CreateCertain
 {
 public:
-   C_Create_String(_genptr<_str>& el, const _bool& forc, _uro& uro)
+   C_Create_String(_genptr<_str>& el, const _bool forc, _uro& uro)
       : element(std::move(el)), forced(forc), C_CreateCertain(uro) { };
 
    void run() override;
@@ -124,7 +124,7 @@ private:
 struct C_CreateFile_String : C_CreateCertain
 {
 public:
-   C_CreateFile_String(_genptr<_str>& el, const _bool& forc, _uro& uro)
+   C_CreateFile_String(_genptr<_str>& el, const _bool forc, _uro& uro)
       : element(std::move(el)), forced(forc), C_CreateCertain(uro){ };
 
    void run() override;
@@ -138,7 +138,7 @@ private:
 struct C_CreateDirectory_String : C_CreateCertain
 {
 public:
-   C_CreateDirectory_String(_genptr<_str>& el, const _bool& forc, _uro& uro)
+   C_CreateDirectory_String(_genptr<_str>& el, const _bool forc, _uro& uro)
       : element(std::move(el)), forced(forc), C_CreateCertain(uro) { };
 
    void run() override;
@@ -194,7 +194,7 @@ private:
 struct C_Create_List : C_CreateCertain
 {
 public:
-   C_Create_List(_genptr<_list>& el, const _bool& forc, _uro& uro)
+   C_Create_List(_genptr<_list>& el, const _bool forc, _uro& uro)
       : elements(std::move(el)), forced(forc), C_CreateCertain(uro) { };
 
    void run() override;
@@ -208,7 +208,7 @@ private:
 struct C_CreateFiles_List : C_CreateCertain
 {
 public:
-   C_CreateFiles_List(_genptr<_list>& el, const _bool& forc, _uro& uro)
+   C_CreateFiles_List(_genptr<_list>& el, const _bool forc, _uro& uro)
       : elements(std::move(el)), forced(forc), C_CreateCertain(uro) { };
 
    void run() override;
@@ -222,7 +222,7 @@ private:
 struct C_CreateDirectories_List : C_CreateCertain
 {
 public:
-   C_CreateDirectories_List(_genptr<_list>& el, const _bool& forc, _uro& uro)
+   C_CreateDirectories_List(_genptr<_list>& el, const _bool forc, _uro& uro)
       : elements(std::move(el)), forced(forc), C_CreateCertain(uro) { };
 
    void run() override;

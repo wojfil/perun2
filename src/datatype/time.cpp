@@ -432,7 +432,7 @@ Time& Time::operator -= (const Period& per)
 }
 
 // add clock to an already existing time
-void Time::initClock(const _bool& withSeconds, const _tnum& recentChange)
+void Time::initClock(const _bool withSeconds, const _tnum& recentChange)
 {
    if (type == tt_YearMonth || type == tt_Date) {
       hour = TNUM_ZERO;
@@ -919,7 +919,7 @@ inline _tnum daysInYears(const _tnum& min, const _tnum& max)
    }
 }
 
-inline void decrementMonth(Period& p, const Time& t, const _bool& addDays)
+inline void decrementMonth(Period& p, const Time& t, const _bool addDays)
 {
    if (p.months_sec == TNUM_ZERO) {
       p.years_sec--;

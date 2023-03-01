@@ -494,7 +494,7 @@ static _char toBoolExpOperator(const Token& tk)
 }
 
 template <typename T>
-static _bool parseIn_Unit(_genptr<_bool>& result, const _bool& negated,
+static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
    const std::pair<Tokens, Tokens>& pair, _uro& uro)
 {
    _genptr<T> valLeft;
@@ -674,7 +674,7 @@ static void emptyOperSideException(const Token& oper, const bool& isLeft, _uro& 
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool& negated, const Tokens& tks, _uro& uro)
+   const _str& timeMember, const _bool negated, const Tokens& tks, _uro& uro)
 {
    if (timeMember == L"year") {
       if (negated) {
@@ -909,7 +909,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
 }
 
 _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& list, const gen::CompType& ct,
-   const _bool& reversed, _uro& uro)
+   const _bool reversed, _uro& uro)
 {
    switch (ct) {
       case gen::ct_Equals: {

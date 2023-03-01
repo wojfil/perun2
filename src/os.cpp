@@ -838,7 +838,7 @@ _bool os_drop(const _str& path, _uro& uro)
       : os_dropDirectory(path, uro);
 }
 
-_bool os_drop(const _str& path, const _bool& isFile, _uro& uro)
+_bool os_drop(const _str& path, const _bool isFile, _uro& uro)
 {
    return isFile
       ? os_dropFile(path)
@@ -1092,7 +1092,7 @@ _bool os_moveTo(const _str& oldPath, const _str& newPath)
    return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, _uro& uro)
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _uro& uro)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);

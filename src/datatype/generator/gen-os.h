@@ -30,9 +30,9 @@ struct _uro;
 namespace uro::gen
 {
 
-#define P_GEN_OS_ARGS _genptr<_str>& loc, _uro& uro, const _bool& abs, const _str& pref
+#define P_GEN_OS_ARGS _genptr<_str>& loc, _uro& uro, const _bool abs, const _str& pref
 #define P_GEN_OS_ARGS_2 loc, uro, abs, pref
-#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool& abs, const _str& pref
+#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool abs, const _str& pref
 #define P_GEN_OS_ARGS_EXT_2 loc, uro, patt, abs, pref
 
 

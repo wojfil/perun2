@@ -44,7 +44,7 @@ struct LikeSet
 {
 public:
    LikeSet() = delete;
-   LikeSet(const std::unordered_set<_char>& vals, const _bool& neg);
+   LikeSet(const std::unordered_set<_char>& vals, const _bool neg);
    _bool contains(const _char& ch) const;
 
 private:
@@ -270,7 +270,7 @@ struct LC_Constant : LikeComparer
 {
 public:
    LC_Constant() = delete;
-   LC_Constant(const _bool& cnst) : constant(cnst) {};
+   LC_Constant(const _bool cnst) : constant(cnst) {};
    _bool compareToPattern(const _str& value) override;
 
 private:

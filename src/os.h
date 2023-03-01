@@ -84,7 +84,7 @@ _bool os_directoryExists(const _str& path);
 // they can be stopped safely by an interruption call during operation
 _bool os_delete(const _str& path);
 _bool os_drop(const _str& path, _uro& uro);
-_bool os_drop(const _str& path, const _bool& isFile, _uro& uro);
+_bool os_drop(const _str& path, const _bool isFile, _uro& uro);
 _bool os_dropFile(const _str& path);
 _bool os_dropDirectory(const _str& path, _uro& uro);
 _bool os_hide(const _str& path);
@@ -102,7 +102,7 @@ _bool os_createFile(const _str& path);
 _bool os_createDirectory(const _str& path);
 
 _bool os_moveTo(const _str& oldPath, const _str& newPath);
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool& isFile, _uro& uro);
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _uro& uro);
 _bool os_copyToFile(const _str& oldPath, const _str& newPath);
 _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _uro& uro);
 

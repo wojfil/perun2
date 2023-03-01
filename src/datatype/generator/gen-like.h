@@ -117,9 +117,11 @@ public:
 private:
    void clearCharStates();
    LikeCharState checkState(const _size& n, const _size& m);
+   _size getMinLength(const _str& pat);
 
    const _str pattern;
    const _size patternLen;
+   const _size minLength;
    const std::unordered_map<_size, LikeSet> charSets;
    _str const* valuePtr = nullptr;
    std::vector<std::vector<LikeCharState>> charStates;

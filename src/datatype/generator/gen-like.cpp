@@ -447,10 +447,10 @@ _bool Like::getValue()
 
 
 LC_Default::LC_Default(const _str& pat, const std::unordered_map<_size, LikeSet>& cs)
-   : pattern(pat), charSets(cs), patternLen(pat.size()) { };
+   : pattern(pat), charSets(cs), patternLen(pat.size()), minLength(getMinLength(pat)) { };
 
 LC_Default::LC_Default(const _str& pat)
-   : pattern(pat), charSets({}), patternLen(pat.size()) { };
+   : pattern(pat), charSets({}), patternLen(pat.size()), minLength(getMinLength(pat)) { };
 
 
 void LC_Default::clearCharStates()
@@ -540,8 +540,26 @@ LikeCharState LC_Default::checkState(const _size& n, const _size& m)
 }
 
 
+_size LC_Default::getMinLength(const _str& pat)
+{
+   _size result = 0;
+
+   for (const _char& ch : pat) {
+      if (ch != WILDCARD_MULTIPLE_CHARS) {
+         result++;
+      }
+   }
+
+   return result;
+}
+
+
 _bool LC_Default::compareToPattern(const _str& value)
 {
+   if (value.size() < this->minLength) {
+      return false;
+   }
+
    this->valuePtr = &value;
    this->clearCharStates();
    return this->checkState(value.size(), this->patternLen) == LikeCharState::lcs_Matches;

@@ -342,6 +342,123 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 }
 
+void os_loadDataAttributes(FileContext& context, const _fdata& data)
+{
+   const _attrptr& attribute = context.attribute;
+   context.trimmed = os_trim(context.this_->value);
+   _str path;
+
+   // "drive", "depth", "path", "parent" and "fullname" do not require access to the file system
+   if (attribute->has(ATTR_PATH)) {
+      path = os_join(context.locContext->location->value, context.trimmed);
+      context.v_path->value = path;
+   }
+
+   if (attribute->has(ATTR_FULLNAME)) {
+      context.v_fullname->value = os_fullname(context.trimmed);
+   }
+
+   if (attribute->has(ATTR_PARENT)) {
+      context.v_parent->value = os_parent(path);
+   }
+
+   if (attribute->has(ATTR_DRIVE)) {
+      context.v_drive->value = os_drive(path);
+   }
+
+   if (attribute->has(ATTR_DEPTH)) {
+      context.v_depth->value = os_depth(context.trimmed);
+   }
+
+   if (!attribute->has(ATTR_EXISTS)) {
+      return;
+   }
+
+   // below are "real" attributes of files and directories
+   const DWORD& dwAttrib = data.dwFileAttributes;
+   context.v_exists->value = true;
+
+   const _bool isDir = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
+   const _bool isFile = !isDir;
+   
+   context.v_isfile->value = isFile;
+   context.v_isdirectory->value = isDir;
+
+   if (attribute->has(ATTR_ACCESS)) {
+      context.v_access->value = os_convertToUroTime(&data.ftLastAccessTime);
+   }
+
+   if (attribute->has(ATTR_ARCHIVE)) {
+      context.v_archive->value = dwAttrib & FILE_ATTRIBUTE_ARCHIVE;
+   }
+
+   if (attribute->has(ATTR_COMPRESSED)) {
+      context.v_compressed->value = dwAttrib & FILE_ATTRIBUTE_COMPRESSED;
+   }
+
+   if (attribute->has(ATTR_CREATION)) {
+      context.v_creation->value = os_convertToUroTime(&data.ftCreationTime);
+   }
+
+   const _bool hasMod = attribute->has(ATTR_MODIFICATION);
+   const _bool hasChange = attribute->has(ATTR_CHANGE);
+   if (hasMod || hasChange) {
+      const _tim time = os_convertToUroTime(&data.ftLastWriteTime);
+
+      if (hasChange) {
+         context.v_change->value = time;
+      }
+      if (hasMod) {
+         context.v_modification->value = time;
+      }
+   }
+
+   if (attribute->has(ATTR_LIFETIME)) {
+      context.v_lifetime->value = context.v_creation->value < context.v_modification->value
+         ? (os_now() - context.v_creation->value)
+         : (os_now() - context.v_modification->value);
+   }
+
+   if (attribute->has(ATTR_EMPTY)) {
+      context.v_empty->value = isFile
+         ? (data.nFileSizeLow == 0 && data.nFileSizeHigh == 0)
+         : os_emptyDirectory(path);
+   }
+
+   if (attribute->has(ATTR_ENCRYPTED)) {
+      context.v_encrypted->value = (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED);
+   }
+
+   if (attribute->has(ATTR_EXTENSION)) {
+      context.v_extension->value = isFile ? os_extension(context.trimmed) : EMPTY_STRING;
+   }
+
+   if (attribute->has(ATTR_HIDDEN)) {
+      context.v_hidden->value = (dwAttrib & FILE_ATTRIBUTE_HIDDEN);
+   }
+
+   if (attribute->has(ATTR_NAME)) {
+      if (isDir) {
+         context.v_name->value = os_fullname(context.trimmed);
+      }
+      else {
+         context.v_name->value = os_hasExtension(context.trimmed)
+            ? os_name(context.trimmed)
+            : os_fullname(context.trimmed);
+      }
+   }
+
+   if (attribute->has(ATTR_READONLY)) {
+      context.v_readonly->value = (dwAttrib & FILE_ATTRIBUTE_READONLY);
+   }
+
+   if (attribute->has(ATTR_SIZE)) {
+      context.v_size->value = isFile
+         ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
+         : _num(os_sizeDirectory(path, context.attribute->uroboros));
+   }
+}
+
 _tim os_access(const _str& path)
 {
    _adata data;

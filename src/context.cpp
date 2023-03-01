@@ -100,6 +100,12 @@ namespace uro
       this->this_->value = newThis;
       this->loadAttributes();
    }
+   
+   void FileContext::loadData(const _str& newThis, const _fdata& data)
+   {
+      this->this_->value = newThis;
+      this->loadAttributes(data);
+   }
 
    void FileContext::reloadData()
    {
@@ -110,6 +116,13 @@ namespace uro
    {
       if (this->attribute->hasAny()) {
          os_loadAttributes(*this);
+      }
+   }
+
+   void FileContext::loadAttributes(const _fdata& data)
+   {
+      if (this->attribute->hasAny()) {
+         os_loadDataAttributes(*this, data);
       }
    }
 

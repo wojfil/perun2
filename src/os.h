@@ -47,6 +47,7 @@ void os_rawSleepForMs(const _nint& ms);
 
 void os_loadAttributes(FileContext& context);
 void os_loadEmptyAttributes(FileContext& context);
+void os_loadDataAttributes(FileContext& context, const _fdata& data);
 
 // file system variables:
 _tim os_access(const _str& path);

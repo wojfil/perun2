@@ -102,7 +102,7 @@ _bool All::hasNext()
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->context.loadData(value);
+               this->context.loadData(value, data);
                return true;
             }
          }
@@ -126,7 +126,7 @@ _bool All::hasNext()
 
             P_OS_GEN_VALUE_ALTERATION;
 
-            this->context.loadData(value);
+            this->context.loadData(value, data);
             return true;
          }
       }
@@ -162,7 +162,7 @@ _bool Files::hasNext()
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->context.loadData(value);
+               this->context.loadData(value, data);
                return true;
             }
          }
@@ -184,7 +184,7 @@ _bool Files::hasNext()
 
             P_OS_GEN_VALUE_ALTERATION;
 
-            this->context.loadData(value);
+            this->context.loadData(value, data);
             return true;
          }
       }
@@ -220,7 +220,7 @@ _bool Directories::hasNext()
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->context.loadData(value);
+               this->context.loadData(value, data);
                return true;
             }
          }
@@ -242,7 +242,7 @@ _bool Directories::hasNext()
 
             P_OS_GEN_VALUE_ALTERATION;
 
-            this->context.loadData(value);
+            this->context.loadData(value, data);
             return true;
          }
       }
@@ -293,7 +293,7 @@ _bool RecursiveFiles::hasNext()
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->context.loadData(value);
+                  this->context.loadData(value, data);
                   return true;
                }
             }
@@ -334,7 +334,7 @@ _bool RecursiveFiles::hasNext()
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->context.loadData(value);
+                  this->context.loadData(value, data);
                   return true;
                }
             }
@@ -422,7 +422,7 @@ _bool RecursiveDirectories::hasNext()
 
                P_OS_GEN_VALUE_ALTERATION;
 
-               this->context.loadData(value);
+               this->context.loadData(value, data);
                return true;
             }
          }
@@ -515,7 +515,7 @@ _bool RecursiveAll::hasNext()
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->context.loadData(value);
+                  this->context.loadData(value, data);
                   return true;
                }
                else if ((!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
@@ -532,7 +532,7 @@ _bool RecursiveAll::hasNext()
 
                   P_OS_GEN_VALUE_ALTERATION;
 
-                  this->context.loadData(value);
+                  this->context.loadData(value, data);
                   return true;
                }
             }

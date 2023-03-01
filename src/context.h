@@ -115,9 +115,11 @@ namespace uro
       FileContext(_uro& uro);
       FileContext(_attrptr& attr, _uro& uro);
 
-      virtual void loadData(const _str& newThis);
+      void loadData(const _str& newThis);
+      void loadData(const _str& newThis, const _fdata& data);
       void reloadData();
       void loadAttributes();
+      void loadAttributes(const _fdata& data);
 
       _varptr<_str> this_;
       _attrptr attribute;

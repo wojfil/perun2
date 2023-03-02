@@ -47,7 +47,7 @@ struct OriginStringInfo
 {
 public:
    OriginStringInfo() = delete;
-   OriginStringInfo(const _size& ind, const _size& len);
+   OriginStringInfo(const _size ind, const _size len);
 
    const _size index;
    const _size length;
@@ -114,13 +114,13 @@ union TokenValue
    TokenValue() = delete;
    TokenValue(const _char& ch);
    TokenValue(const _char& ch, const _int am);
-   TokenValue(const _num& n, const _size& os_id, const _size& os_len, const NumberMode& nm);
-   TokenValue(const _size& os_id, const _size& os_len);
-   TokenValue(const _size& os_id, const _size& os_len, const _int id);
-   TokenValue(const _hash& h, const _size& os_id, const _size& os_len);
-   TokenValue(const Keyword& k, const _size& os_id, const _size& os_len);
-   TokenValue(const _hash& h1, const _hash& h2, const _size& os_id1, 
-      const _size& os_len1, const _size& os_id2, const _size& os_len2);
+   TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode& nm);
+   TokenValue(const _size os_id, const _size os_len);
+   TokenValue(const _size os_id, const _size os_len, const _int id);
+   TokenValue(const _hash& h, const _size os_id, const _size os_len);
+   TokenValue(const Keyword& k, const _size os_id, const _size os_len);
+   TokenValue(const _hash& h1, const _hash& h2, const _size os_id1, 
+      const _size os_len1, const _size os_id2, const _size os_len2);
 };
 
 
@@ -144,14 +144,14 @@ public:
    Token() = delete;
    Token(const _char& v, const _int li, _uro& uro);
    Token(const _char& v, const _int am, const _int li, _uro& uro);
-   Token(const _num& v, const _int li, const _size& os_id, const _size& os_len,
+   Token(const _num& v, const _int li, const _size os_id, const _size os_len,
       const NumberMode& nm, _uro& uro);
-   Token(const _size& os_id, const _size& os_len, const _int li, _uro& uro);
-   Token(const _size& os_id, const _size& os_len, const _int id, const _int li, _uro& uro);
-   Token(const _hash& v, const _int li, const _size& os_id, const _size& os_len, _uro& uro);
-   Token(const Keyword& v, const _int li, const _size& os_id, const _size& os_len, _uro& uro);
-   Token(const _hash& v1, const _hash& v2, const _int li, const _size& os_id1, const _size& os_len1,
-      const _size& os_id2, const _size& os_len2, _uro& uro);
+   Token(const _size os_id, const _size os_len, const _int li, _uro& uro);
+   Token(const _size os_id, const _size os_len, const _int id, const _int li, _uro& uro);
+   Token(const _hash& v, const _int li, const _size os_id, const _size os_len, _uro& uro);
+   Token(const Keyword& v, const _int li, const _size os_id, const _size os_len, _uro& uro);
+   Token(const _hash& v1, const _hash& v2, const _int li, const _size os_id1, const _size os_len1,
+      const _size os_id2, const _size os_len2, _uro& uro);
 
    // members:
    const Type type;

@@ -19,7 +19,7 @@
 namespace uro::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size& dpth, const _size& start)
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size dpth, const _size start)
    : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), defaultDepth(dpth), startId(start),
       pattern(pat), patternLength(pat.size()) { };
 
@@ -88,7 +88,7 @@ void DoubleAsteriskPattern::clearCharStates()
    }
 }
 
-CharState DoubleAsteriskPattern::checkState(const _size& n, const _size& m)
+CharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
 {
    if (this->charStates[n][m] >= CharState::cs_NotMatches) {
       return this->charStates[n][m];

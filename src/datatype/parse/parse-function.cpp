@@ -45,7 +45,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 {
    const Token& word = tks.first();
-   const _size& name = word.value.word.h;
+   const _size name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 

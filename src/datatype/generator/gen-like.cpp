@@ -32,7 +32,7 @@ _bool LikeSet::contains(const _char& ch) const
       : this->values.find(ch) != this->values.end();
 }
 
-static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId)
+static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size endId)
 {
    std::unordered_set<_char> set;
    _bool negated = false;
@@ -481,7 +481,7 @@ void LC_Default::clearCharStates()
 }
 
 
-LikeCharState LC_Default::checkState(const _size& n, const _size& m)
+LikeCharState LC_Default::checkState(const _size n, const _size m)
 {
    if (this->charStates[n][m] >= LikeCharState::lcs_NotMatches) {
       return this->charStates[n][m];

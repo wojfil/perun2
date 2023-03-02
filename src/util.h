@@ -35,7 +35,7 @@ void appendVector(std::vector<T>& dest, const std::vector<T>& source)
 // delete previous content of vector
 // and reserve deterministic new memory
 template <typename T>
-void clearAndReserve(std::vector<T>& vec, const _size& length)
+void clearAndReserve(std::vector<T>& vec, const _size length)
 {
    vec.clear();
    vec.reserve(length);

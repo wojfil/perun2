@@ -62,7 +62,7 @@ struct LikeComparer
 typedef std::unique_ptr<LikeComparer> _likeptr;
 
 
-static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size& endId);
+static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size endId);
 static void defaultLikeCmp(_likeptr& result, const _str& pattern);
 void parseLikeCmp(_likeptr& result, const _str& pattern);
 
@@ -116,7 +116,7 @@ public:
 
 private:
    void clearCharStates();
-   LikeCharState checkState(const _size& n, const _size& m);
+   LikeCharState checkState(const _size n, const _size m);
    _size getMinLength(const _str& pat);
 
    const _str pattern;
@@ -284,7 +284,7 @@ struct LC_ConstantLength : LikeComparer
 {
 public:
    LC_ConstantLength() = delete;
-   LC_ConstantLength(const _size& len) : length(len) {};
+   LC_ConstantLength(const _size len) : length(len) {};
    _bool compareToPattern(const _str& value) override;
 
 private:
@@ -325,7 +325,7 @@ struct LC_OnlyDigits : LikeComparer
 {
 public:
    LC_OnlyDigits() = delete;
-   LC_OnlyDigits(const _size& len) : length(len) {};
+   LC_OnlyDigits(const _size len) : length(len) {};
    _bool compareToPattern(const _str& value) override;
 
 private:

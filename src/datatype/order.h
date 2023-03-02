@@ -29,7 +29,7 @@ struct OrderIndices
 public:
    OrderIndices() noexcept;
    ~OrderIndices() noexcept;
-   void prepare(const _size& length);
+   void prepare(const _size length);
 
    _size* values;
 };
@@ -40,7 +40,7 @@ typedef std::unique_ptr<OrderIndices> _indptr;
 struct Order
 {
 public:
-   virtual void clearValues(const _size& length) = 0;
+   virtual void clearValues(const _size length) = 0;
    virtual void clearValues() = 0;
    virtual void addValues() = 0;
    virtual _bool matchesSwap(const _int start, const _int end) const = 0;
@@ -73,7 +73,7 @@ public:
    OrderUnit_Middle(_genptr<T>& val, const _bool desc, _ordptr& next, _indptr& inds)
       : OrderUnit<T>(val, desc, inds), nextUnit(std::move(next)) { };
 
-   void clearValues(const _size& length) override
+   void clearValues(const _size length) override
    {
       langutil::clearAndReserve(this->values, length);
       this->nextUnit->clearValues(length);
@@ -119,7 +119,7 @@ public:
    OrderUnit_Final(_genptr<T>& val, const _bool desc, _indptr& inds)
       : OrderUnit<T>(val, desc, inds) { };
 
-   void clearValues(const _size& length) override
+   void clearValues(const _size length) override
    {
       langutil::clearAndReserve(this->values, length);
    }

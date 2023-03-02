@@ -244,7 +244,7 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
    return tokens;
 }
 
-static Token wordToken(const _str& code, const _size& start, const _size& length, const _int line, _uro& uro)
+static Token wordToken(const _str& code, const _size start, const _size length, const _int line, _uro& uro)
 {
    _int dots = 0;
    _bool nums = true;

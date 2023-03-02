@@ -247,7 +247,7 @@ void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& pa
 
 
 _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, 
-   const _size& start, const _bool isAbsolute, _uro& uro)
+   const _size start, const _bool isAbsolute, _uro& uro)
 {
    enum Mode {
       m_Normal,
@@ -259,7 +259,7 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    _size defaultDepth = 0;
    _str finalPattern = pattern.substr(0, start);
 
-   for (const _size& ch : pattern) {
+   for (const _size ch : pattern) {
       switch (mode) {
          case Mode::m_Normal: {
             switch (ch) {

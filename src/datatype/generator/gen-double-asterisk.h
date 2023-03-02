@@ -43,7 +43,7 @@ enum CharState
 struct DoubleAsteriskPattern : Definition
 {
 public:
-   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size& dpth, const _size& start);
+   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size dpth, const _size start);
 
    _bool hasNext() override;
    void reset() override;
@@ -51,7 +51,7 @@ public:
 private:
    _bool matchesPattern();
    void clearCharStates();
-   CharState checkState(const _size& n, const _size& m);
+   CharState checkState(const _size n, const _size m);
 
    const _str pattern;
    const _size patternLength;

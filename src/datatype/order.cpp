@@ -28,7 +28,7 @@ OrderIndices::~OrderIndices() noexcept
    delete[] this->values;
 }
 
-void OrderIndices::prepare(const _size& length)
+void OrderIndices::prepare(const _size length)
 {
    delete[] this->values;
    this->values = new _size[length]();

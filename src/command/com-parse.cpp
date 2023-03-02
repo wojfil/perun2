@@ -1296,7 +1296,7 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
    // create a new variable
    ////
 
-   const _size& wordLength = first.value.word.os.length;
+   const _size wordLength = first.value.word.os.length;
    if (wordLength != 1) {
       throw SyntaxError(str(L"name '", first.getOriginString(uro),
          L"' is not valid for a new variable. In Uroboros2, user defined variables can be only one-character long"), first.line);

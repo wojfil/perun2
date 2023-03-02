@@ -32,7 +32,7 @@ Number::Number(const _int val)
 Number::Number(const _nint val)
    : value(val), isDouble(false) { }
 
-Number::Number(const _ndouble& val)
+Number::Number(const _ndouble val)
    : value(val), isDouble(true) { }
 
 

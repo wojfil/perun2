@@ -85,7 +85,7 @@ public:
    _num getValue() override;
 
 private:
-   _num doublePower(const _ndouble& base, const _ndouble& exp);
+   _num doublePower(const _ndouble base, const _ndouble exp);
 };
 
 struct F_Round : Func_1<_num>, Generator<_num>

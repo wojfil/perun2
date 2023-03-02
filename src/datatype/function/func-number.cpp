@@ -146,7 +146,7 @@ _num F_Power::getValue()
    const _num n2 = arg2->getValue();
 
    if (n1.isDouble) {
-      const _ndouble& base = n1.value.d;
+      const _ndouble base = n1.value.d;
 
       if (n2.isDouble) {
          return doublePower(base, n2.value.d);
@@ -209,7 +209,7 @@ _num F_Power::getValue()
       }
 
       if (n2.isDouble) {
-         const _ndouble& exp = n2.value.d;
+         const _ndouble exp = n2.value.d;
          return doublePower(static_cast<_ndouble>(base), exp);
       }
       else {
@@ -273,7 +273,7 @@ _num F_Power::getValue()
    }
 }
 
-_num F_Power::doublePower(const _ndouble& base, const _ndouble& exp)
+_num F_Power::doublePower(const _ndouble base, const _ndouble exp)
 {
    const _ndouble v = pow(base, exp);
 

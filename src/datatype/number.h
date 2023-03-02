@@ -27,7 +27,7 @@ union NumberValue
    _ndouble d;
 
    NumberValue(const _nint i) : i(i) {};
-   NumberValue(const _ndouble& d) : d(d) {};
+   NumberValue(const _ndouble d) : d(d) {};
 };
 
 
@@ -36,7 +36,7 @@ struct Number
    Number();
    Number(const _int val);
    Number(const _nint val);
-   Number(const _ndouble& val);
+   Number(const _ndouble val);
 
    _str toString() const;
    _nint toInt() const;

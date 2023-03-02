@@ -43,7 +43,7 @@ public:
       : generator(std::make_unique<gen::Constant<T>>(cnst)),
       constant(cnst), type(ElementType::et_Constant), operator_(0), line(li) { };
 
-   ExpElement<T>(const _char& op, const _int li)
+   ExpElement<T>(const _char op, const _int li)
       : generator(), operator_(op), type(ElementType::et_Operator), constant(T()), line(li) { };
 
    ExpElement<T>(_genptr<T>& gen, const _int li)

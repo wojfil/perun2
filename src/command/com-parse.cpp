@@ -871,7 +871,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro)
    return false;
 }
 
-static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const _char& sign, _uro& uro)
+static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const _char sign, _uro& uro)
 {
    const Token& first = left.first();
 

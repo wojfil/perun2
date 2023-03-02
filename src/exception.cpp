@@ -28,17 +28,17 @@ _str SyntaxError::getMessage() const
    return str(L"Error at line ", toStr(line), L": ", message, L".");
 }
 
-SyntaxError SyntaxError::adjacentSymbols(const _char& value, const _int line)
+SyntaxError SyntaxError::adjacentSymbols(const _char value, const _int line)
 {
    return SyntaxError(str(L"adjacent ", toStr(value), L" symbols"), line);
 }
 
-SyntaxError SyntaxError::bracketIsNotClosed(const _char& value, const _int line)
+SyntaxError SyntaxError::bracketIsNotClosed(const _char value, const _int line)
 {
    return SyntaxError(str(L"bracket ", toStr(value), L" is not closed"), line);
 }
 
-SyntaxError SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(const _char& value, const _int line)
+SyntaxError SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(const _char value, const _int line)
 {
    return SyntaxError(str(L"bracket ", toStr(value), 
       L" should to be closed before the opening of curly bracket {"), line);
@@ -64,7 +64,7 @@ SyntaxError SyntaxError::expectedSemicolonBeforeKeyword(const _str& value, const
    return SyntaxError(str(L"expected ; before keyword '", value, L"'"), line);
 }
 
-SyntaxError SyntaxError::expressionCannotEndWith(const _char& value, const _int line)
+SyntaxError SyntaxError::expressionCannotEndWith(const _char value, const _int line)
 {
    return SyntaxError(str(L"expression cannot end with a ", toStr(value), L" symbol"), line);
 }
@@ -74,7 +74,7 @@ SyntaxError SyntaxError::expressionCannotEndWithFilterKeyword(const _str& value,
    return SyntaxError(str(L"expression cannot end with a filter keyword '", value, L"'"), line);
 }
 
-SyntaxError SyntaxError::expressionCannotStartWith(const _char& value, const _int line)
+SyntaxError SyntaxError::expressionCannotStartWith(const _char value, const _int line)
 {
    return SyntaxError(str(L"expression cannot start with a ", toStr(value), L" symbol"), line);
 }
@@ -124,7 +124,7 @@ SyntaxError SyntaxError::invalidAsteriskPattern(const _str& value, const _int li
    return SyntaxError(str(L"asterisk pattern '", value, L"' is not valid"), line);
 }
 
-SyntaxError SyntaxError::invalidChar(const _char& value, const _int line)
+SyntaxError SyntaxError::invalidChar(const _char value, const _int line)
 {
    switch (value) {
       case CHAR_CARET: {
@@ -228,7 +228,7 @@ SyntaxError SyntaxError::secondsOutOfRange(const _str& value, const _int line)
    return SyntaxError(str(L"value of seconds (", value, L") went out of range"), line);
 }
 
-SyntaxError SyntaxError::symbolNotFound(const _char& value, const _int line)
+SyntaxError SyntaxError::symbolNotFound(const _char value, const _int line)
 {
    return SyntaxError(str(L"symbol '", toStr(value), L"' not found"), line);
 }
@@ -243,7 +243,7 @@ SyntaxError SyntaxError::undefinedVarValue(const _str& value, const _int line)
    return SyntaxError(str(L"value of variable '", value, L"' is undefined here"), line);
 }
 
-SyntaxError SyntaxError::unopenedBracketIsClosed(const _char& value, const _int line)
+SyntaxError SyntaxError::unopenedBracketIsClosed(const _char value, const _int line)
 {
    return SyntaxError(str(L"unopened bracket ", toStr(value), L" is closed"), line);
 }

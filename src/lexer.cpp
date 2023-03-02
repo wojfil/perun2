@@ -387,7 +387,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    return Token(start, length, line, uro);
 }
 
-inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
+inline static _nint getSuffixMultiplier(const _char c1, const _char c2)
 {
    if (!(c2 == CHAR_b || c2 == CHAR_B)) {
       return NINT_MINUS_ONE;
@@ -414,7 +414,7 @@ inline static _nint getSuffixMultiplier(const _char& c1, const _char& c2)
    }
 }
 
-inline static _bool isSymbol(const _char& ch)
+inline static _bool isSymbol(const _char ch)
 {
    switch (ch) {
       case CHAR_COMMA:
@@ -442,12 +442,12 @@ inline static _bool isSymbol(const _char& ch)
    }
 }
 
-inline static _bool isNewLine(const _char& ch)
+inline static _bool isNewLine(const _char ch)
 {
    return ch == CHAR_NEW_LINE;
 }
 
-inline static _bool isAllowedInWord(const _char& ch)
+inline static _bool isAllowedInWord(const _char ch)
 {
    if (std::iswalpha(ch) || std::iswdigit(ch)) {
       return true;
@@ -462,7 +462,7 @@ inline static _bool isAllowedInWord(const _char& ch)
    }
 }
 
-inline static _bool isDoubleChar(const _char& ch)
+inline static _bool isDoubleChar(const _char ch)
 {
    switch (ch) {
       case CHAR_PLUS:

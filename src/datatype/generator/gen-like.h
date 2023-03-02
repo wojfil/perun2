@@ -45,7 +45,7 @@ struct LikeSet
 public:
    LikeSet() = delete;
    LikeSet(const std::unordered_set<_char>& vals, const _bool neg);
-   _bool contains(const _char& ch) const;
+   _bool contains(const _char ch) const;
 
 private:
    const std::unordered_set<_char> values;

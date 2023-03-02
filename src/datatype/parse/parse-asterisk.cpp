@@ -259,7 +259,7 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    _size defaultDepth = 0;
    _str finalPattern = pattern.substr(0, start);
 
-   for (const _size ch : pattern) {
+   for (const _char& ch : pattern) {
       switch (mode) {
          case Mode::m_Normal: {
             switch (ch) {

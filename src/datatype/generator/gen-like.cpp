@@ -25,7 +25,7 @@ LikeSet::LikeSet(const std::unordered_set<_char>& vals, const _bool neg)
    : values(vals), negated(neg) { };
 
 
-_bool LikeSet::contains(const _char& ch) const
+_bool LikeSet::contains(const _char ch) const
 {
    return this->negated
       ? this->values.find(ch) == this->values.end()
@@ -544,7 +544,7 @@ _size LC_Default::getMinLength(const _str& pat)
 {
    _size result = 0;
 
-   for (const _char& ch : pat) {
+   for (const _char ch : pat) {
       if (ch != WILDCARD_MULTIPLE_CHARS) {
          result++;
       }

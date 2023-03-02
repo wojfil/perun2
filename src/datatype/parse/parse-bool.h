@@ -43,8 +43,8 @@ static void timeInNumberException(const Token& timeVar, const Token& numVar,
 static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
 static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
    const Tokens& right, const gen::CompType& ct, _uro& uro);
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, _uro& uro);
-static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype);
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, _uro& uro);
+static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char sign, gen::CompType& ctype);
 
 }
 

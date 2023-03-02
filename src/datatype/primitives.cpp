@@ -18,7 +18,7 @@
 namespace uro
 {
 
-_str toStr(const _char& ch) 
+_str toStr(const _char ch) 
 {
    return _str(1, ch);
 }

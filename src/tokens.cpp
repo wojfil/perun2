@@ -144,7 +144,7 @@ std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword& kw) const
    throw SyntaxError::keywordNotFound(first().line);
 }
 
-std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
+std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char symbol) const
 {
    BracketsInfo bi;
 
@@ -167,7 +167,7 @@ std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char& symbol) const
    throw SyntaxError::symbolNotFound(symbol, first().line);
 }
 
-std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
+std::vector<Tokens> Tokens::splitBySymbol(const _char symbol) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
@@ -207,7 +207,7 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char& symbol) const
    return result;
 }
 
-_int Tokens::countSymbols(const _char& symbol) const
+_int Tokens::countSymbols(const _char symbol) const
 {
    BracketsInfo bi;
    _int count = 0;

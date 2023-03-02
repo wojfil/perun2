@@ -48,7 +48,7 @@ typedef std::wstringstream          _stream;
 typedef std::wostringstream         _ostream;
 
 
-_str toStr(const _char& ch);
+_str toStr(const _char ch);
 
 template<typename T>
 _str toStr(const T& n)

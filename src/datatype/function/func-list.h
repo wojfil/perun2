@@ -54,7 +54,7 @@ public:
    _nlist getValue() override;
 
 private:
-   _nint fromChar(const _char& ch);
+   _nint fromChar(const _char ch);
 };
 
 }

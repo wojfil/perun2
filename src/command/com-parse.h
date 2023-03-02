@@ -39,7 +39,7 @@ static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* 
 static _bool command(_comptr& result, Tokens& tks, _uro& uro);
 static _bool commandMisc(_comptr& result, const Tokens& tks, _uro& uro);
 static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right,
-   const _char& sign, _uro& uro);
+   const _char sign, _uro& uro);
 static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks,
    const _int line, _uro& uro);
 static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _uro& uro);

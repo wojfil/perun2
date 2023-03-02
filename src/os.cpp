@@ -518,7 +518,7 @@ _num os_depth(const _str& value)
 {
    _nint result = NINT_ZERO;
 
-   for (const _char& ch : value) {
+   for (const _char ch : value) {
       if (ch == OS_SEPARATOR) {
          result++;
       }
@@ -1390,7 +1390,7 @@ _uint32 os_patternInfo(const _str& pattern)
    return result;
 }
 
-_bool os_bothAreSeparators(const _char& left, const _char& right)
+_bool os_bothAreSeparators(const _char left, const _char right)
 {
    return (left == right)
       && (left == OS_SEPARATOR);
@@ -1521,7 +1521,7 @@ _bool os_hasExtension(const _str& value)
    return false;
 }
 
-inline _bool os_isDriveLetter(const _char& ch)
+inline _bool os_isDriveLetter(const _char ch)
 {
    return (ch >= CHAR_a && ch <= CHAR_z)
        || (ch >= CHAR_A && ch <= CHAR_Z);

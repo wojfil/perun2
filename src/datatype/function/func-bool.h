@@ -176,7 +176,7 @@ private:
 struct F_StartsWithChar : Generator<_bool>
 {
 public:
-   F_StartsWithChar(_genptr<_str>& val, const _char& ch)
+   F_StartsWithChar(_genptr<_str>& val, const _char ch)
       : value(std::move(val)), character(ch) { };
 
    _bool getValue() override;
@@ -190,7 +190,7 @@ private:
 struct F_EndsWithChar : Generator<_bool>
 {
 public:
-   F_EndsWithChar(_genptr<_str>& val, const _char& ch)
+   F_EndsWithChar(_genptr<_str>& val, const _char ch)
       : value(std::move(val)), character(ch) { };
 
    _bool getValue() override;

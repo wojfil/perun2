@@ -22,10 +22,10 @@ namespace uro
 OriginStringInfo::OriginStringInfo(const _size ind, const _size len)
    : index(ind), length(len) { };
 
-TokenValue::TokenValue(const _char& ch)
+TokenValue::TokenValue(const _char ch)
    : ch(ch) { };
 
-TokenValue::TokenValue(const _char& ch, const _int am)
+TokenValue::TokenValue(const _char ch, const _int am)
    : chars({ ch, am }) { };
 
 TokenValue::TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode& nm)
@@ -46,10 +46,10 @@ TokenValue::TokenValue(const _hash& h1, const _hash& h2, const _size os_id1,
    const _size os_len1, const _size os_id2, const _size os_len2)
    : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
-Token::Token(const _char& v, const _int li, _uro& uro)
+Token::Token(const _char v, const _int li, _uro& uro)
    : line(li), type(t_Symbol), value(v) { };
 
-Token::Token(const _char& v, const _int am, const _int li, _uro& uro)
+Token::Token(const _char v, const _int am, const _int li, _uro& uro)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
 Token::Token(const _num& v, const _int li, const _size os_id, const _size os_len,
@@ -72,7 +72,7 @@ Token::Token(const _hash& v1, const _hash& v2, const _int li, const _size os_id1
    const _size os_id2, const _size os_len2, _uro& uro)
    : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 
-_bool Token::isSymbol(const _char& ch) const
+_bool Token::isSymbol(const _char ch) const
 {
    return type == t_Symbol && value.ch == ch;
 }

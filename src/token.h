@@ -112,8 +112,8 @@ union TokenValue
 
    // constructors:
    TokenValue() = delete;
-   TokenValue(const _char& ch);
-   TokenValue(const _char& ch, const _int am);
+   TokenValue(const _char ch);
+   TokenValue(const _char ch, const _int am);
    TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode& nm);
    TokenValue(const _size os_id, const _size os_len);
    TokenValue(const _size os_id, const _size os_len, const _int id);
@@ -142,8 +142,8 @@ public:
 
    // constructors:
    Token() = delete;
-   Token(const _char& v, const _int li, _uro& uro);
-   Token(const _char& v, const _int am, const _int li, _uro& uro);
+   Token(const _char v, const _int li, _uro& uro);
+   Token(const _char v, const _int am, const _int li, _uro& uro);
    Token(const _num& v, const _int li, const _size os_id, const _size os_len,
       const NumberMode& nm, _uro& uro);
    Token(const _size os_id, const _size os_len, const _int li, _uro& uro);
@@ -162,7 +162,7 @@ public:
    _bool isCommandKeyword() const;
    _bool isFilterKeyword() const;
    _bool isExpForbiddenKeyword() const;
-   _bool isSymbol(const _char& ch) const;
+   _bool isSymbol(const _char ch) const;
    _bool isKeyword(const Keyword& kw) const;
    _bool isNegatableKeywordOperator() const;
    _bool isLogicConstant() const;

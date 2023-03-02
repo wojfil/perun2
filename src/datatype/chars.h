@@ -23,7 +23,7 @@ namespace uro
 
 void toLower(_char& ch);
 void toUpper(_char& ch);
-_bool charsEqualInsensitive(const _char& ch1, const _char& ch2);
+_bool charsEqualInsensitive(const _char ch1, const _char ch2);
 
 inline constexpr _char CHAR_COMMA =                  L',';
 inline constexpr _char CHAR_EXCLAMATION_MARK =       L'!';

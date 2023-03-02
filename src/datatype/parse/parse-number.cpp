@@ -614,7 +614,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    return true;
 }
 
-static _bool isNumExpOperator(const _char& ch)
+static _bool isNumExpOperator(const _char ch)
 {
    switch (ch) {
       case CHAR_PLUS:
@@ -628,7 +628,7 @@ static _bool isNumExpOperator(const _char& ch)
    }
 }
 
-static _bool isNumExpHighPriority(const _char& ch)
+static _bool isNumExpHighPriority(const _char ch)
 {
    switch (ch)  {
       case CHAR_ASTERISK:

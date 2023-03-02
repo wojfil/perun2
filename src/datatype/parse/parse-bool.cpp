@@ -831,7 +831,7 @@ _bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
    return false;
 }
 
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char& sign, _uro& uro)
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, _uro& uro)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -1167,7 +1167,7 @@ static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& le
        || comparisonCollections<_str>(result, left, right, ct, uro);
 }
 
-static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char& sign, gen::CompType& ctype)
+static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char sign, gen::CompType& ctype)
 {
    std::pair<Tokens, Tokens> result = tks.divideBySymbol(sign);
    _bool eq = false;

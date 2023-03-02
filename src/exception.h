@@ -27,16 +27,16 @@ public:
    SyntaxError(const _str& msg, const _int li);
    _str getMessage() const;
 
-   static SyntaxError adjacentSymbols(const _char& value, const _int line);
+   static SyntaxError adjacentSymbols(const _char value, const _int line);
    static SyntaxError adjacentFilterKeywords(const _str& value1, const _str& value2, const _int line);
-   static SyntaxError bracketIsNotClosed(const _char& value, const _int line);
-   static SyntaxError bracketShouldBeClosedBeforeCurlyBracket(const _char& value, const _int line);
+   static SyntaxError bracketIsNotClosed(const _char value, const _int line);
+   static SyntaxError bracketShouldBeClosedBeforeCurlyBracket(const _char value, const _int line);
    static SyntaxError dayCannotBeSmallerThanOne(const _int line);
    static SyntaxError decrementationInsideExpression(const _int line);
    static SyntaxError expectedSemicolonBeforeKeyword(const _str& value, const _int line);
-   static SyntaxError expressionCannotEndWith(const _char& value, const _int line);
+   static SyntaxError expressionCannotEndWith(const _char value, const _int line);
    static SyntaxError expressionCannotEndWithFilterKeyword(const _str& value, const _int line);
-   static SyntaxError expressionCannotStartWith(const _char& value, const _int line);
+   static SyntaxError expressionCannotStartWith(const _char value, const _int line);
    static SyntaxError expressionCannotStartWithIncrementation(const _int line);
    static SyntaxError expressionCannotStartWithDecrementation(const _int line);
    static SyntaxError filterKeywordAtStart(const _str& value, const _int line);
@@ -46,7 +46,7 @@ public:
    static SyntaxError inevitableDivisionByZero(const _int line);
    static SyntaxError inevitableModuloByZero(const _int line);
    static SyntaxError invalidAsteriskPattern(const _str& value, const _int line);
-   static SyntaxError invalidChar(const _char& value, const _int line);
+   static SyntaxError invalidChar(const _char value, const _int line);
    static SyntaxError invalidExpression(const _int line);
    static SyntaxError invalidFunctionName(const _int line);
    static SyntaxError invalidMonthName(const _str& value, const _int line);
@@ -64,10 +64,10 @@ public:
    static SyntaxError numberTooBig(const _str& value, const _int line);
    static SyntaxError openedStringLteral(const _int line);
    static SyntaxError secondsOutOfRange(const _str& value, const _int line);
-   static SyntaxError symbolNotFound(const _char& value, const _int line);
+   static SyntaxError symbolNotFound(const _char value, const _int line);
    static SyntaxError quotationMarkStringLteral(const _int line);
    static SyntaxError undefinedVarValue(const _str& value, const _int line);
-   static SyntaxError unopenedBracketIsClosed(const _char& value, const _int line);
+   static SyntaxError unopenedBracketIsClosed(const _char value, const _int line);
    static SyntaxError wrongSyntax(const _int line);
 
 private:

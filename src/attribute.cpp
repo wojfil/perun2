@@ -23,7 +23,7 @@ namespace uro
 Attribute::Attribute(_uro& uro)
    : uroboros(uro) { };
 
-Attribute::Attribute(const _aunit& val, _uro& uro)
+Attribute::Attribute(const _aunit val, _uro& uro)
    : value(val), uroboros(uro) { };
 
 void Attribute::add(const _hash& val)
@@ -95,7 +95,7 @@ void Attribute::add(const _hash& val)
       this->set(ATTR_SIZE);
 }
 
-inline void Attribute::set(const _aunit& v)
+inline void Attribute::set(const _aunit v)
 {
    this->value |= v;
 }
@@ -118,7 +118,7 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-_bool Attribute::has(const _aunit& v) const
+_bool Attribute::has(const _aunit v) const
 {
    return this->value & v;
 }

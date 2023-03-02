@@ -59,13 +59,13 @@ struct Attribute
 public:
    Attribute() = delete;
    Attribute(_uro& uro);
-   Attribute(const _aunit& val, _uro& uro);
+   Attribute(const _aunit val, _uro& uro);
 
    void add(const _hash& val);
-   inline void set(const _aunit& v);
+   inline void set(const _aunit v);
    void setCoreCommandBase();
    void setTimeCommandBase();
-   _bool has(const _aunit& v) const;
+   _bool has(const _aunit v) const;
    _bool hasAny() const;
    _aunit getValue() const;
    _bool isMarkedToEvaluate() const;

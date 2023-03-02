@@ -45,11 +45,11 @@ public:
 };
 
 
-inline void checkMonthRuntime(const _tnum& month);
-inline void checkDayRuntime(const _tnum& day, const _tnum& month,
-   const _tnum& year);
-inline void checkSmallClockRuntime(const _tnum& hour, const _tnum& minute);
-inline void checkSecondsRuntime(const _tnum& second);
+inline void checkMonthRuntime(const _tnum month);
+inline void checkDayRuntime(const _tnum day, const _tnum month,
+   const _tnum year);
+inline void checkSmallClockRuntime(const _tnum hour, const _tnum minute);
+inline void checkSecondsRuntime(const _tnum second);
 
 
 struct F_Time_2 : Func_2<_num, _num>, Generator<_tim>

@@ -38,10 +38,10 @@ struct Time
    };
 
    Time();
-   Time(const _tnum& mo, const _tnum& ye);
-   Time(const _tnum& da, const _tnum& mo, const _tnum& ye);
-   Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi);
-   Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi, const _tnum& sec);
+   Time(const _tnum mo, const _tnum ye);
+   Time(const _tnum da, const _tnum mo, const _tnum ye);
+   Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi);
+   Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi, const _tnum sec);
 
    _tnum year;
    _tnum day;
@@ -52,22 +52,22 @@ struct Time
    TimeType type;
 
    _str toString() const;
-   void initClock(const _bool withSeconds, const _tnum& recentChange);
+   void initClock(const _bool withSeconds, const _tnum recentChange);
 
-   void addYears(const _tnum& y);
-   void addMonths(const _tnum& m);
-   void addWeeks(const _tnum& w);
-   void addDays(const _tnum& d);
-   void addHours(const _tnum& h);
-   void addMinutes(const _tnum& m);
-   void addSeconds(const _tnum& s);
+   void addYears(const _tnum y);
+   void addMonths(const _tnum m);
+   void addWeeks(const _tnum w);
+   void addDays(const _tnum d);
+   void addHours(const _tnum h);
+   void addMinutes(const _tnum m);
+   void addSeconds(const _tnum s);
 
-   void setYear(const _tnum& y);
-   void setMonth(const _tnum& m);
-   void setDay(const _tnum& d);
-   void setHour(const _tnum& h);
-   void setMinute(const _tnum& m);
-   void setSecond(const _tnum& s);
+   void setYear(const _tnum y);
+   void setMonth(const _tnum m);
+   void setDay(const _tnum d);
+   void setHour(const _tnum h);
+   void setMinute(const _tnum m);
+   void setSecond(const _tnum s);
 
    Time toDate() const;
    _tnum getWeekDay() const;
@@ -90,14 +90,14 @@ struct Time
 };
 
 _tnum toTimeNumber(const Number& num);
-_str monthToString(const _tnum& month);
-_str weekdayToString(const _tnum& wday);
+_str monthToString(const _tnum month);
+_str weekdayToString(const _tnum wday);
 
-inline _str fillTimeUnit(const _tnum& val);
-inline _bool isLeapYear(const _tnum& year);
-_tnum daysInMonth(const _tnum& month, const _tnum& year);
+inline _str fillTimeUnit(const _tnum val);
+inline _bool isLeapYear(const _tnum year);
+_tnum daysInMonth(const _tnum month, const _tnum year);
 inline Period timeDifference(const Time& min, const Time& max);
-inline _tnum daysInYears(const _tnum& min, const _tnum& max);
+inline _tnum daysInYears(const _tnum min, const _tnum max);
 inline void decrementMonth(Period& p, const Time& t, const _bool addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);

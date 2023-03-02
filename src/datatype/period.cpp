@@ -25,7 +25,7 @@ namespace uro
 Period::Period() 
    : periodUnit(PeriodUnit::u_Years), periodType(PeriodType::pt_Unit) { }
 
-Period::Period(const _tnum& val, const PeriodUnit& unit)
+Period::Period(const _tnum val, const PeriodUnit& unit)
    : periodUnit(unit), periodType(PeriodType::pt_Unit)
 {
    switch (periodUnit) {

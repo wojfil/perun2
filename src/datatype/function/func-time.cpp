@@ -47,7 +47,7 @@ _tim F_NewYear::getValue()
 }
 
 
-inline void checkMonthRuntime(const _tnum& month)
+inline void checkMonthRuntime(const _tnum month)
 {
    if (month < 1) {
       throw RuntimeError(str(L"months cannot be smaller than 1. Received value: ",
@@ -59,8 +59,8 @@ inline void checkMonthRuntime(const _tnum& month)
    }
 }
 
-inline void checkDayRuntime(const _tnum& day, const _tnum& month,
-   const _tnum& year)
+inline void checkDayRuntime(const _tnum day, const _tnum month,
+   const _tnum year)
 {
    if (day < 1) {
       throw RuntimeError(str(L"day cannot be smaller than 1. Received value: ",
@@ -74,7 +74,7 @@ inline void checkDayRuntime(const _tnum& day, const _tnum& month,
    }
 }
 
-inline void checkSmallClockRuntime(const _tnum& hour, const _tnum& minute)
+inline void checkSmallClockRuntime(const _tnum hour, const _tnum minute)
 {
    if (hour < 0) {
       throw RuntimeError(str(L"value of hours cannot be smaller than 0. Received value: ",
@@ -94,7 +94,7 @@ inline void checkSmallClockRuntime(const _tnum& hour, const _tnum& minute)
    }
 }
 
-inline void checkSecondsRuntime(const _tnum& second)
+inline void checkSecondsRuntime(const _tnum second)
 {
    if (second < 0) {
       throw RuntimeError(str(L"value of seconds cannot be smaller than 0. Received value: ",

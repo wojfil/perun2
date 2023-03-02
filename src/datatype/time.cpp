@@ -26,16 +26,16 @@ namespace uro
 Time::Time() 
    : day(TNUM_ONE), month(TNUM_ONE), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
 
-Time::Time(const _tnum& mo, const _tnum& ye) 
+Time::Time(const _tnum mo, const _tnum ye) 
    : day(TNUM_ZERO), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
 
-Time::Time(const _tnum& da, const _tnum& mo, const _tnum& ye) 
+Time::Time(const _tnum da, const _tnum mo, const _tnum ye) 
    : day(da), month(mo), year(ye), type(TimeType::tt_Date) { };
 
-Time::Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi) 
+Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi) 
    : day(da), month(mo), year(ye), hour(ho), minute(mi), type(TimeType::tt_ShortClock) { };
 
-Time::Time(const _tnum& da, const _tnum& mo, const _tnum& ye, const _tnum& ho, const _tnum& mi, const _tnum& sec) 
+Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi, const _tnum sec) 
    : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_Clock) { };
 
 
@@ -70,7 +70,7 @@ _str Time::toString() const
    return ss.str();
 }
 
-void Time::addYears(const _tnum& y)
+void Time::addYears(const _tnum y)
 {
    year += y;
    if (type != tt_YearMonth && month == TNUM_FEBRUARY
@@ -80,7 +80,7 @@ void Time::addYears(const _tnum& y)
    }
 }
 
-void Time::addMonths(const _tnum& m)
+void Time::addMonths(const _tnum m)
 {
    const _tnum m2 = m % TNUM_MONTHS_IN_YEAR;
    const _tnum y = m / TNUM_MONTHS_IN_YEAR;
@@ -100,7 +100,7 @@ void Time::addMonths(const _tnum& m)
    }
 }
 
-void Time::addWeeks(const _tnum& w)
+void Time::addWeeks(const _tnum w)
 {
    addDays(w * TNUM_DAYS_IN_WEEK);
 }
@@ -109,7 +109,7 @@ void Time::addWeeks(const _tnum& w)
 // todo:  to make faster calculations with big numbers
 // todo:  at first, compute how many whole years these days contain
 // todo:  do not forget taking leap years into account
-void Time::addDays(const _tnum& d)
+void Time::addDays(const _tnum d)
 {
    if (type == tt_YearMonth) {
       day = d < TNUM_ZERO ? TNUM_ONE : daysInMonth(month, year);
@@ -157,7 +157,7 @@ void Time::addDays(const _tnum& d)
    }
 }
 
-void Time::addHours(const _tnum& h)
+void Time::addHours(const _tnum h)
 {
    initClock(TIME_WITHOUT_SECONDS, h);
 
@@ -178,7 +178,7 @@ void Time::addHours(const _tnum& h)
    }
 }
 
-void Time::addMinutes(const _tnum& m)
+void Time::addMinutes(const _tnum m)
 {
    initClock(TIME_WITHOUT_SECONDS, m);
 
@@ -199,7 +199,7 @@ void Time::addMinutes(const _tnum& m)
    }
 }
 
-void Time::addSeconds(const _tnum& s)
+void Time::addSeconds(const _tnum s)
 {
    initClock(TIME_WITH_SECONDS, s);
 
@@ -220,12 +220,12 @@ void Time::addSeconds(const _tnum& s)
    }
 }
 
-void Time::setYear(const _tnum& y)
+void Time::setYear(const _tnum y)
 {
    year = y;
 }
 
-void Time::setMonth(const _tnum& m)
+void Time::setMonth(const _tnum m)
 {
    if (m < TNUM_JANUARY) {
       throw RuntimeError(str(L"value of month cannot be smaller than 1 (received: ",
@@ -239,7 +239,7 @@ void Time::setMonth(const _tnum& m)
    month = m;
 }
 
-void Time::setDay(const _tnum& d)
+void Time::setDay(const _tnum d)
 {
    if (d < TNUM_JANUARY) {
       throw RuntimeError(str(L"value of day cannot be smaller than 1 (received: ",
@@ -257,7 +257,7 @@ void Time::setDay(const _tnum& d)
    day = d;
 }
 
-void Time::setHour(const _tnum& h)
+void Time::setHour(const _tnum h)
 {
    if (h < TNUM_ZERO) {
       throw RuntimeError(str(L"value of hours cannot be smaller than 0 (received: ",
@@ -271,7 +271,7 @@ void Time::setHour(const _tnum& h)
    hour = h;
 }
 
-void Time::setMinute(const _tnum& m)
+void Time::setMinute(const _tnum m)
 {
    if (m < TNUM_ZERO) {
       throw RuntimeError(str(L"value of minutes cannot be smaller than 0 (received: ",
@@ -285,7 +285,7 @@ void Time::setMinute(const _tnum& m)
    minute = m;
 }
 
-void Time::setSecond(const _tnum& s)
+void Time::setSecond(const _tnum s)
 {
    if (s < TNUM_ZERO) {
       throw RuntimeError(str(L"value of seconds cannot be smaller than 0 (received: ",
@@ -432,7 +432,7 @@ Time& Time::operator -= (const Period& per)
 }
 
 // add clock to an already existing time
-void Time::initClock(const _bool withSeconds, const _tnum& recentChange)
+void Time::initClock(const _bool withSeconds, const _tnum recentChange)
 {
    if (type == tt_YearMonth || type == tt_Date) {
       hour = TNUM_ZERO;
@@ -652,7 +652,7 @@ _tnum toTimeNumber(const Number& num)
       : static_cast<_tnum>(num.value.i);
 }
 
-_str monthToString(const _tnum& month)
+_str monthToString(const _tnum month)
 {
    switch (month) {
       case TNUM_JANUARY:
@@ -684,7 +684,7 @@ _str monthToString(const _tnum& month)
    }
 }
 
-_str weekdayToString(const _tnum& wday)
+_str weekdayToString(const _tnum wday)
 {
    switch (wday) {
       case TNUM_MONDAY:
@@ -706,14 +706,14 @@ _str weekdayToString(const _tnum& wday)
    }
 }
 
-inline _str fillTimeUnit(const _tnum& val)
+inline _str fillTimeUnit(const _tnum val)
 {
    return val <= TNUM_NINE
       ? str(STRING_CHAR_0, toStr(val))
       : toStr(val);
 }
 
-inline _bool isLeapYear(const _tnum& year)
+inline _bool isLeapYear(const _tnum year)
 {
    if (year % 4 == TNUM_ZERO) {
       if (year % TNUM_100 == TNUM_ZERO) {
@@ -724,7 +724,7 @@ inline _bool isLeapYear(const _tnum& year)
    return false;
 }
 
-_tnum daysInMonth(const _tnum& month, const _tnum& year)
+_tnum daysInMonth(const _tnum month, const _tnum year)
 {
    switch (month) {
       case TNUM_ZERO: // 0th month = December
@@ -903,7 +903,7 @@ inline Period timeDifference(const Time& min, const Time& max)
 }
 
 // number of days between two years (including bounds)
-inline _tnum daysInYears(const _tnum& min, const _tnum& max)
+inline _tnum daysInYears(const _tnum min, const _tnum max)
 {
    if (min == max) {
       return isLeapYear(min) 

@@ -1073,7 +1073,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
 
       const _hash h = first.value.twoWords.h2;
       Variable<_tim>& var = *pv_tim;
-      const _bool negative = (sign == '-');
+      const _bool negative = (sign == CHAR_MINUS);
       pv_tim->makeNotConstant();
 
       if (h == uro.hashes.HASH_PER_YEAR || h == uro.hashes.HASH_PER_YEARS) {

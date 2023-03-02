@@ -96,7 +96,7 @@ struct Uroboros2
 public:
    Uroboros2(const _int argc, _char* const argv[]);
    Uroboros2(const _str& location, const _str& code);
-   Uroboros2(const _str& location, const _str& code, const _uint32& flags);
+   Uroboros2(const _str& location, const _str& code, const _uint32 flags);
 
    Uroboros2() = delete;
    Uroboros2(Uroboros2 const&) = delete;

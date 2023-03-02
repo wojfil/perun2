@@ -24,7 +24,7 @@ namespace uro::comm
 Aggregate::Aggregate(_uro& uro)
    : contexts(uro.contexts), uroboros(uro) { };
 
-void Aggregate::set(const _uint32& v)
+void Aggregate::set(const _uint32 v)
 {
    if (!has(v)) {
       value |= v;
@@ -155,7 +155,7 @@ void Aggregate::run()
    }
 }
 
-inline _bool Aggregate::has(const _uint32& v) const
+inline _bool Aggregate::has(const _uint32 v) const
 {
    return value & v;
 }

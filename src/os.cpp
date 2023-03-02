@@ -1792,7 +1792,7 @@ _bool os_find(const _str& path, const _str& value)
    return result;
 }
 
-inline _uint64 os_bigInteger(const _uint32& low, const _uint32& high)
+inline _uint64 os_bigInteger(const _uint32 low, const _uint32 high)
 {
    _uint64 n = high;
    n <<= sizeof(high) * 8;

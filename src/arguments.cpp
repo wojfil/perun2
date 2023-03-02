@@ -23,7 +23,7 @@ namespace uro
 Arguments::Arguments(const _str& loc, const _str& cod)
    : location(loc), code(cod), parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(const _str& loc, const _str& cod, const _uint32& fls)
+Arguments::Arguments(const _str& loc, const _str& cod, const _uint32 fls)
    : location(loc), code(cod), flags(fls), parseState(ArgsParseState::aps_Ok) { };
 
 Arguments::Arguments(const _int argc, _char* const argv[])

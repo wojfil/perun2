@@ -69,7 +69,7 @@ public:
    Arguments(const _str& loc, const _str& cod);
 
    // Uroboros2 arguments made from code, location and flags
-   Arguments(const _str& loc, const _str& cod, const _uint32& fls);
+   Arguments(const _str& loc, const _str& cod, const _uint32 fls);
 
    _uint32 getFlags() const;
    _list getArgs() const;

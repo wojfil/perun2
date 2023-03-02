@@ -45,7 +45,7 @@ struct Aggregate
 public:
    Aggregate() = delete;
    Aggregate(_uro& uro);
-   void set (const _uint32& v);
+   void set (const _uint32 v);
    void run();
 
    _set copyPaths;
@@ -59,7 +59,7 @@ private:
    _uro& uroboros;
    Contexts& contexts;
    _uint32 value = AGGR_NULL;
-   inline _bool has(const _uint32& v) const;
+   inline _bool has(const _uint32 v) const;
 };
 
 typedef std::unique_ptr<Aggregate> _aggrptr;

@@ -142,7 +142,7 @@ _bool os_readFile(_str& result, const _str& path);
 void os_showWebsite(const _str& url);
 _bool os_find(const _str& path, const _str& value);
 
-inline _uint64 os_bigInteger(const _uint32& low, const _uint32& high);
+inline _uint64 os_bigInteger(const _uint32 low, const _uint32 high);
 inline _bool os_isBrowsePath(const _str& path);
 inline _tim os_convertToUroTime(const _ftim* time);
 inline _bool os_convertToFileTime(const _tim& uroTime, _ftim& result);

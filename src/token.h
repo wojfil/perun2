@@ -117,9 +117,9 @@ union TokenValue
    TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode& nm);
    TokenValue(const _size os_id, const _size os_len);
    TokenValue(const _size os_id, const _size os_len, const _int id);
-   TokenValue(const _hash& h, const _size os_id, const _size os_len);
+   TokenValue(const _hash h, const _size os_id, const _size os_len);
    TokenValue(const Keyword& k, const _size os_id, const _size os_len);
-   TokenValue(const _hash& h1, const _hash& h2, const _size os_id1, 
+   TokenValue(const _hash h1, const _hash h2, const _size os_id1, 
       const _size os_len1, const _size os_id2, const _size os_len2);
 };
 
@@ -148,9 +148,9 @@ public:
       const NumberMode& nm, _uro& uro);
    Token(const _size os_id, const _size os_len, const _int li, _uro& uro);
    Token(const _size os_id, const _size os_len, const _int id, const _int li, _uro& uro);
-   Token(const _hash& v, const _int li, const _size os_id, const _size os_len, _uro& uro);
+   Token(const _hash v, const _int li, const _size os_id, const _size os_len, _uro& uro);
    Token(const Keyword& v, const _int li, const _size os_id, const _size os_len, _uro& uro);
-   Token(const _hash& v1, const _hash& v2, const _int li, const _size os_id1, const _size os_len1,
+   Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
       const _size os_id2, const _size os_len2, _uro& uro);
 
    // members:

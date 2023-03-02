@@ -508,7 +508,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
    if (f.type == Token::t_Word) {
       Tokens tks2 = tks;
       tks2.trimLeft();
-      const _hash& fk = f.value.word.h;
+      const _hash fk = f.value.word.h;
 
       if (fk == uro.hashes.HASH_VAR_FILE) {
          if (tks2.isEmpty()) {

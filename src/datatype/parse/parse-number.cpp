@@ -115,7 +115,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
       _genptr<_tlist> tlist;
       if (uro.contexts.makeVarRef(f, tlist, uro)) {
          const Token& last = tks.last();
-         const _hash& h = last.value.twoWords.h2;
+         const _hash h = last.value.twoWords.h2;
          const Hashes& hs = uro.hashes;
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 

@@ -61,7 +61,7 @@ public:
    Attribute(_uro& uro);
    Attribute(const _aunit val, _uro& uro);
 
-   void add(const _hash& val);
+   void add(const _hash val);
    inline void set(const _aunit v);
    void setCoreCommandBase();
    void setTimeCommandBase();

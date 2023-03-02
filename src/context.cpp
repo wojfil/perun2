@@ -171,7 +171,7 @@ namespace uro
 
    _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, _uro& uro)
    {
-      const _hash& var = tk.value.word.h;
+      const _hash var = tk.value.word.h;
 
       if (var == this->hashes.HASH_VAR_SUCCESS) {
          result = this->success.get();
@@ -183,7 +183,7 @@ namespace uro
 
    _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, _uro& uro)
    {
-      const _hash& var = tk.value.word.h;
+      const _hash var = tk.value.word.h;
 
       if (var == this->hashes.HASH_VAR_INDEX) {
          if (this->indexContexts.empty()) {
@@ -203,7 +203,7 @@ namespace uro
 
    _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, _uro& uro)
    {
-      const _hash& var = tk.value.word.h;
+      const _hash var = tk.value.word.h;
 
       if (var == this->hashes.HASH_VAR_THIS) {
          if (this->fileContexts.empty()) {
@@ -235,7 +235,7 @@ namespace uro
 
    _bool Contexts::makeVarRef(const Token& tk, _defptr& result, _uro& uro)
    {
-      const _hash& var = tk.value.word.h;
+      const _hash var = tk.value.word.h;
       auto v = this->osGenerators.find(var);
 
       if (v != this->osGenerators.end()) {
@@ -361,7 +361,7 @@ namespace uro
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const _hash& hash, const gen::OsElement& element, _uro& uro)
+   void Contexts::addOsGen(const _hash hash, const gen::OsElement& element, _uro& uro)
    {
       osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, uro)));
    }

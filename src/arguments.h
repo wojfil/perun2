@@ -76,6 +76,7 @@ public:
    _str getLocation() const;
    const _str& getCode() const;
    ArgsParseState getParseState() const;
+   _bool hasFlag(const _uint32 flag) const;
 
 private:
 

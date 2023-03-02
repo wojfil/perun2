@@ -24,6 +24,7 @@
 #include "command/com.h"
 #include "command/com-parse-unit.h"
 #include "context.h"
+#include "logger.h"
 
 
 namespace uro
@@ -75,6 +76,7 @@ public:
    State state = State::s_Running;
    _exitint exitCode = EXITCODE_OK;
    ParseState parseState = ParseState::ps_NotParsed;
+   Logger logger;
 
 private:
    _comptr commands;

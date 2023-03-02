@@ -245,4 +245,9 @@ ArgsParseState Arguments::getParseState() const
    return this->parseState;
 }
 
+_bool Arguments::hasFlag(const _uint32 flag) const
+{
+   return this->flags & flag;
+}
+
 }

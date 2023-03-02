@@ -23,6 +23,7 @@
 #include "lexer.h"
 #include "os.h"
 #include "hash.h"
+#include "logger.h"
 #include "command/com-print.h"
 #include "datatype/math.h"
 
@@ -31,7 +32,7 @@ namespace uro
 {
 
 _uro::_uro(const Arguments& args) : arguments(args), contexts(*this),
-   flags(args.getFlags()), keywordsData(*this) 
+   flags(args.getFlags()), keywordsData(*this) , logger(*this)
 { 
    Terminator::addPtr(this);
 };

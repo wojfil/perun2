@@ -22,7 +22,7 @@ namespace uro
 {
 
 std::vector<Token> tokenize(const _str &code, _uro& uro);
-static Token wordToken(const _str& code, const _size& start, const _size& length, const _int& line, _uro& uro);
+static Token wordToken(const _str& code, const _size& start, const _size& length, const _int line, _uro& uro);
 inline static _bool isSymbol(const _char& ch);
 inline static _bool isNewLine(const _char& ch);
 inline static _bool isAllowedInWord(const _char& ch);

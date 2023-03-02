@@ -57,9 +57,9 @@ struct Tokens
 {
 public:
    Tokens() = delete;
-   Tokens(const std::vector<Token>& li, const _int& st, const _int& ln, const _tinfo& in);
+   Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo& in);
    Tokens(const std::vector<Token>& li);
-   Tokens(const Tokens& tks, const _int& st, const _int& ln);
+   Tokens(const Tokens& tks, const _int st, const _int ln);
 
    void trimLeft();
    void trimRight();

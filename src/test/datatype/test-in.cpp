@@ -22,7 +22,7 @@
 using namespace uro;
 
 template <typename T>
-void testCase_in(const _int& caseId, const T& value, const std::vector<T>& collection, const _bool& expectedResult)
+void testCase_in(const _int caseId, const T& value, const std::vector<T>& collection, const _bool& expectedResult)
 {
     _genptr<T> v = std::make_unique<gen::Constant<T>>(value);
     _genptr<T> v2 = std::make_unique<gen::Constant<T>>(value);

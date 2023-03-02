@@ -43,7 +43,7 @@ public:
    virtual void clearValues(const _size& length) = 0;
    virtual void clearValues() = 0;
    virtual void addValues() = 0;
-   virtual _bool matchesSwap(const _int& start, const _int& end) const = 0;
+   virtual _bool matchesSwap(const _int start, const _int end) const = 0;
 };
 
 typedef std::unique_ptr<Order> _ordptr;
@@ -91,7 +91,7 @@ public:
       this->nextUnit->addValues();
    }
 
-   _bool matchesSwap(const _int& start, const _int& end) const override
+   _bool matchesSwap(const _int start, const _int end) const override
    {
       const T& left = this->values[this->indices->values[start]];
       const T& right = this->values[this->indices->values[end]];
@@ -134,7 +134,7 @@ public:
       this->values.emplace_back(this->valueGenerator->getValue());
    }
 
-   _bool matchesSwap(const _int& start, const _int& end) const override
+   _bool matchesSwap(const _int start, const _int end) const override
    {
       return this->descending
          ? this->values[this->indices->values[start]] >= this->values[this->indices->values[end]]
@@ -150,7 +150,7 @@ public:
    OrderBy(_indptr& inds, _ordptr& ord)
       : indices(std::move(inds)), order(std::move(ord)) { };
 
-   void quicksort(const _int& start, const _int& end)
+   void quicksort(const _int start, const _int end)
    {
       if (start < end) {
          const _int i = partition(start, end);
@@ -159,7 +159,7 @@ public:
       }
    }
 
-   _int partition(const _int& start, const _int& end)
+   _int partition(const _int start, const _int end)
    {
       _int i = start - 1;
 

@@ -72,9 +72,9 @@ public:
    void deleteLast();
    void lockLast();
    _bool isExpandable() const;
-   void addElse(_comptr& com, const _int& line);
-   void addEmptyElse(const _int& line);
-   void addElseIf(_genptr<_bool>& cond, _comptr& com, const _int& line);
+   void addElse(_comptr& com, const _int line);
+   void addEmptyElse(const _int line);
+   void addElseIf(_genptr<_bool>& cond, _comptr& com, const _int line);
    void setMain(_genptr<_bool>& mainCond);
    void setMain(_comptr& mainCom, _genptr<_bool>& mainCond);
 

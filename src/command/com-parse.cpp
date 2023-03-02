@@ -121,8 +121,8 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, _uro& uro)
 }
 
 
-static _bool commandStruct(_comptr& result, const Tokens& tks, const _int& sublen,
-   const _int& index, const _int& open, _uro& uro)
+static _bool commandStruct(_comptr& result, const Tokens& tks, const _int sublen,
+   const _int index, const _int open, _uro& uro)
 {
    const _int leftStart = index - sublen;
    const _int leftLen = open - leftStart;
@@ -1116,7 +1116,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
    return false;
 }
 
-static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int& line, _uro& uro)
+static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int line, _uro& uro)
 {
    Variable<_str>* pv_str;
    if (uro.contexts.getVar(first, pv_str, uro)) {

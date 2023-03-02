@@ -22,7 +22,7 @@
 namespace uro
 {
 
-Tokens::Tokens(const std::vector<Token>& li, const _int& st, const _int& ln, const _tinfo& in)
+Tokens::Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo& in)
    : start(st), length(ln), end(st + ln - 1), list(li), info(in) { }
 
 Tokens::Tokens(const std::vector<Token>& li)
@@ -32,7 +32,7 @@ Tokens::Tokens(const std::vector<Token>& li)
    this->setData();
 }
 
-Tokens::Tokens(const Tokens& tks, const _int& st, const _int& ln)
+Tokens::Tokens(const Tokens& tks, const _int st, const _int ln)
    : start(st), length(ln), end(st + ln - 1), list(tks.getList())
 {
    this->setData();

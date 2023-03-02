@@ -25,7 +25,7 @@ OriginStringInfo::OriginStringInfo(const _size& ind, const _size& len)
 TokenValue::TokenValue(const _char& ch)
    : ch(ch) { };
 
-TokenValue::TokenValue(const _char& ch, const _int& am)
+TokenValue::TokenValue(const _char& ch, const _int am)
    : chars({ ch, am }) { };
 
 TokenValue::TokenValue(const _num& n, const _size& os_id, const _size& os_len, const NumberMode& nm)
@@ -33,7 +33,7 @@ TokenValue::TokenValue(const _num& n, const _size& os_id, const _size& os_len, c
 TokenValue::TokenValue(const _size& os_id, const _size& os_len)
    : str(_osi(os_id, os_len)) { };
 
-TokenValue::TokenValue(const _size& os_id, const _size& os_len, const _int& id)
+TokenValue::TokenValue(const _size& os_id, const _size& os_len, const _int id)
    : pattern({ _osi(os_id, os_len), id }) { };
 
 TokenValue::TokenValue(const _hash& h, const _size& os_id, const _size& os_len)
@@ -46,29 +46,29 @@ TokenValue::TokenValue(const _hash& h1, const _hash& h2, const _size& os_id1,
    const _size& os_len1, const _size& os_id2, const _size& os_len2)
    : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
-Token::Token(const _char& v, const _int& li, _uro& uro)
+Token::Token(const _char& v, const _int li, _uro& uro)
    : line(li), type(t_Symbol), value(v) { };
 
-Token::Token(const _char& v, const _int& am, const _int& li, _uro& uro)
+Token::Token(const _char& v, const _int am, const _int li, _uro& uro)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
-Token::Token(const _num& v, const _int& li, const _size& os_id, const _size& os_len,
+Token::Token(const _num& v, const _int li, const _size& os_id, const _size& os_len,
    const NumberMode& nm, _uro& uro)
    : line(li), type(t_Number), value(v, os_id, os_len, nm) { };
 
-Token::Token(const _size& os_id, const _size& os_len, const _int& li, _uro& uro)
+Token::Token(const _size& os_id, const _size& os_len, const _int li, _uro& uro)
    : line(li), type(t_Quotation), value(os_id, os_len) { };
 
-Token::Token(const _size& os_id, const _size& os_len, const _int& id, const _int& li, _uro& uro)
+Token::Token(const _size& os_id, const _size& os_len, const _int id, const _int li, _uro& uro)
    : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const _hash& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
+Token::Token(const _hash& v, const _int li, const _size& os_id, const _size& os_len, _uro& uro)
    : line(li), type(t_Word), value(v, os_id, os_len) { };
 
-Token::Token(const Keyword& v, const _int& li, const _size& os_id, const _size& os_len, _uro& uro)
+Token::Token(const Keyword& v, const _int li, const _size& os_id, const _size& os_len, _uro& uro)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
-Token::Token(const _hash& v1, const _hash& v2, const _int& li, const _size& os_id1, const _size& os_len1,
+Token::Token(const _hash& v1, const _hash& v2, const _int li, const _size& os_id1, const _size& os_len1,
    const _size& os_id2, const _size& os_len2, _uro& uro)
    : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 

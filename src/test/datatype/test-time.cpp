@@ -48,14 +48,14 @@ void test_time()
 	testCase_timeListSortAndUnique(109, { _tim(6, 2000), _tim(3, 6, 2000,15, 16) }, { _tim(6, 2000) });
 }
 
-void testCase_timeShift(const _int& caseId, const _tim& value, const _per& shift, const _tim& expectedResult)
+void testCase_timeShift(const _int caseId, const _tim& value, const _per& shift, const _tim& expectedResult)
 {
     _tim v = value;
     v += shift;
     VERIFY(v == expectedResult, caseId);
 }
 
-void testCase_timeListSortAndUnique(const _int& caseId, const _tlist& input, const _tlist& expectedResult)
+void testCase_timeListSortAndUnique(const _int caseId, const _tlist& input, const _tlist& expectedResult)
 {
 	const _tlist result = sortedAndUniqueTimeList(input);
     VERIFY(result == expectedResult, caseId);

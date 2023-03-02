@@ -34,7 +34,7 @@ union NumberValue
 struct Number
 {
    Number();
-   Number(const _int& val);
+   Number(const _int val);
    Number(const _nint& val);
    Number(const _ndouble& val);
 

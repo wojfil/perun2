@@ -1233,19 +1233,19 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 }
 
 
-static void functionArgNumberException(const _int& argNumber, const Token& word, _uro& uro)
+static void functionArgNumberException(const _int argNumber, const Token& word, _uro& uro)
 {
    throw SyntaxError(str(L"function '", word.getOriginString(uro), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? EMPTY_STRING : L"s")), word.line);
 }
 
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, _uro& uro)
+static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, _uro& uro)
 {
    throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(uro), L"' cannot be resolved to a ", typeName), word.line);
 }
 
-static _str ordinalNumber(const _int& number)
+static _str ordinalNumber(const _int number)
 {
    switch (number) {
       case 1:

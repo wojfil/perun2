@@ -63,7 +63,7 @@ public:
    Arguments() = delete;
 
    // Uroboros2 arguments parsed from the command-line
-   Arguments(const _int& argc, _char* const argv[]);
+   Arguments(const _int argc, _char* const argv[]);
 
    // Uroboros2 arguments made from code and location
    Arguments(const _str& loc, const _str& cod);

@@ -31,7 +31,7 @@ namespace uro::comm
 {
 
 _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
-   const _int& line, const _bool force, const _bool stack, _uro& uro)
+   const _int line, const _bool force, const _bool stack, _uro& uro)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete:
@@ -142,7 +142,7 @@ static void makeCoreCommandContext(_fcptr& result, _uro& uro)
    result = std::make_unique<FileContext>(attr, uro);
 }
 
-static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, const _int& line, _uro& uro)
+static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, const _int line, _uro& uro)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
@@ -202,7 +202,7 @@ static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* 
    return true;
 }
 
-static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int& line, _uro& uro)
+static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int line, _uro& uro)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" to' is empty"), line);
@@ -285,7 +285,7 @@ static _bool coreCommandTime(_comptr& result, const Token& word, FileContext* co
    return true;
 }
 
-static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
+static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int line, _uro& uro)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(uro), line, uro);
@@ -344,7 +344,7 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
    return false;
 }
 
-static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
+static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int line, _uro& uro)
 {
    if (uro.contexts.hasAggregate()) {
       Aggregate* aggr = uro.contexts.getAggregate();
@@ -391,7 +391,7 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
    return false;
 }
 
-static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro)
 {
    if (tks.isEmpty()) {
@@ -485,7 +485,7 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
    return false;
 }
 
-static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro)
 {
    if (tks.isEmpty()) {
@@ -676,7 +676,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
    return false;
 }
 
-static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro)
 {
    if (tks.isEmpty()) {
@@ -867,7 +867,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
    return false;
 }
 
-static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int& line,
+static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro)
 {
    const _bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
@@ -1109,7 +1109,7 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    return false;
 }
 
-_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int& line, const _bool directError, _uro& uro)
+_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int line, const _bool directError, _uro& uro)
 {
    if (tks.isEmpty()) {
       if (!uro.contexts.hasIterationContext()) {
@@ -1155,7 +1155,7 @@ _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int&
    return false;
 }
 
-static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
+static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int line, _uro& uro)
 {
    _genptr<_per> per;
    if (parse::parse(uro, tks, per)) {
@@ -1173,7 +1173,7 @@ static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, cons
    return false;
 }
 
-static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
+static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int line, _uro& uro)
 {
    if (tks.isEmpty()) {
       result = std::make_unique<C_Error>(uro);
@@ -1194,7 +1194,7 @@ static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, cons
    return false;
 }
 
-static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int& line, _uro& uro)
+static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int line, _uro& uro)
 {
    uro.contexts.markAllAttributesToRun();
 
@@ -1227,7 +1227,7 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
    return false;
 }
 
-static _bool c_runContextless(_comptr& result, const Token& word, const Tokens& right, const _int& line, _uro& uro)
+static _bool c_runContextless(_comptr& result, const Token& word, const Tokens& right, const _int line, _uro& uro)
 {
    if (right.check(TI_HAS_KEYWORD_WITH)) {
       return c_runContextless_with(result, word, right, line, uro);
@@ -1237,7 +1237,7 @@ static _bool c_runContextless(_comptr& result, const Token& word, const Tokens& 
    }
 }
 
-static _bool c_runContextless_simple(_comptr& result, const Token& word, const Tokens& right, const _int& line, _uro& uro)
+static _bool c_runContextless_simple(_comptr& result, const Token& word, const Tokens& right, const _int line, _uro& uro)
 {
    if (!uro.contexts.hasFileContext()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro),
@@ -1268,7 +1268,7 @@ static _bool c_runContextless_simple(_comptr& result, const Token& word, const T
    return false;
 }
 
-static _bool c_runContextless_with(_comptr& result, const Token& word, const Tokens& right, const _int& line, _uro& uro)
+static _bool c_runContextless_with(_comptr& result, const Token& word, const Tokens& right, const _int line, _uro& uro)
 {
    if (!uro.contexts.hasFileContext()) {
       throw SyntaxError(str(L"command '", word.getOriginString(uro), L" with with' needs first argument here"), line);
@@ -1338,7 +1338,7 @@ static _bool c_runContextless_with(_comptr& result, const Token& word, const Tok
    }
 }
 
-static _bool c_runContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, const _int& line, _uro& uro)
+static _bool c_runContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, const _int line, _uro& uro)
 {
    if (right.check(TI_HAS_KEYWORD_WITH)) {
       return c_runContextfull_with(result, word, left, right, line, uro);
@@ -1349,7 +1349,7 @@ static _bool c_runContextfull(_comptr& result, const Token& word, const Tokens& 
 }
 
 static _bool c_runContextfull_simple(_comptr& result, const Token& word, const Tokens& left,
-   const Tokens& right, const _int& line, _uro& uro)
+   const Tokens& right, const _int line, _uro& uro)
 {
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
@@ -1386,7 +1386,7 @@ static _bool c_runContextfull_simple(_comptr& result, const Token& word, const T
 }
 
 static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tokens& left,
-   const Tokens& right, const _int& line, _uro& uro)
+   const Tokens& right, const _int line, _uro& uro)
 {
    std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_With);
    Tokens& left2 = pair2.first;
@@ -1473,7 +1473,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
    return false;
 }
 
-static void checkUselessFlags(const Token& word, const _int& line,
+static void checkUselessFlags(const Token& word, const _int line,
    const _bool force, const _bool stack, _uro& uro)
 {
    if (force) {
@@ -1487,12 +1487,12 @@ static void checkUselessFlags(const Token& word, const _int& line,
    }
 }
 
-static void commandSyntaxError(const _str& name, const _int& line)
+static void commandSyntaxError(const _str& name, const _int line)
 {
    throw SyntaxError(str(L"wrong syntax of command '", name, L"'"), line);
 }
 
-static void commandNoArgException(const _str& name, const _int& line)
+static void commandNoArgException(const _str& name, const _int line)
 {
    throw SyntaxError(str(L"command '", name, L"' requires an argument"), line);
 }

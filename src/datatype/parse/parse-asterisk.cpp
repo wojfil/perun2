@@ -23,7 +23,7 @@
 namespace uro::parse
 {
 
-_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int& line, _uro& uro)
+_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int line, _uro& uro)
 {
    const _str pattern = os_trim(originPattern);
 

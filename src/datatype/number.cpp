@@ -26,7 +26,7 @@ namespace uro
 Number::Number()
    : value(NINT_ZERO), isDouble(false) { }
 
-Number::Number(const _int& val)
+Number::Number(const _int val)
    : value(static_cast<_nint>(val)), isDouble(false) { }
 
 Number::Number(const _nint& val)

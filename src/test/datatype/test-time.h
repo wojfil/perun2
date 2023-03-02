@@ -23,8 +23,8 @@ using namespace uro;
 
 void test_time();
 
-void testCase_timeShift(const _int& caseId, const _tim& value, const _per& shift, const _tim& expectedResult);
-void testCase_timeListSortAndUnique(const _int& caseId, const _tlist& input, const _tlist& expectedResult);
+void testCase_timeShift(const _int caseId, const _tim& value, const _per& shift, const _tim& expectedResult);
+void testCase_timeListSortAndUnique(const _int caseId, const _tlist& input, const _tlist& expectedResult);
 
 
 #endif // TEST_TIME_INCLUDED

@@ -47,9 +47,9 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
 _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro);
 static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, _uro& uro);
 
-static void functionArgNumberException(const _int& argNumber, const Token& word, _uro& uro);
-static void functionArgException(const _int& argNumber, const _str& typeName, const Token& word, _uro& uro);
-static _str ordinalNumber(const _int& number);
+static void functionArgNumberException(const _int argNumber, const Token& word, _uro& uro);
+static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, _uro& uro);
+static _str ordinalNumber(const _int number);
 
 _bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro);
 _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _uro& uro);

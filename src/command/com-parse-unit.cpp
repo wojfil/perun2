@@ -174,7 +174,7 @@ _bool ConditionContext::isExpandable() const
    return cu.isClosed() && !cu.isLocked() && cu.pointer != nullptr;
 }
 
-void ConditionContext::addElse(_comptr& com, const _int& line)
+void ConditionContext::addElse(_comptr& com, const _int line)
 {
    if (!this->isExpandable()) {
       throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
@@ -190,7 +190,7 @@ void ConditionContext::addElse(_comptr& com, const _int& line)
    cu.closeElse();
 }
 
-void ConditionContext::addEmptyElse(const _int& line)
+void ConditionContext::addEmptyElse(const _int line)
 {
    if (!this->isExpandable()) {
       throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
@@ -205,7 +205,7 @@ void ConditionContext::addEmptyElse(const _int& line)
    cu.closeElse();
 }
 
-void ConditionContext::addElseIf(_genptr<_bool>& cond, _comptr& com, const _int& line)
+void ConditionContext::addElseIf(_genptr<_bool>& cond, _comptr& com, const _int line)
 {
    if (!this->isExpandable()) {
       throw SyntaxError(L"structure 'else if' is not preceded by a structure 'if'", line);

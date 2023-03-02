@@ -13,7 +13,6 @@
 */
 
 #include "com-core-aggr.h"
-#include "com-print.h"
 #include "../uroboros.h"
 #include "../os.h"
 
@@ -139,22 +138,22 @@ void C_AggrSelect_List::run()
 
 void logCopyError(_uro& uro, const _str& name)
 {
-   commandLog(uro, L"Failed to copy ", getCCNameShort(name));
+   uro.logger.log(L"Failed to copy ", getCCNameShort(name));
 }
 
 void logCopySuccess(_uro& uro, const _str& name)
 {
-   commandLog(uro, L"Copy ", getCCNameShort(name));
+   uro.logger.log(L"Copy ", getCCNameShort(name));
 }
 
 void logSelectError(_uro& uro, const _str& name)
 {
-   commandLog(uro, L"Failed to select ", getCCNameShort(name));
+   uro.logger.log(L"Failed to select ", getCCNameShort(name));
 }
 
 void logSelectSuccess(_uro& uro, const _str& name)
 {
-   commandLog(uro, L"Select ", getCCNameShort(name));
+   uro.logger.log(L"Select ", getCCNameShort(name));
 }
 
 

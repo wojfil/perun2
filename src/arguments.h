@@ -23,16 +23,12 @@ namespace uro
 inline constexpr _uint32 FLAG_NULL =      0b000;
 inline constexpr _uint32 FLAG_NOOMIT =    0b001;
 inline constexpr _uint32 FLAG_SILENT =    0b010;
-inline constexpr _uint32 FLAG_GUI =       0b100;
 
 inline constexpr _char CHAR_FLAG_NOOMIT =           CHAR_n;
 inline constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
 
 inline constexpr _char CHAR_FLAG_SILENT =           CHAR_s;
 inline constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
-
-inline constexpr _char CHAR_FLAG_GUI =              CHAR_g;
-inline constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
 
 inline constexpr _char CHAR_FLAG_DIRECTORY =        CHAR_d;
 inline constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;

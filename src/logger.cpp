@@ -17,12 +17,20 @@
 namespace uro
 {
 
+Logger::Logger()
+    : isSilent(false) { };
+
 Logger::Logger(_uro& uro)
     : isSilent(uro.arguments.hasFlag(FLAG_SILENT)) { };
 
-void Logger::print(const _str& value)
+void Logger::print(const _str& value) const
 {
    std::wcout << value << CHAR_NEW_LINE;
+}
+
+void Logger::emptyLine() const
+{
+   std::wcout << EMPTY_STRING << CHAR_NEW_LINE;
 }
 
 }

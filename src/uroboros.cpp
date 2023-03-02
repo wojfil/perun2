@@ -24,7 +24,6 @@
 #include "os.h"
 #include "hash.h"
 #include "logger.h"
-#include "command/com-print.h"
 #include "datatype/math.h"
 
 
@@ -77,13 +76,13 @@ _bool _uro::preParse()
       this->tokens = tokenize(this->arguments.getCode(), *this);
    }
    catch (const SyntaxError& ex) {
-      comm::rawPrint(ex.getMessage());
+      this->logger.print(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
    catch (...) {
       SyntaxError ex = SyntaxError::wrongSyntax(1);
-      comm::rawPrint(ex.getMessage());
+      this->logger.print(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
@@ -102,13 +101,13 @@ _bool _uro::parse()
       this->conditionContext.deleteClosedUnits();
    }
    catch (const SyntaxError& ex) {
-      comm::rawPrint(ex.getMessage());
+      this->logger.print(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
    catch (...) {
       SyntaxError ex = SyntaxError::wrongSyntax(1);
-      comm::rawPrint(ex.getMessage());
+      this->logger.print(ex.getMessage());
       this->exitCode = EXITCODE_SYNTAX_ERROR;
       return false;
    }
@@ -132,7 +131,7 @@ _bool _uro::runCommands()
       this->commands->run();
    }
    catch (const RuntimeError& re) {
-      comm::rawPrint(re.getMessage());
+      this->logger.print(re.getMessage());
       this->exitCode = EXITCODE_RUNTIME_ERROR;
       return false;
    }

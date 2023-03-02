@@ -28,15 +28,17 @@ struct _uro;
 struct Logger
 {
 public:
-    Logger() = delete;
+    Logger();
     Logger(_uro& uro);
+    Logger(Logger const&) = delete;
+    Logger& operator= (Logger const&) = delete;
 
     // print something
-    void print(const _str& value);
+    void print(const _str& value) const;
 
-    // print command log
+    // print command log, all args concatenated in one line
     template<typename... Args>
-    void log(Args const&... args)
+    void log(Args const&... args) const
     {
         if (!this->isSilent) {
             using value_type = std::common_type_t<Args const&...>;
@@ -46,6 +48,9 @@ public:
             std::wcout << CHAR_NEW_LINE;
         }
     }
+    
+    // print an empty line
+    void emptyLine() const;
 
 private:
     const _bool isSilent;

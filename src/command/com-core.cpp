@@ -14,7 +14,6 @@
 
 #include "com-core.h"
 #include "../uroboros.h"
-#include "com-print.h"
 #include "../os.h"
 
 
@@ -34,11 +33,11 @@ void C_Delete::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Delete ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Delete ", getCCName(this->context->v_path->value));
          this->context->reloadData();
       }
       else {
-         commandLog(this->uroboros, L"Failed to delete ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to delete ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -50,13 +49,13 @@ void C_Drop::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Drop ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Drop ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->reloadData();
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to drop ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to drop ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -68,13 +67,13 @@ void C_Hide::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Hide ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Hide ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_hidden->value = true;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to hide ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to hide ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -86,13 +85,13 @@ void C_Lock::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Lock ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Lock ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_readonly->value = true;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to lock ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to lock ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -104,10 +103,10 @@ void C_Open::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Open ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Open ", getCCName(this->context->v_path->value));
       }
       else {
-         commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -119,13 +118,13 @@ void C_Unlock::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Unlock ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Unlock ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_readonly->value = false;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to unlock ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to unlock ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -137,13 +136,13 @@ void C_Unhide::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Unhide ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Unhide ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_hidden->value = false;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to unhide ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to unhide ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -154,7 +153,7 @@ void C_OpenWith::run()
       const _str pro = os_trim(program->getValue());
 
       if (!this->context->v_exists->value || pro.empty()) {
-         commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
+         this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -165,15 +164,15 @@ void C_OpenWith::run()
          this->uroboros.contexts.success->value = s;
 
          if (s) {
-            commandLog(this->uroboros, L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
+            this->uroboros.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
          }
          else {
-            commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
+            this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
          }
       }
       else {
          if (!os_hasParentDirectory(this->context->v_path->value)) {
-            commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -183,10 +182,10 @@ void C_OpenWith::run()
          this->uroboros.contexts.success->value = s;
 
          if (s) {
-            commandLog(this->uroboros, L"Open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->uroboros.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
          else {
-            commandLog(this->uroboros, L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
       }
    }
@@ -201,14 +200,14 @@ void C_ReaccessTo::run()
          && os_setTime(this->context->v_path->value, this->context->v_creation->value, t, this->context->v_modification->value);
 
       if (this->uroboros.contexts.success->value) {
-         commandLog(this->uroboros, L"Reaccess ", getCCName(this->context->v_path->value), L" to ", t.toString());
+         this->uroboros.logger.log(L"Reaccess ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_access->value = t;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to reaccess ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to reaccess ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -222,7 +221,7 @@ void C_RechangeTo::run()
          && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
       if (this->uroboros.contexts.success->value) {
-         commandLog(this->uroboros, L"Rechange ", getCCName(this->context->v_path->value), L" to ", t.toString());
+         this->uroboros.logger.log(L"Rechange ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_change->value = t;
@@ -230,7 +229,7 @@ void C_RechangeTo::run()
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to rechange ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to rechange ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -244,14 +243,14 @@ void C_RecreateTo::run()
          && os_setTime(this->context->v_path->value, t, this->context->v_access->value, this->context->v_modification->value);
 
       if (this->uroboros.contexts.success->value) {
-         commandLog(this->uroboros, L"Recreate ", getCCName(this->context->v_path->value),  L" to ", t.toString());
+         this->uroboros.logger.log(L"Recreate ", getCCName(this->context->v_path->value),  L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_creation->value = t;
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to recreate ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to recreate ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -265,7 +264,7 @@ void C_RemodifyTo::run()
          && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
       if (this->uroboros.contexts.success->value) {
-         commandLog(this->uroboros, L"Remodify ", getCCName(this->context->v_path->value), L" to ", t.toString());
+         this->uroboros.logger.log(L"Remodify ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_modification->value = t;
@@ -273,7 +272,7 @@ void C_RemodifyTo::run()
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to remodify ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to remodify ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -286,7 +285,7 @@ void C_RenameTo::run()
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(this->context->v_path->value) || os_isAbsolute(n)) {
 
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -302,7 +301,7 @@ void C_RenameTo::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
+            this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -312,7 +311,7 @@ void C_RenameTo::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
+         this->uroboros.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
 
          if (saveChanges) {
             this->context->v_fullname->value = n;
@@ -322,7 +321,7 @@ void C_RenameTo::run()
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -335,7 +334,7 @@ void C_RenameTo_Stack::run()
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to rename ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -380,7 +379,7 @@ void C_RenameTo_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
+         this->uroboros.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
 
          if (saveChanges) {
             this->context->v_fullname->value = n;
@@ -390,7 +389,7 @@ void C_RenameTo_Stack::run()
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
       }
    }
 }
@@ -404,7 +403,7 @@ void C_MoveTo::run()
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
 
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -413,7 +412,7 @@ void C_MoveTo::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -425,7 +424,7 @@ void C_MoveTo::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -435,14 +434,14 @@ void C_MoveTo::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -454,7 +453,7 @@ void C_MoveTo_Stack::run()
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -463,7 +462,7 @@ void C_MoveTo_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -488,14 +487,14 @@ void C_MoveTo_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -510,7 +509,7 @@ void C_MoveToAs::run()
       if (!this->context->v_exists->value || os_isInvaild(fulln)
            || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -525,7 +524,7 @@ void C_MoveToAs::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -535,7 +534,7 @@ void C_MoveToAs::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -545,14 +544,14 @@ void C_MoveToAs::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -567,7 +566,7 @@ void C_MoveToAs_Stack::run()
       if (!this->context->v_exists->value || os_isInvaild(fulln)
           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -576,7 +575,7 @@ void C_MoveToAs_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -619,14 +618,14 @@ void C_MoveToAs_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         commandLog(this->uroboros, L"Failed to move ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
@@ -639,7 +638,7 @@ void C_DownloadFrom_String::run()
       const _str src = os_trim(location->getValue());
 
       if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(name));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(name));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -648,7 +647,7 @@ void C_DownloadFrom_String::run()
       const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, name);
 
       if (!os_exists(oldPath)) {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(name));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(name));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -657,7 +656,7 @@ void C_DownloadFrom_String::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(name));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(name));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -667,10 +666,10 @@ void C_DownloadFrom_String::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Download ", getCCName(name), L" from ", getCCName(srcLoc));
+         this->uroboros.logger.log(L"Download ", getCCName(name), L" from ", getCCName(srcLoc));
       }
       else {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(name));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(name));
       }
    }
 }
@@ -691,7 +690,7 @@ void C_DownloadFrom_List::run()
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(os_trim(names[i])));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(os_trim(names[i])));
          }
          this->uroboros.contexts.success->value = false;
          return;
@@ -704,7 +703,7 @@ void C_DownloadFrom_List::run()
          const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
             success = false;
          }
          else {
@@ -712,7 +711,7 @@ void C_DownloadFrom_List::run()
 
             if (os_exists(newPath)) {
                if (!(forced && os_drop(newPath, this->uroboros))) {
-                  commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+                  this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                   success = false;
                   continue;
                }
@@ -721,10 +720,10 @@ void C_DownloadFrom_List::run()
             const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
-               commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
+               this->uroboros.logger.log(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+               this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -742,7 +741,7 @@ void C_DownloadFrom_Definition::run()
       const _str srcLoc = os_join(this->locContext->location->value, src);
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
-         commandLog(this->uroboros, L"Failed to download");
+         this->uroboros.logger.log(L"Failed to download");
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -760,7 +759,7 @@ void C_DownloadFrom_Definition::run()
          const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || !os_exists(oldPath) || os_isAbsolute(n)) {
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(n));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(n));
             success = false;
          }
          else {
@@ -768,7 +767,7 @@ void C_DownloadFrom_Definition::run()
 
             if (os_exists(newPath)) {
                if (!(forced && os_drop(newPath, this->uroboros))) {
-                  commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+                  this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                   success = false;
                   continue;
                }
@@ -777,10 +776,10 @@ void C_DownloadFrom_Definition::run()
             const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
-               commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
+               this->uroboros.logger.log(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+               this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -799,7 +798,7 @@ void C_DownloadFrom_String_Stack::run()
       const _str src = os_trim(location->getValue());
 
       if (os_isInvaild(name) || os_isInvaild(src) || !os_directoryExists(dest)) {
-         commandLog(this->uroboros, L"Failed to download ", getCCNameShort(name));
+         this->uroboros.logger.log(L"Failed to download ", getCCNameShort(name));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -808,7 +807,7 @@ void C_DownloadFrom_String_Stack::run()
       const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, name);
 
       if (!os_exists(oldPath)) {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -830,10 +829,10 @@ void C_DownloadFrom_String_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
+         this->uroboros.logger.log(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
       }
       else {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
       }
    }
 }
@@ -854,7 +853,7 @@ void C_DownloadFrom_List_Stack::run()
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
          for (_size i = 0; i < len; i++) {
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(os_trim(names[i])));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(os_trim(names[i])));
          }
          this->uroboros.contexts.success->value = false;
          return;
@@ -867,7 +866,7 @@ void C_DownloadFrom_List_Stack::run()
          const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(n));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(n));
             success = false;
          }
          else {
@@ -887,10 +886,10 @@ void C_DownloadFrom_List_Stack::run()
             const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
-               commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
+               this->uroboros.logger.log(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+               this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -908,7 +907,7 @@ void C_DownloadFrom_Definition_Stack::run()
       const _str srcLoc = os_join(dest, src);
 
       if (os_isInvaild(src) || !os_directoryExists(dest) || !os_directoryExists(srcLoc)) {
-         commandLog(this->uroboros, L"Failed to download");
+         this->uroboros.logger.log(L"Failed to download");
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -926,7 +925,7 @@ void C_DownloadFrom_Definition_Stack::run()
          const _str oldPath = str(srcLoc, OS_SEPARATOR_STRING, n);
 
          if (os_isInvaild(n) || os_isAbsolute(n) || !os_exists(oldPath)) {
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(n));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(n));
             success = false;
          }
          else {
@@ -951,10 +950,10 @@ void C_DownloadFrom_Definition_Stack::run()
             const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
             if (s) {
-               commandLog(this->uroboros, L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
+               this->uroboros.logger.log(L"Download ", getCCName(oldPath), L" from ", getCCName(srcLoc));
             }
             else {
-               commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+               this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                success = false;
             }
          }
@@ -973,7 +972,7 @@ void C_Download_String::run()
 
       if (os_isInvaild(oldElement) || !os_directoryExists(dest) || !os_isPath(oldElement))
       {
-         commandLog(this->uroboros, L"Failed to download ", getCCNameShort(oldElement));
+         this->uroboros.logger.log(L"Failed to download ", getCCNameShort(oldElement));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -981,7 +980,7 @@ void C_Download_String::run()
       const _str oldPath = os_join(dest, oldElement);
 
       if (!os_exists(oldPath)) {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -990,7 +989,7 @@ void C_Download_String::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1000,10 +999,10 @@ void C_Download_String::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Download ", getCCName(oldPath));
       }
       else {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
       }
    }
 }
@@ -1024,7 +1023,7 @@ void C_Download_List::run()
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
             const _str p = os_trim(oldPaths[i]);
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(p));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(p));
          }
          this->uroboros.contexts.success->value = false;
          return;
@@ -1037,7 +1036,7 @@ void C_Download_List::run()
          const _str oldPath = os_join(dest, n);
 
          if (os_isInvaild(n) || !os_isPath(n) || !os_exists(oldPath)) {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
             success = false;
             continue;
          }
@@ -1046,7 +1045,7 @@ void C_Download_List::run()
 
          if (os_exists(newPath)) {
             if (!(forced && os_drop(newPath, this->uroboros))) {
-               commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+               this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
                success = false;
                continue;
             }
@@ -1055,10 +1054,10 @@ void C_Download_List::run()
          const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
          if (s) {
-            commandLog(this->uroboros, L"Download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Download ", getCCName(oldPath));
          }
          else {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
             success = false;
          }
       }
@@ -1075,7 +1074,7 @@ void C_Download_String_Stack::run()
 
       if (os_isInvaild(oldElement) || !os_isPath(oldElement) || !os_directoryExists(dest))
       {
-         commandLog(this->uroboros, L"Failed to download ", getCCNameShort(oldElement));
+         this->uroboros.logger.log(L"Failed to download ", getCCNameShort(oldElement));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -1083,7 +1082,7 @@ void C_Download_String_Stack::run()
       const _str oldPath = os_join(dest, oldElement);
 
       if (!os_exists(oldPath)) {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -1108,10 +1107,10 @@ void C_Download_String_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Download ", getCCName(oldPath));
       }
       else {
-         commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
       }
    }
 }
@@ -1132,7 +1131,7 @@ void C_Download_List_Stack::run()
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
             const _str p = os_trim(oldPaths[i]);
-            commandLog(this->uroboros, L"Failed to download ", getCCNameShort(p));
+            this->uroboros.logger.log(L"Failed to download ", getCCNameShort(p));
          }
          this->uroboros.contexts.success->value = false;
          return;
@@ -1144,7 +1143,7 @@ void C_Download_List_Stack::run()
          const _str oldPath = os_trim(oldPaths[i]);
 
          if (os_isInvaild(oldPath) || !os_isPath(oldPath) || !os_exists(oldPath)) {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
             success = false;
             continue;
          }
@@ -1168,10 +1167,10 @@ void C_Download_List_Stack::run()
          const _bool s = os_copyTo(oldPath, newPath, os_isFile(oldPath), this->uroboros);
 
          if (s) {
-            commandLog(this->uroboros, L"Download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Download ", getCCName(oldPath));
          }
          else {
-            commandLog(this->uroboros, L"Failed to download ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to download ", getCCName(oldPath));
             success = false;
          }
       }
@@ -1187,7 +1186,7 @@ void C_CopyTo::run()
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -1196,7 +1195,7 @@ void C_CopyTo::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1208,7 +1207,7 @@ void C_CopyTo::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1218,10 +1217,10 @@ void C_CopyTo::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
       }
       else {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1233,7 +1232,7 @@ void C_CopyTo_Stack::run()
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -1242,7 +1241,7 @@ void C_CopyTo_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1267,10 +1266,10 @@ void C_CopyTo_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
       }
       else {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1284,7 +1283,7 @@ void C_CopyToAs::run()
 
       if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -1299,7 +1298,7 @@ void C_CopyToAs::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1309,7 +1308,7 @@ void C_CopyToAs::run()
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->uroboros))) {
-            commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1319,10 +1318,10 @@ void C_CopyToAs::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
       }
       else {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
@@ -1336,7 +1335,7 @@ void C_CopyToAs_Stack::run()
 
       if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->uroboros.contexts.success->value = false;
          return;
       }
@@ -1345,7 +1344,7 @@ void C_CopyToAs_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->uroboros.contexts.success->value = false;
             return;
          }
@@ -1385,10 +1384,10 @@ void C_CopyToAs_Stack::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
       }
       else {
-         commandLog(this->uroboros, L"Failed to copy ", getCCName(oldPath));
+         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }

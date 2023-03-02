@@ -105,16 +105,14 @@ Arguments::Arguments(const _int argc, _char* const argv[])
                      }
                      break;
                   }
-                  case CHAR_FLAG_GUI: 
-                  case CHAR_FLAG_GUI_UPPER: {
-                     if (!(this->flags & FLAG_GUI)) {
-                        this->flags |= FLAG_GUI;
-                     }
-                     break;
-                  }
                   case CHAR_FLAG_HERE: 
                   case CHAR_FLAG_HERE_UPPER: {
                      here = true;
+                     break;
+                  }
+                  case L'g':
+                  case L'G': {
+                     // temporary backward compatibility
                      break;
                   }
                   default: {

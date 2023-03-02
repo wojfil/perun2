@@ -17,7 +17,6 @@
 #include <thread>
 #include <algorithm>
 #include "../os.h"
-#include "com-print.h"
 #include "../uroboros.h"
 #include "com-core.h"
 #include <sstream>
@@ -28,7 +27,7 @@ namespace uro::comm
 
 void C_PrintSingle::run()
 {
-   print(this->uroboros, this->value->getValue());
+   this->uroboros.logger.print(this->value->getValue());
 }
 
 void C_PrintList::run()
@@ -36,7 +35,7 @@ void C_PrintList::run()
    const _list list = this->value->getValue();
    const _size length = list.size();
    for (_size i = 0; this->uroboros.state == State::s_Running && i < length; i++) {
-      print(this->uroboros, list[i]);
+      this->uroboros.logger.print(list[i]);
    }
 }
 
@@ -47,13 +46,13 @@ void C_PrintDefinition::run()
          this->value->reset();
          break;
       }
-      print(this->uroboros, this->value->getValue());
+      this->uroboros.logger.print(this->value->getValue());
    }
 }
 
 void C_PrintThis::run()
 {
-   print(this->uroboros, this->context.this_->value);
+   this->uroboros.logger.print(this->context.this_->value);
 }
 
 void C_SleepPeriod::run()
@@ -122,7 +121,7 @@ void C_Run::run()
    os_rawTrim(command);
 
    if (command.empty()) {
-      commandLog(this->uroboros, L"Failed to run an empty command");
+      this->uroboros.logger.log(L"Failed to run an empty command");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -132,10 +131,10 @@ void C_Run::run()
    this->uroboros.contexts.success->value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run '", command, L"'");
+      this->uroboros.logger.log(L"Run '", command, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run '", command, L"'");
+      this->uroboros.logger.log(L"Failed to run '", command, L"'");
    }
 
    this->reloadContexts();
@@ -147,7 +146,7 @@ void C_RunWith::run()
    os_rawTrim(base);
 
    if (!this->context->v_exists->value || base.empty()) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -158,10 +157,10 @@ void C_RunWith::run()
    this->uroboros.contexts.success->value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->uroboros.logger.log(L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
    }
 
    this->reloadContexts();
@@ -173,7 +172,7 @@ void C_RunWithWithString::run()
    os_rawTrim(base);
 
    if (!this->context->v_exists->value || base.empty()) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -187,10 +186,10 @@ void C_RunWithWithString::run()
    this->uroboros.contexts.success->value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
+      this->uroboros.logger.log(L"Run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
 
    this->reloadContexts();
@@ -202,7 +201,7 @@ void C_RunWithWith::run()
    os_rawTrim(base);
 
    if (!this->context->v_exists->value || base.empty()) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -217,10 +216,10 @@ void C_RunWithWith::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+         this->uroboros.logger.log(L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+         this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
       }
    }
    else {
@@ -242,10 +241,10 @@ void C_RunWithWith::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", logStream.str());
+         this->uroboros.logger.log(L"Run ", logStream.str());
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", logStream.str());
+         this->uroboros.logger.log(L"Failed to run ", logStream.str());
       }
    }
 
@@ -255,7 +254,7 @@ void C_RunWithWith::run()
 void C_RunWithUroboros2::run()
 {
    if (!this->context->v_exists->value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -266,10 +265,10 @@ void C_RunWithUroboros2::run()
    this->uroboros.contexts.success->value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with Uroboros2");
+      this->uroboros.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Uroboros2");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
    }
 
    this->reloadContexts();
@@ -278,7 +277,7 @@ void C_RunWithUroboros2::run()
 void C_RunWithUroboros2WithString::run()
 {
    if (!this->context->v_exists->value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -292,10 +291,10 @@ void C_RunWithUroboros2WithString::run()
    this->uroboros.contexts.success->value = s;
 
    if (s) {
-      commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with Uroboros2 with '", rawArg, L"'");
+      this->uroboros.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Uroboros2 with '", rawArg, L"'");
    }
    else {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2 with '", rawArg, L"'");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2 with '", rawArg, L"'");
    }
 
    this->reloadContexts();
@@ -304,7 +303,7 @@ void C_RunWithUroboros2WithString::run()
 void C_RunWithUroboros2With::run()
 {
    if (!this->context->v_exists->value) {
-      commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
+      this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
       this->uroboros.contexts.success->value = false;
       return;
    }
@@ -319,10 +318,10 @@ void C_RunWithUroboros2With::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", getCCName(this->context->trimmed), L" with Uroboros2");
+         this->uroboros.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Uroboros2");
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
+         this->uroboros.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Uroboros2");
       }
    }
    else {
@@ -344,10 +343,10 @@ void C_RunWithUroboros2With::run()
       this->uroboros.contexts.success->value = s;
 
       if (s) {
-         commandLog(this->uroboros, L"Run ", logStream.str());
+         this->uroboros.logger.log(L"Run ", logStream.str());
       }
       else {
-         commandLog(this->uroboros, L"Failed to run ", logStream.str());
+         this->uroboros.logger.log(L"Failed to run ", logStream.str());
       }
    }
 

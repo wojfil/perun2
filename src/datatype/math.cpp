@@ -36,7 +36,7 @@ _ndouble Math::randomDouble() {
    return doubleDist(generator);
 }
 
-_nint Math::randomInt(const _nint& limit) {
+_nint Math::randomInt(const _nint limit) {
    std::uniform_int_distribution<_nint> distribution(NINT_ZERO, limit);
    return distribution(generator);
 }

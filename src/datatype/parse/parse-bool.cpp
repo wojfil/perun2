@@ -872,7 +872,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
       const _bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
 
       if (isVar1 && isInteger2) {
-         const _nint& nm = t2.value.num.n.value.i;
+         const _nint nm = t2.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
             throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", toStr(nm),
                L"', write '", t1.getOriginString(uro), L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
@@ -883,7 +883,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
          }
       }
       else if (isInteger1 && isVar2) {
-         const _nint& nm = t1.value.num.n.value.i;
+         const _nint nm = t1.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
             throw SyntaxError(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro),
                L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro), L".year'"), tks.first().line);

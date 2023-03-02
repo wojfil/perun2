@@ -29,7 +29,7 @@ Number::Number()
 Number::Number(const _int val)
    : value(static_cast<_nint>(val)), isDouble(false) { }
 
-Number::Number(const _nint& val)
+Number::Number(const _nint val)
    : value(val), isDouble(false) { }
 
 Number::Number(const _ndouble& val)

@@ -29,7 +29,7 @@ public:
    Math();
    void init();
    _ndouble randomDouble();
-   _nint randomInt(const _nint& limit);
+   _nint randomInt(const _nint limit);
    void setAnyRandomDouble();
 
 private:

@@ -73,7 +73,7 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint& ms, _uro& uro)
+void os_sleepForMs(const _nint ms, _uro& uro)
 {
    if (ms <= NINT_ZERO) {
       return;
@@ -90,7 +90,7 @@ void os_sleepForMs(const _nint& ms, _uro& uro)
    }
 }
 
-void os_rawSleepForMs(const _nint& ms)
+void os_rawSleepForMs(const _nint ms)
 {
    Sleep(ms);
 }

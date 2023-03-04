@@ -19,9 +19,9 @@
 namespace uro::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size start)
-   : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), startId(start),
-      pattern(pat), patternLength(pat.size()) { };
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _str& pref)
+   : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), preffix(pref), 
+      startId(pref.size()), pattern(pat), patternLength(pat.size()), specialStart(hasSpecialStart()) { };
 
 
 void DoubleAsteriskPattern::reset() {
@@ -31,7 +31,6 @@ void DoubleAsteriskPattern::reset() {
    }
 }
 
-
 _bool DoubleAsteriskPattern::hasNext()
 {
    if (first) {
@@ -40,7 +39,9 @@ _bool DoubleAsteriskPattern::hasNext()
    }
 
    while (definition->hasNext() && this->uroboros.state == State::s_Running) {
-      value = definition->getValue();
+      value = this->startId == 0
+         ? definition->getValue()
+         : str(this->preffix, definition->getValue());
 
       if (this->matchesPattern()) {
          this->context->index->value = index;
@@ -52,6 +53,13 @@ _bool DoubleAsteriskPattern::hasNext()
    first = true;
    return false;
 }
+
+_bool DoubleAsteriskPattern::hasSpecialStart() const
+{
+   return patternLength >= 2
+       && pattern[0] == WILDCARD_DOUBLE_ASTERISK 
+       && pattern[1] == OS_SEPARATOR;
+};
 
 _bool DoubleAsteriskPattern::matchesPattern()
 {
@@ -93,13 +101,18 @@ CharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
       return this->charStates[n][m];
    }
 
-   if (n == 0 && m == 0) {
+   if (n == this->startId && m == this->startId) {
       this->charStates[n][m] = CharState::cs_Matches;
       return this->charStates[n][m];
    }
 
-   if (n > 0 && m == 0) {
+   if (n > this->startId && m == this->startId) {
       this->charStates[n][m] = CharState::cs_NotMatches;
+      return this->charStates[n][m];
+   }
+
+   if (n == 0 && m == 2 && this->specialStart) {
+      this->charStates[n][m] = CharState::cs_Matches;
       return this->charStates[n][m];
    }
 
@@ -116,7 +129,12 @@ CharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
       case WILDCARD_DOUBLE_ASTERISK: {
          ans = std::max(ans, this->checkState(n, m - 1));
          if (n > 0) {
-            ans = std::max(ans, this->checkState(n - 1, m));
+            if (m >= 2 && this->pattern[m - 2] == OS_SEPARATOR && m < this->patternLength && this->pattern[m] == OS_SEPARATOR) {
+               ans = std::max(ans, this->checkState(n, m - 2));
+            }
+            else {
+               ans = std::max(ans, this->checkState(n - 1, m));
+            }
          }
          break;
       }

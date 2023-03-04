@@ -19,7 +19,6 @@
 #include <memory>
 
 
-
 namespace uro::gen
 {
 
@@ -43,18 +42,21 @@ enum CharState
 struct DoubleAsteriskPattern : Definition
 {
 public:
-   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size start);
+   DoubleAsteriskPattern() = delete;
+   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _str& pref);
 
    _bool hasNext() override;
    void reset() override;
 
 private:
+   _bool hasSpecialStart() const;
    _bool matchesPattern();
    void clearCharStates();
    CharState checkState(const _size n, const _size m);
 
    const _str pattern;
    const _size patternLength;
+   const _str preffix;
    const _size startId;
    _rallptr definition;
    FileContext* context;
@@ -65,6 +67,8 @@ private:
    std::vector<std::vector<CharState>> charStates;
    _str const* valuePtr = nullptr;
 
+   // is true if the pattern starts with a double asterisk and is followed by a path separator
+   const _bool specialStart;
 };
 
 

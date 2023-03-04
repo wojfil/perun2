@@ -333,7 +333,7 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    }
 
    gen::_rallptr loc = std::make_unique<gen::RecursiveAll>(base, uro, isAbsolute, gen::os::NO_PREFIX);
-   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, uro, finalPattern, start);
+   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, uro, finalPattern, pattern.substr(0, start));
    return true;
 }
 

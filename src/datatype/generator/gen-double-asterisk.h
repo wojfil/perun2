@@ -43,7 +43,7 @@ enum CharState
 struct DoubleAsteriskPattern : Definition
 {
 public:
-   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size dpth, const _size start);
+   DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size start);
 
    _bool hasNext() override;
    void reset() override;
@@ -55,7 +55,6 @@ private:
 
    const _str pattern;
    const _size patternLength;
-   const _size defaultDepth;
    const _size startId;
    _rallptr definition;
    FileContext* context;

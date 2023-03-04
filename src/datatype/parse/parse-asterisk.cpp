@@ -256,8 +256,7 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    };
 
    Mode mode = Mode::m_Normal;
-   _size defaultDepth = 0;
-   _str finalPattern = pattern.substr(0, start);
+   _str finalPattern;
 
    for (const _char& ch : pattern) {
       switch (mode) {
@@ -265,7 +264,6 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
             switch (ch) {
                case OS_SEPARATOR: {
                   finalPattern += ch;
-                  defaultDepth++;
                   break;
                }
                case CHAR_ASTERISK: {
@@ -284,7 +282,6 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
                case OS_SEPARATOR: {
                   finalPattern += gen::WILDCARD_SINGLE_ASTERISK;
                   finalPattern += ch;
-                  defaultDepth++;
                   mode = Mode::m_Normal;
                   break;
                }
@@ -306,7 +303,6 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
                case OS_SEPARATOR: {
                   finalPattern += gen::WILDCARD_DOUBLE_ASTERISK;
                   finalPattern += ch;
-                  defaultDepth++;
                   mode = Mode::m_Normal;
                   break;
                }
@@ -337,7 +333,7 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    }
 
    gen::_rallptr loc = std::make_unique<gen::RecursiveAll>(base, uro, isAbsolute, gen::os::NO_PREFIX);
-   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, uro, finalPattern, defaultDepth, start);
+   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, uro, finalPattern, start);
    return true;
 }
 

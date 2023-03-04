@@ -19,8 +19,8 @@
 namespace uro::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size dpth, const _size start)
-   : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), defaultDepth(dpth), startId(start),
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _size start)
+   : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), startId(start),
       pattern(pat), patternLength(pat.size()) { };
 
 
@@ -44,7 +44,6 @@ _bool DoubleAsteriskPattern::hasNext()
 
       if (this->matchesPattern()) {
          this->context->index->value = index;
-         this->context->v_depth->value -= static_cast<_nint>(defaultDepth);
          index++;
          return true;
       }
@@ -106,34 +105,33 @@ CharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
 
    CharState ans = CharState::cs_NotMatches;
 
-   if (this->pattern[m - 1] == WILDCARD_DOUBLE_ASTERISK) {
-      ans = std::max(ans, this->checkState(n, m - 1));
-      if (n > 0) {
-         ans = std::max(ans, this->checkState(n - 1, m));
+   switch (this->pattern[m - 1]) {
+      case WILDCARD_SINGLE_ASTERISK: {
+         ans = std::max(ans, this->checkState(n, m - 1));
+         if (n > 0 && (*this->valuePtr)[n - 1] != OS_SEPARATOR) {
+            ans = std::max(ans, this->checkState(n - 1, m));
+         }
+         break;
       }
-   }
-   else if (this->pattern[m - 1] == WILDCARD_SINGLE_ASTERISK) { // todo add separator as exception
-      ans = std::max(ans, this->checkState(n, m - 1));
-      if (n > 0) {
-         ans = std::max(ans, this->checkState(n - 1, m));
+      case WILDCARD_DOUBLE_ASTERISK: {
+         ans = std::max(ans, this->checkState(n, m - 1));
+         if (n > 0) {
+            ans = std::max(ans, this->checkState(n - 1, m));
+         }
+         break;
       }
-   }
-
-   if (n > 0 && charsEqualInsensitive(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
-      ans = std::max(ans, this->checkState(n - 1, m - 1));
+      default: {
+         if (n > 0) {
+            if (this->pattern[m - 1] == (*this->valuePtr)[n - 1]) {
+               ans = std::max(ans, this->checkState(n - 1, m - 1));
+            }
+         }
+         break;
+      }
    }
 
    this->charStates[n][m] = ans;
    return this->charStates[n][m];
 }
-
-
-
-
-
-
-
-
-
 
 }

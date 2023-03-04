@@ -70,6 +70,15 @@ _bool _uro::run()
    return false;
 };
 
+void _uro::terminate()
+{
+   this->state = State::s_Exit;
+   if (this->sideProcess.running) {
+      this->sideProcess.running = false;
+      TerminateProcess(this->sideProcess.info.hProcess, 0);
+   }
+}
+
 _bool _uro::preParse()
 {
    try {

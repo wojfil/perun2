@@ -64,6 +64,7 @@ public:
    _uro(const Arguments& args);
    ~_uro() noexcept;
    _bool run();
+   void terminate();
 
    const Arguments& arguments;
    Hashes hashes;

@@ -42,11 +42,7 @@ _int Terminator::HandlerRoutine(_ulong dwCtrlType)
    switch (dwCtrlType) {
       case CTRL_C_EVENT: {
          for (_uro* uro : pointers) {
-            uro->state = State::s_Exit;
-            if (uro->sideProcess.running) {
-               uro->sideProcess.running = false;
-               TerminateProcess(uro->sideProcess.info.hProcess, 0);
-            }
+            uro->terminate();
          }
          return TRUE;
       }

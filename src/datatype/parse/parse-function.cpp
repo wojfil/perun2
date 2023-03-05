@@ -311,7 +311,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       result = std::make_unique<F_EndsWith>(str, str2);
       return true;
    }
-   else if (name == uro.hashes.HASH_FUNC_FIND) {
+   else if (name == uro.hashes.HASH_FUNC_FINDTEXT) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -326,7 +326,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
          functionArgException(0, STRING_STRING, word, uro);
       }
 
-      result = std::make_unique<F_Find>(str_, ctx);
+      result = std::make_unique<F_FindText>(str_, ctx);
       return true;
    }
 

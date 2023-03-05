@@ -138,7 +138,7 @@ public:
    const _hash HASH_FUNC_EXISTINSIDE;
    const _hash HASH_FUNC_STARTSWITH;
    const _hash HASH_FUNC_ENDSWITH;
-   const _hash HASH_FUNC_FIND;
+   const _hash HASH_FUNC_FINDTEXT;
 
    const _hash HASH_FUNC_ABSOLUTE;
    const _hash HASH_FUNC_CEIL;

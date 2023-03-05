@@ -288,7 +288,7 @@ _bool F_EndsWithChar::getValue()
 }
 
 
-_bool F_Find::getValue()
+_bool F_FindText::getValue()
 {
    if (!this->context->v_exists->value || !this->context->v_isfile->value) {
       return false;
@@ -299,7 +299,7 @@ _bool F_Find::getValue()
       return true;
    }
 
-   return os_find(this->context->v_path->value, value);
+   return os_findText(this->context->v_path->value, value);
 }
 
 

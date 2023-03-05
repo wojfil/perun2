@@ -232,10 +232,10 @@ private:
 
 
 
-struct F_Find : Func_1<_str>, Generator<_bool>
+struct F_FindText : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_Find(_genptr<_str>& a1,  FileContext* ctx)
+   F_FindText(_genptr<_str>& a1,  FileContext* ctx)
       : Func_1(a1), context(ctx) { };
    _bool getValue() override;
 

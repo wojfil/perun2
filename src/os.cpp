@@ -1767,7 +1767,7 @@ void os_showWebsite(const _str& url)
    ShellExecuteW(NULL, L"open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-_bool os_find(const _str& path, const _str& value)
+_bool os_findText(const _str& path, const _str& value)
 {
    std::wifstream stream(path.c_str());
    if (!stream) {

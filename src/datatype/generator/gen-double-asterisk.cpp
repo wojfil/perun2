@@ -86,7 +86,7 @@ _size DoubleAsteriskPattern::getMinLength(const _str& pat) const
 
 WildcardCharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
 {
-   if (this->charStates[n][m] >= WildcardCharState::wcs_NotMatches) {
+   if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
       return this->charStates[n][m];
    }
 

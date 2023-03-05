@@ -461,7 +461,7 @@ LC_Default::LC_Default(const _str& pat)
 
 WildcardCharState LC_Default::checkState(const _size n, const _size m)
 {
-   if (this->charStates[n][m] >= WildcardCharState::wcs_NotMatches) {
+   if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
       return this->charStates[n][m];
    }
 

@@ -43,8 +43,18 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
 static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int line, _uro& uro);
 static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro);
+
 static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro);
+static _bool c_createFile(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro);
+static _bool c_createDirectory(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro);
+static _bool c_createFiles(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro);
+static _bool c_createDirectories(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro);
+
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _uro& uro);
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int line,
@@ -63,8 +73,7 @@ static _bool c_runContextfull_simple(_comptr& result, const Token& word, const T
    const Tokens& right, const _int line, _uro& uro);
 static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tokens& left, 
    const Tokens& right, const _int line, _uro& uro);
-
-
+   
 
 static void checkUselessFlags(const Token& word, const _int line,
    const _bool force, const _bool stack, _uro& uro);

@@ -53,6 +53,18 @@ _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
       case Keyword::kw_Create: {
          return c_create(result, word, tks, line, force, stack, uro);
       }
+      case Keyword::kw_CreateFile: {
+         return c_createFile(result, word, tks, line, force, stack, uro);
+      }
+      case Keyword::kw_CreateDirectory: {
+         return c_createDirectory(result, word, tks, line, force, stack, uro);
+      }
+      case Keyword::kw_CreateFiles: {
+         return c_createFiles(result, word, tks, line, force, stack, uro);
+      }
+      case Keyword::kw_CreateDirectories: {
+         return c_createDirectories(result, word, tks, line, force, stack, uro);
+      }
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
       case Keyword::kw_Exit: {
@@ -105,7 +117,7 @@ static void checkFileContextExistence(const _str& commandName, const _int line, 
    }
 }
 
-_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _fcptr& ctx, _comptr& result, _uro& uro)
+static _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _fcptr& ctx, _comptr& result, _uro& uro)
 {
    _genptr<_str> str_;
    if (parse::parse(uro, tks, str_)) {
@@ -128,13 +140,6 @@ _bool parseLooped(const Tokens& tks, _comptr& innerCommand, _fcptr& ctx, _comptr
    return false;
 }
 
-/*_bool parseLooped(const Tokens& tks, _comptr& innerCommand, _comptr& result, _uro& uro)
-{
-   _attrptr attr = std::make_unique<Attribute>(uro);
-   attr->setCoreCommandBase();
-   return parseLooped(tks, innerCommand, result, uro, attr);
-}*/
-
 static void makeCoreCommandContext(_fcptr& result, _uro& uro)
 {
    _attrptr attr = std::make_unique<Attribute>(uro);
@@ -150,10 +155,6 @@ static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, co
       ctx->attribute->setCoreCommandBase();
       return coreCommandSimple(result, word, ctx, true, uro);
    }
-
-   /*_attrptr attr = std::make_unique<Attribute>(uro);
-   attr->setCoreCommandBase();
-   _fcptr ctx = std::make_unique<FileContext>(attr, uro);*/
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, uro);
@@ -505,143 +506,6 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
 
    const Token& f = tks.first();
 
-   if (f.type == Token::t_Word) {
-      Tokens tks2 = tks;
-      tks2.trimLeft();
-      const _hash fk = f.value.word.h;
-
-      if (fk == uro.hashes.HASH_VAR_FILE) {
-         if (tks2.isEmpty()) {
-            checkFileContextExistence(str(word.getOriginString(uro), L" ", f.getOriginString(uro)), line, uro);
-            FileContext* ctx = uro.contexts.getFileContext();
-            ctx->attribute->setCoreCommandBase();
-
-            if (stack) {
-               result = std::make_unique<C_CreateFile_Stack>(ctx, uro);
-            }
-            else {
-               result = std::make_unique<C_CreateFile>(force, ctx, uro);
-            }
-
-            return true;
-         }
-
-         _genptr<_str> str_;
-         if (parse::parse(uro, tks2, str_)) {
-            if (stack) {
-               result = std::make_unique<C_CreateFile_String_Stack>(str_, uro);
-            }
-            else {
-               result = std::make_unique<C_CreateFile_String>(str_, force, uro);
-            }
-
-            return true;
-         }
-
-         throw SyntaxError(str(L"the argument of command '", word.getOriginString(uro), L" ",
-            f.getOriginString(uro), L"' cannot be resolved to a string"), line);
-      }
-      else if (fk == uro.hashes.HASH_VAR_FILES) {
-         if (tks2.isEmpty()) {
-            throw SyntaxError(str(L"command '", word.getOriginString(uro), L" ",
-               f.getOriginString(uro), L"' needs an argument"), line);
-         }
-
-         _genptr<_str> str_;
-         if (parse::parse(uro, tks2, str_)) {
-            const _str sub = (f.getOriginString(uro)).substr(0, 4);
-            throw SyntaxError(str(L"write '", word.getOriginString(uro), L" ", sub, L"' instead of '",
-               word.getOriginString(uro), L" ", f.getOriginString(uro), L"'"), line);
-         }
-
-         _defptr def;
-         if (parse::parse(uro, tks2, def)) {
-            throw SyntaxError(str(L"command '", word.getOriginString(uro), L" ", f.getOriginString(uro),
-               L"' cannot be called with a definition argument"), line);
-         }
-
-         _genptr<_list> list;
-         if (parse::parse(uro, tks2, list)) {
-            if (stack) {
-               result = std::make_unique<C_CreateFiles_List_Stack>(list, uro);
-            }
-            else {
-               result = std::make_unique<C_CreateFiles_List>(list, force, uro);
-            }
-
-            return true;
-         }
-
-         throw SyntaxError(str(L"wrong syntax of command '",
-            word.getOriginString(uro), L" ", f.getOriginString(uro), L"'"), line);
-      }
-      else if (fk == uro.hashes.HASH_VAR_DIRECTORY) {
-         if (tks2.isEmpty()) {
-            checkFileContextExistence(str(word.getOriginString(uro), L" ", f.getOriginString(uro)), line, uro);
-            FileContext* ctx = uro.contexts.getFileContext();
-            ctx->attribute->setCoreCommandBase();
-
-            if (stack) {
-               result = std::make_unique<C_CreateDirectory_Stack>(ctx, uro);
-            }
-            else {
-               result = std::make_unique<C_CreateDirectory>(force, ctx, uro);
-            }
-
-            return true;
-         }
-
-         _genptr<_str> str_;
-         if (parse::parse(uro, tks2, str_)) {
-            if (stack) {
-               result = std::make_unique<C_CreateDirectory_String_Stack>(str_, uro);
-            }
-            else {
-               result = std::make_unique<C_CreateDirectory_String>(str_, force, uro);
-            }
-
-            return true;
-         }
-
-         throw SyntaxError(str(L"argument of command '", word.getOriginString(uro), L" ",
-            f.getOriginString(uro), L"' cannot be resolved to a string"), line);
-      }
-      else if (fk == uro.hashes.HASH_VAR_DIRECTORIES) {
-         if (tks2.isEmpty()) {
-            throw SyntaxError(str(L"command '", word.getOriginString(uro), L" ",
-               f.getOriginString(uro), L"' needs an argument"), line);
-         }
-
-         _genptr<_str> str_;
-         if (parse::parse(uro, tks2, str_)) {
-            const _str sub = str((f.getOriginString(uro)).substr(0, 8), L"y");
-            throw SyntaxError(str(L"write '", word.getOriginString(uro), L" ", sub,
-               L"' instead of '", word.getOriginString(uro), L" ", f.getOriginString(uro), L"'"), line);
-         }
-
-         _defptr def;
-         if (parse::parse(uro, tks2, def)) {
-            throw SyntaxError(str(L"command '", word.getOriginString(uro), L" ",
-               f.getOriginString(uro), L"' cannot be called with a definition argument"), line);
-         }
-
-         _genptr<_list> list;
-         if (parse::parse(uro, tks2, list)) {
-            if (stack) {
-               result = std::make_unique<C_CreateDirectories_List_Stack>(list, uro);
-            }
-            else {
-               result = std::make_unique<C_CreateDirectories_List>(list, force, uro);
-            }
-
-            return true;
-         }
-
-         throw SyntaxError(str(L"wrong syntax of command '",
-            word.getOriginString(uro), L" ", f.getOriginString(uro), L"'"), line);
-      }
-   }
-
    _genptr<_str> str_;
    if (parse::parse(uro, tks, str_)) {
       if (stack) {
@@ -654,12 +518,6 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
       return true;
    }
 
-   _defptr def;
-   if (parse::parse(uro, tks, def)) {
-      throw SyntaxError(str(L"command '", word.getOriginString(uro),
-         L"' cannot be called with a definition argument"), line);
-   }
-
    _genptr<_list> list;
    if (parse::parse(uro, tks, list)) {
       if (stack) {
@@ -667,6 +525,169 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
       }
       else {
          result = std::make_unique<C_Create_List>(list, force, uro);
+      }
+
+      return true;
+   }
+
+   commandSyntaxError(word.getOriginString(uro), line);
+   return false;
+}
+
+
+static _bool c_createFile(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro)
+{
+   if (tks.isEmpty()) {
+      checkFileContextExistence(word.getOriginString(uro), line, uro);
+      FileContext* ctx = uro.contexts.getFileContext();
+      ctx->attribute->setCoreCommandBase();
+
+      if (stack) {
+         result = std::make_unique<C_CreateFile_Stack>(ctx, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateFile>(force, ctx, uro);
+      }
+
+      return true;
+   }
+
+   _genptr<_str> str_;
+   if (parse::parse(uro, tks, str_)) {
+      if (stack) {
+         result = std::make_unique<C_CreateFile_String_Stack>(str_, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateFile_String>(str_, force, uro);
+      }
+
+      return true;
+   }
+
+   throw SyntaxError(str(L"the argument of command '", word.getOriginString(uro), L"' cannot be resolved to a string"), line);
+}
+
+static _bool c_createDirectory(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro)
+{
+   if (tks.isEmpty()) {
+      checkFileContextExistence(word.getOriginString(uro), line, uro);
+      FileContext* ctx = uro.contexts.getFileContext();
+      ctx->attribute->setCoreCommandBase();
+
+      if (stack) {
+         result = std::make_unique<C_CreateDirectory_Stack>(ctx, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateDirectory>(force, ctx, uro);
+      }
+
+      return true;
+   }
+
+   _genptr<_str> str_;
+   if (parse::parse(uro, tks, str_)) {
+      if (stack) {
+         result = std::make_unique<C_CreateDirectory_String_Stack>(str_, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateDirectory_String>(str_, force, uro);
+      }
+
+      return true;
+   }
+
+   throw SyntaxError(str(L"argument of command '", word.getOriginString(uro), L"' cannot be resolved to a string"), line);
+}
+
+static _bool c_createFiles(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro)
+{
+   if (tks.isEmpty()) {
+      checkFileContextExistence(word.getOriginString(uro), line, uro);
+      FileContext* ctx = uro.contexts.getFileContext();
+      ctx->attribute->setCoreCommandBase();
+
+      if (stack) {
+         result = std::make_unique<C_CreateFile_Stack>(ctx, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateFile>(force, ctx, uro);
+      }
+
+      return true;
+   }
+
+   const Token& f = tks.first();
+
+   _genptr<_str> str_;
+   if (parse::parse(uro, tks, str_)) {
+      if (stack) {
+         result = std::make_unique<C_CreateFile_String_Stack>(str_, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateFile_String>(str_, force, uro);
+      }
+
+      return true;
+   }
+
+   _genptr<_list> list;
+   if (parse::parse(uro, tks, list)) {
+      if (stack) {
+         result = std::make_unique<C_CreateFiles_List_Stack>(list, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateFiles_List>(list, force, uro);
+      }
+
+      return true;
+   }
+
+   commandSyntaxError(word.getOriginString(uro), line);
+   return false;
+}
+
+static _bool c_createDirectories(_comptr& result, const Token& word, const Tokens& tks, const _int line,
+   const _bool force, const _bool stack, _uro& uro)
+{
+   if (tks.isEmpty()) {
+      checkFileContextExistence(word.getOriginString(uro), line, uro);
+      FileContext* ctx = uro.contexts.getFileContext();
+      ctx->attribute->setCoreCommandBase();
+
+      if (stack) {
+         result = std::make_unique<C_CreateDirectory_Stack>(ctx, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateDirectory>(force, ctx, uro);
+      }
+
+      return true;
+   }
+
+   const Token& f = tks.first();
+
+   _genptr<_str> str_;
+   if (parse::parse(uro, tks, str_)) {
+      if (stack) {
+         result = std::make_unique<C_CreateDirectory_String_Stack>(str_, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateDirectory_String>(str_, force, uro);
+      }
+
+      return true;
+   }
+
+   _genptr<_list> list;
+   if (parse::parse(uro, tks, list)) {
+      if (stack) {
+         result = std::make_unique<C_CreateDirectories_List_Stack>(list, uro);
+      }
+      else {
+         result = std::make_unique<C_CreateDirectories_List>(list, force, uro);
       }
 
       return true;

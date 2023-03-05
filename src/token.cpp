@@ -113,6 +113,10 @@ _bool Token::isCommandKeyword() const
    switch (value.keyword.k) {
       case Keyword::kw_Copy:
       case Keyword::kw_Create:
+      case Keyword::kw_CreateFile:
+      case Keyword::kw_CreateDirectory:
+      case Keyword::kw_CreateFiles:
+      case Keyword::kw_CreateDirectories:
       case Keyword::kw_Delete:
       case Keyword::kw_Drop:
       case Keyword::kw_Hide:

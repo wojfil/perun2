@@ -30,6 +30,10 @@ enum Keyword
       // core commands:
    kw_Copy = 0,
    kw_Create,
+   kw_CreateFile,
+   kw_CreateDirectory,
+   kw_CreateFiles,
+   kw_CreateDirectories,
    kw_Delete,
    kw_Drop,
    kw_Hide,

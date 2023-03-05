@@ -104,8 +104,6 @@ public:
    const _hash HASH_VAR_FILES;
    const _hash HASH_VAR_RECURSIVEFILES;
    const _hash HASH_VAR_RECURSIVEDIRECTORIES;
-   const _hash HASH_VAR_FILE;
-   const _hash HASH_VAR_DIRECTORY;
 
    const _hash HASH_PER_YEAR;
    const _hash HASH_PER_MONTH;
@@ -218,6 +216,10 @@ public:
 
    const _hash HASH_KW_COPY;
    const _hash HASH_KW_CREATE;
+   const _hash HASH_KW_CREATEFILE;
+   const _hash HASH_KW_CREATEDIRECTORY;
+   const _hash HASH_KW_CREATEFILES;
+   const _hash HASH_KW_CREATEDIRECTORIES;
    const _hash HASH_KW_DELETE;
    const _hash HASH_KW_DROP;
    const _hash HASH_KW_HIDE;

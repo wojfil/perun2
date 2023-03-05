@@ -24,6 +24,10 @@ KeywordsData::KeywordsData(_uro& uro) : KEYWORDS( {
    // core commands:
    { uro.hashes.HASH_KW_COPY, Keyword::kw_Copy },
    { uro.hashes.HASH_KW_CREATE, Keyword::kw_Create },
+   { uro.hashes.HASH_KW_CREATEFILE, Keyword::kw_CreateFile },
+   { uro.hashes.HASH_KW_CREATEDIRECTORY, Keyword::kw_CreateDirectory },
+   { uro.hashes.HASH_KW_CREATEFILES, Keyword::kw_CreateFiles },
+   { uro.hashes.HASH_KW_CREATEDIRECTORIES, Keyword::kw_CreateDirectories },
    { uro.hashes.HASH_KW_DELETE, Keyword::kw_Delete },
    { uro.hashes.HASH_KW_DROP, Keyword::kw_Drop },
    { uro.hashes.HASH_KW_HIDE, Keyword::kw_Hide },

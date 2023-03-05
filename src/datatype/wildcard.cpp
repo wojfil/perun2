@@ -13,6 +13,7 @@
 */
 
 #include "wildcard.h"
+#include "chars.h"
 
 
 namespace uro
@@ -62,5 +63,55 @@ void WildcardComparer::clearCharStates()
    }
 }
 
+
+SimpleWildcardComparer::SimpleWildcardComparer(const _str& pat)
+   : WildcardComparer(pat) { };
+
+
+_size SimpleWildcardComparer::getMinLength(const _str& pat) const
+{
+   _size result = 0;
+
+   for (const _char& ch : pat) {
+      if (ch != CHAR_ASTERISK) {
+         result++;
+      }
+   }
+
+   return result;
+}
+
+
+WildcardCharState SimpleWildcardComparer::checkState(const _size n, const _size m)
+{
+   if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
+      return this->charStates[n][m];
+   }
+
+   if (n == 0 && m == 0) {
+      this->charStates[n][m] = WildcardCharState::wcs_Matches;
+      return this->charStates[n][m];
+   }
+
+   if (n > 0 && m == 0) {
+      this->charStates[n][m] = WildcardCharState::wcs_NotMatches;
+      return this->charStates[n][m];
+   }
+
+   WildcardCharState ans = WildcardCharState::wcs_NotMatches;
+
+   if (this->pattern[m - 1] == CHAR_ASTERISK) {
+      ans = std::max(ans, this->checkState(n, m - 1));
+      if (n > 0) {
+         ans = std::max(ans, this->checkState(n - 1, m));
+      }
+   }
+   else if (n > 0 && (this->pattern[m - 1] == (*this->valuePtr)[n - 1])) {
+      ans = std::max(ans, this->checkState(n - 1, m - 1));
+   }
+
+   this->charStates[n][m] = ans;
+   return this->charStates[n][m];
+}
 
 }

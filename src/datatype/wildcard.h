@@ -51,6 +51,20 @@ protected:
    std::vector<std::vector<WildcardCharState>> charStates;
 };
 
+
+// this comparer uses only one wildcard: asterisk *
+struct SimpleWildcardComparer : WildcardComparer
+{
+public:
+   SimpleWildcardComparer() = delete;
+   SimpleWildcardComparer(const _str& pat);
+
+protected:
+   _size getMinLength(const _str& pat) const override;
+   WildcardCharState checkState(const _size n, const _size m) override;
+};
+
+
 }
 
 #endif // WILDCARD_H_INCLUDED

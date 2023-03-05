@@ -59,6 +59,25 @@ void OsDefinitionPlain::reset()
    }
 }
 
+_bool OsDefinitionPlain::isExceptional(const _str& patt)
+{
+   const _size len = patt.size();
+
+   for (_size i = 1; i < len; i++) {
+      switch (patt[i]) {
+         case CHAR_DOT:
+         case CHAR_ASTERISK: {
+            break;
+         }
+         default: {
+            return false;
+         }
+      }
+   }
+
+   return true;
+}
+
 void OsDefinitionRecursive::reset()
 {
    if (!first) {
@@ -94,8 +113,9 @@ _bool All::hasNext()
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if ((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
+            if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
                || (!isDir && os_extension(value) != OS_UROEXT))
+               && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
                index++;
@@ -118,8 +138,9 @@ _bool All::hasNext()
       if (!os_isBrowsePath(value)) {
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if ((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
+         if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
             || (!isDir && os_extension(value) != OS_UROEXT))
+            && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
             index++;
@@ -156,7 +177,9 @@ _bool Files::hasNext()
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
+            if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT))
+               && (!this->exceptional || this->comparer.matches(this->value))) 
+            {
                this->context.index->value = index;
                index++;
 
@@ -178,7 +201,9 @@ _bool Files::hasNext()
       if (!os_isBrowsePath(value)) {
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if (!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT)) {
+         if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT))
+            && (!this->exceptional || this->comparer.matches(this->value))) 
+         {
             this->context.index->value = index;
             index++;
 
@@ -214,7 +239,9 @@ _bool Directories::hasNext()
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if (isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value))) {
+            if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
+               && (!this->exceptional || this->comparer.matches(this->value)))
+            {
                this->context.index->value = index;
                index++;
 
@@ -236,7 +263,9 @@ _bool Directories::hasNext()
       if (!os_isBrowsePath(value)) {
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if (isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value))) {
+         if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
+            && (!this->exceptional || this->comparer.matches(this->value))) 
+         {
             this->context.index->value = index;
             index++;
 

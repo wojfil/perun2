@@ -17,6 +17,7 @@
 
 #include "../datatype.h"
 #include "../patterns.h"
+#include "../wildcard.h"
 #include "../../os.h"
 #include "../../context.h"
 #include <windows.h>
@@ -47,8 +48,6 @@ namespace os
 }
 
 
-
-
 struct OsDefinition : _def
 {
 public:
@@ -77,13 +76,25 @@ struct OsDefinitionPlain : OsDefinition
 public:
    OsDefinitionPlain() = delete;
    OsDefinitionPlain(P_GEN_OS_ARGS_EXT)
-      : OsDefinition(P_GEN_OS_ARGS_2), pattern(patt) { };
+      : OsDefinition(P_GEN_OS_ARGS_2), 
+        pattern(isExceptional(patt) ? gen::os::DEFAULT_PATTERN : patt),
+        exceptional(isExceptional(patt)),
+        comparer(patt.substr(1)) { };
 
    void reset() override;
 
 protected:
    HANDLE handle;
    const _str pattern;
+
+   // Windows API has some trouble with handling patterns that consist of only dots and asterisks
+   // so, in this rare case, let us generate all files and directories with *
+   // and then filter them with SimpleWildcardComparer
+   const _bool exceptional;
+   SimpleWildcardComparer comparer;
+
+private:
+   _bool isExceptional(const _str& patt);
 };
 
 

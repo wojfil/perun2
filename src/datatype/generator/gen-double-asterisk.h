@@ -16,6 +16,7 @@
 #define GEN_DOUBLE_ASTERISK_H_INCLUDED
 
 #include "gen-os.h"
+#include "../wildcard.h"
 #include <memory>
 
 
@@ -30,16 +31,8 @@ inline constexpr _char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
 
 typedef std::unique_ptr<RecursiveAll> _rallptr;
 
-enum CharState
-{
-   // these numbers are important
-   cs_Unknown = -1,
-   cs_NotMatches = 0,
-   cs_Matches = 1
-};
 
-
-struct DoubleAsteriskPattern : Definition
+struct DoubleAsteriskPattern : Definition, WildcardComparer
 {
 public:
    DoubleAsteriskPattern() = delete;
@@ -48,14 +41,12 @@ public:
    _bool hasNext() override;
    void reset() override;
 
-private:
+protected:
    _bool hasSpecialStart() const;
-   _bool matchesPattern();
-   void clearCharStates();
-   CharState checkState(const _size n, const _size m);
+   _size getMinLength(const _str& pat) const override;
+   WildcardCharState checkState(const _size n, const _size m) override;
 
-   const _str pattern;
-   const _size patternLength;
+private:
    const _str preffix;
    const _size startId;
    _rallptr definition;
@@ -63,9 +54,6 @@ private:
    _uro& uroboros;
    _bool first = true;
    _num index = NINT_ZERO;
-
-   std::vector<std::vector<CharState>> charStates;
-   _str const* valuePtr = nullptr;
 
    // is true if the pattern starts with a double asterisk and is followed by a path separator
    const _bool specialStart;

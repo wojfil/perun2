@@ -34,29 +34,22 @@ enum WildcardCharState
 struct WildcardComparer
 {
 public:
-    WildcardComparer(const _str& pat);
-
-
-   void clearCharStates();
-
-    virtual _size getMinLength(const _str& pat) const;
-    virtual _bool matches(const _str& value);
+   WildcardComparer() = delete;
+   WildcardComparer(const _str& pat);
+   _bool matches(const _str& val);
 
 protected:
+   void clearCharStates();
 
+   virtual _size getMinLength(const _str& pat) const = 0;
+   virtual WildcardCharState checkState(const _size n, const _size m) = 0;
 
    const _str pattern;
-   const _size patternLen;
-   const _size minLength;
-
+   const _size patternLength;
+   _size minLength = 0;
    _str const* valuePtr = nullptr;
    std::vector<std::vector<WildcardCharState>> charStates;
-
-
 };
-
-
-
 
 }
 

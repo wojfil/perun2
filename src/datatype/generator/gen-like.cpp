@@ -447,57 +447,35 @@ _bool Like::getValue()
 
 
 LC_Default::LC_Default(const _str& pat, const std::unordered_map<_size, LikeSet>& cs)
-   : pattern(pat), charSets(cs), patternLen(pat.size()), minLength(getMinLength(pat)) { };
+   : WildcardComparer(pat), charSets(cs) 
+{ 
+   minLength = this->getMinLength(pat);
+};
 
 LC_Default::LC_Default(const _str& pat)
-   : pattern(pat), charSets({}), patternLen(pat.size()), minLength(getMinLength(pat)) { };
+   : WildcardComparer(pat) 
+{ 
+   minLength = this->getMinLength(pat);
+};
 
 
-void LC_Default::clearCharStates()
+WildcardCharState LC_Default::checkState(const _size n, const _size m)
 {
-   if (this->charStates.empty()) {
-      this->charStates.emplace_back(this->patternLen + 1, LikeCharState::lcs_Unknown);
-   }
-
-   const _size prevSize = this->charStates.size() - 1;
-   const _size nextSize = (*this->valuePtr).size();
-
-   if (nextSize > prevSize) {
-      this->charStates.reserve(nextSize + 1);
-
-      for (_size i = 0; i <= prevSize; i++) {
-         std::fill(this->charStates[i].begin(), this->charStates[i].end(), LikeCharState::lcs_Unknown);
-      }
-
-      while (this->charStates.size() < nextSize + 1) {
-         this->charStates.emplace_back(this->patternLen + 1, LikeCharState::lcs_Unknown);
-      }
-   }
-   else {
-      for (_size i = 0; i <= nextSize; i++) {
-         std::fill(this->charStates[i].begin(), this->charStates[i].end(), LikeCharState::lcs_Unknown);
-      }
-   }
-}
-
-
-LikeCharState LC_Default::checkState(const _size n, const _size m)
-{
-   if (this->charStates[n][m] >= LikeCharState::lcs_NotMatches) {
+   if (this->charStates[n][m] >= WildcardCharState::wcs_NotMatches) {
       return this->charStates[n][m];
    }
 
    if (n == 0 && m == 0) {
-      this->charStates[n][m] = LikeCharState::lcs_Matches;
+      this->charStates[n][m] = WildcardCharState::wcs_Matches;
       return this->charStates[n][m];
    }
 
    if (n > 0 && m == 0) {
-      this->charStates[n][m] = LikeCharState::lcs_NotMatches;
+      this->charStates[n][m] = WildcardCharState::wcs_NotMatches;
       return this->charStates[n][m];
    }
 
-   LikeCharState ans = LikeCharState::lcs_NotMatches;
+   WildcardCharState ans = WildcardCharState::wcs_NotMatches;
 
    if (this->pattern[m - 1] == WILDCARD_MULTIPLE_CHARS) {
       ans = std::max(ans, this->checkState(n, m - 1));
@@ -540,7 +518,7 @@ LikeCharState LC_Default::checkState(const _size n, const _size m)
 }
 
 
-_size LC_Default::getMinLength(const _str& pat)
+_size LC_Default::getMinLength(const _str& pat) const
 {
    _size result = 0;
 
@@ -556,13 +534,7 @@ _size LC_Default::getMinLength(const _str& pat)
 
 _bool LC_Default::compareToPattern(const _str& value)
 {
-   if (value.size() < this->minLength) {
-      return false;
-   }
-
-   this->valuePtr = &value;
-   this->clearCharStates();
-   return this->checkState(value.size(), this->patternLen) == LikeCharState::lcs_Matches;
+   return this->matches(value);
 }
 
 

@@ -20,8 +20,11 @@ namespace uro::gen
 {
 
 DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _str& pref)
-   : definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), preffix(pref), 
-      startId(pref.size()), pattern(pat), patternLength(pat.size()), specialStart(hasSpecialStart()) { };
+   : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), preffix(pref), 
+      startId(pref.size()), specialStart(hasSpecialStart()) 
+{   
+   minLength = this->getMinLength(pat);
+};
 
 
 void DoubleAsteriskPattern::reset() {
@@ -43,7 +46,7 @@ _bool DoubleAsteriskPattern::hasNext()
          ? definition->getValue()
          : str(this->preffix, definition->getValue());
 
-      if (this->matchesPattern()) {
+      if (this->matches(value)) {
          this->context->index->value = index;
          index++;
          return true;
@@ -61,62 +64,48 @@ _bool DoubleAsteriskPattern::hasSpecialStart() const
        && pattern[1] == OS_SEPARATOR;
 };
 
-_bool DoubleAsteriskPattern::matchesPattern()
+_size DoubleAsteriskPattern::getMinLength(const _str& pat) const
 {
-   this->valuePtr = &value;
-   this->clearCharStates();
-   return this->checkState(value.size(), this->patternLength) == CharState::cs_Matches;
+   _size result = 0;
+
+   for (const _char& ch : pat) {
+      switch (ch) {
+         case WILDCARD_SINGLE_ASTERISK:
+         case WILDCARD_DOUBLE_ASTERISK: {
+            break;
+         }
+         default: {
+            result++;
+            break;
+         }
+      }
+   }
+
+   return result;
 }
 
-void DoubleAsteriskPattern::clearCharStates()
+WildcardCharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
 {
-   if (this->charStates.empty()) {
-      this->charStates.emplace_back(this->patternLength + 1, CharState::cs_Unknown);
-   }
-
-   const _size prevSize = this->charStates.size() - 1;
-   const _size nextSize = (*this->valuePtr).size();
-
-   if (nextSize > prevSize) {
-      this->charStates.reserve(nextSize + 1);
-
-      for (_size i = 0; i <= prevSize; i++) {
-         std::fill(this->charStates[i].begin(), this->charStates[i].end(), CharState::cs_Unknown);
-      }
-
-      while (this->charStates.size() < nextSize + 1) {
-         this->charStates.emplace_back(this->patternLength + 1, CharState::cs_Unknown);
-      }
-   }
-   else {
-      for (_size i = 0; i <= nextSize; i++) {
-         std::fill(this->charStates[i].begin(), this->charStates[i].end(), CharState::cs_Unknown);
-      }
-   }
-}
-
-CharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
-{
-   if (this->charStates[n][m] >= CharState::cs_NotMatches) {
+   if (this->charStates[n][m] >= WildcardCharState::wcs_NotMatches) {
       return this->charStates[n][m];
    }
 
    if (n == this->startId && m == this->startId) {
-      this->charStates[n][m] = CharState::cs_Matches;
+      this->charStates[n][m] = WildcardCharState::wcs_Matches;
       return this->charStates[n][m];
    }
 
    if (n > this->startId && m == this->startId) {
-      this->charStates[n][m] = CharState::cs_NotMatches;
+      this->charStates[n][m] = WildcardCharState::wcs_NotMatches;
       return this->charStates[n][m];
    }
 
    if (n == 0 && m == 2 && this->specialStart) {
-      this->charStates[n][m] = CharState::cs_Matches;
+      this->charStates[n][m] = WildcardCharState::wcs_Matches;
       return this->charStates[n][m];
    }
 
-   CharState ans = CharState::cs_NotMatches;
+   WildcardCharState ans = WildcardCharState::wcs_NotMatches;
 
    switch (this->pattern[m - 1]) {
       case WILDCARD_SINGLE_ASTERISK: {

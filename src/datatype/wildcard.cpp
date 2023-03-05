@@ -20,13 +20,25 @@ namespace uro
 
 
 WildcardComparer::WildcardComparer(const _str& pat)
-   : pattern(pat), patternLen(pat.size()), minLength(this->getMinLength(pat)) { };
+   : pattern(pat), patternLength(pat.size()) { };
+
+
+_bool WildcardComparer::matches(const _str& val)
+{
+   if (val.size() < this->minLength) {
+      return false;
+   }
+
+   this->valuePtr = &val;
+   this->clearCharStates();
+   return this->checkState(val.size(), this->patternLength) == WildcardCharState::wcs_Matches;
+}
 
 
 void WildcardComparer::clearCharStates()
 {
    if (this->charStates.empty()) {
-      this->charStates.emplace_back(this->patternLen + 1, WildcardCharState::wcs_Unknown);
+      this->charStates.emplace_back(this->patternLength + 1, WildcardCharState::wcs_Unknown);
    }
 
    const _size prevSize = this->charStates.size() - 1;
@@ -40,7 +52,7 @@ void WildcardComparer::clearCharStates()
       }
 
       while (this->charStates.size() < nextSize + 1) {
-         this->charStates.emplace_back(this->patternLen + 1, WildcardCharState::wcs_Unknown);
+         this->charStates.emplace_back(this->patternLength + 1, WildcardCharState::wcs_Unknown);
       }
    }
    else {
@@ -51,7 +63,4 @@ void WildcardComparer::clearCharStates()
 }
 
 
-
 }
-
-

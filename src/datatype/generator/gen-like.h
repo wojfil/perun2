@@ -16,6 +16,7 @@
 #define GEN_LIKE_H
 
 #include "../datatype.h"
+#include "../wildcard.h"
 #include "../../hash.h"
 #include <unordered_set>
 #include <unordered_map>
@@ -96,17 +97,8 @@ private:
 };
 
 
-enum LikeCharState
-{
-   // these numbers are important
-   lcs_Unknown = -1,
-   lcs_NotMatches = 0,
-   lcs_Matches = 1
-};
-
-
 //  %exa[m-v]__pl_e%            complex pattern like this
-struct LC_Default : LikeComparer
+struct LC_Default : LikeComparer, WildcardComparer
 {
 public:
    LC_Default() = delete;
@@ -114,17 +106,12 @@ public:
    LC_Default(const _str& pat, const std::unordered_map<_size, LikeSet>& cs);
    _bool compareToPattern(const _str& value) override;
 
-private:
-   void clearCharStates();
-   LikeCharState checkState(const _size n, const _size m);
-   _size getMinLength(const _str& pat);
+protected:
+   WildcardCharState checkState(const _size n, const _size m) override;
+   _size getMinLength(const _str& pat) const override;
 
-   const _str pattern;
-   const _size patternLen;
-   const _size minLength;
+private:
    const std::unordered_map<_size, LikeSet> charSets;
-   _str const* valuePtr = nullptr;
-   std::vector<std::vector<LikeCharState>> charStates;
 };
 
 

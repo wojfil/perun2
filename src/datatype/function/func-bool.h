@@ -23,11 +23,11 @@ namespace uro::func
 {
 
 
-struct F_Any : Generator<_bool>
+struct F_AnyInside : Generator<_bool>
 {
 public:
-   F_Any() = delete;
-   F_Any(_defptr& def, _lcptr& lctx, FileContext* fctx)
+   F_AnyInside() = delete;
+   F_AnyInside(_defptr& def, _lcptr& lctx, FileContext* fctx)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx) { };
 
    _bool getValue() override;
@@ -147,23 +147,23 @@ public:
 };
 
 
-struct F_Exists : Func_1<_str>, Generator<_bool>
+struct F_ExistsInside : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_Exists(_genptr<_str>& a1, LocationContext* lctx, FileContext* fctx)
+   F_ExistsInside(_genptr<_str>& a1, LocationContext* lctx, FileContext* fctx)
       : Func_1(a1), locContext(lctx), fileContext(fctx) { };
    _bool getValue() override;
 
 private:
-   _lcptr locContext;
+   LocationContext* locContext;
    FileContext* fileContext;
 };
 
 
-struct F_Exist: Func_1<_list>, Generator<_bool>
+struct F_ExistInside: Func_1<_list>, Generator<_bool>
 {
 public:
-   F_Exist(_genptr<_list>& a1, LocationContext* lctx, FileContext* fctx)
+   F_ExistInside(_genptr<_list>& a1, LocationContext* lctx, FileContext* fctx)
       : Func_1(a1), locContext(lctx), fileContext(fctx) { };
    _bool getValue() override;
 

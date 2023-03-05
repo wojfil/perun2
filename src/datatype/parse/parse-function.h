@@ -29,7 +29,6 @@ namespace uro::func
 // enables variety of precise error messages
 
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
-static _bool createThisReference(_uro& uro);
 
 _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
 _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, _uro& uro);

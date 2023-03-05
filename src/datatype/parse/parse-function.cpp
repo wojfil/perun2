@@ -57,7 +57,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       return simpleBoolFunction(result, args[0], word, uro);
    }
-   else if (name == uro.hashes.HASH_FUNC_EXIST) {
+   else if (name == uro.hashes.HASH_FUNC_EXISTINSIDE) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -70,10 +70,10 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _genptr<_list> list;
       if (!parse::parse(uro, args[0], list)) {
-         functionArgException(0, STRING_LIST, word, uro);
+         functionArgException(1, STRING_LIST, word, uro);
       }
 
-      result = std::make_unique<F_Exist>(list, lctx, fctx);
+      result = std::make_unique<F_ExistInside>(list, lctx, fctx);
       return true;
    }
    else if (name == uro.hashes.HASH_FUNC_ANYINSIDE) {
@@ -91,11 +91,11 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
-         functionArgException(0, STRING_DEFINITION, word, uro);
+         functionArgException(1, STRING_DEFINITION, word, uro);
       }
 
       uro.contexts.retreatLocationContext();
-      result = std::make_unique<F_Any>(def, lctx, fctx);
+      result = std::make_unique<F_AnyInside>(def, lctx, fctx);
       return true;
    }
    else if (name == uro.hashes.HASH_FUNC_CONTAINS) {
@@ -169,7 +169,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
-   else if (name == uro.hashes.HASH_VAR_EXISTS) {
+   else if (name == uro.hashes.HASH_FUNC_EXISTSINSIDE) {
       if (len != 1) {
          functionArgNumberException(len, word, uro);
       }
@@ -182,10 +182,10 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             
       _genptr<_str> str_;
       if (!parse::parse(uro, args[0], str_)) {
-         functionArgException(0, STRING_STRING, word, uro);
+         functionArgException(1, STRING_STRING, word, uro);
       }
 
-      result = std::make_unique<F_Exists>(str_, lctx, fctx);
+      result = std::make_unique<F_ExistsInside>(str_, lctx, fctx);
       return true;
    }
    else if (name == uro.hashes.HASH_FUNC_STARTSWITH) {
@@ -462,7 +462,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
       }
 
       uro.contexts.retreatLocationContext();
-      result = std::make_unique<F_Count>(def, lctx, fctx, uro);
+      result = std::make_unique<F_CountInside>(def, lctx, fctx, uro);
       return true;
    }
    else if (name == uro.hashes.HASH_FUNC_POWER) {

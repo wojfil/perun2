@@ -132,7 +132,6 @@ public:
    const _hash HASH_FUNC_ISBINARY;
    const _hash HASH_FUNC_ISHEX;
 
-   const _hash HASH_FUNC_EXIST;
    const _hash HASH_FUNC_ANYINSIDE;
    const _hash HASH_FUNC_CONTAINS;
    const _hash HASH_FUNC_EXISTSINSIDE;
@@ -160,7 +159,6 @@ public:
    const _hash HASH_FUNC_FROMHEX;
    const _hash HASH_FUNC_SIZE;
    const _hash HASH_FUNC_NUMBER;
-   const _hash HASH_FUNC_COUNT;
    const _hash HASH_FUNC_COUNTINSIDE;
    const _hash HASH_FUNC_POWER;
 

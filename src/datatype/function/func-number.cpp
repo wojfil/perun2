@@ -61,7 +61,7 @@ _num F_Ceil::getValue()
 }
 
 
-_num F_Count::getValue()
+_num F_CountInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;

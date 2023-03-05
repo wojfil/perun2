@@ -22,7 +22,7 @@ namespace uro::func
 
 
 
-_bool F_Any::getValue()
+_bool F_AnyInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
@@ -222,7 +222,7 @@ _bool F_EndsWith::getValue()
 }
 
 
-_bool F_Exists::getValue()
+_bool F_ExistsInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
@@ -239,7 +239,7 @@ _bool F_Exists::getValue()
 }
 
 
-_bool F_Exist::getValue()
+_bool F_ExistInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;

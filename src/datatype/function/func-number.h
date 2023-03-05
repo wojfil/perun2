@@ -38,10 +38,10 @@ public:
 };
 
 
-struct F_Count : Generator<_num>
+struct F_CountInside : Generator<_num>
 {
 public:
-   F_Count(_defptr& def, _lcptr& lctx, FileContext* fctx, _uro& uro)
+   F_CountInside(_defptr& def, _lcptr& lctx, FileContext* fctx, _uro& uro)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx), uroboros(uro) { };
 
    _num getValue() override;

@@ -157,14 +157,15 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
    std::vector<ExpElement<_num>> infList; // infix notation list
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
-   _int sublen = 0, lv1 = 0, lv2 = 0;
+   _int sublen = 0;
+   BracketsInfo bi;
    _bool prev = false;
 
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
          const _char& ch = t.value.ch;
-         const _bool free = (lv1 == 0) && (lv2 == 0);
+
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
                // check if character '-' represents binary subtraction
@@ -173,7 +174,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
                infList.emplace_back(ch2, t.line);
             }
             else {
-               if (free) {
+               if (bi.isBracketFree()) {
                   const Tokens tks2(tks, i - sublen, sublen);
                   const _int line = tks2.first().line;
 
@@ -205,50 +206,22 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
             continue;
          }
 
-         switch (ch) {
-            case CHAR_OPENING_ROUND_BRACKET: {
-               if (free) {
-                  if (sublen == 1) {
-                     const Token& pt = tks.listAt(i - 1);
-                     if (pt.type != Token::t_Word) {
-                        throw SyntaxError::invalidFunctionName(t.line);
-                     }
+         if (ch == CHAR_OPENING_ROUND_BRACKET) {
+            if (bi.isBracketFree()) {
+               if (sublen == 1) {
+                  const Token& pt = tks.listAt(i - 1);
+                  if (pt.type != Token::t_Word) {
+                     throw SyntaxError::invalidFunctionName(t.line);
                   }
                }
-               lv1++;
-               sublen++;
-               prev = false;
-               break;
-            }
-            case CHAR_CLOSING_ROUND_BRACKET: {
-               lv1--;
-               sublen++;
-               prev = false;
-               break;
-            }
-            case CHAR_OPENING_SQUARE_BRACKET: {
-               lv2++;
-               sublen++;
-               prev = false;
-               break;
-            }
-            case CHAR_CLOSING_SQUARE_BRACKET: {
-               lv2--;
-               sublen++;
-               prev = false;
-               break;
-            }
-            default: {
-               sublen++;
-               prev = false;
-               break;
             }
          }
+
+         bi.refresh(t);
       }
-      else {
-         prev = false;
-         sublen++;
-      }
+
+      prev = false;
+      sublen++;
    }
 
    if (sublen != 0) {

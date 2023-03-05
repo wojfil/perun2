@@ -16,6 +16,7 @@
 #include "os.h"
 #include "uroboros.h"
 #include "logger.h"
+#include "metadata.h"
 
 
 namespace uro::cmd
@@ -24,17 +25,17 @@ namespace uro::cmd
 void version()
 {
    Logger logger;
-   logger.print(str(L"Uroboros2 version ", VERSION_STR));
+   logger.print(str(metadata::NAME, L" version ", metadata::VERSION));
 }
 
 void docs()
 {
-   os_showWebsite(L"https://uroboros2.org/docs");
+   os_showWebsite(metadata::WEBSITE_DOCS);
 }
 
 void website()
 {
-   os_showWebsite(L"https://uroboros2.org");
+   os_showWebsite(metadata::WEBSITE_FRONT);
 }
 
 void help()
@@ -47,9 +48,9 @@ void help()
    logger.print(L"Options:");
    logger.print(L"  --help       Display this information again.");
    logger.print(L"  --version    Display interpreter version information.");
-   logger.print(L"  --website    Enter the official Uroboros2 website.");
-   logger.print(L"  --docs       Enter the official Uroboros2 documentation.");
-   logger.print(L"  -c           Pass Uroboros2 code as an argument instead of file name.");
+   logger.print(str(L"  --website    Enter the official ", metadata::NAME, L" website."));
+   logger.print(str(L"  --docs       Enter the official ", metadata::NAME, L" documentation."));
+   logger.print(str(L"  -c           Pass ", metadata::NAME, L" code as an argument instead of file name."));
    logger.print(L"  -d <name>    Set working location to certain value.");
    logger.print(L"  -h           Set working location to the place where this command was called from.");
    logger.print(L"  -n           Run in noomit mode (iterate over all file system elements with no exceptions).");
@@ -61,7 +62,8 @@ namespace error
    void noArguments()
    {
       Logger logger;
-      logger.print(L"Command-line error: missing arguments. Run 'uro --help' for command-line tips.");
+      logger.print(str(L"Command-line error: missing arguments. Run '", 
+         metadata::EXECUTABLE_NAME, L" --help' for command-line tips."));
    }
 
    void unknownOption(const _str& option)

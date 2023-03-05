@@ -32,8 +32,6 @@ namespace uro
 
 struct Contexts;
 
-static const _str VERSION_STR = L"2.0.0";
-
 inline constexpr _exitint EXITCODE_OK =             0;
 inline constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;
 inline constexpr _exitint EXITCODE_SYNTAX_ERROR =   2;

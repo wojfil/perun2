@@ -13,8 +13,7 @@
 */
 
 #include "exception.h"
-#include "datatype/chars.h"
-#include "datatype/primitives.h"
+#include "datatype/strings.h"
 
 
 namespace uro
@@ -40,7 +39,7 @@ SyntaxError SyntaxError::bracketIsNotClosed(const _char value, const _int line)
 
 SyntaxError SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(const _char value, const _int line)
 {
-   return SyntaxError(str(L"bracket ", toStr(value), 
+   return SyntaxError(str(L"bracket ", toStr(value),
       L" should to be closed before the opening of curly bracket {"), line);
 }
 

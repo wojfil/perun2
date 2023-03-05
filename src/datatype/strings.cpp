@@ -17,6 +17,31 @@
 namespace uro
 {
 
+_str toStr(const _char ch) 
+{
+   return _str(1, ch);
+}
 
+_ndouble stringToDouble(const _str& value)
+{
+   _stream ss(value);
+   _ndouble n;
+   ss >> n;
+   return n;
+}
+
+void toLower(_str& value)
+{
+   for (_char& ch : value) {
+      ch = std::tolower(ch, std::locale(""));
+   }
+}
+
+void toUpper(_str& value)
+{
+   for (_char& ch : value) {
+      ch = std::toupper(ch, std::locale(""));
+   }
+}
 
 }

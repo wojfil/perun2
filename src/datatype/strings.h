@@ -21,6 +21,42 @@
 namespace uro
 {
 
+_str toStr(const _char ch);
+
+template<typename T>
+_str toStr(const T& n)
+{
+   _ostream s;
+   s << n;
+   return s.str();
+}
+
+// the following function
+// is the default method of string concatenation in Uroboros2
+// this is probably the most efficient way to do that
+template<typename... Args>
+_str str(Args const&... args)
+{
+   _size len = 0;
+   using value_type = std::common_type_t<Args const&...>;
+   for (auto const& arg : { static_cast<value_type>(args)...} ) {
+      len += arg.size();
+   }
+
+   _str result;
+   result.reserve(len);
+   for (auto const& arg : { static_cast<value_type>(args)...} ) {
+      result += arg;
+   }
+
+   return result;
+}
+
+_ndouble stringToDouble(const _str& value);
+
+void toLower(_str& value);
+void toUpper(_str& value);
+
 inline constexpr _size LETTERS_IN_ENGLISH_ALPHABET = 26;
 
 static const _str EMPTY_STRING =                   _str();

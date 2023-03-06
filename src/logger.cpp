@@ -18,19 +18,30 @@ namespace uro
 {
 
 Logger::Logger()
-    : isSilent(false) { };
+    : isSilent(false), flushBuffer(true) { };
 
-Logger::Logger(_uro& uro)
-    : isSilent(uro.arguments.hasFlag(FLAG_SILENT)) { };
+Logger::Logger(const _uro& uro)
+    : isSilent(uro.arguments.hasFlag(FLAG_SILENT)),
+      flushBuffer(uro.arguments.hasFlag(FLAG_GUI)) { };
 
 void Logger::print(const _str& value) const
 {
-   std::wcout << value << CHAR_NEW_LINE;
+   if (this->flushBuffer) {
+      std::wcout << value << std::endl;
+   }
+   else {
+      std::wcout << value << CHAR_NEW_LINE;
+   }
 }
 
 void Logger::emptyLine() const
 {
-   std::wcout << EMPTY_STRING << CHAR_NEW_LINE;
+   if (this->flushBuffer) {
+      std::wcout << EMPTY_STRING << std::endl;
+   }
+   else {
+      std::wcout << EMPTY_STRING << CHAR_NEW_LINE;
+   }
 }
 
 }

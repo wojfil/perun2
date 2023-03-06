@@ -110,9 +110,11 @@ Arguments::Arguments(const _int argc, _char* const argv[])
                      here = true;
                      break;
                   }
-                  case L'g':
-                  case L'G': {
-                     // temporary backward compatibility
+                  case CHAR_FLAG_GUI:
+                  case CHAR_FLAG_GUI_UPPER: {
+                     if (!(this->flags & FLAG_GUI)) {
+                        this->flags |= FLAG_GUI;
+                     }
                      break;
                   }
                   default: {

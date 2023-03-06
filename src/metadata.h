@@ -22,8 +22,8 @@ namespace uro::metadata
 
 static const _str NAME =                L"Uroboros2";
 static const _str VERSION =             L"2.0.0";
-static const _str WEBSITE_FRONT =       L"https://uroboros2.org/docs";
-static const _str WEBSITE_DOCS =        L"https://uroboros2.org";
+static const _str WEBSITE_FRONT =       L"https://uroboros2.org";
+static const _str WEBSITE_DOCS =        L"https://uroboros2.org/docs";
 static const _str EXECUTABLE_NAME =     L"uro";
 
 }

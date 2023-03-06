@@ -24,6 +24,7 @@ namespace uro
 class SyntaxError
 {
 public:
+   SyntaxError() = delete;
    SyntaxError(const _str& msg, const _int li);
    _str getMessage() const;
 
@@ -78,6 +79,7 @@ private:
 class RuntimeError
 {
 public:
+   RuntimeError() = delete;
    RuntimeError(const _str& msg);
    _str getMessage() const;
 

@@ -14,6 +14,7 @@
 
 #include "arguments.h"
 #include "cmd.h"
+#include "metadata.h"
 #include "os.h"
 
 
@@ -186,13 +187,13 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       if (os_hasExtension(filePath)) {
          const _str extension = os_extension(filePath);
 
-         if (extension != OS_UROEXT) {
-            cmd::error::wrongFileExtension(OS_UROEXT);
+         if (extension != metadata::EXTENSION) {
+            cmd::error::wrongFileExtension();
             return;
          }
       }
       else {
-         filePath = str(filePath, OS_DOT_UROEXT);
+         filePath = str(filePath, STRING_CHAR_DOT, metadata::EXTENSION);
       }
 
       if (!os_exists(filePath)) {

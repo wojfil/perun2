@@ -96,10 +96,10 @@ namespace error
       logger.print(str(L"Command-line error: input file '", fileName, L"' does not exist."));
    }
 
-   void wrongFileExtension(const _str& expected)
+   void wrongFileExtension()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: wrong input file extension. Only '", expected, L"' is allowed."));
+      logger.print(str(L"Command-line error: wrong input file extension. Only '", metadata::EXTENSION, L"' is allowed."));
    }
 
    void fileReadFailure(const _str& fileName)

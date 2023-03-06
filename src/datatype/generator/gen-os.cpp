@@ -23,6 +23,7 @@
 #include "gen-os.h"
 #include "gen-string.h"
 #include "../../uroboros.h"
+#include "../../metadata.h"
 #include "../../os.h"
 
 
@@ -114,7 +115,7 @@ _bool All::hasNext()
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
-               || (!isDir && os_extension(value) != OS_UROEXT))
+               || (!isDir && os_extension(value) != metadata::EXTENSION))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
@@ -139,7 +140,7 @@ _bool All::hasNext()
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
-            || (!isDir && os_extension(value) != OS_UROEXT))
+            || (!isDir && os_extension(value) != metadata::EXTENSION))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
@@ -177,7 +178,7 @@ _bool Files::hasNext()
          if (!os_isBrowsePath(value)) {
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT))
+            if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
                && (!this->exceptional || this->comparer.matches(this->value))) 
             {
                this->context.index->value = index;
@@ -201,7 +202,7 @@ _bool Files::hasNext()
       if (!os_isBrowsePath(value)) {
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != OS_UROEXT))
+         if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
             && (!this->exceptional || this->comparer.matches(this->value))) 
          {
             this->context.index->value = index;
@@ -315,7 +316,7 @@ _bool RecursiveFiles::hasNext()
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                const _str& v = data.cFileName;
 
-               if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
+               if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
                   value = v;
                   this->context.index->value = index;
                   index++;
@@ -356,7 +357,7 @@ _bool RecursiveFiles::hasNext()
                      goDeeper = true;
                   }
                }
-               else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT) {
+               else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
                   value = this->bases.empty() ? v : str(bases.back(), v);
                   this->context.index->value = index;
                   index++;
@@ -548,7 +549,7 @@ _bool RecursiveAll::hasNext()
                   return true;
                }
                else if ((!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-                  && (this->flags & FLAG_NOOMIT) || os_extension(v) != OS_UROEXT)
+                  && (this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION)
                {
                   if (!this->prevFile) {
                      this->prevFile = true;

@@ -103,7 +103,6 @@ static const _str STRING_VERSION =              L"version";
 static const _str STRING_DOCS =                 L"docs";
 static const _str STRING_WEBSITE =              L"website";
 static const _str STRING_HELP =                 L"help";
-static const _str STRING_URO =                  L"uro";
 static const _str STRING_GIT =                  L"git";
 static const _str STRING_SVN =                  L"svn";
 

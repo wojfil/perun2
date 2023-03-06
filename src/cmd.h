@@ -34,7 +34,7 @@ namespace error
    void noMainArgument();
    void noInput();
    void fileNotFound(const _str& fileName);
-   void wrongFileExtension(const _str& expected);
+   void wrongFileExtension();
    void fileReadFailure(const _str& fileName);
 }
 

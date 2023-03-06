@@ -17,7 +17,6 @@
 
 #include "../datatype/datatype.h"
 #include <unordered_map>
-#include <memory>
 
 
 namespace uro
@@ -61,8 +60,6 @@ private:
    _uint32 value = AGGR_NULL;
    inline _bool has(const _uint32 v) const;
 };
-
-typedef std::unique_ptr<Aggregate> _aggrptr;
 
 }
 

@@ -12,12 +12,32 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "uroboros.h"
+#include "console.h"
 
-uro::_exitint wmain(uro::_int argc, uro::_char* argv[], uro::_char* envp[])
+#ifndef UNICODE
+#define UNICODE
+#endif
+
+#ifndef _UNICODE
+#define _UNICODE
+#endif
+
+#include <locale>
+#include <clocale>
+#include <cstdlib>
+#include <cwctype>
+#include <combaseapi.h>
+#include <iostream>
+#include <fcntl.h>
+
+namespace uro
 {
-   uro::initConsole();
-   uro::Uroboros2 instance(argc, argv);
-   instance.run();
-   return instance.getExitCode();
+   void initConsole()
+   {
+      std::wcin.tie(0);
+      std::wcout.tie(0);
+      std::setlocale(LC_CTYPE, "");
+      _setmode(_fileno(stdout), _O_U8TEXT);
+      CoInitializeEx(0, COINIT_MULTITHREADED);
+   }
 }

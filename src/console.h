@@ -12,12 +12,14 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "uroboros.h"
+#ifndef CONSOLE_H_INCLUDED
+#define CONSOLE_H_INCLUDED
 
-uro::_exitint wmain(uro::_int argc, uro::_char* argv[], uro::_char* envp[])
+namespace uro
 {
-   uro::initConsole();
-   uro::Uroboros2 instance(argc, argv);
-   instance.run();
-   return instance.getExitCode();
+
+void initConsole();
+
 }
+
+#endif // CONSOLE_H_INCLUDED

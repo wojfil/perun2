@@ -15,6 +15,7 @@
 #ifndef UROBOROS_H
 #define UROBOROS_H
 
+#include "console.h"
 #include "arguments.h"
 #include "hash.h"
 #include "datatype/math.h"

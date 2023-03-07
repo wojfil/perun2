@@ -118,7 +118,7 @@ inline void os_escapeQuote(_str& path);
 _str os_join(const _str& path1, const _str& path2);
 _bool os_isAbsolute(const _str& path);
 _bool os_hasExtension(const _str& value);
-inline _bool os_isDriveLetter(const _char ch);
+_bool os_isDriveLetter(const _char ch);
 _bool os_isPath(const _str value);
 _bool os_isExplorableDirectory(const _str& name);
 

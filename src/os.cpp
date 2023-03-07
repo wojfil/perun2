@@ -1521,7 +1521,7 @@ _bool os_hasExtension(const _str& value)
    return false;
 }
 
-inline _bool os_isDriveLetter(const _char ch)
+_bool os_isDriveLetter(const _char ch)
 {
    return (ch >= CHAR_a && ch <= CHAR_z)
        || (ch >= CHAR_A && ch <= CHAR_Z);

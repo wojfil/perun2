@@ -327,51 +327,51 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
 
       if (e.type == ElementType::et_Operator) {
          op = e.operator_;
+         continue;
       }
-      else {
-         _genptr<_bool> second(std::move(e.generator));
 
-         if (firstIsConstant && e.type == ElementType::et_Constant) {
-            _bool value;
+      _genptr<_bool> second(std::move(e.generator));
 
-            switch(op) {
-               case CHAR_AMPERSAND: {
-                  value = first->getValue() && second->getValue();
-                  break;
-               }
-               case CHAR_VERTICAL_BAR: {
-                  value = first->getValue() || second->getValue();;
-                  break;
-               }
-               case CHAR_CARET: {
-                  value = first->getValue() ^ second->getValue();;
-                  break;
-               }
+      if (firstIsConstant && e.type == ElementType::et_Constant) {
+         _bool value;
+
+         switch(op) {
+            case CHAR_AMPERSAND: {
+               value = first->getValue() && second->getValue();
+               break;
             }
-
-            first = std::make_unique<gen::Constant<_bool>>(value);
+            case CHAR_VERTICAL_BAR: {
+               value = first->getValue() || second->getValue();;
+               break;
+            }
+            case CHAR_CARET: {
+               value = first->getValue() ^ second->getValue();;
+               break;
+            }
          }
-         else {
-            _genptr<_bool> prev = std::move(first);
 
-            switch(op) {
-               case CHAR_AMPERSAND: {
-                  first = std::make_unique<gen::And>(prev, second);
-                  break;
-               }
-               case CHAR_VERTICAL_BAR: {
-                  first = std::make_unique<gen::Or>(prev, second);
-                  break;
-               }
-               case CHAR_CARET: {
-                  first = std::make_unique<gen::Xor>(prev, second);
-                  break;
-               }
-            }
+         first = std::make_unique<gen::Constant<_bool>>(value);
+         continue;
+      }
 
-            firstIsConstant = false;
+      _genptr<_bool> prev = std::move(first);
+
+      switch (op) {
+         case CHAR_AMPERSAND: {
+            first = std::make_unique<gen::And>(prev, second);
+            break;
+         }
+         case CHAR_VERTICAL_BAR: {
+            first = std::make_unique<gen::Or>(prev, second);
+            break;
+         }
+         case CHAR_CARET: {
+            first = std::make_unique<gen::Xor>(prev, second);
+            break;
          }
       }
+
+      firstIsConstant = false;
    }
 
    result = std::move(first);

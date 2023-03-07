@@ -97,12 +97,12 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
    std::vector<ExpElement<_bool>> infList; // infix notation list
    const _int start = tks.getStart();
    const _int end = tks.getEnd();
-   _int sublen = 0, lv1 = 0, lv2 = 0;
+   _int sublen = 0;
+   BracketsInfo bi;
 
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Keyword) {
-         const _bool free = (lv1 == 0) && (lv2 == 0);
          if (isBoolExpOperator(t)) {
             if (t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator())
             {
@@ -114,7 +114,7 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
                   infList.emplace_back(ch, t.line);
                }
                else {
-                  if (free) {
+                  if (bi.isBracketFree()) {
                      const Tokens tks2(tks, i - sublen, sublen);
                      const _int line = tks2.first().line;
 
@@ -146,32 +146,8 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             sublen++;
          }
       }
-      else if (t.type == Token::t_Symbol) {
-         sublen++;
-
-         switch (t.value.ch) {
-            case CHAR_OPENING_ROUND_BRACKET: {
-               lv1++;
-               break;
-            }
-            case CHAR_CLOSING_ROUND_BRACKET: {
-               lv1--;
-               break;
-            }
-            case CHAR_OPENING_SQUARE_BRACKET: {
-               lv2++;
-               break;
-            }
-            case CHAR_CLOSING_SQUARE_BRACKET: {
-               lv2--;
-               break;
-            }
-            default: {
-               break;
-            }
-         }
-      }
       else {
+         bi.refresh(t);
          sublen++;
       }
    }

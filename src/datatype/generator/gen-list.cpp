@@ -50,11 +50,7 @@ ListFilter_Final::ListFilter_Final(_genptr<_list>& li, _genptr<_num>& num)
 
 _list Join_StrStr::getValue()
 {
-   _list v;
-   v.reserve(2);
-   v.emplace_back(left->getValue());
-   v.emplace_back(right->getValue());
-   return v;
+   return { left->getValue(), right->getValue() };
 };
 
 

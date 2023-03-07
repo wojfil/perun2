@@ -26,10 +26,8 @@
 #include "../../metadata.h"
 #include "../../os.h"
 
-
 namespace uro::gen
 {
-
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
@@ -42,12 +40,12 @@ namespace uro::gen
 
 
 OsDefinition::OsDefinition(P_GEN_OS_ARGS)
-   : location(std::move(loc)), uroboros(uro), context(uro), 
+   : location(std::move(loc)), uroboros(uro), context(uro),
      flags(uro.flags), isAbsolute(abs),
      hasPrefix(!pref.empty()), prefix(pref) { };
 
 
-FileContext* OsDefinition::getFileContext() 
+FileContext* OsDefinition::getFileContext()
 {
    return &this->context;
 }
@@ -179,7 +177,7 @@ _bool Files::hasNext()
             const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
-               && (!this->exceptional || this->comparer.matches(this->value))) 
+               && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
                index++;
@@ -203,7 +201,7 @@ _bool Files::hasNext()
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
-            && (!this->exceptional || this->comparer.matches(this->value))) 
+            && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
             index++;
@@ -265,7 +263,7 @@ _bool Directories::hasNext()
          const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
-            && (!this->exceptional || this->comparer.matches(this->value))) 
+            && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
             index++;

@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <fstream>
 
-
 namespace uro
 {
 
@@ -380,7 +379,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
 
    const _bool isDir = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
    const _bool isFile = !isDir;
-   
+
    context.v_isfile->value = isFile;
    context.v_isdirectory->value = isDir;
 

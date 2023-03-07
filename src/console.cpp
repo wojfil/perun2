@@ -12,8 +12,6 @@
     along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "console.h"
-
 #ifndef UNICODE
 #define UNICODE
 #endif
@@ -21,6 +19,8 @@
 #ifndef _UNICODE
 #define _UNICODE
 #endif
+
+#include "console.h"
 
 #include <locale>
 #include <clocale>

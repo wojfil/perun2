@@ -20,6 +20,32 @@
 namespace uro::func
 {
 
+_str F_Parent::getValue()
+{
+   const _str v = os_trim(arg1->getValue());
+   if (os_isInvaild(v)) {
+      return EMPTY_STRING;
+   }
+
+   // there is no separator, so simply return location
+   if (v.find(OS_SEPARATOR) == _str::npos) {
+      return this->context->location->value;
+   }
+
+   return os_parent(os_join(this->context->location->value, v));
+}
+
+
+_str F_Path_1::getValue()
+{
+   const _str v = os_trim(arg1->getValue());
+   if (os_isInvaild(v)) {
+      return EMPTY_STRING;
+   }
+
+   return os_join(this->context->location->value, v);
+}
+
 
 _str F_Path_2::getValue()
 {

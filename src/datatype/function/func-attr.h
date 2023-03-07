@@ -21,6 +21,30 @@
 
 namespace uro::func
 {
+   
+
+struct F_Parent : Func_1<_str>, Generator<_str>
+{
+public:
+   F_Parent(_genptr<_str>& a1, _uro& uro) 
+      : Func_1(a1), context(uro.contexts.getLocationContext()) { };
+   _str getValue() override;
+
+private:
+   LocationContext* context;
+};
+
+
+struct F_Path_1 : Func_1<_str>, Generator<_str>
+{
+public:
+   F_Path_1(_genptr<_str>& a1, _uro& uro) 
+      : Func_1(a1), context(uro.contexts.getLocationContext()) { };
+   _str getValue() override;
+
+private:
+   LocationContext* context;
+};
 
 
 struct F_Path_2 : Generator<_str>

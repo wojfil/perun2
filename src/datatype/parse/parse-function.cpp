@@ -67,7 +67,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       FileContext* fctx = uro.contexts.getFileContext();
       LocationContext* lctx = uro.contexts.getLocationContext();
       fctx->attribute->setCoreCommandBase();
-            
+
       _genptr<_list> list;
       if (!parse::parse(uro, args[0], list)) {
          functionArgException(1, STRING_LIST, word, uro);
@@ -88,7 +88,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       _lcptr lctx;
       uro.contexts.makeLocationContext(lctx);
       uro.contexts.addLocationContext(lctx.get());
-            
+
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
          functionArgException(1, STRING_DEFINITION, word, uro);
@@ -179,7 +179,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       FileContext* fctx = uro.contexts.getFileContext();
       LocationContext* lctx = uro.contexts.getLocationContext();
       fctx->attribute->setCoreCommandBase();
-            
+
       _genptr<_str> str_;
       if (!parse::parse(uro, args[0], str_)) {
          functionArgException(1, STRING_STRING, word, uro);
@@ -320,7 +320,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
       FileContext* ctx = uro.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
-            
+
       _genptr<_str> str_;
       if (!parse::parse(uro, args[0], str_)) {
          functionArgException(0, STRING_STRING, word, uro);
@@ -410,6 +410,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
    }
    else if (name == uro.hashes.HASH_VAR_SIZE) {
       if (len != 1) {
+         checkInOperatorCommaAmbiguity(word, args[0], uro);
          functionArgNumberException(len, word, uro);
       }
 
@@ -455,7 +456,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro)
       _lcptr lctx;
       uro.contexts.makeLocationContext(lctx);
       uro.contexts.addLocationContext(lctx.get());
-            
+
       _defptr def;
       if (!parse::parse(uro, args[0], def)) {
          functionArgException(0, STRING_DEFINITION, word, uro);
@@ -805,8 +806,16 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro)
       }
    }
    else if (name == uro.hashes.HASH_FUNC_PATH) {
-      if (len <= 1) {
+      if (len == 0) {
          functionArgNumberException(len, word, uro);
+      }
+      if (len == 1) {
+         _genptr<_str> arg1;
+         if (!parse::parse(uro, args[0], arg1)) {
+            functionArgException(1, STRING_STRING, word, uro);
+         }
+         result = std::make_unique<F_Path_1>(arg1, uro);
+         return true;
       }
 
       if (len > 4) {
@@ -1069,6 +1078,8 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
       result = std::make_unique<F_BeforeLetters>(arg1);
    else if (name == uro.hashes.HASH_FUNC_CAPITALIZE)
       result = std::make_unique<F_Capitalize>(arg1);
+   else if (name == uro.hashes.HASH_VAR_PARENT)
+      result = std::make_unique<F_Parent>(arg1, uro);
    else
       return false;
 

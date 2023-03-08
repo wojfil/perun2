@@ -26,6 +26,9 @@
 namespace uro
 {
 
+#define _COUT                       std::wcout
+#define _CIN                        std::wcin
+
 typedef int                         _exitint;
 typedef bool                        _bool;
 typedef int32_t                     _int;

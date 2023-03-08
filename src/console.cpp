@@ -21,6 +21,7 @@
 #endif
 
 #include "console.h"
+#include "datatype/primitives.h"
 
 #include <locale>
 #include <clocale>
@@ -34,8 +35,8 @@ namespace uro
 {
    void initConsole()
    {
-      std::wcin.tie(0);
-      std::wcout.tie(0);
+      _CIN.tie(0);
+      _COUT.tie(0);
       std::setlocale(LC_CTYPE, "");
       _setmode(_fileno(stdout), _O_U8TEXT);
       CoInitializeEx(0, COINIT_MULTITHREADED);

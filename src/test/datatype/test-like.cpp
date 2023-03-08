@@ -378,7 +378,6 @@ void test_like()
 
 void testCase_like(const _int caseId, const _str& pattern, const _str& value, const _bool& expectedResult)
 {
-   // std::wcout << caseId << std::endl;
    gen::_likeptr comparer;
    gen::parseLikeCmp(comparer, pattern);
    const _bool result = comparer->compareToPattern(value);

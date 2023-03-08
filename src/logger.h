@@ -43,14 +43,14 @@ public:
       if (!this->isSilent) {
          using value_type = std::common_type_t<Args const&...>;
          for (auto const& arg : {static_cast<value_type>(args)...}) {
-            std::wcout << arg;
+            _COUT << arg;
          }
             
          if (this->flushBuffer) {
-            std::wcout << std::endl;
+            _COUT << std::endl;
          }
          else {
-            std::wcout << CHAR_NEW_LINE;
+            _COUT << CHAR_NEW_LINE;
          }
       }
    }

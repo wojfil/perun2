@@ -32,15 +32,15 @@ _int wmain(_int argc, _char* argv[], _char* envp[])
 {
     std::setlocale(LC_CTYPE, "");
     _setmode(_fileno(stdout), _O_U8TEXT);
-    std::wcout << L"DATA TYPE TESTS START" << std::endl;
+    _COUT << L"DATA TYPE TESTS START" << std::endl;
 	
 	test_like();
 	test_in();
 	test_const();
 	test_time();
 	
-    std::wcout << L"DATA TYPE TESTS END" << std::endl;
-    std::wcout << L"All tests have passed successfully if there is no error message above." << std::endl;
+    _COUT << L"DATA TYPE TESTS END" << std::endl;
+    _COUT << L"All tests have passed successfully if there is no error message above." << std::endl;
 	
     return 0;
 }

@@ -27,20 +27,20 @@ Logger::Logger(const _uro& uro)
 void Logger::print(const _str& value) const
 {
    if (this->flushBuffer) {
-      std::wcout << value << std::endl;
+      _COUT << value << std::endl;
    }
    else {
-      std::wcout << value << CHAR_NEW_LINE;
+      _COUT << value << CHAR_NEW_LINE;
    }
 }
 
 void Logger::emptyLine() const
 {
    if (this->flushBuffer) {
-      std::wcout << EMPTY_STRING << std::endl;
+      _COUT << EMPTY_STRING << std::endl;
    }
    else {
-      std::wcout << EMPTY_STRING << CHAR_NEW_LINE;
+      _COUT << EMPTY_STRING << CHAR_NEW_LINE;
    }
 }
 

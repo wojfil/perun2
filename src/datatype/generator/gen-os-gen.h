@@ -43,7 +43,7 @@ struct DefinitionGenerator
 {
 public:
    DefinitionGenerator() = delete;
-   DefinitionGenerator(const OsElement& el, _uro& uro)
+   DefinitionGenerator(const OsElement el, _uro& uro)
       : element_(el), uroboros(uro) { };
    _bool generate(_defptr& result) const;
 

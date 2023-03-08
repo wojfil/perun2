@@ -65,7 +65,7 @@ namespace uro
       }
 
       template <typename T>
-      Variable<T>* insertVar(const _hash var, const VarType& type)
+      Variable<T>* insertVar(const _hash var, const VarType type)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -306,7 +306,7 @@ namespace uro
          return false;
       }
 
-      void addOsGen(const _hash hash, const gen::OsElement& element, _uro& uro);
+      void addOsGen(const _hash hash, const gen::OsElement element, _uro& uro);
 
       LocationContext rootLocation;
       std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;

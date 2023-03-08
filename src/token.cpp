@@ -28,7 +28,7 @@ TokenValue::TokenValue(const _char ch)
 TokenValue::TokenValue(const _char ch, const _int am)
    : chars({ ch, am }) { };
 
-TokenValue::TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode& nm)
+TokenValue::TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode nm)
    : num({ n, _osi(os_id, os_len), nm }) { };
 TokenValue::TokenValue(const _size os_id, const _size os_len)
    : str(_osi(os_id, os_len)) { };
@@ -39,7 +39,7 @@ TokenValue::TokenValue(const _size os_id, const _size os_len, const _int id)
 TokenValue::TokenValue(const _hash h, const _size os_id, const _size os_len)
    : word({ h, _osi(os_id, os_len) }) { };
 
-TokenValue::TokenValue(const Keyword& k, const _size os_id, const _size os_len)
+TokenValue::TokenValue(const Keyword k, const _size os_id, const _size os_len)
    : keyword({ k, _osi(os_id, os_len) }) { };
 
 TokenValue::TokenValue(const _hash h1, const _hash h2, const _size os_id1,
@@ -53,7 +53,7 @@ Token::Token(const _char v, const _int am, const _int li, _uro& uro)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
 Token::Token(const _num& v, const _int li, const _size os_id, const _size os_len,
-   const NumberMode& nm, _uro& uro)
+   const NumberMode nm, _uro& uro)
    : line(li), type(t_Number), value(v, os_id, os_len, nm) { };
 
 Token::Token(const _size os_id, const _size os_len, const _int li, _uro& uro)
@@ -65,7 +65,7 @@ Token::Token(const _size os_id, const _size os_len, const _int id, const _int li
 Token::Token(const _hash v, const _int li, const _size os_id, const _size os_len, _uro& uro)
    : line(li), type(t_Word), value(v, os_id, os_len) { };
 
-Token::Token(const Keyword& v, const _int li, const _size os_id, const _size os_len, _uro& uro)
+Token::Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _uro& uro)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
 Token::Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
@@ -77,7 +77,7 @@ _bool Token::isSymbol(const _char ch) const
    return type == t_Symbol && value.ch == ch;
 }
 
-_bool Token::isKeyword(const Keyword& kw) const
+_bool Token::isKeyword(const Keyword kw) const
 {
    return type == t_Keyword && value.keyword.k == kw;
 }

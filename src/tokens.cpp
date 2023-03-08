@@ -22,7 +22,7 @@
 namespace uro
 {
 
-Tokens::Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo& in)
+Tokens::Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo in)
    : start(st), length(ln), end(st + ln - 1), list(li), info(in) { }
 
 Tokens::Tokens(const std::vector<Token>& li)
@@ -81,7 +81,7 @@ _tinfo Tokens::getInfo() const
    return this->info;
 }
 
-_bool Tokens::check(const _tinfo& in) const
+_bool Tokens::check(const _tinfo in) const
 {
    return this->info & in;
 }
@@ -121,7 +121,7 @@ const Token& Tokens::listAt(const _int index) const
    return this->list[index];
 }
 
-std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword& kw) const
+std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword kw) const
 {
    BracketsInfo bi;
 

@@ -33,9 +33,9 @@ namespace uro
    struct Variable : Generator<T>
    {
    public:
-      Variable(const VarType& vt)
+      Variable(const VarType vt)
          : type(vt) { };
-      Variable(const VarType& vt, const T& val)
+      Variable(const VarType vt, const T& val)
          : type(vt), value(val) { };
 
       Variable() = delete;

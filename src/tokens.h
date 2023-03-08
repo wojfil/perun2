@@ -57,7 +57,7 @@ struct Tokens
 {
 public:
    Tokens() = delete;
-   Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo& in);
+   Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo in);
    Tokens(const std::vector<Token>& li);
    Tokens(const Tokens& tks, const _int st, const _int ln);
 
@@ -70,7 +70,7 @@ public:
    _int getEmbracement() const;
    const std::vector<Token>& getList() const;
    _tinfo getInfo() const;
-   _bool check(const _tinfo& in) const;
+   _bool check(const _tinfo in) const;
    _bool isEmpty() const;
    const Token& first() const;
    const Token& second() const;
@@ -79,7 +79,7 @@ public:
    const Token& at(const _int index) const;
    const Token& listAt(const _int index) const;
 
-   std::pair<Tokens, Tokens> divideByKeyword(const Keyword& kw) const;
+   std::pair<Tokens, Tokens> divideByKeyword(const Keyword kw) const;
    std::pair<Tokens, Tokens> divideBySymbol(const _char symbol) const;
    std::vector<Tokens> splitBySymbol(const _char symbol) const;
    _int countSymbols(const _char symbol) const;

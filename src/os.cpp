@@ -1526,7 +1526,7 @@ _bool os_isDriveLetter(const _char ch)
        || (ch >= CHAR_A && ch <= CHAR_Z);
 }
 
-_bool os_isPath(const _str value)
+_bool os_isPath(const _str& value)
 {
    return value.find(OS_SEPARATOR) != _str::npos;
 }

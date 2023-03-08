@@ -48,7 +48,7 @@ public:
    };
 
    Period();
-   Period(const _tnum val, const PeriodUnit& unit);
+   Period(const _tnum val, const PeriodUnit unit);
 
    _tnum years = TNUM_ZERO;
    _tnum months = TNUM_ZERO;

@@ -361,7 +361,7 @@ namespace uro
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const _hash hash, const gen::OsElement& element, _uro& uro)
+   void Contexts::addOsGen(const _hash hash, const gen::OsElement element, _uro& uro)
    {
       osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, uro)));
    }

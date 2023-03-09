@@ -1,28 +1,28 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gen-bool-compare.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 _bool DefinitionsEqual::getValue()
 {
    while (true) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -58,7 +58,7 @@ _bool DefinitionsEqual::getValue()
 _bool DefinitionsNotEqual::getValue()
 {
    while (true) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -94,7 +94,7 @@ _bool DefinitionsNotEqual::getValue()
 _bool DefinitionsSmaller::getValue()
 {
    while (true) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -123,7 +123,7 @@ _bool DefinitionsSmaller::getValue()
 _bool DefinitionsSmallerEquals::getValue()
 {
    while (true) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -152,7 +152,7 @@ _bool DefinitionsSmallerEquals::getValue()
 _bool DefinitionsBigger::getValue()
 {
    while (true) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -181,7 +181,7 @@ _bool DefinitionsBigger::getValue()
 _bool DefinitionsBiggerEquals::getValue()
 {
    while (true) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -225,7 +225,7 @@ _bool DefinitionListEqual::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -268,7 +268,7 @@ _bool DefinitionListNotEqual::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->definition->reset();
          break;
       }
@@ -305,7 +305,7 @@ _bool DefinitionListSmaller::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->definition->reset();
          return false;
       }
@@ -338,7 +338,7 @@ _bool DefinitionListSmallerEquals::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->definition->reset();
          return false;
       }
@@ -376,7 +376,7 @@ _bool DefinitionListBigger::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->definition->reset();
          return false;
       }
@@ -408,7 +408,7 @@ _bool DefinitionListBiggerEquals::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          this->definition->reset();
          return false;
       }

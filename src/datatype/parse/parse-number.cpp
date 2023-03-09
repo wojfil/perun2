@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-number.h"
@@ -22,7 +22,7 @@
 #include "../../hash.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
 inline constexpr _char CHAR_UNARY_MINUS = CHAR_TILDE;
@@ -30,12 +30,12 @@ inline constexpr _char CHAR_UNARY_MINUS = CHAR_TILDE;
 // the sign above is used internally by the interpreter to distinguish them
 
 
-_bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
+_bool parseNumber(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      return parseOneToken(uro, tks, result);
+      return parseOneToken(p2, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
@@ -43,7 +43,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return uro::func::numberFunction(result, tks, uro);
+      return func::numberFunction(result, tks, p2);
    }
    else if (len >= 2 && !tks.check(TI_HAS_CHAR_COMMA)) {
       // build numeric expression (but only if the sequence has any operator)
@@ -61,7 +61,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
          if (t.type == Token::t_Symbol && isNumExpOperator(t.value.ch) && bi.isBracketFree()
              && !(i == start && t.value.ch == CHAR_MINUS))
          {
-            if (parseNumExp(result, tks, uro)) {
+            if (parseNumExp(result, tks, p2)) {
                return true;
             }
             else if (!tks.check(TI_HAS_COMPARISON_CHAR)) {
@@ -74,7 +74,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
                for (const Tokens& tkse : elements) {
                   _genptr<_str> str;
 
-                  if (!parse(uro, tkse, str)) {
+                  if (!parse(p2, tkse, str)) {
                      throw SyntaxError::invalidExpression(tkse.first().line);
                   }
                }
@@ -90,33 +90,33 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
          tks2.trimLeft();
          _genptr<_num> num;
 
-         if (parse(uro, tks2, num)) {
+         if (parse(p2, tks2, num)) {
             result = std::make_unique<gen::Negation>(num);
             return true;
          }
          else {
             _genptr<_per> per;
-            if (!parse(uro, tks2, per)) {
+            if (!parse(p2, tks2, per)) {
                throw SyntaxError(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
             }
          }
       }
    }
 
-   if (parseCollectionElement<_num>(result, tks, uro)) {
+   if (parseCollectionElement<_num>(result, tks, p2)) {
       return true;
    }
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
       _genptr<_num> num;
-      parseListElementIndex(num, tksm, uro);
+      parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
-      if (uro.contexts.makeVarRef(f, tlist, uro)) {
+      if (p2.contexts.makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
          const _hash h = last.value.twoWords.h2;
-         const Hashes& hs = uro.hashes;
+         const Hashes& hs = p2.hashes;
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
          if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
@@ -136,13 +136,13 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
          else if (h == hs.HASH_PER_DATE)
             return false;
          else
-            timeVariableMemberException(last, uro);
+            timeVariableMemberException(last, p2);
 
          return true;
       }
    }
 
-   if (parseBinary<_num>(result, tks, uro) || parseTernary<_num>(result, tks, uro)) {
+   if (parseBinary<_num>(result, tks, p2) || parseTernary<_num>(result, tks, p2)) {
       return true;
    }
 
@@ -152,7 +152,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
+static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 {
    std::vector<ExpElement<_num>> infList; // infix notation list
    const _int start = tks.getStart();
@@ -188,7 +188,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
                   }
                   else {
                      _genptr<_num> num;
-                     if (parse(uro, tks2, num)) {
+                     if (parse(p2, tks2, num)) {
                         infList.emplace_back(num, line);
                         infList.emplace_back(ch, line);
                         sublen = 0;
@@ -232,7 +232,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _uro& uro)
       }
       else {
          _genptr<_num> num;
-         if (parse(uro, tks2, num)) {
+         if (parse(p2, tks2, num)) {
             infList.emplace_back(num, tks2.first().line);
          }
          else {
@@ -613,9 +613,9 @@ static _bool isNumExpHighPriority(const _char ch)
    }
 }
 
-void timeVariableMemberException(const Token& tk, _uro& uro)
+void timeVariableMemberException(const Token& tk, _p2& p2)
 {
-   throw SyntaxError(str(L"'", tk.getOriginString_2(uro),
+   throw SyntaxError(str(L"'", tk.getOriginString_2(p2),
       L"' is not a time variable member"), tk.line);
 }
 

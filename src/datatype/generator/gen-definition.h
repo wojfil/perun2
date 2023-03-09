@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef GEN_DEFINITION_H_INCLUDED
@@ -19,12 +19,12 @@
 #include "gen-os.h"
 #include "../cast.h"
 #include "../../attribute.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 #include <algorithm>
 #include <deque>
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 
@@ -32,7 +32,7 @@ struct DefWithContext : _def
 {
 public:
    DefWithContext() = delete;
-   DefWithContext(_defptr& def, _uro& uro);
+   DefWithContext(_defptr& def, _p2& p2);
    DefWithContext(_defptr& def, _fcptr& ctx);
 
    void reset() override;
@@ -49,13 +49,13 @@ struct DefFilter : _def
 {
 public:
    DefFilter() = delete;
-   DefFilter(_defptr& def, FileContext* ctx, _uro& uro);
+   DefFilter(_defptr& def, FileContext* ctx, _p2& p2);
 
    void reset() override;
    FileContext* getFileContext() override;
 
 protected:
-   _uro& uroboros;
+   _p2& perun2;
    _bool first;
    _defptr definition;
    FileContext* context;
@@ -65,7 +65,7 @@ protected:
 struct DefFilter_Where : DefFilter
 {
 public:
-   DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro);
+   DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _p2& p2);
 
    _bool hasNext() override;
    void reset() override;
@@ -117,8 +117,8 @@ private:
 struct DefFilter_Limit : DefFilter
 {
 public:
-   DefFilter_Limit(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
-      : DefFilter(def, ctx, uro), number(std::move(num)) { };
+   DefFilter_Limit(_defptr& def, _genptr<_num>& num, FileContext* ctx, _p2& p2)
+      : DefFilter(def, ctx, p2), number(std::move(num)) { };
 
    _bool hasNext() override;
 
@@ -132,8 +132,8 @@ private:
 struct DefFilter_Skip : DefFilter
 {
 public:
-   DefFilter_Skip(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
-      : DefFilter(def, ctx, uro), number(std::move(num)) { };
+   DefFilter_Skip(_defptr& def, _genptr<_num>& num, FileContext* ctx, _p2& p2)
+      : DefFilter(def, ctx, p2), number(std::move(num)) { };
 
    _bool hasNext() override;
 
@@ -147,8 +147,8 @@ private:
 struct DefFilter_Every : DefFilter
 {
 public:
-   DefFilter_Every(_defptr& def, _genptr<_num>& num, FileContext* ctx, _uro& uro)
-      : DefFilter(def, ctx, uro), number(std::move(num)) { };
+   DefFilter_Every(_defptr& def, _genptr<_num>& num, FileContext* ctx, _p2& p2)
+      : DefFilter(def, ctx, p2), number(std::move(num)) { };
 
    _bool hasNext() override;
 
@@ -163,8 +163,8 @@ private:
 struct DefFilter_Final : DefFilter
 {
 public:
-   DefFilter_Final(_defptr& def, _genptr<_num>& num, _fcptr& ctx, FileContext* pcxt, _uro& uro)
-      : DefFilter(def, ctx.get(), uro), nextContext(std::move(ctx)), prevContext(pcxt), number(std::move(num)) { };
+   DefFilter_Final(_defptr& def, _genptr<_num>& num, _fcptr& ctx, FileContext* pcxt, _p2& p2)
+      : DefFilter(def, ctx.get(), p2), nextContext(std::move(ctx)), prevContext(pcxt), number(std::move(num)) { };
 
    FileContext* getFileContext() override;
    _bool hasNext() override;
@@ -185,14 +185,14 @@ struct Join_DefStr : _def
 {
 
 public:
-   Join_DefStr(_defptr& lef, _genptr<_str>& rig, _uro& uro)
-        : left(std::move(lef)), right(std::move(rig)), taken(false), uroboros(uro) { };
+   Join_DefStr(_defptr& lef, _genptr<_str>& rig, _p2& p2)
+        : left(std::move(lef)), right(std::move(rig)), taken(false), perun2(p2) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr left;
    _genptr<_str> right;
    _bool taken;
@@ -203,14 +203,14 @@ struct Join_StrDef : _def
 {
 
 public:
-   Join_StrDef(_genptr<_str>& lef, _defptr& rig, _uro& uro)
-        : left(std::move(lef)), right(std::move(rig)), first(true), uroboros(uro) { };
+   Join_StrDef(_genptr<_str>& lef, _defptr& rig, _p2& p2)
+        : left(std::move(lef)), right(std::move(rig)), first(true), perun2(p2) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _genptr<_str> left;
    _defptr right;
    _bool first;
@@ -221,14 +221,14 @@ struct Join_DefList : _def
 {
 
 public:
-   Join_DefList(_defptr& lef, _genptr<_list>& rig, _uro& uro)
-        : left(std::move(lef)), right(std::move(rig)), taken(false), uroboros(uro) { };
+   Join_DefList(_defptr& lef, _genptr<_list>& rig, _p2& p2)
+        : left(std::move(lef)), right(std::move(rig)), taken(false), perun2(p2) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr left;
    _genptr<_list> right;
    _bool taken;
@@ -242,14 +242,14 @@ struct Join_ListDef : _def
 {
 
 public:
-   Join_ListDef(_genptr<_list>& lef, _defptr& rig, _uro& uro)
-        : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), uroboros(uro) { };
+   Join_ListDef(_genptr<_list>& lef, _defptr& rig, _p2& p2)
+        : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), perun2(p2) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _genptr<_list> left;
    _defptr right;
    _bool first;
@@ -264,14 +264,14 @@ struct Join_DefDef : _def
 {
 
 public:
-   Join_DefDef(_defptr& lef, _defptr& rig, _uro& uro)
-        : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), uroboros(uro) { };
+   Join_DefDef(_defptr& lef, _defptr& rig, _p2& p2)
+        : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), perun2(p2) { };
 
    void reset() override;
    _bool hasNext() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr left;
    _defptr right;
    _bool first;
@@ -282,7 +282,7 @@ private:
 struct DefinitionSuffix : _def
 {
 public:
-   DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool abs, const _bool fin);
+   DefinitionSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool abs, const _bool fin);
 
    _bool hasNext() override;
    void reset() override;

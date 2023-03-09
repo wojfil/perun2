@@ -1,23 +1,23 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gen-string.h"
 #include "../../os.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 _str ConcatString::getValue()
@@ -37,16 +37,16 @@ _str StringBinary::getValue()
 }
 
 
-LocationReference::LocationReference(_uro& uro)
-   : context(*uro.contexts.getLocationContext()) { };
+LocationReference::LocationReference(_p2& p2)
+   : context(*p2.contexts.getLocationContext()) { };
 
 _str LocationReference::getValue()
 {
    return this->context.location->value;
 }
 
-RelativeLocation::RelativeLocation(_genptr<_str>& val, _uro& uro)
-   : value(std::move(val)), context(*uro.contexts.getLocationContext()) { };
+RelativeLocation::RelativeLocation(_genptr<_str>& val, _p2& p2)
+   : value(std::move(val)), context(*p2.contexts.getLocationContext()) { };
 
 _str RelativeLocation::getValue()
 {
@@ -78,7 +78,7 @@ _str DefinitionElement::getValue()
    }
 
    while (this->definition->hasNext()) {
-      if (this->uroboros.state != State::s_Running) {
+      if (this->perun2.state != State::s_Running) {
          this->definition.reset();
          return EMPTY_STRING;
       }

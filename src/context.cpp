@@ -1,27 +1,27 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "context.h"
-#include "uroboros.h"
+#include "perun2.h"
 #include "datatype/generator/gen-time.h"
 #include "os.h"
 
-namespace uro
+namespace perun2
 {
 
-   AggregateContext::AggregateContext(_uro& uro)
-      : aggregate(uro) { };
+   AggregateContext::AggregateContext(_p2& p2)
+      : aggregate(p2) { };
 
    LocationContext::LocationContext()
       : location(std::make_unique<Variable<_str>>(VarType::vt_Special)),
@@ -38,24 +38,24 @@ namespace uro
          : os_join(this->prevLocation->location->value, trimmedValue);
    }
 
-   IndexContext::IndexContext(_uro& uro)
-      : AggregateContext(uro),
+   IndexContext::IndexContext(_p2& p2)
+      : AggregateContext(p2),
         index(std::make_unique<Variable<_num>>(VarType::vt_Special)) { };
 
-   FileContext::FileContext(_uro& uro)
-      : IndexContext(uro), attribute(std::make_unique<Attribute>(uro)),
+   FileContext::FileContext(_p2& p2)
+      : IndexContext(p2), attribute(std::make_unique<Attribute>(p2)),
       this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
-      locContext(uro.contexts.getLocationContext())
+      locContext(p2.contexts.getLocationContext())
    {
-      this->initVars(uro);
+      this->initVars(p2);
    };
 
-   FileContext::FileContext(_attrptr& attr, _uro& uro)
-      : IndexContext(uro), attribute(std::move(attr)),
+   FileContext::FileContext(_attrptr& attr, _p2& p2)
+      : IndexContext(p2), attribute(std::move(attr)),
       this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
-      locContext(uro.contexts.getLocationContext())
+      locContext(p2.contexts.getLocationContext())
    {
-      this->initVars(uro);
+      this->initVars(p2);
    };
 
    void IndexContext::resetIndex()
@@ -68,30 +68,30 @@ namespace uro
       this->index->value.value.i++;
    }
 
-   void FileContext::initVars(_uro& uro)
+   void FileContext::initVars(_p2& p2)
    {
-      this->v_archive = this->insertVar<_bool>(uro.hashes.HASH_VAR_ARCHIVE);
-      this->v_compressed = this->insertVar<_bool>(uro.hashes.HASH_VAR_COMPRESSED);
-      this->v_empty = this->insertVar<_bool>(uro.hashes.HASH_VAR_EMPTY);
-      this->v_encrypted = this->insertVar<_bool>(uro.hashes.HASH_VAR_ENCRYPTED);
-      this->v_exists = this->insertVar<_bool>(uro.hashes.HASH_VAR_EXISTS);
-      this->v_hidden = this->insertVar<_bool>(uro.hashes.HASH_VAR_HIDDEN);
-      this->v_isdirectory = this->insertVar<_bool>(uro.hashes.HASH_VAR_ISDIRECTORY);
-      this->v_isfile = this->insertVar<_bool>(uro.hashes.HASH_VAR_ISFILE);
-      this->v_readonly = this->insertVar<_bool>(uro.hashes.HASH_VAR_READONLY);
-      this->v_access = this->insertVar<_tim>(uro.hashes.HASH_VAR_ACCESS);
-      this->v_change = this->insertVar<_tim>(uro.hashes.HASH_VAR_CHANGE);
-      this->v_creation = this->insertVar<_tim>(uro.hashes.HASH_VAR_CREATION);
-      this->v_modification = this->insertVar<_tim>(uro.hashes.HASH_VAR_MODIFICATION);
-      this->v_lifetime = this->insertVar<_per>(uro.hashes.HASH_VAR_LIFETIME);
-      this->v_size = this->insertVar<_num>(uro.hashes.HASH_VAR_SIZE);
-      this->v_depth = this->insertVar<_num>(uro.hashes.HASH_VAR_DEPTH);
-      this->v_drive = this->insertVar<_str>(uro.hashes.HASH_VAR_DRIVE);
-      this->v_extension = this->insertVar<_str>(uro.hashes.HASH_VAR_EXTENSION);
-      this->v_fullname = this->insertVar<_str>(uro.hashes.HASH_VAR_FULLNAME);
-      this->v_name = this->insertVar<_str>(uro.hashes.HASH_VAR_NAME);
-      this->v_parent = this->insertVar<_str>(uro.hashes.HASH_VAR_PARENT);
-      this->v_path = this->insertVar<_str>(uro.hashes.HASH_VAR_PATH);
+      this->v_archive = this->insertVar<_bool>(p2.hashes.HASH_VAR_ARCHIVE);
+      this->v_compressed = this->insertVar<_bool>(p2.hashes.HASH_VAR_COMPRESSED);
+      this->v_empty = this->insertVar<_bool>(p2.hashes.HASH_VAR_EMPTY);
+      this->v_encrypted = this->insertVar<_bool>(p2.hashes.HASH_VAR_ENCRYPTED);
+      this->v_exists = this->insertVar<_bool>(p2.hashes.HASH_VAR_EXISTS);
+      this->v_hidden = this->insertVar<_bool>(p2.hashes.HASH_VAR_HIDDEN);
+      this->v_isdirectory = this->insertVar<_bool>(p2.hashes.HASH_VAR_ISDIRECTORY);
+      this->v_isfile = this->insertVar<_bool>(p2.hashes.HASH_VAR_ISFILE);
+      this->v_readonly = this->insertVar<_bool>(p2.hashes.HASH_VAR_READONLY);
+      this->v_access = this->insertVar<_tim>(p2.hashes.HASH_VAR_ACCESS);
+      this->v_change = this->insertVar<_tim>(p2.hashes.HASH_VAR_CHANGE);
+      this->v_creation = this->insertVar<_tim>(p2.hashes.HASH_VAR_CREATION);
+      this->v_modification = this->insertVar<_tim>(p2.hashes.HASH_VAR_MODIFICATION);
+      this->v_lifetime = this->insertVar<_per>(p2.hashes.HASH_VAR_LIFETIME);
+      this->v_size = this->insertVar<_num>(p2.hashes.HASH_VAR_SIZE);
+      this->v_depth = this->insertVar<_num>(p2.hashes.HASH_VAR_DEPTH);
+      this->v_drive = this->insertVar<_str>(p2.hashes.HASH_VAR_DRIVE);
+      this->v_extension = this->insertVar<_str>(p2.hashes.HASH_VAR_EXTENSION);
+      this->v_fullname = this->insertVar<_str>(p2.hashes.HASH_VAR_FULLNAME);
+      this->v_name = this->insertVar<_str>(p2.hashes.HASH_VAR_NAME);
+      this->v_parent = this->insertVar<_str>(p2.hashes.HASH_VAR_PARENT);
+      this->v_path = this->insertVar<_str>(p2.hashes.HASH_VAR_PATH);
    }
 
 
@@ -126,26 +126,26 @@ namespace uro
       }
    }
 
-   GlobalContext::GlobalContext(_uro& uro)
+   GlobalContext::GlobalContext(_p2& p2)
    {
-      this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_NOW, std::make_unique<gen::v_Now>()));
-      this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_TODAY, std::make_unique<gen::v_Today>()));
-      this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
-      this->globalVars.times.insert(std::make_pair(uro.hashes.HASH_VAR_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
+      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_NOW, std::make_unique<gen::v_Now>()));
+      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_TODAY, std::make_unique<gen::v_Today>()));
+      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
+      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
 
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_DESKTOP,
+      this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_DESKTOP,
          std::make_unique<Variable<_str>>(VarType::vt_Special, os_desktopPath())));
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_UROBOROS2,
-         std::make_unique<Variable<_str>>(VarType::vt_Special, os_uroborosPath())));
-      this->globalVars.strings.insert(std::make_pair(uro.hashes.HASH_VAR_ORIGIN,
-         std::make_unique<Variable<_str>>(VarType::vt_Special, uro.arguments.getLocation())));
+      this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_PERUN2,
+         std::make_unique<Variable<_str>>(VarType::vt_Special, os_executablePath())));
+      this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_ORIGIN,
+         std::make_unique<Variable<_str>>(VarType::vt_Special, p2.arguments.getLocation())));
 
-      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ALPHABET,
+      this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ALPHABET,
          std::make_unique<Variable<_list>>(VarType::vt_Special, this->getAlphabet())));
-      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ASCII,
+      this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ASCII,
          std::make_unique<Variable<_list>>(VarType::vt_Special, STRINGS_ASCII)));
-      this->globalVars.lists.insert(std::make_pair(uro.hashes.HASH_VAR_ARGUMENTS,
-         std::make_unique<Variable<_list>>(VarType::vt_Special, uro.arguments.getArgs())));
+      this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ARGUMENTS,
+         std::make_unique<Variable<_list>>(VarType::vt_Special, p2.arguments.getArgs())));
    };
 
    _list GlobalContext::getAlphabet() const
@@ -157,19 +157,19 @@ namespace uro
       return a;
    }
 
-   Contexts::Contexts(_uro& uro)
-      : GlobalContext(uro), hashes(uro.hashes), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
+   Contexts::Contexts(_p2& p2)
+      : GlobalContext(p2), hashes(p2.hashes), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
    {
       this->locationContexts.push_back(&this->rootLocation);
-      this->locationContexts.back()->location->value = uro.arguments.getLocation();
+      this->locationContexts.back()->location->value = p2.arguments.getLocation();
 
-      this->addOsGen(hashes.HASH_VAR_FILES, gen::OsElement::oe_Files, uro);
-      this->addOsGen(hashes.HASH_VAR_RECURSIVEFILES, gen::OsElement::oe_RecursiveFiles, uro);
-      this->addOsGen(hashes.HASH_VAR_DIRECTORIES, gen::OsElement::oe_Directories, uro);
-      this->addOsGen(hashes.HASH_VAR_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, uro);
+      this->addOsGen(hashes.HASH_VAR_FILES, gen::OsElement::oe_Files, p2);
+      this->addOsGen(hashes.HASH_VAR_RECURSIVEFILES, gen::OsElement::oe_RecursiveFiles, p2);
+      this->addOsGen(hashes.HASH_VAR_DIRECTORIES, gen::OsElement::oe_Directories, p2);
+      this->addOsGen(hashes.HASH_VAR_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
    };
 
-   _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, _p2& p2)
    {
       const _hash var = tk.value.word.h;
 
@@ -178,16 +178,16 @@ namespace uro
          return true;
       }
 
-      return findVar(tk, result, uro);
+      return findVar(tk, result, p2);
    }
 
-   _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, _p2& p2)
    {
       const _hash var = tk.value.word.h;
 
       if (var == this->hashes.HASH_VAR_INDEX) {
          if (this->indexContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
+            throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             return false;
          }
 
@@ -198,16 +198,16 @@ namespace uro
          }
       }
 
-      return findVar(tk, result, uro);
+      return findVar(tk, result, p2);
    }
 
-   _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, _uro& uro)
+   _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, _p2& p2)
    {
       const _hash var = tk.value.word.h;
 
       if (var == this->hashes.HASH_VAR_THIS) {
          if (this->fileContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
+            throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             return false;
          }
 
@@ -219,7 +219,7 @@ namespace uro
       }
       else if (var == this->hashes.HASH_VAR_LOCATION) {
          if (this->locationContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
+            throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             return false;
          }
 
@@ -230,10 +230,10 @@ namespace uro
          }
       }
 
-      return findVar(tk, result, uro);
+      return findVar(tk, result, p2);
    }
 
-   _bool Contexts::makeVarRef(const Token& tk, _defptr& result, _uro& uro)
+   _bool Contexts::makeVarRef(const Token& tk, _defptr& result, _p2& p2)
    {
       const _hash var = tk.value.word.h;
       auto v = this->osGenerators.find(var);
@@ -361,9 +361,9 @@ namespace uro
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const _hash hash, const gen::OsElement element, _uro& uro)
+   void Contexts::addOsGen(const _hash hash, const gen::OsElement element, _p2& p2)
    {
-      osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, uro)));
+      osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, p2)));
    }
 
    void Contexts::makeLocationContext(_lcptr& result)
@@ -376,7 +376,7 @@ namespace uro
       return this->userVarsContexts.back();
    }
 
-   _bool Contexts::varExists(const Token& tk, _uro& uro)
+   _bool Contexts::varExists(const Token& tk, _p2& p2)
    {
       Variable<_bool>* b;
       Variable<_tim>* t;
@@ -388,13 +388,13 @@ namespace uro
       Variable<_list>* l;
 
       return osGenerators.find(tk.value.word.h) != osGenerators.end()
-          || this->getVar(tk, b, uro)
-          || this->getVar(tk, t, uro)
-          || this->getVar(tk, p, uro)
-          || this->getVar(tk, s, uro)
-          || this->getVar(tk, n, uro)
-          || this->getVar(tk, tl, uro)
-          || this->getVar(tk, nl, uro)
-          || this->getVar(tk, l, uro);
+          || this->getVar(tk, b, p2)
+          || this->getVar(tk, t, p2)
+          || this->getVar(tk, p, p2)
+          || this->getVar(tk, s, p2)
+          || this->getVar(tk, n, p2)
+          || this->getVar(tk, tl, p2)
+          || this->getVar(tk, nl, p2)
+          || this->getVar(tk, l, p2);
    }
 }

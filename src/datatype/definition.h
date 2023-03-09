@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef DEFINITION_H
@@ -21,14 +21,12 @@
 #include <memory>
 
 
-namespace uro
+namespace perun2
 {
 
 struct FileContext;
 
-// this data structure is crucial for Uroboros2
-// as it represents a lazy evaluated collection of strings
-// this is what file system elements (as their names and paths) usually are
+// this data structure represents a lazy evaluated collection of strings
 struct Definition : Generator<_str>
 {
 public:

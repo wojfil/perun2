@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-numlist.h"
@@ -21,23 +21,23 @@
 #include "../parse-gen.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _uro& uro)
+_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _p2& p2)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      return parseOneToken(uro, tks, result);
+      return parseOneToken(p2, tks, result);
    }
 
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {
-         return parseTimListed(result, tks, uro);
+         return parseTimListed(result, tks, p2);
       }
 
-      if (parseBinary<_tlist>(result, tks, uro) || parseTernary<_tlist>(result, tks, uro)) {
+      if (parseBinary<_tlist>(result, tks, p2) || parseTernary<_tlist>(result, tks, p2)) {
          return true;
       }
    }
@@ -45,7 +45,7 @@ _bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _uro& uro)
    return false;
 }
 
-static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _uro& uro)
+static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _p2& p2)
 {
    // look - I do not use template functions from 'parse-generic.h'
    // why? because time has a special property - comma can mean
@@ -55,15 +55,15 @@ static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _uro& ur
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
 
    _genptr<_tlist> times;
-   if (parseListedTimes(times, elements, uro)) {
+   if (parseListedTimes(times, elements, p2)) {
       result = std::move(times);
       return true;
    }
 
-   return parseListedTimLists(result, elements, uro);
+   return parseListedTimLists(result, elements, p2);
 }
 
-static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _uro& uro)
+static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _p2& p2)
 {
    const _size len = elements.size();
    _bool isPrev = false;
@@ -74,7 +74,7 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
       const Tokens& tks = elements[i];
       _genptr<_tim> time;
 
-      if (parse(uro, tks, time)) {
+      if (parse(p2, tks, time)) {
          isPrev = true;
          if (isConstant && !time->isConstant()) {
             isConstant = false;
@@ -87,7 +87,7 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
             result.pop_back();
             _genptr<_tim> time2;
 
-            if (timeFromTwoSeqs(time2, elements[i - 1], tks, uro)) {
+            if (timeFromTwoSeqs(time2, elements[i - 1], tks, p2)) {
                isPrev = false;
                if (isConstant && !time2->isConstant()) {
                   isConstant = false;
@@ -116,15 +116,15 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
    return true;
 }
 
-static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, _uro& uro)
+static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, _p2& p2)
 {
    const _int start = prev.getStart();
    const _int length = prev.getLength() + curr.getLength() + 1;
    const Tokens tks2(curr, start, length);
-   return parse(uro, tks2, result);
+   return parse(p2, tks2, result);
 }
 
-static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _uro& uro)
+static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _p2& p2)
 {
    const _size len = elements.size();
    _bool isPrev = false;
@@ -135,7 +135,7 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
       const Tokens& tks = elements[i];
       _genptr<_tim> time;
 
-      if (parse(uro, tks, time)) {
+      if (parse(p2, tks, time)) {
          if (isConstant && !time->isConstant()) {
             isConstant = false;
          }
@@ -148,7 +148,7 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
          if (isPrev) {
             _genptr<_tim> time2;
 
-            if (timeFromTwoSeqs(time2, elements[i - 1], tks, uro)) {
+            if (timeFromTwoSeqs(time2, elements[i - 1], tks, p2)) {
                if (isConstant && !time2->isConstant()) {
                   isConstant = false;
                }
@@ -162,7 +162,7 @@ static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>
          }
 
          _genptr<_tlist> tlist;
-         if (parse(uro, tks, tlist)) {
+         if (parse(p2, tks, tlist)) {
             if (isConstant && !tlist->isConstant()) {
                isConstant = false;
             }

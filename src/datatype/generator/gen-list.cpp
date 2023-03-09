@@ -1,23 +1,23 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gen-list.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 #include "../../util.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 Join_StrStr::Join_StrStr(_genptr<_str>& lef, _genptr<_str>& rig)
@@ -32,8 +32,8 @@ Join_ListStr::Join_ListStr(_genptr<_list>& lef, _genptr<_str>& rig)
 Join_ListList::Join_ListList(_genptr<_list>& lef, _genptr<_list>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-ListFilter_Where::ListFilter_Where(_genptr<_bool>& cond, _genptr<_list>& li, _fcptr& ctx, _uro& uro)
-   : condition(std::move(cond)), list(std::move(li)), context(std::move(ctx)), uroboros(uro) { };
+ListFilter_Where::ListFilter_Where(_genptr<_bool>& cond, _genptr<_list>& li, _fcptr& ctx, _p2& p2)
+   : condition(std::move(cond)), list(std::move(li)), context(std::move(ctx)), perun2(p2) { };
 
 ListFilter_Limit::ListFilter_Limit(_genptr<_list>& li, _genptr<_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
@@ -88,7 +88,7 @@ _list ListFilter_Where::getValue()
    this->context->resetIndex();
    _nint index = NINT_ZERO;
 
-   while (this->uroboros.state == State::s_Running && index != length) {
+   while (this->perun2.state == State::s_Running && index != length) {
       const _str& unit = values[static_cast<_size>(index)];
       this->context->index->value.value.i = index;
       this->context->loadData(unit);

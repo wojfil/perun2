@@ -1,34 +1,34 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "attribute.h"
-#include "uroboros.h"
+#include "perun2.h"
 #include "os.h"
 
 
-namespace uro
+namespace perun2
 {
 
-Attribute::Attribute(_uro& uro)
-   : uroboros(uro) { };
+Attribute::Attribute(_p2& p2)
+   : perun2(p2) { };
 
-Attribute::Attribute(const _aunit val, _uro& uro)
-   : value(val), uroboros(uro) { };
+Attribute::Attribute(const _aunit val, _p2& p2)
+   : value(val), perun2(p2) { };
 
 void Attribute::add(const _hash val)
 {
-   const Hashes& hashes = this->uroboros.hashes;
+   const Hashes& hashes = this->perun2.hashes;
 
    if (hashes.HASH_GROUP_ATTR.find(val) == hashes.HASH_GROUP_ATTR.end()) {
       return;

@@ -1,9 +1,9 @@
 force copy 'bin/Release/Uroboros.exe'
   to 'test/blackbox'
-  as 'uro.exe';
+  as 'perun2.exe';
   
 inside 'test/blackbox' {
-  if exists('uro.exe') {
+  if exists('perun2.exe') {
     open 'run.py';
     if not success {
       error

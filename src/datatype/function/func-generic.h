@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef FUNC_GENERIC_H
@@ -18,10 +18,10 @@
 #include "../generator.h"
 #include "../datatype.h"
 #include "../math.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::func
+namespace perun2::func
 {
 
 // one arg
@@ -101,8 +101,8 @@ struct F_RandomElement : Func_1<std::vector<T>>, Generator<T>
 {
 public:
 
-   F_RandomElement<T> (_genptr<std::vector<T>>& a1, _uro& uro)
-      : Func_1<std::vector<T>>(a1), math(uro.math) {};
+   F_RandomElement<T> (_genptr<std::vector<T>>& a1, _p2& p2)
+      : Func_1<std::vector<T>>(a1), math(p2.math) {};
 
    T getValue() override {
       const std::vector<T> value = this->arg1->getValue();

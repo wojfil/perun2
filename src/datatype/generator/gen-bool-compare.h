@@ -1,25 +1,25 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef GEN_BOOL_COMPARE_H
 #define GEN_BOOL_COMPARE_H
 
 #include "../datatype.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 enum CompType
@@ -381,11 +381,11 @@ private:
 struct DefComparison : Generator<_bool>
 {
 public:
-   DefComparison(_defptr& val1, _defptr& val2, _uro& uro)
-      : value1(std::move(val1)), value2(std::move(val2)), uroboros(uro) { };
+   DefComparison(_defptr& val1, _defptr& val2, _p2& p2)
+      : value1(std::move(val1)), value2(std::move(val2)), perun2(p2) { };
 
 protected:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr value1;
    _defptr value2;
 };
@@ -394,8 +394,8 @@ protected:
 struct DefinitionsEqual : DefComparison
 {
 public:
-   DefinitionsEqual(_defptr& val1, _defptr& val2, _uro& uro)
-      : DefComparison(val1, val2, uro) { };
+   DefinitionsEqual(_defptr& val1, _defptr& val2, _p2& p2)
+      : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
 };
@@ -404,8 +404,8 @@ public:
 struct DefinitionsNotEqual : DefComparison
 {
 public:
-   DefinitionsNotEqual(_defptr& val1, _defptr& val2, _uro& uro)
-      : DefComparison(val1, val2, uro) { };
+   DefinitionsNotEqual(_defptr& val1, _defptr& val2, _p2& p2)
+      : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
 };
@@ -414,8 +414,8 @@ public:
 struct DefinitionsSmaller : DefComparison
 {
 public:
-   DefinitionsSmaller(_defptr& val1, _defptr& val2, _uro& uro)
-      : DefComparison(val1, val2, uro) { };
+   DefinitionsSmaller(_defptr& val1, _defptr& val2, _p2& p2)
+      : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
 };
@@ -424,8 +424,8 @@ public:
 struct DefinitionsSmallerEquals : DefComparison
 {
 public:
-   DefinitionsSmallerEquals(_defptr& val1, _defptr& val2, _uro& uro)
-      : DefComparison(val1, val2, uro) { };
+   DefinitionsSmallerEquals(_defptr& val1, _defptr& val2, _p2& p2)
+      : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
 };
@@ -434,8 +434,8 @@ public:
 struct DefinitionsBigger : DefComparison
 {
 public:
-   DefinitionsBigger(_defptr& val1, _defptr& val2, _uro& uro)
-      : DefComparison(val1, val2, uro) { };
+   DefinitionsBigger(_defptr& val1, _defptr& val2, _p2& p2)
+      : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
 };
@@ -444,8 +444,8 @@ public:
 struct DefinitionsBiggerEquals : DefComparison
 {
 public:
-   DefinitionsBiggerEquals(_defptr& val1, _defptr& val2, _uro& uro)
-      : DefComparison(val1, val2, uro) { };
+   DefinitionsBiggerEquals(_defptr& val1, _defptr& val2, _p2& p2)
+      : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
 };
@@ -457,11 +457,11 @@ public:
 struct DefListComparison : Generator<_bool>
 {
 public:
-   DefListComparison(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : definition(std::move(def)), list(std::move(li)), uroboros(uro) { };
+   DefListComparison(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : definition(std::move(def)), list(std::move(li)), perun2(p2) { };
 
 protected:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr definition;
    _genptr<_list> list;
 };
@@ -470,8 +470,8 @@ protected:
 struct DefinitionListEqual : DefListComparison
 {
 public:
-   DefinitionListEqual(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : DefListComparison(def, li, uro) { };
+   DefinitionListEqual(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
 };
@@ -480,8 +480,8 @@ public:
 struct DefinitionListNotEqual : DefListComparison
 {
 public:
-   DefinitionListNotEqual(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : DefListComparison(def, li, uro) { };
+   DefinitionListNotEqual(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
 };
@@ -490,8 +490,8 @@ public:
 struct DefinitionListSmaller : DefListComparison
 {
 public:
-   DefinitionListSmaller(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : DefListComparison(def, li, uro) { };
+   DefinitionListSmaller(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
 };
@@ -500,8 +500,8 @@ public:
 struct DefinitionListSmallerEquals : DefListComparison
 {
 public:
-   DefinitionListSmallerEquals(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : DefListComparison(def, li, uro) { };
+   DefinitionListSmallerEquals(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
 };
@@ -510,8 +510,8 @@ public:
 struct DefinitionListBigger : DefListComparison
 {
 public:
-   DefinitionListBigger(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : DefListComparison(def, li, uro) { };
+   DefinitionListBigger(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
 };
@@ -520,8 +520,8 @@ public:
 struct DefinitionListBiggerEquals : DefListComparison
 {
 public:
-   DefinitionListBiggerEquals(_defptr& def, _genptr<_list>& li, _uro& uro)
-      : DefListComparison(def, li, uro) { };
+   DefinitionListBiggerEquals(_defptr& def, _genptr<_list>& li, _p2& p2)
+      : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
 };

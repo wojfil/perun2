@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "func-attr.h"
@@ -17,7 +17,7 @@
 #include "..\..\util.h"
 
 
-namespace uro::func
+namespace perun2::func
 {
 
 _str F_Parent::getValue()
@@ -159,13 +159,13 @@ _num F_SizeDefinition::getValue()
    _nint total = NINT_ZERO;
 
    while (definition->hasNext()) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          definition->reset();
          return _num(NINT_MINUS_ONE);
       }
 
       const _str v = definition->getValue();
-      const _nint s = os_size(os_join(this->context->location->value, v), this->uroboros);
+      const _nint s = os_size(os_join(this->context->location->value, v), this->perun2);
       if (s != NINT_MINUS_ONE) {
          total += s;
       }
@@ -186,13 +186,13 @@ _num F_SizeList::getValue()
    }
 
    for (_size i = 0; i < len; i++) {
-      if (!this->uroboros.state == State::s_Running) {
+      if (!this->perun2.state == State::s_Running) {
          return _num(NINT_MINUS_ONE);
       }
 
       const _str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvaild(v)) {
-         const _nint s = os_size(os_join(this->context->location->value, v), this->uroboros);
+         const _nint s = os_size(os_join(this->context->location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             total += s;
             any = true;

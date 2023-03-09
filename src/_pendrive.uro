@@ -1,3 +1,3 @@
 force copy 'bin\Release\Uroboros.exe'
   to 'f:\'
-  as 'uro.exe'
+  as 'p2.exe'

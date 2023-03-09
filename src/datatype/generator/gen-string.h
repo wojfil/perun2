@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef GEN_STRING_H
@@ -19,13 +19,13 @@
 #include "../datatype.h"
 #include "../../util.h"
 
-namespace uro
+namespace perun2
 {
-   struct _uro;
+   struct _p2;
    struct LocationContext;
 }
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 struct ConcatString : Generator<_str>
@@ -61,7 +61,7 @@ private:
 struct LocationReference : Generator<_str>
 {
 public:
-   LocationReference(_uro& uro);
+   LocationReference(_p2& p2);
    _str getValue() override;
 
 private:
@@ -72,7 +72,7 @@ private:
 struct RelativeLocation : Generator<_str>
 {
 public:
-   RelativeLocation(_genptr<_str>& val, _uro& uro);
+   RelativeLocation(_genptr<_str>& val, _p2& p2);
    _str getValue() override;
 
 private:
@@ -98,13 +98,13 @@ private:
 struct DefinitionElement : Generator<_str>
 {
 public:
-   DefinitionElement(_defptr& def, _genptr<_num>& ind, _uro& uro)
-      : definition(std::move(def)), index(std::move(ind)), uroboros(uro) {};
+   DefinitionElement(_defptr& def, _genptr<_num>& ind, _p2& p2)
+      : definition(std::move(def)), index(std::move(ind)), perun2(p2) {};
 
    _str getValue() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr definition;
    _genptr<_num> index;
 };

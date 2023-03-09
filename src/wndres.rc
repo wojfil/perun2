@@ -6,13 +6,13 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "wojfil"
-      VALUE "FileDescription", "Uroboros2 main executable file"
+      VALUE "CompanyName", "WojFil Games"
+      VALUE "FileDescription", "Perun2 main executable file"
       VALUE "FileVersion", "2.0.0"
-      VALUE "InternalName", "uro"
+      VALUE "InternalName", "perun2"
       VALUE "LegalCopyright", ""
-      VALUE "OriginalFilename", "uro.exe"
-      VALUE "ProductName", "Uroboros2"
+      VALUE "OriginalFilename", "perun2.exe"
+      VALUE "ProductName", "Perun2"
       VALUE "ProductVersion", "2.0.0"
     END
   END

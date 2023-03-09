@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef PARSE_FUNCTION_H_INCLUDED
@@ -17,10 +17,10 @@
 
 #include "../generator.h"
 #include "../../tokens.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::func
+namespace perun2::func
 {
 
 // this is function parsing
@@ -30,31 +30,31 @@ namespace uro::func
 
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
 
-_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _uro& uro);
-_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, _uro& uro);
+_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
+_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, _p2& p2);
 
-_bool numberFunction(_genptr<_num>& result, const Tokens& tks, _uro& uro);
-static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, _uro& uro);
-static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, _uro& uro);
+_bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2);
+static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, _p2& p2);
+static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, _p2& p2);
 
-_bool periodFunction(_genptr<_per>& result, const Tokens& tks, _uro& uro);
+_bool periodFunction(_genptr<_per>& result, const Tokens& tks, _p2& p2);
 
-_bool stringFunction(_genptr<_str>& result, const Tokens& tks, _uro& uro);
-static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, _uro& uro);
-static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, _uro& uro);
+_bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2);
+static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, _p2& p2);
+static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, _p2& p2);
 
-_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _uro& uro);
-static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, _uro& uro);
+_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2);
+static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, _p2& p2);
 
-static void functionArgNumberException(const _int argNumber, const Token& word, _uro& uro);
-static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, _uro& uro);
+static void functionArgNumberException(const _int argNumber, const Token& word, _p2& p2);
+static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, _p2& p2);
 static _str ordinalNumber(const _int number);
 
-_bool listFunction(_genptr<_list>& result, const Tokens& tks, _uro& uro);
-_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _uro& uro);
+_bool listFunction(_genptr<_list>& result, const Tokens& tks, _p2& p2);
+_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _p2& p2);
 
-static void checkFunctionAttribute(const Token& word, _uro& uro);
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, _uro& uro);
+static void checkFunctionAttribute(const Token& word, _p2& p2);
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, _p2& p2);
 
 }
 

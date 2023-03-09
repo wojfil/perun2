@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef UNICODE
@@ -22,11 +22,11 @@
 
 #include "gen-os.h"
 #include "gen-string.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 #include "../../metadata.h"
 #include "../../os.h"
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
@@ -40,8 +40,8 @@ namespace uro::gen
 
 
 OsDefinition::OsDefinition(P_GEN_OS_ARGS)
-   : location(std::move(loc)), uroboros(uro), context(uro),
-     flags(uro.flags), isAbsolute(abs),
+   : location(std::move(loc)), perun2(p2), context(p2),
+     flags(p2.flags), isAbsolute(abs),
      hasPrefix(!pref.empty()), prefix(pref) { };
 
 
@@ -293,7 +293,7 @@ _bool RecursiveFiles::hasNext()
       this->context.index->value = index;
    }
 
-   while (this->uroboros.state == State::s_Running) {
+   while (this->perun2.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -397,7 +397,7 @@ _bool RecursiveDirectories::hasNext()
       this->context.index->value = index;
    }
 
-   while (this->uroboros.state == State::s_Running) {
+   while (this->perun2.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -484,7 +484,7 @@ _bool RecursiveAll::hasNext()
       this->context.index->value = index;
    }
 
-   while (this->uroboros.state == State::s_Running) {
+   while (this->perun2.state == State::s_Running) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {

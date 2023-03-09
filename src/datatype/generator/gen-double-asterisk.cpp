@@ -1,26 +1,26 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gen-double-asterisk.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _uro& uro, const _str& pat, const _str& pref)
-   : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), uroboros(uro), preffix(pref), 
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _p2& p2, const _str& pat, const _str& pref)
+   : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), perun2(p2), preffix(pref), 
       startId(pref.size()), specialStart(hasSpecialStart()) 
 {   
    minLength = this->getMinLength(pat);
@@ -41,7 +41,7 @@ _bool DoubleAsteriskPattern::hasNext()
       first = false;
    }
 
-   while (definition->hasNext() && this->uroboros.state == State::s_Running) {
+   while (definition->hasNext() && this->perun2.state == State::s_Running) {
       value = this->startId == 0
          ? definition->getValue()
          : str(this->preffix, definition->getValue());

@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef TOKEN_H
@@ -20,10 +20,10 @@
 #include "keyword.h"
 
 
-namespace uro
+namespace perun2
 {
 
-struct _uro;
+struct _p2;
 
 // Token represents the smallest syntax unit of the language
 
@@ -142,16 +142,16 @@ public:
 
    // constructors:
    Token() = delete;
-   Token(const _char v, const _int li, _uro& uro);
-   Token(const _char v, const _int am, const _int li, _uro& uro);
+   Token(const _char v, const _int li, _p2& p2);
+   Token(const _char v, const _int am, const _int li, _p2& p2);
    Token(const _num& v, const _int li, const _size os_id, const _size os_len,
-      const NumberMode nm, _uro& uro);
-   Token(const _size os_id, const _size os_len, const _int li, _uro& uro);
-   Token(const _size os_id, const _size os_len, const _int id, const _int li, _uro& uro);
-   Token(const _hash v, const _int li, const _size os_id, const _size os_len, _uro& uro);
-   Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _uro& uro);
+      const NumberMode nm, _p2& p2);
+   Token(const _size os_id, const _size os_len, const _int li, _p2& p2);
+   Token(const _size os_id, const _size os_len, const _int id, const _int li, _p2& p2);
+   Token(const _hash v, const _int li, const _size os_id, const _size os_len, _p2& p2);
+   Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _p2& p2);
    Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
-      const _size os_id2, const _size os_len2, _uro& uro);
+      const _size os_id2, const _size os_len2, _p2& p2);
 
    // members:
    const Type type;
@@ -168,11 +168,11 @@ public:
    _bool isLogicConstant() const;
    _bool isWeekDay() const;
    _bool isMonth() const;
-   _str getOriginString(_uro& uro) const;
-   _str getOriginString_2(_uro& uro) const;
+   _str getOriginString(_p2& p2) const;
+   _str getOriginString_2(_p2& p2) const;
 
 private:
-   _str getCodeSubstr(const _osi& osi, _uro& uro) const;
+   _str getCodeSubstr(const _osi& osi, _p2& p2) const;
 
 };
 

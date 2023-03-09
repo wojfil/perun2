@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "hash.h"
@@ -18,7 +18,7 @@
 #include <algorithm>
 
 
-namespace uro
+namespace perun2
 {
 
 // case-insensitive hash of a string
@@ -98,7 +98,7 @@ Hashes::Hashes() :
    HASH_VAR_ARGUMENTS(rawStringHash(STRING_ARGUMENTS)),
 
    HASH_VAR_DESKTOP(rawStringHash(STRING_DESKTOP)),
-   HASH_VAR_UROBOROS2(rawStringHash(STRING_UROBOROS2)),
+   HASH_VAR_PERUN2(rawStringHash(STRING_PERUN2)),
    HASH_VAR_ORIGIN(rawStringHash(STRING_ORIGIN)),
 
    HASH_VAR_DIRECTORIES(rawStringHash(STRING_DIRECTORIES)),
@@ -316,7 +316,7 @@ Hashes::Hashes() :
       this->HASH_VAR_DECEMBER, this->HASH_VAR_MONDAY, this->HASH_VAR_TUESDAY, this->HASH_VAR_WEDNESDAY,
       this->HASH_VAR_THURSDAY, this->HASH_VAR_FRIDAY, this->HASH_VAR_SATURDAY, this->HASH_VAR_SUNDAY,
       this->HASH_VAR_ALPHABET, this->HASH_VAR_ASCII, this->HASH_VAR_ARGUMENTS, this->HASH_VAR_DESKTOP,
-      this->HASH_VAR_UROBOROS2, this->HASH_VAR_ORIGIN, this->HASH_VAR_DIRECTORIES,
+      this->HASH_VAR_PERUN2, this->HASH_VAR_ORIGIN, this->HASH_VAR_DIRECTORIES,
       this->HASH_VAR_FILES, this->HASH_VAR_RECURSIVEFILES, this->HASH_VAR_RECURSIVEDIRECTORIES
    }),
 

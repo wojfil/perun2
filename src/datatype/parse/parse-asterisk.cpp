@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-asterisk.h"
@@ -20,23 +20,23 @@
 #include "../../os.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int line, _uro& uro)
+_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int line, _p2& p2)
 {
    const _str pattern = os_trim(originPattern);
 
    if (pattern == STRING_CHAR_ASTERISK) {
-      _genptr<_str> loc = std::make_unique<gen::LocationReference>(uro);
-      result = std::make_unique<gen::All>(loc, uro, gen::os::DEFAULT_PATTERN,
+      _genptr<_str> loc = std::make_unique<gen::LocationReference>(p2);
+      result = std::make_unique<gen::All>(loc, p2, gen::os::DEFAULT_PATTERN,
          gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
    if (pattern == STRING_DOUBLE_ASTERISK) {
-      _genptr<_str> loc = std::make_unique<gen::LocationReference>(uro);
-      result = std::make_unique<gen::RecursiveAll>(loc, uro, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
+      _genptr<_str> loc = std::make_unique<gen::LocationReference>(p2);
+      result = std::make_unique<gen::RecursiveAll>(loc, p2, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX);
       return true;
    }
 
@@ -74,7 +74,7 @@ exitAsteriskBeginning:
          base = std::make_unique<gen::Constant<_str>>(pattern.substr(0, 2));
       }
       else {
-         base = std::make_unique<gen::LocationReference>(uro);
+         base = std::make_unique<gen::LocationReference>(p2);
       }
    }
    else {
@@ -84,7 +84,7 @@ exitAsteriskBeginning:
       else {
          prefix = pattern.substr(0, separatorId);
          _genptr<_str> loc = std::make_unique<gen::Constant<_str>>(prefix);
-         base = std::make_unique<gen::RelativeLocation>(loc, uro);
+         base = std::make_unique<gen::RelativeLocation>(loc, p2);
          prefix += OS_SEPARATOR;
       }
    }
@@ -103,12 +103,12 @@ exitAsteriskBeginning:
 
       if (separatorId2 == -1) {
          if (separatorId == -1) {
-            result = std::make_unique<gen::All>(base, uro,
+            result = std::make_unique<gen::All>(base, p2,
                str(OS_SEPARATOR_STRING, isAbsolute ? pattern.substr(3) : pattern), isAbsolute, prefix);
          }
          else {
             const _str s = pattern.substr(separatorId);
-            result = std::make_unique<gen::All>(base, uro, s, isAbsolute, prefix);
+            result = std::make_unique<gen::All>(base, p2, s, isAbsolute, prefix);
          }
 
          return true;
@@ -121,15 +121,15 @@ exitAsteriskBeginning:
          ? str(OS_SEPARATOR_STRING, pattern.substr(patternStart2, patternLength))
          : pattern.substr(patternStart2, patternLength);
 
-      _defptr d = std::make_unique<gen::Directories>(base, uro, p, isAbsolute, prefix);
-      result = std::make_unique<gen::DefinitionSuffix>(d, uro, suffix, isAbsolute, gen::os::IS_FINAL);
+      _defptr d = std::make_unique<gen::Directories>(base, p2, p, isAbsolute, prefix);
+      result = std::make_unique<gen::DefinitionSuffix>(d, p2, suffix, isAbsolute, gen::os::IS_FINAL);
       return true;
    }
 
    _size start = separatorId == -1 ? patternStart : static_cast<_size>(separatorId + 1);
 
    if ((info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0) {
-      return parseDoubleAsterisk(result, base, pattern, start, isAbsolute, uro);
+      return parseDoubleAsterisk(result, base, pattern, start, isAbsolute, p2);
    }
 
    _bool hasAsterisk = false;
@@ -171,11 +171,11 @@ exitAsteriskBeginning:
       const _str p = str(OS_SEPARATOR_STRING, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
-         result = std::make_unique<gen::All>(base, uro, p, isAbsolute, prefix);
+         result = std::make_unique<gen::All>(base, p2, p, isAbsolute, prefix);
       }
       else {
-         _defptr d = std::make_unique<gen::Directories>(base, uro, p, isAbsolute, prefix);
-         result = std::make_unique<gen::DefinitionSuffix>(d, uro, u.suffixPart, isAbsolute, gen::os::IS_FINAL);
+         _defptr d = std::make_unique<gen::Directories>(base, p2, p, isAbsolute, prefix);
+         result = std::make_unique<gen::DefinitionSuffix>(d, p2, u.suffixPart, isAbsolute, gen::os::IS_FINAL);
       }
       return true;
    }
@@ -184,16 +184,16 @@ exitAsteriskBeginning:
    const _str firstPatt = str(OS_SEPARATOR_STRING, units[0].asteriskPart);
 
    if (units[0].suffixPart.empty()) {
-      result = std::make_unique<gen::Directories>(base, uro, firstPatt, isAbsolute, prefix);
+      result = std::make_unique<gen::Directories>(base, p2, firstPatt, isAbsolute, prefix);
    }
    else {
-      _defptr d = std::make_unique<gen::Directories>(base, uro, firstPatt, isAbsolute, prefix);
-      result = std::make_unique<gen::DefinitionSuffix>(d, uro, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL);
+      _defptr d = std::make_unique<gen::Directories>(base, p2, firstPatt, isAbsolute, prefix);
+      result = std::make_unique<gen::DefinitionSuffix>(d, p2, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL);
    }
 
    for (_size i = 1; i < ulen; i++) {
       const _bool isFinal = i == (ulen - 1);
-      LocationContext* locContext = uro.contexts.getLocationContext();
+      LocationContext* locContext = p2.contexts.getLocationContext();
       std::unique_ptr<gen::LocationVessel> vessel = std::make_unique<gen::LocationVessel>(isAbsolute, locContext);
       gen::LocationVessel& vesselRef = *(vessel.get());
       _genptr<_str> vesselPtr = std::move(vessel);
@@ -203,15 +203,15 @@ exitAsteriskBeginning:
 
       if (units[i].suffixPart.empty()) {
          if (isFinal) {
-            nextDef = std::make_unique<gen::All>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
+            nextDef = std::make_unique<gen::All>(vesselPtr, p2, nextPatt, isAbsolute, gen::os::NO_PREFIX);
          }
          else {
-            nextDef = std::make_unique<gen::Directories>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
+            nextDef = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, isAbsolute, gen::os::NO_PREFIX);
          }
       }
       else {
-         _defptr d = std::make_unique<gen::Directories>(vesselPtr, uro, nextPatt, isAbsolute, gen::os::NO_PREFIX);
-         nextDef = std::make_unique<gen::DefinitionSuffix>(d, uro, units[i].suffixPart, isAbsolute, isFinal);
+         _defptr d = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, isAbsolute, gen::os::NO_PREFIX);
+         nextDef = std::make_unique<gen::DefinitionSuffix>(d, p2, units[i].suffixPart, isAbsolute, isFinal);
       }
 
       _defptr prev = std::move(result);
@@ -247,7 +247,7 @@ void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& pa
 
 
 _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, 
-   const _size start, const _bool isAbsolute, _uro& uro)
+   const _size start, const _bool isAbsolute, _p2& p2)
 {
    enum Mode {
       m_Normal,
@@ -332,8 +332,8 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
       }
    }
 
-   gen::_rallptr loc = std::make_unique<gen::RecursiveAll>(base, uro, isAbsolute, gen::os::NO_PREFIX);
-   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, uro, finalPattern, pattern.substr(0, start));
+   gen::_rallptr loc = std::make_unique<gen::RecursiveAll>(base, p2, isAbsolute, gen::os::NO_PREFIX);
+   result = std::make_unique<gen::DoubleAsteriskPattern>(loc, p2, finalPattern, pattern.substr(0, start));
    return true;
 }
 

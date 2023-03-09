@@ -1,35 +1,35 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef PATTERNS_H_INCLUDED
 #define PATTERNS_H_INCLUDED
 
 
-#define P_CHECK_LOOP_BREAK if (this->uroboros.state == State::s_Break) { \
-      this->uroboros.state = State::s_Running; \
+#define P_CHECK_LOOP_BREAK if (this->perun2.state == State::s_Break) { \
+      this->perun2.state = State::s_Running; \
       break; \
    } \
-   else if (this->uroboros.state == State::s_Continue) { \
-      this->uroboros.state = State::s_Running; \
+   else if (this->perun2.state == State::s_Continue) { \
+      this->perun2.state = State::s_Running; \
       continue; \
    }
 
 
-#define P_CHECK_SOFT_LOOP_BREAK switch (this->uroboros.state) { \
+#define P_CHECK_SOFT_LOOP_BREAK switch (this->perun2.state) { \
       case State::s_Break: \
       case State::s_Continue: { \
-         this->uroboros.state = State::s_Running; \
+         this->perun2.state = State::s_Running; \
          break; \
       } \
    }

@@ -1,28 +1,28 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gen-definition.h"
 #include "../../os.h"
-#include "../../uroboros.h"
+#include "../../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 
-DefWithContext::DefWithContext(_defptr& def, _uro& uro)
-   : definition(std::move(def)), context(std::make_unique<FileContext>(uro)) { };
+DefWithContext::DefWithContext(_defptr& def, _p2& p2)
+   : definition(std::move(def)), context(std::make_unique<FileContext>(p2)) { };
 
 DefWithContext::DefWithContext(_defptr& def, _fcptr& ctx)
    : definition(std::move(def)), context(std::move(ctx)) { };
@@ -49,8 +49,8 @@ FileContext* DefWithContext::getFileContext()
 }
 
 
-DefFilter::DefFilter(_defptr& def, FileContext* ctx, _uro& uro)
-   : first(true), definition(std::move(def)), uroboros(uro), context(ctx) { };
+DefFilter::DefFilter(_defptr& def, FileContext* ctx, _p2& p2)
+   : first(true), definition(std::move(def)), perun2(p2), context(ctx) { };
 
 FileContext* DefFilter::getFileContext()
 {
@@ -65,8 +65,8 @@ void DefFilter::reset() {
 }
 
 
-DefFilter_Where::DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _uro& uro)
-   : DefFilter(def, ctx, uro), condition(std::move(cond)) { };
+DefFilter_Where::DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, _p2& p2)
+   : DefFilter(def, ctx, p2), condition(std::move(cond)) { };
 
 
 void DefFilter_Where::reset() {
@@ -88,7 +88,7 @@ _bool DefFilter_Where::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros.state != State::s_Running) {
+      if (this->perun2.state != State::s_Running) {
          break;
       }
 
@@ -220,7 +220,7 @@ _bool DefFilter_Limit::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros.state != State::s_Running || counter >= limit) {
+      if (this->perun2.state != State::s_Running || counter >= limit) {
          definition->reset();
          break;
       }
@@ -247,7 +247,7 @@ _bool DefFilter_Skip::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros.state != State::s_Running) {
+      if (this->perun2.state != State::s_Running) {
          definition->reset();
       }
 
@@ -280,7 +280,7 @@ _bool DefFilter_Every::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->uroboros.state != State::s_Running) {
+      if (this->perun2.state != State::s_Running) {
          definition->reset();
       }
 
@@ -319,7 +319,7 @@ _bool DefFilter_Final::hasNext()
       length = NINT_ZERO;
 
       while (definition->hasNext()) {
-         if (this->uroboros.state != State::s_Running) {
+         if (this->perun2.state != State::s_Running) {
             definition->reset();
             return false;
          }
@@ -338,7 +338,7 @@ _bool DefFilter_Final::hasNext()
       first = false;
    }
 
-   if (this->uroboros.state != State::s_Running) {
+   if (this->perun2.state != State::s_Running) {
       first = true;
       return false;
    }
@@ -367,7 +367,7 @@ void Join_DefStr::reset()
 
 _bool Join_DefStr::hasNext()
 {
-   if (this->uroboros.state != State::s_Running) {
+   if (this->perun2.state != State::s_Running) {
       reset();
       return false;
    }
@@ -399,7 +399,7 @@ void Join_StrDef::reset()
 
 _bool Join_StrDef::hasNext()
 {
-   if (this->uroboros.state != State::s_Running) {
+   if (this->perun2.state != State::s_Running) {
       reset();
       return false;
    }
@@ -433,7 +433,7 @@ void Join_DefList::reset()
 
 _bool Join_DefList::hasNext()
 {
-   if (this->uroboros.state != State::s_Running) {
+   if (this->perun2.state != State::s_Running) {
       reset();
       return false;
    }
@@ -475,7 +475,7 @@ void Join_ListDef::reset()
 
 _bool Join_ListDef::hasNext()
 {
-   if (this->uroboros.state != State::s_Running) {
+   if (this->perun2.state != State::s_Running) {
       reset();
       return false;
    }
@@ -527,7 +527,7 @@ void Join_DefDef::reset()
 
 _bool Join_DefDef::hasNext()
 {
-   if (this->uroboros.state != State::s_Running) {
+   if (this->perun2.state != State::s_Running) {
       reset();
       return false;
    }
@@ -563,9 +563,9 @@ _bool Join_DefDef::hasNext()
 }
 
 
-DefinitionSuffix::DefinitionSuffix(_defptr& def, _uro& uro, const _str& suf, const _bool abs, const _bool fin)
+DefinitionSuffix::DefinitionSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool abs, const _bool fin)
    : definition(std::move(def)), fileContext(definition->getFileContext()),
-     locContext(uro.contexts.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
+     locContext(p2.contexts.getLocationContext()), suffix(suf), absoluteBase(abs), isFinal(fin) { };
 
 
 void DefinitionSuffix::reset()

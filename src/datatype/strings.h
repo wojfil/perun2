@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef STRINGS_H_INCLUDED
@@ -18,7 +18,7 @@
 #include "chars.h"
 
 
-namespace uro
+namespace perun2
 {
 
 _str toStr(const _char ch);
@@ -32,7 +32,7 @@ _str toStr(const T& n)
 }
 
 // the following function
-// is the default method of string concatenation in Uroboros2
+// is the default method of string concatenation in Perun2
 // this is probably the most efficient way to do that
 template<typename... Args>
 _str str(Args const&... args)
@@ -187,7 +187,7 @@ static const _str STRING_ALPHABET =             L"alphabet";
 static const _str STRING_ASCII =                L"ascii";
 static const _str STRING_ARGUMENTS =            L"arguments";
 static const _str STRING_DESKTOP =              L"desktop";
-static const _str STRING_UROBOROS2 =            L"uroboros2";
+static const _str STRING_PERUN2 =               L"perun2";
 static const _str STRING_ORIGIN =               L"origin";
 static const _str STRING_DIRECTORIES =          L"directories";
 static const _str STRING_FILES =                L"files";

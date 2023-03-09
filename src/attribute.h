@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef ATTRIB_H
@@ -20,7 +20,7 @@
 #include <memory>
 
 
-namespace uro
+namespace perun2
 {
 
 typedef _uint64 _aunit;
@@ -52,14 +52,14 @@ inline constexpr _aunit ATTR_SIZE =         0b00000000000010000000000000000000;
 // instead of reading them one by one
 // all attributes from an expression are joined together and read at once at the beginning of expression evaluation
 
-struct _uro;
+struct _p2;
 
 struct Attribute
 {
 public:
    Attribute() = delete;
-   Attribute(_uro& uro);
-   Attribute(const _aunit val, _uro& uro);
+   Attribute(_p2& p2);
+   Attribute(const _aunit val, _p2& p2);
 
    void add(const _hash val);
    inline void set(const _aunit v);
@@ -73,7 +73,7 @@ public:
    _bool isMarkedToRun() const;
    void markToRun();
    
-   _uro& uroboros;
+   _p2& perun2;
 
 protected:
    _bool markedToEvaluate = false;

@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef ORDER_H
@@ -18,10 +18,10 @@
 #include "generator.h"
 #include "datatype.h"
 #include "../util.h"
-#include "../uroboros.h"
+#include "../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 struct OrderIndices
@@ -188,7 +188,7 @@ struct OrderBy_List : OrderBy, Generator<_list>
 {
 public:
    OrderBy_List() = delete;
-   OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, _uro& uro)
+   OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, _p2& p2)
       : OrderBy(inds, ord), context(std::move(ctx)), base(std::move(bas)) { };
 
    _list getValue() override
@@ -226,7 +226,7 @@ struct OrderBy_Definition : OrderBy, _def
 {
 public:
    OrderBy_Definition() = delete;
-   OrderBy_Definition(_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _uro& uro);
+   OrderBy_Definition(_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, _p2& p2);
    FileContext* getFileContext() override;
 
    void reset() override;
@@ -237,7 +237,7 @@ private:
    _fcptr nextContext;
    _defptr base;
    _bool first = true;
-   _uro& uroboros;
+   _p2& perun2;
 
    _size length;
    _size index;

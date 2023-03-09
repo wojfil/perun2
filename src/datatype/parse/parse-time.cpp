@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-time.h"
@@ -24,10 +24,10 @@
 #include "../parse-gen.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
+_bool parseTime(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
 {
    const _size len = tks.getLength();
 
@@ -36,10 +36,10 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
    }
 
    if (len == 1) {
-      return parseOneToken(uro, tks, result);
+      return parseOneToken(p2, tks, result);
    }
    else if (len >= 2) {
-      if (parseTimeConst(result, tks, uro)) {
+      if (parseTimeConst(result, tks, p2)) {
          return true;
       }
 
@@ -48,11 +48,11 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
       if (hasMinuses || hasPluses) {
          _genptr<_per> per;
-         if (parse(uro, tks, per)) {
+         if (parse(p2, tks, per)) {
             return false;
          }
          else {
-            if (parseTimeExp(result, tks, uro)) {
+            if (parseTimeExp(result, tks, p2)) {
                return true;
             }
          }
@@ -60,24 +60,24 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return func::timeFunction(result, tks, uro);
+      return func::timeFunction(result, tks, p2);
    }
 
-   if (parseCollectionElement<_tim>(result, tks, uro)) {
+   if (parseCollectionElement<_tim>(result, tks, p2)) {
       return true;
    }
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
       _genptr<_num> num;
-      parseListElementIndex(num, tksm, uro);
+      parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
-      if (uro.contexts.makeVarRef(f, tlist, uro)) {
+      if (p2.contexts.makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
-         if (last.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {
+         if (last.value.twoWords.h2 == p2.hashes.HASH_FUNC_DATE) {
             result = std::make_unique<gen::TimeDateAtIndex>(tim);
             return true;
          }
@@ -86,14 +86,14 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
       }
    }
 
-   if (parseTernary<_tim>(result, tks, uro)) {
+   if (parseTernary<_tim>(result, tks, p2)) {
       return true;
    }
 
    return false;
 }
 
-_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
+_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -106,7 +106,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxError::invalidMonthName(first.getOriginString(uro), first.line);
+         throw SyntaxError::invalidMonthName(first.getOriginString(p2), first.line);
       }
 
       if (first.type != Token::t_Number || first.value.num.nm != NumberMode::nm_Month) {
@@ -127,7 +127,7 @@ _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxError::invalidMonthName(second.getOriginString(uro), second.line);
+      throw SyntaxError::invalidMonthName(second.getOriginString(p2), second.line);
    }
 
    if (second.type != Token::t_Number || second.value.num.nm != NumberMode::nm_Month) {
@@ -204,7 +204,7 @@ static void checkDayCorrectness(const _tnum day, const _tnum month,
    }
 }
 
-static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
+static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
 {
    _genptr<_tim> prevTim;
    _genptr<_tim> time;
@@ -232,7 +232,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
                   }
 
                   const Tokens tks2(tks, i - sublen, sublen);
-                  if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2, numReserve, uro)) {
+                  if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2, numReserve, p2)) {
                      return false;
                   }
                   if (numReserve == 0) {
@@ -248,7 +248,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
             case CHAR_MINUS: {
                if (bi.isBracketFree() && sublen != 0) {
                   const Tokens tks2(tks, i - sublen, sublen);
-                  if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2, numReserve, uro)) {
+                  if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2, numReserve, p2)) {
                      return false;
                   }
 
@@ -287,7 +287,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
    const Tokens tks2(tks, 1 + end - sublen, sublen);
    if (!timeExpUnit(sublen, subtract, prevSubtract, prevTim, time, tks2,
-      numReserve, uro) || numReserve != 0 || prevTim)
+      numReserve, p2) || numReserve != 0 || prevTim)
    {
       return false;
    }
@@ -298,10 +298,10 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _uro& uro)
 
 static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract,
    _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks,
-   _int& numReserve, _uro& uro)
+   _int& numReserve, _p2& p2)
 {
    _genptr<_tim> tim;
-   if (parse(uro, tks, tim)) {
+   if (parse(p2, tks, tim)) {
       if (numReserve != 0) {
          return false;
       }
@@ -347,7 +347,7 @@ static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract
    }
 
    _genptr<_num> num;
-   if (parse(uro, tks, num)) {
+   if (parse(p2, tks, num)) {
       if (numReserve == 0 && subtract) {
          numReserve = 1;
       }
@@ -358,7 +358,7 @@ static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract
 
    if (numReserve == 0) {
       _genptr<_per> per;
-      if (!parse(uro, tks, per)) {
+      if (!parse(p2, tks, per)) {
          return false;
       }
 
@@ -375,7 +375,7 @@ static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract
       const Tokens tks2(tks, start, length);
 
       _genptr<_per> per;
-      if (!parse(uro, tks2, per)) {
+      if (!parse(p2, tks2, per)) {
          return false;
       }
 

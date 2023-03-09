@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gen-os-gen.h"
@@ -17,16 +17,16 @@
 #include "gen-string.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS_DEFAULT loc, this->uroboros, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
-#define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->uroboros, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
+#define P_GEN_OS_ARGS_DEFAULT loc, this->perun2, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
+#define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->perun2, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
 
 
 _bool DefinitionGenerator::generate(_defptr& result) const
 {
-   _genptr<_str> loc = std::make_unique<LocationReference>(this->uroboros);
+   _genptr<_str> loc = std::make_unique<LocationReference>(this->perun2);
 
    switch (this->element_) {
       case OsElement::oe_All: {

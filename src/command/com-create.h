@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef COM_CREATE_H_INCLUDED
@@ -18,17 +18,17 @@
 #include "com-core.h"
 #include "com-listener.h"
 #include "../attribute.h"
-#include "../uroboros.h"
+#include "../perun2.h"
 
 
-namespace uro::comm
+namespace perun2::comm
 {
 
 struct C_Create : CoreCommand
 {
 public:
-   C_Create(const _bool force, FileContext* ctx, _uro& uro)
-      : forced(force), CoreCommand(true, ctx, uro) { };
+   C_Create(const _bool force, FileContext* ctx, _p2& p2)
+      : forced(force), CoreCommand(true, ctx, p2) { };
 
    void run() override;
 
@@ -40,8 +40,8 @@ private:
 struct C_Create_Stack : CoreCommand
 {
 public:
-   C_Create_Stack(FileContext* ctx, _uro& uro)
-      : CoreCommand(true, ctx, uro) { };
+   C_Create_Stack(FileContext* ctx, _p2& p2)
+      : CoreCommand(true, ctx, p2) { };
 
    void run() override;
 };
@@ -50,8 +50,8 @@ public:
 struct C_CreateFile : CoreCommand
 {
 public:
-   C_CreateFile(const _bool force, FileContext* ctx, _uro& uro)
-      : forced(force), CoreCommand(true, ctx, uro) { };
+   C_CreateFile(const _bool force, FileContext* ctx, _p2& p2)
+      : forced(force), CoreCommand(true, ctx, p2) { };
 
    void run() override;
 
@@ -63,8 +63,8 @@ private:
 struct C_CreateFile_Stack : CoreCommand
 {
 public:
-   C_CreateFile_Stack(FileContext* ctx, _uro& uro)
-      : CoreCommand(true, ctx, uro) { };
+   C_CreateFile_Stack(FileContext* ctx, _p2& p2)
+      : CoreCommand(true, ctx, p2) { };
 
    void run() override;
 };
@@ -73,8 +73,8 @@ public:
 struct C_CreateDirectory : CoreCommand
 {
 public:
-   C_CreateDirectory(const _bool force, FileContext* ctx, _uro& uro)
-      : forced(force), CoreCommand(true, ctx, uro) { };
+   C_CreateDirectory(const _bool force, FileContext* ctx, _p2& p2)
+      : forced(force), CoreCommand(true, ctx, p2) { };
 
    void run() override;
 
@@ -86,8 +86,8 @@ private:
 struct C_CreateDirectory_Stack : CoreCommand
 {
 public:
-   C_CreateDirectory_Stack(FileContext* ctx, _uro& uro)
-      : CoreCommand(true, ctx, uro) { };
+   C_CreateDirectory_Stack(FileContext* ctx, _p2& p2)
+      : CoreCommand(true, ctx, p2) { };
 
    void run() override;
 };
@@ -98,20 +98,20 @@ public:
 struct C_CreateCertain : Command
 {
 public:
-   C_CreateCertain(_uro& uro)
-      : uroboros(uro), locContext(uro.contexts.getLocationContext()) { };
+   C_CreateCertain(_p2& p2)
+      : perun2(p2), locContext(p2.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locContext;
-   _uro& uroboros;
+   _p2& perun2;
 };
 
 
 struct C_Create_String : C_CreateCertain
 {
 public:
-   C_Create_String(_genptr<_str>& el, const _bool forc, _uro& uro)
-      : element(std::move(el)), forced(forc), C_CreateCertain(uro) { };
+   C_Create_String(_genptr<_str>& el, const _bool forc, _p2& p2)
+      : element(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -124,8 +124,8 @@ private:
 struct C_CreateFile_String : C_CreateCertain
 {
 public:
-   C_CreateFile_String(_genptr<_str>& el, const _bool forc, _uro& uro)
-      : element(std::move(el)), forced(forc), C_CreateCertain(uro){ };
+   C_CreateFile_String(_genptr<_str>& el, const _bool forc, _p2& p2)
+      : element(std::move(el)), forced(forc), C_CreateCertain(p2){ };
 
    void run() override;
 
@@ -138,8 +138,8 @@ private:
 struct C_CreateDirectory_String : C_CreateCertain
 {
 public:
-   C_CreateDirectory_String(_genptr<_str>& el, const _bool forc, _uro& uro)
-      : element(std::move(el)), forced(forc), C_CreateCertain(uro) { };
+   C_CreateDirectory_String(_genptr<_str>& el, const _bool forc, _p2& p2)
+      : element(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -152,8 +152,8 @@ private:
 struct C_Create_String_Stack : C_CreateCertain
 {
 public:
-   C_Create_String_Stack (_genptr<_str>& el, _uro& uro)
-      : element(std::move(el)), C_CreateCertain(uro) { };
+   C_Create_String_Stack (_genptr<_str>& el, _p2& p2)
+      : element(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -165,8 +165,8 @@ private:
 struct C_CreateFile_String_Stack  : C_CreateCertain
 {
 public:
-   C_CreateFile_String_Stack (_genptr<_str>& el, _uro& uro)
-      : element(std::move(el)), C_CreateCertain(uro) { };
+   C_CreateFile_String_Stack (_genptr<_str>& el, _p2& p2)
+      : element(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -178,8 +178,8 @@ private:
 struct C_CreateDirectory_String_Stack  : C_CreateCertain
 {
 public:
-   C_CreateDirectory_String_Stack (_genptr<_str>& el, _uro& uro)
-      : element(std::move(el)), C_CreateCertain(uro) { };
+   C_CreateDirectory_String_Stack (_genptr<_str>& el, _p2& p2)
+      : element(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -194,8 +194,8 @@ private:
 struct C_Create_List : C_CreateCertain
 {
 public:
-   C_Create_List(_genptr<_list>& el, const _bool forc, _uro& uro)
-      : elements(std::move(el)), forced(forc), C_CreateCertain(uro) { };
+   C_Create_List(_genptr<_list>& el, const _bool forc, _p2& p2)
+      : elements(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -208,8 +208,8 @@ private:
 struct C_CreateFiles_List : C_CreateCertain
 {
 public:
-   C_CreateFiles_List(_genptr<_list>& el, const _bool forc, _uro& uro)
-      : elements(std::move(el)), forced(forc), C_CreateCertain(uro) { };
+   C_CreateFiles_List(_genptr<_list>& el, const _bool forc, _p2& p2)
+      : elements(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -222,8 +222,8 @@ private:
 struct C_CreateDirectories_List : C_CreateCertain
 {
 public:
-   C_CreateDirectories_List(_genptr<_list>& el, const _bool forc, _uro& uro)
-      : elements(std::move(el)), forced(forc), C_CreateCertain(uro) { };
+   C_CreateDirectories_List(_genptr<_list>& el, const _bool forc, _p2& p2)
+      : elements(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -236,8 +236,8 @@ private:
 struct C_Create_List_Stack : C_CreateCertain
 {
 public:
-   C_Create_List_Stack (_genptr<_list>& el, _uro& uro)
-      : elements(std::move(el)), C_CreateCertain(uro) { };
+   C_Create_List_Stack (_genptr<_list>& el, _p2& p2)
+      : elements(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -249,8 +249,8 @@ private:
 struct C_CreateFiles_List_Stack : C_CreateCertain
 {
 public:
-   C_CreateFiles_List_Stack (_genptr<_list>& el, _uro& uro)
-      : elements(std::move(el)), C_CreateCertain(uro) { };
+   C_CreateFiles_List_Stack (_genptr<_list>& el, _p2& p2)
+      : elements(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
@@ -262,8 +262,8 @@ private:
 struct C_CreateDirectories_List_Stack  : C_CreateCertain
 {
 public:
-   C_CreateDirectories_List_Stack (_genptr<_list>& el, _uro& uro)
-      : elements(std::move(el)), C_CreateCertain(uro) { };
+   C_CreateDirectories_List_Stack (_genptr<_list>& el, _p2& p2)
+      : elements(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 

@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-generic.h"
@@ -22,16 +22,16 @@
 #include <cwctype>
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro)
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
    const Tokens tks2(tks, start, length);
 
-   if (parse(uro, tks2, result))  {
+   if (parse(p2, tks2, result))  {
       return true;
    }
    else {
@@ -41,12 +41,12 @@ _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro)
 
 }
 
-void checkLimitBySize(const Tokens& tks, _uro& uro)
+void checkLimitBySize(const Tokens& tks, _p2& p2)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
       if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
-         throw SyntaxError(str(L"collection cannot be limited by file size '", tk.getOriginString(uro),
+         throw SyntaxError(str(L"collection cannot be limited by file size '", tk.getOriginString(p2),
             L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition"),
             tk.line);
       }

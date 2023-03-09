@@ -1,22 +1,22 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "token.h"
-#include "uroboros.h"
+#include "perun2.h"
 
 
-namespace uro
+namespace perun2
 {
 
 OriginStringInfo::OriginStringInfo(const _size ind, const _size len)
@@ -46,30 +46,30 @@ TokenValue::TokenValue(const _hash h1, const _hash h2, const _size os_id1,
    const _size os_len1, const _size os_id2, const _size os_len2)
    : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
-Token::Token(const _char v, const _int li, _uro& uro)
+Token::Token(const _char v, const _int li, _p2& p2)
    : line(li), type(t_Symbol), value(v) { };
 
-Token::Token(const _char v, const _int am, const _int li, _uro& uro)
+Token::Token(const _char v, const _int am, const _int li, _p2& p2)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
 Token::Token(const _num& v, const _int li, const _size os_id, const _size os_len,
-   const NumberMode nm, _uro& uro)
+   const NumberMode nm, _p2& p2)
    : line(li), type(t_Number), value(v, os_id, os_len, nm) { };
 
-Token::Token(const _size os_id, const _size os_len, const _int li, _uro& uro)
+Token::Token(const _size os_id, const _size os_len, const _int li, _p2& p2)
    : line(li), type(t_Quotation), value(os_id, os_len) { };
 
-Token::Token(const _size os_id, const _size os_len, const _int id, const _int li, _uro& uro)
+Token::Token(const _size os_id, const _size os_len, const _int id, const _int li, _p2& p2)
    : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const _hash v, const _int li, const _size os_id, const _size os_len, _uro& uro)
+Token::Token(const _hash v, const _int li, const _size os_id, const _size os_len, _p2& p2)
    : line(li), type(t_Word), value(v, os_id, os_len) { };
 
-Token::Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _uro& uro)
+Token::Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _p2& p2)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
 Token::Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
-   const _size os_id2, const _size os_len2, _uro& uro)
+   const _size os_id2, const _size os_len2, _p2& p2)
    : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
 
 _bool Token::isSymbol(const _char ch) const
@@ -192,7 +192,7 @@ _bool Token::isMonth() const
    return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
 }
 
-_str Token::getOriginString(_uro& uro) const
+_str Token::getOriginString(_p2& p2) const
 {
    switch (type) {
       case Token::Type::t_Symbol: {
@@ -202,22 +202,22 @@ _str Token::getOriginString(_uro& uro) const
          return _str(value.chars.am, value.chars.ch);
       }
       case Token::Type::t_Number: {
-         return getCodeSubstr(value.num.os, uro);
+         return getCodeSubstr(value.num.os, p2);
       }
       case Token::Type::t_Word: {
-         return getCodeSubstr(value.word.os, uro);
+         return getCodeSubstr(value.word.os, p2);
       }
       case Token::Type::t_Keyword: {
-         return getCodeSubstr(value.keyword.os, uro);
+         return getCodeSubstr(value.keyword.os, p2);
       }
       case Token::Type::t_Quotation: {
-         return getCodeSubstr(value.str, uro);
+         return getCodeSubstr(value.str, p2);
       }
       case Token::Type::t_Pattern: {
-         return getCodeSubstr(value.pattern.os, uro);
+         return getCodeSubstr(value.pattern.os, p2);
       }
       case Token::Type::t_TwoWords: {
-         return getCodeSubstr(value.twoWords.os1, uro);
+         return getCodeSubstr(value.twoWords.os1, p2);
       }
       default: {
          return EMPTY_STRING;
@@ -225,16 +225,16 @@ _str Token::getOriginString(_uro& uro) const
    }
 }
 
-_str Token::getOriginString_2(_uro& uro) const
+_str Token::getOriginString_2(_p2& p2) const
 {
    return type == Token::Type::t_TwoWords
-      ? getCodeSubstr(value.twoWords.os2, uro)
+      ? getCodeSubstr(value.twoWords.os2, p2)
       : EMPTY_STRING;
 }
 
-_str Token::getCodeSubstr(const _osi& osi, _uro& uro) const
+_str Token::getCodeSubstr(const _osi& osi, _p2& p2) const
 {
-   return uro.arguments.getCode().substr(osi.index, osi.length);
+   return p2.arguments.getCode().substr(osi.index, osi.length);
 }
 
 }

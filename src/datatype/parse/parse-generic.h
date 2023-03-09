@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef PARSE_GENERIC_H
@@ -24,14 +24,14 @@
 #include <vector>
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _uro& uro);
-void checkLimitBySize(const Tokens& tks, _uro& uro);
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2);
+void checkLimitBySize(const Tokens& tks, _p2& p2);
 
 template <typename T>
-static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _uro& uro)
+static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _p2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -40,17 +40,17 @@ static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _uro& uro)
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
    _genptr<_bool> condition;
-   if (!parse(uro, std::get<0>(trio), condition)) {
+   if (!parse(p2, std::get<0>(trio), condition)) {
       return false;
    }
 
    _genptr<T> left;
-   if (!parse(uro, std::get<1>(trio), left)) {
+   if (!parse(p2, std::get<1>(trio), left)) {
       return false;
    }
 
    _genptr<T> right;
-   if (!parse(uro, std::get<2>(trio), right)) {
+   if (!parse(p2, std::get<2>(trio), right)) {
       return false;
    }
 
@@ -80,7 +80,7 @@ static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _uro& uro)
 
 
 template <typename T>
-static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _uro& uro)
+static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _p2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -89,12 +89,12 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _uro& uro)
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_QUESTION_MARK);
 
    _genptr<_bool> condition;
-   if (!parse(uro, pair.first, condition)) {
+   if (!parse(p2, pair.first, condition)) {
       return false;
    }
 
    _genptr<T> value;
-   if (!parse(uro, pair.second, value)) {
+   if (!parse(p2, pair.second, value)) {
       return false;
    }
 
@@ -121,7 +121,7 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _uro& uro)
 
 template <typename T>
 static _bool parseListedValues(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, _uro& uro)
+   const std::vector<Tokens>& elements, _p2& p2)
 {
    const _size len = elements.size();
    std::vector<_genptr<T>> result;
@@ -130,7 +130,7 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       _genptr<T> value;
-      if (parse(uro, tks, value)) {
+      if (parse(p2, tks, value)) {
          if (isConstant && !value->isConstant()) {
             isConstant = false;
          }
@@ -156,7 +156,7 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
 
 template <typename T>
 static _bool parseListedLists(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, _uro& uro)
+   const std::vector<Tokens>& elements, _p2& p2)
 {
    const _size len = elements.size();
    std::vector<_genptr<std::vector<T>>> result;
@@ -165,7 +165,7 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
    for (_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       _genptr<std::vector<T>> value;
-      if (parse(uro, tks, value)) {
+      if (parse(p2, tks, value)) {
          if (isConstant && !value->isConstant()) {
             isConstant = false;
          }
@@ -190,7 +190,7 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
 
 
 template <typename T>
-static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, _uro& uro)
+static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, _p2& p2)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -198,26 +198,26 @@ static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, _ur
 
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
 
-   if (parseListedValues<T>(result, elements, uro)) {
+   if (parseListedValues<T>(result, elements, p2)) {
       return true;
    }
 
-   return parseListedLists<T>(result, elements, uro);
+   return parseListedLists<T>(result, elements, p2);
 }
 
 
 template <typename T>
-static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _uro& uro)
+static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _p2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return false;
    }
 
    _genptr<_num> num;
-   parseListElementIndex(num, tks, uro);
+   parseListElementIndex(num, tks, p2);
    const Token& f = tks.first();
    _genptr<std::vector<T>> collection;
-   if (uro.contexts.makeVarRef(f, collection, uro)) {
+   if (p2.contexts.makeVarRef(f, collection, p2)) {
       result = std::make_unique<gen::ListElement<T>>(collection, num);
       return true;
    }

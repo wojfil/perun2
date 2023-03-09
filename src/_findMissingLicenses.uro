@@ -1,4 +1,4 @@
 print recursiveFiles
   where extension in ('h', 'cpp')
   and this not like '%blackbox%'
-  and not findText('This file is part of Uroboros2.')
+  and not findText('This file is part of Perun2.')

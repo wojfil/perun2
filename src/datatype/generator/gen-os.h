@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef GEN_OS_H_INCLUDED
@@ -23,18 +23,18 @@
 #include <windows.h>
 
 
-namespace uro
+namespace perun2
 {
-struct _uro;
+struct _p2;
 }
 
-namespace uro::gen
+namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS _genptr<_str>& loc, _uro& uro, const _bool abs, const _str& pref
-#define P_GEN_OS_ARGS_2 loc, uro, abs, pref
-#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, _uro& uro, const _str& patt, const _bool abs, const _str& pref
-#define P_GEN_OS_ARGS_EXT_2 loc, uro, patt, abs, pref
+#define P_GEN_OS_ARGS _genptr<_str>& loc, _p2& p2, const _bool abs, const _str& pref
+#define P_GEN_OS_ARGS_2 loc, p2, abs, pref
+#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, _p2& p2, const _str& patt, const _bool abs, const _str& pref
+#define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, abs, pref
 
 
 namespace os
@@ -58,7 +58,7 @@ public:
 protected:
    _bool first = true;
    _genptr<_str> location;
-   _uro& uroboros;
+   _p2& perun2;
    FileContext context;
    _fdata data;
    _num index;

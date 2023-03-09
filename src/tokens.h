@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef TOKENS_H
@@ -19,7 +19,7 @@
 #include <vector>
 
 
-namespace uro
+namespace perun2
 {
 
 // Tokens info about certain sequence of tokens
@@ -51,7 +51,7 @@ inline constexpr _tinfo TI_IS_POSSIBLE_TERNARY =     0b00010000000000000000000;
 inline constexpr _tinfo TI_IS_LIST_ELEM_MEMBER =     0b00100000000000000000000;
 
 
-struct _uro;
+struct _p2;
 
 struct Tokens
 {
@@ -83,11 +83,11 @@ public:
    std::pair<Tokens, Tokens> divideBySymbol(const _char symbol) const;
    std::vector<Tokens> splitBySymbol(const _char symbol) const;
    _int countSymbols(const _char symbol) const;
-   _int getFilterKeywordId(_uro& uro) const;
-   std::vector<Tokens> splitByFiltherKeywords(_uro& uro) const;
+   _int getFilterKeywordId(_p2& p2) const;
+   std::vector<Tokens> splitByFiltherKeywords(_p2& p2) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 
-   void checkCommonExpressionExceptions(_uro& uro) const;
+   void checkCommonExpressionExceptions(_p2& p2) const;
 
 private:
    _int start;

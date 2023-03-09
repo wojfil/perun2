@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-string.h"
@@ -24,15 +24,15 @@
 #include "../parse-gen.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseString(_genptr<_str>& result, const Tokens& tks, _uro& uro)
+_bool parseString(_genptr<_str>& result, const Tokens& tks, _p2& p2)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      return parseOneToken(uro, tks, result);
+      return parseOneToken(p2, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
@@ -40,11 +40,11 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, _uro& uro)
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return func::stringFunction(result, tks, uro);
+      return func::stringFunction(result, tks, p2);
    }
    else if (tks.check(TI_HAS_CHAR_PLUS)) {
       _genptr<_str> str;
-      if (parseStringConcat(str, tks, uro)) {
+      if (parseStringConcat(str, tks, p2)) {
          result = std::move(str);
          return true;
       }
@@ -52,33 +52,33 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, _uro& uro)
 
    if (tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       _genptr<_num> num;
-      parseListElementIndex(num, tks, uro);
+      parseListElementIndex(num, tks, p2);
       const Token& f = tks.first();
       _genptr<_list> list;
 
-      if (uro.contexts.makeVarRef(f, list, uro)) {
+      if (p2.contexts.makeVarRef(f, list, p2)) {
          result = std::make_unique<gen::ListElement<_str>>(list, num);
          return true;
       }
       else {
          _genptr<_str> str;
 
-         if (uro.contexts.makeVarRef(f, str, uro)) {
+         if (p2.contexts.makeVarRef(f, str, p2)) {
             result = std::make_unique<gen::CharAtIndex>(str, num);
             return true;
          }
          else {
             _defptr def;
 
-            if (uro.contexts.makeVarRef(f, def, uro)) {
-               result = std::make_unique<gen::DefinitionElement>(def, num, uro);
+            if (p2.contexts.makeVarRef(f, def, p2)) {
+               result = std::make_unique<gen::DefinitionElement>(def, num, p2);
                return true;
             }
          }
       }
    }
 
-   if (parseBinary<_str>(result, tks, uro) || parseTernary<_str>(result, tks, uro)) {
+   if (parseBinary<_str>(result, tks, p2) || parseTernary<_str>(result, tks, p2)) {
       return true;
    }
 
@@ -96,7 +96,7 @@ void concatParseOutcome(_bool& parsed, _bool& allConstants, _genptr<T>& recentVa
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
+_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _p2& p2)
 {
    enum PrevType {
       pt_String = 0,
@@ -120,16 +120,16 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
 
       switch (prevType) {
          case pt_String: {
-            if (parse(uro, tks2, prevNum)) {
+            if (parse(p2, tks2, prevNum)) {
                prevType = pt_Number;
                concatParseOutcome(parsed, allConstants, prevNum);
             }
             else {
-               if (parse(uro, tks2, prevTim)) {
+               if (parse(p2, tks2, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
                }
-               else if (parse(uro, tks2, prevPer)) {
+               else if (parse(p2, tks2, prevPer)) {
                   prevType = pt_Period;
                   concatParseOutcome(parsed, allConstants, prevPer);
                }
@@ -138,18 +138,18 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
          }
          case pt_Number: {
             _genptr<_num> num;
-            if (parse(uro, tks2, num)) {
+            if (parse(p2, tks2, num)) {
                _genptr<_num> pn = std::move(prevNum);
                concatParseOutcome(parsed, allConstants, num);
                prevNum = std::make_unique<gen::Addition>(pn, num);
             }
             else {
                result.push_back(std::make_unique<gen::Cast_N_S>(prevNum));
-               if (parse(uro, tks2, prevTim)) {
+               if (parse(p2, tks2, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
                }
-               else if (parse(uro, tks2, prevPer)) {
+               else if (parse(p2, tks2, prevPer)) {
                   prevType = pt_Period;
                   concatParseOutcome(parsed, allConstants, prevPer);
                }
@@ -158,18 +158,18 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
          }
          case pt_Time: {
             _genptr<_per> per;
-            if (parse(uro, tks2, per)) {
+            if (parse(p2, tks2, per)) {
                _genptr<_tim> pt = std::move(prevTim);
                concatParseOutcome(parsed, allConstants, per);
                prevTim = std::make_unique<gen::IncreasedTime>(pt, per);
             }
             else {
                result.push_back(std::make_unique<gen::Cast_T_S>(prevTim));
-               if (parse(uro, tks2, prevTim)) {
+               if (parse(p2, tks2, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
                }
-               else if (parse(uro, tks2, prevNum)) {
+               else if (parse(p2, tks2, prevNum)) {
                   prevType = pt_Number;
                   concatParseOutcome(parsed, allConstants, prevNum);
                }
@@ -178,18 +178,18 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
          }
          case pt_Period: {
             _genptr<_per> per;
-            if (parse(uro, tks2, per)) {
+            if (parse(p2, tks2, per)) {
                _genptr<_per> pp = std::move(prevPer);
                concatParseOutcome(parsed, allConstants, per);
                prevPer = std::make_unique<gen::PeriodAddition>(pp, per);
             }
             else {
                result.push_back(std::make_unique<gen::Cast_P_S>(prevPer));
-               if (parse(uro, tks2, prevNum)) {
+               if (parse(p2, tks2, prevNum)) {
                   prevType = pt_Number;
                   concatParseOutcome(parsed, allConstants, prevNum);
                }
-               else if (parse(uro, tks2, prevTim)) {
+               else if (parse(p2, tks2, prevTim)) {
                   prevType = pt_Time;
                   concatParseOutcome(parsed, allConstants, prevTim);
                }
@@ -202,7 +202,7 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _uro& uro)
          prevType = pt_String;
          _genptr<_str> str;
 
-         if (parse(uro, tks2, str)) {
+         if (parse(p2, tks2, str)) {
             allConstants &= str->isConstant();
             result.push_back(std::move(str));
          }

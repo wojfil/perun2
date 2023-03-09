@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef CONTEXT_H_INCLUDED
@@ -25,9 +25,9 @@
 #include <iostream>
 
 
-namespace uro
+namespace perun2
 {
-   struct _uro;
+   struct _p2;
    struct Hashes;
 
    template <typename T>
@@ -91,7 +91,7 @@ namespace uro
    struct AggregateContext
    {
       AggregateContext() = delete;
-      AggregateContext(_uro& uro);
+      AggregateContext(_p2& p2);
       void runAggregate() { this->aggregate.run(); }
 
       comm::Aggregate aggregate;
@@ -101,7 +101,7 @@ namespace uro
    {
    public:
       IndexContext() = delete;
-      IndexContext(_uro& uro);
+      IndexContext(_p2& p2);
       void resetIndex();
       void incrementIndex();
 
@@ -112,8 +112,8 @@ namespace uro
    {
    public:
       FileContext() = delete;
-      FileContext(_uro& uro);
-      FileContext(_attrptr& attr, _uro& uro);
+      FileContext(_p2& p2);
+      FileContext(_attrptr& attr, _p2& p2);
 
       void loadData(const _str& newThis);
       void loadData(const _str& newThis, const _fdata& data);
@@ -151,7 +151,7 @@ namespace uro
       Variable<_str>* v_path;
 
    private:
-      void initVars(_uro& uro);
+      void initVars(_p2& p2);
 
       template <typename T>
       Variable<T>* insertVar(const _hash hsh)
@@ -177,7 +177,7 @@ namespace uro
    {
    public:
       GlobalContext() = delete;
-      GlobalContext(_uro& uro);
+      GlobalContext(_p2& p2);
 
       VarsContext globalVars;
 
@@ -202,25 +202,25 @@ namespace uro
    {
    public:
       Contexts() = delete;
-      Contexts(_uro& uro);
+      Contexts(_p2& p2);
 
-      _bool getVar(const Token& tk, Variable<_bool>*& result, _uro& uro);
-      _bool getVar(const Token& tk, Variable<_num>*& result, _uro& uro);
-      _bool getVar(const Token& tk, Variable<_str>*& result, _uro& uro);
+      _bool getVar(const Token& tk, Variable<_bool>*& result, _p2& p2);
+      _bool getVar(const Token& tk, Variable<_num>*& result, _p2& p2);
+      _bool getVar(const Token& tk, Variable<_str>*& result, _p2& p2);
 
       template <typename T>
-      _bool getVar(const Token& tk, Variable<T>*& result, _uro& uro)
+      _bool getVar(const Token& tk, Variable<T>*& result, _p2& p2)
       {
-         return findVar(tk, result, uro);
+         return findVar(tk, result, p2);
       };
 
-      _bool makeVarRef(const Token& tk, _defptr& result, _uro& uro);
+      _bool makeVarRef(const Token& tk, _defptr& result, _p2& p2);
 
       template <typename T>
-      _bool makeVarRef(const Token& tk, _genptr<T>& result, _uro& uro)
+      _bool makeVarRef(const Token& tk, _genptr<T>& result, _p2& p2)
       {
          Variable<T>* var;
-         if (getVar(tk, var, uro)) {
+         if (getVar(tk, var, p2)) {
             result = std::make_unique<VariableReference<T>>(var);
             return true;
          }
@@ -264,7 +264,7 @@ namespace uro
       _bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
-      _bool varExists(const Token& tk, _uro& uro);
+      _bool varExists(const Token& tk, _p2& p2);
 
       _varptr<_bool> success;
 
@@ -272,7 +272,7 @@ namespace uro
       const Hashes& hashes;
 
       template <typename T>
-      _bool findVar(const Token& tk, Variable<T>*& result, _uro& uro)
+      _bool findVar(const Token& tk, Variable<T>*& result, _p2& p2)
       {
          const _hash var = tk.value.word.h;
 
@@ -293,7 +293,7 @@ namespace uro
 
          if (fw != this->hashes.HASH_GROUP_ATTR.end()) {
             if (this->fileContexts.empty()) {
-               throw SyntaxError::undefinedVarValue(tk.getOriginString(uro), tk.line);
+               throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             }
 
             FileContext* lastFileCtx = this->fileContexts.back();
@@ -306,7 +306,7 @@ namespace uro
          return false;
       }
 
-      void addOsGen(const _hash hash, const gen::OsElement element, _uro& uro);
+      void addOsGen(const _hash hash, const gen::OsElement element, _p2& p2);
 
       LocationContext rootLocation;
       std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;

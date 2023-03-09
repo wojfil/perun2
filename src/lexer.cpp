@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "lexer.h"
@@ -21,14 +21,14 @@
 #include <sstream>
 
 
-namespace uro
+namespace perun2
 {
 
 // transform source code into a list of tokens
 // meanwhile, omit comments
 // both // singleline
 // and /* multiline */
-std::vector<Token> tokenize(const _str& code, _uro& uro)
+std::vector<Token> tokenize(const _str& code, _p2& p2)
 {
    enum Mode {
       m_Normal = 0,
@@ -71,15 +71,15 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
                      if (prevSymbol) {
                         if (isDoubleChar(c) && tokens.back().value.ch == c) {
                            tokens.pop_back();
-                           tokens.emplace_back(c, 2, line, uro);
+                           tokens.emplace_back(c, 2, line, p2);
                            prevSymbol = false;
                         }
                         else {
-                           tokens.emplace_back(c, line, uro);
+                           tokens.emplace_back(c, line, p2);
                         }
                      }
                      else {
-                        tokens.emplace_back(c, line, uro);
+                        tokens.emplace_back(c, line, p2);
                         prevSymbol = true;
                      }
                   }
@@ -88,15 +88,15 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
                   if (prevSymbol) {
                      if (isDoubleChar(c) && tokens.back().value.ch == c) {
                         tokens.pop_back();
-                        tokens.emplace_back(c, 2, line, uro);
+                        tokens.emplace_back(c, 2, line, p2);
                         prevSymbol = false;
                      }
                      else {
-                        tokens.emplace_back(c, line, uro);
+                        tokens.emplace_back(c, line, p2);
                      }
                   }
                   else {
-                     tokens.emplace_back(c, line, uro);
+                     tokens.emplace_back(c, line, p2);
                      prevSymbol = true;
                   }
                }
@@ -137,12 +137,12 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
                wlen++;
             }
             else {
-               tokens.push_back(wordToken(code, wpos, wlen, line, uro));
+               tokens.push_back(wordToken(code, wpos, wlen, line, p2));
                wlen = 0;
                mode = Mode::m_Normal;
 
                if (isSymbol(c)) {
-                  tokens.emplace_back(c, line, uro);
+                  tokens.emplace_back(c, line, p2);
                   prevSymbol = true;
                }
                else if (isNewLine(c)) {
@@ -174,10 +174,10 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
                }
 
                if (asteriskId == -1) {
-                  tokens.emplace_back(wpos, wlen, line, uro);
+                  tokens.emplace_back(wpos, wlen, line, p2);
                }
                else {
-                  tokens.emplace_back(wpos, wlen, asteriskId, line, uro);
+                  tokens.emplace_back(wpos, wlen, asteriskId, line, p2);
                }
 
                wpos = i;
@@ -194,7 +194,7 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
          }
          case Mode::m_BLiteral: {
             if (c == CHAR_BACKTICK) {
-               tokens.emplace_back(wpos, wlen, line, uro);
+               tokens.emplace_back(wpos, wlen, line, p2);
                wpos = i;
                wlen = 0;
                mode = Mode::m_Normal;
@@ -231,7 +231,7 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
    switch (mode) {
       case m_Word: {
          if (wlen != 0) {
-            tokens.push_back(wordToken(code, wpos, wlen, line, uro));
+            tokens.push_back(wordToken(code, wpos, wlen, line, p2));
          }
          break;
       }
@@ -244,7 +244,7 @@ std::vector<Token> tokenize(const _str& code, _uro& uro)
    return tokens;
 }
 
-static Token wordToken(const _str& code, const _size start, const _size length, const _int line, _uro& uro)
+static Token wordToken(const _str& code, const _size start, const _size length, const _int line, _p2& p2)
 {
    _int dots = 0;
    _bool nums = true;
@@ -267,7 +267,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       switch (dots) {
          case 0: {
             try {
-               return Token(_num(std::stoll(value)), line, start, length, NumberMode::nm_Normal, uro);
+               return Token(_num(std::stoll(value)), line, start, length, NumberMode::nm_Normal, p2);
             }
             catch (...) {
                throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -275,7 +275,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          }
          case 1: {
             try {
-               return Token(_num(stringToDouble(value)), line, start, length, NumberMode::nm_Normal, uro);
+               return Token(_num(stringToDouble(value)), line, start, length, NumberMode::nm_Normal, p2);
             }
             catch (...) {
                throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -315,7 +315,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
                   if (mult != NINT_ZERO && i2 / mult != i) {
                      throw SyntaxError::numberTooBig(code.substr(start, length), line);
                   }
-                  return Token(_num(i2), line, start, length, NumberMode::nm_Size, uro);
+                  return Token(_num(i2), line, start, length, NumberMode::nm_Size, p2);
                }
                catch (...) {
                   throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -326,7 +326,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
                   _ndouble d = stringToDouble(value2);
                   d *= mult;
 
-                  return Token(_num(d), line, start, length, NumberMode::nm_Size, uro);
+                  return Token(_num(d), line, start, length, NumberMode::nm_Size, p2);
                }
                catch (...) {
                   throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -341,22 +341,22 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          const _str word = code.substr(start, length);
          const _hash hsh = stringHash(word);
 
-         auto fm = uro.hashes.HASH_MAP_MONTHS.find(hsh);
-         if (fm != uro.hashes.HASH_MAP_MONTHS.end()) {
-            return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, uro);
+         auto fm = p2.hashes.HASH_MAP_MONTHS.find(hsh);
+         if (fm != p2.hashes.HASH_MAP_MONTHS.end()) {
+            return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, p2);
          }
 
-         auto fw = uro.hashes.HASH_MAP_WEEKDAYS.find(hsh);
-         if (fw != uro.hashes.HASH_MAP_WEEKDAYS.end()) {
-            return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, uro);
+         auto fw = p2.hashes.HASH_MAP_WEEKDAYS.find(hsh);
+         if (fw != p2.hashes.HASH_MAP_WEEKDAYS.end()) {
+            return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, p2);
          }
 
-         auto fk = uro.keywordsData.KEYWORDS.find(hsh);
-         if (fk == uro.keywordsData.KEYWORDS.end()) {
-            return Token(hsh, line, start, length, uro);
+         auto fk = p2.keywordsData.KEYWORDS.find(hsh);
+         if (fk == p2.keywordsData.KEYWORDS.end()) {
+            return Token(hsh, line, start, length, p2);
          }
          else {
-            return Token(fk->second, line, start, length, uro);
+            return Token(fk->second, line, start, length, p2);
          }
       }
       case 1: {
@@ -377,14 +377,14 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          const _hash h1 = stringHash(os1);
          const _hash h2 = stringHash(os2);
 
-         return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, uro);
+         return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
       }
       default: {
          throw SyntaxError::multipleDotsInWord(code.substr(start, length), line);
       }
    }
 
-   return Token(start, length, line, uro);
+   return Token(start, length, line, p2);
 }
 
 inline static _nint getSuffixMultiplier(const _char c1, const _char c2)

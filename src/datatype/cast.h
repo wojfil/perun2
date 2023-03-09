@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef CAST_H
@@ -18,10 +18,10 @@
 
 #include "generator.h"
 #include "datatype.h"
-#include "../uroboros.h"
+#include "../perun2.h"
 
 
-namespace uro::gen
+namespace perun2::gen
 {
 
 template <typename T1, typename T2>
@@ -134,13 +134,13 @@ struct Cast_TL_L : Cast<_tlist, _list>
 struct Cast_D_L : Generator<_list>
 {
 public:
-   Cast_D_L(_defptr& b, _uro& uro)
-      : base(std::move(b)), uroboros(uro) { };
+   Cast_D_L(_defptr& b, _p2& p2)
+      : base(std::move(b)), perun2(p2) { };
 
    _list getValue() override;
 
 private:
-   _uro& uroboros;
+   _p2& perun2;
    _defptr base;
 };
 

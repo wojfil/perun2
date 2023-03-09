@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-numlist.h"
@@ -21,29 +21,29 @@
 #include "../parse-gen.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, _uro& uro)
+_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, _p2& p2)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      return parseOneToken(uro, tks, result);
+      return parseOneToken(p2, tks, result);
    }
 
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {
-         return parseListed<_num>(result, tks, uro);
+         return parseListed<_num>(result, tks, p2);
       }
 
-      if (parseBinary<_nlist>(result, tks, uro) || parseTernary<_nlist>(result, tks, uro)) {
+      if (parseBinary<_nlist>(result, tks, p2) || parseTernary<_nlist>(result, tks, p2)) {
          return true;
       }
    }
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return func::numListFunction(result, tks, uro);
+      return func::numListFunction(result, tks, p2);
    }
 
    return false;

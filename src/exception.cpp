@@ -1,22 +1,23 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "exception.h"
+#include "metadata.h"
 #include "datatype/strings.h"
 
 
-namespace uro
+namespace perun2
 {
 
 SyntaxError::SyntaxError(const _str& msg, const _int li)
@@ -137,7 +138,7 @@ SyntaxError SyntaxError::invalidChar(const _char value, const _int line)
          return SyntaxError(L"you should use keyword 'or' instead of character '|' as a boolean operator", line);
       }
       default: {
-         return SyntaxError(str(L"character '", toStr(value), L"' is not allowed in Uroboros2"), line);
+         return SyntaxError(str(L"character '", toStr(value), L"' is not allowed in ", metadata::NAME), line);
       }
    }
 }

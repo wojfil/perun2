@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef UNICODE
@@ -22,7 +22,7 @@
 
 #include "os.h"
 #include <time.h>
-#include "uroboros.h"
+#include "perun2.h"
 #include "datatype/parse/parse-asterisk.h"
 #include <shlobj.h>
 #include <cwctype>
@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <fstream>
 
-namespace uro
+namespace perun2
 {
 
 inline constexpr _nint OS_SLEEP_UNIT = NINT_300;
@@ -72,7 +72,7 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint ms, _uro& uro)
+void os_sleepForMs(const _nint ms, _p2& p2)
 {
    if (ms <= NINT_ZERO) {
       return;
@@ -83,7 +83,7 @@ void os_sleepForMs(const _nint ms, _uro& uro)
 
    Sleep(remainder);
 
-   while (uro.state == State::s_Running && loops != NINT_ZERO) {
+   while (p2.state == State::s_Running && loops != NINT_ZERO) {
       Sleep(OS_SLEEP_UNIT);
       loops--;
    }
@@ -157,7 +157,7 @@ void os_loadAttributes(FileContext& context)
 
    if (attribute->has(ATTR_ACCESS)) {
       context.v_access->value = exists
-         ? os_convertToUroTime(&data.ftLastAccessTime)
+         ? os_convertToPerun2Time(&data.ftLastAccessTime)
          : _tim();
    }
 
@@ -171,7 +171,7 @@ void os_loadAttributes(FileContext& context)
 
    if (attribute->has(ATTR_CREATION)) {
       context.v_creation->value = exists
-         ? os_convertToUroTime(&data.ftCreationTime)
+         ? os_convertToPerun2Time(&data.ftCreationTime)
          : _tim();
    }
 
@@ -179,7 +179,7 @@ void os_loadAttributes(FileContext& context)
    const _bool hasChange = attribute->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
       const _tim time = exists
-         ? os_convertToUroTime(&data.ftLastWriteTime)
+         ? os_convertToPerun2Time(&data.ftLastWriteTime)
          : _tim();
 
       if (hasChange) {
@@ -243,7 +243,7 @@ void os_loadAttributes(FileContext& context)
       if (exists) {
          context.v_size->value = isFile
             ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : _num(os_sizeDirectory(path, context.attribute->uroboros));
+            : _num(os_sizeDirectory(path, context.attribute->perun2));
       }
       else {
          context.v_size->value = _num(NINT_MINUS_ONE);
@@ -384,7 +384,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    context.v_isdirectory->value = isDir;
 
    if (attribute->has(ATTR_ACCESS)) {
-      context.v_access->value = os_convertToUroTime(&data.ftLastAccessTime);
+      context.v_access->value = os_convertToPerun2Time(&data.ftLastAccessTime);
    }
 
    if (attribute->has(ATTR_ARCHIVE)) {
@@ -396,13 +396,13 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_CREATION)) {
-      context.v_creation->value = os_convertToUroTime(&data.ftCreationTime);
+      context.v_creation->value = os_convertToPerun2Time(&data.ftCreationTime);
    }
 
    const _bool hasMod = attribute->has(ATTR_MODIFICATION);
    const _bool hasChange = attribute->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
-      const _tim time = os_convertToUroTime(&data.ftLastWriteTime);
+      const _tim time = os_convertToPerun2Time(&data.ftLastWriteTime);
 
       if (hasChange) {
          context.v_change->value = time;
@@ -454,7 +454,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    if (attribute->has(ATTR_SIZE)) {
       context.v_size->value = isFile
          ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-         : _num(os_sizeDirectory(path, context.attribute->uroboros));
+         : _num(os_sizeDirectory(path, context.attribute->perun2));
    }
 }
 
@@ -470,7 +470,7 @@ _tim os_access(const _str& path)
       return _tim();
    }
 
-   return os_convertToUroTime(&data.ftLastAccessTime);
+   return os_convertToPerun2Time(&data.ftLastAccessTime);
 }
 
 _bool os_archive(const _str& path)
@@ -490,7 +490,7 @@ _tim os_change(const _str& path)
       return _tim();
    }
 
-   return os_convertToUroTime(&data.ftLastWriteTime);
+   return os_convertToPerun2Time(&data.ftLastWriteTime);
 }
 
 _bool os_compressed(const _str& path)
@@ -510,7 +510,7 @@ _tim os_creation(const _str& path)
       return _tim();
    }
 
-   return os_convertToUroTime(&data.ftCreationTime);
+   return os_convertToPerun2Time(&data.ftCreationTime);
 }
 
 _num os_depth(const _str& value)
@@ -663,8 +663,8 @@ _per os_lifetime(const _str& path)
       return _per();
    }
 
-   const _tim modification = os_convertToUroTime(&data.ftLastWriteTime);
-   const _tim creation = os_convertToUroTime(&data.ftCreationTime);
+   const _tim modification = os_convertToPerun2Time(&data.ftLastWriteTime);
+   const _tim creation = os_convertToPerun2Time(&data.ftCreationTime);
 
    return creation < modification
       ? (os_now() - creation)
@@ -683,7 +683,7 @@ _tim os_modification(const _str& path)
       return _tim();
    }
 
-   return os_convertToUroTime(&data.ftLastWriteTime);
+   return os_convertToPerun2Time(&data.ftLastWriteTime);
 }
 
 _str os_name(const _str& value)
@@ -730,7 +730,7 @@ _bool os_readonly(const _str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-_nint os_size(const _str& path, _uro& uro)
+_nint os_size(const _str& path, _p2& p2)
 {
    _adata data;
    if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
@@ -743,11 +743,11 @@ _nint os_size(const _str& path, _uro& uro)
    }
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
-      ? os_sizeDirectory(path, uro)
+      ? os_sizeDirectory(path, p2)
       : static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-_nint os_sizeDirectory(const _str& path, _uro& uro)
+_nint os_sizeDirectory(const _str& path, _p2& p2)
 {
    _nint totalSize = NINT_ZERO;
    _fdata data;
@@ -758,13 +758,13 @@ _nint os_sizeDirectory(const _str& path, _uro& uro)
    }
 
    do {
-      if (!uro.state == State::s_Running) {
+      if (!p2.state == State::s_Running) {
          FindClose(handle);
          return NINT_MINUS_ONE;
       }
       if (!os_isBrowsePath(data.cFileName)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, data.cFileName), uro);
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, data.cFileName), p2);
          }
          else {
             totalSize += static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
@@ -830,18 +830,18 @@ _bool os_delete(const _str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-_bool os_drop(const _str& path, _uro& uro)
+_bool os_drop(const _str& path, _p2& p2)
 {
    return os_isFile(path)
       ? os_dropFile(path)
-      : os_dropDirectory(path, uro);
+      : os_dropDirectory(path, p2);
 }
 
-_bool os_drop(const _str& path, const _bool isFile, _uro& uro)
+_bool os_drop(const _str& path, const _bool isFile, _p2& p2)
 {
    return isFile
       ? os_dropFile(path)
-      : os_dropDirectory(path, uro);
+      : os_dropDirectory(path, p2);
 }
 
 _bool os_dropFile(const _str& path)
@@ -859,7 +859,7 @@ _bool os_dropFile(const _str& path)
    return false;
 }
 
-_bool os_dropDirectory(const _str& path, _uro& uro)
+_bool os_dropDirectory(const _str& path, _p2& p2)
 {
    HANDLE hFind;
    _fdata FindFileData;
@@ -880,7 +880,7 @@ _bool os_dropDirectory(const _str& path, _uro& uro)
    _bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!uro.state == State::s_Running) {
+         if (!p2.state == State::s_Running) {
             FindClose(hFind);
             return false;
          }
@@ -891,7 +891,7 @@ _bool os_dropDirectory(const _str& path, _uro& uro)
 
          wcscat(FileName,FindFileData.cFileName);
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_dropDirectory(FileName, uro)) {
+            if (!os_dropDirectory(FileName, p2)) {
                FindClose(hFind);
                return false;
             }
@@ -1091,18 +1091,18 @@ _bool os_moveTo(const _str& oldPath, const _str& newPath)
    return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _uro& uro)
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _p2& p2)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
    }
    else {
-      const _bool success = os_copyToDirectory(oldPath, newPath, uro);
-      if (!success && !uro.state == State::s_Running && os_directoryExists(newPath)) {
+      const _bool success = os_copyToDirectory(oldPath, newPath, p2);
+      if (!success && !p2.state == State::s_Running && os_directoryExists(newPath)) {
          // if directory copy operation
          // was stopped by the user
          // delete recent partially copied directory if it is there
-         os_dropDirectory(newPath, uro);
+         os_dropDirectory(newPath, p2);
       }
 
       return success;
@@ -1114,7 +1114,7 @@ _bool os_copyToFile(const _str& oldPath, const _str& newPath)
    return CopyFileW(oldPath.c_str(), newPath.c_str(), true) != 0;
 }
 
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _uro& uro)
+_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1141,7 +1141,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _uro& uro)
    _bool bSearch = true;
    while (bSearch) {
       if (FindNextFile(hFind,&FindFileData)) {
-         if (!uro.state == State::s_Running) {
+         if (!p2.state == State::s_Running) {
             FindClose(hFind);
             return false;
          }
@@ -1154,7 +1154,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _uro& uro)
          const _str np = str(newPath, OS_SEPARATOR_STRING, _str(FileName).substr(length));
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_copyToDirectory(FileName, np, uro)) {
+            if (!os_copyToDirectory(FileName, np, p2)) {
                FindClose(hFind);
                return false;
             }
@@ -1233,14 +1233,14 @@ _bool os_select(const _str& parent, const _set& paths)
    return hr == S_OK;
 }
 
-_bool os_run(const _str& comm, const _str& location, _uro& uro)
+_bool os_run(const _str& comm, const _str& location, _p2& p2)
 {
-   uro.sideProcess.running = true;
+   p2.sideProcess.running = true;
    STARTUPINFO si;
 
    ZeroMemory(&si, sizeof(si));
    si.cb = sizeof(si);
-   ZeroMemory(&uro.sideProcess.info, sizeof(uro.sideProcess.info));
+   ZeroMemory(&p2.sideProcess.info, sizeof(p2.sideProcess.info));
 
    const _size len = comm.size() + 1;
    _char cmd[len];
@@ -1258,15 +1258,15 @@ _bool os_run(const _str& comm, const _str& location, _uro& uro)
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
       loc,
-      &si, &uro.sideProcess.info
+      &si, &p2.sideProcess.info
    );
 
-   WaitForSingleObject(uro.sideProcess.info.hProcess, INFINITE);
+   WaitForSingleObject(p2.sideProcess.info.hProcess, INFINITE);
    DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(uro.sideProcess.info.hProcess, &dwExitCode);
+   ::GetExitCodeProcess(p2.sideProcess.info.hProcess, &dwExitCode);
 
-   uro.sideProcess.running = false;
-   return uro.state == State::s_Running && dwExitCode == 0;
+   p2.sideProcess.running = false;
+   return p2.state == State::s_Running && dwExitCode == 0;
 }
 
 _bool os_process(const _str& command, const _str& location)
@@ -1711,7 +1711,7 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
    }
 }
 
-_str os_uroborosPath()
+_str os_executablePath()
 {
    _char path[MAX_PATH];
    GetModuleFileNameW(NULL, path, MAX_PATH);
@@ -1816,7 +1816,7 @@ inline _bool os_isBrowsePath(const _str& path)
    }
 }
 
-inline _tim os_convertToUroTime(const _ftim* time)
+inline _tim os_convertToPerun2Time(const _ftim* time)
 {
    _FILETIME ftime;
    if (FileTimeToLocalFileTime(time, &ftime)) {
@@ -1835,15 +1835,15 @@ inline _tim os_convertToUroTime(const _ftim* time)
    }
 }
 
-inline _bool os_convertToFileTime(const _tim& uroTime, _ftim& result)
+inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result)
 {
    _SYSTEMTIME stime;
-   stime.wYear = uroTime.year;
-   stime.wMonth = uroTime.month;
-   stime.wDay = uroTime.day;
-   stime.wHour = uroTime.hour;
-   stime.wMinute = uroTime.minute;
-   stime.wSecond = uroTime.second;
+   stime.wYear = perunTime.year;
+   stime.wMonth = perunTime.month;
+   stime.wDay = perunTime.day;
+   stime.wHour = perunTime.hour;
+   stime.wMinute = perunTime.minute;
+   stime.wSecond = perunTime.second;
 
    _FILETIME ftime;
    if (!SystemTimeToFileTime(&stime, &ftime)) {

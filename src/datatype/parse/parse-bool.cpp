@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-bool.h"
@@ -23,15 +23,15 @@
 #include "../parse-gen.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
+_bool parseBool(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    const _size len = tks.getLength();
 
    if (len == 1) {
-      return parseOneToken(uro, tks, result);
+      return parseOneToken(p2, tks, result);
    }
 
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
@@ -41,7 +41,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
    const _bool possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return func::boolFunction(result, tks, uro);
+      return func::boolFunction(result, tks, p2);
    }
    else if (len >= 2 && !possibleBinary) {
       // build numeric expression (but only if sequence has any operator)
@@ -55,7 +55,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
          {
             if (!(t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()))
             {
-               if (!parseBoolExp(result, tks, uro)) {
+               if (!parseBoolExp(result, tks, p2)) {
                   throw SyntaxError(L"syntax of a boolean expression is not valid", tks.first().line);
                }
                return true;
@@ -65,23 +65,23 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       }
    }
 
-   if (parseComparisons(result, tks, uro)) {
+   if (parseComparisons(result, tks, p2)) {
       return true;
    }
 
    if (tks.check(TI_HAS_KEYWORD_IN)) {
-      if (parseIn(result, tks, uro)) {
+      if (parseIn(result, tks, p2)) {
          return true;
       }
    }
 
    if (tks.check(TI_HAS_KEYWORD_LIKE)) {
-      if (parseLike(result, tks, uro)) {
+      if (parseLike(result, tks, p2)) {
          return true;
       }
    }
 
-   if (parseTernary<_bool>(result, tks, uro)) {
+   if (parseTernary<_bool>(result, tks, p2)) {
       return true;
    }
 
@@ -92,7 +92,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
+static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    std::vector<ExpElement<_bool>> infList; // infix notation list
    const _int start = tks.getStart();
@@ -126,7 +126,7 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
                      }
                      else {
                         _genptr<_bool> boo;
-                        if (parse(uro, tks2, boo)) {
+                        if (parse(p2, tks2, boo)) {
                            infList.emplace_back(boo, line);
                            infList.emplace_back(ch, line);
                            sublen = 0;
@@ -161,7 +161,7 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
       }
       else {
          _genptr<_bool> boo;
-         if (parse(uro, tks2, boo)) {
+         if (parse(p2, tks2, boo)) {
             infList.emplace_back(boo, tks2.first().line);
          }
          else {
@@ -471,10 +471,10 @@ static _char toBoolExpOperator(const Token& tk)
 
 template <typename T>
 static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
-   const std::pair<Tokens, Tokens>& pair, _uro& uro)
+   const std::pair<Tokens, Tokens>& pair, _p2& p2)
 {
    _genptr<T> valLeft;
-   if (!parse(uro, pair.first, valLeft)) {
+   if (!parse(p2, pair.first, valLeft)) {
       return false;
    }
 
@@ -482,7 +482,7 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
    // in this special case, the whole structure is reduced to
    // a simple comparison "left == right" or "left != right"
    _genptr<T> num2;
-   if (parse(uro, pair.second, num2)) {
+   if (parse(p2, pair.second, num2)) {
       if (negated) {
          result = std::make_unique<gen::NotEquals<T>>(valLeft, num2);
       }
@@ -494,7 +494,7 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
 
    _genptr<std::vector<T>> valRight;
 
-   if (parse(uro, pair.second, valRight)) {
+   if (parse(p2, pair.second, valRight)) {
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
          _genptr<_bool> in = std::make_unique<gen::InConstList<T>>(valLeft, vs);
@@ -516,29 +516,29 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
    }
 }
 
-static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
+static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
    if (pair.first.isEmpty()) {
-      emptyOperSideException(tks.first(), true, uro);
+      emptyOperSideException(tks.first(), true, p2);
    }
    if (pair.second.isEmpty()) {
-      emptyOperSideException(tks.last(), false, uro);
+      emptyOperSideException(tks.last(), false, p2);
    }
 
    _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       pair.first.trimRight();
       if (pair.first.isEmpty()) {
-         emptyOperSideException(tks.first(), true, uro);
+         emptyOperSideException(tks.first(), true, p2);
       }
    }
 
    // first: try to build "Number IN NumList"
    _genptr<_bool> list;
 
-   if (parseIn_Unit<_num>(list, neg, pair, uro)) {
+   if (parseIn_Unit<_num>(list, neg, pair, p2)) {
       result = std::move(list);
       return true;
    }
@@ -546,7 +546,7 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
    const Token& lf = pair.first.first();
 
    if (pair.first.getLength() == 1 && lf.type == Token::t_Word &&
-      uro.hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end())
+      p2.hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end())
    {
       if (pair.second.check(TI_HAS_CHAR_COMMA)) {
          const std::vector<Tokens> elements = pair.second.splitBySymbol(CHAR_COMMA);
@@ -556,15 +556,15 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
             if (t.getLength() == 1) {
                const Token& tf = t.first();
                if (tf.isWeekDay()) {
-                  timeInNumberException(pair.first.first(), tf, L"weekDay", neg, pair.first, uro);
+                  timeInNumberException(pair.first.first(), tf, L"weekDay", neg, pair.first, p2);
                }
                else if (tf.isMonth()) {
-                  timeInNumberException(pair.first.first(), tf, L"month", neg, pair.first, uro);
+                  timeInNumberException(pair.first.first(), tf, L"month", neg, pair.first, p2);
                }
 
                const _bool isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
                if (isInteger) {
-                  timeInNumberException(pair.first.first(), tf, L"year", neg, pair.first, uro);
+                  timeInNumberException(pair.first.first(), tf, L"year", neg, pair.first, p2);
                }
             }
          }
@@ -576,38 +576,38 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
 
          if (isWeek || isMonth) {
             timeInNumberException(pair.first.first(), pair.second.first(),
-               isWeek ? L"weekDay" : L"month", neg, pair.first, uro);
+               isWeek ? L"weekDay" : L"month", neg, pair.first, p2);
          }
 
          const _bool isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
          if (isInteger) {
-            timeInNumberException(pair.first.first(), pair.second.first(), L"year", neg, pair.first, uro);
+            timeInNumberException(pair.first.first(), pair.second.first(), L"year", neg, pair.first, p2);
          }
       }
    }
 
    // secondary: try to build "Time IN TimList"
    _genptr<_bool> list2;
-   if (parseInTimList(list2, neg, pair, uro)) {
+   if (parseInTimList(list2, neg, pair, p2)) {
       result = std::move(list2);
       return true;
    }
 
    // finally: try to build "string IN list"
-   return parseIn_Unit<_str>(result, neg, pair, uro);;
+   return parseIn_Unit<_str>(result, neg, pair, p2);;
 }
 
 
 static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
-   const std::pair<Tokens, Tokens>& pair, _uro& uro)
+   const std::pair<Tokens, Tokens>& pair, _p2& p2)
 {
    _genptr<_tim> tim;
-   if (!parse(uro, pair.first, tim)) {
+   if (!parse(p2, pair.first, tim)) {
       return false;
    }
 
    _genptr<_tim> tim2;
-   if (parse(uro, pair.second, tim2)) {
+   if (parse(p2, pair.second, tim2)) {
       if (negated) {
          result = std::make_unique<gen::NotEquals<_tim>>(tim, tim2);
       }
@@ -619,7 +619,7 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    }
 
    _genptr<_tlist> tlist;
-   if (parse(uro, pair.second, tlist)) {
+   if (parse(p2, pair.second, tlist)) {
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
          _genptr<_bool> in = std::make_unique<gen::InConstTimeList>(tim, vs);
@@ -641,69 +641,69 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    }
 }
 
-static void emptyOperSideException(const Token& oper, const bool& isLeft, _uro& uro)
+static void emptyOperSideException(const Token& oper, const bool& isLeft, _p2& p2)
 {
    const _str side = isLeft ? L"left" : L"right";
 
-   throw SyntaxError(str(side, L" side of operator '", oper.getOriginString(uro), L"' is empty"),
+   throw SyntaxError(str(side, L" side of operator '", oper.getOriginString(p2), L"' is empty"),
       oper.line);
 }
 
 static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool negated, const Tokens& tks, _uro& uro)
+   const _str& timeMember, const _bool negated, const Tokens& tks, _p2& p2)
 {
    if (timeMember == L"year") {
       if (negated) {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", toStr(numVar.value.num.n.value.i),
-            L"', write '", timeVar.getOriginString(uro), L".year != ",
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" not in ", toStr(numVar.value.num.n.value.i),
+            L"', write '", timeVar.getOriginString(p2), L".year != ",
             toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" in ", toStr(numVar.value.num.n.value.i),
-            L"', write '", timeVar.getOriginString(uro), L".year = ",
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" in ", toStr(numVar.value.num.n.value.i),
+            L"', write '", timeVar.getOriginString(p2), L".year = ",
             toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
       }
    }
    else {
       if (negated) {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" not in ", numVar.getOriginString(uro),
-            L"', write '", timeVar.getOriginString(uro), L".", timeMember,
-            L" != ", numVar.getOriginString(uro), L"'"), tks.first().line);
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" not in ", numVar.getOriginString(p2),
+            L"', write '", timeVar.getOriginString(p2), L".", timeMember,
+            L" != ", numVar.getOriginString(p2), L"'"), tks.first().line);
       }
       else {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(uro), L" in ", numVar.getOriginString(uro),
-            L"', write '", timeVar.getOriginString(uro), L".", timeMember,
-            L" = ", numVar.getOriginString(uro), L"'"), tks.first().line);
+         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" in ", numVar.getOriginString(p2),
+            L"', write '", timeVar.getOriginString(p2), L".", timeMember,
+            L" = ", numVar.getOriginString(p2), L"'"), tks.first().line);
       }
    }
 }
 
-static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
+static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
    if (pair.first.isEmpty()) {
-      emptyOperSideException(tks.first(), true, uro);
+      emptyOperSideException(tks.first(), true, p2);
    }
    if (pair.second.isEmpty()) {
-      emptyOperSideException(tks.last(), false, uro);
+      emptyOperSideException(tks.last(), false, p2);
    }
 
    const _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       pair.first.trimRight();
       if (pair.first.isEmpty()) {
-         emptyOperSideException(tks.first(), true, uro);
+         emptyOperSideException(tks.first(), true, p2);
       }
    }
 
    _genptr<_str> value;
-   if (!parse(uro, pair.first, value)) {
+   if (!parse(p2, pair.first, value)) {
       return false;
    }
 
    _genptr<_str> pattern;
-   if (parse(uro, pair.second, pattern)) {
+   if (parse(p2, pair.second, pattern)) {
       if (pattern->isConstant()) {
          const _str cnst = pattern->getValue();
 
@@ -733,7 +733,7 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
    }
 }
 
-static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _uro& uro)
+static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    BracketsInfo bi;
    const _int end = tks.getEnd();
@@ -747,7 +747,7 @@ static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _uro& u
             case CHAR_GREATER:
             case CHAR_EXCLAMATION_MARK:
             case CHAR_EQUAL_SIGN: {
-               return parseComparison(result, tks, ch, uro);
+               return parseComparison(result, tks, ch, p2);
             }
          }
       }
@@ -796,18 +796,18 @@ static _bool comparison(_genptr<_bool>& result, _genptr<T>& val1,
 
 template <typename T>
 _bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, _uro& uro)
+   const Tokens& right, const gen::CompType& ct, _p2& p2)
 {
    _genptr<T> v1;
    _genptr<T> v2;
-   if (parse(uro, left, v1) && parse(uro, right, v2)) {
+   if (parse(p2, left, v1) && parse(p2, right, v2)) {
       return comparison<T>(result, v1, v2, ct);
    }
 
    return false;
 }
 
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, _uro& uro)
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, _p2& p2)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -825,22 +825,22 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
       const _bool isMonth1 = t1.isMonth();
       const _bool isMonth2 = t2.isMonth();
       const _bool isVar1 = t1.type == Token::t_Word &&
-         uro.hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end();
+         p2.hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
       const _bool isVar2 = t2.type == Token::t_Word &&
-         uro.hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != uro.hashes.HASH_GROUP_TIME_ATTR.end();
+         p2.hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
 
       //const _str& v1 = t1.originString;
       //const _str& v2 = t2.originString;
       const _str s = _str(1, sign);
 
       if (isVar1 && (isWeek2 || isMonth2)) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
-            L"', write '", t1.getOriginString(uro), L".", (isWeek2 ? L"weekDay" : L"month"),
-            L" ", s, L" ", t2.getOriginString(uro), L"'"), tks.first().line);
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", s, L" ", t2.getOriginString(p2),
+            L"', write '", t1.getOriginString(p2), L".", (isWeek2 ? L"weekDay" : L"month"),
+            L" ", s, L" ", t2.getOriginString(p2), L"'"), tks.first().line);
       }
       else if ((isWeek1 || isMonth1) && isVar2) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro),
-            L"', write '", t1.getOriginString(uro), L" ", s, L" ", t2.getOriginString(uro), L".",
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", s, L" ", t2.getOriginString(p2),
+            L"', write '", t1.getOriginString(p2), L" ", s, L" ", t2.getOriginString(p2), L".",
             (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
       }
 
@@ -850,69 +850,69 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
       if (isVar1 && isInteger2) {
          const _nint nm = t2.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxError(str(L"instead of '", t1.getOriginString(uro), L" ", s, L" ", toStr(nm),
-               L"', write '", t1.getOriginString(uro), L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
+            throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", s, L" ", toStr(nm),
+               L"', write '", t1.getOriginString(p2), L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
          }
          else {
-            throw SyntaxError(str(L"time variable '", t1.getOriginString(uro),
+            throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
                L"' cannot be compared with a number"), tks.first().line);
          }
       }
       else if (isInteger1 && isVar2) {
          const _nint nm = t1.value.num.n.value.i;
          if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxError(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro),
-               L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(uro), L".year'"), tks.first().line);
+            throw SyntaxError(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(p2),
+               L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(p2), L".year'"), tks.first().line);
          }
          else {
-            throw SyntaxError(str(L"time variable '", t2.getOriginString(uro),
+            throw SyntaxError(str(L"time variable '", t2.getOriginString(p2),
                L"' cannot be compared with a number"), tks.first().line);
          }
       }
    }
 
    // try to parse comparison for every singular data type
-   if (parseComparisonUnit<_bool>(result, left, right, ct, uro)
-    || parseComparisonUnit<_num>(result, left, right, ct, uro)
-    || parseComparisonUnit<_per>(result, left, right, ct, uro)
-    || parseComparisonUnit<_tim>(result, left, right, ct, uro)
-    || parseComparisonUnit<_str>(result, left, right, ct, uro)) {
+   if (parseComparisonUnit<_bool>(result, left, right, ct, p2)
+    || parseComparisonUnit<_num>(result, left, right, ct, p2)
+    || parseComparisonUnit<_per>(result, left, right, ct, p2)
+    || parseComparisonUnit<_tim>(result, left, right, ct, p2)
+    || parseComparisonUnit<_str>(result, left, right, ct, p2)) {
       return true;
    }
 
    // comparisons between singular values have failed, so try comparisons of collections
-   return parseCollectionComparisons(result, left, right, ct, uro);
+   return parseCollectionComparisons(result, left, right, ct, p2);
 }
 
 _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& list, const gen::CompType& ct,
-   const _bool reversed, _uro& uro)
+   const _bool reversed, _p2& p2)
 {
    switch (ct) {
       case gen::ct_Equals: {
-         result = std::make_unique<gen::DefinitionListEqual>(def, list, uro);
+         result = std::make_unique<gen::DefinitionListEqual>(def, list, p2);
          break;
       }
       case gen::ct_NotEquals: {
-         result = std::make_unique<gen::DefinitionListNotEqual>(def, list, uro);
+         result = std::make_unique<gen::DefinitionListNotEqual>(def, list, p2);
          break;
     }
       default: {
          if (reversed) {
             switch(ct) {
                case gen::ct_Smaller: {
-                  result = std::make_unique<gen::DefinitionListBigger>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListBigger>(def, list, p2);
                   break;
                }
                case gen::ct_SmallerEquals: {
-                  result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, p2);
                   break;
                }
                case gen::ct_Bigger: {
-                  result = std::make_unique<gen::DefinitionListSmaller>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListSmaller>(def, list, p2);
                   break;
                }
                case gen::ct_BiggerEquals: {
-                  result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, p2);
                   break;
                }
                default: {
@@ -923,19 +923,19 @@ _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& li
          else {
             switch(ct) {
                case gen::ct_Smaller: {
-                  result = std::make_unique<gen::DefinitionListSmaller>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListSmaller>(def, list, p2);
                   break;
                }
                case gen::ct_SmallerEquals: {
-                  result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, p2);
                   break;
                }
                case gen::ct_Bigger: {
-                  result = std::make_unique<gen::DefinitionListBigger>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListBigger>(def, list, p2);
                   break;
                }
                case gen::ct_BiggerEquals: {
-                  result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, uro);
+                  result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, p2);
                   break;
                }
                default: {
@@ -953,13 +953,13 @@ _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& li
 
 template <typename T>
 _bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, _uro& uro)
+   const Tokens& right, const gen::CompType& ct, _p2& p2)
 {
    _genptr<std::vector<T>> leftValue;
-   if (parse(uro, left, leftValue)) {
+   if (parse(p2, left, leftValue)) {
       _genptr<std::vector<T>> rightValue;
 
-      if (parse(uro, right, rightValue)) {
+      if (parse(p2, right, rightValue)) {
          switch(ct) {
             case gen::ct_Equals: {
                result = std::make_unique<gen::CollectionsEqual<T>>(leftValue, rightValue);
@@ -996,13 +996,13 @@ _bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
 
 template <typename T>
 _bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, const Tokens& right,
-   const gen::CompType& ct, _uro& uro)
+   const gen::CompType& ct, _p2& p2)
 {
    _genptr<T> leftValue;
-   if (parse(uro, left, leftValue)) {
+   if (parse(p2, left, leftValue)) {
       _genptr<std::vector<T>> rightCollection;
 
-      if (parse(uro, right, rightCollection)) {
+      if (parse(p2, right, rightCollection)) {
          switch(ct) {
             case gen::ct_Equals: {
                result = std::make_unique<gen::CollectionValueEquals<T>>(rightCollection, leftValue);
@@ -1037,10 +1037,10 @@ _bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, cons
    }
 
    _genptr<T> rightValue;
-   if (parse(uro, right, rightValue)) {
+   if (parse(p2, right, rightValue)) {
       _genptr<std::vector<T>> leftCollection;
 
-      if (parse(uro, left, leftCollection)) {
+      if (parse(p2, left, leftCollection)) {
          switch(ct) {
             case gen::ct_Equals: {
                result = std::make_unique<gen::CollectionValueEquals<T>>(leftCollection, rightValue);
@@ -1079,12 +1079,12 @@ _bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, cons
 }
 
 static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, _uro& uro)
+   const Tokens& right, const gen::CompType& ct, _p2& p2)
 {
    _defptr leftDef;
    _defptr rightDef;
-   const _bool hasLeftDef = parse(uro, left, leftDef);
-   const _bool hasRightDef = parse(uro, right, rightDef);
+   const _bool hasLeftDef = parse(p2, left, leftDef);
+   const _bool hasRightDef = parse(p2, right, rightDef);
 
    // special case situations
    // when definition is compared with other data types or with another definition
@@ -1093,27 +1093,27 @@ static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& le
       if (hasLeftDef && hasRightDef) {
          switch(ct) {
             case gen::ct_Equals: {
-               result = std::make_unique<gen::DefinitionsEqual>(leftDef, rightDef, uro);
+               result = std::make_unique<gen::DefinitionsEqual>(leftDef, rightDef, p2);
                break;
             }
             case gen::ct_NotEquals: {
-               result = std::make_unique<gen::DefinitionsNotEqual>(leftDef, rightDef, uro);
+               result = std::make_unique<gen::DefinitionsNotEqual>(leftDef, rightDef, p2);
                break;
             }
             case gen::ct_Smaller: {
-               result = std::make_unique<gen::DefinitionsSmaller>(leftDef, rightDef, uro);
+               result = std::make_unique<gen::DefinitionsSmaller>(leftDef, rightDef, p2);
                break;
             }
             case gen::ct_SmallerEquals: {
-               result = std::make_unique<gen::DefinitionsSmallerEquals>(leftDef, rightDef, uro);
+               result = std::make_unique<gen::DefinitionsSmallerEquals>(leftDef, rightDef, p2);
                break;
             }
             case gen::ct_Bigger: {
-               result = std::make_unique<gen::DefinitionsBigger>(leftDef, rightDef, uro);
+               result = std::make_unique<gen::DefinitionsBigger>(leftDef, rightDef, p2);
                break;
             }
             case gen::ct_BiggerEquals: {
-               result = std::make_unique<gen::DefinitionsBiggerEquals>(leftDef, rightDef, uro);
+               result = std::make_unique<gen::DefinitionsBiggerEquals>(leftDef, rightDef, p2);
                break;
             }
          }
@@ -1123,24 +1123,24 @@ static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& le
 
       if (hasLeftDef) {
          _genptr<_list> rightList;
-         return parse(uro, right, rightList)
-            ? comparisonDefList(result, leftDef, rightList, ct, false, uro)
+         return parse(p2, right, rightList)
+            ? comparisonDefList(result, leftDef, rightList, ct, false, p2)
             : false;
       }
       else {
          _genptr<_list> leftList;
-         return parse(uro, left, leftList)
-            ? comparisonDefList(result, rightDef, leftList, ct, true, uro)
+         return parse(p2, left, leftList)
+            ? comparisonDefList(result, rightDef, leftList, ct, true, p2)
             : false;
       }
    }
 
-   return comparisonCollectionValue<_tim>(result, left, right, ct, uro)
-       || comparisonCollectionValue<_num>(result, left, right, ct, uro)
-       || comparisonCollectionValue<_str>(result, left, right, ct, uro)
-       || comparisonCollections<_tim>(result, left, right, ct, uro)
-       || comparisonCollections<_num>(result, left, right, ct, uro)
-       || comparisonCollections<_str>(result, left, right, ct, uro);
+   return comparisonCollectionValue<_tim>(result, left, right, ct, p2)
+       || comparisonCollectionValue<_num>(result, left, right, ct, p2)
+       || comparisonCollectionValue<_str>(result, left, right, ct, p2)
+       || comparisonCollections<_tim>(result, left, right, ct, p2)
+       || comparisonCollections<_num>(result, left, right, ct, p2)
+       || comparisonCollections<_str>(result, left, right, ct, p2);
 }
 
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char sign, gen::CompType& ctype)

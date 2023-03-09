@@ -1,23 +1,23 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "com-core.h"
-#include "../uroboros.h"
+#include "../perun2.h"
 #include "../os.h"
 
 
-namespace uro::comm
+namespace perun2::comm
 {
 
 
@@ -28,164 +28,164 @@ namespace uro::comm
 
 void C_Delete::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _bool s = this->context->v_exists->value && os_delete(this->context->v_path->value);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Delete ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Delete ", getCCName(this->context->v_path->value));
          this->context->reloadData();
       }
       else {
-         this->uroboros.logger.log(L"Failed to delete ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to delete ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_Drop::run()
 {
-   if (this->uroboros.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->uroboros);
-      this->uroboros.contexts.success->value = s;
+   if (this->perun2.state == State::s_Running) {
+      const _bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->perun2);
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Drop ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Drop ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->reloadData();
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to drop ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to drop ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_Hide::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _bool s = this->context->v_exists->value && os_hide(this->context->v_path->value);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Hide ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Hide ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_hidden->value = true;
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to hide ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to hide ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_Lock::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _bool s = this->context->v_exists->value && os_lock(this->context->v_path->value);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Lock ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Lock ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_readonly->value = true;
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to lock ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to lock ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_Open::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _bool s = this->context->v_exists->value && os_open(this->context->v_path->value);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Open ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value));
       }
       else {
-         this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_Unlock::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _bool s = this->context->v_exists->value && os_unlock(this->context->v_path->value);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Unlock ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Unlock ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_readonly->value = false;
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to unlock ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to unlock ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_Unhide::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _bool s = this->context->v_exists->value && os_unhide(this->context->v_path->value);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Unhide ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Unhide ", getCCName(this->context->v_path->value));
          if (saveChanges) {
             this->context->v_hidden->value = false;
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to unhide ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to unhide ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_OpenWith::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _str pro = os_trim(program->getValue());
 
       if (!this->context->v_exists->value || pro.empty()) {
-         this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
       const _str proPath = os_join(this->locationContext->location->value, pro);
       if (os_exists(proPath)) {
          const _bool s = os_openWith(proPath, os_quoteEmbraced(this->context->v_path->value));
-         this->uroboros.contexts.success->value = s;
+         this->perun2.contexts.success->value = s;
 
          if (s) {
-            this->uroboros.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
+            this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
          }
          else {
-            this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
+            this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
          }
       }
       else {
          if (!os_hasParentDirectory(this->context->v_path->value)) {
-            this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->perun2.contexts.success->value = false;
             return;
          }
 
          const _str com = str(pro, L" ", os_quoteEmbraced(this->context->v_path->value));
          const _bool s = os_process(com, os_parent(this->context->v_path->value));
-         this->uroboros.contexts.success->value = s;
+         this->perun2.contexts.success->value = s;
 
          if (s) {
-            this->uroboros.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
          else {
-            this->uroboros.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
+            this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
       }
    }
@@ -193,35 +193,35 @@ void C_OpenWith::run()
 
 void C_ReaccessTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _tim t = this->context->v_access->value;
       t.setValue(time->getValue());
-      this->uroboros.contexts.success->value = this->context->v_exists->value
+      this->perun2.contexts.success->value = this->context->v_exists->value
          && os_setTime(this->context->v_path->value, this->context->v_creation->value, t, this->context->v_modification->value);
 
-      if (this->uroboros.contexts.success->value) {
-         this->uroboros.logger.log(L"Reaccess ", getCCName(this->context->v_path->value), L" to ", t.toString());
+      if (this->perun2.contexts.success->value) {
+         this->perun2.logger.log(L"Reaccess ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_access->value = t;
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to reaccess ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to reaccess ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_RechangeTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _tim t = this->context->v_change->value;
       t.setValue(time->getValue());
-      this->uroboros.contexts.success->value = this->context->v_exists->value
+      this->perun2.contexts.success->value = this->context->v_exists->value
          && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
-      if (this->uroboros.contexts.success->value) {
-         this->uroboros.logger.log(L"Rechange ", getCCName(this->context->v_path->value), L" to ", t.toString());
+      if (this->perun2.contexts.success->value) {
+         this->perun2.logger.log(L"Rechange ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_change->value = t;
@@ -229,42 +229,42 @@ void C_RechangeTo::run()
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to rechange ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to rechange ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_RecreateTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _tim t = this->context->v_creation->value;
       t.setValue(time->getValue());
-      this->uroboros.contexts.success->value = this->context->v_exists->value
+      this->perun2.contexts.success->value = this->context->v_exists->value
          && os_setTime(this->context->v_path->value, t, this->context->v_access->value, this->context->v_modification->value);
 
-      if (this->uroboros.contexts.success->value) {
-         this->uroboros.logger.log(L"Recreate ", getCCName(this->context->v_path->value),  L" to ", t.toString());
+      if (this->perun2.contexts.success->value) {
+         this->perun2.logger.log(L"Recreate ", getCCName(this->context->v_path->value),  L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_creation->value = t;
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to recreate ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to recreate ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_RemodifyTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _tim t = this->context->v_modification->value;
       t.setValue(time->getValue());
-      this->uroboros.contexts.success->value = this->context->v_exists->value
+      this->perun2.contexts.success->value = this->context->v_exists->value
          && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
-      if (this->uroboros.contexts.success->value) {
-         this->uroboros.logger.log(L"Remodify ", getCCName(this->context->v_path->value), L" to ", t.toString());
+      if (this->perun2.contexts.success->value) {
+         this->perun2.logger.log(L"Remodify ", getCCName(this->context->v_path->value), L" to ", t.toString());
 
          if (saveChanges) {
             this->context->v_modification->value = t;
@@ -272,21 +272,21 @@ void C_RemodifyTo::run()
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to remodify ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to remodify ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_RenameTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str n = os_fullname(os_trim(name->getValue()));
 
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(this->context->v_path->value) || os_isAbsolute(n)) {
 
-         this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -300,18 +300,18 @@ void C_RenameTo::run()
       const _str newPath = str(base, OS_SEPARATOR_STRING, n);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->uroboros))) {
-            this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
-            this->uroboros.contexts.success->value = false;
+         if (!(forced && os_drop(newPath, this->perun2))) {
+            this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
 
       const _bool s = os_moveTo(this->context->v_path->value, newPath);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
+         this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
 
          if (saveChanges) {
             this->context->v_fullname->value = n;
@@ -321,21 +321,21 @@ void C_RenameTo::run()
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_RenameTo_Stack::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str n = os_fullname(os_trim(name->getValue()));
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
-         this->uroboros.logger.log(L"Failed to rename ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to rename ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -376,10 +376,10 @@ void C_RenameTo_Stack::run()
          s = os_moveTo(oldPath, newPath);
       }
 
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
+         this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
 
          if (saveChanges) {
             this->context->v_fullname->value = n;
@@ -389,22 +389,22 @@ void C_RenameTo_Stack::run()
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
       }
    }
 }
 
 void C_MoveTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
 
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -412,8 +412,8 @@ void C_MoveTo::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -423,38 +423,38 @@ void C_MoveTo::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->uroboros))) {
-            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+         if (!(forced && os_drop(newPath, this->perun2))) {
+            this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
 
       const _bool s = os_moveTo(oldPath, newPath);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
 
 void C_MoveTo_Stack::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -462,8 +462,8 @@ void C_MoveTo_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -484,24 +484,24 @@ void C_MoveTo_Stack::run()
       }
 
       const _bool s = os_moveTo(oldPath, newPath);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
 
 void C_MoveToAs::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
@@ -509,8 +509,8 @@ void C_MoveToAs::run()
       if (!this->context->v_exists->value || os_isInvaild(fulln)
            || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -524,8 +524,8 @@ void C_MoveToAs::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -533,32 +533,32 @@ void C_MoveToAs::run()
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->uroboros))) {
-            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+         if (!(forced && os_drop(newPath, this->perun2))) {
+            this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
 
       const _bool s = os_moveTo(oldPath, newPath);
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
 
 void C_MoveToAs_Stack::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
@@ -566,8 +566,8 @@ void C_MoveToAs_Stack::run()
       if (!this->context->v_exists->value || os_isInvaild(fulln)
           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
 
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -575,8 +575,8 @@ void C_MoveToAs_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -615,30 +615,30 @@ void C_MoveToAs_Stack::run()
          s = os_moveTo(oldPath, newPath);
       }
 
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
          if (this->saveChanges) {
             this->context->loadData(newPath);
          }
       }
       else {
-         this->uroboros.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
    }
 }
 
 void C_CopyTo::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -646,8 +646,8 @@ void C_CopyTo::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -657,34 +657,34 @@ void C_CopyTo::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->uroboros))) {
-            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+         if (!(forced && os_drop(newPath, this->perun2))) {
+            this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
-      this->uroboros.contexts.success->value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
       }
       else {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
 
 void C_CopyTo_Stack::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -692,8 +692,8 @@ void C_CopyTo_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -713,29 +713,29 @@ void C_CopyTo_Stack::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
-      this->uroboros.contexts.success->value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
+         this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc));
       }
       else {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
 
 void C_CopyToAs::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -749,8 +749,8 @@ void C_CopyToAs::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -758,36 +758,36 @@ void C_CopyToAs::run()
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->uroboros))) {
-            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+         if (!(forced && os_drop(newPath, this->perun2))) {
+            this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
-      this->uroboros.contexts.success->value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
       }
       else {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }
 
 void C_CopyToAs_Stack::run()
 {
-   if (this->uroboros.state == State::s_Running) {
+   if (this->perun2.state == State::s_Running) {
       const _str& oldPath = this->context->v_path->value;
       _str fulln = os_fullname(os_trim(name->getValue()));
       const _str loc = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-         this->uroboros.contexts.success->value = false;
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
          return;
       }
 
@@ -795,8 +795,8 @@ void C_CopyToAs_Stack::run()
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-            this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
-            this->uroboros.contexts.success->value = false;
+            this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+            this->perun2.contexts.success->value = false;
             return;
          }
       }
@@ -831,14 +831,14 @@ void C_CopyToAs_Stack::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->uroboros);
-      this->uroboros.contexts.success->value = s;
+      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->uroboros.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+         this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
       }
       else {
-         this->uroboros.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
    }
 }

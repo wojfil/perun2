@@ -1,23 +1,23 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "com-core-aggr.h"
-#include "../uroboros.h"
+#include "../perun2.h"
 #include "../os.h"
 
 
-namespace uro::comm
+namespace perun2::comm
 {
 
 void C_AggrCopy_String::run()
@@ -136,24 +136,24 @@ void C_AggrSelect_List::run()
 
 
 
-void logCopyError(_uro& uro, const _str& name)
+void logCopyError(_p2& p2, const _str& name)
 {
-   uro.logger.log(L"Failed to copy ", getCCNameShort(name));
+   p2.logger.log(L"Failed to copy ", getCCNameShort(name));
 }
 
-void logCopySuccess(_uro& uro, const _str& name)
+void logCopySuccess(_p2& p2, const _str& name)
 {
-   uro.logger.log(L"Copy ", getCCNameShort(name));
+   p2.logger.log(L"Copy ", getCCNameShort(name));
 }
 
-void logSelectError(_uro& uro, const _str& name)
+void logSelectError(_p2& p2, const _str& name)
 {
-   uro.logger.log(L"Failed to select ", getCCNameShort(name));
+   p2.logger.log(L"Failed to select ", getCCNameShort(name));
 }
 
-void logSelectSuccess(_uro& uro, const _str& name)
+void logSelectSuccess(_p2& p2, const _str& name)
 {
-   uro.logger.log(L"Select ", getCCNameShort(name));
+   p2.logger.log(L"Select ", getCCNameShort(name));
 }
 
 
@@ -162,8 +162,8 @@ void C_Copy_String::run()
 {
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
-      logCopyError(this->uroboros, n);
-      this->uroboros.contexts.success->value = false;
+      logCopyError(this->perun2, n);
+      this->perun2.contexts.success->value = false;
       return;
    }
 
@@ -173,17 +173,17 @@ void C_Copy_String::run()
       set.insert(path);
       const _bool s = os_copy(set);
       if (s) {
-         logCopySuccess(this->uroboros, path);
+         logCopySuccess(this->perun2, path);
       }
       else {
-         logCopyError(this->uroboros, path);
+         logCopyError(this->perun2, path);
       }
-      this->uroboros.contexts.success->value = s;
+      this->perun2.contexts.success->value = s;
 
    }
    else {
-      logCopyError(this->uroboros, path);
-      this->uroboros.contexts.success->value = false;
+      logCopyError(this->perun2, path);
+      this->perun2.contexts.success->value = false;
    }
 }
 
@@ -193,7 +193,7 @@ void C_Copy_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      this->uroboros.contexts.success->value = true;
+      this->perun2.contexts.success->value = true;
       return;
    }
 
@@ -203,7 +203,7 @@ void C_Copy_List::run()
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
       if (os_isInvaild(n)) {
-         logCopyError(this->uroboros, n);
+         logCopyError(this->perun2, n);
          anyFailure = true;
       }
       else {
@@ -212,7 +212,7 @@ void C_Copy_List::run()
             set.insert(path);
          }
          else {
-            logCopyError(this->uroboros, path);
+            logCopyError(this->perun2, path);
             anyFailure = true;
          }
       }
@@ -224,23 +224,23 @@ void C_Copy_List::run()
 
       for (auto it = set.begin(); it != end; ++it) {
          if (s) {
-            logCopySuccess(this->uroboros, *it);
+            logCopySuccess(this->perun2, *it);
          }
          else {
-            logCopyError(this->uroboros, *it);
+            logCopyError(this->perun2, *it);
          }
       }
    }
 
-   this->uroboros.contexts.success->value = !anyFailure;
+   this->perun2.contexts.success->value = !anyFailure;
 }
 
 void C_Select_String::run()
 {
    const _str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
-      logSelectError(this->uroboros, n);
-      this->uroboros.contexts.success->value = false;
+      logSelectError(this->perun2, n);
+      this->perun2.contexts.success->value = false;
       return;
    }
 
@@ -256,21 +256,21 @@ void C_Select_String::run()
          success = os_select(parent, set);
 
          if (success) {
-            logSelectSuccess(this->uroboros, path);
+            logSelectSuccess(this->perun2, path);
          }
          else {
-            logSelectError(this->uroboros, path);
+            logSelectError(this->perun2, path);
          }
       }
       else {
-         logSelectError(this->uroboros, path);
+         logSelectError(this->perun2, path);
       }
    }
    else {
-      logSelectError(this->uroboros, path);
+      logSelectError(this->perun2, path);
    }
 
-   this->uroboros.contexts.success->value = success;
+   this->perun2.contexts.success->value = success;
 }
 
 void C_Select_List::run()
@@ -279,7 +279,7 @@ void C_Select_List::run()
    const _size length = elements.size();
 
    if (length == 0) {
-      this->uroboros.contexts.success->value = true;
+      this->perun2.contexts.success->value = true;
       return;
    }
 
@@ -292,20 +292,20 @@ void C_Select_List::run()
       const _str n = os_trim(elements[i]);
 
       if (os_isInvaild(n)) {
-         logSelectError(this->uroboros, n);
+         logSelectError(this->perun2, n);
          continue;
       }
 
       const _str path = os_join(this->locationContext->location->value, n);
 
       if (!os_exists(path) || !os_hasParentDirectory(path)) {
-         logSelectError(this->uroboros, path);
+         logSelectError(this->perun2, path);
          continue;
       }
 
       const _str parent = os_parent(path);
       if (!os_directoryExists(parent)) {
-         logSelectError(this->uroboros, path);
+         logSelectError(this->perun2, path);
          continue;
       }
 
@@ -333,14 +333,14 @@ void C_Select_List::run()
    }
 
    if (selectPaths.empty()) {
-      this->uroboros.contexts.success->value = false;
+      this->perun2.contexts.success->value = false;
    }
    else {
       _bool anyFailed = false;
 
       for (auto it = selectPaths.begin(); it != selectPaths.end(); it++)
       {
-         if (this->uroboros.state != State::s_Running) {
+         if (this->perun2.state != State::s_Running) {
             break;
          }
 
@@ -352,15 +352,15 @@ void C_Select_List::run()
          const auto end = it->second.end();
          for (auto it2 = it->second.begin(); it2 != end; ++it2) {
             if (success) {
-               logSelectSuccess(this->uroboros, *it2);
+               logSelectSuccess(this->perun2, *it2);
             }
             else {
-               logSelectError(this->uroboros, *it2);
+               logSelectError(this->perun2, *it2);
             }
          }
       }
 
-      this->uroboros.contexts.success->value = !anyFailed;
+      this->perun2.contexts.success->value = !anyFailed;
    }
 }
 

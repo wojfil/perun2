@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef COM_STRUCT_H
@@ -23,15 +23,15 @@
 #include "com-arg.h"
 
 
-namespace uro::comm
+namespace perun2::comm
 {
 
 
 struct CS_RawBlock : Command
 {
 public:
-   CS_RawBlock(std::vector<_comptr>& coms, _ucptr& ctx, _uro& uro)
-      : length(coms.size()), context(std::move(ctx)), uroboros(uro)
+   CS_RawBlock(std::vector<_comptr>& coms, _ucptr& ctx, _p2& p2)
+      : length(coms.size()), context(std::move(ctx)), perun2(p2)
    {
       langutil::transferUniquePtrs(coms, commands);
    };
@@ -41,7 +41,7 @@ public:
 private:
    std::vector<_comptr> commands;
    const _size length;
-   _uro& uroboros;
+   _p2& perun2;
    _ucptr context;
 };
 
@@ -49,8 +49,8 @@ private:
 struct CS_Block : Command
 {
 public:
-   CS_Block(std::vector<_comptr>& coms, _acptr& ctx, _uro& uro)
-      : length(coms.size()), uroboros(uro), context(std::move(ctx))
+   CS_Block(std::vector<_comptr>& coms, _acptr& ctx, _p2& p2)
+      : length(coms.size()), perun2(p2), context(std::move(ctx))
    {
       langutil::transferUniquePtrs(coms, commands);
    };
@@ -60,7 +60,7 @@ public:
 private:
    std::vector<_comptr> commands;
    const _size length;
-   _uro& uroboros;
+   _p2& perun2;
    _acptr context;
 };
 
@@ -68,15 +68,15 @@ private:
 struct CS_Times : Command
 {
 public:
-   CS_Times(_genptr<_num>& ts, _comptr& com, _icptr& ctx, _uro& uro)
-      : context(std::move(ctx)), times(std::move(ts)), command(std::move(com)), uroboros(uro) { };
+   CS_Times(_genptr<_num>& ts, _comptr& com, _icptr& ctx, _p2& p2)
+      : context(std::move(ctx)), times(std::move(ts)), command(std::move(com)), perun2(p2) { };
 
    void run() override;
 
 private:
    _genptr<_num> times;
    _comptr command;
-   _uro& uroboros;
+   _p2& perun2;
    _icptr context;
 };
 
@@ -84,15 +84,15 @@ private:
 struct CS_While : Command
 {
 public:
-   CS_While(_genptr<_bool>& cond, _comptr& com, _icptr& ctx, _uro& uro)
-      : context(std::move(ctx)), condition(std::move(cond)), command(std::move(com)), uroboros(uro)  { };
+   CS_While(_genptr<_bool>& cond, _comptr& com, _icptr& ctx, _p2& p2)
+      : context(std::move(ctx)), condition(std::move(cond)), command(std::move(com)), perun2(p2)  { };
 
    void run() override;
 
 private:
    _genptr<_bool> condition;
    _comptr command;
-   _uro& uroboros;
+   _p2& perun2;
    _icptr context;
 };
 
@@ -100,8 +100,8 @@ private:
 struct CS_StringLoop : IterationLoop
 {
 public:
-   CS_StringLoop(_genptr<_str>& str, _comptr& com, _fcptr& ctx, _uro& uro)
-      : IterationLoop(com, ctx, uro), string(std::move(str)) { };
+   CS_StringLoop(_genptr<_str>& str, _comptr& com, _fcptr& ctx, _p2& p2)
+      : IterationLoop(com, ctx, p2), string(std::move(str)) { };
 
    void run() override;
 
@@ -113,8 +113,8 @@ private:
 struct CS_DefinitionLoop : IterationLoop
 {
 public:
-   CS_DefinitionLoop(_defptr& def, _comptr& com, _fcptr& ctx, _uro& uro)
-      : IterationLoop(com, ctx, uro), definition(std::move(def)) { };
+   CS_DefinitionLoop(_defptr& def, _comptr& com, _fcptr& ctx, _p2& p2)
+      : IterationLoop(com, ctx, p2), definition(std::move(def)) { };
 
    void run() override;
 
@@ -129,13 +129,13 @@ private:
 struct CS_ContextlessLoop : Command
 {
 public:
-   CS_ContextlessLoop(_defptr& def, _comptr& com, _uro& uro);
+   CS_ContextlessLoop(_defptr& def, _comptr& com, _p2& p2);
    void run() override;
 
 private:
    _defptr definition;
    _comptr command;
-   _uro& uroboros;
+   _p2& perun2;
    FileContext* const context;
 };
 
@@ -143,8 +143,8 @@ private:
 struct CS_ListLoop : IterationLoop
 {
 public:
-   CS_ListLoop(_genptr<_list>& li, _comptr& com, _fcptr& ctx, _uro& uro)
-      : IterationLoop(com, ctx, uro), list(std::move(li)) { };
+   CS_ListLoop(_genptr<_list>& li, _comptr& com, _fcptr& ctx, _p2& p2)
+      : IterationLoop(com, ctx, p2), list(std::move(li)) { };
 
    void run() override;
 
@@ -156,8 +156,8 @@ private:
 struct CS_Inside : IterationLoop
 {
 public:
-   CS_Inside(_comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
-      : IterationLoop(com, fctx, uro), locContext(std::move(lctx)) { };
+   CS_Inside(_comptr& com, _lcptr& lctx, _fcptr& fctx, _p2& p2)
+      : IterationLoop(com, fctx, p2), locContext(std::move(lctx)) { };
 
 protected:
    _lcptr locContext;
@@ -167,8 +167,8 @@ protected:
 struct CS_InsideThis : Command
 {
 public:
-   CS_InsideThis(_comptr& com, _lcptr& lctx, FileContext* fctx, _uro& uro)
-      : command(std::move(com)), locContext(std::move(lctx)), fileContext(fctx), uroboros(uro) { };
+   CS_InsideThis(_comptr& com, _lcptr& lctx, FileContext* fctx, _p2& p2)
+      : command(std::move(com)), locContext(std::move(lctx)), fileContext(fctx), perun2(p2) { };
 
    void run() override;
 
@@ -176,15 +176,15 @@ private:
    _comptr command;
    _lcptr locContext;
    FileContext* const fileContext;
-   _uro& uroboros;
+   _p2& perun2;
 };
 
 
 struct CS_InsideString : CS_Inside
 {
 public:
-   CS_InsideString(_genptr<_str>& str, _comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
-      : CS_Inside(com, lctx, fctx, uro), string(std::move(str)) { };
+   CS_InsideString(_genptr<_str>& str, _comptr& com, _lcptr& lctx, _fcptr& fctx, _p2& p2)
+      : CS_Inside(com, lctx, fctx, p2), string(std::move(str)) { };
 
    void run() override;
 
@@ -196,8 +196,8 @@ private:
 struct CS_InsideDefinition : CS_Inside
 {
 public:
-   CS_InsideDefinition(_defptr& def, _comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
-      : CS_Inside(com, lctx, fctx, uro), definition(std::move(def)) { };
+   CS_InsideDefinition(_defptr& def, _comptr& com, _lcptr& lctx, _fcptr& fctx, _p2& p2)
+      : CS_Inside(com, lctx, fctx, p2), definition(std::move(def)) { };
 
    void run() override;
 
@@ -210,7 +210,7 @@ private:
 struct CS_InsideContextless : Command
 {
 public:
-   CS_InsideContextless(_defptr& def, _comptr& com, _lcptr& lctx, _uro& uro);
+   CS_InsideContextless(_defptr& def, _comptr& com, _lcptr& lctx, _p2& p2);
 
    void run() override;
 
@@ -219,15 +219,15 @@ private:
    _comptr command;
    _lcptr locContext;
    FileContext* const fileContext;
-   _uro& uroboros;
+   _p2& perun2;
 };
 
 
 struct CS_InsideList : CS_Inside
 {
 public:
-   CS_InsideList(_genptr<_list>& li, _comptr& com, _lcptr& lctx, _fcptr& fctx, _uro& uro)
-      : CS_Inside(com, lctx, fctx, uro), list(std::move(li)) { };
+   CS_InsideList(_genptr<_list>& li, _comptr& com, _lcptr& lctx, _fcptr& fctx, _p2& p2)
+      : CS_Inside(com, lctx, fctx, p2), list(std::move(li)) { };
 
    void run() override;
 

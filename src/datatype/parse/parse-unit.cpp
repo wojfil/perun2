@@ -1,15 +1,15 @@
 /*
-    This file is part of Uroboros2.
-    Uroboros2 is free software: you can redistribute it and/or modify
+    This file is part of Perun2.
+    Perun2 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    Uroboros2 is distributed in the hope that it will be useful,
+    Peruns2 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
-    along with Uroboros2. If not, see <http://www.gnu.org/licenses/>.
+    along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "parse-unit.h"
@@ -23,10 +23,10 @@
 #include "parse-asterisk.h"
 
 
-namespace uro::parse
+namespace perun2::parse
 {
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_bool>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -47,7 +47,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_bool>& result)
          }
       }
       case Token::t_Word: {
-         return uro.contexts.makeVarRef(tk, result, uro);
+         return p2.contexts.makeVarRef(tk, result, p2);
       }
       default: {
          return false;
@@ -55,7 +55,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_bool>& result)
    }
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
 {
    const Token& tk = tks.first();
 
@@ -65,19 +65,19 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
          return true;
       }
       case Token::t_Word: {
-         return uro.contexts.makeVarRef(tk, result, uro);
+         return p2.contexts.makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         const Hashes& hs = uro.hashes;
+         const Hashes& hs = p2.hashes;
 
          if (tk.value.twoWords.h1 == hs.HASH_NOTHING) {
             throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
          _genptr<_tim> var;
-         if (!uro.contexts.makeVarRef(tk, var, uro)) {
-            throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(uro),
-               L".", tk.getOriginString_2(uro), L"' does not exist or is unreachable here"), tk.line);
+         if (!p2.contexts.makeVarRef(tk, var, p2)) {
+            throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(p2),
+               L".", tk.getOriginString_2(p2), L"' does not exist or is unreachable here"), tk.line);
          }
 
          const _hash h = tk.value.twoWords.h2;
@@ -99,7 +99,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
          else if (h == hs.HASH_PER_DATE)
             return false;
          else {
-            timeVariableMemberException(tk, uro);
+            timeVariableMemberException(tk, p2);
          }
 
          return true;
@@ -110,7 +110,7 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_num>& result)
    }
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_str>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_str>& result)
 {
    const Token& tk = tks.first();
 
@@ -120,11 +120,11 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_str>& result)
          return true;
       }
       case Token::t_Quotation: {
-         result = std::make_unique<gen::Constant<_str>>(tk.getOriginString(uro));
+         result = std::make_unique<gen::Constant<_str>>(tk.getOriginString(p2));
          return true;
       }
       case Token::t_Word: {
-         return uro.contexts.makeVarRef(tk, result, uro);
+         return p2.contexts.makeVarRef(tk, result, p2);
       }
       default: {
          return false;
@@ -132,43 +132,43 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_str>& result)
    }
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_nlist>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
+   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tlist>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
+   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_list>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_list>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
+   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Word: {
-         return uro.contexts.makeVarRef(tk, result, uro);
+         return p2.contexts.makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         if (tk.value.twoWords.h1 == uro.hashes.HASH_NOTHING) {
+         if (tk.value.twoWords.h1 == p2.hashes.HASH_NOTHING) {
             throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
          _genptr<_tim> var;
-         if (!uro.contexts.makeVarRef(tk, var, uro)) {
-            throw SyntaxError(str(L"time variable '", tk.getOriginString(uro), L"' does not exist"), tk.line);
+         if (!p2.contexts.makeVarRef(tk, var, p2)) {
+            throw SyntaxError(str(L"time variable '", tk.getOriginString(p2), L"' does not exist"), tk.line);
          }
 
-         if (tk.value.twoWords.h2 == uro.hashes.HASH_FUNC_DATE) {
+         if (tk.value.twoWords.h2 == p2.hashes.HASH_FUNC_DATE) {
             result = std::make_unique<gen::TimeDate>(var);
             return true;
          }
@@ -182,24 +182,24 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_tim>& result)
    }
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _genptr<_per>& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
-   return tk.type == Token::t_Word && uro.contexts.makeVarRef(tk, result, uro);
+   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_uro& uro, const Tokens& tks, _defptr& result)
+_bool parseOneToken(_p2& p2, const Tokens& tks, _defptr& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Word: {
-         return uro.contexts.makeVarRef(tk, result, uro);
+         return p2.contexts.makeVarRef(tk, result, p2);
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == CHAR_ASTERISK) {
-            return parseAsteriskPattern(result, STRING_DOUBLE_ASTERISK, tk.line, uro);
+            return parseAsteriskPattern(result, STRING_DOUBLE_ASTERISK, tk.line, p2);
          }
          else {
             return false;
@@ -207,14 +207,14 @@ _bool parseOneToken(_uro& uro, const Tokens& tks, _defptr& result)
       }
       case Token::t_Symbol: {
          if (tk.value.ch == CHAR_ASTERISK) {
-            return parseAsteriskPattern(result, STRING_CHAR_ASTERISK, tk.line, uro);
+            return parseAsteriskPattern(result, STRING_CHAR_ASTERISK, tk.line, p2);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return parseAsteriskPattern(result, tk.getOriginString(uro), tk.line, uro);
+         return parseAsteriskPattern(result, tk.getOriginString(p2), tk.line, p2);
       }
       default: {
          return false;

@@ -1,7 +1,7 @@
 # Black-box tests
 
-Here are the most important tests for Uroboros2.
-All they do is take a compiled executable file *p2.exe*, run certain Uroboros2 code with it and compare the result (output + exit code) with the expectations.
+Here are the most important tests for Perun2.
+They take a compiled executable file *perun2.exe*, run certain Perun2 code with it and compare the result (output + exit code) with the expectations.
 They test the entire process of code interpretation, as one failure somewhere in the middle would alter the final output.
 
 ## Remarks

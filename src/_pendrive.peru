@@ -1,0 +1,2 @@
+force copy 'bin\Release\perun2.exe'
+  to 'f:\'

@@ -1,4 +1,4 @@
-force copy 'bin/Release/Uroboros.exe'
+force copy 'bin/Release/perun2.exe'
   to 'test/blackbox'
   as 'perun2.exe';
   

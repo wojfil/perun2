@@ -14,7 +14,7 @@ EXIT_CODE_CMD_ERROR = 3
 os.environ['PYTHONIOENCODING'] = ENCODING
 
 def make_process(code):
-  return subprocess.Popen(['uro', '-d', 'res', '-c', code], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+  return subprocess.Popen(['perun2', '-d', 'res', '-c', code], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 def run_test_case(code, expectedOutput):
   p = make_process(code)

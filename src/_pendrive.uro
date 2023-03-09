@@ -1,3 +1,0 @@
-force copy 'bin\Release\Uroboros.exe'
-  to 'f:\'
-  as 'p2.exe'

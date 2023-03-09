@@ -160,7 +160,7 @@ static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, co
    makeCoreCommandContext(ctx, p2);
 
    _comptr inner;
-   if (coreCommandSimple(result, word, ctx.get(), false, p2) && parseLooped(tks, inner, ctx, result, p2)) {
+   if (coreCommandSimple(inner, word, ctx.get(), false, p2) && parseLooped(tks, inner, ctx, result, p2)) {
       return true;
    }
 

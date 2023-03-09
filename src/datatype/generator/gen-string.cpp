@@ -62,10 +62,14 @@ _str CharAtIndex::getValue()
       return v;
    }
 
-   const _nint n = index->getValue().toInt();
+   _nint n = index->getValue().toInt();
 
-   return n >= 0 && n < len
-      ? _str(1, v[n])
+   if (n < NINT_ZERO) {
+      n += len;
+   }
+
+   return (n >= NINT_ZERO && n < len)
+      ? toStr(v[static_cast<_size>(n)])
       : EMPTY_STRING;
 }
 

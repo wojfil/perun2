@@ -164,9 +164,13 @@ public:
          return T();
       }
 
-      const _nint id = index->getValue().toInt();
+      _nint id = index->getValue().toInt();
 
-      return id < NINT_ZERO || id >= length
+      if (id < NINT_ZERO) {
+         id += length;
+      }
+
+      return (id < NINT_ZERO || id >= length)
          ? T()
          : lst[id];
    }

@@ -258,7 +258,6 @@ public:
    const _hash HASH_KW_WHERE;
    const _hash HASH_KW_AS;
    const _hash HASH_KW_BY;
-   const _hash HASH_KW_FROM;
    const _hash HASH_KW_TO;
    const _hash HASH_KW_EXTENSIONLESS;
    const _hash HASH_KW_WITH;

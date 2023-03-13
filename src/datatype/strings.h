@@ -328,7 +328,6 @@ static const _str STRING_SKIP =                 L"skip";
 static const _str STRING_WHERE =                L"where";
 static const _str STRING_AS =                   L"as";
 static const _str STRING_BY =                   L"by";
-static const _str STRING_FROM =                 L"from";
 static const _str STRING_TO =                   L"to";
 static const _str STRING_EXTENSIONLESS =        L"extensionless";
 static const _str STRING_WITH =                 L"with";

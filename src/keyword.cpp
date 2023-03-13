@@ -75,7 +75,6 @@ KeywordsData::KeywordsData(_p2& p2) : KEYWORDS( {
    // rest:
    { p2.hashes.HASH_KW_AS, Keyword::kw_As },
    { p2.hashes.HASH_KW_BY, Keyword::kw_By },
-   { p2.hashes.HASH_KW_FROM, Keyword::kw_From },
    { p2.hashes.HASH_KW_TO, Keyword::kw_To },
    { p2.hashes.HASH_KW_EXTENSIONLESS, Keyword::kw_Extensionless },
    { p2.hashes.HASH_KW_WITH, Keyword::kw_With },

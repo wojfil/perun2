@@ -503,10 +503,6 @@ void Tokens::setData()
                      this->info |= TI_HAS_KEYWORD_AS;
                      break;
                   }
-                  case Keyword::kw_From: {
-                     this->info |= TI_HAS_KEYWORD_FROM;
-                     break;
-                  }
                   default: {
                      if (t.isFilterKeyword()) {
                         this->info |= TI_HAS_FILTER_KEYWORD;

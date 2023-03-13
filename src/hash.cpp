@@ -259,7 +259,6 @@ Hashes::Hashes() :
    HASH_KW_WHERE(rawStringHash(STRING_WHERE)),
    HASH_KW_AS(rawStringHash(STRING_AS)),
    HASH_KW_BY(rawStringHash(STRING_BY)),
-   HASH_KW_FROM(rawStringHash(STRING_FROM)),
    HASH_KW_TO(rawStringHash(STRING_TO)),
    HASH_KW_EXTENSIONLESS(rawStringHash(STRING_EXTENSIONLESS)),
    HASH_KW_WITH(rawStringHash(STRING_WITH)),

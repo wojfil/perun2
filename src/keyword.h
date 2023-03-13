@@ -81,7 +81,6 @@ enum Keyword
       // rest:
    kw_As,
    kw_By,
-   kw_From,
    kw_To,
    kw_Extensionless,
    kw_With,

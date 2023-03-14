@@ -41,8 +41,8 @@ _int Terminator::HandlerRoutine(_ulong dwCtrlType)
 {
    switch (dwCtrlType) {
       case CTRL_C_EVENT: {
-         for (_p2* uro : pointers) {
-            uro->terminate();
+         for (_p2* perun2 : pointers) {
+            perun2->terminate();
          }
          return TRUE;
       }

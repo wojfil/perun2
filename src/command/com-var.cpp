@@ -66,63 +66,61 @@ void VarTimeSubtract::run()
 void VarCharAssignment::run()
 {
    const _size len = variable.value.size();
-   const _nint n = index->getValue().toInt();
+   _nint n = index->getValue().toInt();
 
-   if (n >= NINT_ZERO && n < static_cast<_nint>(len)) {
-      const _str v = value->getValue();
-      const _size vlen = v.size();
+   if (n < NINT_ZERO) {
+      n += len;
+   }
 
-      switch (vlen) {
-         case 0: {
-            if (len != 0) {
-               if (n == NINT_ZERO) {
-                  variable.value = variable.value.substr(1);
-               }
-               else if (n == static_cast<_nint>(len) - NINT_ONE) {
-                  variable.value = variable.value.substr(0, len - 1);
-               }
-               else {
-                  variable.value = str(variable.value.substr(0, static_cast<_size>(n)), 
-                     variable.value.substr(static_cast<_size>(n) + 1));
-               }
-            }
-            break;
-         }
-         case 1: {
-            variable.value[n] = v[0];
-            break;
-         }
-         default: {
+   if (n < NINT_ZERO || n >= static_cast<_nint>(len)) {
+      return;
+   }
+
+   const _str v = value->getValue();
+   const _size vlen = v.size();
+
+   switch (vlen) {
+      case 0: {
+         if (len != 0) {
             if (n == NINT_ZERO) {
-               if (len == 1) {
-                  variable.value = v;
-               }
-               else {
-                  variable.value = str(v, variable.value.substr(1));
-               }
+               variable.value = variable.value.substr(1);
             }
             else if (n == static_cast<_nint>(len) - NINT_ONE) {
-               if (len == 1) {
-                  variable.value = v;
-               }
-               else {
-                  variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v);
-               }
+               variable.value = variable.value.substr(0, len - 1);
             }
             else {
-               variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v, 
+               variable.value = str(variable.value.substr(0, static_cast<_size>(n)), 
                   variable.value.substr(static_cast<_size>(n) + 1));
             }
-            break;
          }
+         break;
       }
-   }
-   else if (n == static_cast<_nint>(len)) {
-      const _str v = value->getValue();
-      const _size vlen = v.size();
-
-      if (!v.empty()) {
-         variable.value += v;
+      case 1: {
+         variable.value[n] = v[0];
+         break;
+      }
+      default: {
+         if (n == NINT_ZERO) {
+            if (len == 1) {
+               variable.value = v;
+            }
+            else {
+               variable.value = str(v, variable.value.substr(1));
+            }
+         }
+         else if (n == static_cast<_nint>(len) - NINT_ONE) {
+            if (len == 1) {
+               variable.value = v;
+            }
+            else {
+               variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v);
+            }
+         }
+         else {
+            variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v, 
+               variable.value.substr(static_cast<_size>(n) + 1));
+         }
+         break;
       }
    }
 }

@@ -1269,34 +1269,6 @@ _bool os_run(const _str& comm, const _str& location, _p2& p2)
    return p2.state == State::s_Running && dwExitCode == 0;
 }
 
-_bool os_process(const _str& command, const _str& location)
-{
-   STARTUPINFO si;
-   PROCESS_INFORMATION pi;
-
-   ZeroMemory(&si, sizeof(si));
-   si.cb = sizeof(si);
-   ZeroMemory(&pi, sizeof(pi));
-
-   const _size len = command.size() + 1;
-   _char cmd[len];
-   wcscpy(cmd, command.c_str());
-
-   const _size lenloc = location.size() + 1;
-   _char loc[lenloc];
-   wcscpy(loc, location.c_str());
-
-   return CreateProcessW
-   (
-      NULL,
-      cmd,
-      NULL, NULL, FALSE,
-      CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
-      NULL, loc,
-      &si, &pi
-   ) != 0;
-}
-
 _bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();

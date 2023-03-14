@@ -108,7 +108,6 @@ _bool os_copy(const _set& paths);
 _bool os_select(const _str& parent, const _set& paths);
 
 _bool os_run(const _str& comm, const _str& location, _p2& p2);
-_bool os_process(const _str& command, const _str& location);
 
 _bool os_isInvaild(const _str& path);
 _uint32 os_patternInfo(const _str& pattern);

@@ -79,6 +79,16 @@ void _p2::terminate()
    }
 }
 
+_bool _p2::isRunning() const
+{
+   return this->state == State::s_Running;
+};
+
+_bool _p2::isNotRunning() const
+{
+   return this->state != State::s_Running;
+};
+
 _bool _p2::preParse()
 {
    try {

@@ -79,6 +79,9 @@ public:
    ParseState parseState = ParseState::ps_NotParsed;
    Logger logger;
 
+   inline _bool isRunning() const;
+   inline _bool isNotRunning() const;
+
 private:
    _comptr commands;
    std::vector<Token> tokens;

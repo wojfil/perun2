@@ -96,7 +96,8 @@ void C_ErrorWithExitCode::run()
 }
 
 RunBase::RunBase(_p2& p2)
-   : fileCtxs(p2.contexts.getFileContexts()), 
+   : perun2(p2),
+     fileCtxs(p2.contexts.getFileContexts()), 
      locationCtx(p2.contexts.getLocationContext()),
      uro2Base(str(os_quoteEmbraced(os_executablePath()), 
       STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE)) { };

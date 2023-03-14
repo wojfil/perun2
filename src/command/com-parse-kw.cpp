@@ -1220,10 +1220,9 @@ static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const 
    p2.contexts.markAllAttributesToRun();
 
    if (!tks.check(TI_HAS_KEYWORD_WITH)) {
-      FileContext* ctx = p2.contexts.getFileContext();
       _genptr<_str> str;
       if (parse::parse(p2, tks, str)) {
-         result = std::make_unique<C_Run>(str, ctx, p2);
+         result = std::make_unique<C_Run>(str, p2);
          return true;
       }
       else {

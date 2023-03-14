@@ -967,6 +967,34 @@ _bool os_openWith(const _str& program, const _str& path)
    return (INT_PTR)ShellExecuteW(NULL, L"open", program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
 }
 
+_bool os_openAsCommand(const _str& command, const _str& location)
+{
+   STARTUPINFO si;
+   PROCESS_INFORMATION pi;
+
+   ZeroMemory(&si, sizeof(si));
+   si.cb = sizeof(si);
+   ZeroMemory(&pi, sizeof(pi));
+
+   const _size len = command.size() + 1;
+   _char cmd[len];
+   wcscpy(cmd, command.c_str());
+
+   const _size lenloc = location.size() + 1;
+   _char loc[lenloc];
+   wcscpy(loc, location.c_str());
+
+   return CreateProcessW
+   (
+      NULL,
+      cmd,
+      NULL, NULL, FALSE,
+      CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
+      NULL, loc,
+      &si, &pi
+   ) != 0;
+}
+
 _bool os_unhide(const _str& path)
 {
    const _char* p = path.c_str();

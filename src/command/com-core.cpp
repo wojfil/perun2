@@ -177,8 +177,8 @@ void C_OpenWith::run()
             return;
          }
 
-         const _str com = str(pro, L" ", os_quoteEmbraced(this->context->v_path->value));
-         const _bool s = os_process(com, os_parent(this->context->v_path->value));
+         const _str com = str(pro, STRING_CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
+         const _bool s = os_openAsCommand(com, os_parent(this->context->v_path->value));
          this->perun2.contexts.success->value = s;
 
          if (s) {

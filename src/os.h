@@ -89,7 +89,7 @@ _bool os_hide(const _str& path);
 _bool os_lock(const _str& path);
 _bool os_open(const _str& path);
 _bool os_openWith(const _str& program, const _str& path);
-_bool os_openAsCommand(const _str& command);
+_bool os_openAsCommand(const _str& command, const _str& location);
 _bool os_unhide(const _str& path);
 _bool os_unlock(const _str& path);
 

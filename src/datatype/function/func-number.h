@@ -177,8 +177,24 @@ private:
 };
 
 
+template <typename T>
+struct F_CountList : Generator<_num>
+{
+public:
+   F_CountList() = delete;
+   F_CountList(_genptr<std::vector<T>>& val) 
+      : value(std::move(val)) { };
+
+   _num getValue() override
+   {
+      return static_cast<_nint>(this->value->getValue().size());
+   }
+
+private:
+   _genptr<std::vector<T>> value;
+};
+
 
 }
 
 #endif /* FUNC_NUMBER_H */
-

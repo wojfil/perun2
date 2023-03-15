@@ -291,6 +291,24 @@ private:
 };
 
 
+template <typename T>
+struct F_AnyList : Generator<_bool>
+{
+public:
+   F_AnyList() = delete;
+   F_AnyList(_genptr<std::vector<T>>& val) 
+      : value(std::move(val)) { };
+
+   _bool getValue() override
+   {
+      return this->value->getValue().size() > 0;
+   }
+
+private:
+   _genptr<std::vector<T>> value;
+};
+
+
 struct F_Exists : Func_1<_str>, Generator<_bool>
 {
 public:

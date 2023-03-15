@@ -103,13 +103,32 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _defptr def;
-      if (!parse::parse(p2, args[0], def)) {
-         functionArgException(1, STRING_DEFINITION, word, p2);
+      _genptr<_tlist> tlist;
+      if (parse::parse(p2, args[0], tlist)) {
+         result = std::make_unique<F_AnyList<_tim>>(tlist);
+         return true;
       }
 
-      result = std::make_unique<F_Any>(def);
-      return true;
+      _genptr<_nlist> nlist;
+      if (parse::parse(p2, args[0], nlist)) {
+         result = std::make_unique<F_AnyList<_num>>(nlist);
+         return true;
+      }
+
+      _defptr def;
+      if (parse::parse(p2, args[0], def)) {
+         result = std::make_unique<F_Any>(def);
+         return true;
+      }
+
+      _genptr<_list> list;
+      if (parse::parse(p2, args[0], list)) {
+         result = std::make_unique<F_AnyList<_str>>(list);
+         return true;
+      }
+
+      throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
+         L"' cannot be resolved to any collection"), word.line);
    }
    else if (name == p2.hashes.HASH_FUNC_EXIST) {
       if (len != 1) {
@@ -510,13 +529,32 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _defptr def;
-      if (!parse::parse(p2, args[0], def)) {
-         functionArgException(1, STRING_DEFINITION, word, p2);
+      _genptr<_tlist> tlist;
+      if (parse::parse(p2, args[0], tlist)) {
+         result = std::make_unique<F_CountList<_tim>>(tlist);
+         return true;
       }
 
-      result = std::make_unique<F_Count>(def, p2);
-      return true;
+      _genptr<_nlist> nlist;
+      if (parse::parse(p2, args[0], nlist)) {
+         result = std::make_unique<F_CountList<_num>>(nlist);
+         return true;
+      }
+
+      _defptr def;
+      if (parse::parse(p2, args[0], def)) {
+         result = std::make_unique<F_Count>(def, p2);
+         return true;
+      }
+
+      _genptr<_list> list;
+      if (parse::parse(p2, args[0], list)) {
+         result = std::make_unique<F_CountList<_str>>(list);
+         return true;
+      }
+
+      throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
+         L"' cannot be resolved to any collection"), word.line);
    }
    else if (name == p2.hashes.HASH_FUNC_POWER) {
       if (len != 2)

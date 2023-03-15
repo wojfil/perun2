@@ -162,6 +162,11 @@ public:
    const _hash HASH_FUNC_COUNTINSIDE;
    const _hash HASH_FUNC_POWER;
 
+   const _hash HASH_FUNC_ANY;
+   const _hash HASH_FUNC_EXIST;
+   const _hash HASH_FUNC_EXISTS;
+   const _hash HASH_FUNC_COUNT;
+
    const _hash HASH_FUNC_FIRST;
    const _hash HASH_FUNC_LAST;
    const _hash HASH_FUNC_RANDOM;

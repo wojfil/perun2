@@ -32,7 +32,7 @@ namespace perun2
 
 _p2::_p2(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), keywordsData(*this) , logger(*this)
-{ 
+{
    Terminator::addPtr(this);
 };
 

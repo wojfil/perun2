@@ -161,6 +161,23 @@ public:
    _num getValue() override;
 };
 
+
+struct F_Count : Generator<_num>
+{
+public:
+   F_Count() = delete;
+   F_Count(_defptr& def, _p2& p2) 
+      : definition(std::move(def)), perun2(p2) { };
+
+   _num getValue() override;
+
+private:
+   _defptr definition;
+   _p2& perun2;
+};
+
+
+
 }
 
 #endif /* FUNC_NUMBER_H */

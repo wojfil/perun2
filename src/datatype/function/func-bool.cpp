@@ -426,4 +426,58 @@ _bool F_IsHex::getValue()
    return true;
 }
 
+_bool F_Any::getValue()
+{
+   const _bool result = this->definition->hasNext();
+
+   if (result) {
+      this->definition->reset();
+   }
+
+   return result;
+}
+
+F_Exists::F_Exists(_genptr<_str>& a1, _p2& perun2)
+   : Func_1(a1), context(perun2.contexts.getLocationContext()) { };
+
+_bool F_Exists::getValue()
+{
+   const _str value = os_trim(this->arg1->getValue());
+
+   if (os_isInvaild(value)) {
+      return false;
+   }
+
+   return os_exists(os_join(this->context->location->value, value));
+}
+
+F_Exist::F_Exist(_genptr<_list>& a1, _p2& perun2)
+   : Func_1(a1), context(perun2.contexts.getLocationContext())  { };
+
+_bool F_Exist::getValue()
+{
+   const _list values = this->arg1->getValue();
+   const _size len = values.size();
+
+   for (_size i = 0; i < len; i++) {
+      const _str& v = os_trim(values[i]);
+
+      if (os_isInvaild(v)) {
+          return false;
+      }
+
+      const _str path = os_join(this->context->location->value, v);
+      if (!os_exists(path)) {
+         return false;
+      }
+   }
+
+   return true;
+}
+
+
+
+
+
+
 }

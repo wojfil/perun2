@@ -459,4 +459,20 @@ _num F_FromHex::getValue()
    return _num(x);
 }
 
+
+_num F_Count::getValue()
+{
+   _nint result = NINT_ZERO;
+   
+   while (this->definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->definition->reset();
+         return NINT_MINUS_ONE;
+      }
+      result++;
+   }
+
+   return result;
+}
+
 }

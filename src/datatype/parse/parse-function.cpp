@@ -98,6 +98,45 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_AnyInside>(def, lctx, fctx);
       return true;
    }
+   else if (name == p2.hashes.HASH_FUNC_ANY) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      _defptr def;
+      if (!parse::parse(p2, args[0], def)) {
+         functionArgException(1, STRING_DEFINITION, word, p2);
+      }
+
+      result = std::make_unique<F_Any>(def);
+      return true;
+   }
+   else if (name == p2.hashes.HASH_FUNC_EXIST) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      _genptr<_list> list;
+      if (!parse::parse(p2, args[0], list)) {
+         functionArgException(1, STRING_LIST, word, p2);
+      }
+
+      result = std::make_unique<F_Exist>(list, p2);
+      return true;
+   }
+   else if (name == p2.hashes.HASH_FUNC_EXISTS) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      _genptr<_str> str_;
+      if (!parse::parse(p2, args[0], str_)) {
+         functionArgException(1, STRING_STRING, word, p2);
+      }
+
+      result = std::make_unique<F_Exists>(str_, p2);
+      return true;
+   }
    else if (name == p2.hashes.HASH_FUNC_CONTAINS) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
@@ -464,6 +503,19 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 
       p2.contexts.retreatLocationContext();
       result = std::make_unique<F_CountInside>(def, lctx, fctx, p2);
+      return true;
+   }
+   else if (name == p2.hashes.HASH_FUNC_COUNT) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      _defptr def;
+      if (!parse::parse(p2, args[0], def)) {
+         functionArgException(1, STRING_DEFINITION, word, p2);
+      }
+
+      result = std::make_unique<F_Count>(def, p2);
       return true;
    }
    else if (name == p2.hashes.HASH_FUNC_POWER) {

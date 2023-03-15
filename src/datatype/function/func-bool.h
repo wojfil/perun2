@@ -276,6 +276,43 @@ public:
    _bool getValue() override;
 };
 
+
+struct F_Any : Generator<_bool>
+{
+public:
+   F_Any() = delete;
+   F_Any(_defptr& def) 
+      : definition(std::move(def)) { };
+
+   _bool getValue() override;
+
+private:
+   _defptr definition;
+};
+
+
+struct F_Exists : Func_1<_str>, Generator<_bool>
+{
+public:
+   F_Exists(_genptr<_str>& a1, _p2& perun2);
+   _bool getValue() override;
+
+private:
+   LocationContext* context;
+};
+
+
+struct F_Exist: Func_1<_list>, Generator<_bool>
+{
+public:
+   F_Exist(_genptr<_list>& a1, _p2& perun2);
+   _bool getValue() override;
+
+private:
+   LocationContext* context;
+};
+
+
 }
 
 #endif // FUNC_BOOL_H_INCLUDED

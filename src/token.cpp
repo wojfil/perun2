@@ -192,6 +192,12 @@ _bool Token::isMonth() const
    return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
 }
 
+_bool Token::isTimeAttribute(_p2& p2) const
+{
+   return this->type == Token::t_Word &&
+      p2.hashes.HASH_GROUP_TIME_ATTR.find(this->value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
+}
+
 _str Token::getOriginString(_p2& p2) const
 {
    switch (type) {

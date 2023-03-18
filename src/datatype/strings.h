@@ -209,6 +209,7 @@ static const _str STRING_MINUTES =              L"minutes";
 static const _str STRING_SECONDS =              L"seconds";
 static const _str STRING_DATE =                 L"date";
 static const _str STRING_WEEKDAY =              L"weekday";
+static const _str STRING_WEEKDAY_CAMELCASE =    L"weekDay";
 static const _str STRING_ISLOWER =              L"islower";
 static const _str STRING_ISUPPER =              L"isupper";
 static const _str STRING_ISNUMBER =             L"isnumber";

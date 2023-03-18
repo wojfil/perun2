@@ -516,6 +516,125 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
    }
 }
 
+static void leftInTimeException(const Token& tk, const _str& varMember,
+   const std::pair<Tokens, Tokens>& pair, const _bool negated, _p2& p2)
+{
+   const Token& first = pair.first.first();
+
+   if (negated) {
+      const _str v1 = str(first.getOriginString(p2), L" not in ", tk.getOriginString(p2));
+      const _str v2 = str(first.getOriginString(p2),
+         STRING_CHAR_DOT, varMember, L" != ", tk.getOriginString(p2));
+      throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
+   }
+   else {
+      const _str v1 = str(first.getOriginString(p2), L" in ", tk.getOriginString(p2));
+      const _str v2 = str(first.getOriginString(p2),
+         STRING_CHAR_DOT, varMember, L" = ", tk.getOriginString(p2));
+      throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
+   }
+}
+
+static void rightInTimeException(const Token& tk, const _str& varMember,
+   const std::pair<Tokens, Tokens>& pair, const _bool negated, _p2& p2)
+{
+   const Token& first = pair.second.first();
+
+   if (negated) {
+      const _str v1 = str(tk.getOriginString(p2) , L" not in ", first.getOriginString(p2));
+      const _str v2 = str(tk.getOriginString(p2), L" != ", first.getOriginString(p2),
+         STRING_CHAR_DOT, varMember);
+      throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
+   }
+   else {
+      const _str v1 = str(tk.getOriginString(p2), L" in ", first.getOriginString(p2));
+      const _str v2 = str(tk.getOriginString(p2), L" = ", first.getOriginString(p2),
+         STRING_CHAR_DOT, varMember);
+      throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
+   }
+}
+
+static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, const _bool negated, _p2& p2)
+{
+   const _bool leftTimeAttr = pair.first.getLength() == 1 && pair.first.first().isTimeAttribute(p2);
+   const _bool rightTimeAttr = pair.second.getLength() == 1 && pair.second.first().isTimeAttribute(p2);
+
+   // check cases when left side is a time attribute (creation, modification...)
+   if (leftTimeAttr)
+   {
+      if (pair.second.check(TI_HAS_CHAR_COMMA)) {
+         const std::vector<Tokens> elements = pair.second.splitBySymbol(CHAR_COMMA);
+         const _size elen = elements.size();
+         for (_size i = 0; i < elen; i++) {
+            const Tokens& t = elements[i];
+            if (t.getLength() == 1) {
+               const Token& tf = t.first();
+               if (tf.isWeekDay()) {
+                  leftInTimeException(tf, STRING_WEEKDAY_CAMELCASE, pair, negated, p2);
+               }
+               else if (tf.isMonth()) {
+                  leftInTimeException(tf, STRING_MONTH, pair, negated, p2);
+               }
+               else if (tf.type == Token::t_Number && !tf.value.num.n.isDouble) {
+                  leftInTimeException(tf, STRING_YEAR, pair, negated, p2);
+               }
+            }
+         }
+      }
+      else if (pair.second.getLength() == 1) {
+         const Token& rf = pair.second.first();
+
+         if (rf.isWeekDay()) {
+            leftInTimeException(rf, STRING_WEEKDAY_CAMELCASE, pair, negated, p2);
+         }
+         else if (rf.isMonth()) {
+            leftInTimeException(rf, STRING_MONTH, pair, negated, p2);
+         }
+         else if (rf.type == Token::t_Number && !rf.value.num.n.isDouble) {
+            leftInTimeException(rf, STRING_YEAR, pair, negated, p2);
+         }
+      }
+   }
+
+   // check cases when right side is a time attribute (creation, modification...)
+   if (rightTimeAttr)
+   {
+      if (pair.first.check(TI_HAS_CHAR_COMMA)) {
+         const std::vector<Tokens> elements = pair.first.splitBySymbol(CHAR_COMMA);
+         const _size elen = elements.size();
+         for (_size i = 0; i < elen; i++) {
+            const Tokens& t = elements[i];
+            if (t.getLength() == 1) {
+               const Token& tf = t.first();
+               if (tf.isWeekDay()) {
+                  rightInTimeException(tf, STRING_WEEKDAY_CAMELCASE, pair, negated, p2);
+               }
+               else if (tf.isMonth()) {
+                  rightInTimeException(tf, STRING_MONTH, pair, negated, p2);
+               }
+               else if (tf.type == Token::t_Number && !tf.value.num.n.isDouble) {
+                  rightInTimeException(tf, STRING_YEAR, pair, negated, p2);
+               }
+            }
+         }
+      }
+      else if (pair.first.getLength() == 1) {
+         const Token& rf = pair.first.first();
+
+         if (rf.isWeekDay()) {
+            rightInTimeException(rf, STRING_WEEKDAY_CAMELCASE, pair, negated, p2);
+         }
+         else if (rf.isMonth()) {
+            rightInTimeException(rf, STRING_MONTH, pair, negated, p2);
+         }
+         else if (rf.type == Token::t_Number && !rf.value.num.n.isDouble) {
+            rightInTimeException(rf, STRING_YEAR, pair, negated, p2);
+         }
+      }
+   }
+}
+
+
 static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
@@ -543,48 +662,7 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       return true;
    }
 
-   const Token& lf = pair.first.first();
-
-   if (pair.first.getLength() == 1 && lf.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_ATTR.find(lf.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end())
-   {
-      if (pair.second.check(TI_HAS_CHAR_COMMA)) {
-         const std::vector<Tokens> elements = pair.second.splitBySymbol(CHAR_COMMA);
-         const _size elen = elements.size();
-         for (_size i = 0; i < elen; i++) {
-            const Tokens& t = elements[i];
-            if (t.getLength() == 1) {
-               const Token& tf = t.first();
-               if (tf.isWeekDay()) {
-                  timeInNumberException(pair.first.first(), tf, L"weekDay", neg, pair.first, p2);
-               }
-               else if (tf.isMonth()) {
-                  timeInNumberException(pair.first.first(), tf, L"month", neg, pair.first, p2);
-               }
-
-               const _bool isInteger = (tf.type == Token::t_Number) && !tf.value.num.n.isDouble;
-               if (isInteger) {
-                  timeInNumberException(pair.first.first(), tf, L"year", neg, pair.first, p2);
-               }
-            }
-         }
-      }
-      else if (pair.second.getLength() == 1) {
-         const Token& rf = pair.second.first();
-         const _bool isWeek = rf.isWeekDay();
-         const _bool isMonth = rf.isMonth();
-
-         if (isWeek || isMonth) {
-            timeInNumberException(pair.first.first(), pair.second.first(),
-               isWeek ? L"weekDay" : L"month", neg, pair.first, p2);
-         }
-
-         const _bool isInteger = (rf.type == Token::t_Number) && !rf.value.num.n.isDouble;
-         if (isInteger) {
-            timeInNumberException(pair.first.first(), pair.second.first(), L"year", neg, pair.first, p2);
-         }
-      }
-   }
+   checkCommonExceptions_InTime(pair, neg, p2);
 
    // secondary: try to build "Time IN TimList"
    _genptr<_bool> list2;
@@ -643,39 +721,8 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
 
 static void emptyOperSideException(const Token& oper, const bool& isLeft, _p2& p2)
 {
-   const _str side = isLeft ? L"left" : L"right";
-
-   throw SyntaxError(str(side, L" side of operator '", oper.getOriginString(p2), L"' is empty"),
-      oper.line);
-}
-
-static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool negated, const Tokens& tks, _p2& p2)
-{
-   if (timeMember == L"year") {
-      if (negated) {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" not in ", toStr(numVar.value.num.n.value.i),
-            L"', write '", timeVar.getOriginString(p2), L".year != ",
-            toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
-      }
-      else {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" in ", toStr(numVar.value.num.n.value.i),
-            L"', write '", timeVar.getOriginString(p2), L".year = ",
-            toStr(numVar.value.num.n.value.i), L"'"), tks.first().line);
-      }
-   }
-   else {
-      if (negated) {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" not in ", numVar.getOriginString(p2),
-            L"', write '", timeVar.getOriginString(p2), L".", timeMember,
-            L" != ", numVar.getOriginString(p2), L"'"), tks.first().line);
-      }
-      else {
-         throw SyntaxError(str(L"instead of '", timeVar.getOriginString(p2), L" in ", numVar.getOriginString(p2),
-            L"', write '", timeVar.getOriginString(p2), L".", timeMember,
-            L" = ", numVar.getOriginString(p2), L"'"), tks.first().line);
-      }
-   }
+   throw SyntaxError(str((isLeft ? STRING_LEFT : STRING_RIGHT),
+      L" side of operator '", oper.getOriginString(p2), L"' is empty"), oper.line);
 }
 
 static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
@@ -807,6 +854,60 @@ _bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
    return false;
 }
 
+
+static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& right, const _char sign, _p2& p2)
+{
+   const Token& t1 = left.first();
+   const Token& t2 = right.first();
+
+   const _bool isWeek1 = t1.isWeekDay();
+   const _bool isWeek2 = t2.isWeekDay();
+   const _bool isMonth1 = t1.isMonth();
+   const _bool isMonth2 = t2.isMonth();
+   const _bool isVar1 = t1.type == Token::t_Word &&
+      p2.hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
+   const _bool isVar2 = t2.type == Token::t_Word &&
+      p2.hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
+
+   if (isVar1 && (isWeek2 || isMonth2)) {
+      throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
+         L"', you should write '", t1.getOriginString(p2), L".", (isWeek2 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+         L" ", toStr(sign), L" ", t2.getOriginString(p2), L"'"), t1.line);
+   }
+   else if ((isWeek1 || isMonth1) && isVar2) {
+      throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
+         L"', you should write '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".",
+         (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"'"), t1.line);
+   }
+
+   const _bool isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
+   const _bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
+
+   if (isVar1 && isInteger2) {
+      const _nint nm = t2.value.num.n.value.i;
+      if (nm >= NINT_1950 && nm <= NINT_2100) {
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", toStr(nm),
+            L"', you should write '", t1.getOriginString(p2), L".year ", toStr(sign), L" ", toStr(nm), L"'"), t1.line);
+      }
+      else {
+         throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
+            L"' cannot be compared with a number"), t1.line);
+      }
+   }
+   else if (isInteger1 && isVar2) {
+      const _nint nm = t1.value.num.n.value.i;
+      if (nm >= NINT_1950 && nm <= NINT_2100) {
+         throw SyntaxError(str(L"instead of '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2),
+            L"', you should write '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".year'"), t1.line);
+      }
+      else {
+         throw SyntaxError(str(L"time variable '", t2.getOriginString(p2),
+            L"' cannot be compared with a number"), t1.line);
+      }
+   }
+}
+
+
 static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, _p2& p2)
 {
    gen::CompType ct;
@@ -817,58 +918,7 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
    // look for some common errors
    // and throw precise messages to the user
    if (left.getLength() == 1 && right.getLength() == 1) {
-      const Token& t1 = left.first();
-      const Token& t2 = right.first();
-
-      const _bool isWeek1 = t1.isWeekDay();
-      const _bool isWeek2 = t2.isWeekDay();
-      const _bool isMonth1 = t1.isMonth();
-      const _bool isMonth2 = t2.isMonth();
-      const _bool isVar1 = t1.type == Token::t_Word &&
-         p2.hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
-      const _bool isVar2 = t2.type == Token::t_Word &&
-         p2.hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
-
-      //const _str& v1 = t1.originString;
-      //const _str& v2 = t2.originString;
-      const _str s = _str(1, sign);
-
-      if (isVar1 && (isWeek2 || isMonth2)) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", s, L" ", t2.getOriginString(p2),
-            L"', write '", t1.getOriginString(p2), L".", (isWeek2 ? L"weekDay" : L"month"),
-            L" ", s, L" ", t2.getOriginString(p2), L"'"), tks.first().line);
-      }
-      else if ((isWeek1 || isMonth1) && isVar2) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", s, L" ", t2.getOriginString(p2),
-            L"', write '", t1.getOriginString(p2), L" ", s, L" ", t2.getOriginString(p2), L".",
-            (isWeek1 ? L"weekDay" : L"month"), L"'"), tks.first().line);
-      }
-
-      const _bool isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
-      const _bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
-
-      if (isVar1 && isInteger2) {
-         const _nint nm = t2.value.num.n.value.i;
-         if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", s, L" ", toStr(nm),
-               L"', write '", t1.getOriginString(p2), L".year ", s, L" ", toStr(nm), L"'"), tks.first().line);
-         }
-         else {
-            throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
-               L"' cannot be compared with a number"), tks.first().line);
-         }
-      }
-      else if (isInteger1 && isVar2) {
-         const _nint nm = t1.value.num.n.value.i;
-         if (nm >= 1950LL && nm <= 2100LL) {
-            throw SyntaxError(str(L"instead of '", toStr(nm), L" ", s, L" ", t2.getOriginString(p2),
-               L"', write '", toStr(nm), L" ", s, L" ", t2.getOriginString(p2), L".year'"), tks.first().line);
-         }
-         else {
-            throw SyntaxError(str(L"time variable '", t2.getOriginString(p2),
-               L"' cannot be compared with a number"), tks.first().line);
-         }
-      }
+      checkCommonExceptions_Comparison(left, right, sign, p2);
    }
 
    // try to parse comparison for every singular data type

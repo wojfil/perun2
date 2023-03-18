@@ -46,6 +46,7 @@ public:
    static SyntaxError incrementationInsideExpression(const _int line);
    static SyntaxError inevitableDivisionByZero(const _int line);
    static SyntaxError inevitableModuloByZero(const _int line);
+   static SyntaxError insteadOfYouShouldWrite(const _str& value1, const _str& value2, const _int line);
    static SyntaxError invalidAsteriskPattern(const _str& value, const _int line);
    static SyntaxError invalidChar(const _char value, const _int line);
    static SyntaxError invalidExpression(const _int line);

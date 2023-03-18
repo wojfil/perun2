@@ -119,6 +119,11 @@ SyntaxError SyntaxError::inevitableModuloByZero(const _int line)
    return SyntaxError(L"inevitable modulo by zero", line);
 }
 
+SyntaxError SyntaxError::insteadOfYouShouldWrite(const _str& value1, const _str& value2, const _int line)
+{
+   return SyntaxError(str(L"instead of '", value1, L"', you should write '", value2, L"'"), line);
+}
+
 SyntaxError SyntaxError::invalidAsteriskPattern(const _str& value, const _int line)
 {
    return SyntaxError(str(L"asterisk pattern '", value, L"' is not valid"), line);

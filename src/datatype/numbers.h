@@ -35,6 +35,8 @@ inline constexpr _nint NINT_TEN =                 10LL;
 inline constexpr _nint NINT_300 =                300LL;
 inline constexpr _nint NINT_THOUSAND =          1000LL;
 inline constexpr _nint NINT_1024 =              1024LL;
+inline constexpr _nint NINT_1950 =              1950LL;
+inline constexpr _nint NINT_2100 =              2100LL;
 
 inline constexpr _nint SIZE_UNIT_KB =      NINT_1024;
 inline constexpr _nint SIZE_UNIT_MB =      SIZE_UNIT_KB * SIZE_UNIT_KB;

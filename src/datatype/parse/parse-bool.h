@@ -38,8 +38,6 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
 static _bool parseInTimList(_genptr<_bool>& result, const bool& negated, 
    const std::pair<Tokens, Tokens>& pair, _p2& p2);
 static void emptyOperSideException(const Token& oper, const bool& isLeft, _p2& p2);
-static void timeInNumberException(const Token& timeVar, const Token& numVar,
-   const _str& timeMember, const _bool negated, const Tokens& tks, _p2& p2);
 static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
 static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
    const Tokens& right, const gen::CompType& ct, _p2& p2);

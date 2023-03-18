@@ -710,7 +710,6 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
       Tokens& left = pair.first;
       Tokens& right = pair.second;
-      right.checkCommonExpressionExceptions(p2);
 
       if (left.isEmpty()) {
          if (right.isEmpty()) {
@@ -728,9 +727,11 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
             tks.last().line);
       }
 
-      if (right.first().isSymbol(CHAR_EQUAL_SIGN)) {
+      if (right.first().isSymbol(CHAR_EQUAL_SIGN) || left.check(TI_HAS_FILTER_KEYWORD)) {
          return false;
       }
+
+      right.checkCommonExpressionExceptions(p2);
 
       const Token& leftLast = left.last();
       if (leftLast.type == Token::t_Symbol) {

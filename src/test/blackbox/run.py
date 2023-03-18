@@ -1088,7 +1088,7 @@ if __name__ == '__main__':
   run_test_case("inside 'defchain' { ** where length(this) = 14 and isFile {fullname} } ", "i.txt")
   run_test_case("inside 'defchain' { ** where length(this) = 8 and isFile {fullname};7 } ", "7")
   run_test_case("inside 'defchain' { ** where length(this) = 8 and isDirectory {fullname} } ", "u")
-  run_test_case("inside 'defchain' { ** where length(this) = 8 and isDirectory {name(parent)} } ", "aa")
+  run_test_case("inside 'defchain' { ** where length(this) = 8 and isDirectory {parent { name }} } ", "aa")
   run_test_case("inside 'defchain' { * where length(this) = 3 {name+name} } ", "dddddd")
   run_test_case("inside 'defchain' { ** where length(this) = 3 {repeat(name + ' ', 3)} } ", "ddd ddd ddd ")
   run_test_case("inside 'defchain' { recursivefiles where length(name) = 2 and name[1] != 'g' { name} }", "ko")
@@ -1187,7 +1187,14 @@ if __name__ == '__main__':
   run_test_case(" inside 'defchain' { files order asc final 3 limit 2 } ", lines("a.txt", "b.txt"))
 
   run_test_case(" 'a.txt' {  exists; size }  ", lines("1", "47"))
-  run_test_case("countInside(files, 'many texts') ", "30")
+  run_test_case("'many texts' { countInside(files) }", "30")
+  run_test_case("inside 'many texts' { countInside(files) }", "30")
+  run_test_case("inside 'many texts' { countInside('*.txt'), countInside('*.*'), countInside('*'), countInside('*.png') }", lines("30", "30", "30", "0"))
+  run_test_case("inside 'many texts' { anyInside('*.txt'), anyInside('*.*x*'), anyInside('**'), anyInside('*.png') }", lines("1", "1", "1", "0"))
+  run_test_case("inside 'many texts' { count('*.txt'), count('*.*'), count('*'), count('*.png') }", lines("30", "30", "30", "0"))
+  run_test_case("inside 'many texts' { any('*.txt'), any('*.*x*'), any('**'), any('*.png') }", lines("1", "1", "1", "0"))
+  run_test_case("inside 'many texts' { name, fullname, exists, isDirectory, isFile }", lines("many texts", "many texts", "1", "1", "0"))
+  run_test_case("inside 'many texts' { size, hidden }", lines("810", "0"))
   run_test_case("inside 'many texts' { count (files) } ", "30")
   run_test_case("inside 'many texts' { count (files where extension = 'txt') }", "30")
   run_test_case("inside 'many texts' { count (files where extension != 'txt') }", "0")
@@ -1204,7 +1211,7 @@ if __name__ == '__main__':
   run_test_case("inside 'many texts' { files order by name desc every 4 limit 5 skip 1 } ", lines("ex_26.txt", "ex_22.txt", "ex_18.txt", "ex_14.txt"))
   run_test_case("inside 'many texts' { files order by name desc where right(name, 1) = 5 } ", lines("ex_25.txt", "ex_15.txt", "ex_05.txt"))
   run_test_case("inside 'many texts' { files order by name desc limit 1 { name, fullname, extension } }", lines("ex_30", "ex_30.txt", "txt"))
-  run_test_case("inside 'many texts' { files order by name desc limit 1 { name(parent) } } ", "many texts")
+  run_test_case("inside 'many texts' { files order by name desc limit 1 { parent { name} } } ", "many texts")
   run_test_case("inside 'many texts' { files order by name desc limit 1 { length(name) } }", "5")
   run_test_case("inside 'many texts' { files order by name desc where name[3] = 1 and name[4] = 2 } ", "ex_12.txt")
   run_test_case("inside 'many texts' { files order by name asc final 5 }", lines("ex_26.txt", "ex_27.txt", "ex_28.txt", "ex_29.txt", "ex_30.txt"))
@@ -1273,17 +1280,17 @@ if __name__ == '__main__':
   (run_test_case("inside 'tree' { print '*/*.js' order asc }", lines(path("029719", "011952.js"),
   path("089212", "238781.js"), path("089212", "532245.js"), path("561442", "345559.js"),
   path("561442", "567635.js"), path("702035", "465580.js"), path("702035", "643304.js"), path("702035", "691437.js"))))
-  (run_test_case("inside 'tree' { print '**.js' where depth = 2 order asc }", lines(path("829131", "667797", "828412.js"),
+  (run_test_case("inside 'tree' { print '**.js' where depth = 2 order desc }", lines(path("829131", "667797", "828412.js"),
   path("829131", "372165", "260134.js"), path("702035", "250274", "575573.js"), path("530856", "197877", "788392.js"),
   path("029719", "877639", "690072.js"), path("029719", "286109", "660170.js"))))
-  (run_test_case("inside 'tree' { print '*/*/*.js' order asc }", lines(path("829131", "667797", "828412.js"),
+  (run_test_case("inside 'tree' { print '*/*/*.js' order desc }", lines(path("829131", "667797", "828412.js"),
   path("829131", "372165", "260134.js"), path("702035", "250274", "575573.js"), path("530856", "197877", "788392.js"),
   path("029719", "877639", "690072.js"), path("029719", "286109", "660170.js"))))
-  (run_test_case("inside 'tree' { print '*/*2*/*.js' order asc }", lines(path("829131", "372165", "260134.js"),
+  (run_test_case("inside 'tree' { print '*/*2*/*.js' order desc }", lines(path("829131", "372165", "260134.js"),
   path("702035", "250274", "575573.js"), path("029719", "286109", "660170.js"))))
-  (run_test_case("inside 'tree' { print '*/*7/*.js' order asc }", lines(path("829131", "667797", "828412.js"),
+  (run_test_case("inside 'tree' { print '*/*7/*.js' order desc }", lines(path("829131", "667797", "828412.js"),
   path("530856", "197877", "788392.js"))))
-  (run_test_case("inside 'tree' { print '**.txt' where name[0] = 7 order desc }", lines(
+  (run_test_case("inside 'tree' { print '**.txt' where name[0] = 5 order desc }", lines(
   path("829131", "863770", "571186.txt"), "581940.txt", path("561442", "413938", "560857.txt"),
   path("561442", "413938", "512316.txt"), "558639.txt", "532624.txt")))
   (run_test_case("inside 'tree' { print '*/**.txt' order desc every 16 }", lines(
@@ -1292,13 +1299,15 @@ if __name__ == '__main__':
   (run_test_case("inside 'tree' { print '*/**.txt' order desc where index % 16 = 0 }", lines(
   path("829131", "863770", "877450.txt"), path("674295", "056884.txt"),
   path("264026", "789148", "268141.txt"), path("029719", "743013.txt"))))
-  (run_test_case("inside 'tree' { print '829131/863770/*' order asc }", lines(path("829131", "863770", "571186.txt"),
+  (run_test_case("inside 'tree' { print '829131/863770/*' where isFILe order asc }", lines(path("829131", "863770", "571186.txt"),
   path("829131", "863770", "783877.txt"), path("829131", "863770", "877450.txt"))))
   (run_test_case("inside 'tree' { print '829131/**' order asc }", lines(path("829131", "372165"),
-  path("829131", "372165", "260134.js"), path("829131", "429798"), path("829131", "429798", "702683.h"),
-  path("829131", "429798", "968092.h"), path("829131", "429798", "990148.txt"), path("829131", "667797"),
-  path("829131", "667797", "080298.txt"), path("829131", "667797", "828412.js"), path("829131", "863770"),
-  path("829131", "863770", "571186.txt"), path("829131", "863770", "783877.txt"), path("829131", "863770", "877450.txt"))))
+  path("829131", "372165", "240541"), path("829131", "372165", "260134.js"), path("829131", "429798"), 
+  path("829131", "429798", "702683.h"), path("829131", "429798", "968092.h"), path("829131", "429798", "990148.txt"), 
+  path("829131", "667797"), path("829131", "667797", "080298.txt"), path("829131", "667797", "577575"),
+  path("829131", "667797", "828412.js"), path("829131", "863770"), path("829131", "863770", "458369"),
+  path("829131", "863770", "571186.txt"), path("829131", "863770", "727014"),
+  path("829131", "863770", "783877.txt"), path("829131", "863770", "877450.txt"))))
   (run_test_case("inside 'tree' { print '829131/**.h' order asc }", lines(
   path("829131", "429798", "702683.h"), path("829131", "429798", "968092.h"))))
   
@@ -1593,7 +1602,7 @@ if __name__ == '__main__':
   expect_syntax_error("u = 6,1,2,4,3,5; print u final 'f' ")
   expect_syntax_error("u = 6,1,2,4,3,5; print u where true limit 'g' ")
   expect_syntax_error("u = 6,1,2,'4',3,5; print u limit 3 every 'g' ")
-  expect_syntax_error("u = 6,1,2,4,3,5; print u where name != 'g' ")
+  expect_syntax_error("u = 6,1,2,4,3,5; print u final name != 'g' ")
   expect_syntax_error("u = 6,1,2,4,3,5; print u where 3 days ")
   expect_syntax_error("u = 6,1,2,4,3,5; print u skip 4 where 18 ")
   expect_syntax_error("u = 6,1,2,4,3,5; print u limit order")

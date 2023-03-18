@@ -39,12 +39,12 @@ namespace perun2::gen
 
 namespace os
 {
-   inline constexpr _bool IS_ABSOLUTE_PATH =            true;
-   inline constexpr _bool IS_RELATIVE_PATH =            false;
-   static const _str NO_PREFIX =                        EMPTY_STRING;
-   static const _str DEFAULT_PATTERN =                  OS_SEPARATOR_ASTERISK;
-   inline constexpr _bool IS_FINAL =                    true;
-   inline constexpr _bool IS_NOT_FINAL =                false;
+   _constexpr _bool IS_ABSOLUTE_PATH =            true;
+   _constexpr _bool IS_RELATIVE_PATH =            false;
+   _const_str NO_PREFIX =                         EMPTY_STRING;
+   _const_str DEFAULT_PATTERN =                   OS_SEPARATOR_ASTERISK;
+   _constexpr _bool IS_FINAL =                    true;
+   _constexpr _bool IS_NOT_FINAL =                false;
 }
 
 

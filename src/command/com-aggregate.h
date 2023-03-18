@@ -28,9 +28,9 @@ namespace perun2
 namespace perun2::comm
 {
 
-inline constexpr _uint32 AGGR_NULL =      0b000;
-inline constexpr _uint32 AGGR_COPY =      0b001;
-inline constexpr _uint32 AGGR_SELECT =    0b010;
+_constexpr _uint32 AGGR_NULL =      0b000;
+_constexpr _uint32 AGGR_COPY =      0b001;
+_constexpr _uint32 AGGR_SELECT =    0b010;
 
 // commands Select and Copy are different than others
 // they have to be performed on multiple files and directories at once

@@ -20,33 +20,33 @@
 namespace perun2
 {
 
-inline constexpr _uint32 FLAG_NULL =      0b000;
-inline constexpr _uint32 FLAG_NOOMIT =    0b001;
-inline constexpr _uint32 FLAG_SILENT =    0b010;
-inline constexpr _uint32 FLAG_GUI =       0b100;
+_constexpr _uint32 FLAG_NULL =      0b000;
+_constexpr _uint32 FLAG_NOOMIT =    0b001;
+_constexpr _uint32 FLAG_SILENT =    0b010;
+_constexpr _uint32 FLAG_GUI =       0b100;
 
-inline constexpr _char CHAR_FLAG_GUI =              CHAR_g;
-inline constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
+_constexpr _char CHAR_FLAG_GUI =              CHAR_g;
+_constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
 
-inline constexpr _char CHAR_FLAG_NOOMIT =           CHAR_n;
-inline constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
+_constexpr _char CHAR_FLAG_NOOMIT =           CHAR_n;
+_constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
 
-inline constexpr _char CHAR_FLAG_SILENT =           CHAR_s;
-inline constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
+_constexpr _char CHAR_FLAG_SILENT =           CHAR_s;
+_constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
 
-inline constexpr _char CHAR_FLAG_DIRECTORY =        CHAR_d;
-inline constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
+_constexpr _char CHAR_FLAG_DIRECTORY =        CHAR_d;
+_constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
 
-inline constexpr _char CHAR_FLAG_HERE =             CHAR_h;
-inline constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
+_constexpr _char CHAR_FLAG_HERE =             CHAR_h;
+_constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
 
-inline constexpr _char CHAR_FLAG_CODE =             CHAR_c;
-inline constexpr _char CHAR_FLAG_CODE_UPPER =       CHAR_C;
+_constexpr _char CHAR_FLAG_CODE =             CHAR_c;
+_constexpr _char CHAR_FLAG_CODE_UPPER =       CHAR_C;
 
-static const _str STRING_ARG_VERSION =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_VERSION);
-static const _str STRING_ARG_DOCS =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_DOCS);
-static const _str STRING_ARG_WEBSITE =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_WEBSITE);
-static const _str STRING_ARG_HELP =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_HELP);
+_const_str STRING_ARG_VERSION =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_VERSION);
+_const_str STRING_ARG_DOCS =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_DOCS);
+_const_str STRING_ARG_WEBSITE =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_WEBSITE);
+_const_str STRING_ARG_HELP =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_HELP);
 
 
 enum ArgsParseState 

@@ -33,10 +33,10 @@ namespace perun2
 
 struct Contexts;
 
-inline constexpr _exitint EXITCODE_OK =             0;
-inline constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;
-inline constexpr _exitint EXITCODE_SYNTAX_ERROR =   2;
-inline constexpr _exitint EXITCODE_CLI_ERROR =      3;
+_constexpr _exitint EXITCODE_OK =             0;
+_constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;
+_constexpr _exitint EXITCODE_SYNTAX_ERROR =   2;
+_constexpr _exitint EXITCODE_CLI_ERROR =      3;
 
 
 enum State

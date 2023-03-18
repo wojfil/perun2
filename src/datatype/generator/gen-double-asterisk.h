@@ -26,8 +26,8 @@ namespace perun2::gen
 // these wildcards are used only internally
 // they should be characters restricted for a file name
 // so no collision happens
-inline constexpr _char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
-inline constexpr _char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
+_constexpr _char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
+_constexpr _char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
 
 typedef std::unique_ptr<RecursiveAll> _rallptr;
 

@@ -26,6 +26,10 @@
 namespace perun2
 {
 
+#define _const                      static const
+#define _constexpr                  inline constexpr
+#define _const_str                  static const _str
+#define _const_list                 static const _list
 #define _COUT                       std::wcout
 #define _CIN                        std::wcin
 
@@ -42,7 +46,7 @@ typedef std::vector<_str>           _list;
 
 typedef int64_t                     _nint;
 typedef long double                 _ndouble;
-inline constexpr _size BITS_IN_NINT = static_cast<_size>(sizeof(_nint) * 8);
+_constexpr _size BITS_IN_NINT = static_cast<_size>(sizeof(_nint) * 8);
 
 typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
 typedef WIN32_FIND_DATAW            _fdata;

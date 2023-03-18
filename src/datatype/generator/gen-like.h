@@ -29,16 +29,16 @@ namespace perun2::gen
 // they symbolize:
 // 1) lack of char
 // 2) there is a set of characters at this position
-inline constexpr _char WILDCARD_NONE = CHAR_NULL;
-inline constexpr _char WILDCARD_SET = CHAR_NULL_2;
+_constexpr _char WILDCARD_NONE = CHAR_NULL;
+_constexpr _char WILDCARD_SET = CHAR_NULL_2;
 
-inline constexpr _char WILDCARD_ONE_CHAR = CHAR_UNDERSCORE;
-inline constexpr _char WILDCARD_MULTIPLE_CHARS = CHAR_PERCENT;
-inline constexpr _char WILDCARD_ONE_DIGIT = CHAR_HASH;
-inline constexpr _char WILDCARD_SET_RANGE = CHAR_MINUS;
-inline constexpr _char WILDCARD_SET_START = CHAR_OPENING_SQUARE_BRACKET;
-inline constexpr _char WILDCARD_SET_END = CHAR_CLOSING_SQUARE_BRACKET;
-inline constexpr _char WILDCARD_SET_EXCLUSION = CHAR_CARET;
+_constexpr _char WILDCARD_ONE_CHAR = CHAR_UNDERSCORE;
+_constexpr _char WILDCARD_MULTIPLE_CHARS = CHAR_PERCENT;
+_constexpr _char WILDCARD_ONE_DIGIT = CHAR_HASH;
+_constexpr _char WILDCARD_SET_RANGE = CHAR_MINUS;
+_constexpr _char WILDCARD_SET_START = CHAR_OPENING_SQUARE_BRACKET;
+_constexpr _char WILDCARD_SET_END = CHAR_CLOSING_SQUARE_BRACKET;
+_constexpr _char WILDCARD_SET_EXCLUSION = CHAR_CARET;
 
 
 struct LikeSet

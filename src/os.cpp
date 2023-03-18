@@ -34,7 +34,7 @@
 namespace perun2
 {
 
-inline constexpr _nint OS_SLEEP_UNIT = NINT_300;
+_constexpr _nint OS_SLEEP_UNIT = NINT_300;
 // while sleeping
 // check every 300 ms if the program received an interruption signal
 

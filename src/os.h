@@ -22,18 +22,17 @@
 namespace perun2
 {
 
-// theses constants refer to the default file path separator
+// default file path separator
 // in Windows OS, this separator is \ and the 'wrong separator' is /
-// example: C:\some\correct\path
-inline constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
-inline constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
+_constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
+_constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
 
-static const _str OS_SEPARATOR_STRING = toStr(OS_SEPARATOR);
-static const _str OS_SEPARATOR_ASTERISK = str(OS_SEPARATOR_STRING, STRING_CHAR_ASTERISK);
-static const _str OS_SEPARATOR_APOSTROPHE = str(OS_SEPARATOR_STRING, STRING_CHAR_ASTERISK);
+_const_str OS_SEPARATOR_STRING = toStr(OS_SEPARATOR);
+_const_str OS_SEPARATOR_ASTERISK = str(OS_SEPARATOR_STRING, STRING_CHAR_ASTERISK);
+_const_str OS_SEPARATOR_APOSTROPHE = str(OS_SEPARATOR_STRING, STRING_CHAR_ASTERISK);
 
-static const _str OS_GIT_DIRECTORY = str(STRING_CHAR_DOT, STRING_GIT);
-static const _str OS_SVN_DIRECTORY = str(STRING_CHAR_DOT, STRING_SVN);
+_const_str OS_GIT_DIRECTORY = str(STRING_CHAR_DOT, STRING_GIT);
+_const_str OS_SVN_DIRECTORY = str(STRING_CHAR_DOT, STRING_SVN);
 
 _tim os_now();
 _tim os_today();

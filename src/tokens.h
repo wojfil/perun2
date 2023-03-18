@@ -27,27 +27,27 @@ namespace perun2
 // and then used multiple times during parsing
 typedef _uint64 _tinfo;
 
-inline constexpr _tinfo TI_NULL =                    0b00000000000000000000000;
-inline constexpr _tinfo TI_HAS_COMPARISON_CHAR =     0b00000000000000000000001;
-inline constexpr _tinfo TI_HAS_FILTER_KEYWORD =      0b00000000000000000000010;
-inline constexpr _tinfo TI_HAS_INDEP_BRACKETS =      0b00000000000000000000100;
-inline constexpr _tinfo TI_HAS_INDEP_SQ_BRACKETS =   0b00000000000000000001000;
-inline constexpr _tinfo TI_HAS_CHAR_QUESTION_MARK =  0b00000000000000000010000;
-inline constexpr _tinfo TI_HAS_CHAR_COMMA =          0b00000000000000000100000;
-inline constexpr _tinfo TI_HAS_CHAR_COLON =          0b00000000000000001000000;
-inline constexpr _tinfo TI_HAS_CHAR_PLUS =           0b00000000000000010000000;
-inline constexpr _tinfo TI_HAS_CHAR_MINUS =          0b00000000000000100000000;
-inline constexpr _tinfo TI_HAS_CHAR_EQUALS =         0b00000000000001000000000;
-inline constexpr _tinfo TI_IS_POSSIBLE_FUNCTION =    0b00000000000010000000000;
-inline constexpr _tinfo TI_HAS_KEYWORD_IN =          0b00000000000100000000000;
-inline constexpr _tinfo TI_HAS_KEYWORD_LIKE =        0b00000000001000000000000;
-inline constexpr _tinfo TI_HAS_KEYWORD_TO =          0b00000000010000000000000;
-inline constexpr _tinfo TI_HAS_KEYWORD_WITH =        0b00000000100000000000000;
-inline constexpr _tinfo TI_HAS_KEYWORD_AS =          0b00000001000000000000000;
-inline constexpr _tinfo TI_IS_POSSIBLE_LIST_ELEM =   0b00000010000000000000000;
-inline constexpr _tinfo TI_IS_POSSIBLE_BINARY =      0b00000100000000000000000;
-inline constexpr _tinfo TI_IS_POSSIBLE_TERNARY =     0b00001000000000000000000;
-inline constexpr _tinfo TI_IS_LIST_ELEM_MEMBER =     0b00010000000000000000000;
+_constexpr _tinfo TI_NULL =                    0b00000000000000000000000;
+_constexpr _tinfo TI_HAS_COMPARISON_CHAR =     0b00000000000000000000001;
+_constexpr _tinfo TI_HAS_FILTER_KEYWORD =      0b00000000000000000000010;
+_constexpr _tinfo TI_HAS_INDEP_BRACKETS =      0b00000000000000000000100;
+_constexpr _tinfo TI_HAS_INDEP_SQ_BRACKETS =   0b00000000000000000001000;
+_constexpr _tinfo TI_HAS_CHAR_QUESTION_MARK =  0b00000000000000000010000;
+_constexpr _tinfo TI_HAS_CHAR_COMMA =          0b00000000000000000100000;
+_constexpr _tinfo TI_HAS_CHAR_COLON =          0b00000000000000001000000;
+_constexpr _tinfo TI_HAS_CHAR_PLUS =           0b00000000000000010000000;
+_constexpr _tinfo TI_HAS_CHAR_MINUS =          0b00000000000000100000000;
+_constexpr _tinfo TI_HAS_CHAR_EQUALS =         0b00000000000001000000000;
+_constexpr _tinfo TI_IS_POSSIBLE_FUNCTION =    0b00000000000010000000000;
+_constexpr _tinfo TI_HAS_KEYWORD_IN =          0b00000000000100000000000;
+_constexpr _tinfo TI_HAS_KEYWORD_LIKE =        0b00000000001000000000000;
+_constexpr _tinfo TI_HAS_KEYWORD_TO =          0b00000000010000000000000;
+_constexpr _tinfo TI_HAS_KEYWORD_WITH =        0b00000000100000000000000;
+_constexpr _tinfo TI_HAS_KEYWORD_AS =          0b00000001000000000000000;
+_constexpr _tinfo TI_IS_POSSIBLE_LIST_ELEM =   0b00000010000000000000000;
+_constexpr _tinfo TI_IS_POSSIBLE_BINARY =      0b00000100000000000000000;
+_constexpr _tinfo TI_IS_POSSIBLE_TERNARY =     0b00001000000000000000000;
+_constexpr _tinfo TI_IS_LIST_ELEM_MEMBER =     0b00010000000000000000000;
 
 
 struct _p2;

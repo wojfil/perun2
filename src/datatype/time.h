@@ -22,8 +22,8 @@
 namespace perun2
 {
 
-inline constexpr _bool TIME_WITH_SECONDS = true;
-inline constexpr _bool TIME_WITHOUT_SECONDS = false;
+_constexpr _bool TIME_WITH_SECONDS = true;
+_constexpr _bool TIME_WITHOUT_SECONDS = false;
 
 struct Time
 {

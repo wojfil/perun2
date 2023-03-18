@@ -25,7 +25,7 @@
 namespace perun2::parse
 {
 
-inline constexpr _char CHAR_UNARY_MINUS = CHAR_TILDE;
+_constexpr _char CHAR_UNARY_MINUS = CHAR_TILDE;
 // within a numerical expression, the minus sign means either subtraction operation (x-y) or unary negation (-x)
 // the sign above is used internally by the interpreter to distinguish them
 

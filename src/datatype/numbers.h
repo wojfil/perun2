@@ -25,47 +25,45 @@ namespace perun2
 // here all number literals, that are of type _nint or _ndouble
 // their literals should not be hardcoded in the source code
 
-inline constexpr _nint NINT_ZERO =                 0LL;
-inline constexpr _nint NINT_ONE =                  1LL;
-inline constexpr _nint NINT_MINUS_ONE =           -1LL;
-inline constexpr _nint NINT_TWO =                  2LL;
-inline constexpr _nint NINT_THREE =                3LL;
-inline constexpr _nint NINT_FOUR =                 4LL;
-inline constexpr _nint NINT_TEN =                 10LL;
-inline constexpr _nint NINT_300 =                300LL;
-inline constexpr _nint NINT_THOUSAND =          1000LL;
-inline constexpr _nint NINT_1024 =              1024LL;
-inline constexpr _nint NINT_1950 =              1950LL;
-inline constexpr _nint NINT_2100 =              2100LL;
+_constexpr _nint NINT_ZERO =                 0LL;
+_constexpr _nint NINT_ONE =                  1LL;
+_constexpr _nint NINT_MINUS_ONE =           -1LL;
+_constexpr _nint NINT_TWO =                  2LL;
+_constexpr _nint NINT_THREE =                3LL;
+_constexpr _nint NINT_FOUR =                 4LL;
+_constexpr _nint NINT_TEN =                 10LL;
+_constexpr _nint NINT_300 =                300LL;
+_constexpr _nint NINT_THOUSAND =          1000LL;
+_constexpr _nint NINT_1024 =              1024LL;
+_constexpr _nint NINT_1950 =              1950LL;
+_constexpr _nint NINT_2100 =              2100LL;
 
-inline constexpr _nint SIZE_UNIT_KB =      NINT_1024;
-inline constexpr _nint SIZE_UNIT_MB =      SIZE_UNIT_KB * SIZE_UNIT_KB;
-inline constexpr _nint SIZE_UNIT_GB =      SIZE_UNIT_MB * SIZE_UNIT_KB;
-inline constexpr _nint SIZE_UNIT_TB =      SIZE_UNIT_GB * SIZE_UNIT_KB;
-inline constexpr _nint SIZE_UNIT_PB =      SIZE_UNIT_TB * SIZE_UNIT_KB;
+_constexpr _nint SIZE_UNIT_KB =      NINT_1024;
+_constexpr _nint SIZE_UNIT_MB =      SIZE_UNIT_KB * SIZE_UNIT_KB;
+_constexpr _nint SIZE_UNIT_GB =      SIZE_UNIT_MB * SIZE_UNIT_KB;
+_constexpr _nint SIZE_UNIT_TB =      SIZE_UNIT_GB * SIZE_UNIT_KB;
+_constexpr _nint SIZE_UNIT_PB =      SIZE_UNIT_TB * SIZE_UNIT_KB;
 
-inline constexpr _nint NINT_SECONDS_IN_MINUTE =      static_cast<_nint>(TNUM_SECONDS_IN_MINUTE);
-inline constexpr _nint NINT_SECONDS_IN_HOUR =        static_cast<_nint>(TNUM_SECONDS_IN_HOUR);
-inline constexpr _nint NINT_SECONDS_IN_DAY =         static_cast<_nint>(TNUM_SECONDS_IN_DAY);
-inline constexpr _nint NINT_SECONDS_IN_WEEK =        static_cast<_nint>(TNUM_SECONDS_IN_WEEK);
-inline constexpr _nint NINT_SECONDS_IN_MONTH =       static_cast<_nint>(TNUM_SECONDS_IN_MONTH);
-inline constexpr _nint NINT_SECONDS_IN_YEAR =        static_cast<_nint>(TNUM_SECONDS_IN_YEAR);
-
-
-inline constexpr _ndouble NDOUBLE_ZERO =            0L;
-inline constexpr _ndouble NDOUBLE_HALF =          0.5L;
-inline constexpr _ndouble NDOUBLE_ONE =             1L;
-inline constexpr _ndouble NDOUBLE_MINUS_ONE =      -1L;
-inline constexpr _ndouble NDOUBLE_TWELVE =         12L;
+_constexpr _nint NINT_SECONDS_IN_MINUTE =      static_cast<_nint>(TNUM_SECONDS_IN_MINUTE);
+_constexpr _nint NINT_SECONDS_IN_HOUR =        static_cast<_nint>(TNUM_SECONDS_IN_HOUR);
+_constexpr _nint NINT_SECONDS_IN_DAY =         static_cast<_nint>(TNUM_SECONDS_IN_DAY);
+_constexpr _nint NINT_SECONDS_IN_WEEK =        static_cast<_nint>(TNUM_SECONDS_IN_WEEK);
+_constexpr _nint NINT_SECONDS_IN_MONTH =       static_cast<_nint>(TNUM_SECONDS_IN_MONTH);
+_constexpr _nint NINT_SECONDS_IN_YEAR =        static_cast<_nint>(TNUM_SECONDS_IN_YEAR);
 
 
+_constexpr _ndouble NDOUBLE_ZERO =            0L;
+_constexpr _ndouble NDOUBLE_HALF =          0.5L;
+_constexpr _ndouble NDOUBLE_ONE =             1L;
+_constexpr _ndouble NDOUBLE_MINUS_ONE =      -1L;
+_constexpr _ndouble NDOUBLE_TWELVE =         12L;
 
-inline constexpr _nint ROMAN_VINCULUM_THRESHOLD = 4000LL;
-inline constexpr _nint ROMAN_MAXIMUM = 5000000LL;
-static const _nint ROMAN_NUMBER_LITERALS[] = { 1LL, 4LL, 5LL, 9LL, 10LL, 40LL, 50LL, 90LL, 100LL, 400LL, 500LL, 900LL, 1000LL,
+
+_constexpr _nint ROMAN_VINCULUM_THRESHOLD = 4000LL;
+_constexpr _nint ROMAN_MAXIMUM = 5000000LL;
+_constexpr _nint ROMAN_NUMBER_LITERALS[] = { 1LL, 4LL, 5LL, 9LL, 10LL, 40LL, 50LL, 90LL, 100LL, 400LL, 500LL, 900LL, 1000LL,
     4000LL, 5000LL, 9000LL, 10000LL, 40000LL, 50000LL, 90000LL, 100000LL, 400000LL, 500000LL, 900000LL, 1000000LL
 };
-
 
 
 }

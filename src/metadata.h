@@ -20,12 +20,12 @@
 namespace perun2::metadata
 {
 
-static const _str NAME =                L"Perun2";
-static const _str VERSION =             L"2.0.0";
-static const _str EXTENSION =           L"peru";
-static const _str WEBSITE_FRONT =       L"https://perun2.org";
-static const _str WEBSITE_DOCS =        L"https://perun2.org/docs";
-static const _str EXECUTABLE_NAME =     L"perun2";
+_const_str NAME =                L"Perun2";
+_const_str VERSION =             L"2.0.0";
+_const_str EXTENSION =           L"peru";
+_const_str WEBSITE_FRONT =       L"https://perun2.org";
+_const_str WEBSITE_DOCS =        L"https://perun2.org/docs";
+_const_str EXECUTABLE_NAME =     L"perun2";
 
 }
 

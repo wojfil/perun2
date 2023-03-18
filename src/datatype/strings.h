@@ -95,6 +95,8 @@ _const_list STRINGS_ASCII = {
       L"p", L"q", L"r", L"s", L"t", L"u", L"v", L"w", L"x", L"y", L"z", L"{", L"|", L"}", L"~", L" "
 };
 
+_const_str STRING_FILE_OPEN_MODE =       L"rtS, ccs=UTF-8";
+
 _const_str STRING_NO_TIME =              L"no time";
 _const_str STRING_NO_PERIOD =            L"no period";
 _const_str STRING_NOTHING =              L"nothing";

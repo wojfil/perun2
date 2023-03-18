@@ -964,7 +964,7 @@ _bool os_open(const _str& path)
 _bool os_openWith(const _str& program, const _str& path)
 {
    const _str location = os_parent(path);
-   return (INT_PTR)ShellExecuteW(NULL, L"open", program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
+   return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN.c_str(), program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
 }
 
 _bool os_openAsCommand(const _str& command, const _str& location)
@@ -1626,7 +1626,7 @@ _bool os_isPath(const _str& value)
 _bool os_isExplorableDirectory(const _str& name)
 {
    // this is an equivalent to
-   // return name != L".git" && name != L".svn";
+   // return name != .git && name != .svn
    if (name.size() == 4) {
       return name != OS_GIT_DIRECTORY
           && name != OS_SVN_DIRECTORY;
@@ -1834,7 +1834,7 @@ _size os_readFile_size(const _str& path)
 
 _bool os_readFile(_str& result, const _str& path)
 {
-   FILE* f = _wfopen(path.c_str(), L"rtS, ccs=UTF-8");
+   FILE* f = _wfopen(path.c_str(), STRING_FILE_OPEN_MODE.c_str());
 
    if (f == NULL) {
       return false;
@@ -1855,7 +1855,7 @@ _bool os_readFile(_str& result, const _str& path)
 
 void os_showWebsite(const _str& url)
 {
-   ShellExecuteW(NULL, L"open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+   ShellExecuteW(NULL, STRING_OPEN.c_str(), url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 _bool os_findText(const _str& path, const _str& value)
@@ -1894,7 +1894,7 @@ inline _uint64 os_bigInteger(const _uint32 low, const _uint32 high)
 inline _bool os_isBrowsePath(const _str& path)
 {
    // this is an equivalent to
-   // return path == L"." || path == L"..";
+   // return path == . || path == ..
    switch (path.size()) {
       case 1: {
          return path[0] == CHAR_DOT;

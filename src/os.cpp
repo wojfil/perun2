@@ -1476,6 +1476,86 @@ exitEnd:
    return result;
 }
 
+void os_rawTrim(_str& value)
+{
+   const _int len = value.size();
+   _int start = 0;
+
+   if (len >= 2 && value[0] == CHAR_DOT
+    && (value[1] == OS_SEPARATOR || value[1] == OS_WRONG_SEPARATOR))
+   {
+      start = 2;
+   }
+
+   while (start < len) {
+      switch (value[start]) {
+         case OS_WRONG_SEPARATOR:
+         case OS_SEPARATOR:
+         case CHAR_SPACE: {
+            break;
+         }
+         default: {
+            goto r_exitStart;
+         }
+      }
+      start++;
+   }
+
+r_exitStart:
+
+   if (len >= (start + 2) && value[start] == CHAR_DOT
+    && (value[start+ 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
+   {
+      start += 2;
+   }
+
+   switch (len - start) {
+      case 0: {
+         value = EMPTY_STRING;
+         return;
+      }
+      case 1: {
+         value = value.substr(len - 1, 1);
+         return;
+      }
+   }
+
+   _str result;
+   _int end = len - 1;
+
+   while (end >= 0) {
+      switch (value[end]) {
+         case OS_WRONG_SEPARATOR:
+         case OS_SEPARATOR:
+         case CHAR_SPACE: {
+            break;
+         }
+         default: {
+            goto r_exitEnd;
+         }
+      }
+      end--;
+   }
+
+r_exitEnd:
+
+   if (start == 0) {
+      if (end != len - 1) {
+         value = value.substr(0, end + 1);
+      }
+   }
+   else {
+      if (end == len - 1) {
+         value = value.substr(start);
+      }
+      else {
+         value = value.substr(start, end - start + 1);
+      }
+   }
+
+   return;
+}
+
 inline void os_escapeQuote(_str& path)
 {
    const _size length = path.size();
@@ -1905,87 +1985,6 @@ _str os_makeArg(const _str& value)
          ? str(STRING_CHAR_QUOTATION_MARK, result, STRING_CHAR_QUOTATION_MARK)
          : result;
    }
-}
-
-
-void os_rawTrim(_str& value)
-{
-   const _int len = value.size();
-   _int start = 0;
-
-   if (len >= 2 && value[0] == CHAR_DOT
-    && (value[1] == OS_SEPARATOR || value[1] == OS_WRONG_SEPARATOR))
-   {
-      start = 2;
-   }
-
-   while (start < len) {
-      switch (value[start]) {
-         case OS_WRONG_SEPARATOR:
-         case OS_SEPARATOR:
-         case CHAR_SPACE: {
-            break;
-         }
-         default: {
-            goto r_exitStart;
-         }
-      }
-      start++;
-   }
-
-r_exitStart:
-
-   if (len >= (start + 2) && value[start] == CHAR_DOT
-    && (value[start+ 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
-   {
-      start += 2;
-   }
-
-   switch (len - start) {
-      case 0: {
-         value = EMPTY_STRING;
-         return;
-      }
-      case 1: {
-         value = value.substr(len - 1, 1);
-         return;
-      }
-   }
-
-   _str result;
-   _int end = len - 1;
-
-   while (end >= 0) {
-      switch (value[end]) {
-         case OS_WRONG_SEPARATOR:
-         case OS_SEPARATOR:
-         case CHAR_SPACE: {
-            break;
-         }
-         default: {
-            goto r_exitEnd;
-         }
-      }
-      end--;
-   }
-
-r_exitEnd:
-
-   if (start == 0) {
-      if (end != len - 1) {
-         value = value.substr(0, end + 1);
-      }
-   }
-   else {
-      if (end == len - 1) {
-         value = value.substr(start);
-      }
-      else {
-         value = value.substr(start, end - start + 1);
-      }
-   }
-
-   return;
 }
 
 _str os_quoteEmbraced(const _str& value)

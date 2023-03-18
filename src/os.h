@@ -112,7 +112,10 @@ _bool os_run(const _str& comm, const _str& location, _p2& p2);
 _bool os_isInvaild(const _str& path);
 _uint32 os_patternInfo(const _str& pattern);
 _bool os_bothAreSeparators(const _char left, const _char right);
+
 _str os_trim(const _str& path);
+void os_rawTrim(_str& value);
+
 inline void os_escapeQuote(_str& path);
 _str os_join(const _str& path1, const _str& path2);
 _bool os_isAbsolute(const _str& path);
@@ -145,7 +148,6 @@ inline _tim os_convertToPerun2Time(const _ftim* time);
 inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result);
 
 _str os_makeArg(const _str& value);
-void os_rawTrim(_str& value);
 _str os_quoteEmbraced(const _str& value);
 
 }

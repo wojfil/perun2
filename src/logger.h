@@ -30,8 +30,6 @@ struct Logger
 public:
    Logger();
    Logger(const _p2& p2);
-   Logger(Logger const&) = delete;
-   Logger& operator= (Logger const&) = delete;
 
    // print something
    void print(const _str& value) const;

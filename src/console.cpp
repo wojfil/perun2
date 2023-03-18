@@ -35,8 +35,8 @@ namespace perun2
 {
    void initConsole()
    {
-      _CIN.tie(0);
-      _COUT.tie(0);
+      _cin.tie(0);
+      _cout.tie(0);
       std::setlocale(LC_CTYPE, "");
       _setmode(_fileno(stdout), _O_U8TEXT);
       CoInitializeEx(0, COINIT_MULTITHREADED);

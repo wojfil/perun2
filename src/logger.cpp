@@ -27,20 +27,20 @@ Logger::Logger(const _p2& p2)
 void Logger::print(const _str& value) const
 {
    if (this->flushBuffer) {
-      _COUT << value << std::endl;
+      _cout << value << std::endl;
    }
    else {
-      _COUT << value << CHAR_NEW_LINE;
+      _cout << value << CHAR_NEW_LINE;
    }
 }
 
 void Logger::emptyLine() const
 {
    if (this->flushBuffer) {
-      _COUT << EMPTY_STRING << std::endl;
+      _cout << EMPTY_STRING << std::endl;
    }
    else {
-      _COUT << EMPTY_STRING << CHAR_NEW_LINE;
+      _cout << EMPTY_STRING << CHAR_NEW_LINE;
    }
 }
 

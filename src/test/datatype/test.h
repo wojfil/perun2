@@ -15,6 +15,6 @@
 #ifndef TEST_INCLUDED
 #define TEST_INCLUDED
 
-#define VERIFY(cond, id) if (!(cond)) {_COUT << L"Unit test failed at " << __FILE__ << L", with id " << id << std::endl;}
+#define VERIFY(cond, id) if (!(cond)) {_cout << L"Unit test failed at " << __FILE__ << L", with id " << id << std::endl;}
 
 #endif // TEST_INCLUDED

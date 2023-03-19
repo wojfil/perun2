@@ -71,6 +71,8 @@ public:
    static SyntaxError undefinedVarValue(const _str& value, const _int line);
    static SyntaxError unopenedBracketIsClosed(const _char value, const _int line);
    static SyntaxError wrongSyntax(const _int line);
+   // to be continued
+   // all errors from the source code will finally end up here
 
 private:
    const _str message;
@@ -89,6 +91,8 @@ public:
    static RuntimeError numberTooBig(const _str& value);
    static RuntimeError squareRootOfNegativeNumber(const _str& value);
    static RuntimeError wrongResultOfExponentiation();
+   // to be continued
+   // all errors from the source code will finally end up here
 
 private:
    const _str message;

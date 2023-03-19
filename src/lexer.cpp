@@ -449,17 +449,7 @@ inline static _bool isNewLine(const _char ch)
 
 inline static _bool isAllowedInWord(const _char ch)
 {
-   if (std::iswalpha(ch) || std::iswdigit(ch)) {
-      return true;
-   }
-
-   switch (ch) {
-      case CHAR_DOT:
-      case CHAR_UNDERSCORE:
-         return true;
-      default:
-         return false;
-   }
+   return std::iswalpha(ch) || std::iswdigit(ch) || ch == CHAR_DOT;
 }
 
 inline static _bool isDoubleChar(const _char ch)

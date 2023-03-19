@@ -20,6 +20,20 @@
 namespace perun2::comm
 {
 
+
+void C_AggrCopy_This::run()
+{
+   if (this->context.trimmed.empty()) {
+      aggregate->failedCopy++;
+   }
+   else if (this->context.invalid || !this->context.v_exists->value) {
+      aggregate->invalidCopy.insert(os_fullname(this->context.trimmed));
+   }
+   else {
+      aggregate->copyPaths.insert(this->context.v_path->value);
+   }
+}
+
 void C_AggrCopy_String::run()
 {
    const _str n = os_trim(value->getValue());
@@ -52,6 +66,36 @@ void C_AggrCopy_List::run()
       }
    }
 }
+
+
+void C_AggrSelect_This::run()
+{
+   if (this->context.trimmed.empty()) {
+      this->aggregate->failedSelect++;
+   }
+   else if (this->context.invalid || !this->context.v_exists->value) {
+      aggregate->invalidSelect.insert(os_fullname(this->context.trimmed));
+   }
+   else {
+      if (os_hasParentDirectory(this->context.v_path->value)) {
+         auto it = aggregate->selectPaths.find(this->context.v_parent->value);
+
+         if (it == aggregate->selectPaths.end()) {
+            std::unordered_set<_str> newSet;
+            newSet.insert(this->context.v_path->value);
+            aggregate->selectPaths.insert(
+               std::pair<_str, std::unordered_set<_str>>(this->context.v_parent->value, newSet));
+         }
+         else {
+            it->second.insert(this->context.v_path->value);
+         }
+      }
+      else {
+         aggregate->invalidSelect.insert(os_fullname(this->context.trimmed));
+      }
+   }
+}
+
 
 void C_AggrSelect_String::run()
 {

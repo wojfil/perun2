@@ -30,9 +30,23 @@ public:
       : aggregate(aggr), value(std::move(val)), locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
-   LocationContext* locationContext;
-   Aggregate* aggregate;
+   LocationContext* const locationContext;
+   Aggregate* const aggregate;
    _genptr<T> value;
+};
+
+
+struct C_AggrCopy_This : Command
+{
+public:
+   C_AggrCopy_This(Aggregate* aggr, FileContext& ctx)
+      : aggregate(aggr), context(ctx) { };
+
+   void run() override;
+
+private:
+   Aggregate* const aggregate;
+   FileContext& context;
 };
 
 
@@ -53,6 +67,20 @@ public:
       : C_AggrDelivery<_list>(aggr, val, p2) {};
 
    void run() override;
+};
+
+
+struct C_AggrSelect_This : Command
+{
+public:
+   C_AggrSelect_This(Aggregate* aggr, FileContext& ctx)
+      : aggregate(aggr), context(ctx) { };
+
+   void run() override;
+
+private:
+   Aggregate* const aggregate;
+   FileContext& context;
 };
 
 

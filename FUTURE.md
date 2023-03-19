@@ -92,16 +92,6 @@ Analogously, there are variables *recursiveRepositories* and *isRepository*.
 If certain directory contains a directory *.git* or *.svn*, it is a repository for sure.
 There are more version control systems.
 
-## Some microoptimizations
-
-There are some possibilities.
-However, they are rather waste of time.
-This time should be spent on new features.
-
-## More tests
-
-Tests should cover every feature in multiple contexts.
-
 ## *LikeAny*, *LikeAll*
 
 Basically the Like operator, but with a collection of patterns.
@@ -144,9 +134,9 @@ select files
   where creation.year = yesteryear
 ```
 
-## Variable stability check
+## Variable runtime stability check
 
-Look for number overflows during runtime execution. In case of one, throw runtime exception.
+Look for integer overflows. In case of one, throw runtime exception.
 These events are rare as 64 bits are used for storing ints... but they are still possible.
 
 ```
@@ -245,36 +235,6 @@ Other possible variables: *phone*, *camera*. There is a possibility to express p
 
 ```
 open 'device:/some/path/*.txt'
-```
-
-## Variable *weekend*
-
-This is a numeric list of two values: *saturday* and *sunday*.
-Because *weekend* is a collection, we should use it with the In operator.
-
-```
-select '*.pdf*'
-  where creation.weekday not in weekend
-```
-
-## Seasons: *spring*, *summer*, *autumn*, *winter*
-
-What should they mean? Astronomical seasons or meteorological seasons?
-Astronomical seasons would be better, but require caution in implementation.
-What about Southern Hemisphere?
-
-Approach 1: functions
-
-```
-select images
-  where isWinter(creation)
-```
-
-Approach 2: time variable member
-
-```
-select images
-  where creation.season = winter
 ```
 
 ## Commands *read* and *write*

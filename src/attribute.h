@@ -68,16 +68,10 @@ public:
    _bool has(const _aunit v) const;
    _bool hasAny() const;
    _aunit getValue() const;
-   _bool isMarkedToEvaluate() const;
-   void markToEvaluate();
-   _bool isMarkedToRun() const;
-   void markToRun();
    
    _p2& perun2;
 
 protected:
-   _bool markedToEvaluate = false;
-   _bool markedToRun = false;
    _aunit value = ATTR_NULL;
 };
 

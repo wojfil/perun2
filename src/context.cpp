@@ -289,17 +289,6 @@ namespace perun2
       this->locationContexts.pop_back();
    }
 
-
-
-   void Contexts::markAllAttributesToRun()
-   {
-      for (FileContext*& fc : this->fileContexts) {
-         if (fc != nullptr) {
-            fc->attribute->markToRun();
-         }
-      }
-   }
-
    _bool Contexts::hasAggregate()
    {
       return this->aggregateContexts.size() >= 1;
@@ -384,5 +373,12 @@ namespace perun2
           || this->getVar(tk, tl, p2)
           || this->getVar(tk, nl, p2)
           || this->getVar(tk, l, p2);
+   }
+
+   void Contexts::closeAttributeScope()
+   {
+      for (FileContext*& fc : this->fileContexts) {
+         fc->attributeScope = false;
+      }
    }
 }

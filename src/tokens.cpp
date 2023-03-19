@@ -553,6 +553,9 @@ void Tokens::setData()
             }
          }
       }
+      else if (t.isKeyword(Keyword::kw_Rename)) {
+         this->info |= TI_EVALUATE_DEFINITIONS;
+      }
    }
 
    if (round != 0) {

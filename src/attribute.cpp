@@ -133,24 +133,4 @@ _aunit Attribute::getValue() const
    return this->value;
 }
 
-_bool Attribute::isMarkedToEvaluate() const
-{
-   return this->markedToEvaluate;
-}
-
-void Attribute::markToEvaluate()
-{
-   this->markedToEvaluate = true;
-}
-
-_bool Attribute::isMarkedToRun() const
-{
-   return this->markedToRun;
-}
-
-void Attribute::markToRun()
-{
-   this->markedToRun = true;
-}
-
 }

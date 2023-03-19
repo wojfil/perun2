@@ -424,7 +424,7 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
       checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
-      ctx->attribute->markToEvaluate();
+      //ctx->attribute->markToEvaluate();
 
       _genptr<_str> newName;
       if (!parse::parse(p2, right, newName)) {
@@ -440,6 +440,8 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
 
       return true;
    }
+
+   p2.contexts.closeAttributeScope();
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, p2);
@@ -504,6 +506,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
       return true;
    }
 
+   p2.contexts.closeAttributeScope();
    const Token& f = tks.first();
 
    _genptr<_str> str_;
@@ -553,6 +556,8 @@ static _bool c_createFile(_comptr& result, const Token& word, const Tokens& tks,
       return true;
    }
 
+   p2.contexts.closeAttributeScope();
+
    _genptr<_str> str_;
    if (parse::parse(p2, tks, str_)) {
       if (stack) {
@@ -585,6 +590,8 @@ static _bool c_createDirectory(_comptr& result, const Token& word, const Tokens&
 
       return true;
    }
+
+   p2.contexts.closeAttributeScope();
 
    _genptr<_str> str_;
    if (parse::parse(p2, tks, str_)) {
@@ -619,6 +626,7 @@ static _bool c_createFiles(_comptr& result, const Token& word, const Tokens& tks
       return true;
    }
 
+   p2.contexts.closeAttributeScope();
    const Token& f = tks.first();
 
    _genptr<_str> str_;
@@ -667,6 +675,7 @@ static _bool c_createDirectories(_comptr& result, const Token& word, const Token
       return true;
    }
 
+   p2.contexts.closeAttributeScope();
    const Token& f = tks.first();
 
    _genptr<_str> str_;
@@ -793,6 +802,8 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
          return true;
       }
    }
+
+   p2.contexts.closeAttributeScope();
 
    if (hasAs) {
       if (left.check(TI_HAS_KEYWORD_AS)) {
@@ -1036,6 +1047,8 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
       }
    }
 
+   p2.contexts.closeAttributeScope();
+
    if (hasAs) {
       if (left.check(TI_HAS_KEYWORD_AS)) {
          throw SyntaxError(str(L"keywords 'to' and 'as' appear in "
@@ -1217,7 +1230,7 @@ static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, cons
 
 static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2)
 {
-   p2.contexts.markAllAttributesToRun();
+   p2.contexts.closeAttributeScope();
 
    if (!tks.check(TI_HAS_KEYWORD_WITH)) {
       _genptr<_str> str;

@@ -65,6 +65,7 @@ _str F_Path_2::getValue()
    }
 }
 
+
 _str F_Path_3::getValue()
 {
    const _str v3 = os_trim(this->value_3->getValue());
@@ -92,6 +93,7 @@ _str F_Path_3::getValue()
       }
    }
 }
+
 
 _str F_Path_4::getValue()
 {
@@ -201,6 +203,134 @@ _num F_SizeList::getValue()
    }
 
    return any ? _num(total) : _num(NINT_MINUS_ONE);
+}
+
+
+void F_Attribute::checkExistence()
+{
+   this->context.v_exists->value = this->context.invalid
+      ? false
+      : os_exists(this->context.v_path->value);
+}
+
+
+_num F_Attr_Size::getValue()
+{
+   return this->context.invalid
+      ? NINT_MINUS_ONE
+      : os_size(this->context.v_path->value, this->perun2);
+}
+
+
+_per F_Attr_Lifetime::getValue()
+{
+   return this->context.invalid
+      ? _per()
+      : os_lifetime(this->context.v_path->value);
+}
+
+
+_tim F_Attr_Access::getValue()
+{
+   return this->context.invalid
+      ? _tim()
+      : os_access(this->context.v_path->value);
+}
+
+
+_tim F_Attr_Change::getValue()
+{
+   return this->context.invalid
+      ? _tim()
+      : os_change(this->context.v_path->value);
+}
+
+
+_tim F_Attr_Creation::getValue()
+{
+   return this->context.invalid
+      ? _tim()
+      : os_creation(this->context.v_path->value);
+}
+
+
+_tim F_Attr_Modification::getValue()
+{
+   return this->context.invalid
+      ? _tim()
+      : os_modification(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Archive::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_archive(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Compressed::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_compressed(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Empty::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_empty(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Exists::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_exists(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Encrypted::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_encrypted(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Hidden::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_hidden(this->context.v_path->value);
+}
+
+
+_bool F_Attr_IsDirectory::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_isDirectory(this->context.v_path->value);
+}
+
+
+_bool F_Attr_IsFile::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_isFile(this->context.v_path->value);
+}
+
+
+_bool F_Attr_Readonly::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_readonly(this->context.v_path->value);
 }
 
 }

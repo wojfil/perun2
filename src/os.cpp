@@ -99,8 +99,9 @@ void os_loadAttributes(FileContext& context)
 {
    const _attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
+   context.invalid = os_isInvaild(context.trimmed);
 
-   if (os_isInvaild(context.trimmed)) {
+   if (context.invalid) {
       os_loadEmptyAttributes(context);
       return;
    }
@@ -345,6 +346,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
 {
    const _attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
+   context.invalid = false;
    _str path;
 
    // "drive", "depth", "path", "parent" and "fullname" do not require access to the file system

@@ -121,11 +121,13 @@ namespace perun2
       void loadAttributes();
       void loadAttributes(const _fdata& data);
 
+      _bool attributeScope = true;
       _varptr<_str> this_;
       _attrptr attribute;
       VarsContext fileVars;
       LocationContext* const locContext;
-      _str trimmed; // the value of this_, but with trimmed spaces and with proper path separators... used only internally
+      _str trimmed; // this is the value of this_, but with trimmed spaces and with proper path separators... used only internally
+      _bool invalid; // the value of this_ is invalid (has not allowed characters, is empty string etc.)
 
       Variable<_bool>* v_archive;
       Variable<_bool>* v_compressed;
@@ -234,8 +236,6 @@ namespace perun2
       void addLocationContext(LocationContext* ctx);
       void retreatLocationContext();
 
-      void markAllAttributesToRun();
-
       // for aggregates
       _bool hasAggregate();
       comm::Aggregate* getAggregate();
@@ -250,6 +250,7 @@ namespace perun2
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
       _bool varExists(const Token& tk, _p2& p2);
+      void closeAttributeScope();
 
       _varptr<_bool> success;
       std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;

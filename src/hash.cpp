@@ -312,14 +312,12 @@ Hashes::Hashes() :
 
    // attributes, that can be altered by external circumstances
    // for example, last modification time of an element may be changed by another process
-   // but its parent directory stays the same no matter what happens
+   // but its parent directory stays the same
    HASH_GROUP_ALTERABLE_ATTR({
      this->HASH_VAR_ACCESS, this->HASH_VAR_ARCHIVE, this->HASH_VAR_CHANGE, this->HASH_VAR_COMPRESSED,
-     this->HASH_VAR_CREATION, this->HASH_VAR_EMPTY, this->HASH_VAR_EXISTS,
-     this->HASH_VAR_ENCRYPTED, this->HASH_VAR_EXTENSION, 
+     this->HASH_VAR_CREATION, this->HASH_VAR_EMPTY, this->HASH_VAR_EXISTS, this->HASH_VAR_ENCRYPTED,
      this->HASH_VAR_HIDDEN, this->HASH_VAR_ISDIRECTORY, this->HASH_VAR_ISFILE, this->HASH_VAR_LIFETIME,
-     this->HASH_VAR_MODIFICATION,
-     this->HASH_VAR_READONLY, this->HASH_VAR_SIZE
+     this->HASH_VAR_MODIFICATION, this->HASH_VAR_READONLY, this->HASH_VAR_SIZE
    }),
 
    HASH_GROUP_VARS_IMMUTABLES({

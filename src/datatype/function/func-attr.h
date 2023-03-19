@@ -142,6 +142,139 @@ private:
 };
 
 
+struct F_Attribute
+{
+public:
+   F_Attribute(_p2& p2)
+      : context(*p2.contexts.getFileContext()), perun2(p2) { };
+
+protected:
+   void checkExistence();
+   FileContext& context;
+   _p2& perun2;
+};
+
+
+struct F_Attr_Size : F_Attribute, Generator<_num>
+{
+public:
+   F_Attr_Size(_p2& p2) : F_Attribute(p2) { };
+   _num getValue() override;
+};
+
+
+struct F_Attr_Lifetime : F_Attribute, Generator<_per>
+{
+public:
+   F_Attr_Lifetime(_p2& p2) : F_Attribute(p2) { };
+   _per getValue() override;
+};
+
+
+struct F_Attr_Access: F_Attribute, Generator<_tim>
+{
+public:
+   F_Attr_Access(_p2& p2) : F_Attribute(p2) { };
+   _tim getValue() override;
+};
+
+
+struct F_Attr_Change: F_Attribute, Generator<_tim>
+{
+public:
+   F_Attr_Change(_p2& p2) : F_Attribute(p2) { };
+   _tim getValue() override;
+};
+
+
+struct F_Attr_Creation: F_Attribute, Generator<_tim>
+{
+public:
+   F_Attr_Creation(_p2& p2) : F_Attribute(p2) { };
+   _tim getValue() override;
+};
+
+
+struct F_Attr_Modification: F_Attribute, Generator<_tim>
+{
+public:
+   F_Attr_Modification(_p2& p2) : F_Attribute(p2) { };
+   _tim getValue() override;
+};
+
+
+struct F_Attr_Archive: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Archive(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_Compressed: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Compressed(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_Empty: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Empty(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_Exists: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Exists(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_Encrypted: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Encrypted(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_Hidden: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Hidden(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_IsDirectory: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_IsDirectory(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_IsFile: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_IsFile(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
+struct F_Attr_Readonly: F_Attribute, Generator<_bool>
+{
+public:
+   F_Attr_Readonly(_p2& p2) : F_Attribute(p2) { };
+   _bool getValue() override;
+};
+
+
 }
 
 #endif // FUNC_ATTR_H_INCLUDED

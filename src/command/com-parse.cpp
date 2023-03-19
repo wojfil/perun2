@@ -380,7 +380,7 @@ static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Token
       FileContext* fc = def->getFileContext();
 
       if (fc != nullptr) {
-         if (fc->attribute->isMarkedToEvaluate()) {
+         if (right.check(TI_EVALUATE_DEFINITIONS)) {
             _fcptr nextFc = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(nextFc.get());
             _comptr com;
@@ -393,7 +393,6 @@ static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Token
             }
 
             return success;
-
          }
          else {
             p2.contexts.addFileContext(fc);
@@ -416,7 +415,7 @@ static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Token
       p2.contexts.retreatFileContext();
 
       if (success) {
-         if (ctx->attribute->isMarkedToEvaluate()) {
+         if (right.check(TI_EVALUATE_DEFINITIONS)) {
             _genptr<_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
             result = std::make_unique<CS_ListLoop>(g, com, ctx, p2);
          }
@@ -505,7 +504,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
       FileContext* fc = def->getFileContext();
 
       if (fc != nullptr) {
-         if (fc->attribute->isMarkedToEvaluate()) {
+         if (right.check(TI_EVALUATE_DEFINITIONS)) {
             _fcptr nextFc = std::make_unique<FileContext>(p2);
             nextFc->attribute->setCoreCommandBase();
             p2.contexts.addFileContext(nextFc.get());
@@ -564,7 +563,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
       p2.contexts.retreatLocationContext();
 
       if (success) {
-         if (ctx->attribute->isMarkedToEvaluate()) {
+         if (right.check(TI_EVALUATE_DEFINITIONS)) {
             _genptr<_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
             result = std::make_unique<CS_InsideList>(g, com, locContext, ctx, p2);
          }

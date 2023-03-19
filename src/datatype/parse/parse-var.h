@@ -20,20 +20,38 @@
 
 namespace perun2::parse
 {
+
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_bool>& result, _p2& p2);
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_num>& result, _p2& p2);
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_per>& result, _p2& p2);
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_tim>& result, _p2& p2);
+
+   template <typename T>
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<T>& result, _p2& p2)
+   {
+      return false;
+   }
+
    _bool makeVarRef(const Token& tk, _defptr& result, _p2& p2);
 
    template <typename T>
    _bool makeVarRef(const Token& tk, _genptr<T>& result, _p2& p2)
    {
       Variable<T>* var;
-      if (p2.contexts.getVar(tk, var, p2)) {
-         result = std::make_unique<VariableReference<T>>(var);
-         return true;
+      if (!p2.contexts.getVar(tk, var, p2)) {
+         return false;
       }
 
-      return false;
+      if (var->type == VarType::vt_Attribute
+         && !p2.contexts.getFileContext()->attributeScope
+         && p2.hashes.HASH_GROUP_ALTERABLE_ATTR.find(tk.value.word.h) != p2.hashes.HASH_GROUP_ALTERABLE_ATTR.end())
+      {
+         return makeVarRefAsFunction(tk, result, p2);
+      }
+
+      result = std::make_unique<VariableReference<T>>(var);
+      return true;
    };
 }
-
 
 #endif // PARSE_VAR_H_INCLUDED

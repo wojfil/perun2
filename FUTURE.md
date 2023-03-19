@@ -64,7 +64,7 @@ delete recursiveVideos
 
 Variables that describe images. All four above are numbers.
 *Pixels* equals *width* multiplied by *height*.
-*Bpp' means bits per pixel.
+*Bpp* means bits per pixel.
 
 ```
 select images
@@ -107,7 +107,7 @@ Tests should cover every feature in multiple contexts.
 Basically the Like operator, but with a collection of patterns.
 
 ```
-select '*.pdf*'
+select '*.pdf'
   where name likeAny ('a_%', 'br[567]%', '%[a-z]__th%')
 ```
 
@@ -238,6 +238,13 @@ inside device {
   delete images 
     where lifetime > 1 year
 }
+```
+
+Other possible variables: *phone*, *camera*. There is a possibility to express paths to external devices the following way.
+
+
+```
+open 'device:/some/path/*.txt'
 ```
 
 ## Variable *weekend*

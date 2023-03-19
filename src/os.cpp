@@ -1749,29 +1749,23 @@ _bool os_pathWasStacked(const _str& basePath)
    }
 
    for (_int i = len - 2; i >= 0; i--) {
-      switch (basePath[i]) {
-         case CHAR_0: case CHAR_1: case CHAR_2: case CHAR_3: case CHAR_4:
-         case CHAR_5: case CHAR_6: case CHAR_7: case CHAR_8: case CHAR_9: {
-            break;
-         }
-         case CHAR_OPENING_ROUND_BRACKET: {
-            if (i == (len - 2) || i == 0) {
-               return false;
-            }
-
-            switch(basePath[i - 1]) {
-               case OS_SEPARATOR:
-               case OS_WRONG_SEPARATOR: {
-                  return false;
-               }
-               default: {
-                  return true;
-               }
-            }
-         }
-         default: {
+      if (basePath[i] == CHAR_OPENING_ROUND_BRACKET) {
+         if (i == (len - 2) || i == 0) {
             return false;
          }
+
+         switch(basePath[i - 1]) {
+            case OS_SEPARATOR:
+            case OS_WRONG_SEPARATOR: {
+               return false;
+            }
+            default: {
+               return true;
+            }
+         }
+      }
+      else if (!std::iswdigit(basePath[i])) {
+         return false;
       }
    }
 
@@ -1783,24 +1777,18 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
    const _size len = path.size();
 
    for (_int i = len - 2; i >= 0; i--) {
-      switch (path[i]) {
-         case CHAR_0: case CHAR_1: case CHAR_2: case CHAR_3: case CHAR_4:
-         case CHAR_5: case CHAR_6: case CHAR_7: case CHAR_8: case CHAR_9: {
-            break;
-         }
-         default: {
-            basePath = path.substr(0, i);
-            const _str numStr = path.substr(i + 1, len - i - 2);
+      if (!std::iswdigit(path[i])) {
+         basePath = path.substr(0, i);
+         const _str numStr = path.substr(i + 1, len - i - 2);
 
-            try {
-               index = std::stoll(numStr);
-            }
-            catch (...) {
-               index = NINT_TWO;
-            }
-
-            return;
+         try {
+            index = std::stoll(numStr);
          }
+         catch (...) {
+            index = NINT_TWO;
+         }
+
+         return;
       }
    }
 }

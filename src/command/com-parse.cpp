@@ -430,10 +430,16 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
    if (left.isEmpty()) {
       if (!p2.contexts.hasFileContext()) {
          throw SyntaxError(str(L"argumentless structure '", keyword.getOriginString(p2),
-            L"' can be created only within an iteratiion loop"), keyword.line);
+            L"' can be declared only within an iteration loop"), keyword.line);
       }
 
       FileContext* fc = p2.contexts.getFileContext();
+
+      if (fc->isInside) {
+         throw SyntaxError(str(L"argumentless structure '", keyword.getOriginString(p2),
+            L"' is forbidden here. We already operate inside a directory, so it cannot be visited again"), keyword.line);
+      }
+
       fc->attribute->setCoreCommandBase();
       const _bool prevInside = fc->isInside;
       fc->isInside = true;

@@ -228,28 +228,6 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int sublen
       left.trimLeft();
       Tokens right(tks, rightStart, rightLen);
       return parseInsideLoop(result, leftFirst, left, right, p2);
-
-
-
-      /*left.trimLeft();
-      if (left.isEmpty() && p2.vars.inner.thisState != ThisState::ts_String) {
-         throw SyntaxError(str(L"argumentless structure '", leftFirst.getOriginString(p2),
-            L"' can be created only inside a loop iterating over strings"), leftFirst.line);
-      }
-      left.checkCommonExpressionExceptions(p2);
-
-      if (rightLen == 0) {
-         return false;
-      }
-
-      Tokens right(tks, rightStart, rightLen);
-
-      if (parseIterationLoop(result, true, left, right, prevThisState, p2)) {
-         return true;
-      }
-
-      throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2),
-         L"' is not followed by a valid value for directories to visit"), leftFirst.line);*/
    }
 
    // build "if"
@@ -1181,13 +1159,6 @@ template <typename T>
 static _bool makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
    Variable<T>* varPtr, _genptr<T>& valuePtr)
 {
-   /*VarBundle<T>* bundle;
-   p2.vars.takeBundlePointer(bundle);
-   const _bool isConstant = !p2.vc.anyAggregate() && valuePtr->isConstant();
-   return bundle->makeVariableAssignment(result, token, varPtr, valuePtr, isConstant);*/
-
-
-
    UserVarsContext* uvc = p2.contexts.getUserVarsContext();
    const _bool isConstant = !p2.contexts.hasAggregate() && valuePtr->isConstant();
    _varptrs<T>* allVarsOfThisType;

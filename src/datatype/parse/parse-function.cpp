@@ -73,7 +73,12 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_LIST, word, p2);
       }
 
-      result = std::make_unique<F_ExistInside>(list, lctx, fctx);
+      if (fctx->isInside) {
+         result = std::make_unique<F_Exist>(list, p2);
+      }
+      else {
+         result = std::make_unique<F_ExistInside>(list, lctx, fctx);
+      }
       return true;
    }
    else if (name == p2.hashes.HASH_FUNC_ANYINSIDE) {
@@ -85,6 +90,17 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 
       FileContext* fctx = p2.contexts.getFileContext();
       fctx->attribute->setCoreCommandBase();
+
+      if (fctx->isInside) {
+         _defptr def;
+         if (!parse::parse(p2, args[0], def)) {
+            functionArgException(0, STRING_DEFINITION, word, p2);
+         }
+
+         result = std::make_unique<F_Any>(def);
+         return true;
+      }
+
       _lcptr lctx;
       p2.contexts.makeLocationContext(lctx);
       p2.contexts.addLocationContext(lctx.get());
@@ -243,7 +259,12 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      result = std::make_unique<F_ExistsInside>(str_, lctx, fctx);
+      if (fctx->isInside) {
+         result = std::make_unique<F_Exists>(str_, p2);
+      }
+      else {
+         result = std::make_unique<F_ExistsInside>(str_, lctx, fctx);
+      }
       return true;
    }
    else if (name == p2.hashes.HASH_FUNC_STARTSWITH) {
@@ -511,6 +532,17 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 
       FileContext* fctx = p2.contexts.getFileContext();
       fctx->attribute->setCoreCommandBase();
+
+      if (fctx->isInside) {
+         _defptr def;
+         if (!parse::parse(p2, args[0], def)) {
+            functionArgException(0, STRING_DEFINITION, word, p2);
+         }
+
+         result = std::make_unique<F_Count>(def, p2);
+         return true;
+      }
+
       _lcptr lctx;
       p2.contexts.makeLocationContext(lctx);
       p2.contexts.addLocationContext(lctx.get());

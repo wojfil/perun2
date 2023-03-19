@@ -435,6 +435,8 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
 
       FileContext* fc = p2.contexts.getFileContext();
       fc->attribute->setCoreCommandBase();
+      const _bool prevInside = fc->isInside;
+      fc->isInside = true;
 
       _lcptr locContext;
       p2.contexts.makeLocationContext(locContext);
@@ -444,6 +446,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
       const _bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
       p2.contexts.retreatLocationContext();
+      fc->isInside = prevInside;
 
       if (success) {
          result = std::make_unique<CS_InsideThis>(com, locContext, fc, p2);
@@ -457,6 +460,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
    if (parse::parse(p2, left, str_)) {
       _fcptr context = std::make_unique<FileContext>(p2);
       context->attribute->setCoreCommandBase();
+      context->isInside = true;
       p2.contexts.addFileContext(context.get());
 
       _lcptr locContext;
@@ -485,6 +489,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
          if (right.check(TI_EVALUATE_DEFINITIONS)) {
             _fcptr nextFc = std::make_unique<FileContext>(p2);
             nextFc->attribute->setCoreCommandBase();
+            nextFc->isInside = true;
             p2.contexts.addFileContext(nextFc.get());
 
             _lcptr locContext;
@@ -506,6 +511,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
          }
          else {
             fc->attribute->setCoreCommandBase();
+            fc->isInside = true;
             p2.contexts.addFileContext(fc);
 
             _lcptr locContext;
@@ -528,6 +534,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
 
       _fcptr ctx = std::make_unique<FileContext>(p2);
       ctx->attribute->setCoreCommandBase();
+      ctx->isInside = true;
       p2.contexts.addFileContext(ctx.get());
 
       _lcptr locContext;
@@ -558,6 +565,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
    if (parse::parse(p2, left, list)) {
       _fcptr context = std::make_unique<FileContext>(p2);
       context->attribute->setCoreCommandBase();
+      context->isInside = true;
       p2.contexts.addFileContext(context.get());
 
       _lcptr locContext;

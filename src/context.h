@@ -128,6 +128,7 @@ namespace perun2
       LocationContext* const locContext;
       _str trimmed; // this is the value of this_, but with trimmed spaces and with proper path separators... used only internally
       _bool invalid; // the value of this_ is invalid (has not allowed characters, is empty string etc.)
+      _bool isInside = false; // this is file context of the Inside structure
 
       Variable<_bool>* v_archive;
       Variable<_bool>* v_compressed;

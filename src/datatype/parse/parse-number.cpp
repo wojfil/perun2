@@ -14,6 +14,7 @@
 
 #include "parse-number.h"
 #include "parse-generic.h"
+#include "parse-var.h"
 #include "../parse/parse-function.h"
 #include "../generator/gen-number.h"
 #include "../generator/gen-generic.h"
@@ -113,7 +114,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
-      if (p2.contexts.makeVarRef(f, tlist, p2)) {
+      if (makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
          const _hash h = last.value.twoWords.h2;
          const Hashes& hs = p2.hashes;

@@ -21,6 +21,7 @@
 #include "../../os.h"
 #include "parse-number.h"
 #include "parse-asterisk.h"
+#include "parse-var.h"
 
 
 namespace perun2::parse
@@ -47,7 +48,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_bool>& result)
          }
       }
       case Token::t_Word: {
-         return p2.contexts.makeVarRef(tk, result, p2);
+         return makeVarRef(tk, result, p2);
       }
       default: {
          return false;
@@ -65,7 +66,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
          return true;
       }
       case Token::t_Word: {
-         return p2.contexts.makeVarRef(tk, result, p2);
+         return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
          const Hashes& hs = p2.hashes;
@@ -75,7 +76,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
          }
 
          _genptr<_tim> var;
-         if (!p2.contexts.makeVarRef(tk, var, p2)) {
+         if (!makeVarRef(tk, var, p2)) {
             throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(p2),
                L".", tk.getOriginString_2(p2), L"' does not exist or is unreachable here"), tk.line);
          }
@@ -124,7 +125,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_str>& result)
          return true;
       }
       case Token::t_Word: {
-         return p2.contexts.makeVarRef(tk, result, p2);
+         return makeVarRef(tk, result, p2);
       }
       default: {
          return false;
@@ -135,19 +136,19 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_str>& result)
 _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
+   return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
 _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
+   return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
 _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_list>& result)
 {
    const Token& tk = tks.first();
-   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
+   return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
 _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
@@ -156,7 +157,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
 
    switch (tk.type) {
       case Token::t_Word: {
-         return p2.contexts.makeVarRef(tk, result, p2);
+         return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
          if (tk.value.twoWords.h1 == p2.hashes.HASH_NOTHING) {
@@ -164,7 +165,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
          }
 
          _genptr<_tim> var;
-         if (!p2.contexts.makeVarRef(tk, var, p2)) {
+         if (!makeVarRef(tk, var, p2)) {
             throw SyntaxError(str(L"time variable '", tk.getOriginString(p2), L"' does not exist"), tk.line);
          }
 
@@ -186,7 +187,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
-   return tk.type == Token::t_Word && p2.contexts.makeVarRef(tk, result, p2);
+   return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
 _bool parseOneToken(_p2& p2, const Tokens& tks, _defptr& result)
@@ -195,7 +196,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _defptr& result)
 
    switch (tk.type) {
       case Token::t_Word: {
-         return p2.contexts.makeVarRef(tk, result, p2);
+         return makeVarRef(tk, result, p2);
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == CHAR_ASTERISK) {

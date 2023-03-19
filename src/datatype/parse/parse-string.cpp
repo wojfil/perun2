@@ -14,6 +14,7 @@
 
 #include "parse-string.h"
 #include "parse-generic.h"
+#include "parse-var.h"
 #include "../cast.h"
 #include "../parse/parse-function.h"
 #include "../generator/gen-string.h"
@@ -56,21 +57,21 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       const Token& f = tks.first();
       _genptr<_list> list;
 
-      if (p2.contexts.makeVarRef(f, list, p2)) {
+      if (makeVarRef(f, list, p2)) {
          result = std::make_unique<gen::ListElement<_str>>(list, num);
          return true;
       }
       else {
          _genptr<_str> str;
 
-         if (p2.contexts.makeVarRef(f, str, p2)) {
+         if (makeVarRef(f, str, p2)) {
             result = std::make_unique<gen::CharAtIndex>(str, num);
             return true;
          }
          else {
             _defptr def;
 
-            if (p2.contexts.makeVarRef(f, def, p2)) {
+            if (makeVarRef(f, def, p2)) {
                result = std::make_unique<gen::DefinitionElement>(def, num, p2);
                return true;
             }

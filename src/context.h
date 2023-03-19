@@ -214,21 +214,6 @@ namespace perun2
          return findVar(tk, result, p2);
       };
 
-      _bool makeVarRef(const Token& tk, _defptr& result, _p2& p2);
-
-      template <typename T>
-      _bool makeVarRef(const Token& tk, _genptr<T>& result, _p2& p2)
-      {
-         Variable<T>* var;
-         if (getVar(tk, var, p2)) {
-            result = std::make_unique<VariableReference<T>>(var);
-            return true;
-         }
-
-         return false;
-      };
-
-
       // context of user variables - every structure of { } brackets
       void addUserVarsContext(UserVarsContext* ctx);
       void retreatUserVarsContext();
@@ -267,6 +252,7 @@ namespace perun2
       _bool varExists(const Token& tk, _p2& p2);
 
       _varptr<_bool> success;
+      std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;
 
    private:
       const Hashes& hashes;
@@ -309,7 +295,6 @@ namespace perun2
       void addOsGen(const _hash hash, const gen::OsElement element, _p2& p2);
 
       LocationContext rootLocation;
-      std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;
 
       std::vector<UserVarsContext*> userVarsContexts;
       std::vector<AggregateContext*> aggregateContexts;

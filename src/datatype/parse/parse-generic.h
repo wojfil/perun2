@@ -21,7 +21,7 @@
 #include "../generator/gen-generic.h"
 #include "../generator/gen-list.h"
 #include "parse-order.h"
-#include <vector>
+#include "parse-var.h"
 
 
 namespace perun2::parse
@@ -217,7 +217,7 @@ static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _p2& 
    parseListElementIndex(num, tks, p2);
    const Token& f = tks.first();
    _genptr<std::vector<T>> collection;
-   if (p2.contexts.makeVarRef(f, collection, p2)) {
+   if (makeVarRef(f, collection, p2)) {
       result = std::make_unique<gen::ListElement<T>>(collection, num);
       return true;
    }

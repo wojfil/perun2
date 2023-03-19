@@ -233,18 +233,6 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   _bool Contexts::makeVarRef(const Token& tk, _defptr& result, _p2& p2)
-   {
-      const _hash var = tk.value.word.h;
-      auto v = this->osGenerators.find(var);
-
-      if (v != this->osGenerators.end()) {
-         return v->second.generate(result);
-      }
-
-      return false;
-   }
-
    void Contexts::addUserVarsContext(UserVarsContext* ctx)
    {
       this->userVarsContexts.push_back(ctx);

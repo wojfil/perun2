@@ -14,6 +14,7 @@
 
 #include "parse-time.h"
 #include "parse-generic.h"
+#include "parse-var.h"
 #include "../parse/parse-function.h"
 #include "../generator/gen-time.h"
 #include "../generator/gen-period.h"
@@ -73,7 +74,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
       parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
-      if (p2.contexts.makeVarRef(f, tlist, p2)) {
+      if (makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
@@ -262,9 +263,9 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
                }
                break;
             }
-            case CHAR_OPENING_ROUND_BRACKET: 
+            case CHAR_OPENING_ROUND_BRACKET:
             case CHAR_CLOSING_ROUND_BRACKET:
-            case CHAR_OPENING_SQUARE_BRACKET: 
+            case CHAR_OPENING_SQUARE_BRACKET:
             case CHAR_CLOSING_SQUARE_BRACKET: {
                bi.refresh(t);
                sublen++;

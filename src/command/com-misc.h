@@ -179,7 +179,6 @@ public:
    RunBase(_p2& p2);
 
 protected:
-   void reloadContexts();
    _str getLocation();
    _str getUro2Cmd();
 
@@ -188,7 +187,6 @@ protected:
 
 private:
    LocationContext* locationCtx;
-   std::vector<FileContext*> fileCtxs;
 };
 
 

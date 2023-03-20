@@ -328,11 +328,6 @@ namespace perun2
       return this->fileContexts.back();
    }
 
-   std::vector<FileContext*>& Contexts::getFileContexts()
-   {
-      return this->fileContexts;
-   }
-
    _bool Contexts::hasIndexContext() const
    {
       return !this->indexContexts.empty();

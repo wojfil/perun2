@@ -246,7 +246,6 @@ namespace perun2
       _bool hasIterationContext() const;
       _bool hasFileContext() const;
       FileContext* getFileContext();
-      std::vector<FileContext*>& getFileContexts();
       _bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();

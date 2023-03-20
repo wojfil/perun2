@@ -97,19 +97,10 @@ void C_ErrorWithExitCode::run()
 
 RunBase::RunBase(_p2& p2)
    : perun2(p2),
-     fileCtxs(p2.contexts.getFileContexts()), 
      locationCtx(p2.contexts.getLocationContext()),
      uro2Base(str(os_quoteEmbraced(os_executablePath()), 
       STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE)) { };
 
-void RunBase::reloadContexts()
-{
-   for (FileContext*& fc : this->fileCtxs) {
-      if (fc != nullptr) {
-         fc->reloadData();
-      }
-   }
-}
 
 _str RunBase::getLocation()
 {
@@ -137,8 +128,6 @@ void C_Run::run()
    else {
       this->perun2.logger.log(L"Failed to run '", command, L"'");
    }
-
-   this->reloadContexts();
 }
 
 void C_RunWith::run()
@@ -163,8 +152,6 @@ void C_RunWith::run()
    else {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
    }
-
-   this->reloadContexts();
 }
 
 void C_RunWithWithString::run()
@@ -192,8 +179,6 @@ void C_RunWithWithString::run()
    else {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
    }
-
-   this->reloadContexts();
 }
 
 void C_RunWithWith::run()
@@ -248,8 +233,6 @@ void C_RunWithWith::run()
          this->perun2.logger.log(L"Failed to run ", logStream.str());
       }
    }
-
-   this->reloadContexts();
 }
 
 void C_RunWithPerun2::run()
@@ -271,8 +254,6 @@ void C_RunWithPerun2::run()
    else {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2");
    }
-
-   this->reloadContexts();
 }
 
 void C_RunWithPerun2WithString::run()
@@ -297,8 +278,6 @@ void C_RunWithPerun2WithString::run()
    else {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2 with '", rawArg, L"'");
    }
-
-   this->reloadContexts();
 }
 
 void C_RunWithPerun2With::run()
@@ -350,8 +329,6 @@ void C_RunWithPerun2With::run()
          this->perun2.logger.log(L"Failed to run ", logStream.str());
       }
    }
-
-   this->reloadContexts();
 }
 
 }

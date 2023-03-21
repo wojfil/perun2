@@ -28,8 +28,8 @@ namespace perun2
 
 #define _const                      static const
 #define _constexpr                  inline constexpr
-#define _const_str                  static const _str
-#define _const_list                 static const _list
+#define _const_str                  _const _str
+#define _const_list                 _const _list
 #define _cout                       std::wcout
 #define _cin                        std::wcin
 

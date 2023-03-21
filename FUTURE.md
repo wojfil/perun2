@@ -134,6 +134,21 @@ select files
   where creation.year = yesteryear
 ```
 
+## Time defined by day and month only
+
+Right now, time can take four forms. 
+The idea is to add another possibility.
+
+```
+select '*.pdf'
+  where creation = 15 july
+```
+
+This feature looks simple to implement. 
+However, there is plenty of problems to solve.
+How to compare "15 july" and "june 2020"?
+What about subtraction operation "15 april - june 2020"?
+
 ## Variable runtime stability check
 
 Look for integer overflows. In case of one, throw runtime exception.

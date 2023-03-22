@@ -41,8 +41,8 @@ namespace os
 {
    _constexpr _bool IS_ABSOLUTE_PATH =            true;
    _constexpr _bool IS_RELATIVE_PATH =            false;
-   _const_str NO_PREFIX =                         EMPTY_STRING;
-   _const_str DEFAULT_PATTERN =                   OS_SEPARATOR_ASTERISK;
+   _const _str NO_PREFIX =                         EMPTY_STRING;
+   _const _str DEFAULT_PATTERN =                   OS_SEPARATOR_ASTERISK;
    _constexpr _bool IS_FINAL =                    true;
    _constexpr _bool IS_NOT_FINAL =                false;
 }

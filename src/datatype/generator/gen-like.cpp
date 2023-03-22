@@ -435,7 +435,7 @@ Like::Like(_genptr<_str>& val, _genptr<_str>& pat)
 _bool Like::getValue() 
 {
    const _str pat = pattern->getValue();
-   const _hash hsh = rawStringHash(pat);
+   const _hash hsh = caseSensitiveHash(pat);
 
    if (hsh != prevHash) {
       parseLikeCmp(comparer, pat);

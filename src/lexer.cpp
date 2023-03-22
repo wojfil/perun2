@@ -338,8 +338,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
 
    switch (dots) {
       case 0: {
-         const _str word = code.substr(start, length);
-         const _hash hsh = stringHash(word);
+         _str word = code.substr(start, length);
+         const _hash hsh = caseInsensitiveHash(word);
 
          auto fm = p2.hashes.HASH_MAP_MONTHS.find(hsh);
          if (fm != p2.hashes.HASH_MAP_MONTHS.end()) {
@@ -372,10 +372,10 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
             throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
          }
 
-         const _str os1 = code.substr(start, pnt - start);
-         const _str os2 = code.substr(pnt + 1, start + length - pnt - 1);
-         const _hash h1 = stringHash(os1);
-         const _hash h2 = stringHash(os2);
+         _str os1 = code.substr(start, pnt - start);
+         _str os2 = code.substr(pnt + 1, start + length - pnt - 1);
+         const _hash h1 = caseInsensitiveHash(os1);
+         const _hash h2 = caseInsensitiveHash(os2);
 
          return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
       }

@@ -26,8 +26,8 @@ namespace perun2
 
 typedef std::size_t   _hash;
 
-_hash stringHash(const _str& value);
-_hash rawStringHash(const _str& value);
+_hash caseInsensitiveHash(_str& value);
+_hash caseSensitiveHash(const _str& value);
 
 // prepare hashes for language keywords
 // so, instead of comparing strings, we will compare hashes

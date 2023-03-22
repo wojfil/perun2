@@ -1170,7 +1170,7 @@ static _bool makeVarAlteration(_p2& p2, const Tokens& tokens, const Token& first
 }
 
 template <typename T>
-static _bool makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
+static void makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
    Variable<T>* varPtr, _genptr<T>& valuePtr)
 {
    UserVarsContext* uvc = p2.contexts.getUserVarsContext();
@@ -1186,8 +1186,6 @@ static _bool makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
    }
 
    result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[hash], valuePtr);
-   return true;
-
 }
 
 static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2)
@@ -1289,42 +1287,50 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
 
    _genptr<_bool> boo;
    if (parse::parse(p2, right, boo)) {
-      return makeVarAssignment(result, first, p2, pv_boo, boo);
+      makeVarAssignment(result, first, p2, pv_boo, boo);
+      return true;
    }
 
    _genptr<_num> num;
    if (parse::parse(p2, right, num)) {
-      return makeVarAssignment(result, first, p2, pv_num, num);
+      makeVarAssignment(result, first, p2, pv_num, num);
+      return true;
    }
 
    _genptr<_tim> tim;
    if (parse::parse(p2, right, tim)) {
-      return makeVarAssignment(result, first, p2, pv_tim, tim);
+      makeVarAssignment(result, first, p2, pv_tim, tim);
+      return true;
    }
 
    _genptr<_per> per;
    if (parse::parse(p2, right, per)) {
-      return makeVarAssignment(result, first, p2, pv_per, per);
+      makeVarAssignment(result, first, p2, pv_per, per);
+      return true;
    }
 
    _genptr<_str> str_;
    if (parse::parse(p2, right, str_)) {
-      return makeVarAssignment(result, first, p2, pv_str, str_);
+      makeVarAssignment(result, first, p2, pv_str, str_);
+      return true;
    }
 
    _genptr<_nlist> nlist;
    if (parse::parse(p2, right, nlist)) {
-      return makeVarAssignment(result, first, p2, pv_nlist, nlist);
+      makeVarAssignment(result, first, p2, pv_nlist, nlist);
+      return true;
    }
 
    _genptr<_tlist> tlist;
    if (parse::parse(p2, right, tlist)) {
-      return makeVarAssignment(result, first, p2, pv_tlist, tlist);
+      makeVarAssignment(result, first, p2, pv_tlist, tlist);
+      return true;
    }
 
    _genptr<_list> list;
    if (parse::parse(p2, right, list)) {
-      return makeVarAssignment(result, first, p2, pv_list, list);
+      makeVarAssignment(result, first, p2, pv_list, list);
+      return true;
    }
 
    throw SyntaxError(str(L"value assigned to variable '", first.getOriginString(p2),

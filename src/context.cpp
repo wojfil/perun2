@@ -376,4 +376,12 @@ namespace perun2
          fc->attributeScope = false;
       }
    }
+
+   void Contexts::closeDeepAttributeScope()
+   {
+      const _size limit = this->fileContexts.size() - 1;
+      for (_size i = 0; i < limit; i++) {
+         this->fileContexts[i]->attributeScope = false;
+      }
+   }
 }

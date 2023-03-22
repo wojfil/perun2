@@ -251,6 +251,7 @@ namespace perun2
       UserVarsContext* getUserVarsContext();
       _bool varExists(const Token& tk, _p2& p2);
       void closeAttributeScope();
+      void closeDeepAttributeScope();
 
       _varptr<_bool> success;
       std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;

@@ -153,11 +153,13 @@ static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks, co
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
       return coreCommandSimple(result, word, ctx, true, p2);
    }
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, p2);
+   p2.contexts.closeAttributeScope();
 
    _comptr inner;
    if (coreCommandSimple(inner, word, ctx.get(), false, p2) && parseLooped(tks, inner, ctx, result, p2)) {
@@ -223,6 +225,7 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setTimeCommandBase();
+      p2.contexts.closeDeepAttributeScope();
 
       _genptr<_tim> tim;
       if (!parse::parse(p2, right, tim)) {
@@ -238,6 +241,7 @@ static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, cons
 
    _attrptr attr = std::make_unique<Attribute>(p2);
    attr->setTimeCommandBase();
+   p2.contexts.closeAttributeScope();
    _fcptr ctx = std::make_unique<FileContext>(attr, p2);
 
    p2.contexts.addFileContext(ctx.get());
@@ -292,6 +296,7 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
       result = std::make_unique<C_Open>(true, ctx, p2);
       return true;
    }
@@ -320,10 +325,12 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
          checkFileContextExistence(str(word.getOriginString(p2), L" with"), line, p2);
          FileContext* ctx = p2.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
+         p2.contexts.closeDeepAttributeScope();
          result = std::make_unique<C_OpenWith>(prog, true, ctx, p2);
          return true;
       }
       else {
+         p2.contexts.closeAttributeScope();
          _comptr inner= std::make_unique<C_OpenWith>(prog, false, ctx.get(), p2);
          if (parseLooped(left, inner, ctx, result, p2)) {
             return true;
@@ -335,6 +342,7 @@ static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const
 
    _fcptr ctx;
    makeCoreCommandContext(ctx, p2);
+   p2.contexts.closeAttributeScope();
 
    _comptr inner= std::make_unique<C_Open>(false, ctx.get(), p2);
    if (parseLooped(tks, inner, ctx, result, p2)) {
@@ -425,6 +433,7 @@ static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, con
       checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
       //ctx->attribute->markToEvaluate();
 
       _genptr<_str> newName;
@@ -496,6 +505,7 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
 
       if (stack) {
          result = std::make_unique<C_Create_Stack>(ctx, p2);
@@ -546,6 +556,7 @@ static _bool c_createFile(_comptr& result, const Token& word, const Tokens& tks,
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
 
       if (stack) {
          result = std::make_unique<C_CreateFile_Stack>(ctx, p2);
@@ -581,6 +592,7 @@ static _bool c_createDirectory(_comptr& result, const Token& word, const Tokens&
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
 
       if (stack) {
          result = std::make_unique<C_CreateDirectory_Stack>(ctx, p2);
@@ -616,6 +628,7 @@ static _bool c_createFiles(_comptr& result, const Token& word, const Tokens& tks
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
 
       if (stack) {
          result = std::make_unique<C_CreateFile_Stack>(ctx, p2);
@@ -665,6 +678,7 @@ static _bool c_createDirectories(_comptr& result, const Token& word, const Token
       checkFileContextExistence(word.getOriginString(p2), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
+      p2.contexts.closeDeepAttributeScope();
 
       if (stack) {
          result = std::make_unique<C_CreateDirectory_Stack>(ctx, p2);
@@ -767,6 +781,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
          checkFileContextExistence(str(word.getOriginString(p2), L" to as"), line, p2);
          FileContext* ctx = p2.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
+         p2.contexts.closeDeepAttributeScope();
 
          if (stack) {
             result = std::make_unique<C_MoveToAs_Stack>(dest, nname, extless, ctx, p2);
@@ -969,6 +984,8 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (left.isEmpty()) {
+      p2.contexts.closeDeepAttributeScope();
+
       if (hasAs) {
          std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
          Tokens& preAs = pair2.first;

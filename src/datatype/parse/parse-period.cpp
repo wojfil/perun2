@@ -35,21 +35,27 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _p2& p2)
       return parseOneToken(p2, tks, result);
    }
 
-   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
-      return func::periodFunction(result, tks, p2);
-   }
-
    if (tks.check(TI_HAS_CHAR_COMMA) || tks.check(TI_HAS_FILTER_KEYWORD)) {
       return false;
    }
 
-   Tokens tks2(tks);
-   tks2.trimLeft();
+   if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
+      return func::periodFunction(result, tks, p2);
+   }
 
    const _bool startsWithMinus = tks.first().isSymbol(CHAR_MINUS);
    const _bool lastIsWord = tks.last().type == Token::t_Word;
    const _bool hasPluses =  tks.check(TI_HAS_CHAR_PLUS);
-   const _bool hasMinuses = tks2.check(TI_HAS_CHAR_MINUS);
+
+   _bool hasMinuses;
+   if (startsWithMinus) {
+      Tokens tks2(tks);
+      tks2.trimLeft();
+      hasMinuses = tks2.check(TI_HAS_CHAR_MINUS);
+   }
+   else {
+      hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
+   }
 
    if (len >= 3 && hasPluses || hasMinuses) {
       if (parsePeriodExp(result, tks, p2)) {
@@ -63,7 +69,9 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _p2& p2)
             return true;
          }
       }
-      else if (len == 3 && tks.first().isSymbol(CHAR_MINUS)) {
+      else if (len == 3 && startsWithMinus) {
+         Tokens tks2(tks);
+         tks2.trimLeft();
          if (parsePeriodConst(result, tks2, true, p2)) {
             return true;
          }
@@ -76,13 +84,14 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _p2& p2)
       }
    }
 
-   if (len >= 2 && !hasPluses && !hasMinuses) {
-      if (startsWithMinus) {
-         _genptr<_per> per;
-         if (parse(p2, tks2, per)) {
-            result = std::make_unique<gen::NegatedPeriod>(per);
-            return true;
-         }
+   if (len >= 2 && !hasPluses && !hasMinuses && startsWithMinus) {
+      Tokens tks2(tks);
+      tks2.trimLeft();
+
+      _genptr<_per> per;
+      if (parse(p2, tks2, per)) {
+         result = std::make_unique<gen::NegatedPeriod>(per);
+         return true;
       }
    }
 

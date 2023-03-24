@@ -1042,16 +1042,6 @@ _bool os_setTime(const _str& path, const _tim& creation,
       return false;
    }
 
-   /*HANDLE handle = CreateFileW(path.c_str(),
-      FILE_WRITE_ATTRIBUTES,
-      FILE_SHARE_READ | FILE_SHARE_WRITE,
-      NULL, OPEN_EXISTING,
-      FILE_FLAG_BACKUP_SEMANTICS, NULL);*/
-
-
-   /*HANDLE handle = CreateFileW(path.c_str(), GENERIC_WRITE, 0, NULL,
-      CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);*/
-
    HANDLE handle = CreateFile(path.c_str(),
       FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE,
       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

@@ -196,7 +196,7 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char symbol) const
    }
 
    if (sublen == 0) {
-      if (!isEmpty()) {
+      if (!isEmpty() && symbol != CHAR_COMMA) {
          throw SyntaxError::expressionCannotEndWith(symbol, last().line);
       }
    }

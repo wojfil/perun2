@@ -27,6 +27,11 @@ typedef _uint64 _cunit;
 _constexpr _cunit CACHE_NULL =                 0b00000000000000000000000000000000;
 _constexpr _cunit CACHE_DESKTOP_PATH =         0b00000000000000000000000000000001;
 _constexpr _cunit CACHE_EXE_PATH =             0b00000000000000000000000000000010;
+_constexpr _cunit CACHE_CMD_PROCESS =          0b00000000000000000000000000000100;
+_constexpr _cunit CACHE_ALPHABET =             0b00000000000000000000000000001000;
+_constexpr _cunit CACHE_ASCII =                0b00000000000000000000000000010000;
+_constexpr _cunit CACHE_ORIGIN =               0b00000000000000000000000000100000;
+_constexpr _cunit CACHE_ARGUMENTS =            0b00000000000000000000000001000000;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop
@@ -51,12 +56,12 @@ public:
    _str cmdProcessStartingArgs;
 
 private:
-   
    _bool isNotLoaded(const _cunit v);
    _str getCmdProcessStartingArgs() const;
+   _list getAlphabet() const;
 
    _cunit value = CACHE_NULL;
-   const Hashes& hashes;
+   _p2& perun2;
    VarsContext& context;
 };
 

@@ -19,43 +19,80 @@
 
 namespace perun2
 {
-   Cache::Cache(_p2& p2)
-      : hashes(p2.hashes), context(p2.contexts.globalVars) { };
 
-   void Cache::actualize(const _hash nameHash)
-   {
-      if (nameHash == this->hashes.HASH_VAR_DESKTOP && this->isNotLoaded(CACHE_DESKTOP_PATH)) {
+Cache::Cache(_p2& p2)
+   : perun2(p2), context(p2.contexts.globalVars) { };
+
+void Cache::actualize(const _hash nameHash)
+{
+   if (nameHash == this->perun2.hashes.HASH_VAR_DESKTOP) {
+      if (this->isNotLoaded(CACHE_DESKTOP_PATH)) {
          this->context.strings[nameHash]->value = os_desktopPath();
       }
-      else if (nameHash == this->hashes.HASH_VAR_PERUN2 && this->isNotLoaded(CACHE_EXE_PATH)) {
+   }
+   else if (nameHash == this->perun2.hashes.HASH_VAR_PERUN2) {
+      if (this->isNotLoaded(CACHE_EXE_PATH)) {
          this->context.strings[nameHash]->value = os_executablePath();
       }
+   }
+   else if (nameHash == this->perun2.hashes.HASH_VAR_ALPHABET) {
+      if (this->isNotLoaded(CACHE_ALPHABET)) {
+         this->context.lists[nameHash]->value = this->getAlphabet();
+      }
+   }
+   else if (nameHash == this->perun2.hashes.HASH_VAR_ASCII) {
+      if (this->isNotLoaded(CACHE_ASCII)) {
+         this->context.lists[nameHash]->value = STRINGS_ASCII;
+      }
+   }
+   else if (nameHash == this->perun2.hashes.HASH_VAR_ORIGIN) {
+      if (this->isNotLoaded(CACHE_ORIGIN)) {
+         this->context.strings[nameHash]->value = this->perun2.arguments.getLocation();
+      }
+   }
+   else if (nameHash == this->perun2.hashes.HASH_VAR_ARGUMENTS) {
+      if (this->isNotLoaded(CACHE_ARGUMENTS)) {
+         this->context.lists[nameHash]->value = this->perun2.arguments.getArgs();
+      }
+   }
+}
 
-
+void Cache::loadCmdPath()
+{
+   if (this->isNotLoaded(CACHE_EXE_PATH)) {
+      this->context.strings[this->perun2.hashes.HASH_VAR_PERUN2]->value = os_executablePath();
    }
 
-   void Cache::loadCmdPath()
-   {
-      if (this->isNotLoaded(CACHE_EXE_PATH)) {
-         this->context.strings[this->hashes.HASH_VAR_PERUN2]->value = os_executablePath();
-      }
-
+   if (this->isNotLoaded(CACHE_CMD_PROCESS)) {
       this->cmdProcessStartingArgs = this->getCmdProcessStartingArgs();
    }
+}
 
-   _bool Cache::isNotLoaded(const _cunit v)
-   {
-      const _bool notLoaded = !(this->value & v); 
-      if (notLoaded) {
-         this->value |= v;
-      }
-
-      return notLoaded;
+_bool Cache::isNotLoaded(const _cunit v)
+{
+   const _bool notLoaded = !(this->value & v); 
+   if (notLoaded) {
+      this->value |= v;
    }
 
-   _str Cache::getCmdProcessStartingArgs() const
-   {
-      return str(os_quoteEmbraced(this->context.strings[this->hashes.HASH_VAR_PERUN2]->value), 
-         STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE);
+   return notLoaded;
+}
+
+_str Cache::getCmdProcessStartingArgs() const
+{
+   return str(os_quoteEmbraced(this->context.strings[this->perun2.hashes.HASH_VAR_PERUN2]->value), 
+      STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE);
+}
+   
+_list Cache::getAlphabet() const
+{
+   _list a(LETTERS_IN_ENGLISH_ALPHABET);
+   for (_size i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
+      a[i] = CHAR_a + i;
    }
+   return a;
+}
+
+
+
 }

@@ -138,24 +138,14 @@ namespace perun2
       this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_PERUN2,
          std::make_unique<Variable<_str>>(VarType::vt_Special)));
       this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_ORIGIN,
-         std::make_unique<Variable<_str>>(VarType::vt_Special, p2.arguments.getLocation())));
-
+         std::make_unique<Variable<_str>>(VarType::vt_Special)));
       this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ALPHABET,
-         std::make_unique<Variable<_list>>(VarType::vt_Special, this->getAlphabet())));
+         std::make_unique<Variable<_list>>(VarType::vt_Special)));
       this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ASCII,
-         std::make_unique<Variable<_list>>(VarType::vt_Special, STRINGS_ASCII)));
+         std::make_unique<Variable<_list>>(VarType::vt_Special)));
       this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ARGUMENTS,
-         std::make_unique<Variable<_list>>(VarType::vt_Special, p2.arguments.getArgs())));
+         std::make_unique<Variable<_list>>(VarType::vt_Special)));
    };
-
-   _list GlobalContext::getAlphabet() const
-   {
-      _list a(LETTERS_IN_ENGLISH_ALPHABET);
-      for (_size i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
-         a[i] = CHAR_a + i;
-      }
-      return a;
-   }
 
    Contexts::Contexts(_p2& p2)
       : GlobalContext(p2), hashes(p2.hashes), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))

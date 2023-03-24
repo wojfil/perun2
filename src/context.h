@@ -191,7 +191,6 @@ namespace perun2
          return this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
       }
 
-      _list getAlphabet() const;
    };
 
    typedef std::unique_ptr<UserVarsContext>        _ucptr;

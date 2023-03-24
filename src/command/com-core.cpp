@@ -423,7 +423,9 @@ void C_MoveTo::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->perun2))) {
+         if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath)) 
+               && os_drop(newPath, this->perun2))) 
+         {
             this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
             this->perun2.contexts.success->value = false;
             return;
@@ -533,7 +535,9 @@ void C_MoveToAs::run()
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->perun2))) {
+         if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
+               && os_drop(newPath, this->perun2))) 
+         {
             this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
             this->perun2.contexts.success->value = false;
             return;
@@ -657,7 +661,9 @@ void C_CopyTo::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->perun2))) {
+         if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
+            && os_drop(newPath, this->perun2))) 
+         {
             this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->perun2.contexts.success->value = false;
             return;
@@ -758,7 +764,9 @@ void C_CopyToAs::run()
       _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
 
       if (os_exists(newPath)) {
-         if (!(forced && os_drop(newPath, this->perun2))) {
+         if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
+               && os_drop(newPath, this->perun2)))
+         {
             this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
             this->perun2.contexts.success->value = false;
             return;

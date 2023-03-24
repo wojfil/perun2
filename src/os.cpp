@@ -1126,17 +1126,20 @@ _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _p
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
    }
-   else {
-      const _bool success = os_copyToDirectory(oldPath, newPath, p2);
-      if (!success && !p2.state == State::s_Running && os_directoryExists(newPath)) {
-         // if directory copy operation
-         // was stopped by the user
-         // delete recent partially copied directory if it is there
-         os_dropDirectory(newPath, p2);
-      }
 
-      return success;
+   if (os_isAncestor(oldPath, newPath)) {
+      return false;
    }
+
+   const _bool success = os_copyToDirectory(oldPath, newPath, p2);
+   if (!success && !p2.state == State::s_Running && os_directoryExists(newPath)) {
+      // if directory copy operation
+      // was stopped by the user
+      // delete recent partially copied directory if it is there
+      os_dropDirectory(newPath, p2);
+   }
+
+   return success;
 }
 
 _bool os_copyToFile(const _str& oldPath, const _str& newPath)
@@ -1636,6 +1639,21 @@ _bool os_isExplorableDirectory(const _str& name)
    else {
       return true;
    }
+}
+
+_bool os_isAncestor(const _str& path, const _str& supposedChildPath)
+{
+   if (supposedChildPath.size() <= path.size()) {
+      return false;
+   }
+
+   for (_size i = 0; i < path.size(); i++) {
+      if (!charsEqualInsensitive(&path[i], &supposedChildPath[i])) {
+         return false;
+      }
+   }
+
+   return supposedChildPath[path.size() + 1] == OS_SEPARATOR;
 }
 
 _bool os_hasParentDirectory(const _str& path)

@@ -123,6 +123,7 @@ _bool os_isDriveLetter(const _char ch);
 _bool os_isPath(const _str& value);
 _bool os_isExplorableDirectory(const _str& name);
 
+_bool os_isAncestor(const _str& path, const _str& supposedChildPath);
 _bool os_hasParentDirectory(const _str& path);
 _str os_stackPath(const _str& path);
 _str os_stackPathExt(const _str& basePath, const _str& extension);

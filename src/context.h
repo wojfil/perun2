@@ -266,6 +266,7 @@ namespace perun2
 
          // look in global variables
          if (this->globalVars.takeVar(var, result)) {
+            p2.cache.actualize(var);
             return true;
          }
 

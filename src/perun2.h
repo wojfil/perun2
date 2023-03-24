@@ -26,6 +26,7 @@
 #include "command/com-parse-unit.h"
 #include "context.h"
 #include "logger.h"
+#include "cache.h"
 
 
 namespace perun2
@@ -78,6 +79,7 @@ public:
    _exitint exitCode = EXITCODE_OK;
    ParseState parseState = ParseState::ps_NotParsed;
    Logger logger;
+   Cache cache;
 
    _bool isRunning() const;
    _bool isNotRunning() const;

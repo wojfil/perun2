@@ -134,9 +134,9 @@ namespace perun2
       this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
 
       this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_DESKTOP,
-         std::make_unique<Variable<_str>>(VarType::vt_Special, os_desktopPath())));
+         std::make_unique<Variable<_str>>(VarType::vt_Special)));
       this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_PERUN2,
-         std::make_unique<Variable<_str>>(VarType::vt_Special, os_executablePath())));
+         std::make_unique<Variable<_str>>(VarType::vt_Special)));
       this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_ORIGIN,
          std::make_unique<Variable<_str>>(VarType::vt_Special, p2.arguments.getLocation())));
 

@@ -97,9 +97,7 @@ void C_ErrorWithExitCode::run()
 
 RunBase::RunBase(_p2& p2)
    : perun2(p2),
-     locationCtx(p2.contexts.getLocationContext()),
-     uro2Base(str(os_quoteEmbraced(os_executablePath()), 
-      STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE)) { };
+     locationCtx(p2.contexts.getLocationContext()) { };
 
 
 _str RunBase::getLocation()
@@ -243,7 +241,7 @@ void C_RunWithPerun2::run()
       return;
    }
 
-   const _str com = str(this->uro2Base, os_quoteEmbraced(this->context->trimmed));
+   const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed));
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->perun2);
    this->perun2.contexts.success->value = s;
@@ -266,7 +264,7 @@ void C_RunWithPerun2WithString::run()
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = str(this->uro2Base, os_quoteEmbraced(this->context->trimmed), L" ", arg);
+   const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), L" ", arg);
 
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->perun2);
@@ -292,7 +290,7 @@ void C_RunWithPerun2With::run()
    const _size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = str(this->uro2Base, os_quoteEmbraced(this->context->trimmed));
+      const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed));
       const _str loc = this->getLocation();
       const _bool s = os_run(com, loc, this->perun2);
       this->perun2.contexts.success->value = s;
@@ -309,7 +307,7 @@ void C_RunWithPerun2With::run()
       _stream logStream;
       const _str& first = rawArgs[0];
       logStream << str(getCCName(this->context->trimmed), L" with Perun2 with '", first, L"'");
-      comStream << str(this->uro2Base, os_quoteEmbraced(this->context->trimmed), L" ", os_makeArg(first));
+      comStream << str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), L" ", os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];

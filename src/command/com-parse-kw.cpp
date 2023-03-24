@@ -1305,6 +1305,7 @@ static _bool c_runContextless_simple(_comptr& result, const Token& word, const T
          const Token& cf = right.first();
          if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
             result = std::make_unique<C_RunWithPerun2>(ctx, p2);
+            p2.cache.loadCmdPath();
             return true;
          }
       }
@@ -1355,12 +1356,14 @@ static _bool c_runContextless_with(_comptr& result, const Token& word, const Tok
 
          if (parse::parse(p2, right2, str_)) {
             result = std::make_unique<C_RunWithPerun2WithString>(str_, ctx, p2);
+            p2.cache.loadCmdPath();
             return true;
          }
          else {
             _genptr<_list> list;
             if (parse::parse(p2, right2, list)) {
                result = std::make_unique<C_RunWithPerun2With>(list, ctx, p2);
+               p2.cache.loadCmdPath();
                return true;
             }
             else {
@@ -1419,6 +1422,7 @@ static _bool c_runContextfull_simple(_comptr& result, const Token& word, const T
       if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
          _comptr inner= std::make_unique<C_RunWithPerun2>(ctx.get(), p2);
          if (parseLooped(left, inner, ctx, result, p2)) {
+            p2.cache.loadCmdPath();
             return true;
          }
 
@@ -1471,6 +1475,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
          if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
             _comptr inner= std::make_unique<C_RunWithPerun2WithString>(lastStr, ctx.get(), p2);
             if (parseLooped(left, inner, ctx, result, p2)) {
+               p2.cache.loadCmdPath();
                return true;
             }
 
@@ -1503,6 +1508,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
             if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
                _comptr inner= std::make_unique<C_RunWithPerun2With>(lastList, ctx.get(), p2);
                if (parseLooped(left, inner, ctx, result, p2)) {
+                  p2.cache.loadCmdPath();
                   return true;
                }
 

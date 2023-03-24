@@ -46,14 +46,14 @@ public:
    Cache(_p2& p2);
 
    void actualize(const _hash nameHash);
-   void loadExePath();
+   void loadCmdPath();
 
-   _str desktopPath;
-   _str exePath;
+   _str cmdProcessStartingArgs;
 
 private:
    
    _bool isNotLoaded(const _cunit v);
+   _str getCmdProcessStartingArgs() const;
 
    _cunit value = CACHE_NULL;
    const Hashes& hashes;

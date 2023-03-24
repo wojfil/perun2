@@ -27,17 +27,20 @@ namespace perun2
       if (nameHash == this->hashes.HASH_VAR_DESKTOP && this->isNotLoaded(CACHE_DESKTOP_PATH)) {
          this->context.strings[nameHash]->value = os_desktopPath();
       }
-
-      if (nameHash == this->hashes.HASH_VAR_PERUN2 && this->isNotLoaded(CACHE_EXE_PATH)) {
+      else if (nameHash == this->hashes.HASH_VAR_PERUN2 && this->isNotLoaded(CACHE_EXE_PATH)) {
          this->context.strings[nameHash]->value = os_executablePath();
       }
+
+
    }
 
-   void Cache::loadExePath()
+   void Cache::loadCmdPath()
    {
       if (this->isNotLoaded(CACHE_EXE_PATH)) {
          this->context.strings[this->hashes.HASH_VAR_PERUN2]->value = os_executablePath();
       }
+
+      this->cmdProcessStartingArgs = this->getCmdProcessStartingArgs();
    }
 
    _bool Cache::isNotLoaded(const _cunit v)
@@ -48,5 +51,11 @@ namespace perun2
       }
 
       return notLoaded;
+   }
+
+   _str Cache::getCmdProcessStartingArgs() const
+   {
+      return str(os_quoteEmbraced(this->context.strings[this->hashes.HASH_VAR_PERUN2]->value), 
+         STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE);
    }
 }

@@ -180,9 +180,7 @@ public:
 
 protected:
    _str getLocation();
-   _str getUro2Cmd();
-
-   const _str uro2Base;
+   
    _p2& perun2;
 
 private:

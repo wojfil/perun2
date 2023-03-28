@@ -34,6 +34,9 @@ _p2::_p2(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), keywordsData(*this), logger(*this), cache(*this)
 {
    Terminator::addPtr(this);
+   if (arguments.getParseState() == ArgsParseState::aps_Failed) {
+      this->parseState = ParseState::ps_ParsingFailure;
+   }
 };
 
 _p2::~_p2() noexcept

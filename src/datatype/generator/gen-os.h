@@ -64,7 +64,7 @@ protected:
    _num index;
    _str baseLocation;
 
-   const _uint32 flags;
+   const _flags flags;
    const _bool isAbsolute;
    const _bool hasPrefix;
    const _str prefix;

@@ -73,7 +73,7 @@ public:
    Contexts contexts;
    const KeywordsData keywordsData;
    SideProcess sideProcess;
-   const _uint32 flags;
+   const _flags flags;
    comm::ConditionContext conditionContext;
    State state = State::s_Running;
    _exitint exitCode = EXITCODE_OK;
@@ -104,7 +104,7 @@ struct Perun2
 public:
    Perun2(const _int argc, _char* const argv[]);
    Perun2(const _str& location, const _str& code);
-   Perun2(const _str& location, const _str& code, const _uint32 flags);
+   Perun2(const _str& location, const _str& code, const _flags flags);
 
    Perun2() = delete;
    Perun2(Perun2 const&) = delete;

@@ -169,7 +169,7 @@ Perun2::Perun2(const _int argc, _char* const argv[])
 Perun2::Perun2(const _str& location, const _str& code)
    : arguments(location, code), process(this->arguments) { };
 
-Perun2::Perun2(const _str& location, const _str& code, const _uint32 flags)
+Perun2::Perun2(const _str& location, const _str& code, const _flags flags)
    : arguments(location, code, flags), process(this->arguments) { };
 
 _bool Perun2::run()

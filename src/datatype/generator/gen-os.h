@@ -15,11 +15,11 @@
 #ifndef GEN_OS_H_INCLUDED
 #define GEN_OS_H_INCLUDED
 
-#include "../datatype.h"
 #include "../patterns.h"
 #include "../wildcard.h"
 #include "../../os.h"
 #include "../../context.h"
+#include "../../arguments.h"
 #include <windows.h>
 
 
@@ -76,7 +76,7 @@ struct OsDefinitionPlain : OsDefinition
 public:
    OsDefinitionPlain() = delete;
    OsDefinitionPlain(P_GEN_OS_ARGS_EXT)
-      : OsDefinition(P_GEN_OS_ARGS_2), 
+      : OsDefinition(P_GEN_OS_ARGS_2),
         pattern(isExceptional(patt) ? gen::os::DEFAULT_PATTERN : patt),
         exceptional(isExceptional(patt)),
         comparer(patt.substr(1)) { };

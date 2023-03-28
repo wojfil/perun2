@@ -24,7 +24,7 @@ namespace perun2::comm
 Aggregate::Aggregate(_p2& p2)
    : contexts(p2.contexts), perun2(p2) { };
 
-void Aggregate::set(const _uint32 v)
+void Aggregate::set(const _agunit v)
 {
    if (!has(v)) {
       value |= v;
@@ -155,7 +155,7 @@ void Aggregate::run()
    }
 }
 
-inline _bool Aggregate::has(const _uint32 v) const
+inline _bool Aggregate::has(const _agunit v) const
 {
    return value & v;
 }

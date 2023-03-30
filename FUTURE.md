@@ -107,10 +107,11 @@ There are more version control systems.
 ## *LikeAny*, *LikeAll*
 
 Basically the Like operator, but with a collection of patterns.
+Brackets are optional (but recommended for readability).
 
 ```
 select '*.pdf'
-  where name likeAny ('a_%', 'br[567]%', '%[a-z]__th%')
+  where name likeAny ('a_%', '__b__', 'c%')
 ```
 
 ## Double dot ..

@@ -318,11 +318,11 @@ Probably a pointless command.
 At this point, Perun2 is so huge and bloated, that this little feature will not make it worse.
 
 ```
-website 'google'
+website 'github'
 ```
 
 *Https* as default protocol and *com* as default domain (if these values are missing). 
-Command above will open *https://google.com*.
+Command above will open *https://github.com*.
 
 ## Command *clear*
 

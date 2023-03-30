@@ -81,10 +81,10 @@ void os_sleepForMs(const _nint ms, _p2& p2)
    _nint loops = ms / OS_SLEEP_UNIT;
    const _nint remainder = ms % OS_SLEEP_UNIT;
 
-   Sleep(remainder);
+   os_rawSleepForMs(remainder);
 
    while (p2.state == State::s_Running && loops != NINT_ZERO) {
-      Sleep(OS_SLEEP_UNIT);
+      os_rawSleepForMs(OS_SLEEP_UNIT);
       loops--;
    }
 }

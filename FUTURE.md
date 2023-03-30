@@ -247,12 +247,20 @@ select '*.txt'
 
 ## Variable *encoding*
 
-Get encoding of file. This feature needs good design. What about case sensitivity?
+Get encoding of file. This feature needs good design. This value will probably by a string.
+What about case sensitivity?
 Maybe implement it like *extension*, so encoding is always in lowercase.
 
 ```
 select '*.txt'
   where encoding = 'utf-8'
+```
+
+Introduction of some constants like *utf8* is a good direction.
+
+```
+select '*.txt'
+  where encoding = utf8
 ```
 
 ## *Device*

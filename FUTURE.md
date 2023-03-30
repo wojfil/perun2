@@ -136,15 +136,6 @@ select directories
   where empty nor hidden
 ```
 
-## Other logic gates: *nand*, *nor*, *xnor*
-
-These gates are used quite rarely, but they still can be useful.
-
-```
-select directories
-  where empty nor hidden
-```
-
 ## Variable *yesteryear*
 
 This is current year minus one.

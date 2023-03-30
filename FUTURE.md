@@ -33,6 +33,17 @@ select '*.zip'
   where anyInside('*.pdf' where creation = today)
 ```
 
+## Function *sizeInside()*
+
+Another context function for directories. Works similar to *anyInside()* or *countInside()*.
+
+```
+select directories
+  where sizeInside('*.txt') >= 100mb
+```
+
+Select directories that contain at least 100 megabytes of text files.
+
 ## General file types
 
 Add boolean variables that describe certain file type: *isImage*, *isAudio*, *isVideo*, *isDocument*, *isSpreadsheet* etc.
@@ -114,6 +125,15 @@ Should work with Asterisk Patterns as well.
 
 ```
 select '../../**.txt'
+```
+
+## Other logic gates: *nand*, *nor*, *xnor*
+
+These gates are used quite rarely, but they still can be useful.
+
+```
+select directories
+  where empty nor hidden
 ```
 
 ## Other logic gates: *nand*, *nor*, *xnor*

@@ -18,6 +18,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include <stdio.h>
+#include "../../datatype/strings.h"
 #include "../../datatype/generator/gen-like.h"
 #include "../../datatype/primitives.h"
 

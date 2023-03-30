@@ -14,6 +14,7 @@
 
 #include "test-in.h"
 #include "test.h"
+#include "../../datatype/strings.h"
 #include "../../datatype/generator/gen-bool.h"
 #include "../../datatype/generator/gen-generic.h"
 #include <iostream>
@@ -41,8 +42,8 @@ void testCase_in(const _int caseId, const T& value, const std::vector<T>& collec
 
 void test_in()
 {
-    testCase_in <_str> (1, L"uro", {L"boros", L"uro"}, true);
-    testCase_in <_str> (2, L"uro", {L"boros", L"Uro"}, false);
+    testCase_in <_str> (1, L"per", {L"un2", L"per"}, true);
+    testCase_in <_str> (2, L"per", {L"un2", L"Per"}, false);
     testCase_in <_str> (3, L"u", { }, false);
     testCase_in <_str> (4, L"", { }, false);
     testCase_in <_str> (5, L"u", { }, false);

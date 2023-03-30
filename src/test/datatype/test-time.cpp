@@ -14,6 +14,7 @@
 
 #include "test-time.h"
 #include "test.h"
+#include "../../datatype/strings.h"
 #include "../../datatype/time.h"
 #include "../../datatype/period.h"
 #include <iostream>

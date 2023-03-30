@@ -14,6 +14,7 @@
 
 #include "gen-like.h"
 #include "../../hash.h"
+#include "../strings.h"
 #include <set>
 #include <cwctype>
 

@@ -94,7 +94,8 @@ copy files
   to path('a', 'b', 'c')
 ```
 
-In this example, function path() is turned into a constant value 'a/b/c' or 'a\b\c' (depending on OS).
+In this example, function path() is treated as a constant value 'a/b/c' or 'a\b\c' (depending on OS).
+Just some internal optimizations. This is nothing user will notice.
 
 ## Repositories
 
@@ -207,6 +208,24 @@ Variables available for videos should be audio variables + image variables combi
 We can check both dimensions of the screen and properties of sound.
 There are some special values restricted only to videos like *framerate*.
 
+```
+select videos
+  where lower(name) like '%tpb%'
+  and resolution = 1080p
+  and length > 10 minutes
+```
+
+## *Resolution* and some related constants
+
+*Resolution* is an attribute of videos. Its meaning is exactly the same as of *pixels*.
+Just *width* and *height* multiplied.
+There can be multiple available constant values like *1080p*, *720p*, *480p* as well as *fullhd* or *ultrahd*.
+
+```
+select videos
+  where resolution = ultrahd
+```
+
 ## Variable *pages*
 
 This variable is available for documents and spreadsheets. Count how many pages there are.
@@ -248,6 +267,8 @@ inside device {
     to origin
 }
 ```
+
+Or delete all photos older than one year. 
 
 ```
 inside device {

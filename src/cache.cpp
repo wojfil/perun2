@@ -87,7 +87,7 @@ _str Cache::getCmdProcessStartingArgs() const
 _list Cache::getAlphabet() const
 {
    _list a(LETTERS_IN_ENGLISH_ALPHABET);
-   for (_size i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
+   for (_int i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
       a[i] = CHAR_a + i;
    }
    return a;

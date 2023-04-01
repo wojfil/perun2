@@ -57,7 +57,7 @@ _ndouble stringToDouble(const _str& value);
 void toLower(_str& value);
 void toUpper(_str& value);
 
-_constexpr _size LETTERS_IN_ENGLISH_ALPHABET = 26;
+_constexpr _int LETTERS_IN_ENGLISH_ALPHABET = 26;
 
 _const _str EMPTY_STRING =                   _str();
 _const _str STRING_CHAR_SPACE =              toStr(CHAR_SPACE);

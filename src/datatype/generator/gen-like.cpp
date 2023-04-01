@@ -599,35 +599,21 @@ _bool LC_StartsWithChar::compareToPattern(const _str& value)
 {
    return value.empty()
       ? false
-      : value[0] == ch;
+      : value[0] == this->ch;
 }
 
 
 _bool LC_EndsWithChar::compareToPattern(const _str& value)
 {
-   const _size len = value.size();
-
-   return len == 0
+   return value.empty()
       ? false
-      : value[len - 1] == ch;
+      : value[value.size() - 1] == this->ch;
 }
 
 
 _bool LC_ContainsChar::compareToPattern(const _str& value)
 {
-   const _size len = value.size();
-
-   if (len == 0) {
-      return false;
-   }
-
-   for (_size i = 0; i < len; i++) {
-      if (value[i] == ch) {
-         return true;
-      }
-   }
-
-   return false;
+   return value.find(this->ch) != _str::npos;
 }
 
 

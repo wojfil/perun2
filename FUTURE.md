@@ -94,7 +94,7 @@ copy files
   to path('a', 'b', 'c')
 ```
 
-In this example, function path() is treated as a constant value 'a/b/c' or 'a\b\c' (depending on OS).
+In this example, function path() is treated internally as a constant value 'a/b/c' or 'a\b\c' (depending on OS).
 Just some internal optimizations. This is nothing user will notice.
 
 ## Repositories
@@ -103,6 +103,11 @@ Variable *repositories* refers to directories that are code repositories.
 Analogously, there are variables *recursiveRepositories* and *isRepository*.
 If certain directory contains a directory *.git* or *.svn*, it is a repository for sure.
 There are more version control systems.
+
+```
+move recursiveRepositories
+  to 'c:/my projects'
+```
 
 ## *LikeAny*, *LikeAll*
 

@@ -26,8 +26,14 @@
 namespace perun2
 {
 
-#define _const                      static const
-#define _constexpr                  inline constexpr
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+   #define _constexpr               inline constexpr
+   #define _const                   inline static const
+#else
+   #define _constexpr               constexpr
+   #define _const                   static const
+#endif
+
 #define _cout                       std::wcout
 #define _cin                        std::wcin
 

@@ -181,6 +181,13 @@ namespace perun2
    public:
       GlobalContext() = delete;
       GlobalContext(_p2& p2);
+      
+      template <typename T>
+      void insertConstant(const _hash hsh)
+      {
+         Variable<T>* v = this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
+         v->isConstant_ = true;
+      }
 
       VarsContext globalVars;
 
@@ -190,7 +197,6 @@ namespace perun2
       {
          return this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
       }
-
    };
 
    typedef std::unique_ptr<UserVarsContext>        _ucptr;

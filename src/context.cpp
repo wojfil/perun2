@@ -133,18 +133,12 @@ namespace perun2
       this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
       this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_VAR_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
 
-      this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_DESKTOP,
-         std::make_unique<Variable<_str>>(VarType::vt_Special)));
-      this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_PERUN2,
-         std::make_unique<Variable<_str>>(VarType::vt_Special)));
-      this->globalVars.strings.insert(std::make_pair(p2.hashes.HASH_VAR_ORIGIN,
-         std::make_unique<Variable<_str>>(VarType::vt_Special)));
-      this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ALPHABET,
-         std::make_unique<Variable<_list>>(VarType::vt_Special)));
-      this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ASCII,
-         std::make_unique<Variable<_list>>(VarType::vt_Special)));
-      this->globalVars.lists.insert(std::make_pair(p2.hashes.HASH_VAR_ARGUMENTS,
-         std::make_unique<Variable<_list>>(VarType::vt_Special)));
+      this->insertConstant<_str>(p2.hashes.HASH_VAR_DESKTOP);
+      this->insertConstant<_str>(p2.hashes.HASH_VAR_PERUN2);
+      this->insertConstant<_str>(p2.hashes.HASH_VAR_ORIGIN);
+      this->insertConstant<_list>(p2.hashes.HASH_VAR_ALPHABET);
+      this->insertConstant<_list>(p2.hashes.HASH_VAR_ASCII);
+      this->insertConstant<_list>(p2.hashes.HASH_VAR_ARGUMENTS);
    };
 
    Contexts::Contexts(_p2& p2)

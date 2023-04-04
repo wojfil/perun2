@@ -17,6 +17,8 @@
 perun2::_exitint wmain(perun2::_int argc, perun2::_char* argv[], perun2::_char* envp[])
 {
    perun2::initConsole();
+   perun2::initTerminator();
+
    perun2::Perun2 instance(argc, argv);
    instance.run();
    return instance.getExitCode();

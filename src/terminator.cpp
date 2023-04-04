@@ -20,29 +20,33 @@ namespace perun2
 {
 
 _bool Terminator::initialized = false;
-std::unordered_set<_p2*> Terminator::pointers = std::unordered_set<_p2*>();
+std::unordered_set<_p2*> Terminator::processes;
 
-void Terminator::addPtr(_p2* p2)
+
+void Terminator::init()
 {
    if (!initialized) {
       initialized = true;
       SetConsoleCtrlHandler(HandlerRoutine, TRUE);
    }
+}
 
-   pointers.insert(p2);
+void Terminator::addPtr(_p2* p2)
+{
+   processes.insert(p2);
 }
 
 void Terminator::removePtr(_p2* p2)
 {
-   pointers.erase(p2);
+   processes.erase(p2);
 }
 
 _int Terminator::HandlerRoutine(_ulong dwCtrlType)
 {
    switch (dwCtrlType) {
       case CTRL_C_EVENT: {
-         for (_p2* perun2 : pointers) {
-            perun2->terminate();
+         for (_p2* p : processes) {
+            p->terminate();
          }
          return TRUE;
       }
@@ -50,6 +54,11 @@ _int Terminator::HandlerRoutine(_ulong dwCtrlType)
          return FALSE;
       }
    }
+}
+
+void initTerminator()
+{
+   Terminator::init();
 }
 
 }

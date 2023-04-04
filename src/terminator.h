@@ -27,19 +27,23 @@ struct _p2;
 // Terminator keeps track of every initialized instance of Perun2
 // it overrides the default Ctrl+C command-line exit command
 // when this event happens, all Perun2 instances are stopped softly (as their commands are designed to be atomic)
+// works only, if Terminator has been initialized
 struct Terminator
 {
 public:
    Terminator() = delete;
 
+   static void init();
    static void addPtr(_p2* p2);
    static void removePtr(_p2* p2);
 
 private:
    static _bool initialized;
-   static std::unordered_set<_p2*> pointers;
+   static std::unordered_set<_p2*> processes;
    static _int HandlerRoutine(_ulong dwCtrlType);
 };
+
+void initTerminator();
 
 }
 

@@ -279,6 +279,7 @@ public:
    const std::unordered_set<_hash> HASH_GROUP_PERIOD_MULTI;
    const std::unordered_set<_hash> HASH_GROUP_ATTR;
    const std::unordered_set<_hash> HASH_GROUP_TIME_ATTR;
+   const std::unordered_set<_hash> HASH_GROUP_TIME_VAR;
    const std::unordered_set<_hash> HASH_GROUP_ALTERABLE_ATTR;
    const std::unordered_set<_hash> HASH_GROUP_VARS_IMMUTABLES;
    const std::unordered_set<_hash> HASH_GROUP_FUNC_BOO_STR;

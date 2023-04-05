@@ -556,11 +556,16 @@ static void rightInTimeException(const Token& tk, const _str& varMember,
 
 static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, const _bool negated, _p2& p2)
 {
-   const _bool leftTimeAttr = pair.first.getLength() == 1 && pair.first.first().isTimeAttribute(p2);
-   const _bool rightTimeAttr = pair.second.getLength() == 1 && pair.second.first().isTimeAttribute(p2);
+   const Token& f1 = pair.first.first();
+   const Token& f2 = pair.second.first();
 
-   // check cases when left side is a time attribute (creation, modification...)
-   if (leftTimeAttr)
+   const _bool leftTimeVar = pair.first.getLength() == 1 && f1.type == Token::t_Word &&
+      p2.hashes.HASH_GROUP_TIME_VAR.find(f1.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
+   const _bool rightTimeVar = pair.second.getLength() == 1 && f2.type == Token::t_Word &&
+      p2.hashes.HASH_GROUP_TIME_VAR.find(f2.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
+
+   // check cases when left side is a time variable (creation, modification...)
+   if (leftTimeVar)
    {
       if (pair.second.check(TI_HAS_CHAR_COMMA)) {
          const std::vector<Tokens> elements = pair.second.splitBySymbol(CHAR_COMMA);
@@ -597,7 +602,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
    }
 
    // check cases when right side is a time attribute (creation, modification...)
-   if (rightTimeAttr)
+   if (rightTimeVar)
    {
       if (pair.first.check(TI_HAS_CHAR_COMMA)) {
          const std::vector<Tokens> elements = pair.first.splitBySymbol(CHAR_COMMA);
@@ -865,9 +870,9 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
    const _bool isMonth1 = t1.isMonth();
    const _bool isMonth2 = t2.isMonth();
    const _bool isVar1 = t1.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_ATTR.find(t1.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
+      p2.hashes.HASH_GROUP_TIME_VAR.find(t1.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
    const _bool isVar2 = t2.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_ATTR.find(t2.value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
+      p2.hashes.HASH_GROUP_TIME_VAR.find(t2.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
 
    if (isVar1 && (isWeek2 || isMonth2)) {
       throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),

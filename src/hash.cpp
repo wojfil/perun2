@@ -306,6 +306,11 @@ Hashes::Hashes() :
      this->HASH_VAR_ACCESS, this->HASH_VAR_CHANGE, this->HASH_VAR_CREATION, this->HASH_VAR_MODIFICATION
    }),
 
+   HASH_GROUP_TIME_VAR({
+     this->HASH_VAR_ACCESS, this->HASH_VAR_CHANGE, this->HASH_VAR_CREATION, this->HASH_VAR_MODIFICATION,
+     this->HASH_VAR_NOW, this->HASH_VAR_TODAY
+   }),
+
    // attributes, that can be altered by external circumstances
    // for example, last modification time of an element may be changed by another process
    // but its parent directory stays the same

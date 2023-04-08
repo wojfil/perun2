@@ -915,6 +915,7 @@ static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, con
    return false;
 }
 
+
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _p2& p2)
 {
@@ -934,51 +935,10 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
 
       if (stack) {
          throw SyntaxError(str(L"command '", word.getOriginString(p2),
-         L"' cannot be preceded by a flag 'stack'"), line);
+            L"' cannot be preceded by a flag 'stack'"), line);
       }
 
-      if (p2.contexts.hasAggregate()) {
-         Aggregate* aggr = p2.contexts.getAggregate();
-         aggr->set(AGGR_COPY);
-
-         if (tks.isEmpty()) {
-            FileContext* fc = p2.contexts.getFileContext();
-            fc->attribute->setCoreCommandBase();
-            result = std::make_unique<C_AggrCopy_This>(aggr, *fc);
-            return true;
-         }
-
-         _genptr<_str> str;
-         if (parse::parse(p2, tks, str)) {
-            result = std::make_unique<C_AggrCopy_String>(aggr, str, p2);
-            return true;
-         }
-
-         _genptr<_list> list;
-         if (parse::parse(p2, tks, list)) {
-            result = std::make_unique<C_AggrCopy_List>(aggr, list, p2);
-            return true;
-         }
-      }
-      else {
-         if (tks.isEmpty()) {
-            commandNoArgException(word.getOriginString(p2), line);
-         }
-
-         _genptr<_str> str;
-         if (parse::parse(p2, tks, str)) {
-            result = std::make_unique<C_Copy_String>(str, p2);
-            return true;
-         }
-
-         _genptr<_list> list;
-         if (parse::parse(p2, tks, list)) {
-            result = std::make_unique<C_Copy_List>(list, p2);
-            return true;
-         }
-      }
-
-      commandSyntaxError(word.getOriginString(p2), line);
+      return c_copySimple(result, word, tks, line, p2);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_To);
@@ -986,153 +946,153 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    if (left.isEmpty()) {
       p2.contexts.closeDeepAttributeScope();
 
-      if (hasAs) {
-         std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
-         Tokens& preAs = pair2.first;
-         Tokens& postAs = pair2.second;
-
-         if (preAs.isEmpty()) {
-            throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
-               L"does not contain a declaration of new location written between "
-               L"keywords 'to' and 'as'"), line);
-         }
-         if (postAs.isEmpty()) {
-            throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
-               L"does not contain a declaration of new name written after keyword 'as'"), line);
-         }
-
-         _bool extless = false;
-         const Token& paf = postAs.first();
-
-         if (paf.isKeyword(Keyword::kw_Extensionless)) {
-            extless = true;
-            postAs.trimLeft();
-            if (postAs.isEmpty()) {
-               throw SyntaxError(str(L"keyword '", paf.getOriginString(p2),
-                  L"' is not followed by a declaration of new file name"), line);
-            }
-         }
-
-         _genptr<_str> nname;
-         if (!parse::parse(p2, postAs, nname)) {
-            throw SyntaxError(str(L"new name in command '", word.getOriginString(p2),
-               L" to as' cannot be resolved to a string"), line);
-         }
-
-         _genptr<_str> dest;
-         if (!parse::parse(p2, preAs, dest)) {
-            throw SyntaxError(str(L"new location in command '", word.getOriginString(p2),
-               L" to' cannot be resolved to a string"), line);
-         }
-
-         checkFileContextExistence(str(word.getOriginString(p2), L" to as"), line, p2);
-         FileContext* ctx = p2.contexts.getFileContext();
-         ctx->attribute->setCoreCommandBase();
-
-         if (stack) {
-            result = std::make_unique<C_CopyToAs_Stack>(dest, nname, true, extless, ctx, p2);
-         }
-         else {
-            result = std::make_unique<C_CopyToAs>(dest, nname, true, force, extless, ctx, p2);
-         }
-
-         return true;
-      }
-
-      if (right.isEmpty()) {
-         throw SyntaxError(str(L"command '", word.getOriginString(p2),
-            L" to' lacks a declaration of new location"), line);
-      }
-
-      _genptr<_str> str_;
-      if (parse::parse(p2, right, str_)) {
-         checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
-         FileContext* ctx = p2.contexts.getFileContext();
-         ctx->attribute->setCoreCommandBase();
-
-         if (stack) {
-            result = std::make_unique<C_CopyTo_Stack>(str_, true, ctx, p2);
-         }
-         else {
-            result = std::make_unique<C_CopyTo>(str_, true, force, ctx, p2);
-         }
-
-         return true;
-      }
-      else {
-         throw SyntaxError(str(L"new location in command '",
-            word.getOriginString(p2), L" to' cannot be resolved to a string"), line);
-      }
+      return hasAs 
+         ? c_copyToAsContextless(result, word, right, line, force, stack, p2)
+         : c_copyToContextless(result, word, right, line, force, stack, p2);
    }
 
    p2.contexts.closeAttributeScope();
 
-   if (hasAs) {
-      if (left.check(TI_HAS_KEYWORD_AS)) {
-         throw SyntaxError(str(L"keywords 'to' and 'as' appear in "
-            L"command '", word.getOriginString(p2), L" to as' in reverse order"), line);
-      }
+   return hasAs
+      ? c_copyToAsContextfull(result, word, left, right, line, force, stack, p2)
+      : c_copyToContextfull(result, word, left, right, line, force, stack, p2);
+}
 
-      std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
-      Tokens& preAs = pair2.first;
-      Tokens& postAs = pair2.second;
+static _bool c_copySimple(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2)
+{
+   if (p2.contexts.hasAggregate()) {
+      Aggregate* aggr = p2.contexts.getAggregate();
+      aggr->set(AGGR_COPY);
 
-      if (preAs.isEmpty()) {
-         throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
-            L"does not contain a declaration of new location written between "
-            L"keywords 'to' and 'as'"), line);
-      }
-      if (postAs.isEmpty()) {
-         throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
-            L"does not contain a declaration of new name written after keyword 'as'"), line);
-      }
-
-      _bool extless = false;
-      const Token& paf = postAs.first();
-
-      if (paf.isKeyword(Keyword::kw_Extensionless)) {
-         extless = true;
-         postAs.trimLeft();
-         if (postAs.isEmpty()) {
-            throw SyntaxError(str(L"keyword '", paf.getOriginString(p2),
-               L"' is not followed by a declaration of new file name"), line);
-         }
-      }
-
-      _fcptr ctx;
-      makeCoreCommandContext(ctx, p2);
-      p2.contexts.addFileContext(ctx.get());
-
-      _genptr<_str> nname;
-      if (!parse::parse(p2, postAs, nname)) {
-         throw SyntaxError(str(L"new name in command '", word.getOriginString(p2),
-            L" to as' cannot be resolved to a string"), line);
-      }
-
-      _genptr<_str> dest;
-      if (!parse::parse(p2, preAs, dest)) {
-         throw SyntaxError(str(L"new location in command '", word.getOriginString(p2),
-            L" to' cannot be resolved to a string"), line);
-      }
-
-      p2.contexts.retreatFileContext();
-
-      _comptr inner;
-      if (stack) {
-         inner = std::make_unique<C_CopyToAs_Stack>(dest, nname, false, extless, ctx.get(), p2);
-      }
-      else {
-         inner = std::make_unique<C_CopyToAs>(dest, nname, false, force, extless, ctx.get(), p2);
-      }
-
-      if (parseLooped(left, inner, ctx, result, p2)) {
+      if (tks.isEmpty()) {
+         FileContext* fc = p2.contexts.getFileContext();
+         fc->attribute->setCoreCommandBase();
+         result = std::make_unique<C_AggrCopy_This>(aggr, *fc);
          return true;
       }
 
-      commandSyntaxError(str(word.getOriginString(p2), L" to as"), line);
-      return false;
+      _genptr<_str> str;
+      if (parse::parse(p2, tks, str)) {
+         result = std::make_unique<C_AggrCopy_String>(aggr, str, p2);
+         return true;
+      }
+
+      _genptr<_list> list;
+      if (parse::parse(p2, tks, list)) {
+         result = std::make_unique<C_AggrCopy_List>(aggr, list, p2);
+         return true;
+      }
+   }
+   else {
+      if (tks.isEmpty()) {
+         commandNoArgException(word.getOriginString(p2), line);
+      }
+
+      _genptr<_str> str;
+      if (parse::parse(p2, tks, str)) {
+         result = std::make_unique<C_Copy_String>(str, p2);
+         return true;
+      }
+
+      _genptr<_list> list;
+      if (parse::parse(p2, tks, list)) {
+         result = std::make_unique<C_Copy_List>(list, p2);
+         return true;
+      }
    }
 
+   commandSyntaxError(word.getOriginString(p2), line);
+   return false;
+}
+
+static _bool c_copyToContextless(_comptr& result, const Token& word, const Tokens& right,
+   const _int line, const _bool force, const _bool stack, _p2& p2)
+{
+   if (right.isEmpty()) {
+      throw SyntaxError(str(L"command '", word.getOriginString(p2),
+         L" to' lacks a declaration of new location"), line);
+   }
+
+   _genptr<_str> str_;
+   if (parse::parse(p2, right, str_)) {
+      checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
+      FileContext* ctx = p2.contexts.getFileContext();
+      ctx->attribute->setCoreCommandBase();
+
+      if (stack) {
+         result = std::make_unique<C_CopyTo_Stack>(str_, true, ctx, p2);
+      }
+      else {
+         result = std::make_unique<C_CopyTo>(str_, true, force, ctx, p2);
+      }
+
+      return true;
+   }
+   else {
+      throw SyntaxError(str(L"new location in command '",
+         word.getOriginString(p2), L" to' cannot be resolved to a string"), line);
+   }
+
+   return false;
+}
+
+static _bool c_copyToAsContextless(_comptr& result, const Token& word, const Tokens& right,
+   const _int line, const _bool force, const _bool stack, _p2& p2)
+{
+   std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
+   Tokens& preAs = pair2.first;
+   Tokens& postAs = pair2.second;
+
+   if (preAs.isEmpty()) {
+      throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
+         L"does not contain a declaration of new location written between "
+         L"keywords 'to' and 'as'"), line);
+   }
+   if (postAs.isEmpty()) {
+      throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
+         L"does not contain a declaration of new name written after keyword 'as'"), line);
+   }
+
+   _bool extless = false;
+
+   if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
+      extless = true;
+      postAs.trimLeft();
+      if (postAs.isEmpty()) {
+         throw SyntaxError(str(L"keyword '", postAs.first().getOriginString(p2),
+            L"' is not followed by a declaration of new file name"), line);
+      }
+   }
+
+   _genptr<_str> nname;
+   if (!parse::parse(p2, postAs, nname)) {
+      throw SyntaxError(str(L"new name in command '", word.getOriginString(p2),
+         L" to as' cannot be resolved to a string"), line);
+   }
+
+   _genptr<_str> dest;
+   if (!parse::parse(p2, preAs, dest)) {
+      throw SyntaxError(str(L"new location in command '", word.getOriginString(p2),
+         L" to' cannot be resolved to a string"), line);
+   }
+
+   checkFileContextExistence(str(word.getOriginString(p2), L" to as"), line, p2);
+   FileContext* ctx = p2.contexts.getFileContext();
+   ctx->attribute->setCoreCommandBase();
+
+   if (stack) {
+      result = std::make_unique<C_CopyToAs_Stack>(dest, nname, true, extless, ctx, p2);
+   }
+   else {
+      result = std::make_unique<C_CopyToAs>(dest, nname, true, force, extless, ctx, p2);
+   }
+
+   return true;
+}
+
+static _bool c_copyToContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
+   const _int line, const _bool force, const _bool stack, _p2& p2)
+{
    _fcptr ctx;
    makeCoreCommandContext(ctx, p2);
    p2.contexts.addFileContext(ctx.get());
@@ -1158,6 +1118,73 @@ static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const
    }
 
    commandSyntaxError(str(word.getOriginString(p2), L" to"), line);
+   return false;
+}
+
+static _bool c_copyToAsContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
+   const _int line, const _bool force, const _bool stack, _p2& p2)
+{
+   if (left.check(TI_HAS_KEYWORD_AS)) {
+      throw SyntaxError(str(L"keywords 'to' and 'as' appear in "
+         L"command '", word.getOriginString(p2), L" to as' in reverse order"), line);
+   }
+
+   std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
+   Tokens& preAs = pair2.first;
+   Tokens& postAs = pair2.second;
+
+   if (preAs.isEmpty()) {
+      throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
+         L"does not contain a declaration of new location written between "
+         L"keywords 'to' and 'as'"), line);
+   }
+   if (postAs.isEmpty()) {
+      throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to as' "
+         L"does not contain a declaration of new name written after keyword 'as'"), line);
+   }
+
+   _bool extless = false;
+
+   if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
+      extless = true;
+      postAs.trimLeft();
+      if (postAs.isEmpty()) {
+         throw SyntaxError(str(L"keyword '", postAs.first().getOriginString(p2),
+            L"' is not followed by a declaration of new file name"), line);
+      }
+   }
+
+   _fcptr ctx;
+   makeCoreCommandContext(ctx, p2);
+   p2.contexts.addFileContext(ctx.get());
+
+   _genptr<_str> nname;
+   if (!parse::parse(p2, postAs, nname)) {
+      throw SyntaxError(str(L"new name in command '", word.getOriginString(p2),
+         L" to as' cannot be resolved to a string"), line);
+   }
+
+   _genptr<_str> dest;
+   if (!parse::parse(p2, preAs, dest)) {
+      throw SyntaxError(str(L"new location in command '", word.getOriginString(p2),
+         L" to' cannot be resolved to a string"), line);
+   }
+
+   p2.contexts.retreatFileContext();
+
+   _comptr inner;
+   if (stack) {
+      inner = std::make_unique<C_CopyToAs_Stack>(dest, nname, false, extless, ctx.get(), p2);
+   }
+   else {
+      inner = std::make_unique<C_CopyToAs>(dest, nname, false, force, extless, ctx.get(), p2);
+   }
+
+   if (parseLooped(left, inner, ctx, result, p2)) {
+      return true;
+   }
+
+   commandSyntaxError(str(word.getOriginString(p2), L" to as"), line);
    return false;
 }
 

@@ -57,6 +57,14 @@ static _bool c_createDirectories(_comptr& result, const Token& word, const Token
 
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _p2& p2);
+static _bool c_moveToContextless(_comptr& result, const Token& word, const Tokens& right, 
+   const _int line, const _bool force, const _bool stack, _p2& p2);
+static _bool c_moveToAsContextless(_comptr& result, const Token& word, const Tokens& right, 
+   const _int line, const _bool force, const _bool stack, _p2& p2);
+static _bool c_moveToContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
+   const _int line, const _bool force, const _bool stack, _p2& p2);
+static _bool c_moveToAsContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
+   const _int line, const _bool force, const _bool stack, _p2& p2);
 
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int line,
    const _bool force, const _bool stack, _p2& p2);

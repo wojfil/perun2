@@ -338,7 +338,7 @@ _bool RecursiveFiles::hasNext()
       }
       else {
          if (FindNextFile(handles.back(), &data)) {
-            const _str& v = data.cFileName;
+            const _str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
@@ -428,7 +428,7 @@ _bool RecursiveDirectories::hasNext()
       }
       else {
          if (FindNextFile(handles.back(), &data)) {
-            const _str& v = data.cFileName;
+            const _str v = data.cFileName;
 
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
@@ -515,7 +515,7 @@ _bool RecursiveAll::hasNext()
       }
       else {
          if (FindNextFile(handles.back(), &data)) {
-            const _str& v = data.cFileName;
+            const _str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
                if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)

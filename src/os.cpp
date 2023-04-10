@@ -764,9 +764,10 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
          FindClose(handle);
          return NINT_MINUS_ONE;
       }
-      if (!os_isBrowsePath(data.cFileName)) {
+      const _str v = data.cFileName;
+      if (!os_isBrowsePath(v)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, data.cFileName), p2);
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, v), p2);
          }
          else {
             totalSize += static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
@@ -887,7 +888,9 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
             return false;
          }
 
-         if (os_isBrowsePath(FindFileData.cFileName)) {
+         const _str v = FindFileData.cFileName;
+
+         if (os_isBrowsePath(v)) {
             continue;
          }
 
@@ -1169,7 +1172,9 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
             return false;
          }
 
-         if (!os_isBrowsePath(FindFileData.cFileName)) {
+         const _str v = FindFileData.cFileName;
+
+         if (os_isBrowsePath(v)) {
             continue;
          }
 
@@ -1204,7 +1209,6 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
    }
 
    FindClose(hFind);
-
    return true;
 }
 

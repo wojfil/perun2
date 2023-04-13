@@ -143,6 +143,17 @@ select directories
   where empty nor hidden
 ```
 
+## Variable *drives*
+
+This is a list of all current hard disc drives.
+
+```
+inside drives
+{
+  delete '**.pdf' where creation < 12 june 2019
+}
+```
+
 ## Variable *yesteryear*
 
 This is current year minus one.

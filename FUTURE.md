@@ -84,6 +84,28 @@ select images
   and bpp = 24
 ```
 
+## Constants for common programs
+
+Introduce constant values with paths to common programs.
+They are constants, but not really deterministic.
+Values may differ depending on where user has installed them.
+
+```
+open images
+  with 'C:\Program Files\GIMP 2\bin\gimp-2.10.exe'
+```
+
+Instead of this, we can write simply.
+
+```
+open images
+  with gimp
+```
+
+We can introduce hundreds of new constants.
+Not every program can be here.
+They should be rated by popularity.
+
 ## "Compile" time function evaluation
 
 If certain function takes constant values as arguments, evaluate it during code interpretation.

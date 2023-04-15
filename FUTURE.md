@@ -89,6 +89,7 @@ select images
 Introduce constant values with paths to common programs.
 They are constants, but not really deterministic.
 Values may differ depending on where user has installed them.
+If certain program is not installed, then this value is empty string.
 
 ```
 open images

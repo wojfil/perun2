@@ -22,10 +22,10 @@ namespace perun2
 
 typedef _uint32 _flags;
 
-_constexpr _flags FLAG_NULL =      0b000;
-_constexpr _flags FLAG_NOOMIT =    0b001;
-_constexpr _flags FLAG_SILENT =    0b010;
-_constexpr _flags FLAG_GUI =       0b100;
+_constexpr _flags FLAG_NULL =                 0b0000;
+_constexpr _flags FLAG_NOOMIT =               0b0001;
+_constexpr _flags FLAG_SILENT =               0b0010;
+_constexpr _flags FLAG_GUI =                  0b0100;
 
 _constexpr _char CHAR_FLAG_GUI =              CHAR_g;
 _constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;

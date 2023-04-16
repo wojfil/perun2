@@ -234,7 +234,7 @@ copy '*.pdf*'
 ## Infix *K* within an integer literal
 
 Allow one *K* infix to appear inside an integer literal. It multiplies preceding value by one thousand.
-However, there is are some requirements. It should be preceded by at least one digit, followed by one, two or three digits and no additional suffixes are allowed.
+However, there are some requirements. It should be preceded by at least one digit, followed by one, two or three digits and no additional suffixes are allowed.
 We can shorten some literals, so instead of *2023*, let us just write *2k23*.
 
 ```

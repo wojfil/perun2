@@ -31,24 +31,6 @@ _str toStr(const T& n)
    return s.str();
 }
 
-
-void insertStr(_str& result);
-
-template<typename T, typename... Args>
-void insertStr(_str& result, const T& firstValue, Args const&... args)
-{
-   result += firstValue;
-   insertStr(result, args...);
-}
-
-template<typename... Args>
-_str str(Args const&... args)
-{
-   _str result;
-   insertStr(result, args...);
-   return result;
-}
-
 _ndouble stringToDouble(const _str& value);
 
 void toLower(_str& value);

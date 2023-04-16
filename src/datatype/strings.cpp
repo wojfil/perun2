@@ -40,12 +40,6 @@ _str toStr(const _char ch)
    return _str(1, ch);
 }
 
-
-void insertStr(_str& result)
-{
-
-}
-
 _ndouble stringToDouble(const _str& value)
 {
    _stream ss(value);

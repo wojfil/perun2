@@ -14,7 +14,7 @@
 
 #include "exception.h"
 #include "metadata.h"
-#include "datatype/strings.h"
+#include "datatype/datatype.h"
 
 
 namespace perun2

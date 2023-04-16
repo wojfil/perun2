@@ -13,7 +13,7 @@
 */
 
 #include "time.h"
-#include "strings.h"
+#include "datatype.h"
 #include <vector>
 #include <sstream>
 #include <math.h>
@@ -23,19 +23,19 @@
 namespace perun2
 {
 
-Time::Time() 
+Time::Time()
    : day(TNUM_ONE), month(TNUM_ONE), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
 
-Time::Time(const _tnum mo, const _tnum ye) 
+Time::Time(const _tnum mo, const _tnum ye)
    : day(TNUM_ZERO), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
 
-Time::Time(const _tnum da, const _tnum mo, const _tnum ye) 
+Time::Time(const _tnum da, const _tnum mo, const _tnum ye)
    : day(da), month(mo), year(ye), type(TimeType::tt_Date) { };
 
-Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi) 
+Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi)
    : day(da), month(mo), year(ye), hour(ho), minute(mi), type(TimeType::tt_ShortClock) { };
 
-Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi, const _tnum sec) 
+Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi, const _tnum sec)
    : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_Clock) { };
 
 
@@ -318,7 +318,7 @@ _tnum Time::getWeekDay() const
    }
 
    const _tnum y = year - (month < TNUM_THREE);
-   const _tnum wd = (y + y / TNUM_FOUR - y / TNUM_100 + y / TNUM_400 
+   const _tnum wd = (y + y / TNUM_FOUR - y / TNUM_100 + y / TNUM_400
       + TNUM_WEEKDAY_DATA[month - TNUM_ONE] + day) % TNUM_DAYS_IN_WEEK;
    return wd == TNUM_ZERO ? TNUM_DAYS_IN_WEEK : wd;
 }
@@ -907,8 +907,8 @@ inline Period timeDifference(const Time& min, const Time& max)
 inline _tnum daysInYears(const _tnum min, const _tnum max)
 {
    if (min == max) {
-      return isLeapYear(min) 
-         ? TNUM_DAYS_IN_LEAP_YEAR 
+      return isLeapYear(min)
+         ? TNUM_DAYS_IN_LEAP_YEAR
          : TNUM_DAYS_IN_NORMAL_YEAR;
    }
    else {

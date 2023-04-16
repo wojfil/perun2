@@ -12,30 +12,14 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATATYPE_H
-#define DATATYPE_H
-
-#include "time.h"
-#include "definition.h"
 #include "concat.h"
-#include "strings.h"
-#include "numbers.h"
-#include <unordered_set>
-
 
 namespace perun2
 {
 
-typedef Number                              _num;
-typedef Time                                _tim;
-typedef Period                              _per;
-typedef std::vector<_num>                   _nlist;
-typedef std::vector<_tim>                   _tlist;
-typedef Definition                          _def;
-typedef std::unordered_set<_str>            _set;
-
-
+void insertStr(_str& result)
+{
 
 }
 
-#endif /* DATATYPE_H */
+}

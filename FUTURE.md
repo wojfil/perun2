@@ -403,7 +403,14 @@ Boolean variable *signed* that checks file signature.
 
 ```
 delete programs
-  where version != '1.0.6'
+  where version not like '1.%'
+```
+
+```
+perun2
+{
+  print 'Your version of Perun2 is ' + version
+}
 ```
 
 ## Variable *fonts*, *recursiveFonts*

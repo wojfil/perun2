@@ -1157,16 +1157,19 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
    wcscpy(DirPath, const_cast<_char*>(oldPath.c_str()));
    wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
    wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
-   wcscat(FileName, &OS_SEPARATOR);
+   wcscat(FileName, str(OS_SEPARATOR).c_str());
 
-   hFind = FindFirstFile(DirPath,&FindFileData);
+   hFind = FindFirstFile(DirPath, &FindFileData);
 
-   if (hFind == INVALID_HANDLE_VALUE) return false;
-      wcscpy(DirPath,FileName);
+   if (hFind == INVALID_HANDLE_VALUE) {
+      return false;
+   }
+
+   wcscpy(DirPath, FileName);
 
    _bool bSearch = true;
    while (bSearch) {
-      if (FindNextFile(hFind,&FindFileData)) {
+      if (FindNextFile(hFind, &FindFileData)) {
          if (!p2.state == State::s_Running) {
             FindClose(hFind);
             return false;

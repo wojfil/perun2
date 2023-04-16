@@ -58,12 +58,12 @@ _str Time::toString() const
 
    if (type == tt_ShortClock || type == tt_Clock) {
       ss << STRING_COMMA_SPACE;
-      ss << fillTimeUnit(hour);
+      addTimeUnit(ss, hour);
       ss << CHAR_COLON;
-      ss << fillTimeUnit(minute);
+      addTimeUnit(ss, minute);
       if (type == tt_Clock) {
          ss << CHAR_COLON;
-         ss << fillTimeUnit(second);
+         addTimeUnit(ss, second);
       }
    }
 
@@ -680,7 +680,7 @@ _str monthToString(const _tnum month)
       case TNUM_DECEMBER:
          return STRING_MONTH_DECEMBER;
       default:
-         return EMPTY_STRING;
+         return _str();
    }
 }
 
@@ -702,15 +702,16 @@ _str weekdayToString(const _tnum wday)
       case TNUM_SUNDAY:
          return STRING_WEEKDAY_SUNDAY;
       default:
-         return EMPTY_STRING;
+         return _str();
    }
 }
 
-inline _str fillTimeUnit(const _tnum val)
+inline void addTimeUnit(_stream& stream, const _tnum val)
 {
-   return val <= TNUM_NINE
-      ? str(STRING_CHAR_0, toStr(val))
-      : toStr(val);
+   if (val <= TNUM_NINE) {
+      stream << CHAR_0;
+   }
+   stream << val;
 }
 
 inline _bool isLeapYear(const _tnum year)

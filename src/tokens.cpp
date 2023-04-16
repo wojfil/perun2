@@ -631,7 +631,7 @@ void Tokens::setData()
             throw SyntaxError(L"square brackets [] can be preceded only by a variable name", first.line);
          }
 
-         if (last.value.twoWords.h1 == caseSensitiveHash(EMPTY_STRING)) {
+         if (last.value.twoWords.h1 == caseSensitiveHash(_str())) {
             this->info |= TI_IS_LIST_ELEM_MEMBER;
          }
       }

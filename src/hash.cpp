@@ -34,7 +34,7 @@ _hash caseSensitiveHash(const _str& value)
 
 // prepare data for future hash comparisons
 Hashes::Hashes() :
-   HASH_NOTHING(caseSensitiveHash(EMPTY_STRING)),
+   HASH_NOTHING(caseSensitiveHash(_str())),
    HASH_VAR_THIS(caseSensitiveHash(STRING_THIS)),
 
    HASH_VAR_ACCESS(caseSensitiveHash(STRING_ACCESS)),

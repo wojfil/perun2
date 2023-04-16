@@ -51,7 +51,7 @@ _str Number::toString() const
          if (ch != CHAR_0) {
             if (ch == CHAR_DOT) {
                return i == 0
-                  ? STRING_CHAR_0
+                  ? toStr(CHAR_0)
                   : str.substr(0, i);
             }
             else {
@@ -66,7 +66,7 @@ _str Number::toString() const
          }
       }
 
-      return STRING_CHAR_0;
+      return toStr(CHAR_0);
    }
    else {
       return toStr(value.i);

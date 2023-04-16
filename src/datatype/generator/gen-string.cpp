@@ -33,7 +33,7 @@ _str StringBinary::getValue()
 {
    return condition->getValue()
       ? value->getValue()
-      : EMPTY_STRING;
+      : _str();
 }
 
 
@@ -50,7 +50,7 @@ RelativeLocation::RelativeLocation(_genptr<_str>& val, _p2& p2)
 
 _str RelativeLocation::getValue()
 {
-   return str(this->context.location->value, OS_SEPARATOR_STRING, this->value->getValue());
+   return str(this->context.location->value, OS_SEPARATOR, this->value->getValue());
 }
 
 _str CharAtIndex::getValue()
@@ -70,7 +70,7 @@ _str CharAtIndex::getValue()
 
    return (n >= NINT_ZERO && n < len)
       ? toStr(v[static_cast<_size>(n)])
-      : EMPTY_STRING;
+      : _str();
 }
 
 _str DefinitionElement::getValue()
@@ -78,13 +78,13 @@ _str DefinitionElement::getValue()
    _nint n = index->getValue().toInt();
 
    if (n < NINT_ZERO) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    while (this->definition->hasNext()) {
       if (this->perun2.state != State::s_Running) {
          this->definition.reset();
-         return EMPTY_STRING;
+         return _str();
       }
 
       if (n == NINT_ZERO) {
@@ -96,7 +96,7 @@ _str DefinitionElement::getValue()
       n--;
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 }

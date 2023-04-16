@@ -45,11 +45,6 @@ _constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
 _constexpr _char CHAR_FLAG_CODE =             CHAR_c;
 _constexpr _char CHAR_FLAG_CODE_UPPER =       CHAR_C;
 
-_const _str STRING_ARG_VERSION =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_VERSION);
-_const _str STRING_ARG_DOCS =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_DOCS);
-_const _str STRING_ARG_WEBSITE =              str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_WEBSITE);
-_const _str STRING_ARG_HELP =                 str(STRING_CHAR_MINUS, STRING_CHAR_MINUS, STRING_HELP);
-
 
 enum ArgsParseState 
 {

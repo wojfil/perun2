@@ -20,8 +20,8 @@
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS_DEFAULT loc, this->perun2, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
-#define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->perun2, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, gen::os::NO_PREFIX
+#define P_GEN_OS_ARGS_DEFAULT loc, this->perun2, gen::os::IS_RELATIVE_PATH, _str()
+#define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->perun2, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, _str()
 
 
 _bool DefinitionGenerator::generate(_defptr& result) const

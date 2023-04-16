@@ -46,17 +46,17 @@ _str F_After::getValue()
       for (_size i = 0; i < len1; i++) {
          if (s1[i] == sign) {
             return i == len1 - 1
-               ? EMPTY_STRING
+               ? _str()
                : s1.substr(i + 1);
          }
       }
 
-      return EMPTY_STRING;
+      return _str();
    }
    else {
       auto pos = s1.find(s2);
       return pos == _str::npos
-         ? EMPTY_STRING
+         ? _str()
          : s1.substr(pos + s2.size());
    }
 }
@@ -70,7 +70,7 @@ _str F_Before::getValue()
 
    const _str s2 = arg2->getValue();
    if (s2.empty())
-      return EMPTY_STRING;
+      return _str();
 
    const _size len2 = s2.size();
 
@@ -81,17 +81,17 @@ _str F_Before::getValue()
       for (_size i = 0; i < len1; i++) {
          if (s1[i] == sign) {
             return i == 0
-               ? EMPTY_STRING
+               ? _str()
                : s1.substr(0, i);
          }
       }
 
-      return EMPTY_STRING;
+      return _str();
    }
    else {
       auto pos = s1.find(s2);
       return pos == _str::npos
-         ? EMPTY_STRING
+         ? _str()
          : s1.substr(0, pos);
    }
 }
@@ -194,7 +194,7 @@ _str F_Trim::getValue()
    }
 
    if (left == length) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    _int right;
@@ -224,7 +224,7 @@ _str F_Repeat::getValue()
 {
    const _nint repeats = arg2->getValue().toInt();
    if (repeats <= NINT_ZERO) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    const _str base = arg1->getValue();
@@ -232,7 +232,7 @@ _str F_Repeat::getValue()
 
    switch (len) {
       case 0: {
-         return EMPTY_STRING;
+         return _str();
       }
       case 1: {
          return _str(repeats, base[0]);
@@ -279,7 +279,7 @@ _str F_Left::getValue()
 {
    const _nint left = arg2->getValue().toInt();
    if (left <= NINT_ZERO) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    const _str value = arg1->getValue();
@@ -295,7 +295,7 @@ _str F_Right::getValue()
 {
    const _nint right = arg2->getValue().toInt();
    if (right <= NINT_ZERO) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    const _str value = arg1->getValue();
@@ -327,7 +327,7 @@ _str F_Substring_2::getValue()
    }
    else {
       return index >= length
-         ? EMPTY_STRING
+         ? _str()
          : value.substr(index);
    }
 }
@@ -341,7 +341,7 @@ _str F_Substring_3::getValue()
    const _nint length = static_cast<_nint>(value.size());
 
    if (index2 <= NINT_ZERO) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    if (index < NINT_ZERO) {
@@ -350,7 +350,7 @@ _str F_Substring_3::getValue()
       if (index >= length) {
          const _nint lets = length - index + index2;
          return lets <= NINT_ZERO
-            ? EMPTY_STRING
+            ? _str()
             : value.substr(0, lets);
       }
       else {
@@ -362,7 +362,7 @@ _str F_Substring_3::getValue()
    }
    else {
       if (index >= length) {
-         return EMPTY_STRING;
+         return _str();
       }
 
       return index + index2 >= length
@@ -379,7 +379,7 @@ _str F_ConcatenateUnit::getValue()
 
    switch (length) {
       case 0: {
-         return EMPTY_STRING;
+         return _str();
       }
       case 1: {
          return values[0];
@@ -419,7 +419,7 @@ _str F_FirstDef::getValue()
       return v;
    }
    else {
-      return EMPTY_STRING;
+      return _str();
    }
 }
 
@@ -427,7 +427,7 @@ _str F_FirstDef::getValue()
 _str F_LastDef::getValue()
 {
    if (!definition->hasNext()) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    while (definition->hasNext()) { }
@@ -514,7 +514,7 @@ _str F_Replace::getValue()
 
 _str F_String_B::getValue()
 {
-   return arg1->getValue() ? STRING_CHAR_1 : STRING_CHAR_0;
+   return arg1->getValue() ? toStr(CHAR_1) : toStr(CHAR_0);
 }
 
 
@@ -546,7 +546,7 @@ _str F_MonthNameFromTime::getValue()
 {
    const _tim t = arg1->getValue();
    return t.type == Time::tt_YearMonth
-      ? EMPTY_STRING
+      ? _str()
       : monthToString(t.month);
 }
 
@@ -561,7 +561,7 @@ _str F_WeekDayNameFromTime::getValue()
 {
    const _tim t = arg1->getValue();
    return t.type == Time::tt_YearMonth
-      ? EMPTY_STRING
+      ? _str()
       : weekdayToString(t.getWeekDay());
 }
 
@@ -585,7 +585,7 @@ _str F_AfterDigits::getValue()
       }
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 
@@ -608,7 +608,7 @@ _str F_AfterLetters::getValue()
       }
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 
@@ -620,12 +620,12 @@ _str F_BeforeDigits::getValue()
    for (_size i = 0; i < len; i++) {
       if (std::iswdigit(value[i])) {
          return i == 0
-            ? EMPTY_STRING
+            ? _str()
             : value.substr(0, i);
       }
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 
@@ -637,12 +637,12 @@ _str F_BeforeLetters::getValue()
    for (_size i = 0; i < len; i++) {
       if (std::iswalpha(value[i])) {
          return i == 0
-            ? EMPTY_STRING
+            ? _str()
             : value.substr(0, i);
       }
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 
@@ -703,7 +703,7 @@ _str F_Join::getValue()
 
    switch (length) {
       case 0: {
-         return EMPTY_STRING;
+         return _str();
       }
       case 1: {
          return values[0];
@@ -754,7 +754,7 @@ _str F_Roman::getValue()
             result = CHAR_N;
          }
          else if (base.value.d < NDOUBLE_ZERO) {
-            result = str(STRING_CHAR_MINUS, result);
+            result = str(CHAR_MINUS, result);
          }
 
          return result;
@@ -830,7 +830,7 @@ _str F_Binary::getValue()
    for (_size i = 0; i < len; i++) {
       if (str_[i] != CHAR_0) {
          return negative
-            ? str(STRING_CHAR_MINUS, str_.substr(i))
+            ? str(CHAR_MINUS, str_.substr(i))
             : str_.substr(i);
       }
    }
@@ -846,7 +846,7 @@ _str F_Hex::getValue()
       v *= NINT_MINUS_ONE;
       _stream oss;
       oss << std::hex << v;
-      return str(STRING_CHAR_MINUS, oss.str());
+      return str(CHAR_MINUS, oss.str());
    }
    else {
       _stream oss;

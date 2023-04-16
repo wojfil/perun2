@@ -177,7 +177,7 @@ void C_OpenWith::run()
             return;
          }
 
-         const _str com = str(pro, STRING_CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
+         const _str com = str(pro, CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
          const _bool s = os_openAsCommand(com, os_parent(this->context->v_path->value));
          this->perun2.contexts.success->value = s;
 
@@ -293,11 +293,11 @@ void C_RenameTo::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(this->context->v_path->value);
 
       if (!extensionless && hasExt && !os_hasExtension(n)) {
-         n += str(STRING_CHAR_DOT, os_extension(this->context->v_path->value));
+         n += str(CHAR_DOT, os_extension(this->context->v_path->value));
       }
 
       const _str base = os_parent(this->context->v_path->value);
-      const _str newPath = str(base, OS_SEPARATOR_STRING, n);
+      const _str newPath = str(base, OS_SEPARATOR, n);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->perun2))) {
@@ -351,11 +351,11 @@ void C_RenameTo_Stack::run()
          else {
             ex = os_extension(oldPath);
             if (!extensionless) {
-               n += str(STRING_CHAR_DOT, ex);
+               n += str(CHAR_DOT, ex);
             }
          }
 
-         newPath = str(parent, OS_SEPARATOR_STRING, n);
+         newPath = str(parent, OS_SEPARATOR, n);
 
          if (os_exists(newPath)) {
             const _str base = os_stackPathBase(newPath);
@@ -363,7 +363,7 @@ void C_RenameTo_Stack::run()
          }
       }
       else {
-         newPath = str(parent, OS_SEPARATOR_STRING, n);
+         newPath = str(parent, OS_SEPARATOR, n);
          newPath = os_stackPath(newPath);
       }
 
@@ -420,7 +420,7 @@ void C_MoveTo::run()
       }
 
       const _str fulln = os_fullname(oldPath);
-      const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+      const _str newPath = str(newLoc, OS_SEPARATOR, fulln);
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
@@ -472,7 +472,7 @@ void C_MoveTo_Stack::run()
       }
 
       const _str fulln = os_fullname(oldPath);
-      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
@@ -520,7 +520,7 @@ void C_MoveToAs::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
-         fulln += str(STRING_CHAR_DOT, os_extension(oldPath));
+         fulln += str(CHAR_DOT, os_extension(oldPath));
       }
 
       const _str newLoc = os_join(this->locationContext->location->value, loc);
@@ -533,7 +533,7 @@ void C_MoveToAs::run()
          }
       }
 
-      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
@@ -598,11 +598,11 @@ void C_MoveToAs_Stack::run()
          else {
             ex = os_extension(oldPath);
             if (!extensionless) {
-               fulln += str(STRING_CHAR_DOT, ex);
+               fulln += str(CHAR_DOT, ex);
             }
          }
 
-         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+         newPath = str(newLoc, OS_SEPARATOR, fulln);
          if (os_exists(newPath)) {
             const _str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
@@ -610,7 +610,7 @@ void C_MoveToAs_Stack::run()
          }
       }
       else {
-         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+         newPath = str(newLoc, OS_SEPARATOR, fulln);
          if (os_exists(newPath)) {
             newPath = os_stackPath(newPath);
             fulln = os_fullname(newPath);
@@ -656,7 +656,7 @@ void C_CopyTo::run()
       }
 
       const _str fulln = os_fullname(oldPath);
-      const _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+      const _str newPath = str(newLoc, OS_SEPARATOR, fulln);
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
@@ -704,7 +704,7 @@ void C_CopyTo_Stack::run()
       }
 
       const _str fulln = os_fullname(oldPath);
-      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
@@ -747,7 +747,7 @@ void C_CopyToAs::run()
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
-         fulln += str(STRING_CHAR_DOT, os_extension(oldPath));
+         fulln += str(CHAR_DOT, os_extension(oldPath));
       }
 
       const _str newLoc = os_join(this->locationContext->location->value, loc);
@@ -760,7 +760,7 @@ void C_CopyToAs::run()
          }
       }
 
-      _str newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
@@ -819,11 +819,11 @@ void C_CopyToAs_Stack::run()
          else {
             ex = os_extension(oldPath);
             if (!extensionless) {
-               fulln += str(STRING_CHAR_DOT, ex);
+               fulln += str(CHAR_DOT, ex);
             }
          }
 
-         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+         newPath = str(newLoc, OS_SEPARATOR, fulln);
          if (os_exists(newPath)) {
             const _str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
@@ -831,7 +831,7 @@ void C_CopyToAs_Stack::run()
          }
       }
       else {
-         newPath = str(newLoc, OS_SEPARATOR_STRING, fulln);
+         newPath = str(newLoc, OS_SEPARATOR, fulln);
          if (os_exists(newPath)) {
             newPath = os_stackPath(newPath);
             fulln = os_fullname(newPath);
@@ -857,8 +857,8 @@ _str getCCName(const _str& path)
    }
 
    return os_hasParentDirectory(path) || path.size() != 2
-      ? str(STRING_CHAR_APOSTROPHE, os_fullname(path), STRING_CHAR_APOSTROPHE)
-      : str(STRING_CHAR_APOSTROPHE, path, OS_SEPARATOR_APOSTROPHE);
+      ? str(CHAR_APOSTROPHE, os_fullname(path), CHAR_APOSTROPHE)
+      : str(CHAR_APOSTROPHE, path, OS_SEPARATOR_APOSTROPHE);
 }
 
 _str getCCNameShort(const _str& path)
@@ -873,8 +873,8 @@ _str getCCNameShort(const _str& path)
    }
 
    return f.size() == 2 && f[1] == CHAR_COLON && os_isDriveLetter(f[0])
-      ? str(STRING_CHAR_APOSTROPHE, f, OS_SEPARATOR_APOSTROPHE)
-      : str(STRING_CHAR_APOSTROPHE, f, STRING_CHAR_APOSTROPHE);
+      ? str(CHAR_APOSTROPHE, f, OS_SEPARATOR_APOSTROPHE)
+      : str(CHAR_APOSTROPHE, f, CHAR_APOSTROPHE);
 }
 
 }

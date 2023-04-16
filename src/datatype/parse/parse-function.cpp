@@ -1369,7 +1369,7 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 static void functionArgNumberException(const _int argNumber, const Token& word, _p2& p2)
 {
    throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' cannot be called with ",
-      toStr(argNumber), L" argument", (argNumber == 1 ? EMPTY_STRING : L"s")), word.line);
+      toStr(argNumber), L" argument", (argNumber == 1 ? _str() : L"s")), word.line);
 }
 
 static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, _p2& p2)

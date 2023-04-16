@@ -226,7 +226,7 @@ _str Token::getOriginString(_p2& p2) const
          return getCodeSubstr(value.twoWords.os1, p2);
       }
       default: {
-         return EMPTY_STRING;
+         return _str();
       }
    }
 }
@@ -235,7 +235,7 @@ _str Token::getOriginString_2(_p2& p2) const
 {
    return type == Token::Type::t_TwoWords
       ? getCodeSubstr(value.twoWords.os2, p2)
-      : EMPTY_STRING;
+      : _str();
 }
 
 _str Token::getCodeSubstr(const _osi& osi, _p2& p2) const

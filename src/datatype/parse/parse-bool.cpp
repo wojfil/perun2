@@ -524,13 +524,13 @@ static void leftInTimeException(const Token& tk, const _str& varMember,
    if (negated) {
       const _str v1 = str(first.getOriginString(p2), L" not in ", tk.getOriginString(p2));
       const _str v2 = str(first.getOriginString(p2),
-         STRING_CHAR_DOT, varMember, L" != ", tk.getOriginString(p2));
+         CHAR_DOT, varMember, L" != ", tk.getOriginString(p2));
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
    }
    else {
       const _str v1 = str(first.getOriginString(p2), L" in ", tk.getOriginString(p2));
       const _str v2 = str(first.getOriginString(p2),
-         STRING_CHAR_DOT, varMember, L" = ", tk.getOriginString(p2));
+         CHAR_DOT, varMember, L" = ", tk.getOriginString(p2));
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
    }
 }
@@ -543,13 +543,13 @@ static void rightInTimeException(const Token& tk, const _str& varMember,
    if (negated) {
       const _str v1 = str(tk.getOriginString(p2) , L" not in ", first.getOriginString(p2));
       const _str v2 = str(tk.getOriginString(p2), L" != ", first.getOriginString(p2),
-         STRING_CHAR_DOT, varMember);
+         CHAR_DOT, varMember);
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
    }
    else {
       const _str v1 = str(tk.getOriginString(p2), L" in ", first.getOriginString(p2));
       const _str v2 = str(tk.getOriginString(p2), L" = ", first.getOriginString(p2),
-         STRING_CHAR_DOT, varMember);
+         CHAR_DOT, varMember);
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
    }
 }

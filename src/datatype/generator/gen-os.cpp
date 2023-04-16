@@ -31,8 +31,8 @@ namespace perun2::gen
 
 #define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
       this->value = this->hasPrefix \
-         ? str(this->prefix, this->baseLocation, OS_SEPARATOR_STRING, this->value) \
-         : str(this->baseLocation, OS_SEPARATOR_STRING, this->value); \
+         ? str(this->prefix, this->baseLocation, OS_SEPARATOR, this->value) \
+         : str(this->baseLocation, OS_SEPARATOR, this->value); \
       } \
    else if (this->hasPrefix) { \
       this->value = str(this->prefix, this->value); \
@@ -99,6 +99,7 @@ _bool All::hasNext()
       this->baseLocation = os_trim(location->getValue());
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
+
          handle = FindFirstFile(path.c_str(), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
@@ -343,13 +344,13 @@ _bool RecursiveFiles::hasNext()
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
                   if ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)) {
-                     paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+                     paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
                      if (this->bases.empty()) {
-                        bases.emplace_back(str(v, OS_SEPARATOR_STRING));
+                        bases.emplace_back(str(v, OS_SEPARATOR));
                      }
                      else {
-                        bases.emplace_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                        bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
                      }
 
                      goDeeper = true;
@@ -435,13 +436,13 @@ _bool RecursiveDirectories::hasNext()
             {
                const _bool isBase = this->bases.empty();
                value = isBase ? v : str(bases.back(), v);
-               paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+               paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
                if (isBase) {
-                  bases.emplace_back(str(v, OS_SEPARATOR_STRING));
+                  bases.emplace_back(str(v, OS_SEPARATOR));
                }
                else {
-                  bases.emplace_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                  bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
                }
 
                goDeeper = true;
@@ -528,13 +529,13 @@ _bool RecursiveAll::hasNext()
                   const _bool isBase = this->bases.empty();
 
                   value = isBase ? v : str(bases.back(), v);
-                  paths.emplace_back(str(paths.back(), OS_SEPARATOR_STRING, v));
+                  paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
                   if (isBase) {
-                     bases.emplace_back(str(v, OS_SEPARATOR_STRING));
+                     bases.emplace_back(str(v, OS_SEPARATOR));
                   }
                   else {
-                     bases.emplace_back(str(bases.back(), v, OS_SEPARATOR_STRING));
+                     bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
                   }
 
                   goDeeper = true;

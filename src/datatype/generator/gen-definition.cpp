@@ -116,7 +116,7 @@ _str LocationVessel::getValue()
 {
    return this->isAbsolute
       ? this->value
-      : str(this->context->location->value, OS_SEPARATOR_STRING, this->value);
+      : str(this->context->location->value, OS_SEPARATOR, this->value);
 };
 
 const _str& LocationVessel::getRawValue() const
@@ -172,9 +172,11 @@ _bool NestedDefiniton::hasNext()
             this->value = this->definition->getValue();
          }
          else {
-            this->value = this->vessel.getRawValue() == STRING_CHAR_DOT
+            const _bool isDot = this->vessel.getRawValue().size() == 1 && this->vessel.getRawValue()[0] == CHAR_DOT;
+
+            this->value = isDot
                ? this->definition->getValue()
-               : str(this->vessel.getRawValue(), OS_SEPARATOR_STRING, this->definition->getValue());
+               : str(this->vessel.getRawValue(), OS_SEPARATOR, this->definition->getValue());
          }
 
          if (this->isFinal) {
@@ -590,7 +592,7 @@ _bool DefinitionSuffix::hasNext()
       this->value = str(this->definition->getValue(), this->suffix);
       const _str path = this->absoluteBase
          ? this->value
-         : str(this->locContext->location->value, OS_SEPARATOR_STRING, this->value);
+         : str(this->locContext->location->value, OS_SEPARATOR, this->value);
 
       if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {
          if (this->isFinal) {

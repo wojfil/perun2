@@ -218,7 +218,7 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_EXTENSION)) {
-      context.v_extension->value = isFile ? os_extension(context.trimmed) : EMPTY_STRING;
+      context.v_extension->value = isFile ? os_extension(context.trimmed) : _str();
    }
 
    if (attribute->has(ATTR_HIDDEN)) {
@@ -431,7 +431,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_EXTENSION)) {
-      context.v_extension->value = isFile ? os_extension(context.trimmed) : EMPTY_STRING;
+      context.v_extension->value = isFile ? os_extension(context.trimmed) : _str();
    }
 
    if (attribute->has(ATTR_HIDDEN)) {
@@ -533,10 +533,10 @@ _str os_drive(const _str& path)
    if (os_isAbsolute(path)) {
       _char letter = path[0];
       toUpper(letter);
-      return str(toStr(letter), STRING_CHAR_COLON);
+      return str(toStr(letter), CHAR_COLON);
    }
    else {
-      return EMPTY_STRING;
+      return _str();
    }
 }
 
@@ -593,7 +593,7 @@ _str os_extension(const _str& value)
       const _char& ch = value[i];
       if (ch == CHAR_DOT) {
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
-            return EMPTY_STRING;
+            return _str();
          }
 
          _str result = value.substr(i + 1);
@@ -601,11 +601,11 @@ _str os_extension(const _str& value)
          return result;
       }
       else if (ch == OS_SEPARATOR) {
-         return EMPTY_STRING;
+         return _str();
       }
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 _str os_fullname(const _str& value)
@@ -724,7 +724,7 @@ _str os_parent(const _str& path)
       }
    }
 
-   return EMPTY_STRING;
+   return _str();
 }
 
 _bool os_readonly(const _str& path)
@@ -767,7 +767,7 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
       const _str v = data.cFileName;
       if (!os_isBrowsePath(v)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR_STRING, v), p2);
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR, v), p2);
          }
          else {
             totalSize += static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
@@ -871,9 +871,9 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
    _char FileName[MAX_PATH];
 
    wcscpy(DirPath, const_cast<_char*>(path.c_str()));
-   wcscat(DirPath, OS_SEPARATOR_ASTERISK.c_str());
+   wcscat(DirPath, OS_SEPARATOR_ASTERISK);
    wcscpy(FileName, const_cast<_char*>(path.c_str()));
-   wcscat(FileName, OS_SEPARATOR_STRING.c_str());
+   wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
    hFind = FindFirstFile(DirPath,&FindFileData);
 
@@ -969,7 +969,7 @@ _bool os_open(const _str& path)
 _bool os_openWith(const _str& program, const _str& path)
 {
    const _str location = os_parent(path);
-   return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN.c_str(), program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
+   return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN, program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
 }
 
 _bool os_openAsCommand(const _str& command, const _str& location)
@@ -1155,7 +1155,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
    _char FileName[MAX_PATH];
 
    wcscpy(DirPath, const_cast<_char*>(oldPath.c_str()));
-   wcscat(DirPath, OS_SEPARATOR_ASTERISK.c_str());
+   wcscat(DirPath, OS_SEPARATOR_ASTERISK);
    wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
    wcscat(FileName, &OS_SEPARATOR);
 
@@ -1179,7 +1179,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
          }
 
          wcscat(FileName, FindFileData.cFileName);
-         const _str np = str(newPath, OS_SEPARATOR_STRING, _str(FileName).substr(length));
+         const _str np = str(newPath, OS_SEPARATOR, _str(FileName).substr(length));
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
             if (!os_copyToDirectory(FileName, np, p2)) {
@@ -1429,7 +1429,7 @@ exitStart:
 
    switch (len - start) {
       case 0: {
-         return EMPTY_STRING;
+         return _str();
       }
       case 1: {
          _str result = path.substr(len - 1, 1);
@@ -1510,7 +1510,7 @@ r_exitStart:
 
    switch (len - start) {
       case 0: {
-         value = EMPTY_STRING;
+         value = _str();
          return;
       }
       case 1: {
@@ -1567,7 +1567,7 @@ _str os_join(const _str& path1, const _str& path2)
 {
    return os_isAbsolute(path2)
       ? path2
-      : str(path1, OS_SEPARATOR_STRING, path2);
+      : str(path1, OS_SEPARATOR, path2);
 }
 
 _bool os_isAbsolute(const _str& path)
@@ -1627,8 +1627,8 @@ _bool os_isExplorableDirectory(const _str& name)
    // this is an equivalent to
    // return name != .git && name != .svn
    if (name.size() == 4) {
-      return name != OS_GIT_DIRECTORY
-          && name != OS_SVN_DIRECTORY;
+      return name != STRING_DOT_GIT
+          && name != STRING_DOT_SVN;
    }
    else {
       return true;
@@ -1678,7 +1678,7 @@ _str os_stackPath(const _str& path)
 
    while (os_exists(newPath))
    {
-      newPath = str(path, STRING_CHAR_OPENING_ROUND_BRACKET, toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET);
+      newPath = str(path, CHAR_OPENING_ROUND_BRACKET, toStr(index), CHAR_CLOSING_ROUND_BRACKET);
       index++;
    }
 
@@ -1692,12 +1692,12 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
    }
 
    _nint index = NINT_TWO;
-   _str newPath = str(basePath, STRING_CHAR_DOT, extension);
+   _str newPath = str(basePath, CHAR_DOT, extension);
 
    while (os_exists(newPath))
    {
-      newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET, toStr(index),
-         STRING_CHAR_CLOSING_ROUND_BRACKET, STRING_CHAR_DOT, extension);
+      newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET, toStr(index),
+         CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
       index++;
    }
 
@@ -1721,14 +1721,14 @@ _str os_stackPathStacked(const _str& path)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
-      toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET);
+   _str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
+      toStr(index), CHAR_CLOSING_ROUND_BRACKET);
 
    while (os_exists(newPath))
    {
       index++;
-      newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
-         toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET);
+      newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
+         toStr(index), CHAR_CLOSING_ROUND_BRACKET);
    }
 
    return newPath;
@@ -1740,14 +1740,14 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
    _str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
-      toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET, STRING_CHAR_DOT, extension);
+   _str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
+      toStr(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
 
    while (os_exists(newPath))
    {
       index++;
-      newPath = str(basePath, STRING_CHAR_OPENING_ROUND_BRACKET,
-         toStr(index), STRING_CHAR_CLOSING_ROUND_BRACKET, STRING_CHAR_DOT, extension);
+      newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
+         toStr(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
    }
 
    return newPath;
@@ -1817,7 +1817,7 @@ _str os_desktopPath()
    _char path[MAX_PATH];
    return SHGetSpecialFolderPathW(0, path, CSIDL_DESKTOP, FALSE)
       ? _str(path)
-      : EMPTY_STRING;
+      : _str();
 }
 
 _str os_currentPath()
@@ -1836,7 +1836,7 @@ _size os_readFile_size(const _str& path)
 
 _bool os_readFile(_str& result, const _str& path)
 {
-   FILE* f = _wfopen(path.c_str(), STRING_FILE_OPEN_MODE.c_str());
+   FILE* f = _wfopen(path.c_str(), STRING_FILE_OPEN_MODE);
 
    if (f == NULL) {
       return false;
@@ -1857,7 +1857,7 @@ _bool os_readFile(_str& result, const _str& path)
 
 void os_showWebsite(const _str& url)
 {
-   ShellExecuteW(NULL, STRING_OPEN.c_str(), url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+   ShellExecuteW(NULL, STRING_OPEN, url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 _bool os_findText(const _str& path, const _str& value)
@@ -1968,7 +1968,7 @@ _str os_makeArg(const _str& value)
 
    if (quotes == 0) {
       return anySpace
-         ? str(STRING_CHAR_QUOTATION_MARK, value, STRING_CHAR_QUOTATION_MARK)
+         ? str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK)
          : value;
    }
    else {
@@ -1984,7 +1984,7 @@ _str os_makeArg(const _str& value)
       }
 
       return anySpace
-         ? str(STRING_CHAR_QUOTATION_MARK, result, STRING_CHAR_QUOTATION_MARK)
+         ? str(CHAR_QUOTATION_MARK, result, CHAR_QUOTATION_MARK)
          : result;
    }
 }
@@ -1993,7 +1993,7 @@ _str os_quoteEmbraced(const _str& value)
 {
    return value.find(CHAR_SPACE) == _str::npos
       ? value
-      : str(STRING_CHAR_QUOTATION_MARK, value, STRING_CHAR_QUOTATION_MARK);
+      : str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
 }
 
 }

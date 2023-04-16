@@ -70,7 +70,7 @@ void Cache::loadCmdPath()
 
 _bool Cache::isNotLoaded(const _cunit v)
 {
-   const _bool notLoaded = !(this->value & v); 
+   const _bool notLoaded = !(this->value & v);
    if (notLoaded) {
       this->value |= v;
    }
@@ -80,10 +80,10 @@ _bool Cache::isNotLoaded(const _cunit v)
 
 _str Cache::getCmdProcessStartingArgs() const
 {
-   return str(os_quoteEmbraced(this->context.strings[this->perun2.hashes.HASH_VAR_PERUN2]->value), 
-      STRING_CHAR_SPACE, STRING_CHAR_MINUS, toStr(CHAR_FLAG_SILENT), STRING_CHAR_SPACE);
+   return str(os_quoteEmbraced(this->context.strings[this->perun2.hashes.HASH_VAR_PERUN2]->value),
+      CHAR_SPACE, CHAR_MINUS, toStr(CHAR_FLAG_SILENT), CHAR_SPACE);
 }
-   
+
 _list Cache::getAlphabet() const
 {
    _list a(LETTERS_IN_ENGLISH_ALPHABET);

@@ -24,7 +24,7 @@ _str F_Parent::getValue()
 {
    const _str v = os_trim(arg1->getValue());
    if (os_isInvaild(v)) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    // there is no separator, so simply return location
@@ -40,7 +40,7 @@ _str F_Path_1::getValue()
 {
    const _str v = os_trim(arg1->getValue());
    if (os_isInvaild(v)) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    return os_join(this->context->location->value, v);
@@ -55,12 +55,12 @@ _str F_Path_2::getValue()
       return v2;
    }
    else if (v2.empty()) {
-      return EMPTY_STRING;
+      return _str();
    }
    else {
       const _str v1 = os_trim(this->value_1->getValue());
       return v1.empty()
-         ? EMPTY_STRING
+         ? _str()
          : os_join(v1, v2);
    }
 }
@@ -74,7 +74,7 @@ _str F_Path_3::getValue()
       return v3;
    }
    else if (v3.empty()) {
-      return EMPTY_STRING;
+      return _str();
    }
    else {
       const _str v2 = os_trim(this->value_2->getValue());
@@ -83,12 +83,12 @@ _str F_Path_3::getValue()
          return os_join(v2, v3);
       }
       else if (v2.empty()) {
-         return EMPTY_STRING;
+         return _str();
       }
       else {
          const _str v1 = os_trim(this->value_1->getValue());
          return v1.empty()
-            ? EMPTY_STRING
+            ? _str()
             : os_join(os_join(v1, v2), v3);
       }
    }
@@ -103,7 +103,7 @@ _str F_Path_4::getValue()
       return v4;
    }
    else if (v4.empty()) {
-      return EMPTY_STRING;
+      return _str();
    }
    else {
       const _str v3 = os_trim(this->value_3->getValue());
@@ -112,7 +112,7 @@ _str F_Path_4::getValue()
          return os_join(v3, v4);
       }
       else if (v3.empty()) {
-         return EMPTY_STRING;
+         return _str();
       }
       else {
          const _str v2 = os_trim(this->value_2->getValue());
@@ -121,12 +121,12 @@ _str F_Path_4::getValue()
             return os_join(os_join(v2, v3), v4);
          }
          else if (v2.empty()) {
-            return EMPTY_STRING;
+            return _str();
          }
          else {
             const _str v1 = os_trim(this->value_1->getValue());
             return v1.empty()
-               ? EMPTY_STRING
+               ? _str()
                : os_join(os_join(os_join(v1, v2), v3), v4);
          }
       }
@@ -137,7 +137,7 @@ _str F_Path_Multi::getValue()
 {
    _str path = os_trim((values[length - 1])->getValue());
    if (path.empty()) {
-      return EMPTY_STRING;
+      return _str();
    }
 
    _int index = length - 2;
@@ -145,7 +145,7 @@ _str F_Path_Multi::getValue()
    while (index >= 0 && !os_isAbsolute(path)) {
       const _str p = os_trim(values[index]->getValue());
       if (p.empty()) {
-         return EMPTY_STRING;
+         return _str();
       }
 
       path = os_join(p, path);

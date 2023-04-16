@@ -93,7 +93,7 @@ _tnum toTimeNumber(const Number& num);
 _str monthToString(const _tnum month);
 _str weekdayToString(const _tnum wday);
 
-inline _str fillTimeUnit(const _tnum val);
+inline void addTimeUnit(_stream& stream, const _tnum val);
 inline _bool isLeapYear(const _tnum year);
 _tnum daysInMonth(const _tnum month, const _tnum year);
 inline Period timeDifference(const Time& min, const Time& max);

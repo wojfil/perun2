@@ -27,9 +27,6 @@ namespace perun2
 _constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
 _constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
 
-_constexpr _char OS_SEPARATOR_ASTERISK[] = { OS_SEPARATOR, CHAR_ASTERISK };
-_constexpr _char OS_SEPARATOR_APOSTROPHE[] = { OS_SEPARATOR, CHAR_APOSTROPHE };
-
 _tim os_now();
 _tim os_today();
 _tim os_yesterday();

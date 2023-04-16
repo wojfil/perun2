@@ -571,7 +571,7 @@ _bool os_emptyFile(const _adata& data)
 _bool os_emptyDirectory(const _str& path)
 {
    _fdata data;
-   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
+   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR, CHAR_ASTERISK)).c_str(), &data);
    if (handle == INVALID_HANDLE_VALUE) {
       return true;
    }
@@ -753,7 +753,7 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
 {
    _nint totalSize = NINT_ZERO;
    _fdata data;
-   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR_ASTERISK)).c_str(), &data);
+   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR, CHAR_ASTERISK)).c_str(), &data);
 
    if (handle == INVALID_HANDLE_VALUE) {
       return totalSize;
@@ -871,7 +871,7 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
    _char FileName[MAX_PATH];
 
    wcscpy(DirPath, const_cast<_char*>(path.c_str()));
-   wcscat(DirPath, OS_SEPARATOR_ASTERISK);
+   wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
    wcscpy(FileName, const_cast<_char*>(path.c_str()));
    wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
@@ -1155,7 +1155,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
    _char FileName[MAX_PATH];
 
    wcscpy(DirPath, const_cast<_char*>(oldPath.c_str()));
-   wcscat(DirPath, OS_SEPARATOR_ASTERISK);
+   wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
    wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
    wcscat(FileName, &OS_SEPARATOR);
 

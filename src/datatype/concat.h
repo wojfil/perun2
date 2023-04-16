@@ -20,6 +20,17 @@
 namespace perun2
 {
 
+_size unitLen(const _char value);
+_size unitLen(_char (&value)[]);
+_size unitLen(const _str& value);
+
+_size charsLen();
+
+template<typename T, typename... Args>
+_size charsLen(const T& firstValue, Args const&... args)
+{
+   return unitLen(firstValue) + charsLen(args...);
+}
 
 void insertStr(_str& result);
 
@@ -30,10 +41,13 @@ void insertStr(_str& result, const T& firstValue, Args const&... args)
    insertStr(result, args...);
 }
 
+// concatenate values into one string
+// args can be of 3 types: _char, _char[], _str
 template<typename... Args>
 _str str(Args const&... args)
 {
    _str result;
+   result.reserve(charsLen(args...));
    insertStr(result, args...);
    return result;
 }

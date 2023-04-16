@@ -57,7 +57,8 @@ _str Time::toString() const
    ss << year;
 
    if (type == tt_ShortClock || type == tt_Clock) {
-      ss << STRING_COMMA_SPACE;
+      ss << CHAR_COMMA;
+      ss << CHAR_SPACE;
       addTimeUnit(ss, hour);
       ss << CHAR_COLON;
       addTimeUnit(ss, minute);

@@ -29,12 +29,12 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
 
    if (pattern.size() == 1 && pattern[0] == CHAR_ASTERISK) {
       _genptr<_str> loc = std::make_unique<gen::LocationReference>(p2);
-      result = std::make_unique<gen::All>(loc, p2, gen::os::DEFAULT_PATTERN,
+      result = std::make_unique<gen::All>(loc, p2, gen::os::getDefaultPattern(),
          gen::os::IS_RELATIVE_PATH, _str());
       return true;
    }
 
-   if (pattern == STRING_DOUBLE_ASTERISK) {
+   if (pattern.size() == 2 && pattern[0] == CHAR_ASTERISK && pattern[1] == CHAR_ASTERISK) {
       _genptr<_str> loc = std::make_unique<gen::LocationReference>(p2);
       result = std::make_unique<gen::RecursiveAll>(loc, p2, gen::os::IS_RELATIVE_PATH, _str());
       return true;

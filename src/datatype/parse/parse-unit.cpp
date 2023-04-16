@@ -200,7 +200,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _defptr& result)
       }
       case Token::t_MultiSymbol: {
          if (tk.value.chars.ch == CHAR_ASTERISK) {
-            return parseAsteriskPattern(result, STRING_DOUBLE_ASTERISK, tk.line, p2);
+            return parseAsteriskPattern(result, str(CHAR_ASTERISK, CHAR_ASTERISK), tk.line, p2);
          }
          else {
             return false;

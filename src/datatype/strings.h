@@ -38,9 +38,6 @@ void toUpper(_str& value);
 
 _constexpr _int LETTERS_IN_ENGLISH_ALPHABET = 26;
 
-_constexpr _char STRING_DOUBLE_ASTERISK[] =         { CHAR_ASTERISK, CHAR_ASTERISK };
-_constexpr _char STRING_COMMA_SPACE[] =             { CHAR_COMMA, CHAR_SPACE };
-
 _constexpr _char ROMAN_VINCULUM_THOUSAND[] =     L"I" L"̅";
 extern const _list ROMAN_STRING_LITERALS;
 extern const _list STRINGS_ASCII;

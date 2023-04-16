@@ -41,9 +41,10 @@ namespace os
 {
    _constexpr _bool IS_ABSOLUTE_PATH =            true;
    _constexpr _bool IS_RELATIVE_PATH =            false;
-   _constexpr _char DEFAULT_PATTERN[] =           { OS_SEPARATOR, CHAR_ASTERISK };
    _constexpr _bool IS_FINAL =                    true;
    _constexpr _bool IS_NOT_FINAL =                false;
+
+   _str getDefaultPattern();
 }
 
 
@@ -76,7 +77,7 @@ public:
    OsDefinitionPlain() = delete;
    OsDefinitionPlain(P_GEN_OS_ARGS_EXT)
       : OsDefinition(P_GEN_OS_ARGS_2),
-        pattern(isExceptional(patt) ? gen::os::DEFAULT_PATTERN : patt),
+        pattern(isExceptional(patt) ? gen::os::getDefaultPattern() : patt),
         exceptional(isExceptional(patt)),
         comparer(patt.substr(1)) { };
 

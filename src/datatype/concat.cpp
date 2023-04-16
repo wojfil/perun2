@@ -13,13 +13,35 @@
 */
 
 #include "concat.h"
+#include <wchar.h>
+
 
 namespace perun2
 {
 
+_size unitLen(const _char value)
+{
+   return 1;
+}
+
+_size unitLen(_char (&value)[])
+{
+   return wcslen(value);
+}
+
+_size unitLen(const _str& value)
+{
+   return value.size();
+}
+
+_size charsLen()
+{
+   return 0;
+}
+
 void insertStr(_str& result)
 {
-
+  // do nothing as expected
 }
 
 }

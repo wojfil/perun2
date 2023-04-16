@@ -38,6 +38,14 @@ namespace perun2::gen
       this->value = str(this->prefix, this->value); \
    } \
 
+namespace os
+{
+   _str getDefaultPattern()
+   {
+      return str(OS_SEPARATOR, CHAR_ASTERISK);
+   }
+}
+
 
 OsDefinition::OsDefinition(P_GEN_OS_ARGS)
    : location(std::move(loc)), perun2(p2), context(p2),
@@ -298,7 +306,7 @@ _bool RecursiveFiles::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            const _str p = str(paths.back(), gen::os::getDefaultPattern());
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
@@ -402,7 +410,7 @@ _bool RecursiveDirectories::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            const _str p = str(paths.back(), gen::os::getDefaultPattern());
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
@@ -489,7 +497,7 @@ _bool RecursiveAll::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            const _str p = str(paths.back(), gen::os::getDefaultPattern());
             handles.emplace_back(FindFirstFile(p.c_str(), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)

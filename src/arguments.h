@@ -28,21 +28,17 @@ _constexpr _flags FLAG_SILENT =               0b0010;
 _constexpr _flags FLAG_GUI =                  0b0100;
 
 _constexpr _char CHAR_FLAG_GUI =              CHAR_g;
-_constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
-
 _constexpr _char CHAR_FLAG_NOOMIT =           CHAR_n;
-_constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
-
 _constexpr _char CHAR_FLAG_SILENT =           CHAR_s;
-_constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
-
 _constexpr _char CHAR_FLAG_DIRECTORY =        CHAR_d;
-_constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
-
 _constexpr _char CHAR_FLAG_HERE =             CHAR_h;
-_constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
-
 _constexpr _char CHAR_FLAG_CODE =             CHAR_c;
+
+_constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
+_constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
+_constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
+_constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
+_constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
 _constexpr _char CHAR_FLAG_CODE_UPPER =       CHAR_C;
 
 

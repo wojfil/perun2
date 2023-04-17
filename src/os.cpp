@@ -849,17 +849,7 @@ _bool os_drop(const _str& path, const _bool isFile, _p2& p2)
 
 _bool os_dropFile(const _str& path)
 {
-   WINBOOL w = DeleteFileW(path.c_str());
-
-   if (w != 0) {
-      return true;
-   }
-   else if (w == ERROR_ACCESS_DENIED) {
-      if (os_unlock(path)) {
-         return DeleteFileW(path.c_str()) != 0;
-      }
-   }
-   return false;
+   return DeleteFileW(path.c_str()) != 0;
 }
 
 _bool os_dropDirectory(const _str& path, _p2& p2)

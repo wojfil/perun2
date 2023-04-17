@@ -31,7 +31,12 @@ void C_Create::run()
 
       if (this->context->v_exists->value) {
          if (!(forced && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->perun2))) {
-            this->perun2.logger.log(L"Failed to create ", getCCName(this->context->v_path->value));
+            if (this->context->v_isfile->value) {
+               this->perun2.logger.log(L"Failed to create file ", getCCName(this->context->v_path->value));
+            }
+            else {
+               this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
+            }
             this->perun2.contexts.success->value = false;
             return;
          }
@@ -276,17 +281,23 @@ void C_Create_String::run()
          return;
       }
 
+      const _bool isFile = os_hasExtension(value);
       const _str path = os_join(dest, value);
 
       if (os_exists(path)) {
          if (!(forced && os_drop(path, this->perun2))) {
-            this->perun2.logger.log(L"Failed to create ", getCCName(path));
+            if (isFile) {
+               this->perun2.logger.log(L"Failed to create file ", getCCName(path));
+            }
+            else {
+               this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
+            }
             this->perun2.contexts.success->value = false;
             return;
          }
       }
 
-      if (os_hasExtension(value)) {
+      if (isFile) {
          const _bool s = os_createFile(path);
          this->perun2.contexts.success->value = s;
 
@@ -511,6 +522,7 @@ void C_Create_List::run()
       const _str& dest = this->locContext->location->value;
       const _list names = elements->getValue();
       const _size len = names.size();
+
       if (len == 0) {
          this->perun2.contexts.success->value = true;
          return;
@@ -518,7 +530,15 @@ void C_Create_List::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            this->perun2.logger.log(L"Failed to create ", getCCNameShort(names[i]));
+            const _str n = os_trim(names[i]);
+            const _bool isFile = os_hasExtension(n);
+
+            if (isFile) {
+               this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
+            }
+            else {
+               this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
+            }
          }
          this->perun2.contexts.success->value = false;
          return;
@@ -528,9 +548,15 @@ void C_Create_List::run()
 
       for (_size i = 0; i < len; i++) {
          const _str n = os_trim(names[i]);
+         const _bool isFile = os_hasExtension(n);
 
          if (os_isInvaild(n)) {
-            this->perun2.logger.log(L"Failed to create ", getCCNameShort(n));
+            if (isFile) {
+               this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
+            }
+            else {
+               this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
+            }
             success = false;
          }
          else {
@@ -538,7 +564,12 @@ void C_Create_List::run()
 
             if (os_exists(path)) {
                if (!(forced && os_drop(path, this->perun2))) {
-                  this->perun2.logger.log(L"Failed to create ", getCCName(path));
+                  if (isFile) {
+                     this->perun2.logger.log(L"Failed to create file ", getCCName(path));
+                  }
+                  else {
+                     this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
+                  }
                   success = false;
                   continue;
                }
@@ -589,7 +620,8 @@ void C_CreateFiles_List::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            this->perun2.logger.log(L"Failed to create file ", getCCNameShort(names[i]));
+            const _str n = os_trim(names[i]);
+            this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
@@ -646,7 +678,8 @@ void C_CreateDirectories_List::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            this->perun2.logger.log(L"Failed to directory ", getCCNameShort(names[i]));
+            const _str n = os_trim(names[i]);
+            this->perun2.logger.log(L"Failed to directory ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
@@ -703,7 +736,15 @@ void C_Create_List_Stack::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            this->perun2.logger.log(L"Failed to create ", getCCNameShort(names[i]));
+            const _str n = os_trim(names[i]);
+            const _bool isFile = os_hasExtension(n);
+
+            if (isFile) {
+               this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
+            }
+            else {
+               this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
+            }
          }
          this->perun2.contexts.success->value = false;
          return;
@@ -778,7 +819,8 @@ void C_CreateFiles_List_Stack::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            this->perun2.logger.log(L"Failed to create file ", getCCNameShort(names[i]));
+            const _str n = os_trim(names[i]);
+            this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
@@ -839,7 +881,8 @@ void C_CreateDirectories_List_Stack::run()
 
       if (!os_directoryExists(dest)) {
          for (_size i = 0; i < len; i++) {
-            this->perun2.logger.log(L"Failed to directory ", getCCNameShort(names[i]));
+            const _str n = os_trim(names[i]);
+            this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;

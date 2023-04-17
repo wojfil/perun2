@@ -1147,7 +1147,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
    wcscpy(DirPath, const_cast<_char*>(oldPath.c_str()));
    wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
    wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
-   wcscat(FileName, str(OS_SEPARATOR).c_str());
+   wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
    hFind = FindFirstFile(DirPath, &FindFileData);
 

@@ -2,4 +2,5 @@ src/Uroboros.depend
 src/Uroboros.layout
 src/obj
 src/.vscode
+.vscode
 src/test/blackbox/res/ccc/*

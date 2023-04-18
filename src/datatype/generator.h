@@ -24,7 +24,7 @@ namespace perun2
 
 // generator is a structure
 // that generates a new instance of a certain data type
-// when is called
+// when its method getValue() is called
 template <typename T>
 struct Generator
 {
@@ -38,7 +38,7 @@ public:
    {
       // simple reflection for parsing
       // detect generators that return deterministic values
-      // and use this knowledge for optimizations
+      // and use this knowledge in optimizations
       return false;
    };
 };

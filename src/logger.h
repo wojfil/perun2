@@ -34,7 +34,7 @@ public:
    // print something
    void print(const _str& value) const;
 
-   // print command log, all args concatenated in one line
+   // print command log, all args are strings and are concatenated into one line
    template<typename... Args>
    void log(Args const&... args) const
    {

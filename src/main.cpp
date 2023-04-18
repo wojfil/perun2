@@ -16,6 +16,11 @@
 
 perun2::_exitint wmain(perun2::_int argc, perun2::_char* argv[], perun2::_char* envp[])
 {
+   // these two inits are useful, but not mandatory
+   // do not call them, if Perun2 is used like an imported external library
+   // initConsole() provides some specific IO optimizations
+   // initTerminator() overrides the default Ctrl+C termination signal
+   // after that, it does not work as expected outside of Perun2, so be very cautious
    perun2::initConsole();
    perun2::initTerminator();
 

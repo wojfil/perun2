@@ -31,6 +31,7 @@ enum WildcardCharState
 };
 
 
+// base struct for pattern matching
 struct WildcardComparer
 {
 public:
@@ -53,6 +54,7 @@ protected:
 
 
 // this comparer uses only one wildcard: asterisk *
+// it represents any sequence of characters including empty space
 struct SimpleWildcardComparer : WildcardComparer
 {
 public:

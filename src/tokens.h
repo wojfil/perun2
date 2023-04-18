@@ -23,8 +23,8 @@ namespace perun2
 {
 
 // Tokens info about certain sequence of tokens
-// this info is generate once at the sequence creation
-// and then used multiple times during parsing
+// this info is generated once at the sequence creation
+// and then read multiple times during parsing
 typedef _uint64 _tinfo;
 
 _constexpr _tinfo TI_NULL =                    0b00000000000000000000000;
@@ -53,6 +53,8 @@ _constexpr _tinfo TI_EVALUATE_DEFINITIONS =    0b00100000000000000000000;
 
 struct _p2;
 
+// this is just a subsequence of vector of tokens
+// it has a reference to the origin vector, some indexes and info
 struct Tokens
 {
 public:
@@ -61,6 +63,8 @@ public:
    Tokens(const std::vector<Token>& li);
    Tokens(const Tokens& tks, const _int st, const _int ln);
 
+   // shorten this sequence by one
+   // remove the first or the last token
    void trimLeft();
    void trimRight();
 

@@ -57,6 +57,7 @@ public:
 typedef OriginStringInfo _osi;
 
 
+// the value of token can be...
 union TokenValue
 {
    // single symbol

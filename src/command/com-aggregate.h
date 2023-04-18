@@ -34,8 +34,9 @@ _constexpr _agunit AGGR_NULL =      0b000;
 _constexpr _agunit AGGR_COPY =      0b001;
 _constexpr _agunit AGGR_SELECT =    0b010;
 
-// commands Select and Copy are different than others
+// commands Select and Copy are different from others
 // they have to be performed on multiple files and directories at once
+// we cannot simply call them one by one
 // what happens when we call them in a loop?
 // if we select files one by one, then the result will be selection of the one last file
 // this is what Aggregate is for - it stores files and directories

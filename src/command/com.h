@@ -21,16 +21,17 @@
 namespace perun2
 {
 
+// this is just a command
+// we can run it
 struct Command
 {
+public:
    virtual void run() = 0;
-   virtual ~Command() { };
 };
 
 typedef std::unique_ptr<Command> _comptr;
 
 }
-
 
 namespace perun2::comm
 {
@@ -38,8 +39,6 @@ namespace perun2::comm
 struct C_DoNothing : Command
 {
 public:
-   C_DoNothing() {};
-
    void run() override;
 };
 

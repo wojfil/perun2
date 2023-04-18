@@ -38,6 +38,10 @@
 namespace perun2::parse
 {
 
+// build a Generator of certain data type (casting included)
+// this is the API we should use everywhere
+// it even has a nice short name and its function overloading works well in templates
+
 _bool parse(_p2& p2, const Tokens& tks, _genptr<_bool>& result);
 _bool parse(_p2& p2, const Tokens& tks, _genptr<_num>& result);
 _bool parse(_p2& p2, const Tokens& tks, _genptr<_str>& result);

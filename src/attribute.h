@@ -47,8 +47,9 @@ _constexpr _aunit ATTR_PATH =         0b00000000000000100000000000000000;
 _constexpr _aunit ATTR_READONLY =     0b00000000000001000000000000000000;
 _constexpr _aunit ATTR_SIZE =         0b00000000000010000000000000000000;
 
-// certain expression or syntax structure may require multiple attributes of file:
+// certain expression or syntax structure may require multiple file attributes:
 // for example - creation time, modification time, size and extension
+// they also may repeat
 // instead of reading them one by one
 // all attributes from an expression are joined together and read at once at the beginning of expression evaluation
 

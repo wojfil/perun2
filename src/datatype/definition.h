@@ -26,7 +26,8 @@ namespace perun2
 
 struct FileContext;
 
-// this data structure represents a lazy evaluated collection of strings
+// a lazy evaluated collection of strings
+// return next element on demand
 struct Definition : Generator<_str>
 {
 public:
@@ -41,6 +42,7 @@ public:
    virtual FileContext* getFileContext()
    {
       // designed to be overriden
+      // some reflection for parsing
       return nullptr;
    };
 

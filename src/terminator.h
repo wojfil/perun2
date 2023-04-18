@@ -25,7 +25,7 @@ namespace perun2
 struct _p2;
 
 // Terminator keeps track of every initialized instance of Perun2
-// it overrides the default Ctrl+C command-line exit command
+// it overrides the default Ctrl+C termination signal
 // when this event happens, all Perun2 instances are stopped softly (as their commands are designed to be atomic)
 // works only, if Terminator has been initialized
 struct Terminator

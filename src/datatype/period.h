@@ -98,9 +98,8 @@ private:
 };
 
 inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit);
-// if return value = 0       periods are equal
-// if return value < 0       left period is smaller
-// if return value > 0       left period is greater
+// return = 0       periods are equal
+// return < 0       left period is smaller
 
 }
 

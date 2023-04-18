@@ -108,7 +108,7 @@ void os_loadAttributes(FileContext& context)
 
    _str path;
 
-   // "drive", "depth", "path", "parent" and "fullname" do not require access to the file system
+   // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
       path = os_join(context.locContext->location->value, context.trimmed);
       context.v_path->value = path;
@@ -342,6 +342,8 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 }
 
+// load attributes, but we already have some data
+// we do not need to read it again from the file system
 void os_loadDataAttributes(FileContext& context, const _fdata& data)
 {
    const _attrptr& attribute = context.attribute;
@@ -349,7 +351,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    context.invalid = false;
    _str path;
 
-   // "drive", "depth", "path", "parent" and "fullname" do not require access to the file system
+   // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
       path = os_join(context.locContext->location->value, context.trimmed);
       context.v_path->value = path;
@@ -813,7 +815,7 @@ _bool os_directoryExists(const _str& path)
 
 //////
 ///
-//  file system:
+// filesystem variables:
 ///
 /////
 

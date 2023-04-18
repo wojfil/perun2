@@ -39,7 +39,7 @@ void os_loadAttributes(FileContext& context);
 void os_loadEmptyAttributes(FileContext& context);
 void os_loadDataAttributes(FileContext& context, const _fdata& data);
 
-// file system variables:
+// get values of filesystem variables:
 _tim os_access(const _str& path);
 _bool os_archive(const _str& path);
 _tim os_change(const _str& path);
@@ -69,8 +69,8 @@ _bool os_exists(const _str& path);
 _bool os_fileExists(const _str& path);
 _bool os_directoryExists(const _str& path);
 
-// file system operations:
-// some of them require pointer to the running Perun2 instance
+// filesystem operations:
+// some of them take a reference to the running Perun2 instance
 // they can be stopped safely by an interruption call during operation
 _bool os_delete(const _str& path);
 _bool os_drop(const _str& path, _p2& p2);

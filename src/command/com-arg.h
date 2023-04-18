@@ -27,6 +27,8 @@
 namespace perun2::comm
 {
 
+// iterate over some strings
+// and treat them like name and paths of files/directories
 struct IterationLoop : Command
 {
 public:

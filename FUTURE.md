@@ -291,6 +291,19 @@ select '*.pdf'
   where pages > 30
 ```
 
+## Disc properties: *totalSpace*, *usedSpace*, *freeSpace*
+
+Get properties of disc current working location is in.
+
+```
+print 'Free space here: ' + (freeSpace / 1gb) + ' gigabytes';
+
+inside 'f:/'
+{
+  print 'Free space on pendrive: ' + (freeSpace / 1gb) + ' gigabytes';
+}
+```
+
 ## Variable *lines*
 
 Count lines in text files.

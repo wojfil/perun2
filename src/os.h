@@ -27,6 +27,13 @@ namespace perun2
 _constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
 _constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
 
+// while sleeping
+// check every 300 ms if the program received an interruption signal
+_constexpr _nint OS_SLEEP_UNIT = NINT_300;
+
+
+void os_init();
+
 _tim os_now();
 _tim os_today();
 _tim os_yesterday();
@@ -71,7 +78,7 @@ _bool os_directoryExists(const _str& path);
 
 // filesystem operations:
 // some of them take a reference to the running Perun2 instance
-// they can be stopped safely by an interruption call during operation
+// they can be stopped safely by an interruption signal during operation
 _bool os_delete(const _str& path);
 _bool os_drop(const _str& path, _p2& p2);
 _bool os_drop(const _str& path, const _bool isFile, _p2& p2);

@@ -27,9 +27,7 @@
 #include <clocale>
 #include <cstdlib>
 #include <cwctype>
-#include <combaseapi.h>
 #include <iostream>
-#include <fcntl.h>
 
 namespace perun2
 {
@@ -38,7 +36,5 @@ namespace perun2
       _cin.tie(0);
       _cout.tie(0);
       std::setlocale(LC_CTYPE, "");
-      _setmode(_fileno(stdout), _O_U8TEXT);
-      CoInitializeEx(0, COINIT_MULTITHREADED);
    }
 }

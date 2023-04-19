@@ -30,14 +30,20 @@
 #include <shlwapi.h>
 #include <algorithm>
 #include <fstream>
+#include <combaseapi.h>
+#include <fcntl.h>
+
 
 namespace perun2
 {
 
-_constexpr _nint OS_SLEEP_UNIT = NINT_300;
-// while sleeping
-// check every 300 ms if the program received an interruption signal
-
+// this function should be called only once globally
+// just some OS-specific settings
+void os_init()
+{
+   _setmode(_fileno(stdout), _O_U8TEXT);
+   CoInitializeEx(0, COINIT_MULTITHREADED);
+}
 
 _tim os_now()
 {

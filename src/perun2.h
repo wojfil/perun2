@@ -116,6 +116,10 @@ public:
 private:
    Arguments arguments;
    _p2 process;
+
+// this initialization is global and performed only once for all struct instances
+   static _bool initialized;
+   static void init();
 };
 
 

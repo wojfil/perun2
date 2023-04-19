@@ -167,13 +167,21 @@ Perun2::Perun2(const _int argc, _char* const argv[])
    if (this->process.exitCode == EXITCODE_CLI_ERROR) {
       this->process.parseState = ParseState::ps_ParsingFailure;
    }
+
+   Perun2::init();
 };
 
 Perun2::Perun2(const _str& location, const _str& code)
-   : arguments(location, code), process(this->arguments) { };
+   : arguments(location, code), process(this->arguments) 
+{ 
+   Perun2::init();
+};
 
 Perun2::Perun2(const _str& location, const _str& code, const _flags flags)
-   : arguments(location, code, flags), process(this->arguments) { };
+   : arguments(location, code, flags), process(this->arguments) 
+{ 
+   Perun2::init();
+};
 
 _bool Perun2::run()
 {
@@ -183,6 +191,16 @@ _bool Perun2::run()
 _exitint Perun2::getExitCode() const
 {
    return this->process.exitCode;
+}
+
+_bool Perun2::initialized = false;
+
+void Perun2::init()
+{
+   if (!initialized) {
+      initialized = true;
+      os_init();
+   }
 }
 
 }

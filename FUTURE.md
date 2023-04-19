@@ -341,7 +341,7 @@ For example, we could use this feature to download photos taken today by a camer
 inside device {
   copy images
     where creation = today
-    to origin
+    to desktop
 }
 ```
 

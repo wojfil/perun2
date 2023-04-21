@@ -40,7 +40,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
       return true;
    }
 
-   const _uint32 info = os_patternInfo(pattern);
+   const uint32_t info = os_patternInfo(pattern);
 
    if ((info & ASTERISK_INFO_VALID) == 0) {
       throw SyntaxError::invalidAsteriskPattern(originPattern, line);

@@ -22,7 +22,7 @@
 namespace perun2
 {
 
-typedef _uint64 _cunit;
+typedef uint64_t _cunit;
 
 _constexpr _cunit CACHE_NULL =                 0b00000000000000000000000000000000;
 _constexpr _cunit CACHE_DESKTOP_PATH =         0b00000000000000000000000000000001;

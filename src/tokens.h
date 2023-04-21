@@ -25,7 +25,7 @@ namespace perun2
 // Tokens info about certain sequence of tokens
 // this info is generated once at the sequence creation
 // and then read multiple times during parsing
-typedef _uint64 _tinfo;
+typedef uint64_t _tinfo;
 
 _constexpr _tinfo TI_NULL =                    0b00000000000000000000000;
 _constexpr _tinfo TI_HAS_COMPARISON_CHAR =     0b00000000000000000000001;

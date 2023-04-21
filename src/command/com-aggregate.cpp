@@ -48,7 +48,7 @@ void Aggregate::run()
       }
 
       if (failedSelect > 0) {
-         for (_uint32 i = 0; i < failedSelect; i++) {
+         for (uint32_t i = 0; i < failedSelect; i++) {
             logSelectError(this->perun2, _str());
          }
          failedSelect = 0;
@@ -113,7 +113,7 @@ void Aggregate::run()
       }
 
       if (failedCopy > 0) {
-         for (_uint32 i = 0; i < failedCopy; i++) {
+         for (uint32_t i = 0; i < failedCopy; i++) {
             logCopyError(this->perun2, _str());
          }
          failedCopy = 0;

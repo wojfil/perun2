@@ -40,8 +40,6 @@ namespace perun2
 typedef int                         _exitint;
 typedef bool                        _bool;
 typedef int32_t                     _int;
-typedef uint32_t                    _uint32;
-typedef uint64_t                    _uint64;
 typedef long unsigned int           _ulong;
 typedef std::size_t                 _size;
 typedef wchar_t                     _char;

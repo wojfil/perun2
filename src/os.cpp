@@ -1327,9 +1327,9 @@ _bool os_isInvaild(const _str& path)
    return false;
 }
 
-_uint32 os_patternInfo(const _str& pattern)
+uint32_t os_patternInfo(const _str& pattern)
 {
-   _uint32 result = parse::ASTERISK_INFO_NULL;
+   uint32_t result = parse::ASTERISK_INFO_NULL;
    const _size length = pattern.size();
 
    if (length == 0 || pattern[length - 1] == CHAR_DOT) {
@@ -1886,9 +1886,9 @@ _bool os_findText(const _str& path, const _str& value)
    return result;
 }
 
-inline _uint64 os_bigInteger(const _uint32 low, const _uint32 high)
+inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high)
 {
-   _uint64 n = high;
+   uint64_t n = high;
    n <<= sizeof(high) * 8;
    n |= low;
    return n;

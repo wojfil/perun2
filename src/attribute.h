@@ -23,7 +23,7 @@
 namespace perun2
 {
 
-typedef _uint64 _aunit;
+typedef uint64_t _aunit;
 
 _constexpr _aunit ATTR_NULL =         0b00000000000000000000000000000000;
 _constexpr _aunit ATTR_ACCESS =       0b00000000000000000000000000000001;

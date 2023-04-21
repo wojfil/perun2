@@ -109,7 +109,7 @@ _bool os_select(const _str& parent, const _set& paths);
 _bool os_run(const _str& comm, const _str& location, _p2& p2);
 
 _bool os_isInvaild(const _str& path);
-_uint32 os_patternInfo(const _str& pattern);
+uint32_t os_patternInfo(const _str& pattern);
 _bool os_bothAreSeparators(const _char left, const _char right);
 
 _str os_trim(const _str& path);
@@ -142,7 +142,7 @@ _bool os_readFile(_str& result, const _str& path);
 void os_showWebsite(const _str& url);
 _bool os_findText(const _str& path, const _str& value);
 
-inline _uint64 os_bigInteger(const _uint32 low, const _uint32 high);
+inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high);
 inline _bool os_isBrowsePath(const _str& path);
 inline _tim os_convertToPerun2Time(const _ftim* time);
 inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result);

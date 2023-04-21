@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-typedef _uint32 _flags;
+typedef uint32_t _flags;
 
 _constexpr _flags FLAG_NULL =                 0b0000;
 _constexpr _flags FLAG_NOOMIT =               0b0001;

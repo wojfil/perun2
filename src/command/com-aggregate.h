@@ -28,7 +28,7 @@ namespace perun2
 namespace perun2::comm
 {
 
-typedef _uint32 _agunit;
+typedef uint32_t _agunit;
 
 _constexpr _agunit AGGR_NULL =      0b000;
 _constexpr _agunit AGGR_COPY =      0b001;
@@ -52,8 +52,8 @@ public:
 
    _set copyPaths;
    std::unordered_map<_str, _set> selectPaths;
-   _uint32 failedCopy = 0;
-   _uint32 failedSelect = 0;
+   uint32_t failedCopy = 0;
+   uint32_t failedSelect = 0;
    _set invalidCopy;
    _set invalidSelect;
 

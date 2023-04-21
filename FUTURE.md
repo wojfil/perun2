@@ -107,6 +107,17 @@ We can introduce hundreds of new constants.
 Not every program can be here.
 They should be rated by popularity.
 
+## Constant value *pendrive*
+
+This is path to the first connected pendrive. Empty string if there is nothing plugged in. In WindowsOS, this value is usually F:/, but not always.
+
+```
+copy '*.pdf'
+  to pendrive
+```
+
+This feature is cool and should be implemented as soon as possible. We can even introduce a plural variant - *pendrives*.
+
 ## "Compile" time function evaluation
 
 If certain function takes constant values as arguments, evaluate it during code interpretation.
@@ -355,7 +366,6 @@ inside device {
 ```
 
 Other possible variables: *phone*, *camera*. There is a possibility to express paths to external devices the following way.
-
 
 ```
 open 'device:/some/path/*.txt'

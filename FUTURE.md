@@ -20,6 +20,21 @@ select '*.pdf'
   limit 100mb
 ```
 
+Command above selects the freshest 100 megabytes of pds files.
+
+## Limit by total length
+
+Another possible meaning of *limit*. In this scenario, the argument is a period.
+Would work with audios and videos.
+
+```
+select '*.mp3'
+  limit 74 minutes
+```
+
+I have one use case. We select some songs in order to burn them on a CD.
+The disc can contain only 74 minutes of music.
+
 ## Archive files
 
 See through the compressed archive files as if they are transparent.

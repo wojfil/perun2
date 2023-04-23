@@ -253,7 +253,7 @@ Let *K* mean one thousand. So, *15k* written in code means *15000*.
 How should then one million be expressed? *KK* or *M*?
 
 ```
-copy '*.pdf*'
+copy '*.pdf'
   limit 3k
 ```
 
@@ -264,7 +264,7 @@ However, there are some requirements. It should be preceded by at least one digi
 We can shorten some literals, so instead of *2023*, let us just write *2k23*.
 
 ```
-select '*.pdf*'
+select '*.pdf'
   where creation.year = 2k20
 ```
 

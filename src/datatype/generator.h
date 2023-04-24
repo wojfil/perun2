@@ -32,8 +32,6 @@ public:
 
    virtual T getValue() = 0;
 
-   virtual ~Generator() { };
-
    virtual _bool isConstant() const
    {
       // simple reflection for parsing

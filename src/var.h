@@ -25,9 +25,8 @@ namespace perun2
    {
       vt_User,       // variable created by user
       vt_Attribute,  // file attribute
-      vt_Special     // other inner vars: global constant, index, this, success...
+      vt_Special     // other vars: global constant, index, this, success...
    };
-
 
    template <typename T>
    struct Variable : Generator<T>

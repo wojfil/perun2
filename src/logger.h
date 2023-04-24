@@ -58,8 +58,8 @@ public:
 
 private:
    // if program was called with -s
-   // it runs in silent mode and there are no logs of file system commands
-   // however, critical error messages and Print still should work
+   // it runs in silent mode and there are no logs of filesystem commands
+   // however, critical error messages and Print should still work
    const _bool isSilent;
 
    // if the logger sends messages to the GUI program, flush the buffer every line

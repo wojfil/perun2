@@ -128,7 +128,6 @@ union TokenValue
 struct Token
 {
 public:
-
    enum Type
    {
       t_Symbol = 0,
@@ -141,7 +140,6 @@ public:
       t_TwoWords
    };
 
-   // constructors:
    Token() = delete;
    Token(const _char v, const _int li, _p2& p2);
    Token(const _char v, const _int am, const _int li, _p2& p2);
@@ -154,12 +152,6 @@ public:
    Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
       const _size os_id2, const _size os_len2, _p2& p2);
 
-   // members:
-   const Type type;
-   const _int line;
-   const TokenValue value;
-
-   // methods:
    _bool isCommandKeyword() const;
    _bool isFilterKeyword() const;
    _bool isExpForbiddenKeyword() const;
@@ -173,6 +165,10 @@ public:
    _str getOriginString(_p2& p2) const;
    _str getOriginString_2(_p2& p2) const;
 
+   const Type type;
+   const _int line;
+   const TokenValue value;
+   
 private:
    _str getCodeSubstr(const _osi& osi, _p2& p2) const;
 

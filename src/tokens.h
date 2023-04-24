@@ -22,8 +22,8 @@
 namespace perun2
 {
 
-// Tokens info about certain sequence of tokens
-// this info is generated once at the sequence creation
+// Tokens' info about certain sequence of tokens
+// this info is generated only once at the sequence creation
 // and then read multiple times during parsing
 typedef uint64_t _tinfo;
 
@@ -53,7 +53,7 @@ _constexpr _tinfo TI_EVALUATE_DEFINITIONS =    0b00100000000000000000000;
 
 struct _p2;
 
-// this is just a subsequence of vector of tokens
+// this is a subsequence of vector of tokens
 // it has a reference to the origin vector, some indexes and info
 struct Tokens
 {

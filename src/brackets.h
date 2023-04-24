@@ -32,7 +32,7 @@ private:
 };
 
 // this is called only once at the beginning of parsing
-// just look for common brackets errors before any command has been built
+// look for common errors before any command has been built
 void checkBracketsThoroughly(const Tokens& tks);
 
 }

@@ -58,10 +58,10 @@ public:
    // Perun2 arguments parsed from the command-line
    Arguments(const _int argc, _char* const argv[]);
 
-   // Perun2 arguments made from code and location
+   // Perun2 arguments made from location and code
    Arguments(const _str& loc, const _str& cod);
 
-   // Perun2 arguments made from code, location and flags
+   // Perun2 arguments made from location, code and flags
    Arguments(const _str& loc, const _str& cod, const _flags fls);
 
    _flags getFlags() const;

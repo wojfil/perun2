@@ -74,19 +74,19 @@ _num TimeMember::getValue()
 {
    switch (this->unit) {
       case Period::u_Years:
-         return _num(static_cast<_nint>(this->time->getValue().year));
+         return static_cast<_nint>(this->time->getValue().year);
       case Period::u_Months:
-         return _num(static_cast<_nint>(this->time->getValue().month));
+         return static_cast<_nint>(this->time->getValue().month);
       case Period::u_Weeks:
-         return _num(static_cast<_nint>(this->time->getValue().getWeekDay()));
+         return static_cast<_nint>(this->time->getValue().getWeekDay());
       case Period::u_Days:
-         return _num(static_cast<_nint>(this->time->getValue().day));
+         return static_cast<_nint>(this->time->getValue().day);
       case Period::u_Hours:
-         return _num(static_cast<_nint>(this->time->getValue().hour));
+         return static_cast<_nint>(this->time->getValue().hour);
       case Period::u_Minutes:
-         return _num(static_cast<_nint>(this->time->getValue().minute));
+         return static_cast<_nint>(this->time->getValue().minute);
       case Period::u_Seconds:
-         return _num(static_cast<_nint>(this->time->getValue().second));
+         return static_cast<_nint>(this->time->getValue().second);
    }
 
    return _num();

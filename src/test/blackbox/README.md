@@ -2,14 +2,13 @@
 
 Here are the most important tests for Perun2.
 They take a compiled executable file *perun2.exe*, run certain Perun2 code with it and compare the result (output + exit code) with the expectations.
-They test the entire process of code interpretation, as one failure somewhere in the middle would alter the final output.
 
 ## Remarks
 
 Tests should be platform independent. For example, path separator may differ between operating systems and be / or \\.
 If certain test requires it, use function *path()* or the constant value *SEPARATOR*.
-The same goes for case size of file names - just use lowercase every time they are involved.
-If the output is a collection of files, their order may vary between environments.
+Another rule goes for case size of file names. Just use lowercase every time they are involved.
+If the output of a command is a collection of files, their order may vary between environments.
 They should be ordered just in case.
 Directory *res* contains test data.
 If you want to introduce more files for tests, create a new subdirectory inside it (like *res/newdir*).

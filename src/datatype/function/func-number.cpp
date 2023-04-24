@@ -71,7 +71,7 @@ _num F_CountInside::getValue()
    _nint n = NINT_ZERO;
 
    while (definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          definition->reset();
          break;
       }

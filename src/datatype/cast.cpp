@@ -114,7 +114,7 @@ _list Cast_D_L::getValue()
    _list strings;
 
    while (this->base->hasNext()) {
-      if (this->perun2.state != State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->base->reset();
          break;
       }

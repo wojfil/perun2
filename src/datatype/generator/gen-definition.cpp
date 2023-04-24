@@ -88,7 +88,7 @@ _bool DefFilter_Where::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->perun2.state != State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          break;
       }
 
@@ -222,7 +222,7 @@ _bool DefFilter_Limit::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->perun2.state != State::s_Running || counter >= limit) {
+      if (this->perun2.isNotRunning() || counter >= limit) {
          definition->reset();
          break;
       }
@@ -249,7 +249,7 @@ _bool DefFilter_Skip::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->perun2.state != State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          definition->reset();
       }
 
@@ -282,7 +282,7 @@ _bool DefFilter_Every::hasNext()
    }
 
    while (definition->hasNext()) {
-      if (this->perun2.state != State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          definition->reset();
       }
 
@@ -321,7 +321,7 @@ _bool DefFilter_Final::hasNext()
       length = NINT_ZERO;
 
       while (definition->hasNext()) {
-         if (this->perun2.state != State::s_Running) {
+         if (this->perun2.isNotRunning()) {
             definition->reset();
             return false;
          }
@@ -340,7 +340,7 @@ _bool DefFilter_Final::hasNext()
       first = false;
    }
 
-   if (this->perun2.state != State::s_Running) {
+   if (this->perun2.isNotRunning()) {
       first = true;
       return false;
    }
@@ -369,7 +369,7 @@ void Join_DefStr::reset()
 
 _bool Join_DefStr::hasNext()
 {
-   if (this->perun2.state != State::s_Running) {
+   if (this->perun2.isNotRunning()) {
       reset();
       return false;
    }
@@ -401,7 +401,7 @@ void Join_StrDef::reset()
 
 _bool Join_StrDef::hasNext()
 {
-   if (this->perun2.state != State::s_Running) {
+   if (this->perun2.isNotRunning()) {
       reset();
       return false;
    }
@@ -435,7 +435,7 @@ void Join_DefList::reset()
 
 _bool Join_DefList::hasNext()
 {
-   if (this->perun2.state != State::s_Running) {
+   if (this->perun2.isNotRunning()) {
       reset();
       return false;
    }
@@ -477,7 +477,7 @@ void Join_ListDef::reset()
 
 _bool Join_ListDef::hasNext()
 {
-   if (this->perun2.state != State::s_Running) {
+   if (this->perun2.isNotRunning()) {
       reset();
       return false;
    }
@@ -529,7 +529,7 @@ void Join_DefDef::reset()
 
 _bool Join_DefDef::hasNext()
 {
-   if (this->perun2.state != State::s_Running) {
+   if (this->perun2.isNotRunning()) {
       reset();
       return false;
    }

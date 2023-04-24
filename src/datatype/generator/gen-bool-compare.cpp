@@ -22,7 +22,7 @@ namespace perun2::gen
 _bool DefinitionsEqual::getValue()
 {
    while (true) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -58,7 +58,7 @@ _bool DefinitionsEqual::getValue()
 _bool DefinitionsNotEqual::getValue()
 {
    while (true) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -94,7 +94,7 @@ _bool DefinitionsNotEqual::getValue()
 _bool DefinitionsSmaller::getValue()
 {
    while (true) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -123,7 +123,7 @@ _bool DefinitionsSmaller::getValue()
 _bool DefinitionsSmallerEquals::getValue()
 {
    while (true) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -152,7 +152,7 @@ _bool DefinitionsSmallerEquals::getValue()
 _bool DefinitionsBigger::getValue()
 {
    while (true) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -181,7 +181,7 @@ _bool DefinitionsBigger::getValue()
 _bool DefinitionsBiggerEquals::getValue()
 {
    while (true) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->value1->reset();
          this->value2->reset();
          break;
@@ -225,7 +225,7 @@ _bool DefinitionListEqual::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          break;
       }
@@ -268,7 +268,7 @@ _bool DefinitionListNotEqual::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          break;
       }
@@ -305,7 +305,7 @@ _bool DefinitionListSmaller::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          return false;
       }
@@ -338,7 +338,7 @@ _bool DefinitionListSmallerEquals::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          return false;
       }
@@ -376,7 +376,7 @@ _bool DefinitionListBigger::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          return false;
       }
@@ -408,7 +408,7 @@ _bool DefinitionListBiggerEquals::getValue()
    _size i = 0;
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          return false;
       }

@@ -112,12 +112,9 @@ void os_loadAttributes(FileContext& context)
       return;
    }
 
-   _str path;
-
    // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
-      path = os_join(context.locContext->location->value, context.trimmed);
-      context.v_path->value = path;
+      context.v_path->value = os_join(context.locContext->location->value, context.trimmed);
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
@@ -125,11 +122,11 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_PARENT)) {
-      context.v_parent->value = os_parent(path);
+      context.v_parent->value = os_parent(context.v_path->value);
    }
 
    if (attribute->has(ATTR_DRIVE)) {
-      context.v_drive->value = os_drive(path);
+      context.v_drive->value = os_drive(context.v_path->value);
    }
 
    if (attribute->has(ATTR_DEPTH)) {
@@ -142,63 +139,54 @@ void os_loadAttributes(FileContext& context)
 
    // below are "real" attributes of files and directories
    _adata data;
-   const _bool gotAttrs = GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data);
-   const DWORD& dwAttrib = data.dwFileAttributes;
-   const _bool exists = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
-   context.v_exists->value = exists;
+   const _bool gotAttrs = GetFileAttributesExW(context.v_path->value.c_str(), GetFileExInfoStandard, &data);
+   const DWORD dwAttrib = data.dwFileAttributes;
+   context.v_exists->value = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
 
-   _bool isDir;
-   _bool isFile;
-
-   if (exists) {
-      isDir = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
-      isFile = !isDir;
+   if (context.v_exists->value) {
+      context.v_isdirectory->value = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
+      context.v_isfile->value = !context.v_isdirectory->value;
    }
    else {
-      isFile = os_hasExtension(context.trimmed);
-      isDir = !isFile;
+      context.v_isfile->value = os_hasExtension(context.trimmed);
+      context.v_isdirectory->value = !context.v_isfile->value;
    }
 
-   context.v_isfile->value = isFile;
-   context.v_isdirectory->value = isDir;
-
    if (attribute->has(ATTR_ACCESS)) {
-      context.v_access->value = exists
+      context.v_access->value = context.v_exists->value
          ? os_convertToPerun2Time(&data.ftLastAccessTime)
          : _tim();
    }
 
    if (attribute->has(ATTR_ARCHIVE)) {
-      context.v_archive->value = exists ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
+      context.v_archive->value = context.v_exists->value ? (dwAttrib & FILE_ATTRIBUTE_ARCHIVE) : false;
    }
 
    if (attribute->has(ATTR_COMPRESSED)) {
-      context.v_compressed->value = exists ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
+      context.v_compressed->value = context.v_exists->value ? (dwAttrib & FILE_ATTRIBUTE_COMPRESSED) : false;
    }
 
    if (attribute->has(ATTR_CREATION)) {
-      context.v_creation->value = exists
+      context.v_creation->value = context.v_exists->value
          ? os_convertToPerun2Time(&data.ftCreationTime)
          : _tim();
    }
 
-   const _bool hasMod = attribute->has(ATTR_MODIFICATION);
-   const _bool hasChange = attribute->has(ATTR_CHANGE);
-   if (hasMod || hasChange) {
-      const _tim time = exists
+   if (attribute->has(ATTR_MODIFICATION) || attribute->has(ATTR_CHANGE)) {
+      const _tim time = context.v_exists->value
          ? os_convertToPerun2Time(&data.ftLastWriteTime)
          : _tim();
 
-      if (hasChange) {
+      if (attribute->has(ATTR_CHANGE)) {
          context.v_change->value = time;
       }
-      if (hasMod) {
+      if (attribute->has(ATTR_MODIFICATION)) {
          context.v_modification->value = time;
       }
    }
 
    if (attribute->has(ATTR_LIFETIME)) {
-      if (exists) {
+      if (context.v_exists->value) {
          context.v_lifetime->value = context.v_creation->value < context.v_modification->value
             ? (os_now() - context.v_creation->value)
             : (os_now() - context.v_modification->value);
@@ -209,10 +197,10 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_EMPTY)) {
-      if (exists) {
-         context.v_empty->value = isFile
+      if (context.v_exists->value) {
+         context.v_empty->value = context.v_isfile->value
             ? os_emptyFile(data)
-            : os_emptyDirectory(path);
+            : os_emptyDirectory(context.v_path->value);
       }
       else {
          context.v_empty->value = false;
@@ -220,19 +208,19 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_ENCRYPTED)) {
-      context.v_encrypted->value = exists ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
+      context.v_encrypted->value = context.v_exists->value ? (dwAttrib & FILE_ATTRIBUTE_ENCRYPTED) : false;
    }
 
    if (attribute->has(ATTR_EXTENSION)) {
-      context.v_extension->value = isFile ? os_extension(context.trimmed) : _str();
+      context.v_extension->value = context.v_isfile->value ? os_extension(context.trimmed) : _str();
    }
 
    if (attribute->has(ATTR_HIDDEN)) {
-      context.v_hidden->value = exists ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
+      context.v_hidden->value = context.v_exists->value ? (dwAttrib & FILE_ATTRIBUTE_HIDDEN) : false;
    }
 
    if (attribute->has(ATTR_NAME)) {
-      if (isDir) {
+      if (context.v_isdirectory->value) {
          context.v_name->value = os_fullname(context.trimmed);
       }
       else {
@@ -243,14 +231,14 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_READONLY)) {
-      context.v_readonly->value = exists ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
+      context.v_readonly->value = context.v_exists->value ? (dwAttrib & FILE_ATTRIBUTE_READONLY) : false;
    }
 
    if (attribute->has(ATTR_SIZE)) {
-      if (exists) {
-         context.v_size->value = isFile
+      if (context.v_exists->value) {
+         context.v_size->value = context.v_isfile->value
             ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : _num(os_sizeDirectory(path, context.attribute->perun2));
+            : _num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
       }
       else {
          context.v_size->value = _num(NINT_MINUS_ONE);
@@ -355,12 +343,10 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    const _attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
    context.invalid = false;
-   _str path;
 
    // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
-      path = os_join(context.locContext->location->value, context.trimmed);
-      context.v_path->value = path;
+      context.v_path->value = os_join(context.locContext->location->value, context.trimmed);
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
@@ -368,11 +354,11 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_PARENT)) {
-      context.v_parent->value = os_parent(path);
+      context.v_parent->value = os_parent(context.v_path->value);
    }
 
    if (attribute->has(ATTR_DRIVE)) {
-      context.v_drive->value = os_drive(path);
+      context.v_drive->value = os_drive(context.v_path->value);
    }
 
    if (attribute->has(ATTR_DEPTH)) {
@@ -384,14 +370,10 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    // below are "real" attributes of files and directories
-   const DWORD& dwAttrib = data.dwFileAttributes;
+   const DWORD dwAttrib = data.dwFileAttributes;
    context.v_exists->value = true;
-
-   const _bool isDir = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
-   const _bool isFile = !isDir;
-
-   context.v_isfile->value = isFile;
-   context.v_isdirectory->value = isDir;
+   context.v_isdirectory->value = dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
+   context.v_isfile->value = !context.v_isdirectory->value;
 
    if (attribute->has(ATTR_ACCESS)) {
       context.v_access->value = os_convertToPerun2Time(&data.ftLastAccessTime);
@@ -429,9 +411,9 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_EMPTY)) {
-      context.v_empty->value = isFile
+      context.v_empty->value = context.v_isfile->value
          ? (data.nFileSizeLow == 0 && data.nFileSizeHigh == 0)
-         : os_emptyDirectory(path);
+         : os_emptyDirectory(context.v_path->value);
    }
 
    if (attribute->has(ATTR_ENCRYPTED)) {
@@ -439,7 +421,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_EXTENSION)) {
-      context.v_extension->value = isFile ? os_extension(context.trimmed) : _str();
+      context.v_extension->value = context.v_isfile->value ? os_extension(context.trimmed) : _str();
    }
 
    if (attribute->has(ATTR_HIDDEN)) {
@@ -447,7 +429,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_NAME)) {
-      if (isDir) {
+      if (context.v_isdirectory->value) {
          context.v_name->value = os_fullname(context.trimmed);
       }
       else {
@@ -462,9 +444,9 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_SIZE)) {
-      context.v_size->value = isFile
+      context.v_size->value = context.v_isfile->value
          ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-         : _num(os_sizeDirectory(path, context.attribute->perun2));
+         : _num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
    }
 }
 

@@ -89,18 +89,6 @@ public:
    _tim getValue() override;
 };
 
-
-struct TimeDateAtIndex : Generator<_tim>
-{
-public:
-   TimeDateAtIndex() = delete;
-   TimeDateAtIndex(_genptr<_tim>& tim);
-   _tim getValue() override;
-
-private:
-   _genptr<_tim> time;
-};
-
 }
 
 #endif /* GEN_TIME_H */

@@ -82,20 +82,6 @@ protected:
    const Period::PeriodUnit unit;
 };
 
-
-struct TimeMemberAtIndex : Generator<_num>
-{
-public:
-   TimeMemberAtIndex() = delete;
-   TimeMemberAtIndex(_genptr<_tim>& tim, const Period::PeriodUnit& pu);
-   _num getValue() override;
-
-protected:
-   _genptr<_tim> time;
-   const Period::PeriodUnit unit;
-};
-
-
 }
 
 #endif /* GEN_NUMBER_H */

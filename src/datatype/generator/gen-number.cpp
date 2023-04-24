@@ -92,30 +92,4 @@ _num TimeMember::getValue()
    return _num();
 }
 
-TimeMemberAtIndex::TimeMemberAtIndex(_genptr<_tim>& tim, const Period::PeriodUnit& pu) 
-   : time(std::move(tim)), unit(pu) { };
-
-_num TimeMemberAtIndex::getValue() 
-{
-   switch (this->unit) {
-      case Period::u_Years:
-         return _num(static_cast<_nint>(this->time->getValue().year));
-      case Period::u_Months:
-         return _num(static_cast<_nint>(this->time->getValue().month));
-      case Period::u_Weeks:
-         return _num(static_cast<_nint>(this->time->getValue().getWeekDay()));
-      case Period::u_Days:
-         return _num(static_cast<_nint>(this->time->getValue().day));
-      case Period::u_Hours:
-         return _num(static_cast<_nint>(this->time->getValue().hour));
-      case Period::u_Minutes:
-         return _num(static_cast<_nint>(this->time->getValue().minute));
-      case Period::u_Seconds:
-         return _num(static_cast<_nint>(this->time->getValue().second));
-   }
-
-   return _num();
-}
-
-
 }

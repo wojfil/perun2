@@ -69,12 +69,4 @@ _tim TimeDate::getValue()
    return this->value->getValue().toDate();
 }
 
-TimeDateAtIndex::TimeDateAtIndex(_genptr<_tim>& tim)
-   : time(std::move(tim)) { }
-
-_tim TimeDateAtIndex::getValue() 
-{
-   return this->time->getValue().toDate();
-}
-
 }

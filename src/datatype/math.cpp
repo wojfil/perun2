@@ -19,30 +19,30 @@
 namespace perun2
 {
 
-Math::Math() {
-   anyRandomDouble = false;
+void Math::markAnyRandomDouble() 
+{
+   this->anyRandomDouble = true;
 }
 
-void Math::init() {
+void Math::init() 
+{
    std::random_device rd;
-   generator = std::mt19937(rd());
+   this->generator = std::mt19937(rd());
 
-   if (anyRandomDouble) {
-      doubleDist = std::uniform_real_distribution<>(NDOUBLE_ZERO, NDOUBLE_ONE);
+   if (this->anyRandomDouble) {
+      this->doubleDist = std::uniform_real_distribution<>(NDOUBLE_ZERO, NDOUBLE_ONE);
    }
 }
 
-_ndouble Math::randomDouble() {
-   return doubleDist(generator);
+_ndouble Math::randomDouble() 
+{
+   return this->doubleDist(this->generator);
 }
 
-_nint Math::randomInt(const _nint limit) {
+_nint Math::randomInt(const _nint limit) 
+{
    std::uniform_int_distribution<_nint> distribution(NINT_ZERO, limit);
-   return distribution(generator);
-}
-
-void Math::markAnyRandomDouble() {
-   anyRandomDouble = true;
+   return distribution(this->generator);
 }
 
 }

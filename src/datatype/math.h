@@ -22,21 +22,21 @@
 namespace perun2
 {
 
-struct Math {
+struct Math 
+{
 
 public:
-
-   Math();
+   void markAnyRandomDouble();
    void init();
+
    _ndouble randomDouble();
    _nint randomInt(const _nint limit);
-   void markAnyRandomDouble();
 
 private:
-
-   _bool anyRandomDouble;
+   _bool anyRandomDouble = false;
    std::mt19937 generator;
    std::uniform_real_distribution<> doubleDist;
+   
 };
 
 }

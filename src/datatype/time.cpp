@@ -106,10 +106,6 @@ void Time::addWeeks(const _tnum w)
    addDays(w * TNUM_DAYS_IN_WEEK);
 }
 
-// todo:  possible optimization
-// todo:  to make faster calculations with big numbers
-// todo:  at first, compute how many whole years these days contain
-// todo:  do not forget taking leap years into account
 void Time::addDays(const _tnum d)
 {
    if (type == tt_YearMonth) {

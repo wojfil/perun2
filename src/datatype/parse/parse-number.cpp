@@ -165,7 +165,7 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, _p2& p2)
    for (_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         const _char& ch = t.value.ch;
+         const _char ch = t.value.ch;
 
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
@@ -513,8 +513,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    // numeric expressions can start with only two symbols: - or (
    const ExpElement<_num>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
-      const _char& op = first.operator_;
-      if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_UNARY_MINUS)) {
+      if (!(first.operator_ == CHAR_OPENING_ROUND_BRACKET || first.operator_ == CHAR_UNARY_MINUS)) {
          return false;
       }
    }

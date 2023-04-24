@@ -364,8 +364,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
    // bool expressions can start with only two symbols: not or (
    const ExpElement<_bool>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
-      const _char& op = first.operator_;
-      if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK)) {
+      if (!(first.operator_ == CHAR_OPENING_ROUND_BRACKET || first.operator_ == CHAR_EXCLAMATION_MARK)) {
          return false;
       }
    }
@@ -393,8 +392,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             }
             case CHAR_OPENING_ROUND_BRACKET: {
                if (cop) {
-                  const _char& op = curr.operator_;
-                  if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK)) {
+                  if (!(curr.operator_ == CHAR_OPENING_ROUND_BRACKET || curr.operator_ == CHAR_EXCLAMATION_MARK)) {
                      return false;
                   }
                }
@@ -402,8 +400,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             }
             case CHAR_CLOSING_ROUND_BRACKET: {
                if (cop) {
-                  const _char& op = curr.operator_;
-                  if (op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK) {
+                  if (curr.operator_ == CHAR_OPENING_ROUND_BRACKET || curr.operator_ == CHAR_EXCLAMATION_MARK) {
                      return false;
                   }
                }
@@ -414,8 +411,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
             }
             default: {
                if (cop) {
-                  const _char& op = curr.operator_;
-                  if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_EXCLAMATION_MARK)) {
+                  if (!(curr.operator_ == CHAR_OPENING_ROUND_BRACKET || curr.operator_ == CHAR_EXCLAMATION_MARK)) {
                      return false;
                   }
                }
@@ -426,8 +422,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
       else
       {
          if (cop) {
-            const _char& op = curr.operator_;
-            if (op == CHAR_EXCLAMATION_MARK || op == CHAR_OPENING_ROUND_BRACKET) {
+            if (curr.operator_ == CHAR_EXCLAMATION_MARK || curr.operator_ == CHAR_OPENING_ROUND_BRACKET) {
                return false;
             }
          }
@@ -793,13 +788,12 @@ static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _p2& p2
    for (_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol && bi.isBracketFree()) {
-         const _char& ch = t.value.ch;
-         switch (ch) {
+         switch (t.value.ch) {
             case CHAR_SMALLER:
             case CHAR_GREATER:
             case CHAR_EXCLAMATION_MARK:
             case CHAR_EQUAL_SIGN: {
-               return parseComparison(result, tks, ch, p2);
+               return parseComparison(result, tks, t.value.ch, p2);
             }
          }
       }

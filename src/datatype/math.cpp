@@ -41,7 +41,7 @@ _nint Math::randomInt(const _nint limit) {
    return distribution(generator);
 }
 
-void Math::setAnyRandomDouble() {
+void Math::markAnyRandomDouble() {
    anyRandomDouble = true;
 }
 

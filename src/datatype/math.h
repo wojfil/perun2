@@ -30,7 +30,7 @@ public:
    void init();
    _ndouble randomDouble();
    _nint randomInt(const _nint limit);
-   void setAnyRandomDouble();
+   void markAnyRandomDouble();
 
 private:
 

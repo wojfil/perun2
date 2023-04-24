@@ -653,14 +653,14 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 
       _genptr<_num> num;
       if (parse::parse(p2, args[0], num)) {
-         p2.math.setAnyRandomDouble();
+         p2.math.markAnyRandomDouble();
          result = std::make_unique<F_RandomNumber>(num, p2);
          return true;
       }
 
       _genptr<_nlist> nlist;
       if (parse::parse(p2, args[0], nlist)) {
-         p2.math.setAnyRandomDouble();
+         p2.math.markAnyRandomDouble();
          result = std::make_unique<F_RandomElement<_num>>(nlist, p2);
          return true;
       }

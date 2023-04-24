@@ -49,7 +49,8 @@ std::vector<Token> tokenize(const _str& code, _p2& p2)
    _bool prevSymbol = false;
 
    for (_size i = 0; i < len; i++) {
-      const _char& c = code[i];
+      const _char c = code[i];
+
       switch (mode)  {
          case Mode::m_Normal: {
             if (c == CHAR_QUOTATION_MARK) {
@@ -250,10 +251,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    _bool nums = true;
 
    for (_size i = start; i < start + length; i++) {
-      const _char& ch = code[i];
-
-      if (!std::iswdigit(ch)) {
-         if (ch == CHAR_DOT) {
+      if (!std::iswdigit(code[i])) {
+         if (code[i] == CHAR_DOT) {
             dots++;
          }
          else {
@@ -294,8 +293,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       const _int n = length - 2;
 
       for (_size i = start; i < n; i++) {
-         const _char& c = code[i];
-         if (!std::iswdigit(c) && c != CHAR_DOT) {
+         if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
             nums = false;
             break;
          }
@@ -362,8 +360,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       case 1: {
          _int pnt = start;
          for (_int i = start; i < start + length; i++) {
-            const _char& c = code[i];
-            if (c == CHAR_DOT) {
+            if (code[i] == CHAR_DOT) {
                pnt = i;
             }
          }

@@ -362,7 +362,7 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
       if (tks.isEmpty()) {
          FileContext* fc = p2.contexts.getFileContext();
          fc->attribute->setCoreCommandBase();
-         fc->attribute->add(p2.hashes.HASH_VAR_PARENT);
+         fc->attribute->add(p2.hashes.HASH_PARENT);
          result = std::make_unique<C_AggrSelect_This>(aggr, *fc);
          return true;
       }
@@ -1349,7 +1349,7 @@ static _bool c_runContextless_simple(_comptr& result, const Token& word, const T
    if (parse::parse(p2, right, exec)) {
       if (right.getLength() == 1) {
          const Token& cf = right.first();
-         if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
+         if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_PERUN2) {
             result = std::make_unique<C_RunWithPerun2>(ctx, p2);
             p2.cache.loadCmdPath();
             return true;
@@ -1397,7 +1397,7 @@ static _bool c_runContextless_with(_comptr& result, const Token& word, const Tok
 
    if (left2.getLength() == 1) {
       const Token& cf = left2.first();
-      if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
+      if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_PERUN2) {
          _genptr<_str> str_;
 
          if (parse::parse(p2, right2, str_)) {
@@ -1465,7 +1465,7 @@ static _bool c_runContextfull_simple(_comptr& result, const Token& word, const T
 
    if (right.getLength() == 1) {
       const Token& cf = right.first();
-      if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
+      if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_PERUN2) {
          _comptr inner= std::make_unique<C_RunWithPerun2>(ctx.get(), p2);
          if (parseLooped(left, inner, ctx, result, p2)) {
             p2.cache.loadCmdPath();
@@ -1518,7 +1518,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
 
       if (left2.getLength() == 1) {
          const Token& cf = left2.first();
-         if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
+         if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_PERUN2) {
             _comptr inner= std::make_unique<C_RunWithPerun2WithString>(lastStr, ctx.get(), p2);
             if (parseLooped(left, inner, ctx, result, p2)) {
                p2.cache.loadCmdPath();
@@ -1551,7 +1551,7 @@ static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tok
 
          if (left2.getLength() == 1) {
             const Token& cf = left2.first();
-            if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_VAR_PERUN2) {
+            if (cf.type == Token::t_Word && cf.value.word.h == p2.hashes.HASH_PERUN2) {
                _comptr inner= std::make_unique<C_RunWithPerun2With>(lastList, ctx.get(), p2);
                if (parseLooped(left, inner, ctx, result, p2)) {
                   p2.cache.loadCmdPath();

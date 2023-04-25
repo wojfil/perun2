@@ -38,60 +38,60 @@ void Attribute::add(const _hash val)
       this->set(ATTR_PATH);
    }
 
-   if (val == hashes.HASH_VAR_DRIVE) {
+   if (val == hashes.HASH_DRIVE) {
       this->set(ATTR_DRIVE);
       return;
    }
 
-   if (val == hashes.HASH_VAR_DEPTH) {
+   if (val == hashes.HASH_DEPTH) {
       this->set(ATTR_DEPTH);
       return;
    }
 
-   if (val != hashes.HASH_VAR_PATH && val != hashes.HASH_VAR_FULLNAME) {
+   if (val != hashes.HASH_PATH && val != hashes.HASH_FULLNAME) {
       this->set(ATTR_EXISTS);
    }
 
-   if (val == hashes.HASH_VAR_ACCESS){
+   if (val == hashes.HASH_ACCESS){
       this->set(ATTR_ACCESS);
    }
-   else if (val == hashes.HASH_VAR_ARCHIVE)
+   else if (val == hashes.HASH_ARCHIVE)
       this->set(ATTR_ARCHIVE);
-   else if (val == hashes.HASH_VAR_COMPRESSED)
+   else if (val == hashes.HASH_COMPRESSED)
       this->set(ATTR_COMPRESSED);
-   else if (val == hashes.HASH_VAR_CREATION)
+   else if (val == hashes.HASH_CREATION)
       this->set(ATTR_CREATION);
-   else if (val == hashes.HASH_VAR_CHANGE)
+   else if (val == hashes.HASH_CHANGE)
       this->set(ATTR_CHANGE);
-   else if (val == hashes.HASH_VAR_DRIVE)
+   else if (val == hashes.HASH_DRIVE)
       this->set(ATTR_DRIVE);
-   else if (val == hashes.HASH_VAR_EMPTY)
+   else if (val == hashes.HASH_EMPTY)
       this->set(ATTR_EMPTY);
-   else if (val == hashes.HASH_VAR_ENCRYPTED)
+   else if (val == hashes.HASH_ENCRYPTED)
       this->set(ATTR_ENCRYPTED);
-   else if (val == hashes.HASH_VAR_EXTENSION) {
+   else if (val == hashes.HASH_EXTENSION) {
       this->set(ATTR_EXTENSION);
    }
-   else if (val == hashes.HASH_VAR_FULLNAME)
+   else if (val == hashes.HASH_FULLNAME)
       this->set(ATTR_FULLNAME);
-   else if (val == hashes.HASH_VAR_HIDDEN)
+   else if (val == hashes.HASH_HIDDEN)
       this->set(ATTR_HIDDEN);
-   else if (val == hashes.HASH_VAR_LIFETIME) {
+   else if (val == hashes.HASH_LIFETIME) {
       this->set(ATTR_CREATION);
       this->set(ATTR_MODIFICATION);
       this->set(ATTR_LIFETIME);
    }
-   else if (val == hashes.HASH_VAR_MODIFICATION)
+   else if (val == hashes.HASH_MODIFICATION)
       this->set(ATTR_MODIFICATION);
-   else if (val == hashes.HASH_VAR_NAME)
+   else if (val == hashes.HASH_NAME)
       this->set(ATTR_NAME);
-   else if (val == hashes.HASH_VAR_PARENT)
+   else if (val == hashes.HASH_PARENT)
       this->set(ATTR_PARENT);
-   else if (val == hashes.HASH_VAR_PATH)
+   else if (val == hashes.HASH_PATH)
       this->set(ATTR_PATH);
-   else if (val == hashes.HASH_VAR_READONLY)
+   else if (val == hashes.HASH_READONLY)
       this->set(ATTR_READONLY);
-   else if (val == hashes.HASH_VAR_SIZE)
+   else if (val == hashes.HASH_SIZE)
       this->set(ATTR_SIZE);
 }
 

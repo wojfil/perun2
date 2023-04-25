@@ -806,7 +806,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
          }
       }
       else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
-         if (first.value.twoWords.h1 == p2.hashes.HASH_NOTHING) {
+         if (first.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
             throw SyntaxError(L"the dot . should be preceded by a time variable name", first.line);
          }
 
@@ -824,19 +824,19 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
          const _hash h = first.value.twoWords.h2;
          Period::PeriodUnit unit;
 
-         if (h == p2.hashes.HASH_PER_YEAR || h == p2.hashes.HASH_PER_YEARS)
+         if (h == p2.hashes.HASH_YEAR || h == p2.hashes.HASH_YEARS)
             unit = Period::u_Years;
-         else if (h == p2.hashes.HASH_PER_MONTH || h == p2.hashes.HASH_PER_MONTHS)
+         else if (h == p2.hashes.HASH_MONTH || h == p2.hashes.HASH_MONTHS)
             unit = Period::u_Months;
-         else if (h == p2.hashes.HASH_PER_DAY || h == p2.hashes.HASH_PER_DAYS)
+         else if (h == p2.hashes.HASH_DAY || h == p2.hashes.HASH_DAYS)
             unit = Period::u_Days;
-         else if (h == p2.hashes.HASH_PER_HOUR || h == p2.hashes.HASH_PER_HOURS)
+         else if (h == p2.hashes.HASH_HOUR || h == p2.hashes.HASH_HOURS)
             unit = Period::u_Hours;
-         else if (h == p2.hashes.HASH_PER_MINUTE || h == p2.hashes.HASH_PER_MINUTES)
+         else if (h == p2.hashes.HASH_MINUTE || h == p2.hashes.HASH_MINUTES)
             unit = Period::u_Minutes;
-         else if (h == p2.hashes.HASH_PER_SECOND || h == p2.hashes.HASH_PER_SECONDS)
+         else if (h == p2.hashes.HASH_SECOND || h == p2.hashes.HASH_SECONDS)
             unit = Period::u_Seconds;
-         else if (h == p2.hashes.HASH_PER_DATE || h == p2.hashes.HASH_PER_WEEKDAY) {
+         else if (h == p2.hashes.HASH_DATE || h == p2.hashes.HASH_WEEKDAY) {
             throw SyntaxError(str(L"time variable member '", first.getOriginString_2(p2),
                L"' cannot be ", op), first.line);
          }
@@ -894,7 +894,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       else {
          const Token& arom = left.last();
 
-         if (arom.type == Token::t_TwoWords && arom.value.twoWords.h1 == p2.hashes.HASH_NOTHING) {
+         if (arom.type == Token::t_TwoWords && arom.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
             Tokens aro(left);
             aro.trimRight();
 
@@ -1068,31 +1068,31 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       const _bool negative = (sign == CHAR_MINUS);
       pv_tim->makeNotConstant();
 
-      if (h == p2.hashes.HASH_PER_YEAR || h == p2.hashes.HASH_PER_YEARS) {
+      if (h == p2.hashes.HASH_YEAR || h == p2.hashes.HASH_YEARS) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Years, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_PER_MONTH || h == p2.hashes.HASH_PER_MONTHS) {
+      else if (h == p2.hashes.HASH_MONTH || h == p2.hashes.HASH_MONTHS) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Months, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_PER_DAY || h == p2.hashes.HASH_PER_DAYS) {
+      else if (h == p2.hashes.HASH_DAY || h == p2.hashes.HASH_DAYS) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Days, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_PER_HOUR || h == p2.hashes.HASH_PER_HOURS) {
+      else if (h == p2.hashes.HASH_HOUR || h == p2.hashes.HASH_HOURS) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Hours, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_PER_MINUTE || h == p2.hashes.HASH_PER_MINUTES) {
+      else if (h == p2.hashes.HASH_MINUTE || h == p2.hashes.HASH_MINUTES) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Minutes, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_PER_SECOND || h == p2.hashes.HASH_PER_SECONDS) {
+      else if (h == p2.hashes.HASH_SECOND || h == p2.hashes.HASH_SECONDS) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Seconds, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_PER_DATE || h == p2.hashes.HASH_PER_WEEKDAY) {
+      else if (h == p2.hashes.HASH_DATE || h == p2.hashes.HASH_WEEKDAY) {
          throw SyntaxError(str(L"value of '", first.getOriginString_2(p2),
             L"' time variable member cannot be altered"), first.line);
       }
@@ -1197,7 +1197,7 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
    }
 
    if (left.getLength() >= 5 ) {
-      if (left.last().type == Token::t_TwoWords && left.last().value.word.h == p2.hashes.HASH_NOTHING) {
+      if (left.last().type == Token::t_TwoWords && left.last().value.word.h == p2.hashes.NOTHING_HASH) {
          Tokens le(left);
          le.trimRight();
 

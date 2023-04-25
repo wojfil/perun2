@@ -25,32 +25,32 @@ Cache::Cache(_p2& p2)
 
 void Cache::actualize(const _hash nameHash)
 {
-   if (nameHash == this->perun2.hashes.HASH_VAR_DESKTOP) {
+   if (nameHash == this->perun2.hashes.HASH_DESKTOP) {
       if (this->isNotLoaded(CACHE_DESKTOP_PATH)) {
          this->context.strings[nameHash]->value = os_desktopPath();
       }
    }
-   else if (nameHash == this->perun2.hashes.HASH_VAR_PERUN2) {
+   else if (nameHash == this->perun2.hashes.HASH_PERUN2) {
       if (this->isNotLoaded(CACHE_EXE_PATH)) {
          this->context.strings[nameHash]->value = os_executablePath();
       }
    }
-   else if (nameHash == this->perun2.hashes.HASH_VAR_ALPHABET) {
+   else if (nameHash == this->perun2.hashes.HASH_ALPHABET) {
       if (this->isNotLoaded(CACHE_ALPHABET)) {
          this->context.lists[nameHash]->value = this->getAlphabet();
       }
    }
-   else if (nameHash == this->perun2.hashes.HASH_VAR_ASCII) {
+   else if (nameHash == this->perun2.hashes.HASH_ASCII) {
       if (this->isNotLoaded(CACHE_ASCII)) {
          this->context.lists[nameHash]->value = STRINGS_ASCII;
       }
    }
-   else if (nameHash == this->perun2.hashes.HASH_VAR_ORIGIN) {
+   else if (nameHash == this->perun2.hashes.HASH_ORIGIN) {
       if (this->isNotLoaded(CACHE_ORIGIN)) {
          this->context.strings[nameHash]->value = this->perun2.arguments.getLocation();
       }
    }
-   else if (nameHash == this->perun2.hashes.HASH_VAR_ARGUMENTS) {
+   else if (nameHash == this->perun2.hashes.HASH_ARGUMENTS) {
       if (this->isNotLoaded(CACHE_ARGUMENTS)) {
          this->context.lists[nameHash]->value = this->perun2.arguments.getArgs();
       }
@@ -60,7 +60,7 @@ void Cache::actualize(const _hash nameHash)
 void Cache::loadCmdPath()
 {
    if (this->isNotLoaded(CACHE_EXE_PATH)) {
-      this->context.strings[this->perun2.hashes.HASH_VAR_PERUN2]->value = os_executablePath();
+      this->context.strings[this->perun2.hashes.HASH_PERUN2]->value = os_executablePath();
    }
 
    if (this->isNotLoaded(CACHE_CMD_PROCESS)) {
@@ -80,7 +80,7 @@ _bool Cache::isNotLoaded(const _cunit v)
 
 _str Cache::getCmdProcessStartingArgs() const
 {
-   return str(os_quoteEmbraced(this->context.strings[this->perun2.hashes.HASH_VAR_PERUN2]->value),
+   return str(os_quoteEmbraced(this->context.strings[this->perun2.hashes.HASH_PERUN2]->value),
       CHAR_SPACE, CHAR_MINUS, CHAR_FLAG_SILENT, CHAR_SPACE);
 }
 

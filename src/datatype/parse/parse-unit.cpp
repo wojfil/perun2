@@ -71,7 +71,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
       case Token::t_TwoWords: {
          const Hashes& hs = p2.hashes;
 
-         if (tk.value.twoWords.h1 == hs.HASH_NOTHING) {
+         if (tk.value.twoWords.h1 == hs.NOTHING_HASH) {
             throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
@@ -83,21 +83,21 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
 
          const _hash h = tk.value.twoWords.h2;
 
-         if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
+         if (h == hs.HASH_YEAR || h == hs.HASH_YEARS)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Years);
-         else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
+         else if (h == hs.HASH_MONTH || h == hs.HASH_MONTHS)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Months);
-         else if (h == hs.HASH_PER_WEEKDAY)
+         else if (h == hs.HASH_WEEKDAY)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Weeks);
-         else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
+         else if (h == hs.HASH_DAY || h == hs.HASH_DAYS)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Days);
-         else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
+         else if (h == hs.HASH_HOUR || h == hs.HASH_HOURS)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Hours);
-         else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
+         else if (h == hs.HASH_MINUTE || h == hs.HASH_MINUTES)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Minutes);
-         else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECOND)
+         else if (h == hs.HASH_SECOND || h == hs.HASH_SECOND)
             result = std::make_unique<gen::TimeMember>(var, Period::u_Seconds);
-         else if (h == hs.HASH_PER_DATE)
+         else if (h == hs.HASH_DATE)
             return false;
          else {
             timeVariableMemberException(tk, p2);
@@ -160,7 +160,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
          return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         if (tk.value.twoWords.h1 == p2.hashes.HASH_NOTHING) {
+         if (tk.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
             throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
@@ -169,7 +169,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
             throw SyntaxError(str(L"time variable '", tk.getOriginString(p2), L"' does not exist"), tk.line);
          }
 
-         if (tk.value.twoWords.h2 == p2.hashes.HASH_FUNC_DATE) {
+         if (tk.value.twoWords.h2 == p2.hashes.HASH_DATE) {
             result = std::make_unique<gen::TimeDate>(var);
             return true;
          }

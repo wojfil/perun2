@@ -120,21 +120,21 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _p2& p2)
          const Hashes& hs = p2.hashes;
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
-         if (h == hs.HASH_PER_YEAR || h == hs.HASH_PER_YEARS)
+         if (h == hs.HASH_YEAR || h == hs.HASH_YEARS)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Years);
-         else if (h == hs.HASH_PER_MONTH || h == hs.HASH_PER_MONTHS)
+         else if (h == hs.HASH_MONTH || h == hs.HASH_MONTHS)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Months);
-         else if (h == hs.HASH_PER_WEEKDAY)
+         else if (h == hs.HASH_WEEKDAY)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Weeks);
-         else if (h == hs.HASH_PER_DAY || h == hs.HASH_PER_DAYS)
+         else if (h == hs.HASH_DAY || h == hs.HASH_DAYS)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Days);
-         else if (h == hs.HASH_PER_HOUR || h == hs.HASH_PER_HOURS)
+         else if (h == hs.HASH_HOUR || h == hs.HASH_HOURS)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Hours);
-         else if (h == hs.HASH_PER_MINUTE || h == hs.HASH_PER_MINUTES)
+         else if (h == hs.HASH_MINUTE || h == hs.HASH_MINUTES)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Minutes);
-         else if (h == hs.HASH_PER_SECOND || h == hs.HASH_PER_SECONDS)
+         else if (h == hs.HASH_SECOND || h == hs.HASH_SECONDS)
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Seconds);
-         else if (h == hs.HASH_PER_DATE)
+         else if (h == hs.HASH_DATE)
             return false;
          else
             timeVariableMemberException(last, p2);

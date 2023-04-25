@@ -20,18 +20,9 @@
 namespace perun2::gen
 {
 
-OrderIndices::OrderIndices() noexcept
-   : values(new _size[0]()) { }
-
-OrderIndices::~OrderIndices() noexcept
-{
-   delete[] this->values;
-}
-
 void OrderIndices::prepare(const _size length)
 {
-   delete[] this->values;
-   this->values = new _size[length]();
+   this->values = std::unique_ptr<_size[]>(new _size[length]());
 }
 
 OrderBy::OrderBy(_indptr& inds, _ordptr& ord)

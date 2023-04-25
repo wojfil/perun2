@@ -27,11 +27,9 @@ namespace perun2::gen
 struct OrderIndices
 {
 public:
-   OrderIndices() noexcept;
-   ~OrderIndices() noexcept;
    void prepare(const _size length);
 
-   _size* values;
+   std::unique_ptr<_size[]> values;
 };
 
 typedef std::unique_ptr<OrderIndices> _indptr;

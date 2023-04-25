@@ -33,6 +33,7 @@ namespace perun2
 _p2::_p2(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), keywordsData(*this), logger(*this), cache(*this)
 {
+   _p2::init();
    Terminator::addPtr(this);
    if (arguments.getParseState() == ArgsParseState::aps_Failed) {
       this->parseState = ParseState::ps_ParsingFailure;
@@ -161,27 +162,29 @@ _bool _p2::runCommands()
    return true;
 };
 
+_bool _p2::initialized = false;
+
+void _p2::init()
+{
+   if (!initialized) {
+      initialized = true;
+      os_init();
+   }
+}
+
 Perun2::Perun2(const _int argc, _char* const argv[])
    : arguments(argc, argv), process(this->arguments)
 {
    if (this->process.exitCode == EXITCODE_CLI_ERROR) {
       this->process.parseState = ParseState::ps_ParsingFailure;
    }
-
-   Perun2::init();
 };
 
 Perun2::Perun2(const _str& location, const _str& code)
-   : arguments(location, code), process(this->arguments) 
-{ 
-   Perun2::init();
-};
+   : arguments(location, code), process(this->arguments) { };
 
 Perun2::Perun2(const _str& location, const _str& code, const _flags flags)
-   : arguments(location, code, flags), process(this->arguments) 
-{ 
-   Perun2::init();
-};
+   : arguments(location, code, flags), process(this->arguments) { };
 
 _bool Perun2::run()
 {
@@ -191,16 +194,6 @@ _bool Perun2::run()
 _exitint Perun2::getExitCode() const
 {
    return this->process.exitCode;
-}
-
-_bool Perun2::initialized = false;
-
-void Perun2::init()
-{
-   if (!initialized) {
-      initialized = true;
-      os_init();
-   }
 }
 
 }

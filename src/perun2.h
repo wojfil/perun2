@@ -57,7 +57,9 @@ enum ParseState
 };
 
 
-// instance of Perun2
+// this is an instance of Perun2
+// used only internally within the namespace
+// for external facade, use struct 'Perun2' instead
 struct _p2
 {
 public:
@@ -92,6 +94,10 @@ private:
    _bool parse();
    _bool postParse();
    _bool runCommands();
+
+// this initialization is global and performed only once for all struct instances
+   static _bool initialized;
+   static void init();
 };
 
 
@@ -116,10 +122,6 @@ public:
 private:
    Arguments arguments;
    _p2 process;
-
-// this initialization is global and performed only once for all struct instances
-   static _bool initialized;
-   static void init();
 };
 
 

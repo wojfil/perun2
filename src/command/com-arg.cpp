@@ -34,7 +34,7 @@ CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx
 
 void CS_StringComArg::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       this->context->resetIndex();
       this->context->loadData(this->string->getValue());
       this->command->run();
@@ -54,7 +54,7 @@ void CS_ListComArg::run()
    _num index;
    this->context->resetIndex();
 
-   while (this->perun2.state == State::s_Running && index != length) {
+   while (this->perun2.isRunning() && index != length) {
       this->context->loadData(values[index.value.i]);
       this->command->run();
       index++;
@@ -69,7 +69,7 @@ void CS_DefinitionComArg::run()
    this->context->resetIndex();
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (this->perun2.isNotRunning()) {
          this->definition->reset();
          break;
       }

@@ -58,10 +58,14 @@ public:
    _set invalidSelect;
 
 private:
+   void copy();
+   void select();
+   inline _bool has(const _agunit v) const;
+
    _p2& perun2;
    Contexts& contexts;
    _agunit value = AGGR_NULL;
-   inline _bool has(const _agunit v) const;
+   _bool selectFailure = false;
 };
 
 }

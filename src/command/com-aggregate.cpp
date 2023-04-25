@@ -26,132 +26,143 @@ Aggregate::Aggregate(_p2& p2)
 
 void Aggregate::set(const _agunit v)
 {
-   if (!has(v)) {
+   if (!this->has(v)) {
       value |= v;
    }
 }
 
 void Aggregate::run()
 {
-   if (value == AGGR_NULL) {
+   if (this->value == AGGR_NULL) {
       return;
    }
 
-   _bool selectFailure = false;
-
-   if (has(AGGR_SELECT)) {
-      if (!invalidSelect.empty()) {
-         for (auto it = invalidSelect.begin(); it != invalidSelect.end(); it++) {
-            logSelectError(this->perun2, *it);
-         }
-         invalidSelect.clear();
-      }
-
-      if (failedSelect > 0) {
-         for (uint32_t i = 0; i < failedSelect; i++) {
-            logSelectError(this->perun2, _str());
-         }
-         failedSelect = 0;
-         selectFailure = true;
-      }
-
-      if (!selectPaths.empty()) {
-         _bool anyGoodPath = false;
-         _set goodPaths;
-
-         for (const std::pair<_str, _set>& pair : selectPaths) {
-            const _str& parent = pair.first;
-            const _set& paths = pair.second;
-
-            if (!os_directoryExists(parent)) {
-               for (auto it = paths.begin(); it != paths.end(); it++) {
-                  logSelectError(this->perun2, *it);
-               }
-               continue;
-            }
-
-            for (auto it = paths.begin(); it != paths.end(); it++) {
-               const _str& path = *it;
-               if (os_exists(path)) {
-                  goodPaths.insert(path);
-                  anyGoodPath = true;
-               }
-               else {
-                  logSelectError(this->perun2, path);
-                  selectFailure = true;
-               }
-            }
-
-            if (anyGoodPath) {
-               if (os_select(parent, goodPaths)) {
-                  for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                     logSelectSuccess(this->perun2, *it);
-                  }
-               }
-               else {
-                  for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                     logSelectError(this->perun2, *it);
-                  }
-                  selectFailure = true;
-               }
-
-               goodPaths.clear();
-               anyGoodPath = false;
-            }
-         }
-
-         selectPaths.clear();
-      }
+   if (this->has(AGGR_SELECT)) {
+      this->select();
    }
 
-   if (has(AGGR_COPY)) {
-      if (!invalidCopy.empty()) {
-         for (auto it = invalidCopy.begin(); it != invalidCopy.end(); it++) {
-            logCopyError(this->perun2, *it);
+   if (this->has(AGGR_COPY)) {
+      this->copy();
+   }
+   else {
+      this->contexts.success->value = !this->selectFailure;
+   }
+}
+
+void Aggregate::copy()
+{
+   if (!this->invalidCopy.empty()) {
+      for (auto it = this->invalidCopy.begin(); it != this->invalidCopy.end(); it++) {
+         logCopyError(this->perun2, *it);
+      }
+      this->invalidCopy.clear();
+   }
+
+   if (this->failedCopy > 0) {
+      for (uint32_t i = 0; i < this->failedCopy; i++) {
+         logCopyError(this->perun2, _str());
+      }
+      this->failedCopy = 0;
+   }
+
+   if (!this->copyPaths.empty()) {
+      _set goodPaths;
+
+      for (auto it = this->copyPaths.begin(); it != this->copyPaths.end(); it++) {
+         const _str& path = *it;
+         if (os_exists(path)) {
+            goodPaths.insert(path);
          }
-         invalidCopy.clear();
+         else {
+            logCopyError(this->perun2, path);
+         }
       }
 
-      if (failedCopy > 0) {
-         for (uint32_t i = 0; i < failedCopy; i++) {
-            logCopyError(this->perun2, _str());
+      if (!goodPaths.empty()) {
+         if (os_copy(goodPaths)) {
+            for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
+               logCopySuccess(this->perun2, *it);
+            }
+            this->contexts.success->value = !this->selectFailure;
          }
-         failedCopy = 0;
+         else {
+            for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
+               logCopyError(this->perun2, *it);
+            }
+            this->contexts.success->value = false;
+         }
       }
 
-      if (!copyPaths.empty()) {
-         _set goodPaths;
+      this->copyPaths.clear();
+   }
+}
 
-         for (auto it = copyPaths.begin(); it != copyPaths.end(); it++) {
+void Aggregate::select()
+{
+   this->selectFailure = false;
+
+   if (!invalidSelect.empty()) {
+      for (auto it = invalidSelect.begin(); it != invalidSelect.end(); it++) {
+         logSelectError(this->perun2, *it);
+      }
+      invalidSelect.clear();
+   }
+
+   if (failedSelect > 0) {
+      for (uint32_t i = 0; i < failedSelect; i++) {
+         logSelectError(this->perun2, _str());
+      }
+
+      failedSelect = 0;
+      this->selectFailure = true;
+   }
+
+   if (!selectPaths.empty()) {
+      _bool anyGoodPath = false;
+      _set goodPaths;
+
+      for (const std::pair<_str, _set>& pair : selectPaths) {
+         const _str& parent = pair.first;
+         const _set& paths = pair.second;
+
+         if (!os_directoryExists(parent)) {
+            for (auto it = paths.begin(); it != paths.end(); it++) {
+               logSelectError(this->perun2, *it);
+            }
+            continue;
+         }
+
+         for (auto it = paths.begin(); it != paths.end(); it++) {
             const _str& path = *it;
             if (os_exists(path)) {
                goodPaths.insert(path);
+               anyGoodPath = true;
             }
             else {
-               logCopyError(this->perun2, path);
+               logSelectError(this->perun2, path);
+               this->selectFailure = true;
             }
          }
 
-         if (!goodPaths.empty()) {
-            if (os_copy(goodPaths)) {
+         if (anyGoodPath) {
+            if (os_select(parent, goodPaths)) {
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                  logCopySuccess(this->perun2, *it);
+                  logSelectSuccess(this->perun2, *it);
                }
-               this->contexts.success->value = !selectFailure;
             }
             else {
                for (auto it = goodPaths.begin(); it != goodPaths.end(); it++) {
-                  logCopyError(this->perun2, *it);
+                  logSelectError(this->perun2, *it);
                }
-               this->contexts.success->value = false;
+               this->selectFailure = true;
             }
-         }
 
-         copyPaths.clear();
+            goodPaths.clear();
+            anyGoodPath = false;
+         }
       }
-   }
-   else {
-      this->contexts.success->value = !selectFailure;
+
+      selectPaths.clear();
    }
 }
 

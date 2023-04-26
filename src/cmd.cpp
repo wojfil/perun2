@@ -59,6 +59,12 @@ void help()
 
 namespace error
 {
+   void argumentsNotAccessed()
+   {
+      Logger logger;
+      logger.print(str(L"Command-line error: arguments could not be accessed."));
+   }
+
    void noArguments()
    {
       Logger logger;

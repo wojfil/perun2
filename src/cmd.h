@@ -28,6 +28,7 @@ void help();
 
 namespace error
 {
+   void argumentsNotAccessed();
    void noArguments();
    void unknownOption(const _str& option);
    void noDestination();

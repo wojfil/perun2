@@ -34,10 +34,10 @@ namespace perun2
 
 struct Contexts;
 
-_constexpr _exitint EXITCODE_OK =             0;
-_constexpr _exitint EXITCODE_RUNTIME_ERROR =  1;
-_constexpr _exitint EXITCODE_SYNTAX_ERROR =   2;
-_constexpr _exitint EXITCODE_CLI_ERROR =      3;
+_constexpr int EXITCODE_OK =             0;
+_constexpr int EXITCODE_RUNTIME_ERROR =  1;
+_constexpr int EXITCODE_SYNTAX_ERROR =   2;
+_constexpr int EXITCODE_CLI_ERROR =      3;
 
 
 enum State
@@ -78,7 +78,7 @@ public:
    const _flags flags;
    comm::ConditionContext conditionContext;
    State state = State::s_Running;
-   _exitint exitCode = EXITCODE_OK;
+   int exitCode = EXITCODE_OK;
    ParseState parseState = ParseState::ps_NotParsed;
    Logger logger;
    Cache cache;
@@ -117,7 +117,7 @@ public:
    Perun2& operator= (Perun2 const&) = delete;
 
    _bool run();
-   _exitint getExitCode() const;
+   int getExitCode() const;
 
 private:
    Arguments arguments;

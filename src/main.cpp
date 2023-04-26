@@ -14,7 +14,7 @@
 
 #include "perun2.h"
 
-perun2::_exitint wmain(perun2::_int argc, perun2::_char* argv[], perun2::_char* envp[])
+int wmain(perun2::_int argc, perun2::_char* argv[], perun2::_char* envp[])
 {
    // if Perun2 is used like an imported external library
    // do not call these two inits

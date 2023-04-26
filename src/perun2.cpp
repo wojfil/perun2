@@ -191,7 +191,7 @@ _bool Perun2::run()
    return this->process.run();
 }
 
-_exitint Perun2::getExitCode() const
+int Perun2::getExitCode() const
 {
    return this->process.exitCode;
 }

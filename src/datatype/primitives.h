@@ -37,7 +37,6 @@ namespace perun2
 #define _cout                       std::wcout
 #define _cin                        std::wcin
 
-typedef int                         _exitint;
 typedef bool                        _bool;
 typedef int32_t                     _int;
 typedef long unsigned int           _ulong;

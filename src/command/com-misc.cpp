@@ -89,7 +89,7 @@ void C_Error::run()
 void C_ErrorWithExitCode::run()
 {
    this->perun2.state = State::s_Exit;
-   const _exitint code = static_cast<_exitint>(this->exitCode->getValue().toInt());
+   const int code = static_cast<int>(this->exitCode->getValue().toInt());
    this->perun2.exitCode = (code == EXITCODE_OK)
       ? EXITCODE_RUNTIME_ERROR
       : code;

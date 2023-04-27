@@ -22,10 +22,10 @@ select '*.pdf'
 
 Command above selects the freshest 100 megabytes of pds files.
 
-## Limit by total length
+## Limit by total duration
 
 Another possible meaning of *limit*. In this scenario, the argument is a period.
-Would work with audios and videos.
+Would work with things that have duration: audios and videos.
 
 ```
 select '*.mp3'
@@ -79,11 +79,11 @@ For example: *isImage*, *images* and *recursiveImages*.
 select images
 ```
 
-They would have their own properties, like length of a video.
+They would have their own properties, like duration of a video.
 
 ```
 delete recursiveVideos
-  where length < 5 seconds
+  where duration < 5 seconds
 ```
 
 ## Image variables: *width*, *height*, *pixels*, *bpp*
@@ -268,14 +268,14 @@ select '*.pdf'
   where creation.year = 2k20
 ```
 
-## Audio variables: *author*, *album*, *release*, *length*, *bitrate*, ...
+## Audio variables: *author*, *album*, *release*, *duration*, *bitrate*, ...
 
 *Length* is a period. *Bitrate* is a number.
 
 ```
 select '*.mp3'
   where author = 'Nirvana'
-  and length < 5 minutes
+  and duration < 5 minutes
   and bitrate = 128k
 ```
 
@@ -294,7 +294,7 @@ There are some special values restricted only to videos like *framerate*.
 select videos
   where lower(name) like '%tpb%'
   and resolution = 1080p
-  and length > 10 minutes
+  and duration > 10 minutes
 ```
 
 ## *Resolution* and some related constants
@@ -317,6 +317,25 @@ select '*.pdf'
   where pages > 30
 ```
 
+## Function *durationInside()*
+
+Next context function similar to *anyInside()* or *countInside()*. For directories/archives with audios and videos.
+
+```
+select directories
+  where durationInside('*.mp3') >= 30 minutes
+```
+
+Select directories that contain at least 30 minutes of music.
+
+```
+print '*.zip'
+  where anyInside('*.mp3')
+  order by durationInside('*.mp3') desc
+```
+
+Find Zip archives with music. Sort them based on how much music they contain. Print the result.
+
 ## Disc properties: *totalSpace*, *usedSpace*, *freeSpace*
 
 Get properties of disc current working location is in.
@@ -324,7 +343,7 @@ Get properties of disc current working location is in.
 ```
 print 'Free space here: ' + (freeSpace / 1gb) + ' gigabytes';
 
-inside 'f:/'
+inside pendrive
 {
   print 'Free space on pendrive: ' + (freeSpace / 1gb) + ' gigabytes';
 }

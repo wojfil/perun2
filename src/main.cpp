@@ -16,8 +16,16 @@
 #include "cmd.h"
 
 
-int wideMain(int argc, LPWSTR* argv)
+int main(void)
 {
+   int argc;
+   LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+   if (argv == NULL) {
+      perun2::cmd::error::argumentsNotAccessed();
+      return perun2::EXITCODE_CLI_ERROR;
+   }
+
    // if Perun2 is used like an imported external library
    // do not call these two inits
    perun2::initConsole();
@@ -25,20 +33,8 @@ int wideMain(int argc, LPWSTR* argv)
 
    perun2::Perun2 instance(argc, argv);
    instance.run();
+
+   LocalFree(argv);
+
    return instance.getExitCode();
-}
-
-int main(void)
-{
-    int argc;
-    LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-
-    if (argv == NULL) {
-        perun2::cmd::error::argumentsNotAccessed();
-        return perun2::EXITCODE_CLI_ERROR;
-    }
-
-    int exitCode = wideMain(argc, argv);
-    LocalFree(argv);
-    return exitCode;
 }

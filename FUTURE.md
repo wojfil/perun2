@@ -20,7 +20,7 @@ select '*.pdf'
   limit 100mb
 ```
 
-Command above selects the freshest 100 megabytes of pds files.
+Command above selects the freshest 100 megabytes of pdf files.
 
 ## Limit by total duration
 
@@ -99,7 +99,7 @@ select images
   and bpp = 24
 ```
 
-## Constants for common programs
+## Common programs constants
 
 Introduce constant values with paths to common programs.
 They are constants, but not really deterministic.

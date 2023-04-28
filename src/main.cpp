@@ -16,7 +16,7 @@
 #include "cmd.h"
 
 
-int wideMain(perun2::_int argc, perun2::_char* argv[])
+int wideMain(int argc, LPWSTR* argv)
 {
    // if Perun2 is used like an imported external library
    // do not call these two inits

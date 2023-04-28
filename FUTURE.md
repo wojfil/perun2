@@ -379,11 +379,12 @@ select '*.txt'
 ## *Device*
 
 This variable refers to the first (and usually the only) external device connected to the computer like phone or camera.
-Perun2 currently works only on hard disc drives.
+Perun2 currently works only on hard disc drives. 
+Other possible variables: *phone*, *camera*.
 For example, we could use this feature to download photos taken today by a camera.
 
 ```
-inside device {
+inside camera {
   copy images
     where creation = today
     to desktop
@@ -399,10 +400,14 @@ inside device {
 }
 ```
 
-Other possible variables: *phone*, *camera*. There is a possibility to express paths to external devices the following way.
+## Recycle bin management
+
+Commands for recycle bin. Maybe the only thing we can do is to resurrect files or delete them completely.
+Variable *death* refers to deletion time.
 
 ```
-open 'device:/some/path/*.txt'
+resurrect images
+  where death = today
 ```
 
 ## Commands *read* and *write*

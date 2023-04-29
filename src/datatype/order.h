@@ -147,7 +147,7 @@ public:
    OrderBy() = delete;
    OrderBy(_indptr& inds, _ordptr& ord);
 
-   void quicksort(const _int start, const _int end);
+   void quicksort(_int start, _int end);
    _int partition(const _int start, const _int end);
 
 protected:

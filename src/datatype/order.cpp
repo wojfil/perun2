@@ -28,12 +28,28 @@ void OrderIndices::prepare(const _size length)
 OrderBy::OrderBy(_indptr& inds, _ordptr& ord)
    : indices(std::move(inds)), order(std::move(ord)) { };
 
-void OrderBy::quicksort(const _int start, const _int end)
+void OrderBy::quicksort(_int start, _int end)
 {
-   if (start < end) {
-      const _int i = partition(start, end);
-      quicksort(start, i - 1);
-      quicksort(i + 1, end);
+   _int stack[end - start + 1];
+   _int top = -1;
+  
+   stack[++top] = start;
+   stack[++top] = end;
+  
+   while (top >= 0) {
+      end = stack[top--];
+      start = stack[top--];
+      _int pivot = partition(start, end);
+  
+      if (pivot - 1 > start) {
+         stack[++top] = start;
+         stack[++top] = pivot - 1;
+      }
+  
+      if (pivot + 1 < end) {
+         stack[++top] = pivot + 1;
+         stack[++top] = end;
+      }
    }
 }
 

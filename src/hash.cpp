@@ -97,6 +97,10 @@ Hashes::Hashes() :
    HASH_PERUN2(caseSensitiveHash(STRING_PERUN2)),
    HASH_ORIGIN(caseSensitiveHash(STRING_ORIGIN)),
 
+   HASH_PAINT(caseSensitiveHash(STRING_PAINT)),
+   HASH_MSPAINT(caseSensitiveHash(STRING_MSPAINT)),
+   HASH_NOTEPAD(caseSensitiveHash(STRING_NOTEPAD)),
+
    HASH_DIRECTORIES(caseSensitiveHash(STRING_DIRECTORIES)),
    HASH_FILES(caseSensitiveHash(STRING_FILES)),
    HASH_RECURSIVEFILES(caseSensitiveHash(STRING_RECURSIVEFILES)),
@@ -265,6 +269,11 @@ Hashes::Hashes() :
    HASH_EXIT(caseSensitiveHash(STRING_EXIT)),
    HASH_ERROR(caseSensitiveHash(STRING_ERROR)),
 
+
+   HASH_GROUP_ALIASES({
+      this->HASH_PAINT
+   }), 
+
    HASH_GROUP_MONTHS({
      this->HASH_JANUARY, this->HASH_FEBRUARY, this->HASH_MARCH,
      this->HASH_APRIL, this->HASH_MAY, this->HASH_JUNE,
@@ -306,9 +315,6 @@ Hashes::Hashes() :
      this->HASH_NOW, this->HASH_TODAY
    }),
 
-   // attributes, that can be altered by external circumstances
-   // for example, last modification time of an element may be changed by another process
-   // but its parent directory stays the same
    HASH_GROUP_ALTERABLE_ATTR({
      this->HASH_ACCESS, this->HASH_ARCHIVE, this->HASH_CHANGE, this->HASH_COMPRESSED,
      this->HASH_CREATION, this->HASH_EMPTY, this->HASH_EXISTS, this->HASH_ENCRYPTED,
@@ -331,7 +337,8 @@ Hashes::Hashes() :
       this->HASH_THURSDAY, this->HASH_FRIDAY, this->HASH_SATURDAY, this->HASH_SUNDAY,
       this->HASH_ALPHABET, this->HASH_ASCII, this->HASH_ARGUMENTS, this->HASH_DESKTOP,
       this->HASH_PERUN2, this->HASH_ORIGIN, this->HASH_DIRECTORIES,
-      this->HASH_FILES, this->HASH_RECURSIVEFILES, this->HASH_RECURSIVEDIRECTORIES
+      this->HASH_FILES, this->HASH_RECURSIVEFILES, this->HASH_RECURSIVEDIRECTORIES,
+      this->HASH_PAINT, this->HASH_MSPAINT, this->HASH_NOTEPAD
    }),
 
    HASH_GROUP_FUNC_BOO_STR({

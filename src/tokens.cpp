@@ -331,7 +331,9 @@ void Tokens::checkCommonExpressionExceptions(_p2& p2) const
 
    if (this->length == 1) {
       const Token& f = first();
-      if (f.type == Token::t_Word && (!p2.contexts.varExists(f, p2))) {
+      if (f.type == Token::t_Word && (!p2.contexts.varExists(f, p2))
+       && p2.hashes.HASH_GROUP_ALIASES.find(f.value.word.h) == p2.hashes.HASH_GROUP_ALIASES.end())
+      {
          throw SyntaxError(str(L"variable '", f.getOriginString(p2), 
             L"' does not exist or is unreachable here. Look for a typo"), f.line);
       }

@@ -100,6 +100,10 @@ public:
    const _hash HASH_PERUN2;
    const _hash HASH_ORIGIN;
 
+   const _hash HASH_PAINT;
+   const _hash HASH_MSPAINT;
+   const _hash HASH_NOTEPAD;
+
    const _hash HASH_DIRECTORIES;
    const _hash HASH_FILES;
    const _hash HASH_RECURSIVEFILES;
@@ -268,6 +272,7 @@ public:
    const _hash HASH_EXIT;
    const _hash HASH_ERROR;
 
+   const std::unordered_set<_hash> HASH_GROUP_ALIASES;
    const std::unordered_set<_hash> HASH_GROUP_MONTHS;
    const std::unordered_set<_hash> HASH_GROUP_WEEKDAYS;
    const std::unordered_set<_hash> HASH_GROUP_PERIOD_SINGLE;

@@ -139,6 +139,8 @@ namespace perun2
       this->insertConstant<_list>(p2.hashes.HASH_ALPHABET);
       this->insertConstant<_list>(p2.hashes.HASH_ASCII);
       this->insertConstant<_list>(p2.hashes.HASH_ARGUMENTS);
+      this->insertConstant<_str>(p2.hashes.HASH_MSPAINT);
+      this->insertConstant<_str>(p2.hashes.HASH_NOTEPAD);
    };
 
    Contexts::Contexts(_p2& p2)
@@ -210,6 +212,12 @@ namespace perun2
          LocationContext* last = this->locationContexts.back();
          if (last != nullptr) {
             result = last->location.get();
+            return true;
+         }
+      }
+      else if (var == this->hashes.HASH_PAINT) {
+         if (this->globalVars.takeVar(this->hashes.HASH_MSPAINT, result)) {
+            p2.cache.actualize(var);
             return true;
          }
       }

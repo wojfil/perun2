@@ -1814,6 +1814,14 @@ _str os_currentPath()
    return _str(path);
 }
 
+_str os_system32Path()
+{
+   _char path[MAX_PATH];
+   return SHGetSpecialFolderPathW(0, path, CSIDL_SYSTEM, FALSE)
+      ? _str(path)
+      : _str();
+}
+
 _size os_readFile_size(const _str& path)
 {
     struct _stat fileinfo;

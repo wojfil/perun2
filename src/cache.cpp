@@ -55,6 +55,12 @@ void Cache::actualize(const _hash nameHash)
          this->context.lists[nameHash]->value = this->perun2.arguments.getArgs();
       }
    }
+   else if (nameHash == this->perun2.hashes.HASH_MSPAINT 
+         || nameHash == this->perun2.hashes.HASH_PAINT
+         || nameHash == this->perun2.hashes.HASH_NOTEPAD) 
+   {
+      this->loadSystem32Path(nameHash);
+   }
 }
 
 void Cache::loadCmdPath()
@@ -93,6 +99,22 @@ _list Cache::getAlphabet() const
    return a;
 }
 
+void Cache::loadSystem32Path(const _hash nameHash)
+{
+   if (this->isNotLoaded(CACHE_SYSTEM32)) {
+      this->system32 = os_system32Path();
+   }
 
+   if (nameHash == this->perun2.hashes.HASH_MSPAINT || nameHash == this->perun2.hashes.HASH_PAINT) {
+      if (this->isNotLoaded(CACHE_MSPAINT)) {
+         this->context.strings[this->perun2.hashes.HASH_MSPAINT]->value = os_join(this->system32, STRING_MSPAINT_EXE);
+      }
+   }
+   else if (nameHash == this->perun2.hashes.HASH_NOTEPAD) {
+      if (this->isNotLoaded(CACHE_NOTEPAD)) {
+         this->context.strings[nameHash]->value = os_join(this->system32, STRING_NOTEPAD_EXE);
+      }
+   }
+}
 
 }

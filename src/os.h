@@ -137,6 +137,7 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath);
 _str os_executablePath();
 _str os_desktopPath();
 _str os_currentPath();
+_str os_system32Path();
 
 _bool os_readFile(_str& result, const _str& path);
 void os_showWebsite(const _str& url);

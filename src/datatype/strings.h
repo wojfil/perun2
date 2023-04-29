@@ -55,6 +55,12 @@ _constexpr _char STRING_ARG_HELP[] =             L"--help";
 
 _constexpr _char STRING_DOT_GIT[] =              L".git";
 _constexpr _char STRING_DOT_SVN[] =              L".svn";
+_constexpr _char STRING_MSPAINT_EXE[] =          L"mspaint.exe";
+_constexpr _char STRING_NOTEPAD_EXE[] =          L"notepad.exe";
+
+_constexpr _char STRING_MSPAINT[] =              L"mspaint";
+_constexpr _char STRING_PAINT[] =                L"paint";
+_constexpr _char STRING_NOTEPAD[] =              L"notepad";
 
 _constexpr _char STRING_WEEKDAY_MONDAY[] =       L"Monday";
 _constexpr _char STRING_WEEKDAY_TUESDAY[] =      L"Tuesday";

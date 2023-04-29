@@ -32,6 +32,9 @@ _constexpr _cunit CACHE_ALPHABET =             0b0000000000000000000000000000100
 _constexpr _cunit CACHE_ASCII =                0b00000000000000000000000000010000;
 _constexpr _cunit CACHE_ORIGIN =               0b00000000000000000000000000100000;
 _constexpr _cunit CACHE_ARGUMENTS =            0b00000000000000000000000001000000;
+_constexpr _cunit CACHE_SYSTEM32 =             0b00000000000000000000000010000000;
+_constexpr _cunit CACHE_MSPAINT =              0b00000000000000000000000100000000;
+_constexpr _cunit CACHE_NOTEPAD =              0b00000000000000000000001000000000;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop
@@ -59,10 +62,12 @@ private:
    _bool isNotLoaded(const _cunit v);
    _str getCmdProcessStartingArgs() const;
    _list getAlphabet() const;
+   void loadSystem32Path(const _hash nameHash);
 
    _cunit value = CACHE_NULL;
    _p2& perun2;
    VarsContext& context;
+   _str system32;
 };
 
 }

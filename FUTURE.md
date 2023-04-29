@@ -1,6 +1,6 @@
 # Future features
 
-New ideas for features (especially for new keywords). Here should be as many creative ideas as possible.
+New ideas for features. Especially for new keywords. Feel free to make a pull request.
 
 ## Limit by total size
 
@@ -132,6 +132,14 @@ copy '*.pdf'
 ```
 
 This feature is cool and should be implemented as soon as possible. We can even introduce a plural variant - *pendrives*.
+
+## Order By acceleration
+
+Perun2 has one performance weak spot. It takes few seconds to sort hundreds of thousands of files. 
+It could be improved, as currently program uses a naive iterative single-threaded quicksort. 
+Calculations are the bottleneck here. 
+Both filesystem access and console logs are very fast. 
+Sorting by a string is the slowest and should be improved in the first place.
 
 ## "Compile" time function evaluation
 
@@ -410,46 +418,6 @@ resurrect images
   where death = today
 ```
 
-## Commands *read* and *write*
-
-Command *write* saves output to a file. The values are the same that would appear in log, separated by new lines.
-
-```
-write '*.pdf'
-  to 'data.txt'
-```
-
-We can also write absolute paths to files.
-
-```
-'*.pdf' {
-  write path to 'data.txt'
-}
-```
-
-How would *read* work? 
-
-```
-a = read('data.txt')
-```
-
-## Command *show* or *message*
-
-Show a popup window with text.
-
-## Command *website*
-
-This command takes one string argument (website URL) and opens it using the default web browser.
-Probably a pointless command. 
-At this point, Perun2 is so huge and bloated, that this little feature will not make it worse.
-
-```
-website 'github'
-```
-
-*Https* as default protocol and *com* as default domain (if these values are missing). 
-Command above will open *https://github.com*.
-
 ## Command *clear*
 
 This command makes files and directories empty. How to implement that? Can anything be cleared?
@@ -482,12 +450,3 @@ Just font files.
 ```
 select fonts
 ```
-
-## Variable *scripts*, *recursiveScripts*
-
-Perun2 script files.
-
-## Variable *downloaded*
-
-This is absolute path to the special directory, where files downloaded from the Internet usually land.
-

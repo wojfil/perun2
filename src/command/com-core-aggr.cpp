@@ -81,10 +81,10 @@ void C_AggrSelect_This::run()
          auto it = aggregate->selectPaths.find(this->context.v_parent->value);
 
          if (it == aggregate->selectPaths.end()) {
-            std::unordered_set<_str> newSet;
+            _set newSet;
             newSet.insert(this->context.v_path->value);
             aggregate->selectPaths.insert(
-               std::pair<_str, std::unordered_set<_str>>(this->context.v_parent->value, newSet));
+               std::pair<_str, _set>(this->context.v_parent->value, newSet));
          }
          else {
             it->second.insert(this->context.v_path->value);
@@ -115,10 +115,10 @@ void C_AggrSelect_String::run()
          auto it = aggregate->selectPaths.find(parent);
 
          if (it == aggregate->selectPaths.end()) {
-            std::unordered_set<_str> newSet;
+            _set newSet;
             newSet.insert(path);
             aggregate->selectPaths.insert(
-               std::pair<_str, std::unordered_set<_str>>(parent, newSet));
+               std::pair<_str, _set>(parent, newSet));
          }
          else {
             it->second.insert(path);
@@ -135,7 +135,7 @@ void C_AggrSelect_List::run()
    const _list elements = value->getValue();
    const _size length = elements.size();
    _str prevParent;
-   std::unordered_set<_str>* prevSet;
+   _set* prevSet;
 
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
@@ -157,10 +157,10 @@ void C_AggrSelect_List::run()
             else {
                auto it = aggregate->selectPaths.find(parent);
                if (it == aggregate->selectPaths.end()) {
-                  std::unordered_set<_str> newSet;
+                  _set newSet;
                   newSet.insert(path);
                   aggregate->selectPaths.insert(
-                     std::pair<_str, std::unordered_set<_str>>(parent, newSet));
+                     std::pair<_str, _set>(parent, newSet));
 
                   prevSet = &(aggregate->selectPaths.find(parent)->second);
                }
@@ -213,7 +213,7 @@ void C_Copy_String::run()
 
    const _str path = os_join(this->locationContext->location->value, n);
    if (os_exists(path)) {
-      std::unordered_set<_str> set;
+      _set set;
       set.insert(path);
       const _bool s = os_copy(set);
       if (s) {
@@ -241,7 +241,7 @@ void C_Copy_List::run()
       return;
    }
 
-   std::unordered_set<_str> set;
+   _set set;
    _bool anyFailure = false;
 
    for (_size i = 0; i < length; i++) {
@@ -295,9 +295,9 @@ void Selector::insertValue()
       auto it = selectPaths.find(this->parent);
       if (it == selectPaths.end())
       {
-         std::unordered_set<_str> newSet;
+         _set newSet;
          newSet.insert(this->path);
-         selectPaths.insert(std::pair<_str, std::unordered_set<_str>>(this->parent, newSet));
+         selectPaths.insert(std::pair<_str, _set>(this->parent, newSet));
          prevSet = &(selectPaths.find(this->parent)->second);
       }
       else
@@ -361,7 +361,7 @@ void C_Select_String::run()
       const _str parent = os_parent(path);
 
       if (os_directoryExists(parent)) {
-         std::unordered_set<_str> set;
+         _set set;
          set.insert(path);
          success = os_select(parent, set);
 

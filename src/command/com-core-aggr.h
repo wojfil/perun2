@@ -157,9 +157,9 @@ public:
    void run();
 
 private:
-   std::map<_str, std::unordered_set<_str>> selectPaths;
+   std::map<_str, _set> selectPaths;
    _str prevParent;
-   std::unordered_set<_str>* prevSet;
+   _set* prevSet;
    _bool isFirst = true;
 
    _str& path;

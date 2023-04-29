@@ -118,7 +118,7 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
-      context.v_fullname->value = os_fullname(context.trimmed);
+      context.v_fullname->value = os_fullname(context.v_path->value);
    }
 
    if (attribute->has(ATTR_PARENT)) {
@@ -221,12 +221,12 @@ void os_loadAttributes(FileContext& context)
 
    if (attribute->has(ATTR_NAME)) {
       if (context.v_isdirectory->value) {
-         context.v_name->value = os_fullname(context.trimmed);
+         context.v_name->value = os_fullname(context.v_path->value);
       }
       else {
-         context.v_name->value = os_hasExtension(context.trimmed)
-            ? os_name(context.trimmed)
-            : os_fullname(context.trimmed);
+         context.v_name->value = os_hasExtension(context.v_path->value)
+            ? os_name(context.v_path->value)
+            : os_fullname(context.v_path->value);
       }
    }
 
@@ -350,7 +350,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
-      context.v_fullname->value = os_fullname(context.trimmed);
+      context.v_fullname->value = os_fullname(context.v_path->value);
    }
 
    if (attribute->has(ATTR_PARENT)) {
@@ -430,12 +430,12 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
 
    if (attribute->has(ATTR_NAME)) {
       if (context.v_isdirectory->value) {
-         context.v_name->value = os_fullname(context.trimmed);
+         context.v_name->value = os_fullname(context.v_path->value);
       }
       else {
-         context.v_name->value = os_hasExtension(context.trimmed)
-            ? os_name(context.trimmed)
-            : os_fullname(context.trimmed);
+         context.v_name->value = os_hasExtension(context.v_path->value)
+            ? os_name(context.v_path->value)
+            : os_fullname(context.v_path->value);
       }
    }
 
@@ -1283,7 +1283,7 @@ _bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();
 
-   if (length == 0 || path[length - 1] == CHAR_DOT) {
+   if (length == 0 || (length != 1 && path[length - 1] == CHAR_DOT)) {
       return true;
    }
 
@@ -1548,6 +1548,10 @@ inline void os_escapeQuote(_str& path)
 
 _str os_join(const _str& path1, const _str& path2)
 {
+   if (path2.size() == 1 && path2[0] == CHAR_DOT) {
+      return path1;
+   }
+
    return os_isAbsolute(path2)
       ? path2
       : str(path1, OS_SEPARATOR, path2);

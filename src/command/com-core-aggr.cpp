@@ -279,6 +279,72 @@ void C_Copy_List::run()
    this->perun2.contexts.success->value = !anyFailure;
 }
 
+void Selector::reset()
+{
+   this->selectPaths.clear();
+   this->prevParent.clear();
+   this->isFirst = true;
+}
+
+void Selector::insertValue()
+{
+   if (!isFirst && this->parent == prevParent) {
+      prevSet->insert(this->path);
+   }
+   else {
+      auto it = selectPaths.find(this->parent);
+      if (it == selectPaths.end())
+      {
+         std::unordered_set<_str> newSet;
+         newSet.insert(this->path);
+         selectPaths.insert(std::pair<_str, std::unordered_set<_str>>(this->parent, newSet));
+         prevSet = &(selectPaths.find(this->parent)->second);
+      }
+      else
+      {
+         it->second.insert(this->path);
+         prevSet = &(it->second);
+      }
+      prevParent = this->parent;
+   }
+
+   isFirst = false;
+}
+
+void Selector::run()
+{
+   if (this->selectPaths.empty()) {
+      this->perun2.contexts.success->value = false;
+   }
+   else {
+      _bool anyFailed = false;
+
+      for (auto it = this->selectPaths.begin(); it != this->selectPaths.end(); it++)
+      {
+         if (this->perun2.state != State::s_Running) {
+            break;
+         }
+
+         const _bool success = os_select(it->first, it->second);
+         if (!anyFailed && !success) {
+            anyFailed = true;
+         }
+
+         const auto end = it->second.end();
+         for (auto it2 = it->second.begin(); it2 != end; ++it2) {
+            if (success) {
+               logSelectSuccess(this->perun2, *it2);
+            }
+            else {
+               logSelectError(this->perun2, *it2);
+            }
+         }
+      }
+
+      this->perun2.contexts.success->value = !anyFailed;
+   }
+}
+
 void C_Select_String::run()
 {
    const _str n = os_trim(value->getValue());
@@ -327,10 +393,7 @@ void C_Select_List::run()
       return;
    }
 
-   std::map<_str, std::unordered_set<_str>> selectPaths;
-   _str prevParent;
-   std::unordered_set<_str>* prevSet;
-   _bool isFirst = true;
+   this->selector.reset();
 
    for (_size i = 0; i < length; i++) {
       const _str n = os_trim(elements[i]);
@@ -340,72 +403,75 @@ void C_Select_List::run()
          continue;
       }
 
-      const _str path = os_join(this->locationContext->location->value, n);
+      this->path = os_join(this->locationContext->location->value, n);
 
       if (!os_exists(path) || !os_hasParentDirectory(path)) {
          logSelectError(this->perun2, path);
          continue;
       }
 
-      const _str parent = os_parent(path);
+      this->parent = os_parent(path);
       if (!os_directoryExists(parent)) {
          logSelectError(this->perun2, path);
          continue;
       }
 
-      if (!isFirst && parent == prevParent) {
-         prevSet->insert(path);
-      }
-      else {
-         auto it = selectPaths.find(parent);
-         if (it == selectPaths.end())
-         {
-            std::unordered_set<_str> newSet;
-            newSet.insert(path);
-            selectPaths.insert(std::pair<_str, std::unordered_set<_str>>(parent, newSet));
-            prevSet = &(selectPaths.find(parent)->second);
-         }
-         else
-         {
-            it->second.insert(path);
-            prevSet = &(it->second);
-         }
-         prevParent = parent;
-      }
-
-      isFirst = false;
+      this->selector.insertValue();
    }
 
-   if (selectPaths.empty()) {
-      this->perun2.contexts.success->value = false;
-   }
-   else {
-      _bool anyFailed = false;
+   this->selector.run();
+}
 
-      for (auto it = selectPaths.begin(); it != selectPaths.end(); it++)
-      {
-         if (this->perun2.state != State::s_Running) {
-            break;
-         }
 
-         const _bool success = os_select(it->first, it->second);
-         if (!anyFailed && !success) {
-            anyFailed = true;
-         }
+void C_Select_Definition::run()
+{
+   this->selector.reset();
 
-         const auto end = it->second.end();
-         for (auto it2 = it->second.begin(); it2 != end; ++it2) {
-            if (success) {
-               logSelectSuccess(this->perun2, *it2);
-            }
-            else {
-               logSelectError(this->perun2, *it2);
-            }
-         }
+   while (this->value->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->value->reset();
+         break;
       }
 
-      this->perun2.contexts.success->value = !anyFailed;
+      this->path = os_join(this->locationContext->location->value, this->value->getValue());
+
+      if (!os_exists(path) || !os_hasParentDirectory(path)) {
+         logSelectError(this->perun2, path);
+         continue;
+      }
+
+      this->parent = os_parent(path);
+      if (!os_directoryExists(parent)) {
+         logSelectError(this->perun2, path);
+         continue;
+      }
+
+      this->selector.insertValue();
    }
+
+   this->selector.run();
+}
+
+
+void C_Select_ContextDefinition::run()
+{
+   this->selector.reset();
+
+   while (this->value->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->value->reset();
+         break;
+      }
+
+      if (!this->context->v_exists->value || this->context->v_parent->value.empty()) {
+         logSelectError(this->perun2, this->context->v_path->value);
+         continue;
+      }
+
+      this->selector.insertValue();
+   }
+
+   this->selector.run();
 }
 
 }

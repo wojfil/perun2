@@ -145,6 +145,30 @@ public:
 };
 
 
+struct Selector
+{
+public:
+   Selector() = delete;
+   Selector(_str& pth, _str& prnt, _p2& p2)
+      : path(pth), parent(prnt), perun2(p2) { };
+
+   void reset();
+   void insertValue();
+   void run();
+
+private:
+   std::map<_str, std::unordered_set<_str>> selectPaths;
+   _str prevParent;
+   std::unordered_set<_str>* prevSet;
+   _bool isFirst = true;
+
+   _str& path;
+   _str& parent;
+
+   _p2& perun2;
+};
+
+
 struct C_Select_String : C_Aggr<_str>
 {
 public:
@@ -159,9 +183,54 @@ struct C_Select_List : C_Aggr<_list>
 {
 public:
    C_Select_List(_genptr<_list>& val, _p2& p2)
-      : C_Aggr<_list>(val, p2) {};
+      : C_Aggr<_list>(val, p2), 
+        selector(path, parent, p2) { };
    void run() override;
+
+private:
+   _str path;
+   _str parent;
+   Selector selector;
 };
+
+
+struct C_Select_Definition : Command
+{
+public:
+   C_Select_Definition(_defptr& val, _p2& p2) 
+      : value(std::move(val)), perun2(p2), 
+      locationContext(p2.contexts.getLocationContext()), 
+      selector(path, parent, p2) { };
+
+   void run() override;
+
+private:
+   LocationContext* locationContext;
+   _defptr value;
+   _p2& perun2;
+   
+   _str path;
+   _str parent;
+   Selector selector;
+};
+
+
+struct C_Select_ContextDefinition : Command
+{
+public:
+   C_Select_ContextDefinition(_defptr& val, _p2& p2, FileContext* ctx) 
+      : value(std::move(val)), perun2(p2), context(ctx), 
+        selector(context->v_path->value, context->v_parent->value, p2) { };
+
+   void run() override;
+
+private:
+   _defptr value;
+   _p2& perun2;
+   FileContext* const context;
+   Selector selector;
+};
+
 
 }
 

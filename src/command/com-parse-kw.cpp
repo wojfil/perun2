@@ -389,6 +389,21 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
          result = std::make_unique<C_Select_String>(str, p2);
          return true;
       }
+      
+      _defptr def;
+      if (parse::parse(p2, tks, def)) {
+         FileContext* ctx = def->getFileContext();
+         if (ctx == nullptr) {
+            result = std::make_unique<C_Select_Definition>(def, p2);
+         }
+         else {
+            ctx->attribute->add(p2.hashes.HASH_PATH);
+            ctx->attribute->add(p2.hashes.HASH_PARENT);
+            result = std::make_unique<C_Select_ContextDefinition>(def, p2, ctx);
+         }
+
+         return true;
+      }
 
       _genptr<_list> list;
       if (parse::parse(p2, tks, list)) {

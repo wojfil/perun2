@@ -1382,10 +1382,10 @@ _str os_trim(const _str& path)
    const _int len = path.size();
    _int start = 0;
 
-   if (len >= 2 && path[0] == CHAR_DOT
-    && (path[1] == OS_SEPARATOR || path[1] == OS_WRONG_SEPARATOR))
+   while (len >= (start + 2) && path[start] == CHAR_DOT
+    && (path[start + 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
    {
-      start = 2;
+      start += 2;
    }
 
    while (start < len) {
@@ -1404,8 +1404,8 @@ _str os_trim(const _str& path)
 
 exitStart:
 
-   if (len >= (start + 2) && path[start] == CHAR_DOT
-    && (path[start+ 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
+   while (len >= (start + 2) && path[start] == CHAR_DOT
+    && (path[start + 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
    {
       start += 2;
    }
@@ -1463,10 +1463,10 @@ void os_rawTrim(_str& value)
    const _int len = value.size();
    _int start = 0;
 
-   if (len >= 2 && value[0] == CHAR_DOT
-    && (value[1] == OS_SEPARATOR || value[1] == OS_WRONG_SEPARATOR))
+   while (len >= (start + 2) && value[start] == CHAR_DOT
+    && (value[start + 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
    {
-      start = 2;
+      start += 2;
    }
 
    while (start < len) {
@@ -1485,8 +1485,8 @@ void os_rawTrim(_str& value)
 
 r_exitStart:
 
-   if (len >= (start + 2) && value[start] == CHAR_DOT
-    && (value[start+ 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
+   while (len >= (start + 2) && value[start] == CHAR_DOT
+    && (value[start + 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
    {
       start += 2;
    }

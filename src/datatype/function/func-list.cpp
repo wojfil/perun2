@@ -60,12 +60,11 @@ _list F_Split::getValue()
          return toChars(v1);
       }
       case 1: {
-         const _char& ch = v2[0];
          _size start = 0;
          _list r;
 
          for (_size i = 0; i < len1; i++) {
-            if (v1[i] == ch) {
+            if (v1[i] == v2[0]) {
                if (start == i) {
                   r.emplace_back();
                }

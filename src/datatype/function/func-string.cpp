@@ -41,10 +41,9 @@ _str F_After::getValue()
 
    if (len2 == 1) {
       const _size len1 = s1.size();
-      const _char& sign = s2[0];
 
       for (_size i = 0; i < len1; i++) {
-         if (s1[i] == sign) {
+         if (s1[i] == s2[0]) {
             return i == len1 - 1
                ? _str()
                : s1.substr(i + 1);
@@ -76,10 +75,9 @@ _str F_Before::getValue()
 
    if (len2 == 1) {
       const _size len1 = s1.size();
-      const _char& sign = s2[0];
 
       for (_size i = 0; i < len1; i++) {
-         if (s1[i] == sign) {
+         if (s1[i] == s2[0]) {
             return i == 0
                ? _str()
                : s1.substr(0, i);
@@ -100,19 +98,18 @@ _str F_Before::getValue()
 _str F_Digits::getValue()
 {
    const _str s1 = arg1->getValue();
-   const _size len1 = s1.size();
    _size len2 = 0;
    _size it = 0;
 
-   for (_size i = 0; i < len1; i++) {
-      if (std::iswdigit(s1[i])) {
+   for (const _char ch : s1) {
+      if (std::iswdigit(ch)) {
          len2++;
       }
    }
 
    _str s2(len2, CHAR_SPACE);
-   for (_size i = 0; i < len1; i++) {
-      const _char& ch = s1[i];
+
+   for (const _char ch : s1) {
       if (std::iswdigit(ch)) {
          s2[it] = ch;
          it++;
@@ -144,19 +141,17 @@ _str F_Fill::getValue()
 _str F_Letters::getValue()
 {
    const _str s1 = arg1->getValue();
-   const _size len1 = s1.size();
    _size len2 = 0;
    _size it = 0;
 
-   for (_size i = 0; i < len1; i++) {
-      if (std::iswalpha(s1[i])) {
+   for (const _char ch : s1) {
+      if (std::iswalpha(ch)) {
          len2++;
       }
    }
 
    _str s2(len2, CHAR_SPACE);
-   for (_size i = 0; i < len1; i++) {
-      const _char& ch = s1[i];
+   for (const _char ch : s1) {
       if (std::iswalpha(ch)) {
          s2[it] = ch;
          it++;
@@ -454,19 +449,18 @@ _str F_Replace::getValue()
          break;
       }
       case 1: {
-         const _char& ch = v1[0];
          switch (len2) {
             case 0: {
-               base.erase(std::remove(base.begin(), base.end(), ch), base.end());
+               base.erase(std::remove(base.begin(), base.end(), v1[0]), base.end());
                break;
             }
             case 1: {
-               std::replace(base.begin(), base.end(), ch, v2[0]);
+               std::replace(base.begin(), base.end(), v1[0], v2[0]);
                break;
             }
             default: {
                for (_size i = 0; i < len; i++) {
-                  if (base[i] == ch) {
+                  if (base[i] == v1[0]) {
                      if (i == 0) {
                         base = str(v2, base.substr(1));
                      }
@@ -675,8 +669,7 @@ _str F_Capitalize::getValue()
    _bool prevLetter = false;
 
    for (_size i = 0; i < len; i++) {
-      const _char& ch = value[i];
-      const _bool isLetter = std::iswalpha(ch);
+      const _bool isLetter = std::iswalpha(value[i]);
 
       if (isLetter) {
          if (prevLetter) {

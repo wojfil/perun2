@@ -83,11 +83,8 @@ _bool F_IsLower::getValue()
    }
 
    _bool anyLetter = false;
-   const _size len = value.size();
 
-   for (_size i = 0; i < len; i++) {
-      const _char& ch = value[i];
-
+   for (const _char ch : value) {
       if (std::iswalpha(ch)) {
          if (std::iswupper(ch)) {
             return false;
@@ -108,11 +105,8 @@ _bool F_IsUpper::getValue()
    }
 
    _bool anyLetter = false;
-   const _size len = value.size();
 
-   for (_size i = 0; i < len; i++) {
-      const _char& ch = value[i];
-
+   for (const _char ch : value) {
       if (std::iswalpha(ch)) {
          if (std::iswlower(ch)) {
             return false;
@@ -141,7 +135,8 @@ _bool isNumber(const _str& value)
    _bool hasDot = false;
 
    for (_size i = 0; i < len; i++) {
-      const _char& ch = value[i];
+      const _char ch = value[i];
+      
       if (ch == CHAR_DOT) {
          if (hasDot) {
             return false;

@@ -45,8 +45,8 @@ static LikeSet makeLikeSet(const _str& pattern, _size startId, const _size endId
 
    for (_size i = startId; i <= endId; i++) {
       if (i < endId - 1 && pattern[i + 1] == WILDCARD_SET_RANGE) {
-         const _char& left = pattern[i];
-         const _char& right = pattern[i + 2];
+         const _char left = pattern[i];
+         const _char right = pattern[i + 2];
 
          if (left < right) {
             for (_char ch = left; ch <= right; ch++) {
@@ -78,7 +78,7 @@ static void defaultLikeCmp(_likeptr& result, const _str& pattern)
    _size resultLength = 0;
 
    for (_size i = 0; i < length; i++) {
-      const _char& ch = pattern[i];
+      const _char ch = pattern[i];
 
       if (ch == WILDCARD_SET_START) {
          i++;
@@ -158,8 +158,8 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
          return;
       }
       case 2: {
-         const _char& fst = pattern[0];
-         const _char& snd = pattern[1];
+         const _char fst = pattern[0];
+         const _char snd = pattern[1];
 
          if (fst == WILDCARD_SET_START || fst == WILDCARD_SET_END || snd == WILDCARD_SET_START || snd == WILDCARD_SET_END) {
             defaultLikeCmp(result, pattern);
@@ -244,8 +244,8 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
 
    // pattern length is 3 or greater
 
-   const _char& first = pattern[0];
-   const _char& last = pattern[length - 1];
+   const _char first = pattern[0];
+   const _char last = pattern[length - 1];
    const _size limit = length - 1;
 
    _bool fieldFail = false;
@@ -486,7 +486,7 @@ WildcardCharState LC_Default::checkState(const _size n, const _size m)
    }
 
    if (n > 0) {
-      const _char& pch = this->pattern[m - 1];
+      const _char pch = this->pattern[m - 1];
 
       switch (pch) {
          case WILDCARD_ONE_CHAR: {

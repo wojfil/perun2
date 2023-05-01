@@ -68,7 +68,7 @@ _size DoubleAsteriskPattern::getMinLength(const _str& pat) const
 {
    _size result = 0;
 
-   for (const _char& ch : pat) {
+   for (const _char ch : pat) {
       switch (ch) {
          case WILDCARD_SINGLE_ASTERISK:
          case WILDCARD_DOUBLE_ASTERISK: {

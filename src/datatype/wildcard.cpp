@@ -72,7 +72,7 @@ _size SimpleWildcardComparer::getMinLength(const _str& pat) const
 {
    _size result = 0;
 
-   for (const _char& ch : pat) {
+   for (const _char ch : pat) {
       if (ch != CHAR_ASTERISK) {
          result++;
       }

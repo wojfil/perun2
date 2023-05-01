@@ -580,7 +580,8 @@ _bool os_emptyDirectory(const _str& path)
 _str os_extension(const _str& value)
 {
    for (_int i = value.size() - 1; i >= 0; i--) {
-      const _char& ch = value[i];
+      const _char ch = value[i];
+
       if (ch == CHAR_DOT) {
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
             return _str();
@@ -601,8 +602,7 @@ _str os_extension(const _str& value)
 _str os_fullname(const _str& value)
 {
    for (_int i = value.size() - 1; i >= 0; i--) {
-      const _char& ch = value[i];
-      if (ch == OS_SEPARATOR) {
+      if (value[i] == OS_SEPARATOR) {
          return value.substr(i + 1);
       }
    }
@@ -685,7 +685,8 @@ _str os_name(const _str& value)
    _bool sep = false;
 
    for (; i >= 0; i--) {
-      const _char& ch = value[i];
+      const _char ch = value[i];
+
       if (dot == -1 && ch == CHAR_DOT) {
          dot = i;
       }
@@ -1329,7 +1330,7 @@ uint32_t os_patternInfo(const _str& pattern)
    _size countAstrisks = 0;
 
    for (_size i = 0; i < length; i++) {
-      const _char& ch = pattern[i];
+      const _char ch = pattern[i];
 
       switch (ch) {
          case CHAR_ASTERISK: {
@@ -1583,7 +1584,7 @@ _bool os_hasExtension(const _str& value)
    const _int len = value.size();
 
    for (_int i = len - 1; i >= 0; i--) {
-      const _char& ch = value[i];
+      const _char ch = value[i];
 
       if (ch == CHAR_DOT) {
          return (i == len - 1 || i == 0)
@@ -1644,8 +1645,7 @@ _bool os_hasParentDirectory(const _str& path)
    }
 
    for (_int i = path.size() - 1; i >= 1; i--) {
-      const _char& ch = path[i];
-      if (ch == OS_SEPARATOR) {
+      if (path[i] == OS_SEPARATOR) {
          return true;
       }
    }
@@ -1944,12 +1944,11 @@ inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result)
 
 _str os_makeArg(const _str& value)
 {
-   const _size len = value.size();
    _bool anySpace = false;
    _size quotes = 0;
 
-   for (_size i = 0; i < len; i++) {
-      switch (value[i]) {
+   for (const _char ch : value) {
+      switch (ch) {
          case CHAR_SPACE: {
             anySpace = true;
             break;
@@ -1968,10 +1967,9 @@ _str os_makeArg(const _str& value)
    }
    else {
       _str result;
-      result.reserve(len + quotes);
+      result.reserve(value.size() + quotes);
 
-      for (_size i = 0; i < len; i++) {
-         const _char& ch = value[i];
+      for (const _char ch : value) {
          if (ch == CHAR_QUOTATION_MARK) {
             result.push_back(CHAR_BACKSLASH);
          }

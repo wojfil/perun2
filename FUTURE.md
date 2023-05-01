@@ -61,16 +61,16 @@ Select directories that contain at least 100 megabytes of text files.
 
 ## General file types
 
-Add boolean variables that describe certain file type: *isImage*, *isAudio*, *isVideo*, *isDocument*, *isSpreadsheet* etc.
+Add boolean variables that describe certain file types: *isImage*, *isAudio*, *isVideo*, *isDocument*, *isSpreadsheet* etc.
 This feature should be implemented on a low level, not by a simple extension check.
-Should work for exotic and rare file encodings.
+Should work for exotic and rare file types.
 
 ```
-select files
+select 'c:/data/*'
   where isImage
 ```
 
-Another approach is to introduce collection variables: *images*, *audios*, *videos*, *archives* etc.
+We can go further and introduce collection variables: *images*, *audios*, *videos*, *archives* etc.
 There would be analogous variables like: *recursiveImages*, *recursiveAudios* etc.
 Maybe the best solution is to add all 3 variables for every type.
 For example: *isImage*, *images* and *recursiveImages*.
@@ -85,6 +85,13 @@ They would have their own properties, like duration of a video.
 delete recursiveVideos
   where duration < 5 seconds
 ```
+
+```
+select directories
+  where anyInside(images)
+```
+
+How to implement that? There is probably no better way than to just import *libmagic*.
 
 ## Image variables: *width*, *height*, *pixels*, *bpp*
 

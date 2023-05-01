@@ -243,6 +243,11 @@ SyntaxError SyntaxError::quotationMarkStringLteral(const _int line)
    return SyntaxError(L"you should use apostrophes ' instead of quotation marks \" for string literals", line);
 }
 
+SyntaxError SyntaxError::youShouldUseApostrophesAndWrite(const _str& value, const _int line)
+{
+   return SyntaxError(str(L"you should use apostrophes and write '", value, L"' instead"), line);
+}
+
 SyntaxError SyntaxError::undefinedVarValue(const _str& value, const _int line)
 {
    return SyntaxError(str(L"value of variable '", value, L"' is undefined here"), line);
@@ -258,6 +263,11 @@ SyntaxError SyntaxError::wrongSyntax(const _int line)
    return SyntaxError(L"wrong syntax. No command can be formed of this code", line);
 }
 
+SyntaxError SyntaxError::wrongSyntaxButProbablyAsteriskPattern(const _int line)
+{
+   return SyntaxError(L"wrong syntax. You probably wanted to express an Asterisk Pattern. This notation is incorrect. "
+      L"You should write it between two apostrophes like this: '*.txt'", line);
+}
 
 RuntimeError::RuntimeError(const _str& msg)
    : message(msg) { };

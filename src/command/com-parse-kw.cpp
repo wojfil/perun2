@@ -1222,6 +1222,34 @@ static _bool c_copyToAsContextfull(_comptr& result, const Token& word, const Tok
    return false;
 }
 
+void finalSyntaxError(const Tokens& tks, const Token& word, const _int line, const _bool directError, _p2& p2)
+{
+   // all the possible expression parsing has failed
+   // now, we have to show a Syntax Error message to the user
+
+   const _int length = tks.getLength();
+
+   if (length > 1 && tks.first().isSymbol(CHAR_ASTERISK)) {
+      if (length == 2) {
+         const Token& second = tks.second();
+
+         if (second.type == Token::Type::t_TwoWords && second.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
+            throw SyntaxError::youShouldUseApostrophesAndWrite(
+               str(CHAR_ASTERISK, CHAR_DOT, second.getOriginString_2(p2)), tks.first().line);
+         }
+      }
+
+      throw SyntaxError::wrongSyntaxButProbablyAsteriskPattern(tks.first().line);
+   }
+
+   if (directError) {
+      commandSyntaxError(word.getOriginString(p2), line);
+   }
+   else {
+      throw SyntaxError::wrongSyntax(line);
+   }
+}
+
 _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int line, const _bool directError, _p2& p2)
 {
    if (tks.isEmpty()) {
@@ -1258,13 +1286,7 @@ _bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int 
       return true;
    }
 
-   if (directError) {
-      commandSyntaxError(word.getOriginString(p2), line);
-   }
-   else {
-      throw SyntaxError::wrongSyntax(line);
-   }
-
+   finalSyntaxError(tks, word, line, directError, p2);
    return false;
 }
 

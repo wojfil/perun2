@@ -68,9 +68,11 @@ public:
    static SyntaxError secondsOutOfRange(const _str& value, const _int line);
    static SyntaxError symbolNotFound(const _char value, const _int line);
    static SyntaxError quotationMarkStringLteral(const _int line);
+   static SyntaxError youShouldUseApostrophesAndWrite(const _str& value, const _int line);
    static SyntaxError undefinedVarValue(const _str& value, const _int line);
    static SyntaxError unopenedBracketIsClosed(const _char value, const _int line);
    static SyntaxError wrongSyntax(const _int line);
+   static SyntaxError wrongSyntaxButProbablyAsteriskPattern(const _int line);
    // to be continued
    // all errors from the source code will finally end up here
 

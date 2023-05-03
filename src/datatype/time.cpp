@@ -27,7 +27,7 @@ Time::Time()
    : day(TNUM_ONE), month(TNUM_ONE), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
 
 Time::Time(const _tnum mo, const _tnum ye)
-   : day(TNUM_ZERO), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
+   : day(TNUM_ONE), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
 
 Time::Time(const _tnum da, const _tnum mo, const _tnum ye)
    : day(da), month(mo), year(ye), type(TimeType::tt_Date) { };

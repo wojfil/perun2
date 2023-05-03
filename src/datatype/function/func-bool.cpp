@@ -264,9 +264,8 @@ _bool F_ExistInside::getValue()
 _bool F_StartsWithChar::getValue()
 {
    const _str v = value->getValue();
-   const _size len = v.size();
 
-   return len == 0
+   return v.empty()
       ? false
       : (v[0] == character);
 }
@@ -275,11 +274,10 @@ _bool F_StartsWithChar::getValue()
 _bool F_EndsWithChar::getValue()
 {
    const _str v = value->getValue();
-   const _size len = v.size();
 
-   return len == 0
+   return v.empty()
       ? false
-      : (v[len - 1] == character);
+      : (v[v.size() - 1] == character);
 }
 
 
@@ -324,10 +322,8 @@ _bool F_EndsWithConst::getValue()
       return false;
    }
 
-   const _size b = len - constantLength;
-
    for (_size i = 0; i < constantLength; i++) {
-      if (v[b + i] != constant[i]) {
+      if (v[len - constantLength + i] != constant[i]) {
          return false;
       }
    }
@@ -343,9 +339,8 @@ _bool F_IsLetter::getValue()
       return false;
    }
 
-   const _size len = value.size();
-   for (_size i = 0; i < len; i++) {
-      if (!std::iswalpha(value[i])) {
+   for (const _char ch : value) {
+      if (!std::iswalpha(ch)) {
          return false;
       }
    }
@@ -361,9 +356,8 @@ _bool F_IsDigit::getValue()
       return false;
    }
 
-   const _size len = value.size();
-   for (_size i = 0; i < len; i++) {
-      if (!std::iswdigit(value[i])) {
+   for (const _char ch : value) {
+      if (!std::iswdigit(ch)) {
          return false;
       }
    }
@@ -379,9 +373,8 @@ _bool F_IsBinary::getValue()
       return false;
    }
 
-   const _size len = value.size();
-   for (_size i = 0; i < len; i++) {
-      switch (value[i]) {
+   for (const _char ch : value) {
+      switch (ch) {
          case CHAR_0:
          case CHAR_1:{
             break;
@@ -403,9 +396,8 @@ _bool F_IsHex::getValue()
       return false;
    }
 
-   const _size len = value.size();
-   for (_size i = 0; i < len; i++) {
-      switch (value[i]) {
+   for (const _char ch : value) {
+      switch (ch) {
          case CHAR_0: case CHAR_1: case CHAR_2: case CHAR_3: case CHAR_4:
          case CHAR_5: case CHAR_6: case CHAR_7: case CHAR_8: case CHAR_9:
          case CHAR_a: case CHAR_b: case CHAR_c: case CHAR_d: case CHAR_e: case CHAR_f:
@@ -454,8 +446,8 @@ _bool F_Exist::getValue()
    const _list values = this->arg1->getValue();
    const _size len = values.size();
 
-   for (_size i = 0; i < len; i++) {
-      const _str& v = os_trim(values[i]);
+   for (const _str& val : values) {
+      const _str& v = os_trim(val);
 
       if (os_isInvaild(v)) {
           return false;
@@ -469,10 +461,5 @@ _bool F_Exist::getValue()
 
    return true;
 }
-
-
-
-
-
 
 }

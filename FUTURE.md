@@ -161,6 +161,15 @@ copy files
 In this example, function path() is treated internally as a constant value 'a/b/c' or 'a\b\c' (depending on OS).
 Just some internal optimizations. This is nothing user will notice.
 
+## Wildcard pattern matching microoptimizations
+
+These algorithms are used in several places. The most prominent one is the Like operator.
+Current implementation is not the most optimal and microoptimizations are possible.
+The algorithm is recursive and uses a vector of vectors of chars. It could be iterative.
+The size of the internal vector is constant and known at runtime and depends only on the pattern length.
+We could use a vector of arrays instead. Even one huge plain array of chars reserved in advance (exchange memory for performance).
+However, this is not really important. Microoptimizations are possible, but they would not be noticeable anyways.
+
 ## Repositories
 
 Variable *repositories* refers to directories that are code repositories.

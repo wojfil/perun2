@@ -30,21 +30,19 @@ namespace perun2::func
 _str F_After::getValue()
 {
    const _str s1 = arg1->getValue();
-   if (s1.empty())
+   if (s1.empty()) {
       return s1;
+   }
 
    const _str s2 = arg2->getValue();
-   if (s2.empty())
+   if (s2.empty()) {
       return s2;
+   }
 
-   const _size len2 = s2.size();
-
-   if (len2 == 1) {
-      const _size len1 = s1.size();
-
-      for (_size i = 0; i < len1; i++) {
+   if (s2.size() == 1) {
+      for (_size i = 0; i < s1.size(); i++) {
          if (s1[i] == s2[0]) {
-            return i == len1 - 1
+            return i == s1.size() - 1
                ? _str()
                : s1.substr(i + 1);
          }
@@ -64,19 +62,17 @@ _str F_After::getValue()
 _str F_Before::getValue()
 {
    const _str s1 = arg1->getValue();
-   if (s1.empty())
+   if (s1.empty()) {
       return s1;
+   }
 
    const _str s2 = arg2->getValue();
-   if (s2.empty())
-      return _str();
+   if (s2.empty()) {
+      return s2;
+   }
 
-   const _size len2 = s2.size();
-
-   if (len2 == 1) {
-      const _size len1 = s1.size();
-
-      for (_size i = 0; i < len1; i++) {
+   if (s2.size() == 1) {
+      for (_size i = 0; i < s1.size(); i++) {
          if (s1[i] == s2[0]) {
             return i == 0
                ? _str()
@@ -370,9 +366,8 @@ _str F_Substring_3::getValue()
 _str F_ConcatenateUnit::getValue()
 {
    const _list values = this->arg1->getValue();
-   const _size length = values.size();
 
-   switch (length) {
+   switch (values.size()) {
       case 0: {
          return _str();
       }
@@ -386,8 +381,8 @@ _str F_ConcatenateUnit::getValue()
 
    _stream ss;
 
-   for (_size i = 0; i < length; i++) {
-      ss << values[i];
+   for (const _str& v : values) {
+      ss << v;
    }
 
    return ss.str();
@@ -398,8 +393,8 @@ _str F_Concatenate::getValue()
 {
    _stream ss;
 
-   for (_size i = 0; i < length; i++) {
-      ss << values[i]->getValue();
+   for (_genptr<_str>& gen : values) {
+      ss << gen->getValue();
    }
 
    return ss.str();
@@ -441,15 +436,13 @@ _str F_Replace::getValue()
 
    const _str v1 = arg2->getValue();
    const _str v2 = arg3->getValue();
-   const _size len1 = v1.size();
-   const _size len2 = v2.size();
 
-   switch (len1) {
+   switch (v1.size()) {
       case 0: {
          break;
       }
       case 1: {
-         switch (len2) {
+         switch (v2.size()) {
             case 0: {
                base.erase(std::remove(base.begin(), base.end(), v1[0]), base.end());
                break;
@@ -471,8 +464,8 @@ _str F_Replace::getValue()
                         base = str(base.substr(0, i), v2, base.substr(i + 1));
                      }
 
-                     i += len2 - 1;
-                     len += len2 - 1;
+                     i += v2.size() - 1;
+                     len += v2.size() - 1;
                   }
                }
                break;
@@ -483,17 +476,17 @@ _str F_Replace::getValue()
       default: {
          size_t i = 0;
 
-         switch (len2) {
+         switch (v2.size()) {
             case 0: {
                while ((i = base.find(v1)) != _str::npos) {
-                  base.erase(i, len1);
+                  base.erase(i, v1.size());
                }
                break;
             }
             default: {
                while ((i = base.find(v1, i)) != _str::npos) {
-                  base.replace(i, len1, v2);
-                  i += len2;
+                  base.replace(i, v1.size(), v2);
+                  i += v2.size();
                }
                break;
             }
@@ -563,10 +556,9 @@ _str F_WeekDayNameFromTime::getValue()
 _str F_AfterDigits::getValue()
 {
    const _str value = arg1->getValue();
-   const _size len = value.size();
    _bool after = false;
 
-   for (_size i = 0; i < len; i++) {
+   for (_size i = 0; i < value.size(); i++) {
       if (after) {
          if (!std::iswdigit(value[i])) {
             return value.substr(i);
@@ -586,10 +578,9 @@ _str F_AfterDigits::getValue()
 _str F_AfterLetters::getValue()
 {
    const _str value = arg1->getValue();
-   const _size len = value.size();
    _bool after = false;
 
-   for (_size i = 0; i < len; i++) {
+   for (_size i = 0; i < value.size(); i++) {
       if (after) {
          if (!std::iswalpha(value[i])) {
             return value.substr(i);
@@ -609,9 +600,8 @@ _str F_AfterLetters::getValue()
 _str F_BeforeDigits::getValue()
 {
    const _str value = arg1->getValue();
-   const _size len = value.size();
 
-   for (_size i = 0; i < len; i++) {
+   for (_size i = 0; i < value.size(); i++) {
       if (std::iswdigit(value[i])) {
          return i == 0
             ? _str()
@@ -626,9 +616,8 @@ _str F_BeforeDigits::getValue()
 _str F_BeforeLetters::getValue()
 {
    const _str value = arg1->getValue();
-   const _size len = value.size();
 
-   for (_size i = 0; i < len; i++) {
+   for (_size i = 0; i < value.size(); i++) {
       if (std::iswalpha(value[i])) {
          return i == 0
             ? _str()
@@ -643,15 +632,14 @@ _str F_BeforeLetters::getValue()
 _str F_RandomChar::getValue()
 {
    const _str value = arg1->getValue();
-   const _size len = value.size();
 
-   switch (len) {
+   switch (value.size()) {
       case 0:
       case 1: {
          return value;
       }
       default: {
-         return _str(1, value[math.randomInt(len - 1)]);
+         return toStr(value[math.randomInt(value.size() - 1)]);
       }
    }
 }
@@ -660,24 +648,23 @@ _str F_RandomChar::getValue()
 _str F_Capitalize::getValue()
 {
    _str value = arg1->getValue();
-   const _size len = value.size();
 
-   if (len == 0) {
+   if (value.empty()) {
       return value;
    }
 
    _bool prevLetter = false;
 
-   for (_size i = 0; i < len; i++) {
-      const _bool isLetter = std::iswalpha(value[i]);
+   for (_char& ch : value) {
+      const _bool isLetter = std::iswalpha(ch);
 
       if (isLetter) {
          if (prevLetter) {
-            toLower(value[i]);
+            toLower(ch);
          }
          else {
             prevLetter = true;
-            toUpper(value[i]);
+            toUpper(ch);
          }
       }
       else {
@@ -692,9 +679,8 @@ _str F_Capitalize::getValue()
 _str F_Join::getValue()
 {
    _list values = arg1->getValue();
-   const _size length = values.size();
 
-   switch (length) {
+   switch (values.size()) {
       case 0: {
          return _str();
       }
@@ -710,8 +696,8 @@ _str F_Join::getValue()
          if (separator.empty()) {
             _stream ss;
 
-            for (_size i = 0; i < length; i++) {
-               ss << values[i];
+            for (const _str& val : values) {
+               ss << val;
             }
 
             return ss.str();
@@ -720,7 +706,7 @@ _str F_Join::getValue()
             _stream ss;
             ss << values[0];
 
-            for (_size i = 1; i < length; i++) {
+            for (_size i = 1; i < values.size(); i++) {
                ss << separator;
                ss << values[i];
             }
@@ -816,15 +802,14 @@ _str F_Binary::getValue()
       negative = true;
    }
 
-   ss << std::bitset<64>(v);
-   const _str str_ = ss.str();
-   const _size len = str_.size();
+   ss << std::bitset<BITS_IN_NINT>(v);
+   const _str val = ss.str();
 
-   for (_size i = 0; i < len; i++) {
-      if (str_[i] != CHAR_0) {
+   for (_size i = 0; i < val.size(); i++) {
+      if (val[i] != CHAR_0) {
          return negative
-            ? str(CHAR_MINUS, str_.substr(i))
-            : str_.substr(i);
+            ? str(CHAR_MINUS, val.substr(i))
+            : val.substr(i);
       }
    }
 

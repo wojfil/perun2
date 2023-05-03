@@ -88,10 +88,9 @@ public:
 
    T getValue() override {
       const std::vector<T> value = this->arg1->getValue();
-      const _size length = value.size();
-      return length == 0
+      return value.empty()
          ? T()
-         : value[length - 1];
+         : value[value.size() - 1];
    }
 };
 
@@ -106,9 +105,8 @@ public:
 
    T getValue() override {
       const std::vector<T> value = this->arg1->getValue();
-      const _size length = value.size();
 
-      switch (length) {
+      switch (value.size()) {
          case 0: {
             return T();
          }
@@ -116,7 +114,7 @@ public:
             return value[0];
          }
          default: {
-            return value[static_cast<_size>(this->math.randomInt(length - 1))];
+            return value[static_cast<_size>(this->math.randomInt(value.size() - 1))];
          }
       }
    }

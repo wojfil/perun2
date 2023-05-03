@@ -22,12 +22,11 @@ namespace perun2::func
 
 inline _list toChars(const _str& value)
 {
-   const _size len = value.size();
    _list r;
-   r.reserve(len);
+   r.reserve(value.size());
 
-   for (_size i = 0; i < len; i++) {
-      r.emplace_back(1, value[i]);
+   for (const _char ch : value) {
+      r.emplace_back(1, ch);
    }
 
    return r;
@@ -46,16 +45,14 @@ _list F_Characters::getValue()
 _list F_Split::getValue()
 {
    _str v1 = arg1->getValue();
-   const _size len1 = v1.size();
 
-   if (len1 == 0) {
+   if (v1.empty()) {
       return _list();
    }
 
    const _str v2 = arg2->getValue();
-   const _size len2 = v2.size();
 
-   switch (len2) {
+   switch (v2.size()) {
       case 0: {
          return toChars(v1);
       }
@@ -63,7 +60,7 @@ _list F_Split::getValue()
          _size start = 0;
          _list r;
 
-         for (_size i = 0; i < len1; i++) {
+         for (_size i = 0; i < v1.size(); i++) {
             if (v1[i] == v2[0]) {
                if (start == i) {
                   r.emplace_back();
@@ -75,7 +72,7 @@ _list F_Split::getValue()
             }
          }
 
-         if (start == len1) {
+         if (start == v1.size()) {
             r.emplace_back();
          }
          else {
@@ -85,6 +82,7 @@ _list F_Split::getValue()
          return r;
       }
       default: {
+         const _size len2 = v2.size();
          _size index = v1.find(v2);
          _list r;
 

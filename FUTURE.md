@@ -239,17 +239,14 @@ select files
 ## Time defined by day and month only
 
 Right now, time can take four forms. 
-The idea is to add another possibility.
+The idea is to add another, fifth possibility. 
 
 ```
 select '*.pdf'
   where creation = 15 july
 ```
 
-This feature looks simple to implement. 
-However, there is plenty of problems to solve.
-How to compare "15 july" and "june 2020"?
-What about subtraction operation "15 april - june 2020"?
+In this variant, the year is not important and is not taken into account at all.
 
 ## Variable runtime stability check
 
@@ -384,7 +381,7 @@ select '*.txt'
 
 ## Variable *encoding*
 
-Get encoding of file. This feature needs good design. This value will probably by a string.
+Get encoding of file. The value probably will be a string.
 What about case sensitivity?
 Maybe implement it like *extension*, so encoding is always in lowercase.
 
@@ -400,9 +397,9 @@ select '*.txt'
   where encoding = utf8
 ```
 
-## *Device*
+## *Device*, *phone*, *camera*
 
-This variable refers to the first (and usually the only) external device connected to the computer like phone or camera.
+*Device* refers to the first (and usually the only) external device connected to the computer like phone or camera.
 Perun2 currently works only on hard disc drives. 
 Other possible variables: *phone*, *camera*.
 For example, we could use this feature to download photos taken today by a camera.
@@ -418,7 +415,7 @@ inside camera {
 Or delete all photos older than one year. 
 
 ```
-inside device {
+inside camera {
   delete images 
     where lifetime > 1 year
 }

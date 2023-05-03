@@ -308,7 +308,7 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, _p2& p2)
                   break;
                }
             }
-            
+
             break;
          }
          case Keyword::kw_Where: {
@@ -324,7 +324,7 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, _p2& p2)
          case Keyword::kw_Order: {
             gen::_ordptr order;
             gen::_indptr indices = std::make_unique<gen::OrderIndices>();
-            parseOrder(order, indices, ts, tsf, p2);
+            parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
 
             // retreat previous context
             // and add a new one instead

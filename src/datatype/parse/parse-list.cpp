@@ -33,7 +33,7 @@ _bool parseList(_genptr<_list>& result, const Tokens& tks, _p2& p2)
    if (len == 1) {
       return parseOneToken(p2, tks, result);
    }
-   
+
    if (tks.check(TI_HAS_FILTER_KEYWORD)) {
       if (parseListFilter(result, tks, p2)) {
          return true;
@@ -122,7 +122,7 @@ static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, _p2& p2)
                   break;
                }
             }
-            
+
             break;
          }
          case Keyword::kw_Where: {
@@ -146,7 +146,7 @@ static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, _p2& p2)
             _fcptr context = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(context.get());
 
-            parseOrder(order, indices, ts, tsf, p2);
+            parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
 
             p2.contexts.retreatFileContext();
             _genptr<_list> prev = std::move(base);

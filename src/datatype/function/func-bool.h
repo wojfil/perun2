@@ -48,15 +48,14 @@ public:
 
    _bool getValue() override {
       const std::vector<T> col = this->arg1->getValue();
-      const _size length = col.size();
 
-      if (length == 0) {
+      if (col.empty()) {
          return false;
       }
 
       const T v = this->arg2->getValue();
 
-      switch (length) {
+      switch (col.size()) {
          case 1: {
             return v == col[0];
          }
@@ -68,8 +67,8 @@ public:
          }
       }
 
-      for (_size i = 0; i < length; i++) {
-         if (v == col[i]) {
+      for (const T& ce : col) {
+         if (v == ce) {
             return true;
          }
       }

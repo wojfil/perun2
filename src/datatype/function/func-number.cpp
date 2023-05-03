@@ -154,7 +154,6 @@ _num F_Power::getValue()
       else {
          _nint exp = n2.value.i;
 
-         // optimization for common cases
          switch (exp) {
             case NINT_MINUS_ONE: {
                return _num(NDOUBLE_ONE / static_cast<_ndouble>(base));
@@ -215,7 +214,6 @@ _num F_Power::getValue()
       else {
          _nint exp = n2.value.i;
 
-         // optimization for common cases
          switch (exp) {
             case NINT_MINUS_ONE: {
                return _num(NDOUBLE_ONE / static_cast<_ndouble>(base));

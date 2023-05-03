@@ -25,18 +25,16 @@ _num F_Average::getValue()
    _num sum;
    _int count = countSingle;
 
-   for (_size i = 0; i < countSingle; i++) {
-      sum += singleValues[i]->getValue();
+   for (_genptr<_num>& sv : this->singleValues) {
+      sum += sv->getValue();
    }
 
-   for (_size i = 0; i < countMulti; i++) {
-      _nlist nlist = multiValues[i]->getValue();
-      if (!nlist.empty()) {
-         const _size len = nlist.size();
-         count += len;
-         for (_size j = 0; j < len; j++) {
-            sum += nlist[j];
-         }
+   for (_genptr<_nlist>& mv : this->multiValues) {
+      _nlist nlist = mv->getValue();
+      count += nlist.size();
+
+      for (const _num& n : nlist) {
+         sum += n;
       }
    }
 
@@ -65,16 +63,15 @@ _num F_Max::getValue()
       }
    }
 
-   for (_size i = 0; i < countMulti; i++) {
-      _nlist nlist = multiValues[i]->getValue();
+   for (_genptr<_nlist>& mv : this->multiValues) {
+      _nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          const _size len = nlist.size();
 
          if (init) {
-            for (_size j = 0; j < len; j++) {
-               const _num& v = nlist[j];
-               if (v > max) {
-                  max = v;
+            for (const _num& n : nlist) {
+               if (n > max) {
+                  max = n;
                }
             }
          }
@@ -82,9 +79,8 @@ _num F_Max::getValue()
             init = true;
             max = nlist[0];
             for (_size j = 1; j < len; j++) {
-               const _num& v = nlist[j];
-               if (v > max) {
-                  max = v;
+               if (nlist[j] > max) {
+                  max = nlist[j];
                }
             }
          }
@@ -97,17 +93,15 @@ _num F_Max::getValue()
 
 _num F_Median::getValue()
 {
-   // use normal vector
-   // std::multiset would be more efficient, but it does not support taking elements at index
    _nlist elements;
    elements.reserve(countSingle);
 
-   for (_size i = 0; i < countSingle; i++) {
-      elements.emplace_back(singleValues[i]->getValue());
+   for (_genptr<_num>& sv : this->singleValues) {
+      elements.emplace_back(sv->getValue());
    }
 
-   for (_size i = 0; i < countMulti; i++) {
-      _nlist nlist = multiValues[i]->getValue();
+   for (_genptr<_nlist>& mv : this->multiValues) {
+      _nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          langutil::appendVector(elements, nlist);
       }
@@ -145,26 +139,22 @@ _num F_Min::getValue()
       }
    }
 
-   for (_size i = 0; i < countMulti; i++) {
-      _nlist nlist = multiValues[i]->getValue();
+   for (_genptr<_nlist>& mv : this->multiValues) {
+      _nlist nlist = mv->getValue();
       if (!nlist.empty()) {
-         const _size len = nlist.size();
-
          if (init) {
-            for (_size j = 0; j < len; j++) {
-               const _num& v = nlist[j];
-               if (v < min) {
-                  min = v;
+            for (const _num& n : nlist) {
+               if (n < min) {
+                  min = n;
                }
             }
          }
          else {
             init = true;
             min = nlist[0];
-            for (_size j = 1; j < len; j++) {
-               const _num& v = nlist[j];
-               if (v < min) {
-                  min = v;
+            for (_size j = 1; j < nlist.size(); j++) {
+               if (nlist[j] < min) {
+                  min = nlist[j];
                }
             }
          }
@@ -179,17 +169,13 @@ _num F_Sum::getValue()
 {
    _num sum;
 
-   for (_size i = 0; i < countSingle; i++) {
-      sum += singleValues[i]->getValue();
+   for (_genptr<_num>& sv : this->singleValues) {
+      sum += sv->getValue();
    }
 
-   for (_size i = 0; i < countMulti; i++) {
-      _nlist nlist = multiValues[i]->getValue();
-      if (!nlist.empty()) {
-         const _size len = nlist.size();
-         for (_size j = 0; j < len; j++) {
-            sum += nlist[j];
-         }
+   for (_genptr<_nlist>& mv : this->multiValues) {
+      for (const _num n : mv->getValue()) {
+         sum += n;
       }
    }
 

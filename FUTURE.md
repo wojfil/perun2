@@ -291,7 +291,7 @@ select '*.pdf'
 
 ## Audio variables: *author*, *album*, *release*, *duration*, *bitrate*, ...
 
-*Length* is a period. *Bitrate* is a number.
+*Duration* is a period. *Bitrate* is a number.
 
 ```
 select '*.mp3'

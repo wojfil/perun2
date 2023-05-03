@@ -1236,10 +1236,12 @@ void finalSyntaxError(const Tokens& tks, const Token& word, const _int line, con
          if (second.type == Token::Type::t_TwoWords && second.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
             throw SyntaxError::youShouldUseApostrophesAndWrite(
                str(CHAR_ASTERISK, CHAR_DOT, second.getOriginString_2(p2)), tks.first().line);
+            return;
          }
       }
 
       throw SyntaxError::wrongSyntaxButProbablyAsteriskPattern(tks.first().line);
+      return;
    }
 
    if (directError) {

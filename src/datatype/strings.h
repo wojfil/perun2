@@ -240,6 +240,8 @@ _constexpr _char STRING_CHARACTERS[] =           L"characters";
 _constexpr _char STRING_WORDS[] =                L"words";
 _constexpr _char STRING_SPLIT[] =                L"split";
 _constexpr _char STRING_NUMBERS[] =              L"numbers";
+_constexpr _char STRING_SHIFTMONTH[] =           L"shiftmonth";
+_constexpr _char STRING_SHIFTWEEKDAY[] =         L"shiftweekday";
 
 _constexpr _char STRING_COPY[] =                 L"copy";
 _constexpr _char STRING_CREATE[] =               L"create";

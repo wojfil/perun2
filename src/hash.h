@@ -215,6 +215,8 @@ public:
    const _hash HASH_WORDS;
    const _hash HASH_SPLIT;
    const _hash HASH_NUMBERS;
+   const _hash HASH_SHIFTMONTH;
+   const _hash HASH_SHIFTWEEKDAY;
 
    const _hash HASH_COPY;
    const _hash HASH_CREATE;

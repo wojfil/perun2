@@ -605,6 +605,54 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Power>(arg1, arg2);
       return true;
    }
+   else if (name == p2.hashes.HASH_SHIFTMONTH) {
+      if (len != 2)
+         functionArgNumberException(len, word, p2);
+
+      _genptr<_num> arg2;
+      if (!parse::parse(p2, args[1], arg2)) {
+         functionArgException(2, STRING_NUMBER, word, p2);
+      }
+
+      _genptr<_tim> tim;
+      if (parse::parse(p2, args[0], tim)) {
+         result = std::make_unique<F_ShiftMonth_Time>(tim, arg2);
+         return true;
+      }
+
+      _genptr<_num> num;
+      if (parse::parse(p2, args[0], num)) {
+         result = std::make_unique<F_ShiftMonth_Number>(num, arg2);
+         return true;
+      }
+
+      throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
+         L"' cannot be resolved to a time nor a number"), word.line);
+   }
+   else if (name == p2.hashes.HASH_SHIFTWEEKDAY) {
+      if (len != 2)
+         functionArgNumberException(len, word, p2);
+
+      _genptr<_num> arg2;
+      if (!parse::parse(p2, args[1], arg2)) {
+         functionArgException(2, STRING_NUMBER, word, p2);
+      }
+
+      _genptr<_tim> tim;
+      if (parse::parse(p2, args[0], tim)) {
+         result = std::make_unique<F_ShiftWeekDay_Time>(tim, arg2);
+         return true;
+      }
+
+      _genptr<_num> num;
+      if (parse::parse(p2, args[0], num)) {
+         result = std::make_unique<F_ShiftWeekDay_Number>(num, arg2);
+         return true;
+      }
+
+      throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
+         L"' cannot be resolved to a time nor a number"), word.line);
+   }
    else if (p2.hashes.HASH_GROUP_AGGRFUNC.find(name) != p2.hashes.HASH_GROUP_AGGRFUNC.end()) {
       if (len == 0) {
          throw SyntaxError(str(L"aggregate function '", word.getOriginString(p2),

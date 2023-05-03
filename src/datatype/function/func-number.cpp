@@ -473,4 +473,53 @@ _num F_Count::getValue()
    return result;
 }
 
+
+_num F_ShiftMonth_Time::getValue()
+{
+   _nint result = (static_cast<_nint>(this->arg1->getValue().month) + this->arg2->getValue().toInt()) % NINT_MONTHS_IN_YEAR;
+
+   if (result <= NINT_ZERO) {
+      result += NINT_MONTHS_IN_YEAR;
+   }
+
+   return result;
+}
+
+
+_num F_ShiftMonth_Number::getValue()
+{
+   _nint result = (this->arg1->getValue().toInt() + this->arg2->getValue().toInt()) % NINT_MONTHS_IN_YEAR;
+
+   if (result <= NINT_ZERO) {
+      result += NINT_MONTHS_IN_YEAR;
+   }
+
+   return result;
+}
+
+
+_num F_ShiftWeekDay_Time::getValue()
+{
+   _nint result = (static_cast<_nint>(this->arg1->getValue().getWeekDay()) + this->arg2->getValue().toInt()) % NINT_DAYS_IN_WEEK;
+
+   if (result <= NINT_ZERO) {
+      result += NINT_DAYS_IN_WEEK;
+   }
+
+   return result;
+}
+
+
+_num F_ShiftWeekDay_Number::getValue()
+{
+   _nint result = (this->arg1->getValue().toInt() + this->arg2->getValue().toInt()) % NINT_DAYS_IN_WEEK;
+
+   if (result <= NINT_ZERO) {
+      result += NINT_DAYS_IN_WEEK;
+   }
+
+   return result;
+}
+
+
 }

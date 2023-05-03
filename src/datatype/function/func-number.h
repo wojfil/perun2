@@ -195,6 +195,38 @@ private:
 };
 
 
+struct F_ShiftMonth_Time : Func_2<_tim, _num>, Generator<_num>
+{
+public:
+   F_ShiftMonth_Time(_genptr<_tim>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   _num getValue() override;
+};
+
+
+struct F_ShiftMonth_Number : Func_2<_num, _num>, Generator<_num>
+{
+public:
+   F_ShiftMonth_Number(_genptr<_num>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   _num getValue() override;
+};
+
+
+struct F_ShiftWeekDay_Time : Func_2<_tim, _num>, Generator<_num>
+{
+public:
+   F_ShiftWeekDay_Time(_genptr<_tim>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   _num getValue() override;
+};
+
+
+struct F_ShiftWeekDay_Number : Func_2<_num, _num>, Generator<_num>
+{
+public:
+   F_ShiftWeekDay_Number(_genptr<_num>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   _num getValue() override;
+};
+
+
 }
 
 #endif /* FUNC_NUMBER_H */

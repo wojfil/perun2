@@ -212,6 +212,8 @@ Hashes::Hashes() :
    HASH_WORDS(caseSensitiveHash(STRING_WORDS)),
    HASH_SPLIT(caseSensitiveHash(STRING_SPLIT)),
    HASH_NUMBERS(caseSensitiveHash(STRING_NUMBERS)),
+   HASH_SHIFTMONTH(caseSensitiveHash(STRING_SHIFTMONTH)),
+   HASH_SHIFTWEEKDAY(caseSensitiveHash(STRING_SHIFTWEEKDAY)),
 
    HASH_COPY(caseSensitiveHash(STRING_COPY)),
    HASH_CREATE(caseSensitiveHash(STRING_CREATE)),

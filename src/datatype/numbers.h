@@ -50,7 +50,8 @@ _constexpr _nint NINT_SECONDS_IN_DAY =         static_cast<_nint>(TNUM_SECONDS_I
 _constexpr _nint NINT_SECONDS_IN_WEEK =        static_cast<_nint>(TNUM_SECONDS_IN_WEEK);
 _constexpr _nint NINT_SECONDS_IN_MONTH =       static_cast<_nint>(TNUM_SECONDS_IN_MONTH);
 _constexpr _nint NINT_SECONDS_IN_YEAR =        static_cast<_nint>(TNUM_SECONDS_IN_YEAR);
-
+_constexpr _nint NINT_DAYS_IN_WEEK =           static_cast<_nint>(TNUM_DAYS_IN_WEEK);
+_constexpr _nint NINT_MONTHS_IN_YEAR =         static_cast<_nint>(TNUM_MONTHS_IN_YEAR);
 
 _constexpr _ndouble NDOUBLE_ZERO =            0L;
 _constexpr _ndouble NDOUBLE_HALF =          0.5L;

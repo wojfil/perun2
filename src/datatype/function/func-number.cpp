@@ -391,9 +391,8 @@ _num F_RandomNumber::getValue()
 _num F_FromBinary::getValue()
 {
    const _str baseString = arg1->getValue();
-   _size len = baseString.size();
 
-   if (len == 0) {
+   if (baseString.empty()) {
       return _num();
    }
 
@@ -402,22 +401,22 @@ _num F_FromBinary::getValue()
    _bool negative = false;
 
    if (baseString[0] == CHAR_MINUS) {
-      if (len == 1) {
+      if (baseString.size() == 1) {
          return _num();
       }
       negative = true;
       i++;
-      if (len > BITS_IN_NINT - 2) {
+      if (baseString.size() > BITS_IN_NINT - 2) {
          throw RuntimeError::numberTooBig(baseString);
       }
    }
    else {
-      if (len > BITS_IN_NINT - 1) {
+      if (baseString.size() > BITS_IN_NINT - 1) {
          throw RuntimeError::numberTooBig(baseString);
       }
    }
 
-   for (; i < len; i++) {
+   for (; i < baseString.size(); i++) {
       result = result << 1;
 
       switch (baseString[i]) {
@@ -445,7 +444,7 @@ _num F_FromBinary::getValue()
 _num F_FromHex::getValue()
 {
    const _str baseString = arg1->getValue();
-   if (baseString.size() == 0) {
+   if (baseString.empty()) {
       return _num();
    }
 

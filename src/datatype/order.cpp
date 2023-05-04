@@ -22,7 +22,7 @@ namespace perun2::gen
 
 void OrderIndices::prepare(const _size length)
 {
-   this->values = std::unique_ptr<_size[]>(new _size[length]());
+   this->values = std::make_unique<_size[]>(length);
 }
 
 OrderBy::OrderBy(_indptr& inds, _ordptr& ord)

@@ -18,6 +18,7 @@
 
 #include "../../perun2.h"
 #include "../../tokens.h"
+#include "../order-limit-one.h"
 #include "../generator/gen-definition.h"
 #include "../parse-gen.h"
 
@@ -27,20 +28,33 @@ namespace perun2::parse
 
 
 template <typename T>
-void setOrderUnit(gen::_ordptr& order, _genptr<T>& value, const _bool desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::_ordptr& result, _genptr<T>& value, const _bool desc, gen::OrderIndices* indices)
 {
-   if (order) {
-      gen::_ordptr prev = std::move(order);
-      order = std::make_unique<gen::OrderUnit_Middle<T>>(value, desc, prev, indices);
+   if (result) {
+      gen::_ordptr prev = std::move(result);
+      result = std::make_unique<gen::OrderUnit_Middle<T>>(value, desc, prev, indices);
    }
    else {
-      order = std::make_unique<gen::OrderUnit_Final<T>>(value, desc, indices);
+      result = std::make_unique<gen::OrderUnit_Final<T>>(value, desc, indices);
+   }
+}
+
+
+template <typename T>
+void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const _bool desc, gen::OrderIndices* indices)
+{
+   if (result) {
+      gen::_loptr prev = std::move(result);
+      result = std::make_unique<gen::LimitOneUnit_Middle<T>>(value, desc, prev);
+   }
+   else {
+      result = std::make_unique<gen::LimitOneUnit_Final<T>>(value, desc);
    }
 }
 
 
 template <typename T2>
-_bool parseOrder(T2& resultOrder, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, _p2& p2)
+_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, _p2& p2)
 {
    const Token& first = tks.first();
    
@@ -50,12 +64,12 @@ _bool parseOrder(T2& resultOrder, gen::OrderIndices* indices, Tokens& tks, const
 
       if (kw == Keyword::kw_Asc) {
          _genptr<_str> str = std::make_unique<VariableReference<_str>>(fc->this_.get());
-         setOrderUnit(resultOrder, str, false, indices);
+         setOrderUnit(result, str, false, indices);
          return true;
       }
       else if (kw == Keyword::kw_Desc) {
          _genptr<_str> str = std::make_unique<VariableReference<_str>>(fc->this_.get());
-         setOrderUnit(resultOrder, str, true, indices);
+         setOrderUnit(result, str, true, indices);
          return true;
       }
    }
@@ -107,31 +121,31 @@ _bool parseOrder(T2& resultOrder, gen::OrderIndices* indices, Tokens& tks, const
 
       _genptr<_bool> uboo;
       if (parse(p2, tk, uboo)) {
-         setOrderUnit(resultOrder, uboo, desc, indices);
+         setOrderUnit(result, uboo, desc, indices);
          continue;
       }
 
       _genptr<_num> unum;
       if (parse(p2, tk, unum)) {
-         setOrderUnit(resultOrder, unum, desc, indices);
+         setOrderUnit(result, unum, desc, indices);
          continue;
       }
 
       _genptr<_per> uper;
       if (parse(p2, tk, uper)) {
-         setOrderUnit(resultOrder, uper, desc, indices);
+         setOrderUnit(result, uper, desc, indices);
          continue;
       }
 
       _genptr<_tim> utim;
       if (parse(p2, tk, utim)) {
-         setOrderUnit(resultOrder, utim, desc, indices);
+         setOrderUnit(result, utim, desc, indices);
          continue;
       }
 
       _genptr<_str> ustr;
       if (parse(p2, tk, ustr)) {
-         setOrderUnit(resultOrder, ustr, desc, indices);
+         setOrderUnit(result, ustr, desc, indices);
          continue;
       }
       else {

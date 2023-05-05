@@ -322,9 +322,23 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, _p2& p2)
             break;
          }
          case Keyword::kw_Order: {
+            gen::_loptr limitOne;
             gen::_ordptr order;
-            gen::_indptr indices = std::make_unique<gen::OrderIndices>();
-            parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
+            gen::_indptr indices;
+
+            // if Order By is followed by "limit 1"
+            // we can introduce optimizations and combine these two filters into one
+            if (i != flength - 1 && filterTokens[i + 1].getLength() == 2 
+               && filterTokens[i + 1].first().isKeyword(Keyword::kw_Limit)
+               && filterTokens[i + 1].second().isOne()) 
+            {
+               i++;
+               parseOrder<gen::_loptr>(limitOne, nullptr, ts, tsf, p2);
+            }
+            else {
+               indices = std::make_unique<gen::OrderIndices>();
+               parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
+            }
 
             // retreat previous context
             // and add a new one instead
@@ -333,7 +347,14 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, _p2& p2)
             _fcptr nextContext = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(nextContext.get());
             _defptr prev = std::move(base);
-            base = std::make_unique<gen::OrderBy_Definition>(prev, contextPtr, nextContext, indices, order, p2);
+
+            if (limitOne) {
+               base = std::make_unique<gen::OrderByLimitOne>(prev, contextPtr, nextContext, limitOne, p2);
+            }
+            else {
+               base = std::make_unique<gen::OrderBy_Definition>(prev, contextPtr, nextContext, indices, order, p2);
+            }
+
             break;
          }
       }

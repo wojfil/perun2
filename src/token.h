@@ -161,6 +161,7 @@ public:
    _bool isLogicConstant() const;
    _bool isWeekDay() const;
    _bool isMonth() const;
+   _bool isOne() const;
    _bool isTimeAttribute(_p2& p2) const;
    _str getOriginString(_p2& p2) const;
    _str getOriginString_2(_p2& p2) const;

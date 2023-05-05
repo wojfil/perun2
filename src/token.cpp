@@ -192,6 +192,11 @@ _bool Token::isMonth() const
    return type == Token::t_Number && value.num.nm == NumberMode::nm_Month;
 }
 
+_bool Token::isOne() const
+{
+   return type == Token::t_Number && value.num.n.isOne();
+}
+
 _bool Token::isTimeAttribute(_p2& p2) const
 {
    return this->type == Token::t_Word &&

@@ -236,7 +236,7 @@ select files
   where creation.year = yesteryear
 ```
 
-## Time defined by day and month only
+## Time defined by days and months only
 
 Right now, time can take four forms. 
 The idea is to add another, fifth possibility. 
@@ -247,6 +247,16 @@ select '*.pdf'
 ```
 
 In this variant, the year is not important and is not taken into account at all.
+
+## Time defined only by hours, minutes (and seconds)
+
+Two more possibilities for time definitions. They ignore the date.
+
+```
+select '*.pdf'
+  where creation >= 9:00
+    and creation <= 14:30:30
+```
 
 ## Variable runtime stability check
 

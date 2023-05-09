@@ -44,7 +44,7 @@ void C_AggrCopy_String::run()
       aggregate->invalidCopy.insert(os_fullname(n));
    }
    else {
-      aggregate->copyPaths.insert(os_join(this->locationContext->location->value, n));
+      aggregate->copyPaths.insert(os_leftJoin(this->locationContext->location->value, n));
    }
 }
 
@@ -62,7 +62,7 @@ void C_AggrCopy_List::run()
          aggregate->invalidCopy.insert(os_fullname(n));
       }
       else {
-         aggregate->copyPaths.insert(os_join(this->locationContext->location->value, n));
+         aggregate->copyPaths.insert(os_leftJoin(this->locationContext->location->value, n));
       }
    }
 }
@@ -108,7 +108,7 @@ void C_AggrSelect_String::run()
       aggregate->invalidSelect.insert(os_fullname(n));
    }
    else {
-      const _str path = os_join(this->locationContext->location->value, n);
+      const _str path = os_leftJoin(this->locationContext->location->value, n);
 
       if (os_hasParentDirectory(path)) {
          const _str parent = os_parent(path);
@@ -146,7 +146,7 @@ void C_AggrSelect_List::run()
          aggregate->invalidSelect.insert(os_fullname(n));
       }
       else {
-         const _str path = os_join(this->locationContext->location->value, n);
+         const _str path = os_leftJoin(this->locationContext->location->value, n);
 
          if (os_hasParentDirectory(path)) {
             const _str parent = os_parent(path);
@@ -211,7 +211,7 @@ void C_Copy_String::run()
       return;
    }
 
-   const _str path = os_join(this->locationContext->location->value, n);
+   const _str path = os_leftJoin(this->locationContext->location->value, n);
    if (os_exists(path)) {
       _set set;
       set.insert(path);
@@ -251,7 +251,7 @@ void C_Copy_List::run()
          anyFailure = true;
       }
       else {
-         const _str path = os_join(this->locationContext->location->value, n);
+         const _str path = os_leftJoin(this->locationContext->location->value, n);
          if (os_exists(path)) {
             set.insert(path);
          }
@@ -354,7 +354,7 @@ void C_Select_String::run()
       return;
    }
 
-   const _str path = os_join(this->locationContext->location->value, n);
+   const _str path = os_leftJoin(this->locationContext->location->value, n);
    _bool success = false;
 
    if (os_exists(path) && os_hasParentDirectory(path)) {
@@ -403,7 +403,7 @@ void C_Select_List::run()
          continue;
       }
 
-      this->path = os_join(this->locationContext->location->value, n);
+      this->path = os_leftJoin(this->locationContext->location->value, n);
 
       if (!os_exists(path) || !os_hasParentDirectory(path)) {
          logSelectError(this->perun2, path);
@@ -433,7 +433,7 @@ void C_Select_Definition::run()
          break;
       }
 
-      this->path = os_join(this->locationContext->location->value, this->value->getValue());
+      this->path = os_leftJoin(this->locationContext->location->value, this->value->getValue());
 
       if (!os_exists(path) || !os_hasParentDirectory(path)) {
          logSelectError(this->perun2, path);

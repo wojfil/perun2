@@ -223,14 +223,14 @@ _bool F_ExistsInside::getValue()
       return false;
    }
 
-   const _str base = os_join(this->locContext->location->value, this->fileContext->trimmed);
+   const _str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
    const _str value = os_trim(this->arg1->getValue());
 
    if (os_isInvaild(value)) {
       return false;
    }
 
-   return os_exists(os_join(base, value));
+   return os_exists(os_leftJoin(base, value));
 }
 
 
@@ -240,7 +240,7 @@ _bool F_ExistInside::getValue()
       return false;
    }
 
-   const _str base = os_join(this->locContext->location->value, this->fileContext->trimmed);
+   const _str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
    const _list values = this->arg1->getValue();
    const _size len = values.size();
 
@@ -251,7 +251,7 @@ _bool F_ExistInside::getValue()
           return false;
       }
 
-      const _str path = os_join(base, v);
+      const _str path = os_leftJoin(base, v);
       if (!os_exists(path)) {
          return false;
       }
@@ -435,7 +435,7 @@ _bool F_Exists::getValue()
       return false;
    }
 
-   return os_exists(os_join(this->context->location->value, value));
+   return os_exists(os_leftJoin(this->context->location->value, value));
 }
 
 F_Exist::F_Exist(_genptr<_list>& a1, _p2& perun2)
@@ -453,7 +453,7 @@ _bool F_Exist::getValue()
           return false;
       }
 
-      const _str path = os_join(this->context->location->value, v);
+      const _str path = os_leftJoin(this->context->location->value, v);
       if (!os_exists(path)) {
          return false;
       }

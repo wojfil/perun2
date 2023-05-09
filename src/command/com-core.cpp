@@ -158,7 +158,14 @@ void C_OpenWith::run()
          return;
       }
 
-      const _str proPath = os_join(this->locationContext->location->value, pro);
+      const _str proPath = os_leftJoin(this->locationContext->location->value, pro);
+
+      if (proPath.empty()) {
+         this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
+
       if (os_exists(proPath)) {
          const _bool s = os_openWith(proPath, os_quoteEmbraced(this->context->v_path->value));
          this->perun2.contexts.success->value = s;
@@ -409,7 +416,13 @@ void C_MoveTo::run()
          return;
       }
 
-      const _str newLoc = os_join(this->locationContext->location->value, n);
+      const _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -461,7 +474,13 @@ void C_MoveTo_Stack::run()
          return;
       }
 
-      _str newLoc = os_join(this->locationContext->location->value, n);
+      _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+      
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -523,7 +542,13 @@ void C_MoveToAs::run()
          fulln += str(CHAR_DOT, os_extension(oldPath));
       }
 
-      const _str newLoc = os_join(this->locationContext->location->value, loc);
+      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -577,7 +602,13 @@ void C_MoveToAs_Stack::run()
       }
 
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
-      const _str newLoc = os_join(this->locationContext->location->value, loc);
+      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -645,7 +676,13 @@ void C_CopyTo::run()
          return;
       }
 
-      const _str newLoc = os_join(this->locationContext->location->value, n);
+      const _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -693,7 +730,13 @@ void C_CopyTo_Stack::run()
          return;
       }
 
-      _str newLoc = os_join(this->locationContext->location->value, n);
+      _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+      
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -750,7 +793,14 @@ void C_CopyToAs::run()
          fulln += str(CHAR_DOT, os_extension(oldPath));
       }
 
-      const _str newLoc = os_join(this->locationContext->location->value, loc);
+      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
+
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -798,7 +848,14 @@ void C_CopyToAs_Stack::run()
          return;
       }
 
-      const _str newLoc = os_join(this->locationContext->location->value, loc);
+      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+
+      if (newLoc.empty()) {
+         this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
+         this->perun2.contexts.success->value = false;
+         return;
+      }
+
       const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!os_directoryExists(newLoc)) {

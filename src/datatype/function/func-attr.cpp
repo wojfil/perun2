@@ -32,7 +32,7 @@ _str F_Parent::getValue()
       return this->context->location->value;
    }
 
-   return os_parent(os_join(this->context->location->value, v));
+   return os_parent(os_leftJoin(this->context->location->value, v));
 }
 
 
@@ -43,7 +43,7 @@ _str F_Path_1::getValue()
       return _str();
    }
 
-   return os_join(this->context->location->value, v);
+   return os_leftJoin(this->context->location->value, v);
 }
 
 
@@ -59,9 +59,7 @@ _str F_Path_2::getValue()
    }
    else {
       const _str v1 = os_trim(this->value_1->getValue());
-      return v1.empty()
-         ? _str()
-         : os_join(v1, v2);
+      return os_join(v1, v2);
    }
 }
 
@@ -87,9 +85,7 @@ _str F_Path_3::getValue()
       }
       else {
          const _str v1 = os_trim(this->value_1->getValue());
-         return v1.empty()
-            ? _str()
-            : os_join(os_join(v1, v2), v3);
+         return os_join(os_join(v1, v2), v3);
       }
    }
 }
@@ -167,7 +163,7 @@ _num F_SizeDefinition::getValue()
       }
 
       const _str v = definition->getValue();
-      const _nint s = os_size(os_join(this->context->location->value, v), this->perun2);
+      const _nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
       if (s != NINT_MINUS_ONE) {
          total += s;
       }
@@ -194,7 +190,7 @@ _num F_SizeList::getValue()
 
       const _str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvaild(v)) {
-         const _nint s = os_size(os_join(this->context->location->value, v), this->perun2);
+         const _nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             total += s;
             any = true;

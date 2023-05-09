@@ -114,9 +114,20 @@ _bool os_bothAreSeparators(const _char left, const _char right);
 
 _str os_trim(const _str& path);
 void os_rawTrim(_str& value);
-
 inline void os_escapeQuote(_str& path);
+
+_str os_retreatedPath(const _str& path, _int retreats);
+
+// paths do not contain . nor ..
+_str os_softJoin(const _str& path1, const _str& path2);
+
+// the left path does not contain . nor .., the right path may
+// can return empty string if .. pushes us too far to the left
+_str os_leftJoin(const _str& path1, const _str& path2);
+
+// both paths may contain multiple . and .. at the beginning
 _str os_join(const _str& path1, const _str& path2);
+
 _bool os_isAbsolute(const _str& path);
 _bool os_hasExtension(const _str& value);
 _bool os_isDriveLetter(const _char ch);

@@ -107,12 +107,12 @@ void Cache::loadSystem32Path(const _hash nameHash)
 
    if (nameHash == this->perun2.hashes.HASH_MSPAINT || nameHash == this->perun2.hashes.HASH_PAINT) {
       if (this->isNotLoaded(CACHE_MSPAINT)) {
-         this->context.strings[this->perun2.hashes.HASH_MSPAINT]->value = os_join(this->system32, STRING_MSPAINT_EXE);
+         this->context.strings[this->perun2.hashes.HASH_MSPAINT]->value = os_softJoin(this->system32, STRING_MSPAINT_EXE);
       }
    }
    else if (nameHash == this->perun2.hashes.HASH_NOTEPAD) {
       if (this->isNotLoaded(CACHE_NOTEPAD)) {
-         this->context.strings[nameHash]->value = os_join(this->system32, STRING_NOTEPAD_EXE);
+         this->context.strings[nameHash]->value = os_softJoin(this->system32, STRING_NOTEPAD_EXE);
       }
    }
 }

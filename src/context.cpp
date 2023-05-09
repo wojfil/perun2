@@ -35,7 +35,7 @@ namespace perun2
    {
       this->location->value = this->prevLocation == nullptr
          ? trimmedValue
-         : os_join(this->prevLocation->location->value, trimmedValue);
+         : os_leftJoin(this->prevLocation->location->value, trimmedValue);
    }
 
    IndexContext::IndexContext(_p2& p2)

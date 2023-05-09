@@ -114,11 +114,25 @@ void os_loadAttributes(FileContext& context)
 
    // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
-      context.v_path->value = os_join(context.locContext->location->value, context.trimmed);
+      context.v_path->value = os_leftJoin(context.locContext->location->value, context.trimmed);
+      
+      if (context.v_path->value.empty()) {
+         os_loadEmptyAttributes(context);
+
+         if (attribute->has(ATTR_EXTENSION)) {
+            context.v_extension->value = os_extension(context.trimmed);
+         }
+         
+         if (attribute->has(ATTR_NAME)) {
+            context.v_name->value = os_hasExtension(context.trimmed)
+               ? os_name(context.trimmed)
+               : os_fullname(context.trimmed);
+         }
+      }
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
-      context.v_fullname->value = os_fullname(context.v_path->value);
+      context.v_fullname->value = os_fullname(context.trimmed);
    }
 
    if (attribute->has(ATTR_PARENT)) {
@@ -133,7 +147,7 @@ void os_loadAttributes(FileContext& context)
       context.v_depth->value = os_depth(context.trimmed);
    }
 
-   if (!attribute->has(ATTR_EXISTS)) {
+   if (!attribute->has(ATTR_EXISTS) || context.v_path->value.empty()) {
       return;
    }
 
@@ -346,11 +360,11 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
 
    // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
-      context.v_path->value = os_join(context.locContext->location->value, context.trimmed);
+      context.v_path->value = os_softJoin(context.locContext->location->value, context.trimmed);
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
-      context.v_fullname->value = os_fullname(context.v_path->value);
+      context.v_fullname->value = os_fullname(context.trimmed);
    }
 
    if (attribute->has(ATTR_PARENT)) {
@@ -430,12 +444,12 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
 
    if (attribute->has(ATTR_NAME)) {
       if (context.v_isdirectory->value) {
-         context.v_name->value = os_fullname(context.v_path->value);
+         context.v_name->value = os_fullname(context.trimmed);
       }
       else {
-         context.v_name->value = os_hasExtension(context.v_path->value)
-            ? os_name(context.v_path->value)
-            : os_fullname(context.v_path->value);
+         context.v_name->value = os_hasExtension(context.trimmed)
+            ? os_name(context.trimmed)
+            : os_fullname(context.trimmed);
       }
    }
 
@@ -507,10 +521,32 @@ _tim os_creation(const _str& path)
 
 _num os_depth(const _str& value)
 {
+   if (value.size() == 2 && value[0] == CHAR_DOT && value[1] == CHAR_DOT) {
+      return NINT_MINUS_ONE;
+   }
+
+   _size start2 = 0;
    _nint result = NINT_ZERO;
 
-   for (const _char ch : value) {
-      if (ch == OS_SEPARATOR) {
+   while (true) {
+      if (start2 + 2 < value.size() && value[start2] == CHAR_DOT 
+         && value[start2 + 1] == OS_SEPARATOR)
+      {
+         start2 += 2;
+      }
+      else if (start2 + 3 < value.size() && value[start2] == CHAR_DOT 
+         && value[start2 + 1] == CHAR_DOT && value[start2 + 2] == OS_SEPARATOR) 
+      {
+         start2 += 3;
+         result--;
+      }
+      else {
+         break;
+      }
+   }
+
+   for (_size i = start2; i < value.size(); i++) {
+      if (value[i] == OS_SEPARATOR) {
          result++;
       }
    }
@@ -1284,7 +1320,7 @@ _bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();
 
-   if (length == 0 || (length != 1 && path[length - 1] == CHAR_DOT)) {
+   if (length == 0 || (length >= 2 && path[length - 2] != CHAR_DOT && path[length - 1] == CHAR_DOT)) {
       return true;
    }
 
@@ -1547,15 +1583,212 @@ inline void os_escapeQuote(_str& path)
    }
 }
 
-_str os_join(const _str& path1, const _str& path2)
+_str os_retreatedPath(const _str& path, _int retreats)
+{
+   _int i = path.size() - 1;
+
+   for (; i >= 0; i--) {
+      if (path[i] == OS_SEPARATOR) {
+         retreats--;
+         if (retreats == 0) {
+            break;
+         }
+      }
+   }
+   
+   return retreats == 0
+      ? path.substr(0, i)
+      : _str();
+}
+
+_str os_softJoin(const _str& path1, const _str& path2)
+{
+   return os_isAbsolute(path2)
+      ? path2
+      : str(path1, OS_SEPARATOR, path2);
+}
+
+_str os_leftJoin(const _str& path1, const _str& path2)
 {
    if (path2.size() == 1 && path2[0] == CHAR_DOT) {
       return path1;
    }
 
-   return os_isAbsolute(path2)
-      ? path2
-      : str(path1, OS_SEPARATOR, path2);
+   if (path2.size() == 2 && path2[0] == CHAR_DOT && path2[1] == CHAR_DOT) {
+      return os_retreatedPath(path1, 1);
+   }
+
+   if (os_isAbsolute(path2)) {
+      return path2;
+   }
+
+   _size start2 = 0;
+   _int retreats = 0;
+
+   while (true) {
+      if (start2 + 2 <= path2.size() && path2[start2] == CHAR_DOT 
+         && path2[start2 + 1] == OS_SEPARATOR)
+      {
+         start2 += 2;
+      }
+      else if (start2 + 3 <= path2.size() && path2[start2] == CHAR_DOT 
+         && path2[start2 + 1] == CHAR_DOT && path2[start2 + 2] == OS_SEPARATOR) 
+      {
+         start2 += 3;
+         retreats++;
+      }
+      else {
+         break;
+      }
+   }
+
+   if (start2 + 2 <= path2.size() && path2[start2] == CHAR_DOT && path2[start2 + 1] == CHAR_DOT) {
+      start2 += 2;
+      retreats++;
+   }
+
+   if (retreats == 0) {
+      return str(path1, OS_SEPARATOR, path2);
+   }
+
+   const _str base = os_retreatedPath(path1, retreats);
+
+   if (base.empty()) {
+      return base;
+   }
+
+   return str(base, OS_SEPARATOR, path2.substr(start2));
+}
+
+static _str os_retreatEndingDots(const _str& path, _int retreats) 
+{
+   _int end = path.size() - 1;
+   _int recent = end;
+
+   while (end >= 0) {
+      if (end == 0 || path[end] == OS_SEPARATOR) {
+         if (recent - end == 2 && path[end + 1] == CHAR_DOT && path[end + 2] == CHAR_DOT) {
+            retreats++;
+         }
+         else if (recent - end == 1 && path[end + 1] == CHAR_DOT) {
+            // do nothing
+         }
+         else {
+            if (end > 0) {
+               retreats--;
+            }
+            if (retreats == -1) {
+               end = recent;
+               break;
+            }
+         }
+
+         if (end > 0) {
+            recent = end - 1;
+         }
+      }
+
+      end--;
+   }
+
+   if ((path.size() >= 3 && path[0] == CHAR_DOT && path[1] == CHAR_DOT && path[2] == OS_SEPARATOR)
+      || (path.size() == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT)) 
+   {
+      retreats++;
+   }
+   else if ((path.size() == 1 && path[0] == CHAR_DOT) 
+      || (path.size() >= 2 && path[0] == CHAR_DOT  && path[1] == OS_SEPARATOR)) { }
+   else {
+      if (retreats > 0) {
+         retreats--;
+      }
+      else if (retreats == 0) {
+         return path.substr(0, recent + 1);
+      }
+   }
+
+   if (retreats == -1) {
+      return path.substr(0, end + 1);
+   }
+   else if (retreats == 0) {
+      return os_isAbsolute(path) ? _str() : toStr(CHAR_DOT);
+   }
+   
+   if (os_isAbsolute(path)) {
+      return _str();
+   }
+
+   _str result;
+   result.reserve(retreats * 3 - 1);
+   result.push_back(CHAR_DOT);
+   result.push_back(CHAR_DOT);
+
+   while (retreats > 1) {
+      result.push_back(OS_SEPARATOR);
+      result.push_back(CHAR_DOT);
+      result.push_back(CHAR_DOT);
+      retreats--;
+   }
+
+   return result;
+}
+
+_str os_join(const _str& path1, const _str& path2)
+{
+   if (os_isInvaild(path1) || os_isInvaild(path2)) {
+      return _str();
+   }
+
+   if (path2.size() == 1 && path2[0] == CHAR_DOT) {
+      return os_retreatEndingDots(path1, 0);
+   }
+
+   if (path2.size() == 2 && path2[0] == CHAR_DOT && path2[1] == CHAR_DOT) {
+      return os_retreatEndingDots(path1, 1);
+   }
+
+   const _str p1 = os_retreatEndingDots(path1, 0);
+   const _str p2 = os_retreatEndingDots(path2, 0);
+
+   if (p1.empty() || p2.empty()) {
+      return _str();
+   }
+
+   if (p1.size() == 1 && p1[0] == CHAR_DOT || os_isAbsolute(p2)) {
+      return p2;
+   }
+   
+   if (p2.size() == 1 && p2[0] == CHAR_DOT) {
+      return p1;
+   }
+
+   if (p2.size() % 3 == 2) {
+      _bool rightPathHasOnlyDoubleDots = true;
+
+      for (_size i = 0; i < p2.size(); i++) {
+         if (p2[i] == CHAR_DOT) {
+            if (i % 3 == 2) {
+               rightPathHasOnlyDoubleDots = false;
+               break;
+            }
+         }
+         else if (p2[i] == OS_SEPARATOR) {
+            if (i % 3 != 2) {
+               rightPathHasOnlyDoubleDots = false;
+               break;
+            }
+         }
+         else {
+            rightPathHasOnlyDoubleDots = false;
+            break;
+         }
+      }
+      if (rightPathHasOnlyDoubleDots) {
+         return os_retreatEndingDots(path1, (p2.size() + 1) / 3);
+      }
+   }
+
+   return str(p1, OS_SEPARATOR, p2);
 }
 
 _bool os_isAbsolute(const _str& path)

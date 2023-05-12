@@ -108,7 +108,12 @@ public:
    _bool nextElementIsBetter() override
    {
       this->nextValue = this->valueGenerator->getValue();
-      return this->descending ? (this->nextValue > this->value) : (this->nextValue < this->value);
+      if (this->descending ? (this->nextValue > this->value) : (this->nextValue < this->value)) {
+         this->value = this->nextValue;
+         return true;
+      }
+
+      return false;
    };
 };
 

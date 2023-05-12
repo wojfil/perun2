@@ -15,7 +15,6 @@
 #include "parse-generic.h"
 #include "../../brackets.h"
 #include "../../lexer.h"
-#include "../../hash.h"
 #include "../generator/gen-definition.h"
 #include "../generator/gen-time.h"
 #include "../generator/gen-list.h"

@@ -21,7 +21,6 @@
 #include "../generator/gen-generic.h"
 #include "../../brackets.h"
 #include "../../util.h"
-#include "../../hash.h"
 #include "../parse-gen.h"
 
 
@@ -78,12 +77,13 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
          const Token& last = tks.last();
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
-         if (last.value.twoWords.h2 == p2.hashes.HASH_DATE) {
+         if (last.isSecondWord(STRING_DATE, p2)) {
             result = std::make_unique<gen::TimeDate>(tim);
             return true;
          }
-         else
+         else {
             return false;
+         }
       }
    }
 

@@ -15,7 +15,6 @@
 #include "com-parse.h"
 #include "com-misc.h"
 #include "../exception.h"
-#include "../hash.h"
 #include "com-struct.h"
 #include "../datatype/parse-gen.h"
 #include "../datatype/parse/parse-number.h"
@@ -806,9 +805,9 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
          }
       }
       else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
-         if (first.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
+         if (first.isFirstWord(EMPTY_STRING, p2)) {
             throw SyntaxError(L"the dot . should be preceded by a time variable name", first.line);
-         }
+         } 
 
          Variable<_tim>* pv_tim;
 
@@ -821,22 +820,21 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
             throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
          }
 
-         const _hash h = first.value.twoWords.h2;
          Period::PeriodUnit unit;
 
-         if (h == p2.hashes.HASH_YEAR || h == p2.hashes.HASH_YEARS)
+         if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2))
             unit = Period::u_Years;
-         else if (h == p2.hashes.HASH_MONTH || h == p2.hashes.HASH_MONTHS)
+         else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2))
             unit = Period::u_Months;
-         else if (h == p2.hashes.HASH_DAY || h == p2.hashes.HASH_DAYS)
+         else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2))
             unit = Period::u_Days;
-         else if (h == p2.hashes.HASH_HOUR || h == p2.hashes.HASH_HOURS)
+         else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2))
             unit = Period::u_Hours;
-         else if (h == p2.hashes.HASH_MINUTE || h == p2.hashes.HASH_MINUTES)
+         else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2))
             unit = Period::u_Minutes;
-         else if (h == p2.hashes.HASH_SECOND || h == p2.hashes.HASH_SECONDS)
+         else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2))
             unit = Period::u_Seconds;
-         else if (h == p2.hashes.HASH_DATE || h == p2.hashes.HASH_WEEKDAY) {
+         else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
             throw SyntaxError(str(L"time variable member '", first.getOriginString_2(p2),
                L"' cannot be ", op), first.line);
          }
@@ -894,7 +892,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
       else {
          const Token& arom = left.last();
 
-         if (arom.type == Token::t_TwoWords && arom.value.twoWords.h1 == p2.hashes.NOTHING_HASH) {
+         if (arom.type == Token::t_TwoWords && arom.isFirstWord(EMPTY_STRING, p2)) {
             Tokens aro(left);
             aro.trimRight();
 
@@ -1063,36 +1061,35 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
             L"=' cannot be resolved to a number"), first.line);
       }
 
-      const _hash h = first.value.twoWords.h2;
       Variable<_tim>& var = *pv_tim;
       const _bool negative = (sign == CHAR_MINUS);
       pv_tim->makeNotConstant();
 
-      if (h == p2.hashes.HASH_YEAR || h == p2.hashes.HASH_YEARS) {
+      if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Years, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_MONTH || h == p2.hashes.HASH_MONTHS) {
+      else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Months, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_DAY || h == p2.hashes.HASH_DAYS) {
+      else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Days, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_HOUR || h == p2.hashes.HASH_HOURS) {
+      else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Hours, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_MINUTE || h == p2.hashes.HASH_MINUTES) {
+      else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Minutes, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_SECOND || h == p2.hashes.HASH_SECONDS) {
+      else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Seconds, negative);
          return true;
       }
-      else if (h == p2.hashes.HASH_DATE || h == p2.hashes.HASH_WEEKDAY) {
+      else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
          throw SyntaxError(str(L"value of '", first.getOriginString_2(p2),
             L"' time variable member cannot be altered"), first.line);
       }
@@ -1177,15 +1174,15 @@ static void makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
    const _bool isConstant = !p2.contexts.hasAggregate() && valuePtr->isConstant();
    _varptrs<T>* allVarsOfThisType;
    uvc->userVars.takeVarsPtr(allVarsOfThisType);
-   const _hash hash = token.value.word.h;
-   allVarsOfThisType->insert(std::make_pair(hash, std::make_unique<Variable<T>>(VarType::vt_User)));
+   _str name = token.toLowerString(p2);
+   allVarsOfThisType->insert(std::make_pair(name, std::make_unique<Variable<T>>(VarType::vt_User)));
 
-   (*allVarsOfThisType)[hash]->isConstant_ = isConstant;
+   (*allVarsOfThisType)[name]->isConstant_ = isConstant;
    if (isConstant) {
-      (*allVarsOfThisType)[hash]->value = valuePtr->getValue();
+      (*allVarsOfThisType)[name]->value = valuePtr->getValue();
    }
 
-   result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[hash], valuePtr);
+   result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[name], valuePtr);
 }
 
 static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2)
@@ -1197,7 +1194,7 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
    }
 
    if (left.getLength() >= 5 ) {
-      if (left.last().type == Token::t_TwoWords && left.last().value.word.h == p2.hashes.NOTHING_HASH) {
+      if (left.last().type == Token::t_TwoWords && left.last().isFirstWord(EMPTY_STRING, p2)) {
          Tokens le(left);
          le.trimRight();
 
@@ -1229,9 +1226,7 @@ static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens&
    // assign value to an existing variable
    ////
 
-   if (p2.hashes.HASH_GROUP_VARS_IMMUTABLES.find(first.value.word.h)
-      != p2.hashes.HASH_GROUP_VARS_IMMUTABLES.end())
-   {
+   if (first.isWord(STRINGS_VARS_IMMUTABLES, p2)) {
       throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
    }
 

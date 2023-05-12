@@ -331,8 +331,7 @@ void Tokens::checkCommonExpressionExceptions(_p2& p2) const
 
    if (this->length == 1) {
       const Token& f = first();
-      if (f.type == Token::t_Word && (!p2.contexts.varExists(f, p2))
-       && p2.hashes.HASH_GROUP_ALIASES.find(f.value.word.h) == p2.hashes.HASH_GROUP_ALIASES.end())
+      if (f.type == Token::t_Word && (!p2.contexts.varExists(f, p2)) && !f.isWord(STRINGS_ALIASES, p2))
       {
          throw SyntaxError(str(L"variable '", f.getOriginString(p2), 
             L"' does not exist or is unreachable here. Look for a typo"), f.line);
@@ -633,7 +632,7 @@ void Tokens::setData()
             throw SyntaxError(L"square brackets [] can be preceded only by a variable name", first.line);
          }
 
-         if (last.value.twoWords.h1 == caseSensitiveHash(_str())) {
+         if (last.type == Token::Type::t_TwoWords && last.value.twoWords.os1.length == 0) {
             this->info |= TI_IS_LIST_ELEM_MEMBER;
          }
       }

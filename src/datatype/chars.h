@@ -23,7 +23,7 @@ namespace perun2
 
 void toLower(_char& ch);
 void toUpper(_char& ch);
-_bool charsEqualInsensitive(const _char* ch1, const _char* ch2);
+_bool charsEqualInsensitive(_char ch1, _char ch2);
 
 _constexpr _char CHAR_COMMA =                  L',';
 _constexpr _char CHAR_EXCLAMATION_MARK =       L'!';

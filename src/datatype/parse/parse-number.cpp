@@ -20,7 +20,6 @@
 #include "../generator/gen-generic.h"
 #include "../parse-gen.h"
 #include "../../brackets.h"
-#include "../../hash.h"
 
 
 namespace perun2::parse
@@ -114,30 +113,38 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
       _genptr<_tlist> tlist;
+      
       if (makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
-         const _hash h = last.value.twoWords.h2;
-         const Hashes& hs = p2.hashes;
          _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
 
-         if (h == hs.HASH_YEAR || h == hs.HASH_YEARS)
+         if (last.isSecondWord(STRING_YEAR, p2) || last.isSecondWord(STRING_YEARS, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Years);
-         else if (h == hs.HASH_MONTH || h == hs.HASH_MONTHS)
+         }
+         else if (last.isSecondWord(STRING_MONTH, p2) || last.isSecondWord(STRING_MONTHS, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Months);
-         else if (h == hs.HASH_WEEKDAY)
+         }
+         else if (last.isSecondWord(STRING_WEEKDAY, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Weeks);
-         else if (h == hs.HASH_DAY || h == hs.HASH_DAYS)
+         }
+         else if (last.isSecondWord(STRING_DAY, p2) || last.isSecondWord(STRING_DAYS, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Days);
-         else if (h == hs.HASH_HOUR || h == hs.HASH_HOURS)
+         }
+         else if (last.isSecondWord(STRING_HOUR, p2) || last.isSecondWord(STRING_HOURS, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Hours);
-         else if (h == hs.HASH_MINUTE || h == hs.HASH_MINUTES)
+         }
+         else if (last.isSecondWord(STRING_MINUTE, p2) || last.isSecondWord(STRING_MINUTES, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Minutes);
-         else if (h == hs.HASH_SECOND || h == hs.HASH_SECONDS)
+         }
+         else if (last.isSecondWord(STRING_SECOND, p2) || last.isSecondWord(STRING_SECONDS, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Seconds);
-         else if (h == hs.HASH_DATE)
+         }
+         else if (last.isSecondWord(STRING_DATE, p2)) {
             return false;
-         else
+         }
+         else {
             timeVariableMemberException(last, p2);
+         }
 
          return true;
       }

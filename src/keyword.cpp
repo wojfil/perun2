@@ -20,72 +20,100 @@
 namespace perun2
 {
 
-KeywordsData::KeywordsData(_p2& p2) : KEYWORDS( {
+KeywordsData::KeywordsData() : KEYWORDS( 
+{
    // core commands:
-   { p2.hashes.HASH_COPY, Keyword::kw_Copy },
-   { p2.hashes.HASH_CREATE, Keyword::kw_Create },
-   { p2.hashes.HASH_CREATEFILE, Keyword::kw_CreateFile },
-   { p2.hashes.HASH_CREATEDIRECTORY, Keyword::kw_CreateDirectory },
-   { p2.hashes.HASH_CREATEFILES, Keyword::kw_CreateFiles },
-   { p2.hashes.HASH_CREATEDIRECTORIES, Keyword::kw_CreateDirectories },
-   { p2.hashes.HASH_DELETE, Keyword::kw_Delete },
-   { p2.hashes.HASH_DROP, Keyword::kw_Drop },
-   { p2.hashes.HASH_HIDE, Keyword::kw_Hide },
-   { p2.hashes.HASH_LOCK, Keyword::kw_Lock },
-   { p2.hashes.HASH_MOVE, Keyword::kw_Move },
-   { p2.hashes.HASH_OPEN, Keyword::kw_Open },
-   { p2.hashes.HASH_REACCESS, Keyword::kw_Reaccess },
-   { p2.hashes.HASH_RECREATE, Keyword::kw_Recreate },
-   { p2.hashes.HASH_RECHANGE, Keyword::kw_Rechange },
-   { p2.hashes.HASH_REMODIFY, Keyword::kw_Remodify },
-   { p2.hashes.HASH_RENAME, Keyword::kw_Rename },
-   { p2.hashes.HASH_SELECT, Keyword::kw_Select },
-   { p2.hashes.HASH_UNHIDE, Keyword::kw_Unhide },
-   { p2.hashes.HASH_UNLOCK, Keyword::kw_Unlock },
+   { STRING_COPY, Keyword::kw_Copy },
+   { STRING_CREATE, Keyword::kw_Create },
+   { STRING_CREATEFILE, Keyword::kw_CreateFile },
+   { STRING_CREATEDIRECTORY, Keyword::kw_CreateDirectory },
+   { STRING_CREATEFILES, Keyword::kw_CreateFiles },
+   { STRING_CREATEDIRECTORIES, Keyword::kw_CreateDirectories },
+   { STRING_DELETE, Keyword::kw_Delete },
+   { STRING_DROP, Keyword::kw_Drop },
+   { STRING_HIDE, Keyword::kw_Hide },
+   { STRING_LOCK, Keyword::kw_Lock },
+   { STRING_MOVE, Keyword::kw_Move },
+   { STRING_OPEN, Keyword::kw_Open },
+   { STRING_REACCESS, Keyword::kw_Reaccess },
+   { STRING_RECREATE, Keyword::kw_Recreate },
+   { STRING_RECHANGE, Keyword::kw_Rechange },
+   { STRING_REMODIFY, Keyword::kw_Remodify },
+   { STRING_RENAME, Keyword::kw_Rename },
+   { STRING_SELECT, Keyword::kw_Select },
+   { STRING_UNHIDE, Keyword::kw_Unhide },
+   { STRING_UNLOCK, Keyword::kw_Unlock },
    // core command flags:
-   { p2.hashes.HASH_FORCE, Keyword::kw_Force },
-   { p2.hashes.HASH_STACK, Keyword::kw_Stack },
+   { STRING_FORCE, Keyword::kw_Force },
+   { STRING_STACK, Keyword::kw_Stack },
    // logic:
-   { p2.hashes.HASH_TRUE, Keyword::kw_True },
-   { p2.hashes.HASH_FALSE, Keyword::kw_False },
-   { p2.hashes.HASH_AND, Keyword::kw_And },
-   { p2.hashes.HASH_OR, Keyword::kw_Or },
-   { p2.hashes.HASH_XOR, Keyword::kw_Xor },
-   { p2.hashes.HASH_NOT, Keyword::kw_Not },
+   { STRING_TRUE, Keyword::kw_True },
+   { STRING_FALSE, Keyword::kw_False },
+   { STRING_AND, Keyword::kw_And },
+   { STRING_OR, Keyword::kw_Or },
+   { STRING_XOR, Keyword::kw_Xor },
+   { STRING_NOT, Keyword::kw_Not },
    // other commands:
-   { p2.hashes.HASH_PRINT, Keyword::kw_Print },
-   { p2.hashes.HASH_RUN, Keyword::kw_Run },
-   { p2.hashes.HASH_SLEEP, Keyword::kw_Sleep },
+   { STRING_PRINT, Keyword::kw_Print },
+   { STRING_RUN, Keyword::kw_Run },
+   { STRING_SLEEP, Keyword::kw_Sleep },
    // expression elements:
-   { p2.hashes.HASH_IN, Keyword::kw_In },
-   { p2.hashes.HASH_LIKE, Keyword::kw_Like },
+   { STRING_IN, Keyword::kw_In },
+   { STRING_LIKE, Keyword::kw_Like },
    // command structs:
-   { p2.hashes.HASH_ELSE, Keyword::kw_Else },
-   { p2.hashes.HASH_IF, Keyword::kw_If },
-   { p2.hashes.HASH_INSIDE, Keyword::kw_Inside },
-   { p2.hashes.HASH_TIMES, Keyword::kw_Times },
-   { p2.hashes.HASH_WHILE, Keyword::kw_While },
+   { STRING_ELSE, Keyword::kw_Else },
+   { STRING_IF, Keyword::kw_If },
+   { STRING_INSIDE, Keyword::kw_Inside },
+   { STRING_TIMES, Keyword::kw_Times },
+   { STRING_WHILE, Keyword::kw_While },
    // filthers:
-   { p2.hashes.HASH_EVERY, Keyword::kw_Every },
-   { p2.hashes.HASH_FINAL, Keyword::kw_Final },
-   { p2.hashes.HASH_LIMIT, Keyword::kw_Limit },
-   { p2.hashes.HASH_ORDER, Keyword::kw_Order },
-   { p2.hashes.HASH_SKIP, Keyword::kw_Skip },
-   { p2.hashes.HASH_WHERE, Keyword::kw_Where },
+   { STRING_EVERY, Keyword::kw_Every },
+   { STRING_FINAL, Keyword::kw_Final },
+   { STRING_LIMIT, Keyword::kw_Limit },
+   { STRING_ORDER, Keyword::kw_Order },
+   { STRING_SKIP, Keyword::kw_Skip },
+   { STRING_WHERE, Keyword::kw_Where },
    // rest:
-   { p2.hashes.HASH_AS, Keyword::kw_As },
-   { p2.hashes.HASH_BY, Keyword::kw_By },
-   { p2.hashes.HASH_TO, Keyword::kw_To },
-   { p2.hashes.HASH_EXTENSIONLESS, Keyword::kw_Extensionless },
-   { p2.hashes.HASH_WITH, Keyword::kw_With },
+   { STRING_AS, Keyword::kw_As },
+   { STRING_BY, Keyword::kw_By },
+   { STRING_TO, Keyword::kw_To },
+   { STRING_EXTENSIONLESS, Keyword::kw_Extensionless },
+   { STRING_WITH, Keyword::kw_With },
    // order:
-   { p2.hashes.HASH_ASC, Keyword::kw_Asc },
-   { p2.hashes.HASH_DESC, Keyword::kw_Desc },
+   { STRING_ASC, Keyword::kw_Asc },
+   { STRING_DESC, Keyword::kw_Desc },
    // one-word command:
-   { p2.hashes.HASH_BREAK, Keyword::kw_Break },
-   { p2.hashes.HASH_CONTINUE, Keyword::kw_Continue },
-   { p2.hashes.HASH_EXIT, Keyword::kw_Exit },
-   { p2.hashes.HASH_ERROR, Keyword::kw_Error }
-}) { };
+   { STRING_BREAK, Keyword::kw_Break },
+   { STRING_CONTINUE, Keyword::kw_Continue },
+   { STRING_EXIT, Keyword::kw_Exit },
+   { STRING_ERROR, Keyword::kw_Error }
+}),
+
+MONTHS({
+   { STRING_JANUARY,    TNUM_JANUARY },
+   { STRING_FEBRUARY,   TNUM_FEBRUARY },
+   { STRING_MARCH,      TNUM_MARCH },
+   { STRING_APRIL,      TNUM_APRIL },
+   { STRING_MAY,        TNUM_MAY },
+   { STRING_JUNE,       TNUM_JUNE },
+   { STRING_JULY,       TNUM_JULY },
+   { STRING_AUGUST,     TNUM_AUGUST },
+   { STRING_SEPTEMBER,  TNUM_SEPTEMBER },
+   { STRING_OCTOBER,    TNUM_OCTOBER },
+   { STRING_NOVEMBER,   TNUM_NOVEMBER },
+   { STRING_DECEMBER,   TNUM_DECEMBER }
+}),
+
+WEEKDAYS({
+   { STRING_MONDAY,     TNUM_MONDAY },
+   { STRING_TUESDAY,    TNUM_TUESDAY },
+   { STRING_WEDNESDAY,  TNUM_WEDNESDAY },
+   { STRING_THURSDAY,   TNUM_THURSDAY },
+   { STRING_FRIDAY,     TNUM_FRIDAY },
+   { STRING_SATURDAY,   TNUM_SATURDAY },
+   { STRING_SUNDAY,     TNUM_SUNDAY }
+})
+
+{ };
 
 }

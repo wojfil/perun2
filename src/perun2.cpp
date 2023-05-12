@@ -22,7 +22,6 @@
 #include "brackets.h"
 #include "lexer.h"
 #include "os.h"
-#include "hash.h"
 #include "logger.h"
 #include "datatype/math.h"
 
@@ -31,7 +30,7 @@ namespace perun2
 {
 
 _p2::_p2(const Arguments& args) : arguments(args), contexts(*this),
-   flags(args.getFlags()), keywordsData(*this), logger(*this), cache(*this)
+   flags(args.getFlags()), logger(*this), cache(*this)
 {
    _p2::init();
    Terminator::addPtr(this);

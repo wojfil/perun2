@@ -554,10 +554,8 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
    const Token& f1 = pair.first.first();
    const Token& f2 = pair.second.first();
 
-   const _bool leftTimeVar = pair.first.getLength() == 1 && f1.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_VAR.find(f1.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
-   const _bool rightTimeVar = pair.second.getLength() == 1 && f2.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_VAR.find(f2.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
+   const _bool leftTimeVar = pair.first.getLength() == 1 && f1.isWord(STRINGS_TIME_VAR, p2);
+   const _bool rightTimeVar = pair.second.getLength() == 1 && f2.isWord(STRINGS_TIME_VAR, p2);
 
    // check cases when left side is a time variable (creation, modification...)
    if (leftTimeVar)
@@ -863,11 +861,9 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
    const _bool isWeek2 = t2.isWeekDay();
    const _bool isMonth1 = t1.isMonth();
    const _bool isMonth2 = t2.isMonth();
-   const _bool isVar1 = t1.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_VAR.find(t1.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
-   const _bool isVar2 = t2.type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_VAR.find(t2.value.word.h) != p2.hashes.HASH_GROUP_TIME_VAR.end();
-
+   const _bool isVar1 = t1.isWord(STRINGS_TIME_VAR, p2);
+   const _bool isVar2 = t2.isWord(STRINGS_TIME_VAR, p2);
+   
    if (isVar1 && (isWeek2 || isMonth2)) {
       throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
          L"', you should write '", t1.getOriginString(p2), L".", (isWeek2 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),

@@ -15,8 +15,8 @@
 #ifndef KEYWORD_H_INCLUDED
 #define KEYWORD_H_INCLUDED
 
+#include "datatype/primitives.h"
 #include <unordered_map>
-#include "hash.h"
 
 
 namespace perun2
@@ -98,10 +98,10 @@ enum Keyword
 struct KeywordsData
 {
 public:
-   KeywordsData() = delete;
-   KeywordsData(_p2& p2);
-
-   const std::unordered_map<_hash, Keyword> KEYWORDS;
+   KeywordsData();
+   const std::unordered_map<_str, Keyword> KEYWORDS;
+   const std::unordered_map<_str, _nint> MONTHS;
+   const std::unordered_map<_str, _nint> WEEKDAYS;
 };
 
 }

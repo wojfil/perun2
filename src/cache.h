@@ -15,7 +15,6 @@
 #ifndef CACHE_H_INCLUDED
 #define CACHE_H_INCLUDED
 
-#include "hash.h"
 #include "var.h"
 
 
@@ -39,12 +38,12 @@ _constexpr _cunit CACHE_NOTEPAD =              0b0000000000000000000000100000000
 // Perun2 offers access to some special constant values
 // like path to the desktop
 // they are rarely used, but when used, it is enough to load them only once
-// they also may be expensive to get
-// struct Cache solves all mentioned problems in an efficient way
-// it only loads the values we need and ignores the rest
+// struct Cache solves all mentioned problems
+// it loads the values we need only once and ignores the rest
 
 struct _p2;
 struct VarsContext;
+struct Token;
 
 
 struct Cache
@@ -53,7 +52,7 @@ public:
    Cache() = delete;
    Cache(_p2& p2);
 
-   void actualize(const _hash nameHash);
+   void actualize(const Token& tk);
    void loadCmdPath();
 
    _str cmdProcessStartingArgs;
@@ -62,7 +61,7 @@ private:
    _bool isNotLoaded(const _cunit v);
    _str getCmdProcessStartingArgs() const;
    _list getAlphabet() const;
-   void loadSystem32Path(const _hash nameHash);
+   void loadSystem32Path(const Token& tk);
 
    _cunit value = CACHE_NULL;
    _p2& perun2;

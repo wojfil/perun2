@@ -26,11 +26,9 @@ Attribute::Attribute(_p2& p2)
 Attribute::Attribute(const _aunit val, _p2& p2)
    : value(val), perun2(p2) { };
 
-void Attribute::add(const _hash val)
+void Attribute::add(const Token& tk)
 {
-   const Hashes& hashes = this->perun2.hashes;
-
-   if (hashes.HASH_GROUP_ATTR.find(val) == hashes.HASH_GROUP_ATTR.end()) {
+   if (!tk.isWord(STRINGS_ATTR, this->perun2)) {
       return;
    }
 
@@ -38,64 +36,78 @@ void Attribute::add(const _hash val)
       this->set(ATTR_PATH);
    }
 
-   if (val == hashes.HASH_DRIVE) {
+   if (tk.isWord(STRING_DRIVE, this->perun2)) {
       this->set(ATTR_DRIVE);
       return;
    }
 
-   if (val == hashes.HASH_DEPTH) {
+   if (tk.isWord(STRING_DEPTH, this->perun2)) {
       this->set(ATTR_DEPTH);
       return;
    }
 
-   if (val != hashes.HASH_PATH && val != hashes.HASH_FULLNAME) {
+   if (!tk.isWord(STRING_PATH, this->perun2) && !tk.isWord(STRING_FULLNAME, this->perun2)) {
       this->set(ATTR_EXISTS);
    }
-
-   if (val == hashes.HASH_ACCESS){
+   if (tk.isWord(STRING_ACCESS, this->perun2)) {
       this->set(ATTR_ACCESS);
    }
-   else if (val == hashes.HASH_ARCHIVE)
+   else if (tk.isWord(STRING_ARCHIVE, this->perun2)) {
       this->set(ATTR_ARCHIVE);
-   else if (val == hashes.HASH_COMPRESSED)
+   }
+   else if (tk.isWord(STRING_COMPRESSED, this->perun2)) {
       this->set(ATTR_COMPRESSED);
-   else if (val == hashes.HASH_CREATION)
+   }
+   else if (tk.isWord(STRING_CREATION, this->perun2)) {
       this->set(ATTR_CREATION);
-   else if (val == hashes.HASH_CHANGE)
+   }
+   else if (tk.isWord(STRING_CHANGE, this->perun2)) {
       this->set(ATTR_CHANGE);
-   else if (val == hashes.HASH_DRIVE)
+   }
+   else if (tk.isWord(STRING_DRIVE, this->perun2)) {
       this->set(ATTR_DRIVE);
-   else if (val == hashes.HASH_EMPTY)
+   }
+   else if (tk.isWord(STRING_EMPTY, this->perun2)) {
       this->set(ATTR_EMPTY);
-   else if (val == hashes.HASH_ENCRYPTED)
+   }
+   else if (tk.isWord(STRING_ENCRYPTED, this->perun2)) {
       this->set(ATTR_ENCRYPTED);
-   else if (val == hashes.HASH_EXTENSION) {
+   }
+   else if (tk.isWord(STRING_EXTENSION, this->perun2)) {
       this->set(ATTR_EXTENSION);
    }
-   else if (val == hashes.HASH_FULLNAME)
+   else if (tk.isWord(STRING_FULLNAME, this->perun2)) {
       this->set(ATTR_FULLNAME);
-   else if (val == hashes.HASH_HIDDEN)
+   }
+   else if (tk.isWord(STRING_HIDDEN, this->perun2)) {
       this->set(ATTR_HIDDEN);
-   else if (val == hashes.HASH_LIFETIME) {
+   }
+   else if (tk.isWord(STRING_LIFETIME, this->perun2)) {
       this->set(ATTR_CREATION);
       this->set(ATTR_MODIFICATION);
       this->set(ATTR_LIFETIME);
    }
-   else if (val == hashes.HASH_MODIFICATION)
+   else if (tk.isWord(STRING_MODIFICATION, this->perun2)) {
       this->set(ATTR_MODIFICATION);
-   else if (val == hashes.HASH_NAME)
+   }
+   else if (tk.isWord(STRING_NAME, this->perun2)) {
       this->set(ATTR_NAME);
-   else if (val == hashes.HASH_PARENT)
+   }
+   else if (tk.isWord(STRING_PARENT, this->perun2)) {
       this->set(ATTR_PARENT);
-   else if (val == hashes.HASH_PATH)
+   }
+   else if (tk.isWord(STRING_PATH, this->perun2)) {
       this->set(ATTR_PATH);
-   else if (val == hashes.HASH_READONLY)
+   }
+   else if (tk.isWord(STRING_READONLY, this->perun2)) {
       this->set(ATTR_READONLY);
-   else if (val == hashes.HASH_SIZE)
+   }
+   else if (tk.isWord(STRING_SIZE, this->perun2)) {
       this->set(ATTR_SIZE);
+   }
 }
 
-inline void Attribute::set(const _aunit v)
+void Attribute::set(const _aunit v)
 {
    this->value |= v;
 }

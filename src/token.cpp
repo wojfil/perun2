@@ -30,21 +30,22 @@ TokenValue::TokenValue(const _char ch, const _int am)
 
 TokenValue::TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode nm)
    : num({ n, _osi(os_id, os_len), nm }) { };
+
 TokenValue::TokenValue(const _size os_id, const _size os_len)
    : str(_osi(os_id, os_len)) { };
 
 TokenValue::TokenValue(const _size os_id, const _size os_len, const _int id)
    : pattern({ _osi(os_id, os_len), id }) { };
 
-TokenValue::TokenValue(const _hash h, const _size os_id, const _size os_len)
-   : word({ h, _osi(os_id, os_len) }) { };
+TokenValue::TokenValue(const _size os_id, const _size os_len, const _size len2)
+   : word({ _osi(os_id, os_len) }) { };
 
 TokenValue::TokenValue(const Keyword k, const _size os_id, const _size os_len)
    : keyword({ k, _osi(os_id, os_len) }) { };
 
-TokenValue::TokenValue(const _hash h1, const _hash h2, const _size os_id1,
+TokenValue::TokenValue(const _size os_id1,
    const _size os_len1, const _size os_id2, const _size os_len2)
-   : twoWords({ h1, h2, _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
+   : twoWords({ _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
 Token::Token(const _char v, const _int li, _p2& p2)
    : line(li), type(t_Symbol), value(v) { };
@@ -62,15 +63,15 @@ Token::Token(const _size os_id, const _size os_len, const _int li, _p2& p2)
 Token::Token(const _size os_id, const _size os_len, const _int id, const _int li, _p2& p2)
    : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const _hash v, const _int li, const _size os_id, const _size os_len, _p2& p2)
-   : line(li), type(t_Word), value(v, os_id, os_len) { };
+Token::Token(const _int li, const _size os_id, const _size os_len, _p2& p2)
+   : line(li), type(t_Word), value(os_id, os_len, os_len) { };
 
 Token::Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _p2& p2)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
-Token::Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
+Token::Token(const _int li, const _size os_id1, const _size os_len1,
    const _size os_id2, const _size os_len2, _p2& p2)
-   : line(li), type(t_TwoWords), value(v1, v2, os_id1, os_len1, os_id2, os_len2) { };
+   : line(li), type(t_TwoWords), value(os_id1, os_len1, os_id2, os_len2) { };
 
 _bool Token::isSymbol(const _char ch) const
 {
@@ -80,6 +81,69 @@ _bool Token::isSymbol(const _char ch) const
 _bool Token::isKeyword(const Keyword kw) const
 {
    return type == t_Keyword && value.keyword.k == kw;
+}
+
+_bool Token::isWord(const _char (&word)[], _p2& p2) const
+{
+   return type == t_Word
+      && isCodeSubstr(word, value.word.os, p2);
+}
+
+_bool Token::isWord(const std::vector<_str>& words, _p2& p2) const
+{
+   if (type != t_Word) {
+      return false;
+   }
+
+   for (const _str& w : words) {
+      if (isCodeSubstr(w, value.word.os, p2)) {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+_bool Token::isFirstWord(const _char (&word)[], _p2& p2) const
+{
+   return type == t_TwoWords
+      && isCodeSubstr(word, value.twoWords.os1, p2);
+}
+
+_bool Token::isFirstWord(const std::vector<_str>& words, _p2& p2) const
+{
+   if (type != t_TwoWords) {
+      return false;
+   }
+
+   for (const _str& w : words) {
+      if (isCodeSubstr(w, value.twoWords.os1, p2)) {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+_bool Token::isSecondWord(const _char (&word)[], _p2& p2) const
+{
+   return type == t_TwoWords
+      && isCodeSubstr(word, value.twoWords.os2, p2);
+}
+
+_bool Token::isSecondWord(const std::vector<_str>& words, _p2& p2) const
+{
+   if (type != t_TwoWords) {
+      return false;
+   }
+
+   for (const _str& w : words) {
+      if (isCodeSubstr(w, value.twoWords.os2, p2)) {
+         return true;
+      }
+   }
+
+   return false;
 }
 
 // this keyword is a binary operator and can be preceded by a Not keyword
@@ -199,8 +263,7 @@ _bool Token::isOne() const
 
 _bool Token::isTimeAttribute(_p2& p2) const
 {
-   return this->type == Token::t_Word &&
-      p2.hashes.HASH_GROUP_TIME_ATTR.find(this->value.word.h) != p2.hashes.HASH_GROUP_TIME_ATTR.end();
+   return this->type == Token::t_Word && isWord(STRINGS_TIME_ATTR, p2);
 }
 
 _str Token::getOriginString(_p2& p2) const
@@ -243,9 +306,48 @@ _str Token::getOriginString_2(_p2& p2) const
       : _str();
 }
 
+_str Token::toLowerString(_p2& p2) const
+{
+   _str result = getOriginString(p2);
+   toLower(result);
+   return result;
+}
+
 _str Token::getCodeSubstr(const _osi& osi, _p2& p2) const
 {
    return p2.arguments.getCode().substr(osi.index, osi.length);
+}
+
+_bool Token::isCodeSubstr(const _char (&word)[], const _osi& osi, _p2& p2) const
+{
+   if (wcslen(word) != osi.length) {
+      return false;
+   }
+
+   const _str& code = p2.arguments.getCode();
+   for (_size i = 0; i < osi.length; i++) {
+      if (!charsEqualInsensitive(word[i], code[osi.index + i])) {
+         return false;
+      }
+   }
+
+   return true;
+}
+
+_bool Token::isCodeSubstr(const _str& word, const _osi& osi, _p2& p2) const
+{
+   if (word.size() != osi.length) {
+      return false;
+   }
+
+   const _str& code = p2.arguments.getCode();
+   for (_size i = 0; i < osi.length; i++) {
+      if (!charsEqualInsensitive(word[i], code[osi.index + i])) {
+         return false;
+      }
+   }
+
+   return true;
 }
 
 }

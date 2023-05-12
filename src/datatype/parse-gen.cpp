@@ -17,7 +17,6 @@
 #include "parse/parse-timlist.h"
 #include "../lexer.h"
 #include "../brackets.h"
-#include "../hash.h"
 #include "parse/parse-function.h"
 
 

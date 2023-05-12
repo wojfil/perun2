@@ -17,7 +17,6 @@
 
 #include "../datatype.h"
 #include "../wildcard.h"
-#include "../../hash.h"
 #include <unordered_set>
 #include <unordered_map>
 
@@ -93,7 +92,7 @@ private:
    _genptr<_str> value;
    _genptr<_str> pattern;
    _likeptr comparer;
-   _hash prevHash = 0;
+   _str prevPattern;
 };
 
 

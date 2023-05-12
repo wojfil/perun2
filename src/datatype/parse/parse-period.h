@@ -29,6 +29,7 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _p2& p2);
 _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, _p2& p2);
 _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, _p2& p2);
 _bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, _p2& p2);
+Period::PeriodUnit toPeriodUnit(const Token& tk, _p2& p2);
 
 }
 

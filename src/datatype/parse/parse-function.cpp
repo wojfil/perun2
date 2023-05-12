@@ -45,11 +45,10 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    const Token& word = tks.first();
-   const _size name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (p2.hashes.HASH_GROUP_FUNC_BOO_STR.find(name) != p2.hashes.HASH_GROUP_FUNC_BOO_STR.end())
+   if (word.isWord(STRINGS_FUNC_BOO_STR, p2))
    {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
@@ -57,7 +56,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 
       return simpleBoolFunction(result, args[0], word, p2);
    }
-   else if (name == p2.hashes.HASH_EXISTINSIDE) {
+   else if (word.isWord(STRING_EXISTINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -81,7 +80,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       }
       return true;
    }
-   else if (name == p2.hashes.HASH_ANYINSIDE) {
+   else if (word.isWord(STRING_ANYINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -114,7 +113,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_AnyInside>(def, lctx, fctx);
       return true;
    }
-   else if (name == p2.hashes.HASH_ANY) {
+   else if (word.isWord(STRING_ANY, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -146,7 +145,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
          L"' cannot be resolved to any collection"), word.line);
    }
-   else if (name == p2.hashes.HASH_EXIST) {
+   else if (word.isWord(STRING_EXIST, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -159,7 +158,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Exist>(list, p2);
       return true;
    }
-   else if (name == p2.hashes.HASH_EXISTS) {
+   else if (word.isWord(STRING_EXISTS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -172,7 +171,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Exists>(str_, p2);
       return true;
    }
-   else if (name == p2.hashes.HASH_CONTAINS) {
+   else if (word.isWord(STRING_CONTAINS, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -243,7 +242,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
             L"' cannot be resolved to a string nor any collection"), word.line);
       }
    }
-   else if (name == p2.hashes.HASH_EXISTSINSIDE) {
+   else if (word.isWord(STRING_EXISTSINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -267,7 +266,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       }
       return true;
    }
-   else if (name == p2.hashes.HASH_STARTSWITH) {
+   else if (word.isWord(STRING_STARTSWITH, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -329,7 +328,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
          functionArgException(2, STRING_STRING, word, p2);
       }
    }
-   else if (name == p2.hashes.HASH_ENDSWITH) {
+   else if (word.isWord(STRING_ENDSWITH, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -390,7 +389,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_EndsWith>(str, str2);
       return true;
    }
-   else if (name == p2.hashes.HASH_FINDTEXT) {
+   else if (word.isWord(STRING_FINDTEXT, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -419,21 +418,19 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
       functionArgException(1, STRING_STRING, word, p2);
    }
 
-   const _hash name = word.value.word.h;
-
-   if (name == p2.hashes.HASH_ISLOWER)
+   if (word.isWord(STRING_ISLOWER, p2))
       result = std::make_unique<F_IsLower>(arg1);
-   else if (name == p2.hashes.HASH_ISUPPER)
+   else if (word.isWord(STRING_ISUPPER, p2))
       result = std::make_unique<F_IsUpper>(arg1);
-   else if (name == p2.hashes.HASH_ISNUMBER)
+   else if (word.isWord(STRING_ISNUMBER, p2))
       result = std::make_unique<F_IsNumber>(arg1);
-   else if (name == p2.hashes.HASH_ISLETTER)
+   else if (word.isWord(STRING_ISLETTER, p2))
       result = std::make_unique<F_IsLetter>(arg1);
-   else if (name == p2.hashes.HASH_ISDIGIT)
+   else if (word.isWord(STRING_ISDIGIT, p2))
       result = std::make_unique<F_IsDigit>(arg1);
-   else if (name == p2.hashes.HASH_ISBINARY)
+   else if (word.isWord(STRING_ISBINARY, p2))
       result = std::make_unique<F_IsBinary>(arg1);
-   else if (name == p2.hashes.HASH_ISHEX)
+   else if (word.isWord(STRING_ISHEX, p2))
       result = std::make_unique<F_IsHex>(arg1);
    else
       return false;
@@ -444,17 +441,16 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
 _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 {
    const Token& word = tks.first();
-   const _hash name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (p2.hashes.HASH_GROUP_FUNC_NUM_NUM.find(name) != p2.hashes.HASH_GROUP_FUNC_NUM_NUM.end()) {
+   if (word.isWord(STRINGS_FUNC_NUM_NUM, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       return simpleNumberFunction(result, args[0], word, p2);
    }
-   else if (name == p2.hashes.HASH_LENGTH) {
+   else if (word.isWord(STRING_LENGTH, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
@@ -469,14 +465,14 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
             L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
       }
    }
-   else if (name == p2.hashes.HASH_FROMBINARY || name == p2.hashes.HASH_FROMHEX) {
+   else if (word.isWord(STRING_FROMBINARY, p2) || word.isWord(STRING_FROMHEX, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       _genptr<_str> arg1;
 
       if (parse::parse(p2, args[0], arg1)) {
-         if (name == p2.hashes.HASH_FROMBINARY)
+         if (word.isWord(STRING_FROMBINARY, p2))
             result = std::make_unique<F_FromBinary>(arg1);
          else
             result = std::make_unique<F_FromHex>(arg1);
@@ -487,7 +483,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_STRING, word, p2);
       }
    }
-   else if (name == p2.hashes.HASH_SIZE) {
+   else if (word.isWord(STRING_SIZE, p2)) {
       if (len != 1) {
          checkInOperatorCommaAmbiguity(word, args[0], p2);
          functionArgNumberException(len, word, p2);
@@ -509,7 +505,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
             L"' cannot be resolved to a collection"), word.line);
       }
    }
-   else if (name == p2.hashes.HASH_NUMBER) {
+   else if (word.isWord(STRING_NUMBER, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
@@ -523,7 +519,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
             L"' cannot be resolved to a string"), word.line);
       }
    }
-   else if (name == p2.hashes.HASH_COUNTINSIDE) {
+   else if (word.isWord(STRING_COUNTINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -556,7 +552,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_CountInside>(def, lctx, fctx, p2);
       return true;
    }
-   else if (name == p2.hashes.HASH_COUNT) {
+   else if (word.isWord(STRING_COUNT, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -588,7 +584,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
          L"' cannot be resolved to any collection"), word.line);
    }
-   else if (name == p2.hashes.HASH_POWER) {
+   else if (word.isWord(STRING_POWER, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
@@ -605,7 +601,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Power>(arg1, arg2);
       return true;
    }
-   else if (name == p2.hashes.HASH_SHIFTMONTH) {
+   else if (word.isWord(STRING_SHIFTMONTH, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
@@ -629,7 +625,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
          L"' cannot be resolved to a time nor a number"), word.line);
    }
-   else if (name == p2.hashes.HASH_SHIFTWEEKDAY) {
+   else if (word.isWord(STRING_SHIFTWEEKDAY, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
@@ -653,7 +649,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
       throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
          L"' cannot be resolved to a time nor a number"), word.line);
    }
-   else if (p2.hashes.HASH_GROUP_AGGRFUNC.find(name) != p2.hashes.HASH_GROUP_AGGRFUNC.end()) {
+   else if (word.isWord(STRINGS_AGGRFUNC, p2)) {
       if (len == 0) {
          throw SyntaxError(str(L"aggregate function '", word.getOriginString(p2),
             L"' needs at least one argument"), word.line);
@@ -661,7 +657,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 
       return aggrFunction(result, args, word, p2);
    }
-   else if (name == p2.hashes.HASH_FIRST || name == p2.hashes.HASH_LAST) {
+   else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -679,7 +675,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
             functionArgNumberException(len, word, p2);
          }
 
-         if (name == p2.hashes.HASH_FIRST) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_First<_num>>(nlist);
          }
          else {
@@ -689,7 +685,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
          return true;
       }
    }
-   else if (name == p2.hashes.HASH_RANDOM) {
+   else if (word.isWord(STRING_RANDOM, p2)) {
       if (len > 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -724,21 +720,19 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
       functionArgException(1, STRING_NUMBER, word, p2);
    }
 
-   const _hash name = word.value.word.h;
-
-   if (name == p2.hashes.HASH_ABSOLUTE)
+   if (word.isWord(STRING_ABSOLUTE, p2))
       result = std::make_unique<F_Absolute>(arg);
-   else if (name == p2.hashes.HASH_CEIL)
+   else if (word.isWord(STRING_CEIL, p2))
       result = std::make_unique<F_Ceil>(arg);
-   else if (name == p2.hashes.HASH_FLOOR)
+   else if (word.isWord(STRING_FLOOR, p2))
       result = std::make_unique<F_Floor>(arg);
-   else if (name == p2.hashes.HASH_ROUND)
+   else if (word.isWord(STRING_ROUND, p2))
       result = std::make_unique<F_Round>(arg);
-   else if (name == p2.hashes.HASH_SIGN)
+   else if (word.isWord(STRING_SIGN, p2))
       result = std::make_unique<F_Sign>(arg);
-   else if (name == p2.hashes.HASH_SQRT)
+   else if (word.isWord(STRING_SQRT, p2))
       result = std::make_unique<F_Sqrt>(arg);
-   else if (name == p2.hashes.HASH_TRUNCATE)
+   else if (word.isWord(STRING_TRUNCATE, p2))
       result = std::make_unique<F_Truncate>(arg);
    else
       return false;
@@ -748,8 +742,6 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
 
 static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, _p2& p2)
 {
-   const _hash name = word.value.word.h;
-
    std::vector<_genptr<_num>> singles;
    std::vector<_genptr<_nlist>> multis;
 
@@ -775,15 +767,15 @@ static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args
       }
    }
 
-   if (name == p2.hashes.HASH_AVERAGE)
+   if (word.isWord(STRING_AVERAGE, p2))
       result = std::make_unique<F_Average>(singles, multis);
-   else if (name == p2.hashes.HASH_MAX)
+   else if (word.isWord(STRING_MAX, p2))
       result = std::make_unique<F_Max>(singles, multis);
-   else if (name == p2.hashes.HASH_MEDIAN)
+   else if (word.isWord(STRING_MEDIAN, p2))
       result = std::make_unique<F_Median>(singles, multis);
-   else if (name == p2.hashes.HASH_MIN)
+   else if (word.isWord(STRING_MIN, p2))
       result = std::make_unique<F_Min>(singles, multis);
-   else if (name == p2.hashes.HASH_SUM)
+   else if (word.isWord(STRING_SUM, p2))
       result = std::make_unique<F_Sum>(singles, multis);
    else
       return false;
@@ -799,27 +791,26 @@ _bool periodFunction(_genptr<_per>& result, const Tokens& tks, _p2& p2)
 _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
 {
    const Token& word = tks.first();
-   const _hash name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == p2.hashes.HASH_AFTER || name == p2.hashes.HASH_BEFORE) {
+   if (word.isWord(STRING_AFTER, p2) || word.isWord(STRING_BEFORE, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
       return stringTwoArgFunction(result, args, word, p2);
    }
-   else if (p2.hashes.HASH_GROUP_FUNC_STR_STR.find(name) != p2.hashes.HASH_GROUP_FUNC_STR_STR.end()) {
+   else if (word.isWord(STRINGS_FUNC_STR_STR, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       return simpleStringFunction(result, args[0], word, p2);
    }
-   else if (name == p2.hashes.HASH_REVERSED) {
+   else if (word.isWord(STRING_REVERSED, p2)) {
       const _str sub = (word.getOriginString(p2)).substr(0, 7);
       throw SyntaxError(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
-   else if (p2.hashes.HASH_GROUP_FUNC_STR_STR_NUM.find(name) != p2.hashes.HASH_GROUP_FUNC_STR_STR_NUM.end()) {
+   else if (word.isWord(STRINGS_FUNC_STR_STR_NUM, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -834,18 +825,18 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
          functionArgException(2, STRING_NUMBER, word, p2);
       }
 
-      if (name == p2.hashes.HASH_REPEAT)
+      if (word.isWord(STRING_REPEAT, p2))
          result = std::make_unique<F_Repeat>(str, num);
-      else if (name == p2.hashes.HASH_LEFT)
+      else if (word.isWord(STRING_LEFT, p2))
          result = std::make_unique<F_Left>(str, num);
-      else if (name == p2.hashes.HASH_RIGHT)
+      else if (word.isWord(STRING_RIGHT, p2))
          result = std::make_unique<F_Right>(str, num);
-      else if (name == p2.hashes.HASH_FILL)
+      else if (word.isWord(STRING_FILL, p2))
          result = std::make_unique<F_Fill>(str, num);
 
       return true;
    }
-   else if (name == p2.hashes.HASH_REPLACE) {
+   else if (word.isWord(STRING_REPLACE, p2)) {
       if (len != 3) {
          functionArgNumberException(len, word, p2);
       }
@@ -868,7 +859,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Replace>(str1, str2, str3);
       return true;
    }
-   else if (name == p2.hashes.HASH_SUBSTRING) {
+   else if (word.isWord(STRING_SUBSTRING, p2)) {
       if (len < 2 || len > 3) {
          throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' can only take"
             L" two or three arguments"), word.line);
@@ -897,7 +888,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Substring_3>(str, num, num2);
       return true;
    }
-   else if (name == p2.hashes.HASH_CONCATENATE) {
+   else if (word.isWord(STRING_CONCATENATE, p2)) {
       if (len < 1) {
          throw SyntaxError(str(L"function '", word.getOriginString(p2),
             L"' needs at least one arguments"), word.line);
@@ -928,7 +919,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Concatenate>(values);
       return true;
    }
-   else if (name == p2.hashes.HASH_FIRST || name == p2.hashes.HASH_LAST) {
+   else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -946,7 +937,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
             functionArgNumberException(len, word, p2);
          }
 
-         if (name == p2.hashes.HASH_FIRST) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_FirstDef>(def);
          }
          else {
@@ -962,7 +953,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
             functionArgNumberException(len, word, p2);
          }
 
-         if (name == p2.hashes.HASH_FIRST) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_First<_str>>(list);
          }
          else {
@@ -975,7 +966,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
             L"' cannot be resolved to any collection"), word.line);
       }
    }
-   else if (name == p2.hashes.HASH_PATH) {
+   else if (word.isWord(STRING_PATH, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -1038,7 +1029,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
          return true;
       }
    }
-   else if (name == p2.hashes.HASH_STRING) {
+   else if (word.isWord(STRING_STRING, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1070,7 +1061,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
         L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
    }
-   else if (p2.hashes.HASH_GROUP_FUNC_STR_NUM.find(name) != p2.hashes.HASH_GROUP_FUNC_STR_NUM.end()) {
+   else if (word.isWord(STRINGS_FUNC_STR_NUM, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1078,11 +1069,11 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       _genptr<_num> num;
 
       if (parse::parse(p2, args[0], num)) {
-         if (name == p2.hashes.HASH_ROMAN)
+         if (word.isWord(STRING_ROMAN, p2))
             result = std::make_unique<F_Roman>(num);
-         else if (name == p2.hashes.HASH_BINARY)
+         else if (word.isWord(STRING_BINARY, p2))
             result = std::make_unique<F_Binary>(num);
-         else if (name == p2.hashes.HASH_HEX)
+         else if (word.isWord(STRING_HEX, p2))
             result = std::make_unique<F_Hex>(num);
 
          return true;
@@ -1091,7 +1082,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_NUMBER, word, p2);
       }
    }
-   else if (name == p2.hashes.HASH_MONTHNAME) {
+   else if (word.isWord(STRING_MONTHNAME, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1111,7 +1102,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_NUMBER, word, p2);
       }
    }
-   else if (name == p2.hashes.HASH_WEEKDAYNAME) {
+   else if (word.isWord(STRING_WEEKDAYNAME, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1131,7 +1122,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_NUMBER, word, p2);
       }
    }
-   else if (name == p2.hashes.HASH_RANDOM) {
+   else if (word.isWord(STRING_RANDOM, p2)) {
       if (len == 0) {
          return false;
       }
@@ -1160,7 +1151,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
             word.line);
       }
    }
-   else if (name == p2.hashes.HASH_JOIN) {
+   else if (word.isWord(STRING_JOIN, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -1205,11 +1196,9 @@ static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Token
       functionArgException(2, STRING_STRING, word, p2);
    }
 
-   const _hash name = word.value.word.h;
-
-   if (name == p2.hashes.HASH_AFTER)
+   if (word.isWord(STRING_AFTER, p2))
       result = std::make_unique<F_After>(arg1, arg2);
-   else if (name == p2.hashes.HASH_BEFORE)
+   else if (word.isWord(STRING_BEFORE, p2))
       result = std::make_unique<F_Before>(arg1, arg2);
    else
       return false;
@@ -1224,31 +1213,29 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
       functionArgException(1, STRING_STRING, word, p2);
    }
 
-   const _hash name = word.value.word.h;
-
-   if (name == p2.hashes.HASH_DIGITS)
+   if (word.isWord(STRING_DIGITS, p2))
       result = std::make_unique<F_Digits>(arg1);
-   else if (name == p2.hashes.HASH_LETTERS)
+   else if (word.isWord(STRING_LETTERS, p2))
       result = std::make_unique<F_Letters>(arg1);
-   else if (name == p2.hashes.HASH_LOWER)
+   else if (word.isWord(STRING_LOWER, p2))
       result = std::make_unique<F_Lower>(arg1);
-   else if (name == p2.hashes.HASH_TRIM)
+   else if (word.isWord(STRING_TRIM, p2))
       result = std::make_unique<F_Trim>(arg1);
-   else if (name == p2.hashes.HASH_UPPER)
+   else if (word.isWord(STRING_UPPER, p2))
       result = std::make_unique<F_Upper>(arg1);
-   else if (name == p2.hashes.HASH_REVERSE)
+   else if (word.isWord(STRING_REVERSE, p2))
       result = std::make_unique<F_Reverse>(arg1);
-   else if (name == p2.hashes.HASH_AFTERDIGITS)
+   else if (word.isWord(STRING_AFTERDIGITS, p2))
       result = std::make_unique<F_AfterDigits>(arg1);
-   else if (name == p2.hashes.HASH_AFTERLETTERS)
+   else if (word.isWord(STRING_AFTERLETTERS, p2))
       result = std::make_unique<F_AfterLetters>(arg1);
-   else if (name == p2.hashes.HASH_BEFOREDIGITS)
+   else if (word.isWord(STRING_BEFOREDIGITS, p2))
       result = std::make_unique<F_BeforeDigits>(arg1);
-   else if (name == p2.hashes.HASH_BEFORELETTERS)
+   else if (word.isWord(STRING_BEFORELETTERS, p2))
       result = std::make_unique<F_BeforeLetters>(arg1);
-   else if (name == p2.hashes.HASH_CAPITALIZE)
+   else if (word.isWord(STRING_CAPITALIZE, p2))
       result = std::make_unique<F_Capitalize>(arg1);
-   else if (name == p2.hashes.HASH_PARENT)
+   else if (word.isWord(STRING_PARENT, p2))
       result = std::make_unique<F_Parent>(arg1, p2);
    else
       return false;
@@ -1259,18 +1246,17 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
 _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
 {
    const Token& word = tks.first();
-   const _hash name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (p2.hashes.HASH_GROUP_FUNC_TIM_NUM.find(name) != p2.hashes.HASH_GROUP_FUNC_TIM_NUM.end()) {
+   if (word.isWord(STRINGS_FUNC_TIM_NUM, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       return simpleTimeFunction(result, args[0], word, p2);
    }
 
-   else if (name == p2.hashes.HASH_DATE) {
+   else if (word.isWord(STRING_DATE, p2)) {
       if (len != 3)
          functionArgNumberException(len, word, p2);
 
@@ -1292,7 +1278,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Time_3>(arg1, arg2, arg3);
       return true;
    }
-   else if (name == p2.hashes.HASH_TIME) {
+   else if (word.isWord(STRING_TIME, p2)) {
       if (len < 2 || len == 4 || len > 6) {
          functionArgNumberException(len, word, p2);
       }
@@ -1345,7 +1331,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
       result = std::make_unique<F_Time_6>(arg1, arg2, arg3, arg4, arg5, arg6);
       return true;
    }
-   else if (name == p2.hashes.HASH_FIRST || name == p2.hashes.HASH_LAST) {
+   else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -1363,7 +1349,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
             functionArgNumberException(len, word, p2);
          }
 
-         if (name == p2.hashes.HASH_FIRST) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_First<_tim>>(tlist);
          }
          else {
@@ -1373,7 +1359,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
          return true;
       }
    }
-   else if (name == p2.hashes.HASH_RANDOM) {
+   else if (word.isWord(STRING_RANDOM, p2)) {
       if (len > 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1399,13 +1385,11 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
       functionArgException(1, STRING_NUMBER, word, p2);
    }
 
-   const _hash name = word.value.word.h;
-
-   if (name == p2.hashes.HASH_CHRISTMAS)
+   if (word.isWord(STRING_CHRISTMAS, p2))
       result = std::make_unique<F_Christmas>(arg1);
-   else if (name == p2.hashes.HASH_EASTER)
+   else if (word.isWord(STRING_EASTER, p2))
       result = std::make_unique<F_Easter>(arg1);
-   else if (name == p2.hashes.HASH_NEWYEAR)
+   else if (word.isWord(STRING_NEWYEAR, p2))
       result = std::make_unique<F_NewYear>(arg1);
    else
       return false;
@@ -1461,11 +1445,10 @@ static _str ordinalNumber(const _int number)
 _bool listFunction(_genptr<_list>& result, const Tokens& tks, _p2& p2)
 {
    const Token& word = tks.first();
-   const _hash name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == p2.hashes.HASH_CHARACTERS || name == p2.hashes.HASH_WORDS) {
+   if (word.isWord(STRING_CHARACTERS, p2) || word.isWord(STRING_WORDS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1475,14 +1458,14 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, _p2& p2)
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      if (name == p2.hashes.HASH_CHARACTERS)
+      if (word.isWord(STRING_CHARACTERS, p2))
          result = std::make_unique<F_Characters>(str);
       else
          result = std::make_unique<F_Words>(str);
 
       return true;
    }
-   if (name == p2.hashes.HASH_SPLIT) {
+   if (word.isWord(STRING_SPLIT, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -1509,11 +1492,10 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, _p2& p2)
 _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _p2& p2)
 {
    const Token& word = tks.first();
-   const _hash name = word.value.word.h;
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const _size len = args.size();
 
-   if (name == p2.hashes.HASH_NUMBERS) {
+   if (word.isWord(STRING_NUMBERS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }

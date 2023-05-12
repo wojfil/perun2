@@ -17,7 +17,6 @@
 
 #include "console.h"
 #include "arguments.h"
-#include "hash.h"
 #include "datatype/math.h"
 #include "terminator.h"
 #include "keyword.h"
@@ -70,7 +69,6 @@ public:
    void terminate();
 
    const Arguments& arguments;
-   Hashes hashes;
    Math math;
    Contexts contexts;
    const KeywordsData keywordsData;

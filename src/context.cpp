@@ -70,28 +70,28 @@ namespace perun2
 
    void FileContext::initVars(_p2& p2)
    {
-      this->v_archive = this->insertVar<_bool>(p2.hashes.HASH_ARCHIVE);
-      this->v_compressed = this->insertVar<_bool>(p2.hashes.HASH_COMPRESSED);
-      this->v_empty = this->insertVar<_bool>(p2.hashes.HASH_EMPTY);
-      this->v_encrypted = this->insertVar<_bool>(p2.hashes.HASH_ENCRYPTED);
-      this->v_exists = this->insertVar<_bool>(p2.hashes.HASH_EXISTS);
-      this->v_hidden = this->insertVar<_bool>(p2.hashes.HASH_HIDDEN);
-      this->v_isdirectory = this->insertVar<_bool>(p2.hashes.HASH_ISDIRECTORY);
-      this->v_isfile = this->insertVar<_bool>(p2.hashes.HASH_ISFILE);
-      this->v_readonly = this->insertVar<_bool>(p2.hashes.HASH_READONLY);
-      this->v_access = this->insertVar<_tim>(p2.hashes.HASH_ACCESS);
-      this->v_change = this->insertVar<_tim>(p2.hashes.HASH_CHANGE);
-      this->v_creation = this->insertVar<_tim>(p2.hashes.HASH_CREATION);
-      this->v_modification = this->insertVar<_tim>(p2.hashes.HASH_MODIFICATION);
-      this->v_lifetime = this->insertVar<_per>(p2.hashes.HASH_LIFETIME);
-      this->v_size = this->insertVar<_num>(p2.hashes.HASH_SIZE);
-      this->v_depth = this->insertVar<_num>(p2.hashes.HASH_DEPTH);
-      this->v_drive = this->insertVar<_str>(p2.hashes.HASH_DRIVE);
-      this->v_extension = this->insertVar<_str>(p2.hashes.HASH_EXTENSION);
-      this->v_fullname = this->insertVar<_str>(p2.hashes.HASH_FULLNAME);
-      this->v_name = this->insertVar<_str>(p2.hashes.HASH_NAME);
-      this->v_parent = this->insertVar<_str>(p2.hashes.HASH_PARENT);
-      this->v_path = this->insertVar<_str>(p2.hashes.HASH_PATH);
+      this->v_archive = this->insertVar<_bool>(STRING_ARCHIVE);
+      this->v_compressed = this->insertVar<_bool>(STRING_COMPRESSED);
+      this->v_empty = this->insertVar<_bool>(STRING_EMPTY);
+      this->v_encrypted = this->insertVar<_bool>(STRING_ENCRYPTED);
+      this->v_exists = this->insertVar<_bool>(STRING_EXISTS);
+      this->v_hidden = this->insertVar<_bool>(STRING_HIDDEN);
+      this->v_isdirectory = this->insertVar<_bool>(STRING_ISDIRECTORY);
+      this->v_isfile = this->insertVar<_bool>(STRING_ISFILE);
+      this->v_readonly = this->insertVar<_bool>(STRING_READONLY);
+      this->v_access = this->insertVar<_tim>(STRING_ACCESS);
+      this->v_change = this->insertVar<_tim>(STRING_CHANGE);
+      this->v_creation = this->insertVar<_tim>(STRING_CREATION);
+      this->v_modification = this->insertVar<_tim>(STRING_MODIFICATION);
+      this->v_lifetime = this->insertVar<_per>(STRING_LIFETIME);
+      this->v_size = this->insertVar<_num>(STRING_SIZE);
+      this->v_depth = this->insertVar<_num>(STRING_DEPTH);
+      this->v_drive = this->insertVar<_str>(STRING_DRIVE);
+      this->v_extension = this->insertVar<_str>(STRING_EXTENSION);
+      this->v_fullname = this->insertVar<_str>(STRING_FULLNAME);
+      this->v_name = this->insertVar<_str>(STRING_NAME);
+      this->v_parent = this->insertVar<_str>(STRING_PARENT);
+      this->v_path = this->insertVar<_str>(STRING_PATH);
    }
 
 
@@ -128,38 +128,36 @@ namespace perun2
 
    GlobalContext::GlobalContext(_p2& p2)
    {
-      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_NOW, std::make_unique<gen::v_Now>()));
-      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_TODAY, std::make_unique<gen::v_Today>()));
-      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
-      this->globalVars.times.insert(std::make_pair(p2.hashes.HASH_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
+      this->globalVars.times.insert(std::make_pair(STRING_NOW, std::make_unique<gen::v_Now>()));
+      this->globalVars.times.insert(std::make_pair(STRING_TODAY, std::make_unique<gen::v_Today>()));
+      this->globalVars.times.insert(std::make_pair(STRING_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
+      this->globalVars.times.insert(std::make_pair(STRING_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
 
-      this->insertConstant<_str>(p2.hashes.HASH_DESKTOP);
-      this->insertConstant<_str>(p2.hashes.HASH_PERUN2);
-      this->insertConstant<_str>(p2.hashes.HASH_ORIGIN);
-      this->insertConstant<_list>(p2.hashes.HASH_ALPHABET);
-      this->insertConstant<_list>(p2.hashes.HASH_ASCII);
-      this->insertConstant<_list>(p2.hashes.HASH_ARGUMENTS);
-      this->insertConstant<_str>(p2.hashes.HASH_MSPAINT);
-      this->insertConstant<_str>(p2.hashes.HASH_NOTEPAD);
+      this->insertConstant<_str>(STRING_DESKTOP);
+      this->insertConstant<_str>(STRING_PERUN2);
+      this->insertConstant<_str>(STRING_ORIGIN);
+      this->insertConstant<_list>(STRING_ALPHABET);
+      this->insertConstant<_list>(STRING_ASCII);
+      this->insertConstant<_list>(STRING_ARGUMENTS);
+      this->insertConstant<_str>(STRING_MSPAINT);
+      this->insertConstant<_str>(STRING_NOTEPAD);
    };
 
    Contexts::Contexts(_p2& p2)
-      : GlobalContext(p2), hashes(p2.hashes), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
+      : GlobalContext(p2), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
    {
       this->locationContexts.push_back(&this->rootLocation);
       this->locationContexts.back()->location->value = p2.arguments.getLocation();
 
-      this->addOsGen(hashes.HASH_FILES, gen::OsElement::oe_Files, p2);
-      this->addOsGen(hashes.HASH_RECURSIVEFILES, gen::OsElement::oe_RecursiveFiles, p2);
-      this->addOsGen(hashes.HASH_DIRECTORIES, gen::OsElement::oe_Directories, p2);
-      this->addOsGen(hashes.HASH_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
+      this->addOsGen(STRING_FILES, gen::OsElement::oe_Files, p2);
+      this->addOsGen(STRING_RECURSIVEFILES, gen::OsElement::oe_RecursiveFiles, p2);
+      this->addOsGen(STRING_DIRECTORIES, gen::OsElement::oe_Directories, p2);
+      this->addOsGen(STRING_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
    };
 
    _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, _p2& p2)
    {
-      const _hash var = tk.value.word.h;
-
-      if (var == this->hashes.HASH_SUCCESS) {
+      if (tk.isWord(STRING_SUCCESS, p2)) {
          result = this->success.get();
          return true;
       }
@@ -169,9 +167,7 @@ namespace perun2
 
    _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, _p2& p2)
    {
-      const _hash var = tk.value.word.h;
-
-      if (var == this->hashes.HASH_INDEX) {
+      if (tk.isWord(STRING_INDEX, p2)) {
          if (this->indexContexts.empty()) {
             throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             return false;
@@ -189,9 +185,7 @@ namespace perun2
 
    _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, _p2& p2)
    {
-      const _hash var = tk.value.word.h;
-
-      if (var == this->hashes.HASH_THIS) {
+      if (tk.isWord(STRING_THIS, p2)) {
          if (this->fileContexts.empty()) {
             throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             return false;
@@ -203,7 +197,7 @@ namespace perun2
             return true;
          }
       }
-      else if (var == this->hashes.HASH_LOCATION) {
+      else if (tk.isWord(STRING_LOCATION, p2)) {
          if (this->locationContexts.empty()) {
             throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             return false;
@@ -215,9 +209,9 @@ namespace perun2
             return true;
          }
       }
-      else if (var == this->hashes.HASH_PAINT) {
-         if (this->globalVars.takeVar(this->hashes.HASH_MSPAINT, result)) {
-            p2.cache.actualize(var);
+      else if (tk.isWord(STRING_PAINT, p2)) {
+         if (this->globalVars.takeVar(STRING_MSPAINT, result)) {
+            p2.cache.actualize(tk);
             return true;
          }
       }
@@ -325,9 +319,9 @@ namespace perun2
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const _hash hash, const gen::OsElement element, _p2& p2)
+   void Contexts::addOsGen(const _str& name, const gen::OsElement element, _p2& p2)
    {
-      osGenerators.insert(std::make_pair(hash, gen::DefinitionGenerator(element, p2)));
+      osGenerators.insert(std::make_pair(name, gen::DefinitionGenerator(element, p2)));
    }
 
    void Contexts::makeLocationContext(_lcptr& result)
@@ -342,6 +336,7 @@ namespace perun2
 
    _bool Contexts::varExists(const Token& tk, _p2& p2)
    {
+      const _str word = tk.toLowerString(p2);
       Variable<_bool>* b;
       Variable<_tim>* t;
       Variable<_per>* p;
@@ -351,7 +346,7 @@ namespace perun2
       Variable<_nlist>* nl;
       Variable<_list>* l;
 
-      return osGenerators.find(tk.value.word.h) != osGenerators.end()
+      return osGenerators.find(word) != osGenerators.end()
           || this->getVar(tk, b, p2)
           || this->getVar(tk, t, p2)
           || this->getVar(tk, p, p2)

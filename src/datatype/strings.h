@@ -16,10 +16,13 @@
 #define STRINGS_H_INCLUDED
 
 #include "chars.h"
+#include <vector>
 
 
 namespace perun2
 {
+
+struct Token;
 
 _str toStr(const _char ch);
 
@@ -44,6 +47,7 @@ extern const _list STRINGS_ASCII;
 
 _constexpr _char STRING_FILE_OPEN_MODE[] =       L"rtS, ccs=UTF-8";
 
+_constexpr _char EMPTY_STRING[] =                { };
 _constexpr _char STRING_NO_TIME[] =              L"no time";
 _constexpr _char STRING_NO_PERIOD[] =            L"no period";
 _constexpr _char STRING_NOTHING[] =              L"nothing";
@@ -299,6 +303,24 @@ _constexpr _char STRING_BREAK[] =                L"break";
 _constexpr _char STRING_CONTINUE[] =             L"continue";
 _constexpr _char STRING_EXIT[] =                 L"exit";
 _constexpr _char STRING_ERROR[] =                L"error";
+
+extern const _list STRINGS_ALIASES;
+extern const _list STRINGS_MONTHS;
+extern const _list STRINGS_WEEKDAYS;
+extern const _list STRINGS_PERIOD_SINGLE;
+extern const _list STRINGS_PERIOD_MULTI;
+extern const _list STRINGS_ATTR;
+extern const _list STRINGS_TIME_ATTR;
+extern const _list STRINGS_TIME_VAR;
+extern const _list STRINGS_ALTERABLE_ATTR;
+extern const _list STRINGS_VARS_IMMUTABLES;
+extern const _list STRINGS_FUNC_BOO_STR;
+extern const _list STRINGS_FUNC_NUM_NUM;
+extern const _list STRINGS_AGGRFUNC;
+extern const _list STRINGS_FUNC_STR_STR;
+extern const _list STRINGS_FUNC_STR_STR_NUM;
+extern const _list STRINGS_FUNC_STR_NUM;
+extern const _list STRINGS_FUNC_TIM_NUM;
 
 }
 

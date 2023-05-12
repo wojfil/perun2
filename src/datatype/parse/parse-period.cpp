@@ -20,7 +20,6 @@
 #include "../../brackets.h"
 #include "../../util.h"
 #include "../parse/parse-function.h"
-#include "../../hash.h"
 #include "../parse-gen.h"
 
 
@@ -111,12 +110,10 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool neg
       return false;
    }
 
-   const _hash h = last.value.word.h;
    const _num& num = first.value.num.n;
 
-   if (p2.hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != p2.hashes.HASH_GROUP_PERIOD_SINGLE.end())
-   {
-      const Period::PeriodUnit unit = p2.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
+   if (last.isWord(STRINGS_PERIOD_SINGLE, p2)) {
+      const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
       if (num.isDouble) {
          if (num.value.d == NDOUBLE_ONE) {
@@ -138,9 +135,8 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool neg
       }
    }
 
-   if (p2.hashes.HASH_GROUP_PERIOD_MULTI.find(h) != p2.hashes.HASH_GROUP_PERIOD_MULTI.end())
-   {
-      const Period::PeriodUnit unit = p2.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
+   if (last.isWord(STRINGS_PERIOD_MULTI, p2)) {
+      const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
       _tnum v = num.isDouble
          ? static_cast<_tnum>(num.value.d)
@@ -159,7 +155,7 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool neg
 
 _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _p2& p2)
 {
-   const _hash h = tks.last().value.word.h;
+   const Token& last = tks.last();
    Tokens tks2(tks);
    tks2.trimRight();
 
@@ -168,13 +164,12 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _p2& p2)
       return false;
    }
 
-   if (p2.hashes.HASH_GROUP_PERIOD_SINGLE.find(h) != p2.hashes.HASH_GROUP_PERIOD_SINGLE.end()) {
-      const Token& last = tks.last();
+   if (last.isWord(STRINGS_PERIOD_SINGLE, p2)) {
       throw SyntaxError::missingLetterS(last.getOriginString(p2), last.line);
    }
 
-   if (p2.hashes.HASH_GROUP_PERIOD_MULTI.find(h) != p2.hashes.HASH_GROUP_PERIOD_MULTI.end()) {
-      const Period::PeriodUnit& unit = p2.hashes.HASH_MAP_PERIOD_UNITS.find(h)->second;
+   if (last.isWord(STRINGS_PERIOD_MULTI, p2)) {
+      const Period::PeriodUnit& unit = toPeriodUnit(last, p2);
       result = std::make_unique<gen::PeriodUnit>(num, unit);
       return true;
    }
@@ -371,6 +366,29 @@ _bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, _p2& p2)
 
    result = std::make_unique<gen::PeriodSubtraction>(per1, per2);
    return true;
+}
+
+Period::PeriodUnit toPeriodUnit(const Token& tk, _p2& p2)
+{
+   if (tk.isWord(STRING_YEAR, p2) || tk.isWord(STRING_YEARS, p2))
+      return Period::u_Years;
+
+   if (tk.isWord(STRING_MONTH, p2) || tk.isWord(STRING_MONTHS, p2))
+      return Period::u_Months;
+
+   if (tk.isWord(STRING_WEEK, p2) || tk.isWord(STRING_WEEKS, p2))
+      return Period::u_Weeks;
+
+   if (tk.isWord(STRING_DAY, p2) || tk.isWord(STRING_DAYS, p2))
+      return Period::u_Days;
+
+   if (tk.isWord(STRING_HOUR, p2) || tk.isWord(STRING_HOURS, p2))
+      return Period::u_Hours;
+
+   if (tk.isWord(STRING_MINUTE, p2) || tk.isWord(STRING_MINUTES, p2))
+      return Period::u_Minutes;
+
+   return Period::u_Seconds;
 }
 
 }

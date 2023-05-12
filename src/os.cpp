@@ -115,14 +115,14 @@ void os_loadAttributes(FileContext& context)
    // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
       context.v_path->value = os_leftJoin(context.locContext->location->value, context.trimmed);
-      
+
       if (context.v_path->value.empty()) {
          os_loadEmptyAttributes(context);
 
          if (attribute->has(ATTR_EXTENSION)) {
             context.v_extension->value = os_extension(context.trimmed);
          }
-         
+
          if (attribute->has(ATTR_NAME)) {
             context.v_name->value = os_hasExtension(context.trimmed)
                ? os_name(context.trimmed)
@@ -529,13 +529,13 @@ _num os_depth(const _str& value)
    _nint result = NINT_ZERO;
 
    while (true) {
-      if (start2 + 2 < value.size() && value[start2] == CHAR_DOT 
+      if (start2 + 2 < value.size() && value[start2] == CHAR_DOT
          && value[start2 + 1] == OS_SEPARATOR)
       {
          start2 += 2;
       }
-      else if (start2 + 3 < value.size() && value[start2] == CHAR_DOT 
-         && value[start2 + 1] == CHAR_DOT && value[start2 + 2] == OS_SEPARATOR) 
+      else if (start2 + 3 < value.size() && value[start2] == CHAR_DOT
+         && value[start2 + 1] == CHAR_DOT && value[start2 + 2] == OS_SEPARATOR)
       {
          start2 += 3;
          result--;
@@ -1595,7 +1595,7 @@ _str os_retreatedPath(const _str& path, _int retreats)
          }
       }
    }
-   
+
    return retreats == 0
       ? path.substr(0, i)
       : _str();
@@ -1626,13 +1626,13 @@ _str os_leftJoin(const _str& path1, const _str& path2)
    _int retreats = 0;
 
    while (true) {
-      if (start2 + 2 <= path2.size() && path2[start2] == CHAR_DOT 
+      if (start2 + 2 <= path2.size() && path2[start2] == CHAR_DOT
          && path2[start2 + 1] == OS_SEPARATOR)
       {
          start2 += 2;
       }
-      else if (start2 + 3 <= path2.size() && path2[start2] == CHAR_DOT 
-         && path2[start2 + 1] == CHAR_DOT && path2[start2 + 2] == OS_SEPARATOR) 
+      else if (start2 + 3 <= path2.size() && path2[start2] == CHAR_DOT
+         && path2[start2 + 1] == CHAR_DOT && path2[start2 + 2] == OS_SEPARATOR)
       {
          start2 += 3;
          retreats++;
@@ -1660,7 +1660,7 @@ _str os_leftJoin(const _str& path1, const _str& path2)
    return str(base, OS_SEPARATOR, path2.substr(start2));
 }
 
-static _str os_retreatEndingDots(const _str& path, _int retreats) 
+static _str os_retreatEndingDots(const _str& path, _int retreats)
 {
    _int end = path.size() - 1;
    _int recent = end;
@@ -1692,11 +1692,11 @@ static _str os_retreatEndingDots(const _str& path, _int retreats)
    }
 
    if ((path.size() >= 3 && path[0] == CHAR_DOT && path[1] == CHAR_DOT && path[2] == OS_SEPARATOR)
-      || (path.size() == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT)) 
+      || (path.size() == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT))
    {
       retreats++;
    }
-   else if ((path.size() == 1 && path[0] == CHAR_DOT) 
+   else if ((path.size() == 1 && path[0] == CHAR_DOT)
       || (path.size() >= 2 && path[0] == CHAR_DOT  && path[1] == OS_SEPARATOR)) { }
    else {
       if (retreats > 0) {
@@ -1713,7 +1713,7 @@ static _str os_retreatEndingDots(const _str& path, _int retreats)
    else if (retreats == 0) {
       return os_isAbsolute(path) ? _str() : toStr(CHAR_DOT);
    }
-   
+
    if (os_isAbsolute(path)) {
       return _str();
    }
@@ -1757,7 +1757,7 @@ _str os_join(const _str& path1, const _str& path2)
    if (p1.size() == 1 && p1[0] == CHAR_DOT || os_isAbsolute(p2)) {
       return p2;
    }
-   
+
    if (p2.size() == 1 && p2[0] == CHAR_DOT) {
       return p1;
    }
@@ -1863,7 +1863,7 @@ _bool os_isAncestor(const _str& path, const _str& supposedChildPath)
    }
 
    for (_size i = 0; i < path.size(); i++) {
-      if (!charsEqualInsensitive(&path[i], &supposedChildPath[i])) {
+      if (!charsEqualInsensitive(path[i], supposedChildPath[i])) {
          return false;
       }
    }

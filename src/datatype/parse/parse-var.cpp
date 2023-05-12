@@ -22,41 +22,39 @@ namespace perun2::parse
 
    _bool makeVarRefAsFunction(const Token& tk, _genptr<_bool>& result, _p2& p2)
    {
-      const _hash h = tk.value.word.h;
-
-      if (h == p2.hashes.HASH_ARCHIVE) {
+      if (tk.isWord(STRING_ARCHIVE, p2)) {
          result = std::make_unique<func::F_Attr_Archive>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_COMPRESSED) {
+      else if (tk.isWord(STRING_COMPRESSED, p2)) {
          result = std::make_unique<func::F_Attr_Compressed>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_EMPTY) {
+      else if (tk.isWord(STRING_EMPTY, p2)) {
          result = std::make_unique<func::F_Attr_Empty>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_EXISTS) {
+      else if (tk.isWord(STRING_EXISTS, p2)) {
          result = std::make_unique<func::F_Attr_Exists>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_ENCRYPTED) {
+      else if (tk.isWord(STRING_ENCRYPTED, p2)) {
          result = std::make_unique<func::F_Attr_Encrypted>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_HIDDEN) {
+      else if (tk.isWord(STRING_HIDDEN, p2)) {
          result = std::make_unique<func::F_Attr_Hidden>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_ISDIRECTORY) {
+      else if (tk.isWord(STRING_ISDIRECTORY, p2)) {
          result = std::make_unique<func::F_Attr_IsDirectory>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_ISFILE) {
+      else if (tk.isWord(STRING_ISFILE, p2)) {
          result = std::make_unique<func::F_Attr_IsFile>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_READONLY) {
+      else if (tk.isWord(STRING_READONLY, p2)) {
          result = std::make_unique<func::F_Attr_Readonly>(p2);
          return true;
       }
@@ -66,8 +64,7 @@ namespace perun2::parse
 
    _bool makeVarRefAsFunction(const Token& tk, _genptr<_num>& result, _p2& p2)
    {
-      const _hash h = tk.value.word.h;
-      if (h == p2.hashes.HASH_SIZE) {
+      if (tk.isWord(STRING_SIZE, p2)) {
          result = std::make_unique<func::F_Attr_Size>(p2);
          return true;
       }
@@ -77,8 +74,7 @@ namespace perun2::parse
 
    _bool makeVarRefAsFunction(const Token& tk, _genptr<_per>& result, _p2& p2)
    {
-      const _hash h = tk.value.word.h;
-      if (h == p2.hashes.HASH_LIFETIME) {
+      if (tk.isWord(STRING_LIFETIME, p2)) {
          result = std::make_unique<func::F_Attr_Lifetime>(p2);
          return true;
       }
@@ -88,21 +84,19 @@ namespace perun2::parse
 
    _bool makeVarRefAsFunction(const Token& tk, _genptr<_tim>& result, _p2& p2)
    {
-      const _hash h = tk.value.word.h;
-
-      if (h == p2.hashes.HASH_ACCESS) {
+      if (tk.isWord(STRING_ACCESS, p2)) {
          result = std::make_unique<func::F_Attr_Access>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_CHANGE) {
+      else if (tk.isWord(STRING_CHANGE, p2)) {
          result = std::make_unique<func::F_Attr_Change>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_CREATION) {
+      else if (tk.isWord(STRING_CREATION, p2)) {
          result = std::make_unique<func::F_Attr_Creation>(p2);
          return true;
       }
-      else if (h == p2.hashes.HASH_MODIFICATION) {
+      else if (tk.isWord(STRING_MODIFICATION, p2)) {
          result = std::make_unique<func::F_Attr_Modification>(p2);
          return true;
       }
@@ -112,7 +106,7 @@ namespace perun2::parse
 
    _bool makeVarRef(const Token& tk, _defptr& result, _p2& p2)
    {
-      const _hash var = tk.value.word.h;
+      _str var = tk.toLowerString(p2);
       auto v = p2.contexts.osGenerators.find(var);
 
       if (v != p2.contexts.osGenerators.end()) {

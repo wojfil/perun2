@@ -15,7 +15,6 @@
 #include "lexer.h"
 #include "exception.h"
 #include "brackets.h"
-#include "hash.h"
 #include <cwctype>
 #include <iostream>
 #include <sstream>
@@ -337,21 +336,21 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    switch (dots) {
       case 0: {
          _str word = code.substr(start, length);
-         const _hash hsh = caseInsensitiveHash(word);
+         toLower(word);
 
-         auto fm = p2.hashes.HASH_MAP_MONTHS.find(hsh);
-         if (fm != p2.hashes.HASH_MAP_MONTHS.end()) {
+         auto fm = p2.keywordsData.MONTHS.find(word);
+         if (fm != p2.keywordsData.MONTHS.end()) {
             return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, p2);
          }
 
-         auto fw = p2.hashes.HASH_MAP_WEEKDAYS.find(hsh);
-         if (fw != p2.hashes.HASH_MAP_WEEKDAYS.end()) {
+         auto fw = p2.keywordsData.WEEKDAYS.find(word);
+         if (fw != p2.keywordsData.WEEKDAYS.end()) {
             return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, p2);
          }
 
-         auto fk = p2.keywordsData.KEYWORDS.find(hsh);
+         auto fk = p2.keywordsData.KEYWORDS.find(word);
          if (fk == p2.keywordsData.KEYWORDS.end()) {
-            return Token(hsh, line, start, length, p2);
+            return Token(line, start, length, p2);
          }
          else {
             return Token(fk->second, line, start, length, p2);
@@ -371,10 +370,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
 
          _str os1 = code.substr(start, pnt - start);
          _str os2 = code.substr(pnt + 1, start + length - pnt - 1);
-         const _hash h1 = caseInsensitiveHash(os1);
-         const _hash h2 = caseInsensitiveHash(os2);
 
-         return Token(h1, h2, line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
+         return Token(line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
       }
       default: {
          throw SyntaxError::multipleDotsInWord(code.substr(start, length), line);

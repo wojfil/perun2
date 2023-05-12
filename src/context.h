@@ -28,13 +28,12 @@
 namespace perun2
 {
    struct _p2;
-   struct Hashes;
 
    template <typename T>
    using _varptr = std::unique_ptr<Variable<T>>;
 
    template <typename T>
-   using _varptrs = std::unordered_map<_hash, _varptr<T>>;
+   using _varptrs = std::unordered_map<_str, _varptr<T>>;
 
 
    struct VarsContext
@@ -51,7 +50,7 @@ namespace perun2
       void takeVarsPtr(_varptrs<_list>*& result) { result = &this->lists; };
 
       template <typename T>
-      _bool takeVar(const _hash var, Variable<T>*& result)
+      _bool takeVar(const _str& var, Variable<T>*& result)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -65,7 +64,7 @@ namespace perun2
       }
 
       template <typename T>
-      Variable<T>* insertVar(const _hash var, const VarType type)
+      Variable<T>* insertVar(const _str& var, const VarType type)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -157,9 +156,9 @@ namespace perun2
       void initVars(_p2& p2);
 
       template <typename T>
-      Variable<T>* insertVar(const _hash hsh)
+      Variable<T>* insertVar(const _str& name)
       {
-         return this->fileVars.insertVar<T>(hsh, VarType::vt_Attribute);
+         return this->fileVars.insertVar<T>(name, VarType::vt_Attribute);
       }
    };
 
@@ -181,11 +180,11 @@ namespace perun2
    public:
       GlobalContext() = delete;
       GlobalContext(_p2& p2);
-      
+
       template <typename T>
-      void insertConstant(const _hash hsh)
+      void insertConstant(const _str& name)
       {
-         Variable<T>* v = this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
+         Variable<T>* v = this->globalVars.insertVar<T>(name, VarType::vt_Special);
          v->isConstant_ = true;
       }
 
@@ -193,9 +192,9 @@ namespace perun2
 
    private:
       template <typename T>
-      Variable<T>* insertVar(const _hash hsh)
+      Variable<T>* insertVar(const _str& name)
       {
-         return this->globalVars.insertVar<T>(hsh, VarType::vt_Special);
+         return this->globalVars.insertVar<T>(name, VarType::vt_Special);
       }
    };
 
@@ -259,40 +258,37 @@ namespace perun2
       void closeDeepAttributeScope();
 
       _varptr<_bool> success;
-      std::unordered_map<_hash, gen::DefinitionGenerator> osGenerators;
+      std::unordered_map<_str, gen::DefinitionGenerator> osGenerators;
 
    private:
-      const Hashes& hashes;
 
       template <typename T>
       _bool findVar(const Token& tk, Variable<T>*& result, _p2& p2)
       {
-         const _hash var = tk.value.word.h;
+         const _str name = tk.toLowerString(p2);
 
          // look in global variables
-         if (this->globalVars.takeVar(var, result)) {
-            p2.cache.actualize(var);
+         if (this->globalVars.takeVar(name, result)) {
+            p2.cache.actualize(tk);
             return true;
          }
 
          // look in user variables
          for (UserVarsContext* uvc : this->userVarsContexts) {
-            if (uvc->userVars.takeVar(var, result)) {
+            if (uvc->userVars.takeVar(name, result)) {
                return true;
             }
          }
 
          // look in file attributes
-         auto fw = this->hashes.HASH_GROUP_ATTR.find(var);
-
-         if (fw != this->hashes.HASH_GROUP_ATTR.end()) {
+         if (tk.isWord(STRINGS_ATTR, p2)) {
             if (this->fileContexts.empty()) {
                throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             }
 
             FileContext* lastFileCtx = this->fileContexts.back();
-            if (lastFileCtx->fileVars.takeVar(var, result)) {
-               lastFileCtx->attribute->add(var);
+            if (lastFileCtx->fileVars.takeVar(name, result)) {
+               lastFileCtx->attribute->add(tk);
                return true;
             }
          }
@@ -300,7 +296,7 @@ namespace perun2
          return false;
       }
 
-      void addOsGen(const _hash hash, const gen::OsElement element, _p2& p2);
+      void addOsGen(const _str& name, const gen::OsElement element, _p2& p2);
 
       LocationContext rootLocation;
 

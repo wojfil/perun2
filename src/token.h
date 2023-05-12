@@ -15,7 +15,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include <string>
+#include <unordered_set>
 #include "datatype/datatype.h"
 #include "keyword.h"
 
@@ -91,7 +91,6 @@ union TokenValue
    // word - variable name, function name
    struct
    {
-      _hash h;  // h  = hash of string
       _osi os;
    } word;
 
@@ -105,8 +104,6 @@ union TokenValue
    // two words - time variable member (creation.year)
    struct
    {
-      _hash h1;
-      _hash h2;
       _osi os1;
       _osi os2;
    } twoWords;
@@ -118,10 +115,9 @@ union TokenValue
    TokenValue(const _num& n, const _size os_id, const _size os_len, const NumberMode nm);
    TokenValue(const _size os_id, const _size os_len);
    TokenValue(const _size os_id, const _size os_len, const _int id);
-   TokenValue(const _hash h, const _size os_id, const _size os_len);
+   TokenValue(const _size os_id, const _size os_len, const _size len2);
    TokenValue(const Keyword k, const _size os_id, const _size os_len);
-   TokenValue(const _hash h1, const _hash h2, const _size os_id1, 
-      const _size os_len1, const _size os_id2, const _size os_len2);
+   TokenValue(const _size os_id1, const _size os_len1, const _size os_id2, const _size os_len2);
 };
 
 
@@ -143,20 +139,31 @@ public:
    Token() = delete;
    Token(const _char v, const _int li, _p2& p2);
    Token(const _char v, const _int am, const _int li, _p2& p2);
-   Token(const _num& v, const _int li, const _size os_id, const _size os_len,
-      const NumberMode nm, _p2& p2);
+   Token(const _num& v, const _int li, const _size os_id, const _size os_len, const NumberMode nm, _p2& p2);
    Token(const _size os_id, const _size os_len, const _int li, _p2& p2);
    Token(const _size os_id, const _size os_len, const _int id, const _int li, _p2& p2);
-   Token(const _hash v, const _int li, const _size os_id, const _size os_len, _p2& p2);
+   Token(const _int li, const _size os_id, const _size os_len, _p2& p2);
    Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _p2& p2);
-   Token(const _hash v1, const _hash v2, const _int li, const _size os_id1, const _size os_len1,
-      const _size os_id2, const _size os_len2, _p2& p2);
+   Token(const _int li, const _size os_id1, const _size os_len1, const _size os_id2, const _size os_len2, _p2& p2);
 
    _bool isCommandKeyword() const;
    _bool isFilterKeyword() const;
    _bool isExpForbiddenKeyword() const;
    _bool isSymbol(const _char ch) const;
    _bool isKeyword(const Keyword kw) const;
+
+   // is single word (CREATION)
+   _bool isWord(const _char (&word)[], _p2& p2) const;
+   _bool isWord(const std::vector<_str>& words, _p2& p2) const;
+
+   // is first word of two (CREATION.year)
+   _bool isFirstWord(const _char (&word)[], _p2& p2) const;
+   _bool isFirstWord(const std::vector<_str>& words, _p2& p2) const;
+
+   // is second word of two (creation.YEAR)
+   _bool isSecondWord(const _char (&word)[], _p2& p2) const;
+   _bool isSecondWord(const std::vector<_str>& words, _p2& p2) const;
+
    _bool isNegatableKeywordOperator() const;
    _bool isLogicConstant() const;
    _bool isWeekDay() const;
@@ -165,6 +172,7 @@ public:
    _bool isTimeAttribute(_p2& p2) const;
    _str getOriginString(_p2& p2) const;
    _str getOriginString_2(_p2& p2) const;
+   _str toLowerString(_p2& p2) const;
 
    const Type type;
    const _int line;
@@ -172,8 +180,11 @@ public:
    
 private:
    _str getCodeSubstr(const _osi& osi, _p2& p2) const;
+   _bool isCodeSubstr(const _char (&word)[], const _osi& osi, _p2& p2) const;
+   _bool isCodeSubstr(const _str& word, const _osi& osi, _p2& p2) const;
 
 };
+
 
 }
 

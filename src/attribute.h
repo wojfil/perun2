@@ -15,7 +15,6 @@
 #ifndef ATTRIB_H
 #define ATTRIB_H
 
-#include "hash.h"
 #include "token.h"
 #include <memory>
 
@@ -62,8 +61,8 @@ public:
    Attribute(_p2& p2);
    Attribute(const _aunit val, _p2& p2);
 
-   void add(const _hash val);
-   inline void set(const _aunit v);
+   void add(const Token& tk);
+   void set(const _aunit v);
    void setCoreCommandBase();
    void setTimeCommandBase();
    _bool has(const _aunit v) const;

@@ -13,7 +13,6 @@
 */
 
 #include "gen-like.h"
-#include "../../hash.h"
 #include "../strings.h"
 #include <set>
 #include <cwctype>
@@ -424,23 +423,22 @@ _bool LikeConst::getValue()
 
 
 Like::Like(_genptr<_str>& val, _genptr<_str>& pat)
-   : value(std::move(val)), pattern(std::move(pat)) { };
+   : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue()) { };
 
 
-// if the pattern of the operator LIKE is not a string literal
+// if the pattern of the operator LIKE is not a constan value (string literal, etc.)
 // we have to generate a new pattern string for every its call
 // usually, the pattern does not change
-// so, for every call, generate a pattern string and its hash
-// if the hash is the same as hash from the previously used pattern
-// then just use previous pattern comparer
+// so, for every call, generate a pattern string
+// if the same as the previous one
+// then use previously created pattern comparer
 _bool Like::getValue() 
 {
    const _str pat = pattern->getValue();
-   const _hash hsh = caseSensitiveHash(pat);
 
-   if (hsh != prevHash) {
+   if (pat != prevPattern) {
       parseLikeCmp(comparer, pat);
-      prevHash = hsh;
+      prevPattern = pat;
    }
 
    return comparer->compareToPattern(value->getValue());

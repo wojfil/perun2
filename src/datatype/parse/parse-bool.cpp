@@ -81,11 +81,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
       }
    }
 
-   if (parseTernary<_bool>(result, tks, p2)) {
-      return true;
-   }
-
-   return false;
+   return parseTernary<_bool>(result, tks, p2);
 }
 
 

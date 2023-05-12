@@ -94,11 +94,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _p2& p2)
       }
    }
 
-   if (parseBinary<_per>(result, tks, p2) || parseTernary<_per>(result, tks, p2)) {
-      return true;
-   }
-
-   return false;
+   return parseBinary<_per>(result, tks, p2) || parseTernary<_per>(result, tks, p2);
 }
 
 _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool negated, _p2& p2)

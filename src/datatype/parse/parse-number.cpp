@@ -149,12 +149,8 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, _p2& p2)
          return true;
       }
    }
-
-   if (parseBinary<_num>(result, tks, p2) || parseTernary<_num>(result, tks, p2)) {
-      return true;
-   }
-
-   return false;
+   
+   return parseBinary<_num>(result, tks, p2) || parseTernary<_num>(result, tks, p2);
 }
 
 

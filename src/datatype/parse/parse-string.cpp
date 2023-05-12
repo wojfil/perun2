@@ -79,11 +79,7 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, _p2& p2)
       }
    }
 
-   if (parseBinary<_str>(result, tks, p2) || parseTernary<_str>(result, tks, p2)) {
-      return true;
-   }
-
-   return false;
+   return parseBinary<_str>(result, tks, p2) || parseTernary<_str>(result, tks, p2);
 }
 
 template <typename T>

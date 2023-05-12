@@ -87,11 +87,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
       }
    }
 
-   if (parseTernary<_tim>(result, tks, p2)) {
-      return true;
-   }
-
-   return false;
+   return parseTernary<_tim>(result, tks, p2);
 }
 
 _bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _p2& p2)

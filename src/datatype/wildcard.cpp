@@ -106,7 +106,7 @@ WildcardCharState SimpleWildcardComparer::checkState(const _size n, const _size 
          ans = std::max(ans, this->checkState(n - 1, m));
       }
    }
-   else if (n > 0 && (this->pattern[m - 1] == (*this->valuePtr)[n - 1])) {
+   else if (n > 0 && charsEqualInsensitive(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
       ans = std::max(ans, this->checkState(n - 1, m - 1));
    }
 

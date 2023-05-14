@@ -107,8 +107,7 @@ _str RunBase::getLocation()
 
 void C_Run::run()
 {
-   _str command = this->value->getValue();
-   os_rawTrim(command);
+   _str command = os_trim(this->value->getValue());
 
    if (command.empty()) {
       this->perun2.logger.log(L"Failed to run an empty command");
@@ -130,8 +129,7 @@ void C_Run::run()
 
 void C_RunWith::run()
 {
-   _str base = value->getValue();
-   os_rawTrim(base);
+   _str base = os_trim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -154,8 +152,7 @@ void C_RunWith::run()
 
 void C_RunWithWithString::run()
 {
-   _str base = value->getValue();
-   os_rawTrim(base);
+   _str base = os_trim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -181,8 +178,7 @@ void C_RunWithWithString::run()
 
 void C_RunWithWith::run()
 {
-   _str base = value->getValue();
-   os_rawTrim(base);
+   _str base = os_trim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");

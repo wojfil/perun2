@@ -1320,7 +1320,9 @@ _bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();
 
-   if (length == 0 || (length >= 2 && path[length - 2] != CHAR_DOT && path[length - 1] == CHAR_DOT)) {
+   if (length == 0 || (length >= 2&& path[length - 1] == CHAR_DOT 
+      && !(path[length - 2] == CHAR_DOT || path[length - 2] == OS_SEPARATOR))) 
+   {
       return true;
    }
 
@@ -1418,60 +1420,64 @@ _str os_trim(const _str& path)
 {
    const _int len = path.size();
    _int start = 0;
+   _bool anyDot = false;
 
-   while (len >= (start + 2) && path[start] == CHAR_DOT
-    && (path[start + 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
-   {
-      start += 2;
-   }
-
-   while (start < len) {
-      switch (path[start]) {
-         case OS_WRONG_SEPARATOR:
-         case OS_SEPARATOR:
-         case CHAR_SPACE: {
-            break;
-         }
-         default: {
-            goto exitStart;
+   while (true) {
+      if (len >= (start + 2) && path[start] == CHAR_DOT
+         && (path[start + 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
+      {
+         anyDot = true;
+         start += 2;
+      }
+      else if (start < len) {
+         switch (path[start]) {
+            case OS_WRONG_SEPARATOR:
+            case OS_SEPARATOR:
+            case CHAR_SPACE: {
+               start++;
+               break;
+            }
+            default: {
+               goto exitStart;
+            }
          }
       }
-      start++;
+      else {
+         break;
+      }
    }
 
 exitStart:
 
-   while (len >= (start + 2) && path[start] == CHAR_DOT
-    && (path[start + 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
-   {
-      start += 2;
-   }
-
-   switch (len - start) {
-      case 0: {
-         return _str();
-      }
-      case 1: {
-         _str result = path.substr(len - 1, 1);
-         os_escapeQuote(result);
-         return result;
-      }
+   if (start == len) {
+      return anyDot ? toStr(CHAR_DOT) : _str();
    }
 
    _int end = len - 1;
 
-   while (end >= 0) {
-      switch (path[end]) {
-         case OS_WRONG_SEPARATOR:
-         case OS_SEPARATOR:
-         case CHAR_SPACE: {
-            break;
-         }
-         default: {
-            goto exitEnd;
+   while (true) {
+      if (end >= 1 && path[end] == CHAR_DOT
+       && (path[end - 1] == OS_SEPARATOR || path[end - 1] == OS_WRONG_SEPARATOR)) 
+      {
+         end -= 2;
+      }
+      else if (end >= 0) {
+         switch (path[end]) {
+            case OS_WRONG_SEPARATOR:
+            case OS_SEPARATOR:
+            case CHAR_SPACE: {
+               end--;
+               break;
+            }
+            default: {
+               goto exitEnd;
+            }
          }
       }
-      end--;
+      else {
+         break;
+      }
+
    }
 
 exitEnd:
@@ -1492,87 +1498,8 @@ exitEnd:
    std::replace(result.begin(), result.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
    result.erase(std::unique(result.begin(), result.end(), os_bothAreSeparators), result.end());
    os_escapeQuote(result);
+
    return result;
-}
-
-void os_rawTrim(_str& value)
-{
-   const _int len = value.size();
-   _int start = 0;
-
-   while (len >= (start + 2) && value[start] == CHAR_DOT
-    && (value[start + 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
-   {
-      start += 2;
-   }
-
-   while (start < len) {
-      switch (value[start]) {
-         case OS_WRONG_SEPARATOR:
-         case OS_SEPARATOR:
-         case CHAR_SPACE: {
-            break;
-         }
-         default: {
-            goto r_exitStart;
-         }
-      }
-      start++;
-   }
-
-r_exitStart:
-
-   while (len >= (start + 2) && value[start] == CHAR_DOT
-    && (value[start + 1] == OS_SEPARATOR || value[start + 1] == OS_WRONG_SEPARATOR))
-   {
-      start += 2;
-   }
-
-   switch (len - start) {
-      case 0: {
-         value = _str();
-         return;
-      }
-      case 1: {
-         value = value.substr(len - 1, 1);
-         return;
-      }
-   }
-
-   _str result;
-   _int end = len - 1;
-
-   while (end >= 0) {
-      switch (value[end]) {
-         case OS_WRONG_SEPARATOR:
-         case OS_SEPARATOR:
-         case CHAR_SPACE: {
-            break;
-         }
-         default: {
-            goto r_exitEnd;
-         }
-      }
-      end--;
-   }
-
-r_exitEnd:
-
-   if (start == 0) {
-      if (end != len - 1) {
-         value = value.substr(0, end + 1);
-      }
-   }
-   else {
-      if (end == len - 1) {
-         value = value.substr(start);
-      }
-      else {
-         value = value.substr(start, end - start + 1);
-      }
-   }
-
-   return;
 }
 
 inline void os_escapeQuote(_str& path)
@@ -1583,22 +1510,130 @@ inline void os_escapeQuote(_str& path)
    }
 }
 
-_str os_retreatedPath(const _str& path, _int retreats)
+_bool os_retreatPath(_str& path)
 {
-   _int i = path.size() - 1;
+   if (path.empty()) {
+      return false;
+   }
 
-   for (; i >= 0; i--) {
+   for (_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == OS_SEPARATOR) {
-         retreats--;
-         if (retreats == 0) {
-            break;
-         }
+         path.resize(i);
+         return true;
       }
    }
 
-   return retreats == 0
-      ? path.substr(0, i)
-      : _str();
+   path.clear();
+   return true;
+}
+
+_bool os_appendPath(_str& result, const _str& path)
+{
+   if (path.empty()) {
+      result.clear();
+      return false;
+   }
+
+   _int prevId = 0;
+   _int retreats = 0;
+   _int i = 0;
+   _bool thereWereRetreats = false;
+   const _bool wasAbsolute = os_isAbsolute(result);
+
+   if (os_isAbsolute(path)) {
+      result = path.substr(0, 2);
+      i = path.size() == 2 ? 2 : 3;
+      prevId = i;
+   }
+
+   for (; i < path.size(); i++) {
+      const _char ch = path[i];
+
+      if (path[i] == OS_SEPARATOR) {
+         const _int len = i - prevId;
+         if (len == 1 && path[prevId] == CHAR_DOT) {
+            prevId = i + 1;
+            continue;
+         }
+         else if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
+            if (retreats == 0) {
+               if (!os_retreatPath(result)) {
+                  retreats++;
+                  thereWereRetreats = true;
+               }
+            }
+            else {
+               retreats++;
+            }
+         }
+         else {
+            if (retreats == 0) {
+               if (!result.empty()) {
+                  result += OS_SEPARATOR;
+               }
+               result += path.substr(prevId, len);
+            }
+            else {
+               retreats--; if (retreats == 0) { result = path.substr(prevId, len); }
+            }
+         }
+
+         prevId = i + 1;
+      }
+   }
+
+   const _int len = path.size() - prevId;
+
+   if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
+      if (retreats == 0) {
+         if (!os_retreatPath(result)) {
+            retreats++;
+            thereWereRetreats = true;
+         }
+      }
+      else {
+         retreats++;
+      }
+   }
+   else if (!(len == 1 && path[prevId] == CHAR_DOT)) {
+      if (retreats == 0) {
+         if (!result.empty()) {
+            result += OS_SEPARATOR;
+         }
+         result += path.substr(prevId, len);
+      }
+      else {
+         retreats--; if (retreats == 0) { result = path.substr(prevId, len); }
+      }
+   }
+
+   if (wasAbsolute && thereWereRetreats) {
+      result.clear();
+      return false;
+   }
+
+   if (retreats > 0) {
+      result.clear();
+      result.reserve(retreats * 3 - 1);
+      result.push_back(CHAR_DOT);
+      result.push_back(CHAR_DOT);
+
+      while (retreats > 1) {
+         result.push_back(OS_SEPARATOR);
+         result.push_back(CHAR_DOT);
+         result.push_back(CHAR_DOT);
+         retreats--;
+      }
+
+      return false;
+   }
+
+   if (result.empty()) {
+      result += CHAR_DOT;
+      return false;
+   }
+
+   return !thereWereRetreats;
 }
 
 _str os_softJoin(const _str& path1, const _str& path2)
@@ -1610,127 +1645,12 @@ _str os_softJoin(const _str& path1, const _str& path2)
 
 _str os_leftJoin(const _str& path1, const _str& path2)
 {
-   if (path2.size() == 1 && path2[0] == CHAR_DOT) {
-      return path1;
+   _str result = path1;
+   if (os_appendPath(result, path2)) {
+      return result;
    }
 
-   if (path2.size() == 2 && path2[0] == CHAR_DOT && path2[1] == CHAR_DOT) {
-      return os_retreatedPath(path1, 1);
-   }
-
-   if (os_isAbsolute(path2)) {
-      return path2;
-   }
-
-   _size start2 = 0;
-   _int retreats = 0;
-
-   while (true) {
-      if (start2 + 2 <= path2.size() && path2[start2] == CHAR_DOT
-         && path2[start2 + 1] == OS_SEPARATOR)
-      {
-         start2 += 2;
-      }
-      else if (start2 + 3 <= path2.size() && path2[start2] == CHAR_DOT
-         && path2[start2 + 1] == CHAR_DOT && path2[start2 + 2] == OS_SEPARATOR)
-      {
-         start2 += 3;
-         retreats++;
-      }
-      else {
-         break;
-      }
-   }
-
-   if (start2 + 2 <= path2.size() && path2[start2] == CHAR_DOT && path2[start2 + 1] == CHAR_DOT) {
-      start2 += 2;
-      retreats++;
-   }
-
-   if (retreats == 0) {
-      return str(path1, OS_SEPARATOR, path2);
-   }
-
-   const _str base = os_retreatedPath(path1, retreats);
-
-   if (base.empty()) {
-      return base;
-   }
-
-   return str(base, OS_SEPARATOR, path2.substr(start2));
-}
-
-static _str os_retreatEndingDots(const _str& path, _int retreats)
-{
-   _int end = path.size() - 1;
-   _int recent = end;
-
-   while (end >= 0) {
-      if (end == 0 || path[end] == OS_SEPARATOR) {
-         if (recent - end == 2 && path[end + 1] == CHAR_DOT && path[end + 2] == CHAR_DOT) {
-            retreats++;
-         }
-         else if (recent - end == 1 && path[end + 1] == CHAR_DOT) {
-            // do nothing
-         }
-         else {
-            if (end > 0) {
-               retreats--;
-            }
-            if (retreats == -1) {
-               end = recent;
-               break;
-            }
-         }
-
-         if (end > 0) {
-            recent = end - 1;
-         }
-      }
-
-      end--;
-   }
-
-   if ((path.size() >= 3 && path[0] == CHAR_DOT && path[1] == CHAR_DOT && path[2] == OS_SEPARATOR)
-      || (path.size() == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT))
-   {
-      retreats++;
-   }
-   else if ((path.size() == 1 && path[0] == CHAR_DOT)
-      || (path.size() >= 2 && path[0] == CHAR_DOT  && path[1] == OS_SEPARATOR)) { }
-   else {
-      if (retreats > 0) {
-         retreats--;
-      }
-      else if (retreats == 0) {
-         return path.substr(0, recent + 1);
-      }
-   }
-
-   if (retreats == -1) {
-      return path.substr(0, end + 1);
-   }
-   else if (retreats == 0) {
-      return os_isAbsolute(path) ? _str() : toStr(CHAR_DOT);
-   }
-
-   if (os_isAbsolute(path)) {
-      return _str();
-   }
-
-   _str result;
-   result.reserve(retreats * 3 - 1);
-   result.push_back(CHAR_DOT);
-   result.push_back(CHAR_DOT);
-
-   while (retreats > 1) {
-      result.push_back(OS_SEPARATOR);
-      result.push_back(CHAR_DOT);
-      result.push_back(CHAR_DOT);
-      retreats--;
-   }
-
-   return result;
+   return _str();
 }
 
 _str os_join(const _str& path1, const _str& path2)
@@ -1739,56 +1659,9 @@ _str os_join(const _str& path1, const _str& path2)
       return _str();
    }
 
-   if (path2.size() == 1 && path2[0] == CHAR_DOT) {
-      return os_retreatEndingDots(path1, 0);
-   }
-
-   if (path2.size() == 2 && path2[0] == CHAR_DOT && path2[1] == CHAR_DOT) {
-      return os_retreatEndingDots(path1, 1);
-   }
-
-   const _str p1 = os_retreatEndingDots(path1, 0);
-   const _str p2 = os_retreatEndingDots(path2, 0);
-
-   if (p1.empty() || p2.empty()) {
-      return _str();
-   }
-
-   if (p1.size() == 1 && p1[0] == CHAR_DOT || os_isAbsolute(p2)) {
-      return p2;
-   }
-
-   if (p2.size() == 1 && p2[0] == CHAR_DOT) {
-      return p1;
-   }
-
-   if (p2.size() % 3 == 2) {
-      _bool rightPathHasOnlyDoubleDots = true;
-
-      for (_size i = 0; i < p2.size(); i++) {
-         if (p2[i] == CHAR_DOT) {
-            if (i % 3 == 2) {
-               rightPathHasOnlyDoubleDots = false;
-               break;
-            }
-         }
-         else if (p2[i] == OS_SEPARATOR) {
-            if (i % 3 != 2) {
-               rightPathHasOnlyDoubleDots = false;
-               break;
-            }
-         }
-         else {
-            rightPathHasOnlyDoubleDots = false;
-            break;
-         }
-      }
-      if (rightPathHasOnlyDoubleDots) {
-         return os_retreatEndingDots(path1, (p2.size() + 1) / 3);
-      }
-   }
-
-   return str(p1, OS_SEPARATOR, p2);
+   _str result;
+   os_appendPath(result, os_isAbsolute(path2) ? path2 : str(path1, OS_SEPARATOR,path2));
+   return result;
 }
 
 _bool os_isAbsolute(const _str& path)

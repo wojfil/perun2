@@ -113,10 +113,12 @@ uint32_t os_patternInfo(const _str& pattern);
 _bool os_bothAreSeparators(const _char left, const _char right);
 
 _str os_trim(const _str& path);
-void os_rawTrim(_str& value);
 inline void os_escapeQuote(_str& path);
 
-_str os_retreatedPath(const _str& path, _int retreats);
+_bool os_retreatPath(_str& path);
+
+// return true if the result is a 'true path' (has no .. nor .)
+_bool os_appendPath(_str& result, const _str& path);
 
 // paths do not contain . nor ..
 _str os_softJoin(const _str& path1, const _str& path2);

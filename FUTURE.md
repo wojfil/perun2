@@ -1,6 +1,6 @@
 # Future features
 
-New ideas for features. Especially for new keywords. Feel free to make a pull request.
+Ideas for new features. Especially for new keywords. Feel free to make a pull request.
 
 ## Limit by total size
 
@@ -40,12 +40,12 @@ The disc can contain only 74 minutes of music.
 See through the compressed archive files as if they are transparent.
 Making operations on compressed files may be not possible.
 However, this is not really important. Let us focus on just reading them.
-Right now there are four functions for directories: *anyInside()*, *countInside()*, *existInside()*, *existsInside()*.
-The first objective is to make them also work with archives.
+Directories have four designated functions for them: *anyInside()*, *countInside()*, *existInside()*, *existsInside()*.
+The first thing is to make them also work with archives.
 
 ```
 select '*.zip'
-  where anyInside('*.pdf' where creation = today)
+  where anyInside('*.pdf')
 ```
 
 ## Function *sizeInside()*
@@ -190,21 +190,6 @@ Brackets are optional (but recommended for readability).
 ```
 select '*.pdf'
   where name likeAny ('a_%', '__b__', 'c%')
-```
-
-## Double dot ..
-
-Access parent directory. What a shame that something so fundamental is not implemented in Perun2 yet.
-
-```
-copy files
-  to '../some/path'
-```
-
-Should work with Asterisk Patterns as well.
-
-```
-select '../../**.txt'
 ```
 
 ## Other logic gates: *nand*, *nor*, *xnor*

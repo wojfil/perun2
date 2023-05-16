@@ -24,7 +24,7 @@ _size unitLen(const _char value)
    return 1;
 }
 
-_size unitLen(_char (&value)[])
+_size unitLen(const _char (&value)[])
 {
    return wcslen(value);
 }

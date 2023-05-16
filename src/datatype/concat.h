@@ -21,7 +21,7 @@ namespace perun2
 {
 
 _size unitLen(const _char value);
-_size unitLen(_char (&value)[]);
+_size unitLen(const _char (&value)[]);
 _size unitLen(const _str& value);
 
 _size charsLen();

@@ -396,7 +396,7 @@ static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, con
             result = std::make_unique<C_Select_Definition>(def, p2);
          }
          else {
-            ctx->attribute->set(ATTR_PATH);
+            ctx->attribute->setCoreCommandBase();
             ctx->attribute->set(ATTR_PARENT);
             result = std::make_unique<C_Select_ContextDefinition>(def, p2, ctx);
          }

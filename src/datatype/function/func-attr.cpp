@@ -49,84 +49,28 @@ _str F_Path_1::getValue()
 
 _str F_Path_2::getValue()
 {
+   const _str v1 = os_trim(this->value_1->getValue());
    const _str v2 = os_trim(this->value_2->getValue());
-
-   if (os_isAbsolute(v2)) {
-      return v2;
-   }
-   else if (v2.empty()) {
-      return _str();
-   }
-   else {
-      const _str v1 = os_trim(this->value_1->getValue());
-      return os_join(v1, v2);
-   }
+   return os_join(v1, v2);
 }
 
 
 _str F_Path_3::getValue()
 {
+   const _str v1 = os_trim(this->value_1->getValue());
+   const _str v2 = os_trim(this->value_2->getValue());
    const _str v3 = os_trim(this->value_3->getValue());
-
-   if (os_isAbsolute(v3)) {
-      return v3;
-   }
-   else if (v3.empty()) {
-      return _str();
-   }
-   else {
-      const _str v2 = os_trim(this->value_2->getValue());
-
-      if (os_isAbsolute(v2)) {
-         return os_join(v2, v3);
-      }
-      else if (v2.empty()) {
-         return _str();
-      }
-      else {
-         const _str v1 = os_trim(this->value_1->getValue());
-         return os_join(os_join(v1, v2), v3);
-      }
-   }
+   return os_join(os_join(v1, v2), v3);
 }
 
 
 _str F_Path_4::getValue()
 {
+   const _str v1 = os_trim(this->value_1->getValue());
+   const _str v2 = os_trim(this->value_2->getValue());
+   const _str v3 = os_trim(this->value_3->getValue());
    const _str v4 = os_trim(this->value_4->getValue());
-
-   if (os_isAbsolute(v4)) {
-      return v4;
-   }
-   else if (v4.empty()) {
-      return _str();
-   }
-   else {
-      const _str v3 = os_trim(this->value_3->getValue());
-
-      if (os_isAbsolute(v3)) {
-         return os_join(v3, v4);
-      }
-      else if (v3.empty()) {
-         return _str();
-      }
-      else {
-         const _str v2 = os_trim(this->value_2->getValue());
-
-         if (os_isAbsolute(v2)) {
-            return os_join(os_join(v2, v3), v4);
-         }
-         else if (v2.empty()) {
-            return _str();
-         }
-         else {
-            const _str v1 = os_trim(this->value_1->getValue());
-            return v1.empty()
-               ? _str()
-               : os_join(os_join(os_join(v1, v2), v3), v4);
-         }
-      }
-   }
+   return os_join(os_join(os_join(v1, v2), v3), v4);
 }
 
 _str F_Path_Multi::getValue()
@@ -140,11 +84,12 @@ _str F_Path_Multi::getValue()
 
    while (index >= 0 && !os_isAbsolute(path)) {
       const _str p = os_trim(values[index]->getValue());
-      if (p.empty()) {
+      path = os_join(p, path);
+
+      if (path.empty()) {
          return _str();
       }
 
-      path = os_join(p, path);
       index--;
    }
 

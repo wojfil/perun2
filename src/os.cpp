@@ -112,22 +112,49 @@ void os_loadAttributes(FileContext& context)
       return;
    }
 
-   // we do not need access to the file system to get these values
+   // we do not need access to the file system to get these values below
+
    if (attribute->has(ATTR_PATH)) {
       context.v_path->value = os_leftJoin(context.locContext->location->value, context.trimmed);
 
+      _bool noPath = false;
+
       if (context.v_path->value.empty()) {
+         noPath = true;
+      }
+      else if (!os_isAbsolute(context.v_path->value)) {
+         noPath = true;
+         context.v_path->value.clear();
+      }
+
+      if (noPath) {
          os_loadEmptyAttributes(context);
 
+         if (attribute->has(ATTR_DEPTH)) {
+            context.v_depth->value = os_depth(context.trimmed);
+         }
+
+         const _str namePart = os_segmentWithName(context.trimmed);
+
+         if (namePart.empty()) {
+            return;
+         }
+
          if (attribute->has(ATTR_EXTENSION)) {
-            context.v_extension->value = os_extension(context.trimmed);
+            context.v_extension->value = os_extension(namePart);
          }
 
          if (attribute->has(ATTR_NAME)) {
-            context.v_name->value = os_hasExtension(context.trimmed)
-               ? os_name(context.trimmed)
-               : os_fullname(context.trimmed);
+            context.v_name->value = os_hasExtension(namePart)
+               ? os_name(namePart)
+               : os_fullname(namePart);
          }
+
+         if (attribute->has(ATTR_FULLNAME)) {
+            context.v_fullname->value = os_fullname(namePart);
+         }
+
+         return;
       }
    }
 
@@ -521,37 +548,42 @@ _tim os_creation(const _str& path)
 
 _num os_depth(const _str& value)
 {
-   if (value.size() == 2 && value[0] == CHAR_DOT && value[1] == CHAR_DOT) {
-      return NINT_MINUS_ONE;
+   if (value.empty()) {
+      return NINT_ZERO;
    }
 
-   _size start2 = 0;
-   _nint result = NINT_ZERO;
+   _nint depth = NINT_ZERO;
+   _int prevId = 0;
 
-   while (true) {
-      if (start2 + 2 < value.size() && value[start2] == CHAR_DOT
-         && value[start2 + 1] == OS_SEPARATOR)
-      {
-         start2 += 2;
-      }
-      else if (start2 + 3 < value.size() && value[start2] == CHAR_DOT
-         && value[start2 + 1] == CHAR_DOT && value[start2 + 2] == OS_SEPARATOR)
-      {
-         start2 += 3;
-         result--;
-      }
-      else {
-         break;
+   if (os_isAbsolute(value)) {
+      if (value.size() == 2) {
+         return NINT_ZERO;
       }
    }
 
-   for (_size i = start2; i < value.size(); i++) {
+   for (_int i = 0; i < value.size(); i++) {
       if (value[i] == OS_SEPARATOR) {
-         result++;
+         const _int len = i - prevId;
+
+         if (len == 1 && value[prevId] == CHAR_DOT) { }
+         else if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
+            depth--;
+         }
+         else {
+            depth++;
+         }
+
+         prevId = i + 1;
       }
    }
 
-   return result;
+   const _int len = value.size() - prevId;
+
+   if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
+      depth--;
+   }
+
+   return depth;
 }
 
 _str os_drive(const _str& path)
@@ -840,7 +872,7 @@ _bool os_directoryExists(const _str& path)
 
 //////
 ///
-// filesystem variables:
+// filesystem commands:
 ///
 /////
 
@@ -1142,7 +1174,7 @@ _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _p
    }
 
    const _bool success = os_copyToDirectory(oldPath, newPath, p2);
-   if (!success && !p2.state == State::s_Running && os_directoryExists(newPath)) {
+   if (!success && p2.isNotRunning() && os_directoryExists(newPath)) {
       // if directory copy operation
       // was stopped by the user
       // delete recent partially copied directory if it is there
@@ -1320,8 +1352,8 @@ _bool os_isInvaild(const _str& path)
 {
    const _size length = path.size();
 
-   if (length == 0 || (length >= 2&& path[length - 1] == CHAR_DOT 
-      && !(path[length - 2] == CHAR_DOT || path[length - 2] == OS_SEPARATOR))) 
+   if (length == 0 || (length >= 2&& path[length - 1] == CHAR_DOT
+      && !(path[length - 2] == CHAR_DOT || path[length - 2] == OS_SEPARATOR)))
    {
       return true;
    }
@@ -1457,7 +1489,7 @@ exitStart:
 
    while (true) {
       if (end >= 1 && path[end] == CHAR_DOT
-       && (path[end - 1] == OS_SEPARATOR || path[end - 1] == OS_WRONG_SEPARATOR)) 
+       && (path[end - 1] == OS_SEPARATOR || path[end - 1] == OS_WRONG_SEPARATOR))
       {
          end -= 2;
       }
@@ -1510,6 +1542,51 @@ inline void os_escapeQuote(_str& path)
    }
 }
 
+_str os_segmentWithName(const _str& path)
+{
+   _int prev = path.size() - 1;
+   _int level = 0;
+
+   for (_int i = path.size() - 1; i >= 0; i--) {
+      const _char ch = path[i];
+
+      if (ch == OS_SEPARATOR) {
+         const _int len = prev - i;
+
+         if (len == 2 && path[i + 1] == CHAR_DOT && path[i + 2] == CHAR_DOT) {
+            level--;
+         }
+         else if (len == 1 && path[i + 1] == CHAR_DOT) { }
+         else {
+            if (level == 0) {
+               return path.substr(0, prev + 1);
+            }
+            else {
+               level++;
+            }
+         }
+
+         prev = i - 1;
+      }
+   }
+
+   const _int len = prev + 1;
+
+
+   if (len == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT) {
+      return _str();
+   }
+   else if (len == 1 && path[0] == CHAR_DOT) {
+      return _str();
+   }
+
+   if (level < 0) {
+      return _str();
+   }
+
+   return path.substr(0, prev + 1);
+}
+
 _bool os_retreatPath(_str& path)
 {
    if (path.empty()) {
@@ -1527,7 +1604,7 @@ _bool os_retreatPath(_str& path)
    return true;
 }
 
-_bool os_appendPath(_str& result, const _str& path)
+_bool os_extendPath(_str& result, const _str& path)
 {
    if (path.empty()) {
       result.clear();
@@ -1538,11 +1615,17 @@ _bool os_appendPath(_str& result, const _str& path)
    _int retreats = 0;
    _int i = 0;
    _bool thereWereRetreats = false;
-   const _bool wasAbsolute = os_isAbsolute(result);
+   const _bool wasAbsolute = os_isAbsolute(path);
+   _bool wasEmpty = false;
 
    if (os_isAbsolute(path)) {
+      if (path.size() == 2) {
+         result = path;
+         return true;
+      }
+
       result = path.substr(0, 2);
-      i = path.size() == 2 ? 2 : 3;
+      i = 3;
       prevId = i;
    }
 
@@ -1556,26 +1639,20 @@ _bool os_appendPath(_str& result, const _str& path)
             continue;
          }
          else if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
-            if (retreats == 0) {
-               if (!os_retreatPath(result)) {
-                  retreats++;
-                  thereWereRetreats = true;
-               }
-            }
-            else {
+            if (!os_retreatPath(result)) {
                retreats++;
+               thereWereRetreats = true;
+            }
+
+            if (result.empty()) {
+               wasEmpty = true;
             }
          }
          else {
-            if (retreats == 0) {
-               if (!result.empty()) {
-                  result += OS_SEPARATOR;
-               }
-               result += path.substr(prevId, len);
+            if (!result.empty()) {
+               result += OS_SEPARATOR;
             }
-            else {
-               retreats--; if (retreats == 0) { result = path.substr(prevId, len); }
-            }
+            result += path.substr(prevId, len);
          }
 
          prevId = i + 1;
@@ -1585,46 +1662,43 @@ _bool os_appendPath(_str& result, const _str& path)
    const _int len = path.size() - prevId;
 
    if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
-      if (retreats == 0) {
-         if (!os_retreatPath(result)) {
-            retreats++;
-            thereWereRetreats = true;
-         }
-      }
-      else {
+      if (!os_retreatPath(result)) {
          retreats++;
+         thereWereRetreats = true;
+      }
+
+      if (result.empty()) {
+         wasEmpty = true;
       }
    }
    else if (!(len == 1 && path[prevId] == CHAR_DOT)) {
-      if (retreats == 0) {
-         if (!result.empty()) {
-            result += OS_SEPARATOR;
-         }
-         result += path.substr(prevId, len);
+      if (!result.empty()) {
+         result += OS_SEPARATOR;
       }
-      else {
-         retreats--; if (retreats == 0) { result = path.substr(prevId, len); }
-      }
+      result += path.substr(prevId, len);
    }
 
-   if (wasAbsolute && thereWereRetreats) {
+   if (wasAbsolute && (wasEmpty || thereWereRetreats)) {
       result.clear();
       return false;
    }
 
    if (retreats > 0) {
-      result.clear();
-      result.reserve(retreats * 3 - 1);
-      result.push_back(CHAR_DOT);
-      result.push_back(CHAR_DOT);
+      _str beginning;
+      beginning.reserve(retreats * 3 - 1);
+      beginning.push_back(CHAR_DOT);
+      beginning.push_back(CHAR_DOT);
 
       while (retreats > 1) {
-         result.push_back(OS_SEPARATOR);
-         result.push_back(CHAR_DOT);
-         result.push_back(CHAR_DOT);
+         beginning.push_back(OS_SEPARATOR);
+         beginning.push_back(CHAR_DOT);
+         beginning.push_back(CHAR_DOT);
          retreats--;
       }
 
+      result = result.empty()
+         ? str(beginning, result)
+         : str(beginning, OS_SEPARATOR, result);
       return false;
    }
 
@@ -1646,7 +1720,7 @@ _str os_softJoin(const _str& path1, const _str& path2)
 _str os_leftJoin(const _str& path1, const _str& path2)
 {
    _str result = path1;
-   if (os_appendPath(result, path2)) {
+   if (os_extendPath(result, path2)) {
       return result;
    }
 
@@ -1660,8 +1734,25 @@ _str os_join(const _str& path1, const _str& path2)
    }
 
    _str result;
-   os_appendPath(result, os_isAbsolute(path2) ? path2 : str(path1, OS_SEPARATOR,path2));
+   os_extendPath(result, os_isAbsolute(path2) ? path2 : str(path1, OS_SEPARATOR, path2));
    return result;
+}
+
+_bool os_endsWithDoubleDot(const _str& path)
+{
+   const _size len = path.size();
+
+   if (len == 2) {
+      return path[0] == CHAR_DOT && path[1] == CHAR_DOT;
+   }
+
+   if (len < 2) {
+      return false;
+   }
+
+   return path[len - 1] == CHAR_DOT
+       && path[len - 2] == CHAR_DOT
+       && path[len - 3] == OS_SEPARATOR;
 }
 
 _bool os_isAbsolute(const _str& path)

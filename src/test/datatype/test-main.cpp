@@ -29,7 +29,7 @@
 
 using namespace perun2;
 
-_int wmain(_int argc, _char* argv[], _char* envp[])
+_int main()
 {
     std::setlocale(LC_CTYPE, "");
     _setmode(_fileno(stdout), _O_U8TEXT);

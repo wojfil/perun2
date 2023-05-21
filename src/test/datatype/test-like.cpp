@@ -92,7 +92,7 @@ void test_like()
    testCase_like(67, L"____", L"abc", false);
    testCase_like(68, L"___#", L"abcd", false);
    testCase_like(69, L"___#", L"abc5", true);
-   testCase_like(70, L"%#%", L"Perun2", false);
+   testCase_like(70, L"%#%", L"Perun2", true);
    testCase_like(71, L"%#%", L"1Perun2", true);
    testCase_like(72, L"%#%", L"Perun3", true);
    testCase_like(73, L"%#%", L"Per7un", true);

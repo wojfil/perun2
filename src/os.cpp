@@ -554,13 +554,7 @@ _num os_depth(const _str& value)
 
    _nint depth = NINT_ZERO;
    _int prevId = 0;
-
-   if (os_isAbsolute(value)) {
-      if (value.size() == 2) {
-         return NINT_ZERO;
-      }
-   }
-
+   
    for (_int i = 0; i < value.size(); i++) {
       if (value[i] == OS_SEPARATOR) {
          const _int len = i - prevId;
@@ -582,7 +576,11 @@ _num os_depth(const _str& value)
    if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
       depth--;
    }
+   else if (!(len == 1 && value[prevId] == CHAR_DOT)) {
+      depth++;
+   }
 
+   depth--;
    return depth;
 }
 

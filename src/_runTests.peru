@@ -1,2 +1,16 @@
-open 'test/datatype/run.bat';
-run '_runBlackBoxTests.uro' with perun2;
+force copy 'bin/Release/perun2.exe'
+  to 'test/blackbox'
+  as 'perun2.exe';
+  
+inside 'test/blackbox' {
+  if exists('perun2.exe') {
+    drop 'res\ccc\*';
+    open 'run.py';
+    if not success {
+      error
+    }
+  }
+  else {
+    error
+  }
+}

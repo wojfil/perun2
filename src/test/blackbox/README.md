@@ -5,7 +5,7 @@ They take a compiled executable file *perun2.exe*, run certain Perun2 code with 
 
 ## How to run them?
 
-Just run *../../_runTests.peru* with Perun2.
+Just go back the *src* directory and run *_runTests.peru* with Perun2.
 
 ## Remarks
 

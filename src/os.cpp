@@ -1119,11 +1119,10 @@ _bool os_createFile(const _str& path)
    else {
       return false;
    }
+   
+   HANDLE h = CreateFileW(P_WINDOWS_PATH(path), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
-   HANDLE h = CreateFileW(path.c_str(), GENERIC_WRITE, 0, NULL,
-      CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
-
-   if (h) {
+   if (h != INVALID_HANDLE_VALUE) {
       _ftim ftime;
 
       if (os_convertToFileTime(os_now(), ftime)) {
@@ -1153,7 +1152,7 @@ _bool os_createDirectory(const _str& path)
       return false;
    }
 
-   return CreateDirectoryW(path.c_str(), NULL) != 0;
+   return CreateDirectoryW(P_WINDOWS_PATH(path), NULL) != 0;
 }
 
 _bool os_moveTo(const _str& oldPath, const _str& newPath)

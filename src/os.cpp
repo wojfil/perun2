@@ -180,7 +180,7 @@ void os_loadAttributes(FileContext& context)
 
    // below are "real" attributes of files and directories
    _adata data;
-   const _bool gotAttrs = GetFileAttributesExW(context.v_path->value.c_str(), GetFileExInfoStandard, &data);
+   const _bool gotAttrs = GetFileAttributesExW(P_WINDOWS_PATH(context.v_path->value), GetFileExInfoStandard, &data);
    const DWORD dwAttrib = data.dwFileAttributes;
    context.v_exists->value = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
 
@@ -495,7 +495,7 @@ _tim os_access(const _str& path)
 {
    _adata data;
 
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
    }
 
@@ -515,7 +515,7 @@ _tim os_change(const _str& path)
 {
    _adata data;
 
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
    }
 
@@ -535,7 +535,7 @@ _tim os_creation(const _str& path)
 {
    _adata data;
 
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
    }
 
@@ -599,7 +599,7 @@ _str os_drive(const _str& path)
 _bool os_empty(const _str& path)
 {
    _adata data;
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return false;
    }
 
@@ -627,7 +627,8 @@ _bool os_emptyFile(const _adata& data)
 _bool os_emptyDirectory(const _str& path)
 {
    _fdata data;
-   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR, CHAR_ASTERISK)).c_str(), &data);
+   const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
+   HANDLE handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
    if (handle == INVALID_HANDLE_VALUE) {
       return true;
    }
@@ -678,7 +679,7 @@ _str os_fullname(const _str& value)
 
 _bool os_hasAttribute(const _str& path, const DWORD attribute)
 {
-   DWORD dwAttrib = GetFileAttributesW(path.c_str());
+   DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
 
    return (dwAttrib != INVALID_FILE_ATTRIBUTES) &&
           (dwAttrib & attribute);
@@ -691,7 +692,7 @@ _bool os_hidden(const _str& path)
 
 _bool os_isFile(const _str& path)
 {
-   DWORD dwAttrib = GetFileAttributesW(path.c_str());
+   DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
       return os_hasExtension(path);
    }
@@ -701,7 +702,7 @@ _bool os_isFile(const _str& path)
 
 _bool os_isDirectory(const _str& path)
 {
-   DWORD dwAttrib = GetFileAttributesW(path.c_str());
+   DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
       return !os_hasExtension(path);
    }
@@ -713,7 +714,7 @@ _per os_lifetime(const _str& path)
 {
    _adata data;
 
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _per();
    }
 
@@ -733,7 +734,7 @@ _tim os_modification(const _str& path)
 {
    _adata data;
 
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
    }
 
@@ -792,7 +793,7 @@ _bool os_readonly(const _str& path)
 _nint os_size(const _str& path, _p2& p2)
 {
    _adata data;
-   if (!GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &data)) {
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return NINT_MINUS_ONE;
    }
 
@@ -810,7 +811,8 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
 {
    _nint totalSize = NINT_ZERO;
    _fdata data;
-   HANDLE handle = FindFirstFile((str(path, OS_SEPARATOR, CHAR_ASTERISK)).c_str(), &data);
+   const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
+   HANDLE handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
 
    if (handle == INVALID_HANDLE_VALUE) {
       return totalSize;
@@ -842,7 +844,7 @@ _bool os_exists(const _str& path)
       return false;
    }
 
-   return GetFileAttributesW(path.c_str()) != INVALID_FILE_ATTRIBUTES;
+   return GetFileAttributesW(P_WINDOWS_PATH(path)) != INVALID_FILE_ATTRIBUTES;
 }
 
 _bool os_fileExists(const _str& path)
@@ -851,8 +853,7 @@ _bool os_fileExists(const _str& path)
       return false;
    }
 
-   DWORD dwAttrib = GetFileAttributesW(path.c_str());
-
+   DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)));
 }
 
@@ -862,8 +863,7 @@ _bool os_directoryExists(const _str& path)
       return false;
    }
 
-   DWORD dwAttrib = GetFileAttributesW(path.c_str());
-
+   DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
@@ -906,7 +906,7 @@ _bool os_drop(const _str& path, const _bool isFile, _p2& p2)
 
 _bool os_dropFile(const _str& path)
 {
-   return DeleteFileW(path.c_str()) != 0;
+   return DeleteFileW(P_WINDOWS_PATH(path)) != 0;
 }
 
 _bool os_dropDirectory(const _str& path, _p2& p2)
@@ -974,19 +974,19 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
    }
    FindClose(hFind);
 
-   return RemoveDirectoryW(const_cast<_char*>(path.c_str())) != 0;
+   return RemoveDirectoryW(const_cast<_char*>(P_WINDOWS_PATH(path))) != 0;
 }
 
 _bool os_hide(const _str& path)
 {
-   const _char* p = path.c_str();
-   const DWORD attr = GetFileAttributesW(p);
+   const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
+
    if (attr == INVALID_FILE_ATTRIBUTES) {
       return false;
    }
 
    if ((attr & FILE_ATTRIBUTE_HIDDEN) == 0) {
-      return SetFileAttributes(p, attr | FILE_ATTRIBUTE_HIDDEN) != 0;
+      return SetFileAttributes(P_WINDOWS_PATH(path), attr | FILE_ATTRIBUTE_HIDDEN) != 0;
    }
 
    return true;
@@ -994,14 +994,14 @@ _bool os_hide(const _str& path)
 
 _bool os_lock(const _str& path)
 {
-   const _char* p = path.c_str();
-   const DWORD attr = GetFileAttributesW(p);
+   const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
+
    if (attr == INVALID_FILE_ATTRIBUTES) {
       return false;
    }
 
    if ((attr & FILE_ATTRIBUTE_READONLY) == 0) {
-      return SetFileAttributes(p, attr | FILE_ATTRIBUTE_READONLY) != 0;
+      return SetFileAttributes(P_WINDOWS_PATH(path), attr | FILE_ATTRIBUTE_READONLY) != 0;
    }
 
    return true;
@@ -1010,13 +1010,14 @@ _bool os_lock(const _str& path)
 _bool os_open(const _str& path)
 {
    const _str location = os_parent(path);
-   return (INT_PTR)ShellExecuteW(0, 0, path.c_str(), 0, location.c_str() , SW_SHOW) > 32;
+   return (INT_PTR)ShellExecuteW(0, 0, P_WINDOWS_PATH(path), 0, P_WINDOWS_PATH(location) , SW_SHOW) > 32;
 }
 
 _bool os_openWith(const _str& program, const _str& path)
 {
    const _str location = os_parent(path);
-   return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN, program.c_str(), path.c_str(), location.c_str(), SW_SHOW) > 32;
+   return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN, P_WINDOWS_PATH(program), 
+      P_WINDOWS_PATH(path), P_WINDOWS_PATH(location), SW_SHOW) > 32;
 }
 
 _bool os_openAsCommand(const _str& command, const _str& location)
@@ -1049,14 +1050,14 @@ _bool os_openAsCommand(const _str& command, const _str& location)
 
 _bool os_unhide(const _str& path)
 {
-   const _char* p = path.c_str();
-   const DWORD attr = GetFileAttributesW(p);
+   const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
+
    if (attr == INVALID_FILE_ATTRIBUTES) {
       return false;
    }
 
    if ((attr & FILE_ATTRIBUTE_HIDDEN) == FILE_ATTRIBUTE_HIDDEN) {
-      return SetFileAttributes(p, attr & ~FILE_ATTRIBUTE_HIDDEN) != 0;
+      return SetFileAttributes(P_WINDOWS_PATH(path), attr & ~FILE_ATTRIBUTE_HIDDEN) != 0;
    }
 
    return true;
@@ -1064,14 +1065,14 @@ _bool os_unhide(const _str& path)
 
 _bool os_unlock(const _str& path)
 {
-   const _char* p = path.c_str();
-   const DWORD attr = GetFileAttributesW(p);
+   const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
+
    if (attr == INVALID_FILE_ATTRIBUTES) {
       return false;
    }
 
    if ((attr & FILE_ATTRIBUTE_READONLY) == FILE_ATTRIBUTE_READONLY) {
-      return SetFileAttributes(p, attr & ~FILE_ATTRIBUTE_READONLY) != 0;
+      return SetFileAttributes(P_WINDOWS_PATH(path), attr & ~FILE_ATTRIBUTE_READONLY) != 0;
    }
 
    return true;
@@ -1092,7 +1093,7 @@ _bool os_setTime(const _str& path, const _tim& creation,
       return false;
    }
 
-   HANDLE handle = CreateFile(path.c_str(),
+   HANDLE handle = CreateFile(P_WINDOWS_PATH(path),
       FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE,
       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -1157,7 +1158,7 @@ _bool os_createDirectory(const _str& path)
 
 _bool os_moveTo(const _str& oldPath, const _str& newPath)
 {
-   return MoveFileExW(oldPath.c_str(), newPath.c_str(), MOVEFILE_COPY_ALLOWED) != 0;
+   return MoveFileExW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
 _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _p2& p2)
@@ -1183,7 +1184,7 @@ _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _p
 
 _bool os_copyToFile(const _str& oldPath, const _str& newPath)
 {
-   return CopyFileW(oldPath.c_str(), newPath.c_str(), true) != 0;
+   return CopyFileW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), true) != 0;
 }
 
 _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
@@ -2051,7 +2052,7 @@ void os_showWebsite(const _str& url)
 
 _bool os_findText(const _str& path, const _str& value)
 {
-   std::wifstream stream(path.c_str());
+   std::wifstream stream(P_WINDOWS_PATH(path));
    if (!stream) {
       return false;
    }

@@ -108,7 +108,7 @@ _bool All::hasNext()
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
 
-         handle = FindFirstFile(path.c_str(), &data);
+         handle = FindFirstFile(P_WINDOWS_PATH(path), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
          }
@@ -172,7 +172,7 @@ _bool Files::hasNext()
       this->baseLocation = os_trim(location->getValue());
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
-         handle = FindFirstFile(path.c_str(), &data);
+         handle = FindFirstFile(P_WINDOWS_PATH(path), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
          }
@@ -234,7 +234,7 @@ _bool Directories::hasNext()
       this->baseLocation = os_trim(location->getValue());
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
-         handle = FindFirstFile(path.c_str(), &data);
+         handle = FindFirstFile(P_WINDOWS_PATH(path), &data);
          if (handle == INVALID_HANDLE_VALUE) {
             return false;
          }
@@ -307,7 +307,7 @@ _bool RecursiveFiles::hasNext()
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), gen::os::getDefaultPattern());
-            handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            handles.emplace_back(FindFirstFile(P_WINDOWS_PATH(p), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -411,7 +411,7 @@ _bool RecursiveDirectories::hasNext()
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), gen::os::getDefaultPattern());
-            handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            handles.emplace_back(FindFirstFile(P_WINDOWS_PATH(p), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {
@@ -498,7 +498,7 @@ _bool RecursiveAll::hasNext()
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
             const _str p = str(paths.back(), gen::os::getDefaultPattern());
-            handles.emplace_back(FindFirstFile(p.c_str(), &data));
+            handles.emplace_back(FindFirstFile(P_WINDOWS_PATH(p), &data));
 
             if (handles.back() == INVALID_HANDLE_VALUE)
             {

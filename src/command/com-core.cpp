@@ -167,7 +167,7 @@ void C_OpenWith::run()
       }
 
       if (os_exists(proPath)) {
-         const _bool s = os_openWith(proPath, os_quoteEmbraced(this->context->v_path->value));
+         const _bool s = os_openWith(proPath, this->context->v_path->value);
          this->perun2.contexts.success->value = s;
 
          if (s) {

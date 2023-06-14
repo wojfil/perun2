@@ -474,7 +474,35 @@ Code below will print *888 hours*.
 
 ```
 print (2 days + 5 weeks) as hours
-
 ```
 
 The operator should have relatively low precedence.
+
+## Subjective image variables
+
+Maybe we can introduce some special subgroups of *images* like *photos* or even *selfies*.
+All photos are images, but not all images are photos.
+However, it is not an easy task to differenciate these groups and the differenciation is soft and disputable.
+
+```
+copy recursivePhotos
+```
+
+They can also have subjective properties. For example, boolean variables *dark* and *bright*.
+An image can be dark, but what does it exactly mean?
+
+```
+select directories 
+  where anyInside(selfies where dark)
+```
+
+## Monochromatic images
+
+Another boolean variable. We could apply it to both to *images* and *videos*. 
+However, I expect the latter to be quite inefficient in implementation. 
+
+```
+select images
+  where name like 'img%'
+  and monochromatic 
+```

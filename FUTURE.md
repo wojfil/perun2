@@ -499,10 +499,31 @@ select directories
 ## Monochromatic images
 
 Another boolean variable. We could apply it to both to *images* and *videos*. 
-However, I expect the latter to be quite inefficient in implementation. 
+However, I expect the implementations of the latter to be quite inefficient. 
 
 ```
 select images
   where name like 'img%'
   and monochromatic 
 ```
+
+## Subjective audio variables
+
+Subgroups of *audios*: *music*, *podcasts*, *recordings*, etc.
+This feature is really controversial.
+What is music? Karlheinz Stockhausen and John Cage would fight with me.
+
+```
+select directories 
+  where anyInside(podcasts)
+```
+
+There are some subjective properties like *instrumental* or *loud*.
+
+```
+select directories 
+  where anyInside(music where instrumental)
+  and not anyInside(music where not instrumental)
+```
+
+This script finds all directories with only instrumental music inside.

@@ -458,3 +458,23 @@ Just font files.
 ```
 select fonts
 ```
+
+## Period unit conversion
+
+By using the *as* keyword, express periods in certain unit. As period consists of only integer values, they will be trimmed if necessary.
+
+```
+images 
+{
+  print lifetime as days
+}
+```
+
+Code below will print *888 hours*.
+
+```
+print (2 days + 5 weeks) as hours
+
+```
+
+The operator should have relatively low precedence.

@@ -19,9 +19,10 @@
 namespace perun2::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _p2& p2, const _str& pat, const _str& pref)
-   : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), perun2(p2), preffix(pref), 
-      startId(pref.size()), specialStart(hasSpecialStart()) 
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, _p2& p2, const _str& pat, const _str& pref, const _int retr)
+   : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), perun2(p2), prefix(pref), 
+      startId(pref.size()), specialStart(hasSpecialStart()), 
+      hasRetreats(retr != 0), retreat(hasRetreats ? os_doubleDotsPrefix(retr) : _str())
 {   
    minLength = this->getMinLength(pat);
 };
@@ -36,24 +37,33 @@ void DoubleAsteriskPattern::reset() {
 
 _bool DoubleAsteriskPattern::hasNext()
 {
-   if (first) {
-      index.setToZero();
-      first = false;
+   if (this->first) {
+      this->index.setToZero();
+      this->first = false;
    }
 
-   while (definition->hasNext() && this->perun2.state == State::s_Running) {
-      value = this->startId == 0
-         ? definition->getValue()
-         : str(this->preffix, definition->getValue());
+   while (this->definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->reset();
+         break;
+      }
 
-      if (this->matches(value)) {
-         this->context->index->value = index;
-         index++;
+      this->value = this->startId == 0
+         ? this->definition->getValue()
+         : str(this->prefix, this->definition->getValue());
+
+      if (this->matches(this->value)) {
+         if (this->hasRetreats) {
+            this->value = str(this->retreat, this->value);
+         }
+
+         this->context->index->value = this->index;
+         this->index++;
          return true;
       }
    }
 
-   first = true;
+   this->first = true;
    return false;
 }
 

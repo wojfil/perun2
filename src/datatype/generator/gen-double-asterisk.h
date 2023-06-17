@@ -36,7 +36,7 @@ struct DoubleAsteriskPattern : Definition, WildcardComparer
 {
 public:
    DoubleAsteriskPattern() = delete;
-   DoubleAsteriskPattern(_rallptr& def, _p2& p2, const _str& pat, const _str& pref);
+   DoubleAsteriskPattern(_rallptr& def, _p2& p2, const _str& pat, const _str& pref, const _int retr);
 
    _bool hasNext() override;
    void reset() override;
@@ -47,13 +47,15 @@ protected:
    WildcardCharState checkState(const _size n, const _size m) override;
 
 private:
-   const _str preffix;
+   const _str prefix;
    const _size startId;
    _rallptr definition;
    FileContext* context;
    _p2& perun2;
    _bool first = true;
    _num index = NINT_ZERO;
+   const _bool hasRetreats;
+   const _str retreat;
 
    // is true if the pattern starts with a double asterisk and is followed by a path separator
    const _bool specialStart;

@@ -142,9 +142,15 @@ struct All : OsDefinitionPlain
 public:
    All() = delete;
    All(P_GEN_OS_ARGS_EXT)
-      : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
+      : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2), retreats(0) {};
+      
+   All(P_GEN_OS_ARGS_EXT, const _int retr)
+      : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2), retreats(retr) {};
 
    _bool hasNext() override;
+
+private:
+   const _int retreats;
 };
 
 

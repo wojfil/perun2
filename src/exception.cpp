@@ -33,6 +33,12 @@ SyntaxError SyntaxError::adjacentSymbols(const _char value, const _int line)
    return SyntaxError(str(L"adjacent ", toStr(value), L" symbols"), line);
 }
 
+SyntaxError SyntaxError::asteriskPatternCannotContainDotSegments(const _str& value, const _int line)
+{
+   return SyntaxError(str(L"asterisk pattern '", value, 
+      L"' cannot contain dot segments in the middle of a path"), line);
+}
+
 SyntaxError SyntaxError::bracketIsNotClosed(const _char value, const _int line)
 {
    return SyntaxError(str(L"bracket ", toStr(value), L" is not closed"), line);

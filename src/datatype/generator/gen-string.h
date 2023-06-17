@@ -72,12 +72,25 @@ private:
 struct RelativeLocation : Generator<_str>
 {
 public:
-   RelativeLocation(_genptr<_str>& val, _p2& p2);
+   RelativeLocation(_genptr<_str>& val, _p2& p2, const _int retr);
    _str getValue() override;
 
 private:
    LocationContext& context;
    _genptr<_str> value;
+   const _int retreats;
+};
+
+
+struct RetreatedPath : Generator<_str>
+{
+public:
+   RetreatedPath(_genptr<_str>& val, const _int retr);
+   _str getValue() override;
+
+private:
+   _genptr<_str> value;
+   const _int reatreats;
 };
 
 

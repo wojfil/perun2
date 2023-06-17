@@ -387,7 +387,12 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
 
    // we do not need access to the file system to get these values
    if (attribute->has(ATTR_PATH)) {
-      context.v_path->value = os_softJoin(context.locContext->location->value, context.trimmed);
+      if (!context.trimmed.empty() && context.trimmed[0] == CHAR_DOT) {
+         context.v_path->value = os_join(context.locContext->location->value, context.trimmed);
+      }
+      else {
+         context.v_path->value = os_softJoin(context.locContext->location->value, context.trimmed);
+      }
    }
 
    if (attribute->has(ATTR_FULLNAME)) {
@@ -1540,6 +1545,90 @@ inline void os_escapeQuote(_str& path)
    }
 }
 
+_str os_doubleDotsPrefix(_int amount)
+{
+   _str result;
+   result.reserve(amount * 3);
+
+   while (amount > 0) {
+      result += CHAR_DOT;
+      result += CHAR_DOT;
+      result += OS_SEPARATOR;
+      amount--;
+   }
+
+   return result;
+}
+
+_bool os_hasDotSegments(const _str& path)
+{
+   _int prev = path.size() - 1;
+
+   for (_int i = path.size() - 1; i >= 0; i--) {
+      const _char ch = path[i];
+
+      if (ch == OS_SEPARATOR) {
+         const _int len = prev - i;
+
+         if (len == 2 && path[i + 1] == CHAR_DOT && path[i + 2] == CHAR_DOT) {
+            return true;
+         }
+         else if (len == 1 && path[i + 1] == CHAR_DOT) { 
+            return true;
+         }
+
+         prev = i - 1;
+      }
+   }
+
+   const _int len = prev + 1;
+
+   return (len == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT)
+      || (len == 1 && path[0] == CHAR_DOT);
+}
+
+_str os_trimRetreats(const _str& path, _size& retreats)
+{
+   if (path.empty()) {
+      return _str();
+   }
+
+   _int prevId = 0;
+   _int i = 0;
+
+   for (; i < path.size(); i++) {
+      const _char ch = path[i];
+
+      if (path[i] == OS_SEPARATOR) {
+         const _int len = i - prevId;
+         if (len == 1 && path[prevId] == CHAR_DOT) {
+            prevId = i + 1;
+            continue;
+         }
+         else if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
+            retreats++;
+         }
+         else {
+            return path.substr(prevId);
+         }
+
+         prevId = i + 1;
+      }
+   }
+
+   const _int len = path.size() - prevId;
+
+   if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
+      retreats++;
+      return _str();
+   }
+   else if (!(len == 1 && path[prevId] == CHAR_DOT)) {
+      return path.substr(prevId);
+   }
+
+   return toStr(CHAR_DOT);
+}
+
 _str os_segmentWithName(const _str& path)
 {
    _int prev = path.size() - 1;
@@ -1585,6 +1674,21 @@ _str os_segmentWithName(const _str& path)
    return path.substr(0, prev + 1);
 }
 
+_str os_retreats(_int times)
+{
+   _str result;
+   result.reserve(times * 3);
+
+   while (times > 0) {
+      times--;
+      result += CHAR_DOT;
+      result += CHAR_DOT;
+      result += OS_SEPARATOR;
+   }
+
+   return result;
+}
+
 _bool os_retreatPath(_str& path)
 {
    if (path.empty()) {
@@ -1601,6 +1705,27 @@ _bool os_retreatPath(_str& path)
    path.clear();
    return true;
 }
+
+
+void os_retreatPath(_str& path, _int times)
+{
+   if (path.empty() || times <= 0) {
+      return;
+   }
+
+   for (_int i = path.size() - 1; i >= 0; i--) {
+      if (path[i] == OS_SEPARATOR) {
+         times--;
+         if (times <= 0) {
+            path.resize(i);
+            return;
+         }
+      }
+   }
+
+   path.clear();
+}
+
 
 _bool os_extendPath(_str& result, const _str& path)
 {

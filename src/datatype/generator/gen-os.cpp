@@ -38,6 +38,7 @@ namespace perun2::gen
       this->value = str(this->prefix, this->value); \
    } \
 
+
 namespace os
 {
    _str getDefaultPattern()
@@ -130,6 +131,10 @@ _bool All::hasNext()
 
                P_OS_GEN_VALUE_ALTERATION;
 
+               if (retreats > 0) {
+                  this->value = str(os_retreats(retreats), this->value);
+               }
+
                this->context.loadData(value, data);
                return true;
             }
@@ -154,6 +159,10 @@ _bool All::hasNext()
             index++;
 
             P_OS_GEN_VALUE_ALTERATION;
+
+            if (retreats > 0) {
+               this->value = str(os_retreats(retreats), this->value);
+            }
 
             this->context.loadData(value, data);
             return true;
@@ -232,6 +241,7 @@ _bool Directories::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
+
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
          handle = FindFirstFile(P_WINDOWS_PATH(path), &data);

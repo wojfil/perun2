@@ -45,12 +45,33 @@ _str LocationReference::getValue()
    return this->context.location->value;
 }
 
-RelativeLocation::RelativeLocation(_genptr<_str>& val, _p2& p2)
-   : value(std::move(val)), context(*p2.contexts.getLocationContext()) { };
+RelativeLocation::RelativeLocation(_genptr<_str>& val, _p2& p2, const _int retr)
+   : value(std::move(val)), context(*p2.contexts.getLocationContext()), retreats(retr) { };
 
 _str RelativeLocation::getValue()
 {
-   return str(this->context.location->value, OS_SEPARATOR, this->value->getValue());
+   if (this->retreats == 0) {
+      return str(this->context.location->value, OS_SEPARATOR, this->value->getValue());
+   }
+
+   _str base = this->context.location->value;
+   os_retreatPath(base, this->retreats);
+
+   if (base.empty()) {
+      return base;
+   }
+
+   return str(base, OS_SEPARATOR, this->value->getValue());
+}
+
+RetreatedPath::RetreatedPath(_genptr<_str>& val, const _int retr)
+   : value(std::move(val)), reatreats(retr) { };
+
+_str RetreatedPath::getValue()
+{
+   _str v = this->value->getValue();
+   os_retreatPath(v, this->reatreats);
+   return v;
 }
 
 _str CharAtIndex::getValue()

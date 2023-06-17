@@ -80,7 +80,7 @@ private:
 struct LocationVessel : Generator<_str>
 {
 public:
-   LocationVessel(const _bool abs, LocationContext* ctx);
+   LocationVessel(const _bool abs, _genptr<_str>& loc);
    _str getValue() override;
    const _str& getRawValue() const;
    void setValue(const _str& val);
@@ -88,14 +88,14 @@ public:
 private:
    _str value;
    const _bool isAbsolute;
-   LocationContext* context;
+   _genptr<_str> location;
 };
 
 
 struct NestedDefiniton : _def
 {
 public:
-   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool abs, const _bool fin);
+   NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool abs, const _bool fin, const _int retr);
    _bool hasNext() override;
    void reset() override;
    FileContext* getFileContext() override;
@@ -111,6 +111,7 @@ private:
    FileContext* context;
    const _bool isAbsolute;
    const _bool isFinal;
+   const _int retreats;
 };
 
 
@@ -279,10 +280,33 @@ private:
 };
 
 
-struct DefinitionSuffix : _def
+// below are three variants of DefinitionSuffix
+// they add a constant segment to a path, like 'a/b' -> 'a/b/c'
+// DefinitionSuffix is final, if it appears at the end of a pattern
+// if not, we can optimize and return only directories
+
+struct AbsoluteDefSuffix : _def
 {
 public:
-   DefinitionSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool abs, const _bool fin);
+   AbsoluteDefSuffix(_defptr& def, const _str& suf, const _bool fin);
+
+   _bool hasNext() override;
+   void reset() override;
+
+private:
+   _defptr definition;
+   FileContext* fileContext;
+   _bool first = true;
+   _num index;
+   const _str suffix;
+   const _bool isFinal;
+};
+
+
+struct RelativeDefSuffix : _def
+{
+public:
+   RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin);
 
    _bool hasNext() override;
    void reset() override;
@@ -294,10 +318,27 @@ private:
    _bool first = true;
    _num index;
    const _str suffix;
-   const _bool absoluteBase;
    const _bool isFinal;
-   // DefSuffix is final, if it appears at the end of a pattern
-   // if not, we can optimize and return only directories
+};
+
+
+struct RetreatedDefSuffix : _def
+{
+public:
+   RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr);
+
+   _bool hasNext() override;
+   void reset() override;
+
+private:
+   _defptr definition;
+   FileContext* fileContext;
+   LocationContext* locContext;
+   _bool first = true;
+   _num index;
+   const _str suffix;
+   const _bool isFinal;
+   const _int retreats;
 };
 
 

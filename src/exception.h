@@ -30,6 +30,7 @@ public:
 
    static SyntaxError adjacentSymbols(const _char value, const _int line);
    static SyntaxError adjacentFilterKeywords(const _str& value1, const _str& value2, const _int line);
+   static SyntaxError asteriskPatternCannotContainDotSegments(const _str& value, const _int line);
    static SyntaxError bracketIsNotClosed(const _char value, const _int line);
    static SyntaxError bracketShouldBeClosedBeforeCurlyBracket(const _char value, const _int line);
    static SyntaxError dayCannotBeSmallerThanOne(const _int line);

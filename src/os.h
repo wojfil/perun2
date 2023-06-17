@@ -123,8 +123,13 @@ _bool os_bothAreSeparators(const _char left, const _char right);
 _str os_trim(const _str& path);
 inline void os_escapeQuote(_str& path);
 
+_str os_doubleDotsPrefix(_int amount);
+_bool os_hasDotSegments(const _str& path);
+_str os_trimRetreats(const _str& path, _size& retreats);
 _str os_segmentWithName(const _str& path);
+_str os_retreats(_int times);
 _bool os_retreatPath(_str& path);
+void os_retreatPath(_str& path, _int times);
 
 // return true if the result is a 'true path' (has no .. nor .)
 _bool os_extendPath(_str& result, const _str& path);

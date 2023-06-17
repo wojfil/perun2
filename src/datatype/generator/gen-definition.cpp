@@ -573,17 +573,22 @@ _bool Join_DefDef::hasNext()
 }
 
 
-AbsoluteDefSuffix::AbsoluteDefSuffix(_defptr& def, const _str& suf, const _bool fin)
+
+DefinitionSuffix::DefinitionSuffix(_defptr& def, const _str& suf, const _bool fin)
    : definition(std::move(def)), fileContext(definition->getFileContext()), suffix(suf), isFinal(fin) { };
 
 
-void AbsoluteDefSuffix::reset()
+void DefinitionSuffix::reset()
 {
    if (!this->first) {
       this->definition->reset();
       this->first = true;
    }
 }
+
+
+AbsoluteDefSuffix::AbsoluteDefSuffix(_defptr& def, const _str& suf, const _bool fin)
+   : DefinitionSuffix(def, suf, fin) { };
 
 
 _bool AbsoluteDefSuffix::hasNext()
@@ -614,17 +619,7 @@ _bool AbsoluteDefSuffix::hasNext()
 
 
 RelativeDefSuffix::RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin)
-   : definition(std::move(def)), fileContext(definition->getFileContext()),
-     locContext(p2.contexts.getLocationContext()), suffix(suf), isFinal(fin) { };
-
-
-void RelativeDefSuffix::reset()
-{
-   if (!this->first) {
-      this->definition->reset();
-      this->first = true;
-   }
-}
+   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()) { };
 
 
 _bool RelativeDefSuffix::hasNext()
@@ -655,17 +650,7 @@ _bool RelativeDefSuffix::hasNext()
 
 
 RetreatedDefSuffix::RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr)
-   : definition(std::move(def)), fileContext(definition->getFileContext()),
-     locContext(p2.contexts.getLocationContext()), suffix(suf), isFinal(fin), retreats(retr) { };
-
-
-void RetreatedDefSuffix::reset()
-{
-   if (!this->first) {
-      this->definition->reset();
-      this->first = true;
-   }
-}
+   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr) { };
 
 
 _bool RetreatedDefSuffix::hasNext()

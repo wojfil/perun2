@@ -285,60 +285,53 @@ private:
 // DefinitionSuffix is final, if it appears at the end of a pattern
 // if not, we can optimize and return only directories
 
-struct AbsoluteDefSuffix : _def
+struct DefinitionSuffix : _def
+{
+public:
+   DefinitionSuffix(_defptr& def, const _str& suf, const _bool fin);
+   void reset() override;
+
+protected:
+   _defptr definition;
+   FileContext* fileContext;
+   _bool first = true;
+   _num index;
+   const _str suffix;
+   const _bool isFinal;
+};
+
+
+struct AbsoluteDefSuffix : DefinitionSuffix
 {
 public:
    AbsoluteDefSuffix(_defptr& def, const _str& suf, const _bool fin);
-
    _bool hasNext() override;
-   void reset() override;
 
-private:
-   _defptr definition;
-   FileContext* fileContext;
-   _bool first = true;
-   _num index;
-   const _str suffix;
-   const _bool isFinal;
 };
 
 
-struct RelativeDefSuffix : _def
+struct RelativeDefSuffix : DefinitionSuffix
 {
 public:
    RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin);
-
    _bool hasNext() override;
-   void reset() override;
 
 private:
-   _defptr definition;
-   FileContext* fileContext;
    LocationContext* locContext;
-   _bool first = true;
-   _num index;
-   const _str suffix;
-   const _bool isFinal;
+
 };
 
 
-struct RetreatedDefSuffix : _def
+struct RetreatedDefSuffix : DefinitionSuffix
 {
 public:
    RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr);
-
    _bool hasNext() override;
-   void reset() override;
 
 private:
-   _defptr definition;
-   FileContext* fileContext;
    LocationContext* locContext;
-   _bool first = true;
-   _num index;
-   const _str suffix;
-   const _bool isFinal;
    const _int retreats;
+
 };
 
 

@@ -37,10 +37,10 @@ void Logger::print(const _str& value) const
 void Logger::emptyLine() const
 {
    if (this->flushBuffer) {
-      _cout << _str() << std::endl;
+      _cout << std::endl;
    }
    else {
-      _cout << _str() << CHAR_NEW_LINE;
+      _cout << CHAR_NEW_LINE;
    }
 }
 

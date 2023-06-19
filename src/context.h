@@ -281,7 +281,7 @@ namespace perun2
          }
 
          // look in file attributes
-         if (tk.isWord(STRINGS_ATTR, p2)) {
+         if (tk.isVariable(STRINGS_ATTR, p2)) {
             if (this->fileContexts.empty()) {
                throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
             }

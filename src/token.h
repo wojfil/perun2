@@ -164,6 +164,10 @@ public:
    _bool isSecondWord(const _char (&word)[], _p2& p2) const;
    _bool isSecondWord(const std::vector<_str>& words, _p2& p2) const;
 
+   // is single word (CREATION) OR is first word of two (CREATION.year)
+   _bool isVariable(const _char (&word)[], _p2& p2) const;
+   _bool isVariable(const std::vector<_str>& words, _p2& p2) const;
+
    _bool isNegatableKeywordOperator() const;
    _bool isLogicConstant() const;
    _bool isWeekDay() const;

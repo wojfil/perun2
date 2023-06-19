@@ -44,7 +44,7 @@ namespace perun2::parse
 
       if (var->type == VarType::vt_Attribute
          && !p2.contexts.getFileContext()->attributeScope
-         && tk.isWord(STRINGS_ALTERABLE_ATTR, p2))
+         && tk.isVariable(STRINGS_ALTERABLE_ATTR, p2))
       {
          return makeVarRefAsFunction(tk, result, p2);
       }

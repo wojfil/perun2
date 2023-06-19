@@ -146,6 +146,36 @@ _bool Token::isSecondWord(const std::vector<_str>& words, _p2& p2) const
    return false;
 }
 
+_bool Token::isVariable(const _char (&word)[], _p2& p2) const
+{
+   switch (this->type) {
+      case Token::t_Word: {
+         return isWord(word, p2);
+      }
+      case Token::t_TwoWords: {
+         return isFirstWord(word, p2);
+      }
+      default: {
+         return false;
+      }
+   }
+}
+
+_bool Token::isVariable(const std::vector<_str>& words, _p2& p2) const
+{
+   switch (this->type) {
+      case Token::t_Word: {
+         return isWord(words, p2);
+      }
+      case Token::t_TwoWords: {
+         return isFirstWord(words, p2);
+      }
+      default: {
+         return false;
+      }
+   }
+}
+
 // this keyword is a binary operator and can be preceded by a Not keyword
 _bool Token::isNegatableKeywordOperator() const
 {

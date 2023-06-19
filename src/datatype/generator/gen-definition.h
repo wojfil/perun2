@@ -280,7 +280,7 @@ private:
 };
 
 
-// below are three variants of DefinitionSuffix
+// below are some variants of DefinitionSuffix
 // they add a constant segment to a path, like 'a/b' -> 'a/b/c'
 // DefinitionSuffix is final, if it appears at the end of a pattern
 // if not, we can optimize and return only directories
@@ -306,33 +306,46 @@ struct AbsoluteDefSuffix : DefinitionSuffix
 public:
    AbsoluteDefSuffix(_defptr& def, const _str& suf, const _bool fin);
    _bool hasNext() override;
-
 };
 
 
 struct RelativeDefSuffix : DefinitionSuffix
 {
 public:
-   RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin);
+   RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, _def* const prev);
    _bool hasNext() override;
 
 private:
-   LocationContext* locContext;
-
+   LocationContext* const locContext;
+   _def* const previous;
 };
 
 
 struct RetreatedDefSuffix : DefinitionSuffix
 {
 public:
-   RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr);
+   RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr, _def* const prev);
    _bool hasNext() override;
 
 private:
-   LocationContext* locContext;
+   LocationContext* const locContext;
    const _int retreats;
-
+   _def* const previous;
 };
+
+
+struct FarRetreatedDefSuffix : DefinitionSuffix
+{
+public:
+   FarRetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr, _def* const prev);
+   _bool hasNext() override;
+
+private:
+   LocationContext* const locContext;
+   const _int retreats;
+   _def* const previous;
+};
+
 
 
 // ternary and binary works with Definitions in its own way

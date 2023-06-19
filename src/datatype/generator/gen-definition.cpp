@@ -179,6 +179,10 @@ _bool NestedDefiniton::hasNext()
             this->value = isDot
                ? this->definition->getValue()
                : str(this->vessel.getRawValue(), OS_SEPARATOR, this->definition->getValue());
+            
+            if (this->context == nullptr) {
+               this->value = this->definition->getValue();
+            }
          }
 
          if (this->isFinal) {
@@ -186,9 +190,11 @@ _bool NestedDefiniton::hasNext()
                this->value = str(os_retreats(this->retreats), this->value);
             }
 
-            this->context->index->value = index;
-            this->context->loadData(this->value);
-            index++;
+            if (this->context != nullptr) {
+               this->context->index->value = index;
+               this->context->loadData(this->value);
+               index++;
+            }
          }
 
          return true;
@@ -618,8 +624,8 @@ _bool AbsoluteDefSuffix::hasNext()
 }
 
 
-RelativeDefSuffix::RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin)
-   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()) { };
+RelativeDefSuffix::RelativeDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, _def* const prev)
+   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), previous(prev) { };
 
 
 _bool RelativeDefSuffix::hasNext()
@@ -632,7 +638,10 @@ _bool RelativeDefSuffix::hasNext()
    }
 
    while (this->definition->hasNext()) {
-      this->value = str(this->definition->getValue(), this->suffix);
+      this->value = this->previous == nullptr
+         ? str(this->definition->getValue(), this->suffix)
+         : str(this->previous->getValue(), OS_SEPARATOR, this->definition->getValue(), this->suffix);
+
       const _str path = str(this->locContext->location->value, OS_SEPARATOR, this->value);
 
       if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {
@@ -649,8 +658,8 @@ _bool RelativeDefSuffix::hasNext()
 }
 
 
-RetreatedDefSuffix::RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr)
-   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr) { };
+RetreatedDefSuffix::RetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr, _def* const prev)
+   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 
 _bool RetreatedDefSuffix::hasNext()
@@ -663,10 +672,16 @@ _bool RetreatedDefSuffix::hasNext()
    }
 
    while (this->definition->hasNext()) {
-      this->value = str(this->definition->getValue(), this->suffix);
-      
+      const _str rawValue = str(this->definition->getValue(), this->suffix);
+
+      this->value = this->previous == nullptr
+         ? rawValue
+         : str(this->previous->getValue(), OS_SEPARATOR, rawValue);
+
+
       _str path = this->locContext->location->value;
       os_retreatPath(path, this->retreats);
+
       if (path.empty()) {
          continue;
       }
@@ -678,8 +693,15 @@ _bool RetreatedDefSuffix::hasNext()
          if (this->isFinal) {
             this->fileContext->index->value = index;
             index++;
-            this->value = str(os_retreats(this->retreats), this->value);
+
+            if (this->previous == nullptr) {
+               this->value = str(os_retreats(this->retreats), this->value);
+            }
          }
+         else {
+            this->value = rawValue;
+         }
+
          return true;
       }
    }
@@ -688,6 +710,41 @@ _bool RetreatedDefSuffix::hasNext()
    return false;
 }
 
+
+FarRetreatedDefSuffix::FarRetreatedDefSuffix(_defptr& def, _p2& p2, const _str& suf, const _bool fin, const _int retr, _def* const prev)
+   : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
+
+
+_bool FarRetreatedDefSuffix::hasNext()
+{
+   if (this->first) {
+      this->first = false;
+      if (this->isFinal) {
+         this->index.setToZero();
+      }
+   }
+
+   while (this->definition->hasNext()) {
+      this->value = this->previous == nullptr
+         ? str(this->definition->getValue(), this->suffix)
+         : str(this->previous->getValue(), OS_SEPARATOR, this->definition->getValue(), this->suffix);
+
+      _str path = this->locContext->location->value;
+      os_retreatPath(path, this->retreats);
+      path = str(path, OS_SEPARATOR, this->value);
+
+      if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {
+         if (this->isFinal) {
+            this->fileContext->index->value = index;
+            index++;
+         }
+         return true;
+      }
+   }
+
+   this->first = true;
+   return false;
+}
 
 
 void DefTernary::reset()

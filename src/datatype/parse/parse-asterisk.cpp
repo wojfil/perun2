@@ -149,7 +149,7 @@ exitAsteriskBeginning:
 
       _defptr d = std::make_unique<gen::Directories>(base, p2, p, isAbsolute, prefix);
 
-      parseDefinitionSuffix(result, d, suffix, isAbsolute, gen::os::IS_FINAL, retreats, p2);
+      parseDefinitionSuffix(result, d, suffix, isAbsolute, gen::os::IS_FINAL, retreats, nullptr, p2);
       return true;
    }
 
@@ -202,7 +202,7 @@ exitAsteriskBeginning:
       }
       else {
          _defptr d = std::make_unique<gen::Directories>(base, p2, p, isAbsolute, prefix);
-         parseDefinitionSuffix(result, d, u.suffixPart, isAbsolute, gen::os::IS_FINAL, retreats, p2);
+         parseDefinitionSuffix(result, d, u.suffixPart, isAbsolute, gen::os::IS_FINAL, retreats, nullptr, p2);
       }
       return true;
    }
@@ -215,7 +215,7 @@ exitAsteriskBeginning:
    }
    else {
       _defptr d = std::make_unique<gen::Directories>(base, p2, firstPatt, isAbsolute, prefix);
-      parseDefinitionSuffix(result, d, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL, retreats, p2);
+      parseDefinitionSuffix(result, d, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL, retreats, nullptr, p2);
    }
 
    for (_size i = 1; i < ulen; i++) {
@@ -228,7 +228,6 @@ exitAsteriskBeginning:
       }
 
       std::unique_ptr<gen::LocationVessel> vessel = std::make_unique<gen::LocationVessel>(isAbsolute, loc);
-
       gen::LocationVessel& vesselRef = *(vessel.get());
       _genptr<_str> vesselPtr = std::move(vessel);
       _defptr nextDef;
@@ -244,8 +243,9 @@ exitAsteriskBeginning:
          }
       }
       else {
+         _def* def = result.get();
          _defptr d = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, isAbsolute, _str());
-         parseDefinitionSuffix(result, d, units[i].suffixPart, isAbsolute, gen::os::IS_FINAL, retreats, p2);
+         parseDefinitionSuffix(nextDef, d, units[i].suffixPart, isAbsolute, isFinal, retreats, def, p2);
       }
 
       _defptr prev = std::move(result);
@@ -376,17 +376,22 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
    return true;
 }
 
-_bool parseDefinitionSuffix(_defptr& result, _defptr& definition, 
-   const _str& suffix, const _bool isAbsolute, const _bool isFinal, const _int retreats, _p2& p2)
+_bool parseDefinitionSuffix(_defptr& result, _defptr& definition, const _str& suffix,
+   const _bool isAbsolute, const _bool isFinal, const _int retreats, _def* previous, _p2& p2)
 {
    if (isAbsolute) {
       result = std::make_unique<gen::AbsoluteDefSuffix>(definition, suffix, isFinal);
    }
    else if (retreats == 0) {
-      result = std::make_unique<gen::RelativeDefSuffix>(definition, p2, suffix, isFinal);
+      result = std::make_unique<gen::RelativeDefSuffix>(definition, p2, suffix, isFinal, previous);
    }
    else {
-      result = std::make_unique<gen::RetreatedDefSuffix>(definition, p2, suffix, isFinal, retreats);
+      if (previous == nullptr) {
+         result = std::make_unique<gen::RetreatedDefSuffix>(definition, p2, suffix, isFinal, retreats, previous);
+      }
+      else {
+         result = std::make_unique<gen::FarRetreatedDefSuffix>(definition, p2, suffix, isFinal, retreats, previous);
+      }
    }
 
    return true;

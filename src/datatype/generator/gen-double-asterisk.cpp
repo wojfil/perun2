@@ -131,9 +131,8 @@ WildcardCharState DoubleAsteriskPattern::checkState(const _size n, const _size m
             if (m >= 2 && this->pattern[m - 2] == OS_SEPARATOR && m < this->patternLength && this->pattern[m] == OS_SEPARATOR) {
                ans = std::max(ans, this->checkState(n, m - 2));
             }
-            else {
-               ans = std::max(ans, this->checkState(n - 1, m));
-            }
+
+            ans = std::max(ans, this->checkState(n - 1, m));
          }
          break;
       }

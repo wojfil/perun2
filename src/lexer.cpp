@@ -123,7 +123,7 @@ std::vector<Token> tokenize(const _str& code, _p2& p2)
                   mode = Mode::m_BLiteral;
                   prevSymbol = false;
                }
-               else if (c != CHAR_SPACE) {
+               else if (! isSpace(c)) {
                   throw SyntaxError::invalidChar(c, line);
                }
             }
@@ -156,7 +156,7 @@ std::vector<Token> tokenize(const _str& code, _p2& p2)
                   wpos = i + 1;
                   mode = Mode::m_BLiteral;
                }
-               else if (c != CHAR_SPACE) {
+               else if (! isSpace(c)) {
                   throw SyntaxError::invalidChar(c, line);
                }
             }
@@ -430,6 +430,16 @@ inline static _bool isSymbol(const _char ch)
       case CHAR_SMALLER:
       case CHAR_GREATER:
       case CHAR_QUESTION_MARK:
+         return true;
+      default:
+         return false;
+   }
+}
+
+inline static _bool isSpace(const _char ch)
+{
+   switch (ch) {
+      case CHAR_SPACE:
          return true;
       default:
          return false;

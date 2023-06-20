@@ -440,6 +440,8 @@ inline static _bool isSpace(const _char ch)
 {
    switch (ch) {
       case CHAR_SPACE:
+      case CHAR_TAB:
+      case CHAR_CARRIAGE_RETURN:
          return true;
       default:
          return false;

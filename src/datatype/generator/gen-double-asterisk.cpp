@@ -147,7 +147,7 @@ WildcardCharState DoubleAsteriskPattern::checkState(const _size n, const _size m
    }
 
    this->charStates[n][m] = ans;
-   return this->charStates[n][m];
+   return ans;
 }
 
 }

@@ -111,7 +111,7 @@ WildcardCharState SimpleWildcardComparer::checkState(const _size n, const _size 
    }
 
    this->charStates[n][m] = ans;
-   return this->charStates[n][m];
+   return ans;
 }
 
 }

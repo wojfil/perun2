@@ -1,9 +1,9 @@
 # Perun2
 
 Perun2 is a statically typed scripting language for the file system. 
-Together with its GUI applications, it makes it easy to create extensions for the context menu of the File Explorer.
+Together with its GUI applications, it makes it easy to create tiny programs runnable from the context menu of the File Explorer.
 
-![Code examples](res/codes.gif)
+![Menu examples](res/menuexample.png)
 
 ## Repository
 
@@ -18,7 +18,7 @@ The documentation is hosted at [this website](https://perun2.org/docs).
 ## Contribution
 
 Perun2 is developed by WojFil Games.
-Ideas for new features that follow the main use case of this project (extensions to the File Explorer) are really appreciated.
+Ideas for new features are really appreciated.
 Especially creative and crazy ones.
 There is a whole [page](FUTURE.md) dedicated to proposals of new features.
 If you have some ideas, feel free to make a pull request.

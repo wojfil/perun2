@@ -1,30 +1,40 @@
-# Uroboros
+# Perun2
 
-Uroboros is a statically-typed and domain-specific scripting language. 
-Inspired by SQL, it provides a readable interface for the most common file system operations.
+Perun2 is a statically typed scripting language for the file system. 
+Together with its GUI applications, it makes it easy to create extensions for the context menu of the File Explorer.
 
 ![Code examples](res/codes.gif)
 
 ## Repository
 
-This repository contains source code of the main Uroboros file.
-It uses command-line interface and is named 'uro.exe' in the installation folder.
-Remaining 3 GUI applications of the project are [here](https://github.com/wojfil/uroboros-gui-win3264).
+This repository contains source code of the main executable file of Perun2.
+It is named *perun2.exe* in the installation folder.
+The source code of the remaining GUI applications of this project is [here](https://github.com/wojfil/perun2-gui).
 
 ## Documentation
 
-The documentation is hosted at [this website](https://uroboros-lang.org/docs).
+The documentation is hosted at [this website](https://perun2.org/docs).
+
+## Contribution
+
+Perun2 is developed by WojFil Games.
+Ideas for new features that follow the main use case of this project (extensions to the File Explorer) are really appreciated.
+Especially creative and crazy ones.
+There is a whole [page](FUTURE.md) dedicated to proposals of new features.
+If you have some ideas, feel free to make a pull request.
 
 ## Build
 
-Uroboros is compiled with GCC 11.2.0. Project does not use Boost nor other dependencies.
-There are currently two possibilities for build: file 'Makefile' (GNU Make) or file 'Uroboros.cbp' (Code::Blocks build settings).
-Maybe a CMake build alternative will be added soon. If you want to contribute to the project, please read [this](CONTRIBUTING.md).
+What is required? 
+Generally, you need CMake 3.10 and any version of GCC that fully supports at least C++14. 
+For Windows OS, the *MinGW Makefiles* generator is used.
+To build this project, select a proper batch script from [here](src/build) and run it. 
+A file named *perun2.exe* located there is the output.
 
 ## License
 
-Uroboros is licensed under [GNU General Public License v3.0](LICENSE.txt).
+Perun2 is licensed under [GNU General Public License v3.0](LICENSE.txt).
 
 ## Install
 
-If you want to install Uroboros as user, follow [quick guide](https://uroboros-lang.org/docs/quickguide).
+If you want to install Perun2 as a user, follow [quick guide](https://perun2.org/docs/quickguide).

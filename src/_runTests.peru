@@ -1,6 +1,5 @@
-force copy 'bin/Release/perun2.exe'
-  to 'test/blackbox'
-  as 'perun2.exe';
+delete 'build/perun2.exe';
+copy 'build/perun2.exe' to 'test/blackbox';
   
 inside 'test/blackbox' {
   if exists('perun2.exe') {

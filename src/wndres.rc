@@ -10,7 +10,7 @@ BEGIN
       VALUE "FileDescription", "Perun2 main executable file"
       VALUE "FileVersion", "0.8.0"
       VALUE "InternalName", "perun2"
-      VALUE "LegalCopyright", ""
+      VALUE "LegalCopyright", "WojFil Games"
       VALUE "OriginalFilename", "perun2.exe"
       VALUE "ProductName", "Perun2"
       VALUE "ProductVersion", "0.8.0"

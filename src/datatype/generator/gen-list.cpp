@@ -114,7 +114,7 @@ _list ListFilter_Limit::getValue()
 
    const _list lst = list->getValue();
 
-   return n >= lst.size()
+   return n >= static_cast<_nint>(lst.size())
       ? lst
       : _list(lst.begin(), lst.begin() + n);
 };
@@ -129,7 +129,7 @@ _list ListFilter_Skip::getValue()
       return lst;
    }
 
-   return n >= lst.size()
+   return n >= static_cast<_nint>(lst.size())
       ? _list()
       : _list(lst.begin() + n, lst.end());
 };
@@ -166,7 +166,7 @@ _list ListFilter_Final::getValue()
 
    const _list lst = list->getValue();
 
-   return n >= lst.size()
+   return n >= static_cast<_nint>(lst.size())
       ? lst
       : _list(lst.end() - n, lst.end());
 };

@@ -248,8 +248,8 @@ void parseLikeCmp(_likeptr& result, const _str& pattern)
    const _size limit = length - 1;
 
    _bool fieldFail = false;
-   _int underscoresWithin = 0;
-   _int hashesWithin = 0;
+   _size underscoresWithin = 0;
+   _size hashesWithin = 0;
 
    for (_size i = 1; i < limit; i++) {
       switch (pattern[i]) {

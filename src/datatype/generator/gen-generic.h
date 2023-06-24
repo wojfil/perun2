@@ -158,19 +158,18 @@ public:
 
    T getValue() override {
       const std::vector<T> lst = list->getValue();
-      const _size length = lst.size();
 
-      if (length == 0) {
+      if (lst.empty()) {
          return T();
       }
 
       _nint id = index->getValue().toInt();
 
       if (id < NINT_ZERO) {
-         id += length;
+         id += lst.size();
       }
 
-      return (id < NINT_ZERO || id >= length)
+      return (id < NINT_ZERO || id >= static_cast<_nint>(lst.size()))
          ? T()
          : lst[id];
    }

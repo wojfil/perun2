@@ -77,19 +77,18 @@ _str RetreatedPath::getValue()
 _str CharAtIndex::getValue()
 {
    const _str v = value->getValue();
-   const _size len = v.size();
 
-   if (len == 0) {
+   if (v.empty()) {
       return v;
    }
 
    _nint n = index->getValue().toInt();
 
    if (n < NINT_ZERO) {
-      n += len;
+      n += v.size();
    }
 
-   return (n >= NINT_ZERO && n < len)
+   return (n >= NINT_ZERO && n < static_cast<_nint>(v.size()))
       ? toStr(v[static_cast<_size>(n)])
       : _str();
 }

@@ -109,9 +109,7 @@ _num F_Number::getValue()
       return _num();
    }
 
-   _int dotIndex = s.find(CHAR_DOT);
-
-   if (dotIndex == _str::npos) {
+   if (s.find(CHAR_DOT) == _str::npos) {
       try {
          const _nint i = std::stoll(s);
          return _num(i);

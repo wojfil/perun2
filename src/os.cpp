@@ -560,9 +560,9 @@ _num os_depth(const _str& value)
    _nint depth = NINT_ZERO;
    _int prevId = 0;
    
-   for (_int i = 0; i < value.size(); i++) {
+   for (_size i = 0; i < value.size(); i++) {
       if (value[i] == OS_SEPARATOR) {
-         const _int len = i - prevId;
+         const _size len = i - prevId;
 
          if (len == 1 && value[prevId] == CHAR_DOT) { }
          else if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
@@ -576,7 +576,7 @@ _num os_depth(const _str& value)
       }
    }
 
-   const _int len = value.size() - prevId;
+   const _size len = value.size() - prevId;
 
    if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
       depth--;
@@ -1593,14 +1593,14 @@ _str os_trimRetreats(const _str& path, _size& retreats)
       return _str();
    }
 
-   _int prevId = 0;
-   _int i = 0;
+   _size prevId = 0;
+   _size i = 0;
 
    for (; i < path.size(); i++) {
       const _char ch = path[i];
 
       if (path[i] == OS_SEPARATOR) {
-         const _int len = i - prevId;
+         const _size len = i - prevId;
          if (len == 1 && path[prevId] == CHAR_DOT) {
             prevId = i + 1;
             continue;
@@ -1736,7 +1736,7 @@ _bool os_extendPath(_str& result, const _str& path)
 
    _int prevId = 0;
    _int retreats = 0;
-   _int i = 0;
+   _size i = 0;
    _bool thereWereRetreats = false;
    const _bool wasAbsolute = os_isAbsolute(path);
    _bool wasEmpty = false;
@@ -2067,9 +2067,11 @@ _bool os_pathWasStacked(const _str& basePath)
       return false;
    }
 
-   for (_int i = len - 2; i >= 0; i--) {
+   const _int beginning = static_cast<_int>(len - 2);
+
+   for (_int i = beginning; i >= 0; i--) {
       if (basePath[i] == CHAR_OPENING_ROUND_BRACKET) {
-         if (i == (len - 2) || i == 0) {
+         if (i == beginning || i == 0) {
             return false;
          }
 
@@ -2095,10 +2097,10 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
 {
    const _size len = path.size();
 
-   for (_int i = len - 2; i >= 0; i--) {
+   for (_int i = static_cast<_int>(len - 2); i >= 0; i--) {
       if (!std::iswdigit(path[i])) {
          basePath = path.substr(0, i);
-         const _str numStr = path.substr(i + 1, len - i - 2);
+         const _str numStr = path.substr(i + 1, static_cast<_int>(len) - i - 2);
 
          try {
             index = std::stoll(numStr);

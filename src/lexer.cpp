@@ -289,7 +289,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       _char c1 = code[start + length - 2];
       _char c2 = code[start + length - 1];
       nums = true;
-      const _int n = length - 2;
+      const _size n = length - 2;
 
       for (_size i = start; i < n; i++) {
          if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
@@ -357,8 +357,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          }
       }
       case 1: {
-         _int pnt = start;
-         for (_int i = start; i < start + length; i++) {
+         _size pnt = start;
+         for (_size i = start; i < start + length; i++) {
             if (code[i] == CHAR_DOT) {
                pnt = i;
             }

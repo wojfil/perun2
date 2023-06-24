@@ -9,26 +9,23 @@ enable_language(RC)
 set(CMAKE_RC_COMPILER windres)
 
 add_compile_options(
+    -O2 
     -Wall 
     -Wno-reorder
     -Wno-unused-function
-    -O2 
-    -ftemplate-backtrace-limit=0
-    -fomit-frame-pointer
+    -fdata-sections
     -fexpensive-optimizations
     -ffunction-sections 
-    -fdata-sections
-    -fvisibility=hidden
     -flto
-    -std=c++17
-    -std=gnu++17
+    -fomit-frame-pointer
     -ftemplate-backtrace-limit=0
-    -s
-    -static-libstdc++
-    -static-libgcc
-    -static
+    -fvisibility=hidden
     -lole32
     -loleaut32
+    -s
+    -static
+    -static-libgcc
+    -static-libstdc++
 )
 
 add_executable(

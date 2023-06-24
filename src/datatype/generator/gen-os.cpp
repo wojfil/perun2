@@ -565,8 +565,8 @@ _bool RecursiveAll::hasNext()
                   this->context.loadData(value, data);
                   return true;
                }
-               else if ((!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-                  && (this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION)
+               else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                  && ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION))
                {
                   if (!this->prevFile) {
                      this->prevFile = true;

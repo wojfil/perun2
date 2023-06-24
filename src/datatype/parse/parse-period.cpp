@@ -56,7 +56,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, _p2& p2)
       hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
    }
 
-   if (len >= 3 && hasPluses || hasMinuses) {
+   if (len >= 3 && (hasPluses || hasMinuses)) {
       if (parsePeriodExp(result, tks, p2)) {
          return true;
       }

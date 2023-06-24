@@ -316,7 +316,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int sublen
          const _bool success = parseCommandsAsMember(com, right, nullptr, p2);
          p2.conditionContext.deleteLast();
 
-         if (com != nullptr) {
+         if (success) {
             p2.conditionContext.addElseIf(boo, com, leftFirst.line);
          }
       }

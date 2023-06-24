@@ -46,28 +46,20 @@ _p2::~_p2() noexcept
 
 _bool _p2::run()
 {
-   switch (this->parseState) {
-      case ParseState::ps_NotParsed: {
-         const _bool parsed = this->preParse() && this->parse() && this->postParse();
-         if (parsed) {
-            this->parseState = ParseState::ps_ParsingSuccess;
-            return this->runCommands();
-         }
-         else {
-            this->parseState = ParseState::ps_ParsingFailure;
-            return false;
-         }
-         break;
-      }
-      case ParseState::ps_ParsingSuccess: {
-         this->exitCode = EXITCODE_OK;
+   if (this->parseState == ParseState::ps_NotParsed) {
+      const _bool parsed = this->preParse() && this->parse() && this->postParse();
+
+      if (parsed) {
+         this->parseState = ParseState::ps_ParsingSuccess;
          return this->runCommands();
-         break;
       }
-      case ParseState::ps_ParsingFailure: {
-         return false;
-         break;
+      else {
+         this->parseState = ParseState::ps_ParsingFailure;
       }
+   }
+   else if (this->parseState == ParseState::ps_ParsingSuccess) {
+      this->exitCode = EXITCODE_OK;
+      return this->runCommands();
    }
 
    return false;

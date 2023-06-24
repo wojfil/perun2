@@ -498,8 +498,7 @@ select directories
 
 ## Monochromatic images
 
-Another boolean variable. We could apply it to both to *images* and *videos*. 
-However, I expect the implementations of the latter to be quite inefficient. 
+Another boolean variable. We could apply it to both to *images* and *videos*.
 
 ```
 select images
@@ -527,3 +526,30 @@ select directories
 ```
 
 This script finds all directories with only instrumental music inside.
+
+## Time expressed as a week
+
+We can introduce three variables - *currentWeek*, *lastWeek*, *nextWeek*.
+In this case, time means a period of 7 days.
+
+```
+select files 
+  where creation = currentWeek
+```
+
+There is one problem to be resolved. How to implement time shifting?
+
+```
+select files 
+  where creation = currentWeek - 30 hours
+```
+
+## More time variables
+
+For every day of the week, we can have two more values. For example: *lastMonday*, *nextMonday*. We can do the same with months.
+
+```
+select files 
+  where creation = lastFriday
+```
+

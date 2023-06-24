@@ -1597,8 +1597,6 @@ _str os_trimRetreats(const _str& path, _size& retreats)
    _size i = 0;
 
    for (; i < path.size(); i++) {
-      const _char ch = path[i];
-
       if (path[i] == OS_SEPARATOR) {
          const _size len = i - prevId;
          if (len == 1 && path[prevId] == CHAR_DOT) {
@@ -1753,8 +1751,6 @@ _bool os_extendPath(_str& result, const _str& path)
    }
 
    for (; i < path.size(); i++) {
-      const _char ch = path[i];
-
       if (path[i] == OS_SEPARATOR) {
          const _int len = i - prevId;
          if (len == 1 && path[prevId] == CHAR_DOT) {

@@ -434,7 +434,6 @@ void C_MoveTo::run()
 
       const _str fulln = os_fullname(oldPath);
       const _str newPath = str(newLoc, OS_SEPARATOR, fulln);
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath)) 
@@ -694,7 +693,6 @@ void C_CopyTo::run()
 
       const _str fulln = os_fullname(oldPath);
       const _str newPath = str(newLoc, OS_SEPARATOR, fulln);
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))

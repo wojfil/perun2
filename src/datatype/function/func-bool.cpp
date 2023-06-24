@@ -444,7 +444,6 @@ F_Exist::F_Exist(_genptr<_list>& a1, _p2& perun2)
 _bool F_Exist::getValue()
 {
    const _list values = this->arg1->getValue();
-   const _size len = values.size();
 
    for (const _str& val : values) {
       const _str& v = os_trim(val);

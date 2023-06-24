@@ -189,7 +189,6 @@ exitAsteriskBeginning:
    }
 
    const _size ulen = units.size();
-   const _bool hasDoubleAst = (info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0;
 
    // the pattern contains multiple asterisks
    // but they all appear within one 'path segment' (there is no separator \ / between them)

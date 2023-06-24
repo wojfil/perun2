@@ -532,7 +532,6 @@ static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, con
    }
 
    p2.contexts.closeAttributeScope();
-   const Token& f = tks.first();
 
    _genptr<_str> str_;
    if (parse::parse(p2, tks, str_)) {
@@ -655,7 +654,6 @@ static _bool c_createFiles(_comptr& result, const Token& word, const Tokens& tks
    }
 
    p2.contexts.closeAttributeScope();
-   const Token& f = tks.first();
 
    _genptr<_str> str_;
    if (parse::parse(p2, tks, str_)) {
@@ -705,7 +703,6 @@ static _bool c_createDirectories(_comptr& result, const Token& word, const Token
    }
 
    p2.contexts.closeAttributeScope();
-   const Token& f = tks.first();
 
    _genptr<_str> str_;
    if (parse::parse(p2, tks, str_)) {

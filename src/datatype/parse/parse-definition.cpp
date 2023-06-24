@@ -342,7 +342,6 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, _p2& p2)
 
             // retreat previous context
             // and add a new one instead
-            FileContext* prevContext = contextPtr;
             p2.contexts.retreatFileContext();
             _fcptr nextContext = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(nextContext.get());

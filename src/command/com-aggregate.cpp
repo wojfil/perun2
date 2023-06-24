@@ -121,7 +121,7 @@ void Aggregate::select()
       _bool anyGoodPath = false;
       _set goodPaths;
 
-      for (const std::pair<_str, _set>& pair : selectPaths) {
+      for (const auto& pair : selectPaths) {
          const _str& parent = pair.first;
          const _set& paths = pair.second;
 

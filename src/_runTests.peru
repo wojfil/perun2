@@ -1,4 +1,4 @@
-delete 'build/perun2.exe';
+delete 'test/blackbox/perun2.exe';
 copy 'build/perun2.exe' to 'test/blackbox';
   
 inside 'test/blackbox' {

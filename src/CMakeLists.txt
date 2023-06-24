@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD ${USED_CPP_STANDARD})
-SET(CMAKE_CXX_COMPILER C:/MinGW/bin/gcc.exe)
+set(CMAKE_CXX_COMPILER C:/MinGW/bin/gcc.exe)
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+
 project(perun2)
 
 enable_language(RC)
@@ -18,19 +20,16 @@ add_compile_options(
     -fexpensive-optimizations
     -ffunction-sections 
     -flto
+    -fno-rtti
     -fomit-frame-pointer
     -ftemplate-backtrace-limit=0
     -fvisibility=hidden
-    -lole32
-    -loleaut32
-    -s
-    -static
-    -static-libgcc
-    -static-libstdc++
+    -s 
 )
 
 add_executable(
     perun2 
+
     main.cpp 
     wndres.rc
 
@@ -110,6 +109,10 @@ add_executable(
     datatype/generator/gen-time.cpp
 )
 
-target_link_libraries(perun2
-    PRIVATE -lstdc++
+target_link_libraries(
+    perun2 PRIVATE
+
+    stdc++
+    ole32 
+    oleaut32
 )

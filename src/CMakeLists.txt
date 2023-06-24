@@ -12,6 +12,7 @@ add_compile_options(
     -O2 
     -Wall 
     -Wno-reorder
+    -Wno-switch
     -Wno-unused-function
     -fdata-sections
     -fexpensive-optimizations
@@ -110,6 +111,5 @@ add_executable(
 )
 
 target_link_libraries(perun2
-    PRIVATE
-    -lstdc++
+    PRIVATE -lstdc++
 )

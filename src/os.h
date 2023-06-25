@@ -39,14 +39,10 @@ void os_init();
 
 _tim os_now();
 _tim os_today();
-_tim os_yesterday();
-_tim os_tomorrow();
 
-void os_sleepForMs(const _nint ms, _p2& p2);
 void os_rawSleepForMs(const _nint ms);
 
 void os_loadAttributes(FileContext& context);
-void os_loadEmptyAttributes(FileContext& context);
 void os_loadDataAttributes(FileContext& context, const _fdata& data);
 
 // get values of filesystem variables:
@@ -61,16 +57,12 @@ _bool os_empty(const _str& path);
 _bool os_emptyFile(const _adata& data);
 _bool os_emptyDirectory(const _str& path);
 _bool os_encrypted(const _str& path);
-_str os_extension(const _str& value);
-_str os_fullname(const _str& value);
 _bool os_hasAttribute(const _str& path, const DWORD attribute);
 _bool os_hidden(const _str& path);
 _bool os_isFile(const _str& path);
 _bool os_isDirectory(const _str& path);
 _per os_lifetime(const _str& path);
 _tim os_modification(const _str& path);
-_str os_name(const _str& value);
-_str os_parent(const _str& path);
 _bool os_readonly(const _str& path);
 _nint os_size(const _str& path, _p2& p2);
 _nint os_sizeDirectory(const _str& path, _p2& p2);
@@ -113,11 +105,6 @@ _bool os_run(const _str& comm, const _str& location, _p2& p2);
 
 _bool os_isInvaild(const _str& path);
 uint32_t os_patternInfo(const _str& pattern);
-_bool os_bothAreSeparators(const _char left, const _char right);
-
-_str os_trim(const _str& path);
-_str os_softTrim(const _str& value);
-inline void os_escapeQuote(_str& path);
 
 _str os_doubleDotsPrefix(_int amount);
 _bool os_hasDotSegments(const _str& path);

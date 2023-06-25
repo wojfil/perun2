@@ -137,7 +137,7 @@ void C_RunWith::run()
       return;
    }
 
-   const _str com = str(base, L" ", os_quoteEmbraced(this->context->trimmed));
+   const _str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed));
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->perun2);
    this->perun2.contexts.success->value = s;
@@ -162,7 +162,7 @@ void C_RunWithWithString::run()
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = str(base, L" ", os_quoteEmbraced(this->context->trimmed), L" ", arg);
+   const _str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, arg);
 
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->perun2);
@@ -190,7 +190,7 @@ void C_RunWithWith::run()
    const _size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = str(base, L" ", os_quoteEmbraced(this->context->trimmed));
+      const _str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed));
       const _str loc = this->getLocation();
       const _bool s = os_run(com, loc, this->perun2);
       this->perun2.contexts.success->value = s;
@@ -207,12 +207,12 @@ void C_RunWithWith::run()
       _stream logStream;
       const _str& first = rawArgs[0];
       logStream << str(getCCName(this->context->trimmed), L" with '", base, L"' with '", first, L"'");
-      comStream << str(base, L" ", os_quoteEmbraced(this->context->trimmed), L" ", os_makeArg(first));
+      comStream << str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];
          logStream << str(L", '", a, L"'");
-         comStream << str(L" ", os_makeArg(a));
+         comStream << str(CHAR_SPACE, os_makeArg(a));
       }
 
       const _str com = comStream.str();
@@ -260,7 +260,7 @@ void C_RunWithPerun2WithString::run()
 
    const _str rawArg = argument->getValue();
    const _str arg = os_makeArg(rawArg);
-   const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), L" ", arg);
+   const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, arg);
 
    const _str loc = this->getLocation();
    const _bool s = os_run(com, loc, this->perun2);
@@ -303,12 +303,12 @@ void C_RunWithPerun2With::run()
       _stream logStream;
       const _str& first = rawArgs[0];
       logStream << str(getCCName(this->context->trimmed), L" with Perun2 with '", first, L"'");
-      comStream << str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), L" ", os_makeArg(first));
+      comStream << str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
       for (_size i = 1; i < len; i++) {
          const _str& a = rawArgs[i];
          logStream << str(L", '", a, L"'");
-         comStream << str(L" ", os_makeArg(a));
+         comStream << str(CHAR_SPACE, os_makeArg(a));
       }
 
       const _str com = comStream.str();

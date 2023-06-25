@@ -45,6 +45,7 @@ add_executable(
     lexer.cpp
     logger.cpp
     os.cpp
+    os-common.cpp
     perun2.cpp
     terminator.cpp
     token.cpp

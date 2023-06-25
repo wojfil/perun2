@@ -15,8 +15,7 @@
 #ifndef OS_H
 #define OS_H
 
-#include "datatype\datatype.h"
-#include "attribute.h"
+#include "os-common.h"
 
 
 namespace perun2
@@ -26,10 +25,6 @@ namespace perun2
 // in Windows OS, this separator is \ and the 'wrong separator' is /
 _constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
 _constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
-
-// while sleeping
-// check every 300 ms if the program received an interruption signal
-_constexpr _nint OS_SLEEP_UNIT = NINT_300;
 
 
 // for Windows OS only

@@ -121,6 +121,7 @@ uint32_t os_patternInfo(const _str& pattern);
 _bool os_bothAreSeparators(const _char left, const _char right);
 
 _str os_trim(const _str& path);
+_str os_softTrim(const _str& value);
 inline void os_escapeQuote(_str& path);
 
 _str os_doubleDotsPrefix(_int amount);

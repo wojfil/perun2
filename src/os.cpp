@@ -1537,6 +1537,39 @@ exitEnd:
    return result;
 }
 
+
+_str os_softTrim(const _str& value)
+{
+   const _int len = value.size();
+   _int start = 0;
+
+   while (start < len && value[start] == CHAR_SPACE) {
+      start++;
+   }
+
+   if (start == len) {
+      return _str();
+   }
+
+   _int end = len - 1;
+
+   while (end >= 0 && value[end] == CHAR_SPACE) {
+      end--;
+   }
+
+   if (start == 0) {
+      return end == len - 1
+         ? value
+         : value.substr(0, end + 1);
+   }
+   else {
+      return end == len - 1
+         ? value.substr(start)
+         : value.substr(start, end - start + 1);
+   }
+}
+
+
 inline void os_escapeQuote(_str& path)
 {
    const _size length = path.size();

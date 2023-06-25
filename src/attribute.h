@@ -71,7 +71,7 @@ public:
    
    _p2& perun2;
 
-protected:
+private:
    _aunit value = ATTR_NULL;
 };
 

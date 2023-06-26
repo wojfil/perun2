@@ -4,7 +4,6 @@ Perun2 is a statically typed scripting language for the file system.
 Together with its GUI applications, it makes it easy to create tiny programs runnable from the context menu of the File Explorer.
 
 ![Menu examples](res/menuexample.png)
-![Code examples](res/codes.gif)
 
 ## Repository
 

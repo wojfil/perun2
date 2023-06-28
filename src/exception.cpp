@@ -189,6 +189,11 @@ SyntaxError SyntaxError::keywordNotFollowedByNumber(const _str& value, const _in
    return SyntaxError(str(L"tokens after keyword '",value, L"' cannot be resolved to a number"), line);
 }
 
+SyntaxError SyntaxError::leftSideOfOperatorIsEmpty(const _str& operator_, const _int line)
+{
+   return SyntaxError(str(L"left side of operator '", operator_, L"' is empty"), line);
+}
+
 SyntaxError SyntaxError::minutesOutOfRange(const _str& value, const _int line)
 {
    return SyntaxError(str(L"value of minutes (", value, L") went out of range"), line);
@@ -234,6 +239,11 @@ SyntaxError SyntaxError::openedStringLteral(const _int line)
    return SyntaxError(L"an opened string literal is not closed", line);
 }
 
+SyntaxError SyntaxError::rightSideOfOperatorIsEmpty(const _str& operator_, const _int line)
+{
+   return SyntaxError(str(L"right side of operator '", operator_, L"' is empty"), line);
+}
+
 SyntaxError SyntaxError::secondsOutOfRange(const _str& value, const _int line)
 {
    return SyntaxError(str(L"value of seconds (", value, L") went out of range"), line);
@@ -242,6 +252,11 @@ SyntaxError SyntaxError::secondsOutOfRange(const _str& value, const _int line)
 SyntaxError SyntaxError::symbolNotFound(const _char value, const _int line)
 {
    return SyntaxError(str(L"symbol '", toStr(value), L"' not found"), line);
+}
+
+SyntaxError SyntaxError::syntaxOfBooleanExpressionNotValid(const _int line)
+{
+   return SyntaxError(L"syntax of a boolean expression is not valid", line);
 }
 
 SyntaxError SyntaxError::quotationMarkStringLteral(const _int line)

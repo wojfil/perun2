@@ -56,7 +56,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
             if (!(t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()))
             {
                if (!parseBoolExp(result, tks, p2)) {
-                  throw SyntaxError(L"syntax of a boolean expression is not valid", tks.first().line);
+                  throw SyntaxError::syntaxOfBooleanExpressionNotValid(tks.first().line);
                }
                return true;
             }
@@ -167,8 +167,7 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
    }
 
    if (!isBoolExpComputable(infList)) {
-      throw SyntaxError(L"syntax of a boolean expression is not valid",
-         tks.first().line);
+      throw SyntaxError::syntaxOfBooleanExpressionNotValid(tks.first().line);
    }
 
    return boolExpTree(result, infList);
@@ -634,20 +633,23 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
    if (pair.first.isEmpty()) {
-      emptyOperSideException(tks.first(), true, p2);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
    if (pair.second.isEmpty()) {
-      emptyOperSideException(tks.last(), false, p2);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
 
    _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
-   if (neg) {
-      pair.first.trimRight();
-      if (pair.first.isEmpty()) {
-         emptyOperSideException(tks.first(), true, p2);
-      }
-   }
 
+   if (neg) {
+      if (pair.first.getLength() == 1) {
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
+      }
+
+      pair.first.trimRight();
+   }
+   
    // first: try to build "Number IN NumList"
    _genptr<_bool> list;
 
@@ -713,29 +715,25 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    }
 }
 
-static void emptyOperSideException(const Token& oper, const bool& isLeft, _p2& p2)
-{
-   throw SyntaxError(str((isLeft ? STRING_LEFT : STRING_RIGHT),
-      L" side of operator '", oper.getOriginString(p2), L"' is empty"), oper.line);
-}
-
 static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
    if (pair.first.isEmpty()) {
-      emptyOperSideException(tks.first(), true, p2);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
    if (pair.second.isEmpty()) {
-      emptyOperSideException(tks.last(), false, p2);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
 
    const _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
-      pair.first.trimRight();
-      if (pair.first.isEmpty()) {
-         emptyOperSideException(tks.first(), true, p2);
+      if (pair.first.getLength() == 1) {
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
+
+      pair.first.trimRight();
    }
 
    _genptr<_str> value;

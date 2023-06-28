@@ -57,6 +57,7 @@ public:
    static SyntaxError keywordNotFound(const _int line);
    static SyntaxError keywordNotFollowedByBool(const _str& value, const _int line);
    static SyntaxError keywordNotFollowedByNumber(const _str& value, const _int line);
+   static SyntaxError leftSideOfOperatorIsEmpty(const _str& operator_, const _int line);
    static SyntaxError minutesOutOfRange(const _str& value, const _int line);
    static SyntaxError missingTimeVariableMember(const _str& value, const _int line);
    static SyntaxError missingLetterS(const _str& value, const _int line);
@@ -66,8 +67,10 @@ public:
    static SyntaxError negationByExclamation(const _int line);
    static SyntaxError numberTooBig(const _str& value, const _int line);
    static SyntaxError openedStringLteral(const _int line);
+   static SyntaxError rightSideOfOperatorIsEmpty(const _str& operator_, const _int line);
    static SyntaxError secondsOutOfRange(const _str& value, const _int line);
    static SyntaxError symbolNotFound(const _char value, const _int line);
+   static SyntaxError syntaxOfBooleanExpressionNotValid(const _int line);
    static SyntaxError quotationMarkStringLteral(const _int line);
    static SyntaxError youShouldUseApostrophesAndWrite(const _str& value, const _int line);
    static SyntaxError undefinedVarValue(const _str& value, const _int line);

@@ -55,6 +55,8 @@ typedef FILETIME                    _ftim;
 typedef std::wstringstream          _stream;
 typedef std::wostringstream         _ostream;
 
+typedef HANDLE                      _entry;
+
 
 }
 

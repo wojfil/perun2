@@ -71,6 +71,9 @@ _bool os_exists(const _str& path);
 _bool os_fileExists(const _str& path);
 _bool os_directoryExists(const _str& path);
 
+_bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output);
+_bool os_hasNextFile(_entry& entry, _fdata& output);
+
 // filesystem operations:
 // some of them take a reference to the running Perun2 instance
 // they can be stopped safely by an interruption signal during operation

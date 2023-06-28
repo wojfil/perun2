@@ -512,7 +512,7 @@ _bool os_emptyDirectory(const _str& path)
 {
    _fdata data;
    const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
-   HANDLE handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
+   _entry handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
    if (handle == INVALID_HANDLE_VALUE) {
       return true;
    }
@@ -623,7 +623,7 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
    _nint totalSize = NINT_ZERO;
    _fdata data;
    const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
-   HANDLE handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
+   _entry handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
 
    if (handle == INVALID_HANDLE_VALUE) {
       return totalSize;
@@ -679,6 +679,17 @@ _bool os_directoryExists(const _str& path)
 }
 
 
+_bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output)
+{
+   entry = FindFirstFile(P_WINDOWS_PATH(path), &output);
+   return entry != INVALID_HANDLE_VALUE;
+}
+
+_bool os_hasNextFile(_entry& entry, _fdata& output)
+{
+   return FindNextFile(entry, &output);
+}
+
 //////
 ///
 // filesystem commands:
@@ -722,7 +733,7 @@ _bool os_dropFile(const _str& path)
 
 _bool os_dropDirectory(const _str& path, _p2& p2)
 {
-   HANDLE hFind;
+   _entry hFind;
    _fdata FindFileData;
 
    _char DirPath[MAX_PATH];
@@ -904,7 +915,7 @@ _bool os_setTime(const _str& path, const _tim& creation,
       return false;
    }
 
-   HANDLE handle = CreateFile(P_WINDOWS_PATH(path),
+   _entry handle = CreateFile(P_WINDOWS_PATH(path),
       FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE,
       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -932,7 +943,7 @@ _bool os_createFile(const _str& path)
       return false;
    }
    
-   HANDLE h = CreateFileW(P_WINDOWS_PATH(path), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+   _entry h = CreateFileW(P_WINDOWS_PATH(path), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
    if (h != INVALID_HANDLE_VALUE) {
       _ftim ftime;
@@ -1006,7 +1017,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
 
    const _size length = oldPath.size() + 1;
 
-   HANDLE hFind;
+   _entry hFind;
    _fdata FindFileData;
 
    _char DirPath[MAX_PATH];

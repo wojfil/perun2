@@ -84,7 +84,7 @@ public:
    void reset() override;
 
 protected:
-   HANDLE handle;
+   _entry handle;
    const _str pattern;
 
    // Windows API has some trouble with handling patterns that consist of only dots and asterisks
@@ -109,7 +109,7 @@ public:
 
 protected:
    _bool goDeeper = false;
-   std::vector<HANDLE> handles;
+   std::vector<_entry> handles;
    _list paths;
    _list bases;
 };

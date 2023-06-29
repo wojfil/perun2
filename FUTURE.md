@@ -1,6 +1,8 @@
 # Future features
 
-Ideas for new features. Especially for new keywords. Feel free to make a pull request.
+Here are ideas for new features. Especially for new keywords. 
+All words of the English dictionary are already reserved for future use in syntax, so we can add almost anything.
+Sky is the limit.
 
 ## Limit by total size
 

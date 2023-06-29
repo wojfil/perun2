@@ -44,7 +44,7 @@ namespace os
    _constexpr _bool IS_FINAL =                    true;
    _constexpr _bool IS_NOT_FINAL =                false;
 
-   _str getDefaultPattern();
+   extern const _str DEFAULT_PATTERN;
 }
 
 
@@ -77,7 +77,7 @@ public:
    OsDefinitionPlain() = delete;
    OsDefinitionPlain(P_GEN_OS_ARGS_EXT)
       : OsDefinition(P_GEN_OS_ARGS_2),
-        pattern(isExceptional(patt) ? gen::os::getDefaultPattern() : patt),
+        pattern(isExceptional(patt) ? gen::os::DEFAULT_PATTERN : patt),
         exceptional(isExceptional(patt)),
         comparer(patt.substr(1)) { };
 

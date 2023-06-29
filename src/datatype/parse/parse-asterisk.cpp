@@ -44,7 +44,7 @@ _bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _in
          prefix = os_doubleDotsPrefix(retreats);
       }
 
-      result = std::make_unique<gen::All>(loc, p2, gen::os::getDefaultPattern(), gen::os::IS_RELATIVE_PATH, prefix);
+      result = std::make_unique<gen::All>(loc, p2, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, prefix);
       return true;
    }
 

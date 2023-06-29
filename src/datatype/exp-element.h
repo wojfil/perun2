@@ -53,8 +53,6 @@ public:
       : generator(element.type == ElementType::et_Operator ? _genptr<T>() : std::move(element.generator)),
       constant(element.constant), type(element.type), operator_(element.operator_), line(element.line) { };
 
-   //ExpElement<T>& operator=(ExpElement<T>&&) noexcept { };
-
    ExpElement<T>(ExpElement<T>&& other) noexcept 
    { 
       operator_ = other.operator_;

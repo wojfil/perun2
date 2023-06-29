@@ -511,21 +511,22 @@ _bool os_emptyFile(const _adata& data)
 _bool os_emptyDirectory(const _str& path)
 {
    _fdata data;
+   _entry handle;
    const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
-   _entry handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
-   if (handle == INVALID_HANDLE_VALUE) {
+
+   if (!os_hasFirstFile(pattern, handle, data)) {
       return true;
    }
-   else {
-      FindNextFile(handle, &data);
-      if (FindNextFile(handle, &data)) {
-         FindClose(handle);
+ 
+   while (os_hasNextFile(handle, data)) {
+      if (!os_isBrowsePath(data.cFileName)) {
+         os_closeEntry(handle);
          return false;
       }
-
-      FindClose(handle);
-      return true;
    }
+
+   os_closeEntry(handle);
+   return true;
 }
 
 _bool os_hasAttribute(const _str& path, const DWORD attribute)
@@ -623,15 +624,15 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
    _nint totalSize = NINT_ZERO;
    _fdata data;
    const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
-   _entry handle = FindFirstFile(P_WINDOWS_PATH(pattern), &data);
+   _entry handle;
 
-   if (handle == INVALID_HANDLE_VALUE) {
+   if (!os_hasFirstFile(pattern, handle, data)) {
       return totalSize;
    }
 
    do {
       if (!p2.state == State::s_Running) {
-         FindClose(handle);
+         os_closeEntry(handle);
          return NINT_MINUS_ONE;
       }
       const _str v = data.cFileName;
@@ -643,9 +644,9 @@ _nint os_sizeDirectory(const _str& path, _p2& p2)
             totalSize += static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
          }
       }
-   } while (FindNextFile(handle, &data));
+   } while (os_hasNextFile(handle, data));
 
-   FindClose(handle);
+   os_closeEntry(handle);
    return totalSize;
 }
 
@@ -688,6 +689,11 @@ _bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output)
 _bool os_hasNextFile(_entry& entry, _fdata& output)
 {
    return FindNextFile(entry, &output);
+}
+
+void os_closeEntry(_entry& entry)
+{
+   CloseHandle(entry);
 }
 
 //////
@@ -744,16 +750,17 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
    wcscpy(FileName, const_cast<_char*>(path.c_str()));
    wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
-   hFind = FindFirstFile(DirPath,&FindFileData);
+   if (!os_hasFirstFile(DirPath, hFind, FindFileData)) {
+      return false;
+   }
 
-   if (hFind == INVALID_HANDLE_VALUE) return false;
-      wcscpy(DirPath,FileName);
+   wcscpy(DirPath, FileName);
 
    _bool bSearch = true;
    while (bSearch) {
-      if (FindNextFile(hFind,&FindFileData)) {
-         if (!p2.state == State::s_Running) {
-            FindClose(hFind);
+      if (os_hasNextFile(hFind, FindFileData)) {
+         if (p2.isNotRunning()) {
+            os_closeEntry(hFind);
             return false;
          }
 
@@ -766,7 +773,7 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
          wcscat(FileName,FindFileData.cFileName);
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
             if (!os_dropDirectory(FileName, p2)) {
-               FindClose(hFind);
+               os_closeEntry(hFind);
                return false;
             }
 
@@ -778,7 +785,7 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
                os_unlock(FileName);
 
             if (!DeleteFileW(FileName)) {
-               FindClose(hFind);
+               os_closeEntry(hFind);
                return false;
             }
 
@@ -789,12 +796,12 @@ _bool os_dropDirectory(const _str& path, _p2& p2)
          if (GetLastError() == ERROR_NO_MORE_FILES)
             bSearch = false;
          else {
-            FindClose(hFind);
+            os_closeEntry(hFind);
             return false;
          }
       }
    }
-   FindClose(hFind);
+   os_closeEntry(hFind);
 
    return RemoveDirectoryW(const_cast<_char*>(P_WINDOWS_PATH(path))) != 0;
 }
@@ -1028,9 +1035,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
    wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
    wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
-   hFind = FindFirstFile(DirPath, &FindFileData);
-
-   if (hFind == INVALID_HANDLE_VALUE) {
+   if (!os_hasFirstFile(DirPath, hFind, FindFileData)) {
       return false;
    }
 
@@ -1038,9 +1043,9 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
 
    _bool bSearch = true;
    while (bSearch) {
-      if (FindNextFile(hFind, &FindFileData)) {
-         if (!p2.state == State::s_Running) {
-            FindClose(hFind);
+      if (os_hasNextFile(hFind, FindFileData)) {
+         if (p2.isNotRunning()) {
+            os_closeEntry(hFind);
             return false;
          }
 
@@ -1055,7 +1060,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
             if (!os_copyToDirectory(FileName, np, p2)) {
-               FindClose(hFind);
+               os_closeEntry(hFind);
                return false;
             }
 
@@ -1063,7 +1068,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
          }
          else {
             if (!os_copyToFile(FileName, np)) {
-               FindClose(hFind);
+               os_closeEntry(hFind);
                return false;
             }
 
@@ -1074,13 +1079,13 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2)
          if (GetLastError() == ERROR_NO_MORE_FILES)
             bSearch = false;
          else {
-            FindClose(hFind);
+            os_closeEntry(hFind);
             return false;
          }
       }
    }
 
-   FindClose(hFind);
+   os_closeEntry(hFind);
    return true;
 }
 

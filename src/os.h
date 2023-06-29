@@ -73,6 +73,7 @@ _bool os_directoryExists(const _str& path);
 
 _bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output);
 _bool os_hasNextFile(_entry& entry, _fdata& output);
+void os_closeEntry(_entry& entry);
 
 // filesystem operations:
 // some of them take a reference to the running Perun2 instance

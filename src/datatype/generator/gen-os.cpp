@@ -63,7 +63,7 @@ void OsDefinitionPlain::reset()
 {
    if (!first) {
       first = true;
-      FindClose(handle);
+      os_closeEntry(handle);
    }
 }
 
@@ -95,7 +95,7 @@ void OsDefinitionRecursive::reset()
       const _size len = handles.size();
       if (len != 0) {
          for (_size i = 0; i < len; i++) {
-            FindClose(handles[i]);
+            os_closeEntry(handles[i]);
          }
          handles.clear();
       }
@@ -109,8 +109,7 @@ _bool All::hasNext()
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
 
-         handle = FindFirstFile(P_WINDOWS_PATH(path), &data);
-         if (handle == INVALID_HANDLE_VALUE) {
+         if (!os_hasFirstFile(path, handle, data)) {
             return false;
          }
 
@@ -145,7 +144,7 @@ _bool All::hasNext()
       }
    }
 
-   while (FindNextFile(handle, &data)) {
+   while (os_hasNextFile(handle, data)) {
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
@@ -171,7 +170,7 @@ _bool All::hasNext()
    }
 
    first = true;
-   FindClose(handle);
+   os_closeEntry(handle);
    return false;
 }
 
@@ -181,8 +180,8 @@ _bool Files::hasNext()
       this->baseLocation = os_trim(location->getValue());
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
-         handle = FindFirstFile(P_WINDOWS_PATH(path), &data);
-         if (handle == INVALID_HANDLE_VALUE) {
+
+         if (!os_hasFirstFile(path, handle, data)) {
             return false;
          }
 
@@ -212,7 +211,7 @@ _bool Files::hasNext()
       }
    }
 
-   while (FindNextFile(handle, &data)) {
+   while (os_hasNextFile(handle, data)) {
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
@@ -233,7 +232,7 @@ _bool Files::hasNext()
    }
 
    first = true;
-   FindClose(handle);
+   os_closeEntry(handle);
    return false;
 }
 
@@ -244,8 +243,8 @@ _bool Directories::hasNext()
 
       if (os_directoryExists(this->baseLocation)) {
          const _str path = str(this->baseLocation, pattern);
-         handle = FindFirstFile(P_WINDOWS_PATH(path), &data);
-         if (handle == INVALID_HANDLE_VALUE) {
+
+         if (!os_hasFirstFile(path, handle, data)) {
             return false;
          }
 
@@ -275,7 +274,7 @@ _bool Directories::hasNext()
       }
    }
 
-   while (FindNextFile(handle, &data)) {
+   while (os_hasNextFile(handle, data)) {
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
@@ -296,7 +295,7 @@ _bool Directories::hasNext()
    }
 
    first = true;
-   FindClose(handle);
+   os_closeEntry(handle);
    return false;
 }
 
@@ -316,11 +315,10 @@ _bool RecursiveFiles::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), gen::os::getDefaultPattern());
-            handles.emplace_back(FindFirstFile(P_WINDOWS_PATH(p), &data));
-
-            if (handles.back() == INVALID_HANDLE_VALUE)
-            {
+            const _str path = str(paths.back(), gen::os::getDefaultPattern());
+            handles.emplace_back();
+            
+            if (!os_hasFirstFile(path, handles.back(), data)) {
                handles.pop_back();
                paths.pop_back();
                if (paths.empty()) {
@@ -356,7 +354,7 @@ _bool RecursiveFiles::hasNext()
          }
       }
       else {
-         if (FindNextFile(handles.back(), &data)) {
+         if (os_hasNextFile(handles.back(), data)) {
             const _str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
@@ -374,7 +372,7 @@ _bool RecursiveFiles::hasNext()
                      goDeeper = true;
                   }
                }
-               else  if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
+               else if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
                   value = this->bases.empty() ? v : str(bases.back(), v);
                   this->context.index->value = index;
                   index++;
@@ -387,7 +385,7 @@ _bool RecursiveFiles::hasNext()
             }
          }
          else {
-            FindClose(handles.back());
+            os_closeEntry(handles.back());
             handles.pop_back();
             paths.pop_back();
 
@@ -420,11 +418,10 @@ _bool RecursiveDirectories::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), gen::os::getDefaultPattern());
-            handles.emplace_back(FindFirstFile(P_WINDOWS_PATH(p), &data));
-
-            if (handles.back() == INVALID_HANDLE_VALUE)
-            {
+            const _str path = str(paths.back(), gen::os::getDefaultPattern());
+            handles.emplace_back();
+            
+            if (!os_hasFirstFile(path, handles.back(), data)) {
                handles.pop_back();
                paths.pop_back();
                if (paths.empty()) {
@@ -446,7 +443,7 @@ _bool RecursiveDirectories::hasNext()
          }
       }
       else {
-         if (FindNextFile(handles.back(), &data)) {
+         if (os_hasNextFile(handles.back(), data)) {
             const _str v = data.cFileName;
 
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -474,7 +471,7 @@ _bool RecursiveDirectories::hasNext()
             }
          }
          else {
-            FindClose(handles.back());
+            os_closeEntry(handles.back());
             handles.pop_back();
             paths.pop_back();
 
@@ -507,11 +504,10 @@ _bool RecursiveAll::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str p = str(paths.back(), gen::os::getDefaultPattern());
-            handles.emplace_back(FindFirstFile(P_WINDOWS_PATH(p), &data));
-
-            if (handles.back() == INVALID_HANDLE_VALUE)
-            {
+            const _str path = str(paths.back(), gen::os::getDefaultPattern());
+            handles.emplace_back();
+            
+            if (!os_hasFirstFile(path, handles.back(), data)) {
                handles.pop_back();
                paths.pop_back();
                if (paths.empty()) {
@@ -533,7 +529,7 @@ _bool RecursiveAll::hasNext()
          }
       }
       else {
-         if (FindNextFile(handles.back(), &data)) {
+         if (os_hasNextFile(handles.back(), data)) {
             const _str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
@@ -585,7 +581,7 @@ _bool RecursiveAll::hasNext()
             }
          }
          else {
-            FindClose(handles.back());
+            os_closeEntry(handles.back());
             handles.pop_back();
             paths.pop_back();
 

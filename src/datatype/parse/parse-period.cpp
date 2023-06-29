@@ -152,6 +152,13 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool neg
 _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _p2& p2)
 {
    const Token& last = tks.last();
+   const _bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE, p2);
+   const _bool lastIsMulti = last.isWord(STRINGS_PERIOD_MULTI, p2);
+
+   if (!(lastIsSingle || lastIsMulti)) {
+      return false;
+   }
+
    Tokens tks2(tks);
    tks2.trimRight();
 
@@ -160,11 +167,11 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, _p2& p2)
       return false;
    }
 
-   if (last.isWord(STRINGS_PERIOD_SINGLE, p2)) {
+   if (lastIsSingle) {
       throw SyntaxError::missingLetterS(last.getOriginString(p2), last.line);
    }
 
-   if (last.isWord(STRINGS_PERIOD_MULTI, p2)) {
+   if (lastIsMulti) {
       const Period::PeriodUnit& unit = toPeriodUnit(last, p2);
       result = std::make_unique<gen::PeriodUnit>(num, unit);
       return true;

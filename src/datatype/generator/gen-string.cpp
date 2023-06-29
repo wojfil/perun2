@@ -20,12 +20,65 @@
 namespace perun2::gen
 {
 
-_str ConcatString::getValue()
+
+ConcatString_2::ConcatString_2(_genptr<_str>& v1, _genptr<_str>& v2) 
+   : value1(std::move(v1)), value2(std::move(v2)) { };
+
+ConcatString_3::ConcatString_3(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3) 
+   : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)) { };
+
+ConcatString_4::ConcatString_4(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4) 
+   : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)), value4(std::move(v4)) { };
+
+ConcatString_5::ConcatString_5(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4, _genptr<_str>& v5) 
+   : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)), value4(std::move(v4)), value5(std::move(v5)) { };
+
+ConcatString_6::ConcatString_6(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4, _genptr<_str>& v5, _genptr<_str>& v6) 
+   : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)), value4(std::move(v4)), value5(std::move(v5)), value6(std::move(v6)) { };
+
+
+_str ConcatString_2::getValue()
+{
+   return str(this->value1->getValue(), this->value2->getValue());
+};
+
+_str ConcatString_3::getValue()
+{
+   return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue());
+};
+
+_str ConcatString_4::getValue()
+{
+   return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue(),
+              this->value4->getValue());
+};
+
+_str ConcatString_5::getValue()
+{
+   return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue(),
+              this->value4->getValue(), this->value5->getValue());
+};
+
+_str ConcatString_6::getValue()
+{
+   return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue(),
+              this->value4->getValue(), this->value5->getValue(), this->value6->getValue());
+};
+
+
+ConcatString_Multi::ConcatString_Multi(std::vector<_genptr<_str>>& val)
+{
+   langutil::transferUniquePtrs(val, this->values);
+};
+
+_str ConcatString_Multi::getValue()
 {
    _stream ss;
-   for (_size i = 0; i < length; i++) {
-      ss << value[i]->getValue();
+
+   for (const _genptr<_str>& val : this->values) {
+      ss << val->getValue();
    }
+
    return ss.str();
 }
 
@@ -35,7 +88,6 @@ _str StringBinary::getValue()
       ? value->getValue()
       : _str();
 }
-
 
 LocationReference::LocationReference(_p2& p2)
    : context(*p2.contexts.getLocationContext()) { };

@@ -28,19 +28,85 @@ namespace perun2
 namespace perun2::gen
 {
 
-struct ConcatString : Generator<_str>
+
+struct ConcatString_2 : Generator<_str>
 {
 public:
-   ConcatString(std::vector<_genptr<_str>>& val) : length(val.size())
-   {
-      langutil::transferUniquePtrs(val, this->value);
-   };
-
+   ConcatString_2(_genptr<_str>& v1, _genptr<_str>& v2);
    _str getValue() override;
 
 private:
-   std::vector<_genptr<_str>> value;
-   const _size length;
+   _genptr<_str> value1;
+   _genptr<_str> value2;
+};
+
+
+struct ConcatString_3 : Generator<_str>
+{
+public:
+   ConcatString_3(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3);
+   _str getValue() override;
+
+private:
+   _genptr<_str> value1;
+   _genptr<_str> value2;
+   _genptr<_str> value3;
+};
+
+
+struct ConcatString_4 : Generator<_str>
+{
+public:
+   ConcatString_4(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4);
+   _str getValue() override;
+
+private:
+   _genptr<_str> value1;
+   _genptr<_str> value2;
+   _genptr<_str> value3;
+   _genptr<_str> value4;
+};
+
+
+struct ConcatString_5 : Generator<_str>
+{
+public:
+   ConcatString_5(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4, _genptr<_str>& v5);
+   _str getValue() override;
+
+private:
+   _genptr<_str> value1;
+   _genptr<_str> value2;
+   _genptr<_str> value3;
+   _genptr<_str> value4;
+   _genptr<_str> value5;
+};
+
+
+struct ConcatString_6 : Generator<_str>
+{
+public:
+   ConcatString_6(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4, _genptr<_str>& v5, _genptr<_str>& v6);
+   _str getValue() override;
+
+private:
+   _genptr<_str> value1;
+   _genptr<_str> value2;
+   _genptr<_str> value3;
+   _genptr<_str> value4;
+   _genptr<_str> value5;
+   _genptr<_str> value6;
+};
+
+
+struct ConcatString_Multi : Generator<_str>
+{
+public:
+   ConcatString_Multi(std::vector<_genptr<_str>>& val);
+   _str getValue() override;
+
+private:
+   std::vector<_genptr<_str>> values;
 };
 
 

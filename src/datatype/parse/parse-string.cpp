@@ -224,7 +224,38 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _p2& p2)
       }
    }
 
-   _genptr<_str> concat = std::make_unique<gen::ConcatString>(result);
+   _genptr<_str> concat;
+
+   switch (result.size()) {
+      case 1: {
+         concat = std::move(result[0]);
+         break;
+      }
+      case 2: {
+         concat = std::make_unique<gen::ConcatString_2>(result[0], result[1]);
+         break;
+      }
+      case 3: {
+         concat = std::make_unique<gen::ConcatString_3>(result[0], result[1], result[2]);
+         break;
+      }
+      case 4: {
+         concat = std::make_unique<gen::ConcatString_4>(result[0], result[1], result[2], result[3]);
+         break;
+      }
+      case 5: {
+         concat = std::make_unique<gen::ConcatString_5>(result[0], result[1], result[2], result[3], result[4]);
+         break;
+      }
+      case 6: {
+         concat = std::make_unique<gen::ConcatString_6>(result[0], result[1], result[2], result[3], result[4], result[5]);
+         break;
+      }
+      default: {
+         concat = std::make_unique<gen::ConcatString_Multi>(result);
+         break;
+      }
+   }
 
    if (allConstants) {
       // if all units of string concatenation are constant values

@@ -682,7 +682,7 @@ _bool os_directoryExists(const _str& path)
 
 _bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output)
 {
-   entry = FindFirstFile(P_WINDOWS_PATH(path), &output);
+   entry = FindFirstFileEx(P_WINDOWS_PATH(path), FindExInfoBasic, &output, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH); 
    return entry != INVALID_HANDLE_VALUE;
 }
 

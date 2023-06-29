@@ -1430,7 +1430,7 @@ _bool os_retreatPath(_str& path)
 
 void os_retreatPath(_str& path, _int times)
 {
-   if (path.empty() || times <= 0) {
+   if (times <= 0 || path.empty()) {
       return;
    }
 

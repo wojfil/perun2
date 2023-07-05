@@ -37,6 +37,7 @@ _constexpr _nint NINT_THOUSAND =          1000LL;
 _constexpr _nint NINT_1024 =              1024LL;
 _constexpr _nint NINT_1950 =              1950LL;
 _constexpr _nint NINT_2100 =              2100LL;
+_constexpr _nint NINT_MILLION =        1000000LL;
 
 _constexpr _nint SIZE_UNIT_KB =      NINT_1024;
 _constexpr _nint SIZE_UNIT_MB =      SIZE_UNIT_KB * SIZE_UNIT_KB;

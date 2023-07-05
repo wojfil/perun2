@@ -29,6 +29,7 @@ inline static _bool isNewLine(const _char ch);
 inline static _bool isAllowedInWord(const _char ch);
 inline static _bool isDoubleChar(const _char ch);
 inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2);
+inline static _nint decimalSuffixMulti(const _char c);
 
 }
 

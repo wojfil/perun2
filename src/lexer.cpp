@@ -406,7 +406,19 @@ inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2)
    }
 }
 
-
+inline static _nint decimalSuffixMulti(const _char c)
+{
+   switch (c) {
+      case CHAR_k: 
+      case CHAR_K:
+         return NINT_THOUSAND;
+      case CHAR_m: 
+      case CHAR_M:
+         return NINT_MILLION;
+      default:
+         return NINT_MINUS_ONE;
+   }
+}
 
 inline static _bool isSymbol(const _char ch)
 {

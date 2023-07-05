@@ -286,8 +286,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    }
 
    if (length > 2 && dots <= 1) {
-      _char c1 = code[start + length - 2];
-      _char c2 = code[start + length - 1];
+      const _char c1 = code[start + length - 2];
+      const _char c2 = code[start + length - 1];
       nums = true;
       const _size n = length - 2;
 
@@ -299,17 +299,18 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       }
 
       if (nums) {
-         _nint mult = getSuffixMultiplier(c1, c2);
-         if (mult != NINT_MINUS_ONE) {
-            _str value2 = code.substr(start, length - 2);
+         const _nint sizeUnit = fileSizeSuffixMulti(c1, c2);
+         if (sizeUnit != NINT_MINUS_ONE) {
+            const _str value2 = code.substr(start, length - 2);
+
             if (dots == 0) {
                try {
                   // check for number overflow
                   // the number is multiplied by the suffix
                   // and then divided back
                   _nint i = std::stoll(value2);
-                  _nint i2 = i * mult;
-                  if (mult != NINT_ZERO && i2 / mult != i) {
+                  _nint i2 = i * sizeUnit;
+                  if (sizeUnit != NINT_ZERO && i2 / sizeUnit != i) {
                      throw SyntaxError::numberTooBig(code.substr(start, length), line);
                   }
                   return Token(_num(i2), line, start, length, NumberMode::nm_Size, p2);
@@ -321,7 +322,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
             else {
                try {
                   _ndouble d = stringToDouble(value2);
-                  d *= mult;
+                  d *= sizeUnit;
 
                   return Token(_num(d), line, start, length, NumberMode::nm_Size, p2);
                }
@@ -367,7 +368,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          if (pnt == length - 1) {
             throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
          }
-         
+
          return Token(line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
       }
       default: {
@@ -378,7 +379,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    return Token(start, length, line, p2);
 }
 
-inline static _nint getSuffixMultiplier(const _char c1, const _char c2)
+inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2)
 {
    if (!(c2 == CHAR_b || c2 == CHAR_B)) {
       return NINT_MINUS_ONE;
@@ -404,6 +405,8 @@ inline static _nint getSuffixMultiplier(const _char c1, const _char c2)
          return NINT_MINUS_ONE;
    }
 }
+
+
 
 inline static _bool isSymbol(const _char ch)
 {

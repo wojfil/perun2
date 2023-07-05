@@ -367,10 +367,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          if (pnt == length - 1) {
             throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
          }
-
-         _str os1 = code.substr(start, pnt - start);
-         _str os2 = code.substr(pnt + 1, start + length - pnt - 1);
-
+         
          return Token(line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
       }
       default: {

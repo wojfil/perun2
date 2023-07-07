@@ -247,7 +247,7 @@ std::vector<Token> tokenize(const _str& code, _p2& p2)
 static Token wordToken(const _str& code, const _size start, const _size length, const _int line, _p2& p2)
 {
    _int dots = 0;
-   _bool nums = true;
+   _bool onlyDigitsAndDots = true;
 
    for (_size i = start; i < start + length; i++) {
       if (!std::iswdigit(code[i])) {
@@ -255,128 +255,125 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
             dots++;
          }
          else {
-            nums = false;
+            onlyDigitsAndDots = false;
          }
       }
    }
 
-   if (nums) {
+   // try to parse a numeric constant: 20
+   if (onlyDigitsAndDots) {
       const _str value = code.substr(start, length);
-      switch (dots) {
-         case 0: {
-            try {
-               return Token(_num(std::stoll(value)), line, start, length, NumberMode::nm_Normal, p2);
-            }
-            catch (...) {
-               throw SyntaxError::numberTooBig(code.substr(start, length), line);
-            }
-         }
-         case 1: {
-            try {
-               return Token(_num(stringToDouble(value)), line, start, length, NumberMode::nm_Normal, p2);
-            }
-            catch (...) {
-               throw SyntaxError::numberTooBig(code.substr(start, length), line);
-            }
-         }
-         default: {
-            throw SyntaxError::multipleDotsInNumber(value, line);
-         }
-      }
+      return numberToken(code, value, start, length, NINT_ONE, NumberMode::nm_Normal, dots, line, p2);
    }
 
-   if (length > 2 && dots <= 1) {
-      const _char c1 = code[start + length - 2];
-      const _char c2 = code[start + length - 1];
-      nums = true;
-      const _size n = length - 2;
+   // try to parse size unit constant: 20mb
+   if (length > 2) {
+      const _nint sizeUnit = fileSizeSuffixMulti(code[start + length - 2], code[start + length - 1]);
 
-      for (_size i = start; i < n; i++) {
-         if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
-            nums = false;
-            break;
+      if (sizeUnit != NINT_MINUS_ONE) {
+         _bool hasLetters = false;
+
+         for (_size i = start; i < (length - 2); i++) {
+            if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
+               hasLetters = true;
+               break;
+            }
          }
-      }
 
-      if (nums) {
-         const _nint sizeUnit = fileSizeSuffixMulti(c1, c2);
-         if (sizeUnit != NINT_MINUS_ONE) {
+         if (! hasLetters) {
             const _str value2 = code.substr(start, length - 2);
-
-            if (dots == 0) {
-               try {
-                  // check for number overflow
-                  // the number is multiplied by the suffix
-                  // and then divided back
-                  _nint i = std::stoll(value2);
-                  _nint i2 = i * sizeUnit;
-                  if (sizeUnit != NINT_ZERO && i2 / sizeUnit != i) {
-                     throw SyntaxError::numberTooBig(code.substr(start, length), line);
-                  }
-                  return Token(_num(i2), line, start, length, NumberMode::nm_Size, p2);
-               }
-               catch (...) {
-                  throw SyntaxError::numberTooBig(code.substr(start, length), line);
-               }
-            }
-            else {
-               try {
-                  _ndouble d = stringToDouble(value2);
-                  d *= sizeUnit;
-
-                  return Token(_num(d), line, start, length, NumberMode::nm_Size, p2);
-               }
-               catch (...) {
-                  throw SyntaxError::numberTooBig(code.substr(start, length), line);
-               }
-            }
+            return numberToken(code, value2, start, length, sizeUnit, NumberMode::nm_Size, dots, line, p2);
          }
       }
    }
 
-   switch (dots) {
-      case 0: {
-         _str word = code.substr(start, length);
-         toLower(word);
+   if (dots > 1) {
+      throw SyntaxError::multipleDotsInWord(code.substr(start, length), line);
+   }
 
-         auto fm = p2.keywordsData.MONTHS.find(word);
-         if (fm != p2.keywordsData.MONTHS.end()) {
-            return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, p2);
-         }
+   if (dots == 0) {
+      _str word = code.substr(start, length);
+      toLower(word);
 
-         auto fw = p2.keywordsData.WEEKDAYS.find(word);
-         if (fw != p2.keywordsData.WEEKDAYS.end()) {
-            return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, p2);
-         }
-
-         auto fk = p2.keywordsData.KEYWORDS.find(word);
-         if (fk == p2.keywordsData.KEYWORDS.end()) {
-            return Token(line, start, length, p2);
-         }
-         else {
-            return Token(fk->second, line, start, length, p2);
-         }
+      auto fm = p2.keywordsData.MONTHS.find(word);
+      if (fm != p2.keywordsData.MONTHS.end()) {
+         return Token(_num(fm->second), line, start, length, NumberMode::nm_Month, p2);
       }
-      case 1: {
-         _size pnt = start;
-         for (_size i = start; i < start + length; i++) {
-            if (code[i] == CHAR_DOT) {
-               pnt = i;
-            }
-         }
 
-         if (pnt == length - 1) {
-            throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
-         }
-
-         return Token(line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
+      auto fw = p2.keywordsData.WEEKDAYS.find(word);
+      if (fw != p2.keywordsData.WEEKDAYS.end()) {
+         return Token(_num(fw->second), line, start, length, NumberMode::nm_WeekDay, p2);
       }
-      default: {
-         throw SyntaxError::multipleDotsInWord(code.substr(start, length), line);
+
+      auto fk = p2.keywordsData.KEYWORDS.find(word);
+      if (fk == p2.keywordsData.KEYWORDS.end()) {
+         return Token(line, start, length, p2);
+      }
+      else {
+         return Token(fk->second, line, start, length, p2);
       }
    }
 
+   if (dots == 1) {
+      _size pnt = start;
+      for (_size i = start; i < start + length; i++) {
+         if (code[i] == CHAR_DOT) {
+            pnt = i;
+         }
+      }
+
+      if (pnt == length - 1) {
+         throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
+      }
+
+      return Token(line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
+   }
+   
    return Token(start, length, line, p2);
+}
+
+inline static Token numberToken(const _str& code, const _str& value, const _size start, const _size length, 
+   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, _p2& p2)
+{
+   if (dots > 1) {
+      throw SyntaxError::multipleDotsInNumber(value, line);
+   }
+
+   if (dots == 0) {
+      try {
+         _nint i = std::stoll(value);
+
+         if (multiplier != NINT_ONE) {
+            // look for number overflow
+            // the number is multiplied by the suffix
+            // and then divided back
+
+            _nint i2 = i * multiplier;
+            if (multiplier != NINT_ZERO && i2 / multiplier != i) {
+               throw SyntaxError::numberTooBig(code.substr(start, length), line);
+            }
+
+            return Token(_num(i2), line, start, length, mode, p2);
+         }
+
+         return Token(_num(i), line, start, length, mode, p2);
+      }
+      catch (...) {
+         throw SyntaxError::numberTooBig(code.substr(start, length), line);
+      }
+   }
+
+   try {
+      _ndouble d = stringToDouble(value);
+      if (multiplier != NINT_ONE) {
+         d *= multiplier;
+      }
+
+      return Token(_num(d), line, start, length, mode, p2);
+   }
+   catch (...) {
+      throw SyntaxError::numberTooBig(code.substr(start, length), line);
+   }     
 }
 
 inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2)

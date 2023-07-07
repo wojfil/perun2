@@ -362,22 +362,23 @@ inline static Token numberToken(const _str& code, const _str& value, const _size
 
    if (dots == 0) {
       try {
-         _nint i = std::stoll(value);
+         _nint integer = std::stoll(value);
 
          if (multiplier != NINT_ONE) {
             // look for number overflow
             // the number is multiplied by the suffix
             // and then divided back
 
-            _nint i2 = i * multiplier;
-            if (multiplier != NINT_ZERO && i2 / multiplier != i) {
+            _nint i2 = integer * multiplier;
+
+            if (multiplier != NINT_ZERO && i2 / multiplier != integer) {
                throw SyntaxError::numberTooBig(code.substr(start, length), line);
             }
 
             return Token(_num(i2), line, start, length, mode, p2);
          }
 
-         return Token(_num(i), line, start, length, mode, p2);
+         return Token(_num(integer), line, start, length, mode, p2);
       }
       catch (...) {
          throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -385,12 +386,17 @@ inline static Token numberToken(const _str& code, const _str& value, const _size
    }
 
    try {
-      _ndouble d = stringToDouble(value);
-      if (multiplier != NINT_ONE) {
-         d *= multiplier;
+      _ndouble dbl = stringToDouble(value);
+      dbl *= multiplier;
+
+      // try to convert the number into integer
+      // if it equals the base double value, create an integer constant instead
+      const _nint integer = static_cast<_nint>(dbl);
+      if (dbl == integer) {
+         return Token(_num(integer), line, start, length, mode, p2);
       }
 
-      return Token(_num(d), line, start, length, mode, p2);
+      return Token(_num(dbl), line, start, length, mode, p2);
    }
    catch (...) {
       throw SyntaxError::numberTooBig(code.substr(start, length), line);

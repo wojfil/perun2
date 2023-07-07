@@ -266,7 +266,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       return numberToken(code, value, start, length, NINT_ONE, NumberMode::nm_Normal, dots, line, p2);
    }
 
-   // try to parse size unit constant: 20mb
+   // try to parse a size unit constant: 20mb
    if (length > 2) {
       const _nint sizeUnit = fileSizeSuffixMulti(code[start + length - 2], code[start + length - 1]);
 
@@ -283,6 +283,27 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          if (! hasLetters) {
             const _str value2 = code.substr(start, length - 2);
             return numberToken(code, value2, start, length, sizeUnit, NumberMode::nm_Size, dots, line, p2);
+         }
+      }
+   }
+
+   // try to parse a decimal constant: 20k
+   if (length > 1) {
+      const _nint multiplier = decimalSuffixMulti(code[start + length - 1]);
+
+      if (multiplier != NINT_MINUS_ONE) {
+         _bool hasLetters = false;
+
+         for (_size i = start; i < (length - 1); i++) {
+            if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
+               hasLetters = true;
+               break;
+            }
+         }
+
+         if (! hasLetters) {
+            const _str value2 = code.substr(start, length - 1);
+            return numberToken(code, value2, start, length, multiplier, NumberMode::nm_Decimal, dots, line, p2);
          }
       }
    }

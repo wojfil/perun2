@@ -167,7 +167,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       if (d_has) {
          this->location = os_isAbsolute(d_value)
             ? d_value
-            : str(cdLocation, OS_SEPARATOR, d_value);
+            : os_join(cdLocation, d_value);
       }
       else {
          this->location = cdLocation;
@@ -181,7 +181,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       }
 
       if (!os_isAbsolute(filePath)) {
-         filePath = str(cdLocation, OS_SEPARATOR, filePath);
+         filePath = os_join(cdLocation, filePath);
       }
 
       if (os_hasExtension(filePath)) {
@@ -211,7 +211,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       if (d_has) {
          this->location = os_isAbsolute(d_value)
             ? d_value
-            : str(basisLocation, OS_SEPARATOR, d_value);
+            : os_join(basisLocation, d_value);
       }
       else {
          this->location = basisLocation;

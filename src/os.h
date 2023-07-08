@@ -32,7 +32,7 @@ _constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
 // but newer APIs make it possible to avoid this restriction as below
 #define P_WINDOWS_PATH(path) (path.size() < MAX_PATH - 1) \
    ? path.c_str() \
-   : str(STRING_LONG_PATH_PREFIX, path).c_str() \
+   : str(STRING_WINDOWS_PATH_PREFIX, path).c_str() \
 
 
 void os_init();

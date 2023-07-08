@@ -46,7 +46,7 @@ extern const _list ROMAN_STRING_LITERALS;
 extern const _list STRINGS_ASCII;
 
 _constexpr _char STRING_FILE_OPEN_MODE[] =       L"rtS, ccs=UTF-8";
-_constexpr _char STRING_LONG_PATH_PREFIX[] =     L"\\\\?\\";
+_constexpr _char STRING_WINDOWS_PATH_PREFIX[] =  L"\\\\?\\";
 
 _constexpr _char EMPTY_STRING[] =                { };
 _constexpr _char STRING_NO_TIME[] =              L"no time";

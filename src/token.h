@@ -33,13 +33,15 @@ struct _p2;
 // 3) month            : april, july, ...
 // 4) day of the week  : monday, sunday, ...
 // 5) decimal constant : 20k, 100m ..
+// 6) infix constant   : 2k23, 2k20 ..
 enum NumberMode
 {
    nm_Normal = 0,
    nm_Size,
    nm_Month,
    nm_WeekDay,
-   nm_Decimal
+   nm_Decimal,
+   nm_Infix
 };
 
 

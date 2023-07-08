@@ -273,7 +273,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       if (sizeUnit != NINT_MINUS_ONE) {
          _bool hasLetters = false;
 
-         for (_size i = start; i < (length - 2); i++) {
+         for (_size i = start; i < (start + length - 2); i++) {
             if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
                hasLetters = true;
                break;
@@ -294,7 +294,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
       if (multiplier != NINT_MINUS_ONE) {
          _bool hasLetters = false;
 
-         for (_size i = start; i < (length - 1); i++) {
+         for (_size i = start; i < (start + length - 1); i++) {
             if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
                hasLetters = true;
                break;
@@ -305,6 +305,55 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
             const _str value2 = code.substr(start, length - 1);
             return numberToken(code, value2, start, length, multiplier, NumberMode::nm_Decimal, dots, line, p2);
          }
+      }
+   }
+
+   // try to parse K infix: 2k23
+   if (dots == 0) {
+      _int kid = -1;
+
+      for (_size i = start; i < start + length; i++) {
+         const _char ch = code[i];
+
+         if (ch == CHAR_k || ch == CHAR_K) {
+            if (kid == -1) {
+               kid = i;
+            }
+            else {
+               kid = -1;
+               break;
+            }
+         }
+         else if (!std::iswdigit(ch)) {
+            kid = -1;
+            break;
+         }
+      }
+
+      const _int min = static_cast<_int>(start + length) - 4;
+      const _int max = static_cast<_int>(start + length) - 1;
+
+      if (kid != -1 && kid > start && kid < max && kid >= min) {
+         _nint first;
+         _nint second;
+         const _str firstString = code.substr(start, kid - start);
+         const _str secondString = code.substr(kid + 1, start + length - kid - 1);
+
+         try {
+            first = std::stoll(firstString);
+         }
+         catch (...) {
+            throw SyntaxError::numberTooBig(firstString, line);
+         }
+
+         try {
+            second = std::stoll(secondString);
+         }
+         catch (...) {
+            throw SyntaxError::numberTooBig(secondString, line);
+         }
+
+         return Token(_num(first * NINT_THOUSAND + second), line, start, length, NumberMode::nm_Infix, p2);
       }
    }
 

@@ -25,6 +25,7 @@ namespace perun2
 _constexpr _bool TIME_WITH_SECONDS = true;
 _constexpr _bool TIME_WITHOUT_SECONDS = false;
 
+
 struct Time
 {
    // time can be defined in 4 forms:
@@ -43,6 +44,8 @@ struct Time
    Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi);
    Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi, const _tnum sec);
 
+// todo:
+// change these 6 numbers into one value: time_t
    _tnum year;
    _tnum day;
    _tnum month;

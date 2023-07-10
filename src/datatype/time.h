@@ -31,6 +31,7 @@ struct Time
    // time can be defined in 4 forms:
    enum TimeType
    {
+      tt_Null = -1,
       tt_YearMonth = 0,     // contains month and year
       tt_Date = 1,          // contains day, month and year
       tt_ShortClock = 2,    // contains day, month, year, hour, minute
@@ -75,8 +76,8 @@ struct Time
    Time toDate() const;
    _tnum getWeekDay() const;
    _bool equalsExactly(const Time& tim) const;
-   _bool isEmpty() const;
    void setValue(const Time& tim);
+   void clear();
 
    Time& operator += (const Period& per);
    Time& operator -= (const Period& per);

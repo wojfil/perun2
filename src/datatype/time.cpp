@@ -24,7 +24,8 @@ namespace perun2
 {
 
 Time::Time()
-   : day(TNUM_ONE), month(TNUM_ONE), year(TNUM_FIRST_YEAR), type(TimeType::tt_Clock) { };
+   : day(TNUM_MINUS_ONE), month(TNUM_MINUS_ONE), year(TNUM_MINUS_ONE), 
+     hour(TNUM_MINUS_ONE), minute(TNUM_MINUS_ONE), second(TNUM_MINUS_ONE), type(TimeType::tt_Null) { };
 
 Time::Time(const _tnum mo, const _tnum ye)
    : day(TNUM_ONE), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
@@ -41,7 +42,7 @@ Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const
 
 _str Time::toString() const
 {
-   if (this->isEmpty()) {
+   if (type == TimeType::tt_Null) {
       return STRING_NO_TIME;
    }
 
@@ -73,6 +74,10 @@ _str Time::toString() const
 
 void Time::addYears(const _tnum y)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    year += y;
    if (type != tt_YearMonth && month == TNUM_FEBRUARY
        && day == TNUM_DAYS_IN_LEAP_FEBRUARY && !isLeapYear(year))
@@ -83,6 +88,10 @@ void Time::addYears(const _tnum y)
 
 void Time::addMonths(const _tnum m)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    const _tnum m2 = m % TNUM_MONTHS_IN_YEAR;
    const _tnum y = m / TNUM_MONTHS_IN_YEAR;
    month += m2;
@@ -108,6 +117,10 @@ void Time::addWeeks(const _tnum w)
 
 void Time::addDays(const _tnum d)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    if (type == tt_YearMonth) {
       day = d < TNUM_ZERO ? TNUM_ONE : daysInMonth(month, year);
       type = tt_Date;
@@ -156,6 +169,10 @@ void Time::addDays(const _tnum d)
 
 void Time::addHours(const _tnum h)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    initClock(TIME_WITHOUT_SECONDS, h);
 
    const _tnum h2 = h % TNUM_HOURS_IN_DAY;
@@ -177,6 +194,10 @@ void Time::addHours(const _tnum h)
 
 void Time::addMinutes(const _tnum m)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    initClock(TIME_WITHOUT_SECONDS, m);
 
    const _tnum m2 = m % TNUM_MINUTES_IN_HOUR;
@@ -198,6 +219,10 @@ void Time::addMinutes(const _tnum m)
 
 void Time::addSeconds(const _tnum s)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    initClock(TIME_WITH_SECONDS, s);
 
    const _tnum s2 = s % TNUM_SECONDS_IN_MINUTE;
@@ -219,11 +244,19 @@ void Time::addSeconds(const _tnum s)
 
 void Time::setYear(const _tnum y)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    year = y;
 }
 
 void Time::setMonth(const _tnum m)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    if (m < TNUM_JANUARY) {
       throw RuntimeError(str(L"value of month cannot be smaller than 1 (received: ",
          toStr(m), L")"));
@@ -238,6 +271,10 @@ void Time::setMonth(const _tnum m)
 
 void Time::setDay(const _tnum d)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    if (d < TNUM_JANUARY) {
       throw RuntimeError(str(L"value of day cannot be smaller than 1 (received: ",
          toStr(d), L")"));
@@ -256,6 +293,10 @@ void Time::setDay(const _tnum d)
 
 void Time::setHour(const _tnum h)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    if (h < TNUM_ZERO) {
       throw RuntimeError(str(L"value of hours cannot be smaller than 0 (received: ",
          toStr(h), L")"));
@@ -270,6 +311,10 @@ void Time::setHour(const _tnum h)
 
 void Time::setMinute(const _tnum m)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    if (m < TNUM_ZERO) {
       throw RuntimeError(str(L"value of minutes cannot be smaller than 0 (received: ",
          toStr(m), L")"));
@@ -284,6 +329,10 @@ void Time::setMinute(const _tnum m)
 
 void Time::setSecond(const _tnum s)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
    if (s < TNUM_ZERO) {
       throw RuntimeError(str(L"value of seconds cannot be smaller than 0 (received: ",
          toStr(s), L")"));
@@ -302,6 +351,9 @@ Time Time::toDate() const
       case tt_YearMonth: {
          return Time(month, year);
       }
+      case tt_Null: {
+         return Time();
+      }
       default: {
          return Time(day, month, year);
       }
@@ -310,7 +362,7 @@ Time Time::toDate() const
 
 _tnum Time::getWeekDay() const
 {
-   if (type == TimeType::tt_YearMonth) {
+   if (type == TimeType::tt_YearMonth || type == TimeType::tt_Null) {
       return TNUM_MINUS_ONE;
    }
 
@@ -325,19 +377,17 @@ _bool Time::equalsExactly(const Time& tim) const
    return type == tim.type && *this == tim;
 }
 
-_bool Time::isEmpty() const
-{
-   return year == TNUM_FIRST_YEAR
-       && type == TimeType::tt_Clock
-       && month == TNUM_ONE
-       && day == TNUM_ONE
-       && hour == TNUM_ZERO
-       && minute == TNUM_ZERO
-       && second == TNUM_ZERO;
-}
-
 void Time::setValue(const Time& tim)
 {
+   if (type == TimeType::tt_Null) {
+      return;
+   }
+
+   if (tim.type == TimeType::tt_Null) {
+      clear();
+      return;
+   }
+
    year = tim.year >= TNUM_FIRST_YEAR
       ? tim.year
       : TNUM_FIRST_YEAR;
@@ -372,9 +422,22 @@ void Time::setValue(const Time& tim)
    second = tim.second;
 }
 
+void Time::clear()
+{
+   type = TimeType::tt_Null;
+   year = TNUM_MINUS_ONE;
+   day = TNUM_MINUS_ONE;
+   month = TNUM_MINUS_ONE;
+   hour = TNUM_MINUS_ONE;
+   minute = TNUM_MINUS_ONE;
+   second = TNUM_MINUS_ONE;
+}
+
 Time& Time::operator += (const Period& per)
 {
-   const _tnum d = per.days + per.years_ad + per.months_ad;
+   if (type == TimeType::tt_Null) {
+      return *this;
+   }
 
    if (per.seconds != TNUM_ZERO)
       addSeconds(per.seconds);
@@ -384,6 +447,8 @@ Time& Time::operator += (const Period& per)
 
    if (per.hours != TNUM_ZERO)
       addHours(per.hours);
+
+   const _tnum d = per.days + per.years_ad + per.months_ad;
 
    if (d != TNUM_ZERO)
       addDays(d);
@@ -402,7 +467,9 @@ Time& Time::operator += (const Period& per)
 
 Time& Time::operator -= (const Period& per)
 {
-   const _tnum d = -per.days - per.years_ad - per.months_ad;
+   if (type == TimeType::tt_Null) {
+      return *this;
+   }
 
    if (per.seconds != TNUM_ZERO)
       addSeconds(-per.seconds);
@@ -413,8 +480,10 @@ Time& Time::operator -= (const Period& per)
    if (per.hours != TNUM_ZERO)
       addHours(-per.hours);
 
+   const _tnum d = per.days + per.years_ad + per.months_ad;
+
    if (d != TNUM_ZERO)
-      addDays(d);
+      addDays(-d);
 
    if (per.weeks != TNUM_ZERO)
       addDays(-per.weeks * TNUM_DAYS_IN_WEEK);
@@ -467,6 +536,10 @@ void Time::initClock(const _bool withSeconds, const _tnum recentChange)
 
 _bool Time::operator == (const Time& tim) const
 {
+   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+      return type == tim.type;
+   }
+
    if (type == tt_YearMonth || tim.type == tt_YearMonth) {
       return month == tim.month
           && year == tim.year;
@@ -496,6 +569,10 @@ _bool Time::operator == (const Time& tim) const
 
 _bool Time::operator != (const Time& tim) const
 {
+   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+      return type != tim.type;
+   }
+
    if (type == tt_YearMonth || tim.type == tt_YearMonth) {
       return month != tim.month
           || year != tim.year;
@@ -525,6 +602,10 @@ _bool Time::operator != (const Time& tim) const
 
 _bool Time::operator < (const Time& tim) const
 {
+   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+      return false;
+   }
+
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
 
@@ -551,6 +632,10 @@ _bool Time::operator < (const Time& tim) const
 
 _bool Time::operator > (const Time& tim) const
 {
+   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+      return false;
+   }
+
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
 
@@ -577,6 +662,10 @@ _bool Time::operator > (const Time& tim) const
 
 _bool Time::operator <= (const Time& tim) const
 {
+   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+      return type == tim.type;
+   }
+
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
 
@@ -603,6 +692,10 @@ _bool Time::operator <= (const Time& tim) const
 
 _bool Time::operator >= (const Time& tim) const
 {
+   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+      return type == tim.type;
+   }
+
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
 
@@ -745,6 +838,10 @@ _tnum daysInMonth(const _tnum month, const _tnum year)
 
 inline Period timeDifference(const Time& min, const Time& max)
 {
+   if (min.type == Time::TimeType::tt_Null || max.type == Time::TimeType::tt_Null) {
+      return Period();
+   }
+
    Period p;
    p.periodType = Period::pt_Difference;
    p.years_sec = max.year - min.year;

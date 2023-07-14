@@ -265,27 +265,6 @@ Also variable *never* would be an empty list of times.
 print nothing
 ```
 
-## Number suffix *K*
-
-Let *K* mean one thousand. So, *15k* written in code means *15000*.
-How should then one million be expressed? *KK* or *M*?
-
-```
-copy '*.pdf'
-  limit 3k
-```
-
-## Infix *K* within an integer literal
-
-Allow one *K* infix to appear inside an integer literal. It multiplies preceding value by one thousand.
-However, there are some requirements. It should be preceded by at least one digit, followed by one, two or three digits and no additional suffixes are allowed.
-We can shorten some literals, so instead of *2023*, let us just write *2k23*.
-
-```
-select '*.pdf'
-  where creation.year = 2k20
-```
-
 ## Audio variables: *author*, *album*, *release*, *duration*, *bitrate*, ...
 
 *Duration* is a period. *Bitrate* is a number.

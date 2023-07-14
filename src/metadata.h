@@ -21,7 +21,7 @@ namespace perun2::metadata
 {
 
 _constexpr _char NAME[] =                L"Perun2";
-_constexpr _char VERSION[] =             L"0.8.0";
+_constexpr _char VERSION[] =             L"0.8.1";
 _constexpr _char EXTENSION[] =           L"peru";
 _constexpr _char WEBSITE_FRONT[] =       L"https://perun2.org";
 _constexpr _char WEBSITE_DOCS[] =        L"https://perun2.org/docs";

@@ -21,32 +21,32 @@
 namespace perun2::parse
 {
 
-_constexpr uint32_t ASTERISK_INFO_NULL =             0b0000000;
-_constexpr uint32_t ASTERISK_INFO_VALID =            0b0000001;
-_constexpr uint32_t ASTERISK_INFO_ONE_ASTERISK =     0b0000010;
-_constexpr uint32_t ASTERISK_INFO_DOUBLE_ASTERISK =  0b0000100;
-_constexpr uint32_t ASTERISK_INFO_IS_ABSOLUTE =      0b0001000;
+p_constexpr uint32_t ASTERISK_INFO_NULL =             0b0000000;
+p_constexpr uint32_t ASTERISK_INFO_VALID =            0b0000001;
+p_constexpr uint32_t ASTERISK_INFO_ONE_ASTERISK =     0b0000010;
+p_constexpr uint32_t ASTERISK_INFO_DOUBLE_ASTERISK =  0b0000100;
+p_constexpr uint32_t ASTERISK_INFO_IS_ABSOLUTE =      0b0001000;
 
 
 struct AsteriskUnit
 {
 public:
    AsteriskUnit() = delete;
-   AsteriskUnit(const _str& ast, const _str& suf) : asteriskPart(ast), suffixPart(suf) { };
-   AsteriskUnit(const _str& ast) : asteriskPart(ast) { };
+   AsteriskUnit(const p_str& ast, const p_str& suf) : asteriskPart(ast), suffixPart(suf) { };
+   AsteriskUnit(const p_str& ast) : asteriskPart(ast) { };
 
-   const _str asteriskPart;
-   const _str suffixPart;
+   const p_str asteriskPart;
+   const p_str suffixPart;
 };
 
 
-_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int line, p_perun2& p2);
-void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& part,
-   const _bool hasAsterisk, std::vector<AsteriskUnit>& units);
-_bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, const _str& trimmed,
-   const _size start, const _bool isAbsolute, const _int retreats, p_perun2& p2);
-_bool parseDefinitionSuffix(_defptr& result, _defptr& definition, const _str& suffix, 
-   const _bool isAbsolute, const _bool isFinal, const _int retreats, _def* previous, p_perun2& p2);
+p_bool parseAsteriskPattern(_defptr& result, const p_str& originPattern, const p_int line, p_perun2& p2);
+void addAsteriskPatternUnit(p_str& asteriskPart, p_str& suffixPart, const p_str& part,
+   const p_bool hasAsterisk, std::vector<AsteriskUnit>& units);
+p_bool parseDoubleAsterisk(_defptr& result, _genptr<p_str>& base, const p_str& pattern, const p_str& trimmed,
+   const p_size start, const p_bool isAbsolute, const p_int retreats, p_perun2& p2);
+p_bool parseDefinitionSuffix(_defptr& result, _defptr& definition, const p_str& suffix, 
+   const p_bool isAbsolute, const p_bool isFinal, const p_int retreats, _def* previous, p_perun2& p2);
 
 }
 

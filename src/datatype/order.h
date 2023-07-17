@@ -27,9 +27,9 @@ namespace perun2::gen
 struct OrderIndices
 {
 public:
-   void prepare(const _size length);
+   void prepare(const p_size length);
 
-   std::unique_ptr<_size[]> values;
+   std::unique_ptr<p_size[]> values;
 };
 
 typedef std::unique_ptr<OrderIndices> _indptr;
@@ -38,10 +38,10 @@ typedef std::unique_ptr<OrderIndices> _indptr;
 struct Order
 {
 public:
-   virtual void clearValues(const _size length) = 0;
+   virtual void clearValues(const p_size length) = 0;
    virtual void clearValues() = 0;
    virtual void addValues() = 0;
-   virtual _bool matchesSwap(const _int start, const _int end) const = 0;
+   virtual p_bool matchesSwap(const p_int start, const p_int end) const = 0;
 };
 
 typedef std::unique_ptr<Order> _ordptr;
@@ -52,14 +52,14 @@ struct OrderUnit : Order
 {
 public:
    OrderUnit() = delete;
-   OrderUnit(_genptr<T>& val, const _bool desc, OrderIndices* inds)
+   OrderUnit(_genptr<T>& val, const p_bool desc, OrderIndices* inds)
       : valueGenerator(std::move(val)), descending(desc), indices(inds) { };
 
 protected:
    _genptr<T> valueGenerator;
    OrderIndices* indices;
    std::vector<T> values;
-   const _bool descending;
+   const p_bool descending;
 };
 
 
@@ -68,10 +68,10 @@ struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
    OrderUnit_Middle() = delete;
-   OrderUnit_Middle(_genptr<T>& val, const _bool desc, _ordptr& next, OrderIndices* inds)
+   OrderUnit_Middle(_genptr<T>& val, const p_bool desc, _ordptr& next, OrderIndices* inds)
       : OrderUnit<T>(val, desc, inds), nextUnit(std::move(next)) { };
 
-   void clearValues(const _size length) override
+   void clearValues(const p_size length) override
    {
       langutil::clearAndReserve(this->values, length);
       this->nextUnit->clearValues(length);
@@ -89,7 +89,7 @@ public:
       this->nextUnit->addValues();
    }
 
-   _bool matchesSwap(const _int start, const _int end) const override
+   p_bool matchesSwap(const p_int start, const p_int end) const override
    {
       const T& left = this->values[this->indices->values[start]];
       const T& right = this->values[this->indices->values[end]];
@@ -114,10 +114,10 @@ struct OrderUnit_Final : OrderUnit<T>
 {
 public:
    OrderUnit_Final() = delete;
-   OrderUnit_Final(_genptr<T>& val, const _bool desc, OrderIndices* inds)
+   OrderUnit_Final(_genptr<T>& val, const p_bool desc, OrderIndices* inds)
       : OrderUnit<T>(val, desc, inds) { };
 
-   void clearValues(const _size length) override
+   void clearValues(const p_size length) override
    {
       langutil::clearAndReserve(this->values, length);
    }
@@ -132,7 +132,7 @@ public:
       this->values.emplace_back(this->valueGenerator->getValue());
    }
 
-   _bool matchesSwap(const _int start, const _int end) const override
+   p_bool matchesSwap(const p_int start, const p_int end) const override
    {
       return this->descending
          ? this->values[this->indices->values[start]] >= this->values[this->indices->values[end]]
@@ -147,27 +147,27 @@ public:
    OrderBy() = delete;
    OrderBy(_indptr& inds, _ordptr& ord);
 
-   void quicksort(_int start, _int end);
-   _int partition(const _int start, const _int end);
+   void quicksort(p_int start, p_int end);
+   p_int partition(const p_int start, const p_int end);
 
 protected:
    _indptr indices;
    _ordptr order;
-   _list* resultPtr = nullptr;
+   p_list* resultPtr = nullptr;
 };
 
 
-struct OrderBy_List : OrderBy, Generator<_list>
+struct OrderBy_List : OrderBy, Generator<p_list>
 {
 public:
    OrderBy_List() = delete;
-   OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, p_perun2& p2);
+   OrderBy_List(_genptr<p_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, p_perun2& p2);
 
-   _list getValue() override;
+   p_list getValue() override;
 
 private:
    _fcptr context;
-   _genptr<_list> base;
+   _genptr<p_list> base;
 };
 
 
@@ -179,18 +179,18 @@ public:
    FileContext* getFileContext() override;
 
    void reset() override;
-   _bool hasNext() override;
+   p_bool hasNext() override;
 
 private:
    FileContext* fileContext;
    _fcptr nextContext;
    _defptr base;
-   _bool first = true;
+   p_bool first = true;
    p_perun2& perun2;
 
-   _size length;
-   _size index;
-   _list result;
+   p_size length;
+   p_size index;
+   p_list result;
 };
 
 }

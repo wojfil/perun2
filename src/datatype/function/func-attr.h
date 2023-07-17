@@ -23,90 +23,90 @@ namespace perun2::func
 {
    
 
-struct F_Parent : Func_1<_str>, Generator<_str>
+struct F_Parent : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Parent(_genptr<_str>& a1, p_perun2& p2) 
+   F_Parent(_genptr<p_str>& a1, p_perun2& p2) 
       : Func_1(a1), context(p2.contexts.getLocationContext()) { };
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
    LocationContext* context;
 };
 
 
-struct F_Path_1 : Func_1<_str>, Generator<_str>
+struct F_Path_1 : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Path_1(_genptr<_str>& a1, p_perun2& p2) 
+   F_Path_1(_genptr<p_str>& a1, p_perun2& p2) 
       : Func_1(a1), context(p2.contexts.getLocationContext()) { };
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
    LocationContext* context;
 };
 
 
-struct F_Path_2 : Generator<_str>
+struct F_Path_2 : Generator<p_str>
 {
 public:
-   F_Path_2(_genptr<_str>& val_1, _genptr<_str>& val_2)
+   F_Path_2(_genptr<p_str>& val_1, _genptr<p_str>& val_2)
       : value_1(std::move(val_1)), value_2(std::move(val_2)) { };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
-   _genptr<_str> value_1;
-   _genptr<_str> value_2;
+   _genptr<p_str> value_1;
+   _genptr<p_str> value_2;
 };
 
 
-struct F_Path_3 : Generator<_str>
+struct F_Path_3 : Generator<p_str>
 {
 public:
-   F_Path_3(_genptr<_str>& val_1, _genptr<_str>& val_2, _genptr<_str>& val_3)
+   F_Path_3(_genptr<p_str>& val_1, _genptr<p_str>& val_2, _genptr<p_str>& val_3)
       : value_1(std::move(val_1)), value_2(std::move(val_2)), value_3(std::move(val_3)) { };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
-   _genptr<_str> value_1;
-   _genptr<_str> value_2;
-   _genptr<_str> value_3;
+   _genptr<p_str> value_1;
+   _genptr<p_str> value_2;
+   _genptr<p_str> value_3;
 };
 
 
-struct F_Path_4 : Generator<_str>
+struct F_Path_4 : Generator<p_str>
 {
 public:
-   F_Path_4(_genptr<_str>& val_1, _genptr<_str>& val_2, _genptr<_str>& val_3, _genptr<_str>& val_4)
+   F_Path_4(_genptr<p_str>& val_1, _genptr<p_str>& val_2, _genptr<p_str>& val_3, _genptr<p_str>& val_4)
       : value_1(std::move(val_1)), value_2(std::move(val_2)),
         value_3(std::move(val_3)), value_4(std::move(val_4)) { };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
-   _genptr<_str> value_1;
-   _genptr<_str> value_2;
-   _genptr<_str> value_3;
-   _genptr<_str> value_4;
+   _genptr<p_str> value_1;
+   _genptr<p_str> value_2;
+   _genptr<p_str> value_3;
+   _genptr<p_str> value_4;
 };
 
 
-struct F_Path_Multi : Generator<_str>
+struct F_Path_Multi : Generator<p_str>
 {
 public:
-   F_Path_Multi(std::vector<_genptr<_str>>& vals)
+   F_Path_Multi(std::vector<_genptr<p_str>>& vals)
       : length(vals.size())
    {
       langutil::transferUniquePtrs(vals, this->values);
    };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
-   std::vector<_genptr<_str>> values;
-   const _int length;
+   std::vector<_genptr<p_str>> values;
+   const p_int length;
 };
 
 
@@ -129,7 +129,7 @@ private:
 struct F_SizeList : Generator<_num>
 {
 public:
-   F_SizeList(_genptr<_list>& vals, p_perun2& p2)
+   F_SizeList(_genptr<p_list>& vals, p_perun2& p2)
       : values(std::move(vals)), perun2(p2), 
         context(p2.contexts.getLocationContext()) { };
 
@@ -138,7 +138,7 @@ public:
 private:
    p_perun2& perun2;
    LocationContext* context;
-   _genptr<_list> values;
+   _genptr<p_list> values;
 };
 
 
@@ -203,75 +203,75 @@ public:
 };
 
 
-struct F_Attr_Archive: F_Attribute, Generator<_bool>
+struct F_Attr_Archive: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Archive(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_Compressed: F_Attribute, Generator<_bool>
+struct F_Attr_Compressed: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Compressed(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_Empty: F_Attribute, Generator<_bool>
+struct F_Attr_Empty: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Empty(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_Exists: F_Attribute, Generator<_bool>
+struct F_Attr_Exists: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Exists(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_Encrypted: F_Attribute, Generator<_bool>
+struct F_Attr_Encrypted: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Encrypted(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_Hidden: F_Attribute, Generator<_bool>
+struct F_Attr_Hidden: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Hidden(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_IsDirectory: F_Attribute, Generator<_bool>
+struct F_Attr_IsDirectory: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_IsDirectory(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_IsFile: F_Attribute, Generator<_bool>
+struct F_Attr_IsFile: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_IsFile(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_Attr_Readonly: F_Attribute, Generator<_bool>
+struct F_Attr_Readonly: F_Attribute, Generator<p_bool>
 {
 public:
    F_Attr_Readonly(p_perun2& p2) : F_Attribute(p2) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 

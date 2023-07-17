@@ -22,17 +22,17 @@
 namespace perun2
 {
 
-Tokens::Tokens(const std::vector<Token>& li, const _int st, const _int ln, const _tinfo in)
+Tokens::Tokens(const std::vector<Token>& li, const p_int st, const p_int ln, const _tinfo in)
    : start(st), length(ln), end(st + ln - 1), list(li), info(in) { }
 
 Tokens::Tokens(const std::vector<Token>& li)
-   : start(0), length(static_cast<_int>(li.size())), end(this->length - 1), list(li)
+   : start(0), length(static_cast<p_int>(li.size())), end(this->length - 1), list(li)
 {
    checkBracketsThoroughly(*this);
    this->setData();
 }
 
-Tokens::Tokens(const Tokens& tks, const _int st, const _int ln)
+Tokens::Tokens(const Tokens& tks, const p_int st, const p_int ln)
    : start(st), length(ln), end(st + ln - 1), list(tks.getList())
 {
    this->setData();
@@ -56,17 +56,17 @@ void Tokens::trimRight()
    }
 }
 
-_int Tokens::getStart() const
+p_int Tokens::getStart() const
 {
    return this->start;
 }
 
-_int Tokens::getLength() const
+p_int Tokens::getLength() const
 {
    return this->length;
 }
 
-_int Tokens::getEnd() const
+p_int Tokens::getEnd() const
 {
    return this->end;
 }
@@ -81,12 +81,12 @@ _tinfo Tokens::getInfo() const
    return this->info;
 }
 
-_bool Tokens::check(const _tinfo in) const
+p_bool Tokens::check(const _tinfo in) const
 {
    return this->info & in;
 }
 
-_bool Tokens::isEmpty() const
+p_bool Tokens::isEmpty() const
 {
    return this->length == 0;
 }
@@ -111,12 +111,12 @@ const Token& Tokens::last() const
    return this->list[this->end];
 }
 
-const Token& Tokens::at(const _int index) const
+const Token& Tokens::at(const p_int index) const
 {
    return this->list[this->start + index];
 }
 
-const Token& Tokens::listAt(const _int index) const
+const Token& Tokens::listAt(const p_int index) const
 {
    return this->list[index];
 }
@@ -125,7 +125,7 @@ std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword kw) const
 {
    BracketsInfo bi;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isKeyword(kw)) {
@@ -144,11 +144,11 @@ std::pair<Tokens, Tokens> Tokens::divideByKeyword(const Keyword kw) const
    throw SyntaxError::keywordNotFound(first().line);
 }
 
-std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char symbol) const
+std::pair<Tokens, Tokens> Tokens::divideBySymbol(const p_char symbol) const
 {
    BracketsInfo bi;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isSymbol(symbol)) {
@@ -167,13 +167,13 @@ std::pair<Tokens, Tokens> Tokens::divideBySymbol(const _char symbol) const
    throw SyntaxError::symbolNotFound(symbol, first().line);
 }
 
-std::vector<Tokens> Tokens::splitBySymbol(const _char symbol) const
+std::vector<Tokens> Tokens::splitBySymbol(const p_char symbol) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
-   _int sublen = 0;
+   p_int sublen = 0;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
@@ -207,12 +207,12 @@ std::vector<Tokens> Tokens::splitBySymbol(const _char symbol) const
    return result;
 }
 
-_int Tokens::countSymbols(const _char symbol) const
+p_int Tokens::countSymbols(const p_char symbol) const
 {
    BracketsInfo bi;
-   _int count = 0;
+   p_int count = 0;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isSymbol(symbol) && bi.isBracketFree()) {
@@ -226,11 +226,11 @@ _int Tokens::countSymbols(const _char symbol) const
    return count;
 }
 
-_int Tokens::getFilterKeywordId(p_perun2& p2) const
+p_int Tokens::getFilterKeywordId(p_perun2& p2) const
 {
    BracketsInfo bi;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isFilterKeyword() && bi.isBracketFree()) {
@@ -255,9 +255,9 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(p_perun2& p2) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
-   _int sublen = 0;
+   p_int sublen = 0;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isFilterKeyword() && bi.isBracketFree()) {
@@ -288,12 +288,12 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(p_perun2& p2) const
 std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
 {
    BracketsInfo bi;
-   _bool hasQuestionMark = false;
-   _bool loop = true;
-   _int questionMarkId = -1;
-   _int colonId = -1;
+   p_bool hasQuestionMark = false;
+   p_bool loop = true;
+   p_int questionMarkId = -1;
+   p_int colonId = -1;
 
-   for (_int i = this->start; loop && i <= this->end; i++) {
+   for (p_int i = this->start; loop && i <= this->end; i++) {
       const Token& t = this->listAt(i);
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
@@ -323,7 +323,7 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
 
 void Tokens::checkCommonExpressionExceptions(p_perun2& p2) const
 {
-   _bool prevExclamantion = false;
+   p_bool prevExclamantion = false;
 
    if (first().isSymbol(CHAR_EXCLAMATION_MARK)) {
       throw SyntaxError::negationByExclamation(first().line);
@@ -345,7 +345,7 @@ void Tokens::checkCommonExpressionExceptions(p_perun2& p2) const
          this->list[this->start].line);
    }
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->list[i];
 
       if (prevExclamantion && !t.isSymbol(CHAR_EQUAL_SIGN)) {
@@ -390,10 +390,10 @@ void Tokens::setData()
       if (this->list[this->start].isSymbol(CHAR_OPENING_ROUND_BRACKET) 
        && this->list[this->end].isSymbol(CHAR_CLOSING_ROUND_BRACKET)) 
       {
-         _int lvl = 0;
-         _bool b = true;
+         p_int lvl = 0;
+         p_bool b = true;
 
-         for (_int i = this->start; b && i <= this->end; i++) {
+         for (p_int i = this->start; b && i <= this->end; i++) {
             const Token& t = this->list[i];
             if (t.type == Token::t_Symbol) {
                switch (t.value.ch) {
@@ -427,15 +427,15 @@ void Tokens::setData()
       }
    }
 
-   _int round = 0; // level of round brackets
-   _int square = 0; // level of square brackets
-   _bool indepRound = false;
-   _bool firstSquare = false;
-   _bool indepSquare = false;
-   _int firstQuestionMarkId = -1;
-   _int firstColonId = -1;
+   p_int round = 0; // level of round brackets
+   p_int square = 0; // level of square brackets
+   p_bool indepRound = false;
+   p_bool firstSquare = false;
+   p_bool indepSquare = false;
+   p_int firstQuestionMarkId = -1;
+   p_int firstColonId = -1;
 
-   for (_int i = this->start; i <= this->end; i++) {
+   for (p_int i = this->start; i <= this->end; i++) {
       const Token& t = this->list[i];
 
       if (round == 0 && square == 0) {

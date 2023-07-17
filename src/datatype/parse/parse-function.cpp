@@ -36,17 +36,17 @@ namespace perun2::func
 
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 {
-   const _size start = tks.getStart() + 2;
-   const _size length = tks.getLength() - 3;
+   const p_size start = tks.getStart() + 2;
+   const p_size length = tks.getLength() - 3;
    const Tokens tks2(tks.getList(), start, length, tks.getInfo());
    return tks2.splitBySymbol(CHAR_COMMA);
 }
 
-_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
+p_bool boolFunction(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
-   const _size len = args.size();
+   const p_size len = args.size();
 
    if (word.isWord(STRINGS_FUNC_BOO_STR, p2))
    {
@@ -67,7 +67,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       LocationContext* lctx = p2.contexts.getLocationContext();
       fctx->attribute->setCoreCommandBase();
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (!parse::parse(p2, args[0], list)) {
          functionArgException(1, STRING_LIST, word, p2);
       }
@@ -136,9 +136,9 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (parse::parse(p2, args[0], list)) {
-         result = std::make_unique<F_AnyList<_str>>(list);
+         result = std::make_unique<F_AnyList<p_str>>(list);
          return true;
       }
 
@@ -150,7 +150,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (!parse::parse(p2, args[0], list)) {
          functionArgException(1, STRING_LIST, word, p2);
       }
@@ -163,7 +163,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (!parse::parse(p2, args[0], str_)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -176,9 +176,9 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         _genptr<_str> str2;
+         _genptr<p_str> str2;
          if (parse::parse(p2, args[1], str2)) {
             result = std::make_unique<F_ContainsStr>(str_, str2);
             return true;
@@ -192,7 +192,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
 
       _defptr def;
       if (parse::parse(p2, args[0], def)) {
-         _genptr<_str> str2;
+         _genptr<p_str> str2;
          if (parse::parse(p2, args[1], str2)) {
             result = std::make_unique<F_ContainsDef>(def, str2, p2);
             return true;
@@ -226,11 +226,11 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          }
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (parse::parse(p2, args[0], list)) {
-         _genptr<_str> str2;
+         _genptr<p_str> str2;
          if (parse::parse(p2, args[1], str2)) {
-            result = std::make_unique<F_ContainsCol<_str>>(list, str2);
+            result = std::make_unique<F_ContainsCol<p_str>>(list, str2);
             return true;
          }
          else {
@@ -253,7 +253,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       LocationContext* lctx = p2.contexts.getLocationContext();
       fctx->attribute->setCoreCommandBase();
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (!parse::parse(p2, args[0], str_)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -271,7 +271,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[0], str)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -280,15 +280,15 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               const _str os = f.getOriginString(p2);
+               const p_str os = f.getOriginString(p2);
 
                switch (os.size()) {
                   case 0: {
-                     result = std::make_unique<gen::Constant<_bool>>(true);
+                     result = std::make_unique<gen::Constant<p_bool>>(true);
                      break;
                   }
                   case 1: {
-                     const _char ch = os[0];
+                     const p_char ch = os[0];
                      result = std::make_unique<F_StartsWithChar>(str, ch);
                      break;
                   }
@@ -301,10 +301,10 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
                return true;
             }
             case Token::t_Number: {
-               const _str conv = f.value.num.n.toString();
+               const p_str conv = f.value.num.n.toString();
                switch (conv.size()) {
                   case 1: {
-                     const _char ch = conv[0];
+                     const p_char ch = conv[0];
                      result = std::make_unique<F_StartsWithChar>(str, ch);
                      break;
                   }
@@ -319,7 +319,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          }
       }
 
-      _genptr<_str> str2;
+      _genptr<p_str> str2;
       if (parse::parse(p2, args[1], str2)) {
          result = std::make_unique<F_StartsWith>(str, str2);
          return true;
@@ -333,7 +333,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[0], str)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -342,15 +342,15 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               const _str os = f.getOriginString(p2);
+               const p_str os = f.getOriginString(p2);
 
                switch (os.size()) {
                   case 0: {
-                     result = std::make_unique<gen::Constant<_bool>>(true);
+                     result = std::make_unique<gen::Constant<p_bool>>(true);
                      break;
                   }
                   case 1: {
-                     const _char ch = os[0];
+                     const p_char ch = os[0];
                      result = std::make_unique<F_EndsWithChar>(str, ch);
                      break;
                   }
@@ -363,10 +363,10 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
                return true;
             }
             case Token::t_Number: {
-               const _str conv = f.value.num.n.toString();
+               const p_str conv = f.value.num.n.toString();
                switch (conv.size()) {
                   case 1: {
-                     const _char ch = conv[0];
+                     const p_char ch = conv[0];
                      result = std::make_unique<F_EndsWithChar>(str, ch);
                      break;
                   }
@@ -381,7 +381,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
          }
       }
 
-      _genptr<_str> str2;
+      _genptr<p_str> str2;
       if (!parse::parse(p2, args[1], str2)) {
          functionArgException(2, STRING_STRING, word, p2);
       }
@@ -399,7 +399,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (!parse::parse(p2, args[0], str_)) {
          functionArgException(0, STRING_STRING, word, p2);
       }
@@ -411,9 +411,9 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
    return false;
 };
 
-_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, p_perun2& p2)
+p_bool simpleBoolFunction(_genptr<p_bool>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
-   _genptr<_str> arg1;
+   _genptr<p_str> arg1;
    if (!parse::parse(p2, tks, arg1)) {
       functionArgException(1, STRING_STRING, word, p2);
    }
@@ -438,11 +438,11 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
    return true;
 }
 
-_bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
+p_bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
-   const _size len = args.size();
+   const p_size len = args.size();
 
    if (word.isWord(STRINGS_FUNC_NUM_NUM, p2)) {
       if (len != 1)
@@ -454,7 +454,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
-      _genptr<_str> arg1;
+      _genptr<p_str> arg1;
       if (parse::parse(p2, args[0], arg1)) {
          result = std::make_unique<F_Length>(arg1);
          return true;
@@ -469,7 +469,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
-      _genptr<_str> arg1;
+      _genptr<p_str> arg1;
 
       if (parse::parse(p2, args[0], arg1)) {
          if (word.isWord(STRING_FROMBINARY, p2))
@@ -495,7 +495,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (parse::parse(p2, args[0], list)) {
          result = std::make_unique<F_SizeList>(list, p2);
          return true;
@@ -509,7 +509,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
-      _genptr<_str> arg1;
+      _genptr<p_str> arg1;
       if (parse::parse(p2, args[0], arg1)) {
          result = std::make_unique<F_Number>(arg1);
          return true;
@@ -575,9 +575,9 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (parse::parse(p2, args[0], list)) {
-         result = std::make_unique<F_CountList<_str>>(list);
+         result = std::make_unique<F_CountList<p_str>>(list);
          return true;
       }
 
@@ -662,7 +662,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
          throw SyntaxError(str(L"function '", word.getOriginString(p2),
             L"' can only take a collection of values as an argument"), word.line);
@@ -713,7 +713,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, p_perun2& p2)
+static p_bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
    _genptr<_num> arg;
    if (!parse::parse(p2, tks, arg)) {
@@ -740,14 +740,14 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
    return true;
 }
 
-static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2)
+static p_bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2)
 {
    std::vector<_genptr<_num>> singles;
    std::vector<_genptr<_nlist>> multis;
 
-   const _size len = args.size();
+   const p_size len = args.size();
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       const Tokens& tks = args[i];
 
       _genptr<_num> num;
@@ -783,16 +783,16 @@ static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args
    return true;
 }
 
-_bool periodFunction(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool periodFunction(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
    return false;
 }
 
-_bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
+p_bool stringFunction(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
-   const _size len = args.size();
+   const p_size len = args.size();
 
    if (word.isWord(STRING_AFTER, p2) || word.isWord(STRING_BEFORE, p2)) {
       if (len != 2)
@@ -807,7 +807,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
       return simpleStringFunction(result, args[0], word, p2);
    }
    else if (word.isWord(STRING_REVERSED, p2)) {
-      const _str sub = (word.getOriginString(p2)).substr(0, 7);
+      const p_str sub = (word.getOriginString(p2)).substr(0, 7);
       throw SyntaxError(str(L"the proper name for this function is '", sub, L"'"), word.line);
    }
    else if (word.isWord(STRINGS_FUNC_STR_STR_NUM, p2)) {
@@ -815,7 +815,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[0], str)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -841,17 +841,17 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str1;
+      _genptr<p_str> str1;
       if (!parse::parse(p2, args[0], str1)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      _genptr<_str> str2;
+      _genptr<p_str> str2;
       if (!parse::parse(p2, args[1], str2)) {
          functionArgException(2, STRING_STRING, word, p2);
       }
 
-      _genptr<_str> str3;
+      _genptr<p_str> str3;
       if (!parse::parse(p2, args[2], str3)) {
          functionArgException(3, STRING_STRING, word, p2);
       }
@@ -865,7 +865,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
             L" two or three arguments"), word.line);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[0], str)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -894,16 +894,16 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
             L"' needs at least one arguments"), word.line);
       }
 
-      std::vector<_genptr<_str>> values;
+      std::vector<_genptr<p_str>> values;
 
-      for (_size i = 0; i < len; i++) {
-         _genptr<_str> str_;
+      for (p_size i = 0; i < len; i++) {
+         _genptr<p_str> str_;
          if (parse::parse(p2, args[i], str_)) {
             values.push_back(std::move(str_));
             continue;
          }
 
-         _genptr<_list> list;
+         _genptr<p_list> list;
          if (parse::parse(p2, args[i], list)) {
             if (i != len - 1) {
                checkInOperatorCommaAmbiguity(word, args[i], p2);
@@ -924,7 +924,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
          throw SyntaxError(str(L"function '", word.getOriginString(p2),
             L"' can only take a collection of values as an argument"), word.line);
@@ -946,7 +946,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (parse::parse(p2, args[0], list)) {
          if (len != 1) {
             checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -954,10 +954,10 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          }
 
          if (word.isWord(STRING_FIRST, p2)) {
-            result = std::make_unique<F_First<_str>>(list);
+            result = std::make_unique<F_First<p_str>>(list);
          }
          else {
-            result = std::make_unique<F_Last<_str>>(list);
+            result = std::make_unique<F_Last<p_str>>(list);
          }
          return true;
       }
@@ -971,7 +971,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
       if (len == 1) {
-         _genptr<_str> arg1;
+         _genptr<p_str> arg1;
          if (!parse::parse(p2, args[0], arg1)) {
             functionArgException(1, STRING_STRING, word, p2);
          }
@@ -980,10 +980,10 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
       }
 
       if (len > 4) {
-         std::vector<_genptr<_str>> values;
+         std::vector<_genptr<p_str>> values;
 
-         for (_size i = 0; i < len; i++) {
-            _genptr<_str> str;
+         for (p_size i = 0; i < len; i++) {
+            _genptr<p_str> str;
             if (!parse::parse(p2, args[i], str)) {
                functionArgException(i + 1, STRING_STRING, word, p2);
             }
@@ -995,12 +995,12 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
       else {
-         _genptr<_str> str1;
+         _genptr<p_str> str1;
          if (!parse::parse(p2, args[0], str1)) {
             functionArgException(1, STRING_STRING, word, p2);
          }
 
-         _genptr<_str> str2;
+         _genptr<p_str> str2;
          if (!parse::parse(p2, args[1], str2)) {
             functionArgException(2, STRING_STRING, word, p2);
          }
@@ -1010,7 +1010,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
             return true;
          }
 
-         _genptr<_str> str3;
+         _genptr<p_str> str3;
          if (!parse::parse(p2, args[2], str3)) {
             functionArgException(3, STRING_STRING, word, p2);
          }
@@ -1020,7 +1020,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
             return true;
          }
 
-         _genptr<_str> str4;
+         _genptr<p_str> str4;
          if (!parse::parse(p2, args[3], str4)) {
             functionArgException(4, STRING_STRING, word, p2);
          }
@@ -1034,7 +1034,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_bool> boo;
+      _genptr<p_bool> boo;
       if (parse::parse(p2, args[0], boo)) {
          result = std::make_unique<F_String_B>(boo);
          return true;
@@ -1127,7 +1127,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          return false;
       }
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
          if (len > 1) {
             functionArgNumberException(len, word, p2);
@@ -1136,14 +1136,14 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (parse::parse(p2, args[0], list)) {
          if (len > 1) {
             checkInOperatorCommaAmbiguity(word, args[0], p2);
             functionArgNumberException(len, word, p2);
          }
 
-         result = std::make_unique<F_RandomElement<_str>>(list, p2);
+         result = std::make_unique<F_RandomElement<p_str>>(list, p2);
          return true;
       }
       else {
@@ -1156,7 +1156,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_list> list;
+      _genptr<p_list> list;
       if (!parse::parse(p2, args[0], list)) {
          functionArgException(1, STRING_LIST, word, p2);
       }
@@ -1172,7 +1172,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[1], str)) {
          functionArgException(2, STRING_STRING, word, p2);
       }
@@ -1184,14 +1184,14 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2)
+static p_bool stringTwoArgFunction(_genptr<p_str>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2)
 {
-   _genptr<_str> arg1;
+   _genptr<p_str> arg1;
    if (!parse::parse(p2, args[0], arg1)) {
       functionArgException(1, STRING_STRING, word, p2);
    }
 
-   _genptr<_str> arg2;
+   _genptr<p_str> arg2;
    if (!parse::parse(p2, args[1], arg2)) {
       functionArgException(2, STRING_STRING, word, p2);
    }
@@ -1206,9 +1206,9 @@ static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Token
    return true;
 }
 
-static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, p_perun2& p2)
+static p_bool simpleStringFunction(_genptr<p_str>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
-   _genptr<_str> arg1;
+   _genptr<p_str> arg1;
    if (!parse::parse(p2, tks, arg1)) {
       functionArgException(1, STRING_STRING, word, p2);
    }
@@ -1243,11 +1243,11 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
    return true;
 }
 
-_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
-   const _size len = args.size();
+   const p_size len = args.size();
 
    if (word.isWord(STRINGS_FUNC_TIM_NUM, p2)) {
       if (len != 1)
@@ -1336,7 +1336,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str_;
+      _genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
          throw SyntaxError(str(L"function '", word.getOriginString(p2),
             L"' can only take a collection of values as an argument"), word.line);
@@ -1378,7 +1378,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, p_perun2& p2)
+static p_bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
    _genptr<_num> arg1;
    if (!parse::parse(p2, tks, arg1)) {
@@ -1398,19 +1398,19 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 }
 
 
-static void functionArgNumberException(const _int argNumber, const Token& word, p_perun2& p2)
+static void functionArgNumberException(const p_int argNumber, const Token& word, p_perun2& p2)
 {
    throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' cannot be called with ",
-      toStr(argNumber), L" argument", (argNumber == 1 ? _str() : L"s")), word.line);
+      toStr(argNumber), L" argument", (argNumber == 1 ? p_str() : L"s")), word.line);
 }
 
-static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, p_perun2& p2)
+static void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, p_perun2& p2)
 {
    throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(p2), L"' cannot be resolved to a ", typeName), word.line);
 }
 
-static _str ordinalNumber(const _int number)
+static p_str ordinalNumber(const p_int number)
 {
    switch (number) {
       case 1:
@@ -1442,18 +1442,18 @@ static _str ordinalNumber(const _int number)
    }
 }
 
-_bool listFunction(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
+p_bool listFunction(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
-   const _size len = args.size();
+   const p_size len = args.size();
 
    if (word.isWord(STRING_CHARACTERS, p2) || word.isWord(STRING_WORDS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[0], str)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -1470,12 +1470,12 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str1;
+      _genptr<p_str> str1;
       if (!parse::parse(p2, args[0], str1)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      _genptr<_str> str2;
+      _genptr<p_str> str2;
       if (!parse::parse(p2, args[1], str2)) {
          functionArgException(2, STRING_STRING, word, p2);
       }
@@ -1489,18 +1489,18 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, p_perun2& p2)
+p_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
-   const _size len = args.size();
+   const p_size len = args.size();
 
    if (word.isWord(STRING_NUMBERS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
 
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (!parse::parse(p2, args[0], str)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
@@ -1524,11 +1524,11 @@ static void checkFunctionAttribute(const Token& word, p_perun2& p2)
 static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2)
 {
    BracketsInfo bi;
-   _int end = tks.getEnd();
-   _int start = tks.getStart();
-   _int index = -1;
+   p_int end = tks.getEnd();
+   p_int start = tks.getStart();
+   p_int index = -1;
 
-   for (_int i = end; i >= start; i--)
+   for (p_int i = end; i >= start; i--)
    {
       const Token& t = tks.listAt(i);
 

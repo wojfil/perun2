@@ -40,7 +40,7 @@ public:
 
 private:
    std::vector<_comptr> commands;
-   const _size length;
+   const p_size length;
    p_perun2& perun2;
    _ucptr context;
 };
@@ -59,7 +59,7 @@ public:
 
 private:
    std::vector<_comptr> commands;
-   const _size length;
+   const p_size length;
    p_perun2& perun2;
    _acptr context;
 };
@@ -84,13 +84,13 @@ private:
 struct CS_While : Command
 {
 public:
-   CS_While(_genptr<_bool>& cond, _comptr& com, _icptr& ctx, p_perun2& p2)
+   CS_While(_genptr<p_bool>& cond, _comptr& com, _icptr& ctx, p_perun2& p2)
       : context(std::move(ctx)), condition(std::move(cond)), command(std::move(com)), perun2(p2)  { };
 
    void run() override;
 
 private:
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    _comptr command;
    p_perun2& perun2;
    _icptr context;
@@ -100,13 +100,13 @@ private:
 struct CS_StringLoop : IterationLoop
 {
 public:
-   CS_StringLoop(_genptr<_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2)
+   CS_StringLoop(_genptr<p_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2)
       : IterationLoop(com, ctx, p2), string(std::move(str)) { };
 
    void run() override;
 
 private:
-   _genptr<_str> string;
+   _genptr<p_str> string;
 };
 
 
@@ -143,13 +143,13 @@ private:
 struct CS_ListLoop : IterationLoop
 {
 public:
-   CS_ListLoop(_genptr<_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2)
+   CS_ListLoop(_genptr<p_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2)
       : IterationLoop(com, ctx, p2), list(std::move(li)) { };
 
    void run() override;
 
 private:
-   _genptr<_list> list;
+   _genptr<p_list> list;
 };
 
 
@@ -183,13 +183,13 @@ private:
 struct CS_InsideString : CS_Inside
 {
 public:
-   CS_InsideString(_genptr<_str>& str, _comptr& com, _lcptr& lctx, _fcptr& fctx, p_perun2& p2)
+   CS_InsideString(_genptr<p_str>& str, _comptr& com, _lcptr& lctx, _fcptr& fctx, p_perun2& p2)
       : CS_Inside(com, lctx, fctx, p2), string(std::move(str)) { };
 
    void run() override;
 
 private:
-   _genptr<_str> string;
+   _genptr<p_str> string;
 };
 
 
@@ -226,13 +226,13 @@ private:
 struct CS_InsideList : CS_Inside
 {
 public:
-   CS_InsideList(_genptr<_list>& li, _comptr& com, _lcptr& lctx, _fcptr& fctx, p_perun2& p2)
+   CS_InsideList(_genptr<p_list>& li, _comptr& com, _lcptr& lctx, _fcptr& fctx, p_perun2& p2)
       : CS_Inside(com, lctx, fctx, p2), list(std::move(li)) { };
 
    void run() override;
 
 private:
-   _genptr<_list> list;
+   _genptr<p_list> list;
 };
 
 }

@@ -36,7 +36,7 @@ void C_AggrCopy_This::run()
 
 void C_AggrCopy_String::run()
 {
-   const _str n = os_trim(value->getValue());
+   const p_str n = os_trim(value->getValue());
    if (n.empty()) {
       aggregate->failedCopy++;
    }
@@ -50,11 +50,11 @@ void C_AggrCopy_String::run()
 
 void C_AggrCopy_List::run()
 {
-   const _list list = value->getValue();
-   const _size len = list.size();
+   const p_list list = value->getValue();
+   const p_size len = list.size();
 
-   for (_size i = 0; i < len; i++) {
-      const _str n = os_trim(list[i]);
+   for (p_size i = 0; i < len; i++) {
+      const p_str n = os_trim(list[i]);
       if (n.empty()) {
          aggregate->failedCopy++;
       }
@@ -84,7 +84,7 @@ void C_AggrSelect_This::run()
             _set newSet;
             newSet.insert(this->context.v_path->value);
             aggregate->selectPaths.insert(
-               std::pair<_str, _set>(this->context.v_parent->value, newSet));
+               std::pair<p_str, _set>(this->context.v_parent->value, newSet));
          }
          else {
             it->second.insert(this->context.v_path->value);
@@ -99,7 +99,7 @@ void C_AggrSelect_This::run()
 
 void C_AggrSelect_String::run()
 {
-   const _str n = os_trim(value->getValue());
+   const p_str n = os_trim(value->getValue());
 
    if (n.empty()) {
       aggregate->failedSelect++;
@@ -108,17 +108,17 @@ void C_AggrSelect_String::run()
       aggregate->invalidSelect.insert(os_fullname(n));
    }
    else {
-      const _str path = os_leftJoin(this->locationContext->location->value, n);
+      const p_str path = os_leftJoin(this->locationContext->location->value, n);
 
       if (os_hasParentDirectory(path)) {
-         const _str parent = os_parent(path);
+         const p_str parent = os_parent(path);
          auto it = aggregate->selectPaths.find(parent);
 
          if (it == aggregate->selectPaths.end()) {
             _set newSet;
             newSet.insert(path);
             aggregate->selectPaths.insert(
-               std::pair<_str, _set>(parent, newSet));
+               std::pair<p_str, _set>(parent, newSet));
          }
          else {
             it->second.insert(path);
@@ -132,13 +132,13 @@ void C_AggrSelect_String::run()
 
 void C_AggrSelect_List::run()
 {
-   const _list elements = value->getValue();
-   const _size length = elements.size();
-   _str prevParent;
+   const p_list elements = value->getValue();
+   const p_size length = elements.size();
+   p_str prevParent;
    _set* prevSet;
 
-   for (_size i = 0; i < length; i++) {
-      const _str n = os_trim(elements[i]);
+   for (p_size i = 0; i < length; i++) {
+      const p_str n = os_trim(elements[i]);
       if (n.empty()) {
          aggregate->failedSelect++;
       }
@@ -146,10 +146,10 @@ void C_AggrSelect_List::run()
          aggregate->invalidSelect.insert(os_fullname(n));
       }
       else {
-         const _str path = os_leftJoin(this->locationContext->location->value, n);
+         const p_str path = os_leftJoin(this->locationContext->location->value, n);
 
          if (os_hasParentDirectory(path)) {
-            const _str parent = os_parent(path);
+            const p_str parent = os_parent(path);
 
             if (i > 0 && parent == prevParent) {
                prevSet->insert(path);
@@ -160,7 +160,7 @@ void C_AggrSelect_List::run()
                   _set newSet;
                   newSet.insert(path);
                   aggregate->selectPaths.insert(
-                     std::pair<_str, _set>(parent, newSet));
+                     std::pair<p_str, _set>(parent, newSet));
 
                   prevSet = &(aggregate->selectPaths.find(parent)->second);
                }
@@ -180,22 +180,22 @@ void C_AggrSelect_List::run()
 
 
 
-void logCopyError(p_perun2& p2, const _str& name)
+void logCopyError(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Failed to copy ", getCCNameShort(name));
 }
 
-void logCopySuccess(p_perun2& p2, const _str& name)
+void logCopySuccess(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Copy ", getCCNameShort(name));
 }
 
-void logSelectError(p_perun2& p2, const _str& name)
+void logSelectError(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Failed to select ", getCCNameShort(name));
 }
 
-void logSelectSuccess(p_perun2& p2, const _str& name)
+void logSelectSuccess(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Select ", getCCNameShort(name));
 }
@@ -204,18 +204,18 @@ void logSelectSuccess(p_perun2& p2, const _str& name)
 
 void C_Copy_String::run()
 {
-   const _str n = os_trim(value->getValue());
+   const p_str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
       logCopyError(this->perun2, n);
       this->perun2.contexts.success->value = false;
       return;
    }
 
-   const _str path = os_leftJoin(this->locationContext->location->value, n);
+   const p_str path = os_leftJoin(this->locationContext->location->value, n);
    if (os_exists(path)) {
       _set set;
       set.insert(path);
-      const _bool s = os_copy(set);
+      const p_bool s = os_copy(set);
       if (s) {
          logCopySuccess(this->perun2, path);
       }
@@ -233,8 +233,8 @@ void C_Copy_String::run()
 
 void C_Copy_List::run()
 {
-   const _list elements = value->getValue();
-   const _size length = elements.size();
+   const p_list elements = value->getValue();
+   const p_size length = elements.size();
 
    if (length == 0) {
       this->perun2.contexts.success->value = true;
@@ -242,16 +242,16 @@ void C_Copy_List::run()
    }
 
    _set set;
-   _bool anyFailure = false;
+   p_bool anyFailure = false;
 
-   for (_size i = 0; i < length; i++) {
-      const _str n = os_trim(elements[i]);
+   for (p_size i = 0; i < length; i++) {
+      const p_str n = os_trim(elements[i]);
       if (os_isInvaild(n)) {
          logCopyError(this->perun2, n);
          anyFailure = true;
       }
       else {
-         const _str path = os_leftJoin(this->locationContext->location->value, n);
+         const p_str path = os_leftJoin(this->locationContext->location->value, n);
          if (os_exists(path)) {
             set.insert(path);
          }
@@ -263,7 +263,7 @@ void C_Copy_List::run()
    }
 
    if (!set.empty()) {
-      const _bool s = os_copy(set);
+      const p_bool s = os_copy(set);
       const auto end = set.end();
 
       for (auto it = set.begin(); it != end; ++it) {
@@ -297,7 +297,7 @@ void Selector::insertValue()
       {
          _set newSet;
          newSet.insert(this->path);
-         selectPaths.insert(std::pair<_str, _set>(this->parent, newSet));
+         selectPaths.insert(std::pair<p_str, _set>(this->parent, newSet));
          prevSet = &(selectPaths.find(this->parent)->second);
       }
       else
@@ -317,7 +317,7 @@ void Selector::run()
       this->perun2.contexts.success->value = false;
    }
    else {
-      _bool anyFailed = false;
+      p_bool anyFailed = false;
 
       for (auto it = this->selectPaths.begin(); it != this->selectPaths.end(); it++)
       {
@@ -325,7 +325,7 @@ void Selector::run()
             break;
          }
 
-         const _bool success = os_select(it->first, it->second);
+         const p_bool success = os_select(it->first, it->second);
          if (!anyFailed && !success) {
             anyFailed = true;
          }
@@ -347,18 +347,18 @@ void Selector::run()
 
 void C_Select_String::run()
 {
-   const _str n = os_trim(value->getValue());
+   const p_str n = os_trim(value->getValue());
    if (os_isInvaild(n)) {
       logSelectError(this->perun2, n);
       this->perun2.contexts.success->value = false;
       return;
    }
 
-   const _str path = os_leftJoin(this->locationContext->location->value, n);
-   _bool success = false;
+   const p_str path = os_leftJoin(this->locationContext->location->value, n);
+   p_bool success = false;
 
    if (os_exists(path) && os_hasParentDirectory(path)) {
-      const _str parent = os_parent(path);
+      const p_str parent = os_parent(path);
 
       if (os_directoryExists(parent)) {
          _set set;
@@ -385,8 +385,8 @@ void C_Select_String::run()
 
 void C_Select_List::run()
 {
-   const _list elements = value->getValue();
-   const _size length = elements.size();
+   const p_list elements = value->getValue();
+   const p_size length = elements.size();
 
    if (length == 0) {
       this->perun2.contexts.success->value = true;
@@ -395,8 +395,8 @@ void C_Select_List::run()
 
    this->selector.reset();
 
-   for (_size i = 0; i < length; i++) {
-      const _str n = os_trim(elements[i]);
+   for (p_size i = 0; i < length; i++) {
+      const p_str n = os_trim(elements[i]);
 
       if (os_isInvaild(n)) {
          logSelectError(this->perun2, n);

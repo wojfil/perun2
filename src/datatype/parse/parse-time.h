@@ -22,14 +22,14 @@
 namespace perun2::parse
 {
 
-_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2);
 
-_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2);
 static _tnum tokenToTimeNumber(const Token& tk);
 static void checkDayCorrectness(const _tnum day, const _tnum month, const _tnum year, const Token& tk);
-static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2);
-static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract,
-   _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks, _int& numReserve, p_perun2& p2);
+static p_bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2);
+static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubtract,
+   _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks, p_int& numReserve, p_perun2& p2);
 
 }
 

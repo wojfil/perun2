@@ -21,17 +21,17 @@
 namespace perun2
 {
 
-std::vector<Token> tokenize(const _str &code, p_perun2& p2);
-static Token wordToken(const _str& code, const _size start, const _size length, const _int line, p_perun2& p2);
-inline static Token numberToken(const _str& code, const _str& value, const _size start, const _size length, 
-   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, p_perun2& p2);
-inline static _bool isSymbol(const _char ch);
-inline static _bool isSpace(const _char ch);
-inline static _bool isNewLine(const _char ch);
-inline static _bool isAllowedInWord(const _char ch);
-inline static _bool isDoubleChar(const _char ch);
-inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2);
-inline static _nint decimalSuffixMulti(const _char c);
+std::vector<Token> tokenize(const p_str &code, p_perun2& p2);
+static Token wordToken(const p_str& code, const p_size start, const p_size length, const p_int line, p_perun2& p2);
+inline static Token numberToken(const p_str& code, const p_str& value, const p_size start, const p_size length, 
+   const p_nint multiplier, const NumberMode mode, const p_int dots, const p_int line, p_perun2& p2);
+inline static p_bool isSymbol(const p_char ch);
+inline static p_bool isSpace(const p_char ch);
+inline static p_bool isNewLine(const p_char ch);
+inline static p_bool isAllowedInWord(const p_char ch);
+inline static p_bool isDoubleChar(const p_char ch);
+inline static p_nint fileSizeSuffixMulti(const p_char c1, const p_char c2);
+inline static p_nint decimalSuffixMulti(const p_char c);
 
 }
 

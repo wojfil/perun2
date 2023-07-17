@@ -27,13 +27,13 @@ namespace perun2::comm
 struct C_Create : CoreCommand
 {
 public:
-   C_Create(const _bool force, FileContext* ctx, p_perun2& p2)
+   C_Create(const p_bool force, FileContext* ctx, p_perun2& p2)
       : forced(force), CoreCommand(true, ctx, p2) { };
 
    void run() override;
 
 private:
-   const _bool forced;
+   const p_bool forced;
 };
 
 
@@ -50,13 +50,13 @@ public:
 struct C_CreateFile : CoreCommand
 {
 public:
-   C_CreateFile(const _bool force, FileContext* ctx, p_perun2& p2)
+   C_CreateFile(const p_bool force, FileContext* ctx, p_perun2& p2)
       : forced(force), CoreCommand(true, ctx, p2) { };
 
    void run() override;
 
 private:
-   const _bool forced;
+   const p_bool forced;
 };
 
 
@@ -73,13 +73,13 @@ public:
 struct C_CreateDirectory : CoreCommand
 {
 public:
-   C_CreateDirectory(const _bool force, FileContext* ctx, p_perun2& p2)
+   C_CreateDirectory(const p_bool force, FileContext* ctx, p_perun2& p2)
       : forced(force), CoreCommand(true, ctx, p2) { };
 
    void run() override;
 
 private:
-   const _bool forced;
+   const p_bool forced;
 };
 
 
@@ -110,81 +110,81 @@ protected:
 struct C_Create_String : C_CreateCertain
 {
 public:
-   C_Create_String(_genptr<_str>& el, const _bool forc, p_perun2& p2)
+   C_Create_String(_genptr<p_str>& el, const p_bool forc, p_perun2& p2)
       : element(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_str> element;
-   const _bool forced;
+   _genptr<p_str> element;
+   const p_bool forced;
 };
 
 
 struct C_CreateFile_String : C_CreateCertain
 {
 public:
-   C_CreateFile_String(_genptr<_str>& el, const _bool forc, p_perun2& p2)
+   C_CreateFile_String(_genptr<p_str>& el, const p_bool forc, p_perun2& p2)
       : element(std::move(el)), forced(forc), C_CreateCertain(p2){ };
 
    void run() override;
 
 private:
-   _genptr<_str> element;
-   const _bool forced;
+   _genptr<p_str> element;
+   const p_bool forced;
 };
 
 
 struct C_CreateDirectory_String : C_CreateCertain
 {
 public:
-   C_CreateDirectory_String(_genptr<_str>& el, const _bool forc, p_perun2& p2)
+   C_CreateDirectory_String(_genptr<p_str>& el, const p_bool forc, p_perun2& p2)
       : element(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_str> element;
-   const _bool forced;
+   _genptr<p_str> element;
+   const p_bool forced;
 };
 
 
 struct C_Create_String_Stack : C_CreateCertain
 {
 public:
-   C_Create_String_Stack (_genptr<_str>& el, p_perun2& p2)
+   C_Create_String_Stack (_genptr<p_str>& el, p_perun2& p2)
       : element(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_str> element;
+   _genptr<p_str> element;
 };
 
 
 struct C_CreateFile_String_Stack  : C_CreateCertain
 {
 public:
-   C_CreateFile_String_Stack (_genptr<_str>& el, p_perun2& p2)
+   C_CreateFile_String_Stack (_genptr<p_str>& el, p_perun2& p2)
       : element(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_str> element;
+   _genptr<p_str> element;
 };
 
 
 struct C_CreateDirectory_String_Stack  : C_CreateCertain
 {
 public:
-   C_CreateDirectory_String_Stack (_genptr<_str>& el, p_perun2& p2)
+   C_CreateDirectory_String_Stack (_genptr<p_str>& el, p_perun2& p2)
       : element(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_str> element;
+   _genptr<p_str> element;
 };
 
 
@@ -194,81 +194,81 @@ private:
 struct C_Create_List : C_CreateCertain
 {
 public:
-   C_Create_List(_genptr<_list>& el, const _bool forc, p_perun2& p2)
+   C_Create_List(_genptr<p_list>& el, const p_bool forc, p_perun2& p2)
       : elements(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_list> elements;
-   const _bool forced;
+   _genptr<p_list> elements;
+   const p_bool forced;
 };
 
 
 struct C_CreateFiles_List : C_CreateCertain
 {
 public:
-   C_CreateFiles_List(_genptr<_list>& el, const _bool forc, p_perun2& p2)
+   C_CreateFiles_List(_genptr<p_list>& el, const p_bool forc, p_perun2& p2)
       : elements(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_list> elements;
-   const _bool forced;
+   _genptr<p_list> elements;
+   const p_bool forced;
 };
 
 
 struct C_CreateDirectories_List : C_CreateCertain
 {
 public:
-   C_CreateDirectories_List(_genptr<_list>& el, const _bool forc, p_perun2& p2)
+   C_CreateDirectories_List(_genptr<p_list>& el, const p_bool forc, p_perun2& p2)
       : elements(std::move(el)), forced(forc), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_list> elements;
-   const _bool forced;
+   _genptr<p_list> elements;
+   const p_bool forced;
 };
 
 
 struct C_Create_List_Stack : C_CreateCertain
 {
 public:
-   C_Create_List_Stack (_genptr<_list>& el, p_perun2& p2)
+   C_Create_List_Stack (_genptr<p_list>& el, p_perun2& p2)
       : elements(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_list> elements;
+   _genptr<p_list> elements;
 };
 
 
 struct C_CreateFiles_List_Stack : C_CreateCertain
 {
 public:
-   C_CreateFiles_List_Stack (_genptr<_list>& el, p_perun2& p2)
+   C_CreateFiles_List_Stack (_genptr<p_list>& el, p_perun2& p2)
       : elements(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_list> elements;
+   _genptr<p_list> elements;
 };
 
 
 struct C_CreateDirectories_List_Stack  : C_CreateCertain
 {
 public:
-   C_CreateDirectories_List_Stack (_genptr<_list>& el, p_perun2& p2)
+   C_CreateDirectories_List_Stack (_genptr<p_list>& el, p_perun2& p2)
       : elements(std::move(el)), C_CreateCertain(p2) { };
 
    void run() override;
 
 private:
-   _genptr<_list> elements;
+   _genptr<p_list> elements;
 };
 
 }

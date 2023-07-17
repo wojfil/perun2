@@ -130,12 +130,12 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-_bool Attribute::has(const _aunit v) const
+p_bool Attribute::has(const _aunit v) const
 {
    return this->value & v;
 }
 
-_bool Attribute::hasAny() const
+p_bool Attribute::hasAny() const
 {
    return this->value != ATTR_NULL;
 }

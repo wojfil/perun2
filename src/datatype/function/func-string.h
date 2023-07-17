@@ -21,322 +21,322 @@
 namespace perun2::func
 {
 
-struct F_After : Func_2<_str, _str>, Generator<_str>
+struct F_After : Func_2<p_str, p_str>, Generator<p_str>
 {
 public:
-   F_After(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_After(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Before : Func_2<_str, _str>, Generator<_str>
+struct F_Before : Func_2<p_str, p_str>, Generator<p_str>
 {
 public:
-   F_Before(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Before(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Digits : Func_1<_str>, Generator<_str>
+struct F_Digits : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Digits(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Digits(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Fill : Func_2<_str, _num>, Generator<_str>
+struct F_Fill : Func_2<p_str, _num>, Generator<p_str>
 {
 public:
-   F_Fill(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Fill(_genptr<p_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Letters : Func_1<_str>, Generator<_str>
+struct F_Letters : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Letters(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Letters(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Lower : Func_1<_str>, Generator<_str>
+struct F_Lower : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Lower(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Lower(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Trim : Func_1<_str>, Generator<_str>
+struct F_Trim : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Trim(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Trim(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Upper : Func_1<_str>, Generator<_str>
+struct F_Upper : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Upper(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Upper(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Repeat : Func_2<_str, _num>, Generator<_str>
+struct F_Repeat : Func_2<p_str, _num>, Generator<p_str>
 {
 public:
-   F_Repeat(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Repeat(_genptr<p_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Reverse : Func_1<_str>, Generator<_str>
+struct F_Reverse : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Reverse(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Reverse(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Left : Func_2<_str, _num>, Generator<_str>
+struct F_Left : Func_2<p_str, _num>, Generator<p_str>
 {
 public:
-   F_Left(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Left(_genptr<p_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Right : Func_2<_str, _num>, Generator<_str>
+struct F_Right : Func_2<p_str, _num>, Generator<p_str>
 {
 public:
-   F_Right(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Right(_genptr<p_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Substring_2 : Func_2<_str, _num>, Generator<_str>
+struct F_Substring_2 : Func_2<p_str, _num>, Generator<p_str>
 {
 public:
-   F_Substring_2(_genptr<_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Substring_2(_genptr<p_str>& a1, _genptr<_num>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Substring_3 : Func_3<_str, _num, _num>, Generator<_str>
+struct F_Substring_3 : Func_3<p_str, _num, _num>, Generator<p_str>
 {
 public:
-   F_Substring_3(_genptr<_str>& a1, _genptr<_num>& a2, _genptr<_num>& a3)
+   F_Substring_3(_genptr<p_str>& a1, _genptr<_num>& a2, _genptr<_num>& a3)
       : Func_3(a1, a2, a3) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_ConcatenateUnit : Func_1<_list>, Generator<_str>
+struct F_ConcatenateUnit : Func_1<p_list>, Generator<p_str>
 {
 public:
-   F_ConcatenateUnit(_genptr<_list>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_ConcatenateUnit(_genptr<p_list>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Concatenate : Generator<_str>
+struct F_Concatenate : Generator<p_str>
 {
 public:
-   F_Concatenate(std::vector<_genptr<_str>>& vals) : length(vals.size()) 
+   F_Concatenate(std::vector<_genptr<p_str>>& vals) : length(vals.size()) 
    {
       langutil::transferUniquePtrs(vals, values);
    };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
-   std::vector<_genptr<_str>> values;
-   const _size length;
+   std::vector<_genptr<p_str>> values;
+   const p_size length;
 };
 
 
-struct F_FirstDef : Generator<_str>
+struct F_FirstDef : Generator<p_str>
 {
 public:
    F_FirstDef(_defptr& def) : definition(std::move(def)) { };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
    _defptr definition;
 };
 
 
-struct F_LastDef : Generator<_str>
+struct F_LastDef : Generator<p_str>
 {
 public:
    F_LastDef(_defptr& def) : definition(std::move(def)) { };
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
    _defptr definition;
 };
 
 
-struct F_Replace : Func_3<_str, _str, _str>, Generator<_str>
+struct F_Replace : Func_3<p_str, p_str, p_str>, Generator<p_str>
 {
 public:
-   F_Replace(_genptr<_str>& a1, _genptr<_str>& a2, _genptr<_str>& a3) : Func_3(a1, a2, a3) { };
-   _str getValue() override;
+   F_Replace(_genptr<p_str>& a1, _genptr<p_str>& a2, _genptr<p_str>& a3) : Func_3(a1, a2, a3) { };
+   p_str getValue() override;
 };
 
 
-struct F_String_B : Func_1<_bool>, Generator<_str>
+struct F_String_B : Func_1<p_bool>, Generator<p_str>
 {
 public:
-   F_String_B(_genptr<_bool>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_String_B(_genptr<p_bool>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_String_N : Func_1<_num>, Generator<_str>
+struct F_String_N : Func_1<_num>, Generator<p_str>
 {
 public:
    F_String_N(_genptr<_num>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_String_T : Func_1<_tim>, Generator<_str>
+struct F_String_T : Func_1<_tim>, Generator<p_str>
 {
 public:
    F_String_T(_genptr<_tim>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_String_P : Func_1<_per>, Generator<_str>
+struct F_String_P : Func_1<_per>, Generator<p_str>
 {
 public:
    F_String_P(_genptr<_per>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_MonthName : Func_1<_num>, Generator<_str>
+struct F_MonthName : Func_1<_num>, Generator<p_str>
 {
 public:
    F_MonthName(_genptr<_num>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
-struct F_MonthNameFromTime : Func_1<_tim>, Generator<_str>
+struct F_MonthNameFromTime : Func_1<_tim>, Generator<p_str>
 {
 public:
    F_MonthNameFromTime(_genptr<_tim>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_WeekDayName : Func_1<_num>, Generator<_str>
+struct F_WeekDayName : Func_1<_num>, Generator<p_str>
 {
 public:
    F_WeekDayName(_genptr<_num>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_WeekDayNameFromTime : Func_1<_tim>, Generator<_str>
+struct F_WeekDayNameFromTime : Func_1<_tim>, Generator<p_str>
 {
 public:
    F_WeekDayNameFromTime(_genptr<_tim>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_AfterDigits : Func_1<_str>, Generator<_str>
+struct F_AfterDigits : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_AfterDigits(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_AfterDigits(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_AfterLetters : Func_1<_str>, Generator<_str>
+struct F_AfterLetters : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_AfterLetters(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_AfterLetters(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_BeforeDigits : Func_1<_str>, Generator<_str>
+struct F_BeforeDigits : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_BeforeDigits(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_BeforeDigits(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_BeforeLetters : Func_1<_str>, Generator<_str>
+struct F_BeforeLetters : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_BeforeLetters(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_BeforeLetters(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_RandomChar : Func_1<_str>, Generator<_str>
+struct F_RandomChar : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_RandomChar(_genptr<_str>& a1, p_perun2& p2)
+   F_RandomChar(_genptr<p_str>& a1, p_perun2& p2)
       : Func_1(a1), math(p2.math) { };
 
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
    Math& math;
 };
 
 
-struct F_Capitalize : Func_1<_str>, Generator<_str>
+struct F_Capitalize : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Capitalize(_genptr<_str>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   F_Capitalize(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
 };
 
 
-struct F_Join : Func_2<_list, _str>, Generator<_str>
+struct F_Join : Func_2<p_list, p_str>, Generator<p_str>
 {
 public:
-   F_Join(_genptr<_list>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
-   _str getValue() override;
+   F_Join(_genptr<p_list>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   p_str getValue() override;
 };
 
 
-struct F_Roman : Func_1<_num>, Generator<_str>
+struct F_Roman : Func_1<_num>, Generator<p_str>
 {
 public:
    F_Roman(_genptr<_num>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 
 private:
-   inline void appendFraction(const _num& base, _stream& ss) const;
+   inline void appendFraction(const _num& base, p_stream& ss) const;
 };
 
 
-struct F_Binary : Func_1<_num>, Generator<_str>
+struct F_Binary : Func_1<_num>, Generator<p_str>
 {
 public:
    F_Binary(_genptr<_num>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 
-struct F_Hex : Func_1<_num>, Generator<_str>
+struct F_Hex : Func_1<_num>, Generator<p_str>
 {
 public:
    F_Hex(_genptr<_num>& a1) : Func_1(a1) { };
-   _str getValue() override;
+   p_str getValue() override;
 };
 
 }

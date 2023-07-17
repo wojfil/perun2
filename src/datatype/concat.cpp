@@ -19,27 +19,27 @@
 namespace perun2
 {
 
-_size unitLen(const _char value)
+p_size unitLen(const p_char value)
 {
    return 1;
 }
 
-_size unitLen(const _char (&value)[])
+p_size unitLen(const p_char (&value)[])
 {
    return wcslen(value);
 }
 
-_size unitLen(const _str& value)
+p_size unitLen(const p_str& value)
 {
    return value.size();
 }
 
-_size charsLen()
+p_size charsLen()
 {
    return 0;
 }
 
-void insertStr(_str& result)
+void insertStr(p_str& result)
 {
   // do nothing as expected
 }

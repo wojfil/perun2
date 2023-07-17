@@ -19,10 +19,10 @@
 namespace perun2::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const _str& pat, const _str& pref, const _int retr)
+DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr)
    : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), perun2(p2), prefix(pref), 
       startId(pref.size()), specialStart(hasSpecialStart()), 
-      hasRetreats(retr != 0), retreat(hasRetreats ? os_doubleDotsPrefix(retr) : _str())
+      hasRetreats(retr != 0), retreat(hasRetreats ? os_doubleDotsPrefix(retr) : p_str())
 {   
    minLength = this->getMinLength(pat);
 };
@@ -35,7 +35,7 @@ void DoubleAsteriskPattern::reset() {
    }
 }
 
-_bool DoubleAsteriskPattern::hasNext()
+p_bool DoubleAsteriskPattern::hasNext()
 {
    if (this->first) {
       this->index.setToZero();
@@ -67,18 +67,18 @@ _bool DoubleAsteriskPattern::hasNext()
    return false;
 }
 
-_bool DoubleAsteriskPattern::hasSpecialStart() const
+p_bool DoubleAsteriskPattern::hasSpecialStart() const
 {
    return patternLength >= 2
        && pattern[0] == WILDCARD_DOUBLE_ASTERISK 
        && pattern[1] == OS_SEPARATOR;
 };
 
-_size DoubleAsteriskPattern::getMinLength(const _str& pat) const
+p_size DoubleAsteriskPattern::getMinLength(const p_str& pat) const
 {
-   _size result = 0;
+   p_size result = 0;
 
-   for (const _char ch : pat) {
+   for (const p_char ch : pat) {
       switch (ch) {
          case WILDCARD_SINGLE_ASTERISK:
          case WILDCARD_DOUBLE_ASTERISK: {
@@ -94,7 +94,7 @@ _size DoubleAsteriskPattern::getMinLength(const _str& pat) const
    return result;
 }
 
-WildcardCharState DoubleAsteriskPattern::checkState(const _size n, const _size m)
+WildcardCharState DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
 {
    if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
       return this->charStates[n][m];

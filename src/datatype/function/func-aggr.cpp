@@ -23,7 +23,7 @@ namespace perun2::func
 _num F_Average::getValue()
 {
    _num sum;
-   _int count = countSingle;
+   p_int count = countSingle;
 
    for (_genptr<_num>& sv : this->singleValues) {
       sum += sv->getValue();
@@ -49,13 +49,13 @@ _num F_Average::getValue()
 _num F_Max::getValue()
 {
    _num max;
-   _bool init = false;
+   p_bool init = false;
 
    if (countSingle != 0) {
       init = true;
       max = singleValues[0]->getValue();
 
-      for (_size i = 1; i < countSingle; i++) {
+      for (p_size i = 1; i < countSingle; i++) {
          const _num v = singleValues[i]->getValue();
          if (v > max) {
             max = v;
@@ -66,7 +66,7 @@ _num F_Max::getValue()
    for (_genptr<_nlist>& mv : this->multiValues) {
       _nlist nlist = mv->getValue();
       if (!nlist.empty()) {
-         const _size len = nlist.size();
+         const p_size len = nlist.size();
 
          if (init) {
             for (const _num& n : nlist) {
@@ -78,7 +78,7 @@ _num F_Max::getValue()
          else {
             init = true;
             max = nlist[0];
-            for (_size j = 1; j < len; j++) {
+            for (p_size j = 1; j < len; j++) {
                if (nlist[j] > max) {
                   max = nlist[j];
                }
@@ -108,8 +108,8 @@ _num F_Median::getValue()
    }
 
    std::sort(elements.begin(), elements.end());
-   const _size len = elements.size();
-   const _size half = len / 2;
+   const p_size len = elements.size();
+   const p_size half = len / 2;
 
    if (len % 2 == 0) {
       _num result = elements[half] + elements[half - 1];
@@ -125,13 +125,13 @@ _num F_Median::getValue()
 _num F_Min::getValue()
 {
    _num min;
-   _bool init = false;
+   p_bool init = false;
 
    if (countSingle != 0) {
       init = true;
       min = singleValues[0]->getValue();
 
-      for (_size i = 1; i < countSingle; i++) {
+      for (p_size i = 1; i < countSingle; i++) {
          const _num v = singleValues[i]->getValue();
          if (v < min) {
             min = v;
@@ -152,7 +152,7 @@ _num F_Min::getValue()
          else {
             init = true;
             min = nlist[0];
-            for (_size j = 1; j < nlist.size(); j++) {
+            for (p_size j = 1; j < nlist.size(); j++) {
                if (nlist[j] < min) {
                   min = nlist[j];
                }

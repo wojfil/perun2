@@ -39,7 +39,7 @@ struct LimitOne
 {
 public:
    virtual void loadData() = 0;
-   virtual _bool nextElementIsBetter() = 0;
+   virtual p_bool nextElementIsBetter() = 0;
 };
 
 typedef std::unique_ptr<LimitOne> _loptr;
@@ -50,7 +50,7 @@ struct LimitOneUnit : LimitOne
 {
 public:
    LimitOneUnit() = delete;
-   LimitOneUnit(_genptr<T>& val, const _bool desc)
+   LimitOneUnit(_genptr<T>& val, const p_bool desc)
       : valueGenerator(std::move(val)), descending(desc) { };
 
    void loadData() override
@@ -62,7 +62,7 @@ protected:
    T value;
    T nextValue;
    _genptr<T> valueGenerator;
-   const _bool descending;
+   const p_bool descending;
 };
 
 
@@ -71,7 +71,7 @@ struct LimitOneUnit_Middle : LimitOneUnit<T>
 {
 public:
    LimitOneUnit_Middle() = delete;
-   LimitOneUnit_Middle(_genptr<T>& val, const _bool desc, _loptr& next)
+   LimitOneUnit_Middle(_genptr<T>& val, const p_bool desc, _loptr& next)
       : LimitOneUnit<T>(val, desc), nextUnit(std::move(next)) { };
 
    void loadData() override
@@ -80,7 +80,7 @@ public:
       this->nextUnit->loadData();
    };
 
-   _bool nextElementIsBetter() override
+   p_bool nextElementIsBetter() override
    {
       this->nextValue = this->valueGenerator->getValue();
 
@@ -102,10 +102,10 @@ struct LimitOneUnit_Final : LimitOneUnit<T>
 {
 public:
    LimitOneUnit_Final() = delete;
-   LimitOneUnit_Final(_genptr<T>& val, const _bool desc)
+   LimitOneUnit_Final(_genptr<T>& val, const p_bool desc)
       : LimitOneUnit<T>(val, desc) { };
 
-   _bool nextElementIsBetter() override
+   p_bool nextElementIsBetter() override
    {
       this->nextValue = this->valueGenerator->getValue();
       if (this->descending ? (this->nextValue > this->value) : (this->nextValue < this->value)) {
@@ -126,7 +126,7 @@ public:
    FileContext* getFileContext() override;
 
    void reset() override;
-   _bool hasNext() override;
+   p_bool hasNext() override;
 
 private:
    _defptr base;
@@ -134,7 +134,7 @@ private:
    _fcptr nextContext;
    _loptr limitOne;
    p_perun2& perun2;
-   _bool valueTaken = false;
+   p_bool valueTaken = false;
 };
 
 

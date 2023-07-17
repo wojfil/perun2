@@ -21,21 +21,21 @@
 namespace perun2::parse
 {
 
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_bool>& result, p_perun2& p2);
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_num>& result, p_perun2& p2);
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_per>& result, p_perun2& p2);
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_tim>& result, p_perun2& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, _genptr<p_bool>& result, p_perun2& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, _genptr<_num>& result, p_perun2& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, _genptr<_per>& result, p_perun2& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, _genptr<_tim>& result, p_perun2& p2);
 
    template <typename T>
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<T>& result, p_perun2& p2)
+   p_bool makeVarRefAsFunction(const Token& tk, _genptr<T>& result, p_perun2& p2)
    {
       return false;
    }
 
-   _bool makeVarRef(const Token& tk, _defptr& result, p_perun2& p2);
+   p_bool makeVarRef(const Token& tk, _defptr& result, p_perun2& p2);
 
    template <typename T>
-   _bool makeVarRef(const Token& tk, _genptr<T>& result, p_perun2& p2)
+   p_bool makeVarRef(const Token& tk, _genptr<T>& result, p_perun2& p2)
    {
       Variable<T>* var;
       if (!p2.contexts.getVar(tk, var, p2)) {

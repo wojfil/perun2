@@ -31,20 +31,20 @@ struct p_perun2;
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS _genptr<_str>& loc, p_perun2& p2, const _bool abs, const _str& pref
+#define P_GEN_OS_ARGS _genptr<p_str>& loc, p_perun2& p2, const p_bool abs, const p_str& pref
 #define P_GEN_OS_ARGS_2 loc, p2, abs, pref
-#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, p_perun2& p2, const _str& patt, const _bool abs, const _str& pref
+#define P_GEN_OS_ARGS_EXT _genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const p_bool abs, const p_str& pref
 #define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, abs, pref
 
 
 namespace os
 {
-   _constexpr _bool IS_ABSOLUTE_PATH =            true;
-   _constexpr _bool IS_RELATIVE_PATH =            false;
-   _constexpr _bool IS_FINAL =                    true;
-   _constexpr _bool IS_NOT_FINAL =                false;
+   p_constexpr p_bool IS_ABSOLUTE_PATH =            true;
+   p_constexpr p_bool IS_RELATIVE_PATH =            false;
+   p_constexpr p_bool IS_FINAL =                    true;
+   p_constexpr p_bool IS_NOT_FINAL =                false;
 
-   extern const _str DEFAULT_PATTERN;
+   extern const p_str DEFAULT_PATTERN;
 }
 
 
@@ -56,18 +56,18 @@ public:
    FileContext* getFileContext() override;
 
 protected:
-   _bool first = true;
-   _genptr<_str> location;
+   p_bool first = true;
+   _genptr<p_str> location;
    p_perun2& perun2;
    FileContext context;
-   _fdata data;
+   p_fdata data;
    _num index;
-   _str baseLocation;
+   p_str baseLocation;
 
    const _flags flags;
-   const _bool isAbsolute;
-   const _bool hasPrefix;
-   const _str prefix;
+   const p_bool isAbsolute;
+   const p_bool hasPrefix;
+   const p_str prefix;
 };
 
 
@@ -84,17 +84,17 @@ public:
    void reset() override;
 
 protected:
-   _entry handle;
-   const _str pattern;
+   p_entry handle;
+   const p_str pattern;
 
    // Windows API has some trouble with handling patterns that consist of only dots and asterisks
    // so, in this rare case, let us generate all files and directories with *
    // and then filter them with SimpleWildcardComparer
-   const _bool exceptional;
+   const p_bool exceptional;
    SimpleWildcardComparer comparer;
 
 private:
-   _bool isExceptional(const _str& patt);
+   p_bool isExceptional(const p_str& patt);
 };
 
 
@@ -108,10 +108,10 @@ public:
    void reset() override;
 
 protected:
-   _bool goDeeper = false;
-   std::vector<_entry> handles;
-   _list paths;
-   _list bases;
+   p_bool goDeeper = false;
+   std::vector<p_entry> handles;
+   p_list paths;
+   p_list bases;
 };
 
 
@@ -122,7 +122,7 @@ public:
    Files(P_GEN_OS_ARGS_EXT)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
 };
 
 
@@ -133,7 +133,7 @@ public:
    Directories(P_GEN_OS_ARGS_EXT)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2) {};
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
 };
 
 
@@ -144,13 +144,13 @@ public:
    All(P_GEN_OS_ARGS_EXT)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2), retreats(0) {};
       
-   All(P_GEN_OS_ARGS_EXT, const _int retr)
+   All(P_GEN_OS_ARGS_EXT, const p_int retr)
       : OsDefinitionPlain(P_GEN_OS_ARGS_EXT_2), retreats(retr) {};
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
 
 private:
-   const _int retreats;
+   const p_int retreats;
 };
 
 
@@ -161,7 +161,7 @@ public:
    RecursiveFiles(P_GEN_OS_ARGS)
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
 };
 
 
@@ -172,7 +172,7 @@ public:
    RecursiveDirectories(P_GEN_OS_ARGS)
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
 };
 
 
@@ -183,10 +183,10 @@ public:
    RecursiveAll(P_GEN_OS_ARGS)
       : OsDefinitionRecursive(P_GEN_OS_ARGS_2) { };
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
 
 private:
-   _bool prevFile = false;
+   p_bool prevFile = false;
 };
 
 }

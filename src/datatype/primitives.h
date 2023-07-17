@@ -27,35 +27,35 @@ namespace perun2
 {
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
-   #define _constexpr               inline constexpr
-   #define _const                   inline static const
+   #define p_constexpr              inline constexpr
+   #define p_const                  inline static const
 #else
-   #define _constexpr               constexpr
-   #define _const                   static const
+   #define p_constexpr              constexpr
+   #define p_const                  static const
 #endif
 
-#define _cout                       std::wcout
-#define _cin                        std::wcin
+#define p_cout                      std::wcout
+#define p_cin                       std::wcin
 
-typedef bool                        _bool;
-typedef int32_t                     _int;
-typedef long unsigned int           _ulong;
-typedef std::size_t                 _size;
-typedef wchar_t                     _char;
-typedef std::wstring                _str;
-typedef std::vector<_str>           _list;
+typedef bool                        p_bool;
+typedef int32_t                     p_int;
+typedef long unsigned int           p_ulong;
+typedef std::size_t                 p_size;
+typedef wchar_t                     p_char;
+typedef std::wstring                p_str;
+typedef std::vector<p_str>          p_list;
 
-typedef int64_t                     _nint;
-typedef long double                 _ndouble;
-_constexpr _size BITS_IN_NINT = static_cast<_size>(sizeof(_nint) * 8);
+typedef int64_t                     p_nint;
+typedef long double                 p_ndouble;
+p_constexpr p_size BITS_IN_NINT = static_cast<p_size>(sizeof(p_nint) * 8);
 
-typedef WIN32_FILE_ATTRIBUTE_DATA   _adata;
-typedef WIN32_FIND_DATAW            _fdata;
-typedef FILETIME                    _ftim;
-typedef std::wstringstream          _stream;
-typedef std::wostringstream         _ostream;
+typedef WIN32_FILE_ATTRIBUTE_DATA   p_adata;
+typedef WIN32_FIND_DATAW            p_fdata;
+typedef FILETIME                    p_ftim;
+typedef std::wstringstream          p_stream;
+typedef std::wostringstream         p_ostream;
 
-typedef HANDLE                      _entry;
+typedef HANDLE                      p_entry;
 
 
 }

@@ -24,10 +24,10 @@
 namespace perun2::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size start = tks.getStart() + 2;
-   const _size length = tks.getLength() - 3;
+   const p_size start = tks.getStart() + 2;
+   const p_size length = tks.getLength() - 3;
    const Tokens tks2(tks, start, length);
 
    if (parse(p2, tks2, result))  {

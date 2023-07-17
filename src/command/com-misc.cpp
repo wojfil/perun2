@@ -32,9 +32,9 @@ void C_PrintSingle::run()
 
 void C_PrintList::run()
 {
-   const _list list = this->value->getValue();
-   const _size length = list.size();
-   for (_size i = 0; this->perun2.state == State::s_Running && i < length; i++) {
+   const p_list list = this->value->getValue();
+   const p_size length = list.size();
+   for (p_size i = 0; this->perun2.state == State::s_Running && i < length; i++) {
       this->perun2.logger.print(list[i]);
    }
 }
@@ -100,14 +100,14 @@ RunBase::RunBase(p_perun2& p2)
      locationCtx(p2.contexts.getLocationContext()) { };
 
 
-_str RunBase::getLocation()
+p_str RunBase::getLocation()
 {
    return this->locationCtx->location->value;
 }
 
 void C_Run::run()
 {
-   _str command = os_softTrim(this->value->getValue());
+   p_str command = os_softTrim(this->value->getValue());
 
    if (command.empty()) {
       this->perun2.logger.log(L"Failed to run an empty command");
@@ -115,8 +115,8 @@ void C_Run::run()
       return;
    }
 
-   const _str loc = this->getLocation();
-   const _bool s = os_run(command, loc, this->perun2);
+   const p_str loc = this->getLocation();
+   const p_bool s = os_run(command, loc, this->perun2);
    this->perun2.contexts.success->value = s;
 
    if (s) {
@@ -129,7 +129,7 @@ void C_Run::run()
 
 void C_RunWith::run()
 {
-   _str base = os_softTrim(value->getValue());
+   p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -137,9 +137,9 @@ void C_RunWith::run()
       return;
    }
 
-   const _str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed));
-   const _str loc = this->getLocation();
-   const _bool s = os_run(com, loc, this->perun2);
+   const p_str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed));
+   const p_str loc = this->getLocation();
+   const p_bool s = os_run(com, loc, this->perun2);
    this->perun2.contexts.success->value = s;
 
    if (s) {
@@ -152,7 +152,7 @@ void C_RunWith::run()
 
 void C_RunWithWithString::run()
 {
-   _str base = os_softTrim(value->getValue());
+   p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -160,12 +160,12 @@ void C_RunWithWithString::run()
       return;
    }
 
-   const _str rawArg = argument->getValue();
-   const _str arg = os_makeArg(rawArg);
-   const _str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, arg);
+   const p_str rawArg = argument->getValue();
+   const p_str arg = os_makeArg(rawArg);
+   const p_str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, arg);
 
-   const _str loc = this->getLocation();
-   const _bool s = os_run(com, loc, this->perun2);
+   const p_str loc = this->getLocation();
+   const p_bool s = os_run(com, loc, this->perun2);
    this->perun2.contexts.success->value = s;
 
    if (s) {
@@ -178,7 +178,7 @@ void C_RunWithWithString::run()
 
 void C_RunWithWith::run()
 {
-   _str base = os_softTrim(value->getValue());
+   p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
       this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
@@ -186,13 +186,13 @@ void C_RunWithWith::run()
       return;
    }
 
-   const _list rawArgs = arguments->getValue();
-   const _size len = rawArgs.size();
+   const p_list rawArgs = arguments->getValue();
+   const p_size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed));
-      const _str loc = this->getLocation();
-      const _bool s = os_run(com, loc, this->perun2);
+      const p_str com = str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed));
+      const p_str loc = this->getLocation();
+      const p_bool s = os_run(com, loc, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -203,21 +203,21 @@ void C_RunWithWith::run()
       }
    }
    else {
-      _stream comStream;
-      _stream logStream;
-      const _str& first = rawArgs[0];
+      p_stream comStream;
+      p_stream logStream;
+      const p_str& first = rawArgs[0];
       logStream << str(getCCName(this->context->trimmed), L" with '", base, L"' with '", first, L"'");
       comStream << str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
-      for (_size i = 1; i < len; i++) {
-         const _str& a = rawArgs[i];
+      for (p_size i = 1; i < len; i++) {
+         const p_str& a = rawArgs[i];
          logStream << str(L", '", a, L"'");
          comStream << str(CHAR_SPACE, os_makeArg(a));
       }
 
-      const _str com = comStream.str();
-      const _str loc = this->getLocation();
-      const _bool s = os_run(com, loc, this->perun2);
+      const p_str com = comStream.str();
+      const p_str loc = this->getLocation();
+      const p_bool s = os_run(com, loc, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -237,9 +237,9 @@ void C_RunWithPerun2::run()
       return;
    }
 
-   const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed));
-   const _str loc = this->getLocation();
-   const _bool s = os_run(com, loc, this->perun2);
+   const p_str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed));
+   const p_str loc = this->getLocation();
+   const p_bool s = os_run(com, loc, this->perun2);
    this->perun2.contexts.success->value = s;
 
    if (s) {
@@ -258,12 +258,12 @@ void C_RunWithPerun2WithString::run()
       return;
    }
 
-   const _str rawArg = argument->getValue();
-   const _str arg = os_makeArg(rawArg);
-   const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, arg);
+   const p_str rawArg = argument->getValue();
+   const p_str arg = os_makeArg(rawArg);
+   const p_str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, arg);
 
-   const _str loc = this->getLocation();
-   const _bool s = os_run(com, loc, this->perun2);
+   const p_str loc = this->getLocation();
+   const p_bool s = os_run(com, loc, this->perun2);
    this->perun2.contexts.success->value = s;
 
    if (s) {
@@ -282,13 +282,13 @@ void C_RunWithPerun2With::run()
       return;
    }
 
-   const _list rawArgs = arguments->getValue();
-   const _size len = rawArgs.size();
+   const p_list rawArgs = arguments->getValue();
+   const p_size len = rawArgs.size();
 
    if (len == 0) {
-      const _str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed));
-      const _str loc = this->getLocation();
-      const _bool s = os_run(com, loc, this->perun2);
+      const p_str com = str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed));
+      const p_str loc = this->getLocation();
+      const p_bool s = os_run(com, loc, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -299,21 +299,21 @@ void C_RunWithPerun2With::run()
       }
    }
    else {
-      _stream comStream;
-      _stream logStream;
-      const _str& first = rawArgs[0];
+      p_stream comStream;
+      p_stream logStream;
+      const p_str& first = rawArgs[0];
       logStream << str(getCCName(this->context->trimmed), L" with Perun2 with '", first, L"'");
       comStream << str(this->perun2.cache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
-      for (_size i = 1; i < len; i++) {
-         const _str& a = rawArgs[i];
+      for (p_size i = 1; i < len; i++) {
+         const p_str& a = rawArgs[i];
          logStream << str(L", '", a, L"'");
          comStream << str(CHAR_SPACE, os_makeArg(a));
       }
 
-      const _str com = comStream.str();
-      const _str loc = this->getLocation();
-      const _bool s = os_run(com, loc, this->perun2);
+      const p_str com = comStream.str();
+      const p_str loc = this->getLocation();
+      const p_bool s = os_run(com, loc, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {

@@ -24,14 +24,14 @@ namespace perun2
       : aggregate(p2) { };
 
    LocationContext::LocationContext()
-      : location(std::make_unique<Variable<_str>>(VarType::vt_Special)),
+      : location(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
         prevLocation(nullptr) { };
 
    LocationContext::LocationContext(LocationContext* prev)
-      : location(std::make_unique<Variable<_str>>(VarType::vt_Special)),
+      : location(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
         prevLocation(prev) { };
 
-   void LocationContext::loadData(const _str& trimmedValue)
+   void LocationContext::loadData(const p_str& trimmedValue)
    {
       this->location->value = this->prevLocation == nullptr
          ? trimmedValue
@@ -44,7 +44,7 @@ namespace perun2
 
    FileContext::FileContext(p_perun2& p2)
       : IndexContext(p2), attribute(std::make_unique<Attribute>(p2)),
-      this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
+      this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
    {
       this->initVars(p2);
@@ -52,7 +52,7 @@ namespace perun2
 
    FileContext::FileContext(_attrptr& attr, p_perun2& p2)
       : IndexContext(p2), attribute(std::move(attr)),
-      this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
+      this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
    {
       this->initVars(p2);
@@ -70,38 +70,38 @@ namespace perun2
 
    void FileContext::initVars(p_perun2& p2)
    {
-      this->v_archive = this->insertVar<_bool>(STRING_ARCHIVE);
-      this->v_compressed = this->insertVar<_bool>(STRING_COMPRESSED);
-      this->v_empty = this->insertVar<_bool>(STRING_EMPTY);
-      this->v_encrypted = this->insertVar<_bool>(STRING_ENCRYPTED);
-      this->v_exists = this->insertVar<_bool>(STRING_EXISTS);
-      this->v_hidden = this->insertVar<_bool>(STRING_HIDDEN);
-      this->v_isdirectory = this->insertVar<_bool>(STRING_ISDIRECTORY);
-      this->v_isfile = this->insertVar<_bool>(STRING_ISFILE);
-      this->v_readonly = this->insertVar<_bool>(STRING_READONLY);
+      this->v_archive = this->insertVar<p_bool>(STRING_ARCHIVE);
+      this->v_compressed = this->insertVar<p_bool>(STRING_COMPRESSED);
+      this->v_empty = this->insertVar<p_bool>(STRING_EMPTY);
+      this->v_encrypted = this->insertVar<p_bool>(STRING_ENCRYPTED);
+      this->v_exists = this->insertVar<p_bool>(STRING_EXISTS);
+      this->v_hidden = this->insertVar<p_bool>(STRING_HIDDEN);
+      this->v_isdirectory = this->insertVar<p_bool>(STRING_ISDIRECTORY);
+      this->v_isfile = this->insertVar<p_bool>(STRING_ISFILE);
+      this->v_readonly = this->insertVar<p_bool>(STRING_READONLY);
       this->v_access = this->insertVar<_tim>(STRING_ACCESS);
       this->v_change = this->insertVar<_tim>(STRING_CHANGE);
       this->v_creation = this->insertVar<_tim>(STRING_CREATION);
       this->v_modification = this->insertVar<_tim>(STRING_MODIFICATION);
       this->v_lifetime = this->insertVar<_per>(STRING_LIFETIME);
-      this->v_size = this->insertVar<_num>(STRING_SIZE);
+      this->vp_size = this->insertVar<_num>(STRING_SIZE);
       this->v_depth = this->insertVar<_num>(STRING_DEPTH);
-      this->v_drive = this->insertVar<_str>(STRING_DRIVE);
-      this->v_extension = this->insertVar<_str>(STRING_EXTENSION);
-      this->v_fullname = this->insertVar<_str>(STRING_FULLNAME);
-      this->v_name = this->insertVar<_str>(STRING_NAME);
-      this->v_parent = this->insertVar<_str>(STRING_PARENT);
-      this->v_path = this->insertVar<_str>(STRING_PATH);
+      this->v_drive = this->insertVar<p_str>(STRING_DRIVE);
+      this->v_extension = this->insertVar<p_str>(STRING_EXTENSION);
+      this->v_fullname = this->insertVar<p_str>(STRING_FULLNAME);
+      this->v_name = this->insertVar<p_str>(STRING_NAME);
+      this->v_parent = this->insertVar<p_str>(STRING_PARENT);
+      this->v_path = this->insertVar<p_str>(STRING_PATH);
    }
 
 
-   void FileContext::loadData(const _str& newThis)
+   void FileContext::loadData(const p_str& newThis)
    {
       this->this_->value = newThis;
       this->loadAttributes();
    }
    
-   void FileContext::loadData(const _str& newThis, const _fdata& data)
+   void FileContext::loadData(const p_str& newThis, const p_fdata& data)
    {
       this->this_->value = newThis;
       this->loadAttributes(data);
@@ -119,7 +119,7 @@ namespace perun2
       }
    }
 
-   void FileContext::loadAttributes(const _fdata& data)
+   void FileContext::loadAttributes(const p_fdata& data)
    {
       if (this->attribute->hasAny()) {
          os_loadDataAttributes(*this, data);
@@ -133,18 +133,18 @@ namespace perun2
       this->globalVars.times.insert(std::make_pair(STRING_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
       this->globalVars.times.insert(std::make_pair(STRING_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
 
-      this->insertConstant<_str>(STRING_DESKTOP);
-      this->insertConstant<_str>(STRING_PERUN2);
-      this->insertConstant<_str>(STRING_ORIGIN);
-      this->insertConstant<_list>(STRING_ALPHABET);
-      this->insertConstant<_list>(STRING_ASCII);
-      this->insertConstant<_list>(STRING_ARGUMENTS);
-      this->insertConstant<_str>(STRING_MSPAINT);
-      this->insertConstant<_str>(STRING_NOTEPAD);
+      this->insertConstant<p_str>(STRING_DESKTOP);
+      this->insertConstant<p_str>(STRING_PERUN2);
+      this->insertConstant<p_str>(STRING_ORIGIN);
+      this->insertConstant<p_list>(STRING_ALPHABET);
+      this->insertConstant<p_list>(STRING_ASCII);
+      this->insertConstant<p_list>(STRING_ARGUMENTS);
+      this->insertConstant<p_str>(STRING_MSPAINT);
+      this->insertConstant<p_str>(STRING_NOTEPAD);
    };
 
    Contexts::Contexts(p_perun2& p2)
-      : GlobalContext(p2), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
+      : GlobalContext(p2), success(std::make_unique<Variable<p_bool>>(VarType::vt_Special, false))
    {
       this->locationContexts.push_back(&this->rootLocation);
       this->locationContexts.back()->location->value = p2.arguments.getLocation();
@@ -155,7 +155,7 @@ namespace perun2
       this->addOsGen(STRING_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
    };
 
-   _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, p_perun2& p2)
+   p_bool Contexts::getVar(const Token& tk, Variable<p_bool>*& result, p_perun2& p2)
    {
       if (tk.isWord(STRING_SUCCESS, p2)) {
          result = this->success.get();
@@ -165,7 +165,7 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, p_perun2& p2)
+   p_bool Contexts::getVar(const Token& tk, Variable<_num>*& result, p_perun2& p2)
    {
       if (tk.isWord(STRING_INDEX, p2)) {
          if (this->indexContexts.empty()) {
@@ -183,7 +183,7 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, p_perun2& p2)
+   p_bool Contexts::getVar(const Token& tk, Variable<p_str>*& result, p_perun2& p2)
    {
       if (tk.isWord(STRING_THIS, p2)) {
          if (this->fileContexts.empty()) {
@@ -275,7 +275,7 @@ namespace perun2
       this->locationContexts.pop_back();
    }
 
-   _bool Contexts::hasAggregate()
+   p_bool Contexts::hasAggregate()
    {
       return this->aggregateContexts.size() >= 1;
    }
@@ -295,12 +295,12 @@ namespace perun2
       return this->aggregateContexts.back();
    }
 
-   _bool Contexts::hasIterationContext() const
+   p_bool Contexts::hasIterationContext() const
    {
       return !this->fileContexts.empty();
    }
 
-   _bool Contexts::hasFileContext() const
+   p_bool Contexts::hasFileContext() const
    {
       if (this->fileContexts.empty()) {
          return false;
@@ -314,12 +314,12 @@ namespace perun2
       return this->fileContexts.back();
    }
 
-   _bool Contexts::hasIndexContext() const
+   p_bool Contexts::hasIndexContext() const
    {
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const _str& name, const gen::OsElement element, p_perun2& p2)
+   void Contexts::addOsGen(const p_str& name, const gen::OsElement element, p_perun2& p2)
    {
       osGenerators.insert(std::make_pair(name, gen::DefinitionGenerator(element, p2)));
    }
@@ -334,17 +334,17 @@ namespace perun2
       return this->userVarsContexts.back();
    }
 
-   _bool Contexts::varExists(const Token& tk, p_perun2& p2)
+   p_bool Contexts::varExists(const Token& tk, p_perun2& p2)
    {
-      const _str word = tk.toLowerString(p2);
-      Variable<_bool>* b;
+      const p_str word = tk.toLowerString(p2);
+      Variable<p_bool>* b;
       Variable<_tim>* t;
       Variable<_per>* p;
-      Variable<_str>* s;
+      Variable<p_str>* s;
       Variable<_num>* n;
       Variable<_tlist>* tl;
       Variable<_nlist>* nl;
-      Variable<_list>* l;
+      Variable<p_list>* l;
 
       return osGenerators.find(word) != osGenerators.end()
           || this->getVar(tk, b, p2)
@@ -366,8 +366,8 @@ namespace perun2
 
    void Contexts::closeDeepAttributeScope()
    {
-      const _size limit = this->fileContexts.size() - 1;
-      for (_size i = 0; i < limit; i++) {
+      const p_size limit = this->fileContexts.size() - 1;
+      for (p_size i = 0; i < limit; i++) {
          this->fileContexts[i]->attributeScope = false;
       }
    }

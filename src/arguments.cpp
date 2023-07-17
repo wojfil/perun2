@@ -21,31 +21,31 @@
 namespace perun2
 {
 
-Arguments::Arguments(const _str& loc, const _str& cod)
+Arguments::Arguments(const p_str& loc, const p_str& cod)
    : location(loc), code(cod), parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(const _str& loc, const _str& cod, const _flags fls)
+Arguments::Arguments(const p_str& loc, const p_str& cod, const _flags fls)
    : location(loc), code(cod), flags(fls), parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(const _int argc, _char* const argv[])
+Arguments::Arguments(const p_int argc, p_char* const argv[])
 {
-   _bool options = true;
-   _bool nextParseLocation = false;
-   _bool hasCode = false;
-   _bool hasValue = false;
-   _bool here = false;
-   _str value;
-   _bool d_has = false;
-   _str d_value;
+   p_bool options = true;
+   p_bool nextParseLocation = false;
+   p_bool hasCode = false;
+   p_bool hasValue = false;
+   p_bool here = false;
+   p_str value;
+   p_bool d_has = false;
+   p_str d_value;
 
    if (argc == 1) {
       cmd::error::noArguments();
       return;
    }
 
-   for (_int i = 1; i < argc; i++) {
-      const _str arg = _str(argv[i]);
-      const _size len = arg.size();
+   for (p_int i = 1; i < argc; i++) {
+      const p_str arg = p_str(argv[i]);
+      const p_size len = arg.size();
 
       if (options && len >= 2 && arg[0] == CHAR_MINUS) {
          if (arg[1] == CHAR_MINUS) {
@@ -54,7 +54,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
                continue;
             }
 
-            _str lowerArg = arg;
+            p_str lowerArg = arg;
             toLower(lowerArg);
 
             if (lowerArg == STRING_ARG_VERSION) {
@@ -80,7 +80,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
             return;
          }
          else {
-            for (_size j = 1; j < len; j++) {
+            for (p_size j = 1; j < len; j++) {
                switch (arg[j]) {
                   case CHAR_FLAG_CODE: 
                   case CHAR_FLAG_CODE_UPPER: {
@@ -129,7 +129,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       }
 
       if (nextParseLocation) {
-         const _str v = os_trim(arg);
+         const p_str v = os_trim(arg);
 
          if (v.empty()) {
             continue;
@@ -160,7 +160,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       return;
    }
 
-   const _str cdLocation = os_currentPath();
+   const p_str cdLocation = os_currentPath();
 
    if (hasCode) {
       this->code = value;
@@ -174,7 +174,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       }
    }
    else {
-      _str filePath = os_trim(value);
+      p_str filePath = os_trim(value);
       if (filePath.empty()) {
          cmd::error::noInput();
          return;
@@ -185,7 +185,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
       }
 
       if (os_hasExtension(filePath)) {
-         const _str extension = os_extension(filePath);
+         const p_str extension = os_extension(filePath);
 
          if (extension != metadata::EXTENSION) {
             cmd::error::wrongFileExtension();
@@ -206,7 +206,7 @@ Arguments::Arguments(const _int argc, _char* const argv[])
          return;
       }
 
-      const _str basisLocation = here ? cdLocation : os_parent(filePath);
+      const p_str basisLocation = here ? cdLocation : os_parent(filePath);
 
       if (d_has) {
          this->location = os_isAbsolute(d_value)
@@ -226,17 +226,17 @@ _flags Arguments::getFlags() const
    return this->flags;
 }
 
-_list Arguments::getArgs() const
+p_list Arguments::getArgs() const
 {
    return this->args;
 }
 
-_str Arguments::getLocation() const
+p_str Arguments::getLocation() const
 {
    return this->location;
 }
 
-const _str& Arguments::getCode() const
+const p_str& Arguments::getCode() const
 {
    return this->code;
 }
@@ -246,7 +246,7 @@ ArgsParseState Arguments::getParseState() const
    return this->parseState;
 }
 
-_bool Arguments::hasFlag(const _flags flag) const
+p_bool Arguments::hasFlag(const _flags flag) const
 {
    return this->flags & flag;
 }

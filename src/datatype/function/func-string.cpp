@@ -27,85 +27,85 @@
 namespace perun2::func
 {
 
-_str F_After::getValue()
+p_str F_After::getValue()
 {
-   const _str s1 = arg1->getValue();
+   const p_str s1 = arg1->getValue();
    if (s1.empty()) {
       return s1;
    }
 
-   const _str s2 = arg2->getValue();
+   const p_str s2 = arg2->getValue();
    if (s2.empty()) {
       return s2;
    }
 
    if (s2.size() == 1) {
-      for (_size i = 0; i < s1.size(); i++) {
+      for (p_size i = 0; i < s1.size(); i++) {
          if (s1[i] == s2[0]) {
             return i == s1.size() - 1
-               ? _str()
+               ? p_str()
                : s1.substr(i + 1);
          }
       }
 
-      return _str();
+      return p_str();
    }
    else {
       auto pos = s1.find(s2);
-      return pos == _str::npos
-         ? _str()
+      return pos == p_str::npos
+         ? p_str()
          : s1.substr(pos + s2.size());
    }
 }
 
 
-_str F_Before::getValue()
+p_str F_Before::getValue()
 {
-   const _str s1 = arg1->getValue();
+   const p_str s1 = arg1->getValue();
    if (s1.empty()) {
       return s1;
    }
 
-   const _str s2 = arg2->getValue();
+   const p_str s2 = arg2->getValue();
    if (s2.empty()) {
       return s2;
    }
 
    if (s2.size() == 1) {
-      for (_size i = 0; i < s1.size(); i++) {
+      for (p_size i = 0; i < s1.size(); i++) {
          if (s1[i] == s2[0]) {
             return i == 0
-               ? _str()
+               ? p_str()
                : s1.substr(0, i);
          }
       }
 
-      return _str();
+      return p_str();
    }
    else {
       auto pos = s1.find(s2);
-      return pos == _str::npos
-         ? _str()
+      return pos == p_str::npos
+         ? p_str()
          : s1.substr(0, pos);
    }
 }
 
 
-_str F_Digits::getValue()
+p_str F_Digits::getValue()
 {
-   const _str s1 = arg1->getValue();
-   _size len2 = 0;
-   _size it = 0;
+   const p_str s1 = arg1->getValue();
+   p_size len2 = 0;
+   p_size it = 0;
 
-   for (const _char ch : s1) {
+   for (const p_char ch : s1) {
       if (std::iswdigit(ch)) {
          len2++;
       }
    }
 
-   _str s2(len2, CHAR_SPACE);
+   p_str s2(len2, CHAR_SPACE);
 
-   for (const _char ch : s1) {
+   for (const p_char ch : s1) {
       if (std::iswdigit(ch)) {
          s2[it] = ch;
          it++;
@@ -116,38 +116,38 @@ _str F_Digits::getValue()
 }
 
 
-_str F_Fill::getValue()
+p_str F_Fill::getValue()
 {
-   const _str base = arg1->getValue();
-   const _size len = base.size();
-   const _nint v = arg2->getValue().toInt();
+   const p_str base = arg1->getValue();
+   const p_size len = base.size();
+   const p_nint v = arg2->getValue().toInt();
 
    if (v <= NINT_ZERO) {
       return base;
    }
 
-   const _size min = static_cast<_size>(v);
+   const p_size min = static_cast<p_size>(v);
 
    return len >= min
       ? base
-      : str(_str(min - len, CHAR_0), base);
+      : str(p_str(min - len, CHAR_0), base);
 }
 
 
-_str F_Letters::getValue()
+p_str F_Letters::getValue()
 {
-   const _str s1 = arg1->getValue();
-   _size len2 = 0;
-   _size it = 0;
+   const p_str s1 = arg1->getValue();
+   p_size len2 = 0;
+   p_size it = 0;
 
-   for (const _char ch : s1) {
+   for (const p_char ch : s1) {
       if (std::iswalpha(ch)) {
          len2++;
       }
    }
 
-   _str s2(len2, CHAR_SPACE);
-   for (const _char ch : s1) {
+   p_str s2(len2, CHAR_SPACE);
+   for (const p_char ch : s1) {
       if (std::iswalpha(ch)) {
          s2[it] = ch;
          it++;
@@ -158,9 +158,9 @@ _str F_Letters::getValue()
 }
 
 
-_str F_Lower::getValue()
+p_str F_Lower::getValue()
 {
-   _str value = arg1->getValue();
+   p_str value = arg1->getValue();
    if (!value.empty()) {
       toLower(value);
    }
@@ -168,16 +168,16 @@ _str F_Lower::getValue()
 }
 
 
-_str F_Trim::getValue()
+p_str F_Trim::getValue()
 {
-   const _str value = arg1->getValue();
-   const _int length = value.size();
+   const p_str value = arg1->getValue();
+   const p_int length = value.size();
 
    if (length == 0) {
       return value;
    }
 
-   _int left;
+   p_int left;
    for (left = 0; left < length; left++) {
       if (!(std::iswspace(value[left]))) {
          break;
@@ -185,10 +185,10 @@ _str F_Trim::getValue()
    }
 
    if (left == length) {
-      return _str();
+      return p_str();
    }
 
-   _int right;
+   p_int right;
    for (right = length - 1; right >= 0; --right) {
       if (!(std::iswspace(value[right]))) {
          break;
@@ -201,9 +201,9 @@ _str F_Trim::getValue()
 }
 
 
-_str F_Upper::getValue()
+p_str F_Upper::getValue()
 {
-   _str value = arg1->getValue();
+   p_str value = arg1->getValue();
    if (!value.empty()) {
       toUpper(value);
    }
@@ -211,22 +211,22 @@ _str F_Upper::getValue()
 }
 
 
-_str F_Repeat::getValue()
+p_str F_Repeat::getValue()
 {
-   const _nint repeats = arg2->getValue().toInt();
+   const p_nint repeats = arg2->getValue().toInt();
    if (repeats <= NINT_ZERO) {
-      return _str();
+      return p_str();
    }
 
-   const _str base = arg1->getValue();
-   const _size len = base.size();
+   const p_str base = arg1->getValue();
+   const p_size len = base.size();
 
    switch (len) {
       case 0: {
-         return _str();
+         return p_str();
       }
       case 1: {
-         return _str(repeats, base[0]);
+         return p_str(repeats, base[0]);
       }
    }
 
@@ -242,10 +242,10 @@ _str F_Repeat::getValue()
       }
    }
 
-   _str result;
+   p_str result;
    result.reserve(len * repeats);
 
-   for (_nint i = NINT_ZERO; i < repeats; i++) {
+   for (p_nint i = NINT_ZERO; i < repeats; i++) {
       result += base;
    }
 
@@ -253,9 +253,9 @@ _str F_Repeat::getValue()
 }
 
 
-_str F_Reverse::getValue()
+p_str F_Reverse::getValue()
 {
-   _str value = arg1->getValue();
+   p_str value = arg1->getValue();
 
    if (value.size() <= 1) {
       return value;
@@ -266,15 +266,15 @@ _str F_Reverse::getValue()
 }
 
 
-_str F_Left::getValue()
+p_str F_Left::getValue()
 {
-   const _nint left = arg2->getValue().toInt();
+   const p_nint left = arg2->getValue().toInt();
    if (left <= NINT_ZERO) {
-      return _str();
+      return p_str();
    }
 
-   const _str value = arg1->getValue();
-   const _nint length = static_cast<_nint>(value.size());
+   const p_str value = arg1->getValue();
+   const p_nint length = static_cast<p_nint>(value.size());
 
    return left >= length
       ? value
@@ -282,15 +282,15 @@ _str F_Left::getValue()
 }
 
 
-_str F_Right::getValue()
+p_str F_Right::getValue()
 {
-   const _nint right = arg2->getValue().toInt();
+   const p_nint right = arg2->getValue().toInt();
    if (right <= NINT_ZERO) {
-      return _str();
+      return p_str();
    }
 
-   const _str value = arg1->getValue();
-   const _nint length = static_cast<_nint>(value.size());
+   const p_str value = arg1->getValue();
+   const p_nint length = static_cast<p_nint>(value.size());
 
    return right >= length
       ? value
@@ -298,16 +298,16 @@ _str F_Right::getValue()
 }
 
 
-_str F_Substring_2::getValue()
+p_str F_Substring_2::getValue()
 {
-   _nint index = arg2->getValue().toInt();
-   const _str value = arg1->getValue();
+   p_nint index = arg2->getValue().toInt();
+   const p_str value = arg1->getValue();
 
    if (index == NINT_ZERO) {
       return value;
    }
 
-   const _nint length = static_cast<_nint>(value.size());
+   const p_nint length = static_cast<p_nint>(value.size());
 
    if (index < NINT_ZERO) {
       index *= NINT_MINUS_ONE;
@@ -318,34 +318,34 @@ _str F_Substring_2::getValue()
    }
    else {
       return index >= length
-         ? _str()
+         ? p_str()
          : value.substr(index);
    }
 }
 
 
-_str F_Substring_3::getValue()
+p_str F_Substring_3::getValue()
 {
-   const _str value = arg1->getValue();
-   _nint index = arg2->getValue().toInt();
-   _nint index2 = arg3->getValue().toInt();
-   const _nint length = static_cast<_nint>(value.size());
+   const p_str value = arg1->getValue();
+   p_nint index = arg2->getValue().toInt();
+   p_nint index2 = arg3->getValue().toInt();
+   const p_nint length = static_cast<p_nint>(value.size());
 
    if (index2 <= NINT_ZERO) {
-      return _str();
+      return p_str();
    }
 
    if (index < NINT_ZERO) {
       index *= NINT_MINUS_ONE;
 
       if (index >= length) {
-         const _nint lets = length - index + index2;
+         const p_nint lets = length - index + index2;
          return lets <= NINT_ZERO
-            ? _str()
+            ? p_str()
             : value.substr(0, lets);
       }
       else {
-         const _nint start = length - index;
+         const p_nint start = length - index;
          return start + index2 >= length
             ? value.substr(start)
             : value.substr(start, index2);
@@ -353,7 +353,7 @@ _str F_Substring_3::getValue()
    }
    else {
       if (index >= length) {
-         return _str();
+         return p_str();
       }
 
       return index + index2 >= length
@@ -363,13 +363,13 @@ _str F_Substring_3::getValue()
 }
 
 
-_str F_ConcatenateUnit::getValue()
+p_str F_ConcatenateUnit::getValue()
 {
-   const _list values = this->arg1->getValue();
+   const p_list values = this->arg1->getValue();
 
    switch (values.size()) {
       case 0: {
-         return _str();
+         return p_str();
       }
       case 1: {
          return values[0];
@@ -379,9 +379,9 @@ _str F_ConcatenateUnit::getValue()
       }
    }
 
-   _stream ss;
+   p_stream ss;
 
-   for (const _str& v : values) {
+   for (const p_str& v : values) {
       ss << v;
    }
 
@@ -389,11 +389,11 @@ _str F_ConcatenateUnit::getValue()
 }
 
 
-_str F_Concatenate::getValue()
+p_str F_Concatenate::getValue()
 {
-   _stream ss;
+   p_stream ss;
 
-   for (_genptr<_str>& gen : values) {
+   for (_genptr<p_str>& gen : values) {
       ss << gen->getValue();
    }
 
@@ -401,23 +401,23 @@ _str F_Concatenate::getValue()
 }
 
 
-_str F_FirstDef::getValue()
+p_str F_FirstDef::getValue()
 {
    if (definition->hasNext()) {
-      const _str v = definition->getValue();
+      const p_str v = definition->getValue();
       definition->reset();
       return v;
    }
    else {
-      return _str();
+      return p_str();
    }
 }
 
 
-_str F_LastDef::getValue()
+p_str F_LastDef::getValue()
 {
    if (!definition->hasNext()) {
-      return _str();
+      return p_str();
    }
 
    while (definition->hasNext()) { }
@@ -425,17 +425,17 @@ _str F_LastDef::getValue()
 }
 
 
-_str F_Replace::getValue()
+p_str F_Replace::getValue()
 {
-   _str base = arg1->getValue();
-   _size len = base.size();
+   p_str base = arg1->getValue();
+   p_size len = base.size();
 
    if (len == 0) {
       return base;
    }
 
-   const _str v1 = arg2->getValue();
-   const _str v2 = arg3->getValue();
+   const p_str v1 = arg2->getValue();
+   const p_str v2 = arg3->getValue();
 
    switch (v1.size()) {
       case 0: {
@@ -452,7 +452,7 @@ _str F_Replace::getValue()
                break;
             }
             default: {
-               for (_size i = 0; i < len; i++) {
+               for (p_size i = 0; i < len; i++) {
                   if (base[i] == v1[0]) {
                      if (i == 0) {
                         base = str(v2, base.substr(1));
@@ -478,13 +478,13 @@ _str F_Replace::getValue()
 
          switch (v2.size()) {
             case 0: {
-               while ((i = base.find(v1)) != _str::npos) {
+               while ((i = base.find(v1)) != p_str::npos) {
                   base.erase(i, v1.size());
                }
                break;
             }
             default: {
-               while ((i = base.find(v1, i)) != _str::npos) {
+               while ((i = base.find(v1, i)) != p_str::npos) {
                   base.replace(i, v1.size(), v2);
                   i += v2.size();
                }
@@ -499,66 +499,66 @@ _str F_Replace::getValue()
 }
 
 
-_str F_String_B::getValue()
+p_str F_String_B::getValue()
 {
    return arg1->getValue() ? toStr(CHAR_1) : toStr(CHAR_0);
 }
 
 
-_str F_String_N::getValue()
+p_str F_String_N::getValue()
 {
    return arg1->getValue().toString();
 }
 
 
-_str F_String_T::getValue()
+p_str F_String_T::getValue()
 {
    return arg1->getValue().toString();
 }
 
 
-_str F_String_P::getValue()
+p_str F_String_P::getValue()
 {
    return arg1->getValue().toString();
 }
 
 
-_str F_MonthName::getValue()
+p_str F_MonthName::getValue()
 {
    return monthToString(static_cast<_tnum>(arg1->getValue().toInt()));
 }
 
 
-_str F_MonthNameFromTime::getValue()
+p_str F_MonthNameFromTime::getValue()
 {
    const _tim t = arg1->getValue();
    return t.type == Time::tt_YearMonth
-      ? _str()
+      ? p_str()
       : monthToString(t.month);
 }
 
 
-_str F_WeekDayName::getValue()
+p_str F_WeekDayName::getValue()
 {
    return weekdayToString(static_cast<_tnum>(arg1->getValue().toInt()));
 }
 
 
-_str F_WeekDayNameFromTime::getValue()
+p_str F_WeekDayNameFromTime::getValue()
 {
    const _tim t = arg1->getValue();
    return t.type == Time::tt_YearMonth
-      ? _str()
+      ? p_str()
       : weekdayToString(t.getWeekDay());
 }
 
 
-_str F_AfterDigits::getValue()
+p_str F_AfterDigits::getValue()
 {
-   const _str value = arg1->getValue();
-   _bool after = false;
+   const p_str value = arg1->getValue();
+   p_bool after = false;
 
-   for (_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       if (after) {
          if (!std::iswdigit(value[i])) {
             return value.substr(i);
@@ -571,16 +571,16 @@ _str F_AfterDigits::getValue()
       }
    }
 
-   return _str();
+   return p_str();
 }
 
 
-_str F_AfterLetters::getValue()
+p_str F_AfterLetters::getValue()
 {
-   const _str value = arg1->getValue();
-   _bool after = false;
+   const p_str value = arg1->getValue();
+   p_bool after = false;
 
-   for (_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       if (after) {
          if (!std::iswalpha(value[i])) {
             return value.substr(i);
@@ -593,45 +593,45 @@ _str F_AfterLetters::getValue()
       }
    }
 
-   return _str();
+   return p_str();
 }
 
 
-_str F_BeforeDigits::getValue()
+p_str F_BeforeDigits::getValue()
 {
-   const _str value = arg1->getValue();
+   const p_str value = arg1->getValue();
 
-   for (_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       if (std::iswdigit(value[i])) {
          return i == 0
-            ? _str()
+            ? p_str()
             : value.substr(0, i);
       }
    }
 
-   return _str();
+   return p_str();
 }
 
 
-_str F_BeforeLetters::getValue()
+p_str F_BeforeLetters::getValue()
 {
-   const _str value = arg1->getValue();
+   const p_str value = arg1->getValue();
 
-   for (_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       if (std::iswalpha(value[i])) {
          return i == 0
-            ? _str()
+            ? p_str()
             : value.substr(0, i);
       }
    }
 
-   return _str();
+   return p_str();
 }
 
 
-_str F_RandomChar::getValue()
+p_str F_RandomChar::getValue()
 {
-   const _str value = arg1->getValue();
+   const p_str value = arg1->getValue();
 
    switch (value.size()) {
       case 0:
@@ -645,18 +645,18 @@ _str F_RandomChar::getValue()
 }
 
 
-_str F_Capitalize::getValue()
+p_str F_Capitalize::getValue()
 {
-   _str value = arg1->getValue();
+   p_str value = arg1->getValue();
 
    if (value.empty()) {
       return value;
    }
 
-   _bool prevLetter = false;
+   p_bool prevLetter = false;
 
-   for (_char& ch : value) {
-      const _bool isLetter = std::iswalpha(ch);
+   for (p_char& ch : value) {
+      const p_bool isLetter = std::iswalpha(ch);
 
       if (isLetter) {
          if (prevLetter) {
@@ -676,13 +676,13 @@ _str F_Capitalize::getValue()
 }
 
 
-_str F_Join::getValue()
+p_str F_Join::getValue()
 {
-   _list values = arg1->getValue();
+   p_list values = arg1->getValue();
 
    switch (values.size()) {
       case 0: {
-         return _str();
+         return p_str();
       }
       case 1: {
          return values[0];
@@ -691,22 +691,22 @@ _str F_Join::getValue()
          return str(values[0], arg2->getValue(), values[1]);
       }
       default: {
-         const _str separator = arg2->getValue();
+         const p_str separator = arg2->getValue();
 
          if (separator.empty()) {
-            _stream ss;
+            p_stream ss;
 
-            for (const _str& val : values) {
+            for (const p_str& val : values) {
                ss << val;
             }
 
             return ss.str();
          }
          else {
-            _stream ss;
+            p_stream ss;
             ss << values[0];
 
-            for (_size i = 1; i < values.size(); i++) {
+            for (p_size i = 1; i < values.size(); i++) {
                ss << separator;
                ss << values[i];
             }
@@ -718,16 +718,16 @@ _str F_Join::getValue()
 }
 
 
-_str F_Roman::getValue()
+p_str F_Roman::getValue()
 {
    const _num base = arg1->getValue();
-   _nint number = base.toInt();
+   p_nint number = base.toInt();
 
    if (number == NINT_ZERO) {
       if (base.isDouble) {
-         _stream ss;
+         p_stream ss;
          appendFraction(base, ss);
-         _str result = ss.str();
+         p_str result = ss.str();
 
          if (result.empty()) {
             result = CHAR_N;
@@ -746,17 +746,17 @@ _str F_Roman::getValue()
       return base.toString();
    }
 
-   _stream ss;
+   p_stream ss;
    if (number < NINT_ZERO) {
       ss << CHAR_MINUS;
       number *= NINT_MINUS_ONE;
    }
 
-   const _bool isBig = number >= ROMAN_VINCULUM_THRESHOLD;
-   _int i = 24;
+   const p_bool isBig = number >= ROMAN_VINCULUM_THRESHOLD;
+   p_int i = 24;
 
    while (number > 0) {
-      _nint div = number / ROMAN_NUMBER_LITERALS[i];
+      p_nint div = number / ROMAN_NUMBER_LITERALS[i];
       number = number % ROMAN_NUMBER_LITERALS[i];
       while (div--) {
          ss << ((isBig && i == 12) 
@@ -774,9 +774,9 @@ _str F_Roman::getValue()
 }
 
 
-inline void F_Roman::appendFraction(const _num& base, _stream& ss) const
+inline void F_Roman::appendFraction(const _num& base, p_stream& ss) const
 {
-   _int oc = static_cast<_int>(std::fmod(base.value.d, NDOUBLE_ONE) * NDOUBLE_TWELVE);
+   p_int oc = static_cast<p_int>(std::fmod(base.value.d, NDOUBLE_ONE) * NDOUBLE_TWELVE);
    if (oc < 0) {
       oc *= -1;
    }
@@ -786,16 +786,16 @@ inline void F_Roman::appendFraction(const _num& base, _stream& ss) const
    }
 
    if (oc > 0) {
-      ss << _str(oc,  CHAR_INTERPUNCT);
+      ss << p_str(oc,  CHAR_INTERPUNCT);
    }
 }
 
 
-_str F_Binary::getValue()
+p_str F_Binary::getValue()
 {
-   _nint v = arg1->getValue().toInt();
-   _stream ss;
-   _bool negative = false;
+   p_nint v = arg1->getValue().toInt();
+   p_stream ss;
+   p_bool negative = false;
 
    if (v < 0) {
       v *= -1;
@@ -803,9 +803,9 @@ _str F_Binary::getValue()
    }
 
    ss << std::bitset<BITS_IN_NINT>(v);
-   const _str val = ss.str();
+   const p_str val = ss.str();
 
-   for (_size i = 0; i < val.size(); i++) {
+   for (p_size i = 0; i < val.size(); i++) {
       if (val[i] != CHAR_0) {
          return negative
             ? str(CHAR_MINUS, val.substr(i))
@@ -816,18 +816,18 @@ _str F_Binary::getValue()
    return toStr(CHAR_0);
 }
 
-_str F_Hex::getValue()
+p_str F_Hex::getValue()
 {
-   _nint v = arg1->getValue().toInt();
+   p_nint v = arg1->getValue().toInt();
 
    if (v < NINT_ZERO) {
       v *= NINT_MINUS_ONE;
-      _stream oss;
+      p_stream oss;
       oss << std::hex << v;
       return str(CHAR_MINUS, oss.str());
    }
    else {
-      _stream oss;
+      p_stream oss;
       oss << std::hex << v;
       return oss.str();
    }

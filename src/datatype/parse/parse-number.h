@@ -23,16 +23,16 @@
 namespace perun2::parse
 {
 
-_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
 
-static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
-static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList);
-static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
-static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
-static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
-static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList);
-static _bool isNumExpOperator(const _char ch);
-static _bool isNumExpHighPriority(const _char ch);
+static p_bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
+static p_bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList);
+static p_bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
+static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
+static p_bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements);
+static p_bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList);
+static p_bool isNumExpOperator(const p_char ch);
+static p_bool isNumExpHighPriority(const p_char ch);
 void timeVariableMemberException(const Token& tk, p_perun2& p2);
 
 }

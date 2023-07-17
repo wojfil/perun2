@@ -32,7 +32,7 @@ public:
 
    virtual T getValue() = 0;
 
-   virtual _bool isConstant() const
+   virtual p_bool isConstant() const
    {
       // simple reflection for parsing
       // detect generators that return deterministic values

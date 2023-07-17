@@ -26,28 +26,28 @@ namespace perun2
 Number::Number()
    : value(NINT_ZERO), isDouble(false) { }
 
-Number::Number(const _int val)
-   : value(static_cast<_nint>(val)), isDouble(false) { }
+Number::Number(const p_int val)
+   : value(static_cast<p_nint>(val)), isDouble(false) { }
 
-Number::Number(const _nint val)
+Number::Number(const p_nint val)
    : value(val), isDouble(false) { }
 
-Number::Number(const _ndouble val)
+Number::Number(const p_ndouble val)
    : value(val), isDouble(true) { }
 
 
 // convert a number into string
 // if is double-precision, cut off ending zeros from the fractional part
-_str Number::toString() const
+p_str Number::toString() const
 {
    if (isDouble)  {
-      _ostream stream;
+      p_ostream stream;
       stream << std::fixed << value.d;
-      const _str str = stream.str();
-      const _size len = str.size();
+      const p_str str = stream.str();
+      const p_size len = str.size();
 
-      for (_int i = len - 1; i >= 0; i--)  {
-         const _char ch = str[i];
+      for (p_int i = len - 1; i >= 0; i--)  {
+         const p_char ch = str[i];
          if (ch != CHAR_0) {
             if (ch == CHAR_DOT) {
                return i == 0
@@ -55,7 +55,7 @@ _str Number::toString() const
                   : str.substr(0, i);
             }
             else {
-               for (_size j = 0; j < len; j++) {
+               for (p_size j = 0; j < len; j++) {
                   if (str[j] == CHAR_DOT) {
                      return str.substr(0, i + 1);
                   }
@@ -73,28 +73,28 @@ _str Number::toString() const
    }
 }
 
-_nint Number::toInt() const
+p_nint Number::toInt() const
 {
    return isDouble
-      ? static_cast<_nint>(value.d)
+      ? static_cast<p_nint>(value.d)
       : value.i;
 }
 
-_bool Number::isZero() const
+p_bool Number::isZero() const
 {
    return isDouble
       ? (value.d == NDOUBLE_ZERO)
       : (value.i == NINT_ZERO);
 }
 
-_bool Number::isOne() const
+p_bool Number::isOne() const
 {
    return isDouble
       ? (value.d == NDOUBLE_ONE)
       : (value.i == NINT_ONE);
 }
 
-_bool Number::isMinusOne() const
+p_bool Number::isMinusOne() const
 {
    return isDouble
       ? (value.d == NDOUBLE_MINUS_ONE)
@@ -143,7 +143,7 @@ Number& Number::operator += (const Number& num)
       return *this;
    }
    if (num.isDouble)  {
-      _ndouble d = value.i + num.value.d;
+      p_ndouble d = value.i + num.value.d;
       value.d = d;
       isDouble = true;
    }
@@ -165,7 +165,7 @@ Number& Number::operator -= (const Number& num)
       return *this;
    }
    if (num.isDouble) {
-      _ndouble d = value.i - num.value.d;
+      p_ndouble d = value.i - num.value.d;
       value.d = d;
       isDouble = true;
    }
@@ -194,7 +194,7 @@ Number& Number::operator *= (const Number& num)
    }
 
    if (num.isDouble) {
-      _ndouble d = value.i * num.value.d;
+      p_ndouble d = value.i * num.value.d;
       value.d = d;
       isDouble = true;
    }
@@ -215,7 +215,7 @@ Number& Number::operator /= (const Number& num)
          value.d /= num.value.d;
       }
       else {
-         const _ndouble d = value.i / num.value.d;
+         const p_ndouble d = value.i / num.value.d;
          value.d = d;
          isDouble = true;
       }
@@ -234,7 +234,7 @@ Number& Number::operator /= (const Number& num)
             value.i /= num.value.i;
          }
          else {
-            const _ndouble d = static_cast<_ndouble>(value.i) / static_cast<_ndouble>(num.value.i);
+            const p_ndouble d = static_cast<p_ndouble>(value.i) / static_cast<p_ndouble>(num.value.i);
             value.d = d;
             isDouble = true;
          }
@@ -252,11 +252,11 @@ Number& Number::operator %= (const Number& num)
       }
 
       if (isDouble) {
-         const _ndouble d = std::fmod(value.d, num.value.d);
+         const p_ndouble d = std::fmod(value.d, num.value.d);
          value.d = d;
       }
       else {
-         const _ndouble d = std::fmod(value.i, num.value.d);
+         const p_ndouble d = std::fmod(value.i, num.value.d);
          value.d = d;
          isDouble = true;
       }
@@ -268,7 +268,7 @@ Number& Number::operator %= (const Number& num)
       }
 
       if (isDouble) {
-         const _ndouble d = std::fmod(value.d, num.value.i);
+         const p_ndouble d = std::fmod(value.d, num.value.i);
          value.d = d;
       }
       else {
@@ -304,22 +304,22 @@ Number Number::operator + (const Number& num) const
 {
    if (isDouble) {
       if (num.isDouble) {
-         const _ndouble v = value.d + num.value.d;
+         const p_ndouble v = value.d + num.value.d;
          return Number(v);
       }
       else {
-         const _ndouble v = value.d + num.value.i;
+         const p_ndouble v = value.d + num.value.i;
          return Number(v);
       }
    }
    else
    {
       if (num.isDouble) {
-         const _ndouble v = value.i + num.value.d;
+         const p_ndouble v = value.i + num.value.d;
          return Number(v);
       }
       else {
-         const _nint v = value.i + num.value.i;
+         const p_nint v = value.i + num.value.i;
          return Number(v);
       }
    }
@@ -329,22 +329,22 @@ Number Number::operator - (const Number& num) const
 {
    if (isDouble) {
       if (num.isDouble) {
-         const _ndouble v = value.d - num.value.d;
+         const p_ndouble v = value.d - num.value.d;
          return Number(v);
       }
       else {
-         const _ndouble v = value.d - num.value.i;
+         const p_ndouble v = value.d - num.value.i;
          return Number(v);
       }
    }
    else
    {
       if (num.isDouble) {
-         const _ndouble v = value.i - num.value.d;
+         const p_ndouble v = value.i - num.value.d;
          return Number(v);
       }
       else {
-         const _nint v = value.i - num.value.i;
+         const p_nint v = value.i - num.value.i;
          return Number(v);
       }
    }
@@ -354,22 +354,22 @@ Number Number::operator * (const Number& num) const
 {
    if (isDouble) {
       if (num.isDouble) {
-         const _ndouble v = value.d * num.value.d;
+         const p_ndouble v = value.d * num.value.d;
          return Number(v);
       }
       else {
-         const _ndouble v = value.d * num.value.i;
+         const p_ndouble v = value.d * num.value.i;
          return Number(v);
       }
    }
    else
    {
       if (num.isDouble) {
-         const _ndouble v = value.i * num.value.d;
+         const p_ndouble v = value.i * num.value.d;
          return Number(v);
       }
       else {
-         const _nint v = value.i * num.value.i;
+         const p_nint v = value.i * num.value.i;
          return Number(v);
       }
    }
@@ -382,11 +382,11 @@ Number Number::operator / (const Number& num) const
          throw RuntimeError::divisionByZero();
       }
       if (isDouble) {
-         const _ndouble v = value.d / num.value.d;
+         const p_ndouble v = value.d / num.value.d;
          return Number(v);
       }
       else {
-         const _ndouble v = value.i / num.value.d;
+         const p_ndouble v = value.i / num.value.d;
          return Number(v);
       }
    }
@@ -396,7 +396,7 @@ Number Number::operator / (const Number& num) const
          throw RuntimeError::divisionByZero();
       }
       if (isDouble) {
-         const _ndouble v = value.d / num.value.i;
+         const p_ndouble v = value.d / num.value.i;
          return Number(v);
       }
       else {
@@ -404,7 +404,7 @@ Number Number::operator / (const Number& num) const
             return Number(value.i / num.value.i);
          }
          else {
-            const _ndouble d = static_cast<_ndouble>(value.i) / static_cast<_ndouble>(num.value.i);
+            const p_ndouble d = static_cast<p_ndouble>(value.i) / static_cast<p_ndouble>(num.value.i);
             return Number(d);
          }
       }
@@ -418,11 +418,11 @@ Number Number::operator % (const Number& num) const
          throw RuntimeError::moduloByZero();
       }
       if (isDouble) {
-         const _ndouble v = std::fmod(value.d, num.value.d);
+         const p_ndouble v = std::fmod(value.d, num.value.d);
          return Number(v);
       }
       else {
-         const _ndouble v = std::fmod(value.i, num.value.d);
+         const p_ndouble v = std::fmod(value.i, num.value.d);
          return Number(v);
       }
    }
@@ -431,11 +431,11 @@ Number Number::operator % (const Number& num) const
          throw RuntimeError::moduloByZero();
       }
       if (isDouble) {
-         const _ndouble v = std::fmod(value.d, num.value.i);
+         const p_ndouble v = std::fmod(value.d, num.value.i);
          return Number(v);
       }
       else {
-         const _nint v = value.i % num.value.i;
+         const p_nint v = value.i % num.value.i;
          return Number(v);
       }
    }
@@ -448,7 +448,7 @@ Number Number::operator - () const
       : Number(-value.i);
 }
 
-_bool Number::operator == (const Number& num) const
+p_bool Number::operator == (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i == num.value.i;
@@ -457,14 +457,14 @@ _bool Number::operator == (const Number& num) const
       return value.d == num.value.d;
    }
    else if (isDouble && !num.isDouble) {
-      return value.d == static_cast<_ndouble>(num.value.i);
+      return value.d == static_cast<p_ndouble>(num.value.i);
    }
-   return static_cast<_ndouble>(value.i) == num.value.d;
+   return static_cast<p_ndouble>(value.i) == num.value.d;
 }
 
 // below are duplicates for the rest of comparisons:
 
-_bool Number::operator != (const Number& num) const
+p_bool Number::operator != (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i != num.value.i;
@@ -473,12 +473,12 @@ _bool Number::operator != (const Number& num) const
       return value.d != num.value.d;
    }
    else if (isDouble && !num.isDouble) {
-      return value.d != static_cast<_ndouble>(num.value.i);
+      return value.d != static_cast<p_ndouble>(num.value.i);
    }
-   return static_cast<_ndouble>(value.i) != num.value.d;
+   return static_cast<p_ndouble>(value.i) != num.value.d;
 }
 
-_bool Number::operator < (const Number& num) const
+p_bool Number::operator < (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i < num.value.i;
@@ -492,7 +492,7 @@ _bool Number::operator < (const Number& num) const
    return value.i < num.value.d;
 }
 
-_bool Number::operator > (const Number& num) const
+p_bool Number::operator > (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i > num.value.i;
@@ -506,7 +506,7 @@ _bool Number::operator > (const Number& num) const
    return value.i > num.value.d;
 }
 
-_bool Number::operator <= (const Number& num) const
+p_bool Number::operator <= (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i <= num.value.i;
@@ -520,7 +520,7 @@ _bool Number::operator <= (const Number& num) const
    return value.i <= num.value.d;
 }
 
-_bool Number::operator >= (const Number& num) const
+p_bool Number::operator >= (const Number& num) const
 {
    if (!isDouble && !num.isDouble) {
       return value.i >= num.value.i;

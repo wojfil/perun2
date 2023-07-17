@@ -64,8 +64,8 @@ public:
    PeriodUnit periodUnit;
    PeriodType periodType;
 
-   _nint toSeconds() const;
-   _str toString() const;
+   p_nint toSeconds() const;
+   p_str toString() const;
 
    void reverse();
    inline void subtractUnit(const Period& per);
@@ -79,17 +79,17 @@ public:
    Period operator - (const Period& per) const;
    Period operator - () const;
 
-   _bool operator == (const Period& per) const;
-   _bool operator != (const Period& per) const;
-   _bool operator < (const Period& per) const;
-   _bool operator > (const Period& per) const;
-   _bool operator <= (const Period& per) const;
-   _bool operator >= (const Period& per) const;
+   p_bool operator == (const Period& per) const;
+   p_bool operator != (const Period& per) const;
+   p_bool operator < (const Period& per) const;
+   p_bool operator > (const Period& per) const;
+   p_bool operator <= (const Period& per) const;
+   p_bool operator >= (const Period& per) const;
 
 private:
 
    inline void addUnit(const Period& per);
-   inline _bool isNegativeDifference() const;
+   inline p_bool isNegativeDifference() const;
    inline void checkDifference();
 
    inline _tnum periodUnitsCmp(const Period& per) const;

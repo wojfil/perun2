@@ -38,9 +38,9 @@ public:
    static void removePtr(p_perun2* p2);
 
 private:
-   static _bool initialized;
+   static p_bool initialized;
    static std::unordered_set<p_perun2*> processes;
-   static _int HandlerRoutine(_ulong dwCtrlType);
+   static p_int HandlerRoutine(p_ulong dwCtrlType);
 };
 
 void initTerminator();

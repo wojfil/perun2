@@ -26,9 +26,9 @@
 namespace perun2::parse
 {
 
-_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -42,11 +42,11 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
       return func::periodFunction(result, tks, p2);
    }
 
-   const _bool startsWithMinus = tks.first().isSymbol(CHAR_MINUS);
-   const _bool lastIsWord = tks.last().type == Token::t_Word;
-   const _bool hasPluses =  tks.check(TI_HAS_CHAR_PLUS);
+   const p_bool startsWithMinus = tks.first().isSymbol(CHAR_MINUS);
+   const p_bool lastIsWord = tks.last().type == Token::t_Word;
+   const p_bool hasPluses =  tks.check(TI_HAS_CHAR_PLUS);
 
-   _bool hasMinuses;
+   p_bool hasMinuses;
    if (startsWithMinus) {
       Tokens tks2(tks);
       tks2.trimLeft();
@@ -97,7 +97,7 @@ _bool parsePeriod(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
    return parseBinary<_per>(result, tks, p2) || parseTernary<_per>(result, tks, p2);
 }
 
-_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool negated, p_perun2& p2)
+p_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const p_bool negated, p_perun2& p2)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -149,11 +149,11 @@ _bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool neg
    return false;
 }
 
-_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& last = tks.last();
-   const _bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE, p2);
-   const _bool lastIsMulti = last.isWord(STRINGS_PERIOD_MULTI, p2);
+   const p_bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE, p2);
+   const p_bool lastIsMulti = last.isWord(STRINGS_PERIOD_MULTI, p2);
 
    if (!(lastIsSingle || lastIsMulti)) {
       return false;
@@ -180,10 +180,10 @@ _bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
-   const _size len = elements.size();
+   const p_size len = elements.size();
    _genptr<_per> res;
 
    if (!parsePeriodExpDiff(res, elements[0], p2)) {
@@ -194,7 +194,7 @@ _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
       return true;
    }
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       const Tokens& el = elements[i];
       _genptr<_per> per;
 
@@ -211,14 +211,14 @@ _bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
    return true;
 }
 
-_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _int baseLen = tks.getLength();
+   const p_int baseLen = tks.getLength();
    if (baseLen == 1) {
       return parse(p2, tks, result);
    }
 
-   _bool minusAwaits = tks.first().isSymbol(CHAR_MINUS);
+   p_bool minusAwaits = tks.first().isSymbol(CHAR_MINUS);
 
    Tokens tks2(tks);
    if (minusAwaits) {
@@ -243,10 +243,10 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
    }
 
    const std::vector<Tokens> elements = tks2.splitBySymbol(CHAR_MINUS);
-   const _size len = elements.size();
+   const p_size len = elements.size();
 
-   _bool isTime;
-   _bool hasFirst = false;
+   p_bool isTime;
+   p_bool hasFirst = false;
    _genptr<_tim> time;
    _genptr<_per> res;
 
@@ -268,7 +268,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       const Tokens& el = elements[i];
 
       if (isTime) {
@@ -336,7 +336,7 @@ _bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
    return true;
 }
 
-_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 

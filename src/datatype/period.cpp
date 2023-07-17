@@ -60,37 +60,37 @@ Period::Period(const _tnum val, const PeriodUnit unit)
    }
 }
 
-_nint Period::toSeconds() const
+p_nint Period::toSeconds() const
 {
-   _nint secs = static_cast<_nint>(seconds);
+   p_nint secs = static_cast<p_nint>(seconds);
    const _tnum d = days + years_ad + months_ad;
 
    if (years != TNUM_ZERO) {
-      secs += NINT_SECONDS_IN_YEAR * static_cast<_nint>(years);
+      secs += NINT_SECONDS_IN_YEAR * static_cast<p_nint>(years);
    }
    if (months != TNUM_ZERO) {
-      secs += NINT_SECONDS_IN_MONTH * static_cast<_nint>(months);
+      secs += NINT_SECONDS_IN_MONTH * static_cast<p_nint>(months);
    }
    if (weeks != TNUM_ZERO) {
-      secs += NINT_SECONDS_IN_WEEK * static_cast<_nint>(weeks);
+      secs += NINT_SECONDS_IN_WEEK * static_cast<p_nint>(weeks);
    }
    if (d != TNUM_ZERO) {
-      secs += NINT_SECONDS_IN_DAY * static_cast<_nint>(d);
+      secs += NINT_SECONDS_IN_DAY * static_cast<p_nint>(d);
    }
    if (hours != TNUM_ZERO) {
-      secs += NINT_SECONDS_IN_HOUR * static_cast<_nint>(hours);
+      secs += NINT_SECONDS_IN_HOUR * static_cast<p_nint>(hours);
    }
    if (minutes != TNUM_ZERO) {
-      secs += NINT_SECONDS_IN_MINUTE * static_cast<_nint>(minutes);
+      secs += NINT_SECONDS_IN_MINUTE * static_cast<p_nint>(minutes);
    }
 
    return secs;
 }
 
-_str Period::toString() const
+p_str Period::toString() const
 {
-   _stream ss;
-   _bool first = true;
+   p_stream ss;
+   p_bool first = true;
 
    const _tnum y = years + years_sec;
    const _tnum m = months + months_sec;
@@ -170,7 +170,7 @@ _str Period::toString() const
       : ss.str();
 }
 
-inline _bool Period::isNegativeDifference() const
+inline p_bool Period::isNegativeDifference() const
 {
    return years < TNUM_ZERO
        || months < TNUM_ZERO
@@ -636,7 +636,7 @@ Period Period::operator - () const
    return p;
 }
 
-_bool Period::operator == (const Period& per) const
+p_bool Period::operator == (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -673,7 +673,7 @@ _bool Period::operator == (const Period& per) const
    return periodCmp(per) == TNUM_ZERO;
 }
 
-_bool Period::operator != (const Period& per) const
+p_bool Period::operator != (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -710,7 +710,7 @@ _bool Period::operator != (const Period& per) const
    return periodCmp(per) != TNUM_ZERO;
 }
 
-_bool Period::operator < (const Period& per) const
+p_bool Period::operator < (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -747,7 +747,7 @@ _bool Period::operator < (const Period& per) const
    return periodCmp(per) < TNUM_ZERO;
 }
 
-_bool Period::operator > (const Period& per) const
+p_bool Period::operator > (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -784,7 +784,7 @@ _bool Period::operator > (const Period& per) const
    return periodCmp(per) > TNUM_ZERO;
 }
 
-_bool Period::operator <= (const Period& per) const
+p_bool Period::operator <= (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -821,7 +821,7 @@ _bool Period::operator <= (const Period& per) const
    return periodCmp(per) <= TNUM_ZERO;
 }
 
-_bool Period::operator >= (const Period& per) const
+p_bool Period::operator >= (const Period& per) const
 {
    switch (periodType) {
       case PeriodType::pt_Unit: {
@@ -1033,8 +1033,8 @@ inline _tnum Period::periodCmp(const Period& per) const
    _tnum m1 = months - per.months;
    _tnum m2 = months_sec - per.months_sec;
 
-   const _bool noYear = (y1 == TNUM_ZERO) && (y2 == TNUM_ZERO);
-   const _bool noMonth = (m1 == TNUM_ZERO) && (m2 == TNUM_ZERO);
+   const p_bool noYear = (y1 == TNUM_ZERO) && (y2 == TNUM_ZERO);
+   const p_bool noMonth = (m1 == TNUM_ZERO) && (m2 == TNUM_ZERO);
 
    if (noYear || noMonth) {
       d += months_ad - per.months_ad + years_ad - per.years_ad;
@@ -1099,8 +1099,8 @@ inline _tnum Period::periodCmp(const Period& per) const
    }
 
    // final
-   _bool ney = false;
-   _bool nem = false;
+   p_bool ney = false;
+   p_bool nem = false;
 
    if ((y1 > TNUM_ZERO && y2 < TNUM_ZERO && y1 >= (-y2)) ||
        (y1 < TNUM_ZERO && y2 > TNUM_ZERO && (-y1) >= y2))

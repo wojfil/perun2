@@ -114,7 +114,7 @@ public:
             return value[0];
          }
          default: {
-            return value[static_cast<_size>(this->math.randomInt(value.size() - 1))];
+            return value[static_cast<p_size>(this->math.randomInt(value.size() - 1))];
          }
       }
    }

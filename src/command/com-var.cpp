@@ -65,19 +65,19 @@ void VarTimeSubtract::run()
 
 void VarCharAssignment::run()
 {
-   const _size len = variable.value.size();
-   _nint n = index->getValue().toInt();
+   const p_size len = variable.value.size();
+   p_nint n = index->getValue().toInt();
 
    if (n < NINT_ZERO) {
       n += len;
    }
 
-   if (n < NINT_ZERO || n >= static_cast<_nint>(len)) {
+   if (n < NINT_ZERO || n >= static_cast<p_nint>(len)) {
       return;
    }
 
-   const _str v = value->getValue();
-   const _size vlen = v.size();
+   const p_str v = value->getValue();
+   const p_size vlen = v.size();
 
    switch (vlen) {
       case 0: {
@@ -85,12 +85,12 @@ void VarCharAssignment::run()
             if (n == NINT_ZERO) {
                variable.value = variable.value.substr(1);
             }
-            else if (n == static_cast<_nint>(len) - NINT_ONE) {
+            else if (n == static_cast<p_nint>(len) - NINT_ONE) {
                variable.value = variable.value.substr(0, len - 1);
             }
             else {
-               variable.value = str(variable.value.substr(0, static_cast<_size>(n)), 
-                  variable.value.substr(static_cast<_size>(n) + 1));
+               variable.value = str(variable.value.substr(0, static_cast<p_size>(n)), 
+                  variable.value.substr(static_cast<p_size>(n) + 1));
             }
          }
          break;
@@ -108,17 +108,17 @@ void VarCharAssignment::run()
                variable.value = str(v, variable.value.substr(1));
             }
          }
-         else if (n == static_cast<_nint>(len) - NINT_ONE) {
+         else if (n == static_cast<p_nint>(len) - NINT_ONE) {
             if (len == 1) {
                variable.value = v;
             }
             else {
-               variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v);
+               variable.value = str(variable.value.substr(0, static_cast<p_size>(n)), v);
             }
          }
          else {
-            variable.value = str(variable.value.substr(0, static_cast<_size>(n)), v, 
-               variable.value.substr(static_cast<_size>(n) + 1));
+            variable.value = str(variable.value.substr(0, static_cast<p_size>(n)), v, 
+               variable.value.substr(static_cast<p_size>(n) + 1));
          }
          break;
       }

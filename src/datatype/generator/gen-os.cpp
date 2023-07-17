@@ -41,7 +41,7 @@ namespace perun2::gen
 
 namespace os
 {
-   const _str DEFAULT_PATTERN = str(OS_SEPARATOR, CHAR_ASTERISK);
+   const p_str DEFAULT_PATTERN = str(OS_SEPARATOR, CHAR_ASTERISK);
 }
 
 
@@ -65,11 +65,11 @@ void OsDefinitionPlain::reset()
    }
 }
 
-_bool OsDefinitionPlain::isExceptional(const _str& patt)
+p_bool OsDefinitionPlain::isExceptional(const p_str& patt)
 {
-   const _size len = patt.size();
+   const p_size len = patt.size();
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       switch (patt[i]) {
          case CHAR_DOT:
          case CHAR_ASTERISK: {
@@ -90,9 +90,9 @@ void OsDefinitionRecursive::reset()
       first = true;
       paths.clear();
       bases.clear();
-      const _size len = handles.size();
+      const p_size len = handles.size();
       if (len != 0) {
-         for (_size i = 0; i < len; i++) {
+         for (p_size i = 0; i < len; i++) {
             os_closeEntry(handles[i]);
          }
          handles.clear();
@@ -100,12 +100,12 @@ void OsDefinitionRecursive::reset()
    }
 }
 
-_bool All::hasNext()
+p_bool All::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
       if (os_directoryExists(this->baseLocation)) {
-         const _str path = str(this->baseLocation, pattern);
+         const p_str path = str(this->baseLocation, pattern);
 
          if (!os_hasFirstFile(path, handle, data)) {
             return false;
@@ -117,7 +117,7 @@ _bool All::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+            const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
                || (!isDir && os_extension(value) != metadata::EXTENSION))
@@ -146,7 +146,7 @@ _bool All::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+         const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
             || (!isDir && os_extension(value) != metadata::EXTENSION))
@@ -172,12 +172,12 @@ _bool All::hasNext()
    return false;
 }
 
-_bool Files::hasNext()
+p_bool Files::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
       if (os_directoryExists(this->baseLocation)) {
-         const _str path = str(this->baseLocation, pattern);
+         const p_str path = str(this->baseLocation, pattern);
 
          if (!os_hasFirstFile(path, handle, data)) {
             return false;
@@ -189,7 +189,7 @@ _bool Files::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+            const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
                && (!this->exceptional || this->comparer.matches(this->value)))
@@ -213,7 +213,7 @@ _bool Files::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+         const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
             && (!this->exceptional || this->comparer.matches(this->value)))
@@ -234,13 +234,13 @@ _bool Files::hasNext()
    return false;
 }
 
-_bool Directories::hasNext()
+p_bool Directories::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
 
       if (os_directoryExists(this->baseLocation)) {
-         const _str path = str(this->baseLocation, pattern);
+         const p_str path = str(this->baseLocation, pattern);
 
          if (!os_hasFirstFile(path, handle, data)) {
             return false;
@@ -252,7 +252,7 @@ _bool Directories::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+            const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
             if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
                && (!this->exceptional || this->comparer.matches(this->value)))
@@ -276,7 +276,7 @@ _bool Directories::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const _bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+         const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
          if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
             && (!this->exceptional || this->comparer.matches(this->value)))
@@ -298,7 +298,7 @@ _bool Directories::hasNext()
 }
 
 
-_bool RecursiveFiles::hasNext()
+p_bool RecursiveFiles::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -313,7 +313,7 @@ _bool RecursiveFiles::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            const p_str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back();
             
             if (!os_hasFirstFile(path, handles.back(), data)) {
@@ -327,7 +327,7 @@ _bool RecursiveFiles::hasNext()
                }
             }
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-               const _str& v = data.cFileName;
+               const p_str& v = data.cFileName;
 
                if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
                   value = v;
@@ -353,7 +353,7 @@ _bool RecursiveFiles::hasNext()
       }
       else {
          if (os_hasNextFile(handles.back(), data)) {
-            const _str v = data.cFileName;
+            const p_str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
@@ -401,7 +401,7 @@ _bool RecursiveFiles::hasNext()
    return false;
 }
 
-_bool RecursiveDirectories::hasNext()
+p_bool RecursiveDirectories::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -416,7 +416,7 @@ _bool RecursiveDirectories::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            const p_str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back();
             
             if (!os_hasFirstFile(path, handles.back(), data)) {
@@ -442,12 +442,12 @@ _bool RecursiveDirectories::hasNext()
       }
       else {
          if (os_hasNextFile(handles.back(), data)) {
-            const _str v = data.cFileName;
+            const p_str v = data.cFileName;
 
             if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
             {
-               const _bool isBase = this->bases.empty();
+               const p_bool isBase = this->bases.empty();
                value = isBase ? v : str(bases.back(), v);
                paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
@@ -487,7 +487,7 @@ _bool RecursiveDirectories::hasNext()
    return false;
 }
 
-_bool RecursiveAll::hasNext()
+p_bool RecursiveAll::hasNext()
 {
    if (first) {
       this->baseLocation = os_trim(location->getValue());
@@ -502,7 +502,7 @@ _bool RecursiveAll::hasNext()
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
-            const _str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            const p_str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back();
             
             if (!os_hasFirstFile(path, handles.back(), data)) {
@@ -528,7 +528,7 @@ _bool RecursiveAll::hasNext()
       }
       else {
          if (os_hasNextFile(handles.back(), data)) {
-            const _str v = data.cFileName;
+            const p_str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
                if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -538,7 +538,7 @@ _bool RecursiveAll::hasNext()
                      this->prevFile = false;
                   }
 
-                  const _bool isBase = this->bases.empty();
+                  const p_bool isBase = this->bases.empty();
 
                   value = isBase ? v : str(bases.back(), v);
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
@@ -566,7 +566,7 @@ _bool RecursiveAll::hasNext()
                      this->prevFile = true;
                   }
 
-                  const _bool isBase = this->bases.empty();
+                  const p_bool isBase = this->bases.empty();
                   value = isBase ? v : str(bases.back(), v);
                   this->context.index->value = index;
                   index++;

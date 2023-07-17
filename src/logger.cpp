@@ -24,23 +24,23 @@ Logger::Logger(const p_perun2& p2)
     : isSilent(p2.arguments.hasFlag(FLAG_SILENT)),
       flushBuffer(p2.arguments.hasFlag(FLAG_GUI)) { };
 
-void Logger::print(const _str& value) const
+void Logger::print(const p_str& value) const
 {
    if (this->flushBuffer) {
-      _cout << value << std::endl;
+      p_cout << value << std::endl;
    }
    else {
-      _cout << value << CHAR_NEW_LINE;
+      p_cout << value << CHAR_NEW_LINE;
    }
 }
 
 void Logger::emptyLine() const
 {
    if (this->flushBuffer) {
-      _cout << std::endl;
+      p_cout << std::endl;
    }
    else {
-      _cout << CHAR_NEW_LINE;
+      p_cout << CHAR_NEW_LINE;
    }
 }
 

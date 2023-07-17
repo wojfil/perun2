@@ -20,33 +20,33 @@
 namespace perun2
 {
 
-_size unitLen(const _char value);
-_size unitLen(const _char (&value)[]);
-_size unitLen(const _str& value);
+p_size unitLen(const p_char value);
+p_size unitLen(const p_char (&value)[]);
+p_size unitLen(const p_str& value);
 
-_size charsLen();
+p_size charsLen();
 
 template<typename T, typename... Args>
-_size charsLen(const T& firstValue, Args const&... args)
+p_size charsLen(const T& firstValue, Args const&... args)
 {
    return unitLen(firstValue) + charsLen(args...);
 }
 
-void insertStr(_str& result);
+void insertStr(p_str& result);
 
 template<typename T, typename... Args>
-void insertStr(_str& result, const T& firstValue, Args const&... args)
+void insertStr(p_str& result, const T& firstValue, Args const&... args)
 {
    result += firstValue;
    insertStr(result, args...);
 }
 
 // concatenate values into one string
-// args can be of 3 types: _char, _char[], _str
+// args can be of 3 types: p_char, p_char[], p_str
 template<typename... Args>
-_str str(Args const&... args)
+p_str str(Args const&... args)
 {
-   _str result;
+   p_str result;
    result.reserve(charsLen(args...));
    insertStr(result, args...);
    return result;

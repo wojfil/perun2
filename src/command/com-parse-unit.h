@@ -33,33 +33,33 @@ public:
 
    void finish();
    void setElse(_comptr& com);
-   void addElseIf(_comptr& com, _genptr<_bool>& cond);
+   void addElseIf(_comptr& com, _genptr<p_bool>& cond);
 
-   _bool isClosed() const;
-   _bool isElseClosed() const;
-   _bool isLocked() const;
+   p_bool isClosed() const;
+   p_bool isElseClosed() const;
+   p_bool isLocked() const;
 
    void close();
    void closeElse();
    void lock();
 
-   void setMain(_genptr<_bool>& mainCond);
-   void setMain(_comptr& mainCom, _genptr<_bool>& mainCond);
+   void setMain(_genptr<p_bool>& mainCond);
+   void setMain(_comptr& mainCom, _genptr<p_bool>& mainCond);
 
    _comptr* const pointer;
 
 private:
-   _bool closed = false;
-   _bool elseClosed = false;
-   _bool locked = false;
-   _bool hasElse = false;
+   p_bool closed = false;
+   p_bool elseClosed = false;
+   p_bool locked = false;
+   p_bool hasElse = false;
 
    _comptr mainCommand;
-   _genptr<_bool> mainCondition;
+   _genptr<p_bool> mainCondition;
    _comptr elseCommand;
 
    std::vector<_comptr> elseIfCommands;
-   std::vector<_genptr<_bool>> elseIfConditions;
+   std::vector<_genptr<p_bool>> elseIfConditions;
 };
 
 
@@ -71,12 +71,12 @@ public:
    void deleteClosedUnits();
    void deleteLast();
    void lockLast();
-   _bool isExpandable() const;
-   void addElse(_comptr& com, const _int line);
-   void addEmptyElse(const _int line);
-   void addElseIf(_genptr<_bool>& cond, _comptr& com, const _int line);
-   void setMain(_genptr<_bool>& mainCond);
-   void setMain(_comptr& mainCom, _genptr<_bool>& mainCond);
+   p_bool isExpandable() const;
+   void addElse(_comptr& com, const p_int line);
+   void addEmptyElse(const p_int line);
+   void addElseIf(_genptr<p_bool>& cond, _comptr& com, const p_int line);
+   void setMain(_genptr<p_bool>& mainCond);
+   void setMain(_comptr& mainCom, _genptr<p_bool>& mainCond);
 
 private:
    std::vector<ConditionUnit> units;

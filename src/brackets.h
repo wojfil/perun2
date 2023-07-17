@@ -24,11 +24,11 @@ struct BracketsInfo
 {
 public:
    void refresh(const Token& tk);
-   _bool isBracketFree() const;
+   p_bool isBracketFree() const;
 
 private:
-   _int round = 0;
-   _int square = 0;
+   p_int round = 0;
+   p_int square = 0;
 };
 
 // this is called only once at the beginning of parsing

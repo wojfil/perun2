@@ -32,7 +32,7 @@ typedef Period                              _per;
 typedef std::vector<_num>                   _nlist;
 typedef std::vector<_tim>                   _tlist;
 typedef Definition                          _def;
-typedef std::unordered_set<_str>            _set;
+typedef std::unordered_set<p_str>            _set;
 
 
 

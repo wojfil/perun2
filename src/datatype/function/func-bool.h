@@ -23,14 +23,14 @@ namespace perun2::func
 {
 
 
-struct F_AnyInside : Generator<_bool>
+struct F_AnyInside : Generator<p_bool>
 {
 public:
    F_AnyInside() = delete;
    F_AnyInside(_defptr& def, _lcptr& lctx, FileContext* fctx)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    _lcptr locContext;
@@ -40,13 +40,13 @@ private:
 
 
 template <typename T>
-struct F_ContainsCol : Func_2<std::vector<T>, T>, Generator<_bool>
+struct F_ContainsCol : Func_2<std::vector<T>, T>, Generator<p_bool>
 {
 public:
    F_ContainsCol<T>(_genptr<std::vector<T>>& a1, _genptr<T>& a2)
       : Func_2<std::vector<T>, T>(a1, a2) { };
 
-   _bool getValue() override {
+   p_bool getValue() override {
       const std::vector<T> col = this->arg1->getValue();
 
       if (col.empty()) {
@@ -78,80 +78,80 @@ public:
 };
 
 
-struct F_ContainsStr : Func_2<_str, _str>, Generator<_bool>
+struct F_ContainsStr : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_ContainsStr(_genptr<_str>& a1, _genptr<_str>& a2)
-      : Func_2<_str, _str>(a1, a2) { };
+   F_ContainsStr(_genptr<p_str>& a1, _genptr<p_str>& a2)
+      : Func_2<p_str, p_str>(a1, a2) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 };
 
 
-struct F_ContainsDef : Generator<_bool>
+struct F_ContainsDef : Generator<p_bool>
 {
 public:
-   F_ContainsDef(_defptr& def, _genptr<_str>& val, p_perun2& p2)
+   F_ContainsDef(_defptr& def, _genptr<p_str>& val, p_perun2& p2)
       : definition(std::move(def)), value(std::move(val)), perun2(p2) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    p_perun2& perun2;
    _defptr definition;
-   _genptr<_str> value;
+   _genptr<p_str> value;
 };
 
 
-struct F_IsLower : Func_1<_str>, Generator<_bool>
+struct F_IsLower : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsLower(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsLower(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-struct F_IsUpper : Func_1<_str>, Generator<_bool>
+struct F_IsUpper : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsUpper(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsUpper(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-struct F_IsNumber : Func_1<_str>, Generator<_bool>
+struct F_IsNumber : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsNumber(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsNumber(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-_bool isNumber(const _str& value);
+p_bool isNumber(const p_str& value);
 
 
-struct F_StartsWith : Func_2<_str, _str>, Generator<_bool>
+struct F_StartsWith : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_StartsWith(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
-   _bool getValue() override;
+   F_StartsWith(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   p_bool getValue() override;
 };
 
 
-struct F_EndsWith : Func_2<_str, _str>, Generator<_bool>
+struct F_EndsWith : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_EndsWith(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
-   _bool getValue() override;
+   F_EndsWith(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   p_bool getValue() override;
 };
 
 
-struct F_ExistsInside : Func_1<_str>, Generator<_bool>
+struct F_ExistsInside : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_ExistsInside(_genptr<_str>& a1, LocationContext* lctx, FileContext* fctx)
+   F_ExistsInside(_genptr<p_str>& a1, LocationContext* lctx, FileContext* fctx)
       : Func_1(a1), locContext(lctx), fileContext(fctx) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    LocationContext* locContext;
@@ -159,12 +159,12 @@ private:
 };
 
 
-struct F_ExistInside: Func_1<_list>, Generator<_bool>
+struct F_ExistInside: Func_1<p_list>, Generator<p_bool>
 {
 public:
-   F_ExistInside(_genptr<_list>& a1, LocationContext* lctx, FileContext* fctx)
+   F_ExistInside(_genptr<p_list>& a1, LocationContext* lctx, FileContext* fctx)
       : Func_1(a1), locContext(lctx), fileContext(fctx) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    LocationContext* locContext;
@@ -172,71 +172,71 @@ private:
 };
 
 
-struct F_StartsWithChar : Generator<_bool>
+struct F_StartsWithChar : Generator<p_bool>
 {
 public:
-   F_StartsWithChar(_genptr<_str>& val, const _char ch)
+   F_StartsWithChar(_genptr<p_str>& val, const p_char ch)
       : value(std::move(val)), character(ch) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
-   _genptr<_str> value;
-   const _char character;
+   _genptr<p_str> value;
+   const p_char character;
 };
 
 
-struct F_EndsWithChar : Generator<_bool>
+struct F_EndsWithChar : Generator<p_bool>
 {
 public:
-   F_EndsWithChar(_genptr<_str>& val, const _char ch)
+   F_EndsWithChar(_genptr<p_str>& val, const p_char ch)
       : value(std::move(val)), character(ch) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
-   _genptr<_str> value;
-   const _char character;
+   _genptr<p_str> value;
+   const p_char character;
 };
 
 
-struct F_StartsWithConst : Generator<_bool>
+struct F_StartsWithConst : Generator<p_bool>
 {
 public:
-   F_StartsWithConst(_genptr<_str>& val, const _str& cnst)
+   F_StartsWithConst(_genptr<p_str>& val, const p_str& cnst)
       : value(std::move(val)), constant(cnst), constantLength(cnst.size()) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
-   _genptr<_str> value;
-   const _str constant;
-   const _size constantLength;
+   _genptr<p_str> value;
+   const p_str constant;
+   const p_size constantLength;
 };
 
 
-struct F_EndsWithConst : Generator<_bool>
+struct F_EndsWithConst : Generator<p_bool>
 {
 public:
-   F_EndsWithConst(_genptr<_str>& val, const _str& cnst)
+   F_EndsWithConst(_genptr<p_str>& val, const p_str& cnst)
       : value(std::move(val)), constant(cnst), constantLength(cnst.size()) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
-   _genptr<_str> value;
-   const _str constant;
-   const _size constantLength;
+   _genptr<p_str> value;
+   const p_str constant;
+   const p_size constantLength;
 };
 
 
 
-struct F_FindText : Func_1<_str>, Generator<_bool>
+struct F_FindText : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_FindText(_genptr<_str>& a1,  FileContext* ctx)
+   F_FindText(_genptr<p_str>& a1,  FileContext* ctx)
       : Func_1(a1), context(ctx) { };
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    FileContext* context;
@@ -244,46 +244,46 @@ private:
 
 
 
-struct F_IsLetter : Func_1<_str>, Generator<_bool>
+struct F_IsLetter : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsLetter(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsLetter(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-struct F_IsDigit : Func_1<_str>, Generator<_bool>
+struct F_IsDigit : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsDigit(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsDigit(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-struct F_IsBinary : Func_1<_str>, Generator<_bool>
+struct F_IsBinary : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsBinary(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsBinary(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-struct F_IsHex : Func_1<_str>, Generator<_bool>
+struct F_IsHex : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsHex(_genptr<_str>& a1) : Func_1(a1) { };
-   _bool getValue() override;
+   F_IsHex(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
 };
 
 
-struct F_Any : Generator<_bool>
+struct F_Any : Generator<p_bool>
 {
 public:
    F_Any() = delete;
    F_Any(_defptr& def) 
       : definition(std::move(def)) { };
 
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    _defptr definition;
@@ -291,14 +291,14 @@ private:
 
 
 template <typename T>
-struct F_AnyList : Generator<_bool>
+struct F_AnyList : Generator<p_bool>
 {
 public:
    F_AnyList() = delete;
    F_AnyList(_genptr<std::vector<T>>& val) 
       : value(std::move(val)) { };
 
-   _bool getValue() override
+   p_bool getValue() override
    {
       return this->value->getValue().size() > 0;
    }
@@ -308,22 +308,22 @@ private:
 };
 
 
-struct F_Exists : Func_1<_str>, Generator<_bool>
+struct F_Exists : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_Exists(_genptr<_str>& a1, p_perun2& perun2);
-   _bool getValue() override;
+   F_Exists(_genptr<p_str>& a1, p_perun2& perun2);
+   p_bool getValue() override;
 
 private:
    LocationContext* context;
 };
 
 
-struct F_Exist: Func_1<_list>, Generator<_bool>
+struct F_Exist: Func_1<p_list>, Generator<p_bool>
 {
 public:
-   F_Exist(_genptr<_list>& a1, p_perun2& perun2);
-   _bool getValue() override;
+   F_Exist(_genptr<p_list>& a1, p_perun2& perun2);
+   p_bool getValue() override;
 
 private:
    LocationContext* context;

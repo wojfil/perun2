@@ -23,7 +23,7 @@ namespace perun2::comm
 
 void CS_RawBlock::run()
 {
-   for (_size i = 0; this->perun2.state == State::s_Running && i < this->length; i++) {
+   for (p_size i = 0; this->perun2.state == State::s_Running && i < this->length; i++) {
       (this->commands[i])->run();
    }
 }
@@ -31,7 +31,7 @@ void CS_RawBlock::run()
 
 void CS_Block::run()
 {
-   for (_size i = 0; this->perun2.state == State::s_Running && i < this->length; i++) {
+   for (p_size i = 0; this->perun2.state == State::s_Running && i < this->length; i++) {
       (this->commands[i])->run();
    }
 
@@ -41,7 +41,7 @@ void CS_Block::run()
 
 void CS_Times::run()
 {
-   _nint repeats = this->times->getValue().toInt();
+   p_nint repeats = this->times->getValue().toInt();
    if (repeats <= NINT_ZERO) {
       return;
    }
@@ -136,8 +136,8 @@ void CS_ContextlessLoop::run()
 
 void CS_ListLoop::run()
 {
-   const _list values = this->list->getValue();
-   const _num length = static_cast<_nint>(values.size());
+   const p_list values = this->list->getValue();
+   const _num length = static_cast<p_nint>(values.size());
 
    if (length == 0) {
       return;
@@ -147,7 +147,7 @@ void CS_ListLoop::run()
    this->context->resetIndex();
 
    while (this->perun2.state == State::s_Running && index != length) {
-      this->context->loadData(values[static_cast<_size>(index.value.i)]);
+      this->context->loadData(values[static_cast<p_size>(index.value.i)]);
       this->command->run();
       index++;
       this->context->index->value = index;
@@ -246,19 +246,19 @@ void CS_InsideContextless::run()
 
 void CS_InsideList::run()
 {
-   const _list values = this->list->getValue();
-   const _num length = _num(static_cast<_nint>(values.size()));
+   const p_list values = this->list->getValue();
+   const _num length = _num(static_cast<p_nint>(values.size()));
 
    if (length.value.i == 0) {
       return;
    }
 
    _num index = NINT_ZERO;
-   _nint outIndex = NINT_ZERO;
+   p_nint outIndex = NINT_ZERO;
    this->context->resetIndex();
 
    while (this->perun2.state == State::s_Running && index != length) {
-      this->context->loadData(values[static_cast<_size>(index.value.i)]);
+      this->context->loadData(values[static_cast<p_size>(index.value.i)]);
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
          this->locContext->loadData(this->context->trimmed);
          this->command->run();

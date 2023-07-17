@@ -22,24 +22,24 @@ namespace perun2
 
 typedef uint32_t _flags;
 
-_constexpr _flags FLAG_NULL =                 0b0000;
-_constexpr _flags FLAG_NOOMIT =               0b0001;
-_constexpr _flags FLAG_SILENT =               0b0010;
-_constexpr _flags FLAG_GUI =                  0b0100;
+p_constexpr _flags FLAG_NULL =                 0b0000;
+p_constexpr _flags FLAG_NOOMIT =               0b0001;
+p_constexpr _flags FLAG_SILENT =               0b0010;
+p_constexpr _flags FLAG_GUI =                  0b0100;
 
-_constexpr _char CHAR_FLAG_GUI =              CHAR_g;
-_constexpr _char CHAR_FLAG_NOOMIT =           CHAR_n;
-_constexpr _char CHAR_FLAG_SILENT =           CHAR_s;
-_constexpr _char CHAR_FLAG_DIRECTORY =        CHAR_d;
-_constexpr _char CHAR_FLAG_HERE =             CHAR_h;
-_constexpr _char CHAR_FLAG_CODE =             CHAR_c;
+p_constexpr p_char CHAR_FLAG_GUI =              CHAR_g;
+p_constexpr p_char CHAR_FLAG_NOOMIT =           CHAR_n;
+p_constexpr p_char CHAR_FLAG_SILENT =           CHAR_s;
+p_constexpr p_char CHAR_FLAG_DIRECTORY =        CHAR_d;
+p_constexpr p_char CHAR_FLAG_HERE =             CHAR_h;
+p_constexpr p_char CHAR_FLAG_CODE =             CHAR_c;
 
-_constexpr _char CHAR_FLAG_GUI_UPPER =        CHAR_G;
-_constexpr _char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
-_constexpr _char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
-_constexpr _char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
-_constexpr _char CHAR_FLAG_HERE_UPPER =       CHAR_H;
-_constexpr _char CHAR_FLAG_CODE_UPPER =       CHAR_C;
+p_constexpr p_char CHAR_FLAG_GUI_UPPER =        CHAR_G;
+p_constexpr p_char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
+p_constexpr p_char CHAR_FLAG_SILENT_UPPER =     CHAR_S;
+p_constexpr p_char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
+p_constexpr p_char CHAR_FLAG_HERE_UPPER =       CHAR_H;
+p_constexpr p_char CHAR_FLAG_CODE_UPPER =       CHAR_C;
 
 
 enum ArgsParseState 
@@ -56,27 +56,27 @@ public:
    Arguments() = delete;
 
    // Perun2 arguments parsed from the command-line
-   Arguments(const _int argc, _char* const argv[]);
+   Arguments(const p_int argc, p_char* const argv[]);
 
    // Perun2 arguments made from location and code
-   Arguments(const _str& loc, const _str& cod);
+   Arguments(const p_str& loc, const p_str& cod);
 
    // Perun2 arguments made from location, code and flags
-   Arguments(const _str& loc, const _str& cod, const _flags fls);
+   Arguments(const p_str& loc, const p_str& cod, const _flags fls);
 
    _flags getFlags() const;
-   _list getArgs() const;
-   _str getLocation() const;
-   const _str& getCode() const;
+   p_list getArgs() const;
+   p_str getLocation() const;
+   const p_str& getCode() const;
    ArgsParseState getParseState() const;
-   _bool hasFlag(const _flags flag) const;
+   p_bool hasFlag(const _flags flag) const;
 
 private:
 
-   _str code;
+   p_str code;
    _flags flags = FLAG_NULL;
-   _list args;
-   _str location;
+   p_list args;
+   p_str location;
    ArgsParseState parseState = ArgsParseState::aps_Failed;
 };
 

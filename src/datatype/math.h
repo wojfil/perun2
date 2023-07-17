@@ -29,11 +29,11 @@ public:
    void markAnyRandomDouble();
    void init();
 
-   _ndouble randomDouble();
-   _nint randomInt(const _nint limit);
+   p_ndouble randomDouble();
+   p_nint randomInt(const p_nint limit);
 
 private:
-   _bool anyRandomDouble = false;
+   p_bool anyRandomDouble = false;
    std::mt19937 generator;
    std::uniform_real_distribution<> doubleDist;
    

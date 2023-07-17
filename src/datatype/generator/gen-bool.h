@@ -24,48 +24,48 @@
 namespace perun2::gen
 {
 
-struct Not : UnaryOperation<_bool>
+struct Not : UnaryOperation<p_bool>
 {
 public:
-   Not(_genptr<_bool>& val);
-   _bool getValue() override;
+   Not(_genptr<p_bool>& val);
+   p_bool getValue() override;
 };
 
 
-struct And : BinaryOperation<_bool>
+struct And : BinaryOperation<p_bool>
 {
 public:
-   And(_genptr<_bool>& val1, _genptr<_bool>& val2);
-   _bool getValue() override;
+   And(_genptr<p_bool>& val1, _genptr<p_bool>& val2);
+   p_bool getValue() override;
 };
 
 
-struct Or : BinaryOperation<_bool>
+struct Or : BinaryOperation<p_bool>
 {
 public:
-   Or(_genptr<_bool>& val1, _genptr<_bool>& val2);
-   _bool getValue() override;
+   Or(_genptr<p_bool>& val1, _genptr<p_bool>& val2);
+   p_bool getValue() override;
 };
 
 
-struct Xor : BinaryOperation<_bool>
+struct Xor : BinaryOperation<p_bool>
 {
 public:
-   Xor(_genptr<_bool>& val1, _genptr<_bool>& val2);
-   _bool getValue() override;
+   Xor(_genptr<p_bool>& val1, _genptr<p_bool>& val2);
+   p_bool getValue() override;
 };
 
 
 // IN operator straight outta SQL
 // right side is variant, so is generated for every call
 template <typename T>
-struct InList : Generator<_bool>
+struct InList : Generator<p_bool>
 {
 public:
    InList<T>(_genptr<T>& val, _genptr<std::vector<T>>& li)
       : value(std::move(val)), list(std::move(li)) { };
 
-   _bool getValue() override 
+   p_bool getValue() override 
    {
       const std::vector<T> multipleValues = list->getValue();
       const T singleValue = value->getValue();
@@ -88,7 +88,7 @@ private:
 // an optimized variant of the IN operator
 // is parsed if second argument is constant
 template <typename T>
-struct InConstList : Generator<_bool>
+struct InConstList : Generator<p_bool>
 {
 public:
    InConstList<T>(_genptr<T>& val, const std::vector<T>& li)
@@ -98,7 +98,7 @@ public:
       list.erase(std::unique(list.begin(), list.end()), list.end());
    };
 
-   _bool getValue() override
+   p_bool getValue() override
    {
       return std::binary_search(list.begin(), list.end(), value->getValue());
    };
@@ -112,11 +112,11 @@ private:
 // Time works quite differently than other data types
 // for example '3 June 2005' equals 'June 2005'
 // so let there be a special case struct
-struct InConstTimeList : Generator<_bool>
+struct InConstTimeList : Generator<p_bool>
 {
 public:
    InConstTimeList(_genptr<_tim>& val, const _tlist& li);
-   _bool getValue() override;
+   p_bool getValue() override;
 
 private:
    _genptr<_tim> value;

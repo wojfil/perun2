@@ -20,15 +20,15 @@
 namespace perun2::func
 {
 
-_str F_Parent::getValue()
+p_str F_Parent::getValue()
 {
-   const _str v = os_trim(arg1->getValue());
+   const p_str v = os_trim(arg1->getValue());
    if (os_isInvaild(v)) {
-      return _str();
+      return p_str();
    }
 
    // there is no separator, so simply return location
-   if (v.find(OS_SEPARATOR) == _str::npos) {
+   if (v.find(OS_SEPARATOR) == p_str::npos) {
       return this->context->location->value;
    }
 
@@ -36,58 +36,58 @@ _str F_Parent::getValue()
 }
 
 
-_str F_Path_1::getValue()
+p_str F_Path_1::getValue()
 {
-   const _str v = os_trim(arg1->getValue());
+   const p_str v = os_trim(arg1->getValue());
    if (os_isInvaild(v)) {
-      return _str();
+      return p_str();
    }
 
    return os_leftJoin(this->context->location->value, v);
 }
 
 
-_str F_Path_2::getValue()
+p_str F_Path_2::getValue()
 {
-   const _str v1 = os_trim(this->value_1->getValue());
-   const _str v2 = os_trim(this->value_2->getValue());
+   const p_str v1 = os_trim(this->value_1->getValue());
+   const p_str v2 = os_trim(this->value_2->getValue());
    return os_join(v1, v2);
 }
 
 
-_str F_Path_3::getValue()
+p_str F_Path_3::getValue()
 {
-   const _str v1 = os_trim(this->value_1->getValue());
-   const _str v2 = os_trim(this->value_2->getValue());
-   const _str v3 = os_trim(this->value_3->getValue());
+   const p_str v1 = os_trim(this->value_1->getValue());
+   const p_str v2 = os_trim(this->value_2->getValue());
+   const p_str v3 = os_trim(this->value_3->getValue());
    return os_join(os_join(v1, v2), v3);
 }
 
 
-_str F_Path_4::getValue()
+p_str F_Path_4::getValue()
 {
-   const _str v1 = os_trim(this->value_1->getValue());
-   const _str v2 = os_trim(this->value_2->getValue());
-   const _str v3 = os_trim(this->value_3->getValue());
-   const _str v4 = os_trim(this->value_4->getValue());
+   const p_str v1 = os_trim(this->value_1->getValue());
+   const p_str v2 = os_trim(this->value_2->getValue());
+   const p_str v3 = os_trim(this->value_3->getValue());
+   const p_str v4 = os_trim(this->value_4->getValue());
    return os_join(os_join(os_join(v1, v2), v3), v4);
 }
 
-_str F_Path_Multi::getValue()
+p_str F_Path_Multi::getValue()
 {
-   _str path = os_trim((values[length - 1])->getValue());
+   p_str path = os_trim((values[length - 1])->getValue());
    if (path.empty()) {
-      return _str();
+      return p_str();
    }
 
-   _int index = length - 2;
+   p_int index = length - 2;
 
    while (index >= 0 && !os_isAbsolute(path)) {
-      const _str p = os_trim(values[index]->getValue());
+      const p_str p = os_trim(values[index]->getValue());
       path = os_join(p, path);
 
       if (path.empty()) {
-         return _str();
+         return p_str();
       }
 
       index--;
@@ -99,7 +99,7 @@ _str F_Path_Multi::getValue()
 
 _num F_SizeDefinition::getValue()
 {
-   _nint total = NINT_ZERO;
+   p_nint total = NINT_ZERO;
 
    while (definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -107,8 +107,8 @@ _num F_SizeDefinition::getValue()
          return _num(NINT_MINUS_ONE);
       }
 
-      const _str v = definition->getValue();
-      const _nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
+      const p_str v = definition->getValue();
+      const p_nint s = osp_size(os_leftJoin(this->context->location->value, v), this->perun2);
       if (s != NINT_MINUS_ONE) {
          total += s;
       }
@@ -120,22 +120,22 @@ _num F_SizeDefinition::getValue()
 
 _num F_SizeList::getValue()
 {
-   _bool any = false;
-   _nint total = NINT_ZERO;
-   const _list vs = values->getValue();
-   const _size len = vs.size();
+   p_bool any = false;
+   p_nint total = NINT_ZERO;
+   const p_list vs = values->getValue();
+   const p_size len = vs.size();
    if (len == 0) {
       return _num();
    }
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       if (this->perun2.isNotRunning()) {
          return _num(NINT_MINUS_ONE);
       }
 
-      const _str v = os_trim(vs[i]);
+      const p_str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvaild(v)) {
-         const _nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
+         const p_nint s = osp_size(os_leftJoin(this->context->location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             total += s;
             any = true;
@@ -159,7 +159,7 @@ _num F_Attr_Size::getValue()
 {
    return this->context.invalid
       ? NINT_MINUS_ONE
-      : os_size(this->context.v_path->value, this->perun2);
+      : osp_size(this->context.v_path->value, this->perun2);
 }
 
 
@@ -203,7 +203,7 @@ _tim F_Attr_Modification::getValue()
 }
 
 
-_bool F_Attr_Archive::getValue()
+p_bool F_Attr_Archive::getValue()
 {
    return this->context.invalid
       ? false
@@ -211,7 +211,7 @@ _bool F_Attr_Archive::getValue()
 }
 
 
-_bool F_Attr_Compressed::getValue()
+p_bool F_Attr_Compressed::getValue()
 {
    return this->context.invalid
       ? false
@@ -219,7 +219,7 @@ _bool F_Attr_Compressed::getValue()
 }
 
 
-_bool F_Attr_Empty::getValue()
+p_bool F_Attr_Empty::getValue()
 {
    return this->context.invalid
       ? false
@@ -227,7 +227,7 @@ _bool F_Attr_Empty::getValue()
 }
 
 
-_bool F_Attr_Exists::getValue()
+p_bool F_Attr_Exists::getValue()
 {
    return this->context.invalid
       ? false
@@ -235,7 +235,7 @@ _bool F_Attr_Exists::getValue()
 }
 
 
-_bool F_Attr_Encrypted::getValue()
+p_bool F_Attr_Encrypted::getValue()
 {
    return this->context.invalid
       ? false
@@ -243,7 +243,7 @@ _bool F_Attr_Encrypted::getValue()
 }
 
 
-_bool F_Attr_Hidden::getValue()
+p_bool F_Attr_Hidden::getValue()
 {
    return this->context.invalid
       ? false
@@ -251,7 +251,7 @@ _bool F_Attr_Hidden::getValue()
 }
 
 
-_bool F_Attr_IsDirectory::getValue()
+p_bool F_Attr_IsDirectory::getValue()
 {
    return this->context.invalid
       ? false
@@ -259,7 +259,7 @@ _bool F_Attr_IsDirectory::getValue()
 }
 
 
-_bool F_Attr_IsFile::getValue()
+p_bool F_Attr_IsFile::getValue()
 {
    return this->context.invalid
       ? false
@@ -267,7 +267,7 @@ _bool F_Attr_IsFile::getValue()
 }
 
 
-_bool F_Attr_Readonly::getValue()
+p_bool F_Attr_Readonly::getValue()
 {
    return this->context.invalid
       ? false

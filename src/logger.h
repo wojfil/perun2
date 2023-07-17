@@ -32,7 +32,7 @@ public:
    Logger(const p_perun2& p2);
 
    // print something
-   void print(const _str& value) const;
+   void print(const p_str& value) const;
 
    // print command log, all args are strings and are concatenated into one line
    template<typename... Args>
@@ -41,14 +41,14 @@ public:
       if (!this->isSilent) {
          using value_type = std::common_type_t<Args const&...>;
          for (auto const& arg : {static_cast<value_type>(args)...}) {
-            _cout << arg;
+            p_cout << arg;
          }
             
          if (this->flushBuffer) {
-            _cout << std::endl;
+            p_cout << std::endl;
          }
          else {
-            _cout << CHAR_NEW_LINE;
+            p_cout << CHAR_NEW_LINE;
          }
       }
    }
@@ -60,11 +60,11 @@ private:
    // if program was called with -s
    // it runs in silent mode and there are no logs of filesystem commands
    // however, critical error messages and Print should still work
-   const _bool isSilent;
+   const p_bool isSilent;
 
    // if the logger sends messages to the GUI program, flush the buffer every line
    // otherwise (messages go straight to the console), do not do that
-   const _bool flushBuffer;
+   const p_bool flushBuffer;
 };
 
 }

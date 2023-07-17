@@ -22,14 +22,14 @@ namespace perun2::func
 
 
 
-_bool F_AnyInside::getValue()
+p_bool F_AnyInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
 
    this->locContext->loadData(this->fileContext->trimmed);
-   const _bool any = this->definition->hasNext();
+   const p_bool any = this->definition->hasNext();
 
    if (any) {
       this->definition->reset();
@@ -39,25 +39,25 @@ _bool F_AnyInside::getValue()
 }
 
 
-_bool F_ContainsStr::getValue()
+p_bool F_ContainsStr::getValue()
 {
-   const _str phrase = this->arg2->getValue();
+   const p_str phrase = this->arg2->getValue();
    if (phrase.empty()) {
       return true;
    }
 
-   const _str base =  this->arg1->getValue();
+   const p_str base =  this->arg1->getValue();
    if (base.empty()) {
       return false;
    }
 
-   return base.find(phrase) != _str::npos;
+   return base.find(phrase) != p_str::npos;
 }
 
 
-_bool F_ContainsDef::getValue()
+p_bool F_ContainsDef::getValue()
 {
-   const _str v = this->value->getValue();
+   const p_str v = this->value->getValue();
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -75,16 +75,16 @@ _bool F_ContainsDef::getValue()
 }
 
 
-_bool F_IsLower::getValue()
+p_bool F_IsLower::getValue()
 {
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   _bool anyLetter = false;
+   p_bool anyLetter = false;
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       if (std::iswalpha(ch)) {
          if (std::iswupper(ch)) {
             return false;
@@ -97,16 +97,16 @@ _bool F_IsLower::getValue()
 }
 
 
-_bool F_IsUpper::getValue()
+p_bool F_IsUpper::getValue()
 {
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   _bool anyLetter = false;
+   p_bool anyLetter = false;
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       if (std::iswalpha(ch)) {
          if (std::iswlower(ch)) {
             return false;
@@ -119,23 +119,23 @@ _bool F_IsUpper::getValue()
 }
 
 
-_bool F_IsNumber::getValue()
+p_bool F_IsNumber::getValue()
 {
    return isNumber(this->arg1->getValue());
 }
 
 
-_bool isNumber(const _str& value)
+p_bool isNumber(const p_str& value)
 {
    if (value.empty()) {
       return false;
    }
 
-   const _size len = value.size();
-   _bool hasDot = false;
+   const p_size len = value.size();
+   p_bool hasDot = false;
 
-   for (_size i = 0; i < len; i++) {
-      const _char ch = value[i];
+   for (p_size i = 0; i < len; i++) {
+      const p_char ch = value[i];
       
       if (ch == CHAR_DOT) {
          if (hasDot) {
@@ -159,26 +159,26 @@ _bool isNumber(const _str& value)
 }
 
 
-_bool F_StartsWith::getValue()
+p_bool F_StartsWith::getValue()
 {
-   const _str phrase = this->arg2->getValue();
+   const p_str phrase = this->arg2->getValue();
    if (phrase.empty()) {
       return true;
    }
 
-   const _str base =  this->arg1->getValue();
+   const p_str base =  this->arg1->getValue();
    if (base.empty()) {
       return false;
    }
 
-   const _size blen = base.size();
-   const _size plen = phrase.size();
+   const p_size blen = base.size();
+   const p_size plen = phrase.size();
 
    if (plen > blen) {
       return false;
    }
 
-   for (_size i = 0; i < plen; i++) {
+   for (p_size i = 0; i < plen; i++) {
       if (phrase[i] != base[i]) {
          return false;
       }
@@ -188,26 +188,26 @@ _bool F_StartsWith::getValue()
 }
 
 
-_bool F_EndsWith::getValue()
+p_bool F_EndsWith::getValue()
 {
-   const _str phrase = this->arg2->getValue();
+   const p_str phrase = this->arg2->getValue();
    if (phrase.empty()) {
       return true;
    }
 
-   const _str base =  this->arg1->getValue();
+   const p_str base =  this->arg1->getValue();
    if (base.empty()) {
       return false;
    }
 
-   const _size blen = base.size();
-   const _size plen = phrase.size();
+   const p_size blen = base.size();
+   const p_size plen = phrase.size();
 
    if (plen > blen) {
       return false;
    }
 
-   for (_size i = 0; i < plen; i++) {
+   for (p_size i = 0; i < plen; i++) {
       if (phrase[plen - 1 - i] != base[blen - 1 - i]) {
          return false;
       }
@@ -217,14 +217,14 @@ _bool F_EndsWith::getValue()
 }
 
 
-_bool F_ExistsInside::getValue()
+p_bool F_ExistsInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
 
-   const _str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
-   const _str value = os_trim(this->arg1->getValue());
+   const p_str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
+   const p_str value = os_trim(this->arg1->getValue());
 
    if (os_isInvaild(value)) {
       return false;
@@ -234,24 +234,24 @@ _bool F_ExistsInside::getValue()
 }
 
 
-_bool F_ExistInside::getValue()
+p_bool F_ExistInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
    }
 
-   const _str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
-   const _list values = this->arg1->getValue();
-   const _size len = values.size();
+   const p_str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
+   const p_list values = this->arg1->getValue();
+   const p_size len = values.size();
 
-   for (_size i = 0; i < len; i++) {
-      const _str& v = os_trim(values[i]);
+   for (p_size i = 0; i < len; i++) {
+      const p_str& v = os_trim(values[i]);
 
       if (os_isInvaild(v)) {
           return false;
       }
 
-      const _str path = os_leftJoin(base, v);
+      const p_str path = os_leftJoin(base, v);
       if (!os_exists(path)) {
          return false;
       }
@@ -261,9 +261,9 @@ _bool F_ExistInside::getValue()
 }
 
 
-_bool F_StartsWithChar::getValue()
+p_bool F_StartsWithChar::getValue()
 {
-   const _str v = value->getValue();
+   const p_str v = value->getValue();
 
    return v.empty()
       ? false
@@ -271,9 +271,9 @@ _bool F_StartsWithChar::getValue()
 }
 
 
-_bool F_EndsWithChar::getValue()
+p_bool F_EndsWithChar::getValue()
 {
-   const _str v = value->getValue();
+   const p_str v = value->getValue();
 
    return v.empty()
       ? false
@@ -281,13 +281,13 @@ _bool F_EndsWithChar::getValue()
 }
 
 
-_bool F_FindText::getValue()
+p_bool F_FindText::getValue()
 {
    if (!this->context->v_exists->value || !this->context->v_isfile->value) {
       return false;
    }
 
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return true;
    }
@@ -296,15 +296,15 @@ _bool F_FindText::getValue()
 }
 
 
-_bool F_StartsWithConst::getValue()
+p_bool F_StartsWithConst::getValue()
 {
-   const _str v = value->getValue();
-   const _size len = v.size();
+   const p_str v = value->getValue();
+   const p_size len = v.size();
    if (len < constantLength) {
       return false;
    }
 
-   for (_size i = 0; i < constantLength; i++) {
+   for (p_size i = 0; i < constantLength; i++) {
       if (v[i] != constant[i]) {
          return false;
       }
@@ -314,15 +314,15 @@ _bool F_StartsWithConst::getValue()
 }
 
 
-_bool F_EndsWithConst::getValue()
+p_bool F_EndsWithConst::getValue()
 {
-   const _str v = value->getValue();
-   const _size len = v.size();
+   const p_str v = value->getValue();
+   const p_size len = v.size();
    if (len < constantLength) {
       return false;
    }
 
-   for (_size i = 0; i < constantLength; i++) {
+   for (p_size i = 0; i < constantLength; i++) {
       if (v[len - constantLength + i] != constant[i]) {
          return false;
       }
@@ -332,14 +332,14 @@ _bool F_EndsWithConst::getValue()
 }
 
 
-_bool F_IsLetter::getValue()
+p_bool F_IsLetter::getValue()
 {
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       if (!std::iswalpha(ch)) {
          return false;
       }
@@ -349,14 +349,14 @@ _bool F_IsLetter::getValue()
 }
 
 
-_bool F_IsDigit::getValue()
+p_bool F_IsDigit::getValue()
 {
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       if (!std::iswdigit(ch)) {
          return false;
       }
@@ -366,14 +366,14 @@ _bool F_IsDigit::getValue()
 }
 
 
-_bool F_IsBinary::getValue()
+p_bool F_IsBinary::getValue()
 {
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       switch (ch) {
          case CHAR_0:
          case CHAR_1:{
@@ -389,14 +389,14 @@ _bool F_IsBinary::getValue()
 }
 
 
-_bool F_IsHex::getValue()
+p_bool F_IsHex::getValue()
 {
-   const _str value = this->arg1->getValue();
+   const p_str value = this->arg1->getValue();
    if (value.empty()) {
       return false;
    }
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       switch (ch) {
          case CHAR_0: case CHAR_1: case CHAR_2: case CHAR_3: case CHAR_4:
          case CHAR_5: case CHAR_6: case CHAR_7: case CHAR_8: case CHAR_9:
@@ -413,9 +413,9 @@ _bool F_IsHex::getValue()
    return true;
 }
 
-_bool F_Any::getValue()
+p_bool F_Any::getValue()
 {
-   const _bool result = this->definition->hasNext();
+   const p_bool result = this->definition->hasNext();
 
    if (result) {
       this->definition->reset();
@@ -424,12 +424,12 @@ _bool F_Any::getValue()
    return result;
 }
 
-F_Exists::F_Exists(_genptr<_str>& a1, p_perun2& perun2)
+F_Exists::F_Exists(_genptr<p_str>& a1, p_perun2& perun2)
    : Func_1(a1), context(perun2.contexts.getLocationContext()) { };
 
-_bool F_Exists::getValue()
+p_bool F_Exists::getValue()
 {
-   const _str value = os_trim(this->arg1->getValue());
+   const p_str value = os_trim(this->arg1->getValue());
 
    if (os_isInvaild(value)) {
       return false;
@@ -438,21 +438,21 @@ _bool F_Exists::getValue()
    return os_exists(os_leftJoin(this->context->location->value, value));
 }
 
-F_Exist::F_Exist(_genptr<_list>& a1, p_perun2& perun2)
+F_Exist::F_Exist(_genptr<p_list>& a1, p_perun2& perun2)
    : Func_1(a1), context(perun2.contexts.getLocationContext())  { };
 
-_bool F_Exist::getValue()
+p_bool F_Exist::getValue()
 {
-   const _list values = this->arg1->getValue();
+   const p_list values = this->arg1->getValue();
 
-   for (const _str& val : values) {
-      const _str& v = os_trim(val);
+   for (const p_str& val : values) {
+      const p_str& v = os_trim(val);
 
       if (os_isInvaild(v)) {
           return false;
       }
 
-      const _str path = os_leftJoin(this->context->location->value, v);
+      const p_str path = os_leftJoin(this->context->location->value, v);
       if (!os_exists(path)) {
          return false;
       }

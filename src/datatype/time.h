@@ -22,8 +22,8 @@
 namespace perun2
 {
 
-_constexpr _bool TIME_WITH_SECONDS = true;
-_constexpr _bool TIME_WITHOUT_SECONDS = false;
+p_constexpr p_bool TIME_WITH_SECONDS = true;
+p_constexpr p_bool TIME_WITHOUT_SECONDS = false;
 
 
 struct Time
@@ -55,8 +55,8 @@ struct Time
    _tnum second = TNUM_ZERO;
    TimeType type;
 
-   _str toString() const;
-   void initClock(const _bool withSeconds, const _tnum recentChange);
+   p_str toString() const;
+   void initClock(const p_bool withSeconds, const _tnum recentChange);
 
    void addYears(const _tnum y);
    void addMonths(const _tnum m);
@@ -75,34 +75,34 @@ struct Time
 
    Time toDate() const;
    _tnum getWeekDay() const;
-   _bool equalsExactly(const Time& tim) const;
+   p_bool equalsExactly(const Time& tim) const;
    void setValue(const Time& tim);
    void clear();
 
    Time& operator += (const Period& per);
    Time& operator -= (const Period& per);
 
-   _bool operator == (const Time& tim) const;
-   _bool operator != (const Time& tim) const;
-   _bool operator < (const Time& tim) const;
-   _bool operator > (const Time& tim) const;
-   _bool operator <= (const Time& tim) const;
-   _bool operator >= (const Time& tim) const;
+   p_bool operator == (const Time& tim) const;
+   p_bool operator != (const Time& tim) const;
+   p_bool operator < (const Time& tim) const;
+   p_bool operator > (const Time& tim) const;
+   p_bool operator <= (const Time& tim) const;
+   p_bool operator >= (const Time& tim) const;
 
    Period operator - (const Time& tim) const;
 
 };
 
 _tnum toTimeNumber(const Number& num);
-_str monthToString(const _tnum month);
-_str weekdayToString(const _tnum wday);
+p_str monthToString(const _tnum month);
+p_str weekdayToString(const _tnum wday);
 
-inline void addTimeUnit(_stream& stream, const _tnum val);
-inline _bool isLeapYear(const _tnum year);
+inline void addTimeUnit(p_stream& stream, const _tnum val);
+inline p_bool isLeapYear(const _tnum year);
 _tnum daysInMonth(const _tnum month, const _tnum year);
 inline Period timeDifference(const Time& min, const Time& max);
 inline _tnum daysInYears(const _tnum min, const _tnum max);
-inline void decrementMonth(Period& p, const Time& t, const _bool addDays);
+inline void decrementMonth(Period& p, const Time& t, const p_bool addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);

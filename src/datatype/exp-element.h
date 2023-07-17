@@ -39,14 +39,14 @@ struct ExpElement
 public:
    ExpElement<T>() = delete;
 
-   ExpElement<T>(const T& cnst, const _int li)
+   ExpElement<T>(const T& cnst, const p_int li)
       : generator(std::make_unique<gen::Constant<T>>(cnst)),
       constant(cnst), type(ElementType::et_Constant), operator_(0), line(li) { };
 
-   ExpElement<T>(const _char op, const _int li)
+   ExpElement<T>(const p_char op, const p_int li)
       : generator(), operator_(op), type(ElementType::et_Operator), constant(T()), line(li) { };
 
-   ExpElement<T>(_genptr<T>& gen, const _int li)
+   ExpElement<T>(_genptr<T>& gen, const p_int li)
       : generator(std::move(gen)), type(ElementType::et_Generator), constant(T()), operator_(0), line(li) { };
 
    ExpElement<T>(ExpElement<T>& element)
@@ -64,7 +64,7 @@ public:
       }
    };
 
-   void reinit(const T& cnst, const _int li)
+   void reinit(const T& cnst, const p_int li)
    {
       this->type = ElementType::et_Constant;
       this->constant = cnst;
@@ -72,7 +72,7 @@ public:
       this->line = li;
    }
 
-   void reinit(_genptr<T>& gen, const _int li)
+   void reinit(_genptr<T>& gen, const p_int li)
    {
       this->type = ElementType::et_Generator;
       this->generator = std::move(gen);
@@ -91,12 +91,12 @@ public:
       }
    }
 
-   _char operator_;
+   p_char operator_;
    T constant;
    _genptr<T> generator;
 
    ElementType type;
-   _int line;
+   p_int line;
 };
 
 }

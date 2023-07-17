@@ -21,92 +21,92 @@ namespace perun2::gen
 {
 
 
-ConcatString_2::ConcatString_2(_genptr<_str>& v1, _genptr<_str>& v2) 
+ConcatString_2::ConcatString_2(_genptr<p_str>& v1, _genptr<p_str>& v2) 
    : value1(std::move(v1)), value2(std::move(v2)) { };
 
-ConcatString_3::ConcatString_3(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3) 
+ConcatString_3::ConcatString_3(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3) 
    : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)) { };
 
-ConcatString_4::ConcatString_4(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4) 
+ConcatString_4::ConcatString_4(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3, _genptr<p_str>& v4) 
    : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)), value4(std::move(v4)) { };
 
-ConcatString_5::ConcatString_5(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4, _genptr<_str>& v5) 
+ConcatString_5::ConcatString_5(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3, _genptr<p_str>& v4, _genptr<p_str>& v5) 
    : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)), value4(std::move(v4)), value5(std::move(v5)) { };
 
-ConcatString_6::ConcatString_6(_genptr<_str>& v1, _genptr<_str>& v2, _genptr<_str>& v3, _genptr<_str>& v4, _genptr<_str>& v5, _genptr<_str>& v6) 
+ConcatString_6::ConcatString_6(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3, _genptr<p_str>& v4, _genptr<p_str>& v5, _genptr<p_str>& v6) 
    : value1(std::move(v1)), value2(std::move(v2)), value3(std::move(v3)), value4(std::move(v4)), value5(std::move(v5)), value6(std::move(v6)) { };
 
 
-_str ConcatString_2::getValue()
+p_str ConcatString_2::getValue()
 {
    return str(this->value1->getValue(), this->value2->getValue());
 };
 
-_str ConcatString_3::getValue()
+p_str ConcatString_3::getValue()
 {
    return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue());
 };
 
-_str ConcatString_4::getValue()
+p_str ConcatString_4::getValue()
 {
    return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue(),
               this->value4->getValue());
 };
 
-_str ConcatString_5::getValue()
+p_str ConcatString_5::getValue()
 {
    return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue(),
               this->value4->getValue(), this->value5->getValue());
 };
 
-_str ConcatString_6::getValue()
+p_str ConcatString_6::getValue()
 {
    return str(this->value1->getValue(), this->value2->getValue(), this->value3->getValue(),
               this->value4->getValue(), this->value5->getValue(), this->value6->getValue());
 };
 
 
-ConcatString_Multi::ConcatString_Multi(std::vector<_genptr<_str>>& val)
+ConcatString_Multi::ConcatString_Multi(std::vector<_genptr<p_str>>& val)
 {
    langutil::transferUniquePtrs(val, this->values);
 };
 
-_str ConcatString_Multi::getValue()
+p_str ConcatString_Multi::getValue()
 {
-   _stream ss;
+   p_stream ss;
 
-   for (const _genptr<_str>& val : this->values) {
+   for (const _genptr<p_str>& val : this->values) {
       ss << val->getValue();
    }
 
    return ss.str();
 }
 
-_str StringBinary::getValue()
+p_str StringBinary::getValue()
 {
    return condition->getValue()
       ? value->getValue()
-      : _str();
+      : p_str();
 }
 
 LocationReference::LocationReference(p_perun2& p2)
    : context(*p2.contexts.getLocationContext()) { };
 
-_str LocationReference::getValue()
+p_str LocationReference::getValue()
 {
    return this->context.location->value;
 }
 
-RelativeLocation::RelativeLocation(_genptr<_str>& val, p_perun2& p2, const _int retr)
+RelativeLocation::RelativeLocation(_genptr<p_str>& val, p_perun2& p2, const p_int retr)
    : value(std::move(val)), context(*p2.contexts.getLocationContext()), retreats(retr) { };
 
-_str RelativeLocation::getValue()
+p_str RelativeLocation::getValue()
 {
    if (this->retreats == 0) {
       return str(this->context.location->value, OS_SEPARATOR, this->value->getValue());
    }
 
-   _str base = this->context.location->value;
+   p_str base = this->context.location->value;
    os_retreatPath(base, this->retreats);
 
    if (base.empty()) {
@@ -116,51 +116,51 @@ _str RelativeLocation::getValue()
    return str(base, OS_SEPARATOR, this->value->getValue());
 }
 
-RetreatedPath::RetreatedPath(_genptr<_str>& val, const _int retr)
+RetreatedPath::RetreatedPath(_genptr<p_str>& val, const p_int retr)
    : value(std::move(val)), reatreats(retr) { };
 
-_str RetreatedPath::getValue()
+p_str RetreatedPath::getValue()
 {
-   _str v = this->value->getValue();
+   p_str v = this->value->getValue();
    os_retreatPath(v, this->reatreats);
    return v;
 }
 
-_str CharAtIndex::getValue()
+p_str CharAtIndex::getValue()
 {
-   const _str v = value->getValue();
+   const p_str v = value->getValue();
 
    if (v.empty()) {
       return v;
    }
 
-   _nint n = index->getValue().toInt();
+   p_nint n = index->getValue().toInt();
 
    if (n < NINT_ZERO) {
       n += v.size();
    }
 
-   return (n >= NINT_ZERO && n < static_cast<_nint>(v.size()))
-      ? toStr(v[static_cast<_size>(n)])
-      : _str();
+   return (n >= NINT_ZERO && n < static_cast<p_nint>(v.size()))
+      ? toStr(v[static_cast<p_size>(n)])
+      : p_str();
 }
 
-_str DefinitionElement::getValue()
+p_str DefinitionElement::getValue()
 {
-   _nint n = index->getValue().toInt();
+   p_nint n = index->getValue().toInt();
 
    if (n < NINT_ZERO) {
-      return _str();
+      return p_str();
    }
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
          this->definition.reset();
-         return _str();
+         return p_str();
       }
 
       if (n == NINT_ZERO) {
-         const _str result = this->definition->getValue();
+         const p_str result = this->definition->getValue();
          this->definition.reset();
          return result;
       }
@@ -168,7 +168,7 @@ _str DefinitionElement::getValue()
       n--;
    }
 
-   return _str();
+   return p_str();
 }
 
 }

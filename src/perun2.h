@@ -33,10 +33,10 @@ namespace perun2
 
 struct Contexts;
 
-_constexpr int EXITCODE_OK =             0;
-_constexpr int EXITCODE_RUNTIME_ERROR =  1;
-_constexpr int EXITCODE_SYNTAX_ERROR =   2;
-_constexpr int EXITCODE_CLI_ERROR =      3;
+p_constexpr int EXITCODE_OK =             0;
+p_constexpr int EXITCODE_RUNTIME_ERROR =  1;
+p_constexpr int EXITCODE_SYNTAX_ERROR =   2;
+p_constexpr int EXITCODE_CLI_ERROR =      3;
 
 
 enum State
@@ -65,7 +65,7 @@ public:
    p_perun2() = delete;
    p_perun2(const Arguments& args);
    ~p_perun2() noexcept;
-   _bool run();
+   p_bool run();
    void terminate();
 
    const Arguments& arguments;
@@ -81,20 +81,20 @@ public:
    Logger logger;
    Cache cache;
 
-   _bool isRunning() const;
-   _bool isNotRunning() const;
+   p_bool isRunning() const;
+   p_bool isNotRunning() const;
 
 private:
    _comptr commands;
    std::vector<Token> tokens;
 
-   _bool preParse();
-   _bool parse();
-   _bool postParse();
-   _bool runCommands();
+   p_bool preParse();
+   p_bool parse();
+   p_bool postParse();
+   p_bool runCommands();
 
 // this initialization is global and performed only once for all struct instances
-   static _bool initialized;
+   static p_bool initialized;
    static void init();
 };
 
@@ -106,15 +106,15 @@ private:
 struct Perun2
 {
 public:
-   Perun2(const _int argc, _char* const argv[]);
-   Perun2(const _str& location, const _str& code);
-   Perun2(const _str& location, const _str& code, const _flags flags);
+   Perun2(const p_int argc, p_char* const argv[]);
+   Perun2(const p_str& location, const p_str& code);
+   Perun2(const p_str& location, const p_str& code, const _flags flags);
 
    Perun2() = delete;
    Perun2(Perun2 const&) = delete;
    Perun2& operator= (Perun2 const&) = delete;
 
-   _bool run();
+   p_bool run();
    int getExitCode() const;
 
 private:

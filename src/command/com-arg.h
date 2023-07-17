@@ -45,22 +45,22 @@ protected:
 struct CS_StringComArg : IterationLoop
 {
 public:
-   CS_StringComArg(_genptr<_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2);
+   CS_StringComArg(_genptr<p_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2);
    void run() override;
 
 private:
-   _genptr<_str> string;
+   _genptr<p_str> string;
 };
 
 
 struct CS_ListComArg : IterationLoop
 {
 public:
-   CS_ListComArg(_genptr<_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2);
+   CS_ListComArg(_genptr<p_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2);
    void run() override;
 
 private:
-   _genptr<_list> list;
+   _genptr<p_list> list;
 };
 
 

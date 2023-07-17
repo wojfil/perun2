@@ -41,7 +41,7 @@ namespace perun2
       Variable(Variable const&) = delete;
       Variable& operator= (Variable const&) = delete;
 
-      _bool isConstant() const override
+      p_bool isConstant() const override
       {
          return this->isConstant_;
       };
@@ -51,7 +51,7 @@ namespace perun2
          return this->value;
       };
 
-      _bool isImmutable() const
+      p_bool isImmutable() const
       {
          return this->type != VarType::vt_User;
       }
@@ -62,7 +62,7 @@ namespace perun2
       }
 
       T value;
-      _bool isConstant_ = false;
+      p_bool isConstant_ = false;
       const VarType type;
    };
 
@@ -78,7 +78,7 @@ namespace perun2
       VariableReference(VariableReference const&) = delete;
       VariableReference& operator= (VariableReference const&) = delete;
 
-      _bool isConstant() const override
+      p_bool isConstant() const override
       {
          return this->variable.isConstant();
       };

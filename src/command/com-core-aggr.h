@@ -50,21 +50,21 @@ private:
 };
 
 
-struct C_AggrCopy_String : C_AggrDelivery<_str>
+struct C_AggrCopy_String : C_AggrDelivery<p_str>
 {
 public:
-   C_AggrCopy_String(Aggregate* aggr, _genptr<_str>& val, p_perun2& p2)
-      : C_AggrDelivery<_str>(aggr, val, p2) {};
+   C_AggrCopy_String(Aggregate* aggr, _genptr<p_str>& val, p_perun2& p2)
+      : C_AggrDelivery<p_str>(aggr, val, p2) {};
 
    void run() override;
 };
 
 
-struct C_AggrCopy_List : C_AggrDelivery<_list>
+struct C_AggrCopy_List : C_AggrDelivery<p_list>
 {
 public:
-   C_AggrCopy_List(Aggregate* aggr, _genptr<_list>& val, p_perun2& p2)
-      : C_AggrDelivery<_list>(aggr, val, p2) {};
+   C_AggrCopy_List(Aggregate* aggr, _genptr<p_list>& val, p_perun2& p2)
+      : C_AggrDelivery<p_list>(aggr, val, p2) {};
 
    void run() override;
 };
@@ -84,30 +84,30 @@ private:
 };
 
 
-struct C_AggrSelect_String : C_AggrDelivery<_str>
+struct C_AggrSelect_String : C_AggrDelivery<p_str>
 {
 public:
-   C_AggrSelect_String(Aggregate* aggr, _genptr<_str>& val, p_perun2& p2)
-      : C_AggrDelivery<_str>(aggr, val, p2) {};
+   C_AggrSelect_String(Aggregate* aggr, _genptr<p_str>& val, p_perun2& p2)
+      : C_AggrDelivery<p_str>(aggr, val, p2) {};
 
    void run() override;
 };
 
 
-struct C_AggrSelect_List : C_AggrDelivery<_list>
+struct C_AggrSelect_List : C_AggrDelivery<p_list>
 {
 public:
-   C_AggrSelect_List(Aggregate* aggr, _genptr<_list>& val, p_perun2& p2)
-      : C_AggrDelivery<_list>(aggr, val, p2) {};
+   C_AggrSelect_List(Aggregate* aggr, _genptr<p_list>& val, p_perun2& p2)
+      : C_AggrDelivery<p_list>(aggr, val, p2) {};
 
    void run() override;
 };
 
 
-void logCopyError(p_perun2& p2, const _str& name);
-void logCopySuccess(p_perun2& p2, const _str& name);
-void logSelectError(p_perun2& p2, const _str& name);
-void logSelectSuccess(p_perun2& p2, const _str& name);
+void logCopyError(p_perun2& p2, const p_str& name);
+void logCopySuccess(p_perun2& p2, const p_str& name);
+void logSelectError(p_perun2& p2, const p_str& name);
+void logSelectSuccess(p_perun2& p2, const p_str& name);
 
 
 template <typename T>
@@ -125,21 +125,21 @@ protected:
 };
 
 
-struct C_Copy_String : C_Aggr<_str>
+struct C_Copy_String : C_Aggr<p_str>
 {
 public:
-   C_Copy_String(_genptr<_str>& val, p_perun2& p2)
-      : C_Aggr<_str>(val, p2) {};
+   C_Copy_String(_genptr<p_str>& val, p_perun2& p2)
+      : C_Aggr<p_str>(val, p2) {};
 
    void run() override;
 };
 
 
-struct C_Copy_List : C_Aggr<_list>
+struct C_Copy_List : C_Aggr<p_list>
 {
 public:
-   C_Copy_List(_genptr<_list>& val, p_perun2& p2)
-      : C_Aggr<_list>(val, p2) {};
+   C_Copy_List(_genptr<p_list>& val, p_perun2& p2)
+      : C_Aggr<p_list>(val, p2) {};
 
    void run() override;
 };
@@ -149,7 +149,7 @@ struct Selector
 {
 public:
    Selector() = delete;
-   Selector(_str& pth, _str& prnt, p_perun2& p2)
+   Selector(p_str& pth, p_str& prnt, p_perun2& p2)
       : path(pth), parent(prnt), perun2(p2) { };
 
    void reset();
@@ -157,39 +157,39 @@ public:
    void run();
 
 private:
-   std::map<_str, _set> selectPaths;
-   _str prevParent;
+   std::map<p_str, _set> selectPaths;
+   p_str prevParent;
    _set* prevSet;
-   _bool isFirst = true;
+   p_bool isFirst = true;
 
-   _str& path;
-   _str& parent;
+   p_str& path;
+   p_str& parent;
 
    p_perun2& perun2;
 };
 
 
-struct C_Select_String : C_Aggr<_str>
+struct C_Select_String : C_Aggr<p_str>
 {
 public:
-   C_Select_String(_genptr<_str>& val, p_perun2& p2)
-      : C_Aggr<_str>(val, p2) {};
+   C_Select_String(_genptr<p_str>& val, p_perun2& p2)
+      : C_Aggr<p_str>(val, p2) {};
 
    void run() override;
 };
 
 
-struct C_Select_List : C_Aggr<_list>
+struct C_Select_List : C_Aggr<p_list>
 {
 public:
-   C_Select_List(_genptr<_list>& val, p_perun2& p2)
-      : C_Aggr<_list>(val, p2), 
+   C_Select_List(_genptr<p_list>& val, p_perun2& p2)
+      : C_Aggr<p_list>(val, p2), 
         selector(path, parent, p2) { };
    void run() override;
 
 private:
-   _str path;
-   _str parent;
+   p_str path;
+   p_str parent;
    Selector selector;
 };
 
@@ -209,8 +209,8 @@ private:
    _defptr value;
    p_perun2& perun2;
    
-   _str path;
-   _str parent;
+   p_str path;
+   p_str parent;
    Selector selector;
 };
 

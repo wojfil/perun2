@@ -23,26 +23,26 @@ namespace perun2
 
 union NumberValue
 {
-   _nint i;
-   _ndouble d;
+   p_nint i;
+   p_ndouble d;
 
-   NumberValue(const _nint i) : i(i) {};
-   NumberValue(const _ndouble d) : d(d) {};
+   NumberValue(const p_nint i) : i(i) {};
+   NumberValue(const p_ndouble d) : d(d) {};
 };
 
 
 struct Number
 {
    Number();
-   Number(const _int val);
-   Number(const _nint val);
-   Number(const _ndouble val);
+   Number(const p_int val);
+   Number(const p_nint val);
+   Number(const p_ndouble val);
 
-   _str toString() const;
-   _nint toInt() const;
-   _bool isZero() const;
-   _bool isOne() const;
-   _bool isMinusOne() const;
+   p_str toString() const;
+   p_nint toInt() const;
+   p_bool isZero() const;
+   p_bool isOne() const;
+   p_bool isMinusOne() const;
    void makeOpposite();
    void setToZero();
    void setToMinusOne();
@@ -64,17 +64,17 @@ struct Number
 
    Number operator - () const;
 
-   _bool operator == (const Number& num) const;
-   _bool operator != (const Number& num) const;
-   _bool operator < (const Number& num) const;
-   _bool operator > (const Number& num) const;
-   _bool operator <= (const Number& num) const;
-   _bool operator >= (const Number& num) const;
+   p_bool operator == (const Number& num) const;
+   p_bool operator != (const Number& num) const;
+   p_bool operator < (const Number& num) const;
+   p_bool operator > (const Number& num) const;
+   p_bool operator <= (const Number& num) const;
+   p_bool operator >= (const Number& num) const;
 
    // number consists of a value (int or double)
    // and a boolean flag indicating current state
    NumberValue value;
-   _bool isDouble;
+   p_bool isDouble;
 };
 
 }

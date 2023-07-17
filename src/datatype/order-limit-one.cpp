@@ -32,7 +32,7 @@ namespace perun2::gen
       this->valueTaken = false;
    }
 
-   _bool OrderByLimitOne::hasNext()
+   p_bool OrderByLimitOne::hasNext()
    {
       if (this->valueTaken) {
          this->valueTaken = false;

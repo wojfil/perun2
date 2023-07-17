@@ -26,9 +26,9 @@
 namespace perun2::parse
 {
 
-_bool parseList(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseList(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -45,10 +45,10 @@ _bool parseList(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
 
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {
-         return parseListed<_str>(result, tks, p2);
+         return parseListed<p_str>(result, tks, p2);
       }
 
-      if (parseBinary<_list>(result, tks, p2) || parseTernary<_list>(result, tks, p2)) {
+      if (parseBinary<p_list>(result, tks, p2) || parseTernary<p_list>(result, tks, p2)) {
          return true;
       }
    }
@@ -61,23 +61,23 @@ _bool parseList(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size firstKeywordId = tks.getFilterKeywordId(p2);
+   const p_size firstKeywordId = tks.getFilterKeywordId(p2);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
-   _genptr<_list> base;
+   _genptr<p_list> base;
    if (!parse(p2, tks2, base)) {
       return false;
    }
 
-   const _int kw = firstKeywordId - tks.getStart() + 1;
-   const _int start = tks.getStart() + kw;
-   const _int length = tks.getLength() - kw;
+   const p_int kw = firstKeywordId - tks.getStart() + 1;
+   const p_int start = tks.getStart() + kw;
+   const p_int length = tks.getLength() - kw;
    const Tokens tks3(tks, start, length);
    std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(p2);
-   const _size flength = filterTokens.size();
+   const p_size flength = filterTokens.size();
 
-   for (_size i = 0; i < flength; i++) {
+   for (p_size i = 0; i < flength; i++) {
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
       const Keyword& kw = tsf.value.keyword.k;
@@ -90,7 +90,7 @@ static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, p_perun2
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
-            _genptr<_list> prev = std::move(base);
+            _genptr<p_list> prev = std::move(base);
             base = std::make_unique<gen::ListFilter_Final>(prev, num);
             break;
          }
@@ -106,7 +106,7 @@ static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, p_perun2
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
-            _genptr<_list> prev = std::move(base);
+            _genptr<p_list> prev = std::move(base);
 
             switch(kw) {
                case Keyword::kw_Every: {
@@ -129,14 +129,14 @@ static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, p_perun2
             _fcptr context = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(context.get());
 
-            _genptr<_bool> boo;
+            _genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
                throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
             }
 
             p2.contexts.retreatFileContext();
 
-            _genptr<_list> prev = std::move(base);
+            _genptr<p_list> prev = std::move(base);
             base = std::make_unique<gen::ListFilter_Where>(boo, prev, context, p2);
             break;
          }
@@ -149,7 +149,7 @@ static _bool parseListFilter(_genptr<_list>& result, const Tokens& tks, p_perun2
             parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
 
             p2.contexts.retreatFileContext();
-            _genptr<_list> prev = std::move(base);
+            _genptr<p_list> prev = std::move(base);
             base = std::make_unique<gen::OrderBy_List>(prev, context, indices, order, p2);
             break;
          }

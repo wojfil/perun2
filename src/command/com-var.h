@@ -198,14 +198,14 @@ private:
 struct VarCharAssignment: Command
 {
 public:
-   VarCharAssignment(Variable<_str>& var, _genptr<_str>& val, _genptr<_num>& ind)
+   VarCharAssignment(Variable<p_str>& var, _genptr<p_str>& val, _genptr<_num>& ind)
       : variable(var), value(std::move(val)), index(std::move(ind)) { };
 
    void run() override;
 
 private:
-   Variable<_str>& variable;
-   _genptr<_str> value;
+   Variable<p_str>& variable;
+   _genptr<p_str> value;
    _genptr<_num> index;
 };
 
@@ -229,7 +229,7 @@ struct VarTimeUnitChange : Command
 {
 public:
    VarTimeUnitChange(Variable<_tim>& var, _genptr<_num>& val,
-      const Period::PeriodUnit& un, const _bool neg)
+      const Period::PeriodUnit& un, const p_bool neg)
       : variable(var), value(std::move(val)), unit(un), negative(neg) { };
 
    void run() override;
@@ -238,7 +238,7 @@ private:
    Variable<_tim>& variable;
    _genptr<_num> value;
    const Period::PeriodUnit unit;
-   const _bool negative;
+   const p_bool negative;
 };
 
 

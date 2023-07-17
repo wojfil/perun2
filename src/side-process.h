@@ -25,7 +25,7 @@ namespace perun2
 struct SideProcess
 {
 public:
-   _bool running = false;
+   p_bool running = false;
    PROCESS_INFORMATION info;
    
 };

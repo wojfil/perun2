@@ -36,19 +36,19 @@ struct WildcardComparer
 {
 public:
    WildcardComparer() = delete;
-   WildcardComparer(const _str& pat);
-   _bool matches(const _str& val);
+   WildcardComparer(const p_str& pat);
+   p_bool matches(const p_str& val);
 
 protected:
    void clearCharStates();
 
-   virtual _size getMinLength(const _str& pat) const = 0;
-   virtual WildcardCharState checkState(const _size n, const _size m) = 0;
+   virtual p_size getMinLength(const p_str& pat) const = 0;
+   virtual WildcardCharState checkState(const p_size n, const p_size m) = 0;
 
-   const _str pattern;
-   const _size patternLength;
-   _size minLength = 0;
-   _str const* valuePtr = nullptr;
+   const p_str pattern;
+   const p_size patternLength;
+   p_size minLength = 0;
+   p_str const* valuePtr = nullptr;
    std::vector<std::vector<WildcardCharState>> charStates;
 };
 
@@ -59,11 +59,11 @@ struct SimpleWildcardComparer : WildcardComparer
 {
 public:
    SimpleWildcardComparer() = delete;
-   SimpleWildcardComparer(const _str& pat);
+   SimpleWildcardComparer(const p_str& pat);
 
 protected:
-   _size getMinLength(const _str& pat) const override;
-   WildcardCharState checkState(const _size n, const _size m) override;
+   p_size getMinLength(const p_str& pat) const override;
+   WildcardCharState checkState(const p_size n, const p_size m) override;
 };
 
 

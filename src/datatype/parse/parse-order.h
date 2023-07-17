@@ -28,7 +28,7 @@ namespace perun2::parse
 
 
 template <typename T>
-void setOrderUnit(gen::_ordptr& result, _genptr<T>& value, const _bool desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::_ordptr& result, _genptr<T>& value, const p_bool desc, gen::OrderIndices* indices)
 {
    if (result) {
       gen::_ordptr prev = std::move(result);
@@ -41,7 +41,7 @@ void setOrderUnit(gen::_ordptr& result, _genptr<T>& value, const _bool desc, gen
 
 
 template <typename T>
-void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const _bool desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const p_bool desc, gen::OrderIndices* indices)
 {
    if (result) {
       gen::_loptr prev = std::move(result);
@@ -54,7 +54,7 @@ void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const _bool desc, gen:
 
 
 template <typename T2>
-_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, p_perun2& p2)
+p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, p_perun2& p2)
 {
    const Token& first = tks.first();
    
@@ -63,12 +63,12 @@ _bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Toke
       FileContext* fc = p2.contexts.getFileContext();
 
       if (kw == Keyword::kw_Asc) {
-         _genptr<_str> str = std::make_unique<VariableReference<_str>>(fc->this_.get());
+         _genptr<p_str> str = std::make_unique<VariableReference<p_str>>(fc->this_.get());
          setOrderUnit(result, str, false, indices);
          return true;
       }
       else if (kw == Keyword::kw_Desc) {
-         _genptr<_str> str = std::make_unique<VariableReference<_str>>(fc->this_.get());
+         _genptr<p_str> str = std::make_unique<VariableReference<p_str>>(fc->this_.get());
          setOrderUnit(result, str, true, indices);
          return true;
       }
@@ -93,11 +93,11 @@ _bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Toke
       tokensList.emplace_back(tks);
    }
 
-   const _int length = tokensList.size();
+   const p_int length = tokensList.size();
 
-   for (_int i = length - 1; i >= 0; i--) {
+   for (p_int i = length - 1; i >= 0; i--) {
       Tokens& tk = tokensList[i];
-      _bool desc = false;
+      p_bool desc = false;
       const Token last = tk.last();
 
       if (last.type == Token::t_Keyword) {
@@ -119,7 +119,7 @@ _bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Toke
          }
       }
 
-      _genptr<_bool> uboo;
+      _genptr<p_bool> uboo;
       if (parse(p2, tk, uboo)) {
          setOrderUnit(result, uboo, desc, indices);
          continue;
@@ -143,7 +143,7 @@ _bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Toke
          continue;
       }
 
-      _genptr<_str> ustr;
+      _genptr<p_str> ustr;
       if (parse(p2, tk, ustr)) {
          setOrderUnit(result, ustr, desc, indices);
          continue;

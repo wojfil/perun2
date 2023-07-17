@@ -26,9 +26,9 @@
 namespace perun2::parse
 {
 
-_bool parseBool(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseBool(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -38,7 +38,7 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       return false;
    }
 
-   const _bool possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
+   const p_bool possibleBinary = tks.check(TI_HAS_CHAR_QUESTION_MARK);
 
    if (tks.check(TI_IS_POSSIBLE_FUNCTION)) {
       return func::boolFunction(result, tks, p2);
@@ -46,10 +46,10 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
    else if (len >= 2 && !possibleBinary) {
       // build numeric expression (but only if sequence has any operator)
       BracketsInfo bi;
-      const _int end = tks.getEnd();
-      const _int start = tks.getStart();
+      const p_int end = tks.getEnd();
+      const p_int start = tks.getStart();
 
-      for (_int i = start; i <= end; i++) {
+      for (p_int i = start; i <= end; i++) {
          const Token& t = tks.listAt(i);
          if (t.type == Token::t_Keyword && isBoolExpOperator(t) && bi.isBracketFree())
          {
@@ -81,22 +81,22 @@ _bool parseBool(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   return parseTernary<_bool>(result, tks, p2);
+   return parseTernary<p_bool>(result, tks, p2);
 }
 
 
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseBoolExp(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 {
-   std::vector<ExpElement<_bool>> infList; // infix notation list
-   const _int start = tks.getStart();
-   const _int end = tks.getEnd();
-   _int sublen = 0;
+   std::vector<ExpElement<p_bool>> infList; // infix notation list
+   const p_int start = tks.getStart();
+   const p_int end = tks.getEnd();
+   p_int sublen = 0;
    BracketsInfo bi;
 
-   for (_int i = start; i <= end; i++) {
+   for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Keyword) {
          if (isBoolExpOperator(t)) {
@@ -105,23 +105,23 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, p_perun2& p
                sublen++;
             }
             else {
-               const _char ch = toBoolExpOperator(t);
+               const p_char ch = toBoolExpOperator(t);
                if (sublen == 0) {
                   infList.emplace_back(ch, t.line);
                }
                else {
                   if (bi.isBracketFree()) {
                      const Tokens tks2(tks, i - sublen, sublen);
-                     const _int line = tks2.first().line;
+                     const p_int line = tks2.first().line;
 
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-                        const _bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
+                        const p_bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
                         infList.emplace_back(boo, line);
                         infList.emplace_back(ch, line);
                         sublen = 0;
                      }
                      else {
-                        _genptr<_bool> boo;
+                        _genptr<p_bool> boo;
                         if (parse(p2, tks2, boo)) {
                            infList.emplace_back(boo, line);
                            infList.emplace_back(ch, line);
@@ -152,11 +152,11 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, p_perun2& p
       const Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-         const _bool boo = (tks2.first().value.keyword.k == Keyword::kw_True);
+         const p_bool boo = (tks2.first().value.keyword.k == Keyword::kw_True);
          infList.emplace_back(boo, tks2.first().line);
       }
       else {
-         _genptr<_bool> boo;
+         _genptr<p_bool> boo;
          if (parse(p2, tks2, boo)) {
             infList.emplace_back(boo, tks2.first().line);
          }
@@ -173,18 +173,18 @@ static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, p_perun2& p
    return boolExpTree(result, infList);
 }
 
-static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& infList)
+static p_bool boolExpTree(_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& infList)
 {
-   std::vector<ExpElement<_bool>> elements;
-   std::vector<ExpElement<_bool>> temp;
-   const _size len = infList.size();
-   _int brackets = 0;
-   _bool anyNot = false;
+   std::vector<ExpElement<p_bool>> elements;
+   std::vector<ExpElement<p_bool>> temp;
+   const p_size len = infList.size();
+   p_int brackets = 0;
+   p_bool anyNot = false;
 
-   for (_size i = 0; i < len; i++) {
-      ExpElement<_bool>& e = infList[i];
+   for (p_size i = 0; i < len; i++) {
+      ExpElement<p_bool>& e = infList[i];
       if (e.type == ElementType::et_Operator) {
-         const _char op = e.operator_;
+         const p_char op = e.operator_;
          switch (op) {
             case CHAR_OPENING_ROUND_BRACKET: {
                brackets++;
@@ -196,7 +196,7 @@ static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>&
             case CHAR_CLOSING_ROUND_BRACKET: {
                brackets--;
                if (brackets == 0) {
-                  _genptr<_bool> res;
+                  _genptr<p_bool> res;
 
                   if (!boolExpTree(res, temp)) {
                      return false;
@@ -240,15 +240,15 @@ static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>&
       : boolExpTreeMerge(result, elements);
 }
 
-static _bool boolExpIntegrateNegations(_genptr<_bool>& result,
-   std::vector<ExpElement<_bool>>& elements)
+static p_bool boolExpIntegrateNegations(_genptr<p_bool>& result,
+   std::vector<ExpElement<p_bool>>& elements)
 {
-   std::vector<ExpElement<_bool>> newList;
-   _bool negate = false;
-   const _size len = elements.size();
+   std::vector<ExpElement<p_bool>> newList;
+   p_bool negate = false;
+   const p_size len = elements.size();
 
-   for (_size i = 0; i < len; i++) {
-      ExpElement<_bool>& e = elements[i];
+   for (p_size i = 0; i < len; i++) {
+      ExpElement<p_bool>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
          if (e.operator_ == CHAR_EXCLAMATION_MARK) {
             negate = true;
@@ -260,12 +260,12 @@ static _bool boolExpIntegrateNegations(_genptr<_bool>& result,
       else {
          if (negate) {
             if (e.type == ElementType::et_Constant) {
-               const _bool value = !(e.constant);
+               const p_bool value = !(e.constant);
                newList.emplace_back(value, e.line);
             }
             else {
-               _genptr<_bool> n = std::move(e.generator);
-               _genptr<_bool> no = std::make_unique<gen::Not>(n);
+               _genptr<p_bool> n = std::move(e.generator);
+               _genptr<p_bool> no = std::make_unique<gen::Not>(n);
                newList.emplace_back(no, e.line);
             }
 
@@ -280,31 +280,31 @@ static _bool boolExpIntegrateNegations(_genptr<_bool>& result,
    return boolExpTreeMerge(result, newList);
 }
 
-static _bool boolExpTreeMerge(_genptr<_bool>& result,
-   std::vector<ExpElement<_bool>>& elements)
+static p_bool boolExpTreeMerge(_genptr<p_bool>& result,
+   std::vector<ExpElement<p_bool>>& elements)
 {
-   const _size len = elements.size();
+   const p_size len = elements.size();
    if (len == 1) {
       result = std::move(elements[0].generator);
       return true;
    }
 
-   _genptr<_bool> first = std::move(elements[0].generator);
-   _bool firstIsConstant = first->isConstant();
-   _char op;
+   _genptr<p_bool> first = std::move(elements[0].generator);
+   p_bool firstIsConstant = first->isConstant();
+   p_char op;
 
-   for (_size i = 1; i < len; i++) {
-      ExpElement<_bool>& e = elements[i];
+   for (p_size i = 1; i < len; i++) {
+      ExpElement<p_bool>& e = elements[i];
 
       if (e.type == ElementType::et_Operator) {
          op = e.operator_;
          continue;
       }
 
-      _genptr<_bool> second(std::move(e.generator));
+      _genptr<p_bool> second(std::move(e.generator));
 
       if (firstIsConstant && e.type == ElementType::et_Constant) {
-         _bool value;
+         p_bool value;
 
          switch(op) {
             case CHAR_AMPERSAND: {
@@ -321,11 +321,11 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
             }
          }
 
-         first = std::make_unique<gen::Constant<_bool>>(value);
+         first = std::make_unique<gen::Constant<p_bool>>(value);
          continue;
       }
 
-      _genptr<_bool> prev = std::move(first);
+      _genptr<p_bool> prev = std::move(first);
 
       switch (op) {
          case CHAR_AMPERSAND: {
@@ -349,15 +349,15 @@ static _bool boolExpTreeMerge(_genptr<_bool>& result,
    return true;
 }
 
-static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
+static p_bool isBoolExpComputable(const std::vector<ExpElement<p_bool>>& infList)
 {
-   const _size len = infList.size();
+   const p_size len = infList.size();
    if (len == 0) {
       return false;
    }
 
    // bool expressions can start with only two symbols: not or (
-   const ExpElement<_bool>& first = infList[0];
+   const ExpElement<p_bool>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
       if (!(first.operator_ == CHAR_OPENING_ROUND_BRACKET || first.operator_ == CHAR_EXCLAMATION_MARK)) {
          return false;
@@ -365,17 +365,17 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
    }
 
    // bool expressions can end with only one symbol: )
-   const ExpElement<_bool>& last = infList[len - 1];
+   const ExpElement<p_bool>& last = infList[len - 1];
    if (last.type == ElementType::et_Operator) {
       if (last.operator_ != CHAR_CLOSING_ROUND_BRACKET) {
          return false;
       }
    }
 
-   for (_size i = 1; i < len; i++) {
-      const ExpElement<_bool>& prev = infList[i - 1];
-      const ExpElement<_bool>& curr = infList[i];
-      const _bool cop = curr.type == ElementType::et_Operator;
+   for (p_size i = 1; i < len; i++) {
+      const ExpElement<p_bool>& prev = infList[i - 1];
+      const ExpElement<p_bool>& curr = infList[i];
+      const p_bool cop = curr.type == ElementType::et_Operator;
 
       if (prev.type == ElementType::et_Operator) {
          switch (prev.operator_) {
@@ -430,7 +430,7 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList)
    return true;
 }
 
-_bool isBoolExpOperator(const Token& tk)
+p_bool isBoolExpOperator(const Token& tk)
 {
    switch (tk.value.keyword.k) {
       case Keyword::kw_And:
@@ -443,7 +443,7 @@ _bool isBoolExpOperator(const Token& tk)
    }
 }
 
-static _char toBoolExpOperator(const Token& tk)
+static p_char toBoolExpOperator(const Token& tk)
 {
    switch (tk.value.keyword.k) {
       case Keyword::kw_And:
@@ -460,7 +460,7 @@ static _char toBoolExpOperator(const Token& tk)
 }
 
 template <typename T>
-static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
+static p_bool parseIn_Unit(_genptr<p_bool>& result, const p_bool negated,
    const std::pair<Tokens, Tokens>& pair, p_perun2& p2)
 {
    _genptr<T> valLeft;
@@ -487,13 +487,13 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
    if (parse(p2, pair.second, valRight)) {
       if (valRight->isConstant()) {
          const std::vector<T> vs = valRight->getValue();
-         _genptr<_bool> in = std::make_unique<gen::InConstList<T>>(valLeft, vs);
+         _genptr<p_bool> in = std::make_unique<gen::InConstList<T>>(valLeft, vs);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
       }
       else {
-         _genptr<_bool> in = std::make_unique<gen::InList<T>>(valLeft, valRight);
+         _genptr<p_bool> in = std::make_unique<gen::InList<T>>(valLeft, valRight);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
@@ -506,59 +506,59 @@ static _bool parseIn_Unit(_genptr<_bool>& result, const _bool negated,
    }
 }
 
-static void leftInTimeException(const Token& tk, const _str& varMember,
-   const std::pair<Tokens, Tokens>& pair, const _bool negated, p_perun2& p2)
+static void leftInTimeException(const Token& tk, const p_str& varMember,
+   const std::pair<Tokens, Tokens>& pair, const p_bool negated, p_perun2& p2)
 {
    const Token& first = pair.first.first();
 
    if (negated) {
-      const _str v1 = str(first.getOriginString(p2), L" not in ", tk.getOriginString(p2));
-      const _str v2 = str(first.getOriginString(p2),
+      const p_str v1 = str(first.getOriginString(p2), L" not in ", tk.getOriginString(p2));
+      const p_str v2 = str(first.getOriginString(p2),
          CHAR_DOT, varMember, L" != ", tk.getOriginString(p2));
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
    }
    else {
-      const _str v1 = str(first.getOriginString(p2), L" in ", tk.getOriginString(p2));
-      const _str v2 = str(first.getOriginString(p2),
+      const p_str v1 = str(first.getOriginString(p2), L" in ", tk.getOriginString(p2));
+      const p_str v2 = str(first.getOriginString(p2),
          CHAR_DOT, varMember, L" = ", tk.getOriginString(p2));
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
    }
 }
 
-static void rightInTimeException(const Token& tk, const _str& varMember,
-   const std::pair<Tokens, Tokens>& pair, const _bool negated, p_perun2& p2)
+static void rightInTimeException(const Token& tk, const p_str& varMember,
+   const std::pair<Tokens, Tokens>& pair, const p_bool negated, p_perun2& p2)
 {
    const Token& first = pair.second.first();
 
    if (negated) {
-      const _str v1 = str(tk.getOriginString(p2) , L" not in ", first.getOriginString(p2));
-      const _str v2 = str(tk.getOriginString(p2), L" != ", first.getOriginString(p2),
+      const p_str v1 = str(tk.getOriginString(p2) , L" not in ", first.getOriginString(p2));
+      const p_str v2 = str(tk.getOriginString(p2), L" != ", first.getOriginString(p2),
          CHAR_DOT, varMember);
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
    }
    else {
-      const _str v1 = str(tk.getOriginString(p2), L" in ", first.getOriginString(p2));
-      const _str v2 = str(tk.getOriginString(p2), L" = ", first.getOriginString(p2),
+      const p_str v1 = str(tk.getOriginString(p2), L" in ", first.getOriginString(p2));
+      const p_str v2 = str(tk.getOriginString(p2), L" = ", first.getOriginString(p2),
          CHAR_DOT, varMember);
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
    }
 }
 
-static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, const _bool negated, p_perun2& p2)
+static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, const p_bool negated, p_perun2& p2)
 {
    const Token& f1 = pair.first.first();
    const Token& f2 = pair.second.first();
 
-   const _bool leftTimeVar = pair.first.getLength() == 1 && f1.isWord(STRINGS_TIME_VAR, p2);
-   const _bool rightTimeVar = pair.second.getLength() == 1 && f2.isWord(STRINGS_TIME_VAR, p2);
+   const p_bool leftTimeVar = pair.first.getLength() == 1 && f1.isWord(STRINGS_TIME_VAR, p2);
+   const p_bool rightTimeVar = pair.second.getLength() == 1 && f2.isWord(STRINGS_TIME_VAR, p2);
 
    // check cases when left side is a time variable (creation, modification...)
    if (leftTimeVar)
    {
       if (pair.second.check(TI_HAS_CHAR_COMMA)) {
          const std::vector<Tokens> elements = pair.second.splitBySymbol(CHAR_COMMA);
-         const _size elen = elements.size();
-         for (_size i = 0; i < elen; i++) {
+         const p_size elen = elements.size();
+         for (p_size i = 0; i < elen; i++) {
             const Tokens& t = elements[i];
             if (t.getLength() == 1) {
                const Token& tf = t.first();
@@ -594,8 +594,8 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
    {
       if (pair.first.check(TI_HAS_CHAR_COMMA)) {
          const std::vector<Tokens> elements = pair.first.splitBySymbol(CHAR_COMMA);
-         const _size elen = elements.size();
-         for (_size i = 0; i < elen; i++) {
+         const p_size elen = elements.size();
+         for (p_size i = 0; i < elen; i++) {
             const Tokens& t = elements[i];
             if (t.getLength() == 1) {
                const Token& tf = t.first();
@@ -628,7 +628,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
 }
 
 
-static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseIn(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
@@ -639,7 +639,7 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
 
-   _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
+   p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
 
    if (neg) {
       if (pair.first.getLength() == 1) {
@@ -651,7 +651,7 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
    }
    
    // first: try to build "Number IN NumList"
-   _genptr<_bool> list;
+   _genptr<p_bool> list;
 
    if (parseIn_Unit<_num>(list, neg, pair, p2)) {
       result = std::move(list);
@@ -661,18 +661,18 @@ static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
    checkCommonExceptions_InTime(pair, neg, p2);
 
    // secondary: try to build "Time IN TimList"
-   _genptr<_bool> list2;
+   _genptr<p_bool> list2;
    if (parseInTimList(list2, neg, pair, p2)) {
       result = std::move(list2);
       return true;
    }
 
    // finally: try to build "string IN list"
-   return parseIn_Unit<_str>(result, neg, pair, p2);;
+   return parseIn_Unit<p_str>(result, neg, pair, p2);;
 }
 
 
-static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
+static p_bool parseInTimList(_genptr<p_bool>& result, const bool& negated,
    const std::pair<Tokens, Tokens>& pair, p_perun2& p2)
 {
    _genptr<_tim> tim;
@@ -696,13 +696,13 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    if (parse(p2, pair.second, tlist)) {
       if (tlist->isConstant()) {
          const _tlist vs = tlist->getValue();
-         _genptr<_bool> in = std::make_unique<gen::InConstTimeList>(tim, vs);
+         _genptr<p_bool> in = std::make_unique<gen::InConstTimeList>(tim, vs);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
       }
       else {
-         _genptr<_bool> in = std::make_unique<gen::InList<_tim>>(tim, tlist);
+         _genptr<p_bool> in = std::make_unique<gen::InList<_tim>>(tim, tlist);
          result = negated
             ? std::make_unique<gen::Not>(in)
             : std::move(in);
@@ -715,7 +715,7 @@ static _bool parseInTimList(_genptr<_bool>& result, const bool& negated,
    }
 }
 
-static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseLike(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
@@ -726,7 +726,7 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
 
-   const _bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
+   const p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       if (pair.first.getLength() == 1) {
          throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
@@ -736,18 +736,18 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       pair.first.trimRight();
    }
 
-   _genptr<_str> value;
+   _genptr<p_str> value;
    if (!parse(p2, pair.first, value)) {
       return false;
    }
 
-   _genptr<_str> pattern;
+   _genptr<p_str> pattern;
    if (parse(p2, pair.second, pattern)) {
       if (pattern->isConstant()) {
-         const _str cnst = pattern->getValue();
+         const p_str cnst = pattern->getValue();
 
          if (neg) {
-            _genptr<_bool> b = std::make_unique<gen::LikeConst>(value, cnst);
+            _genptr<p_bool> b = std::make_unique<gen::LikeConst>(value, cnst);
             result = std::make_unique<gen::Not>(b);
          }
          else {
@@ -758,7 +758,7 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
       }
 
       if (neg) {
-         _genptr<_bool> b = std::make_unique<gen::Like>(value, pattern);
+         _genptr<p_bool> b = std::make_unique<gen::Like>(value, pattern);
          result = std::make_unique<gen::Not>(b);
       }
       else {
@@ -772,12 +772,12 @@ static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
    }
 }
 
-static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseComparisons(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 {
    BracketsInfo bi;
-   const _int end = tks.getEnd();
+   const p_int end = tks.getEnd();
 
-   for (_int i = tks.getStart(); i <= end; i++) {
+   for (p_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol && bi.isBracketFree()) {
          switch (t.value.ch) {
@@ -796,7 +796,7 @@ static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, p_perun
 }
 
 template <typename T>
-static _bool comparison(_genptr<_bool>& result, _genptr<T>& val1,
+static p_bool comparison(_genptr<p_bool>& result, _genptr<T>& val1,
    _genptr<T>& val2, const gen::CompType& ct)
 {
    switch (ct) {
@@ -833,7 +833,7 @@ static _bool comparison(_genptr<_bool>& result, _genptr<T>& val1,
 
 
 template <typename T>
-_bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
+p_bool parseComparisonUnit(_genptr<p_bool>& result, const Tokens& left,
    const Tokens& right, const gen::CompType& ct, p_perun2& p2)
 {
    _genptr<T> v1;
@@ -846,17 +846,17 @@ _bool parseComparisonUnit(_genptr<_bool>& result, const Tokens& left,
 }
 
 
-static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& right, const _char sign, p_perun2& p2)
+static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
 {
    const Token& t1 = left.first();
    const Token& t2 = right.first();
 
-   const _bool isWeek1 = t1.isWeekDay();
-   const _bool isWeek2 = t2.isWeekDay();
-   const _bool isMonth1 = t1.isMonth();
-   const _bool isMonth2 = t2.isMonth();
-   const _bool isVar1 = t1.isWord(STRINGS_TIME_VAR, p2);
-   const _bool isVar2 = t2.isWord(STRINGS_TIME_VAR, p2);
+   const p_bool isWeek1 = t1.isWeekDay();
+   const p_bool isWeek2 = t2.isWeekDay();
+   const p_bool isMonth1 = t1.isMonth();
+   const p_bool isMonth2 = t2.isMonth();
+   const p_bool isVar1 = t1.isWord(STRINGS_TIME_VAR, p2);
+   const p_bool isVar2 = t2.isWord(STRINGS_TIME_VAR, p2);
    
    if (isVar1 && (isWeek2 || isMonth2)) {
       throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
@@ -869,11 +869,11 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
          (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"'"), t1.line);
    }
 
-   const _bool isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
-   const _bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
+   const p_bool isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
+   const p_bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
 
    if (isVar1 && isInteger2) {
-      const _nint nm = t2.value.num.n.value.i;
+      const p_nint nm = t2.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
          throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", toStr(nm),
             L"', you should write '", t1.getOriginString(p2), L".year ", toStr(sign), L" ", toStr(nm), L"'"), t1.line);
@@ -884,7 +884,7 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
       }
    }
    else if (isInteger1 && isVar2) {
-      const _nint nm = t1.value.num.n.value.i;
+      const p_nint nm = t1.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
          throw SyntaxError(str(L"instead of '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2),
             L"', you should write '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".year'"), t1.line);
@@ -897,7 +897,7 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
 }
 
 
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, p_perun2& p2)
+static p_bool parseComparison(_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2)
 {
    gen::CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -911,11 +911,11 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
    }
 
    // try to parse comparison for every singular data type
-   if (parseComparisonUnit<_bool>(result, left, right, ct, p2)
+   if (parseComparisonUnit<p_bool>(result, left, right, ct, p2)
     || parseComparisonUnit<_num>(result, left, right, ct, p2)
     || parseComparisonUnit<_per>(result, left, right, ct, p2)
     || parseComparisonUnit<_tim>(result, left, right, ct, p2)
-    || parseComparisonUnit<_str>(result, left, right, ct, p2)) {
+    || parseComparisonUnit<p_str>(result, left, right, ct, p2)) {
       return true;
    }
 
@@ -923,8 +923,8 @@ static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _c
    return parseCollectionComparisons(result, left, right, ct, p2);
 }
 
-_bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& list, const gen::CompType& ct,
-   const _bool reversed, p_perun2& p2)
+p_bool comparisonDefList(_genptr<p_bool>& result, _defptr& def, _genptr<p_list>& list, const gen::CompType& ct,
+   const p_bool reversed, p_perun2& p2)
 {
    switch (ct) {
       case gen::ct_Equals: {
@@ -991,7 +991,7 @@ _bool comparisonDefList(_genptr<_bool>& result, _defptr& def, _genptr<_list>& li
 
 
 template <typename T>
-_bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
+p_bool comparisonCollections(_genptr<p_bool>& result, const Tokens& left,
    const Tokens& right, const gen::CompType& ct, p_perun2& p2)
 {
    _genptr<std::vector<T>> leftValue;
@@ -1034,7 +1034,7 @@ _bool comparisonCollections(_genptr<_bool>& result, const Tokens& left,
 
 
 template <typename T>
-_bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, const Tokens& right,
+p_bool comparisonCollectionValue(_genptr<p_bool>& result, const Tokens& left, const Tokens& right,
    const gen::CompType& ct, p_perun2& p2)
 {
    _genptr<T> leftValue;
@@ -1117,13 +1117,13 @@ _bool comparisonCollectionValue(_genptr<_bool>& result, const Tokens& left, cons
    return false;
 }
 
-static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
+static p_bool parseCollectionComparisons(_genptr<p_bool>& result, const Tokens& left,
    const Tokens& right, const gen::CompType& ct, p_perun2& p2)
 {
    _defptr leftDef;
    _defptr rightDef;
-   const _bool hasLeftDef = parse(p2, left, leftDef);
-   const _bool hasRightDef = parse(p2, right, rightDef);
+   const p_bool hasLeftDef = parse(p2, left, leftDef);
+   const p_bool hasRightDef = parse(p2, right, rightDef);
 
    // special case situations
    // when definition is compared with other data types or with another definition
@@ -1161,13 +1161,13 @@ static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& le
       }
 
       if (hasLeftDef) {
-         _genptr<_list> rightList;
+         _genptr<p_list> rightList;
          return parse(p2, right, rightList)
             ? comparisonDefList(result, leftDef, rightList, ct, false, p2)
             : false;
       }
       else {
-         _genptr<_list> leftList;
+         _genptr<p_list> leftList;
          return parse(p2, left, leftList)
             ? comparisonDefList(result, rightDef, leftList, ct, true, p2)
             : false;
@@ -1176,16 +1176,16 @@ static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& le
 
    return comparisonCollectionValue<_tim>(result, left, right, ct, p2)
        || comparisonCollectionValue<_num>(result, left, right, ct, p2)
-       || comparisonCollectionValue<_str>(result, left, right, ct, p2)
+       || comparisonCollectionValue<p_str>(result, left, right, ct, p2)
        || comparisonCollections<_tim>(result, left, right, ct, p2)
        || comparisonCollections<_num>(result, left, right, ct, p2)
-       || comparisonCollections<_str>(result, left, right, ct, p2);
+       || comparisonCollections<p_str>(result, left, right, ct, p2);
 }
 
-static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char sign, gen::CompType& ctype)
+static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, gen::CompType& ctype)
 {
    std::pair<Tokens, Tokens> result = tks.divideBySymbol(sign);
-   _bool eq = false;
+   p_bool eq = false;
 
    if (result.first.isEmpty()) {
       if (result.second.isEmpty()) {

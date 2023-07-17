@@ -60,7 +60,7 @@ void Aggregate::copy()
 
    if (this->failedCopy > 0) {
       for (uint32_t i = 0; i < this->failedCopy; i++) {
-         logCopyError(this->perun2, _str());
+         logCopyError(this->perun2, p_str());
       }
       this->failedCopy = 0;
    }
@@ -69,7 +69,7 @@ void Aggregate::copy()
       _set goodPaths;
 
       for (auto it = this->copyPaths.begin(); it != this->copyPaths.end(); it++) {
-         const _str& path = *it;
+         const p_str& path = *it;
          if (os_exists(path)) {
             goodPaths.insert(path);
          }
@@ -110,7 +110,7 @@ void Aggregate::select()
 
    if (failedSelect > 0) {
       for (uint32_t i = 0; i < failedSelect; i++) {
-         logSelectError(this->perun2, _str());
+         logSelectError(this->perun2, p_str());
       }
 
       failedSelect = 0;
@@ -118,11 +118,11 @@ void Aggregate::select()
    }
 
    if (!selectPaths.empty()) {
-      _bool anyGoodPath = false;
+      p_bool anyGoodPath = false;
       _set goodPaths;
 
       for (const auto& pair : selectPaths) {
-         const _str& parent = pair.first;
+         const p_str& parent = pair.first;
          const _set& paths = pair.second;
 
          if (!os_directoryExists(parent)) {
@@ -133,7 +133,7 @@ void Aggregate::select()
          }
 
          for (auto it = paths.begin(); it != paths.end(); it++) {
-            const _str& path = *it;
+            const p_str& path = *it;
             if (os_exists(path)) {
                goodPaths.insert(path);
                anyGoodPath = true;
@@ -166,7 +166,7 @@ void Aggregate::select()
    }
 }
 
-inline _bool Aggregate::has(const _agunit v) const
+inline p_bool Aggregate::has(const _agunit v) const
 {
    return value & v;
 }

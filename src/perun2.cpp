@@ -44,10 +44,10 @@ p_perun2::~p_perun2() noexcept
    Terminator::removePtr(this);
 }
 
-_bool p_perun2::run()
+p_bool p_perun2::run()
 {
    if (this->parseState == ParseState::ps_NotParsed) {
-      const _bool parsed = this->preParse() && this->parse() && this->postParse();
+      const p_bool parsed = this->preParse() && this->parse() && this->postParse();
 
       if (parsed) {
          this->parseState = ParseState::ps_ParsingSuccess;
@@ -74,17 +74,17 @@ void p_perun2::terminate()
    }
 }
 
-_bool p_perun2::isRunning() const
+p_bool p_perun2::isRunning() const
 {
    return this->state == State::s_Running;
 };
 
-_bool p_perun2::isNotRunning() const
+p_bool p_perun2::isNotRunning() const
 {
    return this->state != State::s_Running;
 };
 
-_bool p_perun2::preParse()
+p_bool p_perun2::preParse()
 {
    try {
       this->tokens = tokenize(this->arguments.getCode(), *this);
@@ -105,7 +105,7 @@ _bool p_perun2::preParse()
 };
 
 
-_bool p_perun2::parse()
+p_bool p_perun2::parse()
 {
    try {
       const Tokens tks(this->tokens);
@@ -129,7 +129,7 @@ _bool p_perun2::parse()
    return true;
 };
 
-_bool p_perun2::postParse()
+p_bool p_perun2::postParse()
 {
    this->math.init();
 
@@ -139,7 +139,7 @@ _bool p_perun2::postParse()
    return true;
 };
 
-_bool p_perun2::runCommands()
+p_bool p_perun2::runCommands()
 {
    try {
       this->commands->run();
@@ -153,7 +153,7 @@ _bool p_perun2::runCommands()
    return true;
 };
 
-_bool p_perun2::initialized = false;
+p_bool p_perun2::initialized = false;
 
 void p_perun2::init()
 {
@@ -163,7 +163,7 @@ void p_perun2::init()
    }
 }
 
-Perun2::Perun2(const _int argc, _char* const argv[])
+Perun2::Perun2(const p_int argc, p_char* const argv[])
    : arguments(argc, argv), process(this->arguments)
 {
    if (this->process.exitCode == EXITCODE_CLI_ERROR) {
@@ -171,13 +171,13 @@ Perun2::Perun2(const _int argc, _char* const argv[])
    }
 };
 
-Perun2::Perun2(const _str& location, const _str& code)
+Perun2::Perun2(const p_str& location, const p_str& code)
    : arguments(location, code), process(this->arguments) { };
 
-Perun2::Perun2(const _str& location, const _str& code, const _flags flags)
+Perun2::Perun2(const p_str& location, const p_str& code, const _flags flags)
    : arguments(location, code, flags), process(this->arguments) { };
 
-_bool Perun2::run()
+p_bool Perun2::run()
 {
    return this->process.run();
 }

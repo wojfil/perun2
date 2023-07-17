@@ -62,18 +62,18 @@ public:
 };
 
 
-struct F_Length : Func_1<_str>, Generator<_num>
+struct F_Length : Func_1<p_str>, Generator<_num>
 {
 public:
-   F_Length(_genptr<_str>& a1) : Func_1(a1) { };
+   F_Length(_genptr<p_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
 
-struct F_Number : Func_1<_str>, Generator<_num>
+struct F_Number : Func_1<p_str>, Generator<_num>
 {
 public:
-   F_Number(_genptr<_str>& a1) : Func_1(a1) { };
+   F_Number(_genptr<p_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -85,7 +85,7 @@ public:
    _num getValue() override;
 
 private:
-   _num doublePower(const _ndouble base, const _ndouble exp);
+   _num doublePower(const p_ndouble base, const p_ndouble exp);
 };
 
 struct F_Round : Func_1<_num>, Generator<_num>
@@ -146,18 +146,18 @@ private:
 };
 
 
-struct F_FromBinary : Func_1<_str>, Generator<_num>
+struct F_FromBinary : Func_1<p_str>, Generator<_num>
 {
 public:
-   F_FromBinary(_genptr<_str>& a1) : Func_1(a1) { };
+   F_FromBinary(_genptr<p_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
 
-struct F_FromHex : Func_1<_str>, Generator<_num>
+struct F_FromHex : Func_1<p_str>, Generator<_num>
 {
 public:
-   F_FromHex(_genptr<_str>& a1) : Func_1(a1) { };
+   F_FromHex(_genptr<p_str>& a1) : Func_1(a1) { };
    _num getValue() override;
 };
 
@@ -187,7 +187,7 @@ public:
 
    _num getValue() override
    {
-      return static_cast<_nint>(this->value->getValue().size());
+      return static_cast<p_nint>(this->value->getValue().size());
    }
 
 private:

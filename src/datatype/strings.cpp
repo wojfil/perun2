@@ -17,7 +17,7 @@
 namespace perun2
 {
 
-const _list ROMAN_STRING_LITERALS = 
+const p_list ROMAN_STRING_LITERALS = 
 { 
    L"I", L"IV", L"V", L"IX", L"X", L"XL", L"L", L"XC", L"C", L"CD", L"D", L"CM", L"M",
    (L"I" L"̅" L"V" L"̅"), (L"V" L"̅"), (L"I" L"̅" L"X" L"̅"), (L"X" L"̅"),
@@ -26,7 +26,7 @@ const _list ROMAN_STRING_LITERALS =
    (L"C" L"̅" L"M" L"̅"), (L"M" L"̅")
 };
 
-const _list STRINGS_ASCII = 
+const p_list STRINGS_ASCII = 
 {
    L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ",
    L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ", L" ",
@@ -38,39 +38,39 @@ const _list STRINGS_ASCII =
    L"p", L"q", L"r", L"s", L"t", L"u", L"v", L"w", L"x", L"y", L"z", L"{", L"|", L"}", L"~", L" "
 };
 
-_str toStr(const _char ch) 
+p_str toStr(const p_char ch) 
 {
-   return _str(1, ch);
+   return p_str(1, ch);
 }
 
-_ndouble stringToDouble(const _str& value)
+p_ndouble stringToDouble(const p_str& value)
 {
-   _stream ss(value);
-   _ndouble n;
+   p_stream ss(value);
+   p_ndouble n;
    ss >> n;
    return n;
 }
 
-void toLower(_str& value)
+void toLower(p_str& value)
 {
-   for (_char& ch : value) {
+   for (p_char& ch : value) {
       ch = std::tolower(ch, std::locale(""));
    }
 }
 
-void toUpper(_str& value)
+void toUpper(p_str& value)
 {
-   for (_char& ch : value) {
+   for (p_char& ch : value) {
       ch = std::toupper(ch, std::locale(""));
    }
 }
 
-const _list STRINGS_ALIASES = 
+const p_list STRINGS_ALIASES = 
 {
    STRING_PAINT
 }; 
 
-const _list STRINGS_MONTHS = 
+const p_list STRINGS_MONTHS = 
 {
    STRING_JANUARY, STRING_FEBRUARY, STRING_MARCH,
    STRING_APRIL, STRING_MAY, STRING_JUNE,
@@ -78,26 +78,26 @@ const _list STRINGS_MONTHS =
    STRING_OCTOBER, STRING_NOVEMBER, STRING_DECEMBER
 };
 
-const _list STRINGS_WEEKDAYS = 
+const p_list STRINGS_WEEKDAYS = 
 {
    STRING_MONDAY, STRING_TUESDAY, STRING_WEDNESDAY,
    STRING_THURSDAY, STRING_FRIDAY,
    STRING_SATURDAY, STRING_SUNDAY
 };
 
-const _list STRINGS_PERIOD_SINGLE = 
+const p_list STRINGS_PERIOD_SINGLE = 
 {
    STRING_YEAR, STRING_MONTH, STRING_WEEK, STRING_DAY,
    STRING_HOUR, STRING_MINUTE, STRING_SECOND
 };
 
-const _list STRINGS_PERIOD_MULTI = 
+const p_list STRINGS_PERIOD_MULTI = 
 {
    STRING_YEARS, STRING_MONTHS, STRING_WEEKS, STRING_DAYS,
    STRING_HOURS, STRING_MINUTES, STRING_SECONDS
 };
 
-const _list STRINGS_ATTR = 
+const p_list STRINGS_ATTR = 
 {
    STRING_ACCESS, STRING_ARCHIVE, STRING_CHANGE, STRING_COMPRESSED,
    STRING_CREATION, STRING_DEPTH, STRING_DRIVE, STRING_EMPTY, STRING_EXISTS,
@@ -107,18 +107,18 @@ const _list STRINGS_ATTR =
    STRING_READONLY, STRING_SIZE
 };
 
-const _list STRINGS_TIME_ATTR = 
+const p_list STRINGS_TIME_ATTR = 
 {
    STRING_ACCESS, STRING_CHANGE, STRING_CREATION, STRING_MODIFICATION
 };
 
-const _list STRINGS_TIME_VAR = 
+const p_list STRINGS_TIME_VAR = 
 {
    STRING_ACCESS, STRING_CHANGE, STRING_CREATION, STRING_MODIFICATION,
    STRING_NOW, STRING_TODAY
 };
 
-const _list STRINGS_ALTERABLE_ATTR = 
+const p_list STRINGS_ALTERABLE_ATTR = 
 {
    STRING_ACCESS, STRING_ARCHIVE, STRING_CHANGE, STRING_COMPRESSED,
    STRING_CREATION, STRING_EMPTY, STRING_EXISTS, STRING_ENCRYPTED,
@@ -126,7 +126,7 @@ const _list STRINGS_ALTERABLE_ATTR =
    STRING_MODIFICATION, STRING_READONLY, STRING_SIZE
 };
 
-const _list STRINGS_VARS_IMMUTABLES = 
+const p_list STRINGS_VARS_IMMUTABLES = 
 {
    STRING_THIS, STRING_ACCESS, STRING_ARCHIVE, STRING_CHANGE,
    STRING_COMPRESSED, STRING_CREATION, STRING_DEPTH, STRING_DRIVE,
@@ -146,41 +146,41 @@ const _list STRINGS_VARS_IMMUTABLES =
    STRING_PAINT, STRING_MSPAINT, STRING_NOTEPAD
 };
 
-const _list STRINGS_FUNC_BOO_STR = 
+const p_list STRINGS_FUNC_BOO_STR = 
 {
    STRING_ISLOWER, STRING_ISUPPER, STRING_ISNUMBER,
    STRING_ISLETTER, STRING_ISDIGIT, STRING_ISBINARY, STRING_ISHEX
 };
 
-const _list STRINGS_FUNC_NUM_NUM = 
+const p_list STRINGS_FUNC_NUM_NUM = 
 {
    STRING_ABSOLUTE, STRING_CEIL, STRING_FLOOR,
    STRING_ROUND, STRING_SIGN, STRING_SQRT, STRING_TRUNCATE
 };
 
-const _list STRINGS_AGGRFUNC = 
+const p_list STRINGS_AGGRFUNC = 
 {
    STRING_AVERAGE, STRING_SUM, STRING_MIN, STRING_MAX, STRING_MEDIAN
 };
 
-const _list STRINGS_FUNC_STR_STR = 
+const p_list STRINGS_FUNC_STR_STR = 
 {
    STRING_DIGITS,  STRING_LETTERS, STRING_LOWER, STRING_TRIM,
    STRING_UPPER, STRING_REVERSE, STRING_AFTERDIGITS, STRING_AFTERLETTERS,
    STRING_BEFOREDIGITS, STRING_BEFORELETTERS, STRING_CAPITALIZE, STRING_PARENT
 };
 
-const _list STRINGS_FUNC_STR_STR_NUM = 
+const p_list STRINGS_FUNC_STR_STR_NUM = 
 {
    STRING_REPEAT, STRING_LEFT, STRING_RIGHT, STRING_FILL
 };
 
-const _list STRINGS_FUNC_STR_NUM = 
+const p_list STRINGS_FUNC_STR_NUM = 
 {
    STRING_ROMAN, STRING_BINARY, STRING_HEX
 };
 
-const _list STRINGS_FUNC_TIM_NUM = 
+const p_list STRINGS_FUNC_TIM_NUM = 
 {
    STRING_CHRISTMAS, STRING_EASTER, STRING_NEWYEAR
 };

@@ -28,13 +28,13 @@ struct FileContext;
 
 // a lazy evaluated collection of strings
 // return next element on demand
-struct Definition : Generator<_str>
+struct Definition : Generator<p_str>
 {
 public:
-    virtual _bool hasNext() = 0;
+    virtual p_bool hasNext() = 0;
     virtual void reset() = 0;
 
-   _str getValue() override
+   p_str getValue() override
    {
       return value;
    }
@@ -47,7 +47,7 @@ public:
    };
 
 protected:
-   _str value;
+   p_str value;
 };
 
 typedef std::unique_ptr<Definition> _defptr;

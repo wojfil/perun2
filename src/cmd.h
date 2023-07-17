@@ -30,13 +30,13 @@ namespace error
 {
    void argumentsNotAccessed();
    void noArguments();
-   void unknownOption(const _str& option);
+   void unknownOption(const p_str& option);
    void noDestination();
    void noMainArgument();
    void noInput();
-   void fileNotFound(const _str& fileName);
+   void fileNotFound(const p_str& fileName);
    void wrongFileExtension();
-   void fileReadFailure(const _str& fileName);
+   void fileReadFailure(const p_str& fileName);
 }
 
 }

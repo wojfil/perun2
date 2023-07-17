@@ -26,8 +26,8 @@ namespace perun2::gen
 // these wildcards are used only internally
 // they should be characters restricted for a file name
 // so no collision happens
-_constexpr _char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
-_constexpr _char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
+p_constexpr p_char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
+p_constexpr p_char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
 
 typedef std::unique_ptr<RecursiveAll> _rallptr;
 
@@ -36,29 +36,29 @@ struct DoubleAsteriskPattern : Definition, WildcardComparer
 {
 public:
    DoubleAsteriskPattern() = delete;
-   DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const _str& pat, const _str& pref, const _int retr);
+   DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr);
 
-   _bool hasNext() override;
+   p_bool hasNext() override;
    void reset() override;
 
 protected:
-   _bool hasSpecialStart() const;
-   _size getMinLength(const _str& pat) const override;
-   WildcardCharState checkState(const _size n, const _size m) override;
+   p_bool hasSpecialStart() const;
+   p_size getMinLength(const p_str& pat) const override;
+   WildcardCharState checkState(const p_size n, const p_size m) override;
 
 private:
-   const _str prefix;
-   const _size startId;
+   const p_str prefix;
+   const p_size startId;
    _rallptr definition;
    FileContext* context;
    p_perun2& perun2;
-   _bool first = true;
+   p_bool first = true;
    _num index = NINT_ZERO;
-   const _bool hasRetreats;
-   const _str retreat;
+   const p_bool hasRetreats;
+   const p_str retreat;
 
    // is true if the pattern starts with a double asterisk and is followed by a path separator
-   const _bool specialStart;
+   const p_bool specialStart;
 };
 
 

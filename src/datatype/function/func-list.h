@@ -21,40 +21,40 @@
 namespace perun2::func
 {
 
-inline _list toChars(const _str& value);
+inline p_list toChars(const p_str& value);
 
-struct F_Characters : Func_1<_str>, Generator<_list>
+struct F_Characters : Func_1<p_str>, Generator<p_list>
 {
 public:
-   F_Characters(_genptr<_str>& a1) : Func_1(a1) { };
-   _list getValue() override;
+   F_Characters(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_list getValue() override;
 };
 
 
-struct F_Split : Func_2<_str, _str>, Generator<_list>
+struct F_Split : Func_2<p_str, p_str>, Generator<p_list>
 {
 public:
-   F_Split(_genptr<_str>& a1, _genptr<_str>& a2) : Func_2(a1, a2) { };
-   _list getValue() override;
+   F_Split(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   p_list getValue() override;
 };
 
 
-struct F_Words : Func_1<_str>, Generator<_list>
+struct F_Words : Func_1<p_str>, Generator<p_list>
 {
 public:
-   F_Words(_genptr<_str>& a1) : Func_1(a1) { };
-   _list getValue() override;
+   F_Words(_genptr<p_str>& a1) : Func_1(a1) { };
+   p_list getValue() override;
 };
 
 
-struct F_Numbers : Func_1<_str>, Generator<_nlist>
+struct F_Numbers : Func_1<p_str>, Generator<_nlist>
 {
 public:
-   F_Numbers(_genptr<_str>& a1) : Func_1(a1) { };
+   F_Numbers(_genptr<p_str>& a1) : Func_1(a1) { };
    _nlist getValue() override;
 
 private:
-   _nint fromChar(const _char ch);
+   p_nint fromChar(const p_char ch);
 };
 
 }

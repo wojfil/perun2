@@ -19,7 +19,7 @@
 namespace perun2::gen
 {
 
-_bool DefinitionsEqual::getValue()
+p_bool DefinitionsEqual::getValue()
 {
    while (true) {
       if (this->perun2.isNotRunning()) {
@@ -55,7 +55,7 @@ _bool DefinitionsEqual::getValue()
    return false;
 }
 
-_bool DefinitionsNotEqual::getValue()
+p_bool DefinitionsNotEqual::getValue()
 {
    while (true) {
       if (this->perun2.isNotRunning()) {
@@ -91,7 +91,7 @@ _bool DefinitionsNotEqual::getValue()
    return false;
 }
 
-_bool DefinitionsSmaller::getValue()
+p_bool DefinitionsSmaller::getValue()
 {
    while (true) {
       if (this->perun2.isNotRunning()) {
@@ -120,7 +120,7 @@ _bool DefinitionsSmaller::getValue()
    return false;
 }
 
-_bool DefinitionsSmallerEquals::getValue()
+p_bool DefinitionsSmallerEquals::getValue()
 {
    while (true) {
       if (this->perun2.isNotRunning()) {
@@ -149,7 +149,7 @@ _bool DefinitionsSmallerEquals::getValue()
    return false;
 }
 
-_bool DefinitionsBigger::getValue()
+p_bool DefinitionsBigger::getValue()
 {
    while (true) {
       if (this->perun2.isNotRunning()) {
@@ -178,7 +178,7 @@ _bool DefinitionsBigger::getValue()
    return false;
 }
 
-_bool DefinitionsBiggerEquals::getValue()
+p_bool DefinitionsBiggerEquals::getValue()
 {
    while (true) {
       if (this->perun2.isNotRunning()) {
@@ -207,10 +207,10 @@ _bool DefinitionsBiggerEquals::getValue()
    return false;
 }
 
-_bool DefinitionListEqual::getValue()
+p_bool DefinitionListEqual::getValue()
 {
-   const _list v = this->list->getValue();
-   const _size len = v.size();
+   const p_list v = this->list->getValue();
+   const p_size len = v.size();
 
    if (len == 0) {
       if (this->definition->hasNext()) {
@@ -222,7 +222,7 @@ _bool DefinitionListEqual::getValue()
       }
    }
 
-   _size i = 0;
+   p_size i = 0;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -250,10 +250,10 @@ _bool DefinitionListEqual::getValue()
    return false;
 }
 
-_bool DefinitionListNotEqual::getValue()
+p_bool DefinitionListNotEqual::getValue()
 {
-   const _list v = this->list->getValue();
-   const _size len = v.size();
+   const p_list v = this->list->getValue();
+   const p_size len = v.size();
 
    if (len == 0) {
       if (this->definition->hasNext()) {
@@ -265,7 +265,7 @@ _bool DefinitionListNotEqual::getValue()
       }
    }
 
-   _size i = 0;
+   p_size i = 0;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -293,16 +293,16 @@ _bool DefinitionListNotEqual::getValue()
    return false;
 }
 
-_bool DefinitionListSmaller::getValue()
+p_bool DefinitionListSmaller::getValue()
 {
-   const _list v = this->list->getValue();
-   const _size len = v.size();
+   const p_list v = this->list->getValue();
+   const p_size len = v.size();
 
    if (len == 0) {
       return false;
    }
 
-   _size i = 0;
+   p_size i = 0;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -320,10 +320,10 @@ _bool DefinitionListSmaller::getValue()
    return true;
 }
 
-_bool DefinitionListSmallerEquals::getValue()
+p_bool DefinitionListSmallerEquals::getValue()
 {
-   const _list v = this->list->getValue();
-   const _size len = v.size();
+   const p_list v = this->list->getValue();
+   const p_size len = v.size();
 
    if (len == 0) {
       if (this->definition->hasNext()) {
@@ -335,7 +335,7 @@ _bool DefinitionListSmallerEquals::getValue()
       }
    }
 
-   _size i = 0;
+   p_size i = 0;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -358,10 +358,10 @@ _bool DefinitionListSmallerEquals::getValue()
    return true;
 }
 
-_bool DefinitionListBigger::getValue()
+p_bool DefinitionListBigger::getValue()
 {
-   const _list v = this->list->getValue();
-   const _size len = v.size();
+   const p_list v = this->list->getValue();
+   const p_size len = v.size();
 
    if (len == 0) {
       if (this->definition->hasNext()) {
@@ -373,7 +373,7 @@ _bool DefinitionListBigger::getValue()
       }
    }
 
-   _size i = 0;
+   p_size i = 0;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -396,16 +396,16 @@ _bool DefinitionListBigger::getValue()
    return false;
 }
 
-_bool DefinitionListBiggerEquals::getValue()
+p_bool DefinitionListBiggerEquals::getValue()
 {
-   const _list v = this->list->getValue();
-   const _size len = v.size();
+   const p_list v = this->list->getValue();
+   const p_size len = v.size();
 
    if (len == 0) {
       return true;
    }
 
-   _size i = 0;
+   p_size i = 0;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {

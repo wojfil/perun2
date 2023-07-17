@@ -51,14 +51,14 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint ms, p_perun2& p2)
+void os_sleepForMs(const p_nint ms, p_perun2& p2)
 {
    if (ms <= NINT_ZERO) {
       return;
    }
 
-   _nint loops = ms / OS_SLEEP_UNIT;
-   const _nint remainder = ms % OS_SLEEP_UNIT;
+   p_nint loops = ms / OS_SLEEP_UNIT;
+   const p_nint remainder = ms % OS_SLEEP_UNIT;
 
    os_rawSleepForMs(remainder);
 
@@ -154,35 +154,35 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_SIZE)) {
-      context.v_size->value = _num(NINT_MINUS_ONE);
+      context.vp_size->value = _num(NINT_MINUS_ONE);
    }
 }
 
-_str os_extension(const _str& value)
+p_str os_extension(const p_str& value)
 {
-   for (_int i = value.size() - 1; i >= 0; i--) {
-      const _char ch = value[i];
+   for (p_int i = value.size() - 1; i >= 0; i--) {
+      const p_char ch = value[i];
 
       if (ch == CHAR_DOT) {
          if (i == 0 || value[i - 1] == OS_SEPARATOR) {
-            return _str();
+            return p_str();
          }
 
-         _str result = value.substr(i + 1);
+         p_str result = value.substr(i + 1);
          toLower(result);
          return result;
       }
       else if (ch == OS_SEPARATOR) {
-         return _str();
+         return p_str();
       }
    }
 
-   return _str();
+   return p_str();
 }
 
-_str os_fullname(const _str& value)
+p_str os_fullname(const p_str& value)
 {
-   for (_int i = value.size() - 1; i >= 0; i--) {
+   for (p_int i = value.size() - 1; i >= 0; i--) {
       if (value[i] == OS_SEPARATOR) {
          return value.substr(i + 1);
       }
@@ -191,14 +191,14 @@ _str os_fullname(const _str& value)
    return value;
 }
 
-_str os_name(const _str& value)
+p_str os_name(const p_str& value)
 {
-   _int i = value.size() - 1;
-   _int dot = -1;
-   _bool sep = false;
+   p_int i = value.size() - 1;
+   p_int dot = -1;
+   p_bool sep = false;
 
    for (; i >= 0; i--) {
-      const _char ch = value[i];
+      const p_char ch = value[i];
 
       if (dot == -1 && ch == CHAR_DOT) {
          dot = i;
@@ -220,28 +220,28 @@ _str os_name(const _str& value)
       : value.substr(0, dot);
 }
 
-_str os_parent(const _str& path)
+p_str os_parent(const p_str& path)
 {
-   for (_int i = path.size() - 1; i >= 0; i--) {
+   for (p_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == OS_SEPARATOR) {
          return path.substr(0, i);
       }
    }
 
-   return _str();
+   return p_str();
 }
 
-_bool os_bothAreSeparators(const _char left, const _char right)
+p_bool os_bothAreSeparators(const p_char left, const p_char right)
 {
    return (left == right)
       && (left == OS_SEPARATOR);
 }
 
-_str os_trim(const _str& path)
+p_str os_trim(const p_str& path)
 {
-   const _int len = path.size();
-   _int start = 0;
-   _bool anyDot = false;
+   const p_int len = path.size();
+   p_int start = 0;
+   p_bool anyDot = false;
 
    while (true) {
       if (len >= (start + 2) && path[start] == CHAR_DOT
@@ -271,10 +271,10 @@ _str os_trim(const _str& path)
 exitStart:
 
    if (start == len) {
-      return anyDot ? toStr(CHAR_DOT) : _str();
+      return anyDot ? toStr(CHAR_DOT) : p_str();
    }
 
-   _int end = len - 1;
+   p_int end = len - 1;
 
    while (true) {
       if (end >= 1 && path[end] == CHAR_DOT
@@ -303,7 +303,7 @@ exitStart:
 
 exitEnd:
 
-   _str result;
+   p_str result;
 
    if (start == 0) {
       result = end == len - 1
@@ -323,20 +323,20 @@ exitEnd:
    return result;
 }
 
-_str os_softTrim(const _str& value)
+p_str os_softTrim(const p_str& value)
 {
-   const _int len = value.size();
-   _int start = 0;
+   const p_int len = value.size();
+   p_int start = 0;
 
    while (start < len && value[start] == CHAR_SPACE) {
       start++;
    }
 
    if (start == len) {
-      return _str();
+      return p_str();
    }
 
-   _int end = len - 1;
+   p_int end = len - 1;
 
    while (end >= 0 && value[end] == CHAR_SPACE) {
       end--;
@@ -354,9 +354,9 @@ _str os_softTrim(const _str& value)
    }
 }
 
-inline void os_escapeQuote(_str& path)
+inline void os_escapeQuote(p_str& path)
 {
-   const _size length = path.size();
+   const p_size length = path.size();
    if (path[0] == CHAR_QUOTATION_MARK && path[length - 1] == CHAR_QUOTATION_MARK) {
       path = path.substr(1, length - 2);
    }

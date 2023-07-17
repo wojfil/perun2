@@ -30,9 +30,9 @@ namespace perun2::comm
 
 typedef uint32_t _agunit;
 
-_constexpr _agunit AGGR_NULL =      0b000;
-_constexpr _agunit AGGR_COPY =      0b001;
-_constexpr _agunit AGGR_SELECT =    0b010;
+p_constexpr _agunit AGGR_NULL =      0b000;
+p_constexpr _agunit AGGR_COPY =      0b001;
+p_constexpr _agunit AGGR_SELECT =    0b010;
 
 // commands Select and Copy are different from others
 // they have to be performed on multiple files and directories at once
@@ -51,7 +51,7 @@ public:
    void run();
 
    _set copyPaths;
-   std::unordered_map<_str, _set> selectPaths;
+   std::unordered_map<p_str, _set> selectPaths;
    uint32_t failedCopy = 0;
    uint32_t failedSelect = 0;
    _set invalidCopy;
@@ -60,12 +60,12 @@ public:
 private:
    void copy();
    void select();
-   inline _bool has(const _agunit v) const;
+   inline p_bool has(const _agunit v) const;
 
    p_perun2& perun2;
    Contexts& contexts;
    _agunit value = AGGR_NULL;
-   _bool selectFailure = false;
+   p_bool selectFailure = false;
 };
 
 }

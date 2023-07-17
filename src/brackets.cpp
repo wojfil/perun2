@@ -43,22 +43,22 @@ void BracketsInfo::refresh(const Token& tk)
    }
 }
 
-_bool BracketsInfo::isBracketFree() const
+p_bool BracketsInfo::isBracketFree() const
 {
    return round == 0 && square == 0;
 }
 
 void checkBracketsThoroughly(const Tokens& tks)
 {
-   _int roundLvl = 0;
-   _int squareLvl = 0;
-   _int curlyLvl = 0;
-   _int roundId = 0;
-   _int squareId = 0;
-   _int curlyId = 0;
-   const _int end = tks.getEnd();
+   p_int roundLvl = 0;
+   p_int squareLvl = 0;
+   p_int curlyLvl = 0;
+   p_int roundId = 0;
+   p_int squareId = 0;
+   p_int curlyId = 0;
+   const p_int end = tks.getEnd();
 
-   for (_int i = tks.getStart(); i <= end; i++) {
+   for (p_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type != Token::t_Symbol) { continue; }
 

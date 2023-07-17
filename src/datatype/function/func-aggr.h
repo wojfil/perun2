@@ -40,8 +40,8 @@ public:
 protected:
    _single singleValues;
    _multi multiValues;
-   const _size countSingle;
-   const _size countMulti;
+   const p_size countSingle;
+   const p_size countMulti;
 };
 
 

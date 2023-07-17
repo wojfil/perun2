@@ -28,9 +28,9 @@
 namespace perun2::parse
 {
 
-_bool parseString(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseString(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -44,7 +44,7 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
       return func::stringFunction(result, tks, p2);
    }
    else if (tks.check(TI_HAS_CHAR_PLUS)) {
-      _genptr<_str> str;
+      _genptr<p_str> str;
       if (parseStringConcat(str, tks, p2)) {
          result = std::move(str);
          return true;
@@ -55,14 +55,14 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
       _genptr<_num> num;
       parseListElementIndex(num, tks, p2);
       const Token& f = tks.first();
-      _genptr<_list> list;
+      _genptr<p_list> list;
 
       if (makeVarRef(f, list, p2)) {
-         result = std::make_unique<gen::ListElement<_str>>(list, num);
+         result = std::make_unique<gen::ListElement<p_str>>(list, num);
          return true;
       }
       else {
-         _genptr<_str> str;
+         _genptr<p_str> str;
 
          if (makeVarRef(f, str, p2)) {
             result = std::make_unique<gen::CharAtIndex>(str, num);
@@ -79,11 +79,11 @@ _bool parseString(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   return parseBinary<_str>(result, tks, p2) || parseTernary<_str>(result, tks, p2);
+   return parseBinary<p_str>(result, tks, p2) || parseTernary<p_str>(result, tks, p2);
 }
 
 template <typename T>
-void concatParseOutcome(_bool& parsed, _bool& allConstants, _genptr<T>& recentValue)
+void concatParseOutcome(p_bool& parsed, p_bool& allConstants, _genptr<T>& recentValue)
 {
    parsed = true;
    allConstants &= recentValue->isConstant();
@@ -93,7 +93,7 @@ void concatParseOutcome(_bool& parsed, _bool& allConstants, _genptr<T>& recentVa
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, p_perun2& p2)
+p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
 {
    enum PrevType {
       pt_String = 0,
@@ -109,11 +109,11 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, p_perun2& p2)
    _genptr<_tim> prevTim;
    _genptr<_per> prevPer;
 
-   _bool allConstants = true;
-   std::vector<_genptr<_str>> result;
+   p_bool allConstants = true;
+   std::vector<_genptr<p_str>> result;
 
    for (const Tokens& tks2 : elements) {
-      _bool parsed = false;
+      p_bool parsed = false;
 
       switch (prevType) {
          case pt_String: {
@@ -197,7 +197,7 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, p_perun2& p2)
 
       if (!parsed) {
          prevType = pt_String;
-         _genptr<_str> str;
+         _genptr<p_str> str;
 
          if (parse(p2, tks2, str)) {
             allConstants &= str->isConstant();
@@ -224,7 +224,7 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   _genptr<_str> concat;
+   _genptr<p_str> concat;
 
    switch (result.size()) {
       case 1: {
@@ -260,8 +260,8 @@ _bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, p_perun2& p2)
    if (allConstants) {
       // if all units of string concatenation are constant values
       // just transform the whole structure into one constant
-      const _str cnst = concat->getValue();
-      res = std::make_unique<gen::Constant<_str>>(cnst);
+      const p_str cnst = concat->getValue();
+      res = std::make_unique<gen::Constant<p_str>>(cnst);
    }
    else {
       res = std::move(concat);

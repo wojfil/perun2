@@ -18,34 +18,34 @@
 namespace perun2::gen
 {
 
-Not::Not(_genptr<_bool>& val) 
-   : UnaryOperation<_bool>(val) { };
+Not::Not(_genptr<p_bool>& val) 
+   : UnaryOperation<p_bool>(val) { };
 
-And::And(_genptr<_bool>& val1, _genptr<_bool>& val2)
-   : BinaryOperation<_bool>(val1, val2) { };
+And::And(_genptr<p_bool>& val1, _genptr<p_bool>& val2)
+   : BinaryOperation<p_bool>(val1, val2) { };
 
-Or::Or(_genptr<_bool>& val1, _genptr<_bool>& val2)
-   : BinaryOperation<_bool>(val1, val2) { };
+Or::Or(_genptr<p_bool>& val1, _genptr<p_bool>& val2)
+   : BinaryOperation<p_bool>(val1, val2) { };
 
-Xor::Xor(_genptr<_bool>& val1, _genptr<_bool>& val2)
-   : BinaryOperation<_bool>(val1, val2) { };
+Xor::Xor(_genptr<p_bool>& val1, _genptr<p_bool>& val2)
+   : BinaryOperation<p_bool>(val1, val2) { };
 
-_bool Not::getValue() 
+p_bool Not::getValue() 
 {
    return !value->getValue();
 }
 
-_bool And::getValue() 
+p_bool And::getValue() 
 {
    return value1->getValue() && value2->getValue();
 }
 
-_bool Or::getValue() 
+p_bool Or::getValue() 
 {
    return value1->getValue() || value2->getValue();
 }
 
-_bool Xor::getValue() 
+p_bool Xor::getValue() 
 {
    return value1->getValue() ^ value2->getValue();
 }
@@ -53,7 +53,7 @@ _bool Xor::getValue()
 InConstTimeList::InConstTimeList(_genptr<_tim>& val, const _tlist& li)
    : value(std::move(val)), list(sortedAndUniqueTimeList(li)) { };
 
-_bool InConstTimeList::getValue() 
+p_bool InConstTimeList::getValue() 
 {
    return std::binary_search(list.begin(), list.end(), value->getValue());
 }

@@ -72,7 +72,7 @@ namespace error
          metadata::EXECUTABLE_NAME, L" --help' for command-line tips."));
    }
 
-   void unknownOption(const _str& option)
+   void unknownOption(const p_str& option)
    {
       Logger logger;
       logger.print(str(L"Command-line error: unknown option '", option, L"'."));
@@ -96,7 +96,7 @@ namespace error
       logger.print(L"Command-line error: no input file.");
    }
 
-   void fileNotFound(const _str& fileName)
+   void fileNotFound(const p_str& fileName)
    {
       Logger logger;
       logger.print(str(L"Command-line error: input file '", fileName, L"' does not exist."));
@@ -108,7 +108,7 @@ namespace error
       logger.print(str(L"Command-line error: wrong input file extension. Only '", metadata::EXTENSION, L"' is allowed."));
    }
 
-   void fileReadFailure(const _str& fileName)
+   void fileReadFailure(const p_str& fileName)
    {
       Logger logger;
       logger.print(str(L"Command-line error: input file '", fileName, L"' could not be read."));

@@ -23,10 +23,10 @@ namespace perun2::comm
 IterationLoop::IterationLoop(_comptr& com, _fcptr& ctx, p_perun2& p2)
    : command(std::move(com)), context(std::move(ctx)), perun2(p2) { };
 
-CS_StringComArg::CS_StringComArg(_genptr<_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2)
+CS_StringComArg::CS_StringComArg(_genptr<p_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2)
    : IterationLoop(com, ctx, p2), string(std::move(str)) { };
 
-CS_ListComArg::CS_ListComArg(_genptr<_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2)
+CS_ListComArg::CS_ListComArg(_genptr<p_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2)
    : IterationLoop(com, ctx, p2), list(std::move(li)) { };
 
 CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx, p_perun2& p2)
@@ -44,8 +44,8 @@ void CS_StringComArg::run()
 
 void CS_ListComArg::run()
 {
-   const _list values = list->getValue();
-   const _num length = _num(static_cast<_nint>(values.size()));
+   const p_list values = list->getValue();
+   const _num length = _num(static_cast<p_nint>(values.size()));
 
    if (length.value.i == NINT_ZERO) {
       return;

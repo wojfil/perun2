@@ -29,66 +29,66 @@ _nlist Cast_B_NL::getValue()
    return _nlist { this->base->getValue() ? NINT_ONE : NINT_ZERO };
 };
 
-_str Cast_B_S::getValue()
+p_str Cast_B_S::getValue()
 {
    return this->base->getValue() ? toStr(CHAR_1) : toStr(CHAR_0);
 };
 
-_list Cast_B_L::getValue()
+p_list Cast_B_L::getValue()
 {
-   return _list { this->base->getValue() ? toStr(CHAR_1) : toStr(CHAR_0) };
+   return p_list { this->base->getValue() ? toStr(CHAR_1) : toStr(CHAR_0) };
 };
 
 _nlist Cast_N_NL::getValue(){
    return _nlist { this->base->getValue() };
 };
 
-_str Cast_N_S::getValue()
+p_str Cast_N_S::getValue()
 {
    return this->base->getValue().toString();
 };
 
-_list Cast_N_L::getValue()
+p_list Cast_N_L::getValue()
 {
-   return _list { this->base->getValue().toString() };
+   return p_list { this->base->getValue().toString() };
 };
 
-_str Cast_T_S::getValue()
-{
-   return this->base->getValue().toString();
-};
-
-_list Cast_T_L::getValue()
-{
-   return _list { this->base->getValue().toString() };
-};
-
-_str Cast_P_S::getValue()
+p_str Cast_T_S::getValue()
 {
    return this->base->getValue().toString();
 };
 
-_list Cast_P_L::getValue()
+p_list Cast_T_L::getValue()
 {
-   return _list { this->base->getValue().toString() };
+   return p_list { this->base->getValue().toString() };
 };
 
-_list Cast_NL_L::getValue()
+p_str Cast_P_S::getValue()
+{
+   return this->base->getValue().toString();
+};
+
+p_list Cast_P_L::getValue()
+{
+   return p_list { this->base->getValue().toString() };
+};
+
+p_list Cast_NL_L::getValue()
 {
    const _nlist nums = this->base->getValue();
-   const _size len = nums.size();
-   _list strings(len);
+   const p_size len = nums.size();
+   p_list strings(len);
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       strings[i] = nums[i].toString();
    }
 
    return strings;
 };
 
-_list Cast_S_L::getValue()
+p_list Cast_S_L::getValue()
 {
-   return _list { this->base->getValue() };
+   return p_list { this->base->getValue() };
 };
 
 _tlist Cast_T_TL::getValue()
@@ -96,22 +96,22 @@ _tlist Cast_T_TL::getValue()
    return _tlist { this->base->getValue() };
 }
 
-_list Cast_TL_L::getValue()
+p_list Cast_TL_L::getValue()
 {
    const _tlist times = this->base->getValue();
-   const _size len = times.size();
-   _list strings(len);
+   const p_size len = times.size();
+   p_list strings(len);
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       strings[i] = times[i].toString();
    }
 
    return strings;
 };
 
-_list Cast_D_L::getValue()
+p_list Cast_D_L::getValue()
 {
-   _list strings;
+   p_list strings;
 
    while (this->base->hasNext()) {
       if (this->perun2.isNotRunning()) {

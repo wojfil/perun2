@@ -20,76 +20,76 @@
 namespace perun2::gen
 {
 
-Join_StrStr::Join_StrStr(_genptr<_str>& lef, _genptr<_str>& rig)
+Join_StrStr::Join_StrStr(_genptr<p_str>& lef, _genptr<p_str>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-Join_StrList::Join_StrList(_genptr<_str>& lef, _genptr<_list>& rig)
+Join_StrList::Join_StrList(_genptr<p_str>& lef, _genptr<p_list>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-Join_ListStr::Join_ListStr(_genptr<_list>& lef, _genptr<_str>& rig)
+Join_ListStr::Join_ListStr(_genptr<p_list>& lef, _genptr<p_str>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-Join_ListList::Join_ListList(_genptr<_list>& lef, _genptr<_list>& rig)
+Join_ListList::Join_ListList(_genptr<p_list>& lef, _genptr<p_list>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-ListFilter_Where::ListFilter_Where(_genptr<_bool>& cond, _genptr<_list>& li, _fcptr& ctx, p_perun2& p2)
+ListFilter_Where::ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, p_perun2& p2)
    : condition(std::move(cond)), list(std::move(li)), context(std::move(ctx)), perun2(p2) { };
 
-ListFilter_Limit::ListFilter_Limit(_genptr<_list>& li, _genptr<_num>& num)
+ListFilter_Limit::ListFilter_Limit(_genptr<p_list>& li, _genptr<_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
-ListFilter_Skip::ListFilter_Skip(_genptr<_list>& li, _genptr<_num>& num)
+ListFilter_Skip::ListFilter_Skip(_genptr<p_list>& li, _genptr<_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
-ListFilter_Every::ListFilter_Every(_genptr<_list>& li, _genptr<_num>& num)
+ListFilter_Every::ListFilter_Every(_genptr<p_list>& li, _genptr<_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
-ListFilter_Final::ListFilter_Final(_genptr<_list>& li, _genptr<_num>& num)
+ListFilter_Final::ListFilter_Final(_genptr<p_list>& li, _genptr<_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
 
-_list Join_StrStr::getValue()
+p_list Join_StrStr::getValue()
 {
    return { left->getValue(), right->getValue() };
 };
 
 
-_list Join_StrList::getValue()
+p_list Join_StrList::getValue()
 {
-   _list v = right->getValue();
+   p_list v = right->getValue();
    v.insert(v.begin(), left->getValue());
    return v;
 };
 
 
-_list Join_ListStr::getValue()
+p_list Join_ListStr::getValue()
 {
-   _list v = left->getValue();
+   p_list v = left->getValue();
    v.emplace_back(right->getValue());
    return v;
 };
 
 
-_list Join_ListList::getValue()
+p_list Join_ListList::getValue()
 {
-   _list v = left->getValue();
+   p_list v = left->getValue();
    langutil::appendVector(v, right->getValue());
    return v;
 };
 
 
-_list ListFilter_Where::getValue() 
+p_list ListFilter_Where::getValue() 
 {
-   const _list values = list->getValue();
-   _list result;
+   const p_list values = list->getValue();
+   p_list result;
    result.reserve(values.size());
-   const _nint length = static_cast<_nint>(values.size());
+   const p_nint length = static_cast<p_nint>(values.size());
 
    this->context->resetIndex();
-   _nint index = NINT_ZERO;
+   p_nint index = NINT_ZERO;
 
    while (this->perun2.state == State::s_Running && index != length) {
-      const _str& unit = values[static_cast<_size>(index)];
+      const p_str& unit = values[static_cast<p_size>(index)];
       this->context->index->value.value.i = index;
       this->context->loadData(unit);
 
@@ -104,51 +104,51 @@ _list ListFilter_Where::getValue()
 };
 
 
-_list ListFilter_Limit::getValue() 
+p_list ListFilter_Limit::getValue() 
 {
-   const _nint n = number->getValue().toInt();
+   const p_nint n = number->getValue().toInt();
 
    if (n <= NINT_ZERO) {
-      return _list();
+      return p_list();
    }
 
-   const _list lst = list->getValue();
+   const p_list lst = list->getValue();
 
-   return n >= static_cast<_nint>(lst.size())
+   return n >= static_cast<p_nint>(lst.size())
       ? lst
-      : _list(lst.begin(), lst.begin() + n);
+      : p_list(lst.begin(), lst.begin() + n);
 };
 
 
-_list ListFilter_Skip::getValue()
+p_list ListFilter_Skip::getValue()
 {
-   const _nint n = number->getValue().toInt();
-   const _list lst = list->getValue();
+   const p_nint n = number->getValue().toInt();
+   const p_list lst = list->getValue();
 
    if (n <= NINT_ZERO) {
       return lst;
    }
 
-   return n >= static_cast<_nint>(lst.size())
-      ? _list()
-      : _list(lst.begin() + n, lst.end());
+   return n >= static_cast<p_nint>(lst.size())
+      ? p_list()
+      : p_list(lst.begin() + n, lst.end());
 };
 
 
-_list ListFilter_Every::getValue()
+p_list ListFilter_Every::getValue()
 {
-   const _nint n = number->getValue().toInt();
-   const _list lst = list->getValue();
+   const p_nint n = number->getValue().toInt();
+   const p_list lst = list->getValue();
 
    if (n <= NINT_ONE) {
       return lst;
    }
 
-   const _size baseSize = lst.size();
-   const _size newSize = (baseSize / n) + ((baseSize % n == 0) ? 0 : 1);
-   _list result(newSize);
+   const p_size baseSize = lst.size();
+   const p_size newSize = (baseSize / n) + ((baseSize % n == 0) ? 0 : 1);
+   p_list result(newSize);
 
-   for (_size i = 0; i < newSize; i++) {
+   for (p_size i = 0; i < newSize; i++) {
       result[i] = lst[i * n];
    }
 
@@ -156,19 +156,19 @@ _list ListFilter_Every::getValue()
 };
 
 
-_list ListFilter_Final::getValue()
+p_list ListFilter_Final::getValue()
 {
-   const _nint n = number->getValue().toInt();
+   const p_nint n = number->getValue().toInt();
 
    if (n <= NINT_ZERO) {
-      return _list();
+      return p_list();
    }
 
-   const _list lst = list->getValue();
+   const p_list lst = list->getValue();
 
-   return n >= static_cast<_nint>(lst.size())
+   return n >= static_cast<p_nint>(lst.size())
       ? lst
-      : _list(lst.end() - n, lst.end());
+      : p_list(lst.end() - n, lst.end());
 };
 
 

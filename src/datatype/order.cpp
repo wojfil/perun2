@@ -20,18 +20,18 @@
 namespace perun2::gen
 {
 
-void OrderIndices::prepare(const _size length)
+void OrderIndices::prepare(const p_size length)
 {
-   this->values = std::make_unique<_size[]>(length);
+   this->values = std::make_unique<p_size[]>(length);
 }
 
 OrderBy::OrderBy(_indptr& inds, _ordptr& ord)
    : indices(std::move(inds)), order(std::move(ord)) { };
 
-void OrderBy::quicksort(_int start, _int end)
+void OrderBy::quicksort(p_int start, p_int end)
 {
-   _int stack[end - start + 1];
-   _int top = -1;
+   p_int stack[end - start + 1];
+   p_int top = -1;
   
    stack[++top] = start;
    stack[++top] = end;
@@ -39,7 +39,7 @@ void OrderBy::quicksort(_int start, _int end)
    while (top >= 0) {
       end = stack[top--];
       start = stack[top--];
-      _int pivot = partition(start, end);
+      p_int pivot = partition(start, end);
   
       if (pivot - 1 > start) {
          stack[++top] = start;
@@ -53,11 +53,11 @@ void OrderBy::quicksort(_int start, _int end)
    }
 }
 
-_int OrderBy::partition(const _int start, const _int end)
+p_int OrderBy::partition(const p_int start, const p_int end)
 {
-   _int i = start - 1;
+   p_int i = start - 1;
 
-   for (_int j = start; j <= end - 1; j++) {
+   for (p_int j = start; j <= end - 1; j++) {
       if (this->order->matchesSwap(j, end)) {
          i++;
          std::swap(this->indices->values[i], this->indices->values[j]);
@@ -65,19 +65,19 @@ _int OrderBy::partition(const _int start, const _int end)
       }
    }
 
-   const _int ip = i + 1;
+   const p_int ip = i + 1;
    std::swap(this->indices->values[ip], this->indices->values[end]);
    std::iter_swap(this->resultPtr->begin() + ip, this->resultPtr->begin() + end);
    return ip;
 }
 
-OrderBy_List::OrderBy_List(_genptr<_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, p_perun2& p2)
+OrderBy_List::OrderBy_List(_genptr<p_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, p_perun2& p2)
       : OrderBy(inds, ord), context(std::move(ctx)), base(std::move(bas)) { };
 
-_list OrderBy_List::getValue()
+p_list OrderBy_List::getValue()
 {
-   _list result = this->base->getValue();
-   const _size length = result.size();
+   p_list result = this->base->getValue();
+   const p_size length = result.size();
 
    if (length == 0) {
       return result;
@@ -88,7 +88,7 @@ _list OrderBy_List::getValue()
    this->order->clearValues(length);
    this->context->resetIndex();
 
-   for (_size i = 0; i < length; i++) {
+   for (p_size i = 0; i < length; i++) {
       this->context->loadData(result[i]);
       this->indices->values[i] = i;
       this->order->addValues();
@@ -122,7 +122,7 @@ void OrderBy_Definition::reset()
    }
 }
 
-_bool OrderBy_Definition::hasNext()
+p_bool OrderBy_Definition::hasNext()
 {
    if (this->first) {
       this->reset();
@@ -146,7 +146,7 @@ _bool OrderBy_Definition::hasNext()
 
       this->indices->prepare(this->length);
 
-      for (_size i = 0; i < this->length; i++) {
+      for (p_size i = 0; i < this->length; i++) {
          this->indices->values[i] = i;
       }
 
@@ -161,7 +161,7 @@ _bool OrderBy_Definition::hasNext()
    else {
       this->value = this->result[this->index];
       this->nextContext->loadData(this->value);
-      this->nextContext->index->value.value.i = static_cast<_nint>(this->index);
+      this->nextContext->index->value.value.i = static_cast<p_nint>(this->index);
       this->index++;
       return true;
    }

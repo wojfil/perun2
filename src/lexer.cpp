@@ -27,7 +27,7 @@ namespace perun2
 // meanwhile, omit comments
 // both // singleline
 // and /* multiline */
-std::vector<Token> tokenize(const _str& code, p_perun2& p2)
+std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
 {
    enum Mode {
       m_Normal = 0,
@@ -40,15 +40,15 @@ std::vector<Token> tokenize(const _str& code, p_perun2& p2)
 
    std::vector<Token> tokens;
    Mode mode = Mode::m_Normal;
-   _int line = 1;
-   _char prev = CHAR_SPACE;
-   const _size len = code.length();
-   _size wpos = 0;
-   _size wlen = 0;
-   _bool prevSymbol = false;
+   p_int line = 1;
+   p_char prev = CHAR_SPACE;
+   const p_size len = code.length();
+   p_size wpos = 0;
+   p_size wlen = 0;
+   p_bool prevSymbol = false;
 
-   for (_size i = 0; i < len; i++) {
-      const _char c = code[i];
+   for (p_size i = 0; i < len; i++) {
+      const p_char c = code[i];
 
       switch (mode)  {
          case Mode::m_Normal: {
@@ -164,11 +164,11 @@ std::vector<Token> tokenize(const _str& code, p_perun2& p2)
          }
          case Mode::m_ALiteral: {
             if (c == CHAR_APOSTROPHE) {
-               _int asteriskId = -1;
+               p_int asteriskId = -1;
 
-               for (_size j = wpos; j < wpos + wlen; j++) {
+               for (p_size j = wpos; j < wpos + wlen; j++) {
                   if (code[j] == CHAR_ASTERISK) {
-                     asteriskId = static_cast<_int>(j);
+                     asteriskId = static_cast<p_int>(j);
                      break;
                   }
                }
@@ -244,12 +244,12 @@ std::vector<Token> tokenize(const _str& code, p_perun2& p2)
    return tokens;
 }
 
-static Token wordToken(const _str& code, const _size start, const _size length, const _int line, p_perun2& p2)
+static Token wordToken(const p_str& code, const p_size start, const p_size length, const p_int line, p_perun2& p2)
 {
-   _int dots = 0;
-   _bool onlyDigitsAndDots = true;
+   p_int dots = 0;
+   p_bool onlyDigitsAndDots = true;
 
-   for (_size i = start; i < start + length; i++) {
+   for (p_size i = start; i < start + length; i++) {
       if (!std::iswdigit(code[i])) {
          if (code[i] == CHAR_DOT) {
             dots++;
@@ -262,18 +262,18 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
 
    // try to parse a numeric constant: 20
    if (onlyDigitsAndDots) {
-      const _str value = code.substr(start, length);
+      const p_str value = code.substr(start, length);
       return numberToken(code, value, start, length, NINT_ONE, NumberMode::nm_Normal, dots, line, p2);
    }
 
    // try to parse a size unit constant: 20mb
    if (length > 2) {
-      const _nint sizeUnit = fileSizeSuffixMulti(code[start + length - 2], code[start + length - 1]);
+      const p_nint sizeUnit = fileSizeSuffixMulti(code[start + length - 2], code[start + length - 1]);
 
       if (sizeUnit != NINT_MINUS_ONE) {
-         _bool hasLetters = false;
+         p_bool hasLetters = false;
 
-         for (_size i = start; i < (start + length - 2); i++) {
+         for (p_size i = start; i < (start + length - 2); i++) {
             if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
                hasLetters = true;
                break;
@@ -281,7 +281,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          }
 
          if (! hasLetters) {
-            const _str value2 = code.substr(start, length - 2);
+            const p_str value2 = code.substr(start, length - 2);
             return numberToken(code, value2, start, length, sizeUnit, NumberMode::nm_Size, dots, line, p2);
          }
       }
@@ -289,12 +289,12 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
 
    // try to parse a decimal constant: 20k
    if (length > 1) {
-      const _nint multiplier = decimalSuffixMulti(code[start + length - 1]);
+      const p_nint multiplier = decimalSuffixMulti(code[start + length - 1]);
 
       if (multiplier != NINT_MINUS_ONE) {
-         _bool hasLetters = false;
+         p_bool hasLetters = false;
 
-         for (_size i = start; i < (start + length - 1); i++) {
+         for (p_size i = start; i < (start + length - 1); i++) {
             if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
                hasLetters = true;
                break;
@@ -302,7 +302,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          }
 
          if (! hasLetters) {
-            const _str value2 = code.substr(start, length - 1);
+            const p_str value2 = code.substr(start, length - 1);
             return numberToken(code, value2, start, length, multiplier, NumberMode::nm_Decimal, dots, line, p2);
          }
       }
@@ -310,10 +310,10 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
 
    // try to parse K infix: 2k23
    if (dots == 0) {
-      _int kid = -1;
+      p_int kid = -1;
 
-      for (_size i = start; i < start + length; i++) {
-         const _char ch = code[i];
+      for (p_size i = start; i < start + length; i++) {
+         const p_char ch = code[i];
 
          if (ch == CHAR_k || ch == CHAR_K) {
             if (kid == -1) {
@@ -330,14 +330,14 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
          }
       }
 
-      const _int min = static_cast<_int>(start + length) - 4;
-      const _int max = static_cast<_int>(start + length) - 1;
+      const p_int min = static_cast<p_int>(start + length) - 4;
+      const p_int max = static_cast<p_int>(start + length) - 1;
 
       if (kid != -1 && kid > start && kid < max && kid >= min) {
-         _nint first;
-         _nint second;
-         const _str firstString = code.substr(start, kid - start);
-         const _str secondString = code.substr(kid + 1, start + length - kid - 1);
+         p_nint first;
+         p_nint second;
+         const p_str firstString = code.substr(start, kid - start);
+         const p_str secondString = code.substr(kid + 1, start + length - kid - 1);
 
          try {
             first = std::stoll(firstString);
@@ -362,7 +362,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    }
 
    if (dots == 0) {
-      _str word = code.substr(start, length);
+      p_str word = code.substr(start, length);
       toLower(word);
 
       auto fm = p2.keywordsData.MONTHS.find(word);
@@ -385,8 +385,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    }
 
    if (dots == 1) {
-      _size pnt = start;
-      for (_size i = start; i < start + length; i++) {
+      p_size pnt = start;
+      for (p_size i = start; i < start + length; i++) {
          if (code[i] == CHAR_DOT) {
             pnt = i;
          }
@@ -402,8 +402,8 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
    return Token(start, length, line, p2);
 }
 
-inline static Token numberToken(const _str& code, const _str& value, const _size start, const _size length, 
-   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, p_perun2& p2)
+inline static Token numberToken(const p_str& code, const p_str& value, const p_size start, const p_size length, 
+   const p_nint multiplier, const NumberMode mode, const p_int dots, const p_int line, p_perun2& p2)
 {
    if (dots > 1) {
       throw SyntaxError::multipleDotsInNumber(value, line);
@@ -411,14 +411,14 @@ inline static Token numberToken(const _str& code, const _str& value, const _size
 
    if (dots == 0) {
       try {
-         _nint integer = std::stoll(value);
+         p_nint integer = std::stoll(value);
 
          if (multiplier != NINT_ONE) {
             // look for number overflow
             // the number is multiplied by the suffix
             // and then divided back
 
-            _nint i2 = integer * multiplier;
+            p_nint i2 = integer * multiplier;
 
             if (multiplier != NINT_ZERO && i2 / multiplier != integer) {
                throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -435,12 +435,12 @@ inline static Token numberToken(const _str& code, const _str& value, const _size
    }
 
    try {
-      _ndouble dbl = stringToDouble(value);
+      p_ndouble dbl = stringToDouble(value);
       dbl *= multiplier;
 
       // try to convert the number into integer
       // if it equals the base double value, create an integer constant instead
-      const _nint integer = static_cast<_nint>(dbl);
+      const p_nint integer = static_cast<p_nint>(dbl);
       if (dbl == integer) {
          return Token(_num(integer), line, start, length, mode, p2);
       }
@@ -452,7 +452,7 @@ inline static Token numberToken(const _str& code, const _str& value, const _size
    }     
 }
 
-inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2)
+inline static p_nint fileSizeSuffixMulti(const p_char c1, const p_char c2)
 {
    if (!(c2 == CHAR_b || c2 == CHAR_B)) {
       return NINT_MINUS_ONE;
@@ -479,7 +479,7 @@ inline static _nint fileSizeSuffixMulti(const _char c1, const _char c2)
    }
 }
 
-inline static _nint decimalSuffixMulti(const _char c)
+inline static p_nint decimalSuffixMulti(const p_char c)
 {
    switch (c) {
       case CHAR_k: 
@@ -493,7 +493,7 @@ inline static _nint decimalSuffixMulti(const _char c)
    }
 }
 
-inline static _bool isSymbol(const _char ch)
+inline static p_bool isSymbol(const p_char ch)
 {
    switch (ch) {
       case CHAR_COMMA:
@@ -521,7 +521,7 @@ inline static _bool isSymbol(const _char ch)
    }
 }
 
-inline static _bool isSpace(const _char ch)
+inline static p_bool isSpace(const p_char ch)
 {
    switch (ch) {
       case CHAR_SPACE:
@@ -533,17 +533,17 @@ inline static _bool isSpace(const _char ch)
    }
 }
 
-inline static _bool isNewLine(const _char ch)
+inline static p_bool isNewLine(const p_char ch)
 {
    return ch == CHAR_NEW_LINE;
 }
 
-inline static _bool isAllowedInWord(const _char ch)
+inline static p_bool isAllowedInWord(const p_char ch)
 {
    return std::iswalpha(ch) || std::iswdigit(ch) || ch == CHAR_DOT;
 }
 
-inline static _bool isDoubleChar(const _char ch)
+inline static p_bool isDoubleChar(const p_char ch)
 {
    switch (ch) {
       case CHAR_PLUS:

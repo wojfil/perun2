@@ -23,8 +23,8 @@ namespace perun2
 
 // default file path separator
 // in Windows OS, this separator is \ and the 'wrong separator' is /
-_constexpr _char OS_SEPARATOR = CHAR_BACKSLASH;
-_constexpr _char OS_WRONG_SEPARATOR = CHAR_SLASH;
+p_constexpr p_char OS_SEPARATOR = CHAR_BACKSLASH;
+p_constexpr p_char OS_WRONG_SEPARATOR = CHAR_SLASH;
 
 
 // for Windows OS only
@@ -40,131 +40,131 @@ void os_init();
 _tim os_now();
 _tim os_today();
 
-void os_rawSleepForMs(const _nint ms);
+void os_rawSleepForMs(const p_nint ms);
 
 void os_loadAttributes(FileContext& context);
-void os_loadDataAttributes(FileContext& context, const _fdata& data);
+void os_loadDataAttributes(FileContext& context, const p_fdata& data);
 
 // get values of filesystem variables:
-_tim os_access(const _str& path);
-_bool os_archive(const _str& path);
-_tim os_change(const _str& path);
-_bool os_compressed(const _str& path);
-_tim os_creation(const _str& path);
-_num os_depth(const _str& value);
-_str os_drive(const _str& path);
-_bool os_empty(const _str& path);
-_bool os_emptyFile(const _adata& data);
-_bool os_emptyDirectory(const _str& path);
-_bool os_encrypted(const _str& path);
-_bool os_hasAttribute(const _str& path, const DWORD attribute);
-_bool os_hidden(const _str& path);
-_bool os_isFile(const _str& path);
-_bool os_isDirectory(const _str& path);
-_per os_lifetime(const _str& path);
-_tim os_modification(const _str& path);
-_bool os_readonly(const _str& path);
-_nint os_size(const _str& path, p_perun2& p2);
-_nint os_sizeDirectory(const _str& path, p_perun2& p2);
+_tim os_access(const p_str& path);
+p_bool os_archive(const p_str& path);
+_tim os_change(const p_str& path);
+p_bool os_compressed(const p_str& path);
+_tim os_creation(const p_str& path);
+_num os_depth(const p_str& value);
+p_str os_drive(const p_str& path);
+p_bool os_empty(const p_str& path);
+p_bool os_emptyFile(const p_adata& data);
+p_bool os_emptyDirectory(const p_str& path);
+p_bool os_encrypted(const p_str& path);
+p_bool os_hasAttribute(const p_str& path, const DWORD attribute);
+p_bool os_hidden(const p_str& path);
+p_bool os_isFile(const p_str& path);
+p_bool os_isDirectory(const p_str& path);
+_per os_lifetime(const p_str& path);
+_tim os_modification(const p_str& path);
+p_bool os_readonly(const p_str& path);
+p_nint osp_size(const p_str& path, p_perun2& p2);
+p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2);
 
-_bool os_exists(const _str& path);
-_bool os_fileExists(const _str& path);
-_bool os_directoryExists(const _str& path);
+p_bool os_exists(const p_str& path);
+p_bool os_fileExists(const p_str& path);
+p_bool os_directoryExists(const p_str& path);
 
-_bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output);
-_bool os_hasNextFile(_entry& entry, _fdata& output);
-void os_closeEntry(_entry& entry);
+p_bool os_hasFirstFile(const p_str& path, p_entry& entry, p_fdata& output);
+p_bool os_hasNextFile(p_entry& entry, p_fdata& output);
+void os_closeEntry(p_entry& entry);
 
 // filesystem operations:
 // some of them take a reference to the running Perun2 instance
 // they can be stopped safely by an interruption signal during operation
-_bool os_delete(const _str& path);
-_bool os_drop(const _str& path, p_perun2& p2);
-_bool os_drop(const _str& path, const _bool isFile, p_perun2& p2);
-_bool os_dropFile(const _str& path);
-_bool os_dropDirectory(const _str& path, p_perun2& p2);
-_bool os_hide(const _str& path);
-_bool os_lock(const _str& path);
-_bool os_open(const _str& path);
-_bool os_openWith(const _str& program, const _str& path);
-_bool os_openAsCommand(const _str& command, const _str& location);
-_bool os_unhide(const _str& path);
-_bool os_unlock(const _str& path);
+p_bool os_delete(const p_str& path);
+p_bool os_drop(const p_str& path, p_perun2& p2);
+p_bool os_drop(const p_str& path, const p_bool isFile, p_perun2& p2);
+p_bool os_dropFile(const p_str& path);
+p_bool os_dropDirectory(const p_str& path, p_perun2& p2);
+p_bool os_hide(const p_str& path);
+p_bool os_lock(const p_str& path);
+p_bool os_open(const p_str& path);
+p_bool os_openWith(const p_str& program, const p_str& path);
+p_bool os_openAsCommand(const p_str& command, const p_str& location);
+p_bool os_unhide(const p_str& path);
+p_bool os_unlock(const p_str& path);
 
-_bool os_setTime(const _str& path, const _tim& creation,
+p_bool os_setTime(const p_str& path, const _tim& creation,
    const _tim& access, const _tim& modification);
 
-_bool os_createFile(const _str& path);
-_bool os_createDirectory(const _str& path);
+p_bool os_createFile(const p_str& path);
+p_bool os_createDirectory(const p_str& path);
 
-_bool os_moveTo(const _str& oldPath, const _str& newPath);
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, p_perun2& p2);
-_bool os_copyToFile(const _str& oldPath, const _str& newPath);
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, p_perun2& p2);
+p_bool os_moveTo(const p_str& oldPath, const p_str& newPath);
+p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, p_perun2& p2);
+p_bool os_copyToFile(const p_str& oldPath, const p_str& newPath);
+p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& p2);
 
-_bool os_copy(const _set& paths);
-_bool os_select(const _str& parent, const _set& paths);
+p_bool os_copy(const _set& paths);
+p_bool os_select(const p_str& parent, const _set& paths);
 
-_bool os_run(const _str& comm, const _str& location, p_perun2& p2);
+p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2);
 
-_bool os_isInvaild(const _str& path);
-uint32_t os_patternInfo(const _str& pattern);
+p_bool os_isInvaild(const p_str& path);
+uint32_t os_patternInfo(const p_str& pattern);
 
-_str os_doubleDotsPrefix(_int amount);
-_bool os_hasDotSegments(const _str& path);
-_str os_trimRetreats(const _str& path, _size& retreats);
-_str os_segmentWithName(const _str& path);
-_str os_retreats(_int times);
-_bool os_retreatPath(_str& path);
-void os_retreatPath(_str& path, _int times);
+p_str os_doubleDotsPrefix(p_int amount);
+p_bool os_hasDotSegments(const p_str& path);
+p_str os_trimRetreats(const p_str& path, p_size& retreats);
+p_str os_segmentWithName(const p_str& path);
+p_str os_retreats(p_int times);
+p_bool os_retreatPath(p_str& path);
+void os_retreatPath(p_str& path, p_int times);
 
 // return true if the result is a 'true path' (has no .. nor .)
-_bool os_extendPath(_str& result, const _str& path);
+p_bool os_extendPath(p_str& result, const p_str& path);
 
 // it is guaranteed, that both paths do not contain . nor ..
-_str os_softJoin(const _str& path1, const _str& path2);
+p_str os_softJoin(const p_str& path1, const p_str& path2);
 
 // the left path does not contain . nor .., the right path may
 // can return empty string if .. pushes us too far to the left
-_str os_leftJoin(const _str& path1, const _str& path2);
+p_str os_leftJoin(const p_str& path1, const p_str& path2);
 
 // both paths may contain multiple . and .. anywhere
-_str os_join(const _str& path1, const _str& path2);
+p_str os_join(const p_str& path1, const p_str& path2);
 
-_bool os_endsWithDoubleDot(const _str& path);
-_bool os_isAbsolute(const _str& path);
-_bool os_hasExtension(const _str& value);
-_bool os_isDriveLetter(const _char ch);
-_bool os_isPath(const _str& value);
-_bool os_isExplorableDirectory(const _str& name);
+p_bool os_endsWithDoubleDot(const p_str& path);
+p_bool os_isAbsolute(const p_str& path);
+p_bool os_hasExtension(const p_str& value);
+p_bool os_isDriveLetter(const p_char ch);
+p_bool os_isPath(const p_str& value);
+p_bool os_isExplorableDirectory(const p_str& name);
 
-_bool os_isAncestor(const _str& path, const _str& supposedChildPath);
-_bool os_hasParentDirectory(const _str& path);
-_str os_stackPath(const _str& path);
-_str os_stackPathExt(const _str& basePath, const _str& extension);
-_str os_stackPathBase(const _str& path);
+p_bool os_isAncestor(const p_str& path, const p_str& supposedChildPath);
+p_bool os_hasParentDirectory(const p_str& path);
+p_str os_stackPath(const p_str& path);
+p_str os_stackPathExt(const p_str& basePath, const p_str& extension);
+p_str os_stackPathBase(const p_str& path);
 
-_bool os_pathWasStacked(const _str& basePath);
-_str os_stackPathStacked(const _str& path);
-_str os_stackPathExtStacked(const _str& path, const _str& extension);
-void os_getStackedData(const _str& path, _nint& index, _str& basePath);
+p_bool os_pathWasStacked(const p_str& basePath);
+p_str os_stackPathStacked(const p_str& path);
+p_str os_stackPathExtStacked(const p_str& path, const p_str& extension);
+void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath);
 
-_str os_executablePath();
-_str os_desktopPath();
-_str os_currentPath();
-_str os_system32Path();
+p_str os_executablePath();
+p_str os_desktopPath();
+p_str os_currentPath();
+p_str os_system32Path();
 
-_bool os_readFile(_str& result, const _str& path);
-void os_showWebsite(const _str& url);
-_bool os_findText(const _str& path, const _str& value);
+p_bool os_readFile(p_str& result, const p_str& path);
+void os_showWebsite(const p_str& url);
+p_bool os_findText(const p_str& path, const p_str& value);
 
 inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high);
-inline _bool os_isBrowsePath(const _str& path);
-inline _tim os_convertToPerun2Time(const _ftim* time);
-inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result);
+inline p_bool os_isBrowsePath(const p_str& path);
+inline _tim os_convertToPerun2Time(const p_ftim* time);
+inline p_bool os_convertToFileTime(const _tim& perunTime, p_ftim& result);
 
-_str os_makeArg(const _str& value);
-_str os_quoteEmbraced(const _str& value);
+p_str os_makeArg(const p_str& value);
+p_str os_quoteEmbraced(const p_str& value);
 
 }
 

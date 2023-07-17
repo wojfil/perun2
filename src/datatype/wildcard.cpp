@@ -20,11 +20,11 @@ namespace perun2
 {
 
 
-WildcardComparer::WildcardComparer(const _str& pat)
+WildcardComparer::WildcardComparer(const p_str& pat)
    : pattern(pat), patternLength(pat.size()) { };
 
 
-_bool WildcardComparer::matches(const _str& val)
+p_bool WildcardComparer::matches(const p_str& val)
 {
    if (val.size() < this->minLength) {
       return false;
@@ -42,13 +42,13 @@ void WildcardComparer::clearCharStates()
       this->charStates.emplace_back(this->patternLength + 1, WildcardCharState::wcs_Unknown);
    }
 
-   const _size prevSize = this->charStates.size() - 1;
-   const _size nextSize = (*this->valuePtr).size();
+   const p_size prevSize = this->charStates.size() - 1;
+   const p_size nextSize = (*this->valuePtr).size();
 
    if (nextSize > prevSize) {
       this->charStates.reserve(nextSize + 1);
 
-      for (_size i = 0; i <= prevSize; i++) {
+      for (p_size i = 0; i <= prevSize; i++) {
          std::fill(this->charStates[i].begin(), this->charStates[i].end(), WildcardCharState::wcs_Unknown);
       }
 
@@ -57,22 +57,22 @@ void WildcardComparer::clearCharStates()
       }
    }
    else {
-      for (_size i = 0; i <= nextSize; i++) {
+      for (p_size i = 0; i <= nextSize; i++) {
          std::fill(this->charStates[i].begin(), this->charStates[i].end(), WildcardCharState::wcs_Unknown);
       }
    }
 }
 
 
-SimpleWildcardComparer::SimpleWildcardComparer(const _str& pat)
+SimpleWildcardComparer::SimpleWildcardComparer(const p_str& pat)
    : WildcardComparer(pat) { };
 
 
-_size SimpleWildcardComparer::getMinLength(const _str& pat) const
+p_size SimpleWildcardComparer::getMinLength(const p_str& pat) const
 {
-   _size result = 0;
+   p_size result = 0;
 
-   for (const _char ch : pat) {
+   for (const p_char ch : pat) {
       if (ch != CHAR_ASTERISK) {
          result++;
       }
@@ -82,7 +82,7 @@ _size SimpleWildcardComparer::getMinLength(const _str& pat) const
 }
 
 
-WildcardCharState SimpleWildcardComparer::checkState(const _size n, const _size m)
+WildcardCharState SimpleWildcardComparer::checkState(const p_size n, const p_size m)
 {
    if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
       return this->charStates[n][m];

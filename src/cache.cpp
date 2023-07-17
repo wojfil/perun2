@@ -74,9 +74,9 @@ void Cache::loadCmdPath()
    }
 }
 
-_bool Cache::isNotLoaded(const _cunit v)
+p_bool Cache::isNotLoaded(const _cunit v)
 {
-   const _bool notLoaded = !(this->value & v);
+   const p_bool notLoaded = !(this->value & v);
    if (notLoaded) {
       this->value |= v;
    }
@@ -84,16 +84,16 @@ _bool Cache::isNotLoaded(const _cunit v)
    return notLoaded;
 }
 
-_str Cache::getCmdProcessStartingArgs() const
+p_str Cache::getCmdProcessStartingArgs() const
 {
    return str(os_quoteEmbraced(this->context.strings[STRING_PERUN2]->value),
       CHAR_SPACE, CHAR_MINUS, CHAR_FLAG_SILENT, CHAR_SPACE);
 }
 
-_list Cache::getAlphabet() const
+p_list Cache::getAlphabet() const
 {
-   _list a(LETTERS_IN_ENGLISH_ALPHABET);
-   for (_int i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
+   p_list a(LETTERS_IN_ENGLISH_ALPHABET);
+   for (p_int i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {
       a[i] = CHAR_a + i;
    }
    return a;

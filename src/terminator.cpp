@@ -19,7 +19,7 @@
 namespace perun2
 {
 
-_bool Terminator::initialized = false;
+p_bool Terminator::initialized = false;
 std::unordered_set<p_perun2*> Terminator::processes;
 
 
@@ -41,7 +41,7 @@ void Terminator::removePtr(p_perun2* p2)
    processes.erase(p2);
 }
 
-_int Terminator::HandlerRoutine(_ulong dwCtrlType)
+p_int Terminator::HandlerRoutine(p_ulong dwCtrlType)
 {
    switch (dwCtrlType) {
       case CTRL_C_EVENT: {

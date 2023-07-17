@@ -43,7 +43,7 @@ void C_Create::run()
       }
 
       if (os_hasExtension(this->context->v_path->value)) {
-         const _bool s = os_createFile(this->context->v_path->value);
+         const p_bool s = os_createFile(this->context->v_path->value);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -55,7 +55,7 @@ void C_Create::run()
          }
       }
       else {
-         const _bool s = os_createDirectory(this->context->v_path->value);
+         const p_bool s = os_createDirectory(this->context->v_path->value);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -79,15 +79,15 @@ void C_Create_Stack::run()
          return;
       }
 
-      _str path = this->context->v_path->value;
-      const _bool hasExt = os_hasExtension(path);
-      _bool nameChanged = false;
+      p_str path = this->context->v_path->value;
+      const p_bool hasExt = os_hasExtension(path);
+      p_bool nameChanged = false;
 
       if (this->context->v_exists->value) {
          nameChanged = true;
          if (hasExt) {
-            const _str ex = os_extension(path);
-            const _str base = os_stackPathBase(path);
+            const p_str ex = os_extension(path);
+            const p_str base = os_stackPathBase(path);
             path = os_stackPathExt(base, ex);
          }
          else {
@@ -96,7 +96,7 @@ void C_Create_Stack::run()
       }
 
       if (hasExt) {
-         const _bool s = os_createFile(path);
+         const p_bool s = os_createFile(path);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -111,7 +111,7 @@ void C_Create_Stack::run()
          }
       }
       else {
-         const _bool s = os_createDirectory(path);
+         const p_bool s = os_createDirectory(path);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -146,7 +146,7 @@ void C_CreateFile::run()
          }
       }
 
-      const _bool s = os_createFile(this->context->v_path->value);
+      const p_bool s = os_createFile(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -169,15 +169,15 @@ void C_CreateFile_Stack::run()
          return;
       }
 
-      _str path = this->context->v_path->value;
-      const _bool hasExt = os_hasExtension(path);
-      _bool nameChanged = false;
+      p_str path = this->context->v_path->value;
+      const p_bool hasExt = os_hasExtension(path);
+      p_bool nameChanged = false;
 
       if (this->context->v_exists->value) {
          nameChanged = true;
          if (hasExt) {
-            const _str ex = os_extension(path);
-            const _str base = os_stackPathBase(path);
+            const p_str ex = os_extension(path);
+            const p_str base = os_stackPathBase(path);
             path = os_stackPathExt(base, ex);
          }
          else {
@@ -185,7 +185,7 @@ void C_CreateFile_Stack::run()
          }
       }
 
-      const _bool s = os_createFile(path);
+      const p_bool s = os_createFile(path);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -219,7 +219,7 @@ void C_CreateDirectory::run()
          }
       }
 
-      const _bool s = os_createDirectory(this->context->v_path->value);
+      const p_bool s = os_createDirectory(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -242,15 +242,15 @@ void C_CreateDirectory_Stack::run()
          return;
       }
 
-      _str path = this->context->v_path->value;
-      _bool nameChanged = false;
+      p_str path = this->context->v_path->value;
+      p_bool nameChanged = false;
 
       if (this->context->v_exists->value) {
          nameChanged = true;
          path = os_stackPath(path);
       }
 
-      const _bool s = os_createDirectory(path);
+      const p_bool s = os_createDirectory(path);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -272,8 +272,8 @@ void C_CreateDirectory_Stack::run()
 void C_Create_String::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str value = os_trim(element->getValue());
-      const _str& dest = this->locContext->location->value;
+      const p_str value = os_trim(element->getValue());
+      const p_str& dest = this->locContext->location->value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create ", getCCNameShort(value));
@@ -281,8 +281,8 @@ void C_Create_String::run()
          return;
       }
 
-      const _bool isFile = os_hasExtension(value);
-      const _str path = os_leftJoin(dest, value);
+      const p_bool isFile = os_hasExtension(value);
+      const p_str path = os_leftJoin(dest, value);
 
       if (path.empty()) {
          this->perun2.logger.log(L"Failed to create ", getCCNameShort(value));
@@ -304,7 +304,7 @@ void C_Create_String::run()
       }
 
       if (isFile) {
-         const _bool s = os_createFile(path);
+         const p_bool s = os_createFile(path);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -315,7 +315,7 @@ void C_Create_String::run()
          }
       }
       else {
-         const _bool s = os_createDirectory(path);
+         const p_bool s = os_createDirectory(path);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -332,8 +332,8 @@ void C_Create_String::run()
 void C_CreateFile_String::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str value = os_trim(element->getValue());
-      const _str& dest = this->locContext->location->value;
+      const p_str value = os_trim(element->getValue());
+      const p_str& dest = this->locContext->location->value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create file ", getCCNameShort(value));
@@ -341,7 +341,7 @@ void C_CreateFile_String::run()
          return;
       }
 
-      const _str path = os_leftJoin(dest, value);
+      const p_str path = os_leftJoin(dest, value);
 
       if (path.empty()) {
          this->perun2.logger.log(L"Failed to create file ", getCCNameShort(value));
@@ -357,7 +357,7 @@ void C_CreateFile_String::run()
          }
       }
 
-      const _bool s = os_createFile(path);
+      const p_bool s = os_createFile(path);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -373,8 +373,8 @@ void C_CreateFile_String::run()
 void C_CreateDirectory_String::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str value = os_trim(element->getValue());
-      const _str& dest = this->locContext->location->value;
+      const p_str value = os_trim(element->getValue());
+      const p_str& dest = this->locContext->location->value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(value));
@@ -382,7 +382,7 @@ void C_CreateDirectory_String::run()
          return;
       }
 
-      const _str path = os_leftJoin(dest, value);
+      const p_str path = os_leftJoin(dest, value);
       
       if (path.empty()) {
          this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(value));
@@ -398,7 +398,7 @@ void C_CreateDirectory_String::run()
          }
       }
 
-      const _bool s = os_createDirectory(path);
+      const p_bool s = os_createDirectory(path);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -414,8 +414,8 @@ void C_CreateDirectory_String::run()
 void C_Create_String_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str value = os_trim(element->getValue());
-      const _str& dest = this->locContext->location->value;
+      const p_str value = os_trim(element->getValue());
+      const p_str& dest = this->locContext->location->value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create ", getCCNameShort(value));
@@ -423,7 +423,7 @@ void C_Create_String_Stack::run()
          return;
       }
 
-      _str path = os_leftJoin(dest, value);
+      p_str path = os_leftJoin(dest, value);
 
       if (path.empty()) {
          this->perun2.logger.log(L"Failed to create ", getCCNameShort(value));
@@ -431,12 +431,12 @@ void C_Create_String_Stack::run()
          return;
       }
 
-      const _bool hasExt = os_hasExtension(value);
+      const p_bool hasExt = os_hasExtension(value);
 
       if (os_exists(path)) {
          if (hasExt) {
-            const _str ex = os_extension(path);
-            const _str base = os_stackPathBase(path);
+            const p_str ex = os_extension(path);
+            const p_str base = os_stackPathBase(path);
             path = os_stackPathExt(base, ex);
          }
          else {
@@ -445,7 +445,7 @@ void C_Create_String_Stack::run()
       }
 
       if (hasExt) {
-         const _bool s = os_createFile(path);
+         const p_bool s = os_createFile(path);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -456,7 +456,7 @@ void C_Create_String_Stack::run()
          }
       }
       else {
-         const _bool s = os_createDirectory(path);
+         const p_bool s = os_createDirectory(path);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -473,8 +473,8 @@ void C_Create_String_Stack::run()
 void C_CreateFile_String_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str value = os_trim(element->getValue());
-      const _str& dest = this->locContext->location->value;
+      const p_str value = os_trim(element->getValue());
+      const p_str& dest = this->locContext->location->value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create file ", getCCNameShort(value));
@@ -482,7 +482,7 @@ void C_CreateFile_String_Stack::run()
          return;
       }
 
-      _str path = os_leftJoin(dest, value);
+      p_str path = os_leftJoin(dest, value);
 
       if (path.empty()) {
          this->perun2.logger.log(L"Failed to create file ", getCCNameShort(value));
@@ -490,12 +490,12 @@ void C_CreateFile_String_Stack::run()
          return;
       }
 
-      const _bool hasExt = os_hasExtension(value);
+      const p_bool hasExt = os_hasExtension(value);
 
       if (os_exists(path)) {
          if (hasExt) {
-            const _str ex = os_extension(path);
-            const _str base = os_stackPathBase(path);
+            const p_str ex = os_extension(path);
+            const p_str base = os_stackPathBase(path);
             path = os_stackPathExt(base, ex);
          }
          else {
@@ -503,7 +503,7 @@ void C_CreateFile_String_Stack::run()
          }
       }
 
-      const _bool s = os_createFile(path);
+      const p_bool s = os_createFile(path);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -519,8 +519,8 @@ void C_CreateFile_String_Stack::run()
 void C_CreateDirectory_String_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str value = os_trim(element->getValue());
-      const _str& dest = this->locContext->location->value;
+      const p_str value = os_trim(element->getValue());
+      const p_str& dest = this->locContext->location->value;
 
       if (os_isInvaild(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(value));
@@ -528,7 +528,7 @@ void C_CreateDirectory_String_Stack::run()
          return;
       }
 
-      _str path = os_leftJoin(dest, value);
+      p_str path = os_leftJoin(dest, value);
 
       if (path.empty()) {
          this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(value));
@@ -540,7 +540,7 @@ void C_CreateDirectory_String_Stack::run()
          path = os_stackPath(path);
       }
 
-      const _bool s = os_createDirectory(path);
+      const p_bool s = os_createDirectory(path);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -557,9 +557,9 @@ void C_CreateDirectory_String_Stack::run()
 void C_Create_List::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& dest = this->locContext->location->value;
-      const _list names = elements->getValue();
-      const _size len = names.size();
+      const p_str& dest = this->locContext->location->value;
+      const p_list names = elements->getValue();
+      const p_size len = names.size();
 
       if (len == 0) {
          this->perun2.contexts.success->value = true;
@@ -567,9 +567,9 @@ void C_Create_List::run()
       }
 
       if (!os_directoryExists(dest)) {
-         for (_size i = 0; i < len; i++) {
-            const _str n = os_trim(names[i]);
-            const _bool isFile = os_hasExtension(n);
+         for (p_size i = 0; i < len; i++) {
+            const p_str n = os_trim(names[i]);
+            const p_bool isFile = os_hasExtension(n);
 
             if (isFile) {
                this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
@@ -582,11 +582,11 @@ void C_Create_List::run()
          return;
       }
 
-      _bool success = true;
+      p_bool success = true;
 
-      for (_size i = 0; i < len; i++) {
-         const _str n = os_trim(names[i]);
-         const _bool isFile = os_hasExtension(n);
+      for (p_size i = 0; i < len; i++) {
+         const p_str n = os_trim(names[i]);
+         const p_bool isFile = os_hasExtension(n);
 
          if (os_isInvaild(n)) {
             if (isFile) {
@@ -599,7 +599,7 @@ void C_Create_List::run()
             continue;
          }
 
-         const _str path = os_leftJoin(dest, n);
+         const p_str path = os_leftJoin(dest, n);
 
          if (path.empty()) {
             if (isFile) {
@@ -626,7 +626,7 @@ void C_Create_List::run()
          }
 
          if (os_hasExtension(n)) {
-            const _bool s = os_createFile(path);
+            const p_bool s = os_createFile(path);
             this->perun2.contexts.success->value = s;
 
             if (s) {
@@ -638,7 +638,7 @@ void C_Create_List::run()
             }
          }
          else {
-            const _bool s = os_createDirectory(path);
+            const p_bool s = os_createDirectory(path);
             this->perun2.contexts.success->value = s;
 
             if (s) {
@@ -659,34 +659,34 @@ void C_Create_List::run()
 void C_CreateFiles_List::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& dest = this->locContext->location->value;
-      const _list names = elements->getValue();
-      const _size len = names.size();
+      const p_str& dest = this->locContext->location->value;
+      const p_list names = elements->getValue();
+      const p_size len = names.size();
       if (len == 0) {
          this->perun2.contexts.success->value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
-         for (_size i = 0; i < len; i++) {
-            const _str n = os_trim(names[i]);
+         for (p_size i = 0; i < len; i++) {
+            const p_str n = os_trim(names[i]);
             this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
       }
 
-      _bool success = true;
+      p_bool success = true;
 
-      for (_size i = 0; i < len; i++) {
-         const _str n = os_trim(names[i]);
+      for (p_size i = 0; i < len; i++) {
+         const p_str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
             this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
             success = false;
          }
          else {
-            const _str path = os_leftJoin(dest, n);
+            const p_str path = os_leftJoin(dest, n);
 
             if (path.empty()) {
                this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
@@ -702,7 +702,7 @@ void C_CreateFiles_List::run()
                }
             }
 
-            const _bool s = os_createFile(path);
+            const p_bool s = os_createFile(path);
             this->perun2.contexts.success->value = s;
 
             if (s) {
@@ -723,34 +723,34 @@ void C_CreateFiles_List::run()
 void C_CreateDirectories_List::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& dest = this->locContext->location->value;
-      const _list names = elements->getValue();
-      const _size len = names.size();
+      const p_str& dest = this->locContext->location->value;
+      const p_list names = elements->getValue();
+      const p_size len = names.size();
       if (len == 0) {
          this->perun2.contexts.success->value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
-         for (_size i = 0; i < len; i++) {
-            const _str n = os_trim(names[i]);
+         for (p_size i = 0; i < len; i++) {
+            const p_str n = os_trim(names[i]);
             this->perun2.logger.log(L"Failed to directory ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
       }
 
-      _bool success = true;
+      p_bool success = true;
 
-      for (_size i = 0; i < len; i++) {
-         const _str n = os_trim(names[i]);
+      for (p_size i = 0; i < len; i++) {
+         const p_str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
             this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
             success = false;
          }
          else {
-            const _str path = os_leftJoin(dest, n);
+            const p_str path = os_leftJoin(dest, n);
 
             if (path.empty()) {
                this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
@@ -766,7 +766,7 @@ void C_CreateDirectories_List::run()
                }
             }
 
-            const _bool s = os_createDirectory(path);
+            const p_bool s = os_createDirectory(path);
             this->perun2.contexts.success->value = s;
 
             if (s) {
@@ -787,18 +787,18 @@ void C_CreateDirectories_List::run()
 void C_Create_List_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& dest = this->locContext->location->value;
-      const _list names = elements->getValue();
-      const _size len = names.size();
+      const p_str& dest = this->locContext->location->value;
+      const p_list names = elements->getValue();
+      const p_size len = names.size();
       if (len == 0) {
          this->perun2.contexts.success->value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
-         for (_size i = 0; i < len; i++) {
-            const _str n = os_trim(names[i]);
-            const _bool isFile = os_hasExtension(n);
+         for (p_size i = 0; i < len; i++) {
+            const p_str n = os_trim(names[i]);
+            const p_bool isFile = os_hasExtension(n);
 
             if (isFile) {
                this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
@@ -811,17 +811,17 @@ void C_Create_List_Stack::run()
          return;
       }
 
-      _bool success = true;
+      p_bool success = true;
 
-      for (_size i = 0; i < len; i++) {
-         const _str n = os_trim(names[i]);
+      for (p_size i = 0; i < len; i++) {
+         const p_str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
             this->perun2.logger.log(L"Failed to create ", getCCNameShort(n));
             success = false;
          }
          else {
-            _str path = os_leftJoin(dest, n);
+            p_str path = os_leftJoin(dest, n);
 
             if (path.empty()) {
                this->perun2.logger.log(L"Failed to create ", getCCNameShort(n));
@@ -829,12 +829,12 @@ void C_Create_List_Stack::run()
                continue;
             }
 
-            const _bool hasExt = os_hasExtension(path);
+            const p_bool hasExt = os_hasExtension(path);
 
             if (os_exists(path)) {
                if (hasExt) {
-                  const _str ext = os_extension(path);
-                  const _str base = os_stackPathBase(path);
+                  const p_str ext = os_extension(path);
+                  const p_str base = os_stackPathBase(path);
                   path = os_stackPathExt(base, ext);
                }
                else {
@@ -843,7 +843,7 @@ void C_Create_List_Stack::run()
             }
 
             if (hasExt) {
-               const _bool s = os_createFile(path);
+               const p_bool s = os_createFile(path);
                this->perun2.contexts.success->value = s;
 
                if (s) {
@@ -855,7 +855,7 @@ void C_Create_List_Stack::run()
                }
             }
             else {
-               const _bool s = os_createDirectory(path);
+               const p_bool s = os_createDirectory(path);
                this->perun2.contexts.success->value = s;
 
                if (s) {
@@ -877,34 +877,34 @@ void C_Create_List_Stack::run()
 void C_CreateFiles_List_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& dest = this->locContext->location->value;
-      const _list names = elements->getValue();
-      const _size len = names.size();
+      const p_str& dest = this->locContext->location->value;
+      const p_list names = elements->getValue();
+      const p_size len = names.size();
       if (len == 0) {
          this->perun2.contexts.success->value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
-         for (_size i = 0; i < len; i++) {
-            const _str n = os_trim(names[i]);
+         for (p_size i = 0; i < len; i++) {
+            const p_str n = os_trim(names[i]);
             this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
       }
 
-      _bool success = true;
+      p_bool success = true;
 
-      for (_size i = 0; i < len; i++) {
-         const _str n = os_trim(names[i]);
+      for (p_size i = 0; i < len; i++) {
+         const p_str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
             this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
             success = false;
          }
          else {
-            _str path = os_leftJoin(dest, n);
+            p_str path = os_leftJoin(dest, n);
 
             if (path.empty()) {
                this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
@@ -912,12 +912,12 @@ void C_CreateFiles_List_Stack::run()
                continue;
             }
 
-            const _bool hasExt = os_hasExtension(path);
+            const p_bool hasExt = os_hasExtension(path);
 
             if (os_exists(path)) {
                if (hasExt) {
-                  const _str ext = os_extension(path);
-                  const _str base = os_stackPathBase(path);
+                  const p_str ext = os_extension(path);
+                  const p_str base = os_stackPathBase(path);
                   path = os_stackPathExt(base, ext);
                }
                else {
@@ -925,7 +925,7 @@ void C_CreateFiles_List_Stack::run()
                }
             }
 
-            const _bool s = os_createFile(path);
+            const p_bool s = os_createFile(path);
             this->perun2.contexts.success->value = s;
 
             if (s) {
@@ -946,34 +946,34 @@ void C_CreateFiles_List_Stack::run()
 void C_CreateDirectories_List_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& dest = this->locContext->location->value;
-      const _list names = elements->getValue();
-      const _size len = names.size();
+      const p_str& dest = this->locContext->location->value;
+      const p_list names = elements->getValue();
+      const p_size len = names.size();
       if (len == 0) {
          this->perun2.contexts.success->value = true;
          return;
       }
 
       if (!os_directoryExists(dest)) {
-         for (_size i = 0; i < len; i++) {
-            const _str n = os_trim(names[i]);
+         for (p_size i = 0; i < len; i++) {
+            const p_str n = os_trim(names[i]);
             this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
          }
          this->perun2.contexts.success->value = false;
          return;
       }
 
-      _bool success = true;
+      p_bool success = true;
 
-      for (_size i = 0; i < len; i++) {
-         const _str n = os_trim(names[i]);
+      for (p_size i = 0; i < len; i++) {
+         const p_str n = os_trim(names[i]);
 
          if (os_isInvaild(n)) {
             this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
             success = false;
          }
          else {
-            _str path = os_leftJoin(dest, n);
+            p_str path = os_leftJoin(dest, n);
 
             if (path.empty()) {
                this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
@@ -985,7 +985,7 @@ void C_CreateDirectories_List_Stack::run()
                path = os_stackPath(path);
             }
 
-            const _bool s = os_createDirectory(path);
+            const p_bool s = os_createDirectory(path);
             this->perun2.contexts.success->value = s;
 
             if (s) {

@@ -27,9 +27,9 @@
 namespace perun2::parse
 {
 
-_bool parseDefinition(_defptr& result, const Tokens& tks, p_perun2& p2)
+p_bool parseDefinition(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -50,7 +50,7 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, p_perun2& p2)
 // Definition chain is a collection of Strings, Lists and Definitions
 // separated by commas, that contains at least one Definition
 // as a result, multiple elements are transformed into one Definition and lazy evaluation is preserved
-static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -59,12 +59,12 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
    };
 
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
-   const _size len = elements.size();
+   const p_size len = elements.size();
 
    ChainLink cl;
    _defptr prevDef;
-   _genptr<_str> prevStr;
-   _genptr<_list> prevList;
+   _genptr<p_str> prevStr;
+   _genptr<p_list> prevList;
 
    if (parse(p2, elements[0], prevDef)) {
       cl = ChainLink::cl_Definition;
@@ -83,7 +83,7 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       const Tokens& tk = elements[i];
 
       switch (cl) {
@@ -94,13 +94,13 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
                prevDef = std::make_unique<gen::Join_DefDef>(pdef, def, p2);
             }
             else {
-               _genptr<_str> str;
+               _genptr<p_str> str;
                if (parse(p2, tk, str)) {
                   _defptr pdef = std::move(prevDef);
                   prevDef = std::make_unique<gen::Join_DefStr>(pdef, str, p2);
                }
                else {
-                  _genptr<_list> list;
+                  _genptr<p_list> list;
                   if (parse(p2, tk, list)) {
                      _defptr pdef = std::move(prevDef);
                      prevDef = std::make_unique<gen::Join_DefList>(pdef, list, p2);
@@ -121,14 +121,14 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
                cl = ChainLink::cl_Definition;
             }
             else {
-               _genptr<_str> str;
+               _genptr<p_str> str;
                if (parse(p2, tk, str)) {
                   prevList = std::make_unique<gen::Join_StrStr>(prevStr, str);
                   prevStr.reset();
                   cl = ChainLink::cl_List;
                }
                else {
-                  _genptr<_list> list;
+                  _genptr<p_list> list;
                   if (parse(p2, tk, list)) {
                      prevList = std::make_unique<gen::Join_StrList>(prevStr, list);
                      prevStr.reset();
@@ -150,15 +150,15 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
                cl = ChainLink::cl_Definition;
             }
             else {
-               _genptr<_str> str;
+               _genptr<p_str> str;
                if (parse(p2, tk, str)) {
-                  _genptr<_list> plist(std::move(prevList));
+                  _genptr<p_list> plist(std::move(prevList));
                   prevList = std::make_unique<gen::Join_ListStr>(plist, str);
                }
                else {
-                  _genptr<_list> list;
+                  _genptr<p_list> list;
                   if (parse(p2, tk, list)) {
-                     _genptr<_list> plist(std::move(prevList));
+                     _genptr<p_list> plist(std::move(prevList));
                      prevList = std::make_unique<gen::Join_ListList>(plist, list);
                   }
                   else {
@@ -180,7 +180,7 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static _bool parseDefTernary(_defptr& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseDefTernary(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -188,7 +188,7 @@ static _bool parseDefTernary(_defptr& result, const Tokens& tks, p_perun2& p2)
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    if (!parse(p2, std::get<0>(trio), condition)) {
       return false;
    }
@@ -208,7 +208,7 @@ static _bool parseDefTernary(_defptr& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static _bool parseDefBinary(_defptr& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseDefBinary(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -216,7 +216,7 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, p_perun2& p2)
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_QUESTION_MARK);
 
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    if (!parse(p2, pair.first, condition)) {
       return false;
    }
@@ -231,21 +231,21 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static _bool parseDefFilter(_defptr& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseDefFilter(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size firstKeywordId = tks.getFilterKeywordId(p2);
+   const p_size firstKeywordId = tks.getFilterKeywordId(p2);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
    _defptr base;
    if (!parse(p2, tks2, base)) {
       return false;
    }
 
-   const _int kw = firstKeywordId - tks.getStart() + 1;
-   const _int start = tks.getStart() + kw;
-   const _int length = tks.getLength() - kw;
+   const p_int kw = firstKeywordId - tks.getStart() + 1;
+   const p_int start = tks.getStart() + kw;
+   const p_int length = tks.getLength() - kw;
    const Tokens tks3(tks, start, length);
    std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(p2);
-   const _size flength = filterTokens.size();
+   const p_size flength = filterTokens.size();
 
    FileContext* contextPtr = base->getFileContext();
    if (contextPtr == nullptr) {
@@ -256,7 +256,7 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, p_perun2& p2)
 
    p2.contexts.addFileContext(contextPtr);
 
-   for (_size i = 0; i < flength; i++) {
+   for (p_size i = 0; i < flength; i++) {
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
       const Keyword& kw = tsf.value.keyword.k;
@@ -312,7 +312,7 @@ static _bool parseDefFilter(_defptr& result, const Tokens& tks, p_perun2& p2)
             break;
          }
          case Keyword::kw_Where: {
-            _genptr<_bool> boo;
+            _genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
                throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
             }

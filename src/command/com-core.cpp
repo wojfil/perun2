@@ -29,7 +29,7 @@ namespace perun2::comm
 void C_Delete::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_delete(this->context->v_path->value);
+      const p_bool s = this->context->v_exists->value && os_delete(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -45,7 +45,7 @@ void C_Delete::run()
 void C_Drop::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->perun2);
+      const p_bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -63,7 +63,7 @@ void C_Drop::run()
 void C_Hide::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_hide(this->context->v_path->value);
+      const p_bool s = this->context->v_exists->value && os_hide(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -81,7 +81,7 @@ void C_Hide::run()
 void C_Lock::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_lock(this->context->v_path->value);
+      const p_bool s = this->context->v_exists->value && os_lock(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -99,7 +99,7 @@ void C_Lock::run()
 void C_Open::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_open(this->context->v_path->value);
+      const p_bool s = this->context->v_exists->value && os_open(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -114,7 +114,7 @@ void C_Open::run()
 void C_Unlock::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_unlock(this->context->v_path->value);
+      const p_bool s = this->context->v_exists->value && os_unlock(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -132,7 +132,7 @@ void C_Unlock::run()
 void C_Unhide::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _bool s = this->context->v_exists->value && os_unhide(this->context->v_path->value);
+      const p_bool s = this->context->v_exists->value && os_unhide(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -150,7 +150,7 @@ void C_Unhide::run()
 void C_OpenWith::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str pro = os_trim(program->getValue());
+      const p_str pro = os_trim(program->getValue());
 
       if (!this->context->v_exists->value || pro.empty()) {
          this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
@@ -158,7 +158,7 @@ void C_OpenWith::run()
          return;
       }
 
-      const _str proPath = os_leftJoin(this->locationContext->location->value, pro);
+      const p_str proPath = os_leftJoin(this->locationContext->location->value, pro);
 
       if (proPath.empty()) {
          this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
@@ -167,7 +167,7 @@ void C_OpenWith::run()
       }
 
       if (os_exists(proPath)) {
-         const _bool s = os_openWith(proPath, this->context->v_path->value);
+         const p_bool s = os_openWith(proPath, this->context->v_path->value);
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -184,8 +184,8 @@ void C_OpenWith::run()
             return;
          }
 
-         const _str com = str(pro, CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
-         const _bool s = os_openAsCommand(com, os_parent(this->context->v_path->value));
+         const p_str com = str(pro, CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
+         const p_bool s = os_openAsCommand(com, os_parent(this->context->v_path->value));
          this->perun2.contexts.success->value = s;
 
          if (s) {
@@ -287,7 +287,7 @@ void C_RemodifyTo::run()
 void C_RenameTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str n = os_fullname(os_trim(name->getValue()));
+      p_str n = os_fullname(os_trim(name->getValue()));
 
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(this->context->v_path->value) || os_isAbsolute(n)) {
@@ -297,14 +297,14 @@ void C_RenameTo::run()
          return;
       }
 
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(this->context->v_path->value);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(this->context->v_path->value);
 
       if (!extensionless && hasExt && !os_hasExtension(n)) {
          n += str(CHAR_DOT, os_extension(this->context->v_path->value));
       }
 
-      const _str base = os_parent(this->context->v_path->value);
-      const _str newPath = str(base, OS_SEPARATOR, n);
+      const p_str base = os_parent(this->context->v_path->value);
+      const p_str newPath = str(base, OS_SEPARATOR, n);
 
       if (os_exists(newPath)) {
          if (!(forced && os_drop(newPath, this->perun2))) {
@@ -314,7 +314,7 @@ void C_RenameTo::run()
          }
       }
 
-      const _bool s = os_moveTo(this->context->v_path->value, newPath);
+      const p_bool s = os_moveTo(this->context->v_path->value, newPath);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -336,8 +336,8 @@ void C_RenameTo::run()
 void C_RenameTo_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str n = os_fullname(os_trim(name->getValue()));
+      p_str& oldPath = this->context->v_path->value;
+      p_str n = os_fullname(os_trim(name->getValue()));
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
@@ -346,10 +346,10 @@ void C_RenameTo_Stack::run()
          return;
       }
 
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
-      const _str parent = os_parent(oldPath);
-      _str newPath;
-      _str ex;
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_str parent = os_parent(oldPath);
+      p_str newPath;
+      p_str ex;
 
       if (hasExt) {
          if (os_hasExtension(n)) {
@@ -365,7 +365,7 @@ void C_RenameTo_Stack::run()
          newPath = str(parent, OS_SEPARATOR, n);
 
          if (os_exists(newPath)) {
-            const _str base = os_stackPathBase(newPath);
+            const p_str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
          }
       }
@@ -374,7 +374,7 @@ void C_RenameTo_Stack::run()
          newPath = os_stackPath(newPath);
       }
 
-      const _bool s = os_moveTo(oldPath, newPath);
+      const p_bool s = os_moveTo(oldPath, newPath);
       
       if (hasExt) {
          n = os_fullname(newPath);
@@ -405,8 +405,8 @@ void C_RenameTo_Stack::run()
 void C_MoveTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str n = os_trim(location->getValue());
+      p_str& oldPath = this->context->v_path->value;
+      p_str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n)
           || !os_hasParentDirectory(oldPath)) {
@@ -416,7 +416,7 @@ void C_MoveTo::run()
          return;
       }
 
-      const _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+      const p_str newLoc = os_leftJoin(this->locationContext->location->value, n);
 
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -432,8 +432,8 @@ void C_MoveTo::run()
          }
       }
 
-      const _str fulln = os_fullname(oldPath);
-      const _str newPath = str(newLoc, OS_SEPARATOR, fulln);
+      const p_str fulln = os_fullname(oldPath);
+      const p_str newPath = str(newLoc, OS_SEPARATOR, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath)) 
@@ -445,7 +445,7 @@ void C_MoveTo::run()
          }
       }
 
-      const _bool s = os_moveTo(oldPath, newPath);
+      const p_bool s = os_moveTo(oldPath, newPath);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -464,8 +464,8 @@ void C_MoveTo::run()
 void C_MoveTo_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str n = os_trim(location->getValue());
+      p_str& oldPath = this->context->v_path->value;
+      p_str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -473,7 +473,7 @@ void C_MoveTo_Stack::run()
          return;
       }
 
-      _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+      p_str newLoc = os_leftJoin(this->locationContext->location->value, n);
       
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -489,14 +489,14 @@ void C_MoveTo_Stack::run()
          }
       }
 
-      const _str fulln = os_fullname(oldPath);
-      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_str fulln = os_fullname(oldPath);
+      p_str newPath = str(newLoc, OS_SEPARATOR, fulln);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (hasExt) {
-            const _str ext = os_extension(newPath);
-            const _str base = os_stackPathBase(newPath);
+            const p_str ext = os_extension(newPath);
+            const p_str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ext);
          }
          else {
@@ -504,7 +504,7 @@ void C_MoveTo_Stack::run()
          }
       }
 
-      const _bool s = os_moveTo(oldPath, newPath);
+      const p_bool s = os_moveTo(oldPath, newPath);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -523,9 +523,9 @@ void C_MoveTo_Stack::run()
 void C_MoveToAs::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str fulln = os_fullname(os_trim(name->getValue()));
-      const _str loc = os_trim(location->getValue());
+      p_str& oldPath = this->context->v_path->value;
+      p_str fulln = os_fullname(os_trim(name->getValue()));
+      const p_str loc = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(fulln)
            || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
@@ -535,13 +535,13 @@ void C_MoveToAs::run()
          return;
       }
 
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
          fulln += str(CHAR_DOT, os_extension(oldPath));
       }
 
-      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+      const p_str newLoc = os_leftJoin(this->locationContext->location->value, loc);
 
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -557,7 +557,7 @@ void C_MoveToAs::run()
          }
       }
 
-      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
+      p_str newPath = str(newLoc, OS_SEPARATOR, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
@@ -569,7 +569,7 @@ void C_MoveToAs::run()
          }
       }
 
-      const _bool s = os_moveTo(oldPath, newPath);
+      const p_bool s = os_moveTo(oldPath, newPath);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -588,9 +588,9 @@ void C_MoveToAs::run()
 void C_MoveToAs_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& oldPath = this->context->v_path->value;
-      _str fulln = os_fullname(os_trim(name->getValue()));
-      const _str loc = os_trim(location->getValue());
+      const p_str& oldPath = this->context->v_path->value;
+      p_str fulln = os_fullname(os_trim(name->getValue()));
+      const p_str loc = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(fulln)
           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
@@ -600,8 +600,8 @@ void C_MoveToAs_Stack::run()
          return;
       }
 
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
-      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_str newLoc = os_leftJoin(this->locationContext->location->value, loc);
 
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -617,11 +617,11 @@ void C_MoveToAs_Stack::run()
          }
       }
 
-      _str newPath;
-      _bool s;
+      p_str newPath;
+      p_bool s;
 
       if (hasExt) {
-         _str ex;
+         p_str ex;
          if (os_hasExtension(fulln)) {
             ex = os_extension(fulln);
          }
@@ -634,7 +634,7 @@ void C_MoveToAs_Stack::run()
 
          newPath = str(newLoc, OS_SEPARATOR, fulln);
          if (os_exists(newPath)) {
-            const _str base = os_stackPathBase(newPath);
+            const p_str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
             fulln = os_fullname(newPath);
          }
@@ -666,8 +666,8 @@ void C_MoveToAs_Stack::run()
 void C_CopyTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str n = os_trim(location->getValue());
+      p_str& oldPath = this->context->v_path->value;
+      p_str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -675,7 +675,7 @@ void C_CopyTo::run()
          return;
       }
 
-      const _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+      const p_str newLoc = os_leftJoin(this->locationContext->location->value, n);
 
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -691,8 +691,8 @@ void C_CopyTo::run()
          }
       }
 
-      const _str fulln = os_fullname(oldPath);
-      const _str newPath = str(newLoc, OS_SEPARATOR, fulln);
+      const p_str fulln = os_fullname(oldPath);
+      const p_str newPath = str(newLoc, OS_SEPARATOR, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
@@ -704,7 +704,7 @@ void C_CopyTo::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      const p_bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -719,8 +719,8 @@ void C_CopyTo::run()
 void C_CopyTo_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str n = os_trim(location->getValue());
+      p_str& oldPath = this->context->v_path->value;
+      p_str n = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -728,7 +728,7 @@ void C_CopyTo_Stack::run()
          return;
       }
 
-      _str newLoc = os_leftJoin(this->locationContext->location->value, n);
+      p_str newLoc = os_leftJoin(this->locationContext->location->value, n);
       
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -744,14 +744,14 @@ void C_CopyTo_Stack::run()
          }
       }
 
-      const _str fulln = os_fullname(oldPath);
-      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_str fulln = os_fullname(oldPath);
+      p_str newPath = str(newLoc, OS_SEPARATOR, fulln);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (os_exists(newPath)) {
          if (hasExt) {
-            const _str ext = os_extension(newPath);
-            const _str base = os_stackPathBase(newPath);
+            const p_str ext = os_extension(newPath);
+            const p_str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ext);
          }
          else {
@@ -759,7 +759,7 @@ void C_CopyTo_Stack::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      const p_bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -774,9 +774,9 @@ void C_CopyTo_Stack::run()
 void C_CopyToAs::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _str& oldPath = this->context->v_path->value;
-      _str fulln = os_fullname(os_trim(name->getValue()));
-      const _str loc = os_trim(location->getValue());
+      p_str& oldPath = this->context->v_path->value;
+      p_str fulln = os_fullname(os_trim(name->getValue()));
+      const p_str loc = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
@@ -785,13 +785,13 @@ void C_CopyToAs::run()
          return;
       }
 
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!extensionless && hasExt && !os_hasExtension(fulln)) {
          fulln += str(CHAR_DOT, os_extension(oldPath));
       }
 
-      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+      const p_str newLoc = os_leftJoin(this->locationContext->location->value, loc);
 
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -808,7 +808,7 @@ void C_CopyToAs::run()
          }
       }
 
-      _str newPath = str(newLoc, OS_SEPARATOR, fulln);
+      p_str newPath = str(newLoc, OS_SEPARATOR, fulln);
 
       if (os_exists(newPath)) {
          if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
@@ -820,7 +820,7 @@ void C_CopyToAs::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      const p_bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -835,9 +835,9 @@ void C_CopyToAs::run()
 void C_CopyToAs_Stack::run()
 {
    if (this->perun2.state == State::s_Running) {
-      const _str& oldPath = this->context->v_path->value;
-      _str fulln = os_fullname(os_trim(name->getValue()));
-      const _str loc = os_trim(location->getValue());
+      const p_str& oldPath = this->context->v_path->value;
+      p_str fulln = os_fullname(os_trim(name->getValue()));
+      const p_str loc = os_trim(location->getValue());
 
       if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
       {
@@ -846,7 +846,7 @@ void C_CopyToAs_Stack::run()
          return;
       }
 
-      const _str newLoc = os_leftJoin(this->locationContext->location->value, loc);
+      const p_str newLoc = os_leftJoin(this->locationContext->location->value, loc);
 
       if (newLoc.empty()) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -854,7 +854,7 @@ void C_CopyToAs_Stack::run()
          return;
       }
 
-      const _bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
+      const p_bool hasExt = this->context->v_isfile->value && os_hasExtension(oldPath);
 
       if (!os_directoryExists(newLoc)) {
          if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
@@ -864,10 +864,10 @@ void C_CopyToAs_Stack::run()
          }
       }
 
-      _str newPath;
+      p_str newPath;
 
       if (hasExt) {
-         _str ex;
+         p_str ex;
          if (os_hasExtension(fulln)) {
             ex = os_extension(fulln);
          }
@@ -880,7 +880,7 @@ void C_CopyToAs_Stack::run()
 
          newPath = str(newLoc, OS_SEPARATOR, fulln);
          if (os_exists(newPath)) {
-            const _str base = os_stackPathBase(newPath);
+            const p_str base = os_stackPathBase(newPath);
             newPath = os_stackPathExt(base, ex);
             fulln = os_fullname(newPath);
          }
@@ -893,7 +893,7 @@ void C_CopyToAs_Stack::run()
          }
       }
 
-      const _bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
+      const p_bool s = os_copyTo(oldPath, newPath, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
@@ -905,7 +905,7 @@ void C_CopyToAs_Stack::run()
    }
 }
 
-_str getCCName(const _str& path)
+p_str getCCName(const p_str& path)
 {
    if (path.empty()) {
       return STRING_NOTHING;
@@ -916,13 +916,13 @@ _str getCCName(const _str& path)
       : str(CHAR_APOSTROPHE, path, OS_SEPARATOR, CHAR_APOSTROPHE);
 }
 
-_str getCCNameShort(const _str& path)
+p_str getCCNameShort(const p_str& path)
 {
    if (path.empty()) {
       return STRING_NOTHING;
    }
 
-   const _str f = os_fullname(path);
+   const p_str f = os_fullname(path);
    if (f.empty()) {
       return STRING_NOTHING;
    }

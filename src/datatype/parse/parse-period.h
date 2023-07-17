@@ -22,13 +22,13 @@
 namespace perun2::parse
 {
 
-_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
+p_bool parsePeriod(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
 
-_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const _bool negated, p_perun2& p2);
-_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
-_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
-_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
-_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
+p_bool parsePeriodConst(_genptr<_per>& result, const Tokens& tks, const p_bool negated, p_perun2& p2);
+p_bool parsePeriodUnit(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
+p_bool parsePeriodExp(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
+p_bool parsePeriodExpDiff(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseTimeDifference(_genptr<_per>& result, const Tokens& tks, p_perun2& p2);
 Period::PeriodUnit toPeriodUnit(const Token& tk, p_perun2& p2);
 
 }

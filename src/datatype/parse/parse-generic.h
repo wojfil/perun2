@@ -27,11 +27,11 @@
 namespace perun2::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
 void checkLimitBySize(const Tokens& tks, p_perun2& p2);
 
 template <typename T>
-static _bool parseTernary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseTernary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -39,7 +39,7 @@ static _bool parseTernary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    if (!parse(p2, std::get<0>(trio), condition)) {
       return false;
    }
@@ -80,7 +80,7 @@ static _bool parseTernary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 
 
 template <typename T>
-static _bool parseBinary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseBinary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -88,7 +88,7 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_QUESTION_MARK);
 
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    if (!parse(p2, pair.first, condition)) {
       return false;
    }
@@ -120,14 +120,14 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 
 
 template <typename T>
-static _bool parseListedValues(_genptr<std::vector<T>>& res,
+static p_bool parseListedValues(_genptr<std::vector<T>>& res,
    const std::vector<Tokens>& elements, p_perun2& p2)
 {
-   const _size len = elements.size();
+   const p_size len = elements.size();
    std::vector<_genptr<T>> result;
-   _bool isConstant = true;
+   p_bool isConstant = true;
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       _genptr<T> value;
       if (parse(p2, tks, value)) {
@@ -155,14 +155,14 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
 
 
 template <typename T>
-static _bool parseListedLists(_genptr<std::vector<T>>& res,
+static p_bool parseListedLists(_genptr<std::vector<T>>& res,
    const std::vector<Tokens>& elements, p_perun2& p2)
 {
-   const _size len = elements.size();
+   const p_size len = elements.size();
    std::vector<_genptr<std::vector<T>>> result;
-   _bool isConstant = true;
+   p_bool isConstant = true;
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       _genptr<std::vector<T>> value;
       if (parse(p2, tks, value)) {
@@ -190,7 +190,7 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
 
 
 template <typename T>
-static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -207,7 +207,7 @@ static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, p_p
 
 
 template <typename T>
-static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return false;

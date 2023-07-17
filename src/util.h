@@ -35,7 +35,7 @@ void appendVector(std::vector<T>& dest, const std::vector<T>& source)
 // delete previous content of vector
 // and reserve deterministic new memory
 template <typename T>
-void clearAndReserve(std::vector<T>& vec, const _size length)
+void clearAndReserve(std::vector<T>& vec, const p_size length)
 {
    vec.clear();
    vec.reserve(length);
@@ -45,8 +45,8 @@ void clearAndReserve(std::vector<T>& vec, const _size length)
 template <typename T>
 void transferUniquePtrs(std::vector<std::unique_ptr<T>>& source, std::vector<std::unique_ptr<T>>& destination)
 {
-   const _size len = source.size();
-   for (_size i = 0; i < len; i++) {
+   const p_size len = source.size();
+   for (p_size i = 0; i < len; i++) {
       std::unique_ptr<T>& s = source[i];
       destination.push_back(std::move(s));
    }

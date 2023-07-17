@@ -25,83 +25,83 @@ class SyntaxError
 {
 public:
    SyntaxError() = delete;
-   SyntaxError(const _str& msg, const _int li);
-   _str getMessage() const;
+   SyntaxError(const p_str& msg, const p_int li);
+   p_str getMessage() const;
 
-   static SyntaxError adjacentSymbols(const _char value, const _int line);
-   static SyntaxError adjacentFilterKeywords(const _str& value1, const _str& value2, const _int line);
-   static SyntaxError asteriskPatternCannotContainDotSegments(const _str& value, const _int line);
-   static SyntaxError bracketIsNotClosed(const _char value, const _int line);
-   static SyntaxError bracketShouldBeClosedBeforeCurlyBracket(const _char value, const _int line);
-   static SyntaxError dayCannotBeSmallerThanOne(const _int line);
-   static SyntaxError decrementationInsideExpression(const _int line);
-   static SyntaxError expectedSemicolonBeforeKeyword(const _str& value, const _int line);
-   static SyntaxError expressionCannotEndWith(const _char value, const _int line);
-   static SyntaxError expressionCannotEndWithFilterKeyword(const _str& value, const _int line);
-   static SyntaxError expressionCannotStartWith(const _char value, const _int line);
-   static SyntaxError expressionCannotStartWithIncrementation(const _int line);
-   static SyntaxError expressionCannotStartWithDecrementation(const _int line);
-   static SyntaxError filterKeywordAtStart(const _str& value, const _int line);
-   static SyntaxError filterKeywordAtEnd(const _str& value, const _int line);
-   static SyntaxError hoursOutOfRange(const _str& value, const _int line);
-   static SyntaxError incrementationInsideExpression(const _int line);
-   static SyntaxError inevitableDivisionByZero(const _int line);
-   static SyntaxError inevitableModuloByZero(const _int line);
-   static SyntaxError insteadOfYouShouldWrite(const _str& value1, const _str& value2, const _int line);
-   static SyntaxError invalidAsteriskPattern(const _str& value, const _int line);
-   static SyntaxError invalidChar(const _char value, const _int line);
-   static SyntaxError invalidExpression(const _int line);
-   static SyntaxError invalidFunctionName(const _int line);
-   static SyntaxError invalidMonthName(const _str& value, const _int line);
-   static SyntaxError invalidNumericalExpression(const _int line);
-   static SyntaxError keywordNotFound(const _int line);
-   static SyntaxError keywordNotFollowedByBool(const _str& value, const _int line);
-   static SyntaxError keywordNotFollowedByNumber(const _str& value, const _int line);
-   static SyntaxError leftSideOfOperatorIsEmpty(const _str& operator_, const _int line);
-   static SyntaxError minutesOutOfRange(const _str& value, const _int line);
-   static SyntaxError missingTimeVariableMember(const _str& value, const _int line);
-   static SyntaxError missingLetterS(const _str& value, const _int line);
-   static SyntaxError monthHasFewerDays(const _str& month, const _str& value, const _int line);
-   static SyntaxError multipleDotsInNumber(const _str& value, const _int line);
-   static SyntaxError multipleDotsInWord(const _str& value, const _int line);
-   static SyntaxError negationByExclamation(const _int line);
-   static SyntaxError numberTooBig(const _str& value, const _int line);
-   static SyntaxError openedStringLteral(const _int line);
-   static SyntaxError rightSideOfOperatorIsEmpty(const _str& operator_, const _int line);
-   static SyntaxError secondsOutOfRange(const _str& value, const _int line);
-   static SyntaxError symbolNotFound(const _char value, const _int line);
-   static SyntaxError syntaxOfBooleanExpressionNotValid(const _int line);
-   static SyntaxError quotationMarkStringLteral(const _int line);
-   static SyntaxError youShouldUseApostrophesAndWrite(const _str& value, const _int line);
-   static SyntaxError undefinedVarValue(const _str& value, const _int line);
-   static SyntaxError unopenedBracketIsClosed(const _char value, const _int line);
-   static SyntaxError wrongSyntax(const _int line);
-   static SyntaxError wrongSyntaxButProbablyAsteriskPattern(const _int line);
+   static SyntaxError adjacentSymbols(const p_char value, const p_int line);
+   static SyntaxError adjacentFilterKeywords(const p_str& value1, const p_str& value2, const p_int line);
+   static SyntaxError asteriskPatternCannotContainDotSegments(const p_str& value, const p_int line);
+   static SyntaxError bracketIsNotClosed(const p_char value, const p_int line);
+   static SyntaxError bracketShouldBeClosedBeforeCurlyBracket(const p_char value, const p_int line);
+   static SyntaxError dayCannotBeSmallerThanOne(const p_int line);
+   static SyntaxError decrementationInsideExpression(const p_int line);
+   static SyntaxError expectedSemicolonBeforeKeyword(const p_str& value, const p_int line);
+   static SyntaxError expressionCannotEndWith(const p_char value, const p_int line);
+   static SyntaxError expressionCannotEndWithFilterKeyword(const p_str& value, const p_int line);
+   static SyntaxError expressionCannotStartWith(const p_char value, const p_int line);
+   static SyntaxError expressionCannotStartWithIncrementation(const p_int line);
+   static SyntaxError expressionCannotStartWithDecrementation(const p_int line);
+   static SyntaxError filterKeywordAtStart(const p_str& value, const p_int line);
+   static SyntaxError filterKeywordAtEnd(const p_str& value, const p_int line);
+   static SyntaxError hoursOutOfRange(const p_str& value, const p_int line);
+   static SyntaxError incrementationInsideExpression(const p_int line);
+   static SyntaxError inevitableDivisionByZero(const p_int line);
+   static SyntaxError inevitableModuloByZero(const p_int line);
+   static SyntaxError insteadOfYouShouldWrite(const p_str& value1, const p_str& value2, const p_int line);
+   static SyntaxError invalidAsteriskPattern(const p_str& value, const p_int line);
+   static SyntaxError invalidChar(const p_char value, const p_int line);
+   static SyntaxError invalidExpression(const p_int line);
+   static SyntaxError invalidFunctionName(const p_int line);
+   static SyntaxError invalidMonthName(const p_str& value, const p_int line);
+   static SyntaxError invalidNumericalExpression(const p_int line);
+   static SyntaxError keywordNotFound(const p_int line);
+   static SyntaxError keywordNotFollowedByBool(const p_str& value, const p_int line);
+   static SyntaxError keywordNotFollowedByNumber(const p_str& value, const p_int line);
+   static SyntaxError leftSideOfOperatorIsEmpty(const p_str& operator_, const p_int line);
+   static SyntaxError minutesOutOfRange(const p_str& value, const p_int line);
+   static SyntaxError missingTimeVariableMember(const p_str& value, const p_int line);
+   static SyntaxError missingLetterS(const p_str& value, const p_int line);
+   static SyntaxError monthHasFewerDays(const p_str& month, const p_str& value, const p_int line);
+   static SyntaxError multipleDotsInNumber(const p_str& value, const p_int line);
+   static SyntaxError multipleDotsInWord(const p_str& value, const p_int line);
+   static SyntaxError negationByExclamation(const p_int line);
+   static SyntaxError numberTooBig(const p_str& value, const p_int line);
+   static SyntaxError openedStringLteral(const p_int line);
+   static SyntaxError rightSideOfOperatorIsEmpty(const p_str& operator_, const p_int line);
+   static SyntaxError secondsOutOfRange(const p_str& value, const p_int line);
+   static SyntaxError symbolNotFound(const p_char value, const p_int line);
+   static SyntaxError syntaxOfBooleanExpressionNotValid(const p_int line);
+   static SyntaxError quotationMarkStringLteral(const p_int line);
+   static SyntaxError youShouldUseApostrophesAndWrite(const p_str& value, const p_int line);
+   static SyntaxError undefinedVarValue(const p_str& value, const p_int line);
+   static SyntaxError unopenedBracketIsClosed(const p_char value, const p_int line);
+   static SyntaxError wrongSyntax(const p_int line);
+   static SyntaxError wrongSyntaxButProbablyAsteriskPattern(const p_int line);
    // to be continued
    // all errors from the source code will finally end up here
 
 private:
-   const _str message;
-   const _int line;
+   const p_str message;
+   const p_int line;
 };
 
 class RuntimeError
 {
 public:
    RuntimeError() = delete;
-   RuntimeError(const _str& msg);
-   _str getMessage() const;
+   RuntimeError(const p_str& msg);
+   p_str getMessage() const;
 
    static RuntimeError divisionByZero();
    static RuntimeError moduloByZero();
-   static RuntimeError numberTooBig(const _str& value);
-   static RuntimeError squareRootOfNegativeNumber(const _str& value);
+   static RuntimeError numberTooBig(const p_str& value);
+   static RuntimeError squareRootOfNegativeNumber(const p_str& value);
    static RuntimeError wrongResultOfExponentiation();
    // to be continued
    // all errors from the source code will finally end up here
 
 private:
-   const _str message;
+   const p_str message;
 };
 
 }

@@ -27,9 +27,9 @@
 namespace perun2::parse
 {
 
-_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (tks.first().isSymbol(CHAR_MINUS) || tks.check(TI_HAS_FILTER_KEYWORD)) {
       return false;
@@ -43,8 +43,8 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
          return true;
       }
 
-      const _bool hasPluses = tks.check(TI_HAS_CHAR_PLUS);
-      const _bool hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
+      const p_bool hasPluses = tks.check(TI_HAS_CHAR_PLUS);
+      const p_bool hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
 
       if (hasMinuses || hasPluses) {
          _genptr<_per> per;
@@ -90,10 +90,10 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
    return parseTernary<_tim>(result, tks, p2);
 }
 
-_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    // tt_YearMonth:
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
    const Token& first = tks.first();
    const Token& second = tks.second();
 
@@ -201,19 +201,19 @@ static void checkDayCorrectness(const _tnum day, const _tnum month,
    }
 }
 
-static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    _genptr<_tim> prevTim;
    _genptr<_tim> time;
    BracketsInfo bi;
-   const _int start = tks.getStart();
-   const _int end = tks.getEnd();
-   _int sublen = 0;
-   _bool subtract = false;
-   _bool prevSubtract = false;
-   _int numReserve = 0;
+   const p_int start = tks.getStart();
+   const p_int end = tks.getEnd();
+   p_int sublen = 0;
+   p_bool subtract = false;
+   p_bool prevSubtract = false;
+   p_int numReserve = 0;
 
-   for (_int i = start; i <= end; i++) {
+   for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
          switch (t.value.ch) {
@@ -293,9 +293,9 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2
    return true;
 }
 
-static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract,
+static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubtract,
    _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks,
-   _int& numReserve, p_perun2& p2)
+   p_int& numReserve, p_perun2& p2)
 {
    _genptr<_tim> tim;
    if (parse(p2, tks, tim)) {
@@ -367,8 +367,8 @@ static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract
       }
    }
    else {
-      const _int start = tks.getStart() - numReserve;
-      const _int length = tks.getLength() + numReserve;
+      const p_int start = tks.getStart() - numReserve;
+      const p_int length = tks.getLength() + numReserve;
       const Tokens tks2(tks, start, length);
 
       _genptr<_per> per;

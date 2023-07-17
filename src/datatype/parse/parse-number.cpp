@@ -25,14 +25,14 @@
 namespace perun2::parse
 {
 
-_constexpr _char CHAR_UNARY_MINUS = CHAR_TILDE;
+p_constexpr p_char CHAR_UNARY_MINUS = CHAR_TILDE;
 // within a numerical expression, the minus sign means either subtraction operation (x-y) or unary negation (-x)
 // the sign above is used internally by the interpreter to distinguish them
 
 
-_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -48,15 +48,15 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
    else if (len >= 2 && !tks.check(TI_HAS_CHAR_COMMA)) {
       // build numeric expression (but only if the sequence has any operator)
       BracketsInfo bi;
-      const _int end = tks.getEnd();
-      const _int start = tks.getStart();
-      _bool anyOperator = false;
+      const p_int end = tks.getEnd();
+      const p_int start = tks.getStart();
+      p_bool anyOperator = false;
 
       if (tks.first().isSymbol(CHAR_ASTERISK)) {
          return false;
       }
 
-      for (_int i = start; i <= end; i++) {
+      for (p_int i = start; i <= end; i++) {
          const Token& t = tks.listAt(i);
          if (t.type == Token::t_Symbol && isNumExpOperator(t.value.ch) && bi.isBracketFree()
              && !(i == start && t.value.ch == CHAR_MINUS))
@@ -72,7 +72,7 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
                }
 
                for (const Tokens& tkse : elements) {
-                  _genptr<_str> str;
+                  _genptr<p_str> str;
 
                   if (!parse(p2, tkse, str)) {
                      throw SyntaxError::invalidExpression(tkse.first().line);
@@ -156,31 +156,31 @@ _bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
    std::vector<ExpElement<_num>> infList; // infix notation list
-   const _int start = tks.getStart();
-   const _int end = tks.getEnd();
-   _int sublen = 0;
+   const p_int start = tks.getStart();
+   const p_int end = tks.getEnd();
+   p_int sublen = 0;
    BracketsInfo bi;
-   _bool prev = false;
+   p_bool prev = false;
 
-   for (_int i = start; i <= end; i++) {
+   for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         const _char ch = t.value.ch;
+         const p_char ch = t.value.ch;
 
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
                // check if character '-' represents binary subtraction
                // or unary negation
-               const _char ch2 = (ch == CHAR_MINUS && (prev || i == start)) ? CHAR_UNARY_MINUS : ch;
+               const p_char ch2 = (ch == CHAR_MINUS && (prev || i == start)) ? CHAR_UNARY_MINUS : ch;
                infList.emplace_back(ch2, t.line);
             }
             else {
                if (bi.isBracketFree()) {
                   const Tokens tks2(tks, i - sublen, sublen);
-                  const _int line = tks2.first().line;
+                  const p_int line = tks2.first().line;
 
                   if (tks2.getLength() == 1
                      && tks2.first().type == Token::t_Number) {
@@ -252,18 +252,18 @@ static _bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
    return numExpTree(result, infList);
 }
 
-static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList)
+static p_bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList)
 {
    std::vector<ExpElement<_num>> elements;
    std::vector<ExpElement<_num>> temp;
-   const _size len = infList.size();
-   _int brackets = 0;
-   _bool anyUnary = false;
+   const p_size len = infList.size();
+   p_int brackets = 0;
+   p_bool anyUnary = false;
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       ExpElement<_num>& e = infList[i];
       if (e.type == ElementType::et_Operator) {
-         const _char op = e.operator_;
+         const p_char op = e.operator_;
          switch (op) {
             case CHAR_OPENING_ROUND_BRACKET: {
                brackets++;
@@ -319,13 +319,13 @@ static _bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& in
       : numExpTreeMerge(result, elements);
 }
 
-static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
+static p_bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
 {
    std::vector<ExpElement<_num>> newList;
-   _bool minus = false;
-   const _size len = elements.size();
+   p_bool minus = false;
+   const p_size len = elements.size();
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       ExpElement<_num>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
          if (e.operator_ == CHAR_UNARY_MINUS) {
@@ -358,9 +358,9 @@ static _bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<
    return numExpTreeMerge(result, newList);
 }
 
-static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
+static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
 {
-   const _size len = elements.size();
+   const p_size len = elements.size();
    if (len == 1) {
       result = std::move(elements[0].generator);
       return true;
@@ -368,10 +368,10 @@ static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>
 
    std::vector<ExpElement<_num>> nextElements;
    ExpElement<_num> firstElement(elements[0]);
-   _char oper;
-   _int operLine;
+   p_char oper;
+   p_int operLine;
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       ExpElement<_num>& secondElement = elements[i];
       const ElementType& type = secondElement.type;
 
@@ -452,14 +452,14 @@ static _bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>
    }
 }
 
-static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
+static p_bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
 {
    _genptr<_num> first(std::move(elements[0].generator));
-   _bool firstIsConstant = first->isConstant();
-   _char op;
-   const _size len = elements.size();
+   p_bool firstIsConstant = first->isConstant();
+   p_char op;
+   const p_size len = elements.size();
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       ExpElement<_num>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
          op = e.operator_;
@@ -506,9 +506,9 @@ static _bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num
    return true;
 }
 
-static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
+static p_bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
 {
-   const _size len = infList.size();
+   const p_size len = infList.size();
    if (len == 0) {
       return false;
    }
@@ -529,10 +529,10 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
       }
    }
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       const ExpElement<_num>& prev = infList[i - 1];
       const ExpElement<_num>& curr = infList[i];
-      const _bool cop = curr.type == ElementType::et_Operator;
+      const p_bool cop = curr.type == ElementType::et_Operator;
 
       if (prev.type == ElementType::et_Operator) {
          switch (prev.operator_) {
@@ -544,7 +544,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             }
             case CHAR_OPENING_ROUND_BRACKET: {
                if (cop) {
-                  const _char op = curr.operator_;
+                  const p_char op = curr.operator_;
                   if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_UNARY_MINUS)) {
                      return false;
                   }
@@ -553,7 +553,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             }
             case CHAR_CLOSING_ROUND_BRACKET: {
                if (cop) {
-                  const _char op = curr.operator_;
+                  const p_char op = curr.operator_;
                   if (op == CHAR_UNARY_MINUS || op == CHAR_OPENING_ROUND_BRACKET) {
                      return false;
                   }
@@ -565,7 +565,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
             }
             default: {
                if (cop) {
-                  const _char op = curr.operator_;
+                  const p_char op = curr.operator_;
                   if (!(op == CHAR_OPENING_ROUND_BRACKET || op == CHAR_UNARY_MINUS)) {
                      return false;
                   }
@@ -576,7 +576,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
       }
       else {
          if (cop) {
-            const _char op = curr.operator_;
+            const p_char op = curr.operator_;
             if (op == CHAR_UNARY_MINUS || op == CHAR_OPENING_ROUND_BRACKET) {
                return false;
             }
@@ -590,7 +590,7 @@ static _bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    return true;
 }
 
-static _bool isNumExpOperator(const _char ch)
+static p_bool isNumExpOperator(const p_char ch)
 {
    switch (ch) {
       case CHAR_PLUS:
@@ -604,7 +604,7 @@ static _bool isNumExpOperator(const _char ch)
    }
 }
 
-static _bool isNumExpHighPriority(const _char ch)
+static p_bool isNumExpHighPriority(const p_char ch)
 {
    switch (ch)  {
       case CHAR_ASTERISK:

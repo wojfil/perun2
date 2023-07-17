@@ -33,7 +33,7 @@ public:
    Constant<T> (const T& val) : value(val) {};
    T getValue () override { return value; };
 
-   _bool isConstant() const override
+   p_bool isConstant() const override
    {
       return true;
    };
@@ -71,7 +71,7 @@ template <typename T>
 struct Ternary : Generator<T>
 {
 public:
-   Ternary<T> (_genptr<_bool>& cond, _genptr<T>& le, _genptr<T>& ri)
+   Ternary<T> (_genptr<p_bool>& cond, _genptr<T>& le, _genptr<T>& ri)
       : condition(std::move(cond)), left(std::move(le)), right(std::move(ri)) {};
 
    T getValue() override {
@@ -79,7 +79,7 @@ public:
    };
 
 private:
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    _genptr<T> left;
    _genptr<T> right;
 };
@@ -89,7 +89,7 @@ template <typename T>
 struct Binary : Generator<T>
 {
 public:
-   Binary<T> (_genptr<_bool>& cond, _genptr<T>& val)
+   Binary<T> (_genptr<p_bool>& cond, _genptr<T>& val)
       : condition(std::move(cond)), value(std::move(val)){};
 
    T getValue () override {
@@ -97,7 +97,7 @@ public:
    };
 
 private:
-   _genptr<_bool> condition;
+   _genptr<p_bool> condition;
    _genptr<T> value;
 };
 
@@ -113,7 +113,7 @@ public:
 
    std::vector<T> getValue() override {
       std::vector<T> list(length);
-      for (_size i = 0; i < length; i++) {
+      for (p_size i = 0; i < length; i++) {
          list[i] = value[i]->getValue();
       }
       return list;
@@ -121,7 +121,7 @@ public:
 
 private:
    std::vector<_genptr<T>> value;
-   const _size length;
+   const p_size length;
 };
 
 
@@ -136,7 +136,7 @@ public:
 
    std::vector<T> getValue() override {
       std::vector<T> list;
-      for (_size i = 0; i < length; i++) {
+      for (p_size i = 0; i < length; i++) {
          const std::vector<T> vec = value[i]->getValue();
          langutil::appendVector(list, vec);
       }
@@ -145,7 +145,7 @@ public:
 
 private:
    std::vector<_genptr<std::vector<T>>> value;
-   const _size length;
+   const p_size length;
 };
 
 
@@ -163,13 +163,13 @@ public:
          return T();
       }
 
-      _nint id = index->getValue().toInt();
+      p_nint id = index->getValue().toInt();
 
       if (id < NINT_ZERO) {
          id += lst.size();
       }
 
-      return (id < NINT_ZERO || id >= static_cast<_nint>(lst.size()))
+      return (id < NINT_ZERO || id >= static_cast<p_nint>(lst.size()))
          ? T()
          : lst[id];
    }

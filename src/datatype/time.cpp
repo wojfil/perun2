@@ -40,13 +40,13 @@ Time::Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const
    : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_Clock) { };
 
 
-_str Time::toString() const
+p_str Time::toString() const
 {
    if (type == TimeType::tt_Null) {
       return STRING_NO_TIME;
    }
 
-   _stream ss;
+   p_stream ss;
 
    if (type != tt_YearMonth) {
       ss << day;
@@ -282,7 +282,7 @@ void Time::setDay(const _tnum d)
 
    const _tnum inMonth = daysInMonth(month, year);
    if (d > inMonth) {
-      const _str name = monthToString(month);
+      const p_str name = monthToString(month);
       throw RuntimeError(str(name, L" ", toStr(year),
          L"contains only ", toStr(inMonth), L" days (received day: ",
          toStr(d), L")"));
@@ -372,7 +372,7 @@ _tnum Time::getWeekDay() const
    return wd == TNUM_ZERO ? TNUM_DAYS_IN_WEEK : wd;
 }
 
-_bool Time::equalsExactly(const Time& tim) const
+p_bool Time::equalsExactly(const Time& tim) const
 {
    return type == tim.type && *this == tim;
 }
@@ -498,7 +498,7 @@ Time& Time::operator -= (const Period& per)
 }
 
 // add clock to an already existing time
-void Time::initClock(const _bool withSeconds, const _tnum recentChange)
+void Time::initClock(const p_bool withSeconds, const _tnum recentChange)
 {
    if (type == tt_YearMonth || type == tt_Date) {
       hour = TNUM_ZERO;
@@ -534,7 +534,7 @@ void Time::initClock(const _bool withSeconds, const _tnum recentChange)
    }
 }
 
-_bool Time::operator == (const Time& tim) const
+p_bool Time::operator == (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return type == tim.type;
@@ -567,7 +567,7 @@ _bool Time::operator == (const Time& tim) const
        && second == tim.second;
 }
 
-_bool Time::operator != (const Time& tim) const
+p_bool Time::operator != (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return type != tim.type;
@@ -600,7 +600,7 @@ _bool Time::operator != (const Time& tim) const
        || second != tim.second;
 }
 
-_bool Time::operator < (const Time& tim) const
+p_bool Time::operator < (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return false;
@@ -630,7 +630,7 @@ _bool Time::operator < (const Time& tim) const
    return second < tim.second;
 }
 
-_bool Time::operator > (const Time& tim) const
+p_bool Time::operator > (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return false;
@@ -660,7 +660,7 @@ _bool Time::operator > (const Time& tim) const
    return second > tim.second;
 }
 
-_bool Time::operator <= (const Time& tim) const
+p_bool Time::operator <= (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return type == tim.type;
@@ -690,7 +690,7 @@ _bool Time::operator <= (const Time& tim) const
    return second <= tim.second;
 }
 
-_bool Time::operator >= (const Time& tim) const
+p_bool Time::operator >= (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return type == tim.type;
@@ -742,7 +742,7 @@ _tnum toTimeNumber(const Number& num)
       : static_cast<_tnum>(num.value.i);
 }
 
-_str monthToString(const _tnum month)
+p_str monthToString(const _tnum month)
 {
    switch (month) {
       case TNUM_JANUARY:
@@ -770,11 +770,11 @@ _str monthToString(const _tnum month)
       case TNUM_DECEMBER:
          return STRING_MONTH_DECEMBER;
       default:
-         return _str();
+         return p_str();
    }
 }
 
-_str weekdayToString(const _tnum wday)
+p_str weekdayToString(const _tnum wday)
 {
    switch (wday) {
       case TNUM_MONDAY:
@@ -792,11 +792,11 @@ _str weekdayToString(const _tnum wday)
       case TNUM_SUNDAY:
          return STRING_WEEKDAY_SUNDAY;
       default:
-         return _str();
+         return p_str();
    }
 }
 
-inline void addTimeUnit(_stream& stream, const _tnum val)
+inline void addTimeUnit(p_stream& stream, const _tnum val)
 {
    if (val <= TNUM_NINE) {
       stream << CHAR_0;
@@ -804,7 +804,7 @@ inline void addTimeUnit(_stream& stream, const _tnum val)
    stream << val;
 }
 
-inline _bool isLeapYear(const _tnum year)
+inline p_bool isLeapYear(const _tnum year)
 {
    if (year % 4 == TNUM_ZERO) {
       if (year % TNUM_100 == TNUM_ZERO) {
@@ -1014,7 +1014,7 @@ inline _tnum daysInYears(const _tnum min, const _tnum max)
    }
 }
 
-inline void decrementMonth(Period& p, const Time& t, const _bool addDays)
+inline void decrementMonth(Period& p, const Time& t, const p_bool addDays)
 {
    if (p.months_sec == TNUM_ZERO) {
       p.years_sec--;
@@ -1077,9 +1077,9 @@ std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base)
 {
    std::vector<Time> result = base;
    std::sort(result.begin(), result.end());
-   _size len = result.size();
+   p_size len = result.size();
 
-   for (_size i = 1; i < len; i++) {
+   for (p_size i = 1; i < len; i++) {
       if (result[i - 1] == result[i]) {
          if (result[i - 1].type <= result[i].type) {
             result.erase(result.begin() + i);

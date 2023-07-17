@@ -21,17 +21,17 @@
 namespace perun2
 {
 
-void toLower(_char& ch)
+void toLower(p_char& ch)
 {
    ch = std::tolower(ch, std::locale(""));
 }
 
-void toUpper(_char& ch)
+void toUpper(p_char& ch)
 {
    ch = std::toupper(ch, std::locale(""));
 }
 
-_bool charsEqualInsensitive(_char ch1, _char ch2)
+p_bool charsEqualInsensitive(p_char ch1, p_char ch2)
 {
    toLower(ch1);
    toLower(ch2);

@@ -45,7 +45,7 @@ public:
    DefinitionGenerator() = delete;
    DefinitionGenerator(const OsElement el, p_perun2& p2)
       : element_(el), perun2(p2) { };
-   _bool generate(_defptr& result) const;
+   p_bool generate(_defptr& result) const;
 
 private:
    p_perun2& perun2;

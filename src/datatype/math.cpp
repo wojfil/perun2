@@ -34,14 +34,14 @@ void Math::init()
    }
 }
 
-_ndouble Math::randomDouble() 
+p_ndouble Math::randomDouble() 
 {
    return this->doubleDist(this->generator);
 }
 
-_nint Math::randomInt(const _nint limit) 
+p_nint Math::randomInt(const p_nint limit) 
 {
-   std::uniform_int_distribution<_nint> distribution(NINT_ZERO, limit);
+   std::uniform_int_distribution<p_nint> distribution(NINT_ZERO, limit);
    return distribution(this->generator);
 }
 

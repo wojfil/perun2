@@ -32,7 +32,7 @@ void DefWithContext::reset()
    this->definition->reset();
 }
 
-_bool DefWithContext::hasNext()
+p_bool DefWithContext::hasNext()
 {
    if (this->definition->hasNext()) {
       this->value = this->definition->getValue();
@@ -65,7 +65,7 @@ void DefFilter::reset() {
 }
 
 
-DefFilter_Where::DefFilter_Where(_genptr<_bool>& cond, _defptr& def, FileContext* ctx, p_perun2& p2)
+DefFilter_Where::DefFilter_Where(_genptr<p_bool>& cond, _defptr& def, FileContext* ctx, p_perun2& p2)
    : DefFilter(def, ctx, p2), condition(std::move(cond)) { };
 
 
@@ -79,7 +79,7 @@ void DefFilter_Where::reset() {
 }
 
 
-_bool DefFilter_Where::hasNext()
+p_bool DefFilter_Where::hasNext()
 {
    if (first) {
       finished = false;
@@ -93,7 +93,7 @@ _bool DefFilter_Where::hasNext()
       }
 
       value = definition->getValue();
-      const _bool con = this->condition->getValue();
+      const p_bool con = this->condition->getValue();
 
       if (con) {
          this->context->index->value = index;
@@ -108,11 +108,11 @@ _bool DefFilter_Where::hasNext()
 }
 
 
-LocationVessel::LocationVessel(const _bool abs, _genptr<_str>& loc)
+LocationVessel::LocationVessel(const p_bool abs, _genptr<p_str>& loc)
    : isAbsolute(abs), location(std::move(loc)) { };
 
 
-_str LocationVessel::getValue()
+p_str LocationVessel::getValue()
 {
    if (this->isAbsolute) {
       return this->value;
@@ -121,19 +121,19 @@ _str LocationVessel::getValue()
    return str(this->location->getValue(), OS_SEPARATOR, this->value);
 };
 
-const _str& LocationVessel::getRawValue() const
+const p_str& LocationVessel::getRawValue() const
 {
    return this->value;
 };
 
 
-void LocationVessel::setValue(const _str& val)
+void LocationVessel::setValue(const p_str& val)
 {
    this->value = val;
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const _bool abs, const _bool fin, const _int retr)
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, _defptr& def, _defptr& locs, const p_bool abs, const p_bool fin, const p_int retr)
    : vessel(ves), definition(std::move(def)), locations(std::move(locs)),
      context(definition->getFileContext()), isAbsolute(abs), isFinal(fin), retreats(retr) { };
 
@@ -151,7 +151,7 @@ void NestedDefiniton::reset()
 };
 
 
-_bool NestedDefiniton::hasNext()
+p_bool NestedDefiniton::hasNext()
 {
    if (!this->locsOpened) {
       if (this->locations->hasNext()) {
@@ -174,7 +174,7 @@ _bool NestedDefiniton::hasNext()
             this->value = this->definition->getValue();
          }
          else {
-            const _bool isDot = this->vessel.getRawValue().size() == 1 && this->vessel.getRawValue()[0] == CHAR_DOT;
+            const p_bool isDot = this->vessel.getRawValue().size() == 1 && this->vessel.getRawValue()[0] == CHAR_DOT;
 
             this->value = isDot
                ? this->definition->getValue()
@@ -223,7 +223,7 @@ FileContext* NestedDefiniton::getFileContext()
 }
 
 
-_bool DefFilter_Limit::hasNext()
+p_bool DefFilter_Limit::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
@@ -250,7 +250,7 @@ _bool DefFilter_Limit::hasNext()
 };
 
 
-_bool DefFilter_Skip::hasNext()
+p_bool DefFilter_Skip::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
@@ -282,7 +282,7 @@ _bool DefFilter_Skip::hasNext()
 };
 
 
-_bool DefFilter_Every::hasNext()
+p_bool DefFilter_Every::hasNext()
 {
    if (first) {
       limit = this->number->getValue().toInt();
@@ -323,10 +323,10 @@ FileContext* DefFilter_Final::getFileContext()
 }
 
 
-_bool DefFilter_Final::hasNext()
+p_bool DefFilter_Final::hasNext()
 {
    if (first) {
-      const _nint limit = this->number->getValue().toInt();
+      const p_nint limit = this->number->getValue().toInt();
       if (limit < NINT_ONE) {
          return false;
       }
@@ -360,7 +360,7 @@ _bool DefFilter_Final::hasNext()
    }
 
    if (index < length) {
-      value = values[static_cast<_size>(index)];
+      value = values[static_cast<p_size>(index)];
       nextContext->loadData(value);
       this->context->index->value.value.i = index;
       index++;
@@ -381,7 +381,7 @@ void Join_DefStr::reset()
    }
 }
 
-_bool Join_DefStr::hasNext()
+p_bool Join_DefStr::hasNext()
 {
    if (this->perun2.isNotRunning()) {
       reset();
@@ -413,7 +413,7 @@ void Join_StrDef::reset()
 }
 
 
-_bool Join_StrDef::hasNext()
+p_bool Join_StrDef::hasNext()
 {
    if (this->perun2.isNotRunning()) {
       reset();
@@ -447,7 +447,7 @@ void Join_DefList::reset()
 }
 
 
-_bool Join_DefList::hasNext()
+p_bool Join_DefList::hasNext()
 {
    if (this->perun2.isNotRunning()) {
       reset();
@@ -489,7 +489,7 @@ void Join_ListDef::reset()
 }
 
 
-_bool Join_ListDef::hasNext()
+p_bool Join_ListDef::hasNext()
 {
    if (this->perun2.isNotRunning()) {
       reset();
@@ -541,7 +541,7 @@ void Join_DefDef::reset()
 }
 
 
-_bool Join_DefDef::hasNext()
+p_bool Join_DefDef::hasNext()
 {
    if (this->perun2.isNotRunning()) {
       reset();
@@ -580,7 +580,7 @@ _bool Join_DefDef::hasNext()
 
 
 
-DefinitionSuffix::DefinitionSuffix(_defptr& def, const _str& suf, const _bool fin)
+DefinitionSuffix::DefinitionSuffix(_defptr& def, const p_str& suf, const p_bool fin)
    : definition(std::move(def)), fileContext(definition->getFileContext()), suffix(suf), isFinal(fin) { };
 
 
@@ -593,11 +593,11 @@ void DefinitionSuffix::reset()
 }
 
 
-AbsoluteDefSuffix::AbsoluteDefSuffix(_defptr& def, const _str& suf, const _bool fin)
+AbsoluteDefSuffix::AbsoluteDefSuffix(_defptr& def, const p_str& suf, const p_bool fin)
    : DefinitionSuffix(def, suf, fin) { };
 
 
-_bool AbsoluteDefSuffix::hasNext()
+p_bool AbsoluteDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
@@ -624,11 +624,11 @@ _bool AbsoluteDefSuffix::hasNext()
 }
 
 
-RelativeDefSuffix::RelativeDefSuffix(_defptr& def, p_perun2& p2, const _str& suf, const _bool fin, _def* const prev)
+RelativeDefSuffix::RelativeDefSuffix(_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, _def* const prev)
    : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), previous(prev) { };
 
 
-_bool RelativeDefSuffix::hasNext()
+p_bool RelativeDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
@@ -642,7 +642,7 @@ _bool RelativeDefSuffix::hasNext()
          ? str(this->definition->getValue(), this->suffix)
          : str(this->previous->getValue(), OS_SEPARATOR, this->definition->getValue(), this->suffix);
 
-      const _str path = str(this->locContext->location->value, OS_SEPARATOR, this->value);
+      const p_str path = str(this->locContext->location->value, OS_SEPARATOR, this->value);
 
       if (this->isFinal ? os_exists(path) : os_directoryExists(path)) {
          if (this->isFinal) {
@@ -658,11 +658,11 @@ _bool RelativeDefSuffix::hasNext()
 }
 
 
-RetreatedDefSuffix::RetreatedDefSuffix(_defptr& def, p_perun2& p2, const _str& suf, const _bool fin, const _int retr, _def* const prev)
+RetreatedDefSuffix::RetreatedDefSuffix(_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, _def* const prev)
    : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 
-_bool RetreatedDefSuffix::hasNext()
+p_bool RetreatedDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
@@ -672,14 +672,14 @@ _bool RetreatedDefSuffix::hasNext()
    }
 
    while (this->definition->hasNext()) {
-      const _str rawValue = str(this->definition->getValue(), this->suffix);
+      const p_str rawValue = str(this->definition->getValue(), this->suffix);
 
       this->value = this->previous == nullptr
          ? rawValue
          : str(this->previous->getValue(), OS_SEPARATOR, rawValue);
 
 
-      _str path = this->locContext->location->value;
+      p_str path = this->locContext->location->value;
       os_retreatPath(path, this->retreats);
 
       if (path.empty()) {
@@ -711,11 +711,11 @@ _bool RetreatedDefSuffix::hasNext()
 }
 
 
-FarRetreatedDefSuffix::FarRetreatedDefSuffix(_defptr& def, p_perun2& p2, const _str& suf, const _bool fin, const _int retr, _def* const prev)
+FarRetreatedDefSuffix::FarRetreatedDefSuffix(_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, _def* const prev)
    : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 
-_bool FarRetreatedDefSuffix::hasNext()
+p_bool FarRetreatedDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
@@ -729,7 +729,7 @@ _bool FarRetreatedDefSuffix::hasNext()
          ? str(this->definition->getValue(), this->suffix)
          : str(this->previous->getValue(), OS_SEPARATOR, this->definition->getValue(), this->suffix);
 
-      _str path = this->locContext->location->value;
+      p_str path = this->locContext->location->value;
       os_retreatPath(path, this->retreats);
       path = str(path, OS_SEPARATOR, this->value);
 
@@ -761,7 +761,7 @@ void DefTernary::reset()
 }
 
 
-_bool DefTernary::hasNext()
+p_bool DefTernary::hasNext()
 {
    if (first) {
       isLeft = this->condition->getValue();
@@ -794,7 +794,7 @@ void DefBinary::reset()
 }
 
 
-_bool DefBinary::hasNext()
+p_bool DefBinary::hasNext()
 {
    if (first) {
       if (!this->condition->getValue()) {

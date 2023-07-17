@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_bool>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -35,11 +35,11 @@ _bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_bool>& result)
       case Token::t_Keyword: {
          switch (tk.value.keyword.k) {
             case Keyword::kw_True: {
-               result = std::make_unique<gen::Constant<_bool>>(true);
+               result = std::make_unique<gen::Constant<p_bool>>(true);
                return true;
             }
             case Keyword::kw_False: {
-               result = std::make_unique<gen::Constant<_bool>>(false);
+               result = std::make_unique<gen::Constant<p_bool>>(false);
                return true;
             }
             default: {
@@ -56,7 +56,7 @@ _bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_bool>& result)
    }
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
 {
    const Token& tk = tks.first();
 
@@ -115,17 +115,17 @@ _bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
    }
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_str>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = std::make_unique<gen::Constant<_str>>(tk.value.num.n.toString());
+         result = std::make_unique<gen::Constant<p_str>>(tk.value.num.n.toString());
          return true;
       }
       case Token::t_Quotation: {
-         result = std::make_unique<gen::Constant<_str>>(tk.getOriginString(p2));
+         result = std::make_unique<gen::Constant<p_str>>(tk.getOriginString(p2));
          return true;
       }
       case Token::t_Word: {
@@ -137,25 +137,25 @@ _bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_str>& result)
    }
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_list>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
 {
    const Token& tk = tks.first();
 
@@ -187,14 +187,14 @@ _bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
    }
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_per>& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(p_perun2& p2, const Tokens& tks, _defptr& result)
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _defptr& result)
 {
    const Token& tk = tks.first();
 

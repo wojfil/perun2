@@ -24,9 +24,9 @@
 namespace perun2::parse
 {
 
-_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
 {
-   const _size len = tks.getLength();
+   const p_size len = tks.getLength();
 
    if (len == 1) {
       return parseOneToken(p2, tks, result);
@@ -45,7 +45,7 @@ _bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
 {
    // look - I do not use template functions from 'parse-generic.h'
    // why? because time has a special property - comma can mean
@@ -63,14 +63,14 @@ static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, p_perun2
    return parseListedTimLists(result, elements, p2);
 }
 
-static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
+static p_bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
 {
-   const _size len = elements.size();
-   _bool isPrev = false;
+   const p_size len = elements.size();
+   p_bool isPrev = false;
    std::vector<_genptr<_tim>> result;
-   _bool isConstant = true;
+   p_bool isConstant = true;
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       _genptr<_tim> time;
 
@@ -116,22 +116,22 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
    return true;
 }
 
-static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, p_perun2& p2)
+static p_bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, p_perun2& p2)
 {
-   const _int start = prev.getStart();
-   const _int length = prev.getLength() + curr.getLength() + 1;
+   const p_int start = prev.getStart();
+   const p_int length = prev.getLength() + curr.getLength() + 1;
    const Tokens tks2(curr, start, length);
    return parse(p2, tks2, result);
 }
 
-static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
+static p_bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
 {
-   const _size len = elements.size();
-   _bool isPrev = false;
+   const p_size len = elements.size();
+   p_bool isPrev = false;
    std::vector<_genptr<_tlist>> result;
-   _bool isConstant = true;
+   p_bool isConstant = true;
 
-   for (_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
       _genptr<_tim> time;
 

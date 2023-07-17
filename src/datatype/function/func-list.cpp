@@ -20,12 +20,12 @@
 namespace perun2::func
 {
 
-inline _list toChars(const _str& value)
+inline p_list toChars(const p_str& value)
 {
-   _list r;
+   p_list r;
    r.reserve(value.size());
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       r.emplace_back(1, ch);
    }
 
@@ -33,34 +33,34 @@ inline _list toChars(const _str& value)
 }
 
 
-_list F_Characters::getValue()
+p_list F_Characters::getValue()
 {
-   const _str v = arg1->getValue();
+   const p_str v = arg1->getValue();
    return v.empty()
-      ? _list()
+      ? p_list()
       : toChars(v);
 }
 
 
-_list F_Split::getValue()
+p_list F_Split::getValue()
 {
-   _str v1 = arg1->getValue();
+   p_str v1 = arg1->getValue();
 
    if (v1.empty()) {
-      return _list();
+      return p_list();
    }
 
-   const _str v2 = arg2->getValue();
+   const p_str v2 = arg2->getValue();
 
    switch (v2.size()) {
       case 0: {
          return toChars(v1);
       }
       case 1: {
-         _size start = 0;
-         _list r;
+         p_size start = 0;
+         p_list r;
 
-         for (_size i = 0; i < v1.size(); i++) {
+         for (p_size i = 0; i < v1.size(); i++) {
             if (v1[i] == v2[0]) {
                if (start == i) {
                   r.emplace_back();
@@ -82,11 +82,11 @@ _list F_Split::getValue()
          return r;
       }
       default: {
-         const _size len2 = v2.size();
-         _size index = v1.find(v2);
-         _list r;
+         const p_size len2 = v2.size();
+         p_size index = v1.find(v2);
+         p_list r;
 
-         while (index != _str::npos) {
+         while (index != p_str::npos) {
             r.emplace_back(v1.substr(0, index));
             v1 = v1.substr(index + len2);
             index = v1.find(v2);
@@ -99,45 +99,45 @@ _list F_Split::getValue()
 }
 
 
-_list F_Words::getValue()
+p_list F_Words::getValue()
 {
-   _str value = arg1->getValue();
-   const _size len = value.size();
+   p_str value = arg1->getValue();
+   const p_size len = value.size();
 
    switch (len) {
       case 0: {
-         return _list();
+         return p_list();
       }
       case 1: {
-         return std::iswalpha(value[0]) ? _list{value} : _list();
+         return std::iswalpha(value[0]) ? p_list{value} : p_list();
       }
       case 2: {
          if (std::iswalpha(value[0])) {
             if (std::iswalpha(value[1])) {
-               return _list{value};
+               return p_list{value};
             }
             else {
                value.pop_back();
-               return _list{value};
+               return p_list{value};
             }
          }
          else {
             if (std::iswalpha(value[1])) {
                value.erase(value.begin());
-               return _list{value};
+               return p_list{value};
             }
             else {
-               return _list();
+               return p_list();
             }
          }
       }
       default: {
-         _list words;
-         _bool prevLetter = false;
-         _size start = 0;
+         p_list words;
+         p_bool prevLetter = false;
+         p_size start = 0;
 
-         for (_size i = 0; i < len; i++) {
-            const _bool isLetter = std::iswalpha(value[i]);
+         for (p_size i = 0; i < len; i++) {
+            const p_bool isLetter = std::iswalpha(value[i]);
             if (isLetter) {
                if (!prevLetter) {
                   start = i;
@@ -160,15 +160,15 @@ _list F_Words::getValue()
    }
 }
 
-inline _nint F_Numbers::fromChar(const _char ch)
+inline p_nint F_Numbers::fromChar(const p_char ch)
 {
-   return static_cast<_nint>(ch - CHAR_0);
+   return static_cast<p_nint>(ch - CHAR_0);
 }
 
 _nlist F_Numbers::getValue()
 {
-   _str value = arg1->getValue();
-   const _size len = value.size();
+   p_str value = arg1->getValue();
+   const p_size len = value.size();
 
    switch (len) {
       case 0: {
@@ -194,11 +194,11 @@ _nlist F_Numbers::getValue()
       }
       default: {
          _nlist numbers;
-         _bool prevDigit = false;
-         _size start = 0;
+         p_bool prevDigit = false;
+         p_size start = 0;
 
-         for (_size i = 0; i < len; i++) {
-            const _bool isDigit = std::iswdigit(value[i]);
+         for (p_size i = 0; i < len; i++) {
+            const p_bool isDigit = std::iswdigit(value[i]);
             if (isDigit) {
                if (!prevDigit) {
                   start = i;
@@ -207,7 +207,7 @@ _nlist F_Numbers::getValue()
             else {
                if (prevDigit) {
                   try {
-                     const _nint ii = std::stoll(value.substr(start, i - start));
+                     const p_nint ii = std::stoll(value.substr(start, i - start));
                      numbers.emplace_back(ii);
                   }
                   catch(...) {
@@ -221,7 +221,7 @@ _nlist F_Numbers::getValue()
 
          if (prevDigit) {
             try {
-               const _nint ii = std::stoll(value.substr(start));
+               const p_nint ii = std::stoll(value.substr(start));
                numbers.emplace_back(ii);
             }
             catch(...) {

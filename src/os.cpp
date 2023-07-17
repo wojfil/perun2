@@ -64,7 +64,7 @@ _tim os_today()
    return _tim(info->tm_mday, info->tm_mon + 1, 1900 + info->tm_year);
 }
 
-void os_rawSleepForMs(const _nint ms)
+void os_rawSleepForMs(const p_nint ms)
 {
    Sleep(ms);
 }
@@ -86,7 +86,7 @@ void os_loadAttributes(FileContext& context)
    if (attribute->has(ATTR_PATH)) {
       context.v_path->value = os_leftJoin(context.locContext->location->value, context.trimmed);
 
-      _bool noPath = false;
+      p_bool noPath = false;
 
       if (context.v_path->value.empty()) {
          noPath = true;
@@ -103,7 +103,7 @@ void os_loadAttributes(FileContext& context)
             context.v_depth->value = os_depth(context.trimmed);
          }
 
-         const _str namePart = os_segmentWithName(context.trimmed);
+         const p_str namePart = os_segmentWithName(context.trimmed);
 
          if (namePart.empty()) {
             return;
@@ -148,8 +148,8 @@ void os_loadAttributes(FileContext& context)
    }
 
    // below are "real" attributes of files and directories
-   _adata data;
-   const _bool gotAttrs = GetFileAttributesExW(P_WINDOWS_PATH(context.v_path->value), GetFileExInfoStandard, &data);
+   p_adata data;
+   const p_bool gotAttrs = GetFileAttributesExW(P_WINDOWS_PATH(context.v_path->value), GetFileExInfoStandard, &data);
    const DWORD dwAttrib = data.dwFileAttributes;
    context.v_exists->value = gotAttrs && dwAttrib != INVALID_FILE_ATTRIBUTES;
 
@@ -222,7 +222,7 @@ void os_loadAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_EXTENSION)) {
-      context.v_extension->value = context.v_isfile->value ? os_extension(context.trimmed) : _str();
+      context.v_extension->value = context.v_isfile->value ? os_extension(context.trimmed) : p_str();
    }
 
    if (attribute->has(ATTR_HIDDEN)) {
@@ -246,19 +246,19 @@ void os_loadAttributes(FileContext& context)
 
    if (attribute->has(ATTR_SIZE)) {
       if (context.v_exists->value) {
-         context.v_size->value = context.v_isfile->value
-            ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : _num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
+         context.vp_size->value = context.v_isfile->value
+            ? _num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
+            : _num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
       }
       else {
-         context.v_size->value = _num(NINT_MINUS_ONE);
+         context.vp_size->value = _num(NINT_MINUS_ONE);
       }
    }
 }
 
 // load attributes, but we already have some data
 // we do not need to read it again from the file system
-void os_loadDataAttributes(FileContext& context, const _fdata& data)
+void os_loadDataAttributes(FileContext& context, const p_fdata& data)
 {
    const _attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
@@ -316,8 +316,8 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
       context.v_creation->value = os_convertToPerun2Time(&data.ftCreationTime);
    }
 
-   const _bool hasMod = attribute->has(ATTR_MODIFICATION);
-   const _bool hasChange = attribute->has(ATTR_CHANGE);
+   const p_bool hasMod = attribute->has(ATTR_MODIFICATION);
+   const p_bool hasChange = attribute->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
       const _tim time = os_convertToPerun2Time(&data.ftLastWriteTime);
 
@@ -346,7 +346,7 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_EXTENSION)) {
-      context.v_extension->value = context.v_isfile->value ? os_extension(context.trimmed) : _str();
+      context.v_extension->value = context.v_isfile->value ? os_extension(context.trimmed) : p_str();
    }
 
    if (attribute->has(ATTR_HIDDEN)) {
@@ -369,15 +369,15 @@ void os_loadDataAttributes(FileContext& context, const _fdata& data)
    }
 
    if (attribute->has(ATTR_SIZE)) {
-      context.v_size->value = context.v_isfile->value
-         ? _num(static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-         : _num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
+      context.vp_size->value = context.v_isfile->value
+         ? _num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
+         : _num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
    }
 }
 
-_tim os_access(const _str& path)
+_tim os_access(const p_str& path)
 {
-   _adata data;
+   p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -390,14 +390,14 @@ _tim os_access(const _str& path)
    return os_convertToPerun2Time(&data.ftLastAccessTime);
 }
 
-_bool os_archive(const _str& path)
+p_bool os_archive(const p_str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_ARCHIVE);
 }
 
-_tim os_change(const _str& path)
+_tim os_change(const p_str& path)
 {
-   _adata data;
+   p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -410,14 +410,14 @@ _tim os_change(const _str& path)
    return os_convertToPerun2Time(&data.ftLastWriteTime);
 }
 
-_bool os_compressed(const _str& path)
+p_bool os_compressed(const p_str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_COMPRESSED);
 }
 
-_tim os_creation(const _str& path)
+_tim os_creation(const p_str& path)
 {
-   _adata data;
+   p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -430,18 +430,18 @@ _tim os_creation(const _str& path)
    return os_convertToPerun2Time(&data.ftCreationTime);
 }
 
-_num os_depth(const _str& value)
+_num os_depth(const p_str& value)
 {
    if (value.empty()) {
       return NINT_ZERO;
    }
 
-   _nint depth = NINT_ZERO;
-   _int prevId = 0;
+   p_nint depth = NINT_ZERO;
+   p_int prevId = 0;
    
-   for (_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       if (value[i] == OS_SEPARATOR) {
-         const _size len = i - prevId;
+         const p_size len = i - prevId;
 
          if (len == 1 && value[prevId] == CHAR_DOT) { }
          else if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
@@ -455,7 +455,7 @@ _num os_depth(const _str& value)
       }
    }
 
-   const _size len = value.size() - prevId;
+   const p_size len = value.size() - prevId;
 
    if (len == 2 && value[prevId] == CHAR_DOT && value[prevId + 1] == CHAR_DOT) {
       depth--;
@@ -468,21 +468,21 @@ _num os_depth(const _str& value)
    return depth;
 }
 
-_str os_drive(const _str& path)
+p_str os_drive(const p_str& path)
 {
    if (os_isAbsolute(path)) {
-      _char letter = path[0];
+      p_char letter = path[0];
       toUpper(letter);
       return str(toStr(letter), CHAR_COLON);
    }
    else {
-      return _str();
+      return p_str();
    }
 }
 
-_bool os_empty(const _str& path)
+p_bool os_empty(const p_str& path)
 {
-   _adata data;
+   p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return false;
    }
@@ -497,22 +497,22 @@ _bool os_empty(const _str& path)
       : os_emptyFile(data);
 }
 
-_bool os_encrypted(const _str& path)
+p_bool os_encrypted(const p_str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_ENCRYPTED);
 }
 
-_bool os_emptyFile(const _adata& data)
+p_bool os_emptyFile(const p_adata& data)
 {
    return data.nFileSizeLow == 0
        && data.nFileSizeHigh == 0;
 }
 
-_bool os_emptyDirectory(const _str& path)
+p_bool os_emptyDirectory(const p_str& path)
 {
-   _fdata data;
-   _entry handle;
-   const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
+   p_fdata data;
+   p_entry handle;
+   const p_str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
 
    if (!os_hasFirstFile(pattern, handle, data)) {
       return true;
@@ -529,7 +529,7 @@ _bool os_emptyDirectory(const _str& path)
    return true;
 }
 
-_bool os_hasAttribute(const _str& path, const DWORD attribute)
+p_bool os_hasAttribute(const p_str& path, const DWORD attribute)
 {
    DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
 
@@ -537,12 +537,12 @@ _bool os_hasAttribute(const _str& path, const DWORD attribute)
           (dwAttrib & attribute);
 }
 
-_bool os_hidden(const _str& path)
+p_bool os_hidden(const p_str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_HIDDEN);
 }
 
-_bool os_isFile(const _str& path)
+p_bool os_isFile(const p_str& path)
 {
    DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
@@ -552,7 +552,7 @@ _bool os_isFile(const _str& path)
    return !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
 }
 
-_bool os_isDirectory(const _str& path)
+p_bool os_isDirectory(const p_str& path)
 {
    DWORD dwAttrib = GetFileAttributesW(P_WINDOWS_PATH(path));
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
@@ -562,9 +562,9 @@ _bool os_isDirectory(const _str& path)
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
 }
 
-_per os_lifetime(const _str& path)
+_per os_lifetime(const p_str& path)
 {
-   _adata data;
+   p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _per();
@@ -582,9 +582,9 @@ _per os_lifetime(const _str& path)
       : (os_now() - modification);
 }
 
-_tim os_modification(const _str& path)
+_tim os_modification(const p_str& path)
 {
-   _adata data;
+   p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return _tim();
@@ -597,14 +597,14 @@ _tim os_modification(const _str& path)
    return os_convertToPerun2Time(&data.ftLastWriteTime);
 }
 
-_bool os_readonly(const _str& path)
+p_bool os_readonly(const p_str& path)
 {
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-_nint os_size(const _str& path, p_perun2& p2)
+p_nint osp_size(const p_str& path, p_perun2& p2)
 {
-   _adata data;
+   p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
       return NINT_MINUS_ONE;
    }
@@ -615,16 +615,16 @@ _nint os_size(const _str& path, p_perun2& p2)
    }
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
-      ? os_sizeDirectory(path, p2)
-      : static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
+      ? osp_sizeDirectory(path, p2)
+      : static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-_nint os_sizeDirectory(const _str& path, p_perun2& p2)
+p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2)
 {
-   _nint totalSize = NINT_ZERO;
-   _fdata data;
-   const _str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
-   _entry handle;
+   p_nint totalSize = NINT_ZERO;
+   p_fdata data;
+   const p_str pattern = str(path, OS_SEPARATOR, CHAR_ASTERISK);
+   p_entry handle;
 
    if (!os_hasFirstFile(pattern, handle, data)) {
       return totalSize;
@@ -635,13 +635,13 @@ _nint os_sizeDirectory(const _str& path, p_perun2& p2)
          os_closeEntry(handle);
          return NINT_MINUS_ONE;
       }
-      const _str v = data.cFileName;
+      const p_str v = data.cFileName;
       if (!os_isBrowsePath(v)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR, v), p2);
+            totalSize += osp_sizeDirectory(str(path, OS_SEPARATOR, v), p2);
          }
          else {
-            totalSize += static_cast<_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
+            totalSize += static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
          }
       }
    } while (os_hasNextFile(handle, data));
@@ -650,7 +650,7 @@ _nint os_sizeDirectory(const _str& path, p_perun2& p2)
    return totalSize;
 }
 
-_bool os_exists(const _str& path)
+p_bool os_exists(const p_str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -659,7 +659,7 @@ _bool os_exists(const _str& path)
    return GetFileAttributesW(P_WINDOWS_PATH(path)) != INVALID_FILE_ATTRIBUTES;
 }
 
-_bool os_fileExists(const _str& path)
+p_bool os_fileExists(const p_str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -669,7 +669,7 @@ _bool os_fileExists(const _str& path)
    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)));
 }
 
-_bool os_directoryExists(const _str& path)
+p_bool os_directoryExists(const p_str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
@@ -680,18 +680,18 @@ _bool os_directoryExists(const _str& path)
 }
 
 
-_bool os_hasFirstFile(const _str& path, _entry& entry, _fdata& output)
+p_bool os_hasFirstFile(const p_str& path, p_entry& entry, p_fdata& output)
 {
    entry = FindFirstFileEx(P_WINDOWS_PATH(path), FindExInfoBasic, &output, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH); 
    return entry != INVALID_HANDLE_VALUE;
 }
 
-_bool os_hasNextFile(_entry& entry, _fdata& output)
+p_bool os_hasNextFile(p_entry& entry, p_fdata& output)
 {
    return FindNextFile(entry, &output);
 }
 
-void os_closeEntry(_entry& entry)
+void os_closeEntry(p_entry& entry)
 {
    CloseHandle(entry);
 }
@@ -702,9 +702,9 @@ void os_closeEntry(_entry& entry)
 ///
 /////
 
-_bool os_delete(const _str& path)
+p_bool os_delete(const p_str& path)
 {
-   _char wszFrom[MAX_PATH] = { 0 };
+   p_char wszFrom[MAX_PATH] = { 0 };
    wcscpy(wszFrom, path.c_str());
    CopyMemory(wszFrom + lstrlenW(wszFrom), "\0\0", 2);
 
@@ -718,36 +718,36 @@ _bool os_delete(const _str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-_bool os_drop(const _str& path, p_perun2& p2)
+p_bool os_drop(const p_str& path, p_perun2& p2)
 {
    return os_isFile(path)
       ? os_dropFile(path)
       : os_dropDirectory(path, p2);
 }
 
-_bool os_drop(const _str& path, const _bool isFile, p_perun2& p2)
+p_bool os_drop(const p_str& path, const p_bool isFile, p_perun2& p2)
 {
    return isFile
       ? os_dropFile(path)
       : os_dropDirectory(path, p2);
 }
 
-_bool os_dropFile(const _str& path)
+p_bool os_dropFile(const p_str& path)
 {
    return DeleteFileW(P_WINDOWS_PATH(path)) != 0;
 }
 
-_bool os_dropDirectory(const _str& path, p_perun2& p2)
+p_bool os_dropDirectory(const p_str& path, p_perun2& p2)
 {
-   _entry hFind;
-   _fdata FindFileData;
+   p_entry hFind;
+   p_fdata FindFileData;
 
-   _char DirPath[MAX_PATH];
-   _char FileName[MAX_PATH];
+   p_char DirPath[MAX_PATH];
+   p_char FileName[MAX_PATH];
 
-   wcscpy(DirPath, const_cast<_char*>(path.c_str()));
+   wcscpy(DirPath, const_cast<p_char*>(path.c_str()));
    wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
-   wcscpy(FileName, const_cast<_char*>(path.c_str()));
+   wcscpy(FileName, const_cast<p_char*>(path.c_str()));
    wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
    if (!os_hasFirstFile(DirPath, hFind, FindFileData)) {
@@ -756,7 +756,7 @@ _bool os_dropDirectory(const _str& path, p_perun2& p2)
 
    wcscpy(DirPath, FileName);
 
-   _bool bSearch = true;
+   p_bool bSearch = true;
    while (bSearch) {
       if (os_hasNextFile(hFind, FindFileData)) {
          if (p2.isNotRunning()) {
@@ -764,7 +764,7 @@ _bool os_dropDirectory(const _str& path, p_perun2& p2)
             return false;
          }
 
-         const _str v = FindFileData.cFileName;
+         const p_str v = FindFileData.cFileName;
 
          if (os_isBrowsePath(v)) {
             continue;
@@ -803,10 +803,10 @@ _bool os_dropDirectory(const _str& path, p_perun2& p2)
    }
    os_closeEntry(hFind);
 
-   return RemoveDirectoryW(const_cast<_char*>(P_WINDOWS_PATH(path))) != 0;
+   return RemoveDirectoryW(const_cast<p_char*>(P_WINDOWS_PATH(path))) != 0;
 }
 
-_bool os_hide(const _str& path)
+p_bool os_hide(const p_str& path)
 {
    const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
 
@@ -821,7 +821,7 @@ _bool os_hide(const _str& path)
    return true;
 }
 
-_bool os_lock(const _str& path)
+p_bool os_lock(const p_str& path)
 {
    const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
 
@@ -836,20 +836,20 @@ _bool os_lock(const _str& path)
    return true;
 }
 
-_bool os_open(const _str& path)
+p_bool os_open(const p_str& path)
 {
-   const _str location = os_parent(path);
+   const p_str location = os_parent(path);
    return (INT_PTR)ShellExecuteW(0, 0, P_WINDOWS_PATH(path), 0, P_WINDOWS_PATH(location) , SW_SHOW) > 32;
 }
 
-_bool os_openWith(const _str& program, const _str& path)
+p_bool os_openWith(const p_str& program, const p_str& path)
 {
-   const _str location = os_parent(path);
+   const p_str location = os_parent(path);
    return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN, P_WINDOWS_PATH(program), 
       P_WINDOWS_PATH(path), P_WINDOWS_PATH(location), SW_SHOW) > 32;
 }
 
-_bool os_openAsCommand(const _str& command, const _str& location)
+p_bool os_openAsCommand(const p_str& command, const p_str& location)
 {
    STARTUPINFO si;
    PROCESS_INFORMATION pi;
@@ -858,12 +858,12 @@ _bool os_openAsCommand(const _str& command, const _str& location)
    si.cb = sizeof(si);
    ZeroMemory(&pi, sizeof(pi));
 
-   const _size len = command.size() + 1;
-   _char cmd[len];
+   const p_size len = command.size() + 1;
+   p_char cmd[len];
    wcscpy(cmd, command.c_str());
 
-   const _size lenloc = location.size() + 1;
-   _char loc[lenloc];
+   const p_size lenloc = location.size() + 1;
+   p_char loc[lenloc];
    wcscpy(loc, location.c_str());
 
    return CreateProcessW
@@ -877,7 +877,7 @@ _bool os_openAsCommand(const _str& command, const _str& location)
    ) != 0;
 }
 
-_bool os_unhide(const _str& path)
+p_bool os_unhide(const p_str& path)
 {
    const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
 
@@ -892,7 +892,7 @@ _bool os_unhide(const _str& path)
    return true;
 }
 
-_bool os_unlock(const _str& path)
+p_bool os_unlock(const p_str& path)
 {
    const DWORD attr = GetFileAttributesW(P_WINDOWS_PATH(path));
 
@@ -908,12 +908,12 @@ _bool os_unlock(const _str& path)
 }
 
 
-_bool os_setTime(const _str& path, const _tim& creation,
+p_bool os_setTime(const p_str& path, const _tim& creation,
    const _tim& access, const _tim& modification)
 {
-   _ftim time_c;
-   _ftim time_a;
-   _ftim time_m;
+   p_ftim time_c;
+   p_ftim time_a;
+   p_ftim time_m;
 
    if (!(os_convertToFileTime(creation, time_c)
     && os_convertToFileTime(access, time_a)
@@ -922,7 +922,7 @@ _bool os_setTime(const _str& path, const _tim& creation,
       return false;
    }
 
-   _entry handle = CreateFile(P_WINDOWS_PATH(path),
+   p_entry handle = CreateFile(P_WINDOWS_PATH(path),
       FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE,
       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -930,17 +930,17 @@ _bool os_setTime(const _str& path, const _tim& creation,
       return false;
    }
 
-   const _bool result = SetFileTime(handle, &time_c, &time_a, &time_m);
+   const p_bool result = SetFileTime(handle, &time_c, &time_a, &time_m);
    CloseHandle(handle);
    return result;
 }
 
-_bool os_createFile(const _str& path)
+p_bool os_createFile(const p_str& path)
 {
    if (os_hasParentDirectory(path)) {
-      const _str p = os_parent(path);
+      const p_str p = os_parent(path);
       if (!os_exists(p)) {
-         const _bool b = os_createDirectory(p);
+         const p_bool b = os_createDirectory(p);
          if (!b) {
             return false;
          }
@@ -950,10 +950,10 @@ _bool os_createFile(const _str& path)
       return false;
    }
    
-   _entry h = CreateFileW(P_WINDOWS_PATH(path), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+   p_entry h = CreateFileW(P_WINDOWS_PATH(path), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
    if (h != INVALID_HANDLE_VALUE) {
-      _ftim ftime;
+      p_ftim ftime;
 
       if (os_convertToFileTime(os_now(), ftime)) {
          SetFileTime(h, &ftime, &ftime, &ftime);
@@ -967,12 +967,12 @@ _bool os_createFile(const _str& path)
    }
 }
 
-_bool os_createDirectory(const _str& path)
+p_bool os_createDirectory(const p_str& path)
 {
    if (os_hasParentDirectory(path)) {
-      const _str p = os_parent(path);
+      const p_str p = os_parent(path);
       if (!os_exists(p)) {
-         const _bool b = os_createDirectory(p);
+         const p_bool b = os_createDirectory(p);
          if (!b) {
             return false;
          }
@@ -985,12 +985,12 @@ _bool os_createDirectory(const _str& path)
    return CreateDirectoryW(P_WINDOWS_PATH(path), NULL) != 0;
 }
 
-_bool os_moveTo(const _str& oldPath, const _str& newPath)
+p_bool os_moveTo(const p_str& oldPath, const p_str& newPath)
 {
    return MoveFileExW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, p_perun2& p2)
+p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, p_perun2& p2)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
@@ -1000,7 +1000,7 @@ _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, p_
       return false;
    }
 
-   const _bool success = os_copyToDirectory(oldPath, newPath, p2);
+   const p_bool success = os_copyToDirectory(oldPath, newPath, p2);
    if (!success && p2.isNotRunning() && os_directoryExists(newPath)) {
       // if directory copy operation
       // was stopped by the user
@@ -1011,28 +1011,28 @@ _bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, p_
    return success;
 }
 
-_bool os_copyToFile(const _str& oldPath, const _str& newPath)
+p_bool os_copyToFile(const p_str& oldPath, const p_str& newPath)
 {
    return CopyFileW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), true) != 0;
 }
 
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, p_perun2& p2)
+p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& p2)
 {
    if (!os_createDirectory(newPath)) {
       return false;
    }
 
-   const _size length = oldPath.size() + 1;
+   const p_size length = oldPath.size() + 1;
 
-   _entry hFind;
-   _fdata FindFileData;
+   p_entry hFind;
+   p_fdata FindFileData;
 
-   _char DirPath[MAX_PATH];
-   _char FileName[MAX_PATH];
+   p_char DirPath[MAX_PATH];
+   p_char FileName[MAX_PATH];
 
-   wcscpy(DirPath, const_cast<_char*>(oldPath.c_str()));
+   wcscpy(DirPath, const_cast<p_char*>(oldPath.c_str()));
    wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
-   wcscpy(FileName, const_cast<_char*>(oldPath.c_str()));
+   wcscpy(FileName, const_cast<p_char*>(oldPath.c_str()));
    wcscat(FileName, toStr(OS_SEPARATOR).c_str());
 
    if (!os_hasFirstFile(DirPath, hFind, FindFileData)) {
@@ -1041,7 +1041,7 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, p_perun2& p2)
 
    wcscpy(DirPath, FileName);
 
-   _bool bSearch = true;
+   p_bool bSearch = true;
    while (bSearch) {
       if (os_hasNextFile(hFind, FindFileData)) {
          if (p2.isNotRunning()) {
@@ -1049,14 +1049,14 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, p_perun2& p2)
             return false;
          }
 
-         const _str v = FindFileData.cFileName;
+         const p_str v = FindFileData.cFileName;
 
          if (os_isBrowsePath(v)) {
             continue;
          }
 
          wcscat(FileName, FindFileData.cFileName);
-         const _str np = str(newPath, OS_SEPARATOR, _str(FileName).substr(length));
+         const p_str np = str(newPath, OS_SEPARATOR, p_str(FileName).substr(length));
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
             if (!os_copyToDirectory(FileName, np, p2)) {
@@ -1089,12 +1089,12 @@ _bool os_copyToDirectory(const _str& oldPath, const _str& newPath, p_perun2& p2)
    return true;
 }
 
-_bool os_copy(const _set& paths)
+p_bool os_copy(const _set& paths)
 {
-   _size totalSize = sizeof(DROPFILES) + sizeof(_char);
+   p_size totalSize = sizeof(DROPFILES) + sizeof(p_char);
 
    for (const auto& p : paths) {
-      totalSize += sizeof(_char) * (p.size() + 1);
+      totalSize += sizeof(p_char) * (p.size() + 1);
    }
 
    HDROP hdrop   = static_cast<HDROP>(GlobalAlloc(GHND, totalSize));
@@ -1102,7 +1102,7 @@ _bool os_copy(const _set& paths)
    df->pFiles    = sizeof(DROPFILES);
    df->fWide     = true;
 
-   _char* dstStart = (_char*)(&df[1]);
+   p_char* dstStart = (p_char*)(&df[1]);
 
    for (const auto& p : paths) {
       wcscpy(dstStart, p.c_str());
@@ -1118,7 +1118,7 @@ _bool os_copy(const _set& paths)
    return true;
 }
 
-_bool os_select(const _str& parent, const _set& paths)
+p_bool os_select(const p_str& parent, const _set& paths)
 {
    ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
    std::vector<ITEMIDLIST*> v;
@@ -1137,7 +1137,7 @@ _bool os_select(const _str& parent, const _set& paths)
    return hr == S_OK;
 }
 
-_bool os_run(const _str& comm, const _str& location, p_perun2& p2)
+p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
 {
    p2.sideProcess.running = true;
    STARTUPINFO si;
@@ -1146,12 +1146,12 @@ _bool os_run(const _str& comm, const _str& location, p_perun2& p2)
    si.cb = sizeof(si);
    ZeroMemory(&p2.sideProcess.info, sizeof(p2.sideProcess.info));
 
-   const _size len = comm.size() + 1;
-   _char cmd[len];
+   const p_size len = comm.size() + 1;
+   p_char cmd[len];
    wcscpy(cmd, comm.c_str());
 
-   const _size lenloc = location.size() + 1;
-   _char loc[lenloc];
+   const p_size lenloc = location.size() + 1;
+   p_char loc[lenloc];
    wcscpy(loc, location.c_str());
 
    CreateProcessW
@@ -1173,9 +1173,9 @@ _bool os_run(const _str& comm, const _str& location, p_perun2& p2)
    return p2.state == State::s_Running && dwExitCode == 0;
 }
 
-_bool os_isInvaild(const _str& path)
+p_bool os_isInvaild(const p_str& path)
 {
-   const _size length = path.size();
+   const p_size length = path.size();
 
    if (length == 0 || (length >= 2&& path[length - 1] == CHAR_DOT
       && !(path[length - 2] == CHAR_DOT || path[length - 2] == OS_SEPARATOR)))
@@ -1183,7 +1183,7 @@ _bool os_isInvaild(const _str& path)
       return true;
    }
 
-   for (_size i = 0; i < length; i++) {
+   for (p_size i = 0; i < length; i++) {
       switch (path[i]) {
          case CHAR_SMALLER:
          case CHAR_GREATER:
@@ -1205,10 +1205,10 @@ _bool os_isInvaild(const _str& path)
    return false;
 }
 
-uint32_t os_patternInfo(const _str& pattern)
+uint32_t os_patternInfo(const p_str& pattern)
 {
    uint32_t result = parse::ASTERISK_INFO_NULL;
-   const _size length = pattern.size();
+   const p_size length = pattern.size();
 
    if (length == 0 || pattern[length - 1] == CHAR_DOT) {
       return result;
@@ -1221,11 +1221,11 @@ uint32_t os_patternInfo(const _str& pattern)
       }
    }
 
-   _char prev;
-   _size countAstrisks = 0;
+   p_char prev;
+   p_size countAstrisks = 0;
 
-   for (_size i = 0; i < length; i++) {
-      const _char ch = pattern[i];
+   for (p_size i = 0; i < length; i++) {
+      const p_char ch = pattern[i];
 
       switch (ch) {
          case CHAR_ASTERISK: {
@@ -1268,9 +1268,9 @@ uint32_t os_patternInfo(const _str& pattern)
 }
 
 
-_str os_doubleDotsPrefix(_int amount)
+p_str os_doubleDotsPrefix(p_int amount)
 {
-   _str result;
+   p_str result;
    result.reserve(amount * 3);
 
    while (amount > 0) {
@@ -1283,15 +1283,15 @@ _str os_doubleDotsPrefix(_int amount)
    return result;
 }
 
-_bool os_hasDotSegments(const _str& path)
+p_bool os_hasDotSegments(const p_str& path)
 {
-   _int prev = path.size() - 1;
+   p_int prev = path.size() - 1;
 
-   for (_int i = path.size() - 1; i >= 0; i--) {
-      const _char ch = path[i];
+   for (p_int i = path.size() - 1; i >= 0; i--) {
+      const p_char ch = path[i];
 
       if (ch == OS_SEPARATOR) {
-         const _int len = prev - i;
+         const p_int len = prev - i;
 
          if (len == 2 && path[i + 1] == CHAR_DOT && path[i + 2] == CHAR_DOT) {
             return true;
@@ -1304,24 +1304,24 @@ _bool os_hasDotSegments(const _str& path)
       }
    }
 
-   const _int len = prev + 1;
+   const p_int len = prev + 1;
 
    return (len == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT)
       || (len == 1 && path[0] == CHAR_DOT);
 }
 
-_str os_trimRetreats(const _str& path, _size& retreats)
+p_str os_trimRetreats(const p_str& path, p_size& retreats)
 {
    if (path.empty()) {
-      return _str();
+      return p_str();
    }
 
-   _size prevId = 0;
-   _size i = 0;
+   p_size prevId = 0;
+   p_size i = 0;
 
    for (; i < path.size(); i++) {
       if (path[i] == OS_SEPARATOR) {
-         const _size len = i - prevId;
+         const p_size len = i - prevId;
          if (len == 1 && path[prevId] == CHAR_DOT) {
             prevId = i + 1;
             continue;
@@ -1337,11 +1337,11 @@ _str os_trimRetreats(const _str& path, _size& retreats)
       }
    }
 
-   const _int len = path.size() - prevId;
+   const p_int len = path.size() - prevId;
 
    if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
       retreats++;
-      return _str();
+      return p_str();
    }
    else if (!(len == 1 && path[prevId] == CHAR_DOT)) {
       return path.substr(prevId);
@@ -1350,16 +1350,16 @@ _str os_trimRetreats(const _str& path, _size& retreats)
    return toStr(CHAR_DOT);
 }
 
-_str os_segmentWithName(const _str& path)
+p_str os_segmentWithName(const p_str& path)
 {
-   _int prev = path.size() - 1;
-   _int level = 0;
+   p_int prev = path.size() - 1;
+   p_int level = 0;
 
-   for (_int i = path.size() - 1; i >= 0; i--) {
-      const _char ch = path[i];
+   for (p_int i = path.size() - 1; i >= 0; i--) {
+      const p_char ch = path[i];
 
       if (ch == OS_SEPARATOR) {
-         const _int len = prev - i;
+         const p_int len = prev - i;
 
          if (len == 2 && path[i + 1] == CHAR_DOT && path[i + 2] == CHAR_DOT) {
             level--;
@@ -1378,26 +1378,26 @@ _str os_segmentWithName(const _str& path)
       }
    }
 
-   const _int len = prev + 1;
+   const p_int len = prev + 1;
 
 
    if (len == 2 && path[0] == CHAR_DOT && path[1] == CHAR_DOT) {
-      return _str();
+      return p_str();
    }
    else if (len == 1 && path[0] == CHAR_DOT) {
-      return _str();
+      return p_str();
    }
 
    if (level < 0) {
-      return _str();
+      return p_str();
    }
 
    return path.substr(0, prev + 1);
 }
 
-_str os_retreats(_int times)
+p_str os_retreats(p_int times)
 {
-   _str result;
+   p_str result;
    result.reserve(times * 3);
 
    while (times > 0) {
@@ -1410,13 +1410,13 @@ _str os_retreats(_int times)
    return result;
 }
 
-_bool os_retreatPath(_str& path)
+p_bool os_retreatPath(p_str& path)
 {
    if (path.empty()) {
       return false;
    }
 
-   for (_int i = path.size() - 1; i >= 0; i--) {
+   for (p_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == OS_SEPARATOR) {
          path.resize(i);
          return true;
@@ -1428,13 +1428,13 @@ _bool os_retreatPath(_str& path)
 }
 
 
-void os_retreatPath(_str& path, _int times)
+void os_retreatPath(p_str& path, p_int times)
 {
    if (times <= 0 || path.empty()) {
       return;
    }
 
-   for (_int i = path.size() - 1; i >= 0; i--) {
+   for (p_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == OS_SEPARATOR) {
          times--;
          if (times <= 0) {
@@ -1448,19 +1448,19 @@ void os_retreatPath(_str& path, _int times)
 }
 
 
-_bool os_extendPath(_str& result, const _str& path)
+p_bool os_extendPath(p_str& result, const p_str& path)
 {
    if (path.empty()) {
       result.clear();
       return false;
    }
 
-   _int prevId = 0;
-   _int retreats = 0;
-   _size i = 0;
-   _bool thereWereRetreats = false;
-   const _bool wasAbsolute = os_isAbsolute(path);
-   _bool wasEmpty = false;
+   p_int prevId = 0;
+   p_int retreats = 0;
+   p_size i = 0;
+   p_bool thereWereRetreats = false;
+   const p_bool wasAbsolute = os_isAbsolute(path);
+   p_bool wasEmpty = false;
 
    if (os_isAbsolute(path)) {
       if (path.size() == 2) {
@@ -1475,7 +1475,7 @@ _bool os_extendPath(_str& result, const _str& path)
 
    for (; i < path.size(); i++) {
       if (path[i] == OS_SEPARATOR) {
-         const _int len = i - prevId;
+         const p_int len = i - prevId;
          if (len == 1 && path[prevId] == CHAR_DOT) {
             prevId = i + 1;
             continue;
@@ -1501,7 +1501,7 @@ _bool os_extendPath(_str& result, const _str& path)
       }
    }
 
-   const _int len = path.size() - prevId;
+   const p_int len = path.size() - prevId;
 
    if (len == 2 && path[prevId] == CHAR_DOT && path[prevId + 1] == CHAR_DOT) {
       if (!os_retreatPath(result)) {
@@ -1526,7 +1526,7 @@ _bool os_extendPath(_str& result, const _str& path)
    }
 
    if (retreats > 0) {
-      _str beginning;
+      p_str beginning;
       beginning.reserve(retreats * 3 - 1);
       beginning.push_back(CHAR_DOT);
       beginning.push_back(CHAR_DOT);
@@ -1552,37 +1552,37 @@ _bool os_extendPath(_str& result, const _str& path)
    return !thereWereRetreats;
 }
 
-_str os_softJoin(const _str& path1, const _str& path2)
+p_str os_softJoin(const p_str& path1, const p_str& path2)
 {
    return os_isAbsolute(path2)
       ? path2
       : str(path1, OS_SEPARATOR, path2);
 }
 
-_str os_leftJoin(const _str& path1, const _str& path2)
+p_str os_leftJoin(const p_str& path1, const p_str& path2)
 {
-   _str result = path1;
+   p_str result = path1;
    if (os_extendPath(result, path2)) {
       return result;
    }
 
-   return _str();
+   return p_str();
 }
 
-_str os_join(const _str& path1, const _str& path2)
+p_str os_join(const p_str& path1, const p_str& path2)
 {
    if (os_isInvaild(path1) || os_isInvaild(path2)) {
-      return _str();
+      return p_str();
    }
 
-   _str result;
+   p_str result;
    os_extendPath(result, os_isAbsolute(path2) ? path2 : str(path1, OS_SEPARATOR, path2));
    return result;
 }
 
-_bool os_endsWithDoubleDot(const _str& path)
+p_bool os_endsWithDoubleDot(const p_str& path)
 {
-   const _size len = path.size();
+   const p_size len = path.size();
 
    if (len == 2) {
       return path[0] == CHAR_DOT && path[1] == CHAR_DOT;
@@ -1597,7 +1597,7 @@ _bool os_endsWithDoubleDot(const _str& path)
        && path[len - 3] == OS_SEPARATOR;
 }
 
-_bool os_isAbsolute(const _str& path)
+p_bool os_isAbsolute(const p_str& path)
 {
    switch (path.size()) {
       case 0:
@@ -1618,12 +1618,12 @@ _bool os_isAbsolute(const _str& path)
    return path[1] == CHAR_COLON && os_isDriveLetter(path[0]);
 }
 
-_bool os_hasExtension(const _str& value)
+p_bool os_hasExtension(const p_str& value)
 {
-   const _int len = value.size();
+   const p_int len = value.size();
 
-   for (_int i = len - 1; i >= 0; i--) {
-      const _char ch = value[i];
+   for (p_int i = len - 1; i >= 0; i--) {
+      const p_char ch = value[i];
 
       if (ch == CHAR_DOT) {
          return (i == len - 1 || i == 0)
@@ -1638,18 +1638,18 @@ _bool os_hasExtension(const _str& value)
    return false;
 }
 
-_bool os_isDriveLetter(const _char ch)
+p_bool os_isDriveLetter(const p_char ch)
 {
    return (ch >= CHAR_a && ch <= CHAR_z)
        || (ch >= CHAR_A && ch <= CHAR_Z);
 }
 
-_bool os_isPath(const _str& value)
+p_bool os_isPath(const p_str& value)
 {
-   return value.find(OS_SEPARATOR) != _str::npos;
+   return value.find(OS_SEPARATOR) != p_str::npos;
 }
 
-_bool os_isExplorableDirectory(const _str& name)
+p_bool os_isExplorableDirectory(const p_str& name)
 {
    // this is an equivalent to
    // return name != .git && name != .svn
@@ -1662,13 +1662,13 @@ _bool os_isExplorableDirectory(const _str& name)
    }
 }
 
-_bool os_isAncestor(const _str& path, const _str& supposedChildPath)
+p_bool os_isAncestor(const p_str& path, const p_str& supposedChildPath)
 {
    if (supposedChildPath.size() <= path.size()) {
       return false;
    }
 
-   for (_size i = 0; i < path.size(); i++) {
+   for (p_size i = 0; i < path.size(); i++) {
       if (!charsEqualInsensitive(path[i], supposedChildPath[i])) {
          return false;
       }
@@ -1677,13 +1677,13 @@ _bool os_isAncestor(const _str& path, const _str& supposedChildPath)
    return supposedChildPath[path.size() + 1] == OS_SEPARATOR;
 }
 
-_bool os_hasParentDirectory(const _str& path)
+p_bool os_hasParentDirectory(const p_str& path)
 {
    if (!os_isAbsolute(path)) {
       return false;
    }
 
-   for (_int i = path.size() - 1; i >= 1; i--) {
+   for (p_int i = path.size() - 1; i >= 1; i--) {
       if (path[i] == OS_SEPARATOR) {
          return true;
       }
@@ -1693,14 +1693,14 @@ _bool os_hasParentDirectory(const _str& path)
 }
 
 // stack path to an element without extension
-_str os_stackPath(const _str& path)
+p_str os_stackPath(const p_str& path)
 {
    if (os_pathWasStacked(path)) {
       return os_stackPathStacked(path);
    }
 
-   _nint index = NINT_TWO;
-   _str newPath = path;
+   p_nint index = NINT_TWO;
+   p_str newPath = path;
 
    while (os_exists(newPath))
    {
@@ -1711,14 +1711,14 @@ _str os_stackPath(const _str& path)
    return newPath;
 }
 
-_str os_stackPathExt(const _str& basePath, const _str& extension)
+p_str os_stackPathExt(const p_str& basePath, const p_str& extension)
 {
    if (os_pathWasStacked(basePath)) {
       return os_stackPathExtStacked(basePath, extension);
    }
 
-   _nint index = NINT_TWO;
-   _str newPath = str(basePath, CHAR_DOT, extension);
+   p_nint index = NINT_TWO;
+   p_str newPath = str(basePath, CHAR_DOT, extension);
 
    while (os_exists(newPath))
    {
@@ -1730,9 +1730,9 @@ _str os_stackPathExt(const _str& basePath, const _str& extension)
    return newPath;
 }
 
-_str os_stackPathBase(const _str& path)
+p_str os_stackPathBase(const p_str& path)
 {
-   for (_int i = path.size() - 1; i >= 0; i--) {
+   for (p_int i = path.size() - 1; i >= 0; i--) {
       if (path[i] == CHAR_DOT) {
          return path.substr(0, i);
       }
@@ -1741,13 +1741,13 @@ _str os_stackPathBase(const _str& path)
    return path;
 }
 
-_str os_stackPathStacked(const _str& path)
+p_str os_stackPathStacked(const p_str& path)
 {
-   _nint index;
-   _str basePath;
+   p_nint index;
+   p_str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
+   p_str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
       toStr(index), CHAR_CLOSING_ROUND_BRACKET);
 
    while (os_exists(newPath))
@@ -1760,13 +1760,13 @@ _str os_stackPathStacked(const _str& path)
    return newPath;
 }
 
-_str os_stackPathExtStacked(const _str& path, const _str& extension)
+p_str os_stackPathExtStacked(const p_str& path, const p_str& extension)
 {
-   _nint index;
-   _str basePath;
+   p_nint index;
+   p_str basePath;
    os_getStackedData(path, index, basePath);
 
-   _str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
+   p_str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
       toStr(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
 
    while (os_exists(newPath))
@@ -1779,16 +1779,16 @@ _str os_stackPathExtStacked(const _str& path, const _str& extension)
    return newPath;
 }
 
-_bool os_pathWasStacked(const _str& basePath)
+p_bool os_pathWasStacked(const p_str& basePath)
 {
-   const _size len = basePath.size();
+   const p_size len = basePath.size();
    if (len < 4 || basePath[len - 1] != CHAR_CLOSING_ROUND_BRACKET) {
       return false;
    }
 
-   const _int beginning = static_cast<_int>(len - 2);
+   const p_int beginning = static_cast<p_int>(len - 2);
 
-   for (_int i = beginning; i >= 0; i--) {
+   for (p_int i = beginning; i >= 0; i--) {
       if (basePath[i] == CHAR_OPENING_ROUND_BRACKET) {
          if (i == beginning || i == 0) {
             return false;
@@ -1812,14 +1812,14 @@ _bool os_pathWasStacked(const _str& basePath)
    return false;
 }
 
-void os_getStackedData(const _str& path, _nint& index, _str& basePath)
+void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath)
 {
-   const _size len = path.size();
+   const p_size len = path.size();
 
-   for (_int i = static_cast<_int>(len - 2); i >= 0; i--) {
+   for (p_int i = static_cast<p_int>(len - 2); i >= 0; i--) {
       if (!std::iswdigit(path[i])) {
          basePath = path.substr(0, i);
-         const _str numStr = path.substr(i + 1, static_cast<_int>(len) - i - 2);
+         const p_str numStr = path.substr(i + 1, static_cast<p_int>(len) - i - 2);
 
          try {
             index = std::stoll(numStr);
@@ -1833,44 +1833,44 @@ void os_getStackedData(const _str& path, _nint& index, _str& basePath)
    }
 }
 
-_str os_executablePath()
+p_str os_executablePath()
 {
-   _char path[MAX_PATH];
+   p_char path[MAX_PATH];
    GetModuleFileNameW(NULL, path, MAX_PATH);
-   return _str(path);
+   return p_str(path);
 }
 
-_str os_desktopPath()
+p_str os_desktopPath()
 {
-   _char path[MAX_PATH];
+   p_char path[MAX_PATH];
    return SHGetSpecialFolderPathW(0, path, CSIDL_DESKTOP, FALSE)
-      ? _str(path)
-      : _str();
+      ? p_str(path)
+      : p_str();
 }
 
-_str os_currentPath()
+p_str os_currentPath()
 {
-   _char path[MAX_PATH];
+   p_char path[MAX_PATH];
    GetCurrentDirectory(MAX_PATH, path);
-   return _str(path);
+   return p_str(path);
 }
 
-_str os_system32Path()
+p_str os_system32Path()
 {
-   _char path[MAX_PATH];
+   p_char path[MAX_PATH];
    return SHGetSpecialFolderPathW(0, path, CSIDL_SYSTEM, FALSE)
-      ? _str(path)
-      : _str();
+      ? p_str(path)
+      : p_str();
 }
 
-_size os_readFile_size(const _str& path)
+p_size os_readFilep_size(const p_str& path)
 {
     struct _stat fileinfo;
     _wstat(path.c_str(), &fileinfo);
     return fileinfo.st_size;
 }
 
-_bool os_readFile(_str& result, const _str& path)
+p_bool os_readFile(p_str& result, const p_str& path)
 {
    FILE* f = _wfopen(path.c_str(), STRING_FILE_OPEN_MODE);
 
@@ -1878,11 +1878,11 @@ _bool os_readFile(_str& result, const _str& path)
       return false;
    }
 
-   _size filesize = os_readFile_size(path);
+   p_size filesize = os_readFilep_size(path);
 
    if (filesize > 0) {
       result.resize(filesize);
-      _size wchars_read = fread(&(result.front()), sizeof(_char), filesize, f);
+      p_size wchars_read = fread(&(result.front()), sizeof(p_char), filesize, f);
       result.resize(wchars_read);
       result.shrink_to_fit();
    }
@@ -1891,12 +1891,12 @@ _bool os_readFile(_str& result, const _str& path)
    return true;
 }
 
-void os_showWebsite(const _str& url)
+void os_showWebsite(const p_str& url)
 {
    ShellExecuteW(NULL, STRING_OPEN, url.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-_bool os_findText(const _str& path, const _str& value)
+p_bool os_findText(const p_str& path, const p_str& value)
 {
    std::wifstream stream(P_WINDOWS_PATH(path));
    if (!stream) {
@@ -1907,11 +1907,11 @@ _bool os_findText(const _str& path, const _str& value)
       return true;
    }
 
-   _str line;
-   _bool result = false;
+   p_str line;
+   p_bool result = false;
 
    while (std::getline(stream, line)) {
-      if (line.find(value) != _str::npos) {
+      if (line.find(value) != p_str::npos) {
          result = true;
          break;
       }
@@ -1929,7 +1929,7 @@ inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high)
    return n;
 }
 
-inline _bool os_isBrowsePath(const _str& path)
+inline p_bool os_isBrowsePath(const p_str& path)
 {
    // this is an equivalent to
    // return path == . || path == ..
@@ -1946,7 +1946,7 @@ inline _bool os_isBrowsePath(const _str& path)
    }
 }
 
-inline _tim os_convertToPerun2Time(const _ftim* time)
+inline _tim os_convertToPerun2Time(const p_ftim* time)
 {
    _FILETIME ftime;
    if (FileTimeToLocalFileTime(time, &ftime)) {
@@ -1965,7 +1965,7 @@ inline _tim os_convertToPerun2Time(const _ftim* time)
    }
 }
 
-inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result)
+inline p_bool os_convertToFileTime(const _tim& perunTime, p_ftim& result)
 {
    _SYSTEMTIME stime;
    stime.wYear = perunTime.year;
@@ -1983,12 +1983,12 @@ inline _bool os_convertToFileTime(const _tim& perunTime, _ftim& result)
    return LocalFileTimeToFileTime(&ftime, &result);
 }
 
-_str os_makeArg(const _str& value)
+p_str os_makeArg(const p_str& value)
 {
-   _bool anySpace = false;
-   _size quotes = 0;
+   p_bool anySpace = false;
+   p_size quotes = 0;
 
-   for (const _char ch : value) {
+   for (const p_char ch : value) {
       switch (ch) {
          case CHAR_SPACE: {
             anySpace = true;
@@ -2007,10 +2007,10 @@ _str os_makeArg(const _str& value)
          : value;
    }
    else {
-      _str result;
+      p_str result;
       result.reserve(value.size() + quotes);
 
-      for (const _char ch : value) {
+      for (const p_char ch : value) {
          if (ch == CHAR_QUOTATION_MARK) {
             result.push_back(CHAR_BACKSLASH);
          }
@@ -2023,9 +2023,9 @@ _str os_makeArg(const _str& value)
    }
 }
 
-_str os_quoteEmbraced(const _str& value)
+p_str os_quoteEmbraced(const p_str& value)
 {
-   return value.find(CHAR_SPACE) == _str::npos
+   return value.find(CHAR_SPACE) == p_str::npos
       ? value
       : str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
 }

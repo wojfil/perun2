@@ -99,9 +99,9 @@ struct KeywordsData
 {
 public:
    KeywordsData();
-   const std::unordered_map<_str, Keyword> KEYWORDS;
-   const std::unordered_map<_str, _nint> MONTHS;
-   const std::unordered_map<_str, _nint> WEEKDAYS;
+   const std::unordered_map<p_str, Keyword> KEYWORDS;
+   const std::unordered_map<p_str, p_nint> MONTHS;
+   const std::unordered_map<p_str, p_nint> WEEKDAYS;
 };
 
 }

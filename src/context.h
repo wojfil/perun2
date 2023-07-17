@@ -33,24 +33,24 @@ namespace perun2
    using _varptr = std::unique_ptr<Variable<T>>;
 
    template <typename T>
-   using _varptrs = std::unordered_map<_str, _varptr<T>>;
+   using _varptrs = std::unordered_map<p_str, _varptr<T>>;
 
 
    struct VarsContext
    {
    public:
 
-      void takeVarsPtr(_varptrs<_bool>*& result) { result = &this->bools; };
+      void takeVarsPtr(_varptrs<p_bool>*& result) { result = &this->bools; };
       void takeVarsPtr(_varptrs<_tim>*& result) { result = &this->times; };
       void takeVarsPtr(_varptrs<_per>*& result) { result = &this->periods; };
-      void takeVarsPtr(_varptrs<_str>*& result) { result = &this->strings; };
+      void takeVarsPtr(_varptrs<p_str>*& result) { result = &this->strings; };
       void takeVarsPtr(_varptrs<_num>*& result) { result = &this->numbers; };
       void takeVarsPtr(_varptrs<_tlist>*& result) { result = &this->timeLists; };
       void takeVarsPtr(_varptrs<_nlist>*& result) { result = &this->numLists; };
-      void takeVarsPtr(_varptrs<_list>*& result) { result = &this->lists; };
+      void takeVarsPtr(_varptrs<p_list>*& result) { result = &this->lists; };
 
       template <typename T>
-      _bool takeVar(const _str& var, Variable<T>*& result)
+      p_bool takeVar(const p_str& var, Variable<T>*& result)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -64,7 +64,7 @@ namespace perun2
       }
 
       template <typename T>
-      Variable<T>* insertVar(const _str& var, const VarType type)
+      Variable<T>* insertVar(const p_str& var, const VarType type)
       {
          _varptrs<T>* vars;
          this->takeVarsPtr(vars);
@@ -72,14 +72,14 @@ namespace perun2
          return a.first->second.get();
       }
 
-      _varptrs<_bool> bools;
+      _varptrs<p_bool> bools;
       _varptrs<_tim> times;
       _varptrs<_per> periods;
-      _varptrs<_str> strings;
+      _varptrs<p_str> strings;
       _varptrs<_num> numbers;
       _varptrs<_tlist> timeLists;
       _varptrs<_nlist> numLists;
-      _varptrs<_list> lists;
+      _varptrs<p_list> lists;
    };
 
    struct UserVarsContext
@@ -114,49 +114,49 @@ namespace perun2
       FileContext(p_perun2& p2);
       FileContext(_attrptr& attr, p_perun2& p2);
 
-      void loadData(const _str& newThis);
-      void loadData(const _str& newThis, const _fdata& data);
+      void loadData(const p_str& newThis);
+      void loadData(const p_str& newThis, const p_fdata& data);
       void reloadData();
       void loadAttributes();
-      void loadAttributes(const _fdata& data);
+      void loadAttributes(const p_fdata& data);
 
-      _bool attributeScope = true;
-      _varptr<_str> this_;
+      p_bool attributeScope = true;
+      _varptr<p_str> this_;
       _attrptr attribute;
       VarsContext fileVars;
       LocationContext* const locContext;
-      _str trimmed; // this is the value of this_, but with trimmed spaces and with proper path separators... used only internally
-      _bool invalid; // the value of this_ is invalid (has not allowed characters, is empty string etc.)
-      _bool isInside = false; // this is file context of the Inside structure
+      p_str trimmed; // this is the value of this_, but with trimmed spaces and with proper path separators... used only internally
+      p_bool invalid; // the value of this_ is invalid (has not allowed characters, is empty string etc.)
+      p_bool isInside = false; // this is file context of the Inside structure
 
-      Variable<_bool>* v_archive;
-      Variable<_bool>* v_compressed;
-      Variable<_bool>* v_empty;
-      Variable<_bool>* v_encrypted;
-      Variable<_bool>* v_exists;
-      Variable<_bool>* v_hidden;
-      Variable<_bool>* v_isdirectory;
-      Variable<_bool>* v_isfile;
-      Variable<_bool>* v_readonly;
+      Variable<p_bool>* v_archive;
+      Variable<p_bool>* v_compressed;
+      Variable<p_bool>* v_empty;
+      Variable<p_bool>* v_encrypted;
+      Variable<p_bool>* v_exists;
+      Variable<p_bool>* v_hidden;
+      Variable<p_bool>* v_isdirectory;
+      Variable<p_bool>* v_isfile;
+      Variable<p_bool>* v_readonly;
       Variable<_tim>* v_access;
       Variable<_tim>* v_change;
       Variable<_tim>* v_creation;
       Variable<_tim>* v_modification;
       Variable<_per>* v_lifetime;
-      Variable<_num>* v_size;
+      Variable<_num>* vp_size;
       Variable<_num>* v_depth;
-      Variable<_str>* v_drive;
-      Variable<_str>* v_extension;
-      Variable<_str>* v_fullname;
-      Variable<_str>* v_name;
-      Variable<_str>* v_parent;
-      Variable<_str>* v_path;
+      Variable<p_str>* v_drive;
+      Variable<p_str>* v_extension;
+      Variable<p_str>* v_fullname;
+      Variable<p_str>* v_name;
+      Variable<p_str>* v_parent;
+      Variable<p_str>* v_path;
 
    private:
       void initVars(p_perun2& p2);
 
       template <typename T>
-      Variable<T>* insertVar(const _str& name)
+      Variable<T>* insertVar(const p_str& name)
       {
          return this->fileVars.insertVar<T>(name, VarType::vt_Attribute);
       }
@@ -167,9 +167,9 @@ namespace perun2
    public:
       LocationContext();
       LocationContext(LocationContext* prev);
-      void loadData(const _str& trimmedValue);
+      void loadData(const p_str& trimmedValue);
 
-      _varptr<_str> location;
+      _varptr<p_str> location;
 
    private:
       LocationContext* prevLocation;
@@ -182,7 +182,7 @@ namespace perun2
       GlobalContext(p_perun2& p2);
 
       template <typename T>
-      void insertConstant(const _str& name)
+      void insertConstant(const p_str& name)
       {
          Variable<T>* v = this->globalVars.insertVar<T>(name, VarType::vt_Special);
          v->isConstant_ = true;
@@ -192,7 +192,7 @@ namespace perun2
 
    private:
       template <typename T>
-      Variable<T>* insertVar(const _str& name)
+      Variable<T>* insertVar(const p_str& name)
       {
          return this->globalVars.insertVar<T>(name, VarType::vt_Special);
       }
@@ -211,12 +211,12 @@ namespace perun2
       Contexts() = delete;
       Contexts(p_perun2& p2);
 
-      _bool getVar(const Token& tk, Variable<_bool>*& result, p_perun2& p2);
-      _bool getVar(const Token& tk, Variable<_num>*& result, p_perun2& p2);
-      _bool getVar(const Token& tk, Variable<_str>*& result, p_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_bool>*& result, p_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<_num>*& result, p_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_str>*& result, p_perun2& p2);
 
       template <typename T>
-      _bool getVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
+      p_bool getVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
       {
          return findVar(tk, result, p2);
       };
@@ -242,30 +242,30 @@ namespace perun2
       void retreatLocationContext();
 
       // for aggregates
-      _bool hasAggregate();
+      p_bool hasAggregate();
       comm::Aggregate* getAggregate();
 
       LocationContext* getLocationContext();
       AggregateContext* getAggregateContext();
-      _bool hasIterationContext() const;
-      _bool hasFileContext() const;
+      p_bool hasIterationContext() const;
+      p_bool hasFileContext() const;
       FileContext* getFileContext();
-      _bool hasIndexContext() const;
+      p_bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
-      _bool varExists(const Token& tk, p_perun2& p2);
+      p_bool varExists(const Token& tk, p_perun2& p2);
       void closeAttributeScope();
       void closeDeepAttributeScope();
 
-      _varptr<_bool> success;
-      std::unordered_map<_str, gen::DefinitionGenerator> osGenerators;
+      _varptr<p_bool> success;
+      std::unordered_map<p_str, gen::DefinitionGenerator> osGenerators;
 
    private:
 
       template <typename T>
-      _bool findVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
+      p_bool findVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
       {
-         const _str name = tk.toLowerString(p2);
+         const p_str name = tk.toLowerString(p2);
 
          // look in global variables
          if (this->globalVars.takeVar(name, result)) {
@@ -296,7 +296,7 @@ namespace perun2
          return false;
       }
 
-      void addOsGen(const _str& name, const gen::OsElement element, p_perun2& p2);
+      void addOsGen(const p_str& name, const gen::OsElement element, p_perun2& p2);
 
       LocationContext rootLocation;
 

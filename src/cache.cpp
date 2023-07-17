@@ -74,7 +74,7 @@ void Cache::loadCmdPath()
    }
 }
 
-p_bool Cache::isNotLoaded(const _cunit v)
+p_bool Cache::isNotLoaded(const p_cunit v)
 {
    const p_bool notLoaded = !(this->value & v);
    if (notLoaded) {

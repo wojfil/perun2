@@ -26,7 +26,7 @@
 namespace perun2::parse
 {
 
-p_bool parsePeriod(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriod(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -87,7 +87,7 @@ p_bool parsePeriod(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
       Tokens tks2(tks);
       tks2.trimLeft();
 
-      _genptr<p_per> per;
+      p_genptr<p_per> per;
       if (parse(p2, tks2, per)) {
          result = std::make_unique<gen::NegatedPeriod>(per);
          return true;
@@ -97,7 +97,7 @@ p_bool parsePeriod(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
    return parseBinary<p_per>(result, tks, p2) || parseTernary<p_per>(result, tks, p2);
 }
 
-p_bool parsePeriodConst(_genptr<p_per>& result, const Tokens& tks, const p_bool negated, p_perun2& p2)
+p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool negated, p_perun2& p2)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -134,9 +134,9 @@ p_bool parsePeriodConst(_genptr<p_per>& result, const Tokens& tks, const p_bool 
    if (last.isWord(STRINGS_PERIOD_MULTI, p2)) {
       const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
-      _tnum v = num.isDouble
-         ? static_cast<_tnum>(num.value.d)
-         : static_cast<_tnum>(num.value.i);
+      p_tnum v = num.isDouble
+         ? static_cast<p_tnum>(num.value.d)
+         : static_cast<p_tnum>(num.value.i);
 
       if (negated) {
          v *= TNUM_MINUS_ONE;
@@ -149,7 +149,7 @@ p_bool parsePeriodConst(_genptr<p_per>& result, const Tokens& tks, const p_bool 
    return false;
 }
 
-p_bool parsePeriodUnit(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriodUnit(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& last = tks.last();
    const p_bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE, p2);
@@ -162,7 +162,7 @@ p_bool parsePeriodUnit(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
    Tokens tks2(tks);
    tks2.trimRight();
 
-   _genptr<p_num> num;
+   p_genptr<p_num> num;
    if (!parse(p2, tks2, num)) {
       return false;
    }
@@ -180,11 +180,11 @@ p_bool parsePeriodUnit(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-p_bool parsePeriodExp(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriodExp(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
    const p_size len = elements.size();
-   _genptr<p_per> res;
+   p_genptr<p_per> res;
 
    if (!parsePeriodExpDiff(res, elements[0], p2)) {
       return false;
@@ -196,10 +196,10 @@ p_bool parsePeriodExp(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 
    for (p_size i = 1; i < len; i++) {
       const Tokens& el = elements[i];
-      _genptr<p_per> per;
+      p_genptr<p_per> per;
 
       if (parsePeriodExpDiff(per, el, p2)) {
-         _genptr<p_per> per2 = std::move(res);
+         p_genptr<p_per> per2 = std::move(res);
          res = std::make_unique<gen::PeriodAddition>(per2, per);
       }
       else {
@@ -211,7 +211,7 @@ p_bool parsePeriodExp(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
    return true;
 }
 
-p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parsePeriodExpDiff(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_int baseLen = tks.getLength();
    if (baseLen == 1) {
@@ -226,7 +226,7 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p
    }
 
    if (!tks2.check(TI_HAS_CHAR_MINUS)) {
-      _genptr<p_per> gp;
+      p_genptr<p_per> gp;
       if (parse(p2, tks2, gp)) {
          if (minusAwaits) {
             result = std::make_unique<gen::NegatedPeriod>(gp);
@@ -247,14 +247,14 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p
 
    p_bool isTime;
    p_bool hasFirst = false;
-   _genptr<p_tim> time;
-   _genptr<p_per> res;
+   p_genptr<p_tim> time;
+   p_genptr<p_per> res;
 
    if (parse(p2, elements[0], res)) {
       hasFirst = true;
       isTime = false;
       if (minusAwaits) {
-         _genptr<p_per> res2 = std::move(res);
+         p_genptr<p_per> res2 = std::move(res);
          res = std::make_unique<gen::NegatedPeriod>(res2);
          minusAwaits = false;
       }
@@ -272,12 +272,12 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p
       const Tokens& el = elements[i];
 
       if (isTime) {
-         _genptr<p_tim> time2;
+         p_genptr<p_tim> time2;
          if (parse(p2, el, time2)) {
-            _genptr<p_per> per = std::make_unique<gen::TimeDifference>(time, time2);
+            p_genptr<p_per> per = std::make_unique<gen::TimeDifference>(time, time2);
 
             if (hasFirst) {
-               _genptr<p_per> res2 = std::move(res);
+               p_genptr<p_per> res2 = std::move(res);
                res = std::make_unique<gen::PeriodSubtraction>(res2, per);
             }
             else {
@@ -294,9 +294,9 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p
             isTime = false;
          }
          else {
-            _genptr<p_per> per3;
+            p_genptr<p_per> per3;
             if (parse(p2, el, per3)) {
-               _genptr<p_tim> tim3 = std::make_unique<gen::DecreasedTime>(time, per3);
+               p_genptr<p_tim> tim3 = std::make_unique<gen::DecreasedTime>(time, per3);
                time = std::move(tim3);
             }
             else {
@@ -305,9 +305,9 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p
          }
       }
       else {
-         _genptr<p_per> per;
+         p_genptr<p_per> per;
          if (parse(p2, el, per)) {
-            _genptr<p_per> sub = std::make_unique<gen::PeriodSubtraction>(res, per);
+            p_genptr<p_per> sub = std::make_unique<gen::PeriodSubtraction>(res, per);
 
             if (minusAwaits) {
                res = std::make_unique<gen::NegatedPeriod>(sub);
@@ -336,7 +336,7 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p
    return true;
 }
 
-p_bool parseTimeDifference(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimeDifference(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 
@@ -348,21 +348,21 @@ p_bool parseTimeDifference(_genptr<p_per>& result, const Tokens& tks, p_perun2& 
       return false;
    }
 
-   _genptr<p_tim> tim1;
+   p_genptr<p_tim> tim1;
    if (parse(p2, pair.first, tim1)) {
-      _genptr<p_tim> tim2;
+      p_genptr<p_tim> tim2;
       if (parse(p2, pair.second, tim2)) {
          result = std::make_unique<gen::TimeDifference>(tim1, tim2);
          return true;
       }
    }
 
-   _genptr<p_per> per1;
+   p_genptr<p_per> per1;
    if (!parse(p2, pair.first, per1)) {
       return false;
    }
 
-   _genptr<p_per> per2;
+   p_genptr<p_per> per2;
    if (!parse(p2, pair.second, per2)) {
       return false;
    }

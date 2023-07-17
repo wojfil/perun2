@@ -28,7 +28,7 @@
 namespace perun2::parse
 {
 
-p_bool parseString(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseString(p_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -44,7 +44,7 @@ p_bool parseString(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
       return func::stringFunction(result, tks, p2);
    }
    else if (tks.check(TI_HAS_CHAR_PLUS)) {
-      _genptr<p_str> str;
+      p_genptr<p_str> str;
       if (parseStringConcat(str, tks, p2)) {
          result = std::move(str);
          return true;
@@ -52,17 +52,17 @@ p_bool parseString(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
    }
 
    if (tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
-      _genptr<p_num> num;
+      p_genptr<p_num> num;
       parseListElementIndex(num, tks, p2);
       const Token& f = tks.first();
-      _genptr<p_list> list;
+      p_genptr<p_list> list;
 
       if (makeVarRef(f, list, p2)) {
          result = std::make_unique<gen::ListElement<p_str>>(list, num);
          return true;
       }
       else {
-         _genptr<p_str> str;
+         p_genptr<p_str> str;
 
          if (makeVarRef(f, str, p2)) {
             result = std::make_unique<gen::CharAtIndex>(str, num);
@@ -83,7 +83,7 @@ p_bool parseString(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
 }
 
 template <typename T>
-void concatParseOutcome(p_bool& parsed, p_bool& allConstants, _genptr<T>& recentValue)
+void concatParseOutcome(p_bool& parsed, p_bool& allConstants, p_genptr<T>& recentValue)
 {
    parsed = true;
    allConstants &= recentValue->isConstant();
@@ -93,7 +93,7 @@ void concatParseOutcome(p_bool& parsed, p_bool& allConstants, _genptr<T>& recent
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
+p_bool parseStringConcat(p_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
 {
    enum PrevType {
       pt_String = 0,
@@ -105,12 +105,12 @@ p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
 
    PrevType prevType = pt_String;
-   _genptr<p_num> prevNum;
-   _genptr<p_tim> prevTim;
-   _genptr<p_per> prevPer;
+   p_genptr<p_num> prevNum;
+   p_genptr<p_tim> prevTim;
+   p_genptr<p_per> prevPer;
 
    p_bool allConstants = true;
-   std::vector<_genptr<p_str>> result;
+   std::vector<p_genptr<p_str>> result;
 
    for (const Tokens& tks2 : elements) {
       p_bool parsed = false;
@@ -134,9 +134,9 @@ p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
             break;
          }
          case pt_Number: {
-            _genptr<p_num> num;
+            p_genptr<p_num> num;
             if (parse(p2, tks2, num)) {
-               _genptr<p_num> pn = std::move(prevNum);
+               p_genptr<p_num> pn = std::move(prevNum);
                concatParseOutcome(parsed, allConstants, num);
                prevNum = std::make_unique<gen::Addition>(pn, num);
             }
@@ -154,9 +154,9 @@ p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
             break;
          }
          case pt_Time: {
-            _genptr<p_per> per;
+            p_genptr<p_per> per;
             if (parse(p2, tks2, per)) {
-               _genptr<p_tim> pt = std::move(prevTim);
+               p_genptr<p_tim> pt = std::move(prevTim);
                concatParseOutcome(parsed, allConstants, per);
                prevTim = std::make_unique<gen::IncreasedTime>(pt, per);
             }
@@ -174,9 +174,9 @@ p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
             break;
          }
          case pt_Period: {
-            _genptr<p_per> per;
+            p_genptr<p_per> per;
             if (parse(p2, tks2, per)) {
-               _genptr<p_per> pp = std::move(prevPer);
+               p_genptr<p_per> pp = std::move(prevPer);
                concatParseOutcome(parsed, allConstants, per);
                prevPer = std::make_unique<gen::PeriodAddition>(pp, per);
             }
@@ -197,7 +197,7 @@ p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
 
       if (!parsed) {
          prevType = pt_String;
-         _genptr<p_str> str;
+         p_genptr<p_str> str;
 
          if (parse(p2, tks2, str)) {
             allConstants &= str->isConstant();
@@ -224,7 +224,7 @@ p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   _genptr<p_str> concat;
+   p_genptr<p_str> concat;
 
    switch (result.size()) {
       case 1: {

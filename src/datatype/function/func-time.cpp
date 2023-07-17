@@ -21,33 +21,33 @@ namespace perun2::func
 
 p_tim F_Christmas::getValue()
 {
-   const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
+   const p_tnum year = static_cast<p_tnum>(arg1->getValue().toInt());
    return p_tim(25, 12, year);
 }
 
 p_tim F_Easter::getValue()
 {
-   const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
+   const p_tnum year = static_cast<p_tnum>(arg1->getValue().toInt());
 
-   const _tnum a = year % 19;
-   const _tnum b = year / 100;
-   const _tnum c = (b - (b / 4) - ((8 * b + 13) / 25) + (19 * a) + 15) % 30;
-   const _tnum d = c - (c / 28) * (1 - (c / 28) * (29 / (c + 1)) * ((21 - a) / 11));
-   const _tnum e = d - ((year + (year / 4) + d + 2 - b + (b / 4)) % 7);
-   const _tnum month = 3 + ((e + 40) / 44);
-   const _tnum day = e + 28 - (31 * (month / 4));
+   const p_tnum a = year % 19;
+   const p_tnum b = year / 100;
+   const p_tnum c = (b - (b / 4) - ((8 * b + 13) / 25) + (19 * a) + 15) % 30;
+   const p_tnum d = c - (c / 28) * (1 - (c / 28) * (29 / (c + 1)) * ((21 - a) / 11));
+   const p_tnum e = d - ((year + (year / 4) + d + 2 - b + (b / 4)) % 7);
+   const p_tnum month = 3 + ((e + 40) / 44);
+   const p_tnum day = e + 28 - (31 * (month / 4));
 
    return p_tim(day, month, year);
 }
 
 p_tim F_NewYear::getValue()
 {
-   const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
+   const p_tnum year = static_cast<p_tnum>(arg1->getValue().toInt());
    return p_tim(1, 1, year, 0, 0, 0);
 }
 
 
-inline void checkMonthRuntime(const _tnum month)
+inline void checkMonthRuntime(const p_tnum month)
 {
    if (month < 1) {
       throw RuntimeError(str(L"months cannot be smaller than 1. Received value: ",
@@ -59,22 +59,22 @@ inline void checkMonthRuntime(const _tnum month)
    }
 }
 
-inline void checkDayRuntime(const _tnum day, const _tnum month,
-   const _tnum year)
+inline void checkDayRuntime(const p_tnum day, const p_tnum month,
+   const p_tnum year)
 {
    if (day < 1) {
       throw RuntimeError(str(L"day cannot be smaller than 1. Received value: ",
          toStr(day)));
    }
 
-   const _tnum expected = daysInMonth(month, year);
+   const p_tnum expected = daysInMonth(month, year);
    if (day > expected) {
       throw RuntimeError(str(L"month ", monthToString(month), L" has only ",
          toStr(expected), L" days. Received value: ", toStr(day)));
    }
 }
 
-inline void checkSmallClockRuntime(const _tnum hour, const _tnum minute)
+inline void checkSmallClockRuntime(const p_tnum hour, const p_tnum minute)
 {
    if (hour < 0) {
       throw RuntimeError(str(L"value of hours cannot be smaller than 0. Received value: ",
@@ -94,7 +94,7 @@ inline void checkSmallClockRuntime(const _tnum hour, const _tnum minute)
    }
 }
 
-inline void checkSecondsRuntime(const _tnum second)
+inline void checkSecondsRuntime(const p_tnum second)
 {
    if (second < 0) {
       throw RuntimeError(str(L"value of seconds cannot be smaller than 0. Received value: ",
@@ -109,21 +109,21 @@ inline void checkSecondsRuntime(const _tnum second)
 
 p_tim F_Time_2::getValue()
 {
-   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
+   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
    checkMonthRuntime(v1);
 
-   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
+   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
    return p_tim(v1, v2);
 }
 
 
 p_tim F_Time_3::getValue()
 {
-   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
+   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
 
-   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
-   const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
+   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
+   const p_tnum v3 = static_cast<p_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
    return p_tim(v1, v2, v3);
@@ -132,15 +132,15 @@ p_tim F_Time_3::getValue()
 
 p_tim F_Time_5::getValue()
 {
-   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
+   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
 
-   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
-   const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
+   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
+   const p_tnum v3 = static_cast<p_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
-   const _tnum v4 = static_cast<_tnum>(arg4->getValue().toInt());
-   const _tnum v5 = static_cast<_tnum>(arg5->getValue().toInt());
+   const p_tnum v4 = static_cast<p_tnum>(arg4->getValue().toInt());
+   const p_tnum v5 = static_cast<p_tnum>(arg5->getValue().toInt());
    checkSmallClockRuntime(v4, v5);
 
    return p_tim(v1, v2, v3, v4, v5);
@@ -149,18 +149,18 @@ p_tim F_Time_5::getValue()
 
 p_tim F_Time_6::getValue()
 {
-   const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
+   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
 
-   const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
-   const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
+   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
+   const p_tnum v3 = static_cast<p_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
-   const _tnum v4 = static_cast<_tnum>(arg4->getValue().toInt());
-   const _tnum v5 = static_cast<_tnum>(arg5->getValue().toInt());
+   const p_tnum v4 = static_cast<p_tnum>(arg4->getValue().toInt());
+   const p_tnum v5 = static_cast<p_tnum>(arg5->getValue().toInt());
    checkSmallClockRuntime(v4, v5);
 
-   const _tnum v6 = static_cast<_tnum>(arg6->getValue().toInt());
+   const p_tnum v6 = static_cast<p_tnum>(arg6->getValue().toInt());
    checkSecondsRuntime(v6);
 
    return p_tim(v1, v2, v3, v4, v5, v6);

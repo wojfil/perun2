@@ -30,29 +30,29 @@ namespace perun2
    struct p_perun2;
 
    template <typename T>
-   using _varptr = std::unique_ptr<Variable<T>>;
+   using p_varptr = std::unique_ptr<Variable<T>>;
 
    template <typename T>
-   using _varptrs = std::unordered_map<p_str, _varptr<T>>;
+   using p_varptrs = std::unordered_map<p_str, p_varptr<T>>;
 
 
    struct VarsContext
    {
    public:
 
-      void takeVarsPtr(_varptrs<p_bool>*& result) { result = &this->bools; };
-      void takeVarsPtr(_varptrs<p_tim>*& result) { result = &this->times; };
-      void takeVarsPtr(_varptrs<p_per>*& result) { result = &this->periods; };
-      void takeVarsPtr(_varptrs<p_str>*& result) { result = &this->strings; };
-      void takeVarsPtr(_varptrs<p_num>*& result) { result = &this->numbers; };
-      void takeVarsPtr(_varptrs<p_tlist>*& result) { result = &this->timeLists; };
-      void takeVarsPtr(_varptrs<p_nlist>*& result) { result = &this->numLists; };
-      void takeVarsPtr(_varptrs<p_list>*& result) { result = &this->lists; };
+      void takeVarsPtr(p_varptrs<p_bool>*& result) { result = &this->bools; };
+      void takeVarsPtr(p_varptrs<p_tim>*& result) { result = &this->times; };
+      void takeVarsPtr(p_varptrs<p_per>*& result) { result = &this->periods; };
+      void takeVarsPtr(p_varptrs<p_str>*& result) { result = &this->strings; };
+      void takeVarsPtr(p_varptrs<p_num>*& result) { result = &this->numbers; };
+      void takeVarsPtr(p_varptrs<p_tlist>*& result) { result = &this->timeLists; };
+      void takeVarsPtr(p_varptrs<p_nlist>*& result) { result = &this->numLists; };
+      void takeVarsPtr(p_varptrs<p_list>*& result) { result = &this->lists; };
 
       template <typename T>
       p_bool takeVar(const p_str& var, Variable<T>*& result)
       {
-         _varptrs<T>* vars;
+         p_varptrs<T>* vars;
          this->takeVarsPtr(vars);
          auto v = vars->find(var);
          if (v != vars->end()) {
@@ -66,20 +66,20 @@ namespace perun2
       template <typename T>
       Variable<T>* insertVar(const p_str& var, const VarType type)
       {
-         _varptrs<T>* vars;
+         p_varptrs<T>* vars;
          this->takeVarsPtr(vars);
          auto a = vars->insert(std::make_pair(var, std::make_unique<Variable<T>>(type)));
          return a.first->second.get();
       }
 
-      _varptrs<p_bool> bools;
-      _varptrs<p_tim> times;
-      _varptrs<p_per> periods;
-      _varptrs<p_str> strings;
-      _varptrs<p_num> numbers;
-      _varptrs<p_tlist> timeLists;
-      _varptrs<p_nlist> numLists;
-      _varptrs<p_list> lists;
+      p_varptrs<p_bool> bools;
+      p_varptrs<p_tim> times;
+      p_varptrs<p_per> periods;
+      p_varptrs<p_str> strings;
+      p_varptrs<p_num> numbers;
+      p_varptrs<p_tlist> timeLists;
+      p_varptrs<p_nlist> numLists;
+      p_varptrs<p_list> lists;
    };
 
    struct UserVarsContext
@@ -104,7 +104,7 @@ namespace perun2
       void resetIndex();
       void incrementIndex();
 
-      _varptr<p_num> index;
+      p_varptr<p_num> index;
    };
 
    struct FileContext : IndexContext
@@ -112,7 +112,7 @@ namespace perun2
    public:
       FileContext() = delete;
       FileContext(p_perun2& p2);
-      FileContext(_attrptr& attr, p_perun2& p2);
+      FileContext(p_attrptr& attr, p_perun2& p2);
 
       void loadData(const p_str& newThis);
       void loadData(const p_str& newThis, const p_fdata& data);
@@ -121,8 +121,8 @@ namespace perun2
       void loadAttributes(const p_fdata& data);
 
       p_bool attributeScope = true;
-      _varptr<p_str> this_;
-      _attrptr attribute;
+      p_varptr<p_str> this_;
+      p_attrptr attribute;
       VarsContext fileVars;
       LocationContext* const locContext;
       p_str trimmed; // this is the value of this_, but with trimmed spaces and with proper path separators... used only internally
@@ -169,7 +169,7 @@ namespace perun2
       LocationContext(LocationContext* prev);
       void loadData(const p_str& trimmedValue);
 
-      _varptr<p_str> location;
+      p_varptr<p_str> location;
 
    private:
       LocationContext* prevLocation;
@@ -198,11 +198,11 @@ namespace perun2
       }
    };
 
-   typedef std::unique_ptr<UserVarsContext>        _ucptr;
-   typedef std::unique_ptr<AggregateContext>       _acptr;
-   typedef std::unique_ptr<IndexContext>           _icptr;
-   typedef std::unique_ptr<FileContext>            _fcptr;
-   typedef std::unique_ptr<LocationContext>        _lcptr;
+   typedef std::unique_ptr<UserVarsContext>        p_ucptr;
+   typedef std::unique_ptr<AggregateContext>       p_acptr;
+   typedef std::unique_ptr<IndexContext>           p_icptr;
+   typedef std::unique_ptr<FileContext>            p_fcptr;
+   typedef std::unique_ptr<LocationContext>        p_lcptr;
 
 
    struct Contexts : GlobalContext
@@ -251,13 +251,13 @@ namespace perun2
       p_bool hasFileContext() const;
       FileContext* getFileContext();
       p_bool hasIndexContext() const;
-      void makeLocationContext(_lcptr& result);
+      void makeLocationContext(p_lcptr& result);
       UserVarsContext* getUserVarsContext();
       p_bool varExists(const Token& tk, p_perun2& p2);
       void closeAttributeScope();
       void closeDeepAttributeScope();
 
-      _varptr<p_bool> success;
+      p_varptr<p_bool> success;
       std::unordered_map<p_str, gen::DefinitionGenerator> osGenerators;
 
    private:

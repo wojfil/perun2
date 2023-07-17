@@ -48,19 +48,19 @@ public:
    };
 
    Period();
-   Period(const _tnum val, const PeriodUnit unit);
+   Period(const p_tnum val, const PeriodUnit unit);
 
-   _tnum years = TNUM_ZERO;
-   _tnum months = TNUM_ZERO;
-   _tnum weeks = TNUM_ZERO;
-   _tnum days = TNUM_ZERO;
-   _tnum hours = TNUM_ZERO;
-   _tnum minutes = TNUM_ZERO;
-   _tnum seconds = TNUM_ZERO;
-   _tnum years_sec = TNUM_ZERO; // years with known amount of days
-   _tnum months_sec = TNUM_ZERO; // months with known amount of days
-   _tnum years_ad = TNUM_ZERO; // days in years from variable 'years_sec'
-   _tnum months_ad = TNUM_ZERO; // days in months from variable 'months_sec'
+   p_tnum years = TNUM_ZERO;
+   p_tnum months = TNUM_ZERO;
+   p_tnum weeks = TNUM_ZERO;
+   p_tnum days = TNUM_ZERO;
+   p_tnum hours = TNUM_ZERO;
+   p_tnum minutes = TNUM_ZERO;
+   p_tnum seconds = TNUM_ZERO;
+   p_tnum years_sec = TNUM_ZERO; // years with known amount of days
+   p_tnum months_sec = TNUM_ZERO; // months with known amount of days
+   p_tnum years_ad = TNUM_ZERO; // days in years from variable 'years_sec'
+   p_tnum months_ad = TNUM_ZERO; // days in months from variable 'months_sec'
    PeriodUnit periodUnit;
    PeriodType periodType;
 
@@ -92,12 +92,12 @@ private:
    inline p_bool isNegativeDifference() const;
    inline void checkDifference();
 
-   inline _tnum periodUnitsCmp(const Period& per) const;
-   inline _tnum periodDiffsCmp(const Period& diff) const;
-   inline _tnum periodCmp(const Period& per) const;
+   inline p_tnum periodUnitsCmp(const Period& per) const;
+   inline p_tnum periodDiffsCmp(const Period& diff) const;
+   inline p_tnum periodCmp(const Period& per) const;
 };
 
-inline _tnum periodDiffUnitCmp(const Period& diff, const Period& unit);
+inline p_tnum periodDiffUnitCmp(const Period& diff, const Period& unit);
 // return = 0       periods are equal
 // return < 0       left period is smaller
 

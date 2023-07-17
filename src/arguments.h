@@ -20,12 +20,12 @@
 namespace perun2
 {
 
-typedef uint32_t _flags;
+typedef uint32_t p_flags;
 
-p_constexpr _flags FLAG_NULL =                 0b0000;
-p_constexpr _flags FLAG_NOOMIT =               0b0001;
-p_constexpr _flags FLAG_SILENT =               0b0010;
-p_constexpr _flags FLAG_GUI =                  0b0100;
+p_constexpr p_flags FLAG_NULL =                 0b0000;
+p_constexpr p_flags FLAG_NOOMIT =               0b0001;
+p_constexpr p_flags FLAG_SILENT =               0b0010;
+p_constexpr p_flags FLAG_GUI =                  0b0100;
 
 p_constexpr p_char CHAR_FLAG_GUI =              CHAR_g;
 p_constexpr p_char CHAR_FLAG_NOOMIT =           CHAR_n;
@@ -62,19 +62,19 @@ public:
    Arguments(const p_str& loc, const p_str& cod);
 
    // Perun2 arguments made from location, code and flags
-   Arguments(const p_str& loc, const p_str& cod, const _flags fls);
+   Arguments(const p_str& loc, const p_str& cod, const p_flags fls);
 
-   _flags getFlags() const;
+   p_flags getFlags() const;
    p_list getArgs() const;
    p_str getLocation() const;
    const p_str& getCode() const;
    ArgsParseState getParseState() const;
-   p_bool hasFlag(const _flags flag) const;
+   p_bool hasFlag(const p_flags flag) const;
 
 private:
 
    p_str code;
-   _flags flags = FLAG_NULL;
+   p_flags flags = FLAG_NULL;
    p_list args;
    p_str location;
    ArgsParseState parseState = ArgsParseState::aps_Failed;

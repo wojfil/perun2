@@ -26,11 +26,11 @@ struct PeriodUnit : Generator<p_per>
 {
 public:
    PeriodUnit() = delete;
-   PeriodUnit(_genptr<p_num>& val, Period::PeriodUnit un);
+   PeriodUnit(p_genptr<p_num>& val, Period::PeriodUnit un);
    p_per getValue() override;
 
 private:
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
    const Period::PeriodUnit unit;
 };
 
@@ -39,7 +39,7 @@ struct PeriodAddition : BinaryOperation<p_per>
 {
 public:
    PeriodAddition() = delete;
-   PeriodAddition(_genptr<p_per>& val1, _genptr<p_per>& val2);
+   PeriodAddition(p_genptr<p_per>& val1, p_genptr<p_per>& val2);
    p_per getValue() override;
 };
 
@@ -48,7 +48,7 @@ struct PeriodSubtraction : BinaryOperation<p_per>
 {
 public:
    PeriodSubtraction() = delete;
-   PeriodSubtraction(_genptr<p_per>& val1, _genptr<p_per>& val2);
+   PeriodSubtraction(p_genptr<p_per>& val1, p_genptr<p_per>& val2);
    p_per getValue() override;
 };
 
@@ -57,12 +57,12 @@ struct TimeDifference : Generator<p_per>
 {
 public:
    TimeDifference() = delete;
-   TimeDifference(_genptr<p_tim>& val1, _genptr<p_tim>& val2);
+   TimeDifference(p_genptr<p_tim>& val1, p_genptr<p_tim>& val2);
    p_per getValue() override;
 
 private:
-   _genptr<p_tim> value1;
-   _genptr<p_tim> value2;
+   p_genptr<p_tim> value1;
+   p_genptr<p_tim> value2;
 };
 
 
@@ -70,11 +70,11 @@ struct NegatedPeriod : Generator<p_per>
 {
 public:
    NegatedPeriod() = delete;
-   NegatedPeriod(_genptr<p_per>& val);
+   NegatedPeriod(p_genptr<p_per>& val);
    p_per getValue() override;
 
 private:
-   _genptr<p_per> value;
+   p_genptr<p_per> value;
 };
 
 }

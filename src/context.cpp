@@ -50,7 +50,7 @@ namespace perun2
       this->initVars(p2);
    };
 
-   FileContext::FileContext(_attrptr& attr, p_perun2& p2)
+   FileContext::FileContext(p_attrptr& attr, p_perun2& p2)
       : IndexContext(p2), attribute(std::move(attr)),
       this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
@@ -324,7 +324,7 @@ namespace perun2
       osGenerators.insert(std::make_pair(name, gen::DefinitionGenerator(element, p2)));
    }
 
-   void Contexts::makeLocationContext(_lcptr& result)
+   void Contexts::makeLocationContext(p_lcptr& result)
    {
       result = std::make_unique<LocationContext>(this->locationContexts.back());
    }

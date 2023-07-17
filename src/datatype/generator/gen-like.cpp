@@ -68,7 +68,7 @@ static LikeSet makeLikeSet(const p_str& pattern, p_size startId, const p_size en
    return LikeSet(set, negated);
 }
 
-static void defaultLikeCmp(_likeptr& result, const p_str& pattern)
+static void defaultLikeCmp(p_likeptr& result, const p_str& pattern)
 {
    std::unordered_map<p_size, LikeSet> sets;
    const p_size length = pattern.size();
@@ -126,7 +126,7 @@ static void defaultLikeCmp(_likeptr& result, const p_str& pattern)
 // look for special case variants of the LIKE operator
 // if one is detected
 // return an optimized pattern comparer
-void parseLikeCmp(_likeptr& result, const p_str& pattern)
+void parseLikeCmp(p_likeptr& result, const p_str& pattern)
 {
    const p_size length = pattern.size();
 
@@ -409,7 +409,7 @@ void parseLikeCmp(_likeptr& result, const p_str& pattern)
 }
 
 
-LikeConst::LikeConst(_genptr<p_str>& val, const p_str& pattern)
+LikeConst::LikeConst(p_genptr<p_str>& val, const p_str& pattern)
   : value(std::move(val))
 { 
    parseLikeCmp(comparer, pattern);
@@ -422,7 +422,7 @@ p_bool LikeConst::getValue()
 };
 
 
-Like::Like(_genptr<p_str>& val, _genptr<p_str>& pat)
+Like::Like(p_genptr<p_str>& val, p_genptr<p_str>& pat)
    : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue()) { };
 
 

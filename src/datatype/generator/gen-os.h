@@ -31,9 +31,9 @@ struct p_perun2;
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS _genptr<p_str>& loc, p_perun2& p2, const p_bool abs, const p_str& pref
+#define P_GEN_OS_ARGS p_genptr<p_str>& loc, p_perun2& p2, const p_bool abs, const p_str& pref
 #define P_GEN_OS_ARGS_2 loc, p2, abs, pref
-#define P_GEN_OS_ARGS_EXT _genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const p_bool abs, const p_str& pref
+#define P_GEN_OS_ARGS_EXT p_genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const p_bool abs, const p_str& pref
 #define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, abs, pref
 
 
@@ -57,14 +57,14 @@ public:
 
 protected:
    p_bool first = true;
-   _genptr<p_str> location;
+   p_genptr<p_str> location;
    p_perun2& perun2;
    FileContext context;
    p_fdata data;
    p_num index;
    p_str baseLocation;
 
-   const _flags flags;
+   const p_flags flags;
    const p_bool isAbsolute;
    const p_bool hasPrefix;
    const p_str prefix;

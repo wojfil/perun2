@@ -127,7 +127,7 @@ void VarCharAssignment::run()
 
 void VarTimeUnitAssignment::run()
 {
-   const _tnum n = toTimeNumber(value->getValue());
+   const p_tnum n = toTimeNumber(value->getValue());
 
    switch (unit) {
       case Period::u_Years: {
@@ -159,7 +159,7 @@ void VarTimeUnitAssignment::run()
 
 void VarTimeUnitChange::run()
 {
-   const _tnum n = toTimeNumber(value->getValue()) * (negative ? TNUM_MINUS_ONE : TNUM_ONE);
+   const p_tnum n = toTimeNumber(value->getValue()) * (negative ? TNUM_MINUS_ONE : TNUM_ONE);
 
    switch (unit) {
       case Period::u_Years: {

@@ -29,29 +29,29 @@ struct CS_Condition : Command
 {
 public:
    CS_Condition();
-   _comptr* getCommandPtr();
+   p_comptr* getCommandPtr();
    void run() override;
 
 private:
-   _comptr command;
+   p_comptr command;
 };
 
 
 struct If_Base : Command
 {
 public:
-   If_Base(_genptr<p_bool>& cond, _comptr& com);
+   If_Base(p_genptr<p_bool>& cond, p_comptr& com);
 
 protected:
-   _genptr<p_bool> condition;
-   _comptr mainCommand;
+   p_genptr<p_bool> condition;
+   p_comptr mainCommand;
 };
 
 
 struct If_Raw : If_Base
 {
 public:
-   If_Raw(_genptr<p_bool>& cond, _comptr& com);
+   If_Raw(p_genptr<p_bool>& cond, p_comptr& com);
    void run() override;
 };
 
@@ -59,48 +59,48 @@ public:
 struct If_Else : If_Base
 {
 public:
-   If_Else(_genptr<p_bool>& cond, _comptr& com, _comptr& alt);
+   If_Else(p_genptr<p_bool>& cond, p_comptr& com, p_comptr& alt);
    void run() override;
 
 private:
-   _comptr altCommand;
+   p_comptr altCommand;
 };
 
 
 struct If_ElseIf : If_Base
 {
 public:
-   If_ElseIf(_genptr<p_bool>& cond, _comptr& com, _genptr<p_bool>& altCond, _comptr& alt);
+   If_ElseIf(p_genptr<p_bool>& cond, p_comptr& com, p_genptr<p_bool>& altCond, p_comptr& alt);
    void run() override;
 
 private:
-   _genptr<p_bool> altCondition;
-   _comptr altCommand;
+   p_genptr<p_bool> altCondition;
+   p_comptr altCommand;
 };
 
 
 struct If_ElseIfElse : If_Base
 {
 public:
-   If_ElseIfElse(_genptr<p_bool>& cond, _comptr& com, _genptr<p_bool>& altCond, _comptr& alt, _comptr& els);
+   If_ElseIfElse(p_genptr<p_bool>& cond, p_comptr& com, p_genptr<p_bool>& altCond, p_comptr& alt, p_comptr& els);
    void run() override;
 
 private:
-   _genptr<p_bool> altCondition;
-   _comptr altCommand;
-   _comptr elseCommand;
+   p_genptr<p_bool> altCondition;
+   p_comptr altCommand;
+   p_comptr elseCommand;
 };
 
 
 struct If_ManyAlternatives : If_Base
 {
 public:
-   If_ManyAlternatives(_genptr<p_bool>& cond, _comptr& com,
-      std::vector<_genptr<p_bool>>& altConds, std::vector<_comptr>& altComms);
+   If_ManyAlternatives(p_genptr<p_bool>& cond, p_comptr& com,
+      std::vector<p_genptr<p_bool>>& altConds, std::vector<p_comptr>& altComms);
 
 protected:
-   std::vector<_genptr<p_bool>> altConditions;
-   std::vector<_comptr> altCommands;
+   std::vector<p_genptr<p_bool>> altConditions;
+   std::vector<p_comptr> altCommands;
    const p_size altCount;
 };
 
@@ -108,8 +108,8 @@ protected:
 struct If_Alts : If_ManyAlternatives
 {
 public:
-   If_Alts(_genptr<p_bool>& cond, _comptr& com, std::vector<_genptr<p_bool>>& altConds,
-      std::vector<_comptr>& altComms);
+   If_Alts(p_genptr<p_bool>& cond, p_comptr& com, std::vector<p_genptr<p_bool>>& altConds,
+      std::vector<p_comptr>& altComms);
    void run() override;
 };
 
@@ -117,12 +117,12 @@ public:
 struct If_AltsElse : If_ManyAlternatives
 {
 public:
-   If_AltsElse(_genptr<p_bool>& cond, _comptr& com, std::vector<_genptr<p_bool>>& altConds,
-      std::vector<_comptr>& altComms, _comptr& els);
+   If_AltsElse(p_genptr<p_bool>& cond, p_comptr& com, std::vector<p_genptr<p_bool>>& altConds,
+      std::vector<p_comptr>& altComms, p_comptr& els);
    void run() override;
 
 private:
-   _comptr elseCommand;
+   p_comptr elseCommand;
 };
 
 }

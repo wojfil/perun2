@@ -29,11 +29,11 @@ struct CS_Condition;
 struct ConditionUnit
 {
 public:
-   ConditionUnit(_comptr* ptr);
+   ConditionUnit(p_comptr* ptr);
 
    void finish();
-   void setElse(_comptr& com);
-   void addElseIf(_comptr& com, _genptr<p_bool>& cond);
+   void setElse(p_comptr& com);
+   void addElseIf(p_comptr& com, p_genptr<p_bool>& cond);
 
    p_bool isClosed() const;
    p_bool isElseClosed() const;
@@ -43,10 +43,10 @@ public:
    void closeElse();
    void lock();
 
-   void setMain(_genptr<p_bool>& mainCond);
-   void setMain(_comptr& mainCom, _genptr<p_bool>& mainCond);
+   void setMain(p_genptr<p_bool>& mainCond);
+   void setMain(p_comptr& mainCom, p_genptr<p_bool>& mainCond);
 
-   _comptr* const pointer;
+   p_comptr* const pointer;
 
 private:
    p_bool closed = false;
@@ -54,29 +54,29 @@ private:
    p_bool locked = false;
    p_bool hasElse = false;
 
-   _comptr mainCommand;
-   _genptr<p_bool> mainCondition;
-   _comptr elseCommand;
+   p_comptr mainCommand;
+   p_genptr<p_bool> mainCondition;
+   p_comptr elseCommand;
 
-   std::vector<_comptr> elseIfCommands;
-   std::vector<_genptr<p_bool>> elseIfConditions;
+   std::vector<p_comptr> elseIfCommands;
+   std::vector<p_genptr<p_bool>> elseIfConditions;
 };
 
 
 struct ConditionContext
 {
 public:
-   void add(_comptr* pntr);
-   void addClosed(_comptr* pntr);
+   void add(p_comptr* pntr);
+   void addClosed(p_comptr* pntr);
    void deleteClosedUnits();
    void deleteLast();
    void lockLast();
    p_bool isExpandable() const;
-   void addElse(_comptr& com, const p_int line);
+   void addElse(p_comptr& com, const p_int line);
    void addEmptyElse(const p_int line);
-   void addElseIf(_genptr<p_bool>& cond, _comptr& com, const p_int line);
-   void setMain(_genptr<p_bool>& mainCond);
-   void setMain(_comptr& mainCom, _genptr<p_bool>& mainCond);
+   void addElseIf(p_genptr<p_bool>& cond, p_comptr& com, const p_int line);
+   void setMain(p_genptr<p_bool>& mainCond);
+   void setMain(p_comptr& mainCom, p_genptr<p_bool>& mainCond);
 
 private:
    std::vector<ConditionUnit> units;

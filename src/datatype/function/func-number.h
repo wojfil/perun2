@@ -25,7 +25,7 @@ namespace perun2::func
 struct F_Absolute : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Absolute(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Absolute(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -33,7 +33,7 @@ public:
 struct F_Ceil : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Ceil(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Ceil(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -41,13 +41,13 @@ public:
 struct F_CountInside : Generator<p_num>
 {
 public:
-   F_CountInside(p_defptr& def, _lcptr& lctx, FileContext* fctx, p_perun2& p2)
+   F_CountInside(p_defptr& def, p_lcptr& lctx, FileContext* fctx, p_perun2& p2)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx), perun2(p2) { };
 
    p_num getValue() override;
 
 private:
-   _lcptr locContext;
+   p_lcptr locContext;
    FileContext* fileContext;
    p_defptr definition;
    p_perun2& perun2;
@@ -57,7 +57,7 @@ private:
 struct F_Floor : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Floor(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Floor(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -65,7 +65,7 @@ public:
 struct F_Length : Func_1<p_str>, Generator<p_num>
 {
 public:
-   F_Length(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_Length(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -73,7 +73,7 @@ public:
 struct F_Number : Func_1<p_str>, Generator<p_num>
 {
 public:
-   F_Number(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_Number(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -81,7 +81,7 @@ public:
 struct F_Power : Func_2<p_num, p_num>, Generator<p_num>
 {
 public:
-   F_Power(_genptr<p_num>& a1, _genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_Power(p_genptr<p_num>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
    p_num getValue() override;
 
 private:
@@ -91,7 +91,7 @@ private:
 struct F_Round : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Round(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Round(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -99,7 +99,7 @@ public:
 struct F_Sign : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Sign(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Sign(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -107,7 +107,7 @@ public:
 struct F_Sqrt : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Sqrt(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Sqrt(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -115,7 +115,7 @@ public:
 struct F_Truncate : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_Truncate(_genptr<p_num>& a1) : Func_1(a1) { };
+   F_Truncate(p_genptr<p_num>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -136,7 +136,7 @@ private:
 struct F_RandomNumber : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_RandomNumber(_genptr<p_num>& a1, p_perun2& p2)
+   F_RandomNumber(p_genptr<p_num>& a1, p_perun2& p2)
       : Func_1(a1), math(p2.math) { };
 
    p_num getValue() override;
@@ -149,7 +149,7 @@ private:
 struct F_FromBinary : Func_1<p_str>, Generator<p_num>
 {
 public:
-   F_FromBinary(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_FromBinary(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -157,7 +157,7 @@ public:
 struct F_FromHex : Func_1<p_str>, Generator<p_num>
 {
 public:
-   F_FromHex(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_FromHex(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_num getValue() override;
 };
 
@@ -182,7 +182,7 @@ struct F_CountList : Generator<p_num>
 {
 public:
    F_CountList() = delete;
-   F_CountList(_genptr<std::vector<T>>& val) 
+   F_CountList(p_genptr<std::vector<T>>& val) 
       : value(std::move(val)) { };
 
    p_num getValue() override
@@ -191,14 +191,14 @@ public:
    }
 
 private:
-   _genptr<std::vector<T>> value;
+   p_genptr<std::vector<T>> value;
 };
 
 
 struct F_ShiftMonth_Time : Func_2<p_tim, p_num>, Generator<p_num>
 {
 public:
-   F_ShiftMonth_Time(_genptr<p_tim>& a1, _genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_ShiftMonth_Time(p_genptr<p_tim>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
    p_num getValue() override;
 };
 
@@ -206,7 +206,7 @@ public:
 struct F_ShiftMonth_Number : Func_2<p_num, p_num>, Generator<p_num>
 {
 public:
-   F_ShiftMonth_Number(_genptr<p_num>& a1, _genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_ShiftMonth_Number(p_genptr<p_num>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
    p_num getValue() override;
 };
 
@@ -214,7 +214,7 @@ public:
 struct F_ShiftWeekDay_Time : Func_2<p_tim, p_num>, Generator<p_num>
 {
 public:
-   F_ShiftWeekDay_Time(_genptr<p_tim>& a1, _genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_ShiftWeekDay_Time(p_genptr<p_tim>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
    p_num getValue() override;
 };
 
@@ -222,7 +222,7 @@ public:
 struct F_ShiftWeekDay_Number : Func_2<p_num, p_num>, Generator<p_num>
 {
 public:
-   F_ShiftWeekDay_Number(_genptr<p_num>& a1, _genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_ShiftWeekDay_Number(p_genptr<p_num>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
    p_num getValue() override;
 };
 

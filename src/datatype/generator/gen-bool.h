@@ -27,7 +27,7 @@ namespace perun2::gen
 struct Not : UnaryOperation<p_bool>
 {
 public:
-   Not(_genptr<p_bool>& val);
+   Not(p_genptr<p_bool>& val);
    p_bool getValue() override;
 };
 
@@ -35,7 +35,7 @@ public:
 struct And : BinaryOperation<p_bool>
 {
 public:
-   And(_genptr<p_bool>& val1, _genptr<p_bool>& val2);
+   And(p_genptr<p_bool>& val1, p_genptr<p_bool>& val2);
    p_bool getValue() override;
 };
 
@@ -43,7 +43,7 @@ public:
 struct Or : BinaryOperation<p_bool>
 {
 public:
-   Or(_genptr<p_bool>& val1, _genptr<p_bool>& val2);
+   Or(p_genptr<p_bool>& val1, p_genptr<p_bool>& val2);
    p_bool getValue() override;
 };
 
@@ -51,7 +51,7 @@ public:
 struct Xor : BinaryOperation<p_bool>
 {
 public:
-   Xor(_genptr<p_bool>& val1, _genptr<p_bool>& val2);
+   Xor(p_genptr<p_bool>& val1, p_genptr<p_bool>& val2);
    p_bool getValue() override;
 };
 
@@ -62,7 +62,7 @@ template <typename T>
 struct InList : Generator<p_bool>
 {
 public:
-   InList<T>(_genptr<T>& val, _genptr<std::vector<T>>& li)
+   InList<T>(p_genptr<T>& val, p_genptr<std::vector<T>>& li)
       : value(std::move(val)), list(std::move(li)) { };
 
    p_bool getValue() override 
@@ -80,8 +80,8 @@ public:
    };
 
 private:
-   _genptr<T> value;
-   _genptr<std::vector<T>> list;
+   p_genptr<T> value;
+   p_genptr<std::vector<T>> list;
 };
 
 
@@ -91,7 +91,7 @@ template <typename T>
 struct InConstList : Generator<p_bool>
 {
 public:
-   InConstList<T>(_genptr<T>& val, const std::vector<T>& li)
+   InConstList<T>(p_genptr<T>& val, const std::vector<T>& li)
       : value(std::move(val)), list(li)
    {
       std::sort(list.begin(), list.end());
@@ -104,7 +104,7 @@ public:
    };
 
 private:
-   _genptr<T> value;
+   p_genptr<T> value;
    std::vector<T> list;
 };
 
@@ -115,11 +115,11 @@ private:
 struct InConstTimeList : Generator<p_bool>
 {
 public:
-   InConstTimeList(_genptr<p_tim>& val, const p_tlist& li);
+   InConstTimeList(p_genptr<p_tim>& val, const p_tlist& li);
    p_bool getValue() override;
 
 private:
-   _genptr<p_tim> value;
+   p_genptr<p_tim> value;
    const p_tlist list;
 };
 

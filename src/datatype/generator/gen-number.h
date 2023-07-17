@@ -25,7 +25,7 @@ namespace perun2::gen
 struct Negation : UnaryOperation<p_num>
 {
    Negation() = delete;
-   Negation(_genptr<p_num>& val);
+   Negation(p_genptr<p_num>& val);
    p_num getValue() override;
 };
 
@@ -33,7 +33,7 @@ struct Negation : UnaryOperation<p_num>
 struct Addition : BinaryOperation<p_num>
 {
    Addition() = delete;
-   Addition(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   Addition(p_genptr<p_num>& val1, p_genptr<p_num>& val2);
    p_num getValue() override;
 };
 
@@ -41,7 +41,7 @@ struct Addition : BinaryOperation<p_num>
 struct Subtraction : BinaryOperation<p_num>
 {
    Subtraction() = delete;
-   Subtraction(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   Subtraction(p_genptr<p_num>& val1, p_genptr<p_num>& val2);
    p_num getValue() override;
 };
 
@@ -49,7 +49,7 @@ struct Subtraction : BinaryOperation<p_num>
 struct Multiplication : BinaryOperation<p_num>
 {
    Multiplication() = delete;
-   Multiplication(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   Multiplication(p_genptr<p_num>& val1, p_genptr<p_num>& val2);
    p_num getValue() override;
 };
 
@@ -57,7 +57,7 @@ struct Multiplication : BinaryOperation<p_num>
 struct Division : BinaryOperation<p_num>
 {
    Division() = delete;
-   Division(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   Division(p_genptr<p_num>& val1, p_genptr<p_num>& val2);
    p_num getValue() override;
 };
 
@@ -65,7 +65,7 @@ struct Division : BinaryOperation<p_num>
 struct Modulo : BinaryOperation<p_num>
 {
    Modulo() = delete;
-   Modulo(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   Modulo(p_genptr<p_num>& val1, p_genptr<p_num>& val2);
    p_num getValue() override;
 };
 
@@ -74,11 +74,11 @@ struct TimeMember : Generator<p_num>
 {
 public:
    TimeMember() = delete;
-   TimeMember(_genptr<p_tim>& tim, const Period::PeriodUnit& pu);
+   TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit& pu);
    p_num getValue() override;
 
 protected:
-   _genptr<p_tim> time;
+   p_genptr<p_tim> time;
    const Period::PeriodUnit unit;
 };
 

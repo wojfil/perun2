@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-p_bool parseTime(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTime(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -47,7 +47,7 @@ p_bool parseTime(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       const p_bool hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
 
       if (hasMinuses || hasPluses) {
-         _genptr<p_per> per;
+         p_genptr<p_per> per;
          if (parse(p2, tks, per)) {
             return false;
          }
@@ -69,13 +69,13 @@ p_bool parseTime(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
-      _genptr<p_num> num;
+      p_genptr<p_num> num;
       parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
-      _genptr<p_tlist> tlist;
+      p_genptr<p_tlist> tlist;
       if (makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
-         _genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
+         p_genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
 
          if (last.isSecondWord(STRING_DATE, p2)) {
             result = std::make_unique<gen::TimeDate>(tim);
@@ -90,7 +90,7 @@ p_bool parseTime(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
    return parseTernary<p_tim>(result, tks, p2);
 }
 
-p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    // tt_YearMonth:
    const p_size len = tks.getLength();
@@ -110,8 +110,8 @@ p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
          return false;
       }
 
-      const _tnum month = static_cast<_tnum>(first.value.num.n.toInt());
-      const _tnum year = tokenToTimeNumber(second);
+      const p_tnum month = static_cast<p_tnum>(first.value.num.n.toInt());
+      const p_tnum year = tokenToTimeNumber(second);
       result = std::make_unique<gen::Constant<p_tim>>(p_tim(month, year));
       return true;
    }
@@ -131,9 +131,9 @@ p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       return false;
    }
 
-   const _tnum day = tokenToTimeNumber(first);
-   const _tnum month = static_cast<_tnum>(second.value.num.n.toInt());
-   const _tnum year = tokenToTimeNumber(third);
+   const p_tnum day = tokenToTimeNumber(first);
+   const p_tnum month = static_cast<p_tnum>(second.value.num.n.toInt());
+   const p_tnum year = tokenToTimeNumber(third);
    checkDayCorrectness(day, month, year, first);
 
    if (len == 3) {
@@ -151,8 +151,8 @@ p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       return false;
    }
 
-   const _tnum hour = tokenToTimeNumber(tks.at(4));
-   const _tnum minute = tokenToTimeNumber(tks.at(6));
+   const p_tnum hour = tokenToTimeNumber(tks.at(4));
+   const p_tnum minute = tokenToTimeNumber(tks.at(6));
 
    if (hour < 0 || hour >= 24) {
 
@@ -173,7 +173,7 @@ p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       return false;
    }
 
-   const _tnum secs = tokenToTimeNumber(tks.at(8));
+   const p_tnum secs = tokenToTimeNumber(tks.at(8));
 
    if (secs < 0 || secs >= 60) {
       throw SyntaxError::secondsOutOfRange(toStr(secs), tks.at(8).line);
@@ -183,28 +183,28 @@ p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
    return true;
 }
 
-static _tnum tokenToTimeNumber(const Token& tk)
+static p_tnum tokenToTimeNumber(const Token& tk)
 {
    return toTimeNumber(tk.value.num.n);
 }
 
-static void checkDayCorrectness(const _tnum day, const _tnum month,
-   const _tnum year, const Token& tk)
+static void checkDayCorrectness(const p_tnum day, const p_tnum month,
+   const p_tnum year, const Token& tk)
 {
    if (day < 1) {
       throw SyntaxError::dayCannotBeSmallerThanOne(tk.line);
    }
 
-   const _tnum expected = daysInMonth(month, year);
+   const p_tnum expected = daysInMonth(month, year);
    if (day > expected) {
       throw SyntaxError::monthHasFewerDays(monthToString(month), toStr(expected), tk.line);
    }
 }
 
-static p_bool parseTimeExp(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseTimeExp(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 {
-   _genptr<p_tim> prevTim;
-   _genptr<p_tim> time;
+   p_genptr<p_tim> prevTim;
+   p_genptr<p_tim> time;
    BracketsInfo bi;
    const p_int start = tks.getStart();
    const p_int end = tks.getEnd();
@@ -294,10 +294,10 @@ static p_bool parseTimeExp(_genptr<p_tim>& result, const Tokens& tks, p_perun2& 
 }
 
 static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubtract,
-   _genptr<p_tim>& prevTim, _genptr<p_tim>& time, const Tokens& tks,
+   p_genptr<p_tim>& prevTim, p_genptr<p_tim>& time, const Tokens& tks,
    p_int& numReserve, p_perun2& p2)
 {
-   _genptr<p_tim> tim;
+   p_genptr<p_tim> tim;
    if (parse(p2, tks, tim)) {
       if (numReserve != 0) {
          return false;
@@ -311,10 +311,10 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
       }
       else {
          if (subtract) {
-            _genptr<p_per> diff = std::make_unique<gen::TimeDifference>(prevTim, tim);
+            p_genptr<p_per> diff = std::make_unique<gen::TimeDifference>(prevTim, tim);
 
             if (time) {
-               _genptr<p_tim> tim2 = std::move(time);
+               p_genptr<p_tim> tim2 = std::move(time);
                if (prevSubtract) {
                   time = std::make_unique<gen::DecreasedTime>(tim2, diff);
                }
@@ -343,7 +343,7 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
       return false;
    }
 
-   _genptr<p_num> num;
+   p_genptr<p_num> num;
    if (parse(p2, tks, num)) {
       if (numReserve == 0 && subtract) {
          numReserve = 1;
@@ -354,7 +354,7 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
    }
 
    if (numReserve == 0) {
-      _genptr<p_per> per;
+      p_genptr<p_per> per;
       if (!parse(p2, tks, per)) {
          return false;
       }
@@ -371,7 +371,7 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
       const p_int length = tks.getLength() + numReserve;
       const Tokens tks2(tks, start, length);
 
-      _genptr<p_per> per;
+      p_genptr<p_per> per;
       if (!parse(p2, tks2, per)) {
          return false;
       }

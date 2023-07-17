@@ -22,7 +22,7 @@
 namespace perun2
 {
 
-Tokens::Tokens(const std::vector<Token>& li, const p_int st, const p_int ln, const _tinfo in)
+Tokens::Tokens(const std::vector<Token>& li, const p_int st, const p_int ln, const p_tinfo in)
    : start(st), length(ln), end(st + ln - 1), list(li), info(in) { }
 
 Tokens::Tokens(const std::vector<Token>& li)
@@ -76,12 +76,12 @@ const std::vector<Token>& Tokens::getList() const
    return this->list;
 }
 
-_tinfo Tokens::getInfo() const
+p_tinfo Tokens::getInfo() const
 {
    return this->info;
 }
 
-p_bool Tokens::check(const _tinfo in) const
+p_bool Tokens::check(const p_tinfo in) const
 {
    return this->info & in;
 }

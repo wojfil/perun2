@@ -26,7 +26,7 @@
 namespace perun2::parse
 {
 
-p_bool parseList(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -61,11 +61,11 @@ p_bool parseList(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size firstKeywordId = tks.getFilterKeywordId(p2);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
-   _genptr<p_list> base;
+   p_genptr<p_list> base;
    if (!parse(p2, tks2, base)) {
       return false;
    }
@@ -85,12 +85,12 @@ static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_peru
 
       switch (kw) {
          case Keyword::kw_Final: {
-            _genptr<p_num> num;
+            p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
-            _genptr<p_list> prev = std::move(base);
+            p_genptr<p_list> prev = std::move(base);
             base = std::make_unique<gen::ListFilter_Final>(prev, num);
             break;
          }
@@ -101,12 +101,12 @@ static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_peru
                checkLimitBySize(ts, p2);
             }
 
-            _genptr<p_num> num;
+            p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
-            _genptr<p_list> prev = std::move(base);
+            p_genptr<p_list> prev = std::move(base);
 
             switch(kw) {
                case Keyword::kw_Every: {
@@ -126,30 +126,30 @@ static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_peru
             break;
          }
          case Keyword::kw_Where: {
-            _fcptr context = std::make_unique<FileContext>(p2);
+            p_fcptr context = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(context.get());
 
-            _genptr<p_bool> boo;
+            p_genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
                throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
             }
 
             p2.contexts.retreatFileContext();
 
-            _genptr<p_list> prev = std::move(base);
+            p_genptr<p_list> prev = std::move(base);
             base = std::make_unique<gen::ListFilter_Where>(boo, prev, context, p2);
             break;
          }
          case Keyword::kw_Order: {
-            gen::_ordptr order;
-            gen::_indptr indices = std::make_unique<gen::OrderIndices>();
-            _fcptr context = std::make_unique<FileContext>(p2);
+            gen::p_ordptr order;
+            gen::p_indptr indices = std::make_unique<gen::OrderIndices>();
+            p_fcptr context = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(context.get());
 
-            parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
+            parseOrder<gen::p_ordptr>(order, indices.get(), ts, tsf, p2);
 
             p2.contexts.retreatFileContext();
-            _genptr<p_list> prev = std::move(base);
+            p_genptr<p_list> prev = std::move(base);
             base = std::make_unique<gen::OrderBy_List>(prev, context, indices, order, p2);
             break;
          }

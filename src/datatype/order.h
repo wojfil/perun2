@@ -32,7 +32,7 @@ public:
    std::unique_ptr<p_size[]> values;
 };
 
-typedef std::unique_ptr<OrderIndices> _indptr;
+typedef std::unique_ptr<OrderIndices> p_indptr;
 
 
 struct Order
@@ -44,7 +44,7 @@ public:
    virtual p_bool matchesSwap(const p_int start, const p_int end) const = 0;
 };
 
-typedef std::unique_ptr<Order> _ordptr;
+typedef std::unique_ptr<Order> p_ordptr;
 
 
 template <typename T>
@@ -52,11 +52,11 @@ struct OrderUnit : Order
 {
 public:
    OrderUnit() = delete;
-   OrderUnit(_genptr<T>& val, const p_bool desc, OrderIndices* inds)
+   OrderUnit(p_genptr<T>& val, const p_bool desc, OrderIndices* inds)
       : valueGenerator(std::move(val)), descending(desc), indices(inds) { };
 
 protected:
-   _genptr<T> valueGenerator;
+   p_genptr<T> valueGenerator;
    OrderIndices* indices;
    std::vector<T> values;
    const p_bool descending;
@@ -68,7 +68,7 @@ struct OrderUnit_Middle : OrderUnit<T>
 {
 public:
    OrderUnit_Middle() = delete;
-   OrderUnit_Middle(_genptr<T>& val, const p_bool desc, _ordptr& next, OrderIndices* inds)
+   OrderUnit_Middle(p_genptr<T>& val, const p_bool desc, p_ordptr& next, OrderIndices* inds)
       : OrderUnit<T>(val, desc, inds), nextUnit(std::move(next)) { };
 
    void clearValues(const p_size length) override
@@ -105,7 +105,7 @@ public:
    }
 
 private:
-   _ordptr nextUnit;
+   p_ordptr nextUnit;
 };
 
 
@@ -114,7 +114,7 @@ struct OrderUnit_Final : OrderUnit<T>
 {
 public:
    OrderUnit_Final() = delete;
-   OrderUnit_Final(_genptr<T>& val, const p_bool desc, OrderIndices* inds)
+   OrderUnit_Final(p_genptr<T>& val, const p_bool desc, OrderIndices* inds)
       : OrderUnit<T>(val, desc, inds) { };
 
    void clearValues(const p_size length) override
@@ -145,14 +145,14 @@ struct OrderBy
 {
 public:
    OrderBy() = delete;
-   OrderBy(_indptr& inds, _ordptr& ord);
+   OrderBy(p_indptr& inds, p_ordptr& ord);
 
    void quicksort(p_int start, p_int end);
    p_int partition(const p_int start, const p_int end);
 
 protected:
-   _indptr indices;
-   _ordptr order;
+   p_indptr indices;
+   p_ordptr order;
    p_list* resultPtr = nullptr;
 };
 
@@ -161,13 +161,13 @@ struct OrderBy_List : OrderBy, Generator<p_list>
 {
 public:
    OrderBy_List() = delete;
-   OrderBy_List(_genptr<p_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, p_perun2& p2);
+   OrderBy_List(p_genptr<p_list>& bas, p_fcptr& ctx, p_indptr& inds, p_ordptr& ord, p_perun2& p2);
 
    p_list getValue() override;
 
 private:
-   _fcptr context;
-   _genptr<p_list> base;
+   p_fcptr context;
+   p_genptr<p_list> base;
 };
 
 
@@ -175,7 +175,7 @@ struct OrderBy_Definition : OrderBy, p_def
 {
 public:
    OrderBy_Definition() = delete;
-   OrderBy_Definition(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, p_perun2& p2);
+   OrderBy_Definition(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_indptr& inds, p_ordptr& ord, p_perun2& p2);
    FileContext* getFileContext() override;
 
    void reset() override;
@@ -183,7 +183,7 @@ public:
 
 private:
    FileContext* fileContext;
-   _fcptr nextContext;
+   p_fcptr nextContext;
    p_defptr base;
    p_bool first = true;
    p_perun2& perun2;

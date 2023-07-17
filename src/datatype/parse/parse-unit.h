@@ -20,14 +20,14 @@
 namespace perun2::parse
 {
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_bool>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_num>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_nlist>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_tlist>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_tim>& result);
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_per>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_bool>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_num>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_str>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_nlist>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_tlist>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_list>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_tim>& result);
+p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_per>& result);
 p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_defptr& result);
 
 }

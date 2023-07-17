@@ -25,30 +25,30 @@ namespace perun2
 // Tokens' info about certain sequence of tokens
 // this info is generated only once at the sequence creation
 // and then read multiple times during parsing
-typedef uint64_t _tinfo;
+typedef uint64_t p_tinfo;
 
-p_constexpr _tinfo TI_NULL =                    0b00000000000000000000000;
-p_constexpr _tinfo TI_HAS_COMPARISON_CHAR =     0b00000000000000000000001;
-p_constexpr _tinfo TI_HAS_FILTER_KEYWORD =      0b00000000000000000000010;
-p_constexpr _tinfo TI_HAS_INDEP_BRACKETS =      0b00000000000000000000100;
-p_constexpr _tinfo TI_HAS_INDEP_SQ_BRACKETS =   0b00000000000000000001000;
-p_constexpr _tinfo TI_HAS_CHAR_QUESTION_MARK =  0b00000000000000000010000;
-p_constexpr _tinfo TI_HAS_CHAR_COMMA =          0b00000000000000000100000;
-p_constexpr _tinfo TI_HAS_CHAR_COLON =          0b00000000000000001000000;
-p_constexpr _tinfo TI_HAS_CHAR_PLUS =           0b00000000000000010000000;
-p_constexpr _tinfo TI_HAS_CHAR_MINUS =          0b00000000000000100000000;
-p_constexpr _tinfo TI_HAS_CHAR_EQUALS =         0b00000000000001000000000;
-p_constexpr _tinfo TI_IS_POSSIBLE_FUNCTION =    0b00000000000010000000000;
-p_constexpr _tinfo TI_HAS_KEYWORD_IN =          0b00000000000100000000000;
-p_constexpr _tinfo TI_HAS_KEYWORD_LIKE =        0b00000000001000000000000;
-p_constexpr _tinfo TI_HAS_KEYWORD_TO =          0b00000000010000000000000;
-p_constexpr _tinfo TI_HAS_KEYWORD_WITH =        0b00000000100000000000000;
-p_constexpr _tinfo TI_HAS_KEYWORD_AS =          0b00000001000000000000000;
-p_constexpr _tinfo TI_IS_POSSIBLE_LIST_ELEM =   0b00000010000000000000000;
-p_constexpr _tinfo TI_IS_POSSIBLE_BINARY =      0b00000100000000000000000;
-p_constexpr _tinfo TI_IS_POSSIBLE_TERNARY =     0b00001000000000000000000;
-p_constexpr _tinfo TI_IS_LIST_ELEM_MEMBER =     0b00010000000000000000000;
-p_constexpr _tinfo TI_EVALUATE_DEFINITIONS =    0b00100000000000000000000;
+p_constexpr p_tinfo TI_NULL =                    0b00000000000000000000000;
+p_constexpr p_tinfo TI_HAS_COMPARISON_CHAR =     0b00000000000000000000001;
+p_constexpr p_tinfo TI_HAS_FILTER_KEYWORD =      0b00000000000000000000010;
+p_constexpr p_tinfo TI_HAS_INDEP_BRACKETS =      0b00000000000000000000100;
+p_constexpr p_tinfo TI_HAS_INDEP_SQ_BRACKETS =   0b00000000000000000001000;
+p_constexpr p_tinfo TI_HAS_CHAR_QUESTION_MARK =  0b00000000000000000010000;
+p_constexpr p_tinfo TI_HAS_CHAR_COMMA =          0b00000000000000000100000;
+p_constexpr p_tinfo TI_HAS_CHAR_COLON =          0b00000000000000001000000;
+p_constexpr p_tinfo TI_HAS_CHAR_PLUS =           0b00000000000000010000000;
+p_constexpr p_tinfo TI_HAS_CHAR_MINUS =          0b00000000000000100000000;
+p_constexpr p_tinfo TI_HAS_CHAR_EQUALS =         0b00000000000001000000000;
+p_constexpr p_tinfo TI_IS_POSSIBLE_FUNCTION =    0b00000000000010000000000;
+p_constexpr p_tinfo TI_HAS_KEYWORD_IN =          0b00000000000100000000000;
+p_constexpr p_tinfo TI_HAS_KEYWORD_LIKE =        0b00000000001000000000000;
+p_constexpr p_tinfo TI_HAS_KEYWORD_TO =          0b00000000010000000000000;
+p_constexpr p_tinfo TI_HAS_KEYWORD_WITH =        0b00000000100000000000000;
+p_constexpr p_tinfo TI_HAS_KEYWORD_AS =          0b00000001000000000000000;
+p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =   0b00000010000000000000000;
+p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =      0b00000100000000000000000;
+p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =     0b00001000000000000000000;
+p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =     0b00010000000000000000000;
+p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =    0b00100000000000000000000;
 
 
 struct p_perun2;
@@ -59,7 +59,7 @@ struct Tokens
 {
 public:
    Tokens() = delete;
-   Tokens(const std::vector<Token>& li, const p_int st, const p_int ln, const _tinfo in);
+   Tokens(const std::vector<Token>& li, const p_int st, const p_int ln, const p_tinfo in);
    Tokens(const std::vector<Token>& li);
    Tokens(const Tokens& tks, const p_int st, const p_int ln);
 
@@ -73,8 +73,8 @@ public:
    p_int getEnd() const;
    p_int getEmbracement() const;
    const std::vector<Token>& getList() const;
-   _tinfo getInfo() const;
-   p_bool check(const _tinfo in) const;
+   p_tinfo getInfo() const;
+   p_bool check(const p_tinfo in) const;
    p_bool isEmpty() const;
    const Token& first() const;
    const Token& second() const;
@@ -98,7 +98,7 @@ private:
    p_int length;
    p_int end;
    const std::vector<Token>& list;
-   _tinfo info = TI_NULL;
+   p_tinfo info = TI_NULL;
 
    void setData();
 };

@@ -17,7 +17,7 @@
 namespace perun2::gen
 {
 
-   OrderByLimitOne::OrderByLimitOne(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _loptr& lo, p_perun2& p2)
+   OrderByLimitOne::OrderByLimitOne(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_loptr& lo, p_perun2& p2)
       : base(std::move(bas)), fileContext(ctx), nextContext(std::move(nextCtx)), limitOne(std::move(lo)), perun2(p2) { };
 
 

@@ -22,29 +22,29 @@
 namespace perun2
 {
 
-typedef uint64_t _aunit;
+typedef uint64_t p_aunit;
 
-p_constexpr _aunit ATTR_NULL =         0b00000000000000000000000000000000;
-p_constexpr _aunit ATTR_ACCESS =       0b00000000000000000000000000000001;
-p_constexpr _aunit ATTR_ARCHIVE =      0b00000000000000000000000000000010;
-p_constexpr _aunit ATTR_CHANGE =       0b00000000000000000000000000000100;
-p_constexpr _aunit ATTR_COMPRESSED =   0b00000000000000000000000000001000;
-p_constexpr _aunit ATTR_CREATION =     0b00000000000000000000000000010000;
-p_constexpr _aunit ATTR_DEPTH =        0b00000000000000000000000000100000;
-p_constexpr _aunit ATTR_DRIVE =        0b00000000000000000000000001000000;
-p_constexpr _aunit ATTR_EMPTY =        0b00000000000000000000000010000000;
-p_constexpr _aunit ATTR_ENCRYPTED =    0b00000000000000000000000100000000;
-p_constexpr _aunit ATTR_EXISTS =       0b00000000000000000000001000000000;
-p_constexpr _aunit ATTR_EXTENSION =    0b00000000000000000000010000000000;
-p_constexpr _aunit ATTR_FULLNAME =     0b00000000000000000000100000000000;
-p_constexpr _aunit ATTR_HIDDEN =       0b00000000000000000001000000000000;
-p_constexpr _aunit ATTR_LIFETIME =     0b00000000000000000010000000000000;
-p_constexpr _aunit ATTR_MODIFICATION = 0b00000000000000000100000000000000;
-p_constexpr _aunit ATTR_NAME =         0b00000000000000001000000000000000;
-p_constexpr _aunit ATTR_PARENT =       0b00000000000000010000000000000000;
-p_constexpr _aunit ATTR_PATH =         0b00000000000000100000000000000000;
-p_constexpr _aunit ATTR_READONLY =     0b00000000000001000000000000000000;
-p_constexpr _aunit ATTR_SIZE =         0b00000000000010000000000000000000;
+p_constexpr p_aunit ATTR_NULL =         0b00000000000000000000000000000000;
+p_constexpr p_aunit ATTR_ACCESS =       0b00000000000000000000000000000001;
+p_constexpr p_aunit ATTR_ARCHIVE =      0b00000000000000000000000000000010;
+p_constexpr p_aunit ATTR_CHANGE =       0b00000000000000000000000000000100;
+p_constexpr p_aunit ATTR_COMPRESSED =   0b00000000000000000000000000001000;
+p_constexpr p_aunit ATTR_CREATION =     0b00000000000000000000000000010000;
+p_constexpr p_aunit ATTR_DEPTH =        0b00000000000000000000000000100000;
+p_constexpr p_aunit ATTR_DRIVE =        0b00000000000000000000000001000000;
+p_constexpr p_aunit ATTR_EMPTY =        0b00000000000000000000000010000000;
+p_constexpr p_aunit ATTR_ENCRYPTED =    0b00000000000000000000000100000000;
+p_constexpr p_aunit ATTR_EXISTS =       0b00000000000000000000001000000000;
+p_constexpr p_aunit ATTR_EXTENSION =    0b00000000000000000000010000000000;
+p_constexpr p_aunit ATTR_FULLNAME =     0b00000000000000000000100000000000;
+p_constexpr p_aunit ATTR_HIDDEN =       0b00000000000000000001000000000000;
+p_constexpr p_aunit ATTR_LIFETIME =     0b00000000000000000010000000000000;
+p_constexpr p_aunit ATTR_MODIFICATION = 0b00000000000000000100000000000000;
+p_constexpr p_aunit ATTR_NAME =         0b00000000000000001000000000000000;
+p_constexpr p_aunit ATTR_PARENT =       0b00000000000000010000000000000000;
+p_constexpr p_aunit ATTR_PATH =         0b00000000000000100000000000000000;
+p_constexpr p_aunit ATTR_READONLY =     0b00000000000001000000000000000000;
+p_constexpr p_aunit ATTR_SIZE =         0b00000000000010000000000000000000;
 
 // certain expression or syntax structure may require multiple file attributes:
 // for example - creation time, modification time, size and extension
@@ -59,23 +59,23 @@ struct Attribute
 public:
    Attribute() = delete;
    Attribute(p_perun2& p2);
-   Attribute(const _aunit val, p_perun2& p2);
+   Attribute(const p_aunit val, p_perun2& p2);
 
    void add(const Token& tk);
-   void set(const _aunit v);
+   void set(const p_aunit v);
    void setCoreCommandBase();
    void setTimeCommandBase();
-   p_bool has(const _aunit v) const;
+   p_bool has(const p_aunit v) const;
    p_bool hasAny() const;
-   _aunit getValue() const;
+   p_aunit getValue() const;
    
    p_perun2& perun2;
 
 private:
-   _aunit value = ATTR_NULL;
+   p_aunit value = ATTR_NULL;
 };
 
-typedef std::unique_ptr<Attribute> _attrptr;
+typedef std::unique_ptr<Attribute> p_attrptr;
 
 }
 

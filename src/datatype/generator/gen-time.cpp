@@ -21,7 +21,7 @@
 namespace perun2::gen
 {
 
-IncreasedTime::IncreasedTime (_genptr<p_tim>& tim, _genptr<p_per>& per)
+IncreasedTime::IncreasedTime (p_genptr<p_tim>& tim, p_genptr<p_per>& per)
    : time(std::move(tim)), period(std::move(per)) { }
 
 p_tim IncreasedTime::getValue()
@@ -31,7 +31,7 @@ p_tim IncreasedTime::getValue()
    return t;
 }
 
-DecreasedTime::DecreasedTime(_genptr<p_tim>& tim, _genptr<p_per>& per)
+DecreasedTime::DecreasedTime(p_genptr<p_tim>& tim, p_genptr<p_per>& per)
    : time(std::move(tim)), period(std::move(per)) {};
 
 p_tim DecreasedTime::getValue()
@@ -61,7 +61,7 @@ p_tim v_Tomorrow::getValue()
    return os_tomorrow();
 }
 
-TimeDate::TimeDate(_genptr<p_tim>& val) 
+TimeDate::TimeDate(p_genptr<p_tim>& val) 
    : UnaryOperation<p_tim>(val) { }
 
 p_tim TimeDate::getValue() 

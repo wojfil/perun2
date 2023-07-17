@@ -71,7 +71,7 @@ void os_sleepForMs(const p_nint ms, p_perun2& p2)
 // attributes of something, that cannot exist (empty string, contains not allowed chars, ...)
 void os_loadEmptyAttributes(FileContext& context)
 {
-   const _attrptr& attribute = context.attribute;
+   const p_attrptr& attribute = context.attribute;
 
    if (attribute->has(ATTR_PATH)) {
       context.v_path->value.clear();

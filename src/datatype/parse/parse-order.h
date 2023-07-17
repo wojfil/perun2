@@ -28,10 +28,10 @@ namespace perun2::parse
 
 
 template <typename T>
-void setOrderUnit(gen::_ordptr& result, _genptr<T>& value, const p_bool desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::p_ordptr& result, p_genptr<T>& value, const p_bool desc, gen::OrderIndices* indices)
 {
    if (result) {
-      gen::_ordptr prev = std::move(result);
+      gen::p_ordptr prev = std::move(result);
       result = std::make_unique<gen::OrderUnit_Middle<T>>(value, desc, prev, indices);
    }
    else {
@@ -41,10 +41,10 @@ void setOrderUnit(gen::_ordptr& result, _genptr<T>& value, const p_bool desc, ge
 
 
 template <typename T>
-void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const p_bool desc, gen::OrderIndices* indices)
+void setOrderUnit(gen::p_loptr& result, p_genptr<T>& value, const p_bool desc, gen::OrderIndices* indices)
 {
    if (result) {
-      gen::_loptr prev = std::move(result);
+      gen::p_loptr prev = std::move(result);
       result = std::make_unique<gen::LimitOneUnit_Middle<T>>(value, desc, prev);
    }
    else {
@@ -63,12 +63,12 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
       FileContext* fc = p2.contexts.getFileContext();
 
       if (kw == Keyword::kw_Asc) {
-         _genptr<p_str> str = std::make_unique<VariableReference<p_str>>(fc->this_.get());
+         p_genptr<p_str> str = std::make_unique<VariableReference<p_str>>(fc->this_.get());
          setOrderUnit(result, str, false, indices);
          return true;
       }
       else if (kw == Keyword::kw_Desc) {
-         _genptr<p_str> str = std::make_unique<VariableReference<p_str>>(fc->this_.get());
+         p_genptr<p_str> str = std::make_unique<VariableReference<p_str>>(fc->this_.get());
          setOrderUnit(result, str, true, indices);
          return true;
       }
@@ -119,31 +119,31 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
          }
       }
 
-      _genptr<p_bool> uboo;
+      p_genptr<p_bool> uboo;
       if (parse(p2, tk, uboo)) {
          setOrderUnit(result, uboo, desc, indices);
          continue;
       }
 
-      _genptr<p_num> unum;
+      p_genptr<p_num> unum;
       if (parse(p2, tk, unum)) {
          setOrderUnit(result, unum, desc, indices);
          continue;
       }
 
-      _genptr<p_per> uper;
+      p_genptr<p_per> uper;
       if (parse(p2, tk, uper)) {
          setOrderUnit(result, uper, desc, indices);
          continue;
       }
 
-      _genptr<p_tim> utim;
+      p_genptr<p_tim> utim;
       if (parse(p2, tk, utim)) {
          setOrderUnit(result, utim, desc, indices);
          continue;
       }
 
-      _genptr<p_str> ustr;
+      p_genptr<p_str> ustr;
       if (parse(p2, tk, ustr)) {
          setOrderUnit(result, ustr, desc, indices);
          continue;

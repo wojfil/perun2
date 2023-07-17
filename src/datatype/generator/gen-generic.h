@@ -47,10 +47,10 @@ template<typename T>
 struct UnaryOperation : Generator<T>
 {
 public:
-   UnaryOperation<T> (_genptr<T>& val) : value(std::move(val)) { };
+   UnaryOperation<T> (p_genptr<T>& val) : value(std::move(val)) { };
 
 protected:
-   _genptr<T> value;
+   p_genptr<T> value;
 };
 
 
@@ -58,12 +58,12 @@ template <typename T>
 struct BinaryOperation : Generator<T>
 {
 public:
-   BinaryOperation<T> (_genptr<T>& val1, _genptr<T>& val2)
+   BinaryOperation<T> (p_genptr<T>& val1, p_genptr<T>& val2)
       : value1(std::move(val1)), value2(std::move(val2)) { };
 
 protected:
-   _genptr<T> value1;
-   _genptr<T> value2;
+   p_genptr<T> value1;
+   p_genptr<T> value2;
 };
 
 
@@ -71,7 +71,7 @@ template <typename T>
 struct Ternary : Generator<T>
 {
 public:
-   Ternary<T> (_genptr<p_bool>& cond, _genptr<T>& le, _genptr<T>& ri)
+   Ternary<T> (p_genptr<p_bool>& cond, p_genptr<T>& le, p_genptr<T>& ri)
       : condition(std::move(cond)), left(std::move(le)), right(std::move(ri)) {};
 
    T getValue() override {
@@ -79,9 +79,9 @@ public:
    };
 
 private:
-   _genptr<p_bool> condition;
-   _genptr<T> left;
-   _genptr<T> right;
+   p_genptr<p_bool> condition;
+   p_genptr<T> left;
+   p_genptr<T> right;
 };
 
 
@@ -89,7 +89,7 @@ template <typename T>
 struct Binary : Generator<T>
 {
 public:
-   Binary<T> (_genptr<p_bool>& cond, _genptr<T>& val)
+   Binary<T> (p_genptr<p_bool>& cond, p_genptr<T>& val)
       : condition(std::move(cond)), value(std::move(val)){};
 
    T getValue () override {
@@ -97,8 +97,8 @@ public:
    };
 
 private:
-   _genptr<p_bool> condition;
-   _genptr<T> value;
+   p_genptr<p_bool> condition;
+   p_genptr<T> value;
 };
 
 
@@ -106,7 +106,7 @@ template <typename T>
 struct Listed : Generator<std::vector<T>>
 {
 public:
-   Listed(std::vector<_genptr<T>>& val) : length(val.size())
+   Listed(std::vector<p_genptr<T>>& val) : length(val.size())
    {
       langutil::transferUniquePtrs(val, this->value);
    };
@@ -120,7 +120,7 @@ public:
    }
 
 private:
-   std::vector<_genptr<T>> value;
+   std::vector<p_genptr<T>> value;
    const p_size length;
 };
 
@@ -129,7 +129,7 @@ template <typename T>
 struct ListedLists : Generator<std::vector<T>>
 {
 public:
-   ListedLists(std::vector<_genptr<std::vector<T>>>& val) : length(val.size())
+   ListedLists(std::vector<p_genptr<std::vector<T>>>& val) : length(val.size())
    {
       langutil::transferUniquePtrs(val, this->value);
    };
@@ -144,7 +144,7 @@ public:
    }
 
 private:
-   std::vector<_genptr<std::vector<T>>> value;
+   std::vector<p_genptr<std::vector<T>>> value;
    const p_size length;
 };
 
@@ -153,7 +153,7 @@ template <typename T>
 struct ListElement : Generator<T>
 {
 public:
-   ListElement(_genptr<std::vector<T>>& li, _genptr<p_num>& id)
+   ListElement(p_genptr<std::vector<T>>& li, p_genptr<p_num>& id)
       : list(std::move(li)), index(std::move(id)) { };
 
    T getValue() override {
@@ -175,8 +175,8 @@ public:
    }
 
 private:
-   _genptr<std::vector<T>> list;
-   _genptr<p_num> index;
+   p_genptr<std::vector<T>> list;
+   p_genptr<p_num> index;
 };
 
 }

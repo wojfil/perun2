@@ -26,7 +26,7 @@ namespace perun2::gen
 
 p_bool DefinitionGenerator::generate(p_defptr& result) const
 {
-   _genptr<p_str> loc = std::make_unique<LocationReference>(this->perun2);
+   p_genptr<p_str> loc = std::make_unique<LocationReference>(this->perun2);
 
    switch (this->element_) {
       case OsElement::oe_All: {

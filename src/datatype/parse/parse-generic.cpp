@@ -24,7 +24,7 @@
 namespace perun2::parse
 {
 
-p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size start = tks.getStart() + 2;
    const p_size length = tks.getLength() - 3;

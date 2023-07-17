@@ -21,7 +21,7 @@
 namespace perun2::comm
 {
 
-ConditionUnit::ConditionUnit(_comptr* ptr)
+ConditionUnit::ConditionUnit(p_comptr* ptr)
   : pointer(ptr) { };
 
 
@@ -68,13 +68,13 @@ void ConditionUnit::finish()
    }
 }
 
-void ConditionUnit::setElse(_comptr& com)
+void ConditionUnit::setElse(p_comptr& com)
 {
    this->hasElse = true;
    this->elseCommand = std::move(com);
 }
 
-void ConditionUnit::addElseIf(_comptr& com, _genptr<p_bool>& cond)
+void ConditionUnit::addElseIf(p_comptr& com, p_genptr<p_bool>& cond)
 {
    this->elseIfCommands.push_back(std::move(com));
    this->elseIfConditions.push_back(std::move(cond));
@@ -110,25 +110,25 @@ void ConditionUnit::lock()
    this->locked = true;
 }
 
-void ConditionUnit::setMain(_genptr<p_bool>& mainCond)
+void ConditionUnit::setMain(p_genptr<p_bool>& mainCond)
 {
    this->mainCommand = std::make_unique<C_DoNothing>();
    this->mainCondition = std::move(mainCond);
 }
 
-void ConditionUnit::setMain(_comptr& mainCom, _genptr<p_bool>& mainCond)
+void ConditionUnit::setMain(p_comptr& mainCom, p_genptr<p_bool>& mainCond)
 {
    this->mainCommand = std::move(mainCom);
    this->mainCondition = std::move(mainCond);
 }
 
 
-void ConditionContext::add(_comptr* pntr)
+void ConditionContext::add(p_comptr* pntr)
 {
    this->units.emplace_back(pntr);
 }
 
-void ConditionContext::addClosed(_comptr* pntr)
+void ConditionContext::addClosed(p_comptr* pntr)
 {
    this->units.emplace_back(pntr);
    this->units.back().close();
@@ -174,7 +174,7 @@ p_bool ConditionContext::isExpandable() const
    return cu.isClosed() && !cu.isLocked() && cu.pointer != nullptr;
 }
 
-void ConditionContext::addElse(_comptr& com, const p_int line)
+void ConditionContext::addElse(p_comptr& com, const p_int line)
 {
    if (!this->isExpandable()) {
       throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
@@ -205,7 +205,7 @@ void ConditionContext::addEmptyElse(const p_int line)
    cu.closeElse();
 }
 
-void ConditionContext::addElseIf(_genptr<p_bool>& cond, _comptr& com, const p_int line)
+void ConditionContext::addElseIf(p_genptr<p_bool>& cond, p_comptr& com, const p_int line)
 {
    if (!this->isExpandable()) {
       throw SyntaxError(L"structure 'else if' is not preceded by a structure 'if'", line);
@@ -220,13 +220,13 @@ void ConditionContext::addElseIf(_genptr<p_bool>& cond, _comptr& com, const p_in
    cu.addElseIf(com, cond);
 }
 
-void ConditionContext::setMain(_genptr<p_bool>& mainCond)
+void ConditionContext::setMain(p_genptr<p_bool>& mainCond)
 { 
    ConditionUnit& cu = this->units.back();
    cu.setMain(mainCond);
 }
 
-void ConditionContext::setMain(_comptr& mainCom, _genptr<p_bool>& mainCond)
+void ConditionContext::setMain(p_comptr& mainCom, p_genptr<p_bool>& mainCond)
 {
    ConditionUnit& cu = this->units.back();
    cu.setMain(mainCom, mainCond);

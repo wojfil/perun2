@@ -29,23 +29,23 @@ TokenValue::TokenValue(const p_char ch, const p_int am)
    : chars({ ch, am }) { };
 
 TokenValue::TokenValue(const p_num& n, const p_size os_id, const p_size os_len, const NumberMode nm)
-   : num({ n, _osi(os_id, os_len), nm }) { };
+   : num({ n, p_osi(os_id, os_len), nm }) { };
 
 TokenValue::TokenValue(const p_size os_id, const p_size os_len)
-   : str(_osi(os_id, os_len)) { };
+   : str(p_osi(os_id, os_len)) { };
 
 TokenValue::TokenValue(const p_size os_id, const p_size os_len, const p_int id)
-   : pattern({ _osi(os_id, os_len), id }) { };
+   : pattern({ p_osi(os_id, os_len), id }) { };
 
 TokenValue::TokenValue(const p_size os_id, const p_size os_len, const p_size len2)
-   : word({ _osi(os_id, os_len) }) { };
+   : word({ p_osi(os_id, os_len) }) { };
 
 TokenValue::TokenValue(const Keyword k, const p_size os_id, const p_size os_len)
-   : keyword({ k, _osi(os_id, os_len) }) { };
+   : keyword({ k, p_osi(os_id, os_len) }) { };
 
 TokenValue::TokenValue(const p_size os_id1,
    const p_size os_len1, const p_size os_id2, const p_size os_len2)
-   : twoWords({ _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
+   : twoWords({ p_osi(os_id1, os_len1), p_osi(os_id2, os_len2) }) { };
 
 Token::Token(const p_char v, const p_int li, p_perun2& p2)
    : line(li), type(t_Symbol), value(v) { };
@@ -343,12 +343,12 @@ p_str Token::toLowerString(p_perun2& p2) const
    return result;
 }
 
-p_str Token::getCodeSubstr(const _osi& osi, p_perun2& p2) const
+p_str Token::getCodeSubstr(const p_osi& osi, p_perun2& p2) const
 {
    return p2.arguments.getCode().substr(osi.index, osi.length);
 }
 
-p_bool Token::isCodeSubstr(const p_char (&word)[], const _osi& osi, p_perun2& p2) const
+p_bool Token::isCodeSubstr(const p_char (&word)[], const p_osi& osi, p_perun2& p2) const
 {
    if (wcslen(word) != osi.length) {
       return false;
@@ -364,7 +364,7 @@ p_bool Token::isCodeSubstr(const p_char (&word)[], const _osi& osi, p_perun2& p2
    return true;
 }
 
-p_bool Token::isCodeSubstr(const p_str& word, const _osi& osi, p_perun2& p2) const
+p_bool Token::isCodeSubstr(const p_str& word, const p_osi& osi, p_perun2& p2) const
 {
    if (word.size() != osi.length) {
       return false;

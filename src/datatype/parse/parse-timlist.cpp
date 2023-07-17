@@ -24,7 +24,7 @@
 namespace perun2::parse
 {
 
-p_bool parseTimList(_genptr<p_tlist>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimList(p_genptr<p_tlist>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -45,7 +45,7 @@ p_bool parseTimList(_genptr<p_tlist>& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static p_bool parseTimListed(_genptr<p_tlist>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseTimListed(p_genptr<p_tlist>& result, const Tokens& tks, p_perun2& p2)
 {
    // look - I do not use template functions from 'parse-generic.h'
    // why? because time has a special property - comma can mean
@@ -54,7 +54,7 @@ static p_bool parseTimListed(_genptr<p_tlist>& result, const Tokens& tks, p_peru
 
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_COMMA);
 
-   _genptr<p_tlist> times;
+   p_genptr<p_tlist> times;
    if (parseListedTimes(times, elements, p2)) {
       result = std::move(times);
       return true;
@@ -63,16 +63,16 @@ static p_bool parseTimListed(_genptr<p_tlist>& result, const Tokens& tks, p_peru
    return parseListedTimLists(result, elements, p2);
 }
 
-static p_bool parseListedTimes(_genptr<p_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
+static p_bool parseListedTimes(p_genptr<p_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const p_size len = elements.size();
    p_bool isPrev = false;
-   std::vector<_genptr<p_tim>> result;
+   std::vector<p_genptr<p_tim>> result;
    p_bool isConstant = true;
 
    for (p_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      _genptr<p_tim> time;
+      p_genptr<p_tim> time;
 
       if (parse(p2, tks, time)) {
          isPrev = true;
@@ -83,9 +83,9 @@ static p_bool parseListedTimes(_genptr<p_tlist>& res, const std::vector<Tokens>&
       }
       else {
          if (isPrev) {
-            _genptr<p_tim> last = std::move(result.back());
+            p_genptr<p_tim> last = std::move(result.back());
             result.pop_back();
-            _genptr<p_tim> time2;
+            p_genptr<p_tim> time2;
 
             if (timeFromTwoSeqs(time2, elements[i - 1], tks, p2)) {
                isPrev = false;
@@ -104,7 +104,7 @@ static p_bool parseListedTimes(_genptr<p_tlist>& res, const std::vector<Tokens>&
       }
    }
 
-   _genptr<p_tlist> v = std::make_unique<gen::Listed<p_tim>>(result);
+   p_genptr<p_tlist> v = std::make_unique<gen::Listed<p_tim>>(result);
 
    if (isConstant) {
       res = std::make_unique<gen::Constant<p_tlist>>(v->getValue());
@@ -116,7 +116,7 @@ static p_bool parseListedTimes(_genptr<p_tlist>& res, const std::vector<Tokens>&
    return true;
 }
 
-static p_bool timeFromTwoSeqs(_genptr<p_tim>& result, const Tokens& prev, const Tokens& curr, p_perun2& p2)
+static p_bool timeFromTwoSeqs(p_genptr<p_tim>& result, const Tokens& prev, const Tokens& curr, p_perun2& p2)
 {
    const p_int start = prev.getStart();
    const p_int length = prev.getLength() + curr.getLength() + 1;
@@ -124,36 +124,36 @@ static p_bool timeFromTwoSeqs(_genptr<p_tim>& result, const Tokens& prev, const 
    return parse(p2, tks2, result);
 }
 
-static p_bool parseListedTimLists(_genptr<p_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
+static p_bool parseListedTimLists(p_genptr<p_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const p_size len = elements.size();
    p_bool isPrev = false;
-   std::vector<_genptr<p_tlist>> result;
+   std::vector<p_genptr<p_tlist>> result;
    p_bool isConstant = true;
 
    for (p_size i = 0; i < len; i++) {
       const Tokens& tks = elements[i];
-      _genptr<p_tim> time;
+      p_genptr<p_tim> time;
 
       if (parse(p2, tks, time)) {
          if (isConstant && !time->isConstant()) {
             isConstant = false;
          }
 
-         _genptr<p_tlist> time2 = std::make_unique<gen::Cast_T_TL>(time);
+         p_genptr<p_tlist> time2 = std::make_unique<gen::Cast_T_TL>(time);
          result.push_back(std::move(time2));
          isPrev = true;
       }
       else {
          if (isPrev) {
-            _genptr<p_tim> time2;
+            p_genptr<p_tim> time2;
 
             if (timeFromTwoSeqs(time2, elements[i - 1], tks, p2)) {
                if (isConstant && !time2->isConstant()) {
                   isConstant = false;
                }
 
-               _genptr<p_tlist>(std::move(result.back()));
+               p_genptr<p_tlist>(std::move(result.back()));
                result.pop_back();
                result.push_back(std::make_unique<gen::Cast_T_TL>(time2));
                isPrev = false;
@@ -161,7 +161,7 @@ static p_bool parseListedTimLists(_genptr<p_tlist>& res, const std::vector<Token
             }
          }
 
-         _genptr<p_tlist> tlist;
+         p_genptr<p_tlist> tlist;
          if (parse(p2, tks, tlist)) {
             if (isConstant && !tlist->isConstant()) {
                isConstant = false;
@@ -176,7 +176,7 @@ static p_bool parseListedTimLists(_genptr<p_tlist>& res, const std::vector<Token
       }
    }
 
-   _genptr<p_tlist> v = std::make_unique<gen::ListedLists<p_tim>>(result);
+   p_genptr<p_tlist> v = std::make_unique<gen::ListedLists<p_tim>>(result);
 
    if (isConstant) {
       res = std::make_unique<gen::Constant<p_tlist>>(v->getValue());

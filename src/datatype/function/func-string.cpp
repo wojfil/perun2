@@ -393,7 +393,7 @@ p_str F_Concatenate::getValue()
 {
    p_stream ss;
 
-   for (_genptr<p_str>& gen : values) {
+   for (p_genptr<p_str>& gen : values) {
       ss << gen->getValue();
    }
 
@@ -525,7 +525,7 @@ p_str F_String_P::getValue()
 
 p_str F_MonthName::getValue()
 {
-   return monthToString(static_cast<_tnum>(arg1->getValue().toInt()));
+   return monthToString(static_cast<p_tnum>(arg1->getValue().toInt()));
 }
 
 
@@ -540,7 +540,7 @@ p_str F_MonthNameFromTime::getValue()
 
 p_str F_WeekDayName::getValue()
 {
-   return weekdayToString(static_cast<_tnum>(arg1->getValue().toInt()));
+   return weekdayToString(static_cast<p_tnum>(arg1->getValue().toInt()));
 }
 
 

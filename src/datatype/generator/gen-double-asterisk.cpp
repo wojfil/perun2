@@ -19,7 +19,7 @@
 namespace perun2::gen
 {
 
-DoubleAsteriskPattern::DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr)
+DoubleAsteriskPattern::DoubleAsteriskPattern(p_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr)
    : WildcardComparer(pat), definition(std::move(def)), context(definition->getFileContext()), perun2(p2), prefix(pref), 
       startId(pref.size()), specialStart(hasSpecialStart()), 
       hasRetreats(retr != 0), retreat(hasRetreats ? os_doubleDotsPrefix(retr) : p_str())

@@ -23,14 +23,14 @@ namespace perun2::func
 {
 
 // nice abbreviations:
-typedef std::vector<_genptr<p_num>>     _single;
-typedef std::vector<_genptr<p_nlist>>   _multi;
+typedef std::vector<p_genptr<p_num>>     p_single;
+typedef std::vector<p_genptr<p_nlist>>   p_multi;
 
 
 struct FuncAggr : Generator<p_num>
 {
 public:
-   FuncAggr(_single& single, _multi& multi)
+   FuncAggr(p_single& single, p_multi& multi)
       : countSingle(single.size()), countMulti(multi.size())
    {
       langutil::transferUniquePtrs(single, this->singleValues);
@@ -38,8 +38,8 @@ public:
    };
 
 protected:
-   _single singleValues;
-   _multi multiValues;
+   p_single singleValues;
+   p_multi multiValues;
    const p_size countSingle;
    const p_size countMulti;
 };
@@ -47,35 +47,35 @@ protected:
 
 struct F_Average : FuncAggr
 {
-   F_Average(_single& single, _multi& multi) : FuncAggr(single, multi) { };
+   F_Average(p_single& single, p_multi& multi) : FuncAggr(single, multi) { };
    p_num getValue() override;
 };
 
 
 struct F_Max : FuncAggr
 {
-   F_Max(_single& single, _multi& multi) : FuncAggr(single, multi) { };
+   F_Max(p_single& single, p_multi& multi) : FuncAggr(single, multi) { };
    p_num getValue() override;
 };
 
 
 struct F_Median : FuncAggr
 {
-   F_Median(_single& single, _multi& multi) : FuncAggr(single, multi) { };
+   F_Median(p_single& single, p_multi& multi) : FuncAggr(single, multi) { };
    p_num getValue() override;
 };
 
 
 struct F_Min : FuncAggr
 {
-   F_Min(_single& single, _multi& multi) : FuncAggr(single, multi) { };
+   F_Min(p_single& single, p_multi& multi) : FuncAggr(single, multi) { };
    p_num getValue() override;
 };
 
 
 struct F_Sum : FuncAggr
 {
-   F_Sum(_single& single, _multi& multi) : FuncAggr(single, multi) { };
+   F_Sum(p_single& single, p_multi& multi) : FuncAggr(single, multi) { };
    p_num getValue() override;
 };
 

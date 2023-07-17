@@ -46,11 +46,11 @@ public:
    ExpElement<T>(const p_char op, const p_int li)
       : generator(), operator_(op), type(ElementType::et_Operator), constant(T()), line(li) { };
 
-   ExpElement<T>(_genptr<T>& gen, const p_int li)
+   ExpElement<T>(p_genptr<T>& gen, const p_int li)
       : generator(std::move(gen)), type(ElementType::et_Generator), constant(T()), operator_(0), line(li) { };
 
    ExpElement<T>(ExpElement<T>& element)
-      : generator(element.type == ElementType::et_Operator ? _genptr<T>() : std::move(element.generator)),
+      : generator(element.type == ElementType::et_Operator ? p_genptr<T>() : std::move(element.generator)),
       constant(element.constant), type(element.type), operator_(element.operator_), line(element.line) { };
 
    ExpElement<T>(ExpElement<T>&& other) noexcept 
@@ -72,7 +72,7 @@ public:
       this->line = li;
    }
 
-   void reinit(_genptr<T>& gen, const p_int li)
+   void reinit(p_genptr<T>& gen, const p_int li)
    {
       this->type = ElementType::et_Generator;
       this->generator = std::move(gen);
@@ -93,7 +93,7 @@ public:
 
    p_char operator_;
    T constant;
-   _genptr<T> generator;
+   p_genptr<T> generator;
 
    ElementType type;
    p_int line;

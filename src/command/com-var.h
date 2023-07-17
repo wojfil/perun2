@@ -28,7 +28,7 @@ template <typename T>
 struct VarAssignment : Command
 {
 public:
-   VarAssignment<T> (Variable<T>& var, _genptr<T>& val)
+   VarAssignment<T> (Variable<T>& var, p_genptr<T>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override {
@@ -37,7 +37,7 @@ public:
 
 private:
    Variable<T>& variable;
-   _genptr<T> value;
+   p_genptr<T> value;
 };
 
 
@@ -45,7 +45,7 @@ template <typename T>
 struct VarAdd_ : Command
 {
 public:
-   VarAdd_<T> (Variable<T>& var, _genptr<T>& val)
+   VarAdd_<T> (Variable<T>& var, p_genptr<T>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override {
@@ -54,7 +54,7 @@ public:
 
 private:
    Variable<T>& variable;
-   _genptr<T> value;
+   p_genptr<T> value;
 };
 
 
@@ -62,7 +62,7 @@ template <typename T>
 struct VarSubtract : Command
 {
 public:
-   VarSubtract<T> (Variable<T>& var, _genptr<T>& val)
+   VarSubtract<T> (Variable<T>& var, p_genptr<T>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override {
@@ -71,77 +71,77 @@ public:
 
 private:
    Variable<T>& variable;
-   _genptr<T> value;
+   p_genptr<T> value;
 };
 
 
 struct VarNumMultiply : Command
 {
 public:
-   VarNumMultiply(Variable<p_num>& var, _genptr<p_num>& val)
+   VarNumMultiply(Variable<p_num>& var, p_genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    Variable<p_num>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
 };
 
 
 struct VarNumDivide : Command
 {
 public:
-   VarNumDivide(Variable<p_num>& var, _genptr<p_num>& val)
+   VarNumDivide(Variable<p_num>& var, p_genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    Variable<p_num>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
 };
 
 
 struct VarPerMultiply : Command
 {
 public:
-   VarPerMultiply(Variable<p_per>& var, _genptr<p_num>& val)
+   VarPerMultiply(Variable<p_per>& var, p_genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    Variable<p_per>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
 };
 
 
 struct VarPerDivide : Command
 {
 public:
-   VarPerDivide(Variable<p_per>& var, _genptr<p_num>& val)
+   VarPerDivide(Variable<p_per>& var, p_genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    Variable<p_per>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
 };
 
 
 struct VarModulo : Command
 {
 public:
-   VarModulo(Variable<p_num>& var, _genptr<p_num>& val)
+   VarModulo(Variable<p_num>& var, p_genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
    Variable<p_num>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
 };
 
 
@@ -170,57 +170,57 @@ private:
 struct VarTimeAdd : Command
 {
 public:
-   VarTimeAdd(Variable<p_tim>& var, _genptr<p_per>& per)
+   VarTimeAdd(Variable<p_tim>& var, p_genptr<p_per>& per)
       : variable(var), period(std::move(per)) { };
 
    void run() override;
 
 private:
    Variable<p_tim>& variable;
-   _genptr<p_per> period;
+   p_genptr<p_per> period;
 };
 
 
 struct VarTimeSubtract : Command
 {
 public:
-   VarTimeSubtract(Variable<p_tim>& var, _genptr<p_per>& per)
+   VarTimeSubtract(Variable<p_tim>& var, p_genptr<p_per>& per)
       : variable(var), period(std::move(per)) { };
 
    void run() override;
 
 private:
    Variable<p_tim>& variable;
-   _genptr<p_per> period;
+   p_genptr<p_per> period;
 };
 
 
 struct VarCharAssignment: Command
 {
 public:
-   VarCharAssignment(Variable<p_str>& var, _genptr<p_str>& val, _genptr<p_num>& ind)
+   VarCharAssignment(Variable<p_str>& var, p_genptr<p_str>& val, p_genptr<p_num>& ind)
       : variable(var), value(std::move(val)), index(std::move(ind)) { };
 
    void run() override;
 
 private:
    Variable<p_str>& variable;
-   _genptr<p_str> value;
-   _genptr<p_num> index;
+   p_genptr<p_str> value;
+   p_genptr<p_num> index;
 };
 
 
 struct VarTimeUnitAssignment : Command
 {
 public:
-   VarTimeUnitAssignment(Variable<p_tim>& var, _genptr<p_num>& val,
+   VarTimeUnitAssignment(Variable<p_tim>& var, p_genptr<p_num>& val,
       const Period::PeriodUnit& un) : variable(var), value(std::move(val)), unit(un){ };
 
    void run() override;
 
 private:
    Variable<p_tim>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
    const Period::PeriodUnit unit;
 };
 
@@ -228,7 +228,7 @@ private:
 struct VarTimeUnitChange : Command
 {
 public:
-   VarTimeUnitChange(Variable<p_tim>& var, _genptr<p_num>& val,
+   VarTimeUnitChange(Variable<p_tim>& var, p_genptr<p_num>& val,
       const Period::PeriodUnit& un, const p_bool neg)
       : variable(var), value(std::move(val)), unit(un), negative(neg) { };
 
@@ -236,7 +236,7 @@ public:
 
 private:
    Variable<p_tim>& variable;
-   _genptr<p_num> value;
+   p_genptr<p_num> value;
    const Period::PeriodUnit unit;
    const p_bool negative;
 };

@@ -24,7 +24,7 @@ namespace perun2::gen
 DefWithContext::DefWithContext(p_defptr& def, p_perun2& p2)
    : definition(std::move(def)), context(std::make_unique<FileContext>(p2)) { };
 
-DefWithContext::DefWithContext(p_defptr& def, _fcptr& ctx)
+DefWithContext::DefWithContext(p_defptr& def, p_fcptr& ctx)
    : definition(std::move(def)), context(std::move(ctx)) { };
 
 void DefWithContext::reset()
@@ -65,7 +65,7 @@ void DefFilter::reset() {
 }
 
 
-DefFilter_Where::DefFilter_Where(_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, p_perun2& p2)
+DefFilter_Where::DefFilter_Where(p_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, p_perun2& p2)
    : DefFilter(def, ctx, p2), condition(std::move(cond)) { };
 
 
@@ -108,7 +108,7 @@ p_bool DefFilter_Where::hasNext()
 }
 
 
-LocationVessel::LocationVessel(const p_bool abs, _genptr<p_str>& loc)
+LocationVessel::LocationVessel(const p_bool abs, p_genptr<p_str>& loc)
    : isAbsolute(abs), location(std::move(loc)) { };
 
 

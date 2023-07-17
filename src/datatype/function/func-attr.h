@@ -26,7 +26,7 @@ namespace perun2::func
 struct F_Parent : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Parent(_genptr<p_str>& a1, p_perun2& p2) 
+   F_Parent(p_genptr<p_str>& a1, p_perun2& p2) 
       : Func_1(a1), context(p2.contexts.getLocationContext()) { };
    p_str getValue() override;
 
@@ -38,7 +38,7 @@ private:
 struct F_Path_1 : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Path_1(_genptr<p_str>& a1, p_perun2& p2) 
+   F_Path_1(p_genptr<p_str>& a1, p_perun2& p2) 
       : Func_1(a1), context(p2.contexts.getLocationContext()) { };
    p_str getValue() override;
 
@@ -50,53 +50,53 @@ private:
 struct F_Path_2 : Generator<p_str>
 {
 public:
-   F_Path_2(_genptr<p_str>& val_1, _genptr<p_str>& val_2)
+   F_Path_2(p_genptr<p_str>& val_1, p_genptr<p_str>& val_2)
       : value_1(std::move(val_1)), value_2(std::move(val_2)) { };
 
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value_1;
-   _genptr<p_str> value_2;
+   p_genptr<p_str> value_1;
+   p_genptr<p_str> value_2;
 };
 
 
 struct F_Path_3 : Generator<p_str>
 {
 public:
-   F_Path_3(_genptr<p_str>& val_1, _genptr<p_str>& val_2, _genptr<p_str>& val_3)
+   F_Path_3(p_genptr<p_str>& val_1, p_genptr<p_str>& val_2, p_genptr<p_str>& val_3)
       : value_1(std::move(val_1)), value_2(std::move(val_2)), value_3(std::move(val_3)) { };
 
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value_1;
-   _genptr<p_str> value_2;
-   _genptr<p_str> value_3;
+   p_genptr<p_str> value_1;
+   p_genptr<p_str> value_2;
+   p_genptr<p_str> value_3;
 };
 
 
 struct F_Path_4 : Generator<p_str>
 {
 public:
-   F_Path_4(_genptr<p_str>& val_1, _genptr<p_str>& val_2, _genptr<p_str>& val_3, _genptr<p_str>& val_4)
+   F_Path_4(p_genptr<p_str>& val_1, p_genptr<p_str>& val_2, p_genptr<p_str>& val_3, p_genptr<p_str>& val_4)
       : value_1(std::move(val_1)), value_2(std::move(val_2)),
         value_3(std::move(val_3)), value_4(std::move(val_4)) { };
 
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value_1;
-   _genptr<p_str> value_2;
-   _genptr<p_str> value_3;
-   _genptr<p_str> value_4;
+   p_genptr<p_str> value_1;
+   p_genptr<p_str> value_2;
+   p_genptr<p_str> value_3;
+   p_genptr<p_str> value_4;
 };
 
 
 struct F_Path_Multi : Generator<p_str>
 {
 public:
-   F_Path_Multi(std::vector<_genptr<p_str>>& vals)
+   F_Path_Multi(std::vector<p_genptr<p_str>>& vals)
       : length(vals.size())
    {
       langutil::transferUniquePtrs(vals, this->values);
@@ -105,7 +105,7 @@ public:
    p_str getValue() override;
 
 private:
-   std::vector<_genptr<p_str>> values;
+   std::vector<p_genptr<p_str>> values;
    const p_int length;
 };
 
@@ -129,7 +129,7 @@ private:
 struct F_SizeList : Generator<p_num>
 {
 public:
-   F_SizeList(_genptr<p_list>& vals, p_perun2& p2)
+   F_SizeList(p_genptr<p_list>& vals, p_perun2& p2)
       : values(std::move(vals)), perun2(p2), 
         context(p2.contexts.getLocationContext()) { };
 
@@ -138,7 +138,7 @@ public:
 private:
    p_perun2& perun2;
    LocationContext* context;
-   _genptr<p_list> values;
+   p_genptr<p_list> values;
 };
 
 

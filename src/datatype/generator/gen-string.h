@@ -32,95 +32,95 @@ namespace perun2::gen
 struct ConcatString_2 : Generator<p_str>
 {
 public:
-   ConcatString_2(_genptr<p_str>& v1, _genptr<p_str>& v2);
+   ConcatString_2(p_genptr<p_str>& v1, p_genptr<p_str>& v2);
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value1;
-   _genptr<p_str> value2;
+   p_genptr<p_str> value1;
+   p_genptr<p_str> value2;
 };
 
 
 struct ConcatString_3 : Generator<p_str>
 {
 public:
-   ConcatString_3(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3);
+   ConcatString_3(p_genptr<p_str>& v1, p_genptr<p_str>& v2, p_genptr<p_str>& v3);
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value1;
-   _genptr<p_str> value2;
-   _genptr<p_str> value3;
+   p_genptr<p_str> value1;
+   p_genptr<p_str> value2;
+   p_genptr<p_str> value3;
 };
 
 
 struct ConcatString_4 : Generator<p_str>
 {
 public:
-   ConcatString_4(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3, _genptr<p_str>& v4);
+   ConcatString_4(p_genptr<p_str>& v1, p_genptr<p_str>& v2, p_genptr<p_str>& v3, p_genptr<p_str>& v4);
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value1;
-   _genptr<p_str> value2;
-   _genptr<p_str> value3;
-   _genptr<p_str> value4;
+   p_genptr<p_str> value1;
+   p_genptr<p_str> value2;
+   p_genptr<p_str> value3;
+   p_genptr<p_str> value4;
 };
 
 
 struct ConcatString_5 : Generator<p_str>
 {
 public:
-   ConcatString_5(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3, _genptr<p_str>& v4, _genptr<p_str>& v5);
+   ConcatString_5(p_genptr<p_str>& v1, p_genptr<p_str>& v2, p_genptr<p_str>& v3, p_genptr<p_str>& v4, p_genptr<p_str>& v5);
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value1;
-   _genptr<p_str> value2;
-   _genptr<p_str> value3;
-   _genptr<p_str> value4;
-   _genptr<p_str> value5;
+   p_genptr<p_str> value1;
+   p_genptr<p_str> value2;
+   p_genptr<p_str> value3;
+   p_genptr<p_str> value4;
+   p_genptr<p_str> value5;
 };
 
 
 struct ConcatString_6 : Generator<p_str>
 {
 public:
-   ConcatString_6(_genptr<p_str>& v1, _genptr<p_str>& v2, _genptr<p_str>& v3, _genptr<p_str>& v4, _genptr<p_str>& v5, _genptr<p_str>& v6);
+   ConcatString_6(p_genptr<p_str>& v1, p_genptr<p_str>& v2, p_genptr<p_str>& v3, p_genptr<p_str>& v4, p_genptr<p_str>& v5, p_genptr<p_str>& v6);
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value1;
-   _genptr<p_str> value2;
-   _genptr<p_str> value3;
-   _genptr<p_str> value4;
-   _genptr<p_str> value5;
-   _genptr<p_str> value6;
+   p_genptr<p_str> value1;
+   p_genptr<p_str> value2;
+   p_genptr<p_str> value3;
+   p_genptr<p_str> value4;
+   p_genptr<p_str> value5;
+   p_genptr<p_str> value6;
 };
 
 
 struct ConcatString_Multi : Generator<p_str>
 {
 public:
-   ConcatString_Multi(std::vector<_genptr<p_str>>& val);
+   ConcatString_Multi(std::vector<p_genptr<p_str>>& val);
    p_str getValue() override;
 
 private:
-   std::vector<_genptr<p_str>> values;
+   std::vector<p_genptr<p_str>> values;
 };
 
 
 struct StringBinary : Generator<p_str>
 {
 public:
-   StringBinary (_genptr<p_bool>& cond, _genptr<p_str>& val)
+   StringBinary (p_genptr<p_bool>& cond, p_genptr<p_str>& val)
       : condition(std::move(cond)), value(std::move(val)) { };
 
    p_str getValue() override;
 
 private:
-   _genptr<p_bool> condition;
-   _genptr<p_str> value;
+   p_genptr<p_bool> condition;
+   p_genptr<p_str> value;
 };
 
 
@@ -138,12 +138,12 @@ private:
 struct RelativeLocation : Generator<p_str>
 {
 public:
-   RelativeLocation(_genptr<p_str>& val, p_perun2& p2, const p_int retr);
+   RelativeLocation(p_genptr<p_str>& val, p_perun2& p2, const p_int retr);
    p_str getValue() override;
 
 private:
    LocationContext& context;
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
    const p_int retreats;
 };
 
@@ -151,11 +151,11 @@ private:
 struct RetreatedPath : Generator<p_str>
 {
 public:
-   RetreatedPath(_genptr<p_str>& val, const p_int retr);
+   RetreatedPath(p_genptr<p_str>& val, const p_int retr);
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
    const p_int reatreats;
 };
 
@@ -163,21 +163,21 @@ private:
 struct CharAtIndex : Generator<p_str>
 {
 public:
-   CharAtIndex (_genptr<p_str>& val, _genptr<p_num>& ind)
+   CharAtIndex (p_genptr<p_str>& val, p_genptr<p_num>& ind)
       : value(std::move(val)), index(std::move(ind)) { };
 
    p_str getValue() override;
 
 private:
-   _genptr<p_str> value;
-   _genptr<p_num> index;
+   p_genptr<p_str> value;
+   p_genptr<p_num> index;
 };
 
 
 struct DefinitionElement : Generator<p_str>
 {
 public:
-   DefinitionElement(p_defptr& def, _genptr<p_num>& ind, p_perun2& p2)
+   DefinitionElement(p_defptr& def, p_genptr<p_num>& ind, p_perun2& p2)
       : definition(std::move(def)), index(std::move(ind)), perun2(p2) {};
 
    p_str getValue() override;
@@ -185,7 +185,7 @@ public:
 private:
    p_perun2& perun2;
    p_defptr definition;
-   _genptr<p_num> index;
+   p_genptr<p_num> index;
 };
 
 }

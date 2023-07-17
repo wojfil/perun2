@@ -24,7 +24,7 @@ namespace perun2
 Arguments::Arguments(const p_str& loc, const p_str& cod)
    : location(loc), code(cod), parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(const p_str& loc, const p_str& cod, const _flags fls)
+Arguments::Arguments(const p_str& loc, const p_str& cod, const p_flags fls)
    : location(loc), code(cod), flags(fls), parseState(ArgsParseState::aps_Ok) { };
 
 Arguments::Arguments(const p_int argc, p_char* const argv[])
@@ -221,7 +221,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
    this->parseState = ArgsParseState::aps_Ok;
 }
 
-_flags Arguments::getFlags() const
+p_flags Arguments::getFlags() const
 {
    return this->flags;
 }
@@ -246,7 +246,7 @@ ArgsParseState Arguments::getParseState() const
    return this->parseState;
 }
 
-p_bool Arguments::hasFlag(const _flags flag) const
+p_bool Arguments::hasFlag(const p_flags flag) const
 {
    return this->flags & flag;
 }

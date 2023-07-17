@@ -27,13 +27,13 @@ struct F_AnyInside : Generator<p_bool>
 {
 public:
    F_AnyInside() = delete;
-   F_AnyInside(p_defptr& def, _lcptr& lctx, FileContext* fctx)
+   F_AnyInside(p_defptr& def, p_lcptr& lctx, FileContext* fctx)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx) { };
 
    p_bool getValue() override;
 
 private:
-   _lcptr locContext;
+   p_lcptr locContext;
    FileContext* fileContext;
    p_defptr definition;
 };
@@ -43,7 +43,7 @@ template <typename T>
 struct F_ContainsCol : Func_2<std::vector<T>, T>, Generator<p_bool>
 {
 public:
-   F_ContainsCol<T>(_genptr<std::vector<T>>& a1, _genptr<T>& a2)
+   F_ContainsCol<T>(p_genptr<std::vector<T>>& a1, p_genptr<T>& a2)
       : Func_2<std::vector<T>, T>(a1, a2) { };
 
    p_bool getValue() override {
@@ -81,7 +81,7 @@ public:
 struct F_ContainsStr : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_ContainsStr(_genptr<p_str>& a1, _genptr<p_str>& a2)
+   F_ContainsStr(p_genptr<p_str>& a1, p_genptr<p_str>& a2)
       : Func_2<p_str, p_str>(a1, a2) { };
 
    p_bool getValue() override;
@@ -91,7 +91,7 @@ public:
 struct F_ContainsDef : Generator<p_bool>
 {
 public:
-   F_ContainsDef(p_defptr& def, _genptr<p_str>& val, p_perun2& p2)
+   F_ContainsDef(p_defptr& def, p_genptr<p_str>& val, p_perun2& p2)
       : definition(std::move(def)), value(std::move(val)), perun2(p2) { };
 
    p_bool getValue() override;
@@ -99,14 +99,14 @@ public:
 private:
    p_perun2& perun2;
    p_defptr definition;
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
 };
 
 
 struct F_IsLower : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsLower(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsLower(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -114,7 +114,7 @@ public:
 struct F_IsUpper : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsUpper(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsUpper(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -122,7 +122,7 @@ public:
 struct F_IsNumber : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsNumber(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsNumber(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -133,7 +133,7 @@ p_bool isNumber(const p_str& value);
 struct F_StartsWith : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_StartsWith(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_StartsWith(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
    p_bool getValue() override;
 };
 
@@ -141,7 +141,7 @@ public:
 struct F_EndsWith : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_EndsWith(_genptr<p_str>& a1, _genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_EndsWith(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
    p_bool getValue() override;
 };
 
@@ -149,7 +149,7 @@ public:
 struct F_ExistsInside : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_ExistsInside(_genptr<p_str>& a1, LocationContext* lctx, FileContext* fctx)
+   F_ExistsInside(p_genptr<p_str>& a1, LocationContext* lctx, FileContext* fctx)
       : Func_1(a1), locContext(lctx), fileContext(fctx) { };
    p_bool getValue() override;
 
@@ -162,7 +162,7 @@ private:
 struct F_ExistInside: Func_1<p_list>, Generator<p_bool>
 {
 public:
-   F_ExistInside(_genptr<p_list>& a1, LocationContext* lctx, FileContext* fctx)
+   F_ExistInside(p_genptr<p_list>& a1, LocationContext* lctx, FileContext* fctx)
       : Func_1(a1), locContext(lctx), fileContext(fctx) { };
    p_bool getValue() override;
 
@@ -175,13 +175,13 @@ private:
 struct F_StartsWithChar : Generator<p_bool>
 {
 public:
-   F_StartsWithChar(_genptr<p_str>& val, const p_char ch)
+   F_StartsWithChar(p_genptr<p_str>& val, const p_char ch)
       : value(std::move(val)), character(ch) { };
 
    p_bool getValue() override;
 
 private:
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
    const p_char character;
 };
 
@@ -189,13 +189,13 @@ private:
 struct F_EndsWithChar : Generator<p_bool>
 {
 public:
-   F_EndsWithChar(_genptr<p_str>& val, const p_char ch)
+   F_EndsWithChar(p_genptr<p_str>& val, const p_char ch)
       : value(std::move(val)), character(ch) { };
 
    p_bool getValue() override;
 
 private:
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
    const p_char character;
 };
 
@@ -203,13 +203,13 @@ private:
 struct F_StartsWithConst : Generator<p_bool>
 {
 public:
-   F_StartsWithConst(_genptr<p_str>& val, const p_str& cnst)
+   F_StartsWithConst(p_genptr<p_str>& val, const p_str& cnst)
       : value(std::move(val)), constant(cnst), constantLength(cnst.size()) { };
 
    p_bool getValue() override;
 
 private:
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
    const p_str constant;
    const p_size constantLength;
 };
@@ -218,13 +218,13 @@ private:
 struct F_EndsWithConst : Generator<p_bool>
 {
 public:
-   F_EndsWithConst(_genptr<p_str>& val, const p_str& cnst)
+   F_EndsWithConst(p_genptr<p_str>& val, const p_str& cnst)
       : value(std::move(val)), constant(cnst), constantLength(cnst.size()) { };
 
    p_bool getValue() override;
 
 private:
-   _genptr<p_str> value;
+   p_genptr<p_str> value;
    const p_str constant;
    const p_size constantLength;
 };
@@ -234,7 +234,7 @@ private:
 struct F_FindText : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_FindText(_genptr<p_str>& a1,  FileContext* ctx)
+   F_FindText(p_genptr<p_str>& a1,  FileContext* ctx)
       : Func_1(a1), context(ctx) { };
    p_bool getValue() override;
 
@@ -247,7 +247,7 @@ private:
 struct F_IsLetter : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsLetter(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsLetter(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -255,7 +255,7 @@ public:
 struct F_IsDigit : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsDigit(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsDigit(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -263,7 +263,7 @@ public:
 struct F_IsBinary : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsBinary(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsBinary(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -271,7 +271,7 @@ public:
 struct F_IsHex : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsHex(_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsHex(p_genptr<p_str>& a1) : Func_1(a1) { };
    p_bool getValue() override;
 };
 
@@ -295,7 +295,7 @@ struct F_AnyList : Generator<p_bool>
 {
 public:
    F_AnyList() = delete;
-   F_AnyList(_genptr<std::vector<T>>& val) 
+   F_AnyList(p_genptr<std::vector<T>>& val) 
       : value(std::move(val)) { };
 
    p_bool getValue() override
@@ -304,14 +304,14 @@ public:
    }
 
 private:
-   _genptr<std::vector<T>> value;
+   p_genptr<std::vector<T>> value;
 };
 
 
 struct F_Exists : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_Exists(_genptr<p_str>& a1, p_perun2& perun2);
+   F_Exists(p_genptr<p_str>& a1, p_perun2& perun2);
    p_bool getValue() override;
 
 private:
@@ -322,7 +322,7 @@ private:
 struct F_Exist: Func_1<p_list>, Generator<p_bool>
 {
 public:
-   F_Exist(_genptr<p_list>& a1, p_perun2& perun2);
+   F_Exist(p_genptr<p_list>& a1, p_perun2& perun2);
    p_bool getValue() override;
 
 private:

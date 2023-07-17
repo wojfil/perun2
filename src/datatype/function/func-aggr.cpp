@@ -25,11 +25,11 @@ p_num F_Average::getValue()
    p_num sum;
    p_int count = countSingle;
 
-   for (_genptr<p_num>& sv : this->singleValues) {
+   for (p_genptr<p_num>& sv : this->singleValues) {
       sum += sv->getValue();
    }
 
-   for (_genptr<p_nlist>& mv : this->multiValues) {
+   for (p_genptr<p_nlist>& mv : this->multiValues) {
       p_nlist nlist = mv->getValue();
       count += nlist.size();
 
@@ -63,7 +63,7 @@ p_num F_Max::getValue()
       }
    }
 
-   for (_genptr<p_nlist>& mv : this->multiValues) {
+   for (p_genptr<p_nlist>& mv : this->multiValues) {
       p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          const p_size len = nlist.size();
@@ -96,11 +96,11 @@ p_num F_Median::getValue()
    p_nlist elements;
    elements.reserve(countSingle);
 
-   for (_genptr<p_num>& sv : this->singleValues) {
+   for (p_genptr<p_num>& sv : this->singleValues) {
       elements.emplace_back(sv->getValue());
    }
 
-   for (_genptr<p_nlist>& mv : this->multiValues) {
+   for (p_genptr<p_nlist>& mv : this->multiValues) {
       p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          langutil::appendVector(elements, nlist);
@@ -139,7 +139,7 @@ p_num F_Min::getValue()
       }
    }
 
-   for (_genptr<p_nlist>& mv : this->multiValues) {
+   for (p_genptr<p_nlist>& mv : this->multiValues) {
       p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          if (init) {
@@ -169,11 +169,11 @@ p_num F_Sum::getValue()
 {
    p_num sum;
 
-   for (_genptr<p_num>& sv : this->singleValues) {
+   for (p_genptr<p_num>& sv : this->singleValues) {
       sum += sv->getValue();
    }
 
-   for (_genptr<p_nlist>& mv : this->multiValues) {
+   for (p_genptr<p_nlist>& mv : this->multiValues) {
       for (const p_num n : mv->getValue()) {
          sum += n;
       }

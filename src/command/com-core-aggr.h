@@ -26,13 +26,13 @@ template <typename T>
 struct C_AggrDelivery : Command
 {
 public:
-   C_AggrDelivery(Aggregate* aggr, _genptr<T>& val, p_perun2& p2)
+   C_AggrDelivery(Aggregate* aggr, p_genptr<T>& val, p_perun2& p2)
       : aggregate(aggr), value(std::move(val)), locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* const locationContext;
    Aggregate* const aggregate;
-   _genptr<T> value;
+   p_genptr<T> value;
 };
 
 
@@ -53,7 +53,7 @@ private:
 struct C_AggrCopy_String : C_AggrDelivery<p_str>
 {
 public:
-   C_AggrCopy_String(Aggregate* aggr, _genptr<p_str>& val, p_perun2& p2)
+   C_AggrCopy_String(Aggregate* aggr, p_genptr<p_str>& val, p_perun2& p2)
       : C_AggrDelivery<p_str>(aggr, val, p2) {};
 
    void run() override;
@@ -63,7 +63,7 @@ public:
 struct C_AggrCopy_List : C_AggrDelivery<p_list>
 {
 public:
-   C_AggrCopy_List(Aggregate* aggr, _genptr<p_list>& val, p_perun2& p2)
+   C_AggrCopy_List(Aggregate* aggr, p_genptr<p_list>& val, p_perun2& p2)
       : C_AggrDelivery<p_list>(aggr, val, p2) {};
 
    void run() override;
@@ -87,7 +87,7 @@ private:
 struct C_AggrSelect_String : C_AggrDelivery<p_str>
 {
 public:
-   C_AggrSelect_String(Aggregate* aggr, _genptr<p_str>& val, p_perun2& p2)
+   C_AggrSelect_String(Aggregate* aggr, p_genptr<p_str>& val, p_perun2& p2)
       : C_AggrDelivery<p_str>(aggr, val, p2) {};
 
    void run() override;
@@ -97,7 +97,7 @@ public:
 struct C_AggrSelect_List : C_AggrDelivery<p_list>
 {
 public:
-   C_AggrSelect_List(Aggregate* aggr, _genptr<p_list>& val, p_perun2& p2)
+   C_AggrSelect_List(Aggregate* aggr, p_genptr<p_list>& val, p_perun2& p2)
       : C_AggrDelivery<p_list>(aggr, val, p2) {};
 
    void run() override;
@@ -114,13 +114,13 @@ template <typename T>
 struct C_Aggr : Command
 {
 public:
-   C_Aggr(_genptr<T>& val, p_perun2& p2)
+   C_Aggr(p_genptr<T>& val, p_perun2& p2)
       : value(std::move(val)), perun2(p2), 
         locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locationContext;
-   _genptr<T> value;
+   p_genptr<T> value;
    p_perun2& perun2;
 };
 
@@ -128,7 +128,7 @@ protected:
 struct C_Copy_String : C_Aggr<p_str>
 {
 public:
-   C_Copy_String(_genptr<p_str>& val, p_perun2& p2)
+   C_Copy_String(p_genptr<p_str>& val, p_perun2& p2)
       : C_Aggr<p_str>(val, p2) {};
 
    void run() override;
@@ -138,7 +138,7 @@ public:
 struct C_Copy_List : C_Aggr<p_list>
 {
 public:
-   C_Copy_List(_genptr<p_list>& val, p_perun2& p2)
+   C_Copy_List(p_genptr<p_list>& val, p_perun2& p2)
       : C_Aggr<p_list>(val, p2) {};
 
    void run() override;
@@ -172,7 +172,7 @@ private:
 struct C_Select_String : C_Aggr<p_str>
 {
 public:
-   C_Select_String(_genptr<p_str>& val, p_perun2& p2)
+   C_Select_String(p_genptr<p_str>& val, p_perun2& p2)
       : C_Aggr<p_str>(val, p2) {};
 
    void run() override;
@@ -182,7 +182,7 @@ public:
 struct C_Select_List : C_Aggr<p_list>
 {
 public:
-   C_Select_List(_genptr<p_list>& val, p_perun2& p2)
+   C_Select_List(p_genptr<p_list>& val, p_perun2& p2)
       : C_Aggr<p_list>(val, p2), 
         selector(path, parent, p2) { };
    void run() override;

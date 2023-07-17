@@ -18,16 +18,16 @@
 namespace perun2::gen
 {
 
-Not::Not(_genptr<p_bool>& val) 
+Not::Not(p_genptr<p_bool>& val) 
    : UnaryOperation<p_bool>(val) { };
 
-And::And(_genptr<p_bool>& val1, _genptr<p_bool>& val2)
+And::And(p_genptr<p_bool>& val1, p_genptr<p_bool>& val2)
    : BinaryOperation<p_bool>(val1, val2) { };
 
-Or::Or(_genptr<p_bool>& val1, _genptr<p_bool>& val2)
+Or::Or(p_genptr<p_bool>& val1, p_genptr<p_bool>& val2)
    : BinaryOperation<p_bool>(val1, val2) { };
 
-Xor::Xor(_genptr<p_bool>& val1, _genptr<p_bool>& val2)
+Xor::Xor(p_genptr<p_bool>& val1, p_genptr<p_bool>& val2)
    : BinaryOperation<p_bool>(val1, val2) { };
 
 p_bool Not::getValue() 
@@ -50,7 +50,7 @@ p_bool Xor::getValue()
    return value1->getValue() ^ value2->getValue();
 }
 
-InConstTimeList::InConstTimeList(_genptr<p_tim>& val, const p_tlist& li)
+InConstTimeList::InConstTimeList(p_genptr<p_tim>& val, const p_tlist& li)
    : value(std::move(val)), list(sortedAndUniqueTimeList(li)) { };
 
 p_bool InConstTimeList::getValue() 

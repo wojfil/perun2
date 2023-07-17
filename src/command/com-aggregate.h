@@ -28,11 +28,11 @@ namespace perun2
 namespace perun2::comm
 {
 
-typedef uint32_t _agunit;
+typedef uint32_t p_agunit;
 
-p_constexpr _agunit AGGR_NULL =      0b000;
-p_constexpr _agunit AGGR_COPY =      0b001;
-p_constexpr _agunit AGGR_SELECT =    0b010;
+p_constexpr p_agunit AGGR_NULL =      0b000;
+p_constexpr p_agunit AGGR_COPY =      0b001;
+p_constexpr p_agunit AGGR_SELECT =    0b010;
 
 // commands Select and Copy are different from others
 // they have to be performed on multiple files and directories at once
@@ -47,7 +47,7 @@ struct Aggregate
 public:
    Aggregate() = delete;
    Aggregate(p_perun2& p2);
-   void set (const _agunit v);
+   void set (const p_agunit v);
    void run();
 
    p_set copyPaths;
@@ -60,11 +60,11 @@ public:
 private:
    void copy();
    void select();
-   inline p_bool has(const _agunit v) const;
+   inline p_bool has(const p_agunit v) const;
 
    p_perun2& perun2;
    Contexts& contexts;
-   _agunit value = AGGR_NULL;
+   p_agunit value = AGGR_NULL;
    p_bool selectFailure = false;
 };
 

@@ -22,9 +22,9 @@
 namespace perun2::parse
 {
 
-p_bool parseList(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2);
 
-static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2);
+static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2);
 
 }
 

@@ -58,7 +58,7 @@ public:
 };
 
 
-typedef OriginStringInfo _osi;
+typedef OriginStringInfo p_osi;
 
 
 // the value of token can be...
@@ -78,38 +78,38 @@ union TokenValue
    struct
    {
       p_num n;
-      _osi os; // os = original appearance of token in the source code
+      p_osi os; // os = original appearance of token in the source code
       NumberMode nm;
    } num;
 
    // string literal
-   _osi str;
+   p_osi str;
 
    // pattern
    struct
    {
-      _osi os;
+      p_osi os;
       p_int id; // index of first asterisk
    } pattern;
 
    // word - variable name, function name
    struct
    {
-      _osi os;
+      p_osi os;
    } word;
 
    // keyword - important syntax element (print, if, copy...)
    struct
    {
       Keyword k;
-      _osi os;
+      p_osi os;
    } keyword;
 
    // two words - time variable member (creation.year)
    struct
    {
-      _osi os1;
-      _osi os2;
+      p_osi os1;
+      p_osi os2;
    } twoWords;
 
    // constructors:
@@ -187,9 +187,9 @@ public:
    const TokenValue value;
    
 private:
-   p_str getCodeSubstr(const _osi& osi, p_perun2& p2) const;
-   p_bool isCodeSubstr(const p_char (&word)[], const _osi& osi, p_perun2& p2) const;
-   p_bool isCodeSubstr(const p_str& word, const _osi& osi, p_perun2& p2) const;
+   p_str getCodeSubstr(const p_osi& osi, p_perun2& p2) const;
+   p_bool isCodeSubstr(const p_char (&word)[], const p_osi& osi, p_perun2& p2) const;
+   p_bool isCodeSubstr(const p_str& word, const p_osi& osi, p_perun2& p2) const;
 
 };
 

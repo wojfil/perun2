@@ -28,12 +28,12 @@
 namespace perun2::comm
 {
 
-p_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2)
+p_bool parseCommands(p_comptr& result, const Tokens& tks, p_perun2& p2)
 {
-   _ucptr context = std::make_unique<UserVarsContext>();
+   p_ucptr context = std::make_unique<UserVarsContext>();
    p2.contexts.addUserVarsContext(context.get());
 
-   std::vector<_comptr> commands;
+   std::vector<p_comptr> commands;
    p_int sublen = 0;
    p_int depth = 0;
    p_int open = -1;
@@ -48,7 +48,7 @@ p_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2)
                   if (sublen != 0) {
                      p2.conditionContext.lockLast();
                      Tokens tks2(tks, i - sublen, sublen);
-                     _comptr com;
+                     p_comptr com;
                      command(com, tks2, p2);
                      commands.push_back(std::move(com));
                      sublen = 0;
@@ -70,7 +70,7 @@ p_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2)
             case CHAR_CLOSING_CURLY_BRACKET: {
                depth--;
                if (depth == 0) {
-                  _comptr com;
+                  p_comptr com;
 
                   if (commandStruct(com, tks, sublen, i, open, p2)) {
                      commands.push_back(std::move(com));
@@ -95,7 +95,7 @@ p_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2)
 
    if (sublen != 0) {
       Tokens tks2(tks, 1 + end - sublen, sublen);
-      _comptr com;
+      p_comptr com;
       command(com, tks2, p2);
       commands.push_back(std::move(com));
    }
@@ -120,7 +120,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, p_perun2& p2)
 }
 
 
-static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int sublen,
+static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sublen,
    const p_int index, const p_int open, p_perun2& p2)
 {
    const p_int leftStart = index - sublen;
@@ -134,7 +134,7 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
          return false;
       }
 
-      _acptr context = std::make_unique<AggregateContext>(p2);
+      p_acptr context = std::make_unique<AggregateContext>(p2);
       p2.contexts.addAggregateContext(context.get());
       Tokens right(tks, rightStart, rightLen);
       const p_bool b = parseCommandsAsMember(result, right, nullptr, p2);
@@ -159,7 +159,7 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
       }
 
       left.checkCommonExpressionExceptions(p2);
-      _genptr<p_num> num;
+      p_genptr<p_num> num;
       if (!parse::parse(p2, left, num)) {
          throw SyntaxError(str(L"keyword '", leftLast.getOriginString(p2),
             L"' is not preceded by a valid number"), leftLast.line);
@@ -167,9 +167,9 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
 
       Tokens right(tks, rightStart, rightLen);
 
-      _icptr context = std::make_unique<IndexContext>(p2);
+      p_icptr context = std::make_unique<IndexContext>(p2);
       p2.contexts.addIndexContext(context.get());
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
       p2.contexts.retreatIndexContext();
 
@@ -197,7 +197,7 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
       }
 
       left.checkCommonExpressionExceptions(p2);
-      _genptr<p_bool> boo;
+      p_genptr<p_bool> boo;
       if (!parse::parse(p2, left, boo)) {
          throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2),
             L"' is not followed by a valid condition"), leftFirst.line);
@@ -205,9 +205,9 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
 
       Tokens right(tks, rightStart, rightLen);
 
-      _icptr context = std::make_unique<IndexContext>(p2);
+      p_icptr context = std::make_unique<IndexContext>(p2);
       p2.contexts.addIndexContext(context.get());
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
       p2.contexts.retreatIndexContext();
 
@@ -238,14 +238,14 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
       }
 
       left.checkCommonExpressionExceptions(p2);
-      _genptr<p_bool> boo;
+      p_genptr<p_bool> boo;
       if (!parse::parse(p2, left, boo)) {
          throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2), L"' is not followed by a valid condition"),
             leftFirst.line);
       }
 
       std::unique_ptr<CS_Condition> cond = std::make_unique<CS_Condition>();
-      _comptr* inter = cond->getCommandPtr();
+      p_comptr* inter = cond->getCommandPtr();
 
       if (rightLen == 0) {
          p2.conditionContext.addClosed(inter);
@@ -256,7 +256,7 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
 
       Tokens right(tks, rightStart, rightLen);
 
-      _comptr com;
+      p_comptr com;
       if (parseCommandsAsMember(com, right, inter, p2)) {
          p2.conditionContext.setMain(com, boo);
       }
@@ -276,7 +276,7 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
 
          Tokens right(tks, rightStart, rightLen);
 
-         _comptr com;
+         p_comptr com;
          const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
          p2.conditionContext.deleteLast();
 
@@ -299,20 +299,20 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
          }
 
          left.checkCommonExpressionExceptions(p2);
-         _genptr<p_bool> boo;
+         p_genptr<p_bool> boo;
          if (!parse::parse(p2, left, boo)) {
             throw SyntaxError(str(L"keywords '", leftFirst.getOriginString(p2), L" ",
                ifToken.getOriginString(p2), L"' are not followed by a valid condition"), leftFirst.line);
          }
 
          if (rightLen == 0) {
-            _comptr com = std::make_unique<C_DoNothing>();
+            p_comptr com = std::make_unique<C_DoNothing>();
             p2.conditionContext.addElseIf(boo, com, leftFirst.line);
             return false;
          }
 
          Tokens right(tks, rightStart, rightLen);
-         _comptr com;
+         p_comptr com;
          const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
          p2.conditionContext.deleteLast();
 
@@ -333,14 +333,14 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
    return parseIterationLoop(result, left, right, p2);
 }
 
-static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
+static p_bool parseIterationLoop(p_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    // string loop
-   _genptr<p_str> str_;
+   p_genptr<p_str> str_;
    if (parse::parse(p2, left, str_)) {
-      _fcptr context = std::make_unique<FileContext>(p2);
+      p_fcptr context = std::make_unique<FileContext>(p2);
       p2.contexts.addFileContext(context.get());
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
       p2.contexts.retreatFileContext();
 
@@ -358,14 +358,14 @@ static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Toke
 
       if (fc != nullptr) {
          if (right.check(TI_EVALUATE_DEFINITIONS)) {
-            _fcptr nextFc = std::make_unique<FileContext>(p2);
+            p_fcptr nextFc = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(nextFc.get());
-            _comptr com;
+            p_comptr com;
             const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
             p2.contexts.retreatFileContext();
 
             if (success) {
-               _genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
+               p_genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
                result = std::make_unique<CS_ListLoop>(g, com, nextFc, p2);
             }
 
@@ -373,7 +373,7 @@ static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Toke
          }
          else {
             p2.contexts.addFileContext(fc);
-            _comptr com;
+            p_comptr com;
             const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
             p2.contexts.retreatFileContext();
 
@@ -385,15 +385,15 @@ static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Toke
          }
       }
 
-      _fcptr ctx = std::make_unique<FileContext>(p2);
+      p_fcptr ctx = std::make_unique<FileContext>(p2);
       p2.contexts.addFileContext(ctx.get());
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
       p2.contexts.retreatFileContext();
 
       if (success) {
          if (right.check(TI_EVALUATE_DEFINITIONS)) {
-            _genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
+            p_genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
             result = std::make_unique<CS_ListLoop>(g, com, ctx, p2);
          }
          else {
@@ -405,11 +405,11 @@ static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Toke
    }
 
    // list loop
-   _genptr<p_list> list;
+   p_genptr<p_list> list;
    if (parse::parse(p2, left, list)) {
-      _fcptr context = std::make_unique<FileContext>(p2);
+      p_fcptr context = std::make_unique<FileContext>(p2);
       p2.contexts.addFileContext(context.get());
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
       p2.contexts.retreatFileContext();
 
@@ -423,7 +423,7 @@ static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Toke
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, p_perun2& p2)
+static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    // inside { }
    if (left.isEmpty()) {
@@ -443,11 +443,11 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
       const p_bool prevInside = fc->isInside;
       fc->isInside = true;
 
-      _lcptr locContext;
+      p_lcptr locContext;
       p2.contexts.makeLocationContext(locContext);
       p2.contexts.addLocationContext(locContext.get());
 
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
       p2.contexts.retreatLocationContext();
@@ -461,18 +461,18 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
    }
 
    // inside string { }
-   _genptr<p_str> str_;
+   p_genptr<p_str> str_;
    if (parse::parse(p2, left, str_)) {
-      _fcptr context = std::make_unique<FileContext>(p2);
+      p_fcptr context = std::make_unique<FileContext>(p2);
       context->attribute->setCoreCommandBase();
       context->isInside = true;
       p2.contexts.addFileContext(context.get());
 
-      _lcptr locContext;
+      p_lcptr locContext;
       p2.contexts.makeLocationContext(locContext);
       p2.contexts.addLocationContext(locContext.get());
 
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
       p2.contexts.retreatFileContext();
@@ -492,23 +492,23 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
 
       if (fc != nullptr) {
          if (right.check(TI_EVALUATE_DEFINITIONS)) {
-            _fcptr nextFc = std::make_unique<FileContext>(p2);
+            p_fcptr nextFc = std::make_unique<FileContext>(p2);
             nextFc->attribute->setCoreCommandBase();
             nextFc->isInside = true;
             p2.contexts.addFileContext(nextFc.get());
 
-            _lcptr locContext;
+            p_lcptr locContext;
             p2.contexts.makeLocationContext(locContext);
             p2.contexts.addLocationContext(locContext.get());
 
-            _comptr com;
+            p_comptr com;
             const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
             p2.contexts.retreatFileContext();
             p2.contexts.retreatLocationContext();
 
             if (success) {
-               _genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
+               p_genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
                result = std::make_unique<CS_InsideList>(g, com, locContext, nextFc, p2);
             }
 
@@ -519,11 +519,11 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
             fc->isInside = true;
             p2.contexts.addFileContext(fc);
 
-            _lcptr locContext;
+            p_lcptr locContext;
             p2.contexts.makeLocationContext(locContext);
             p2.contexts.addLocationContext(locContext.get());
 
-            _comptr com;
+            p_comptr com;
             const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
             p2.contexts.retreatFileContext();
@@ -537,16 +537,16 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
          }
       }
 
-      _fcptr ctx = std::make_unique<FileContext>(p2);
+      p_fcptr ctx = std::make_unique<FileContext>(p2);
       ctx->attribute->setCoreCommandBase();
       ctx->isInside = true;
       p2.contexts.addFileContext(ctx.get());
 
-      _lcptr locContext;
+      p_lcptr locContext;
       p2.contexts.makeLocationContext(locContext);
       p2.contexts.addLocationContext(locContext.get());
 
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
       p2.contexts.retreatFileContext();
@@ -554,7 +554,7 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
 
       if (success) {
          if (right.check(TI_EVALUATE_DEFINITIONS)) {
-            _genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
+            p_genptr<p_list> g = std::make_unique<gen::Cast_D_L>(def, p2);
             result = std::make_unique<CS_InsideList>(g, com, locContext, ctx, p2);
          }
          else {
@@ -566,18 +566,18 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
    }
 
    // inside list { }
-   _genptr<p_list> list;
+   p_genptr<p_list> list;
    if (parse::parse(p2, left, list)) {
-      _fcptr context = std::make_unique<FileContext>(p2);
+      p_fcptr context = std::make_unique<FileContext>(p2);
       context->attribute->setCoreCommandBase();
       context->isInside = true;
       p2.contexts.addFileContext(context.get());
 
-      _lcptr locContext;
+      p_lcptr locContext;
       p2.contexts.makeLocationContext(locContext);
       p2.contexts.addLocationContext(locContext.get());
 
-      _comptr com;
+      p_comptr com;
       const p_bool success = parseCommandsAsMember(com, right, nullptr, p2);
 
       p2.contexts.retreatFileContext();
@@ -593,7 +593,7 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static p_bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, p_perun2& p2)
+static p_bool parseCommandsAsMember(p_comptr& result, const Tokens& tks, p_comptr* cond, p_perun2& p2)
 {
    p2.conditionContext.add(cond);
    const p_bool success = parseCommands(result, tks, p2);
@@ -601,7 +601,7 @@ static p_bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr*
    return success;
 }
 
-static p_bool command(_comptr& result, Tokens& tks, p_perun2& p2)
+static p_bool command(p_comptr& result, Tokens& tks, p_perun2& p2)
 {
    const Token& f = tks.first();
 
@@ -694,7 +694,7 @@ static p_bool command(_comptr& result, Tokens& tks, p_perun2& p2)
    }
 }
 
-static p_bool commandMisc(_comptr& result, const Tokens& tks, p_perun2& p2)
+static p_bool commandMisc(p_comptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
@@ -786,7 +786,7 @@ static p_bool commandMisc(_comptr& result, const Tokens& tks, p_perun2& p2)
             tks2.trimRight();
 
             if (varSquareBrackets(tks2)) {
-               _genptr<p_num> index;
+               p_genptr<p_num> index;
                parseListElementIndex(index, tks2, p2);
                Variable<p_nlist>* pvp_nlist;
 
@@ -861,7 +861,7 @@ static p_bool commandMisc(_comptr& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
+static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -913,7 +913,7 @@ static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens
    if (first.type == Token::t_Word) {
       Variable<p_num>* pvp_num;
       if (p2.contexts.getVar(first, pvp_num, p2)) {
-         _genptr<p_num> num;
+         p_genptr<p_num> num;
 
          if (!parse::parse(p2, right, num)) {
             throw SyntaxError(str(L"right side of operator ", toStr(sign),
@@ -958,7 +958,7 @@ static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens
          switch (sign) {
             case CHAR_PLUS:
             case CHAR_MINUS: {
-               _genptr<p_per> per;
+               p_genptr<p_per> per;
 
                if (!parse::parse(p2, right, per)) {
                   throw SyntaxError(str(L"right side of operator ", toStr(sign),
@@ -1001,7 +1001,7 @@ static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens
             }
          }
 
-         _genptr<p_per> per;
+         p_genptr<p_per> per;
 
          if (!parse::parse(p2, right, per)) {
             throw SyntaxError(str(L"right side of operator '", first.getOriginString(p2),
@@ -1053,7 +1053,7 @@ static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens
          throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
       }
 
-      _genptr<p_num> num;
+      p_genptr<p_num> num;
 
       if (!parse::parse(p2, right, num)) {
          throw SyntaxError(str(L"right side of operation '", first.getOriginString(p2), L".",
@@ -1105,11 +1105,11 @@ static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens
    return false;
 }
 
-static p_bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const p_int line, p_perun2& p2)
+static p_bool commandVarIncrement(p_comptr& result, const Token& first, const Tokens& tks, const p_int line, p_perun2& p2)
 {
    Variable<p_str>* pvp_str;
    if (p2.contexts.getVar(first, pvp_str, p2)) {
-      _genptr<p_str> str_;
+      p_genptr<p_str> str_;
       if (parse::parse(p2, tks, str_)) {
          pvp_str->makeNotConstant();
 
@@ -1121,7 +1121,7 @@ static p_bool commandVarIncrement(_comptr& result, const Token& first, const Tok
          return true;
       }
 
-      _genptr<p_list> list;
+      p_genptr<p_list> list;
 
       if (parse::parse(p2, tks, list)) {
          throw SyntaxError(str(L"variable '", first.getOriginString(p2),
@@ -1139,14 +1139,14 @@ static p_bool commandVarIncrement(_comptr& result, const Token& first, const Tok
 
 template <typename T>
 static p_bool makeVarAlteration(p_perun2& p2, const Tokens& tokens, const Token& first,
-   Variable<T>*& varPtr, _comptr& result, const p_str& dataTypeName)
+   Variable<T>*& varPtr, p_comptr& result, const p_str& dataTypeName)
 {
    if (p2.contexts.getVar(first, varPtr, p2)) {
       if (varPtr->isImmutable()) {
          throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
       }
 
-      _genptr<T> value;
+      p_genptr<T> value;
       if (parse::parse(p2, tokens, value)) {
          if (!value->isConstant()) {
             varPtr->makeNotConstant();
@@ -1167,12 +1167,12 @@ static p_bool makeVarAlteration(p_perun2& p2, const Tokens& tokens, const Token&
 }
 
 template <typename T>
-static void makeVarAssignment(_comptr& result, const Token& token, p_perun2& p2,
-   Variable<T>* varPtr, _genptr<T>& valuePtr)
+static void makeVarAssignment(p_comptr& result, const Token& token, p_perun2& p2,
+   Variable<T>* varPtr, p_genptr<T>& valuePtr)
 {
    UserVarsContext* uvc = p2.contexts.getUserVarsContext();
    const p_bool isConstant = !p2.contexts.hasAggregate() && valuePtr->isConstant();
-   _varptrs<T>* allVarsOfThisType;
+   p_varptrs<T>* allVarsOfThisType;
    uvc->userVars.takeVarsPtr(allVarsOfThisType);
    p_str name = token.toLowerString(p2);
    allVarsOfThisType->insert(std::make_pair(name, std::make_unique<Variable<T>>(VarType::vt_User)));
@@ -1185,7 +1185,7 @@ static void makeVarAssignment(_comptr& result, const Token& token, p_perun2& p2,
    result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[name], valuePtr);
 }
 
-static p_bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
+static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1280,49 +1280,49 @@ static p_bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens
          L"' is not valid for a new variable. In Perun2, user defined variables can be only one-character long"), first.line);
    }
 
-   _genptr<p_bool> boo;
+   p_genptr<p_bool> boo;
    if (parse::parse(p2, right, boo)) {
       makeVarAssignment(result, first, p2, pv_boo, boo);
       return true;
    }
 
-   _genptr<p_num> num;
+   p_genptr<p_num> num;
    if (parse::parse(p2, right, num)) {
       makeVarAssignment(result, first, p2, pvp_num, num);
       return true;
    }
 
-   _genptr<p_tim> tim;
+   p_genptr<p_tim> tim;
    if (parse::parse(p2, right, tim)) {
       makeVarAssignment(result, first, p2, pvp_tim, tim);
       return true;
    }
 
-   _genptr<p_per> per;
+   p_genptr<p_per> per;
    if (parse::parse(p2, right, per)) {
       makeVarAssignment(result, first, p2, pvp_per, per);
       return true;
    }
 
-   _genptr<p_str> str_;
+   p_genptr<p_str> str_;
    if (parse::parse(p2, right, str_)) {
       makeVarAssignment(result, first, p2, pvp_str, str_);
       return true;
    }
 
-   _genptr<p_nlist> nlist;
+   p_genptr<p_nlist> nlist;
    if (parse::parse(p2, right, nlist)) {
       makeVarAssignment(result, first, p2, pvp_nlist, nlist);
       return true;
    }
 
-   _genptr<p_tlist> tlist;
+   p_genptr<p_tlist> tlist;
    if (parse::parse(p2, right, tlist)) {
       makeVarAssignment(result, first, p2, pvp_tlist, tlist);
       return true;
    }
 
-   _genptr<p_list> list;
+   p_genptr<p_list> list;
    if (parse::parse(p2, right, list)) {
       makeVarAssignment(result, first, p2, pvp_list, list);
       return true;
@@ -1354,7 +1354,7 @@ static p_bool varSquareBrackets(const Tokens& tks)
    return true;
 }
 
-static p_bool commandVarAssign_Element(_comptr& result, const Tokens& left,
+static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
    const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
@@ -1374,9 +1374,9 @@ static p_bool commandVarAssign_Element(_comptr& result, const Tokens& left,
    Variable<p_str>* pvp_str;
    if (p2.contexts.getVar(first, pvp_str, p2)) {
       if (! pvp_str->isImmutable()) {
-         _genptr<p_num> index;
+         p_genptr<p_num> index;
          parseListElementIndex(index, left, p2);
-         _genptr<p_str> str_;
+         p_genptr<p_str> str_;
 
          if (parse::parse(p2, right, str_)) {
             pvp_str->makeNotConstant();
@@ -1398,12 +1398,12 @@ static p_bool commandVarAssign_Element(_comptr& result, const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size start = tks.getStart() + 2;
    const p_size length = tks.getLength() - 3;
    const Tokens tks2(tks, start, length);
-   _genptr<p_num> index;
+   p_genptr<p_num> index;
 
    if (!parse::parse(p2, tks2, index)) {
       throw SyntaxError(

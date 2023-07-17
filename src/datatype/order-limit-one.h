@@ -42,7 +42,7 @@ public:
    virtual p_bool nextElementIsBetter() = 0;
 };
 
-typedef std::unique_ptr<LimitOne> _loptr;
+typedef std::unique_ptr<LimitOne> p_loptr;
 
 
 template <typename T>
@@ -50,7 +50,7 @@ struct LimitOneUnit : LimitOne
 {
 public:
    LimitOneUnit() = delete;
-   LimitOneUnit(_genptr<T>& val, const p_bool desc)
+   LimitOneUnit(p_genptr<T>& val, const p_bool desc)
       : valueGenerator(std::move(val)), descending(desc) { };
 
    void loadData() override
@@ -61,7 +61,7 @@ public:
 protected:
    T value;
    T nextValue;
-   _genptr<T> valueGenerator;
+   p_genptr<T> valueGenerator;
    const p_bool descending;
 };
 
@@ -71,7 +71,7 @@ struct LimitOneUnit_Middle : LimitOneUnit<T>
 {
 public:
    LimitOneUnit_Middle() = delete;
-   LimitOneUnit_Middle(_genptr<T>& val, const p_bool desc, _loptr& next)
+   LimitOneUnit_Middle(p_genptr<T>& val, const p_bool desc, p_loptr& next)
       : LimitOneUnit<T>(val, desc), nextUnit(std::move(next)) { };
 
    void loadData() override
@@ -93,7 +93,7 @@ public:
    };
 
 private:
-   _loptr nextUnit;
+   p_loptr nextUnit;
 };
 
 
@@ -102,7 +102,7 @@ struct LimitOneUnit_Final : LimitOneUnit<T>
 {
 public:
    LimitOneUnit_Final() = delete;
-   LimitOneUnit_Final(_genptr<T>& val, const p_bool desc)
+   LimitOneUnit_Final(p_genptr<T>& val, const p_bool desc)
       : LimitOneUnit<T>(val, desc) { };
 
    p_bool nextElementIsBetter() override
@@ -122,7 +122,7 @@ struct OrderByLimitOne : p_def
 {
 public:
    OrderByLimitOne() = delete;
-   OrderByLimitOne(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _loptr& lo, p_perun2& p2);
+   OrderByLimitOne(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_loptr& lo, p_perun2& p2);
    FileContext* getFileContext() override;
 
    void reset() override;
@@ -131,8 +131,8 @@ public:
 private:
    p_defptr base;
    FileContext* fileContext;
-   _fcptr nextContext;
-   _loptr limitOne;
+   p_fcptr nextContext;
+   p_loptr limitOne;
    p_perun2& perun2;
    p_bool valueTaken = false;
 };

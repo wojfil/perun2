@@ -29,7 +29,7 @@ public:
    virtual void run() = 0;
 };
 
-typedef std::unique_ptr<Command> _comptr;
+typedef std::unique_ptr<Command> p_comptr;
 
 }
 

@@ -40,41 +40,41 @@ struct Time
    };
 
    Time();
-   Time(const _tnum mo, const _tnum ye);
-   Time(const _tnum da, const _tnum mo, const _tnum ye);
-   Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi);
-   Time(const _tnum da, const _tnum mo, const _tnum ye, const _tnum ho, const _tnum mi, const _tnum sec);
+   Time(const p_tnum mo, const p_tnum ye);
+   Time(const p_tnum da, const p_tnum mo, const p_tnum ye);
+   Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi);
+   Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi, const p_tnum sec);
 
 // todo:
 // change these 6 numbers into one value: time_t
-   _tnum year;
-   _tnum day;
-   _tnum month;
-   _tnum hour = TNUM_ZERO;
-   _tnum minute = TNUM_ZERO;
-   _tnum second = TNUM_ZERO;
+   p_tnum year;
+   p_tnum day;
+   p_tnum month;
+   p_tnum hour = TNUM_ZERO;
+   p_tnum minute = TNUM_ZERO;
+   p_tnum second = TNUM_ZERO;
    TimeType type;
 
    p_str toString() const;
-   void initClock(const p_bool withSeconds, const _tnum recentChange);
+   void initClock(const p_bool withSeconds, const p_tnum recentChange);
 
-   void addYears(const _tnum y);
-   void addMonths(const _tnum m);
-   void addWeeks(const _tnum w);
-   void addDays(const _tnum d);
-   void addHours(const _tnum h);
-   void addMinutes(const _tnum m);
-   void addSeconds(const _tnum s);
+   void addYears(const p_tnum y);
+   void addMonths(const p_tnum m);
+   void addWeeks(const p_tnum w);
+   void addDays(const p_tnum d);
+   void addHours(const p_tnum h);
+   void addMinutes(const p_tnum m);
+   void addSeconds(const p_tnum s);
 
-   void setYear(const _tnum y);
-   void setMonth(const _tnum m);
-   void setDay(const _tnum d);
-   void setHour(const _tnum h);
-   void setMinute(const _tnum m);
-   void setSecond(const _tnum s);
+   void setYear(const p_tnum y);
+   void setMonth(const p_tnum m);
+   void setDay(const p_tnum d);
+   void setHour(const p_tnum h);
+   void setMinute(const p_tnum m);
+   void setSecond(const p_tnum s);
 
    Time toDate() const;
-   _tnum getWeekDay() const;
+   p_tnum getWeekDay() const;
    p_bool equalsExactly(const Time& tim) const;
    void setValue(const Time& tim);
    void clear();
@@ -93,15 +93,15 @@ struct Time
 
 };
 
-_tnum toTimeNumber(const Number& num);
-p_str monthToString(const _tnum month);
-p_str weekdayToString(const _tnum wday);
+p_tnum toTimeNumber(const Number& num);
+p_str monthToString(const p_tnum month);
+p_str weekdayToString(const p_tnum wday);
 
-inline void addTimeUnit(p_stream& stream, const _tnum val);
-inline p_bool isLeapYear(const _tnum year);
-_tnum daysInMonth(const _tnum month, const _tnum year);
+inline void addTimeUnit(p_stream& stream, const p_tnum val);
+inline p_bool isLeapYear(const p_tnum year);
+p_tnum daysInMonth(const p_tnum month, const p_tnum year);
 inline Period timeDifference(const Time& min, const Time& max);
-inline _tnum daysInYears(const _tnum min, const _tnum max);
+inline p_tnum daysInYears(const p_tnum min, const p_tnum max);
 inline void decrementMonth(Period& p, const Time& t, const p_bool addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);

@@ -20,31 +20,31 @@
 namespace perun2::gen
 {
 
-Join_StrStr::Join_StrStr(_genptr<p_str>& lef, _genptr<p_str>& rig)
+Join_StrStr::Join_StrStr(p_genptr<p_str>& lef, p_genptr<p_str>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-Join_StrList::Join_StrList(_genptr<p_str>& lef, _genptr<p_list>& rig)
+Join_StrList::Join_StrList(p_genptr<p_str>& lef, p_genptr<p_list>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-Join_ListStr::Join_ListStr(_genptr<p_list>& lef, _genptr<p_str>& rig)
+Join_ListStr::Join_ListStr(p_genptr<p_list>& lef, p_genptr<p_str>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-Join_ListList::Join_ListList(_genptr<p_list>& lef, _genptr<p_list>& rig)
+Join_ListList::Join_ListList(p_genptr<p_list>& lef, p_genptr<p_list>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-ListFilter_Where::ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, p_perun2& p2)
+ListFilter_Where::ListFilter_Where(p_genptr<p_bool>& cond, p_genptr<p_list>& li, p_fcptr& ctx, p_perun2& p2)
    : condition(std::move(cond)), list(std::move(li)), context(std::move(ctx)), perun2(p2) { };
 
-ListFilter_Limit::ListFilter_Limit(_genptr<p_list>& li, _genptr<p_num>& num)
+ListFilter_Limit::ListFilter_Limit(p_genptr<p_list>& li, p_genptr<p_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
-ListFilter_Skip::ListFilter_Skip(_genptr<p_list>& li, _genptr<p_num>& num)
+ListFilter_Skip::ListFilter_Skip(p_genptr<p_list>& li, p_genptr<p_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
-ListFilter_Every::ListFilter_Every(_genptr<p_list>& li, _genptr<p_num>& num)
+ListFilter_Every::ListFilter_Every(p_genptr<p_list>& li, p_genptr<p_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
-ListFilter_Final::ListFilter_Final(_genptr<p_list>& li, _genptr<p_num>& num)
+ListFilter_Final::ListFilter_Final(p_genptr<p_list>& li, p_genptr<p_num>& num)
    : list(std::move(li)), number(std::move(num)) { };
 
 

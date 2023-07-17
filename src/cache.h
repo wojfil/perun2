@@ -21,19 +21,19 @@
 namespace perun2
 {
 
-typedef uint64_t _cunit;
+typedef uint64_t p_cunit;
 
-p_constexpr _cunit CACHE_NULL =                 0b00000000000000000000000000000000;
-p_constexpr _cunit CACHE_DESKTOP_PATH =         0b00000000000000000000000000000001;
-p_constexpr _cunit CACHE_EXE_PATH =             0b00000000000000000000000000000010;
-p_constexpr _cunit CACHE_CMD_PROCESS =          0b00000000000000000000000000000100;
-p_constexpr _cunit CACHE_ALPHABET =             0b00000000000000000000000000001000;
-p_constexpr _cunit CACHE_ASCII =                0b00000000000000000000000000010000;
-p_constexpr _cunit CACHE_ORIGIN =               0b00000000000000000000000000100000;
-p_constexpr _cunit CACHE_ARGUMENTS =            0b00000000000000000000000001000000;
-p_constexpr _cunit CACHE_SYSTEM32 =             0b00000000000000000000000010000000;
-p_constexpr _cunit CACHE_MSPAINT =              0b00000000000000000000000100000000;
-p_constexpr _cunit CACHE_NOTEPAD =              0b00000000000000000000001000000000;
+p_constexpr p_cunit CACHE_NULL =                 0b00000000000000000000000000000000;
+p_constexpr p_cunit CACHE_DESKTOP_PATH =         0b00000000000000000000000000000001;
+p_constexpr p_cunit CACHE_EXE_PATH =             0b00000000000000000000000000000010;
+p_constexpr p_cunit CACHE_CMD_PROCESS =          0b00000000000000000000000000000100;
+p_constexpr p_cunit CACHE_ALPHABET =             0b00000000000000000000000000001000;
+p_constexpr p_cunit CACHE_ASCII =                0b00000000000000000000000000010000;
+p_constexpr p_cunit CACHE_ORIGIN =               0b00000000000000000000000000100000;
+p_constexpr p_cunit CACHE_ARGUMENTS =            0b00000000000000000000000001000000;
+p_constexpr p_cunit CACHE_SYSTEM32 =             0b00000000000000000000000010000000;
+p_constexpr p_cunit CACHE_MSPAINT =              0b00000000000000000000000100000000;
+p_constexpr p_cunit CACHE_NOTEPAD =              0b00000000000000000000001000000000;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop
@@ -58,12 +58,12 @@ public:
    p_str cmdProcessStartingArgs;
 
 private:
-   p_bool isNotLoaded(const _cunit v);
+   p_bool isNotLoaded(const p_cunit v);
    p_str getCmdProcessStartingArgs() const;
    p_list getAlphabet() const;
    void loadSystem32Path(const Token& tk);
 
-   _cunit value = CACHE_NULL;
+   p_cunit value = CACHE_NULL;
    p_perun2& perun2;
    VarsContext& context;
    p_str system32;

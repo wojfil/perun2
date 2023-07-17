@@ -63,8 +63,8 @@ static p_bool parseDefChain(p_defptr& result, const Tokens& tks, p_perun2& p2)
 
    ChainLink cl;
    p_defptr prevDef;
-   _genptr<p_str> prevStr;
-   _genptr<p_list> prevList;
+   p_genptr<p_str> prevStr;
+   p_genptr<p_list> prevList;
 
    if (parse(p2, elements[0], prevDef)) {
       cl = ChainLink::cl_Definition;
@@ -94,13 +94,13 @@ static p_bool parseDefChain(p_defptr& result, const Tokens& tks, p_perun2& p2)
                prevDef = std::make_unique<gen::Join_DefDef>(pdef, def, p2);
             }
             else {
-               _genptr<p_str> str;
+               p_genptr<p_str> str;
                if (parse(p2, tk, str)) {
                   p_defptr pdef = std::move(prevDef);
                   prevDef = std::make_unique<gen::Join_DefStr>(pdef, str, p2);
                }
                else {
-                  _genptr<p_list> list;
+                  p_genptr<p_list> list;
                   if (parse(p2, tk, list)) {
                      p_defptr pdef = std::move(prevDef);
                      prevDef = std::make_unique<gen::Join_DefList>(pdef, list, p2);
@@ -121,14 +121,14 @@ static p_bool parseDefChain(p_defptr& result, const Tokens& tks, p_perun2& p2)
                cl = ChainLink::cl_Definition;
             }
             else {
-               _genptr<p_str> str;
+               p_genptr<p_str> str;
                if (parse(p2, tk, str)) {
                   prevList = std::make_unique<gen::Join_StrStr>(prevStr, str);
                   prevStr.reset();
                   cl = ChainLink::cl_List;
                }
                else {
-                  _genptr<p_list> list;
+                  p_genptr<p_list> list;
                   if (parse(p2, tk, list)) {
                      prevList = std::make_unique<gen::Join_StrList>(prevStr, list);
                      prevStr.reset();
@@ -150,15 +150,15 @@ static p_bool parseDefChain(p_defptr& result, const Tokens& tks, p_perun2& p2)
                cl = ChainLink::cl_Definition;
             }
             else {
-               _genptr<p_str> str;
+               p_genptr<p_str> str;
                if (parse(p2, tk, str)) {
-                  _genptr<p_list> plist(std::move(prevList));
+                  p_genptr<p_list> plist(std::move(prevList));
                   prevList = std::make_unique<gen::Join_ListStr>(plist, str);
                }
                else {
-                  _genptr<p_list> list;
+                  p_genptr<p_list> list;
                   if (parse(p2, tk, list)) {
-                     _genptr<p_list> plist(std::move(prevList));
+                     p_genptr<p_list> plist(std::move(prevList));
                      prevList = std::make_unique<gen::Join_ListList>(plist, list);
                   }
                   else {
@@ -188,7 +188,7 @@ static p_bool parseDefTernary(p_defptr& result, const Tokens& tks, p_perun2& p2)
 
    std::tuple<Tokens, Tokens, Tokens> trio = tks.divideForTernary();
 
-   _genptr<p_bool> condition;
+   p_genptr<p_bool> condition;
    if (!parse(p2, std::get<0>(trio), condition)) {
       return false;
    }
@@ -216,7 +216,7 @@ static p_bool parseDefBinary(p_defptr& result, const Tokens& tks, p_perun2& p2)
 
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_QUESTION_MARK);
 
-   _genptr<p_bool> condition;
+   p_genptr<p_bool> condition;
    if (!parse(p2, pair.first, condition)) {
       return false;
    }
@@ -266,12 +266,12 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, p_perun2& p2)
          case Keyword::kw_Final: {
             p2.contexts.retreatFileContext();
 
-            _genptr<p_num> num;
+            p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
-            _fcptr nextContext = std::make_unique<FileContext>(p2);
+            p_fcptr nextContext = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(nextContext.get());
             p_defptr prev = std::move(base);
             base = std::make_unique<gen::DefFilter_Final>(prev, num, nextContext, contextPtr, p2);
@@ -286,7 +286,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, p_perun2& p2)
 
             p2.contexts.retreatFileContext();
 
-            _genptr<p_num> num;
+            p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
@@ -312,7 +312,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, p_perun2& p2)
             break;
          }
          case Keyword::kw_Where: {
-            _genptr<p_bool> boo;
+            p_genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
                throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
             }
@@ -322,9 +322,9 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, p_perun2& p2)
             break;
          }
          case Keyword::kw_Order: {
-            gen::_loptr limitOne;
-            gen::_ordptr order;
-            gen::_indptr indices;
+            gen::p_loptr limitOne;
+            gen::p_ordptr order;
+            gen::p_indptr indices;
 
             // if Order By is followed by "limit 1"
             // we can introduce optimizations and combine these two filters into one
@@ -333,17 +333,17 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, p_perun2& p2)
                && filterTokens[i + 1].second().isOne()) 
             {
                i++;
-               parseOrder<gen::_loptr>(limitOne, nullptr, ts, tsf, p2);
+               parseOrder<gen::p_loptr>(limitOne, nullptr, ts, tsf, p2);
             }
             else {
                indices = std::make_unique<gen::OrderIndices>();
-               parseOrder<gen::_ordptr>(order, indices.get(), ts, tsf, p2);
+               parseOrder<gen::p_ordptr>(order, indices.get(), ts, tsf, p2);
             }
 
             // retreat previous context
             // and add a new one instead
             p2.contexts.retreatFileContext();
-            _fcptr nextContext = std::make_unique<FileContext>(p2);
+            p_fcptr nextContext = std::make_unique<FileContext>(p2);
             p2.contexts.addFileContext(nextContext.get());
             p_defptr prev = std::move(base);
 

@@ -43,7 +43,7 @@ public:
 
 
 template <typename T>
-using _genptr = std::unique_ptr<Generator<T>>;
+using p_genptr = std::unique_ptr<Generator<T>>;
 
 }
 

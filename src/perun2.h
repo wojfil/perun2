@@ -73,7 +73,7 @@ public:
    Contexts contexts;
    const KeywordsData keywordsData;
    SideProcess sideProcess;
-   const _flags flags;
+   const p_flags flags;
    comm::ConditionContext conditionContext;
    State state = State::s_Running;
    int exitCode = EXITCODE_OK;
@@ -85,7 +85,7 @@ public:
    p_bool isNotRunning() const;
 
 private:
-   _comptr commands;
+   p_comptr commands;
    std::vector<Token> tokens;
 
    p_bool preParse();
@@ -108,7 +108,7 @@ struct Perun2
 public:
    Perun2(const p_int argc, p_char* const argv[]);
    Perun2(const p_str& location, const p_str& code);
-   Perun2(const p_str& location, const p_str& code, const _flags flags);
+   Perun2(const p_str& location, const p_str& code, const p_flags flags);
 
    Perun2() = delete;
    Perun2(Perun2 const&) = delete;

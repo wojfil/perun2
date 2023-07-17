@@ -19,22 +19,22 @@
 namespace perun2::gen
 {
 
-Negation::Negation(_genptr<p_num>& val) 
+Negation::Negation(p_genptr<p_num>& val) 
    : UnaryOperation<p_num>(val) { };
 
-Addition::Addition(_genptr<p_num>& val1, _genptr<p_num>& val2)
+Addition::Addition(p_genptr<p_num>& val1, p_genptr<p_num>& val2)
    : BinaryOperation<p_num>(val1, val2) { };
 
-Subtraction::Subtraction(_genptr<p_num>& val1, _genptr<p_num>& val2)
+Subtraction::Subtraction(p_genptr<p_num>& val1, p_genptr<p_num>& val2)
    : BinaryOperation<p_num>(val1, val2) { };
       
-Multiplication::Multiplication(_genptr<p_num>& val1, _genptr<p_num>& val2)
+Multiplication::Multiplication(p_genptr<p_num>& val1, p_genptr<p_num>& val2)
    : BinaryOperation<p_num>(val1, val2) { };
 
-Division::Division(_genptr<p_num>& val1, _genptr<p_num>& val2)
+Division::Division(p_genptr<p_num>& val1, p_genptr<p_num>& val2)
    : BinaryOperation<p_num>(val1, val2) { };
 
-Modulo::Modulo(_genptr<p_num>& val1, _genptr<p_num>& val2)
+Modulo::Modulo(p_genptr<p_num>& val1, p_genptr<p_num>& val2)
    : BinaryOperation<p_num>(val1, val2) { };
 
 p_num Negation::getValue()
@@ -67,7 +67,7 @@ p_num Modulo::getValue()
    return this->value1->getValue() % this->value2->getValue();
 }
 
-TimeMember::TimeMember(_genptr<p_tim>& tim, const Period::PeriodUnit& pu) 
+TimeMember::TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit& pu) 
    : time(std::move(tim)), unit(pu) { };
 
 p_num TimeMember::getValue() 

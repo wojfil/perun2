@@ -23,7 +23,7 @@ namespace perun2
 Attribute::Attribute(p_perun2& p2)
    : perun2(p2) { };
 
-Attribute::Attribute(const _aunit val, p_perun2& p2)
+Attribute::Attribute(const p_aunit val, p_perun2& p2)
    : value(val), perun2(p2) { };
 
 void Attribute::add(const Token& tk)
@@ -107,7 +107,7 @@ void Attribute::add(const Token& tk)
    }
 }
 
-void Attribute::set(const _aunit v)
+void Attribute::set(const p_aunit v)
 {
    this->value |= v;
 }
@@ -130,7 +130,7 @@ void Attribute::setTimeCommandBase()
    this->set(ATTR_CHANGE);
 }
 
-p_bool Attribute::has(const _aunit v) const
+p_bool Attribute::has(const p_aunit v) const
 {
    return this->value & v;
 }
@@ -140,7 +140,7 @@ p_bool Attribute::hasAny() const
    return this->value != ATTR_NULL;
 }
 
-_aunit Attribute::getValue() const
+p_aunit Attribute::getValue() const
 {
    return this->value;
 }

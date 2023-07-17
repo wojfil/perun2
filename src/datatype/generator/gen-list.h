@@ -28,61 +28,61 @@ namespace perun2::gen
 struct Join_StrStr : Generator<p_list>
 {
 public:
-   Join_StrStr(_genptr<p_str>& lef, _genptr<p_str>& rig);
+   Join_StrStr(p_genptr<p_str>& lef, p_genptr<p_str>& rig);
    p_list getValue() override;
 
 private:
-   _genptr<p_str> left;
-   _genptr<p_str> right;
+   p_genptr<p_str> left;
+   p_genptr<p_str> right;
 };
 
 
 struct Join_StrList : Generator<p_list>
 {
 public:
-   Join_StrList(_genptr<p_str>& lef, _genptr<p_list>& rig);
+   Join_StrList(p_genptr<p_str>& lef, p_genptr<p_list>& rig);
    p_list getValue() override;
 
 private:
-   _genptr<p_str> left;
-   _genptr<p_list> right;
+   p_genptr<p_str> left;
+   p_genptr<p_list> right;
 };
 
 
 struct Join_ListStr : Generator<p_list>
 {
 public:
-   Join_ListStr(_genptr<p_list>& lef, _genptr<p_str>& rig);
+   Join_ListStr(p_genptr<p_list>& lef, p_genptr<p_str>& rig);
    p_list getValue() override;
 
 private:
-   _genptr<p_list> left;
-   _genptr<p_str> right;
+   p_genptr<p_list> left;
+   p_genptr<p_str> right;
 };
 
 
 struct Join_ListList : Generator<p_list>
 {
 public:
-   Join_ListList(_genptr<p_list>& lef, _genptr<p_list>& rig);
+   Join_ListList(p_genptr<p_list>& lef, p_genptr<p_list>& rig);
    p_list getValue() override;
 
 private:
-   _genptr<p_list> left;
-   _genptr<p_list> right;
+   p_genptr<p_list> left;
+   p_genptr<p_list> right;
 };
 
 
 struct ListFilter_Where : Generator<p_list>
 {
 public:
-   ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, p_perun2& p2);
+   ListFilter_Where(p_genptr<p_bool>& cond, p_genptr<p_list>& li, p_fcptr& ctx, p_perun2& p2);
    p_list getValue() override;
 
 private:
-   _genptr<p_bool> condition;
-   _genptr<p_list> list;
-   _fcptr context;
+   p_genptr<p_bool> condition;
+   p_genptr<p_list> list;
+   p_fcptr context;
    p_perun2& perun2;
 };
 
@@ -90,48 +90,48 @@ private:
 struct ListFilter_Limit : Generator<p_list>
 {
 public:
-   ListFilter_Limit(_genptr<p_list>& li, _genptr<p_num>& num);
+   ListFilter_Limit(p_genptr<p_list>& li, p_genptr<p_num>& num);
    p_list getValue() override;
 
 private:
-   _genptr<p_list> list;
-   _genptr<p_num> number;
+   p_genptr<p_list> list;
+   p_genptr<p_num> number;
 };
 
 
 struct ListFilter_Skip : Generator<p_list>
 {
 public:
-   ListFilter_Skip(_genptr<p_list>& li, _genptr<p_num>& num);
+   ListFilter_Skip(p_genptr<p_list>& li, p_genptr<p_num>& num);
    p_list getValue() override;
 
 private:
-   _genptr<p_list> list;
-   _genptr<p_num> number;
+   p_genptr<p_list> list;
+   p_genptr<p_num> number;
 };
 
 
 struct ListFilter_Every : Generator<p_list>
 {
 public:
-   ListFilter_Every(_genptr<p_list>& li, _genptr<p_num>& num);
+   ListFilter_Every(p_genptr<p_list>& li, p_genptr<p_num>& num);
    p_list getValue() override;
 
 private:
-   _genptr<p_list> list;
-   _genptr<p_num> number;
+   p_genptr<p_list> list;
+   p_genptr<p_num> number;
 };
 
 
 struct ListFilter_Final : Generator<p_list>
 {
 public:
-   ListFilter_Final(_genptr<p_list>& li, _genptr<p_num>& num);
+   ListFilter_Final(p_genptr<p_list>& li, p_genptr<p_num>& num);
    p_list getValue() override;
 
 private:
-   _genptr<p_list> list;
-   _genptr<p_num> number;
+   p_genptr<p_list> list;
+   p_genptr<p_num> number;
 };
 
 

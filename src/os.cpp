@@ -72,7 +72,7 @@ void os_rawSleepForMs(const p_nint ms)
 // explanation of attributes is in file 'attribute.h'
 void os_loadAttributes(FileContext& context)
 {
-   const _attrptr& attribute = context.attribute;
+   const p_attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
    context.invalid = os_isInvaild(context.trimmed);
 
@@ -260,7 +260,7 @@ void os_loadAttributes(FileContext& context)
 // we do not need to read it again from the file system
 void os_loadDataAttributes(FileContext& context, const p_fdata& data)
 {
-   const _attrptr& attribute = context.attribute;
+   const p_attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
    context.invalid = false;
 

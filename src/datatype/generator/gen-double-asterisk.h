@@ -29,14 +29,14 @@ namespace perun2::gen
 p_constexpr p_char WILDCARD_SINGLE_ASTERISK = CHAR_SMALLER;
 p_constexpr p_char WILDCARD_DOUBLE_ASTERISK = CHAR_GREATER;
 
-typedef std::unique_ptr<RecursiveAll> _rallptr;
+typedef std::unique_ptr<RecursiveAll> p_rallptr;
 
 
 struct DoubleAsteriskPattern : Definition, WildcardComparer
 {
 public:
    DoubleAsteriskPattern() = delete;
-   DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr);
+   DoubleAsteriskPattern(p_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr);
 
    p_bool hasNext() override;
    void reset() override;
@@ -49,7 +49,7 @@ protected:
 private:
    const p_str prefix;
    const p_size startId;
-   _rallptr definition;
+   p_rallptr definition;
    FileContext* context;
    p_perun2& perun2;
    p_bool first = true;

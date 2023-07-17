@@ -35,11 +35,11 @@ p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const 
    }
 
    if (pattern.size() == 1 && pattern[0] == CHAR_ASTERISK) {
-      _genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
+      p_genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
       p_str prefix;
 
       if (retreats > 0) {
-         _genptr<p_str> prev = std::move(loc);
+         p_genptr<p_str> prev = std::move(loc);
          loc = std::make_unique<gen::RetreatedPath>(prev, retreats);
          prefix = os_doubleDotsPrefix(retreats);
       }
@@ -49,11 +49,11 @@ p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const 
    }
 
    if (pattern.size() == 2 && pattern[0] == CHAR_ASTERISK && pattern[1] == CHAR_ASTERISK) {
-      _genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
+      p_genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
       p_str prefix;
 
       if (retreats > 0) {
-         _genptr<p_str> prev = std::move(loc);
+         p_genptr<p_str> prev = std::move(loc);
          loc = std::make_unique<gen::RetreatedPath>(prev, retreats);
          prefix = os_doubleDotsPrefix(retreats);
       }
@@ -89,7 +89,7 @@ p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const 
 exitAsteriskBeginning:
 
    p_str prefix;
-   _genptr<p_str> base;
+   p_genptr<p_str> base;
 
    if (separatorId == -1) {
       if (isAbsolute) {
@@ -98,7 +98,7 @@ exitAsteriskBeginning:
       else {
          base = std::make_unique<gen::LocationReference>(p2);
          if (retreats > 0) {
-            _genptr<p_str> prev = std::move(base);
+            p_genptr<p_str> prev = std::move(base);
             base = std::make_unique<gen::RetreatedPath>(prev, retreats);
          }
       }
@@ -109,7 +109,7 @@ exitAsteriskBeginning:
       }
       else {
          prefix = pattern.substr(0, separatorId);
-         _genptr<p_str> loc = std::make_unique<gen::Constant<p_str>>(prefix);
+         p_genptr<p_str> loc = std::make_unique<gen::Constant<p_str>>(prefix);
          base = std::make_unique<gen::RelativeLocation>(loc, p2, retreats);
          prefix += OS_SEPARATOR;
       }
@@ -220,15 +220,15 @@ exitAsteriskBeginning:
    for (p_size i = 1; i < ulen; i++) {
       const p_bool isFinal = i == (ulen - 1);
 
-      _genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
+      p_genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
       if (!isAbsolute && retreats > 0) {
-         _genptr<p_str> prev = std::move(loc);
+         p_genptr<p_str> prev = std::move(loc);
          loc = std::make_unique<gen::RetreatedPath>(prev, retreats);
       }
 
       std::unique_ptr<gen::LocationVessel> vessel = std::make_unique<gen::LocationVessel>(isAbsolute, loc);
       gen::LocationVessel& vesselRef = *(vessel.get());
-      _genptr<p_str> vesselPtr = std::move(vessel);
+      p_genptr<p_str> vesselPtr = std::move(vessel);
       p_defptr nextDef;
 
       const p_str nextPatt = str(OS_SEPARATOR, units[i].asteriskPart);
@@ -279,7 +279,7 @@ void addAsteriskPatternUnit(p_str& asteriskPart, p_str& suffixPart, const p_str&
 }
 
 
-p_bool parseDoubleAsterisk(p_defptr& result, _genptr<p_str>& base, const p_str& pattern, const p_str& trimmed,
+p_bool parseDoubleAsterisk(p_defptr& result, p_genptr<p_str>& base, const p_str& pattern, const p_str& trimmed,
    const p_size start, const p_bool isAbsolute, const p_int retreats, p_perun2& p2)
 {
    enum Mode {
@@ -370,7 +370,7 @@ p_bool parseDoubleAsterisk(p_defptr& result, _genptr<p_str>& base, const p_str& 
       prefix = pattern.substr(0, start);
    }
 
-   gen::_rallptr loc = std::make_unique<gen::RecursiveAll>(base, p2, isAbsolute, p_str());
+   gen::p_rallptr loc = std::make_unique<gen::RecursiveAll>(base, p2, isAbsolute, p_str());
    result = std::make_unique<gen::DoubleAsteriskPattern>(loc, p2, finalPattern, prefix, retreats);
    return true;
 }

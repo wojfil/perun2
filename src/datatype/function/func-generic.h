@@ -29,10 +29,10 @@ template <typename T>
 struct Func_1
 {
 public:
-   Func_1<T> (_genptr<T>& a1) : arg1(std::move(a1)) {};
+   Func_1<T> (p_genptr<T>& a1) : arg1(std::move(a1)) {};
 
 protected:
-   _genptr<T> arg1;
+   p_genptr<T> arg1;
 };
 
 
@@ -41,12 +41,12 @@ template <typename T1, typename T2>
 struct Func_2
 {
 public:
-   Func_2<T1, T2> (_genptr<T1>& a1, _genptr<T2>& a2) 
+   Func_2<T1, T2> (p_genptr<T1>& a1, p_genptr<T2>& a2) 
       : arg1(std::move(a1)), arg2(std::move(a2)) {};
 
 protected:
-   _genptr<T1> arg1;
-   _genptr<T2> arg2;
+   p_genptr<T1> arg1;
+   p_genptr<T2> arg2;
 };
 
 
@@ -55,13 +55,13 @@ template <typename T1, typename T2, typename T3>
 struct Func_3
 {
 public:
-   Func_3<T1, T2, T3> (_genptr<T1>& a1, _genptr<T2>& a2, _genptr<T3>& a3) 
+   Func_3<T1, T2, T3> (p_genptr<T1>& a1, p_genptr<T2>& a2, p_genptr<T3>& a3) 
       : arg1(std::move(a1)), arg2(std::move(a2)), arg3(std::move(a3)) {};
 
 protected:
-   _genptr<T1> arg1;
-   _genptr<T2> arg2;
-   _genptr<T3> arg3;
+   p_genptr<T1> arg1;
+   p_genptr<T2> arg2;
+   p_genptr<T3> arg3;
 };
 
 
@@ -69,7 +69,7 @@ template <typename T>
 struct F_First : Func_1<std::vector<T>>, Generator<T>
 {
 public:
-   F_First<T>(_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) {};
+   F_First<T>(p_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) {};
 
    T getValue() override {
       const std::vector<T> value = this->arg1->getValue();
@@ -84,7 +84,7 @@ template <typename T>
 struct F_Last : Func_1<std::vector<T>>, Generator<T>
 {
 public:
-   F_Last<T>(_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) {};
+   F_Last<T>(p_genptr<std::vector<T>>& a1) : Func_1<std::vector<T>>(a1) {};
 
    T getValue() override {
       const std::vector<T> value = this->arg1->getValue();
@@ -100,7 +100,7 @@ struct F_RandomElement : Func_1<std::vector<T>>, Generator<T>
 {
 public:
 
-   F_RandomElement<T> (_genptr<std::vector<T>>& a1, p_perun2& p2)
+   F_RandomElement<T> (p_genptr<std::vector<T>>& a1, p_perun2& p2)
       : Func_1<std::vector<T>>(a1), math(p2.math) {};
 
    T getValue() override {

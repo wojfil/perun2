@@ -527,10 +527,73 @@ select files
 
 ## More time variables
 
-For every day of the week, we can have two more values. For example: *lastMonday*, *nextMonday*. We can do the same with months.
+For every day of the week, we can have three more values. For example: *lastMonday*, *currentMonday*, *nextMonday*. We can do the same with months.
 
 ```
 select files 
   where creation = lastFriday
 ```
 
+## Integration with printers
+
+Open a popup to print something physically on the paper. 
+Unfortunately, keyword *print* is already reserved. Its meaning would be ambiguous anyways.
+Maybe we can use *printer* instead as below.
+
+```
+inside pendrive {
+  open '*.pdf'
+    where creation = today
+    with printer
+}
+```
+
+## Internet communication
+
+This feature is quite controversial as of now because of security. We can imagine sending and downloading files.
+
+```
+download 'https://some/url'
+download 'https://some/url' as 'data.txt'
+send 'a.mp4' to 'https://some/url'
+send 'a.mp4' to 'https://some/url' as 'newname.mp4'
+```
+
+## Google drive
+
+Integration with this third-party software would be useful. Only if we agree on Internet communication first.
+
+```
+send videos
+  to googleDrive '1pzschX6uMbxUblb5WZ6IleseAUE8MZ-t'
+```
+
+## Internet browsers
+
+Keyword *browser* would mean the default browser on this computer.
+
+```
+open browser
+```
+
+```
+open '**/index.html'
+  with browser
+```
+
+Of course we can have specific keywords like *opera*, *firefox* or *chrome*.
+
+## Open websites
+
+Enter certain website with default browser.
+
+```
+website 'https://some/url'
+```
+
+Or we can specify the program.
+
+```
+website 'https://some/url'
+  with opera
+```

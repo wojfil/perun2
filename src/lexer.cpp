@@ -333,7 +333,7 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
       const p_int min = static_cast<p_int>(start + length) - 4;
       const p_int max = static_cast<p_int>(start + length) - 1;
 
-      if (kid != -1 && kid > start && kid < max && kid >= min) {
+      if (kid != -1 && kid > static_cast<p_int>(start) && kid < max && kid >= min) {
          p_nint first;
          p_nint second;
          const p_str firstString = code.substr(start, kid - start);

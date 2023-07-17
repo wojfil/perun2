@@ -26,6 +26,10 @@
 namespace perun2
 {
 
+// these aliases follow a convention
+// read them like: 
+// p_tim = "perun time" or "perunian time"
+
 typedef Number                              p_num;
 typedef Time                                p_tim;
 typedef Period                              p_per;

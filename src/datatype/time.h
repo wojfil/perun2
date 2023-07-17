@@ -47,6 +47,7 @@ struct Time
 
 // todo:
 // change these 6 numbers into one value: time_t
+// or do something else to reduce used memory
    p_tnum year;
    p_tnum day;
    p_tnum month;

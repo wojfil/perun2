@@ -32,7 +32,7 @@ struct DefWithContext : p_def
 {
 public:
    DefWithContext() = delete;
-   DefWithContext(p_defptr& def, pp_perun2& p2);
+   DefWithContext(p_defptr& def, p_perun2& p2);
    DefWithContext(p_defptr& def, _fcptr& ctx);
 
    void reset() override;
@@ -49,13 +49,13 @@ struct DefFilter : p_def
 {
 public:
    DefFilter() = delete;
-   DefFilter(p_defptr& def, FileContext* ctx, pp_perun2& p2);
+   DefFilter(p_defptr& def, FileContext* ctx, p_perun2& p2);
 
    void reset() override;
    FileContext* getFileContext() override;
 
 protected:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    p_bool first;
    p_defptr definition;
    FileContext* context;
@@ -65,7 +65,7 @@ protected:
 struct DefFilter_Where : DefFilter
 {
 public:
-   DefFilter_Where(_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, pp_perun2& p2);
+   DefFilter_Where(_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, p_perun2& p2);
 
    p_bool hasNext() override;
    void reset() override;
@@ -118,7 +118,7 @@ private:
 struct DefFilter_Limit : DefFilter
 {
 public:
-   DefFilter_Limit(p_defptr& def, _genptr<p_num>& num, FileContext* ctx, pp_perun2& p2)
+   DefFilter_Limit(p_defptr& def, _genptr<p_num>& num, FileContext* ctx, p_perun2& p2)
       : DefFilter(def, ctx, p2), number(std::move(num)) { };
 
    p_bool hasNext() override;
@@ -133,7 +133,7 @@ private:
 struct DefFilter_Skip : DefFilter
 {
 public:
-   DefFilter_Skip(p_defptr& def, _genptr<p_num>& num, FileContext* ctx, pp_perun2& p2)
+   DefFilter_Skip(p_defptr& def, _genptr<p_num>& num, FileContext* ctx, p_perun2& p2)
       : DefFilter(def, ctx, p2), number(std::move(num)) { };
 
    p_bool hasNext() override;
@@ -148,7 +148,7 @@ private:
 struct DefFilter_Every : DefFilter
 {
 public:
-   DefFilter_Every(p_defptr& def, _genptr<p_num>& num, FileContext* ctx, pp_perun2& p2)
+   DefFilter_Every(p_defptr& def, _genptr<p_num>& num, FileContext* ctx, p_perun2& p2)
       : DefFilter(def, ctx, p2), number(std::move(num)) { };
 
    p_bool hasNext() override;
@@ -164,7 +164,7 @@ private:
 struct DefFilter_Final : DefFilter
 {
 public:
-   DefFilter_Final(p_defptr& def, _genptr<p_num>& num, _fcptr& ctx, FileContext* pcxt, pp_perun2& p2)
+   DefFilter_Final(p_defptr& def, _genptr<p_num>& num, _fcptr& ctx, FileContext* pcxt, p_perun2& p2)
       : DefFilter(def, ctx.get(), p2), nextContext(std::move(ctx)), prevContext(pcxt), number(std::move(num)) { };
 
    FileContext* getFileContext() override;
@@ -186,14 +186,14 @@ struct Join_DefStr : p_def
 {
 
 public:
-   Join_DefStr(p_defptr& lef, _genptr<p_str>& rig, pp_perun2& p2)
+   Join_DefStr(p_defptr& lef, _genptr<p_str>& rig, p_perun2& p2)
         : left(std::move(lef)), right(std::move(rig)), taken(false), perun2(p2) { };
 
    void reset() override;
    p_bool hasNext() override;
 
 private:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    p_defptr left;
    _genptr<p_str> right;
    p_bool taken;
@@ -204,14 +204,14 @@ struct Join_StrDef : p_def
 {
 
 public:
-   Join_StrDef(_genptr<p_str>& lef, p_defptr& rig, pp_perun2& p2)
+   Join_StrDef(_genptr<p_str>& lef, p_defptr& rig, p_perun2& p2)
         : left(std::move(lef)), right(std::move(rig)), first(true), perun2(p2) { };
 
    void reset() override;
    p_bool hasNext() override;
 
 private:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    _genptr<p_str> left;
    p_defptr right;
    p_bool first;
@@ -222,14 +222,14 @@ struct Join_DefList : p_def
 {
 
 public:
-   Join_DefList(p_defptr& lef, _genptr<p_list>& rig, pp_perun2& p2)
+   Join_DefList(p_defptr& lef, _genptr<p_list>& rig, p_perun2& p2)
         : left(std::move(lef)), right(std::move(rig)), taken(false), perun2(p2) { };
 
    void reset() override;
    p_bool hasNext() override;
 
 private:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    p_defptr left;
    _genptr<p_list> right;
    p_bool taken;
@@ -243,14 +243,14 @@ struct Join_ListDef : p_def
 {
 
 public:
-   Join_ListDef(_genptr<p_list>& lef, p_defptr& rig, pp_perun2& p2)
+   Join_ListDef(_genptr<p_list>& lef, p_defptr& rig, p_perun2& p2)
         : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), perun2(p2) { };
 
    void reset() override;
    p_bool hasNext() override;
 
 private:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    _genptr<p_list> left;
    p_defptr right;
    p_bool first;
@@ -265,14 +265,14 @@ struct Join_DefDef : p_def
 {
 
 public:
-   Join_DefDef(p_defptr& lef, p_defptr& rig, pp_perun2& p2)
+   Join_DefDef(p_defptr& lef, p_defptr& rig, p_perun2& p2)
         : left(std::move(lef)), right(std::move(rig)), first(true), taken(false), perun2(p2) { };
 
    void reset() override;
    p_bool hasNext() override;
 
 private:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    p_defptr left;
    p_defptr right;
    p_bool first;
@@ -312,7 +312,7 @@ public:
 struct RelativeDefSuffix : DefinitionSuffix
 {
 public:
-   RelativeDefSuffix(p_defptr& def, pp_perun2& p2, const p_str& suf, const p_bool fin, p_def* const prev);
+   RelativeDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, p_def* const prev);
    p_bool hasNext() override;
 
 private:
@@ -324,7 +324,7 @@ private:
 struct RetreatedDefSuffix : DefinitionSuffix
 {
 public:
-   RetreatedDefSuffix(p_defptr& def, pp_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev);
+   RetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev);
    p_bool hasNext() override;
 
 private:
@@ -337,7 +337,7 @@ private:
 struct FarRetreatedDefSuffix : DefinitionSuffix
 {
 public:
-   FarRetreatedDefSuffix(p_defptr& def, pp_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev);
+   FarRetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev);
    p_bool hasNext() override;
 
 private:

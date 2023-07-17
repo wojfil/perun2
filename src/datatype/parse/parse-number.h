@@ -23,9 +23,9 @@
 namespace perun2::parse
 {
 
-p_bool parseNumber(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2);
+p_bool parseNumber(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2);
 
-static p_bool parseNumExp(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2);
+static p_bool parseNumExp(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2);
 static p_bool numExpTree(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& infList);
 static p_bool numExpIntegrateUnary(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& elements);
 static p_bool numExpTreeMerge(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& elements);
@@ -33,7 +33,7 @@ static p_bool numExpTreeMerge2(_genptr<p_num>& result, std::vector<ExpElement<p_
 static p_bool isNumExpComputable(const std::vector<ExpElement<p_num>>& infList);
 static p_bool isNumExpOperator(const p_char ch);
 static p_bool isNumExpHighPriority(const p_char ch);
-void timeVariableMemberException(const Token& tk, pp_perun2& p2);
+void timeVariableMemberException(const Token& tk, p_perun2& p2);
 
 }
 

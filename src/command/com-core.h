@@ -29,23 +29,23 @@ struct CoreCommand : Command
 {
 public:
    CoreCommand() = delete;
-   CoreCommand(FileContext* ctx, pp_perun2& p2)
+   CoreCommand(FileContext* ctx, p_perun2& p2)
       : saveChanges(true), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
-   CoreCommand(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   CoreCommand(const p_bool save, FileContext* ctx, p_perun2& p2)
       : saveChanges(save), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
 
    FileContext* context;
    const p_bool saveChanges;
-   pp_perun2& perun2;
+   p_perun2& perun2;
    LocationContext const* locationContext;
 };
 
 struct C_Delete : CoreCommand
 {
 public:
-   C_Delete(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Delete(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -54,7 +54,7 @@ public:
 struct C_Drop : CoreCommand
 {
 public:
-   C_Drop(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Drop(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -62,7 +62,7 @@ public:
 
 struct C_Hide : CoreCommand
 {
-   C_Hide(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Hide(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -70,7 +70,7 @@ struct C_Hide : CoreCommand
 
 struct C_Lock : CoreCommand
 {
-   C_Lock(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Lock(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -78,7 +78,7 @@ struct C_Lock : CoreCommand
 
 struct C_Open : CoreCommand
 {
-   C_Open(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Open(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -86,7 +86,7 @@ struct C_Open : CoreCommand
 
 struct C_Unlock : CoreCommand
 {
-   C_Unlock(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Unlock(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -94,7 +94,7 @@ struct C_Unlock : CoreCommand
 
 struct C_Unhide : CoreCommand
 {
-   C_Unhide(const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_Unhide(const p_bool save, FileContext* ctx, p_perun2& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -103,7 +103,7 @@ struct C_Unhide : CoreCommand
 struct C_OpenWith : CoreCommand
 {
 public:
-   C_OpenWith(_genptr<p_str>& pro, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_OpenWith(_genptr<p_str>& pro, const p_bool save, FileContext* ctx, p_perun2& p2)
       : program(std::move(pro)), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -122,7 +122,7 @@ protected:
 struct C_TimeAlter : CoreCommand
 {
 public:
-   C_TimeAlter(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_TimeAlter(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
       : time(std::move(ti)), CoreCommand(save, ctx, p2) { };
 
 protected:
@@ -132,7 +132,7 @@ protected:
 
 struct C_ReaccessTo : C_TimeAlter
 {
-   C_ReaccessTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_ReaccessTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
       : C_TimeAlter(ti, save, ctx, p2) { };
 
    void run() override;
@@ -141,7 +141,7 @@ struct C_ReaccessTo : C_TimeAlter
 
 struct C_RechangeTo : C_TimeAlter
 {
-   C_RechangeTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_RechangeTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
       : C_TimeAlter(ti, save, ctx, p2) { };
 
    void run() override;
@@ -150,7 +150,7 @@ struct C_RechangeTo : C_TimeAlter
 
 struct C_RecreateTo : C_TimeAlter
 {
-   C_RecreateTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_RecreateTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
       : C_TimeAlter(ti, save, ctx, p2) { };
 
    void run() override;
@@ -159,7 +159,7 @@ struct C_RecreateTo : C_TimeAlter
 
 struct C_RemodifyTo : C_TimeAlter
 {
-   C_RemodifyTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_RemodifyTo(_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
       : C_TimeAlter(ti, save, ctx, p2) { };
 
    void run() override;
@@ -170,7 +170,7 @@ struct C_RenameTo : CoreCommand
 {
 public:
    C_RenameTo(_genptr<p_str>& na, const p_bool save, const p_bool forc,
-      const p_bool extless, FileContext* ctx, pp_perun2& p2)
+      const p_bool extless, FileContext* ctx, p_perun2& p2)
       : name(std::move(na)), saveChanges(save), forced(forc), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -186,7 +186,7 @@ protected:
 struct C_RenameTo_Stack : CoreCommand
 {
 public:
-   C_RenameTo_Stack(_genptr<p_str>& na, const p_bool save, const p_bool extless, FileContext* ctx, pp_perun2& p2)
+   C_RenameTo_Stack(_genptr<p_str>& na, const p_bool save, const p_bool extless, FileContext* ctx, p_perun2& p2)
       : name(std::move(na)), saveChanges(save), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -201,7 +201,7 @@ protected:
 struct C_MoveTo : CoreCommand
 {
 public:
-   C_MoveTo(_genptr<p_str>& loc, const p_bool forc, FileContext* ctx, pp_perun2& p2)
+   C_MoveTo(_genptr<p_str>& loc, const p_bool forc, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), forced(forc), CoreCommand(ctx, p2) { };
 
    void run() override;
@@ -215,7 +215,7 @@ protected:
 struct C_MoveTo_Stack : CoreCommand
 {
 public:
-   C_MoveTo_Stack(_genptr<p_str>& loc, FileContext* ctx, pp_perun2& p2)
+   C_MoveTo_Stack(_genptr<p_str>& loc, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), CoreCommand(ctx, p2) { };
 
    void run() override;
@@ -229,7 +229,7 @@ struct C_MoveToAs : CoreCommand
 {
 public:
    C_MoveToAs(_genptr<p_str>& loc, _genptr<p_str>& na, const p_bool forc,
-      const p_bool extless, FileContext* ctx, pp_perun2& p2)
+      const p_bool extless, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), name(std::move(na)),
         forced(forc), extensionless(extless), CoreCommand(ctx, p2) { };
 
@@ -246,7 +246,7 @@ protected:
 struct C_MoveToAs_Stack : CoreCommand
 {
 public:
-   C_MoveToAs_Stack(_genptr<p_str>& loc, _genptr<p_str>& na, const p_bool extless, FileContext* ctx, pp_perun2& p2)
+   C_MoveToAs_Stack(_genptr<p_str>& loc, _genptr<p_str>& na, const p_bool extless, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(ctx, p2) { };
 
    void run() override;
@@ -262,7 +262,7 @@ struct C_CopyTo : CoreCommand
 {
 public:
    C_CopyTo(_genptr<p_str>& loc, const p_bool save,
-      const p_bool forc, FileContext* ctx, pp_perun2& p2)
+      const p_bool forc, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), saveChanges(save), forced(forc), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -277,7 +277,7 @@ protected:
 struct C_CopyTo_Stack : CoreCommand
 {
 public:
-   C_CopyTo_Stack(_genptr<p_str>& loc, const p_bool save, FileContext* ctx, pp_perun2& p2)
+   C_CopyTo_Stack(_genptr<p_str>& loc, const p_bool save, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), saveChanges(save), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -292,7 +292,7 @@ struct C_CopyToAs : CoreCommand
 {
 public:
    C_CopyToAs(_genptr<p_str>& loc, _genptr<p_str>& na,
-      const p_bool save, const p_bool forc, const p_bool extless, FileContext* ctx, pp_perun2& p2)
+      const p_bool save, const p_bool forc, const p_bool extless, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), name(std::move(na)), forced(forc), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -309,7 +309,7 @@ struct C_CopyToAs_Stack : CoreCommand
 {
 public:
    C_CopyToAs_Stack(_genptr<p_str>& loc, _genptr<p_str>& na,
-      const p_bool save, const p_bool extless, FileContext* ctx, pp_perun2& p2)
+      const p_bool save, const p_bool extless, FileContext* ctx, p_perun2& p2)
       : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;

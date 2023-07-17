@@ -27,11 +27,11 @@
 namespace perun2::parse
 {
 
-p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2);
-void checkLimitBySize(const Tokens& tks, pp_perun2& p2);
+p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2);
+void checkLimitBySize(const Tokens& tks, p_perun2& p2);
 
 template <typename T>
-static p_bool parseTernary(_genptr<T>& result, const Tokens& tks, pp_perun2& p2)
+static p_bool parseTernary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -80,7 +80,7 @@ static p_bool parseTernary(_genptr<T>& result, const Tokens& tks, pp_perun2& p2)
 
 
 template <typename T>
-static p_bool parseBinary(_genptr<T>& result, const Tokens& tks, pp_perun2& p2)
+static p_bool parseBinary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -121,7 +121,7 @@ static p_bool parseBinary(_genptr<T>& result, const Tokens& tks, pp_perun2& p2)
 
 template <typename T>
 static p_bool parseListedValues(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, pp_perun2& p2)
+   const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const p_size len = elements.size();
    std::vector<_genptr<T>> result;
@@ -156,7 +156,7 @@ static p_bool parseListedValues(_genptr<std::vector<T>>& res,
 
 template <typename T>
 static p_bool parseListedLists(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, pp_perun2& p2)
+   const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const p_size len = elements.size();
    std::vector<_genptr<std::vector<T>>> result;
@@ -190,7 +190,7 @@ static p_bool parseListedLists(_genptr<std::vector<T>>& res,
 
 
 template <typename T>
-static p_bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, pp_perun2& p2)
+static p_bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -207,7 +207,7 @@ static p_bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, pp
 
 
 template <typename T>
-static p_bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, pp_perun2& p2)
+static p_bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return false;

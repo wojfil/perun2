@@ -180,22 +180,22 @@ void C_AggrSelect_List::run()
 
 
 
-void logCopyError(pp_perun2& p2, const p_str& name)
+void logCopyError(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Failed to copy ", getCCNameShort(name));
 }
 
-void logCopySuccess(pp_perun2& p2, const p_str& name)
+void logCopySuccess(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Copy ", getCCNameShort(name));
 }
 
-void logSelectError(pp_perun2& p2, const p_str& name)
+void logSelectError(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Failed to select ", getCCNameShort(name));
 }
 
-void logSelectSuccess(pp_perun2& p2, const p_str& name)
+void logSelectSuccess(p_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Select ", getCCNameShort(name));
 }

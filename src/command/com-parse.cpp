@@ -28,7 +28,7 @@
 namespace perun2::comm
 {
 
-p_bool parseCommands(_comptr& result, const Tokens& tks, pp_perun2& p2)
+p_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2)
 {
    _ucptr context = std::make_unique<UserVarsContext>();
    p2.contexts.addUserVarsContext(context.get());
@@ -105,7 +105,7 @@ p_bool parseCommands(_comptr& result, const Tokens& tks, pp_perun2& p2)
    return true;
 }
 
-void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, pp_perun2& p2)
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, p_perun2& p2)
 {
    const p_int end = tks.getEnd();
 
@@ -121,7 +121,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, pp_perun2& p2)
 
 
 static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int sublen,
-   const p_int index, const p_int open, pp_perun2& p2)
+   const p_int index, const p_int open, p_perun2& p2)
 {
    const p_int leftStart = index - sublen;
    const p_int leftLen = open - leftStart;
@@ -333,7 +333,7 @@ static p_bool commandStruct(_comptr& result, const Tokens& tks, const p_int subl
    return parseIterationLoop(result, left, right, p2);
 }
 
-static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, pp_perun2& p2)
+static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    // string loop
    _genptr<p_str> str_;
@@ -423,7 +423,7 @@ static p_bool parseIterationLoop(_comptr& result, const Tokens& left, const Toke
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, pp_perun2& p2)
+static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    // inside { }
    if (left.isEmpty()) {
@@ -593,7 +593,7 @@ static p_bool parseInsideLoop(_comptr& result, const Token& keyword, const Token
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static p_bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, pp_perun2& p2)
+static p_bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, p_perun2& p2)
 {
    p2.conditionContext.add(cond);
    const p_bool success = parseCommands(result, tks, p2);
@@ -601,7 +601,7 @@ static p_bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr*
    return success;
 }
 
-static p_bool command(_comptr& result, Tokens& tks, pp_perun2& p2)
+static p_bool command(_comptr& result, Tokens& tks, p_perun2& p2)
 {
    const Token& f = tks.first();
 
@@ -694,7 +694,7 @@ static p_bool command(_comptr& result, Tokens& tks, pp_perun2& p2)
    }
 }
 
-static p_bool commandMisc(_comptr& result, const Tokens& tks, pp_perun2& p2)
+static p_bool commandMisc(_comptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
@@ -861,7 +861,7 @@ static p_bool commandMisc(_comptr& result, const Tokens& tks, pp_perun2& p2)
    return false;
 }
 
-static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, pp_perun2& p2)
+static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1105,7 +1105,7 @@ static p_bool commandVarChange(_comptr& result, const Tokens& left, const Tokens
    return false;
 }
 
-static p_bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const p_int line, pp_perun2& p2)
+static p_bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const p_int line, p_perun2& p2)
 {
    Variable<p_str>* pvp_str;
    if (p2.contexts.getVar(first, pvp_str, p2)) {
@@ -1138,7 +1138,7 @@ static p_bool commandVarIncrement(_comptr& result, const Token& first, const Tok
 }
 
 template <typename T>
-static p_bool makeVarAlteration(pp_perun2& p2, const Tokens& tokens, const Token& first,
+static p_bool makeVarAlteration(p_perun2& p2, const Tokens& tokens, const Token& first,
    Variable<T>*& varPtr, _comptr& result, const p_str& dataTypeName)
 {
    if (p2.contexts.getVar(first, varPtr, p2)) {
@@ -1167,7 +1167,7 @@ static p_bool makeVarAlteration(pp_perun2& p2, const Tokens& tokens, const Token
 }
 
 template <typename T>
-static void makeVarAssignment(_comptr& result, const Token& token, pp_perun2& p2,
+static void makeVarAssignment(_comptr& result, const Token& token, p_perun2& p2,
    Variable<T>* varPtr, _genptr<T>& valuePtr)
 {
    UserVarsContext* uvc = p2.contexts.getUserVarsContext();
@@ -1185,7 +1185,7 @@ static void makeVarAssignment(_comptr& result, const Token& token, pp_perun2& p2
    result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[name], valuePtr);
 }
 
-static p_bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, pp_perun2& p2)
+static p_bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1355,7 +1355,7 @@ static p_bool varSquareBrackets(const Tokens& tks)
 }
 
 static p_bool commandVarAssign_Element(_comptr& result, const Tokens& left,
-   const Tokens& right, pp_perun2& p2)
+   const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1398,7 +1398,7 @@ static p_bool commandVarAssign_Element(_comptr& result, const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2)
+static p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size start = tks.getStart() + 2;
    const p_size length = tks.getLength() - 3;
@@ -1415,7 +1415,7 @@ static p_bool parseListElementIndex(_genptr<p_num>& result, const Tokens& tks, p
    return true;
 }
 
-static void checkNoSemicolonBeforeBrackets(const Tokens& tks, pp_perun2& p2)
+static void checkNoSemicolonBeforeBrackets(const Tokens& tks, p_perun2& p2)
 {
    const p_int end = tks.getEnd();
    const p_int start = tks.getStart() + 1;

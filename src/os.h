@@ -64,8 +64,8 @@ p_bool os_isDirectory(const p_str& path);
 p_per os_lifetime(const p_str& path);
 p_tim os_modification(const p_str& path);
 p_bool os_readonly(const p_str& path);
-p_nint osp_size(const p_str& path, pp_perun2& p2);
-p_nint osp_sizeDirectory(const p_str& path, pp_perun2& p2);
+p_nint osp_size(const p_str& path, p_perun2& p2);
+p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2);
 
 p_bool os_exists(const p_str& path);
 p_bool os_fileExists(const p_str& path);
@@ -79,10 +79,10 @@ void os_closeEntry(p_entry& entry);
 // some of them take a reference to the running Perun2 instance
 // they can be stopped safely by an interruption signal during operation
 p_bool os_delete(const p_str& path);
-p_bool os_drop(const p_str& path, pp_perun2& p2);
-p_bool os_drop(const p_str& path, const p_bool isFile, pp_perun2& p2);
+p_bool os_drop(const p_str& path, p_perun2& p2);
+p_bool os_drop(const p_str& path, const p_bool isFile, p_perun2& p2);
 p_bool os_dropFile(const p_str& path);
-p_bool os_dropDirectory(const p_str& path, pp_perun2& p2);
+p_bool os_dropDirectory(const p_str& path, p_perun2& p2);
 p_bool os_hide(const p_str& path);
 p_bool os_lock(const p_str& path);
 p_bool os_open(const p_str& path);
@@ -98,14 +98,14 @@ p_bool os_createFile(const p_str& path);
 p_bool os_createDirectory(const p_str& path);
 
 p_bool os_moveTo(const p_str& oldPath, const p_str& newPath);
-p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, pp_perun2& p2);
+p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, p_perun2& p2);
 p_bool os_copyToFile(const p_str& oldPath, const p_str& newPath);
-p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, pp_perun2& p2);
+p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& p2);
 
 p_bool os_copy(const p_set& paths);
 p_bool os_select(const p_str& parent, const p_set& paths);
 
-p_bool os_run(const p_str& comm, const p_str& location, pp_perun2& p2);
+p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2);
 
 p_bool os_isInvaild(const p_str& path);
 uint32_t os_patternInfo(const p_str& pattern);

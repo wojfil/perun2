@@ -113,7 +113,7 @@ void CS_DefinitionLoop::run()
 }
 
 
-CS_ContextlessLoop::CS_ContextlessLoop(p_defptr& def, _comptr& com, pp_perun2& p2)
+CS_ContextlessLoop::CS_ContextlessLoop(p_defptr& def, _comptr& com, p_perun2& p2)
    : definition(std::move(def)), command(std::move(com)), perun2(p2),
      context(this->definition->getFileContext()) { };
 
@@ -219,7 +219,7 @@ void CS_InsideDefinition::run()
 }
 
 
-CS_InsideContextless::CS_InsideContextless(p_defptr& def, _comptr& com, _lcptr& lctx, pp_perun2& p2)
+CS_InsideContextless::CS_InsideContextless(p_defptr& def, _comptr& com, _lcptr& lctx, p_perun2& p2)
    : definition(std::move(def)), command(std::move(com)), locContext(std::move(lctx)), perun2(p2),
      fileContext(this->definition->getFileContext()) { };
 

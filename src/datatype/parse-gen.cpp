@@ -23,12 +23,12 @@
 namespace perun2::parse
 {
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
 {
    return parseBool(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_num>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_num>& result)
 {
    // cast from "bool" to "Number"
    _genptr<p_bool> boo;
@@ -40,7 +40,7 @@ p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_num>& result)
    return parseNumber(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
 {
    // cast from "bool" to "string"
    _genptr<p_bool> boo;
@@ -73,7 +73,7 @@ p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
    return parseString(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_nlist>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_nlist>& result)
 {
    // cast from "bool" to "numList"
    _genptr<p_bool> boo;
@@ -92,7 +92,7 @@ p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_nlist>& result)
    return parseNumList(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_tlist>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_tlist>& result)
 {
    // cast from "Time" to "timList"
    _genptr<p_tim> tim;
@@ -104,7 +104,7 @@ p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_tlist>& result)
    return parseTimList(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
 {
    // cast from "bool" to "list"
    _genptr<p_bool> boo;
@@ -165,17 +165,17 @@ p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
    return parseList(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_tim>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_tim>& result)
 {
    return parseTime(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_per>& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_per>& result)
 {
    return parsePeriod(result, tks, p2);
 }
 
-p_bool parse(pp_perun2& p2, const Tokens& tks, p_defptr& result)
+p_bool parse(p_perun2& p2, const Tokens& tks, p_defptr& result)
 {
    return parseDefinition(result, tks, p2);
 }

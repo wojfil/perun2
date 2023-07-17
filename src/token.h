@@ -23,7 +23,7 @@
 namespace perun2
 {
 
-struct pp_perun2;
+struct p_perun2;
 
 // Token represents the smallest syntax unit of the language
 
@@ -141,14 +141,14 @@ public:
    };
 
    Token() = delete;
-   Token(const p_char v, const p_int li, pp_perun2& p2);
-   Token(const p_char v, const p_int am, const p_int li, pp_perun2& p2);
-   Token(const p_num& v, const p_int li, const p_size os_id, const p_size os_len, const NumberMode nm, pp_perun2& p2);
-   Token(const p_size os_id, const p_size os_len, const p_int li, pp_perun2& p2);
-   Token(const p_size os_id, const p_size os_len, const p_int id, const p_int li, pp_perun2& p2);
-   Token(const p_int li, const p_size os_id, const p_size os_len, pp_perun2& p2);
-   Token(const Keyword v, const p_int li, const p_size os_id, const p_size os_len, pp_perun2& p2);
-   Token(const p_int li, const p_size os_id1, const p_size os_len1, const p_size os_id2, const p_size os_len2, pp_perun2& p2);
+   Token(const p_char v, const p_int li, p_perun2& p2);
+   Token(const p_char v, const p_int am, const p_int li, p_perun2& p2);
+   Token(const p_num& v, const p_int li, const p_size os_id, const p_size os_len, const NumberMode nm, p_perun2& p2);
+   Token(const p_size os_id, const p_size os_len, const p_int li, p_perun2& p2);
+   Token(const p_size os_id, const p_size os_len, const p_int id, const p_int li, p_perun2& p2);
+   Token(const p_int li, const p_size os_id, const p_size os_len, p_perun2& p2);
+   Token(const Keyword v, const p_int li, const p_size os_id, const p_size os_len, p_perun2& p2);
+   Token(const p_int li, const p_size os_id1, const p_size os_len1, const p_size os_id2, const p_size os_len2, p_perun2& p2);
 
    p_bool isCommandKeyword() const;
    p_bool isFilterKeyword() const;
@@ -157,39 +157,39 @@ public:
    p_bool isKeyword(const Keyword kw) const;
 
    // is single word (CREATION)
-   p_bool isWord(const p_char (&word)[], pp_perun2& p2) const;
-   p_bool isWord(const std::vector<p_str>& words, pp_perun2& p2) const;
+   p_bool isWord(const p_char (&word)[], p_perun2& p2) const;
+   p_bool isWord(const std::vector<p_str>& words, p_perun2& p2) const;
 
    // is first word of two (CREATION.year)
-   p_bool isFirstWord(const p_char (&word)[], pp_perun2& p2) const;
-   p_bool isFirstWord(const std::vector<p_str>& words, pp_perun2& p2) const;
+   p_bool isFirstWord(const p_char (&word)[], p_perun2& p2) const;
+   p_bool isFirstWord(const std::vector<p_str>& words, p_perun2& p2) const;
 
    // is second word of two (creation.YEAR)
-   p_bool isSecondWord(const p_char (&word)[], pp_perun2& p2) const;
-   p_bool isSecondWord(const std::vector<p_str>& words, pp_perun2& p2) const;
+   p_bool isSecondWord(const p_char (&word)[], p_perun2& p2) const;
+   p_bool isSecondWord(const std::vector<p_str>& words, p_perun2& p2) const;
 
    // is single word (CREATION) OR is first word of two (CREATION.year)
-   p_bool isVariable(const p_char (&word)[], pp_perun2& p2) const;
-   p_bool isVariable(const std::vector<p_str>& words, pp_perun2& p2) const;
+   p_bool isVariable(const p_char (&word)[], p_perun2& p2) const;
+   p_bool isVariable(const std::vector<p_str>& words, p_perun2& p2) const;
 
    p_bool isNegatableKeywordOperator() const;
    p_bool isLogicConstant() const;
    p_bool isWeekDay() const;
    p_bool isMonth() const;
    p_bool isOne() const;
-   p_bool isTimeAttribute(pp_perun2& p2) const;
-   p_str getOriginString(pp_perun2& p2) const;
-   p_str getOriginString_2(pp_perun2& p2) const;
-   p_str toLowerString(pp_perun2& p2) const;
+   p_bool isTimeAttribute(p_perun2& p2) const;
+   p_str getOriginString(p_perun2& p2) const;
+   p_str getOriginString_2(p_perun2& p2) const;
+   p_str toLowerString(p_perun2& p2) const;
 
    const Type type;
    const p_int line;
    const TokenValue value;
    
 private:
-   p_str getCodeSubstr(const _osi& osi, pp_perun2& p2) const;
-   p_bool isCodeSubstr(const p_char (&word)[], const _osi& osi, pp_perun2& p2) const;
-   p_bool isCodeSubstr(const p_str& word, const _osi& osi, pp_perun2& p2) const;
+   p_str getCodeSubstr(const _osi& osi, p_perun2& p2) const;
+   p_bool isCodeSubstr(const p_char (&word)[], const _osi& osi, p_perun2& p2) const;
+   p_bool isCodeSubstr(const p_str& word, const _osi& osi, p_perun2& p2) const;
 
 };
 

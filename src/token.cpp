@@ -47,30 +47,30 @@ TokenValue::TokenValue(const p_size os_id1,
    const p_size os_len1, const p_size os_id2, const p_size os_len2)
    : twoWords({ _osi(os_id1, os_len1), _osi(os_id2, os_len2) }) { };
 
-Token::Token(const p_char v, const p_int li, pp_perun2& p2)
+Token::Token(const p_char v, const p_int li, p_perun2& p2)
    : line(li), type(t_Symbol), value(v) { };
 
-Token::Token(const p_char v, const p_int am, const p_int li, pp_perun2& p2)
+Token::Token(const p_char v, const p_int am, const p_int li, p_perun2& p2)
    : line(li), type(t_MultiSymbol), value(v, am) { };
 
 Token::Token(const p_num& v, const p_int li, const p_size os_id, const p_size os_len,
-   const NumberMode nm, pp_perun2& p2)
+   const NumberMode nm, p_perun2& p2)
    : line(li), type(t_Number), value(v, os_id, os_len, nm) { };
 
-Token::Token(const p_size os_id, const p_size os_len, const p_int li, pp_perun2& p2)
+Token::Token(const p_size os_id, const p_size os_len, const p_int li, p_perun2& p2)
    : line(li), type(t_Quotation), value(os_id, os_len) { };
 
-Token::Token(const p_size os_id, const p_size os_len, const p_int id, const p_int li, pp_perun2& p2)
+Token::Token(const p_size os_id, const p_size os_len, const p_int id, const p_int li, p_perun2& p2)
    : line(li), type(t_Pattern), value(os_id, os_len, id) { };
 
-Token::Token(const p_int li, const p_size os_id, const p_size os_len, pp_perun2& p2)
+Token::Token(const p_int li, const p_size os_id, const p_size os_len, p_perun2& p2)
    : line(li), type(t_Word), value(os_id, os_len, os_len) { };
 
-Token::Token(const Keyword v, const p_int li, const p_size os_id, const p_size os_len, pp_perun2& p2)
+Token::Token(const Keyword v, const p_int li, const p_size os_id, const p_size os_len, p_perun2& p2)
    : line(li), type(t_Keyword), value(v, os_id, os_len) { };
 
 Token::Token(const p_int li, const p_size os_id1, const p_size os_len1,
-   const p_size os_id2, const p_size os_len2, pp_perun2& p2)
+   const p_size os_id2, const p_size os_len2, p_perun2& p2)
    : line(li), type(t_TwoWords), value(os_id1, os_len1, os_id2, os_len2) { };
 
 p_bool Token::isSymbol(const p_char ch) const
@@ -83,13 +83,13 @@ p_bool Token::isKeyword(const Keyword kw) const
    return type == t_Keyword && value.keyword.k == kw;
 }
 
-p_bool Token::isWord(const p_char (&word)[], pp_perun2& p2) const
+p_bool Token::isWord(const p_char (&word)[], p_perun2& p2) const
 {
    return type == t_Word
       && isCodeSubstr(word, value.word.os, p2);
 }
 
-p_bool Token::isWord(const std::vector<p_str>& words, pp_perun2& p2) const
+p_bool Token::isWord(const std::vector<p_str>& words, p_perun2& p2) const
 {
    if (type != t_Word) {
       return false;
@@ -104,13 +104,13 @@ p_bool Token::isWord(const std::vector<p_str>& words, pp_perun2& p2) const
    return false;
 }
 
-p_bool Token::isFirstWord(const p_char (&word)[], pp_perun2& p2) const
+p_bool Token::isFirstWord(const p_char (&word)[], p_perun2& p2) const
 {
    return type == t_TwoWords
       && isCodeSubstr(word, value.twoWords.os1, p2);
 }
 
-p_bool Token::isFirstWord(const std::vector<p_str>& words, pp_perun2& p2) const
+p_bool Token::isFirstWord(const std::vector<p_str>& words, p_perun2& p2) const
 {
    if (type != t_TwoWords) {
       return false;
@@ -125,13 +125,13 @@ p_bool Token::isFirstWord(const std::vector<p_str>& words, pp_perun2& p2) const
    return false;
 }
 
-p_bool Token::isSecondWord(const p_char (&word)[], pp_perun2& p2) const
+p_bool Token::isSecondWord(const p_char (&word)[], p_perun2& p2) const
 {
    return type == t_TwoWords
       && isCodeSubstr(word, value.twoWords.os2, p2);
 }
 
-p_bool Token::isSecondWord(const std::vector<p_str>& words, pp_perun2& p2) const
+p_bool Token::isSecondWord(const std::vector<p_str>& words, p_perun2& p2) const
 {
    if (type != t_TwoWords) {
       return false;
@@ -146,7 +146,7 @@ p_bool Token::isSecondWord(const std::vector<p_str>& words, pp_perun2& p2) const
    return false;
 }
 
-p_bool Token::isVariable(const p_char (&word)[], pp_perun2& p2) const
+p_bool Token::isVariable(const p_char (&word)[], p_perun2& p2) const
 {
    switch (this->type) {
       case Token::t_Word: {
@@ -161,7 +161,7 @@ p_bool Token::isVariable(const p_char (&word)[], pp_perun2& p2) const
    }
 }
 
-p_bool Token::isVariable(const std::vector<p_str>& words, pp_perun2& p2) const
+p_bool Token::isVariable(const std::vector<p_str>& words, p_perun2& p2) const
 {
    switch (this->type) {
       case Token::t_Word: {
@@ -291,12 +291,12 @@ p_bool Token::isOne() const
    return type == Token::t_Number && value.num.n.isOne();
 }
 
-p_bool Token::isTimeAttribute(pp_perun2& p2) const
+p_bool Token::isTimeAttribute(p_perun2& p2) const
 {
    return this->type == Token::t_Word && isWord(STRINGS_TIME_ATTR, p2);
 }
 
-p_str Token::getOriginString(pp_perun2& p2) const
+p_str Token::getOriginString(p_perun2& p2) const
 {
    switch (type) {
       case Token::Type::t_Symbol: {
@@ -329,26 +329,26 @@ p_str Token::getOriginString(pp_perun2& p2) const
    }
 }
 
-p_str Token::getOriginString_2(pp_perun2& p2) const
+p_str Token::getOriginString_2(p_perun2& p2) const
 {
    return type == Token::Type::t_TwoWords
       ? getCodeSubstr(value.twoWords.os2, p2)
       : p_str();
 }
 
-p_str Token::toLowerString(pp_perun2& p2) const
+p_str Token::toLowerString(p_perun2& p2) const
 {
    p_str result = getOriginString(p2);
    toLower(result);
    return result;
 }
 
-p_str Token::getCodeSubstr(const _osi& osi, pp_perun2& p2) const
+p_str Token::getCodeSubstr(const _osi& osi, p_perun2& p2) const
 {
    return p2.arguments.getCode().substr(osi.index, osi.length);
 }
 
-p_bool Token::isCodeSubstr(const p_char (&word)[], const _osi& osi, pp_perun2& p2) const
+p_bool Token::isCodeSubstr(const p_char (&word)[], const _osi& osi, p_perun2& p2) const
 {
    if (wcslen(word) != osi.length) {
       return false;
@@ -364,7 +364,7 @@ p_bool Token::isCodeSubstr(const p_char (&word)[], const _osi& osi, pp_perun2& p
    return true;
 }
 
-p_bool Token::isCodeSubstr(const p_str& word, const _osi& osi, pp_perun2& p2) const
+p_bool Token::isCodeSubstr(const p_str& word, const _osi& osi, p_perun2& p2) const
 {
    if (word.size() != osi.length) {
       return false;

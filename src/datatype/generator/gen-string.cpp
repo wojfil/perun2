@@ -89,7 +89,7 @@ p_str StringBinary::getValue()
       : p_str();
 }
 
-LocationReference::LocationReference(pp_perun2& p2)
+LocationReference::LocationReference(p_perun2& p2)
    : context(*p2.contexts.getLocationContext()) { };
 
 p_str LocationReference::getValue()
@@ -97,7 +97,7 @@ p_str LocationReference::getValue()
    return this->context.location->value;
 }
 
-RelativeLocation::RelativeLocation(_genptr<p_str>& val, pp_perun2& p2, const p_int retr)
+RelativeLocation::RelativeLocation(_genptr<p_str>& val, p_perun2& p2, const p_int retr)
    : value(std::move(val)), context(*p2.contexts.getLocationContext()), retreats(retr) { };
 
 p_str RelativeLocation::getValue()

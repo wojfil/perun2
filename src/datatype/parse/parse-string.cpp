@@ -28,7 +28,7 @@
 namespace perun2::parse
 {
 
-p_bool parseString(_genptr<p_str>& result, const Tokens& tks, pp_perun2& p2)
+p_bool parseString(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -93,7 +93,7 @@ void concatParseOutcome(p_bool& parsed, p_bool& allConstants, _genptr<T>& recent
 // if adjacent elements are numbers or periods, sum them
 // if a time is followed by a period, then shift the time
 // all these elements are casted into strings finally
-p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, pp_perun2& p2)
+p_bool parseStringConcat(_genptr<p_str>& res, const Tokens& tks, p_perun2& p2)
 {
    enum PrevType {
       pt_String = 0,

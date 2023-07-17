@@ -602,7 +602,7 @@ p_bool os_readonly(const p_str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-p_nint osp_size(const p_str& path, pp_perun2& p2)
+p_nint osp_size(const p_str& path, p_perun2& p2)
 {
    p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
@@ -619,7 +619,7 @@ p_nint osp_size(const p_str& path, pp_perun2& p2)
       : static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-p_nint osp_sizeDirectory(const p_str& path, pp_perun2& p2)
+p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2)
 {
    p_nint totalSize = NINT_ZERO;
    p_fdata data;
@@ -718,14 +718,14 @@ p_bool os_delete(const p_str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-p_bool os_drop(const p_str& path, pp_perun2& p2)
+p_bool os_drop(const p_str& path, p_perun2& p2)
 {
    return os_isFile(path)
       ? os_dropFile(path)
       : os_dropDirectory(path, p2);
 }
 
-p_bool os_drop(const p_str& path, const p_bool isFile, pp_perun2& p2)
+p_bool os_drop(const p_str& path, const p_bool isFile, p_perun2& p2)
 {
    return isFile
       ? os_dropFile(path)
@@ -737,7 +737,7 @@ p_bool os_dropFile(const p_str& path)
    return DeleteFileW(P_WINDOWS_PATH(path)) != 0;
 }
 
-p_bool os_dropDirectory(const p_str& path, pp_perun2& p2)
+p_bool os_dropDirectory(const p_str& path, p_perun2& p2)
 {
    p_entry hFind;
    p_fdata FindFileData;
@@ -990,7 +990,7 @@ p_bool os_moveTo(const p_str& oldPath, const p_str& newPath)
    return MoveFileExW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, pp_perun2& p2)
+p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, p_perun2& p2)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
@@ -1016,7 +1016,7 @@ p_bool os_copyToFile(const p_str& oldPath, const p_str& newPath)
    return CopyFileW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), true) != 0;
 }
 
-p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, pp_perun2& p2)
+p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& p2)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1137,7 +1137,7 @@ p_bool os_select(const p_str& parent, const p_set& paths)
    return hr == S_OK;
 }
 
-p_bool os_run(const p_str& comm, const p_str& location, pp_perun2& p2)
+p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
 {
    p2.sideProcess.running = true;
    STARTUPINFO si;

@@ -122,7 +122,7 @@ struct OrderByLimitOne : p_def
 {
 public:
    OrderByLimitOne() = delete;
-   OrderByLimitOne(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _loptr& lo, pp_perun2& p2);
+   OrderByLimitOne(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _loptr& lo, p_perun2& p2);
    FileContext* getFileContext() override;
 
    void reset() override;
@@ -133,7 +133,7 @@ private:
    FileContext* fileContext;
    _fcptr nextContext;
    _loptr limitOne;
-   pp_perun2& perun2;
+   p_perun2& perun2;
    p_bool valueTaken = false;
 };
 

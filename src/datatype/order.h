@@ -161,7 +161,7 @@ struct OrderBy_List : OrderBy, Generator<p_list>
 {
 public:
    OrderBy_List() = delete;
-   OrderBy_List(_genptr<p_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, pp_perun2& p2);
+   OrderBy_List(_genptr<p_list>& bas, _fcptr& ctx, _indptr& inds, _ordptr& ord, p_perun2& p2);
 
    p_list getValue() override;
 
@@ -175,7 +175,7 @@ struct OrderBy_Definition : OrderBy, p_def
 {
 public:
    OrderBy_Definition() = delete;
-   OrderBy_Definition(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, pp_perun2& p2);
+   OrderBy_Definition(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _indptr& inds, _ordptr& ord, p_perun2& p2);
    FileContext* getFileContext() override;
 
    void reset() override;
@@ -186,7 +186,7 @@ private:
    _fcptr nextContext;
    p_defptr base;
    p_bool first = true;
-   pp_perun2& perun2;
+   p_perun2& perun2;
 
    p_size length;
    p_size index;

@@ -32,7 +32,7 @@ Join_ListStr::Join_ListStr(_genptr<p_list>& lef, _genptr<p_str>& rig)
 Join_ListList::Join_ListList(_genptr<p_list>& lef, _genptr<p_list>& rig)
    : left(std::move(lef)), right(std::move(rig)) { };
 
-ListFilter_Where::ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, pp_perun2& p2)
+ListFilter_Where::ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, p_perun2& p2)
    : condition(std::move(cond)), list(std::move(li)), context(std::move(ctx)), perun2(p2) { };
 
 ListFilter_Limit::ListFilter_Limit(_genptr<p_list>& li, _genptr<p_num>& num)

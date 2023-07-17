@@ -30,7 +30,7 @@ p_constexpr p_nint OS_SLEEP_UNIT = NINT_300;
 
 p_tim os_yesterday();
 p_tim os_tomorrow();
-void os_sleepForMs(const p_nint ms, pp_perun2& p2);
+void os_sleepForMs(const p_nint ms, p_perun2& p2);
 
 void os_loadEmptyAttributes(FileContext& context);
 

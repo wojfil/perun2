@@ -26,7 +26,7 @@
 namespace perun2::parse
 {
 
-p_bool parsePeriod(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
+p_bool parsePeriod(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -97,7 +97,7 @@ p_bool parsePeriod(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
    return parseBinary<p_per>(result, tks, p2) || parseTernary<p_per>(result, tks, p2);
 }
 
-p_bool parsePeriodConst(_genptr<p_per>& result, const Tokens& tks, const p_bool negated, pp_perun2& p2)
+p_bool parsePeriodConst(_genptr<p_per>& result, const Tokens& tks, const p_bool negated, p_perun2& p2)
 {
    const Token& last = tks.last();
    const Token& first = tks.first();
@@ -149,7 +149,7 @@ p_bool parsePeriodConst(_genptr<p_per>& result, const Tokens& tks, const p_bool 
    return false;
 }
 
-p_bool parsePeriodUnit(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
+p_bool parsePeriodUnit(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& last = tks.last();
    const p_bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE, p2);
@@ -180,7 +180,7 @@ p_bool parsePeriodUnit(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
    return false;
 }
 
-p_bool parsePeriodExp(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
+p_bool parsePeriodExp(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const std::vector<Tokens> elements = tks.splitBySymbol(CHAR_PLUS);
    const p_size len = elements.size();
@@ -211,7 +211,7 @@ p_bool parsePeriodExp(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
    return true;
 }
 
-p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
+p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    const p_int baseLen = tks.getLength();
    if (baseLen == 1) {
@@ -336,7 +336,7 @@ p_bool parsePeriodExpDiff(_genptr<p_per>& result, const Tokens& tks, pp_perun2& 
    return true;
 }
 
-p_bool parseTimeDifference(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2)
+p_bool parseTimeDifference(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_MINUS);
 
@@ -371,7 +371,7 @@ p_bool parseTimeDifference(_genptr<p_per>& result, const Tokens& tks, pp_perun2&
    return true;
 }
 
-Period::PeriodUnit toPeriodUnit(const Token& tk, pp_perun2& p2)
+Period::PeriodUnit toPeriodUnit(const Token& tk, p_perun2& p2)
 {
    if (tk.isWord(STRING_YEAR, p2) || tk.isWord(STRING_YEARS, p2))
       return Period::u_Years;

@@ -27,7 +27,7 @@
 
 namespace perun2
 {
-   struct pp_perun2;
+   struct p_perun2;
 
    template <typename T>
    using _varptr = std::unique_ptr<Variable<T>>;
@@ -90,7 +90,7 @@ namespace perun2
    struct AggregateContext
    {
       AggregateContext() = delete;
-      AggregateContext(pp_perun2& p2);
+      AggregateContext(p_perun2& p2);
       void runAggregate() { this->aggregate.run(); }
 
       comm::Aggregate aggregate;
@@ -100,7 +100,7 @@ namespace perun2
    {
    public:
       IndexContext() = delete;
-      IndexContext(pp_perun2& p2);
+      IndexContext(p_perun2& p2);
       void resetIndex();
       void incrementIndex();
 
@@ -111,8 +111,8 @@ namespace perun2
    {
    public:
       FileContext() = delete;
-      FileContext(pp_perun2& p2);
-      FileContext(_attrptr& attr, pp_perun2& p2);
+      FileContext(p_perun2& p2);
+      FileContext(_attrptr& attr, p_perun2& p2);
 
       void loadData(const p_str& newThis);
       void loadData(const p_str& newThis, const p_fdata& data);
@@ -153,7 +153,7 @@ namespace perun2
       Variable<p_str>* v_path;
 
    private:
-      void initVars(pp_perun2& p2);
+      void initVars(p_perun2& p2);
 
       template <typename T>
       Variable<T>* insertVar(const p_str& name)
@@ -179,7 +179,7 @@ namespace perun2
    {
    public:
       GlobalContext() = delete;
-      GlobalContext(pp_perun2& p2);
+      GlobalContext(p_perun2& p2);
 
       template <typename T>
       void insertConstant(const p_str& name)
@@ -209,14 +209,14 @@ namespace perun2
    {
    public:
       Contexts() = delete;
-      Contexts(pp_perun2& p2);
+      Contexts(p_perun2& p2);
 
-      p_bool getVar(const Token& tk, Variable<p_bool>*& result, pp_perun2& p2);
-      p_bool getVar(const Token& tk, Variable<p_num>*& result, pp_perun2& p2);
-      p_bool getVar(const Token& tk, Variable<p_str>*& result, pp_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_bool>*& result, p_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_num>*& result, p_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_str>*& result, p_perun2& p2);
 
       template <typename T>
-      p_bool getVar(const Token& tk, Variable<T>*& result, pp_perun2& p2)
+      p_bool getVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
       {
          return findVar(tk, result, p2);
       };
@@ -253,7 +253,7 @@ namespace perun2
       p_bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
-      p_bool varExists(const Token& tk, pp_perun2& p2);
+      p_bool varExists(const Token& tk, p_perun2& p2);
       void closeAttributeScope();
       void closeDeepAttributeScope();
 
@@ -263,7 +263,7 @@ namespace perun2
    private:
 
       template <typename T>
-      p_bool findVar(const Token& tk, Variable<T>*& result, pp_perun2& p2)
+      p_bool findVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
       {
          const p_str name = tk.toLowerString(p2);
 
@@ -296,7 +296,7 @@ namespace perun2
          return false;
       }
 
-      void addOsGen(const p_str& name, const gen::OsElement element, pp_perun2& p2);
+      void addOsGen(const p_str& name, const gen::OsElement element, p_perun2& p2);
 
       LocationContext rootLocation;
 

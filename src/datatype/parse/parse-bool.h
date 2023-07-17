@@ -23,9 +23,9 @@
 namespace perun2::parse
 {
 
-p_bool parseBool(_genptr<p_bool>& result, const Tokens& tks, pp_perun2& p2);
+p_bool parseBool(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
 
-static p_bool parseBoolExp(_genptr<p_bool>& result, const Tokens& tks, pp_perun2& p2);
+static p_bool parseBoolExp(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
 static p_bool boolExpTree(_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& infList);
 static p_bool boolExpIntegrateNegations(_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& elements);
 static p_bool boolExpTreeMerge(_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& elements);
@@ -33,14 +33,14 @@ static p_bool isBoolExpComputable(const std::vector<ExpElement<p_bool>>& infList
 p_bool isBoolExpOperator(const Token& tk);
 static p_char toBoolExpOperator(const Token& tk);
 
-static p_bool parseLike(_genptr<p_bool>& result, const Tokens& tks, pp_perun2& p2);
-static p_bool parseIn(_genptr<p_bool>& result, const Tokens& tks, pp_perun2& p2);
+static p_bool parseLike(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
+static p_bool parseIn(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
 static p_bool parseInTimList(_genptr<p_bool>& result, const bool& negated, 
-   const std::pair<Tokens, Tokens>& pair, pp_perun2& p2);
-static p_bool parseComparisons(_genptr<p_bool>& result, const Tokens& tks, pp_perun2& p2);
+   const std::pair<Tokens, Tokens>& pair, p_perun2& p2);
+static p_bool parseComparisons(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
 static p_bool parseCollectionComparisons(_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, pp_perun2& p2);
-static p_bool parseComparison(_genptr<p_bool>& result, const Tokens& tks, const p_char sign, pp_perun2& p2);
+   const Tokens& right, const gen::CompType& ct, p_perun2& p2);
+static p_bool parseComparison(_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2);
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, gen::CompType& ctype);
 
 }

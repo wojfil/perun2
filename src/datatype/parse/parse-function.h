@@ -30,31 +30,31 @@ namespace perun2::func
 
 static std::vector<Tokens> toFunctionArgs(const Tokens& tks);
 
-p_bool boolFunction(_genptr<p_bool>& result, const Tokens& tks, pp_perun2& p2);
-p_bool simpleBoolFunction(_genptr<p_bool>& result, const Tokens& tks, const Token& word, pp_perun2& p2);
+p_bool boolFunction(_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
+p_bool simpleBoolFunction(_genptr<p_bool>& result, const Tokens& tks, const Token& word, p_perun2& p2);
 
-p_bool numberFunction(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2);
-static p_bool simpleNumberFunction(_genptr<p_num>& result, const Tokens& tks, const Token& word, pp_perun2& p2);
-static p_bool aggrFunction(_genptr<p_num>& result, const std::vector<Tokens>& args, const Token& word, pp_perun2& p2);
+p_bool numberFunction(_genptr<p_num>& result, const Tokens& tks, p_perun2& p2);
+static p_bool simpleNumberFunction(_genptr<p_num>& result, const Tokens& tks, const Token& word, p_perun2& p2);
+static p_bool aggrFunction(_genptr<p_num>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2);
 
-p_bool periodFunction(_genptr<p_per>& result, const Tokens& tks, pp_perun2& p2);
+p_bool periodFunction(_genptr<p_per>& result, const Tokens& tks, p_perun2& p2);
 
-p_bool stringFunction(_genptr<p_str>& result, const Tokens& tks, pp_perun2& p2);
-static p_bool stringTwoArgFunction(_genptr<p_str>& result, const std::vector<Tokens>& args, const Token& word, pp_perun2& p2);
-static p_bool simpleStringFunction(_genptr<p_str>& result, const Tokens& tks, const Token& word, pp_perun2& p2);
+p_bool stringFunction(_genptr<p_str>& result, const Tokens& tks, p_perun2& p2);
+static p_bool stringTwoArgFunction(_genptr<p_str>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2);
+static p_bool simpleStringFunction(_genptr<p_str>& result, const Tokens& tks, const Token& word, p_perun2& p2);
 
-p_bool timeFunction(_genptr<p_tim>& result, const Tokens& tks, pp_perun2& p2);
-static p_bool simpleTimeFunction(_genptr<p_tim>& result, const Tokens& tks, const Token& word, pp_perun2& p2);
+p_bool timeFunction(_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2);
+static p_bool simpleTimeFunction(_genptr<p_tim>& result, const Tokens& tks, const Token& word, p_perun2& p2);
 
-static void functionArgNumberException(const p_int argNumber, const Token& word, pp_perun2& p2);
-static void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, pp_perun2& p2);
+static void functionArgNumberException(const p_int argNumber, const Token& word, p_perun2& p2);
+static void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, p_perun2& p2);
 static p_str ordinalNumber(const p_int number);
 
-p_bool listFunction(_genptr<p_list>& result, const Tokens& tks, pp_perun2& p2);
-p_bool numListFunction(_genptr<p_nlist>& result, const Tokens& tks, pp_perun2& p2);
+p_bool listFunction(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2);
+p_bool numListFunction(_genptr<p_nlist>& result, const Tokens& tks, p_perun2& p2);
 
-static void checkFunctionAttribute(const Token& word, pp_perun2& p2);
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, pp_perun2& p2);
+static void checkFunctionAttribute(const Token& word, p_perun2& p2);
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2);
 
 }
 

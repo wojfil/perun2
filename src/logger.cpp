@@ -20,7 +20,7 @@ namespace perun2
 Logger::Logger()
     : isSilent(false), flushBuffer(true) { };
 
-Logger::Logger(const pp_perun2& p2)
+Logger::Logger(const p_perun2& p2)
     : isSilent(p2.arguments.hasFlag(FLAG_SILENT)),
       flushBuffer(p2.arguments.hasFlag(FLAG_GUI)) { };
 

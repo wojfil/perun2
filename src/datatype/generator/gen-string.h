@@ -21,7 +21,7 @@
 
 namespace perun2
 {
-   struct pp_perun2;
+   struct p_perun2;
    struct LocationContext;
 }
 
@@ -127,7 +127,7 @@ private:
 struct LocationReference : Generator<p_str>
 {
 public:
-   LocationReference(pp_perun2& p2);
+   LocationReference(p_perun2& p2);
    p_str getValue() override;
 
 private:
@@ -138,7 +138,7 @@ private:
 struct RelativeLocation : Generator<p_str>
 {
 public:
-   RelativeLocation(_genptr<p_str>& val, pp_perun2& p2, const p_int retr);
+   RelativeLocation(_genptr<p_str>& val, p_perun2& p2, const p_int retr);
    p_str getValue() override;
 
 private:
@@ -177,13 +177,13 @@ private:
 struct DefinitionElement : Generator<p_str>
 {
 public:
-   DefinitionElement(p_defptr& def, _genptr<p_num>& ind, pp_perun2& p2)
+   DefinitionElement(p_defptr& def, _genptr<p_num>& ind, p_perun2& p2)
       : definition(std::move(def)), index(std::move(ind)), perun2(p2) {};
 
    p_str getValue() override;
 
 private:
-   pp_perun2& perun2;
+   p_perun2& perun2;
    p_defptr definition;
    _genptr<p_num> index;
 };

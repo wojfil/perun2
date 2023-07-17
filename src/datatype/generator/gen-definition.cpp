@@ -21,7 +21,7 @@ namespace perun2::gen
 {
 
 
-DefWithContext::DefWithContext(p_defptr& def, pp_perun2& p2)
+DefWithContext::DefWithContext(p_defptr& def, p_perun2& p2)
    : definition(std::move(def)), context(std::make_unique<FileContext>(p2)) { };
 
 DefWithContext::DefWithContext(p_defptr& def, _fcptr& ctx)
@@ -49,7 +49,7 @@ FileContext* DefWithContext::getFileContext()
 }
 
 
-DefFilter::DefFilter(p_defptr& def, FileContext* ctx, pp_perun2& p2)
+DefFilter::DefFilter(p_defptr& def, FileContext* ctx, p_perun2& p2)
    : first(true), definition(std::move(def)), perun2(p2), context(ctx) { };
 
 FileContext* DefFilter::getFileContext()
@@ -65,7 +65,7 @@ void DefFilter::reset() {
 }
 
 
-DefFilter_Where::DefFilter_Where(_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, pp_perun2& p2)
+DefFilter_Where::DefFilter_Where(_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, p_perun2& p2)
    : DefFilter(def, ctx, p2), condition(std::move(cond)) { };
 
 
@@ -624,7 +624,7 @@ p_bool AbsoluteDefSuffix::hasNext()
 }
 
 
-RelativeDefSuffix::RelativeDefSuffix(p_defptr& def, pp_perun2& p2, const p_str& suf, const p_bool fin, p_def* const prev)
+RelativeDefSuffix::RelativeDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, p_def* const prev)
    : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), previous(prev) { };
 
 
@@ -658,7 +658,7 @@ p_bool RelativeDefSuffix::hasNext()
 }
 
 
-RetreatedDefSuffix::RetreatedDefSuffix(p_defptr& def, pp_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev)
+RetreatedDefSuffix::RetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev)
    : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 
@@ -711,7 +711,7 @@ p_bool RetreatedDefSuffix::hasNext()
 }
 
 
-FarRetreatedDefSuffix::FarRetreatedDefSuffix(p_defptr& def, pp_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev)
+FarRetreatedDefSuffix::FarRetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const p_bool fin, const p_int retr, p_def* const prev)
    : DefinitionSuffix(def, suf, fin), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 

@@ -41,7 +41,7 @@ public:
 struct F_CountInside : Generator<p_num>
 {
 public:
-   F_CountInside(p_defptr& def, _lcptr& lctx, FileContext* fctx, pp_perun2& p2)
+   F_CountInside(p_defptr& def, _lcptr& lctx, FileContext* fctx, p_perun2& p2)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx), perun2(p2) { };
 
    p_num getValue() override;
@@ -50,7 +50,7 @@ private:
    _lcptr locContext;
    FileContext* fileContext;
    p_defptr definition;
-   pp_perun2& perun2;
+   p_perun2& perun2;
 };
 
 
@@ -123,7 +123,7 @@ public:
 struct F_Random : Generator<p_num>
 {
 public:
-   F_Random(pp_perun2& p2)
+   F_Random(p_perun2& p2)
       : math(p2.math) { };
 
    p_num getValue() override;
@@ -136,7 +136,7 @@ private:
 struct F_RandomNumber : Func_1<p_num>, Generator<p_num>
 {
 public:
-   F_RandomNumber(_genptr<p_num>& a1, pp_perun2& p2)
+   F_RandomNumber(_genptr<p_num>& a1, p_perun2& p2)
       : Func_1(a1), math(p2.math) { };
 
    p_num getValue() override;
@@ -166,14 +166,14 @@ struct F_Count : Generator<p_num>
 {
 public:
    F_Count() = delete;
-   F_Count(p_defptr& def, pp_perun2& p2) 
+   F_Count(p_defptr& def, p_perun2& p2) 
       : definition(std::move(def)), perun2(p2) { };
 
    p_num getValue() override;
 
 private:
    p_defptr definition;
-   pp_perun2& perun2;
+   p_perun2& perun2;
 };
 
 

@@ -74,7 +74,7 @@ void os_loadAttributes(FileContext& context)
 {
    const p_attrptr& attribute = context.attribute;
    context.trimmed = os_trim(context.this_->value);
-   context.invalid = os_isInvaild(context.trimmed);
+   context.invalid = os_isInvalid(context.trimmed);
 
    if (context.invalid) {
       os_loadEmptyAttributes(context);
@@ -1173,7 +1173,7 @@ p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
    return p2.state == State::s_Running && dwExitCode == 0;
 }
 
-p_bool os_isInvaild(const p_str& path)
+p_bool os_isInvalid(const p_str& path)
 {
    const p_size length = path.size();
 
@@ -1657,7 +1657,7 @@ p_str os_leftJoin(const p_str& path1, const p_str& path2)
 
 p_str os_join(const p_str& path1, const p_str& path2)
 {
-   if (os_isInvaild(path1) || os_isInvaild(path2)) {
+   if (os_isInvalid(path1) || os_isInvalid(path2)) {
       return p_str();
    }
 

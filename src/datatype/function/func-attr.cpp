@@ -23,7 +23,7 @@ namespace perun2::func
 p_str F_Parent::getValue()
 {
    const p_str v = os_trim(arg1->getValue());
-   if (os_isInvaild(v)) {
+   if (os_isInvalid(v)) {
       return p_str();
    }
 
@@ -39,7 +39,7 @@ p_str F_Parent::getValue()
 p_str F_Path_1::getValue()
 {
    const p_str v = os_trim(arg1->getValue());
-   if (os_isInvaild(v)) {
+   if (os_isInvalid(v)) {
       return p_str();
    }
 
@@ -134,7 +134,7 @@ p_num F_SizeList::getValue()
       }
 
       const p_str v = os_trim(vs[i]);
-      if (!v.empty() && !os_isInvaild(v)) {
+      if (!v.empty() && !os_isInvalid(v)) {
          const p_nint s = osp_size(os_leftJoin(this->context->location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             total += s;

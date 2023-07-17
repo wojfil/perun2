@@ -226,7 +226,7 @@ p_bool F_ExistsInside::getValue()
    const p_str base = os_leftJoin(this->locContext->location->value, this->fileContext->trimmed);
    const p_str value = os_trim(this->arg1->getValue());
 
-   if (os_isInvaild(value)) {
+   if (os_isInvalid(value)) {
       return false;
    }
 
@@ -247,7 +247,7 @@ p_bool F_ExistInside::getValue()
    for (p_size i = 0; i < len; i++) {
       const p_str& v = os_trim(values[i]);
 
-      if (os_isInvaild(v)) {
+      if (os_isInvalid(v)) {
           return false;
       }
 
@@ -431,7 +431,7 @@ p_bool F_Exists::getValue()
 {
    const p_str value = os_trim(this->arg1->getValue());
 
-   if (os_isInvaild(value)) {
+   if (os_isInvalid(value)) {
       return false;
    }
 
@@ -448,7 +448,7 @@ p_bool F_Exist::getValue()
    for (const p_str& val : values) {
       const p_str& v = os_trim(val);
 
-      if (os_isInvaild(v)) {
+      if (os_isInvalid(v)) {
           return false;
       }
 

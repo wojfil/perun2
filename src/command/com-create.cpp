@@ -275,7 +275,7 @@ void C_Create_String::run()
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
-      if (os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvalid(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create ", getCCNameShort(value));
          this->perun2.contexts.success->value = false;
          return;
@@ -335,7 +335,7 @@ void C_CreateFile_String::run()
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
-      if (os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvalid(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create file ", getCCNameShort(value));
          this->perun2.contexts.success->value = false;
          return;
@@ -376,7 +376,7 @@ void C_CreateDirectory_String::run()
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
-      if (os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvalid(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(value));
          this->perun2.contexts.success->value = false;
          return;
@@ -417,7 +417,7 @@ void C_Create_String_Stack::run()
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
-      if (os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvalid(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create ", getCCNameShort(value));
          this->perun2.contexts.success->value = false;
          return;
@@ -476,7 +476,7 @@ void C_CreateFile_String_Stack::run()
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
-      if (os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvalid(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create file ", getCCNameShort(value));
          this->perun2.contexts.success->value = false;
          return;
@@ -522,7 +522,7 @@ void C_CreateDirectory_String_Stack::run()
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
-      if (os_isInvaild(value) || !os_directoryExists(dest)) {
+      if (os_isInvalid(value) || !os_directoryExists(dest)) {
          this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(value));
          this->perun2.contexts.success->value = false;
          return;
@@ -588,7 +588,7 @@ void C_Create_List::run()
          const p_str n = os_trim(names[i]);
          const p_bool isFile = os_hasExtension(n);
 
-         if (os_isInvaild(n)) {
+         if (os_isInvalid(n)) {
             if (isFile) {
                this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
             }
@@ -681,7 +681,7 @@ void C_CreateFiles_List::run()
       for (p_size i = 0; i < len; i++) {
          const p_str n = os_trim(names[i]);
 
-         if (os_isInvaild(n)) {
+         if (os_isInvalid(n)) {
             this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
             success = false;
          }
@@ -745,7 +745,7 @@ void C_CreateDirectories_List::run()
       for (p_size i = 0; i < len; i++) {
          const p_str n = os_trim(names[i]);
 
-         if (os_isInvaild(n)) {
+         if (os_isInvalid(n)) {
             this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
             success = false;
          }
@@ -816,7 +816,7 @@ void C_Create_List_Stack::run()
       for (p_size i = 0; i < len; i++) {
          const p_str n = os_trim(names[i]);
 
-         if (os_isInvaild(n)) {
+         if (os_isInvalid(n)) {
             this->perun2.logger.log(L"Failed to create ", getCCNameShort(n));
             success = false;
          }
@@ -899,7 +899,7 @@ void C_CreateFiles_List_Stack::run()
       for (p_size i = 0; i < len; i++) {
          const p_str n = os_trim(names[i]);
 
-         if (os_isInvaild(n)) {
+         if (os_isInvalid(n)) {
             this->perun2.logger.log(L"Failed to create file ", getCCNameShort(n));
             success = false;
          }
@@ -968,7 +968,7 @@ void C_CreateDirectories_List_Stack::run()
       for (p_size i = 0; i < len; i++) {
          const p_str n = os_trim(names[i]);
 
-         if (os_isInvaild(n)) {
+         if (os_isInvalid(n)) {
             this->perun2.logger.log(L"Failed to create directory ", getCCNameShort(n));
             success = false;
          }

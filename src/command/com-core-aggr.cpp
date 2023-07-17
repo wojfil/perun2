@@ -40,7 +40,7 @@ void C_AggrCopy_String::run()
    if (n.empty()) {
       aggregate->failedCopy++;
    }
-   else if (os_isInvaild(n)) {
+   else if (os_isInvalid(n)) {
       aggregate->invalidCopy.insert(os_fullname(n));
    }
    else {
@@ -58,7 +58,7 @@ void C_AggrCopy_List::run()
       if (n.empty()) {
          aggregate->failedCopy++;
       }
-      else if (os_isInvaild(n)) {
+      else if (os_isInvalid(n)) {
          aggregate->invalidCopy.insert(os_fullname(n));
       }
       else {
@@ -104,7 +104,7 @@ void C_AggrSelect_String::run()
    if (n.empty()) {
       aggregate->failedSelect++;
    }
-   else if (os_isInvaild(n)) {
+   else if (os_isInvalid(n)) {
       aggregate->invalidSelect.insert(os_fullname(n));
    }
    else {
@@ -142,7 +142,7 @@ void C_AggrSelect_List::run()
       if (n.empty()) {
          aggregate->failedSelect++;
       }
-      else if (os_isInvaild(n)) {
+      else if (os_isInvalid(n)) {
          aggregate->invalidSelect.insert(os_fullname(n));
       }
       else {
@@ -205,7 +205,7 @@ void logSelectSuccess(p_perun2& p2, const p_str& name)
 void C_Copy_String::run()
 {
    const p_str n = os_trim(value->getValue());
-   if (os_isInvaild(n)) {
+   if (os_isInvalid(n)) {
       logCopyError(this->perun2, n);
       this->perun2.contexts.success->value = false;
       return;
@@ -246,7 +246,7 @@ void C_Copy_List::run()
 
    for (p_size i = 0; i < length; i++) {
       const p_str n = os_trim(elements[i]);
-      if (os_isInvaild(n)) {
+      if (os_isInvalid(n)) {
          logCopyError(this->perun2, n);
          anyFailure = true;
       }
@@ -348,7 +348,7 @@ void Selector::run()
 void C_Select_String::run()
 {
    const p_str n = os_trim(value->getValue());
-   if (os_isInvaild(n)) {
+   if (os_isInvalid(n)) {
       logSelectError(this->perun2, n);
       this->perun2.contexts.success->value = false;
       return;
@@ -398,7 +398,7 @@ void C_Select_List::run()
    for (p_size i = 0; i < length; i++) {
       const p_str n = os_trim(elements[i]);
 
-      if (os_isInvaild(n)) {
+      if (os_isInvalid(n)) {
          logSelectError(this->perun2, n);
          continue;
       }

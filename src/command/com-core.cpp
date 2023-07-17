@@ -289,7 +289,7 @@ void C_RenameTo::run()
    if (this->perun2.state == State::s_Running) {
       p_str n = os_fullname(os_trim(name->getValue()));
 
-      if (!this->context->v_exists->value || os_isInvaild(n)
+      if (!this->context->v_exists->value || os_isInvalid(n)
           || !os_hasParentDirectory(this->context->v_path->value) || os_isAbsolute(n)) {
 
          this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
@@ -338,7 +338,7 @@ void C_RenameTo_Stack::run()
    if (this->perun2.state == State::s_Running) {
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_fullname(os_trim(name->getValue()));
-      if (!this->context->v_exists->value || os_isInvaild(n)
+      if (!this->context->v_exists->value || os_isInvalid(n)
           || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
          this->perun2.logger.log(L"Failed to rename ", getCCName(oldPath));
@@ -408,7 +408,7 @@ void C_MoveTo::run()
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(n)
+      if (!this->context->v_exists->value || os_isInvalid(n)
           || !os_hasParentDirectory(oldPath)) {
 
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -467,7 +467,7 @@ void C_MoveTo_Stack::run()
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvalid(n) || !os_hasParentDirectory(oldPath)) {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
@@ -527,8 +527,8 @@ void C_MoveToAs::run()
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(fulln)
-           || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvalid(fulln)
+           || os_isInvalid(loc) || !os_hasParentDirectory(oldPath)) {
 
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
@@ -592,8 +592,8 @@ void C_MoveToAs_Stack::run()
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(fulln)
-          || os_isInvaild(loc) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvalid(fulln)
+          || os_isInvalid(loc) || !os_hasParentDirectory(oldPath)) {
 
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
@@ -669,7 +669,7 @@ void C_CopyTo::run()
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvalid(n) || !os_hasParentDirectory(oldPath)) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
@@ -722,7 +722,7 @@ void C_CopyTo_Stack::run()
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(n) || !os_hasParentDirectory(oldPath)) {
+      if (!this->context->v_exists->value || os_isInvalid(n) || !os_hasParentDirectory(oldPath)) {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
@@ -778,7 +778,7 @@ void C_CopyToAs::run()
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
+      if (!this->context->v_exists->value || os_isInvalid(fulln) || os_isInvalid(loc) || !os_hasParentDirectory(oldPath))
       {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
@@ -839,7 +839,7 @@ void C_CopyToAs_Stack::run()
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
 
-      if (!this->context->v_exists->value || os_isInvaild(fulln) || os_isInvaild(loc) || !os_hasParentDirectory(oldPath))
+      if (!this->context->v_exists->value || os_isInvalid(fulln) || os_isInvalid(loc) || !os_hasParentDirectory(oldPath))
       {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;

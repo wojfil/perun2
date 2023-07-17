@@ -1205,6 +1205,92 @@ p_bool os_isInvaild(const p_str& path)
    return false;
 }
 
+p_str os_trim(const p_str& path)
+{
+   const p_int len = path.size();
+   p_int start = 0;
+   p_bool anyDot = false;
+
+   while (true) {
+      if (len >= (start + 2) && path[start] == CHAR_DOT
+         && (path[start + 1] == OS_SEPARATOR || path[start + 1] == OS_WRONG_SEPARATOR))
+      {
+         anyDot = true;
+         start += 2;
+      }
+      else if (start < len) {
+         switch (path[start]) {
+            case OS_WRONG_SEPARATOR:
+            case OS_SEPARATOR:
+            case CHAR_SPACE: {
+               start++;
+               break;
+            }
+            default: {
+               goto exitStart;
+            }
+         }
+      }
+      else {
+         break;
+      }
+   }
+
+exitStart:
+
+   if (start == len) {
+      return anyDot ? toStr(CHAR_DOT) : p_str();
+   }
+
+   p_int end = len - 1;
+
+   while (true) {
+      if (end >= 1 && path[end] == CHAR_DOT
+       && (path[end - 1] == OS_SEPARATOR || path[end - 1] == OS_WRONG_SEPARATOR))
+      {
+         end -= 2;
+      }
+      else if (end >= 0) {
+         switch (path[end]) {
+            case OS_WRONG_SEPARATOR:
+            case OS_SEPARATOR:
+            case CHAR_SPACE: {
+               end--;
+               break;
+            }
+            default: {
+               goto exitEnd;
+            }
+         }
+      }
+      else {
+         break;
+      }
+
+   }
+
+exitEnd:
+
+   p_str result;
+
+   if (start == 0) {
+      result = end == len - 1
+         ? path
+         : path.substr(0, end + 1);
+   }
+   else {
+      result = end == len - 1
+         ? path.substr(start)
+         : path.substr(start, end - start + 1);
+   }
+
+   std::replace(result.begin(), result.end(), OS_WRONG_SEPARATOR, OS_SEPARATOR);
+   result.erase(std::unique(result.begin(), result.end(), os_bothAreSeparators), result.end());
+   os_escapeQuote(result);
+
+   return result;
+}
+
 uint32_t os_patternInfo(const p_str& pattern)
 {
    uint32_t result = parse::ASTERISK_INFO_NULL;

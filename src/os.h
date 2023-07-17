@@ -107,6 +107,7 @@ p_bool os_select(const p_str& parent, const p_set& paths);
 
 p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2);
 
+p_str os_trim(const p_str& path);
 p_bool os_isInvaild(const p_str& path);
 uint32_t os_patternInfo(const p_str& pattern);
 

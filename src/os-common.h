@@ -41,7 +41,6 @@ p_str os_name(const p_str& value);
 p_str os_parent(const p_str& path);
 
 p_bool os_bothAreSeparators(const p_char left, const p_char right);
-p_str os_trim(const p_str& path);
 p_str os_softTrim(const p_str& value);
 inline void os_escapeQuote(p_str& path);
 

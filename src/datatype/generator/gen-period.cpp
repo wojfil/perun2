@@ -18,43 +18,43 @@ namespace perun2::gen
 {
 
 
-PeriodUnit::PeriodUnit(_genptr<_num>& val, Period::PeriodUnit un)
+PeriodUnit::PeriodUnit(_genptr<p_num>& val, Period::PeriodUnit un)
    : value(std::move(val)), unit(un) { };
 
-_per PeriodUnit::getValue()
+p_per PeriodUnit::getValue()
 {
    const _tnum n = toTimeNumber(this->value->getValue());
-   return _per(n, this->unit);
+   return p_per(n, this->unit);
 }
 
-PeriodAddition::PeriodAddition(_genptr<_per>& val1, _genptr<_per>& val2)
-   : BinaryOperation<_per>(val1, val2) { }
+PeriodAddition::PeriodAddition(_genptr<p_per>& val1, _genptr<p_per>& val2)
+   : BinaryOperation<p_per>(val1, val2) { }
 
-_per PeriodAddition::getValue()
+p_per PeriodAddition::getValue()
 {
    return this->value1->getValue() + this->value2->getValue();
 }
 
-PeriodSubtraction::PeriodSubtraction(_genptr<_per>& val1, _genptr<_per>& val2)
-   : BinaryOperation<_per>(val1, val2) { }
+PeriodSubtraction::PeriodSubtraction(_genptr<p_per>& val1, _genptr<p_per>& val2)
+   : BinaryOperation<p_per>(val1, val2) { }
 
-_per PeriodSubtraction::getValue()
+p_per PeriodSubtraction::getValue()
 {
    return this->value1->getValue() - this->value2->getValue();
 }
 
-TimeDifference::TimeDifference(_genptr<_tim>& val1, _genptr<_tim>& val2)
+TimeDifference::TimeDifference(_genptr<p_tim>& val1, _genptr<p_tim>& val2)
    : value1(std::move(val1)), value2(std::move(val2)) { };
 
-_per TimeDifference::getValue()
+p_per TimeDifference::getValue()
 {
    return this->value1->getValue() - this->value2->getValue();
 }
 
-NegatedPeriod::NegatedPeriod(_genptr<_per>& val) 
+NegatedPeriod::NegatedPeriod(_genptr<p_per>& val) 
    : value(std::move(val)) { };
 
-_per NegatedPeriod::getValue()
+p_per NegatedPeriod::getValue()
 {
    return -(this->value->getValue());
 }

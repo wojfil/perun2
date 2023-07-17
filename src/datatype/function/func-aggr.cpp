@@ -20,35 +20,35 @@
 namespace perun2::func
 {
 
-_num F_Average::getValue()
+p_num F_Average::getValue()
 {
-   _num sum;
+   p_num sum;
    p_int count = countSingle;
 
-   for (_genptr<_num>& sv : this->singleValues) {
+   for (_genptr<p_num>& sv : this->singleValues) {
       sum += sv->getValue();
    }
 
-   for (_genptr<_nlist>& mv : this->multiValues) {
-      _nlist nlist = mv->getValue();
+   for (_genptr<p_nlist>& mv : this->multiValues) {
+      p_nlist nlist = mv->getValue();
       count += nlist.size();
 
-      for (const _num& n : nlist) {
+      for (const p_num& n : nlist) {
          sum += n;
       }
    }
 
    if (count != 0) {
-      sum /= _num(count);
+      sum /= p_num(count);
    }
 
    return sum;
 }
 
 
-_num F_Max::getValue()
+p_num F_Max::getValue()
 {
-   _num max;
+   p_num max;
    p_bool init = false;
 
    if (countSingle != 0) {
@@ -56,20 +56,20 @@ _num F_Max::getValue()
       max = singleValues[0]->getValue();
 
       for (p_size i = 1; i < countSingle; i++) {
-         const _num v = singleValues[i]->getValue();
+         const p_num v = singleValues[i]->getValue();
          if (v > max) {
             max = v;
          }
       }
    }
 
-   for (_genptr<_nlist>& mv : this->multiValues) {
-      _nlist nlist = mv->getValue();
+   for (_genptr<p_nlist>& mv : this->multiValues) {
+      p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          const p_size len = nlist.size();
 
          if (init) {
-            for (const _num& n : nlist) {
+            for (const p_num& n : nlist) {
                if (n > max) {
                   max = n;
                }
@@ -87,21 +87,21 @@ _num F_Max::getValue()
       }
    }
 
-   return init ? max : _num();
+   return init ? max : p_num();
 }
 
 
-_num F_Median::getValue()
+p_num F_Median::getValue()
 {
-   _nlist elements;
+   p_nlist elements;
    elements.reserve(countSingle);
 
-   for (_genptr<_num>& sv : this->singleValues) {
+   for (_genptr<p_num>& sv : this->singleValues) {
       elements.emplace_back(sv->getValue());
    }
 
-   for (_genptr<_nlist>& mv : this->multiValues) {
-      _nlist nlist = mv->getValue();
+   for (_genptr<p_nlist>& mv : this->multiValues) {
+      p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          langutil::appendVector(elements, nlist);
       }
@@ -112,8 +112,8 @@ _num F_Median::getValue()
    const p_size half = len / 2;
 
    if (len % 2 == 0) {
-      _num result = elements[half] + elements[half - 1];
-      result /= _num(NINT_TWO);
+      p_num result = elements[half] + elements[half - 1];
+      result /= p_num(NINT_TWO);
       return result;
    }
    else {
@@ -122,9 +122,9 @@ _num F_Median::getValue()
 }
 
 
-_num F_Min::getValue()
+p_num F_Min::getValue()
 {
-   _num min;
+   p_num min;
    p_bool init = false;
 
    if (countSingle != 0) {
@@ -132,18 +132,18 @@ _num F_Min::getValue()
       min = singleValues[0]->getValue();
 
       for (p_size i = 1; i < countSingle; i++) {
-         const _num v = singleValues[i]->getValue();
+         const p_num v = singleValues[i]->getValue();
          if (v < min) {
             min = v;
          }
       }
    }
 
-   for (_genptr<_nlist>& mv : this->multiValues) {
-      _nlist nlist = mv->getValue();
+   for (_genptr<p_nlist>& mv : this->multiValues) {
+      p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
          if (init) {
-            for (const _num& n : nlist) {
+            for (const p_num& n : nlist) {
                if (n < min) {
                   min = n;
                }
@@ -161,20 +161,20 @@ _num F_Min::getValue()
       }
    }
 
-   return init ? min : _num();
+   return init ? min : p_num();
 }
 
 
-_num F_Sum::getValue()
+p_num F_Sum::getValue()
 {
-   _num sum;
+   p_num sum;
 
-   for (_genptr<_num>& sv : this->singleValues) {
+   for (_genptr<p_num>& sv : this->singleValues) {
       sum += sv->getValue();
    }
 
-   for (_genptr<_nlist>& mv : this->multiValues) {
-      for (const _num n : mv->getValue()) {
+   for (_genptr<p_nlist>& mv : this->multiValues) {
+      for (const p_num n : mv->getValue()) {
          sum += n;
       }
    }

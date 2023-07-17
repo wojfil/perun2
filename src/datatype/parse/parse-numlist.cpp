@@ -24,7 +24,7 @@
 namespace perun2::parse
 {
 
-p_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseNumList(_genptr<p_nlist>& result, const Tokens& tks, pp_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -34,10 +34,10 @@ p_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, p_perun2& p2)
 
    if (len >= 3) {
       if (tks.check(TI_HAS_CHAR_COMMA)) {
-         return parseListed<_num>(result, tks, p2);
+         return parseListed<p_num>(result, tks, p2);
       }
 
-      if (parseBinary<_nlist>(result, tks, p2) || parseTernary<_nlist>(result, tks, p2)) {
+      if (parseBinary<p_nlist>(result, tks, p2) || parseTernary<p_nlist>(result, tks, p2)) {
          return true;
       }
    }

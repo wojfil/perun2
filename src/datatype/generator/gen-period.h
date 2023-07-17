@@ -22,59 +22,59 @@
 namespace perun2::gen
 {
 
-struct PeriodUnit : Generator<_per>
+struct PeriodUnit : Generator<p_per>
 {
 public:
    PeriodUnit() = delete;
-   PeriodUnit(_genptr<_num>& val, Period::PeriodUnit un);
-   _per getValue() override;
+   PeriodUnit(_genptr<p_num>& val, Period::PeriodUnit un);
+   p_per getValue() override;
 
 private:
-   _genptr<_num> value;
+   _genptr<p_num> value;
    const Period::PeriodUnit unit;
 };
 
 
-struct PeriodAddition : BinaryOperation<_per>
+struct PeriodAddition : BinaryOperation<p_per>
 {
 public:
    PeriodAddition() = delete;
-   PeriodAddition(_genptr<_per>& val1, _genptr<_per>& val2);
-   _per getValue() override;
+   PeriodAddition(_genptr<p_per>& val1, _genptr<p_per>& val2);
+   p_per getValue() override;
 };
 
 
-struct PeriodSubtraction : BinaryOperation<_per>
+struct PeriodSubtraction : BinaryOperation<p_per>
 {
 public:
    PeriodSubtraction() = delete;
-   PeriodSubtraction(_genptr<_per>& val1, _genptr<_per>& val2);
-   _per getValue() override;
+   PeriodSubtraction(_genptr<p_per>& val1, _genptr<p_per>& val2);
+   p_per getValue() override;
 };
 
 
-struct TimeDifference : Generator<_per>
+struct TimeDifference : Generator<p_per>
 {
 public:
    TimeDifference() = delete;
-   TimeDifference(_genptr<_tim>& val1, _genptr<_tim>& val2);
-   _per getValue() override;
+   TimeDifference(_genptr<p_tim>& val1, _genptr<p_tim>& val2);
+   p_per getValue() override;
 
 private:
-   _genptr<_tim> value1;
-   _genptr<_tim> value2;
+   _genptr<p_tim> value1;
+   _genptr<p_tim> value2;
 };
 
 
-struct NegatedPeriod : Generator<_per>
+struct NegatedPeriod : Generator<p_per>
 {
 public:
    NegatedPeriod() = delete;
-   NegatedPeriod(_genptr<_per>& val);
-   _per getValue() override;
+   NegatedPeriod(_genptr<p_per>& val);
+   p_per getValue() override;
 
 private:
-   _genptr<_per> value;
+   _genptr<p_per> value;
 };
 
 }

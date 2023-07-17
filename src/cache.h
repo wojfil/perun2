@@ -41,7 +41,7 @@ p_constexpr _cunit CACHE_NOTEPAD =              0b000000000000000000000010000000
 // struct Cache solves all mentioned problems
 // it loads the values we need only once and ignores the rest
 
-struct p_perun2;
+struct pp_perun2;
 struct VarsContext;
 struct Token;
 
@@ -50,7 +50,7 @@ struct Cache
 {
 public:
    Cache() = delete;
-   Cache(p_perun2& p2);
+   Cache(pp_perun2& p2);
 
    void actualize(const Token& tk);
    void loadCmdPath();
@@ -64,7 +64,7 @@ private:
    void loadSystem32Path(const Token& tk);
 
    _cunit value = CACHE_NULL;
-   p_perun2& perun2;
+   pp_perun2& perun2;
    VarsContext& context;
    p_str system32;
 };

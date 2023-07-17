@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-p_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTime(_genptr<p_tim>& result, const Tokens& tks, pp_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -47,7 +47,7 @@ p_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
       const p_bool hasMinuses = tks.check(TI_HAS_CHAR_MINUS);
 
       if (hasMinuses || hasPluses) {
-         _genptr<_per> per;
+         _genptr<p_per> per;
          if (parse(p2, tks, per)) {
             return false;
          }
@@ -63,19 +63,19 @@ p_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
       return func::timeFunction(result, tks, p2);
    }
 
-   if (parseCollectionElement<_tim>(result, tks, p2)) {
+   if (parseCollectionElement<p_tim>(result, tks, p2)) {
       return true;
    }
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
-      _genptr<_num> num;
+      _genptr<p_num> num;
       parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
-      _genptr<_tlist> tlist;
+      _genptr<p_tlist> tlist;
       if (makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
-         _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
+         _genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
 
          if (last.isSecondWord(STRING_DATE, p2)) {
             result = std::make_unique<gen::TimeDate>(tim);
@@ -87,10 +87,10 @@ p_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   return parseTernary<_tim>(result, tks, p2);
+   return parseTernary<p_tim>(result, tks, p2);
 }
 
-p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseTimeConst(_genptr<p_tim>& result, const Tokens& tks, pp_perun2& p2)
 {
    // tt_YearMonth:
    const p_size len = tks.getLength();
@@ -112,7 +112,7 @@ p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 
       const _tnum month = static_cast<_tnum>(first.value.num.n.toInt());
       const _tnum year = tokenToTimeNumber(second);
-      result = std::make_unique<gen::Constant<_tim>>(_tim(month, year));
+      result = std::make_unique<gen::Constant<p_tim>>(p_tim(month, year));
       return true;
    }
 
@@ -137,7 +137,7 @@ p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
    checkDayCorrectness(day, month, year, first);
 
    if (len == 3) {
-      result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year));
+      result = std::make_unique<gen::Constant<p_tim>>(p_tim(day, month, year));
       return true;
    }
 
@@ -164,7 +164,7 @@ p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
    }
 
    if (len == 7) {
-      result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year, hour, minute));
+      result = std::make_unique<gen::Constant<p_tim>>(p_tim(day, month, year, hour, minute));
       return true;
    }
 
@@ -179,7 +179,7 @@ p_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
       throw SyntaxError::secondsOutOfRange(toStr(secs), tks.at(8).line);
    }
 
-   result = std::make_unique<gen::Constant<_tim>>(_tim(day, month, year, hour, minute, secs));
+   result = std::make_unique<gen::Constant<p_tim>>(p_tim(day, month, year, hour, minute, secs));
    return true;
 }
 
@@ -201,10 +201,10 @@ static void checkDayCorrectness(const _tnum day, const _tnum month,
    }
 }
 
-static p_bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseTimeExp(_genptr<p_tim>& result, const Tokens& tks, pp_perun2& p2)
 {
-   _genptr<_tim> prevTim;
-   _genptr<_tim> time;
+   _genptr<p_tim> prevTim;
+   _genptr<p_tim> time;
    BracketsInfo bi;
    const p_int start = tks.getStart();
    const p_int end = tks.getEnd();
@@ -294,10 +294,10 @@ static p_bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p
 }
 
 static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubtract,
-   _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks,
-   p_int& numReserve, p_perun2& p2)
+   _genptr<p_tim>& prevTim, _genptr<p_tim>& time, const Tokens& tks,
+   p_int& numReserve, pp_perun2& p2)
 {
-   _genptr<_tim> tim;
+   _genptr<p_tim> tim;
    if (parse(p2, tks, tim)) {
       if (numReserve != 0) {
          return false;
@@ -311,10 +311,10 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
       }
       else {
          if (subtract) {
-            _genptr<_per> diff = std::make_unique<gen::TimeDifference>(prevTim, tim);
+            _genptr<p_per> diff = std::make_unique<gen::TimeDifference>(prevTim, tim);
 
             if (time) {
-               _genptr<_tim> tim2 = std::move(time);
+               _genptr<p_tim> tim2 = std::move(time);
                if (prevSubtract) {
                   time = std::make_unique<gen::DecreasedTime>(tim2, diff);
                }
@@ -343,7 +343,7 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
       return false;
    }
 
-   _genptr<_num> num;
+   _genptr<p_num> num;
    if (parse(p2, tks, num)) {
       if (numReserve == 0 && subtract) {
          numReserve = 1;
@@ -354,7 +354,7 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
    }
 
    if (numReserve == 0) {
-      _genptr<_per> per;
+      _genptr<p_per> per;
       if (!parse(p2, tks, per)) {
          return false;
       }
@@ -371,7 +371,7 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
       const p_int length = tks.getLength() + numReserve;
       const Tokens tks2(tks, start, length);
 
-      _genptr<_per> per;
+      _genptr<p_per> per;
       if (!parse(p2, tks2, per)) {
          return false;
       }

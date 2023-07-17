@@ -26,7 +26,7 @@
 namespace perun2::parse
 {
 
-p_bool parseList(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseList(_genptr<p_list>& result, const Tokens& tks, pp_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -61,7 +61,7 @@ p_bool parseList(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, pp_perun2& p2)
 {
    const p_size firstKeywordId = tks.getFilterKeywordId(p2);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());
@@ -85,7 +85,7 @@ static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_peru
 
       switch (kw) {
          case Keyword::kw_Final: {
-            _genptr<_num> num;
+            _genptr<p_num> num;
             if (!parse(p2, ts, num)) {
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
@@ -101,7 +101,7 @@ static p_bool parseListFilter(_genptr<p_list>& result, const Tokens& tks, p_peru
                checkLimitBySize(ts, p2);
             }
 
-            _genptr<_num> num;
+            _genptr<p_num> num;
             if (!parse(p2, ts, num)) {
                throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }

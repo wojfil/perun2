@@ -115,12 +115,12 @@ private:
 struct InConstTimeList : Generator<p_bool>
 {
 public:
-   InConstTimeList(_genptr<_tim>& val, const _tlist& li);
+   InConstTimeList(_genptr<p_tim>& val, const p_tlist& li);
    p_bool getValue() override;
 
 private:
-   _genptr<_tim> value;
-   const _tlist list;
+   _genptr<p_tim> value;
+   const p_tlist list;
 };
 
 }

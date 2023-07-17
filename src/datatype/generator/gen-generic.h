@@ -153,7 +153,7 @@ template <typename T>
 struct ListElement : Generator<T>
 {
 public:
-   ListElement(_genptr<std::vector<T>>& li, _genptr<_num>& id)
+   ListElement(_genptr<std::vector<T>>& li, _genptr<p_num>& id)
       : list(std::move(li)), index(std::move(id)) { };
 
    T getValue() override {
@@ -176,7 +176,7 @@ public:
 
 private:
    _genptr<std::vector<T>> list;
-   _genptr<_num> index;
+   _genptr<p_num> index;
 };
 
 }

@@ -28,9 +28,9 @@
 namespace perun2::func
 {
 
-_num F_Absolute::getValue()
+p_num F_Absolute::getValue()
 {
-   _num n = arg1->getValue();
+   p_num n = arg1->getValue();
 
    if (n.isDouble) {
       if (n.value.d < NDOUBLE_ZERO) {
@@ -47,9 +47,9 @@ _num F_Absolute::getValue()
 }
 
 
-_num F_Ceil::getValue()
+p_num F_Ceil::getValue()
 {
-   _num n = arg1->getValue();
+   p_num n = arg1->getValue();
 
    if (n.isDouble) {
       const p_nint val = static_cast<p_nint>(ceil(n.value.d));
@@ -61,7 +61,7 @@ _num F_Ceil::getValue()
 }
 
 
-_num F_CountInside::getValue()
+p_num F_CountInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
       return false;
@@ -78,13 +78,13 @@ _num F_CountInside::getValue()
       n++;
    }
 
-   return _num(n);
+   return p_num(n);
 }
 
 
-_num F_Floor::getValue()
+p_num F_Floor::getValue()
 {
-   _num n = arg1->getValue();
+   p_num n = arg1->getValue();
 
    if (n.isDouble) {
       const p_nint val = static_cast<p_nint>(floor(n.value.d));
@@ -96,37 +96,37 @@ _num F_Floor::getValue()
 }
 
 
-_num F_Length::getValue()
+p_num F_Length::getValue()
 {
-   return _num(static_cast<p_nint>(arg1->getValue().size()));
+   return p_num(static_cast<p_nint>(arg1->getValue().size()));
 }
 
 
-_num F_Number::getValue()
+p_num F_Number::getValue()
 {
    const p_str s = this->arg1->getValue();
    if (!isNumber(s)) {
-      return _num();
+      return p_num();
    }
 
    if (s.find(CHAR_DOT) == p_str::npos) {
       try {
          const p_nint i = std::stoll(s);
-         return _num(i);
+         return p_num(i);
       }
       catch (...) {
          throw RuntimeError::numberTooBig(s);
       }
    }
    else {
-      return _num(stringToDouble(s));
+      return p_num(stringToDouble(s));
    }
 }
 
 
-_num F_Round::getValue()
+p_num F_Round::getValue()
 {
-   _num n = arg1->getValue();
+   p_num n = arg1->getValue();
 
    if (n.isDouble) {
       const p_nint val = static_cast<p_nint>(round(n.value.d));
@@ -138,10 +138,10 @@ _num F_Round::getValue()
 }
 
 
-_num F_Power::getValue()
+p_num F_Power::getValue()
 {
-   const _num n1 = arg1->getValue();
-   const _num n2 = arg2->getValue();
+   const p_num n1 = arg1->getValue();
+   const p_num n2 = arg2->getValue();
 
    if (n1.isDouble) {
       const p_ndouble base = n1.value.d;
@@ -154,23 +154,23 @@ _num F_Power::getValue()
 
          switch (exp) {
             case NINT_MINUS_ONE: {
-               return _num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
+               return p_num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
             }
             case NINT_ZERO: {
-               return _num(NINT_ONE);
+               return p_num(NINT_ONE);
             }
             case NINT_ONE: {
-               return _num(base);
+               return p_num(base);
             }
             case NINT_TWO: {
-               return _num(base * base);
+               return p_num(base * base);
             }
             case NINT_THREE: {
-               return _num(base * base * base);
+               return p_num(base * base * base);
             }
             case NINT_FOUR: {
                const p_ndouble b2 = base * base;
-               return _num(b2 * b2);
+               return p_num(b2 * b2);
             }
          }
 
@@ -183,24 +183,24 @@ _num F_Power::getValue()
       if (base == NINT_ZERO) {
          if (n2.isDouble) {
             if (n2.value.d == NDOUBLE_ZERO) {
-               return _num(NINT_ONE);
+               return p_num(NINT_ONE);
             }
             else if (n2.value.d < NDOUBLE_ZERO) {
                throw RuntimeError::wrongResultOfExponentiation();
             }
             else {
-               return _num();
+               return p_num();
             }
          }
          else {
             if (n2.value.i == NINT_ZERO) {
-               return _num(NINT_ONE);
+               return p_num(NINT_ONE);
             }
             else if (n2.value.i <= NINT_ZERO) {
                throw RuntimeError::wrongResultOfExponentiation();
             }
             else {
-               return _num();
+               return p_num();
             }
          }
       }
@@ -214,23 +214,23 @@ _num F_Power::getValue()
 
          switch (exp) {
             case NINT_MINUS_ONE: {
-               return _num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
+               return p_num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
             }
             case NINT_ZERO: {
-               return _num(NINT_ONE);
+               return p_num(NINT_ONE);
             }
             case NINT_ONE: {
-               return _num(base);
+               return p_num(base);
             }
             case NINT_TWO: {
-               return _num(base * base);
+               return p_num(base * base);
             }
             case NINT_THREE: {
-               return _num(base * base * base);
+               return p_num(base * base * base);
             }
             case NINT_FOUR: {
                const p_nint b2 = base * base;
-               return _num(b2 * b2);
+               return p_num(b2 * b2);
             }
          }
 
@@ -260,16 +260,16 @@ _num F_Power::getValue()
          }
 
          if (inv) {
-            return _num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / static_cast<p_ndouble>(result));
+            return p_num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / static_cast<p_ndouble>(result));
          }
          else {
-            return _num(neg ? (-result) : result);
+            return p_num(neg ? (-result) : result);
          }
       }
    }
 }
 
-_num F_Power::doublePower(const p_ndouble base, const p_ndouble exp)
+p_num F_Power::doublePower(const p_ndouble base, const p_ndouble exp)
 {
    const p_ndouble v = pow(base, exp);
 
@@ -277,25 +277,25 @@ _num F_Power::doublePower(const p_ndouble base, const p_ndouble exp)
       throw RuntimeError::wrongResultOfExponentiation();
    }
 
-   return _num(v);
+   return p_num(v);
 }
 
-_num F_Sqrt::getValue()
+p_num F_Sqrt::getValue()
 {
-   const _num n = arg1->getValue();
+   const p_num n = arg1->getValue();
 
    if (n.isDouble) {
       if (n.value.d == NDOUBLE_ZERO) {
-         return _num();
+         return p_num();
       }
       else if (n.value.d == NDOUBLE_ONE) {
-         return _num(NINT_ONE);
+         return p_num(NINT_ONE);
       }
       else if (n.value.d < NDOUBLE_ZERO) {
          throw RuntimeError::squareRootOfNegativeNumber(n.toString());
       }
 
-      return _num(sqrt(n.value.d));
+      return p_num(sqrt(n.value.d));
    }
    else {
       if (n.value.i == NINT_ZERO || n.value.i == NINT_ONE) {
@@ -313,7 +313,7 @@ _num F_Sqrt::getValue()
          const p_nint mid = (left + right) / NINT_TWO;
 
          if (mid * mid == n.value.i) {
-            return _num(mid);
+            return p_num(mid);
          }
 
          if (mid * mid < n.value.i) {
@@ -324,37 +324,37 @@ _num F_Sqrt::getValue()
          }
       }
 
-      return _num(static_cast<p_ndouble>(sqrt(n.value.i)));
+      return p_num(static_cast<p_ndouble>(sqrt(n.value.i)));
    }
 }
 
 
-_num F_Sign::getValue()
+p_num F_Sign::getValue()
 {
-   const _num n = arg1->getValue();
+   const p_num n = arg1->getValue();
 
    if (n.isDouble) {
       if (n.value.d > NDOUBLE_ZERO)
-         return _num(NINT_ONE);
+         return p_num(NINT_ONE);
       else if (n.value.d < NDOUBLE_ZERO)
-         return _num(NINT_MINUS_ONE);
+         return p_num(NINT_MINUS_ONE);
       else
-         return _num();
+         return p_num();
    }
    else {
       if (n.value.i > NINT_ZERO)
-         return _num(NINT_ONE);
+         return p_num(NINT_ONE);
       else if (n.value.i < NINT_ZERO)
-         return _num(NINT_MINUS_ONE);
+         return p_num(NINT_MINUS_ONE);
       else
-         return _num();
+         return p_num();
    }
 }
 
 
-_num F_Truncate::getValue()
+p_num F_Truncate::getValue()
 {
-   _num n = arg1->getValue();
+   p_num n = arg1->getValue();
 
    if (n.isDouble) {
       const p_nint val = static_cast<p_nint>(trunc(n.value.d));
@@ -366,32 +366,32 @@ _num F_Truncate::getValue()
 }
 
 
-_num F_Random::getValue()
+p_num F_Random::getValue()
 {
    return this->math.randomDouble();
 }
 
 
-_num F_RandomNumber::getValue()
+p_num F_RandomNumber::getValue()
 {
-   _num n = arg1->getValue();
+   p_num n = arg1->getValue();
 
    if (n.isDouble) {
       n.value.d *= this->math.randomDouble();
       return n;
    }
    else {
-      return _num(this->math.randomInt(n.value.i - NINT_ONE));
+      return p_num(this->math.randomInt(n.value.i - NINT_ONE));
    }
 }
 
 
-_num F_FromBinary::getValue()
+p_num F_FromBinary::getValue()
 {
    const p_str baseString = arg1->getValue();
 
    if (baseString.empty()) {
-      return _num();
+      return p_num();
    }
 
    p_nint result = NINT_ZERO;
@@ -400,7 +400,7 @@ _num F_FromBinary::getValue()
 
    if (baseString[0] == CHAR_MINUS) {
       if (baseString.size() == 1) {
-         return _num();
+         return p_num();
       }
       negative = true;
       i++;
@@ -426,7 +426,7 @@ _num F_FromBinary::getValue()
             break;
          }
          default: {
-            return _num();
+            return p_num();
          }
       }
    }
@@ -435,15 +435,15 @@ _num F_FromBinary::getValue()
       result *= NINT_MINUS_ONE;
    }
 
-   return _num(result);
+   return p_num(result);
 }
 
 
-_num F_FromHex::getValue()
+p_num F_FromHex::getValue()
 {
    const p_str baseString = arg1->getValue();
    if (baseString.empty()) {
-      return _num();
+      return p_num();
    }
 
    p_nint x;
@@ -451,11 +451,11 @@ _num F_FromHex::getValue()
    ss << std::hex << baseString;
    ss >> x;
 
-   return _num(x);
+   return p_num(x);
 }
 
 
-_num F_Count::getValue()
+p_num F_Count::getValue()
 {
    p_nint result = NINT_ZERO;
    
@@ -471,7 +471,7 @@ _num F_Count::getValue()
 }
 
 
-_num F_ShiftMonth_Time::getValue()
+p_num F_ShiftMonth_Time::getValue()
 {
    p_nint result = (static_cast<p_nint>(this->arg1->getValue().month) + this->arg2->getValue().toInt()) % NINT_MONTHS_IN_YEAR;
 
@@ -483,7 +483,7 @@ _num F_ShiftMonth_Time::getValue()
 }
 
 
-_num F_ShiftMonth_Number::getValue()
+p_num F_ShiftMonth_Number::getValue()
 {
    p_nint result = (this->arg1->getValue().toInt() + this->arg2->getValue().toInt()) % NINT_MONTHS_IN_YEAR;
 
@@ -495,7 +495,7 @@ _num F_ShiftMonth_Number::getValue()
 }
 
 
-_num F_ShiftWeekDay_Time::getValue()
+p_num F_ShiftWeekDay_Time::getValue()
 {
    p_nint result = (static_cast<p_nint>(this->arg1->getValue().getWeekDay()) + this->arg2->getValue().toInt()) % NINT_DAYS_IN_WEEK;
 
@@ -507,7 +507,7 @@ _num F_ShiftWeekDay_Time::getValue()
 }
 
 
-_num F_ShiftWeekDay_Number::getValue()
+p_num F_ShiftWeekDay_Number::getValue()
 {
    p_nint result = (this->arg1->getValue().toInt() + this->arg2->getValue().toInt()) % NINT_DAYS_IN_WEEK;
 

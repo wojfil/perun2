@@ -78,127 +78,127 @@ private:
 struct VarNumMultiply : Command
 {
 public:
-   VarNumMultiply(Variable<_num>& var, _genptr<_num>& val)
+   VarNumMultiply(Variable<p_num>& var, _genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
-   Variable<_num>& variable;
-   _genptr<_num> value;
+   Variable<p_num>& variable;
+   _genptr<p_num> value;
 };
 
 
 struct VarNumDivide : Command
 {
 public:
-   VarNumDivide(Variable<_num>& var, _genptr<_num>& val)
+   VarNumDivide(Variable<p_num>& var, _genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
-   Variable<_num>& variable;
-   _genptr<_num> value;
+   Variable<p_num>& variable;
+   _genptr<p_num> value;
 };
 
 
 struct VarPerMultiply : Command
 {
 public:
-   VarPerMultiply(Variable<_per>& var, _genptr<_num>& val)
+   VarPerMultiply(Variable<p_per>& var, _genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
-   Variable<_per>& variable;
-   _genptr<_num> value;
+   Variable<p_per>& variable;
+   _genptr<p_num> value;
 };
 
 
 struct VarPerDivide : Command
 {
 public:
-   VarPerDivide(Variable<_per>& var, _genptr<_num>& val)
+   VarPerDivide(Variable<p_per>& var, _genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
-   Variable<_per>& variable;
-   _genptr<_num> value;
+   Variable<p_per>& variable;
+   _genptr<p_num> value;
 };
 
 
 struct VarModulo : Command
 {
 public:
-   VarModulo(Variable<_num>& var, _genptr<_num>& val)
+   VarModulo(Variable<p_num>& var, _genptr<p_num>& val)
       : variable(var), value(std::move(val)) { };
 
    void run() override;
 
 private:
-   Variable<_num>& variable;
-   _genptr<_num> value;
+   Variable<p_num>& variable;
+   _genptr<p_num> value;
 };
 
 
 struct VarIncrement : Command
 {
 public:
-   VarIncrement(Variable<_num>& var) : variable(var) { };
+   VarIncrement(Variable<p_num>& var) : variable(var) { };
    void run() override;
 
 private:
-   Variable<_num>& variable;
+   Variable<p_num>& variable;
 };
 
 
 struct VarDecrement : Command
 {
 public:
-   VarDecrement(Variable<_num>& var) : variable(var) { };
+   VarDecrement(Variable<p_num>& var) : variable(var) { };
    void run() override;
 
 private:
-   Variable<_num>& variable;
+   Variable<p_num>& variable;
 };
 
 
 struct VarTimeAdd : Command
 {
 public:
-   VarTimeAdd(Variable<_tim>& var, _genptr<_per>& per)
+   VarTimeAdd(Variable<p_tim>& var, _genptr<p_per>& per)
       : variable(var), period(std::move(per)) { };
 
    void run() override;
 
 private:
-   Variable<_tim>& variable;
-   _genptr<_per> period;
+   Variable<p_tim>& variable;
+   _genptr<p_per> period;
 };
 
 
 struct VarTimeSubtract : Command
 {
 public:
-   VarTimeSubtract(Variable<_tim>& var, _genptr<_per>& per)
+   VarTimeSubtract(Variable<p_tim>& var, _genptr<p_per>& per)
       : variable(var), period(std::move(per)) { };
 
    void run() override;
 
 private:
-   Variable<_tim>& variable;
-   _genptr<_per> period;
+   Variable<p_tim>& variable;
+   _genptr<p_per> period;
 };
 
 
 struct VarCharAssignment: Command
 {
 public:
-   VarCharAssignment(Variable<p_str>& var, _genptr<p_str>& val, _genptr<_num>& ind)
+   VarCharAssignment(Variable<p_str>& var, _genptr<p_str>& val, _genptr<p_num>& ind)
       : variable(var), value(std::move(val)), index(std::move(ind)) { };
 
    void run() override;
@@ -206,21 +206,21 @@ public:
 private:
    Variable<p_str>& variable;
    _genptr<p_str> value;
-   _genptr<_num> index;
+   _genptr<p_num> index;
 };
 
 
 struct VarTimeUnitAssignment : Command
 {
 public:
-   VarTimeUnitAssignment(Variable<_tim>& var, _genptr<_num>& val,
+   VarTimeUnitAssignment(Variable<p_tim>& var, _genptr<p_num>& val,
       const Period::PeriodUnit& un) : variable(var), value(std::move(val)), unit(un){ };
 
    void run() override;
 
 private:
-   Variable<_tim>& variable;
-   _genptr<_num> value;
+   Variable<p_tim>& variable;
+   _genptr<p_num> value;
    const Period::PeriodUnit unit;
 };
 
@@ -228,15 +228,15 @@ private:
 struct VarTimeUnitChange : Command
 {
 public:
-   VarTimeUnitChange(Variable<_tim>& var, _genptr<_num>& val,
+   VarTimeUnitChange(Variable<p_tim>& var, _genptr<p_num>& val,
       const Period::PeriodUnit& un, const p_bool neg)
       : variable(var), value(std::move(val)), unit(un), negative(neg) { };
 
    void run() override;
 
 private:
-   Variable<_tim>& variable;
-   _genptr<_num> value;
+   Variable<p_tim>& variable;
+   _genptr<p_num> value;
    const Period::PeriodUnit unit;
    const p_bool negative;
 };
@@ -245,13 +245,13 @@ private:
 struct VarTimeUnitIncrement : Command
 {
 public:
-   VarTimeUnitIncrement(Variable<_tim>& var, const Period::PeriodUnit& un)
+   VarTimeUnitIncrement(Variable<p_tim>& var, const Period::PeriodUnit& un)
       : variable(var), unit(un) { };
 
    void run() override;
 
 private:
-   Variable<_tim>& variable;
+   Variable<p_tim>& variable;
    const Period::PeriodUnit unit;
 };
 
@@ -259,13 +259,13 @@ private:
 struct VarTimeUnitDecrement : Command
 {
 public:
-   VarTimeUnitDecrement(Variable<_tim>& var, const Period::PeriodUnit& un)
+   VarTimeUnitDecrement(Variable<p_tim>& var, const Period::PeriodUnit& un)
       : variable(var), unit(un) { };
 
    void run() override;
 
 private:
-   Variable<_tim>& variable;
+   Variable<p_tim>& variable;
    const Period::PeriodUnit unit;
 };
 

@@ -29,22 +29,22 @@
 namespace perun2
 {
 
-p_perun2::p_perun2(const Arguments& args) : arguments(args), contexts(*this),
+pp_perun2::pp_perun2(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), logger(*this), cache(*this)
 {
-   p_perun2::init();
+   pp_perun2::init();
    Terminator::addPtr(this);
    if (arguments.getParseState() == ArgsParseState::aps_Failed) {
       this->parseState = ParseState::ps_ParsingFailure;
    }
 };
 
-p_perun2::~p_perun2() noexcept
+pp_perun2::~pp_perun2() noexcept
 {
    Terminator::removePtr(this);
 }
 
-p_bool p_perun2::run()
+p_bool pp_perun2::run()
 {
    if (this->parseState == ParseState::ps_NotParsed) {
       const p_bool parsed = this->preParse() && this->parse() && this->postParse();
@@ -65,7 +65,7 @@ p_bool p_perun2::run()
    return false;
 };
 
-void p_perun2::terminate()
+void pp_perun2::terminate()
 {
    this->state = State::s_Exit;
    if (this->sideProcess.running) {
@@ -74,17 +74,17 @@ void p_perun2::terminate()
    }
 }
 
-p_bool p_perun2::isRunning() const
+p_bool pp_perun2::isRunning() const
 {
    return this->state == State::s_Running;
 };
 
-p_bool p_perun2::isNotRunning() const
+p_bool pp_perun2::isNotRunning() const
 {
    return this->state != State::s_Running;
 };
 
-p_bool p_perun2::preParse()
+p_bool pp_perun2::preParse()
 {
    try {
       this->tokens = tokenize(this->arguments.getCode(), *this);
@@ -105,7 +105,7 @@ p_bool p_perun2::preParse()
 };
 
 
-p_bool p_perun2::parse()
+p_bool pp_perun2::parse()
 {
    try {
       const Tokens tks(this->tokens);
@@ -129,7 +129,7 @@ p_bool p_perun2::parse()
    return true;
 };
 
-p_bool p_perun2::postParse()
+p_bool pp_perun2::postParse()
 {
    this->math.init();
 
@@ -139,7 +139,7 @@ p_bool p_perun2::postParse()
    return true;
 };
 
-p_bool p_perun2::runCommands()
+p_bool pp_perun2::runCommands()
 {
    try {
       this->commands->run();
@@ -153,9 +153,9 @@ p_bool p_perun2::runCommands()
    return true;
 };
 
-p_bool p_perun2::initialized = false;
+p_bool pp_perun2::initialized = false;
 
-void p_perun2::init()
+void pp_perun2::init()
 {
    if (!initialized) {
       initialized = true;

@@ -76,62 +76,62 @@ private:
 struct ListFilter_Where : Generator<p_list>
 {
 public:
-   ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, p_perun2& p2);
+   ListFilter_Where(_genptr<p_bool>& cond, _genptr<p_list>& li, _fcptr& ctx, pp_perun2& p2);
    p_list getValue() override;
 
 private:
    _genptr<p_bool> condition;
    _genptr<p_list> list;
    _fcptr context;
-   p_perun2& perun2;
+   pp_perun2& perun2;
 };
 
 
 struct ListFilter_Limit : Generator<p_list>
 {
 public:
-   ListFilter_Limit(_genptr<p_list>& li, _genptr<_num>& num);
+   ListFilter_Limit(_genptr<p_list>& li, _genptr<p_num>& num);
    p_list getValue() override;
 
 private:
    _genptr<p_list> list;
-   _genptr<_num> number;
+   _genptr<p_num> number;
 };
 
 
 struct ListFilter_Skip : Generator<p_list>
 {
 public:
-   ListFilter_Skip(_genptr<p_list>& li, _genptr<_num>& num);
+   ListFilter_Skip(_genptr<p_list>& li, _genptr<p_num>& num);
    p_list getValue() override;
 
 private:
    _genptr<p_list> list;
-   _genptr<_num> number;
+   _genptr<p_num> number;
 };
 
 
 struct ListFilter_Every : Generator<p_list>
 {
 public:
-   ListFilter_Every(_genptr<p_list>& li, _genptr<_num>& num);
+   ListFilter_Every(_genptr<p_list>& li, _genptr<p_num>& num);
    p_list getValue() override;
 
 private:
    _genptr<p_list> list;
-   _genptr<_num> number;
+   _genptr<p_num> number;
 };
 
 
 struct ListFilter_Final : Generator<p_list>
 {
 public:
-   ListFilter_Final(_genptr<p_list>& li, _genptr<_num>& num);
+   ListFilter_Final(_genptr<p_list>& li, _genptr<p_num>& num);
    p_list getValue() override;
 
 private:
    _genptr<p_list> list;
-   _genptr<_num> number;
+   _genptr<p_num> number;
 };
 
 

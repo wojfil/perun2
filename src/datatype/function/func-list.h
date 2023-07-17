@@ -47,11 +47,11 @@ public:
 };
 
 
-struct F_Numbers : Func_1<p_str>, Generator<_nlist>
+struct F_Numbers : Func_1<p_str>, Generator<p_nlist>
 {
 public:
    F_Numbers(_genptr<p_str>& a1) : Func_1(a1) { };
-   _nlist getValue() override;
+   p_nlist getValue() override;
 
 private:
    p_nint fromChar(const p_char ch);

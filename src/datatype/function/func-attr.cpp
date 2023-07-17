@@ -97,14 +97,14 @@ p_str F_Path_Multi::getValue()
 }
 
 
-_num F_SizeDefinition::getValue()
+p_num F_SizeDefinition::getValue()
 {
    p_nint total = NINT_ZERO;
 
    while (definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
          definition->reset();
-         return _num(NINT_MINUS_ONE);
+         return p_num(NINT_MINUS_ONE);
       }
 
       const p_str v = definition->getValue();
@@ -114,23 +114,23 @@ _num F_SizeDefinition::getValue()
       }
    }
 
-   return _num(total);
+   return p_num(total);
 }
 
 
-_num F_SizeList::getValue()
+p_num F_SizeList::getValue()
 {
    p_bool any = false;
    p_nint total = NINT_ZERO;
    const p_list vs = values->getValue();
    const p_size len = vs.size();
    if (len == 0) {
-      return _num();
+      return p_num();
    }
 
    for (p_size i = 0; i < len; i++) {
       if (this->perun2.isNotRunning()) {
-         return _num(NINT_MINUS_ONE);
+         return p_num(NINT_MINUS_ONE);
       }
 
       const p_str v = os_trim(vs[i]);
@@ -143,7 +143,7 @@ _num F_SizeList::getValue()
       }
    }
 
-   return any ? _num(total) : _num(NINT_MINUS_ONE);
+   return any ? p_num(total) : p_num(NINT_MINUS_ONE);
 }
 
 
@@ -155,7 +155,7 @@ void F_Attribute::checkExistence()
 }
 
 
-_num F_Attr_Size::getValue()
+p_num F_Attr_Size::getValue()
 {
    return this->context.invalid
       ? NINT_MINUS_ONE
@@ -163,42 +163,42 @@ _num F_Attr_Size::getValue()
 }
 
 
-_per F_Attr_Lifetime::getValue()
+p_per F_Attr_Lifetime::getValue()
 {
    return this->context.invalid
-      ? _per()
+      ? p_per()
       : os_lifetime(this->context.v_path->value);
 }
 
 
-_tim F_Attr_Access::getValue()
+p_tim F_Attr_Access::getValue()
 {
    return this->context.invalid
-      ? _tim()
+      ? p_tim()
       : os_access(this->context.v_path->value);
 }
 
 
-_tim F_Attr_Change::getValue()
+p_tim F_Attr_Change::getValue()
 {
    return this->context.invalid
-      ? _tim()
+      ? p_tim()
       : os_change(this->context.v_path->value);
 }
 
 
-_tim F_Attr_Creation::getValue()
+p_tim F_Attr_Creation::getValue()
 {
    return this->context.invalid
-      ? _tim()
+      ? p_tim()
       : os_creation(this->context.v_path->value);
 }
 
 
-_tim F_Attr_Modification::getValue()
+p_tim F_Attr_Modification::getValue()
 {
    return this->context.invalid
-      ? _tim()
+      ? p_tim()
       : os_modification(this->context.v_path->value);
 }
 

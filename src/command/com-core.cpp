@@ -201,10 +201,10 @@ void C_OpenWith::run()
 void C_ReaccessTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _tim t = this->context->v_access->value;
+      p_tim t = this->context->v_access->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
-         && os_setTime(this->context->v_path->value, this->context->v_creation->value, t, this->context->v_modification->value);
+         && osp_setTime(this->context->v_path->value, this->context->v_creation->value, t, this->context->v_modification->value);
 
       if (this->perun2.contexts.success->value) {
          this->perun2.logger.log(L"Reaccess ", getCCName(this->context->v_path->value), L" to ", t.toString());
@@ -222,10 +222,10 @@ void C_ReaccessTo::run()
 void C_RechangeTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _tim t = this->context->v_change->value;
+      p_tim t = this->context->v_change->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
-         && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
+         && osp_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
       if (this->perun2.contexts.success->value) {
          this->perun2.logger.log(L"Rechange ", getCCName(this->context->v_path->value), L" to ", t.toString());
@@ -244,10 +244,10 @@ void C_RechangeTo::run()
 void C_RecreateTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _tim t = this->context->v_creation->value;
+      p_tim t = this->context->v_creation->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
-         && os_setTime(this->context->v_path->value, t, this->context->v_access->value, this->context->v_modification->value);
+         && osp_setTime(this->context->v_path->value, t, this->context->v_access->value, this->context->v_modification->value);
 
       if (this->perun2.contexts.success->value) {
          this->perun2.logger.log(L"Recreate ", getCCName(this->context->v_path->value),  L" to ", t.toString());
@@ -265,10 +265,10 @@ void C_RecreateTo::run()
 void C_RemodifyTo::run()
 {
    if (this->perun2.state == State::s_Running) {
-      _tim t = this->context->v_modification->value;
+      p_tim t = this->context->v_modification->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
-         && os_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
+         && osp_setTime(this->context->v_path->value, this->context->v_creation->value, this->context->v_access->value, t);
 
       if (this->perun2.contexts.success->value) {
          this->perun2.logger.log(L"Remodify ", getCCName(this->context->v_path->value), L" to ", t.toString());

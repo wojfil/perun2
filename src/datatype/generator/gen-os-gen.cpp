@@ -24,7 +24,7 @@ namespace perun2::gen
 #define P_GEN_OS_ARGS_DEFAULT_EXT loc, this->perun2, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, p_str()
 
 
-p_bool DefinitionGenerator::generate(_defptr& result) const
+p_bool DefinitionGenerator::generate(p_defptr& result) const
 {
    _genptr<p_str> loc = std::make_unique<LocationReference>(this->perun2);
 

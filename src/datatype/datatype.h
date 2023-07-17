@@ -26,14 +26,13 @@
 namespace perun2
 {
 
-typedef Number                              _num;
-typedef Time                                _tim;
-typedef Period                              _per;
-typedef std::vector<_num>                   _nlist;
-typedef std::vector<_tim>                   _tlist;
-typedef Definition                          _def;
-typedef std::unordered_set<p_str>            _set;
-
+typedef Number                              p_num;
+typedef Time                                p_tim;
+typedef Period                              p_per;
+typedef std::vector<p_num>                  p_nlist;
+typedef std::vector<p_tim>                  p_tlist;
+typedef Definition                          p_def;
+typedef std::unordered_set<p_str>           p_set;
 
 
 }

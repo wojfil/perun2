@@ -50,7 +50,7 @@ p_bool Xor::getValue()
    return value1->getValue() ^ value2->getValue();
 }
 
-InConstTimeList::InConstTimeList(_genptr<_tim>& val, const _tlist& li)
+InConstTimeList::InConstTimeList(_genptr<p_tim>& val, const p_tlist& li)
    : value(std::move(val)), list(sortedAndUniqueTimeList(li)) { };
 
 p_bool InConstTimeList::getValue() 

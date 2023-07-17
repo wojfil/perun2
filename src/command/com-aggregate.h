@@ -21,7 +21,7 @@
 
 namespace perun2
 {
-   struct p_perun2;
+   struct pp_perun2;
    struct Contexts;
 }
 
@@ -46,23 +46,23 @@ struct Aggregate
 {
 public:
    Aggregate() = delete;
-   Aggregate(p_perun2& p2);
+   Aggregate(pp_perun2& p2);
    void set (const _agunit v);
    void run();
 
-   _set copyPaths;
-   std::unordered_map<p_str, _set> selectPaths;
+   p_set copyPaths;
+   std::unordered_map<p_str, p_set> selectPaths;
    uint32_t failedCopy = 0;
    uint32_t failedSelect = 0;
-   _set invalidCopy;
-   _set invalidSelect;
+   p_set invalidCopy;
+   p_set invalidSelect;
 
 private:
    void copy();
    void select();
    inline p_bool has(const _agunit v) const;
 
-   p_perun2& perun2;
+   pp_perun2& perun2;
    Contexts& contexts;
    _agunit value = AGGR_NULL;
    p_bool selectFailure = false;

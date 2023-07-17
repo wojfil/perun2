@@ -59,12 +59,12 @@ enum ParseState
 // this is an instance of Perun2
 // used only internally within the namespace
 // for external facade, use struct 'Perun2' instead
-struct p_perun2
+struct pp_perun2
 {
 public:
-   p_perun2() = delete;
-   p_perun2(const Arguments& args);
-   ~p_perun2() noexcept;
+   pp_perun2() = delete;
+   pp_perun2(const Arguments& args);
+   ~pp_perun2() noexcept;
    p_bool run();
    void terminate();
 
@@ -119,7 +119,7 @@ public:
 
 private:
    Arguments arguments;
-   p_perun2 process;
+   pp_perun2 process;
 };
 
 

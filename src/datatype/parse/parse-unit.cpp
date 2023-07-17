@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -56,13 +56,13 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_num>& result)
 {
    const Token& tk = tks.first();
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = std::make_unique<gen::Constant<_num>>(tk.value.num.n);
+         result = std::make_unique<gen::Constant<p_num>>(tk.value.num.n);
          return true;
       }
       case Token::t_Word: {
@@ -73,7 +73,7 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
             throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
-         _genptr<_tim> var;
+         _genptr<p_tim> var;
          if (!makeVarRef(tk, var, p2)) {
             throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(p2),
                L".", tk.getOriginString_2(p2), L"' does not exist or is unreachable here"), tk.line);
@@ -115,7 +115,7 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
 {
    const Token& tk = tks.first();
 
@@ -137,25 +137,25 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_nlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_tlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_tim>& result)
 {
    const Token& tk = tks.first();
 
@@ -168,7 +168,7 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
             throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
          }
 
-         _genptr<_tim> var;
+         _genptr<p_tim> var;
          if (!makeVarRef(tk, var, p2)) {
             throw SyntaxError(str(L"time variable '", tk.getOriginString(p2), L"' does not exist"), tk.line);
          }
@@ -187,14 +187,14 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_per>& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, _genptr<p_per>& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, _defptr& result)
+p_bool parseOneToken(pp_perun2& p2, const Tokens& tks, p_defptr& result)
 {
    const Token& tk = tks.first();
 

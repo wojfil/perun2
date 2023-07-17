@@ -36,7 +36,7 @@ struct DoubleAsteriskPattern : Definition, WildcardComparer
 {
 public:
    DoubleAsteriskPattern() = delete;
-   DoubleAsteriskPattern(_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr);
+   DoubleAsteriskPattern(_rallptr& def, pp_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr);
 
    p_bool hasNext() override;
    void reset() override;
@@ -51,9 +51,9 @@ private:
    const p_size startId;
    _rallptr definition;
    FileContext* context;
-   p_perun2& perun2;
+   pp_perun2& perun2;
    p_bool first = true;
-   _num index = NINT_ZERO;
+   p_num index = NINT_ZERO;
    const p_bool hasRetreats;
    const p_str retreat;
 

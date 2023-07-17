@@ -41,16 +41,16 @@ protected:
 
 
 
-struct Cast_B_N : Cast<p_bool, _num>
+struct Cast_B_N : Cast<p_bool, p_num>
 {
    Cast_B_N(_genptr<p_bool>& b) : Cast(b) { };
-   _num getValue() override;
+   p_num getValue() override;
 };
 
-struct Cast_B_NL : Cast<p_bool, _nlist>
+struct Cast_B_NL : Cast<p_bool, p_nlist>
 {
    Cast_B_NL(_genptr<p_bool>& b) : Cast(b) { };
-   _nlist getValue() override;
+   p_nlist getValue() override;
 };
 
 struct Cast_B_S : Cast<p_bool, p_str>
@@ -65,51 +65,51 @@ struct Cast_B_L : Cast<p_bool, p_list>
    p_list getValue() override;
 };
 
-struct Cast_N_NL : Cast<_num, _nlist>
+struct Cast_N_NL : Cast<p_num, p_nlist>
 {
-   Cast_N_NL(_genptr<_num>& b) : Cast(b) { };
-   _nlist getValue() override;
+   Cast_N_NL(_genptr<p_num>& b) : Cast(b) { };
+   p_nlist getValue() override;
 };
 
-struct Cast_N_S : Cast<_num, p_str>
+struct Cast_N_S : Cast<p_num, p_str>
 {
-   Cast_N_S(_genptr<_num>& b) : Cast(b) { };
+   Cast_N_S(_genptr<p_num>& b) : Cast(b) { };
    p_str getValue() override;
 };
 
-struct Cast_N_L : Cast<_num, p_list>
+struct Cast_N_L : Cast<p_num, p_list>
 {
-   Cast_N_L(_genptr<_num>& b) : Cast(b) { };
+   Cast_N_L(_genptr<p_num>& b) : Cast(b) { };
    p_list getValue() override;
 };
 
-struct Cast_T_S : Cast<_tim, p_str>
+struct Cast_T_S : Cast<p_tim, p_str>
 {
-   Cast_T_S(_genptr<_tim>& b) : Cast(b) { };
+   Cast_T_S(_genptr<p_tim>& b) : Cast(b) { };
    p_str getValue() override;
 };
 
-struct Cast_T_L : Cast<_tim, p_list>
+struct Cast_T_L : Cast<p_tim, p_list>
 {
-   Cast_T_L(_genptr<_tim>& b) : Cast(b) { };
+   Cast_T_L(_genptr<p_tim>& b) : Cast(b) { };
    p_list getValue() override;
 };
 
-struct Cast_P_S : Cast<_per, p_str>
+struct Cast_P_S : Cast<p_per, p_str>
 {
-   Cast_P_S(_genptr<_per>& b) : Cast(b) { };
+   Cast_P_S(_genptr<p_per>& b) : Cast(b) { };
    p_str getValue() override;
 };
 
-struct Cast_P_L : Cast<_per, p_list>
+struct Cast_P_L : Cast<p_per, p_list>
 {
-   Cast_P_L(_genptr<_per>& b) : Cast(b) { };
+   Cast_P_L(_genptr<p_per>& b) : Cast(b) { };
    p_list getValue() override;
 };
 
-struct Cast_NL_L : Cast<_nlist, p_list>
+struct Cast_NL_L : Cast<p_nlist, p_list>
 {
-   Cast_NL_L(_genptr<_nlist>& b) : Cast(b) { };
+   Cast_NL_L(_genptr<p_nlist>& b) : Cast(b) { };
    p_list getValue() override;
 };
 
@@ -119,29 +119,29 @@ struct Cast_S_L : Cast<p_str, p_list>
    p_list getValue() override;
 };
 
-struct Cast_T_TL : Cast<_tim, _tlist>
+struct Cast_T_TL : Cast<p_tim, p_tlist>
 {
-   Cast_T_TL(_genptr<_tim>& b) : Cast(b) { };
-   _tlist getValue() override;
+   Cast_T_TL(_genptr<p_tim>& b) : Cast(b) { };
+   p_tlist getValue() override;
 };
 
-struct Cast_TL_L : Cast<_tlist, p_list>
+struct Cast_TL_L : Cast<p_tlist, p_list>
 {
-   Cast_TL_L(_genptr<_tlist>& b) : Cast(b) { };
+   Cast_TL_L(_genptr<p_tlist>& b) : Cast(b) { };
    p_list getValue() override;
 };
 
 struct Cast_D_L : Generator<p_list>
 {
 public:
-   Cast_D_L(_defptr& b, p_perun2& p2)
+   Cast_D_L(p_defptr& b, pp_perun2& p2)
       : base(std::move(b)), perun2(p2) { };
 
    p_list getValue() override;
 
 private:
-   p_perun2& perun2;
-   _defptr base;
+   pp_perun2& perun2;
+   p_defptr base;
 };
 
 }

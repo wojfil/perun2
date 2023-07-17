@@ -26,7 +26,7 @@ template <typename T>
 struct C_AggrDelivery : Command
 {
 public:
-   C_AggrDelivery(Aggregate* aggr, _genptr<T>& val, p_perun2& p2)
+   C_AggrDelivery(Aggregate* aggr, _genptr<T>& val, pp_perun2& p2)
       : aggregate(aggr), value(std::move(val)), locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
@@ -53,7 +53,7 @@ private:
 struct C_AggrCopy_String : C_AggrDelivery<p_str>
 {
 public:
-   C_AggrCopy_String(Aggregate* aggr, _genptr<p_str>& val, p_perun2& p2)
+   C_AggrCopy_String(Aggregate* aggr, _genptr<p_str>& val, pp_perun2& p2)
       : C_AggrDelivery<p_str>(aggr, val, p2) {};
 
    void run() override;
@@ -63,7 +63,7 @@ public:
 struct C_AggrCopy_List : C_AggrDelivery<p_list>
 {
 public:
-   C_AggrCopy_List(Aggregate* aggr, _genptr<p_list>& val, p_perun2& p2)
+   C_AggrCopy_List(Aggregate* aggr, _genptr<p_list>& val, pp_perun2& p2)
       : C_AggrDelivery<p_list>(aggr, val, p2) {};
 
    void run() override;
@@ -87,7 +87,7 @@ private:
 struct C_AggrSelect_String : C_AggrDelivery<p_str>
 {
 public:
-   C_AggrSelect_String(Aggregate* aggr, _genptr<p_str>& val, p_perun2& p2)
+   C_AggrSelect_String(Aggregate* aggr, _genptr<p_str>& val, pp_perun2& p2)
       : C_AggrDelivery<p_str>(aggr, val, p2) {};
 
    void run() override;
@@ -97,38 +97,38 @@ public:
 struct C_AggrSelect_List : C_AggrDelivery<p_list>
 {
 public:
-   C_AggrSelect_List(Aggregate* aggr, _genptr<p_list>& val, p_perun2& p2)
+   C_AggrSelect_List(Aggregate* aggr, _genptr<p_list>& val, pp_perun2& p2)
       : C_AggrDelivery<p_list>(aggr, val, p2) {};
 
    void run() override;
 };
 
 
-void logCopyError(p_perun2& p2, const p_str& name);
-void logCopySuccess(p_perun2& p2, const p_str& name);
-void logSelectError(p_perun2& p2, const p_str& name);
-void logSelectSuccess(p_perun2& p2, const p_str& name);
+void logCopyError(pp_perun2& p2, const p_str& name);
+void logCopySuccess(pp_perun2& p2, const p_str& name);
+void logSelectError(pp_perun2& p2, const p_str& name);
+void logSelectSuccess(pp_perun2& p2, const p_str& name);
 
 
 template <typename T>
 struct C_Aggr : Command
 {
 public:
-   C_Aggr(_genptr<T>& val, p_perun2& p2)
+   C_Aggr(_genptr<T>& val, pp_perun2& p2)
       : value(std::move(val)), perun2(p2), 
         locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
    LocationContext* locationContext;
    _genptr<T> value;
-   p_perun2& perun2;
+   pp_perun2& perun2;
 };
 
 
 struct C_Copy_String : C_Aggr<p_str>
 {
 public:
-   C_Copy_String(_genptr<p_str>& val, p_perun2& p2)
+   C_Copy_String(_genptr<p_str>& val, pp_perun2& p2)
       : C_Aggr<p_str>(val, p2) {};
 
    void run() override;
@@ -138,7 +138,7 @@ public:
 struct C_Copy_List : C_Aggr<p_list>
 {
 public:
-   C_Copy_List(_genptr<p_list>& val, p_perun2& p2)
+   C_Copy_List(_genptr<p_list>& val, pp_perun2& p2)
       : C_Aggr<p_list>(val, p2) {};
 
    void run() override;
@@ -149,7 +149,7 @@ struct Selector
 {
 public:
    Selector() = delete;
-   Selector(p_str& pth, p_str& prnt, p_perun2& p2)
+   Selector(p_str& pth, p_str& prnt, pp_perun2& p2)
       : path(pth), parent(prnt), perun2(p2) { };
 
    void reset();
@@ -157,22 +157,22 @@ public:
    void run();
 
 private:
-   std::map<p_str, _set> selectPaths;
+   std::map<p_str, p_set> selectPaths;
    p_str prevParent;
-   _set* prevSet;
+   p_set* prevSet;
    p_bool isFirst = true;
 
    p_str& path;
    p_str& parent;
 
-   p_perun2& perun2;
+   pp_perun2& perun2;
 };
 
 
 struct C_Select_String : C_Aggr<p_str>
 {
 public:
-   C_Select_String(_genptr<p_str>& val, p_perun2& p2)
+   C_Select_String(_genptr<p_str>& val, pp_perun2& p2)
       : C_Aggr<p_str>(val, p2) {};
 
    void run() override;
@@ -182,7 +182,7 @@ public:
 struct C_Select_List : C_Aggr<p_list>
 {
 public:
-   C_Select_List(_genptr<p_list>& val, p_perun2& p2)
+   C_Select_List(_genptr<p_list>& val, pp_perun2& p2)
       : C_Aggr<p_list>(val, p2), 
         selector(path, parent, p2) { };
    void run() override;
@@ -197,7 +197,7 @@ private:
 struct C_Select_Definition : Command
 {
 public:
-   C_Select_Definition(_defptr& val, p_perun2& p2) 
+   C_Select_Definition(p_defptr& val, pp_perun2& p2) 
       : value(std::move(val)), perun2(p2), 
       locationContext(p2.contexts.getLocationContext()), 
       selector(path, parent, p2) { };
@@ -206,8 +206,8 @@ public:
 
 private:
    LocationContext* locationContext;
-   _defptr value;
-   p_perun2& perun2;
+   p_defptr value;
+   pp_perun2& perun2;
    
    p_str path;
    p_str parent;
@@ -218,15 +218,15 @@ private:
 struct C_Select_ContextDefinition : Command
 {
 public:
-   C_Select_ContextDefinition(_defptr& val, p_perun2& p2, FileContext* ctx) 
+   C_Select_ContextDefinition(p_defptr& val, pp_perun2& p2, FileContext* ctx) 
       : value(std::move(val)), perun2(p2), context(ctx), 
         selector(context->v_path->value, context->v_parent->value, p2) { };
 
    void run() override;
 
 private:
-   _defptr value;
-   p_perun2& perun2;
+   p_defptr value;
+   pp_perun2& perun2;
    FileContext* const context;
    Selector selector;
 };

@@ -21,7 +21,7 @@
 namespace perun2::comm
 {
 
-Aggregate::Aggregate(p_perun2& p2)
+Aggregate::Aggregate(pp_perun2& p2)
    : contexts(p2.contexts), perun2(p2) { };
 
 void Aggregate::set(const _agunit v)
@@ -66,7 +66,7 @@ void Aggregate::copy()
    }
 
    if (!this->copyPaths.empty()) {
-      _set goodPaths;
+      p_set goodPaths;
 
       for (auto it = this->copyPaths.begin(); it != this->copyPaths.end(); it++) {
          const p_str& path = *it;
@@ -119,11 +119,11 @@ void Aggregate::select()
 
    if (!selectPaths.empty()) {
       p_bool anyGoodPath = false;
-      _set goodPaths;
+      p_set goodPaths;
 
       for (const auto& pair : selectPaths) {
          const p_str& parent = pair.first;
-         const _set& paths = pair.second;
+         const p_set& paths = pair.second;
 
          if (!os_directoryExists(parent)) {
             for (auto it = paths.begin(); it != paths.end(); it++) {

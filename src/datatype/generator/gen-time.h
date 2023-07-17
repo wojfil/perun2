@@ -23,70 +23,70 @@
 namespace perun2::gen
 {
 
-struct IncreasedTime : Generator<_tim>
+struct IncreasedTime : Generator<p_tim>
 {
 public:
    IncreasedTime() = delete;
-   IncreasedTime(_genptr<_tim>& tim, _genptr<_per>& per);
-   _tim getValue() override;
+   IncreasedTime(_genptr<p_tim>& tim, _genptr<p_per>& per);
+   p_tim getValue() override;
 
 private:
-   _genptr<_tim> time;
-   _genptr<_per> period;
+   _genptr<p_tim> time;
+   _genptr<p_per> period;
 };
 
 
-struct DecreasedTime : Generator<_tim>
+struct DecreasedTime : Generator<p_tim>
 {
 public:
    DecreasedTime() = delete;
-   DecreasedTime(_genptr<_tim>& tim, _genptr<_per>& per);
-   _tim getValue() override;
+   DecreasedTime(_genptr<p_tim>& tim, _genptr<p_per>& per);
+   p_tim getValue() override;
 
 private:
-   _genptr<_tim> time;
-   _genptr<_per> period;
+   _genptr<p_tim> time;
+   _genptr<p_per> period;
 };
 
 
-struct v_Now : Variable<_tim>
+struct v_Now : Variable<p_tim>
 {
 public:
-   v_Now() : Variable<_tim>(VarType::vt_Special) { };
-   _tim getValue() override;
+   v_Now() : Variable<p_tim>(VarType::vt_Special) { };
+   p_tim getValue() override;
 };
 
 
-struct v_Today : Variable<_tim>
+struct v_Today : Variable<p_tim>
 {
 public:
-   v_Today() : Variable<_tim>(VarType::vt_Special) { };
-   _tim getValue() override;
+   v_Today() : Variable<p_tim>(VarType::vt_Special) { };
+   p_tim getValue() override;
 };
 
 
-struct v_Yesterday : Variable<_tim>
+struct v_Yesterday : Variable<p_tim>
 {
 public:
-   v_Yesterday() : Variable<_tim>(VarType::vt_Special) { };
-   _tim getValue() override;
+   v_Yesterday() : Variable<p_tim>(VarType::vt_Special) { };
+   p_tim getValue() override;
 };
 
 
-struct v_Tomorrow : Variable<_tim>
+struct v_Tomorrow : Variable<p_tim>
 {
 public:
-   v_Tomorrow() : Variable<_tim>(VarType::vt_Special) { };
-   _tim getValue() override;
+   v_Tomorrow() : Variable<p_tim>(VarType::vt_Special) { };
+   p_tim getValue() override;
 };
 
 
-struct TimeDate : UnaryOperation<_tim>
+struct TimeDate : UnaryOperation<p_tim>
 {
 public:
    TimeDate() = delete;
-   TimeDate(_genptr<_tim>& val);
-   _tim getValue() override;
+   TimeDate(_genptr<p_tim>& val);
+   p_tim getValue() override;
 };
 
 }

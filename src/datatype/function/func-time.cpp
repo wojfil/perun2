@@ -19,13 +19,13 @@
 namespace perun2::func
 {
 
-_tim F_Christmas::getValue()
+p_tim F_Christmas::getValue()
 {
    const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
-   return _tim(25, 12, year);
+   return p_tim(25, 12, year);
 }
 
-_tim F_Easter::getValue()
+p_tim F_Easter::getValue()
 {
    const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
 
@@ -37,13 +37,13 @@ _tim F_Easter::getValue()
    const _tnum month = 3 + ((e + 40) / 44);
    const _tnum day = e + 28 - (31 * (month / 4));
 
-   return _tim(day, month, year);
+   return p_tim(day, month, year);
 }
 
-_tim F_NewYear::getValue()
+p_tim F_NewYear::getValue()
 {
    const _tnum year = static_cast<_tnum>(arg1->getValue().toInt());
-   return _tim(1, 1, year, 0, 0, 0);
+   return p_tim(1, 1, year, 0, 0, 0);
 }
 
 
@@ -107,17 +107,17 @@ inline void checkSecondsRuntime(const _tnum second)
 }
 
 
-_tim F_Time_2::getValue()
+p_tim F_Time_2::getValue()
 {
    const _tnum v1 = static_cast<_tnum>(arg1->getValue().toInt());
    checkMonthRuntime(v1);
 
    const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
-   return _tim(v1, v2);
+   return p_tim(v1, v2);
 }
 
 
-_tim F_Time_3::getValue()
+p_tim F_Time_3::getValue()
 {
    const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
@@ -126,11 +126,11 @@ _tim F_Time_3::getValue()
    const _tnum v3 = static_cast<_tnum>(arg3->getValue().toInt());
    checkDayRuntime(v1, v2, v3);
 
-   return _tim(v1, v2, v3);
+   return p_tim(v1, v2, v3);
 }
 
 
-_tim F_Time_5::getValue()
+p_tim F_Time_5::getValue()
 {
    const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
@@ -143,11 +143,11 @@ _tim F_Time_5::getValue()
    const _tnum v5 = static_cast<_tnum>(arg5->getValue().toInt());
    checkSmallClockRuntime(v4, v5);
 
-   return _tim(v1, v2, v3, v4, v5);
+   return p_tim(v1, v2, v3, v4, v5);
 }
 
 
-_tim F_Time_6::getValue()
+p_tim F_Time_6::getValue()
 {
    const _tnum v2 = static_cast<_tnum>(arg2->getValue().toInt());
    checkMonthRuntime(v2);
@@ -163,7 +163,7 @@ _tim F_Time_6::getValue()
    const _tnum v6 = static_cast<_tnum>(arg6->getValue().toInt());
    checkSecondsRuntime(v6);
 
-   return _tim(v1, v2, v3, v4, v5, v6);
+   return p_tim(v1, v2, v3, v4, v5, v6);
 }
 
 }

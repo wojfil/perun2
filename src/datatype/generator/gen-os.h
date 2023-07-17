@@ -25,15 +25,15 @@
 
 namespace perun2
 {
-struct p_perun2;
+struct pp_perun2;
 }
 
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS _genptr<p_str>& loc, p_perun2& p2, const p_bool abs, const p_str& pref
+#define P_GEN_OS_ARGS _genptr<p_str>& loc, pp_perun2& p2, const p_bool abs, const p_str& pref
 #define P_GEN_OS_ARGS_2 loc, p2, abs, pref
-#define P_GEN_OS_ARGS_EXT _genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const p_bool abs, const p_str& pref
+#define P_GEN_OS_ARGS_EXT _genptr<p_str>& loc, pp_perun2& p2, const p_str& patt, const p_bool abs, const p_str& pref
 #define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, abs, pref
 
 
@@ -48,7 +48,7 @@ namespace os
 }
 
 
-struct OsDefinition : _def
+struct OsDefinition : p_def
 {
 public:
    OsDefinition() = delete;
@@ -58,10 +58,10 @@ public:
 protected:
    p_bool first = true;
    _genptr<p_str> location;
-   p_perun2& perun2;
+   pp_perun2& perun2;
    FileContext context;
    p_fdata data;
-   _num index;
+   p_num index;
    p_str baseLocation;
 
    const _flags flags;

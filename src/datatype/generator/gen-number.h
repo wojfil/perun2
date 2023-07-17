@@ -22,63 +22,63 @@
 namespace perun2::gen
 {
 
-struct Negation : UnaryOperation<_num>
+struct Negation : UnaryOperation<p_num>
 {
    Negation() = delete;
-   Negation(_genptr<_num>& val);
-   _num getValue() override;
+   Negation(_genptr<p_num>& val);
+   p_num getValue() override;
 };
 
 
-struct Addition : BinaryOperation<_num>
+struct Addition : BinaryOperation<p_num>
 {
    Addition() = delete;
-   Addition(_genptr<_num>& val1, _genptr<_num>& val2);
-   _num getValue() override;
+   Addition(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   p_num getValue() override;
 };
 
 
-struct Subtraction : BinaryOperation<_num>
+struct Subtraction : BinaryOperation<p_num>
 {
    Subtraction() = delete;
-   Subtraction(_genptr<_num>& val1, _genptr<_num>& val2);
-   _num getValue() override;
+   Subtraction(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   p_num getValue() override;
 };
 
 
-struct Multiplication : BinaryOperation<_num>
+struct Multiplication : BinaryOperation<p_num>
 {
    Multiplication() = delete;
-   Multiplication(_genptr<_num>& val1, _genptr<_num>& val2);
-   _num getValue() override;
+   Multiplication(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   p_num getValue() override;
 };
 
 
-struct Division : BinaryOperation<_num>
+struct Division : BinaryOperation<p_num>
 {
    Division() = delete;
-   Division(_genptr<_num>& val1, _genptr<_num>& val2);
-   _num getValue() override;
+   Division(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   p_num getValue() override;
 };
 
 
-struct Modulo : BinaryOperation<_num>
+struct Modulo : BinaryOperation<p_num>
 {
    Modulo() = delete;
-   Modulo(_genptr<_num>& val1, _genptr<_num>& val2);
-   _num getValue() override;
+   Modulo(_genptr<p_num>& val1, _genptr<p_num>& val2);
+   p_num getValue() override;
 };
 
 
-struct TimeMember : Generator<_num>
+struct TimeMember : Generator<p_num>
 {
 public:
    TimeMember() = delete;
-   TimeMember(_genptr<_tim>& tim, const Period::PeriodUnit& pu);
-   _num getValue() override;
+   TimeMember(_genptr<p_tim>& tim, const Period::PeriodUnit& pu);
+   p_num getValue() override;
 
 protected:
-   _genptr<_tim> time;
+   _genptr<p_tim> time;
    const Period::PeriodUnit unit;
 };
 

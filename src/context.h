@@ -27,7 +27,7 @@
 
 namespace perun2
 {
-   struct p_perun2;
+   struct pp_perun2;
 
    template <typename T>
    using _varptr = std::unique_ptr<Variable<T>>;
@@ -41,12 +41,12 @@ namespace perun2
    public:
 
       void takeVarsPtr(_varptrs<p_bool>*& result) { result = &this->bools; };
-      void takeVarsPtr(_varptrs<_tim>*& result) { result = &this->times; };
-      void takeVarsPtr(_varptrs<_per>*& result) { result = &this->periods; };
+      void takeVarsPtr(_varptrs<p_tim>*& result) { result = &this->times; };
+      void takeVarsPtr(_varptrs<p_per>*& result) { result = &this->periods; };
       void takeVarsPtr(_varptrs<p_str>*& result) { result = &this->strings; };
-      void takeVarsPtr(_varptrs<_num>*& result) { result = &this->numbers; };
-      void takeVarsPtr(_varptrs<_tlist>*& result) { result = &this->timeLists; };
-      void takeVarsPtr(_varptrs<_nlist>*& result) { result = &this->numLists; };
+      void takeVarsPtr(_varptrs<p_num>*& result) { result = &this->numbers; };
+      void takeVarsPtr(_varptrs<p_tlist>*& result) { result = &this->timeLists; };
+      void takeVarsPtr(_varptrs<p_nlist>*& result) { result = &this->numLists; };
       void takeVarsPtr(_varptrs<p_list>*& result) { result = &this->lists; };
 
       template <typename T>
@@ -73,12 +73,12 @@ namespace perun2
       }
 
       _varptrs<p_bool> bools;
-      _varptrs<_tim> times;
-      _varptrs<_per> periods;
+      _varptrs<p_tim> times;
+      _varptrs<p_per> periods;
       _varptrs<p_str> strings;
-      _varptrs<_num> numbers;
-      _varptrs<_tlist> timeLists;
-      _varptrs<_nlist> numLists;
+      _varptrs<p_num> numbers;
+      _varptrs<p_tlist> timeLists;
+      _varptrs<p_nlist> numLists;
       _varptrs<p_list> lists;
    };
 
@@ -90,7 +90,7 @@ namespace perun2
    struct AggregateContext
    {
       AggregateContext() = delete;
-      AggregateContext(p_perun2& p2);
+      AggregateContext(pp_perun2& p2);
       void runAggregate() { this->aggregate.run(); }
 
       comm::Aggregate aggregate;
@@ -100,19 +100,19 @@ namespace perun2
    {
    public:
       IndexContext() = delete;
-      IndexContext(p_perun2& p2);
+      IndexContext(pp_perun2& p2);
       void resetIndex();
       void incrementIndex();
 
-      _varptr<_num> index;
+      _varptr<p_num> index;
    };
 
    struct FileContext : IndexContext
    {
    public:
       FileContext() = delete;
-      FileContext(p_perun2& p2);
-      FileContext(_attrptr& attr, p_perun2& p2);
+      FileContext(pp_perun2& p2);
+      FileContext(_attrptr& attr, pp_perun2& p2);
 
       void loadData(const p_str& newThis);
       void loadData(const p_str& newThis, const p_fdata& data);
@@ -138,13 +138,13 @@ namespace perun2
       Variable<p_bool>* v_isdirectory;
       Variable<p_bool>* v_isfile;
       Variable<p_bool>* v_readonly;
-      Variable<_tim>* v_access;
-      Variable<_tim>* v_change;
-      Variable<_tim>* v_creation;
-      Variable<_tim>* v_modification;
-      Variable<_per>* v_lifetime;
-      Variable<_num>* vp_size;
-      Variable<_num>* v_depth;
+      Variable<p_tim>* v_access;
+      Variable<p_tim>* v_change;
+      Variable<p_tim>* v_creation;
+      Variable<p_tim>* v_modification;
+      Variable<p_per>* v_lifetime;
+      Variable<p_num>* vp_size;
+      Variable<p_num>* v_depth;
       Variable<p_str>* v_drive;
       Variable<p_str>* v_extension;
       Variable<p_str>* v_fullname;
@@ -153,7 +153,7 @@ namespace perun2
       Variable<p_str>* v_path;
 
    private:
-      void initVars(p_perun2& p2);
+      void initVars(pp_perun2& p2);
 
       template <typename T>
       Variable<T>* insertVar(const p_str& name)
@@ -179,7 +179,7 @@ namespace perun2
    {
    public:
       GlobalContext() = delete;
-      GlobalContext(p_perun2& p2);
+      GlobalContext(pp_perun2& p2);
 
       template <typename T>
       void insertConstant(const p_str& name)
@@ -209,14 +209,14 @@ namespace perun2
    {
    public:
       Contexts() = delete;
-      Contexts(p_perun2& p2);
+      Contexts(pp_perun2& p2);
 
-      p_bool getVar(const Token& tk, Variable<p_bool>*& result, p_perun2& p2);
-      p_bool getVar(const Token& tk, Variable<_num>*& result, p_perun2& p2);
-      p_bool getVar(const Token& tk, Variable<p_str>*& result, p_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_bool>*& result, pp_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_num>*& result, pp_perun2& p2);
+      p_bool getVar(const Token& tk, Variable<p_str>*& result, pp_perun2& p2);
 
       template <typename T>
-      p_bool getVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
+      p_bool getVar(const Token& tk, Variable<T>*& result, pp_perun2& p2)
       {
          return findVar(tk, result, p2);
       };
@@ -253,7 +253,7 @@ namespace perun2
       p_bool hasIndexContext() const;
       void makeLocationContext(_lcptr& result);
       UserVarsContext* getUserVarsContext();
-      p_bool varExists(const Token& tk, p_perun2& p2);
+      p_bool varExists(const Token& tk, pp_perun2& p2);
       void closeAttributeScope();
       void closeDeepAttributeScope();
 
@@ -263,7 +263,7 @@ namespace perun2
    private:
 
       template <typename T>
-      p_bool findVar(const Token& tk, Variable<T>*& result, p_perun2& p2)
+      p_bool findVar(const Token& tk, Variable<T>*& result, pp_perun2& p2)
       {
          const p_str name = tk.toLowerString(p2);
 
@@ -296,7 +296,7 @@ namespace perun2
          return false;
       }
 
-      void addOsGen(const p_str& name, const gen::OsElement element, p_perun2& p2);
+      void addOsGen(const p_str& name, const gen::OsElement element, pp_perun2& p2);
 
       LocationContext rootLocation;
 

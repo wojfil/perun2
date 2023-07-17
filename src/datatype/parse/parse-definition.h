@@ -22,12 +22,12 @@
 namespace perun2::parse
 {
 
-p_bool parseDefinition(_defptr& result, const Tokens& tks, p_perun2& p2);
+p_bool parseDefinition(p_defptr& result, const Tokens& tks, pp_perun2& p2);
 
-static p_bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2);
-static p_bool parseDefTernary(_defptr& result, const Tokens& tks, p_perun2& p2);
-static p_bool parseDefBinary(_defptr& result, const Tokens& tks, p_perun2& p2);
-static p_bool parseDefFilter(_defptr& result, const Tokens& tks, p_perun2& p2);
+static p_bool parseDefChain(p_defptr& result, const Tokens& tks, pp_perun2& p2);
+static p_bool parseDefTernary(p_defptr& result, const Tokens& tks, pp_perun2& p2);
+static p_bool parseDefBinary(p_defptr& result, const Tokens& tks, pp_perun2& p2);
+static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, pp_perun2& p2);
 
 }
 

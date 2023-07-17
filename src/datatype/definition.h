@@ -50,7 +50,7 @@ protected:
    p_str value;
 };
 
-typedef std::unique_ptr<Definition> _defptr;
+typedef std::unique_ptr<Definition> p_defptr;
 
 }
 

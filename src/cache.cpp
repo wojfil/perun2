@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-Cache::Cache(p_perun2& p2)
+Cache::Cache(pp_perun2& p2)
    : perun2(p2), context(p2.contexts.globalVars) { };
 
 void Cache::actualize(const Token& tk)

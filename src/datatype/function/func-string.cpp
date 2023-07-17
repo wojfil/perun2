@@ -531,7 +531,7 @@ p_str F_MonthName::getValue()
 
 p_str F_MonthNameFromTime::getValue()
 {
-   const _tim t = arg1->getValue();
+   const p_tim t = arg1->getValue();
    return t.type == Time::tt_YearMonth
       ? p_str()
       : monthToString(t.month);
@@ -546,7 +546,7 @@ p_str F_WeekDayName::getValue()
 
 p_str F_WeekDayNameFromTime::getValue()
 {
-   const _tim t = arg1->getValue();
+   const p_tim t = arg1->getValue();
    return t.type == Time::tt_YearMonth
       ? p_str()
       : weekdayToString(t.getWeekDay());
@@ -720,7 +720,7 @@ p_str F_Join::getValue()
 
 p_str F_Roman::getValue()
 {
-   const _num base = arg1->getValue();
+   const p_num base = arg1->getValue();
    p_nint number = base.toInt();
 
    if (number == NINT_ZERO) {
@@ -774,7 +774,7 @@ p_str F_Roman::getValue()
 }
 
 
-inline void F_Roman::appendFraction(const _num& base, p_stream& ss) const
+inline void F_Roman::appendFraction(const p_num& base, p_stream& ss) const
 {
    p_int oc = static_cast<p_int>(std::fmod(base.value.d, NDOUBLE_ONE) * NDOUBLE_TWELVE);
    if (oc < 0) {

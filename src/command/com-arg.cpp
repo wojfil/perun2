@@ -20,16 +20,16 @@
 namespace perun2::comm
 {
 
-IterationLoop::IterationLoop(_comptr& com, _fcptr& ctx, p_perun2& p2)
+IterationLoop::IterationLoop(_comptr& com, _fcptr& ctx, pp_perun2& p2)
    : command(std::move(com)), context(std::move(ctx)), perun2(p2) { };
 
-CS_StringComArg::CS_StringComArg(_genptr<p_str>& str, _comptr& com, _fcptr& ctx, p_perun2& p2)
+CS_StringComArg::CS_StringComArg(_genptr<p_str>& str, _comptr& com, _fcptr& ctx, pp_perun2& p2)
    : IterationLoop(com, ctx, p2), string(std::move(str)) { };
 
-CS_ListComArg::CS_ListComArg(_genptr<p_list>& li, _comptr& com, _fcptr& ctx, p_perun2& p2)
+CS_ListComArg::CS_ListComArg(_genptr<p_list>& li, _comptr& com, _fcptr& ctx, pp_perun2& p2)
    : IterationLoop(com, ctx, p2), list(std::move(li)) { };
 
-CS_DefinitionComArg::CS_DefinitionComArg(_defptr& def, _comptr& com, _fcptr& ctx, p_perun2& p2)
+CS_DefinitionComArg::CS_DefinitionComArg(p_defptr& def, _comptr& com, _fcptr& ctx, pp_perun2& p2)
    : IterationLoop(com, ctx, p2), definition(std::move(def)) { };
 
 void CS_StringComArg::run()
@@ -45,13 +45,13 @@ void CS_StringComArg::run()
 void CS_ListComArg::run()
 {
    const p_list values = list->getValue();
-   const _num length = _num(static_cast<p_nint>(values.size()));
+   const p_num length = p_num(static_cast<p_nint>(values.size()));
 
    if (length.value.i == NINT_ZERO) {
       return;
    }
 
-   _num index;
+   p_num index;
    this->context->resetIndex();
 
    while (this->perun2.isRunning() && index != length) {
@@ -65,7 +65,7 @@ void CS_ListComArg::run()
 
 void CS_DefinitionComArg::run()
 {
-   _num index;
+   p_num index;
    this->context->resetIndex();
 
    while (this->definition->hasNext()) {

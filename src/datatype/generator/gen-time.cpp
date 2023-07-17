@@ -21,50 +21,50 @@
 namespace perun2::gen
 {
 
-IncreasedTime::IncreasedTime (_genptr<_tim>& tim, _genptr<_per>& per)
+IncreasedTime::IncreasedTime (_genptr<p_tim>& tim, _genptr<p_per>& per)
    : time(std::move(tim)), period(std::move(per)) { }
 
-_tim IncreasedTime::getValue()
+p_tim IncreasedTime::getValue()
 {
-   _tim t = this->time->getValue();
+   p_tim t = this->time->getValue();
    t += this->period->getValue();
    return t;
 }
 
-DecreasedTime::DecreasedTime(_genptr<_tim>& tim, _genptr<_per>& per)
+DecreasedTime::DecreasedTime(_genptr<p_tim>& tim, _genptr<p_per>& per)
    : time(std::move(tim)), period(std::move(per)) {};
 
-_tim DecreasedTime::getValue()
+p_tim DecreasedTime::getValue()
 {
-   _tim t = this->time->getValue();
+   p_tim t = this->time->getValue();
    t -= this->period->getValue();
    return t;
 }
 
-_tim v_Now::getValue()
+p_tim v_Now::getValue()
 {
    return os_now();
 }
 
-_tim v_Today::getValue()
+p_tim v_Today::getValue()
 {
    return os_today();
 }
 
-_tim v_Yesterday::getValue()
+p_tim v_Yesterday::getValue()
 {
    return os_yesterday();
 }
 
-_tim v_Tomorrow::getValue()
+p_tim v_Tomorrow::getValue()
 {
    return os_tomorrow();
 }
 
-TimeDate::TimeDate(_genptr<_tim>& val) 
-   : UnaryOperation<_tim>(val) { }
+TimeDate::TimeDate(_genptr<p_tim>& val) 
+   : UnaryOperation<p_tim>(val) { }
 
-_tim TimeDate::getValue() 
+p_tim TimeDate::getValue() 
 {
    return this->value->getValue().toDate();
 }

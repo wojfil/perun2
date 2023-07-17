@@ -54,7 +54,7 @@ void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const p_bool desc, gen
 
 
 template <typename T2>
-p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, p_perun2& p2)
+p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, pp_perun2& p2)
 {
    const Token& first = tks.first();
    
@@ -125,19 +125,19 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
          continue;
       }
 
-      _genptr<_num> unum;
+      _genptr<p_num> unum;
       if (parse(p2, tk, unum)) {
          setOrderUnit(result, unum, desc, indices);
          continue;
       }
 
-      _genptr<_per> uper;
+      _genptr<p_per> uper;
       if (parse(p2, tk, uper)) {
          setOrderUnit(result, uper, desc, indices);
          continue;
       }
 
-      _genptr<_tim> utim;
+      _genptr<p_tim> utim;
       if (parse(p2, tk, utim)) {
          setOrderUnit(result, utim, desc, indices);
          continue;

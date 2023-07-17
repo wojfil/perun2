@@ -30,7 +30,7 @@ p_constexpr p_char CHAR_UNARY_MINUS = CHAR_TILDE;
 // the sign above is used internally by the interpreter to distinguish them
 
 
-p_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseNumber(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2)
 {
    const p_size len = tks.getLength();
 
@@ -88,14 +88,14 @@ p_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
       if (!anyOperator && tks.first().isSymbol(CHAR_MINUS)) {
          Tokens tks2(tks);
          tks2.trimLeft();
-         _genptr<_num> num;
+         _genptr<p_num> num;
 
          if (parse(p2, tks2, num)) {
             result = std::make_unique<gen::Negation>(num);
             return true;
          }
          else {
-            _genptr<_per> per;
+            _genptr<p_per> per;
             if (!parse(p2, tks2, per)) {
                throw SyntaxError(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
             }
@@ -103,20 +103,20 @@ p_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   if (parseCollectionElement<_num>(result, tks, p2)) {
+   if (parseCollectionElement<p_num>(result, tks, p2)) {
       return true;
    }
 
    if (tks.check(TI_IS_LIST_ELEM_MEMBER)) {
       const Tokens tksm(tks, tks.getStart(), tks.getLength() - 1);
-      _genptr<_num> num;
+      _genptr<p_num> num;
       parseListElementIndex(num, tksm, p2);
       const Token& f = tks.first();
-      _genptr<_tlist> tlist;
+      _genptr<p_tlist> tlist;
       
       if (makeVarRef(f, tlist, p2)) {
          const Token& last = tks.last();
-         _genptr<_tim> tim = std::make_unique<gen::ListElement<_tim>>(tlist, num);
+         _genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
 
          if (last.isSecondWord(STRING_YEAR, p2) || last.isSecondWord(STRING_YEARS, p2)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Years);
@@ -150,15 +150,15 @@ p_bool parseNumber(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
       }
    }
    
-   return parseBinary<_num>(result, tks, p2) || parseTernary<_num>(result, tks, p2);
+   return parseBinary<p_num>(result, tks, p2) || parseTernary<p_num>(result, tks, p2);
 }
 
 
 // build numeric expression
 // multiple numbers connected with signs +-*/% and brackets ()
-static p_bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseNumExp(_genptr<p_num>& result, const Tokens& tks, pp_perun2& p2)
 {
-   std::vector<ExpElement<_num>> infList; // infix notation list
+   std::vector<ExpElement<p_num>> infList; // infix notation list
    const p_int start = tks.getStart();
    const p_int end = tks.getEnd();
    p_int sublen = 0;
@@ -185,13 +185,13 @@ static p_bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2
                   if (tks2.getLength() == 1
                      && tks2.first().type == Token::t_Number) {
 
-                     const _num num = tks2.first().value.num.n;
+                     const p_num num = tks2.first().value.num.n;
                      infList.emplace_back(num, line);
                      infList.emplace_back(ch, line);
                      sublen = 0;
                   }
                   else {
-                     _genptr<_num> num;
+                     _genptr<p_num> num;
                      if (parse(p2, tks2, num)) {
                         infList.emplace_back(num, line);
                         infList.emplace_back(ch, line);
@@ -235,7 +235,7 @@ static p_bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2
          infList.emplace_back(tks2.first().value.num.n, tks2.first().line);
       }
       else {
-         _genptr<_num> num;
+         _genptr<p_num> num;
          if (parse(p2, tks2, num)) {
             infList.emplace_back(num, tks2.first().line);
          }
@@ -252,16 +252,16 @@ static p_bool parseNumExp(_genptr<_num>& result, const Tokens& tks, p_perun2& p2
    return numExpTree(result, infList);
 }
 
-static p_bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& infList)
+static p_bool numExpTree(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& infList)
 {
-   std::vector<ExpElement<_num>> elements;
-   std::vector<ExpElement<_num>> temp;
+   std::vector<ExpElement<p_num>> elements;
+   std::vector<ExpElement<p_num>> temp;
    const p_size len = infList.size();
    p_int brackets = 0;
    p_bool anyUnary = false;
 
    for (p_size i = 0; i < len; i++) {
-      ExpElement<_num>& e = infList[i];
+      ExpElement<p_num>& e = infList[i];
       if (e.type == ElementType::et_Operator) {
          const p_char op = e.operator_;
          switch (op) {
@@ -275,7 +275,7 @@ static p_bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& i
             case CHAR_CLOSING_ROUND_BRACKET: {
                brackets--;
                if (brackets == 0) {
-                  _genptr<_num> res;
+                  _genptr<p_num> res;
 
                   if (!numExpTree(res, temp)) {
                      return false;
@@ -319,14 +319,14 @@ static p_bool numExpTree(_genptr<_num>& result, std::vector<ExpElement<_num>>& i
       : numExpTreeMerge(result, elements);
 }
 
-static p_bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
+static p_bool numExpIntegrateUnary(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& elements)
 {
-   std::vector<ExpElement<_num>> newList;
+   std::vector<ExpElement<p_num>> newList;
    p_bool minus = false;
    const p_size len = elements.size();
 
    for (p_size i = 0; i < len; i++) {
-      ExpElement<_num>& e = elements[i];
+      ExpElement<p_num>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
          if (e.operator_ == CHAR_UNARY_MINUS) {
             minus = true;
@@ -338,12 +338,12 @@ static p_bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement
       else {
          if (minus) {
             if (e.type == ElementType::et_Constant) {
-               const _num value = -(e.constant);
+               const p_num value = -(e.constant);
                newList.emplace_back(value, e.line);
             }
             else {
-               _genptr<_num> n = std::move(e.generator);
-               _genptr<_num> neg = std::make_unique<gen::Negation>(n);
+               _genptr<p_num> n = std::move(e.generator);
+               _genptr<p_num> neg = std::make_unique<gen::Negation>(n);
                newList.emplace_back(neg, e.line);
             }
 
@@ -358,7 +358,7 @@ static p_bool numExpIntegrateUnary(_genptr<_num>& result, std::vector<ExpElement
    return numExpTreeMerge(result, newList);
 }
 
-static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
+static p_bool numExpTreeMerge(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& elements)
 {
    const p_size len = elements.size();
    if (len == 1) {
@@ -366,13 +366,13 @@ static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num
       return true;
    }
 
-   std::vector<ExpElement<_num>> nextElements;
-   ExpElement<_num> firstElement(elements[0]);
+   std::vector<ExpElement<p_num>> nextElements;
+   ExpElement<p_num> firstElement(elements[0]);
    p_char oper;
    p_int operLine;
 
    for (p_size i = 1; i < len; i++) {
-      ExpElement<_num>& secondElement = elements[i];
+      ExpElement<p_num>& secondElement = elements[i];
       const ElementType& type = secondElement.type;
 
       if (type == ElementType::et_Operator) {
@@ -383,9 +383,9 @@ static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num
          if (isNumExpHighPriority(oper)) {
             if (type == ElementType::et_Constant && firstElement.type == ElementType::et_Constant)
             {
-               const _num& v1 = firstElement.constant;
-               const _num& v2 = secondElement.constant;
-               _num value;
+               const p_num& v1 = firstElement.constant;
+               const p_num& v2 = secondElement.constant;
+               p_num value;
 
                switch(oper) {
                   case CHAR_ASTERISK: {
@@ -411,9 +411,9 @@ static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num
                firstElement.reinit(value, firstElement.line);
             }
             else {
-               _genptr<_num> first = std::move(firstElement.generator);
-               _genptr<_num> second = std::move(secondElement.generator);
-               _genptr<_num> bin;
+               _genptr<p_num> first = std::move(firstElement.generator);
+               _genptr<p_num> second = std::move(secondElement.generator);
+               _genptr<p_num> bin;
 
                switch(oper) {
                   case CHAR_ASTERISK: {
@@ -452,23 +452,23 @@ static p_bool numExpTreeMerge(_genptr<_num>& result, std::vector<ExpElement<_num
    }
 }
 
-static p_bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_num>>& elements)
+static p_bool numExpTreeMerge2(_genptr<p_num>& result, std::vector<ExpElement<p_num>>& elements)
 {
-   _genptr<_num> first(std::move(elements[0].generator));
+   _genptr<p_num> first(std::move(elements[0].generator));
    p_bool firstIsConstant = first->isConstant();
    p_char op;
    const p_size len = elements.size();
 
    for (p_size i = 1; i < len; i++) {
-      ExpElement<_num>& e = elements[i];
+      ExpElement<p_num>& e = elements[i];
       if (e.type == ElementType::et_Operator) {
          op = e.operator_;
       }
       else {
-         _genptr<_num> second(std::move(e.generator));
+         _genptr<p_num> second(std::move(e.generator));
 
          if (firstIsConstant && e.type == ElementType::et_Constant) {
-            _num value;
+            p_num value;
 
             switch(op) {
                case CHAR_PLUS: {
@@ -481,10 +481,10 @@ static p_bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_nu
                }
             }
 
-            first = std::make_unique<gen::Constant<_num>>(value);
+            first = std::make_unique<gen::Constant<p_num>>(value);
          }
          else {
-            _genptr<_num> prev = std::move(first);
+            _genptr<p_num> prev = std::move(first);
 
             switch(op) {
                case CHAR_PLUS: {
@@ -506,7 +506,7 @@ static p_bool numExpTreeMerge2(_genptr<_num>& result, std::vector<ExpElement<_nu
    return true;
 }
 
-static p_bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
+static p_bool isNumExpComputable(const std::vector<ExpElement<p_num>>& infList)
 {
    const p_size len = infList.size();
    if (len == 0) {
@@ -514,7 +514,7 @@ static p_bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    }
 
    // numeric expressions can start with only two symbols: - or (
-   const ExpElement<_num>& first = infList[0];
+   const ExpElement<p_num>& first = infList[0];
    if (first.type == ElementType::et_Operator) {
       if (!(first.operator_ == CHAR_OPENING_ROUND_BRACKET || first.operator_ == CHAR_UNARY_MINUS)) {
          return false;
@@ -522,7 +522,7 @@ static p_bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    }
 
    // numeric expressions can end with only one symbol: )
-   const ExpElement<_num>& last = infList[len - 1];
+   const ExpElement<p_num>& last = infList[len - 1];
    if (last.type == ElementType::et_Operator) {
       if (last.operator_ != CHAR_CLOSING_ROUND_BRACKET) {
          return false;
@@ -530,8 +530,8 @@ static p_bool isNumExpComputable(const std::vector<ExpElement<_num>>& infList)
    }
 
    for (p_size i = 1; i < len; i++) {
-      const ExpElement<_num>& prev = infList[i - 1];
-      const ExpElement<_num>& curr = infList[i];
+      const ExpElement<p_num>& prev = infList[i - 1];
+      const ExpElement<p_num>& curr = infList[i];
       const p_bool cop = curr.type == ElementType::et_Operator;
 
       if (prev.type == ElementType::et_Operator) {
@@ -616,7 +616,7 @@ static p_bool isNumExpHighPriority(const p_char ch)
    }
 }
 
-void timeVariableMemberException(const Token& tk, p_perun2& p2)
+void timeVariableMemberException(const Token& tk, pp_perun2& p2)
 {
    throw SyntaxError(str(L"'", tk.getOriginString_2(p2),
       L"' is not a time variable member"), tk.line);

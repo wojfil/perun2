@@ -45,23 +45,23 @@ void os_init()
    CoInitializeEx(0, COINIT_MULTITHREADED);
 }
 
-_tim os_now()
+p_tim os_now()
 {
    time_t raw;
    time(&raw);
    const struct tm* info = localtime(&raw);
 
-   return _tim(info->tm_mday, info->tm_mon + 1, 1900 + info->tm_year,
+   return p_tim(info->tm_mday, info->tm_mon + 1, 1900 + info->tm_year,
       info->tm_hour, info->tm_min, info->tm_sec);
 }
 
-_tim os_today()
+p_tim os_today()
 {
    time_t raw;
    time(&raw);
    const struct tm* info = localtime(&raw);
 
-   return _tim(info->tm_mday, info->tm_mon + 1, 1900 + info->tm_year);
+   return p_tim(info->tm_mday, info->tm_mon + 1, 1900 + info->tm_year);
 }
 
 void os_rawSleepForMs(const p_nint ms)
@@ -165,7 +165,7 @@ void os_loadAttributes(FileContext& context)
    if (attribute->has(ATTR_ACCESS)) {
       context.v_access->value = context.v_exists->value
          ? os_convertToPerun2Time(&data.ftLastAccessTime)
-         : _tim();
+         : p_tim();
    }
 
    if (attribute->has(ATTR_ARCHIVE)) {
@@ -179,13 +179,13 @@ void os_loadAttributes(FileContext& context)
    if (attribute->has(ATTR_CREATION)) {
       context.v_creation->value = context.v_exists->value
          ? os_convertToPerun2Time(&data.ftCreationTime)
-         : _tim();
+         : p_tim();
    }
 
    if (attribute->has(ATTR_MODIFICATION) || attribute->has(ATTR_CHANGE)) {
-      const _tim time = context.v_exists->value
+      const p_tim time = context.v_exists->value
          ? os_convertToPerun2Time(&data.ftLastWriteTime)
-         : _tim();
+         : p_tim();
 
       if (attribute->has(ATTR_CHANGE)) {
          context.v_change->value = time;
@@ -202,7 +202,7 @@ void os_loadAttributes(FileContext& context)
             : (os_now() - context.v_modification->value);
       }
       else {
-         context.v_lifetime->value = _per();
+         context.v_lifetime->value = p_per();
       }
    }
 
@@ -247,11 +247,11 @@ void os_loadAttributes(FileContext& context)
    if (attribute->has(ATTR_SIZE)) {
       if (context.v_exists->value) {
          context.vp_size->value = context.v_isfile->value
-            ? _num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : _num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
+            ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
+            : p_num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
       }
       else {
-         context.vp_size->value = _num(NINT_MINUS_ONE);
+         context.vp_size->value = p_num(NINT_MINUS_ONE);
       }
    }
 }
@@ -319,7 +319,7 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
    const p_bool hasMod = attribute->has(ATTR_MODIFICATION);
    const p_bool hasChange = attribute->has(ATTR_CHANGE);
    if (hasMod || hasChange) {
-      const _tim time = os_convertToPerun2Time(&data.ftLastWriteTime);
+      const p_tim time = os_convertToPerun2Time(&data.ftLastWriteTime);
 
       if (hasChange) {
          context.v_change->value = time;
@@ -370,21 +370,21 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
 
    if (attribute->has(ATTR_SIZE)) {
       context.vp_size->value = context.v_isfile->value
-         ? _num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-         : _num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
+         ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
+         : p_num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
    }
 }
 
-_tim os_access(const p_str& path)
+p_tim os_access(const p_str& path)
 {
    p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return _tim();
+      return p_tim();
    }
 
    if (data.dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
-      return _tim();
+      return p_tim();
    }
 
    return os_convertToPerun2Time(&data.ftLastAccessTime);
@@ -395,16 +395,16 @@ p_bool os_archive(const p_str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_ARCHIVE);
 }
 
-_tim os_change(const p_str& path)
+p_tim os_change(const p_str& path)
 {
    p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return _tim();
+      return p_tim();
    }
 
    if (data.dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
-      return _tim();
+      return p_tim();
    }
 
    return os_convertToPerun2Time(&data.ftLastWriteTime);
@@ -415,22 +415,22 @@ p_bool os_compressed(const p_str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_COMPRESSED);
 }
 
-_tim os_creation(const p_str& path)
+p_tim os_creation(const p_str& path)
 {
    p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return _tim();
+      return p_tim();
    }
 
    if (data.dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
-      return _tim();
+      return p_tim();
    }
 
    return os_convertToPerun2Time(&data.ftCreationTime);
 }
 
-_num os_depth(const p_str& value)
+p_num os_depth(const p_str& value)
 {
    if (value.empty()) {
       return NINT_ZERO;
@@ -562,36 +562,36 @@ p_bool os_isDirectory(const p_str& path)
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
 }
 
-_per os_lifetime(const p_str& path)
+p_per os_lifetime(const p_str& path)
 {
    p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return _per();
+      return p_per();
    }
 
    if (data.dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
-      return _per();
+      return p_per();
    }
 
-   const _tim modification = os_convertToPerun2Time(&data.ftLastWriteTime);
-   const _tim creation = os_convertToPerun2Time(&data.ftCreationTime);
+   const p_tim modification = os_convertToPerun2Time(&data.ftLastWriteTime);
+   const p_tim creation = os_convertToPerun2Time(&data.ftCreationTime);
 
    return creation < modification
       ? (os_now() - creation)
       : (os_now() - modification);
 }
 
-_tim os_modification(const p_str& path)
+p_tim os_modification(const p_str& path)
 {
    p_adata data;
 
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return _tim();
+      return p_tim();
    }
 
    if (data.dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
-      return _tim();
+      return p_tim();
    }
 
    return os_convertToPerun2Time(&data.ftLastWriteTime);
@@ -602,7 +602,7 @@ p_bool os_readonly(const p_str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-p_nint osp_size(const p_str& path, p_perun2& p2)
+p_nint osp_size(const p_str& path, pp_perun2& p2)
 {
    p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
@@ -619,7 +619,7 @@ p_nint osp_size(const p_str& path, p_perun2& p2)
       : static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2)
+p_nint osp_sizeDirectory(const p_str& path, pp_perun2& p2)
 {
    p_nint totalSize = NINT_ZERO;
    p_fdata data;
@@ -718,14 +718,14 @@ p_bool os_delete(const p_str& path)
    return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
 }
 
-p_bool os_drop(const p_str& path, p_perun2& p2)
+p_bool os_drop(const p_str& path, pp_perun2& p2)
 {
    return os_isFile(path)
       ? os_dropFile(path)
       : os_dropDirectory(path, p2);
 }
 
-p_bool os_drop(const p_str& path, const p_bool isFile, p_perun2& p2)
+p_bool os_drop(const p_str& path, const p_bool isFile, pp_perun2& p2)
 {
    return isFile
       ? os_dropFile(path)
@@ -737,7 +737,7 @@ p_bool os_dropFile(const p_str& path)
    return DeleteFileW(P_WINDOWS_PATH(path)) != 0;
 }
 
-p_bool os_dropDirectory(const p_str& path, p_perun2& p2)
+p_bool os_dropDirectory(const p_str& path, pp_perun2& p2)
 {
    p_entry hFind;
    p_fdata FindFileData;
@@ -908,8 +908,8 @@ p_bool os_unlock(const p_str& path)
 }
 
 
-p_bool os_setTime(const p_str& path, const _tim& creation,
-   const _tim& access, const _tim& modification)
+p_bool osp_setTime(const p_str& path, const p_tim& creation,
+   const p_tim& access, const p_tim& modification)
 {
    p_ftim time_c;
    p_ftim time_a;
@@ -990,7 +990,7 @@ p_bool os_moveTo(const p_str& oldPath, const p_str& newPath)
    return MoveFileExW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), MOVEFILE_COPY_ALLOWED) != 0;
 }
 
-p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, p_perun2& p2)
+p_bool os_copyTo(const p_str& oldPath, const p_str& newPath, const p_bool isFile, pp_perun2& p2)
 {
    if (isFile) {
       return os_copyToFile(oldPath, newPath);
@@ -1016,7 +1016,7 @@ p_bool os_copyToFile(const p_str& oldPath, const p_str& newPath)
    return CopyFileW(P_WINDOWS_PATH(oldPath), P_WINDOWS_PATH(newPath), true) != 0;
 }
 
-p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& p2)
+p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, pp_perun2& p2)
 {
    if (!os_createDirectory(newPath)) {
       return false;
@@ -1089,7 +1089,7 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& 
    return true;
 }
 
-p_bool os_copy(const _set& paths)
+p_bool os_copy(const p_set& paths)
 {
    p_size totalSize = sizeof(DROPFILES) + sizeof(p_char);
 
@@ -1118,7 +1118,7 @@ p_bool os_copy(const _set& paths)
    return true;
 }
 
-p_bool os_select(const p_str& parent, const _set& paths)
+p_bool os_select(const p_str& parent, const p_set& paths)
 {
    ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
    std::vector<ITEMIDLIST*> v;
@@ -1137,7 +1137,7 @@ p_bool os_select(const p_str& parent, const _set& paths)
    return hr == S_OK;
 }
 
-p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
+p_bool os_run(const p_str& comm, const p_str& location, pp_perun2& p2)
 {
    p2.sideProcess.running = true;
    STARTUPINFO si;
@@ -1946,26 +1946,26 @@ inline p_bool os_isBrowsePath(const p_str& path)
    }
 }
 
-inline _tim os_convertToPerun2Time(const p_ftim* time)
+inline p_tim os_convertToPerun2Time(const p_ftim* time)
 {
    _FILETIME ftime;
    if (FileTimeToLocalFileTime(time, &ftime)) {
       _SYSTEMTIME stime;
 
       if (FileTimeToSystemTime(&ftime, &stime)) {
-         return _tim(stime.wDay, stime.wMonth, stime.wYear,
+         return p_tim(stime.wDay, stime.wMonth, stime.wYear,
             stime.wHour, stime.wMinute, stime.wSecond);
       }
       else {
-         return _tim();
+         return p_tim();
       }
    }
    else {
-      return _tim();
+      return p_tim();
    }
 }
 
-inline p_bool os_convertToFileTime(const _tim& perunTime, p_ftim& result)
+inline p_bool os_convertToFileTime(const p_tim& perunTime, p_ftim& result)
 {
    _SYSTEMTIME stime;
    stime.wYear = perunTime.year;

@@ -81,10 +81,10 @@ void C_AggrSelect_This::run()
          auto it = aggregate->selectPaths.find(this->context.v_parent->value);
 
          if (it == aggregate->selectPaths.end()) {
-            _set newSet;
+            p_set newSet;
             newSet.insert(this->context.v_path->value);
             aggregate->selectPaths.insert(
-               std::pair<p_str, _set>(this->context.v_parent->value, newSet));
+               std::pair<p_str, p_set>(this->context.v_parent->value, newSet));
          }
          else {
             it->second.insert(this->context.v_path->value);
@@ -115,10 +115,10 @@ void C_AggrSelect_String::run()
          auto it = aggregate->selectPaths.find(parent);
 
          if (it == aggregate->selectPaths.end()) {
-            _set newSet;
+            p_set newSet;
             newSet.insert(path);
             aggregate->selectPaths.insert(
-               std::pair<p_str, _set>(parent, newSet));
+               std::pair<p_str, p_set>(parent, newSet));
          }
          else {
             it->second.insert(path);
@@ -135,7 +135,7 @@ void C_AggrSelect_List::run()
    const p_list elements = value->getValue();
    const p_size length = elements.size();
    p_str prevParent;
-   _set* prevSet;
+   p_set* prevSet;
 
    for (p_size i = 0; i < length; i++) {
       const p_str n = os_trim(elements[i]);
@@ -157,10 +157,10 @@ void C_AggrSelect_List::run()
             else {
                auto it = aggregate->selectPaths.find(parent);
                if (it == aggregate->selectPaths.end()) {
-                  _set newSet;
+                  p_set newSet;
                   newSet.insert(path);
                   aggregate->selectPaths.insert(
-                     std::pair<p_str, _set>(parent, newSet));
+                     std::pair<p_str, p_set>(parent, newSet));
 
                   prevSet = &(aggregate->selectPaths.find(parent)->second);
                }
@@ -180,22 +180,22 @@ void C_AggrSelect_List::run()
 
 
 
-void logCopyError(p_perun2& p2, const p_str& name)
+void logCopyError(pp_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Failed to copy ", getCCNameShort(name));
 }
 
-void logCopySuccess(p_perun2& p2, const p_str& name)
+void logCopySuccess(pp_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Copy ", getCCNameShort(name));
 }
 
-void logSelectError(p_perun2& p2, const p_str& name)
+void logSelectError(pp_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Failed to select ", getCCNameShort(name));
 }
 
-void logSelectSuccess(p_perun2& p2, const p_str& name)
+void logSelectSuccess(pp_perun2& p2, const p_str& name)
 {
    p2.logger.log(L"Select ", getCCNameShort(name));
 }
@@ -213,7 +213,7 @@ void C_Copy_String::run()
 
    const p_str path = os_leftJoin(this->locationContext->location->value, n);
    if (os_exists(path)) {
-      _set set;
+      p_set set;
       set.insert(path);
       const p_bool s = os_copy(set);
       if (s) {
@@ -241,7 +241,7 @@ void C_Copy_List::run()
       return;
    }
 
-   _set set;
+   p_set set;
    p_bool anyFailure = false;
 
    for (p_size i = 0; i < length; i++) {
@@ -295,9 +295,9 @@ void Selector::insertValue()
       auto it = selectPaths.find(this->parent);
       if (it == selectPaths.end())
       {
-         _set newSet;
+         p_set newSet;
          newSet.insert(this->path);
-         selectPaths.insert(std::pair<p_str, _set>(this->parent, newSet));
+         selectPaths.insert(std::pair<p_str, p_set>(this->parent, newSet));
          prevSet = &(selectPaths.find(this->parent)->second);
       }
       else
@@ -361,7 +361,7 @@ void C_Select_String::run()
       const p_str parent = os_parent(path);
 
       if (os_directoryExists(parent)) {
-         _set set;
+         p_set set;
          set.insert(path);
          success = os_select(parent, set);
 

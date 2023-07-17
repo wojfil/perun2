@@ -23,12 +23,12 @@
 namespace perun2::parse
 {
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_bool>& result)
 {
    return parseBool(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_num>& result)
 {
    // cast from "bool" to "Number"
    _genptr<p_bool> boo;
@@ -40,7 +40,7 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
    return parseNumber(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
 {
    // cast from "bool" to "string"
    _genptr<p_bool> boo;
@@ -50,21 +50,21 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
    }
 
    // cast from "number" to "string"
-   _genptr<_num> num;
+   _genptr<p_num> num;
    if (parseNumber(num, tks, p2)) {
       result = std::make_unique<gen::Cast_N_S>(num);
       return true;
    }
 
    // cast from "time" to "string"
-   _genptr<_tim> tim;
+   _genptr<p_tim> tim;
    if (parseTime(tim, tks, p2)) {
       result = std::make_unique<gen::Cast_T_S>(tim);
       return true;
    }
 
    // cast from "period" to "string"
-   _genptr<_per> per;
+   _genptr<p_per> per;
    if (parsePeriod(per, tks, p2)) {
       result = std::make_unique<gen::Cast_P_S>(per);
       return true;
@@ -73,7 +73,7 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_str>& result)
    return parseString(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_nlist>& result)
 {
    // cast from "bool" to "numList"
    _genptr<p_bool> boo;
@@ -83,7 +83,7 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
    }
 
    // cast from "Number" to "numList"
-   _genptr<_num> num;
+   _genptr<p_num> num;
    if (parseNumber(num, tks, p2)) {
       result = std::make_unique<gen::Cast_N_NL>(num);
       return true;
@@ -92,10 +92,10 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
    return parseNumList(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_tlist>& result)
 {
    // cast from "Time" to "timList"
-   _genptr<_tim> tim;
+   _genptr<p_tim> tim;
    if (parseTime(tim, tks, p2)) {
       result = std::make_unique<gen::Cast_T_TL>(tim);
       return true;
@@ -104,7 +104,7 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result)
    return parseTimList(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
 {
    // cast from "bool" to "list"
    _genptr<p_bool> boo;
@@ -114,35 +114,35 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
    }
 
    // cast from "number" to "list"
-   _genptr<_num> num;
+   _genptr<p_num> num;
    if (parseNumber(num, tks, p2)) {
       result = std::make_unique<gen::Cast_N_L>(num);
       return true;
    }
 
    // cast from "time" to "list"
-   _genptr<_tim> tim;
+   _genptr<p_tim> tim;
    if (parseTime(tim, tks, p2)) {
       result = std::make_unique<gen::Cast_T_L>(tim);
       return true;
    }
 
    // cast from "period" to "list"
-   _genptr<_per> per;
+   _genptr<p_per> per;
    if (parsePeriod(per, tks, p2)) {
       result = std::make_unique<gen::Cast_P_L>(per);
       return true;
    }
 
    // cast from "numList" to "list"
-   _genptr<_nlist> nlis;
+   _genptr<p_nlist> nlis;
    if (parseNumList(nlis, tks, p2)) {
       result = std::make_unique<gen::Cast_NL_L>(nlis);
       return true;
    }
 
    // cast from "timList" to "list"
-   _genptr<_tlist> tlis;
+   _genptr<p_tlist> tlis;
    if (parseTimList(tlis, tks, p2)) {
       result = std::make_unique<gen::Cast_TL_L>(tlis);
       return true;
@@ -156,7 +156,7 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
    }
 
    // cast from "definition" to "list"
-   _defptr def;
+   p_defptr def;
    if (parseDefinition(def, tks, p2)) {
       result = std::make_unique<gen::Cast_D_L>(def, p2);
       return true;
@@ -165,17 +165,17 @@ p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<p_list>& result)
    return parseList(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_tim>& result)
 {
    return parseTime(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_per>& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, _genptr<p_per>& result)
 {
    return parsePeriod(result, tks, p2);
 }
 
-p_bool parse(p_perun2& p2, const Tokens& tks, _defptr& result)
+p_bool parse(pp_perun2& p2, const Tokens& tks, p_defptr& result)
 {
    return parseDefinition(result, tks, p2);
 }

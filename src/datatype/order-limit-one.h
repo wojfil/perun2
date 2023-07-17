@@ -118,22 +118,22 @@ public:
 };
 
 
-struct OrderByLimitOne : _def
+struct OrderByLimitOne : p_def
 {
 public:
    OrderByLimitOne() = delete;
-   OrderByLimitOne(_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _loptr& lo, p_perun2& p2);
+   OrderByLimitOne(p_defptr& bas, FileContext* ctx, _fcptr& nextCtx, _loptr& lo, pp_perun2& p2);
    FileContext* getFileContext() override;
 
    void reset() override;
    p_bool hasNext() override;
 
 private:
-   _defptr base;
+   p_defptr base;
    FileContext* fileContext;
    _fcptr nextContext;
    _loptr limitOne;
-   p_perun2& perun2;
+   pp_perun2& perun2;
    p_bool valueTaken = false;
 };
 

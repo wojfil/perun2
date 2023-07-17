@@ -19,14 +19,14 @@
 namespace perun2::gen
 {
 
-_num Cast_B_N::getValue()
+p_num Cast_B_N::getValue()
 {
-   return _num ( this->base->getValue() ? NINT_ONE : NINT_ZERO ) ;
+   return p_num ( this->base->getValue() ? NINT_ONE : NINT_ZERO ) ;
 };
 
-_nlist Cast_B_NL::getValue()
+p_nlist Cast_B_NL::getValue()
 {
-   return _nlist { this->base->getValue() ? NINT_ONE : NINT_ZERO };
+   return p_nlist { this->base->getValue() ? NINT_ONE : NINT_ZERO };
 };
 
 p_str Cast_B_S::getValue()
@@ -39,8 +39,8 @@ p_list Cast_B_L::getValue()
    return p_list { this->base->getValue() ? toStr(CHAR_1) : toStr(CHAR_0) };
 };
 
-_nlist Cast_N_NL::getValue(){
-   return _nlist { this->base->getValue() };
+p_nlist Cast_N_NL::getValue(){
+   return p_nlist { this->base->getValue() };
 };
 
 p_str Cast_N_S::getValue()
@@ -75,7 +75,7 @@ p_list Cast_P_L::getValue()
 
 p_list Cast_NL_L::getValue()
 {
-   const _nlist nums = this->base->getValue();
+   const p_nlist nums = this->base->getValue();
    const p_size len = nums.size();
    p_list strings(len);
 
@@ -91,14 +91,14 @@ p_list Cast_S_L::getValue()
    return p_list { this->base->getValue() };
 };
 
-_tlist Cast_T_TL::getValue()
+p_tlist Cast_T_TL::getValue()
 {
-   return _tlist { this->base->getValue() };
+   return p_tlist { this->base->getValue() };
 }
 
 p_list Cast_TL_L::getValue()
 {
-   const _tlist times = this->base->getValue();
+   const p_tlist times = this->base->getValue();
    const p_size len = times.size();
    p_list strings(len);
 

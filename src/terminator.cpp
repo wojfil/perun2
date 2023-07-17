@@ -20,7 +20,7 @@ namespace perun2
 {
 
 p_bool Terminator::initialized = false;
-std::unordered_set<p_perun2*> Terminator::processes;
+std::unordered_set<pp_perun2*> Terminator::processes;
 
 
 void Terminator::init()
@@ -31,12 +31,12 @@ void Terminator::init()
    }
 }
 
-void Terminator::addPtr(p_perun2* p2)
+void Terminator::addPtr(pp_perun2* p2)
 {
    processes.insert(p2);
 }
 
-void Terminator::removePtr(p_perun2* p2)
+void Terminator::removePtr(pp_perun2* p2)
 {
    processes.erase(p2);
 }
@@ -45,7 +45,7 @@ p_int Terminator::HandlerRoutine(p_ulong dwCtrlType)
 {
    switch (dwCtrlType) {
       case CTRL_C_EVENT: {
-         for (p_perun2* p : processes) {
+         for (pp_perun2* p : processes) {
             p->terminate();
          }
          return TRUE;

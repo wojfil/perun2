@@ -165,35 +165,35 @@ inline p_nint F_Numbers::fromChar(const p_char ch)
    return static_cast<p_nint>(ch - CHAR_0);
 }
 
-_nlist F_Numbers::getValue()
+p_nlist F_Numbers::getValue()
 {
    p_str value = arg1->getValue();
    const p_size len = value.size();
 
    switch (len) {
       case 0: {
-         return _nlist();
+         return p_nlist();
       }
       case 1: {
          return std::iswdigit(value[0])
-            ? _nlist{fromChar(value[0])}
-            : _nlist();
+            ? p_nlist{fromChar(value[0])}
+            : p_nlist();
       }
       case 2: {
          if (std::iswdigit(value[0])) {
-            return _nlist {std::iswdigit(value[1])
+            return p_nlist {std::iswdigit(value[1])
                ? (NINT_TEN * fromChar(value[0]) + fromChar(value[1]))
                : fromChar(value[0])
             };
          }
          else {
             return std::iswdigit(value[1])
-               ? _nlist{fromChar(value[1])}
-               : _nlist();
+               ? p_nlist{fromChar(value[1])}
+               : p_nlist();
          }
       }
       default: {
-         _nlist numbers;
+         p_nlist numbers;
          p_bool prevDigit = false;
          p_size start = 0;
 

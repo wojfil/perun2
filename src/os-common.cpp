@@ -37,21 +37,21 @@
 namespace perun2
 {
 
-_tim os_tomorrow()
+p_tim os_tomorrow()
 {
-   _tim t = os_today();
+   p_tim t = os_today();
    t.addDays(1);
    return t;
 }
 
-_tim os_yesterday()
+p_tim os_yesterday()
 {
-   _tim t = os_today();
+   p_tim t = os_today();
    t.addDays(-1);
    return t;
 }
 
-void os_sleepForMs(const p_nint ms, p_perun2& p2)
+void os_sleepForMs(const p_nint ms, pp_perun2& p2)
 {
    if (ms <= NINT_ZERO) {
       return;
@@ -82,7 +82,7 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_DEPTH)) {
-      context.v_depth->value = _num(NINT_MINUS_ONE);
+      context.v_depth->value = p_num(NINT_MINUS_ONE);
    }
 
    if (attribute->has(ATTR_DRIVE)) {
@@ -98,7 +98,7 @@ void os_loadEmptyAttributes(FileContext& context)
    context.v_isdirectory->value = false;
 
    if (attribute->has(ATTR_ACCESS)) {
-      context.v_access->value = _tim();
+      context.v_access->value = p_tim();
    }
 
    if (attribute->has(ATTR_ARCHIVE)) {
@@ -110,11 +110,11 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_CHANGE)) {
-      context.v_change->value = _tim();
+      context.v_change->value = p_tim();
    }
 
    if (attribute->has(ATTR_CREATION)) {
-      context.v_creation->value = _tim();
+      context.v_creation->value = p_tim();
    }
 
    if (attribute->has(ATTR_EMPTY)) {
@@ -134,11 +134,11 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_LIFETIME)) {
-      context.v_lifetime->value = _per();
+      context.v_lifetime->value = p_per();
    }
 
    if (attribute->has(ATTR_MODIFICATION)) {
-      context.v_modification->value = _tim();
+      context.v_modification->value = p_tim();
    }
 
    if (attribute->has(ATTR_NAME)) {
@@ -154,7 +154,7 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_SIZE)) {
-      context.vp_size->value = _num(NINT_MINUS_ONE);
+      context.vp_size->value = p_num(NINT_MINUS_ONE);
    }
 }
 

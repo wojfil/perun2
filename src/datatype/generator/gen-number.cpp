@@ -19,58 +19,58 @@
 namespace perun2::gen
 {
 
-Negation::Negation(_genptr<_num>& val) 
-   : UnaryOperation<_num>(val) { };
+Negation::Negation(_genptr<p_num>& val) 
+   : UnaryOperation<p_num>(val) { };
 
-Addition::Addition(_genptr<_num>& val1, _genptr<_num>& val2)
-   : BinaryOperation<_num>(val1, val2) { };
+Addition::Addition(_genptr<p_num>& val1, _genptr<p_num>& val2)
+   : BinaryOperation<p_num>(val1, val2) { };
 
-Subtraction::Subtraction(_genptr<_num>& val1, _genptr<_num>& val2)
-   : BinaryOperation<_num>(val1, val2) { };
+Subtraction::Subtraction(_genptr<p_num>& val1, _genptr<p_num>& val2)
+   : BinaryOperation<p_num>(val1, val2) { };
       
-Multiplication::Multiplication(_genptr<_num>& val1, _genptr<_num>& val2)
-   : BinaryOperation<_num>(val1, val2) { };
+Multiplication::Multiplication(_genptr<p_num>& val1, _genptr<p_num>& val2)
+   : BinaryOperation<p_num>(val1, val2) { };
 
-Division::Division(_genptr<_num>& val1, _genptr<_num>& val2)
-   : BinaryOperation<_num>(val1, val2) { };
+Division::Division(_genptr<p_num>& val1, _genptr<p_num>& val2)
+   : BinaryOperation<p_num>(val1, val2) { };
 
-Modulo::Modulo(_genptr<_num>& val1, _genptr<_num>& val2)
-   : BinaryOperation<_num>(val1, val2) { };
+Modulo::Modulo(_genptr<p_num>& val1, _genptr<p_num>& val2)
+   : BinaryOperation<p_num>(val1, val2) { };
 
-_num Negation::getValue()
+p_num Negation::getValue()
 {
    return -this->value->getValue();
 }
 
-_num Addition::getValue()
+p_num Addition::getValue()
 {
    return this->value1->getValue() + this->value2->getValue();
 }
 
-_num Subtraction::getValue()
+p_num Subtraction::getValue()
 {
    return this->value1->getValue() - this->value2->getValue();
 }
 
-_num Multiplication::getValue()
+p_num Multiplication::getValue()
 {
    return this->value1->getValue() * this->value2->getValue();
 }
 
-_num Division::getValue()
+p_num Division::getValue()
 {
    return this->value1->getValue() / this->value2->getValue();
 }
 
-_num Modulo::getValue()
+p_num Modulo::getValue()
 {
    return this->value1->getValue() % this->value2->getValue();
 }
 
-TimeMember::TimeMember(_genptr<_tim>& tim, const Period::PeriodUnit& pu) 
+TimeMember::TimeMember(_genptr<p_tim>& tim, const Period::PeriodUnit& pu) 
    : time(std::move(tim)), unit(pu) { };
 
-_num TimeMember::getValue() 
+p_num TimeMember::getValue() 
 {
    switch (this->unit) {
       case Period::u_Years:
@@ -89,7 +89,7 @@ _num TimeMember::getValue()
          return static_cast<p_nint>(this->time->getValue().second);
    }
 
-   return _num();
+   return p_num();
 }
 
 }

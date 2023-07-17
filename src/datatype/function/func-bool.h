@@ -27,7 +27,7 @@ struct F_AnyInside : Generator<p_bool>
 {
 public:
    F_AnyInside() = delete;
-   F_AnyInside(_defptr& def, _lcptr& lctx, FileContext* fctx)
+   F_AnyInside(p_defptr& def, _lcptr& lctx, FileContext* fctx)
       : definition(std::move(def)), locContext(std::move(lctx)), fileContext(fctx) { };
 
    p_bool getValue() override;
@@ -35,7 +35,7 @@ public:
 private:
    _lcptr locContext;
    FileContext* fileContext;
-   _defptr definition;
+   p_defptr definition;
 };
 
 
@@ -91,14 +91,14 @@ public:
 struct F_ContainsDef : Generator<p_bool>
 {
 public:
-   F_ContainsDef(_defptr& def, _genptr<p_str>& val, p_perun2& p2)
+   F_ContainsDef(p_defptr& def, _genptr<p_str>& val, pp_perun2& p2)
       : definition(std::move(def)), value(std::move(val)), perun2(p2) { };
 
    p_bool getValue() override;
 
 private:
-   p_perun2& perun2;
-   _defptr definition;
+   pp_perun2& perun2;
+   p_defptr definition;
    _genptr<p_str> value;
 };
 
@@ -280,13 +280,13 @@ struct F_Any : Generator<p_bool>
 {
 public:
    F_Any() = delete;
-   F_Any(_defptr& def) 
+   F_Any(p_defptr& def) 
       : definition(std::move(def)) { };
 
    p_bool getValue() override;
 
 private:
-   _defptr definition;
+   p_defptr definition;
 };
 
 
@@ -311,7 +311,7 @@ private:
 struct F_Exists : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_Exists(_genptr<p_str>& a1, p_perun2& perun2);
+   F_Exists(_genptr<p_str>& a1, pp_perun2& perun2);
    p_bool getValue() override;
 
 private:
@@ -322,7 +322,7 @@ private:
 struct F_Exist: Func_1<p_list>, Generator<p_bool>
 {
 public:
-   F_Exist(_genptr<p_list>& a1, p_perun2& perun2);
+   F_Exist(_genptr<p_list>& a1, pp_perun2& perun2);
    p_bool getValue() override;
 
 private:

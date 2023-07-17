@@ -64,8 +64,8 @@ _bool os_isDirectory(const _str& path);
 _per os_lifetime(const _str& path);
 _tim os_modification(const _str& path);
 _bool os_readonly(const _str& path);
-_nint os_size(const _str& path, _p2& p2);
-_nint os_sizeDirectory(const _str& path, _p2& p2);
+_nint os_size(const _str& path, p_perun2& p2);
+_nint os_sizeDirectory(const _str& path, p_perun2& p2);
 
 _bool os_exists(const _str& path);
 _bool os_fileExists(const _str& path);
@@ -79,10 +79,10 @@ void os_closeEntry(_entry& entry);
 // some of them take a reference to the running Perun2 instance
 // they can be stopped safely by an interruption signal during operation
 _bool os_delete(const _str& path);
-_bool os_drop(const _str& path, _p2& p2);
-_bool os_drop(const _str& path, const _bool isFile, _p2& p2);
+_bool os_drop(const _str& path, p_perun2& p2);
+_bool os_drop(const _str& path, const _bool isFile, p_perun2& p2);
 _bool os_dropFile(const _str& path);
-_bool os_dropDirectory(const _str& path, _p2& p2);
+_bool os_dropDirectory(const _str& path, p_perun2& p2);
 _bool os_hide(const _str& path);
 _bool os_lock(const _str& path);
 _bool os_open(const _str& path);
@@ -98,14 +98,14 @@ _bool os_createFile(const _str& path);
 _bool os_createDirectory(const _str& path);
 
 _bool os_moveTo(const _str& oldPath, const _str& newPath);
-_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, _p2& p2);
+_bool os_copyTo(const _str& oldPath, const _str& newPath, const _bool isFile, p_perun2& p2);
 _bool os_copyToFile(const _str& oldPath, const _str& newPath);
-_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, _p2& p2);
+_bool os_copyToDirectory(const _str& oldPath, const _str& newPath, p_perun2& p2);
 
 _bool os_copy(const _set& paths);
 _bool os_select(const _str& parent, const _set& paths);
 
-_bool os_run(const _str& comm, const _str& location, _p2& p2);
+_bool os_run(const _str& comm, const _str& location, p_perun2& p2);
 
 _bool os_isInvaild(const _str& path);
 uint32_t os_patternInfo(const _str& pattern);

@@ -23,7 +23,7 @@
 namespace perun2
 {
 
-struct _p2;
+struct p_perun2;
 
 // Token represents the smallest syntax unit of the language
 
@@ -141,14 +141,14 @@ public:
    };
 
    Token() = delete;
-   Token(const _char v, const _int li, _p2& p2);
-   Token(const _char v, const _int am, const _int li, _p2& p2);
-   Token(const _num& v, const _int li, const _size os_id, const _size os_len, const NumberMode nm, _p2& p2);
-   Token(const _size os_id, const _size os_len, const _int li, _p2& p2);
-   Token(const _size os_id, const _size os_len, const _int id, const _int li, _p2& p2);
-   Token(const _int li, const _size os_id, const _size os_len, _p2& p2);
-   Token(const Keyword v, const _int li, const _size os_id, const _size os_len, _p2& p2);
-   Token(const _int li, const _size os_id1, const _size os_len1, const _size os_id2, const _size os_len2, _p2& p2);
+   Token(const _char v, const _int li, p_perun2& p2);
+   Token(const _char v, const _int am, const _int li, p_perun2& p2);
+   Token(const _num& v, const _int li, const _size os_id, const _size os_len, const NumberMode nm, p_perun2& p2);
+   Token(const _size os_id, const _size os_len, const _int li, p_perun2& p2);
+   Token(const _size os_id, const _size os_len, const _int id, const _int li, p_perun2& p2);
+   Token(const _int li, const _size os_id, const _size os_len, p_perun2& p2);
+   Token(const Keyword v, const _int li, const _size os_id, const _size os_len, p_perun2& p2);
+   Token(const _int li, const _size os_id1, const _size os_len1, const _size os_id2, const _size os_len2, p_perun2& p2);
 
    _bool isCommandKeyword() const;
    _bool isFilterKeyword() const;
@@ -157,39 +157,39 @@ public:
    _bool isKeyword(const Keyword kw) const;
 
    // is single word (CREATION)
-   _bool isWord(const _char (&word)[], _p2& p2) const;
-   _bool isWord(const std::vector<_str>& words, _p2& p2) const;
+   _bool isWord(const _char (&word)[], p_perun2& p2) const;
+   _bool isWord(const std::vector<_str>& words, p_perun2& p2) const;
 
    // is first word of two (CREATION.year)
-   _bool isFirstWord(const _char (&word)[], _p2& p2) const;
-   _bool isFirstWord(const std::vector<_str>& words, _p2& p2) const;
+   _bool isFirstWord(const _char (&word)[], p_perun2& p2) const;
+   _bool isFirstWord(const std::vector<_str>& words, p_perun2& p2) const;
 
    // is second word of two (creation.YEAR)
-   _bool isSecondWord(const _char (&word)[], _p2& p2) const;
-   _bool isSecondWord(const std::vector<_str>& words, _p2& p2) const;
+   _bool isSecondWord(const _char (&word)[], p_perun2& p2) const;
+   _bool isSecondWord(const std::vector<_str>& words, p_perun2& p2) const;
 
    // is single word (CREATION) OR is first word of two (CREATION.year)
-   _bool isVariable(const _char (&word)[], _p2& p2) const;
-   _bool isVariable(const std::vector<_str>& words, _p2& p2) const;
+   _bool isVariable(const _char (&word)[], p_perun2& p2) const;
+   _bool isVariable(const std::vector<_str>& words, p_perun2& p2) const;
 
    _bool isNegatableKeywordOperator() const;
    _bool isLogicConstant() const;
    _bool isWeekDay() const;
    _bool isMonth() const;
    _bool isOne() const;
-   _bool isTimeAttribute(_p2& p2) const;
-   _str getOriginString(_p2& p2) const;
-   _str getOriginString_2(_p2& p2) const;
-   _str toLowerString(_p2& p2) const;
+   _bool isTimeAttribute(p_perun2& p2) const;
+   _str getOriginString(p_perun2& p2) const;
+   _str getOriginString_2(p_perun2& p2) const;
+   _str toLowerString(p_perun2& p2) const;
 
    const Type type;
    const _int line;
    const TokenValue value;
    
 private:
-   _str getCodeSubstr(const _osi& osi, _p2& p2) const;
-   _bool isCodeSubstr(const _char (&word)[], const _osi& osi, _p2& p2) const;
-   _bool isCodeSubstr(const _str& word, const _osi& osi, _p2& p2) const;
+   _str getCodeSubstr(const _osi& osi, p_perun2& p2) const;
+   _bool isCodeSubstr(const _char (&word)[], const _osi& osi, p_perun2& p2) const;
+   _bool isCodeSubstr(const _str& word, const _osi& osi, p_perun2& p2) const;
 
 };
 

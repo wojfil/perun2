@@ -28,73 +28,73 @@ namespace perun2::comm
 {
 
 _bool keywordCommands(_comptr& result, const Token& word, Tokens& tks,
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 
-static void checkFileContextExistence(const _str& commandName, const _int line, _p2& p2);
+static void checkFileContextExistence(const _str& commandName, const _int line, p_perun2& p2);
 
 static _bool kwCommandSimple(_comptr& result, const Token& word, Tokens& tks,
-   const _int line, _p2& p2);
-static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* context, const _bool saveChanges,_p2& p2);
-static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int line, _p2& p2);
+   const _int line, p_perun2& p2);
+static _bool coreCommandSimple(_comptr& result, const Token& word, FileContext* context, const _bool saveChanges,p_perun2& p2);
+static _bool kwCommandTime(_comptr& result, const Token& word, Tokens& tks, const _int line, p_perun2& p2);
 static _bool coreCommandTime(_comptr& result, const Token& word, FileContext* context,
-    _genptr<_tim>& time, const _bool saveChanges, _p2& p2);
+    _genptr<_tim>& time, const _bool saveChanges, p_perun2& p2);
 
-static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2);
-static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2);
+static _bool c_open(_comptr& result, const Token& word, const Tokens& tks, const _int line, p_perun2& p2);
+static _bool c_select(_comptr& result, const Token& word, const Tokens& tks, const _int line, p_perun2& p2);
 static _bool c_rename(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 
 static _bool c_create(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_createFile(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_createDirectory(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_createFiles(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_createDirectories(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 
 static _bool c_moveTo(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_moveToContextless(_comptr& result, const Token& word, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_moveToAsContextless(_comptr& result, const Token& word, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_moveToContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_moveToAsContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 
 static _bool c_copy(_comptr& result, const Token& word, const Tokens& tks, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
-static _bool c_copySimple(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
+static _bool c_copySimple(_comptr& result, const Token& word, const Tokens& tks, const _int line, p_perun2& p2);
 static _bool c_copyToContextless(_comptr& result, const Token& word, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_copyToAsContextless(_comptr& result, const Token& word, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_copyToContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 static _bool c_copyToAsContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const _int line, const _bool force, const _bool stack, _p2& p2);
+   const _int line, const _bool force, const _bool stack, p_perun2& p2);
 
-_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int line, const _bool directError, _p2& p2);
-static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2);
-static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2);
+_bool c_print(_comptr& result, const Token& word, const Tokens& tks, const _int line, const _bool directError, p_perun2& p2);
+static _bool c_sleep(_comptr& result, const Token& word, const Tokens& tks, const _int line, p_perun2& p2);
+static _bool c_error(_comptr& result, const Token& word, const Tokens& tks, const _int line, p_perun2& p2);
 
-static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int line, _p2& p2);
-static _bool c_runContextless(_comptr& result, const Token& word, const Tokens& right, const _int line, _p2& p2);
-static _bool c_runContextless_simple(_comptr& result, const Token& word, const Tokens& right, const _int line, _p2& p2);
-static _bool c_runContextless_with(_comptr& result, const Token& word, const Tokens& right, const _int line, _p2& p2);
-static _bool c_runContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, const _int line, _p2& p2);
+static _bool c_run(_comptr& result, const Token& word, const Tokens& tks, const _int line, p_perun2& p2);
+static _bool c_runContextless(_comptr& result, const Token& word, const Tokens& right, const _int line, p_perun2& p2);
+static _bool c_runContextless_simple(_comptr& result, const Token& word, const Tokens& right, const _int line, p_perun2& p2);
+static _bool c_runContextless_with(_comptr& result, const Token& word, const Tokens& right, const _int line, p_perun2& p2);
+static _bool c_runContextfull(_comptr& result, const Token& word, const Tokens& left, const Tokens& right, const _int line, p_perun2& p2);
 static _bool c_runContextfull_simple(_comptr& result, const Token& word, const Tokens& left, 
-   const Tokens& right, const _int line, _p2& p2);
+   const Tokens& right, const _int line, p_perun2& p2);
 static _bool c_runContextfull_with(_comptr& result, const Token& word, const Tokens& left, 
-   const Tokens& right, const _int line, _p2& p2);
+   const Tokens& right, const _int line, p_perun2& p2);
    
 
 static void checkUselessFlags(const Token& word, const _int line,
-   const _bool force, const _bool stack, _p2& p2);
+   const _bool force, const _bool stack, p_perun2& p2);
 static void commandSyntaxError(const _str& name, const _int line);
 static void commandNoArgException(const _str& name, const _int line);
 

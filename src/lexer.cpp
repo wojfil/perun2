@@ -27,7 +27,7 @@ namespace perun2
 // meanwhile, omit comments
 // both // singleline
 // and /* multiline */
-std::vector<Token> tokenize(const _str& code, _p2& p2)
+std::vector<Token> tokenize(const _str& code, p_perun2& p2)
 {
    enum Mode {
       m_Normal = 0,
@@ -244,7 +244,7 @@ std::vector<Token> tokenize(const _str& code, _p2& p2)
    return tokens;
 }
 
-static Token wordToken(const _str& code, const _size start, const _size length, const _int line, _p2& p2)
+static Token wordToken(const _str& code, const _size start, const _size length, const _int line, p_perun2& p2)
 {
    _int dots = 0;
    _bool onlyDigitsAndDots = true;
@@ -403,7 +403,7 @@ static Token wordToken(const _str& code, const _size start, const _size length, 
 }
 
 inline static Token numberToken(const _str& code, const _str& value, const _size start, const _size length, 
-   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, _p2& p2)
+   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, p_perun2& p2)
 {
    if (dots > 1) {
       throw SyntaxError::multipleDotsInNumber(value, line);

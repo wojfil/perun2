@@ -134,13 +134,13 @@ struct Cast_TL_L : Cast<_tlist, _list>
 struct Cast_D_L : Generator<_list>
 {
 public:
-   Cast_D_L(_defptr& b, _p2& p2)
+   Cast_D_L(_defptr& b, p_perun2& p2)
       : base(std::move(b)), perun2(p2) { };
 
    _list getValue() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _defptr base;
 };
 

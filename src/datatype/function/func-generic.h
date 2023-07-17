@@ -100,7 +100,7 @@ struct F_RandomElement : Func_1<std::vector<T>>, Generator<T>
 {
 public:
 
-   F_RandomElement<T> (_genptr<std::vector<T>>& a1, _p2& p2)
+   F_RandomElement<T> (_genptr<std::vector<T>>& a1, p_perun2& p2)
       : Func_1<std::vector<T>>(a1), math(p2.math) {};
 
    T getValue() override {

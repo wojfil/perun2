@@ -23,9 +23,9 @@
 namespace perun2::parse
 {
 
-_bool parseBool(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
+_bool parseBool(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2);
 
-static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
+static _bool parseBoolExp(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2);
 static _bool boolExpTree(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& infList);
 static _bool boolExpIntegrateNegations(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& elements);
 static _bool boolExpTreeMerge(_genptr<_bool>& result, std::vector<ExpElement<_bool>>& elements);
@@ -33,14 +33,14 @@ static _bool isBoolExpComputable(const std::vector<ExpElement<_bool>>& infList);
 _bool isBoolExpOperator(const Token& tk);
 static _char toBoolExpOperator(const Token& tk);
 
-static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
-static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
+static _bool parseLike(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2);
+static _bool parseIn(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2);
 static _bool parseInTimList(_genptr<_bool>& result, const bool& negated, 
-   const std::pair<Tokens, Tokens>& pair, _p2& p2);
-static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, _p2& p2);
+   const std::pair<Tokens, Tokens>& pair, p_perun2& p2);
+static _bool parseComparisons(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2);
 static _bool parseCollectionComparisons(_genptr<_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, _p2& p2);
-static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, _p2& p2);
+   const Tokens& right, const gen::CompType& ct, p_perun2& p2);
+static _bool parseComparison(_genptr<_bool>& result, const Tokens& tks, const _char sign, p_perun2& p2);
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const _char sign, gen::CompType& ctype);
 
 }

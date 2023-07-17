@@ -54,7 +54,7 @@ void setOrderUnit(gen::_loptr& result, _genptr<T>& value, const _bool desc, gen:
 
 
 template <typename T2>
-_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, _p2& p2)
+_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Token& keyword, p_perun2& p2)
 {
    const Token& first = tks.first();
    

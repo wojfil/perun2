@@ -21,10 +21,10 @@
 namespace perun2
 {
 
-std::vector<Token> tokenize(const _str &code, _p2& p2);
-static Token wordToken(const _str& code, const _size start, const _size length, const _int line, _p2& p2);
+std::vector<Token> tokenize(const _str &code, p_perun2& p2);
+static Token wordToken(const _str& code, const _size start, const _size length, const _int line, p_perun2& p2);
 inline static Token numberToken(const _str& code, const _str& value, const _size start, const _size length, 
-   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, _p2& p2);
+   const _nint multiplier, const NumberMode mode, const _int dots, const _int line, p_perun2& p2);
 inline static _bool isSymbol(const _char ch);
 inline static _bool isSpace(const _char ch);
 inline static _bool isNewLine(const _char ch);

@@ -20,7 +20,7 @@
 namespace perun2::parse
 {
 
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_bool>& result, _p2& p2)
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_bool>& result, p_perun2& p2)
    {
       if (tk.isVariable(STRING_ARCHIVE, p2)) {
          result = std::make_unique<func::F_Attr_Archive>(p2);
@@ -62,7 +62,7 @@ namespace perun2::parse
       return false;
    }
 
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_num>& result, _p2& p2)
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_num>& result, p_perun2& p2)
    {
       if (tk.isVariable(STRING_SIZE, p2)) {
          result = std::make_unique<func::F_Attr_Size>(p2);
@@ -72,7 +72,7 @@ namespace perun2::parse
       return false;
    }
 
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_per>& result, _p2& p2)
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_per>& result, p_perun2& p2)
    {
       if (tk.isVariable(STRING_LIFETIME, p2)) {
          result = std::make_unique<func::F_Attr_Lifetime>(p2);
@@ -82,7 +82,7 @@ namespace perun2::parse
       return false;
    }
 
-   _bool makeVarRefAsFunction(const Token& tk, _genptr<_tim>& result, _p2& p2)
+   _bool makeVarRefAsFunction(const Token& tk, _genptr<_tim>& result, p_perun2& p2)
    {
       if (tk.isVariable(STRING_ACCESS, p2)) {
          result = std::make_unique<func::F_Attr_Access>(p2);
@@ -104,7 +104,7 @@ namespace perun2::parse
       return false;
    }
 
-   _bool makeVarRef(const Token& tk, _defptr& result, _p2& p2)
+   _bool makeVarRef(const Token& tk, _defptr& result, p_perun2& p2)
    {
       _str var = tk.toLowerString(p2);
       auto v = p2.contexts.osGenerators.find(var);

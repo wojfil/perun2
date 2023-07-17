@@ -42,7 +42,7 @@ static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
    return tks2.splitBySymbol(CHAR_COMMA);
 }
 
-_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
+_bool boolFunction(_genptr<_bool>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
@@ -411,7 +411,7 @@ _bool boolFunction(_genptr<_bool>& result, const Tokens& tks, _p2& p2)
    return false;
 };
 
-_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, _p2& p2)
+_bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
    _genptr<_str> arg1;
    if (!parse::parse(p2, tks, arg1)) {
@@ -438,7 +438,7 @@ _bool simpleBoolFunction(_genptr<_bool>& result, const Tokens& tks, const Token&
    return true;
 }
 
-_bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
+_bool numberFunction(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
@@ -713,7 +713,7 @@ _bool numberFunction(_genptr<_num>& result, const Tokens& tks, _p2& p2)
    return false;
 }
 
-static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, _p2& p2)
+static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
    _genptr<_num> arg;
    if (!parse::parse(p2, tks, arg)) {
@@ -740,7 +740,7 @@ static _bool simpleNumberFunction(_genptr<_num>& result, const Tokens& tks, cons
    return true;
 }
 
-static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, _p2& p2)
+static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2)
 {
    std::vector<_genptr<_num>> singles;
    std::vector<_genptr<_nlist>> multis;
@@ -783,12 +783,12 @@ static _bool aggrFunction(_genptr<_num>& result, const std::vector<Tokens>& args
    return true;
 }
 
-_bool periodFunction(_genptr<_per>& result, const Tokens& tks, _p2& p2)
+_bool periodFunction(_genptr<_per>& result, const Tokens& tks, p_perun2& p2)
 {
    return false;
 }
 
-_bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
+_bool stringFunction(_genptr<_str>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
@@ -1184,7 +1184,7 @@ _bool stringFunction(_genptr<_str>& result, const Tokens& tks, _p2& p2)
    return false;
 }
 
-static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, _p2& p2)
+static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Tokens>& args, const Token& word, p_perun2& p2)
 {
    _genptr<_str> arg1;
    if (!parse::parse(p2, args[0], arg1)) {
@@ -1206,7 +1206,7 @@ static _bool stringTwoArgFunction(_genptr<_str>& result, const std::vector<Token
    return true;
 }
 
-static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, _p2& p2)
+static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
    _genptr<_str> arg1;
    if (!parse::parse(p2, tks, arg1)) {
@@ -1243,7 +1243,7 @@ static _bool simpleStringFunction(_genptr<_str>& result, const Tokens& tks, cons
    return true;
 }
 
-_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
+_bool timeFunction(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
@@ -1378,7 +1378,7 @@ _bool timeFunction(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
    return false;
 }
 
-static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, _p2& p2)
+static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const Token& word, p_perun2& p2)
 {
    _genptr<_num> arg1;
    if (!parse::parse(p2, tks, arg1)) {
@@ -1398,13 +1398,13 @@ static _bool simpleTimeFunction(_genptr<_tim>& result, const Tokens& tks, const 
 }
 
 
-static void functionArgNumberException(const _int argNumber, const Token& word, _p2& p2)
+static void functionArgNumberException(const _int argNumber, const Token& word, p_perun2& p2)
 {
    throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? _str() : L"s")), word.line);
 }
 
-static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, _p2& p2)
+static void functionArgException(const _int argNumber, const _str& typeName, const Token& word, p_perun2& p2)
 {
    throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(p2), L"' cannot be resolved to a ", typeName), word.line);
@@ -1442,7 +1442,7 @@ static _str ordinalNumber(const _int number)
    }
 }
 
-_bool listFunction(_genptr<_list>& result, const Tokens& tks, _p2& p2)
+_bool listFunction(_genptr<_list>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
@@ -1489,7 +1489,7 @@ _bool listFunction(_genptr<_list>& result, const Tokens& tks, _p2& p2)
 }
 
 
-_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _p2& p2)
+_bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, p_perun2& p2)
 {
    const Token& word = tks.first();
    const std::vector<Tokens> args = toFunctionArgs(tks);
@@ -1513,7 +1513,7 @@ _bool numListFunction(_genptr<_nlist>& result, const Tokens& tks, _p2& p2)
 }
 
 
-static void checkFunctionAttribute(const Token& word, _p2& p2)
+static void checkFunctionAttribute(const Token& word, p_perun2& p2)
 {
    if (!p2.contexts.hasFileContext()) {
       throw SyntaxError(str(L"function '", word.getOriginString(p2),
@@ -1521,7 +1521,7 @@ static void checkFunctionAttribute(const Token& word, _p2& p2)
    }
 }
 
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, _p2& p2)
+static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2)
 {
    BracketsInfo bi;
    _int end = tks.getEnd();

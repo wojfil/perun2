@@ -24,7 +24,7 @@
 namespace perun2::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2)
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
@@ -40,7 +40,7 @@ _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2)
 
 }
 
-void checkLimitBySize(const Tokens& tks, _p2& p2)
+void checkLimitBySize(const Tokens& tks, p_perun2& p2)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();

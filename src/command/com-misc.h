@@ -30,13 +30,13 @@ namespace perun2::comm
 struct C_PrintSingle : Command
 {
 public:
-   C_PrintSingle(_genptr<_str>& val, _p2& p2)
+   C_PrintSingle(_genptr<_str>& val, p_perun2& p2)
       : value(std::move(val)), perun2(p2) { };
 
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _genptr<_str> value;
 };
 
@@ -44,13 +44,13 @@ private:
 struct C_PrintList : Command
 {
 public:
-   C_PrintList(_genptr<_list>& val, _p2& p2)
+   C_PrintList(_genptr<_list>& val, p_perun2& p2)
       : value(std::move(val)), perun2(p2) { };
 
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _genptr<_list> value;
 };
 
@@ -58,13 +58,13 @@ private:
 struct C_PrintDefinition : Command
 {
 public:
-   C_PrintDefinition(_defptr& val, _p2& p2)
+   C_PrintDefinition(_defptr& val, p_perun2& p2)
       : value(std::move(val)), perun2(p2) { };
 
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _defptr value;
 };
 
@@ -72,26 +72,26 @@ private:
 struct C_PrintThis : Command
 {
 public:
-   C_PrintThis(_p2& p2, FileContext& ctx)
+   C_PrintThis(p_perun2& p2, FileContext& ctx)
       : perun2(p2), context(ctx) { };
    void run() override;
 
 private:
    FileContext& context;
-   _p2& perun2;
+   p_perun2& perun2;
 };
 
 
 struct C_SleepPeriod : Command
 {
 public:
-   C_SleepPeriod(_genptr<_per>& val, _p2& p2)
+   C_SleepPeriod(_genptr<_per>& val, p_perun2& p2)
       : value(std::move(val)), perun2(p2) { };
 
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _genptr<_per> value;
 };
 
@@ -99,13 +99,13 @@ private:
 struct C_SleepMs : Command
 {
 public:
-   C_SleepMs(_genptr<_num>& val, _p2& p2)
+   C_SleepMs(_genptr<_num>& val, p_perun2& p2)
       : value(std::move(val)), perun2(p2) { };
 
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _genptr<_num> value;
 };
 
@@ -113,61 +113,61 @@ private:
 struct C_Break : Command
 {
 public:
-   C_Break(_p2& p2)
+   C_Break(p_perun2& p2)
       : perun2(p2) { };
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
 };
 
 
 struct C_Continue : Command
 {
 public:
-   C_Continue(_p2& p2)
+   C_Continue(p_perun2& p2)
       : perun2(p2) { };
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
 };
 
 
 struct C_Exit : Command
 {
 public:
-   C_Exit(_p2& p2)
+   C_Exit(p_perun2& p2)
       : perun2(p2) { };
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
 };
 
 
 struct C_Error : Command
 {
 public:
-   C_Error(_p2& p2)
+   C_Error(p_perun2& p2)
       : perun2(p2) { };
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
 };
 
 
 struct C_ErrorWithExitCode : Command
 {
 public:
-   C_ErrorWithExitCode(_genptr<_num>& code, _p2& p2)
+   C_ErrorWithExitCode(_genptr<_num>& code, p_perun2& p2)
       : exitCode(std::move(code)), perun2(p2) { };
 
    void run() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _genptr<_num> exitCode;
 };
 
@@ -176,12 +176,12 @@ struct RunBase
 {
 public:
    RunBase() = delete;
-   RunBase(_p2& p2);
+   RunBase(p_perun2& p2);
 
 protected:
    _str getLocation();
    
-   _p2& perun2;
+   p_perun2& perun2;
 
 private:
    LocationContext* locationCtx;
@@ -191,7 +191,7 @@ private:
 struct C_Run : Command, RunBase
 {
 public:
-   C_Run(_genptr<_str>& val, _p2& p2)
+   C_Run(_genptr<_str>& val, p_perun2& p2)
       : RunBase(p2), value(std::move(val)) { };
 
    void run() override;
@@ -204,7 +204,7 @@ private:
 struct C_RunWith : Command, RunBase
 {
 public:
-   C_RunWith(_genptr<_str>& val, FileContext* ctx, _p2& p2)
+   C_RunWith(_genptr<_str>& val, FileContext* ctx, p_perun2& p2)
       : context(ctx), RunBase(p2), value(std::move(val)) { };
 
    void run() override;
@@ -218,7 +218,7 @@ private:
 struct C_RunWithWithString : Command, RunBase
 {
 public:
-   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, FileContext* ctx, _p2& p2)
+   C_RunWithWithString(_genptr<_str>& val, _genptr<_str>& arg, FileContext* ctx, p_perun2& p2)
       : context(ctx), RunBase(p2), value(std::move(val)), argument(std::move(arg)) { };
 
    void run() override;
@@ -233,7 +233,7 @@ private:
 struct C_RunWithWith : Command, RunBase
 {
 public:
-   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& arg, FileContext* ctx, _p2& p2)
+   C_RunWithWith(_genptr<_str>& val, _genptr<_list>& arg, FileContext* ctx, p_perun2& p2)
       : context(ctx), RunBase(p2), value(std::move(val)), arguments(std::move(arg)) { };
 
    void run() override;
@@ -248,7 +248,7 @@ private:
 struct C_RunWithPerun2 : Command, RunBase
 {
 public:
-   C_RunWithPerun2(FileContext* ctx, _p2& p2)
+   C_RunWithPerun2(FileContext* ctx, p_perun2& p2)
       : context(ctx), RunBase(p2) { };
 
    void run() override;
@@ -261,7 +261,7 @@ private:
 struct C_RunWithPerun2WithString : Command, RunBase
 {
 public:
-   C_RunWithPerun2WithString(_genptr<_str>& arg, FileContext* ctx, _p2& p2)
+   C_RunWithPerun2WithString(_genptr<_str>& arg, FileContext* ctx, p_perun2& p2)
       : context(ctx), RunBase(p2), argument(std::move(arg)) { };
 
    void run() override;
@@ -275,7 +275,7 @@ private:
 struct C_RunWithPerun2With : Command, RunBase
 {
 public:
-   C_RunWithPerun2With(_genptr<_list>& arg, FileContext* ctx, _p2& p2)
+   C_RunWithPerun2With(_genptr<_list>& arg, FileContext* ctx, p_perun2& p2)
       : context(ctx), RunBase(p2), arguments(std::move(arg)) { };
 
    void run() override;

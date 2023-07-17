@@ -76,14 +76,14 @@ private:
 struct ListFilter_Where : Generator<_list>
 {
 public:
-   ListFilter_Where(_genptr<_bool>& cond, _genptr<_list>& li, _fcptr& ctx, _p2& p2);
+   ListFilter_Where(_genptr<_bool>& cond, _genptr<_list>& li, _fcptr& ctx, p_perun2& p2);
    _list getValue() override;
 
 private:
    _genptr<_bool> condition;
    _genptr<_list> list;
    _fcptr context;
-   _p2& perun2;
+   p_perun2& perun2;
 };
 
 

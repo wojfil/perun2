@@ -25,15 +25,15 @@
 
 namespace perun2
 {
-struct _p2;
+struct p_perun2;
 }
 
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS _genptr<_str>& loc, _p2& p2, const _bool abs, const _str& pref
+#define P_GEN_OS_ARGS _genptr<_str>& loc, p_perun2& p2, const _bool abs, const _str& pref
 #define P_GEN_OS_ARGS_2 loc, p2, abs, pref
-#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, _p2& p2, const _str& patt, const _bool abs, const _str& pref
+#define P_GEN_OS_ARGS_EXT _genptr<_str>& loc, p_perun2& p2, const _str& patt, const _bool abs, const _str& pref
 #define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, abs, pref
 
 
@@ -58,7 +58,7 @@ public:
 protected:
    _bool first = true;
    _genptr<_str> location;
-   _p2& perun2;
+   p_perun2& perun2;
    FileContext context;
    _fdata data;
    _num index;

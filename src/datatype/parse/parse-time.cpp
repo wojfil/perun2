@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-_bool parseTime(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
+_bool parseTime(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    const _size len = tks.getLength();
 
@@ -90,7 +90,7 @@ _bool parseTime(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
    return parseTernary<_tim>(result, tks, p2);
 }
 
-_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
+_bool parseTimeConst(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    // tt_YearMonth:
    const _size len = tks.getLength();
@@ -201,7 +201,7 @@ static void checkDayCorrectness(const _tnum day, const _tnum month,
    }
 }
 
-static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
+static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, p_perun2& p2)
 {
    _genptr<_tim> prevTim;
    _genptr<_tim> time;
@@ -295,7 +295,7 @@ static _bool parseTimeExp(_genptr<_tim>& result, const Tokens& tks, _p2& p2)
 
 static _bool timeExpUnit(_int& sublen, const _bool subtract, _bool& prevSubtract,
    _genptr<_tim>& prevTim, _genptr<_tim>& time, const Tokens& tks,
-   _int& numReserve, _p2& p2)
+   _int& numReserve, p_perun2& p2)
 {
    _genptr<_tim> tim;
    if (parse(p2, tks, tim)) {

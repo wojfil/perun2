@@ -22,7 +22,7 @@
 namespace perun2
 {
 
-struct _p2;
+struct p_perun2;
 
 enum Keyword
 {

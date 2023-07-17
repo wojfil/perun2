@@ -21,12 +21,12 @@
 namespace perun2::parse
 {
 
-_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _p2& p2);
+_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2);
 
-static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _p2& p2);
-static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _p2& p2);
-static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, _p2& p2);
-static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _p2& p2);
+static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2);
+static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2);
+static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, p_perun2& p2);
+static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2);
 
 }
 

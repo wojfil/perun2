@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-_bool parseDefinition(_defptr& result, const Tokens& tks, _p2& p2)
+_bool parseDefinition(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    const _size len = tks.getLength();
 
@@ -50,7 +50,7 @@ _bool parseDefinition(_defptr& result, const Tokens& tks, _p2& p2)
 // Definition chain is a collection of Strings, Lists and Definitions
 // separated by commas, that contains at least one Definition
 // as a result, multiple elements are transformed into one Definition and lazy evaluation is preserved
-static _bool parseDefChain(_defptr& result, const Tokens& tks, _p2& p2)
+static _bool parseDefChain(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    enum ChainLink {
       cl_Definition = 0,
@@ -180,7 +180,7 @@ static _bool parseDefChain(_defptr& result, const Tokens& tks, _p2& p2)
 }
 
 
-static _bool parseDefTernary(_defptr& result, const Tokens& tks, _p2& p2)
+static _bool parseDefTernary(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -208,7 +208,7 @@ static _bool parseDefTernary(_defptr& result, const Tokens& tks, _p2& p2)
 }
 
 
-static _bool parseDefBinary(_defptr& result, const Tokens& tks, _p2& p2)
+static _bool parseDefBinary(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -231,7 +231,7 @@ static _bool parseDefBinary(_defptr& result, const Tokens& tks, _p2& p2)
 }
 
 
-static _bool parseDefFilter(_defptr& result, const Tokens& tks, _p2& p2)
+static _bool parseDefFilter(_defptr& result, const Tokens& tks, p_perun2& p2)
 {
    const _size firstKeywordId = tks.getFilterKeywordId(p2);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());

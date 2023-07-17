@@ -20,10 +20,10 @@
 namespace perun2
 {
 
-Attribute::Attribute(_p2& p2)
+Attribute::Attribute(p_perun2& p2)
    : perun2(p2) { };
 
-Attribute::Attribute(const _aunit val, _p2& p2)
+Attribute::Attribute(const _aunit val, p_perun2& p2)
    : value(val), perun2(p2) { };
 
 void Attribute::add(const Token& tk)

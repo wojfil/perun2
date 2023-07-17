@@ -22,8 +22,8 @@
 namespace perun2::parse
 {
 
-_bool parseString(_genptr<_str>& result, const Tokens& tks, _p2& p2);
-_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, _p2& p2);
+_bool parseString(_genptr<_str>& result, const Tokens& tks, p_perun2& p2);
+_bool parseStringConcat(_genptr<_str>& res, const Tokens& tks, p_perun2& p2);
 
 }
 

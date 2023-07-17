@@ -51,7 +51,7 @@ _tim os_yesterday()
    return t;
 }
 
-void os_sleepForMs(const _nint ms, _p2& p2)
+void os_sleepForMs(const _nint ms, p_perun2& p2)
 {
    if (ms <= NINT_ZERO) {
       return;

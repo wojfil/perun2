@@ -51,7 +51,7 @@ _constexpr _tinfo TI_IS_LIST_ELEM_MEMBER =     0b00010000000000000000000;
 _constexpr _tinfo TI_EVALUATE_DEFINITIONS =    0b00100000000000000000000;
 
 
-struct _p2;
+struct p_perun2;
 
 // this is a subsequence of vector of tokens
 // it has a reference to the origin vector, some indexes and info
@@ -87,11 +87,11 @@ public:
    std::pair<Tokens, Tokens> divideBySymbol(const _char symbol) const;
    std::vector<Tokens> splitBySymbol(const _char symbol) const;
    _int countSymbols(const _char symbol) const;
-   _int getFilterKeywordId(_p2& p2) const;
-   std::vector<Tokens> splitByFiltherKeywords(_p2& p2) const;
+   _int getFilterKeywordId(p_perun2& p2) const;
+   std::vector<Tokens> splitByFiltherKeywords(p_perun2& p2) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 
-   void checkCommonExpressionExceptions(_p2& p2) const;
+   void checkCommonExpressionExceptions(p_perun2& p2) const;
 
 private:
    _int start;

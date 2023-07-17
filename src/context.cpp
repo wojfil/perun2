@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-   AggregateContext::AggregateContext(_p2& p2)
+   AggregateContext::AggregateContext(p_perun2& p2)
       : aggregate(p2) { };
 
    LocationContext::LocationContext()
@@ -38,11 +38,11 @@ namespace perun2
          : os_leftJoin(this->prevLocation->location->value, trimmedValue);
    }
 
-   IndexContext::IndexContext(_p2& p2)
+   IndexContext::IndexContext(p_perun2& p2)
       : AggregateContext(p2),
         index(std::make_unique<Variable<_num>>(VarType::vt_Special)) { };
 
-   FileContext::FileContext(_p2& p2)
+   FileContext::FileContext(p_perun2& p2)
       : IndexContext(p2), attribute(std::make_unique<Attribute>(p2)),
       this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
@@ -50,7 +50,7 @@ namespace perun2
       this->initVars(p2);
    };
 
-   FileContext::FileContext(_attrptr& attr, _p2& p2)
+   FileContext::FileContext(_attrptr& attr, p_perun2& p2)
       : IndexContext(p2), attribute(std::move(attr)),
       this_(std::make_unique<Variable<_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
@@ -68,7 +68,7 @@ namespace perun2
       this->index->value.value.i++;
    }
 
-   void FileContext::initVars(_p2& p2)
+   void FileContext::initVars(p_perun2& p2)
    {
       this->v_archive = this->insertVar<_bool>(STRING_ARCHIVE);
       this->v_compressed = this->insertVar<_bool>(STRING_COMPRESSED);
@@ -126,7 +126,7 @@ namespace perun2
       }
    }
 
-   GlobalContext::GlobalContext(_p2& p2)
+   GlobalContext::GlobalContext(p_perun2& p2)
    {
       this->globalVars.times.insert(std::make_pair(STRING_NOW, std::make_unique<gen::v_Now>()));
       this->globalVars.times.insert(std::make_pair(STRING_TODAY, std::make_unique<gen::v_Today>()));
@@ -143,7 +143,7 @@ namespace perun2
       this->insertConstant<_str>(STRING_NOTEPAD);
    };
 
-   Contexts::Contexts(_p2& p2)
+   Contexts::Contexts(p_perun2& p2)
       : GlobalContext(p2), success(std::make_unique<Variable<_bool>>(VarType::vt_Special, false))
    {
       this->locationContexts.push_back(&this->rootLocation);
@@ -155,7 +155,7 @@ namespace perun2
       this->addOsGen(STRING_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
    };
 
-   _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, _p2& p2)
+   _bool Contexts::getVar(const Token& tk, Variable<_bool>*& result, p_perun2& p2)
    {
       if (tk.isWord(STRING_SUCCESS, p2)) {
          result = this->success.get();
@@ -165,7 +165,7 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, _p2& p2)
+   _bool Contexts::getVar(const Token& tk, Variable<_num>*& result, p_perun2& p2)
    {
       if (tk.isWord(STRING_INDEX, p2)) {
          if (this->indexContexts.empty()) {
@@ -183,7 +183,7 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, _p2& p2)
+   _bool Contexts::getVar(const Token& tk, Variable<_str>*& result, p_perun2& p2)
    {
       if (tk.isWord(STRING_THIS, p2)) {
          if (this->fileContexts.empty()) {
@@ -319,7 +319,7 @@ namespace perun2
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const _str& name, const gen::OsElement element, _p2& p2)
+   void Contexts::addOsGen(const _str& name, const gen::OsElement element, p_perun2& p2)
    {
       osGenerators.insert(std::make_pair(name, gen::DefinitionGenerator(element, p2)));
    }
@@ -334,7 +334,7 @@ namespace perun2
       return this->userVarsContexts.back();
    }
 
-   _bool Contexts::varExists(const Token& tk, _p2& p2)
+   _bool Contexts::varExists(const Token& tk, p_perun2& p2)
    {
       const _str word = tk.toLowerString(p2);
       Variable<_bool>* b;

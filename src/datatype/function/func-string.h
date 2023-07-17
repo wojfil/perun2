@@ -287,7 +287,7 @@ public:
 struct F_RandomChar : Func_1<_str>, Generator<_str>
 {
 public:
-   F_RandomChar(_genptr<_str>& a1, _p2& p2)
+   F_RandomChar(_genptr<_str>& a1, p_perun2& p2)
       : Func_1(a1), math(p2.math) { };
 
    _str getValue() override;

@@ -424,7 +424,7 @@ _bool F_Any::getValue()
    return result;
 }
 
-F_Exists::F_Exists(_genptr<_str>& a1, _p2& perun2)
+F_Exists::F_Exists(_genptr<_str>& a1, p_perun2& perun2)
    : Func_1(a1), context(perun2.contexts.getLocationContext()) { };
 
 _bool F_Exists::getValue()
@@ -438,7 +438,7 @@ _bool F_Exists::getValue()
    return os_exists(os_leftJoin(this->context->location->value, value));
 }
 
-F_Exist::F_Exist(_genptr<_list>& a1, _p2& perun2)
+F_Exist::F_Exist(_genptr<_list>& a1, p_perun2& perun2)
    : Func_1(a1), context(perun2.contexts.getLocationContext())  { };
 
 _bool F_Exist::getValue()

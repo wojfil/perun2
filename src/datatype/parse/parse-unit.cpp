@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_bool>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -56,7 +56,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_bool>& result)
    }
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_num>& result)
 {
    const Token& tk = tks.first();
 
@@ -115,7 +115,7 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_num>& result)
    }
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_str>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_str>& result)
 {
    const Token& tk = tks.first();
 
@@ -137,25 +137,25 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_str>& result)
    }
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_nlist>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tlist>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_list>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_list>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result)
 {
    const Token& tk = tks.first();
 
@@ -187,14 +187,14 @@ _bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_tim>& result)
    }
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _genptr<_per>& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _genptr<_per>& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-_bool parseOneToken(_p2& p2, const Tokens& tks, _defptr& result)
+_bool parseOneToken(p_perun2& p2, const Tokens& tks, _defptr& result)
 {
    const Token& tk = tks.first();
 

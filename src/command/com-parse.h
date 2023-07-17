@@ -29,25 +29,25 @@
 namespace perun2::comm
 {
 
-_bool parseCommands(_comptr& result, const Tokens& tks, _p2& p2);
+_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2);
 
 static _bool commandStruct(_comptr& result, const Tokens& tks, const _int sublen,
-   const _int index, const _int open, _p2& p2);
-static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2);
-static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, _p2& p2);
-static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, _p2& p2);
-static _bool command(_comptr& result, Tokens& tks, _p2& p2);
-static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2);
+   const _int index, const _int open, p_perun2& p2);
+static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2);
+static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, p_perun2& p2);
+static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, p_perun2& p2);
+static _bool command(_comptr& result, Tokens& tks, p_perun2& p2);
+static _bool commandMisc(_comptr& result, const Tokens& tks, p_perun2& p2);
 static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right,
-   const _char sign, _p2& p2);
+   const _char sign, p_perun2& p2);
 static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks,
-   const _int line, _p2& p2);
-static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2);
+   const _int line, p_perun2& p2);
+static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2);
 
 static _bool varSquareBrackets(const Tokens& tks);
-static _bool commandVarAssign_Element(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2);
-static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2);
-static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, _p2& p2);
+static _bool commandVarAssign_Element(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2);
+static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
+static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, p_perun2& p2);
 
 }
 

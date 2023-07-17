@@ -28,7 +28,7 @@
 namespace perun2::comm
 {
 
-_bool parseCommands(_comptr& result, const Tokens& tks, _p2& p2)
+_bool parseCommands(_comptr& result, const Tokens& tks, p_perun2& p2)
 {
    _ucptr context = std::make_unique<UserVarsContext>();
    p2.contexts.addUserVarsContext(context.get());
@@ -105,7 +105,7 @@ _bool parseCommands(_comptr& result, const Tokens& tks, _p2& p2)
    return true;
 }
 
-void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, _p2& p2)
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, p_perun2& p2)
 {
    const _int end = tks.getEnd();
 
@@ -121,7 +121,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, _p2& p2)
 
 
 static _bool commandStruct(_comptr& result, const Tokens& tks, const _int sublen,
-   const _int index, const _int open, _p2& p2)
+   const _int index, const _int open, p_perun2& p2)
 {
    const _int leftStart = index - sublen;
    const _int leftLen = open - leftStart;
@@ -333,7 +333,7 @@ static _bool commandStruct(_comptr& result, const Tokens& tks, const _int sublen
    return parseIterationLoop(result, left, right, p2);
 }
 
-static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2)
+static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    // string loop
    _genptr<_str> str_;
@@ -423,7 +423,7 @@ static _bool parseIterationLoop(_comptr& result, const Tokens& left, const Token
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, _p2& p2)
+static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    // inside { }
    if (left.isEmpty()) {
@@ -593,7 +593,7 @@ static _bool parseInsideLoop(_comptr& result, const Token& keyword, const Tokens
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, _p2& p2)
+static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* cond, p_perun2& p2)
 {
    p2.conditionContext.add(cond);
    const _bool success = parseCommands(result, tks, p2);
@@ -601,7 +601,7 @@ static _bool parseCommandsAsMember(_comptr& result, const Tokens& tks, _comptr* 
    return success;
 }
 
-static _bool command(_comptr& result, Tokens& tks, _p2& p2)
+static _bool command(_comptr& result, Tokens& tks, p_perun2& p2)
 {
    const Token& f = tks.first();
 
@@ -694,7 +694,7 @@ static _bool command(_comptr& result, Tokens& tks, _p2& p2)
    }
 }
 
-static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
+static _bool commandMisc(_comptr& result, const Tokens& tks, p_perun2& p2)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
@@ -861,7 +861,7 @@ static _bool commandMisc(_comptr& result, const Tokens& tks, _p2& p2)
    return false;
 }
 
-static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const _char sign, _p2& p2)
+static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens& right, const _char sign, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1105,7 +1105,7 @@ static _bool commandVarChange(_comptr& result, const Tokens& left, const Tokens&
    return false;
 }
 
-static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int line, _p2& p2)
+static _bool commandVarIncrement(_comptr& result, const Token& first, const Tokens& tks, const _int line, p_perun2& p2)
 {
    Variable<_str>* pv_str;
    if (p2.contexts.getVar(first, pv_str, p2)) {
@@ -1138,7 +1138,7 @@ static _bool commandVarIncrement(_comptr& result, const Token& first, const Toke
 }
 
 template <typename T>
-static _bool makeVarAlteration(_p2& p2, const Tokens& tokens, const Token& first,
+static _bool makeVarAlteration(p_perun2& p2, const Tokens& tokens, const Token& first,
    Variable<T>*& varPtr, _comptr& result, const _str& dataTypeName)
 {
    if (p2.contexts.getVar(first, varPtr, p2)) {
@@ -1167,7 +1167,7 @@ static _bool makeVarAlteration(_p2& p2, const Tokens& tokens, const Token& first
 }
 
 template <typename T>
-static void makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
+static void makeVarAssignment(_comptr& result, const Token& token, p_perun2& p2,
    Variable<T>* varPtr, _genptr<T>& valuePtr)
 {
    UserVarsContext* uvc = p2.contexts.getUserVarsContext();
@@ -1185,7 +1185,7 @@ static void makeVarAssignment(_comptr& result, const Token& token, _p2& p2,
    result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[name], valuePtr);
 }
 
-static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, _p2& p2)
+static _bool commandVarAssign(_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1355,7 +1355,7 @@ static _bool varSquareBrackets(const Tokens& tks)
 }
 
 static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
-   const Tokens& right, _p2& p2)
+   const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
 
@@ -1398,7 +1398,7 @@ static _bool commandVarAssign_Element(_comptr& result, const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2)
+static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2)
 {
    const _size start = tks.getStart() + 2;
    const _size length = tks.getLength() - 3;
@@ -1415,7 +1415,7 @@ static _bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2
    return true;
 }
 
-static void checkNoSemicolonBeforeBrackets(const Tokens& tks, _p2& p2)
+static void checkNoSemicolonBeforeBrackets(const Tokens& tks, p_perun2& p2)
 {
    const _int end = tks.getEnd();
    const _int start = tks.getStart() + 1;

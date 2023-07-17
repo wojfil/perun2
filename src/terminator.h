@@ -22,7 +22,7 @@
 namespace perun2
 {
 
-struct _p2;
+struct p_perun2;
 
 // Terminator keeps track of every initialized instance of Perun2
 // it overrides the default Ctrl+C termination signal
@@ -34,12 +34,12 @@ public:
    Terminator() = delete;
 
    static void init();
-   static void addPtr(_p2* p2);
-   static void removePtr(_p2* p2);
+   static void addPtr(p_perun2* p2);
+   static void removePtr(p_perun2* p2);
 
 private:
    static _bool initialized;
-   static std::unordered_set<_p2*> processes;
+   static std::unordered_set<p_perun2*> processes;
    static _int HandlerRoutine(_ulong dwCtrlType);
 };
 

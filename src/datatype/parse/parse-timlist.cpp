@@ -24,7 +24,7 @@
 namespace perun2::parse
 {
 
-_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _p2& p2)
+_bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
 {
    const _size len = tks.getLength();
 
@@ -45,7 +45,7 @@ _bool parseTimList(_genptr<_tlist>& result, const Tokens& tks, _p2& p2)
    return false;
 }
 
-static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _p2& p2)
+static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, p_perun2& p2)
 {
    // look - I do not use template functions from 'parse-generic.h'
    // why? because time has a special property - comma can mean
@@ -63,7 +63,7 @@ static _bool parseTimListed(_genptr<_tlist>& result, const Tokens& tks, _p2& p2)
    return parseListedTimLists(result, elements, p2);
 }
 
-static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _p2& p2)
+static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const _size len = elements.size();
    _bool isPrev = false;
@@ -116,7 +116,7 @@ static _bool parseListedTimes(_genptr<_tlist>& res, const std::vector<Tokens>& e
    return true;
 }
 
-static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, _p2& p2)
+static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const Tokens& curr, p_perun2& p2)
 {
    const _int start = prev.getStart();
    const _int length = prev.getLength() + curr.getLength() + 1;
@@ -124,7 +124,7 @@ static _bool timeFromTwoSeqs(_genptr<_tim>& result, const Tokens& prev, const To
    return parse(p2, tks2, result);
 }
 
-static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, _p2& p2)
+static _bool parseListedTimLists(_genptr<_tlist>& res, const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const _size len = elements.size();
    _bool isPrev = false;

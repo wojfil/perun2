@@ -22,7 +22,7 @@
 namespace perun2::parse
 {
 
-_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, _p2& p2);
+_bool parseNumList(_genptr<_nlist>& result, const Tokens& tks, p_perun2& p2);
 
 }
 

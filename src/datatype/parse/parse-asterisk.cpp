@@ -23,7 +23,7 @@
 namespace perun2::parse
 {
 
-_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int line, _p2& p2)
+_bool parseAsteriskPattern(_defptr& result, const _str& originPattern, const _int line, p_perun2& p2)
 {
    const _str trimmed = os_trim(originPattern);
    _size retreats = 0;
@@ -280,7 +280,7 @@ void addAsteriskPatternUnit(_str& asteriskPart, _str& suffixPart, const _str& pa
 
 
 _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& pattern, const _str& trimmed,
-   const _size start, const _bool isAbsolute, const _int retreats, _p2& p2)
+   const _size start, const _bool isAbsolute, const _int retreats, p_perun2& p2)
 {
    enum Mode {
       m_Normal,
@@ -376,7 +376,7 @@ _bool parseDoubleAsterisk(_defptr& result, _genptr<_str>& base, const _str& patt
 }
 
 _bool parseDefinitionSuffix(_defptr& result, _defptr& definition, const _str& suffix,
-   const _bool isAbsolute, const _bool isFinal, const _int retreats, _def* previous, _p2& p2)
+   const _bool isAbsolute, const _bool isFinal, const _int retreats, _def* previous, p_perun2& p2)
 {
    if (isAbsolute) {
       result = std::make_unique<gen::AbsoluteDefSuffix>(definition, suffix, isFinal);

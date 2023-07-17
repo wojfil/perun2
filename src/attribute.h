@@ -52,14 +52,14 @@ _constexpr _aunit ATTR_SIZE =         0b00000000000010000000000000000000;
 // instead of reading them one by one
 // all attributes from an expression are joined together and read at once at the beginning of expression evaluation
 
-struct _p2;
+struct p_perun2;
 
 struct Attribute
 {
 public:
    Attribute() = delete;
-   Attribute(_p2& p2);
-   Attribute(const _aunit val, _p2& p2);
+   Attribute(p_perun2& p2);
+   Attribute(const _aunit val, p_perun2& p2);
 
    void add(const Token& tk);
    void set(const _aunit v);
@@ -69,7 +69,7 @@ public:
    _bool hasAny() const;
    _aunit getValue() const;
    
-   _p2& perun2;
+   p_perun2& perun2;
 
 private:
    _aunit value = ATTR_NULL;

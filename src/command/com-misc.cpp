@@ -95,7 +95,7 @@ void C_ErrorWithExitCode::run()
       : code;
 }
 
-RunBase::RunBase(_p2& p2)
+RunBase::RunBase(p_perun2& p2)
    : perun2(p2),
      locationCtx(p2.contexts.getLocationContext()) { };
 

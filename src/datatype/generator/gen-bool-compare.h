@@ -381,11 +381,11 @@ private:
 struct DefComparison : Generator<_bool>
 {
 public:
-   DefComparison(_defptr& val1, _defptr& val2, _p2& p2)
+   DefComparison(_defptr& val1, _defptr& val2, p_perun2& p2)
       : value1(std::move(val1)), value2(std::move(val2)), perun2(p2) { };
 
 protected:
-   _p2& perun2;
+   p_perun2& perun2;
    _defptr value1;
    _defptr value2;
 };
@@ -394,7 +394,7 @@ protected:
 struct DefinitionsEqual : DefComparison
 {
 public:
-   DefinitionsEqual(_defptr& val1, _defptr& val2, _p2& p2)
+   DefinitionsEqual(_defptr& val1, _defptr& val2, p_perun2& p2)
       : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
@@ -404,7 +404,7 @@ public:
 struct DefinitionsNotEqual : DefComparison
 {
 public:
-   DefinitionsNotEqual(_defptr& val1, _defptr& val2, _p2& p2)
+   DefinitionsNotEqual(_defptr& val1, _defptr& val2, p_perun2& p2)
       : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
@@ -414,7 +414,7 @@ public:
 struct DefinitionsSmaller : DefComparison
 {
 public:
-   DefinitionsSmaller(_defptr& val1, _defptr& val2, _p2& p2)
+   DefinitionsSmaller(_defptr& val1, _defptr& val2, p_perun2& p2)
       : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
@@ -424,7 +424,7 @@ public:
 struct DefinitionsSmallerEquals : DefComparison
 {
 public:
-   DefinitionsSmallerEquals(_defptr& val1, _defptr& val2, _p2& p2)
+   DefinitionsSmallerEquals(_defptr& val1, _defptr& val2, p_perun2& p2)
       : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
@@ -434,7 +434,7 @@ public:
 struct DefinitionsBigger : DefComparison
 {
 public:
-   DefinitionsBigger(_defptr& val1, _defptr& val2, _p2& p2)
+   DefinitionsBigger(_defptr& val1, _defptr& val2, p_perun2& p2)
       : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
@@ -444,7 +444,7 @@ public:
 struct DefinitionsBiggerEquals : DefComparison
 {
 public:
-   DefinitionsBiggerEquals(_defptr& val1, _defptr& val2, _p2& p2)
+   DefinitionsBiggerEquals(_defptr& val1, _defptr& val2, p_perun2& p2)
       : DefComparison(val1, val2, p2) { };
 
    _bool getValue() override;
@@ -457,11 +457,11 @@ public:
 struct DefListComparison : Generator<_bool>
 {
 public:
-   DefListComparison(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefListComparison(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : definition(std::move(def)), list(std::move(li)), perun2(p2) { };
 
 protected:
-   _p2& perun2;
+   p_perun2& perun2;
    _defptr definition;
    _genptr<_list> list;
 };
@@ -470,7 +470,7 @@ protected:
 struct DefinitionListEqual : DefListComparison
 {
 public:
-   DefinitionListEqual(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefinitionListEqual(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
@@ -480,7 +480,7 @@ public:
 struct DefinitionListNotEqual : DefListComparison
 {
 public:
-   DefinitionListNotEqual(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefinitionListNotEqual(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
@@ -490,7 +490,7 @@ public:
 struct DefinitionListSmaller : DefListComparison
 {
 public:
-   DefinitionListSmaller(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefinitionListSmaller(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
@@ -500,7 +500,7 @@ public:
 struct DefinitionListSmallerEquals : DefListComparison
 {
 public:
-   DefinitionListSmallerEquals(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefinitionListSmallerEquals(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
@@ -510,7 +510,7 @@ public:
 struct DefinitionListBigger : DefListComparison
 {
 public:
-   DefinitionListBigger(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefinitionListBigger(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;
@@ -520,7 +520,7 @@ public:
 struct DefinitionListBiggerEquals : DefListComparison
 {
 public:
-   DefinitionListBiggerEquals(_defptr& def, _genptr<_list>& li, _p2& p2)
+   DefinitionListBiggerEquals(_defptr& def, _genptr<_list>& li, p_perun2& p2)
       : DefListComparison(def, li, p2) { };
 
    _bool getValue() override;

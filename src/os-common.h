@@ -30,7 +30,7 @@ _constexpr _nint OS_SLEEP_UNIT = NINT_300;
 
 _tim os_yesterday();
 _tim os_tomorrow();
-void os_sleepForMs(const _nint ms, _p2& p2);
+void os_sleepForMs(const _nint ms, p_perun2& p2);
 
 void os_loadEmptyAttributes(FileContext& context);
 

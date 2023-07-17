@@ -42,15 +42,15 @@ namespace perun2::parse
 // this is the API we should use everywhere
 // it even has a nice short name and its function overloading works well in templates
 
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_bool>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_num>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_str>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_nlist>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_tlist>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_list>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_tim>& result);
-_bool parse(_p2& p2, const Tokens& tks, _genptr<_per>& result);
-_bool parse(_p2& p2, const Tokens& tks, _defptr& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_bool>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_num>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_str>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_nlist>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_tlist>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_list>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_tim>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _genptr<_per>& result);
+_bool parse(p_perun2& p2, const Tokens& tks, _defptr& result);
 
 }
 

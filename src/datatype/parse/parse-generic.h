@@ -27,11 +27,11 @@
 namespace perun2::parse
 {
 
-_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, _p2& p2);
-void checkLimitBySize(const Tokens& tks, _p2& p2);
+_bool parseListElementIndex(_genptr<_num>& result, const Tokens& tks, p_perun2& p2);
+void checkLimitBySize(const Tokens& tks, p_perun2& p2);
 
 template <typename T>
-static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _p2& p2)
+static _bool parseTernary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_TERNARY)) {
       return false;
@@ -80,7 +80,7 @@ static _bool parseTernary(_genptr<T>& result, const Tokens& tks, _p2& p2)
 
 
 template <typename T>
-static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _p2& p2)
+static _bool parseBinary(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_BINARY)) {
       return false;
@@ -121,7 +121,7 @@ static _bool parseBinary(_genptr<T>& result, const Tokens& tks, _p2& p2)
 
 template <typename T>
 static _bool parseListedValues(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, _p2& p2)
+   const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const _size len = elements.size();
    std::vector<_genptr<T>> result;
@@ -156,7 +156,7 @@ static _bool parseListedValues(_genptr<std::vector<T>>& res,
 
 template <typename T>
 static _bool parseListedLists(_genptr<std::vector<T>>& res,
-   const std::vector<Tokens>& elements, _p2& p2)
+   const std::vector<Tokens>& elements, p_perun2& p2)
 {
    const _size len = elements.size();
    std::vector<_genptr<std::vector<T>>> result;
@@ -190,7 +190,7 @@ static _bool parseListedLists(_genptr<std::vector<T>>& res,
 
 
 template <typename T>
-static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, _p2& p2)
+static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_HAS_CHAR_COMMA)) {
       return false;
@@ -207,7 +207,7 @@ static _bool parseListed(_genptr<std::vector<T>>& result, const Tokens& tks, _p2
 
 
 template <typename T>
-static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, _p2& p2)
+static _bool parseCollectionElement(_genptr<T>& result, const Tokens& tks, p_perun2& p2)
 {
    if (!tks.check(TI_IS_POSSIBLE_LIST_ELEM)) {
       return false;

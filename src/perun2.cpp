@@ -29,22 +29,22 @@
 namespace perun2
 {
 
-_p2::_p2(const Arguments& args) : arguments(args), contexts(*this),
+p_perun2::p_perun2(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), logger(*this), cache(*this)
 {
-   _p2::init();
+   p_perun2::init();
    Terminator::addPtr(this);
    if (arguments.getParseState() == ArgsParseState::aps_Failed) {
       this->parseState = ParseState::ps_ParsingFailure;
    }
 };
 
-_p2::~_p2() noexcept
+p_perun2::~p_perun2() noexcept
 {
    Terminator::removePtr(this);
 }
 
-_bool _p2::run()
+_bool p_perun2::run()
 {
    if (this->parseState == ParseState::ps_NotParsed) {
       const _bool parsed = this->preParse() && this->parse() && this->postParse();
@@ -65,7 +65,7 @@ _bool _p2::run()
    return false;
 };
 
-void _p2::terminate()
+void p_perun2::terminate()
 {
    this->state = State::s_Exit;
    if (this->sideProcess.running) {
@@ -74,17 +74,17 @@ void _p2::terminate()
    }
 }
 
-_bool _p2::isRunning() const
+_bool p_perun2::isRunning() const
 {
    return this->state == State::s_Running;
 };
 
-_bool _p2::isNotRunning() const
+_bool p_perun2::isNotRunning() const
 {
    return this->state != State::s_Running;
 };
 
-_bool _p2::preParse()
+_bool p_perun2::preParse()
 {
    try {
       this->tokens = tokenize(this->arguments.getCode(), *this);
@@ -105,7 +105,7 @@ _bool _p2::preParse()
 };
 
 
-_bool _p2::parse()
+_bool p_perun2::parse()
 {
    try {
       const Tokens tks(this->tokens);
@@ -129,7 +129,7 @@ _bool _p2::parse()
    return true;
 };
 
-_bool _p2::postParse()
+_bool p_perun2::postParse()
 {
    this->math.init();
 
@@ -139,7 +139,7 @@ _bool _p2::postParse()
    return true;
 };
 
-_bool _p2::runCommands()
+_bool p_perun2::runCommands()
 {
    try {
       this->commands->run();
@@ -153,9 +153,9 @@ _bool _p2::runCommands()
    return true;
 };
 
-_bool _p2::initialized = false;
+_bool p_perun2::initialized = false;
 
-void _p2::init()
+void p_perun2::init()
 {
    if (!initialized) {
       initialized = true;

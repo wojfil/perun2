@@ -21,7 +21,7 @@
 
 namespace perun2
 {
-  struct _p2;
+  struct p_perun2;
 }
 
 namespace perun2::gen
@@ -43,12 +43,12 @@ struct DefinitionGenerator
 {
 public:
    DefinitionGenerator() = delete;
-   DefinitionGenerator(const OsElement el, _p2& p2)
+   DefinitionGenerator(const OsElement el, p_perun2& p2)
       : element_(el), perun2(p2) { };
    _bool generate(_defptr& result) const;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    const OsElement element_;
 };
 

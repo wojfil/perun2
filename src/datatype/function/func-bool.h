@@ -91,13 +91,13 @@ public:
 struct F_ContainsDef : Generator<_bool>
 {
 public:
-   F_ContainsDef(_defptr& def, _genptr<_str>& val, _p2& p2)
+   F_ContainsDef(_defptr& def, _genptr<_str>& val, p_perun2& p2)
       : definition(std::move(def)), value(std::move(val)), perun2(p2) { };
 
    _bool getValue() override;
 
 private:
-   _p2& perun2;
+   p_perun2& perun2;
    _defptr definition;
    _genptr<_str> value;
 };
@@ -311,7 +311,7 @@ private:
 struct F_Exists : Func_1<_str>, Generator<_bool>
 {
 public:
-   F_Exists(_genptr<_str>& a1, _p2& perun2);
+   F_Exists(_genptr<_str>& a1, p_perun2& perun2);
    _bool getValue() override;
 
 private:
@@ -322,7 +322,7 @@ private:
 struct F_Exist: Func_1<_list>, Generator<_bool>
 {
 public:
-   F_Exist(_genptr<_list>& a1, _p2& perun2);
+   F_Exist(_genptr<_list>& a1, p_perun2& perun2);
    _bool getValue() override;
 
 private:

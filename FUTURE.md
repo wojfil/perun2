@@ -616,3 +616,18 @@ copy '**/*.txt'
   where text[0] = '?'
   and substring(text, 25, 3) = 'ABC'
 ```
+
+## Underscore as a neutral character
+
+Perun2 keywords are already case insensitive. 
+We could allow *_* within keywords, so all possible writing notations are acceptable and the user can decide what to use.
+All keywords below would mean the same thing.
+
+```
+recursiveFiles
+recursivefiles
+RECURSIVEFILes
+recursive_Files
+recursive_files
+RECURSIVE__FILEs
+```

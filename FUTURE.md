@@ -570,7 +570,7 @@ send videos
 
 ## Internet browsers
 
-Keyword *browser* would mean the default browser on this computer.
+Keyword *browser* would mean the default Internet browser on this computer.
 
 ```
 open browser
@@ -596,4 +596,23 @@ Or we can specify the program.
 ```
 website 'https://some/url'
   with opera
+```
+
+## Read text context of file
+
+Value *text* would mean the content of a file.
+
+```
+copy '*.txt'
+  where creation = today
+  and text like 'start%'
+```
+
+This feature should be implemented along with optimizations.
+For example, we usually need only a fraction of a file to be read.
+
+```
+copy '**/*.txt'
+  where text[0] = '?'
+  and substring(text, 25, 3) = 'ABC'
 ```

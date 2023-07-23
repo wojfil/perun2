@@ -52,6 +52,7 @@ p_constexpr p_char EMPTY_STRING[] =                { };
 p_constexpr p_char STRING_NO_TIME[] =              L"no time";
 p_constexpr p_char STRING_NO_PERIOD[] =            L"no period";
 p_constexpr p_char STRING_NOTHING[] =              L"nothing";
+p_constexpr p_char STRING_NEVER[] =                L"never";
 
 p_constexpr p_char STRING_ARG_VERSION[] =          L"--version";
 p_constexpr p_char STRING_ARG_DOCS[] =             L"--docs";

@@ -141,6 +141,9 @@ namespace perun2
       this->insertConstant<p_list>(STRING_ARGUMENTS);
       this->insertConstant<p_str>(STRING_MSPAINT);
       this->insertConstant<p_str>(STRING_NOTEPAD);
+      
+      this->insertConstant<p_list>(STRING_NOTHING);
+      this->insertConstant<p_tim>(STRING_NEVER);
    };
 
    Contexts::Contexts(p_perun2& p2)

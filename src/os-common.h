@@ -42,7 +42,7 @@ p_str os_parent(const p_str& path);
 
 p_bool os_bothAreSeparators(const p_char left, const p_char right);
 p_str os_softTrim(const p_str& value);
-inline void os_escapeQuote(p_str& path);
+void os_escapeQuote(p_str& path);
 
 }
 

@@ -268,7 +268,7 @@ p_str os_softTrim(const p_str& value)
    }
 }
 
-inline void os_escapeQuote(p_str& path)
+void os_escapeQuote(p_str& path)
 {
    const p_size length = path.size();
    if (path[0] == CHAR_QUOTATION_MARK && path[length - 1] == CHAR_QUOTATION_MARK) {

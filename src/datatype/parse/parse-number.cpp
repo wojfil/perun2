@@ -75,6 +75,13 @@ p_bool parseNumber(p_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
                   p_genptr<p_str> str;
 
                   if (!parse(p2, tkse, str)) {
+                     for (const Tokens& tk : elements) {
+                        const Token& f = tk.first();
+                        if (tk.getLength() == 1 && f.type == Token::t_Pattern) {
+                           throw SyntaxError::supposedUnintentionalAsteriskPattern(f.getOriginString(p2), f.line);
+                        }
+                     }
+
                      throw SyntaxError::invalidExpression(tkse.first().line);
                   }
                }

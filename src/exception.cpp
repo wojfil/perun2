@@ -249,6 +249,14 @@ SyntaxError SyntaxError::secondsOutOfRange(const p_str& value, const p_int line)
    return SyntaxError(str(L"value of seconds (", value, L") went out of range"), line);
 }
 
+SyntaxError SyntaxError::supposedUnintentionalAsteriskPattern(const p_str& value, const p_int line)
+{  
+   return SyntaxError(str(L"syntax of an expression is not valid. Value '", 
+      value, 
+      L"' is an Asterisk Pattern. "
+      L"If you want to treat it like a normal string, replace apostrophes ' with backtick characters `"), line);
+}
+
 SyntaxError SyntaxError::symbolNotFound(const p_char value, const p_int line)
 {
    return SyntaxError(str(L"symbol '", toStr(value), L"' not found"), line);

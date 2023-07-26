@@ -620,7 +620,7 @@ copy '**/*.txt'
 ## Underscore as a neutral character
 
 Perun2 keywords are already case insensitive. 
-We could allow *_* within keywords, so all possible writing notations are acceptable and the user can decide what to use.
+We could allow neutral *_* within keywords, so all possible writing notations are acceptable and the user can decide what to use.
 All keywords below would mean the same thing.
 
 ```
@@ -631,3 +631,31 @@ recursive_Files
 recursive_files
 RECURSIVE__FILEs
 ```
+
+## Run other programming languages
+
+Integration with Python or PowerShell would be great.
+In Perun2, string literals can contain new lines.
+This little fact help us a lot.
+
+```
+powershellCommand 
+'
+  -some -psh
+  -command -here
+';
+```
+
+We could also read the output.
+
+```
+pythonCommand 
+'
+  print("a.txt")
+  print("b.txt")
+';
+
+select output
+```
+
+This command selects two files: "a.txt" and "b.txt".

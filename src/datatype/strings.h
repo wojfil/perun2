@@ -67,6 +67,8 @@ p_constexpr p_char STRING_NOTEPAD_EXE[] =          L"notepad.exe";
 p_constexpr p_char STRING_MSPAINT[] =              L"mspaint";
 p_constexpr p_char STRING_PAINT[] =                L"paint";
 p_constexpr p_char STRING_NOTEPAD[] =              L"notepad";
+p_constexpr p_char STRING_PENDRIVE[] =             L"pendrive";
+p_constexpr p_char STRING_PENDRIVES[] =            L"pendrives";
 
 p_constexpr p_char STRING_WEEKDAY_MONDAY[] =       L"Monday";
 p_constexpr p_char STRING_WEEKDAY_TUESDAY[] =      L"Tuesday";

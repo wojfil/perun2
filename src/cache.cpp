@@ -61,6 +61,18 @@ void Cache::actualize(const Token& tk)
    {
       this->loadSystem32Path(tk);
    }
+   else if (tk.isWord(STRING_PENDRIVE, this->perun2)
+         || tk.isWord(STRING_PENDRIVES, this->perun2)) 
+   {
+      if (this->isNotLoaded(CACHE_PENDRIVES)) {
+         const p_list pendrives = os_pendrives();
+         if (!pendrives.empty()) {
+            this->context.strings[STRING_PENDRIVE]->value = pendrives[0];
+            this->context.lists[STRING_PENDRIVES]->value = std::move(pendrives);
+         }
+      }
+   }
+
 }
 
 void Cache::loadCmdPath()

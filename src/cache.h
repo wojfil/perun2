@@ -34,6 +34,7 @@ p_constexpr p_cunit CACHE_ARGUMENTS =            0b00000000000000000000000001000
 p_constexpr p_cunit CACHE_SYSTEM32 =             0b00000000000000000000000010000000;
 p_constexpr p_cunit CACHE_MSPAINT =              0b00000000000000000000000100000000;
 p_constexpr p_cunit CACHE_NOTEPAD =              0b00000000000000000000001000000000;
+p_constexpr p_cunit CACHE_PENDRIVES =            0b00000000000000000000010000000000;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop

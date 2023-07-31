@@ -152,6 +152,7 @@ void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath);
 
 p_str os_executablePath();
 p_str os_desktopPath();
+p_list os_pendrives();
 p_str os_currentPath();
 p_str os_system32Path();
 

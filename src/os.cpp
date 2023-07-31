@@ -1934,6 +1934,12 @@ p_str os_desktopPath()
       : p_str();
 }
 
+p_list os_pendrives()
+{
+   // todo
+   return { };
+}
+
 p_str os_currentPath()
 {
    p_char path[MAX_PATH];

@@ -32,6 +32,9 @@
 #include <fstream>
 #include <combaseapi.h>
 #include <fcntl.h>
+#include <setupapi.h>
+#include <initguid.h>
+#include <Usbiodef.h>
 
 
 namespace perun2
@@ -1936,8 +1939,23 @@ p_str os_desktopPath()
 
 p_list os_pendrives()
 {
-   // todo
-   return { };
+   p_list result;
+   DWORD drivesBitMask = GetLogicalDrives();
+
+   for (p_char drive = CHAR_A; drive <= CHAR_Z; drive++) {
+      if (drivesBitMask & 1) {
+         const p_str rootPath = str(drive, CHAR_COLON, CHAR_BACKSLASH);
+         const UINT driveType = GetDriveTypeW(rootPath.c_str());
+
+         if (driveType == DRIVE_REMOVABLE) {
+            result.push_back(rootPath);
+         }
+      }
+
+      drivesBitMask >>= 1;
+   }
+
+   return result;
 }
 
 p_str os_currentPath()

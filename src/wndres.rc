@@ -1,6 +1,6 @@
 1 VERSIONINFO
-FILEVERSION     0,8,2,0
-PRODUCTVERSION  0,8,2,0
+FILEVERSION     0,8,3,0
+PRODUCTVERSION  0,8,3,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -8,12 +8,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "WojFil Games"
       VALUE "FileDescription", "Perun2 main executable file"
-      VALUE "FileVersion", "0.8.2"
+      VALUE "FileVersion", "0.8.3"
       VALUE "InternalName", "perun2"
       VALUE "LegalCopyright", "WojFil Games"
       VALUE "OriginalFilename", "perun2.exe"
       VALUE "ProductName", "Perun2"
-      VALUE "ProductVersion", "0.8.2"
+      VALUE "ProductVersion", "0.8.3"
     END
   END
   BLOCK "VarFileInfo"

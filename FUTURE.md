@@ -2,7 +2,6 @@
 
 Here are ideas for new features. Especially for new keywords. 
 All words of the English dictionary are already reserved for future use in syntax, so we can add almost anything.
-Sky is the limit.
 
 ## Limit by total size
 
@@ -131,17 +130,6 @@ We can introduce hundreds of new constants.
 Not every program can be here.
 They should be rated by popularity.
 
-## Constant value *pendrive*
-
-This is path to the first connected pendrive. Empty string if there is nothing plugged in. In WindowsOS, this value is usually F:/, but not always.
-
-```
-copy '*.pdf'
-  to pendrive
-```
-
-This feature is cool and should be implemented as soon as possible. We can even introduce a plural variant - *pendrives*.
-
 ## Order By acceleration
 
 Perun2 has one performance weak spot. It takes few seconds to sort hundreds of thousands of files. 
@@ -254,15 +242,6 @@ These events are rare as 64 bits are used for storing ints... but they are still
 a = 5000000000000000000;
 a += a; // error flows from here
 a
-```
-
-## Variable *nothing*
-
-*Nothing* is an empty collection of strings. Why add this feature? Because why not?
-Also variable *never* would be an empty list of times.
-
-```
-print nothing
 ```
 
 ## Audio variables: *author*, *album*, *release*, *duration*, *bitrate*, ...

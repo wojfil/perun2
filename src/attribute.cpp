@@ -28,7 +28,7 @@ Attribute::Attribute(const p_aunit val, p_perun2& p2)
 
 void Attribute::add(const Token& tk)
 {
-   if (!tk.isWord(STRINGS_ATTR, this->perun2)) {
+   if (!tk.isVariable(STRINGS_ATTR, this->perun2)) {
       return;
    }
 
@@ -36,73 +36,73 @@ void Attribute::add(const Token& tk)
       this->set(ATTR_PATH);
    }
 
-   if (tk.isWord(STRING_DRIVE, this->perun2)) {
+   if (tk.isVariable(STRING_DRIVE, this->perun2)) {
       this->set(ATTR_DRIVE);
       return;
    }
 
-   if (tk.isWord(STRING_DEPTH, this->perun2)) {
+   if (tk.isVariable(STRING_DEPTH, this->perun2)) {
       this->set(ATTR_DEPTH);
       return;
    }
 
-   if (!tk.isWord(STRING_PATH, this->perun2) && !tk.isWord(STRING_FULLNAME, this->perun2)) {
+   if (!tk.isVariable(STRING_PATH, this->perun2) && !tk.isVariable(STRING_FULLNAME, this->perun2)) {
       this->set(ATTR_EXISTS);
    }
-   if (tk.isWord(STRING_ACCESS, this->perun2)) {
+   if (tk.isVariable(STRING_ACCESS, this->perun2)) {
       this->set(ATTR_ACCESS);
    }
-   else if (tk.isWord(STRING_ARCHIVE, this->perun2)) {
+   else if (tk.isVariable(STRING_ARCHIVE, this->perun2)) {
       this->set(ATTR_ARCHIVE);
    }
-   else if (tk.isWord(STRING_COMPRESSED, this->perun2)) {
+   else if (tk.isVariable(STRING_COMPRESSED, this->perun2)) {
       this->set(ATTR_COMPRESSED);
    }
-   else if (tk.isWord(STRING_CREATION, this->perun2)) {
+   else if (tk.isVariable(STRING_CREATION, this->perun2)) {
       this->set(ATTR_CREATION);
    }
-   else if (tk.isWord(STRING_CHANGE, this->perun2)) {
+   else if (tk.isVariable(STRING_CHANGE, this->perun2)) {
       this->set(ATTR_CHANGE);
    }
-   else if (tk.isWord(STRING_DRIVE, this->perun2)) {
+   else if (tk.isVariable(STRING_DRIVE, this->perun2)) {
       this->set(ATTR_DRIVE);
    }
-   else if (tk.isWord(STRING_EMPTY, this->perun2)) {
+   else if (tk.isVariable(STRING_EMPTY, this->perun2)) {
       this->set(ATTR_EMPTY);
    }
-   else if (tk.isWord(STRING_ENCRYPTED, this->perun2)) {
+   else if (tk.isVariable(STRING_ENCRYPTED, this->perun2)) {
       this->set(ATTR_ENCRYPTED);
    }
-   else if (tk.isWord(STRING_EXTENSION, this->perun2)) {
+   else if (tk.isVariable(STRING_EXTENSION, this->perun2)) {
       this->set(ATTR_EXTENSION);
    }
-   else if (tk.isWord(STRING_FULLNAME, this->perun2)) {
+   else if (tk.isVariable(STRING_FULLNAME, this->perun2)) {
       this->set(ATTR_FULLNAME);
    }
-   else if (tk.isWord(STRING_HIDDEN, this->perun2)) {
+   else if (tk.isVariable(STRING_HIDDEN, this->perun2)) {
       this->set(ATTR_HIDDEN);
    }
-   else if (tk.isWord(STRING_LIFETIME, this->perun2)) {
+   else if (tk.isVariable(STRING_LIFETIME, this->perun2)) {
       this->set(ATTR_CREATION);
       this->set(ATTR_MODIFICATION);
       this->set(ATTR_LIFETIME);
    }
-   else if (tk.isWord(STRING_MODIFICATION, this->perun2)) {
+   else if (tk.isVariable(STRING_MODIFICATION, this->perun2)) {
       this->set(ATTR_MODIFICATION);
    }
-   else if (tk.isWord(STRING_NAME, this->perun2)) {
+   else if (tk.isVariable(STRING_NAME, this->perun2)) {
       this->set(ATTR_NAME);
    }
-   else if (tk.isWord(STRING_PARENT, this->perun2)) {
+   else if (tk.isVariable(STRING_PARENT, this->perun2)) {
       this->set(ATTR_PARENT);
    }
-   else if (tk.isWord(STRING_PATH, this->perun2)) {
+   else if (tk.isVariable(STRING_PATH, this->perun2)) {
       this->set(ATTR_PATH);
    }
-   else if (tk.isWord(STRING_READONLY, this->perun2)) {
+   else if (tk.isVariable(STRING_READONLY, this->perun2)) {
       this->set(ATTR_READONLY);
    }
-   else if (tk.isWord(STRING_SIZE, this->perun2)) {
+   else if (tk.isVariable(STRING_SIZE, this->perun2)) {
       this->set(ATTR_SIZE);
    }
 }

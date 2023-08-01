@@ -2474,8 +2474,8 @@ if __name__ == '__main__':
   lines("1", "0", "1", "doc", "a.pdf", "a.pdf.doc", "1")))
   (run_test_case("inside 'ccc' { 'g.png/a.pdf.do' { isFile, isDirectory, exists, extension, name, fullname, depth  } } ", 
   lines("1", "0", "0", "do", "a.pdf", "a.pdf.do", "1")))
-  run_test_case("inside 'ccc' { createFile 'z1.txt'; 'z1.txt' { creation.year != -1; creation.second != -1 } }", lines("Create file 'z1.txt'"), TRUE, TRUE)
-  run_test_case("inside 'ccc' { createFile 'z2.txt'; 'z2.txt' { a = modification.date; a.year != -1; a.day != -1 } }", lines("Create file 'z2.txt'"), TRUE, TRUE)
+  run_test_case("inside 'ccc' { createFile 'z1.txt'; 'z1.txt' { creation.year != -1; creation.second != -1 } }", lines("Create file 'z1.txt'", TRUE, TRUE))
+  run_test_case("inside 'ccc' { createFile 'z2.txt'; 'z2.txt' { a = modification.date; a.year != -1; a.day != -1 } }", lines("Create file 'z2.txt'", TRUE, TRUE))
   run_test_case("inside 'numbers' { recursiveDirectories order by depth desc { name } }", lines("6", "5", "4", "3", "2", "1"))
   run_test_case("inside 'numbers' { recursiveDirectories order by depth asc { name } }", lines("1", "2", "3", "4", "5", "6"))
   run_test_case("inside 'numbers' { inside '1/2/3/' { files  } }", "4.txt")

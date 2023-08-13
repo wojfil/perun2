@@ -1,2 +1,2 @@
 force copy 'build\perun2.exe'
-  to 'f:\'
+  to pendrive

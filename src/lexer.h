@@ -30,8 +30,8 @@ inline static p_bool isSpace(const p_char ch);
 inline static p_bool isNewLine(const p_char ch);
 inline static p_bool isAllowedInWord(const p_char ch);
 inline static p_bool isDoubleChar(const p_char ch);
-inline static p_nint fileSizeSuffixMulti(const p_char c1, const p_char c2);
-inline static p_nint decimalSuffixMulti(const p_char c);
+inline static p_nint fileSizeSuffixMulti(const p_char ch1, const p_char ch2);
+inline static p_nint decimalSuffixMulti(const p_char ch);
 
 }
 

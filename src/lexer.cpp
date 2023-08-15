@@ -452,13 +452,13 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
    }     
 }
 
-inline static p_nint fileSizeSuffixMulti(const p_char c1, const p_char c2)
+inline static p_nint fileSizeSuffixMulti(const p_char ch1, const p_char ch2)
 {
-   if (!(c2 == CHAR_b || c2 == CHAR_B)) {
+   if (!(ch2 == CHAR_b || ch2 == CHAR_B)) {
       return NINT_MINUS_ONE;
    }
 
-   switch (c1) {
+   switch (ch1) {
       case CHAR_k: 
       case CHAR_K:
          return SIZE_UNIT_KB;
@@ -479,9 +479,9 @@ inline static p_nint fileSizeSuffixMulti(const p_char c1, const p_char c2)
    }
 }
 
-inline static p_nint decimalSuffixMulti(const p_char c)
+inline static p_nint decimalSuffixMulti(const p_char ch)
 {
-   switch (c) {
+   switch (ch) {
       case CHAR_k: 
       case CHAR_K:
          return NINT_THOUSAND;

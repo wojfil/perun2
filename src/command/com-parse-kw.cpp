@@ -22,6 +22,7 @@
 #include "com-arg.h"
 #include "com-core-aggr.h"
 #include "com-create.h"
+#include "com-time.h"
 #include "../datatype/generator/gen-string.h"
 #include "../datatype/patterns.h"
 

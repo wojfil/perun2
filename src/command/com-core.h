@@ -113,59 +113,6 @@ protected:
 };
 
 
-
-
-// time commands:
-
-
-
-struct C_TimeAlter : CoreCommand
-{
-public:
-   C_TimeAlter(p_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
-      : time(std::move(ti)), CoreCommand(save, ctx, p2) { };
-
-protected:
-   p_genptr<p_tim> time;
-};
-
-
-struct C_ReaccessTo : C_TimeAlter
-{
-   C_ReaccessTo(p_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
-      : C_TimeAlter(ti, save, ctx, p2) { };
-
-   void run() override;
-};
-
-
-struct C_RechangeTo : C_TimeAlter
-{
-   C_RechangeTo(p_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
-      : C_TimeAlter(ti, save, ctx, p2) { };
-
-   void run() override;
-};
-
-
-struct C_RecreateTo : C_TimeAlter
-{
-   C_RecreateTo(p_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
-      : C_TimeAlter(ti, save, ctx, p2) { };
-
-   void run() override;
-};
-
-
-struct C_RemodifyTo : C_TimeAlter
-{
-   C_RemodifyTo(p_genptr<p_tim>& ti, const p_bool save, FileContext* ctx, p_perun2& p2)
-      : C_TimeAlter(ti, save, ctx, p2) { };
-
-   void run() override;
-};
-
-
 struct C_RenameTo : CoreCommand
 {
 public:

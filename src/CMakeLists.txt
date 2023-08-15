@@ -89,6 +89,7 @@ add_executable(
     command/com-parse-unit.cpp
     command/com-parse.cpp
     command/com-struct.cpp
+    command/com-time.cpp
     command/com-var.cpp
     datatype/function/func-aggr.cpp
     datatype/function/func-attr.cpp

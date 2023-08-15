@@ -911,7 +911,7 @@ p_bool os_unlock(const p_str& path)
 }
 
 
-p_bool osp_setTime(const p_str& path, const p_tim& creation,
+p_bool os_setTime(const p_str& path, const p_tim& creation,
    const p_tim& access, const p_tim& modification)
 {
    p_ftim time_c;

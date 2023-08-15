@@ -91,7 +91,7 @@ p_bool os_openAsCommand(const p_str& command, const p_str& location);
 p_bool os_unhide(const p_str& path);
 p_bool os_unlock(const p_str& path);
 
-p_bool osp_setTime(const p_str& path, const p_tim& creation,
+p_bool os_setTime(const p_str& path, const p_tim& creation,
    const p_tim& access, const p_tim& modification);
 
 p_bool os_createFile(const p_str& path);

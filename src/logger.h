@@ -31,22 +31,20 @@ public:
    Logger();
    Logger(const p_perun2& p2);
 
-   // print something
+   // print something in a new line
    void print(const p_str& value) const;
 
-   // print command log, all args are strings and are concatenated into one line
+   // print command log in a new line
+   // all args are strings and are concatenated into one line
    template<typename... Args>
-   void log(Args const&... args) const
+   void log(const Args&... args) const
    {
       if (this->isSilent) {
          return;
       }
 
-      using value_type = std::common_type_t<Args const&...>;
-      for (auto const& arg : {static_cast<value_type>(args)...}) {
-         p_cout << arg;
-      }
-            
+      this->write(args...);
+
       if (this->flushBuffer) {
          p_cout << std::endl;
       }
@@ -59,6 +57,15 @@ public:
    void emptyLine() const;
 
 private:
+   template<typename... Args>
+   void write(const p_str& first, const Args&... args) const
+   {
+      p_cout << first;
+      write(args...);
+   }
+
+   void write(const p_str& first) const;
+
    // if program was called with -s
    // it runs in silent mode and there are no logs of filesystem commands
    // however, critical error messages and Print should still work

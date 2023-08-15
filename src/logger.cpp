@@ -44,4 +44,9 @@ void Logger::emptyLine() const
    }
 }
 
+void Logger::write(const p_str& first) const
+{
+   p_cout << first;
+}
+
 }

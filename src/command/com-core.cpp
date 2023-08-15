@@ -15,6 +15,7 @@
 #include "com-core.h"
 #include "../perun2.h"
 #include "../os.h"
+#include "../datatype/patterns.h"
 
 
 namespace perun2::comm
@@ -28,7 +29,8 @@ namespace perun2::comm
 
 void C_Delete::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_delete(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -39,12 +41,12 @@ void C_Delete::run()
       else {
          this->perun2.logger.log(L"Failed to delete ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_Drop::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
@@ -57,12 +59,12 @@ void C_Drop::run()
       else {
          this->perun2.logger.log(L"Failed to drop ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_Hide::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_hide(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -75,12 +77,12 @@ void C_Hide::run()
       else {
          this->perun2.logger.log(L"Failed to hide ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_Lock::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_lock(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -93,12 +95,12 @@ void C_Lock::run()
       else {
          this->perun2.logger.log(L"Failed to lock ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_Open::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_open(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -108,12 +110,12 @@ void C_Open::run()
       else {
          this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_Unlock::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_unlock(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -126,12 +128,12 @@ void C_Unlock::run()
       else {
          this->perun2.logger.log(L"Failed to unlock ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_Unhide::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_bool s = this->context->v_exists->value && os_unhide(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -144,12 +146,12 @@ void C_Unhide::run()
       else {
          this->perun2.logger.log(L"Failed to unhide ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_OpenWith::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str pro = os_trim(program->getValue());
 
       if (!this->context->v_exists->value || pro.empty()) {
@@ -195,12 +197,12 @@ void C_OpenWith::run()
             this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
          }
       }
-   }
 };
 
 void C_ReaccessTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_tim t = this->context->v_access->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -216,12 +218,12 @@ void C_ReaccessTo::run()
       else {
          this->perun2.logger.log(L"Failed to reaccess ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_RechangeTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_tim t = this->context->v_change->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -238,12 +240,12 @@ void C_RechangeTo::run()
       else {
          this->perun2.logger.log(L"Failed to rechange ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_RecreateTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_tim t = this->context->v_creation->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -259,12 +261,12 @@ void C_RecreateTo::run()
       else {
          this->perun2.logger.log(L"Failed to recreate ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_RemodifyTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_tim t = this->context->v_modification->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -281,12 +283,12 @@ void C_RemodifyTo::run()
       else {
          this->perun2.logger.log(L"Failed to remodify ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_RenameTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str n = os_fullname(os_trim(name->getValue()));
 
       if (!this->context->v_exists->value || os_isInvalid(n)
@@ -330,12 +332,12 @@ void C_RenameTo::run()
       else {
          this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_RenameTo_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_fullname(os_trim(name->getValue()));
       if (!this->context->v_exists->value || os_isInvalid(n)
@@ -399,12 +401,11 @@ void C_RenameTo_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 void C_MoveTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -458,12 +459,12 @@ void C_MoveTo::run()
       else {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
-   }
 }
 
 void C_MoveTo_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -517,12 +518,12 @@ void C_MoveTo_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
-   }
 }
 
 void C_MoveToAs::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -582,12 +583,12 @@ void C_MoveToAs::run()
       else {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
-   }
 }
 
 void C_MoveToAs_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -660,12 +661,12 @@ void C_MoveToAs_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
       }
-   }
 }
 
 void C_CopyTo::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -713,12 +714,12 @@ void C_CopyTo::run()
       else {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
-   }
 }
 
 void C_CopyTo_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -768,12 +769,12 @@ void C_CopyTo_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
-   }
 }
 
 void C_CopyToAs::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -829,12 +830,12 @@ void C_CopyToAs::run()
       else {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
-   }
 }
 
 void C_CopyToAs_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -902,7 +903,6 @@ void C_CopyToAs_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
       }
-   }
 }
 
 p_str getCCName(const p_str& path)

@@ -15,6 +15,7 @@
 #include "com-create.h"
 #include "../perun2.h"
 #include "../os.h"
+#include "../datatype/patterns.h"
 
 
 namespace perun2::comm
@@ -22,7 +23,8 @@ namespace perun2::comm
 
 void C_Create::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -66,13 +68,13 @@ void C_Create::run()
             this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
          }
       }
-   }
 }
 
 
 void C_Create_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -125,13 +127,13 @@ void C_Create_Stack::run()
             this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
          }
       }
-   }
 }
 
 
 void C_CreateFile::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create file ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -156,13 +158,13 @@ void C_CreateFile::run()
       else {
          this->perun2.logger.log(L"Failed to create file ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 
 void C_CreateFile_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create file ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -198,13 +200,13 @@ void C_CreateFile_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to create file ", getCCName(path));
       }
-   }
 }
 
 
 void C_CreateDirectory::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -229,13 +231,13 @@ void C_CreateDirectory::run()
       else {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
       }
-   }
 }
 
 
 void C_CreateDirectory_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -263,7 +265,6 @@ void C_CreateDirectory_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
       }
-   }
 }
 
 // others
@@ -271,7 +272,8 @@ void C_CreateDirectory_Stack::run()
 
 void C_Create_String::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -325,13 +327,13 @@ void C_Create_String::run()
             this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
          }
       }
-   }
 }
 
 
 void C_CreateFile_String::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -366,13 +368,13 @@ void C_CreateFile_String::run()
       else {
          this->perun2.logger.log(L"Failed to create file ", getCCName(path));
       }
-   }
 }
 
 
 void C_CreateDirectory_String::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -407,13 +409,13 @@ void C_CreateDirectory_String::run()
       else {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
       }
-   }
 }
 
 
 void C_Create_String_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -466,13 +468,13 @@ void C_Create_String_Stack::run()
             this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
          }
       }
-   }
 }
 
 
 void C_CreateFile_String_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -512,13 +514,13 @@ void C_CreateFile_String_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to create file ", getCCName(path));
       }
-   }
 }
 
 
 void C_CreateDirectory_String_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -549,14 +551,14 @@ void C_CreateDirectory_String_Stack::run()
       else {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(path));
       }
-   }
 }
 
 // others multi:
 
 void C_Create_List::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -652,13 +654,13 @@ void C_Create_List::run()
       }
 
       this->perun2.contexts.success->value = success;
-   }
 }
 
 
 void C_CreateFiles_List::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -716,13 +718,13 @@ void C_CreateFiles_List::run()
       }
 
       this->perun2.contexts.success->value = success;
-   }
 }
 
 
 void C_CreateDirectories_List::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -780,13 +782,13 @@ void C_CreateDirectories_List::run()
       }
 
       this->perun2.contexts.success->value = success;
-   }
 }
 
 
 void C_Create_List_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -870,13 +872,13 @@ void C_Create_List_Stack::run()
       }
 
       this->perun2.contexts.success->value = success;
-   }
 }
 
 
 void C_CreateFiles_List_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -939,13 +941,13 @@ void C_CreateFiles_List_Stack::run()
       }
 
       this->perun2.contexts.success->value = success;
-   }
 }
 
 
 void C_CreateDirectories_List_Stack::run()
 {
-   if (this->perun2.isRunning()) {
+   P_CHECK_IF_PERUN2_IS_RUNNING;
+
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -999,7 +1001,6 @@ void C_CreateDirectories_List_Stack::run()
       }
 
       this->perun2.contexts.success->value = success;
-   }
 }
 
 }

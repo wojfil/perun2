@@ -37,7 +37,10 @@
 
 #define P_DIVIDE_BY_KEYWORD(kw) std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw); \
    Tokens& left = pair.first; \
-   Tokens& right = pair.second; \
+   Tokens& right = pair.second; 
+
+
+#define P_CHECK_IF_PERUN2_IS_RUNNING if (this->perun2.isNotRunning()) { return; }
 
 
 #endif // PATTERNS_H_INCLUDED

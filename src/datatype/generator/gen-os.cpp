@@ -309,7 +309,7 @@ p_bool RecursiveFiles::hasNext()
       this->context.index->value = index;
    }
 
-   while (this->perun2.state == State::s_Running) {
+   while (this->perun2.isRunning()) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -412,7 +412,7 @@ p_bool RecursiveDirectories::hasNext()
       this->context.index->value = index;
    }
 
-   while (this->perun2.state == State::s_Running) {
+   while (this->perun2.isRunning()) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {
@@ -498,7 +498,7 @@ p_bool RecursiveAll::hasNext()
       this->context.index->value = index;
    }
 
-   while (this->perun2.state == State::s_Running) {
+   while (this->perun2.isRunning()) {
       if (goDeeper) {
          goDeeper = false;
          if (os_directoryExists(paths.back())) {

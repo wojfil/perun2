@@ -34,7 +34,7 @@ void C_PrintList::run()
 {
    const p_list list = this->value->getValue();
    const p_size length = list.size();
-   for (p_size i = 0; this->perun2.state == State::s_Running && i < length; i++) {
+   for (p_size i = 0; this->perun2.isRunning() && i < length; i++) {
       this->perun2.logger.print(list[i]);
    }
 }
@@ -42,7 +42,7 @@ void C_PrintList::run()
 void C_PrintDefinition::run()
 {
    while (this->value->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (!this->perun2.isRunning()) {
          this->value->reset();
          break;
       }

@@ -28,7 +28,7 @@ namespace perun2::comm
 
 void C_Delete::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_delete(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -44,7 +44,7 @@ void C_Delete::run()
 
 void C_Drop::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_drop(this->context->v_path->value, this->context->v_isfile->value, this->perun2);
       this->perun2.contexts.success->value = s;
 
@@ -62,7 +62,7 @@ void C_Drop::run()
 
 void C_Hide::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_hide(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -80,7 +80,7 @@ void C_Hide::run()
 
 void C_Lock::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_lock(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -98,7 +98,7 @@ void C_Lock::run()
 
 void C_Open::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_open(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -113,7 +113,7 @@ void C_Open::run()
 
 void C_Unlock::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_unlock(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -131,7 +131,7 @@ void C_Unlock::run()
 
 void C_Unhide::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_bool s = this->context->v_exists->value && os_unhide(this->context->v_path->value);
       this->perun2.contexts.success->value = s;
 
@@ -149,7 +149,7 @@ void C_Unhide::run()
 
 void C_OpenWith::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str pro = os_trim(program->getValue());
 
       if (!this->context->v_exists->value || pro.empty()) {
@@ -200,7 +200,7 @@ void C_OpenWith::run()
 
 void C_ReaccessTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_tim t = this->context->v_access->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -221,7 +221,7 @@ void C_ReaccessTo::run()
 
 void C_RechangeTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_tim t = this->context->v_change->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -243,7 +243,7 @@ void C_RechangeTo::run()
 
 void C_RecreateTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_tim t = this->context->v_creation->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -264,7 +264,7 @@ void C_RecreateTo::run()
 
 void C_RemodifyTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_tim t = this->context->v_modification->value;
       t.setValue(time->getValue());
       this->perun2.contexts.success->value = this->context->v_exists->value
@@ -286,7 +286,7 @@ void C_RemodifyTo::run()
 
 void C_RenameTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str n = os_fullname(os_trim(name->getValue()));
 
       if (!this->context->v_exists->value || os_isInvalid(n)
@@ -335,7 +335,7 @@ void C_RenameTo::run()
 
 void C_RenameTo_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_fullname(os_trim(name->getValue()));
       if (!this->context->v_exists->value || os_isInvalid(n)
@@ -404,7 +404,7 @@ void C_RenameTo_Stack::run()
 
 void C_MoveTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -463,7 +463,7 @@ void C_MoveTo::run()
 
 void C_MoveTo_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -522,7 +522,7 @@ void C_MoveTo_Stack::run()
 
 void C_MoveToAs::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -587,7 +587,7 @@ void C_MoveToAs::run()
 
 void C_MoveToAs_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -665,7 +665,7 @@ void C_MoveToAs_Stack::run()
 
 void C_CopyTo::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -718,7 +718,7 @@ void C_CopyTo::run()
 
 void C_CopyTo_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str n = os_trim(location->getValue());
 
@@ -773,7 +773,7 @@ void C_CopyTo_Stack::run()
 
 void C_CopyToAs::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());
@@ -834,7 +834,7 @@ void C_CopyToAs::run()
 
 void C_CopyToAs_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& oldPath = this->context->v_path->value;
       p_str fulln = os_fullname(os_trim(name->getValue()));
       const p_str loc = os_trim(location->getValue());

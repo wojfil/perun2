@@ -88,7 +88,7 @@ p_list ListFilter_Where::getValue()
    this->context->resetIndex();
    p_nint index = NINT_ZERO;
 
-   while (this->perun2.state == State::s_Running && index != length) {
+   while (this->perun2.isRunning() && index != length) {
       const p_str& unit = values[static_cast<p_size>(index)];
       this->context->index->value.value.i = index;
       this->context->loadData(unit);

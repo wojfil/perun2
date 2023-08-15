@@ -22,7 +22,7 @@ namespace perun2::comm
 
 void C_Create::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -72,7 +72,7 @@ void C_Create::run()
 
 void C_Create_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -131,7 +131,7 @@ void C_Create_Stack::run()
 
 void C_CreateFile::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create file ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -162,7 +162,7 @@ void C_CreateFile::run()
 
 void C_CreateFile_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create file ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -204,7 +204,7 @@ void C_CreateFile_Stack::run()
 
 void C_CreateDirectory::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -235,7 +235,7 @@ void C_CreateDirectory::run()
 
 void C_CreateDirectory_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (!this->context->v_isfile->value && !this->context->v_isdirectory->value) {
          this->perun2.logger.log(L"Failed to create directory ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
@@ -271,7 +271,7 @@ void C_CreateDirectory_Stack::run()
 
 void C_Create_String::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -331,7 +331,7 @@ void C_Create_String::run()
 
 void C_CreateFile_String::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -372,7 +372,7 @@ void C_CreateFile_String::run()
 
 void C_CreateDirectory_String::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -413,7 +413,7 @@ void C_CreateDirectory_String::run()
 
 void C_Create_String_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -472,7 +472,7 @@ void C_Create_String_Stack::run()
 
 void C_CreateFile_String_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -518,7 +518,7 @@ void C_CreateFile_String_Stack::run()
 
 void C_CreateDirectory_String_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str value = os_trim(element->getValue());
       const p_str& dest = this->locContext->location->value;
 
@@ -556,7 +556,7 @@ void C_CreateDirectory_String_Stack::run()
 
 void C_Create_List::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -658,7 +658,7 @@ void C_Create_List::run()
 
 void C_CreateFiles_List::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -722,7 +722,7 @@ void C_CreateFiles_List::run()
 
 void C_CreateDirectories_List::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -786,7 +786,7 @@ void C_CreateDirectories_List::run()
 
 void C_Create_List_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -876,7 +876,7 @@ void C_Create_List_Stack::run()
 
 void C_CreateFiles_List_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();
@@ -945,7 +945,7 @@ void C_CreateFiles_List_Stack::run()
 
 void C_CreateDirectories_List_Stack::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       const p_str& dest = this->locContext->location->value;
       const p_list names = elements->getValue();
       const p_size len = names.size();

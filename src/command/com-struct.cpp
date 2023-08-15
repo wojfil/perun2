@@ -23,7 +23,7 @@ namespace perun2::comm
 
 void CS_RawBlock::run()
 {
-   for (p_size i = 0; this->perun2.state == State::s_Running && i < this->length; i++) {
+   for (p_size i = 0; this->perun2.isRunning() && i < this->length; i++) {
       (this->commands[i])->run();
    }
 }
@@ -31,7 +31,7 @@ void CS_RawBlock::run()
 
 void CS_Block::run()
 {
-   for (p_size i = 0; this->perun2.state == State::s_Running && i < this->length; i++) {
+   for (p_size i = 0; this->perun2.isRunning() && i < this->length; i++) {
       (this->commands[i])->run();
    }
 
@@ -48,7 +48,7 @@ void CS_Times::run()
 
    this->context->resetIndex();
 
-   while (this->perun2.state == State::s_Running && repeats != NINT_ZERO) {
+   while (this->perun2.isRunning() && repeats != NINT_ZERO) {
       this->command->run();
       this->context->incrementIndex();
       repeats--;
@@ -64,7 +64,7 @@ void CS_While::run()
 {
    this->context->resetIndex();
 
-   while (this->perun2.state == State::s_Running && this->condition->getValue()) {
+   while (this->perun2.isRunning() && this->condition->getValue()) {
       this->command->run();
       this->context->incrementIndex();
 
@@ -77,7 +77,7 @@ void CS_While::run()
 
 void CS_StringLoop::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       this->context->resetIndex();
       this->context->loadData(this->string->getValue());
       this->command->run();
@@ -95,7 +95,7 @@ void CS_DefinitionLoop::run()
    this->context->resetIndex();
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (!this->perun2.isRunning()) {
          this->definition->reset();
          break;
       }
@@ -121,7 +121,7 @@ CS_ContextlessLoop::CS_ContextlessLoop(p_defptr& def, p_comptr& com, p_perun2& p
 void CS_ContextlessLoop::run()
 {
    while (this->definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (!this->perun2.isRunning()) {
          this->definition->reset();
          break;
       }
@@ -146,7 +146,7 @@ void CS_ListLoop::run()
    p_num index = NINT_ZERO;
    this->context->resetIndex();
 
-   while (this->perun2.state == State::s_Running && index != length) {
+   while (this->perun2.isRunning() && index != length) {
       this->context->loadData(values[static_cast<p_size>(index.value.i)]);
       this->command->run();
       index++;
@@ -161,7 +161,7 @@ void CS_ListLoop::run()
 
 void CS_InsideThis::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       if (this->fileContext->v_exists->value && this->fileContext->v_isdirectory->value) {
 
          this->locContext->loadData(this->fileContext->trimmed);
@@ -175,7 +175,7 @@ void CS_InsideThis::run()
 
 void CS_InsideString::run()
 {
-   if (this->perun2.state == State::s_Running) {
+   if (this->perun2.isRunning()) {
       this->context->resetIndex();
       this->context->loadData(this->string->getValue());
 
@@ -197,7 +197,7 @@ void CS_InsideDefinition::run()
    this->context->resetIndex();
 
    while (definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (!this->perun2.isRunning()) {
          this->definition->reset();
          break;
       }
@@ -227,7 +227,7 @@ CS_InsideContextless::CS_InsideContextless(p_defptr& def, p_comptr& com, p_lcptr
 void CS_InsideContextless::run()
 {
    while (definition->hasNext()) {
-      if (!this->perun2.state == State::s_Running) {
+      if (!this->perun2.isRunning()) {
          this->definition->reset();
          break;
       }
@@ -257,7 +257,7 @@ void CS_InsideList::run()
    p_nint outIndex = NINT_ZERO;
    this->context->resetIndex();
 
-   while (this->perun2.state == State::s_Running && index != length) {
+   while (this->perun2.isRunning() && index != length) {
       this->context->loadData(values[static_cast<p_size>(index.value.i)]);
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
          this->locContext->loadData(this->context->trimmed);

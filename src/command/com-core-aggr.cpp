@@ -321,7 +321,7 @@ void Selector::run()
 
       for (auto it = this->selectPaths.begin(); it != this->selectPaths.end(); it++)
       {
-         if (this->perun2.state != State::s_Running) {
+         if (this->perun2.isNotRunning()) {
             break;
          }
 

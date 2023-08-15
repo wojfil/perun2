@@ -38,18 +38,20 @@ public:
    template<typename... Args>
    void log(Args const&... args) const
    {
-      if (!this->isSilent) {
-         using value_type = std::common_type_t<Args const&...>;
-         for (auto const& arg : {static_cast<value_type>(args)...}) {
-            p_cout << arg;
-         }
+      if (this->isSilent) {
+         return;
+      }
+
+      using value_type = std::common_type_t<Args const&...>;
+      for (auto const& arg : {static_cast<value_type>(args)...}) {
+         p_cout << arg;
+      }
             
-         if (this->flushBuffer) {
-            p_cout << std::endl;
-         }
-         else {
-            p_cout << CHAR_NEW_LINE;
-         }
+      if (this->flushBuffer) {
+         p_cout << std::endl;
+      }
+      else {
+         p_cout << CHAR_NEW_LINE;
       }
    }
     

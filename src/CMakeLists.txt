@@ -81,6 +81,7 @@ add_executable(
     datatype/time.cpp
     datatype/wildcard.cpp
     command/com-condition.cpp
+    command/com-copyto.cpp
     command/com-core-aggr.cpp
     command/com-core.cpp
     command/com-create.cpp

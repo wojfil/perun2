@@ -113,66 +113,6 @@ protected:
 };
 
 
-struct C_MoveTo : CoreCommand
-{
-public:
-   C_MoveTo(p_genptr<p_str>& loc, const p_bool forc, FileContext* ctx, p_perun2& p2)
-      : location(std::move(loc)), forced(forc), CoreCommand(ctx, p2) { };
-
-   void run() override;
-
-protected:
-   p_genptr<p_str> location;
-   const p_bool forced;
-};
-
-
-struct C_MoveTo_Stack : CoreCommand
-{
-public:
-   C_MoveTo_Stack(p_genptr<p_str>& loc, FileContext* ctx, p_perun2& p2)
-      : location(std::move(loc)), CoreCommand(ctx, p2) { };
-
-   void run() override;
-
-protected:
-   p_genptr<p_str> location;
-};
-
-
-struct C_MoveToAs : CoreCommand
-{
-public:
-   C_MoveToAs(p_genptr<p_str>& loc, p_genptr<p_str>& na, const p_bool forc,
-      const p_bool extless, FileContext* ctx, p_perun2& p2)
-      : location(std::move(loc)), name(std::move(na)),
-        forced(forc), extensionless(extless), CoreCommand(ctx, p2) { };
-
-   void run() override;
-
-protected:
-   p_genptr<p_str> location;
-   p_genptr<p_str> name;
-   const p_bool forced;
-   const p_bool extensionless;
-};
-
-
-struct C_MoveToAs_Stack : CoreCommand
-{
-public:
-   C_MoveToAs_Stack(p_genptr<p_str>& loc, p_genptr<p_str>& na, const p_bool extless, FileContext* ctx, p_perun2& p2)
-      : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(ctx, p2) { };
-
-   void run() override;
-
-protected:
-   p_genptr<p_str> location;
-   p_genptr<p_str> name;
-   const p_bool extensionless;
-};
-
-
 p_str getCCName(const p_str& path);
 p_str getCCNameShort(const p_str& path);
 

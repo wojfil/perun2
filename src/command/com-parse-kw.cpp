@@ -23,6 +23,9 @@
 #include "com-core-aggr.h"
 #include "com-create.h"
 #include "com-time.h"
+#include "com-renameto.h"
+#include "com-copyto.h"
+#include "com-moveto.h"
 #include "../datatype/generator/gen-string.h"
 #include "../datatype/patterns.h"
 

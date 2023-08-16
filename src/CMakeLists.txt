@@ -86,6 +86,7 @@ add_executable(
     command/com-core.cpp
     command/com-create.cpp
     command/com-misc.cpp
+    command/com-moveto.cpp
     command/com-parse-kw.cpp
     command/com-parse-unit.cpp
     command/com-parse.cpp

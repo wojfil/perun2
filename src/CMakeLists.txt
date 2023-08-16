@@ -88,6 +88,7 @@ add_executable(
     command/com-parse-kw.cpp
     command/com-parse-unit.cpp
     command/com-parse.cpp
+    command/com-renameto.cpp
     command/com-struct.cpp
     command/com-time.cpp
     command/com-var.cpp

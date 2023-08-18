@@ -632,29 +632,28 @@ static p_bool command(p_comptr& result, Tokens& tks, p_perun2& p2)
       }
    }
 
-   p_bool force = false;
-   p_bool stack = false;
+   CoreCommandMode mode = CoreCommandMode::ccm_Normal;
 
    const Token& f2 = tks.first();
    if (f2.type == Token::t_Keyword) {
       switch (f2.value.keyword.k) {
          case Keyword::kw_Force: {
             tks.trimLeft();
-            force = true;
+            mode = CoreCommandMode::ccm_Force;
 
             if (tks.isEmpty()) {
                throw SyntaxError(str(L"command cannot consist of only one keyword: '",
-                  f2.getOriginString(p2),L"'"), f.line);
+                  f2.getOriginString(p2), L"'"), f.line);
             }
             break;
          }
          case Keyword::kw_Stack: {
             tks.trimLeft();
-            stack = true;
+            mode = CoreCommandMode::ccm_Stack;
 
             if (tks.isEmpty()) {
                throw SyntaxError(str(L"command cannot consist of only one keyword: '",
-                  f2.getOriginString(p2),L"'"), f.line);
+                  f2.getOriginString(p2), L"'"), f.line);
             }
             break;
          }
@@ -672,16 +671,14 @@ static p_bool command(p_comptr& result, Tokens& tks, p_perun2& p2)
          default: {
             tks.trimLeft();
             tks.checkCommonExpressionExceptions(p2);
-            return keywordCommands(result, f3, tks, f.line, force, stack, p2);
+            return keywordCommands(result, f3, tks, f.line, mode, p2);
          }
       }
    }
 
-   if (force) {
-      throw SyntaxError(L"only a core command can start with a keyword 'force'", f.line);
-   }
-   if (stack) {
-      throw SyntaxError(L"only a core command can start with a keyword 'stack'", f.line);
+   if (mode != CoreCommandMode::ccm_Normal) {
+      throw SyntaxError(str(L"only a core command can start with a keyword '", 
+         f2.getOriginString(p2), L"'"), f.line);
    }
 
    if (commandMisc(result, tks, p2)) {

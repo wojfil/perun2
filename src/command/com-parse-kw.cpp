@@ -34,7 +34,7 @@ namespace perun2::comm
 {
 
 p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    switch (word.value.keyword.k) {
       case Keyword::kw_Delete:
@@ -43,68 +43,68 @@ p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
       case Keyword::kw_Lock:
       case Keyword::kw_Unlock:
       case Keyword::kw_Unhide: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return kwCommandSimple(result, word, tks, line, p2);
       }
       case Keyword::kw_Open: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return c_open(result, word, tks, line, p2);
       }
       case Keyword::kw_Copy: {
-         return c_copy(result, word, tks, line, force, stack, p2);
+         return c_copy(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_Create: {
-         return c_create(result, word, tks, line, force, stack, p2);
+         return c_create(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_CreateFile: {
-         return c_createFile(result, word, tks, line, force, stack, p2);
+         return c_createFile(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_CreateDirectory: {
-         return c_createDirectory(result, word, tks, line, force, stack, p2);
+         return c_createDirectory(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_CreateFiles: {
-         return c_createFiles(result, word, tks, line, force, stack, p2);
+         return c_createFiles(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_CreateDirectories: {
-         return c_createDirectories(result, word, tks, line, force, stack, p2);
+         return c_createDirectories(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
       case Keyword::kw_Exit: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          throw SyntaxError(str(L"command '", word.getOriginString(p2), L"' cannot be called with an argument"), line);
       }
       case Keyword::kw_Error: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return c_error(result, word, tks, line, p2);
       }
       case Keyword::kw_Move: {
-         return c_moveTo(result, word, tks, line, force, stack, p2);
+         return c_moveTo(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_Print: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return c_print(result, word, tks, line, true, p2);
       }
       case Keyword::kw_Reaccess:
       case Keyword::kw_Recreate:
       case Keyword::kw_Rechange:
       case Keyword::kw_Remodify: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return kwCommandTime(result, word, tks, line, p2);
       }
       case Keyword::kw_Rename: {
-         return c_rename(result, word, tks, line, force, stack, p2);
+         return c_rename(result, word, tks, line, mode, p2);
       }
       case Keyword::kw_Run: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return c_run(result, word, tks, line, p2);
       }
       case Keyword::kw_Select: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return c_select(result, word, tks, line, p2);
       }
       case Keyword::kw_Sleep: {
-         checkUselessFlags(word, line, force, stack, p2);
+         checkUselessFlags(word, line, mode, p2);
          return c_sleep(result, word, tks, line, p2);
       }
    }
@@ -420,7 +420,7 @@ static p_bool c_select(p_comptr& result, const Token& word, const Tokens& tks, c
 }
 
 static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to' is empty"), line);
@@ -459,11 +459,11 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
          throw SyntaxError(str(L"declaration of new name in command '", word.getOriginString(p2), L" to' is not valid"), line);
       }
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_RenameTo_Stack>(newName, true, extless, ctx, p2);
       }
       else {
-         result = std::make_unique<C_RenameTo>(newName, true, force, extless, ctx, p2);
+         result = std::make_unique<C_RenameTo>(newName, true, mode == CoreCommandMode::ccm_Force, extless, ctx, p2);
       }
 
       return true;
@@ -486,11 +486,11 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
    if (parse::parse(p2, left, str_)) {
       p_comptr inner;
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          inner = std::make_unique<C_RenameTo_Stack>(newName, false, extless, ctx.get(), p2);
       }
       else {
-         inner = std::make_unique<C_RenameTo>(newName, false, force, extless, ctx.get(), p2);
+         inner = std::make_unique<C_RenameTo>(newName, false, mode == CoreCommandMode::ccm_Force, extless, ctx.get(), p2);
       }
 
       result = std::make_unique<CS_StringComArg>(str_, inner, ctx, p2);
@@ -501,11 +501,11 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
    if (parse::parse(p2, left, list)) {
       p_comptr inner;
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          inner = std::make_unique<C_RenameTo_Stack>(newName, false, extless, ctx.get(), p2);
       }
       else {
-         inner = std::make_unique<C_RenameTo>(newName, false, force, extless, ctx.get(), p2);
+         inner = std::make_unique<C_RenameTo>(newName, false, mode == CoreCommandMode::ccm_Force, extless, ctx.get(), p2);
       }
 
       result = std::make_unique<CS_ListComArg>(list, inner, ctx, p2);
@@ -517,7 +517,7 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
 }
 
 static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(p2), line, p2);
@@ -525,11 +525,11 @@ static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, c
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_Create_Stack>(ctx, p2);
       }
       else {
-         result = std::make_unique<C_Create>(force, ctx, p2);
+         result = std::make_unique<C_Create>(mode == CoreCommandMode::ccm_Force, ctx, p2);
       }
 
       return true;
@@ -539,11 +539,11 @@ static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, c
 
    p_genptr<p_str> str_;
    if (parse::parse(p2, tks, str_)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_Create_String_Stack>(str_, p2);
       }
       else {
-         result = std::make_unique<C_Create_String>(str_, force, p2);
+         result = std::make_unique<C_Create_String>(str_, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -551,11 +551,11 @@ static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, c
 
    p_genptr<p_list> list;
    if (parse::parse(p2, tks, list)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_Create_List_Stack>(list, p2);
       }
       else {
-         result = std::make_unique<C_Create_List>(list, force, p2);
+         result = std::make_unique<C_Create_List>(list, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -567,7 +567,7 @@ static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, c
 
 
 static p_bool c_createFile(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(p2), line, p2);
@@ -575,11 +575,11 @@ static p_bool c_createFile(p_comptr& result, const Token& word, const Tokens& tk
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateFile_Stack>(ctx, p2);
       }
       else {
-         result = std::make_unique<C_CreateFile>(force, ctx, p2);
+         result = std::make_unique<C_CreateFile>(mode == CoreCommandMode::ccm_Force, ctx, p2);
       }
 
       return true;
@@ -589,11 +589,11 @@ static p_bool c_createFile(p_comptr& result, const Token& word, const Tokens& tk
 
    p_genptr<p_str> str_;
    if (parse::parse(p2, tks, str_)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateFile_String_Stack>(str_, p2);
       }
       else {
-         result = std::make_unique<C_CreateFile_String>(str_, force, p2);
+         result = std::make_unique<C_CreateFile_String>(str_, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -603,7 +603,7 @@ static p_bool c_createFile(p_comptr& result, const Token& word, const Tokens& tk
 }
 
 static p_bool c_createDirectory(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(p2), line, p2);
@@ -611,11 +611,11 @@ static p_bool c_createDirectory(p_comptr& result, const Token& word, const Token
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateDirectory_Stack>(ctx, p2);
       }
       else {
-         result = std::make_unique<C_CreateDirectory>(force, ctx, p2);
+         result = std::make_unique<C_CreateDirectory>(mode == CoreCommandMode::ccm_Force, ctx, p2);
       }
 
       return true;
@@ -625,11 +625,11 @@ static p_bool c_createDirectory(p_comptr& result, const Token& word, const Token
 
    p_genptr<p_str> str_;
    if (parse::parse(p2, tks, str_)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateDirectory_String_Stack>(str_, p2);
       }
       else {
-         result = std::make_unique<C_CreateDirectory_String>(str_, force, p2);
+         result = std::make_unique<C_CreateDirectory_String>(str_, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -639,7 +639,7 @@ static p_bool c_createDirectory(p_comptr& result, const Token& word, const Token
 }
 
 static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(p2), line, p2);
@@ -647,11 +647,11 @@ static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& t
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateFile_Stack>(ctx, p2);
       }
       else {
-         result = std::make_unique<C_CreateFile>(force, ctx, p2);
+         result = std::make_unique<C_CreateFile>(mode == CoreCommandMode::ccm_Force, ctx, p2);
       }
 
       return true;
@@ -661,11 +661,11 @@ static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& t
 
    p_genptr<p_str> str_;
    if (parse::parse(p2, tks, str_)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateFile_String_Stack>(str_, p2);
       }
       else {
-         result = std::make_unique<C_CreateFile_String>(str_, force, p2);
+         result = std::make_unique<C_CreateFile_String>(str_, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -673,11 +673,11 @@ static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& t
 
    p_genptr<p_list> list;
    if (parse::parse(p2, tks, list)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateFiles_List_Stack>(list, p2);
       }
       else {
-         result = std::make_unique<C_CreateFiles_List>(list, force, p2);
+         result = std::make_unique<C_CreateFiles_List>(list, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -688,7 +688,7 @@ static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& t
 }
 
 static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       checkFileContextExistence(word.getOriginString(p2), line, p2);
@@ -696,11 +696,11 @@ static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tok
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateDirectory_Stack>(ctx, p2);
       }
       else {
-         result = std::make_unique<C_CreateDirectory>(force, ctx, p2);
+         result = std::make_unique<C_CreateDirectory>(mode == CoreCommandMode::ccm_Force, ctx, p2);
       }
 
       return true;
@@ -710,11 +710,11 @@ static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tok
 
    p_genptr<p_str> str_;
    if (parse::parse(p2, tks, str_)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateDirectory_String_Stack>(str_, p2);
       }
       else {
-         result = std::make_unique<C_CreateDirectory_String>(str_, force, p2);
+         result = std::make_unique<C_CreateDirectory_String>(str_, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -722,11 +722,11 @@ static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tok
 
    p_genptr<p_list> list;
    if (parse::parse(p2, tks, list)) {
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CreateDirectories_List_Stack>(list, p2);
       }
       else {
-         result = std::make_unique<C_CreateDirectories_List>(list, force, p2);
+         result = std::make_unique<C_CreateDirectories_List>(list, mode == CoreCommandMode::ccm_Force, p2);
       }
 
       return true;
@@ -737,7 +737,7 @@ static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tok
 }
 
 static p_bool c_moveTo(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(p2), L" to' is empty"), line);
@@ -757,19 +757,19 @@ static p_bool c_moveTo(p_comptr& result, const Token& word, const Tokens& tks, c
       p2.contexts.closeDeepAttributeScope();
 
       return hasAs 
-         ? c_moveToAsContextless(result, word, right, line, force, stack, p2)
-         : c_moveToContextless(result, word, right, line, force, stack, p2);
+         ? c_moveToAsContextless(result, word, right, line, mode, p2)
+         : c_moveToContextless(result, word, right, line, mode, p2);
    }
 
    p2.contexts.closeAttributeScope();
 
    return hasAs
-      ? c_moveToAsContextfull(result, word, left, right, line, force, stack, p2)
-      : c_moveToContextfull(result, word, left, right, line, force, stack, p2);
+      ? c_moveToAsContextfull(result, word, left, right, line, mode, p2)
+      : c_moveToContextfull(result, word, left, right, line, mode, p2);
 }
 
 static p_bool c_moveToContextless(p_comptr& result, const Token& word, const Tokens& right, 
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    if (right.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(p2),
@@ -787,18 +787,18 @@ static p_bool c_moveToContextless(p_comptr& result, const Token& word, const Tok
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       result = std::make_unique<C_MoveTo_Stack>(str_, ctx, p2);
    }
    else {
-      result = std::make_unique<C_MoveTo>(str_, force, ctx, p2);
+      result = std::make_unique<C_MoveTo>(str_, mode == CoreCommandMode::ccm_Force, ctx, p2);
    }
 
    return true;
 }
 
 static p_bool c_moveToAsContextless(p_comptr& result, const Token& word, const Tokens& right, 
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
    Tokens& preAs = pair2.first;
@@ -842,18 +842,18 @@ static p_bool c_moveToAsContextless(p_comptr& result, const Token& word, const T
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       result = std::make_unique<C_MoveToAs_Stack>(dest, nname, extless, ctx, p2);
    }
    else {
-      result = std::make_unique<C_MoveToAs>(dest, nname, force, extless, ctx, p2);
+      result = std::make_unique<C_MoveToAs>(dest, nname, mode == CoreCommandMode::ccm_Force, extless, ctx, p2);
    }
 
    return true;
 }
 
 static p_bool c_moveToContextfull(p_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    p_fcptr ctx;
    makeCoreCommandContext(ctx, p2);
@@ -868,11 +868,11 @@ static p_bool c_moveToContextfull(p_comptr& result, const Token& word, const Tok
    p2.contexts.retreatFileContext();
 
    p_comptr inner;
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       inner = std::make_unique<C_MoveTo_Stack>(dest, ctx.get(), p2);
    }
    else {
-      inner = std::make_unique<C_MoveTo>(dest, force, ctx.get(), p2);
+      inner = std::make_unique<C_MoveTo>(dest, mode == CoreCommandMode::ccm_Force, ctx.get(), p2);
    }
 
    if (parseLooped(left, inner, ctx, result, p2)) {
@@ -884,7 +884,7 @@ static p_bool c_moveToContextfull(p_comptr& result, const Token& word, const Tok
 }
 
 static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    if (left.check(TI_HAS_KEYWORD_AS)) {
       throw SyntaxError(str(L"keywords 'to' and 'as' appear in command '",
@@ -935,11 +935,11 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
    p2.contexts.retreatFileContext();
    p_comptr inner;
 
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       inner = std::make_unique<C_MoveToAs_Stack>(dest, nname, extless, ctx.get(), p2);
    }
    else {
-      inner = std::make_unique<C_MoveToAs>(dest, nname, force, extless, ctx.get(), p2);
+      inner = std::make_unique<C_MoveToAs>(dest, nname, mode == CoreCommandMode::ccm_Force, extless, ctx.get(), p2);
    }
 
    if (parseLooped(left, inner, ctx, result, p2)) {
@@ -951,7 +951,7 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
 }
 
 static p_bool c_copy(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
    const p_bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
    const p_bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
@@ -962,12 +962,12 @@ static p_bool c_copy(p_comptr& result, const Token& word, const Tokens& tks, con
             L" to as' cannot be called without keyword 'to'"), line);
       }
 
-      if (force) {
+      if (mode == CoreCommandMode::ccm_Force) {
          throw SyntaxError(str(L"command '", word.getOriginString(p2),
             L"' cannot be preceded by a flag 'forced'"), line);
       }
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          throw SyntaxError(str(L"command '", word.getOriginString(p2),
             L"' cannot be preceded by a flag 'stack'"), line);
       }
@@ -981,15 +981,15 @@ static p_bool c_copy(p_comptr& result, const Token& word, const Tokens& tks, con
       p2.contexts.closeDeepAttributeScope();
 
       return hasAs 
-         ? c_copyToAsContextless(result, word, right, line, force, stack, p2)
-         : c_copyToContextless(result, word, right, line, force, stack, p2);
+         ? c_copyToAsContextless(result, word, right, line, mode, p2)
+         : c_copyToContextless(result, word, right, line, mode, p2);
    }
 
    p2.contexts.closeAttributeScope();
 
    return hasAs
-      ? c_copyToAsContextfull(result, word, left, right, line, force, stack, p2)
-      : c_copyToContextfull(result, word, left, right, line, force, stack, p2);
+      ? c_copyToAsContextfull(result, word, left, right, line, mode, p2)
+      : c_copyToContextfull(result, word, left, right, line, mode, p2);
 }
 
 static p_bool c_copySimple(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, p_perun2& p2)
@@ -1040,7 +1040,7 @@ static p_bool c_copySimple(p_comptr& result, const Token& word, const Tokens& tk
 }
 
 static p_bool c_copyToContextless(p_comptr& result, const Token& word, const Tokens& right,
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    if (right.isEmpty()) {
       throw SyntaxError(str(L"command '", word.getOriginString(p2),
@@ -1053,11 +1053,11 @@ static p_bool c_copyToContextless(p_comptr& result, const Token& word, const Tok
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
 
-      if (stack) {
+      if (mode == CoreCommandMode::ccm_Stack) {
          result = std::make_unique<C_CopyTo_Stack>(str_, true, ctx, p2);
       }
       else {
-         result = std::make_unique<C_CopyTo>(str_, true, force, ctx, p2);
+         result = std::make_unique<C_CopyTo>(str_, true, mode == CoreCommandMode::ccm_Force, ctx, p2);
       }
 
       return true;
@@ -1071,7 +1071,7 @@ static p_bool c_copyToContextless(p_comptr& result, const Token& word, const Tok
 }
 
 static p_bool c_copyToAsContextless(p_comptr& result, const Token& word, const Tokens& right,
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
    Tokens& preAs = pair2.first;
@@ -1114,18 +1114,18 @@ static p_bool c_copyToAsContextless(p_comptr& result, const Token& word, const T
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       result = std::make_unique<C_CopyToAs_Stack>(dest, nname, true, extless, ctx, p2);
    }
    else {
-      result = std::make_unique<C_CopyToAs>(dest, nname, true, force, extless, ctx, p2);
+      result = std::make_unique<C_CopyToAs>(dest, nname, true, mode == CoreCommandMode::ccm_Force, extless, ctx, p2);
    }
 
    return true;
 }
 
 static p_bool c_copyToContextfull(p_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    p_fcptr ctx;
    makeCoreCommandContext(ctx, p2);
@@ -1140,11 +1140,11 @@ static p_bool c_copyToContextfull(p_comptr& result, const Token& word, const Tok
    p2.contexts.retreatFileContext();
 
    p_comptr inner;
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       inner = std::make_unique<C_CopyTo_Stack>(dest, false, ctx.get(), p2);
    }
    else {
-      inner = std::make_unique<C_CopyTo>(dest, false, force, ctx.get(), p2);
+      inner = std::make_unique<C_CopyTo>(dest, false, mode == CoreCommandMode::ccm_Force, ctx.get(), p2);
    }
 
    if (parseLooped(left, inner, ctx, result, p2)) {
@@ -1156,7 +1156,7 @@ static p_bool c_copyToContextfull(p_comptr& result, const Token& word, const Tok
 }
 
 static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const Tokens& left, const Tokens& right, 
-   const p_int line, const p_bool force, const p_bool stack, p_perun2& p2)
+   const p_int line, const CoreCommandMode mode, p_perun2& p2)
 {
    if (left.check(TI_HAS_KEYWORD_AS)) {
       throw SyntaxError(str(L"keywords 'to' and 'as' appear in "
@@ -1207,11 +1207,11 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
    p2.contexts.retreatFileContext();
 
    p_comptr inner;
-   if (stack) {
+   if (mode == CoreCommandMode::ccm_Stack) {
       inner = std::make_unique<C_CopyToAs_Stack>(dest, nname, false, extless, ctx.get(), p2);
    }
    else {
-      inner = std::make_unique<C_CopyToAs>(dest, nname, false, force, extless, ctx.get(), p2);
+      inner = std::make_unique<C_CopyToAs>(dest, nname, false, mode == CoreCommandMode::ccm_Force, extless, ctx.get(), p2);
    }
 
    if (parseLooped(left, inner, ctx, result, p2)) {
@@ -1616,16 +1616,17 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 }
 
 static void checkUselessFlags(const Token& word, const p_int line,
-   const p_bool force, const p_bool stack, p_perun2& p2)
+   const CoreCommandMode mode, p_perun2& p2)
 {
-   if (force) {
-      throw SyntaxError(str(L"keyword '", word.getOriginString(p2),
-         L"' cannot be preceded by a flag 'forced'"), line);
-   }
-
-   if (stack) {
-      throw SyntaxError(str(L"keyword '", word.getOriginString(p2),
-         L"' cannot be preceded by a flag 'stack'"), line);
+   switch (mode) {
+      case CoreCommandMode::ccm_Force: {
+         throw SyntaxError(str(L"keyword '", word.getOriginString(p2), L"' cannot be preceded by a flag 'forced'"), line);
+         break;
+      }
+      case CoreCommandMode::ccm_Stack: {
+         throw SyntaxError(str(L"keyword '", word.getOriginString(p2), L"' cannot be preceded by a flag 'stack'"), line);
+         break;
+      }
    }
 }
 

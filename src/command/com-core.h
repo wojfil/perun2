@@ -25,6 +25,7 @@
 namespace perun2::comm
 {
 
+
 struct CoreCommand : Command
 {
 public:

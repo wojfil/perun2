@@ -30,7 +30,7 @@ OrderBy::OrderBy(p_indptr& inds, p_ordptr& ord)
 
 void OrderBy::quicksort(p_int start, p_int end)
 {
-   p_int stack[end - start + 1];
+   std::unique_ptr<p_int[]> stack = std::make_unique<p_int[]>(end - start + 1);
    p_int top = -1;
   
    stack[++top] = start;

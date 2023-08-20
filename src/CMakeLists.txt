@@ -71,6 +71,7 @@ add_executable(
     datatype/cast.cpp
     datatype/chars.cpp
     datatype/concat.cpp
+    datatype/incr-constr.cpp
     datatype/math.cpp
     datatype/number.cpp
     datatype/order-limit-one.cpp

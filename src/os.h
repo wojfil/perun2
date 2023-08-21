@@ -66,6 +66,7 @@ p_tim os_modification(const p_str& path);
 p_bool os_readonly(const p_str& path);
 p_nint os_size(const p_str& path, p_perun2& p2);
 p_nint os_sizeDirectory(const p_str& path, p_perun2& p2);
+p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr, p_perun2& p2);
 
 p_bool os_exists(const p_str& path);
 p_bool os_fileExists(const p_str& path);

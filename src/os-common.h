@@ -15,7 +15,7 @@
 #ifndef OS_COMMON_H
 #define OS_COMMON_H
 
-#include "datatype\datatype.h"
+#include "datatype\incr-constr.h"
 #include "attribute.h"
 
 // here are all OS functions, that are implemented the same for all operating systems

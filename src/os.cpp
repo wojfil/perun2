@@ -710,6 +710,107 @@ p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
    return totalSize;
 }
 
+p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr, p_perun2& p2)
+{
+   constr.loadLimit();
+   IC_State state = constr.getState();
+   if (state != IC_State::Unknown) {
+      return state == IC_State::True;
+   }
+
+   std::vector<p_entry> entries;
+   p_list paths = { path };
+   p_list bases;
+   p_bool goDeeper = true;
+   p_fdata data;
+
+   while (true) {
+      if (p2.isNotRunning()) {
+         for (p_entry& entry : entries) {
+            os_closeEntry(entry);
+         }
+
+         return false;
+      }
+
+      if (goDeeper) {
+         goDeeper = false;
+         if (os_directoryExists(paths.back())) {
+            const p_str newPath = str(paths.back(), gen::os::DEFAULT_PATTERN);
+            entries.emplace_back();
+            
+            if (!os_hasFirstFile(newPath, entries.back(), data)) {
+               entries.pop_back();
+               paths.pop_back();
+               if (paths.empty()) {
+                  break;
+               }
+               else {
+                  bases.pop_back();
+               }
+            }
+            else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+               constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+               state = constr.getState();
+               if (state != IC_State::Unknown) {
+                  return state == IC_State::True;
+               }
+            }
+         }
+         else {
+            paths.pop_back();
+            if (paths.empty()) {
+               break;
+            }
+            else {
+               bases.pop_back();
+            }
+         }
+      }
+      else {
+         if (os_hasNextFile(entries.back(), data)) {
+            const p_str v = data.cFileName;
+
+            if (!os_isBrowsePath(v)) {
+               if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                  paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
+
+                  if (bases.empty()) {
+                     bases.emplace_back(str(v, OS_SEPARATOR));
+                  }
+                  else {
+                     bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
+                  }
+
+                  goDeeper = true;
+               }
+               else {
+                  constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+                  state = constr.getState();
+                  if (state != IC_State::Unknown) {
+                     return state == IC_State::True;
+                  }
+               }
+            }
+         }
+         else {
+            os_closeEntry(entries.back());
+            entries.pop_back();
+            paths.pop_back();
+
+            if (paths.empty()) {
+               break;
+            }
+            else {
+               bases.pop_back();
+            }
+         }
+      }
+   }
+
+   return constr.getFinalValue();
+}
+
 p_bool os_exists(const p_str& path)
 {
    if (!os_isAbsolute(path)) {

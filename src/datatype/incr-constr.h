@@ -23,6 +23,21 @@ namespace perun2
 {
 
 
+// what is Incremental Constraint?
+// look at the code below
+//
+//      select directories
+//        where size > 10mb
+//
+// we can introduce an obvious optimization
+// instead of calculating the exact size of every directory and comparing this value to 10 megabytes
+// we read sizes of files sequentially and every step check if condition is alredy satisfied
+// if the size already exceedes 10mb, we can escape early
+// there is no need to read more
+// this is just an example
+// Incremental Constraints have more use cases
+
+
 enum IC_State
 {
    True,

@@ -753,6 +753,10 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
                constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
                state = constr.getState();
                if (state != IC_State::Unknown) {
+                  for (p_entry& entry : entries) {
+                     os_closeEntry(entry);
+                  }
+
                   return state == IC_State::True;
                }
             }
@@ -788,6 +792,10 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
                   constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
                   state = constr.getState();
                   if (state != IC_State::Unknown) {
+                     for (p_entry& entry : entries) {
+                        os_closeEntry(entry);
+                     }
+
                      return state == IC_State::True;
                   }
                }

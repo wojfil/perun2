@@ -18,7 +18,6 @@
 namespace perun2
 {
 
-
 IncrementalConstraint::IncrementalConstraint(p_genptr<p_num>& lg)
    : limitGen(std::move(lg)) { };
 
@@ -36,8 +35,12 @@ void IncrementalConstraint::increment(const p_num val)
 }
 
 
-IC_Equals::IC_Equals(p_genptr<p_num>& lg)         : IncrementalConstraint(lg) { };
-IC_NotEquals::IC_NotEquals(p_genptr<p_num>& lg)   : IncrementalConstraint(lg) { };
+IC_Equals::IC_Equals(p_genptr<p_num>& lg)                 : IncrementalConstraint(lg) { };
+IC_NotEquals::IC_NotEquals(p_genptr<p_num>& lg)           : IncrementalConstraint(lg) { };
+IC_Smaller::IC_Smaller(p_genptr<p_num>& lg)               : IncrementalConstraint(lg) { };
+IC_SmallerEquals::IC_SmallerEquals(p_genptr<p_num>& lg)   : IncrementalConstraint(lg) { };
+IC_Bigger::IC_Bigger(p_genptr<p_num>& lg)                 : IncrementalConstraint(lg) { };
+IC_BiggerEquals::IC_BiggerEquals(p_genptr<p_num>& lg)     : IncrementalConstraint(lg) { };
 
 
 IC_State IC_Equals::getState()
@@ -60,12 +63,74 @@ IC_State IC_NotEquals::getState()
 }
 
 
+IC_State IC_Smaller::getState()
+{
+   if (this->value >= this->limit) {
+      return IC_State::False;
+   }
+
+   return IC_State::Unknown;
+}
 
 
+IC_State IC_SmallerEquals::getState()
+{
+   if (this->value > this->limit) {
+      return IC_State::False;
+   }
+
+   return IC_State::Unknown;
+}
 
 
+IC_State IC_Bigger::getState()
+{
+   if (this->value > this->limit) {
+      return IC_State::True;
+   }
+
+   return IC_State::Unknown;
+}
 
 
+IC_State IC_BiggerEquals::getState()
+{
+   if (this->value >= this->limit) {
+      return IC_State::True;
+   }
 
+   return IC_State::Unknown;
+}
+
+
+p_bool IC_Equals::getFinalValue()
+{
+   return this->value == this->limit;
+}
+
+p_bool IC_NotEquals::getFinalValue()
+{
+   return this->value != this->limit;
+}
+
+p_bool IC_Smaller::getFinalValue()
+{
+   return this->value < this->limit;
+}
+
+p_bool IC_SmallerEquals::getFinalValue()
+{
+   return this->value <= this->limit;
+}
+
+p_bool IC_Bigger::getFinalValue()
+{
+   return this->value > this->limit;
+}
+
+p_bool IC_BiggerEquals::getFinalValue()
+{
+   return this->value >= this->limit;
+}
 
 }

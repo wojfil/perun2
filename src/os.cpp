@@ -251,7 +251,7 @@ void os_loadAttributes(FileContext& context)
       if (context.v_exists->value) {
          context.vp_size->value = context.v_isfile->value
             ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : p_num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
+            : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
       }
       else {
          context.vp_size->value = p_num(NINT_MINUS_ONE);
@@ -374,7 +374,7 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
    if (attribute->has(ATTR_SIZE)) {
       context.vp_size->value = context.v_isfile->value
          ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-         : p_num(osp_sizeDirectory(context.v_path->value, context.attribute->perun2));
+         : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
    }
 }
 
@@ -605,7 +605,7 @@ p_bool os_readonly(const p_str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-p_nint osp_size(const p_str& path, p_perun2& p2)
+p_nint os_size(const p_str& path, p_perun2& p2)
 {
    p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
@@ -618,11 +618,11 @@ p_nint osp_size(const p_str& path, p_perun2& p2)
    }
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
-      ? osp_sizeDirectory(path, p2)
+      ? os_sizeDirectory(path, p2)
       : static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2)
+p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
 {
    p_nint totalSize = NINT_ZERO;
    p_fdata data;
@@ -641,7 +641,7 @@ p_nint osp_sizeDirectory(const p_str& path, p_perun2& p2)
       const p_str v = data.cFileName;
       if (!os_isBrowsePath(v)) {
          if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY) {
-            totalSize += osp_sizeDirectory(str(path, OS_SEPARATOR, v), p2);
+            totalSize += os_sizeDirectory(str(path, OS_SEPARATOR, v), p2);
          }
          else {
             totalSize += static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));

@@ -108,7 +108,7 @@ p_num F_SizeDefinition::getValue()
       }
 
       const p_str v = definition->getValue();
-      const p_nint s = osp_size(os_leftJoin(this->context->location->value, v), this->perun2);
+      const p_nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
       if (s != NINT_MINUS_ONE) {
          total += s;
       }
@@ -135,7 +135,7 @@ p_num F_SizeList::getValue()
 
       const p_str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvalid(v)) {
-         const p_nint s = osp_size(os_leftJoin(this->context->location->value, v), this->perun2);
+         const p_nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             total += s;
             any = true;
@@ -159,7 +159,7 @@ p_num F_Attr_Size::getValue()
 {
    return this->context.invalid
       ? NINT_MINUS_ONE
-      : osp_size(this->context.v_path->value, this->perun2);
+      : os_size(this->context.v_path->value, this->perun2);
 }
 
 

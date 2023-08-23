@@ -979,7 +979,7 @@ static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const
    }
 
    // try some rare optimizations
-   if (parseIncrConstr(result, left, right, ct, p2))
+   if (parseIncrConstr(result, left, right, ct, p2) || parseIncrConstr(result, right, left, mirrorCompType(ct), p2))
    {
       return true;
    }

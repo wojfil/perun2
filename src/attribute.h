@@ -22,7 +22,7 @@
 namespace perun2
 {
 
-typedef uint64_t p_aunit;
+typedef uint64_t     p_aunit;
 
 p_constexpr p_aunit ATTR_NULL =         0b00000000000000000000000000000000;
 p_constexpr p_aunit ATTR_ACCESS =       0b00000000000000000000000000000001;
@@ -45,6 +45,7 @@ p_constexpr p_aunit ATTR_PARENT =       0b00000000000000010000000000000000;
 p_constexpr p_aunit ATTR_PATH =         0b00000000000000100000000000000000;
 p_constexpr p_aunit ATTR_READONLY =     0b00000000000001000000000000000000;
 p_constexpr p_aunit ATTR_SIZE =         0b00000000000010000000000000000000;
+p_constexpr p_aunit ATTR_SIZE_FILE_ONLY=0b00000000000100000000000000000000;
 
 // certain expression or syntax structure may require multiple file attributes:
 // for example - creation time, modification time, size and extension

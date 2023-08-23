@@ -117,6 +117,7 @@ add_executable(
     datatype/function/func-string.cpp
     datatype/function/func-time.cpp
     datatype/generator/gen-bool-compare.cpp
+    datatype/generator/gen-bool-constr.cpp
     datatype/generator/gen-bool.cpp
     datatype/generator/gen-definition.cpp
     datatype/generator/gen-double-asterisk.cpp

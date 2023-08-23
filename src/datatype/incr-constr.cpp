@@ -22,12 +22,18 @@ IncrementalConstraint::IncrementalConstraint(p_genptr<p_num>& lg)
    : limitGen(std::move(lg)) { };
 
 
-void IncrementalConstraint::loadLimit()
+void IncrementalConstraint::reset()
 {
    this->value.setToZero();
    this->limit = this->limitGen->getValue();
 }
 
+
+void IncrementalConstraint::setValue(const p_num val)
+{
+   this->value = val;
+   this->limit = this->limitGen->getValue();
+}
 
 void IncrementalConstraint::increment(const p_num val)
 {
@@ -103,32 +109,32 @@ IC_State IC_BiggerEquals::getState()
 }
 
 
-p_bool IC_Equals::getFinalValue()
+p_bool IC_Equals::getFinalResult()
 {
    return this->value == this->limit;
 }
 
-p_bool IC_NotEquals::getFinalValue()
+p_bool IC_NotEquals::getFinalResult()
 {
    return this->value != this->limit;
 }
 
-p_bool IC_Smaller::getFinalValue()
+p_bool IC_Smaller::getFinalResult()
 {
    return this->value < this->limit;
 }
 
-p_bool IC_SmallerEquals::getFinalValue()
+p_bool IC_SmallerEquals::getFinalResult()
 {
    return this->value <= this->limit;
 }
 
-p_bool IC_Bigger::getFinalValue()
+p_bool IC_Bigger::getFinalResult()
 {
    return this->value > this->limit;
 }
 
-p_bool IC_BiggerEquals::getFinalValue()
+p_bool IC_BiggerEquals::getFinalResult()
 {
    return this->value >= this->limit;
 }

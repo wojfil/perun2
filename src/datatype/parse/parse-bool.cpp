@@ -17,10 +17,12 @@
 #include "parse-generic.h"
 #include "../parse/parse-function.h"
 #include "../generator/gen-bool.h"
+#include "../generator/gen-bool-constr.h"
 #include "../../brackets.h"
 #include "../../lexer.h"
 #include "../generator/gen-like.h"
 #include "../parse-gen.h"
+#include "../incr-constr.h"
 
 
 namespace perun2::parse
@@ -897,6 +899,72 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
 }
 
 
+static void makeIncrConstr(p_conptr& constraint, const gen::CompType ct, p_genptr<p_num>& limit)
+{
+   switch(ct) {
+      case gen::ct_Equals: {
+         constraint = std::make_unique<IC_Equals>(limit);
+         break;
+      }
+      case gen::ct_NotEquals: {
+         constraint = std::make_unique<IC_NotEquals>(limit);
+         break;
+      }
+      case gen::ct_Smaller: {
+         constraint = std::make_unique<IC_Smaller>(limit);
+         break;
+      }
+      case gen::ct_SmallerEquals: {
+         constraint = std::make_unique<IC_SmallerEquals>(limit);
+         break;
+      }
+      case gen::ct_Bigger: {
+         constraint = std::make_unique<IC_Bigger>(limit);
+         break;
+      }
+      case gen::ct_BiggerEquals: {
+         constraint = std::make_unique<IC_BiggerEquals>(limit);
+         break;
+      }
+   }
+}
+
+
+static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken, 
+   p_genptr<p_num>& rightSide, const gen::CompType ct, p_perun2& p2)
+{
+   if (! p2.contexts.hasFileContext()) {
+      throw SyntaxError::undefinedVarValue(varToken.getOriginString(p2), varToken.line);
+   }
+
+   FileContext& context = *p2.contexts.getFileContext();
+   context.attribute->setCoreCommandBase();
+   context.attribute->set(ATTR_SIZE_FILE_ONLY);
+
+   p_conptr constraint;
+   makeIncrConstr(constraint, ct, rightSide);
+
+   result = std::make_unique<gen::SizeConstraint>(constraint, context, p2);
+   return true;
+}
+
+
+static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left, 
+   const Tokens& right, const gen::CompType ct, p_perun2& p2)
+{
+   p_genptr<p_num> rightSide;
+   if (!parse(p2, right, rightSide)) {
+      return false;
+   }
+
+   if (left.getLength() == 1 && left.first().isWord(STRING_SIZE, p2)) {
+      return sizeIncrConstr(result, left.first(), rightSide, ct, p2);
+   }
+
+   return false;
+}
+
+
 static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2)
 {
    gen::CompType ct;
@@ -910,12 +978,19 @@ static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const
       checkCommonExceptions_Comparison(left, right, sign, p2);
    }
 
+   // try some rare optimizations
+   if (parseIncrConstr(result, left, right, ct, p2))
+   {
+      return true;
+   }
+
    // try to parse comparison for every singular data type
    if (parseComparisonUnit<p_bool>(result, left, right, ct, p2)
     || parseComparisonUnit<p_num>(result, left, right, ct, p2)
     || parseComparisonUnit<p_per>(result, left, right, ct, p2)
     || parseComparisonUnit<p_tim>(result, left, right, ct, p2)
-    || parseComparisonUnit<p_str>(result, left, right, ct, p2)) {
+    || parseComparisonUnit<p_str>(result, left, right, ct, p2)) 
+   {
       return true;
    }
 

@@ -257,6 +257,16 @@ void os_loadAttributes(FileContext& context)
          context.vp_size->value = p_num(NINT_MINUS_ONE);
       }
    }
+   else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
+      if (context.v_exists->value) {
+         if (context.v_isfile->value) {
+            context.vp_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+         }
+      }
+      else {
+         context.vp_size->value = p_num(NINT_MINUS_ONE);
+      }
+   }
 }
 
 // load attributes, but we already have some data
@@ -375,6 +385,11 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
       context.vp_size->value = context.v_isfile->value
          ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
          : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
+   }
+   else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
+      if (context.v_isfile->value) {
+         context.vp_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+      }
    }
 }
 
@@ -710,10 +725,10 @@ p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
    return totalSize;
 }
 
-p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr, p_perun2& p2)
+p_bool os_constr_sizeDirectory(const p_str& path, p_conptr& constr, p_perun2& p2)
 {
-   constr.loadLimit();
-   IC_State state = constr.getState();
+   constr->reset();
+   IC_State state = constr->getState();
    if (state != IC_State::Unknown) {
       return state == IC_State::True;
    }
@@ -750,8 +765,8 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
                }
             }
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-               constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
-               state = constr.getState();
+               constr->increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+               state = constr->getState();
                if (state != IC_State::Unknown) {
                   for (p_entry& entry : entries) {
                      os_closeEntry(entry);
@@ -789,8 +804,8 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
                   goDeeper = true;
                }
                else {
-                  constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
-                  state = constr.getState();
+                  constr->increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+                  state = constr->getState();
                   if (state != IC_State::Unknown) {
                      for (p_entry& entry : entries) {
                         os_closeEntry(entry);
@@ -816,7 +831,7 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
       }
    }
 
-   return constr.getFinalValue();
+   return constr->getFinalResult();
 }
 
 p_bool os_exists(const p_str& path)

@@ -52,17 +52,21 @@ public:
    IncrementalConstraint() = delete;
    IncrementalConstraint(p_genptr<p_num>& lg);
 
-   void loadLimit();
+   void reset();
+   void setValue(const p_num val);
    void increment(const p_num val);
 
    virtual IC_State getState() = 0;
-   virtual p_bool getFinalValue() = 0;
+   virtual p_bool getFinalResult() = 0;
 
 protected:
    p_genptr<p_num> limitGen;
    p_num value;
    p_num limit;
 };
+
+
+typedef std::unique_ptr<IncrementalConstraint>     p_conptr;
 
 
 struct IC_Equals : IncrementalConstraint
@@ -72,7 +76,7 @@ public:
    IC_Equals(p_genptr<p_num>& lg);
 
    IC_State getState() override;
-   p_bool getFinalValue() override;
+   p_bool getFinalResult() override;
 };
 
 
@@ -83,7 +87,7 @@ public:
    IC_NotEquals(p_genptr<p_num>& lg);
 
    IC_State getState() override;
-   p_bool getFinalValue() override;
+   p_bool getFinalResult() override;
 };
 
 
@@ -94,7 +98,7 @@ public:
    IC_Smaller(p_genptr<p_num>& lg);
 
    IC_State getState() override;
-   p_bool getFinalValue() override;
+   p_bool getFinalResult() override;
 };
 
 
@@ -105,7 +109,7 @@ public:
    IC_SmallerEquals(p_genptr<p_num>& lg);
 
    IC_State getState() override;
-   p_bool getFinalValue() override;
+   p_bool getFinalResult() override;
 };
 
 
@@ -116,7 +120,7 @@ public:
    IC_Bigger(p_genptr<p_num>& lg);
 
    IC_State getState() override;
-   p_bool getFinalValue() override;
+   p_bool getFinalResult() override;
 };
 
 
@@ -127,7 +131,7 @@ public:
    IC_BiggerEquals(p_genptr<p_num>& lg);
 
    IC_State getState() override;
-   p_bool getFinalValue() override;
+   p_bool getFinalResult() override;
 };
 
 

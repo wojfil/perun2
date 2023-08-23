@@ -68,7 +68,7 @@ void os_sleepForMs(const p_nint ms, p_perun2& p2)
    }
 }
 
-// attributes of something, that cannot exist (empty string, contains not allowed chars, ...)
+// attributes of something, that cannot exist (file name is empty string, contains not allowed chars, ...)
 void os_loadEmptyAttributes(FileContext& context)
 {
    const p_attrptr& attribute = context.attribute;
@@ -153,7 +153,7 @@ void os_loadEmptyAttributes(FileContext& context)
       context.v_readonly->value = false;
    }
 
-   if (attribute->has(ATTR_SIZE)) {
+   if (attribute->has(ATTR_SIZE) || attribute->has(ATTR_SIZE_FILE_ONLY)) {
       context.vp_size->value = p_num(NINT_MINUS_ONE);
    }
 }

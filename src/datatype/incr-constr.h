@@ -56,8 +56,8 @@ public:
    void setValue(const p_num val);
    void increment(const p_num val);
 
-   virtual IC_State getState() = 0;
-   virtual p_bool getFinalResult() = 0;
+   virtual IC_State getState() const = 0;
+   virtual p_bool getFinalResult() const = 0;
 
 protected:
    p_genptr<p_num> limitGen;
@@ -75,8 +75,8 @@ public:
    IC_Equals() = delete;
    IC_Equals(p_genptr<p_num>& lg);
 
-   IC_State getState() override;
-   p_bool getFinalResult() override;
+   IC_State getState() const override;
+   p_bool getFinalResult() const override;
 };
 
 
@@ -86,8 +86,8 @@ public:
    IC_NotEquals() = delete;
    IC_NotEquals(p_genptr<p_num>& lg);
 
-   IC_State getState() override;
-   p_bool getFinalResult() override;
+   IC_State getState() const override;
+   p_bool getFinalResult() const override;
 };
 
 
@@ -97,8 +97,8 @@ public:
    IC_Smaller() = delete;
    IC_Smaller(p_genptr<p_num>& lg);
 
-   IC_State getState() override;
-   p_bool getFinalResult() override;
+   IC_State getState() const override;
+   p_bool getFinalResult() const override;
 };
 
 
@@ -108,8 +108,8 @@ public:
    IC_SmallerEquals() = delete;
    IC_SmallerEquals(p_genptr<p_num>& lg);
 
-   IC_State getState() override;
-   p_bool getFinalResult() override;
+   IC_State getState() const override;
+   p_bool getFinalResult() const override;
 };
 
 
@@ -119,8 +119,8 @@ public:
    IC_Bigger() = delete;
    IC_Bigger(p_genptr<p_num>& lg);
 
-   IC_State getState() override;
-   p_bool getFinalResult() override;
+   IC_State getState() const override;
+   p_bool getFinalResult() const override;
 };
 
 
@@ -130,8 +130,8 @@ public:
    IC_BiggerEquals() = delete;
    IC_BiggerEquals(p_genptr<p_num>& lg);
 
-   IC_State getState() override;
-   p_bool getFinalResult() override;
+   IC_State getState() const override;
+   p_bool getFinalResult() const override;
 };
 
 

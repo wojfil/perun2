@@ -49,7 +49,7 @@ IC_Bigger::IC_Bigger(p_genptr<p_num>& lg)                 : IncrementalConstrain
 IC_BiggerEquals::IC_BiggerEquals(p_genptr<p_num>& lg)     : IncrementalConstraint(lg) { };
 
 
-IC_State IC_Equals::getState()
+IC_State IC_Equals::getState() const
 {
    if (this->value > this->limit) {
       return IC_State::False;
@@ -59,7 +59,7 @@ IC_State IC_Equals::getState()
 }
 
 
-IC_State IC_NotEquals::getState()
+IC_State IC_NotEquals::getState() const
 {
    if (this->value > this->limit) {
       return IC_State::True;
@@ -69,7 +69,7 @@ IC_State IC_NotEquals::getState()
 }
 
 
-IC_State IC_Smaller::getState()
+IC_State IC_Smaller::getState() const
 {
    if (this->value >= this->limit) {
       return IC_State::False;
@@ -79,7 +79,7 @@ IC_State IC_Smaller::getState()
 }
 
 
-IC_State IC_SmallerEquals::getState()
+IC_State IC_SmallerEquals::getState() const
 {
    if (this->value > this->limit) {
       return IC_State::False;
@@ -89,7 +89,7 @@ IC_State IC_SmallerEquals::getState()
 }
 
 
-IC_State IC_Bigger::getState()
+IC_State IC_Bigger::getState() const
 {
    if (this->value > this->limit) {
       return IC_State::True;
@@ -99,7 +99,7 @@ IC_State IC_Bigger::getState()
 }
 
 
-IC_State IC_BiggerEquals::getState()
+IC_State IC_BiggerEquals::getState() const
 {
    if (this->value >= this->limit) {
       return IC_State::True;
@@ -109,32 +109,32 @@ IC_State IC_BiggerEquals::getState()
 }
 
 
-p_bool IC_Equals::getFinalResult()
+p_bool IC_Equals::getFinalResult() const
 {
    return this->value == this->limit;
 }
 
-p_bool IC_NotEquals::getFinalResult()
+p_bool IC_NotEquals::getFinalResult() const
 {
    return this->value != this->limit;
 }
 
-p_bool IC_Smaller::getFinalResult()
+p_bool IC_Smaller::getFinalResult() const
 {
    return this->value < this->limit;
 }
 
-p_bool IC_SmallerEquals::getFinalResult()
+p_bool IC_SmallerEquals::getFinalResult() const
 {
    return this->value <= this->limit;
 }
 
-p_bool IC_Bigger::getFinalResult()
+p_bool IC_Bigger::getFinalResult() const
 {
    return this->value > this->limit;
 }
 
-p_bool IC_BiggerEquals::getFinalResult()
+p_bool IC_BiggerEquals::getFinalResult() const
 {
    return this->value >= this->limit;
 }

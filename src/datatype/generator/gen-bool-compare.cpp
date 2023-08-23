@@ -19,6 +19,27 @@
 namespace perun2::gen
 {
 
+CompType mirrorCompType(const CompType value)
+{
+   switch (value) {
+      case gen::ct_Smaller: {
+         return gen::ct_Bigger;
+      }
+      case gen::ct_SmallerEquals: {
+         return gen::ct_BiggerEquals;
+      }
+      case gen::ct_Bigger: {
+         return gen::ct_Smaller;
+      }
+      case gen::ct_BiggerEquals: {
+         return gen::ct_SmallerEquals;
+      }
+      default: { // Equals, NotEquals
+         return value;
+      }
+   };
+}
+
 p_bool DefinitionsEqual::getValue()
 {
    while (true) {

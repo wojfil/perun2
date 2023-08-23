@@ -33,6 +33,8 @@ enum CompType
 };
 
 
+CompType mirrorCompType(const CompType value);
+
 
 template <typename T>
 struct Comparison : Generator<p_bool>

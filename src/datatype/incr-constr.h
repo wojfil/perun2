@@ -56,6 +56,7 @@ public:
    void reset();
    void setValue(const p_num& val);
    void increment(const p_num& val);
+   void incrementByOne();
 
    IC_State getState() const;
    p_bool getFinalResult() const;

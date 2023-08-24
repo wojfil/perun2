@@ -39,6 +39,11 @@ void IncrementalConstraint::increment(const p_num& val)
    this->value += val;
 }
 
+void IncrementalConstraint::incrementByOne()
+{
+   this->value++;
+}
+
 
 IC_State IncrementalConstraint::getState() const
 {

@@ -21,15 +21,15 @@
 namespace perun2::gen
 {
 
-SizeConstraint::SizeConstraint(p_conptr& constr, FileContext& ctx, p_perun2& p2)
-   : constraint(std::move(constr)), context(ctx), perun2(p2) { };
+SizeConstraint::SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2)
+   : constraint(limit, cmptype), context(ctx), perun2(p2) { };
 
 
 p_bool SizeConstraint::getValue()
 {
    if (! this->context.v_exists->value || this->context.v_isfile->value) {
-      this->constraint->setValue(this->context.vp_size->value);
-      return this->constraint->getFinalResult();
+      this->constraint.setValue(this->context.vp_size->value);
+      return this->constraint.getFinalResult();
    }
 
    return os_constr_sizeDirectory(this->context.v_path->value, this->constraint, this->perun2);

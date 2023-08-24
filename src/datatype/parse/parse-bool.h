@@ -39,9 +39,9 @@ static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated,
    const std::pair<Tokens, Tokens>& pair, p_perun2& p2);
 static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
 static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, p_perun2& p2);
+   const Tokens& right, const CompType ct, p_perun2& p2);
 static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2);
-static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, gen::CompType& ctype);
+static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, CompType& ctype);
 
 }
 

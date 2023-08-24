@@ -799,30 +799,30 @@ static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, p_pe
 
 template <typename T>
 static p_bool comparison(p_genptr<p_bool>& result, p_genptr<T>& val1,
-   p_genptr<T>& val2, const gen::CompType& ct)
+   p_genptr<T>& val2, const CompType& ct)
 {
    switch (ct) {
-      case gen::ct_Equals: {
+      case CompType::ct_Equals: {
          result = std::make_unique<gen::Equals<T>>(val1, val2);
          break;
       }
-      case gen::ct_NotEquals: {
+      case CompType::ct_NotEquals: {
          result = std::make_unique<gen::NotEquals<T>>(val1, val2);
          break;
       }
-      case gen::ct_Smaller: {
+      case CompType::ct_Smaller: {
          result = std::make_unique<gen::Smaller<T>>(val1, val2);
          break;
       }
-      case gen::ct_SmallerEquals: {
+      case CompType::ct_SmallerEquals: {
          result = std::make_unique<gen::SmallerEquals<T>>(val1, val2);
          break;
       }
-      case gen::ct_Bigger: {
+      case CompType::ct_Bigger: {
          result = std::make_unique<gen::Bigger<T>>(val1, val2);
          break;
       }
-      case gen::ct_BiggerEquals: {
+      case CompType::ct_BiggerEquals: {
          result = std::make_unique<gen::BiggerEquals<T>>(val1, val2);
          break;
       }
@@ -836,7 +836,7 @@ static p_bool comparison(p_genptr<p_bool>& result, p_genptr<T>& val1,
 
 template <typename T>
 p_bool parseComparisonUnit(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, p_perun2& p2)
+   const Tokens& right, const CompType& ct, p_perun2& p2)
 {
    p_genptr<T> v1;
    p_genptr<T> v2;
@@ -899,39 +899,8 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
 }
 
 
-static void makeIncrConstr(p_conptr& constraint, const gen::CompType ct, p_genptr<p_num>& limit)
-{
-   switch(ct) {
-      case gen::ct_Equals: {
-         constraint = std::make_unique<IC_Equals>(limit);
-         break;
-      }
-      case gen::ct_NotEquals: {
-         constraint = std::make_unique<IC_NotEquals>(limit);
-         break;
-      }
-      case gen::ct_Smaller: {
-         constraint = std::make_unique<IC_Smaller>(limit);
-         break;
-      }
-      case gen::ct_SmallerEquals: {
-         constraint = std::make_unique<IC_SmallerEquals>(limit);
-         break;
-      }
-      case gen::ct_Bigger: {
-         constraint = std::make_unique<IC_Bigger>(limit);
-         break;
-      }
-      case gen::ct_BiggerEquals: {
-         constraint = std::make_unique<IC_BiggerEquals>(limit);
-         break;
-      }
-   }
-}
-
-
 static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken, 
-   p_genptr<p_num>& rightSide, const gen::CompType ct, p_perun2& p2)
+   p_genptr<p_num>& rightSide, const CompType ct, p_perun2& p2)
 {
    if (! p2.contexts.hasFileContext()) {
       throw SyntaxError::undefinedVarValue(varToken.getOriginString(p2), varToken.line);
@@ -940,17 +909,13 @@ static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken,
    FileContext& context = *p2.contexts.getFileContext();
    context.attribute->setCoreCommandBase();
    context.attribute->set(ATTR_SIZE_FILE_ONLY);
-
-   p_conptr constraint;
-   makeIncrConstr(constraint, ct, rightSide);
-
-   result = std::make_unique<gen::SizeConstraint>(constraint, context, p2);
+   result = std::make_unique<gen::SizeConstraint>(rightSide, ct, context, p2);
    return true;
 }
 
 
 static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left, 
-   const Tokens& right, const gen::CompType ct, p_perun2& p2)
+   const Tokens& right, const CompType ct, p_perun2& p2)
 {
    if (left.getLength() == 1 && left.first().isWord(STRING_SIZE, p2)) {
       p_genptr<p_num> rightSide;
@@ -967,7 +932,7 @@ static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left,
 
 static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2)
 {
-   gen::CompType ct;
+   CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
    const Tokens& left = pair.first;
    const Tokens& right = pair.second;
@@ -998,34 +963,34 @@ static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const
    return parseCollectionComparisons(result, left, right, ct, p2);
 }
 
-p_bool comparisonDefList(p_genptr<p_bool>& result, p_defptr& def, p_genptr<p_list>& list, const gen::CompType& ct,
+p_bool comparisonDefList(p_genptr<p_bool>& result, p_defptr& def, p_genptr<p_list>& list, const CompType& ct,
    const p_bool reversed, p_perun2& p2)
 {
    switch (ct) {
-      case gen::ct_Equals: {
+      case CompType::ct_Equals: {
          result = std::make_unique<gen::DefinitionListEqual>(def, list, p2);
          break;
       }
-      case gen::ct_NotEquals: {
+      case CompType::ct_NotEquals: {
          result = std::make_unique<gen::DefinitionListNotEqual>(def, list, p2);
          break;
     }
       default: {
          if (reversed) {
             switch(ct) {
-               case gen::ct_Smaller: {
+               case CompType::ct_Smaller: {
                   result = std::make_unique<gen::DefinitionListBigger>(def, list, p2);
                   break;
                }
-               case gen::ct_SmallerEquals: {
+               case CompType::ct_SmallerEquals: {
                   result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, p2);
                   break;
                }
-               case gen::ct_Bigger: {
+               case CompType::ct_Bigger: {
                   result = std::make_unique<gen::DefinitionListSmaller>(def, list, p2);
                   break;
                }
-               case gen::ct_BiggerEquals: {
+               case CompType::ct_BiggerEquals: {
                   result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, p2);
                   break;
                }
@@ -1036,19 +1001,19 @@ p_bool comparisonDefList(p_genptr<p_bool>& result, p_defptr& def, p_genptr<p_lis
          }
          else {
             switch(ct) {
-               case gen::ct_Smaller: {
+               case CompType::ct_Smaller: {
                   result = std::make_unique<gen::DefinitionListSmaller>(def, list, p2);
                   break;
                }
-               case gen::ct_SmallerEquals: {
+               case CompType::ct_SmallerEquals: {
                   result = std::make_unique<gen::DefinitionListSmallerEquals>(def, list, p2);
                   break;
                }
-               case gen::ct_Bigger: {
+               case CompType::ct_Bigger: {
                   result = std::make_unique<gen::DefinitionListBigger>(def, list, p2);
                   break;
                }
-               case gen::ct_BiggerEquals: {
+               case CompType::ct_BiggerEquals: {
                   result = std::make_unique<gen::DefinitionListBiggerEquals>(def, list, p2);
                   break;
                }
@@ -1067,7 +1032,7 @@ p_bool comparisonDefList(p_genptr<p_bool>& result, p_defptr& def, p_genptr<p_lis
 
 template <typename T>
 p_bool comparisonCollections(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, p_perun2& p2)
+   const Tokens& right, const CompType ct, p_perun2& p2)
 {
    p_genptr<std::vector<T>> leftValue;
    if (parse(p2, left, leftValue)) {
@@ -1075,27 +1040,27 @@ p_bool comparisonCollections(p_genptr<p_bool>& result, const Tokens& left,
 
       if (parse(p2, right, rightValue)) {
          switch(ct) {
-            case gen::ct_Equals: {
+            case CompType::ct_Equals: {
                result = std::make_unique<gen::CollectionsEqual<T>>(leftValue, rightValue);
                break;
             }
-            case gen::ct_NotEquals: {
+            case CompType::ct_NotEquals: {
                result = std::make_unique<gen::CollectionsNotEqual<T>>(leftValue, rightValue);
                break;
             }
-            case gen::ct_Smaller: {
+            case CompType::ct_Smaller: {
                result = std::make_unique<gen::CollectionsSmaller<T>>(leftValue, rightValue);
                break;
             }
-            case gen::ct_SmallerEquals: {
+            case CompType::ct_SmallerEquals: {
                result = std::make_unique<gen::CollectionsSmallerEquals<T>>(leftValue, rightValue);
                break;
             }
-            case gen::ct_Bigger: {
+            case CompType::ct_Bigger: {
                result = std::make_unique<gen::CollectionsBigger<T>>(leftValue, rightValue);
                break;
             }
-            case gen::ct_BiggerEquals: {
+            case CompType::ct_BiggerEquals: {
                result = std::make_unique<gen::CollectionsBiggerEquals<T>>(leftValue, rightValue);
                break;
             }
@@ -1110,7 +1075,7 @@ p_bool comparisonCollections(p_genptr<p_bool>& result, const Tokens& left,
 
 template <typename T>
 p_bool comparisonCollectionValue(p_genptr<p_bool>& result, const Tokens& left, const Tokens& right,
-   const gen::CompType& ct, p_perun2& p2)
+   const CompType& ct, p_perun2& p2)
 {
    p_genptr<T> leftValue;
    if (parse(p2, left, leftValue)) {
@@ -1118,27 +1083,27 @@ p_bool comparisonCollectionValue(p_genptr<p_bool>& result, const Tokens& left, c
 
       if (parse(p2, right, rightCollection)) {
          switch(ct) {
-            case gen::ct_Equals: {
+            case CompType::ct_Equals: {
                result = std::make_unique<gen::CollectionValueEquals<T>>(rightCollection, leftValue);
                break;
             }
-            case gen::ct_NotEquals: {
+            case CompType::ct_NotEquals: {
                result = std::make_unique<gen::CollectionValueNotEquals<T>>(rightCollection, leftValue);
                break;
             }
-            case gen::ct_Smaller: {
+            case CompType::ct_Smaller: {
                result = std::make_unique<gen::CollectionValueBigger<T>>(rightCollection);
                break;
             }
-            case gen::ct_SmallerEquals: {
+            case CompType::ct_SmallerEquals: {
                result = std::make_unique<gen::CollectionValueBiggerEquals<T>>(rightCollection);
                break;
             }
-            case gen::ct_Bigger: {
+            case CompType::ct_Bigger: {
                result = std::make_unique<gen::CollectionValueSmaller<T>>(rightCollection);
                break;
             }
-            case gen::ct_BiggerEquals: {
+            case CompType::ct_BiggerEquals: {
                result = std::make_unique<gen::CollectionValueSmallerEquals<T>>(rightCollection);
                break;
             }
@@ -1156,27 +1121,27 @@ p_bool comparisonCollectionValue(p_genptr<p_bool>& result, const Tokens& left, c
 
       if (parse(p2, left, leftCollection)) {
          switch(ct) {
-            case gen::ct_Equals: {
+            case CompType::ct_Equals: {
                result = std::make_unique<gen::CollectionValueEquals<T>>(leftCollection, rightValue);
                break;
             }
-            case gen::ct_NotEquals: {
+            case CompType::ct_NotEquals: {
                result = std::make_unique<gen::CollectionValueNotEquals<T>>(leftCollection, rightValue);
                break;
             }
-            case gen::ct_Smaller: {
+            case CompType::ct_Smaller: {
                result = std::make_unique<gen::CollectionValueSmaller<T>>(leftCollection);
                break;
             }
-            case gen::ct_SmallerEquals: {
+            case CompType::ct_SmallerEquals: {
                result = std::make_unique<gen::CollectionValueSmallerEquals<T>>(leftCollection);
                break;
             }
-            case gen::ct_Bigger: {
+            case CompType::ct_Bigger: {
                result = std::make_unique<gen::CollectionValueBigger<T>>(leftCollection);
                break;
             }
-            case gen::ct_BiggerEquals: {
+            case CompType::ct_BiggerEquals: {
                result = std::make_unique<gen::CollectionValueBiggerEquals<T>>(leftCollection);
                break;
             }
@@ -1193,7 +1158,7 @@ p_bool comparisonCollectionValue(p_genptr<p_bool>& result, const Tokens& left, c
 }
 
 static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const gen::CompType& ct, p_perun2& p2)
+   const Tokens& right, const CompType ct, p_perun2& p2)
 {
    p_defptr leftDef;
    p_defptr rightDef;
@@ -1206,27 +1171,27 @@ static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens&
    if (hasLeftDef || hasRightDef) {
       if (hasLeftDef && hasRightDef) {
          switch(ct) {
-            case gen::ct_Equals: {
+            case CompType::ct_Equals: {
                result = std::make_unique<gen::DefinitionsEqual>(leftDef, rightDef, p2);
                break;
             }
-            case gen::ct_NotEquals: {
+            case CompType::ct_NotEquals: {
                result = std::make_unique<gen::DefinitionsNotEqual>(leftDef, rightDef, p2);
                break;
             }
-            case gen::ct_Smaller: {
+            case CompType::ct_Smaller: {
                result = std::make_unique<gen::DefinitionsSmaller>(leftDef, rightDef, p2);
                break;
             }
-            case gen::ct_SmallerEquals: {
+            case CompType::ct_SmallerEquals: {
                result = std::make_unique<gen::DefinitionsSmallerEquals>(leftDef, rightDef, p2);
                break;
             }
-            case gen::ct_Bigger: {
+            case CompType::ct_Bigger: {
                result = std::make_unique<gen::DefinitionsBigger>(leftDef, rightDef, p2);
                break;
             }
-            case gen::ct_BiggerEquals: {
+            case CompType::ct_BiggerEquals: {
                result = std::make_unique<gen::DefinitionsBiggerEquals>(leftDef, rightDef, p2);
                break;
             }
@@ -1257,7 +1222,7 @@ static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens&
        || comparisonCollections<p_str>(result, left, right, ct, p2);
 }
 
-static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, gen::CompType& ctype)
+static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, CompType& ctype)
 {
    std::pair<Tokens, Tokens> result = tks.divideBySymbol(sign);
    p_bool eq = false;
@@ -1295,19 +1260,19 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_ch
 
    switch (sign) {
       case CHAR_SMALLER:
-         ctype = eq ? gen::CompType::ct_SmallerEquals : gen::CompType::ct_Smaller;
+         ctype = eq ? CompType::ct_SmallerEquals : CompType::ct_Smaller;
          break;
       case CHAR_GREATER:
-         ctype = eq ? gen::CompType::ct_BiggerEquals : gen::CompType::ct_Bigger;
+         ctype = eq ? CompType::ct_BiggerEquals : CompType::ct_Bigger;
          break;
       case CHAR_EQUAL_SIGN:
-         ctype = gen::CompType::ct_Equals;
+         ctype = CompType::ct_Equals;
          break;
       case CHAR_EXCLAMATION_MARK: {
-         ctype = gen::CompType::ct_NotEquals;
+         ctype = CompType::ct_NotEquals;
          break;
       default:
-         ctype = gen::CompType::ct_Equals;
+         ctype = CompType::ct_Equals;
          break;
       }
    }

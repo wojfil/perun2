@@ -15,6 +15,7 @@
 #ifndef INCR_CONSTR_H
 #define INCR_CONSTR_H
 
+#include "comparison.h"
 #include "datatype.h"
 #include "generator.h"
 
@@ -50,88 +51,20 @@ struct IncrementalConstraint
 {
 public:
    IncrementalConstraint() = delete;
-   IncrementalConstraint(p_genptr<p_num>& lg);
+   IncrementalConstraint(p_genptr<p_num>& lg, const CompType ct);
 
    void reset();
-   void setValue(const p_num val);
-   void increment(const p_num val);
+   void setValue(const p_num& val);
+   void increment(const p_num& val);
 
-   virtual IC_State getState() const = 0;
-   virtual p_bool getFinalResult() const = 0;
+   IC_State getState() const;
+   p_bool getFinalResult() const;
 
 protected:
    p_genptr<p_num> limitGen;
    p_num value;
    p_num limit;
-};
-
-
-typedef std::unique_ptr<IncrementalConstraint>     p_conptr;
-
-
-struct IC_Equals : IncrementalConstraint
-{
-public:  
-   IC_Equals() = delete;
-   IC_Equals(p_genptr<p_num>& lg);
-
-   IC_State getState() const override;
-   p_bool getFinalResult() const override;
-};
-
-
-struct IC_NotEquals : IncrementalConstraint
-{
-public:
-   IC_NotEquals() = delete;
-   IC_NotEquals(p_genptr<p_num>& lg);
-
-   IC_State getState() const override;
-   p_bool getFinalResult() const override;
-};
-
-
-struct IC_Smaller : IncrementalConstraint
-{
-public:
-   IC_Smaller() = delete;
-   IC_Smaller(p_genptr<p_num>& lg);
-
-   IC_State getState() const override;
-   p_bool getFinalResult() const override;
-};
-
-
-struct IC_SmallerEquals : IncrementalConstraint
-{
-public:
-   IC_SmallerEquals() = delete;
-   IC_SmallerEquals(p_genptr<p_num>& lg);
-
-   IC_State getState() const override;
-   p_bool getFinalResult() const override;
-};
-
-
-struct IC_Bigger : IncrementalConstraint
-{
-public:
-   IC_Bigger() = delete;
-   IC_Bigger(p_genptr<p_num>& lg);
-
-   IC_State getState() const override;
-   p_bool getFinalResult() const override;
-};
-
-
-struct IC_BiggerEquals : IncrementalConstraint
-{
-public:
-   IC_BiggerEquals() = delete;
-   IC_BiggerEquals(p_genptr<p_num>& lg);
-
-   IC_State getState() const override;
-   p_bool getFinalResult() const override;
+   const CompType comparisonType;
 };
 
 

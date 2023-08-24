@@ -30,11 +30,11 @@ namespace perun2::gen
 struct SizeConstraint : Generator<p_bool>
 {
 public:
-   SizeConstraint(p_conptr& constr, FileContext& ctx, p_perun2& p2);
+   SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2);
    p_bool getValue() override;
 
 private:
-   p_conptr constraint;
+   IncrementalConstraint constraint;
    FileContext& context;
    p_perun2& perun2;
 };

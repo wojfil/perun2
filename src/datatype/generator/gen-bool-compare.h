@@ -16,24 +16,12 @@
 #define GEN_BOOL_COMPARE_H
 
 #include "../datatype.h"
+#include "../comparison.h"
 #include "../../perun2.h"
 
 
 namespace perun2::gen
 {
-
-enum CompType
-{
-   ct_Equals = 0,
-   ct_NotEquals,
-   ct_Smaller,
-   ct_SmallerEquals,
-   ct_Bigger,
-   ct_BiggerEquals
-};
-
-
-CompType mirrorCompType(const CompType value);
 
 
 template <typename T>

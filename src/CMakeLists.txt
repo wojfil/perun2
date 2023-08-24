@@ -70,6 +70,7 @@ add_executable(
     command/com-arg.cpp
     datatype/cast.cpp
     datatype/chars.cpp
+    datatype/comparison.cpp
     datatype/concat.cpp
     datatype/incr-constr.cpp
     datatype/math.cpp

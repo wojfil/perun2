@@ -952,12 +952,12 @@ static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken,
 static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left, 
    const Tokens& right, const gen::CompType ct, p_perun2& p2)
 {
-   p_genptr<p_num> rightSide;
-   if (!parse(p2, right, rightSide)) {
-      return false;
-   }
-
    if (left.getLength() == 1 && left.first().isWord(STRING_SIZE, p2)) {
+      p_genptr<p_num> rightSide;
+      if (!parse(p2, right, rightSide)) {
+         return false;
+      }
+
       return sizeIncrConstr(result, left.first(), rightSide, ct, p2);
    }
 

@@ -34,7 +34,7 @@
 namespace perun2::func
 {
 
-static std::vector<Tokens> toFunctionArgs(const Tokens& tks)
+std::vector<Tokens> toFunctionArgs(const Tokens& tks)
 {
    const p_size start = tks.getStart() + 2;
    const p_size length = tks.getLength() - 3;
@@ -1398,19 +1398,19 @@ static p_bool simpleTimeFunction(p_genptr<p_tim>& result, const Tokens& tks, con
 }
 
 
-static void functionArgNumberException(const p_int argNumber, const Token& word, p_perun2& p2)
+void functionArgNumberException(const p_int argNumber, const Token& word, p_perun2& p2)
 {
    throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? p_str() : L"s")), word.line);
 }
 
-static void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, p_perun2& p2)
+void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, p_perun2& p2)
 {
    throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
       word.getOriginString(p2), L"' cannot be resolved to a ", typeName), word.line);
 }
 
-static p_str ordinalNumber(const p_int number)
+p_str ordinalNumber(const p_int number)
 {
    switch (number) {
       case 1:
@@ -1513,7 +1513,7 @@ p_bool numListFunction(p_genptr<p_nlist>& result, const Tokens& tks, p_perun2& p
 }
 
 
-static void checkFunctionAttribute(const Token& word, p_perun2& p2)
+void checkFunctionAttribute(const Token& word, p_perun2& p2)
 {
    if (!p2.contexts.hasFileContext()) {
       throw SyntaxError(str(L"function '", word.getOriginString(p2),

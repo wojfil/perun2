@@ -15,6 +15,7 @@
 #include "parse-bool.h"
 #include "parse-list.h"
 #include "parse-generic.h"
+#include "parse-function.h"
 #include "../parse/parse-function.h"
 #include "../generator/gen-bool.h"
 #include "../generator/gen-bool-constr.h"
@@ -898,6 +899,48 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
    }
 }
 
+static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens, 
+   p_genptr<p_num>& rightSide, const CompType ct, p_perun2& p2)
+{
+   const Token& word = tokens.first();
+   const std::vector<Tokens> args = func::toFunctionArgs(tokens);
+   const p_size argsCount = args.size();
+
+   if (word.isWord(STRING_COUNTINSIDE, p2)) {
+      if (argsCount != 1) {
+         func::functionArgNumberException(argsCount, word, p2);
+      }
+
+      func::checkFunctionAttribute(word, p2);
+
+      FileContext* fctx = p2.contexts.getFileContext();
+      fctx->attribute->setCoreCommandBase();
+
+      if (fctx->isInside) {
+         p_defptr def;
+         if (!parse::parse(p2, args[0], def)) {
+            func::functionArgException(0, STRING_DEFINITION, word, p2);
+         }
+
+         return false;
+      }
+
+      p_lcptr lctx;
+      p2.contexts.makeLocationContext(lctx);
+      p2.contexts.addLocationContext(lctx.get());
+
+      p_defptr def;
+      if (!parse::parse(p2, args[0], def)) {
+         func::functionArgException(0, STRING_DEFINITION, word, p2);
+      }
+
+      p2.contexts.retreatLocationContext();
+      result = std::make_unique<gen::CountInsideConstraint>(rightSide, ct, def, lctx, *fctx, p2);
+      return true;
+   }
+
+   return false;
+}
 
 static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken, 
    p_genptr<p_num>& rightSide, const CompType ct, p_perun2& p2)
@@ -924,6 +967,15 @@ static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left,
       }
 
       return sizeIncrConstr(result, left.first(), rightSide, ct, p2);
+   }
+
+   if (left.check(TI_IS_POSSIBLE_FUNCTION)) {
+      p_genptr<p_num> rightSide;
+      if (!parse(p2, right, rightSide)) {
+         return false;
+      }
+
+      return functionIncrConstr(result, left, rightSide, ct, p2);
    }
 
    return false;

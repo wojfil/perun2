@@ -16,27 +16,43 @@
 #define GEN_BOOL_CONSTR_H
 
 #include "../incr-constr.h"
+#include "../../perun2.h"
 
-
-namespace perun2
-{
-   struct FileContext;
-   struct p_perun2;
-}
 
 namespace perun2::gen
 {
 
-struct SizeConstraint : Generator<p_bool>
+
+struct ContextConstraint : Generator<p_bool>
+{
+public:
+   ContextConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2);
+
+protected:
+   IncrementalConstraint constraint;
+   FileContext& context;
+   p_perun2& perun2;
+};
+
+
+struct SizeConstraint : ContextConstraint
 {
 public:
    SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2);
    p_bool getValue() override;
+};
+
+
+struct CountInsideConstraint : ContextConstraint
+{
+public:
+   CountInsideConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, 
+      p_lcptr& lctx, FileContext& ctx, p_perun2& p2);
+   p_bool getValue() override;
 
 private:
-   IncrementalConstraint constraint;
-   FileContext& context;
-   p_perun2& perun2;
+   p_lcptr locContext;
+   p_defptr definition;
 };
 
 

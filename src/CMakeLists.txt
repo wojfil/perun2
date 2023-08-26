@@ -31,6 +31,7 @@ add_compile_options(
     -Wno-reorder
     -Wno-switch
     -Wno-unused-function
+    -Wreturn-type
     -fdata-sections
     -fexpensive-optimizations
     -ffunction-sections 

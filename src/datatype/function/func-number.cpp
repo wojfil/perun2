@@ -64,7 +64,7 @@ p_num F_Ceil::getValue()
 p_num F_CountInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
-      return false;
+      return NINT_MINUS_ONE;
    }
 
    this->locContext->loadData(this->fileContext->trimmed);

@@ -22,10 +22,20 @@ namespace perun2
 IncrementalConstraint::IncrementalConstraint(p_genptr<p_num>& lg, const CompType ct)
    : limitGen(std::move(lg)), comparisonType(ct) { };
 
-void IncrementalConstraint::reset()
+
+void IncrementalConstraint::loadLimit()
+{
+   this->limit = this->limitGen->getValue();
+}
+
+void IncrementalConstraint::setValueToZero()
 {
    this->value.setToZero();
-   this->limit = this->limitGen->getValue();
+}
+
+void IncrementalConstraint::setValueToMinusOne()
+{
+   this->value.setToMinusOne();
 }
 
 void IncrementalConstraint::setValue(const p_num& val)

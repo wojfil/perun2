@@ -53,7 +53,9 @@ public:
    IncrementalConstraint() = delete;
    IncrementalConstraint(p_genptr<p_num>& lg, const CompType ct);
 
-   void reset();
+   void loadLimit();
+   void setValueToZero();
+   void setValueToMinusOne();
    void setValue(const p_num& val);
    void increment(const p_num& val);
    void incrementByOne();
@@ -62,7 +64,7 @@ public:
    p_bool getFailureResult() const;
    p_bool getFinalResult() const;
 
-protected:
+private:
    p_genptr<p_num> limitGen;
    p_num value;
    p_num limit;

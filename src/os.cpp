@@ -727,7 +727,9 @@ p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
 
 p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr, p_perun2& p2)
 {
-   constr.reset();
+   constr.loadLimit();
+   constr.setValueToZero();
+   
    IC_State state = constr.getState();
    if (state != IC_State::Unknown) {
       return state == IC_State::True;

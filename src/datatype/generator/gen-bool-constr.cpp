@@ -59,7 +59,9 @@ p_bool SizeConstraint::getValue()
 
 p_bool CountConstraint::getValue()
 {
-   this->constraint.reset();
+   this->constraint.loadLimit();
+   this->constraint.setValueToZero();
+
    IC_State state = this->constraint.getState();
    if (state != IC_State::Unknown) {
       return state == IC_State::True;
@@ -73,6 +75,7 @@ p_bool CountConstraint::getValue()
 
       this->constraint.incrementByOne();
       state = this->constraint.getState();
+      
       if (state != IC_State::Unknown) {
          this->definition->reset();
          return state == IC_State::True;
@@ -85,13 +88,15 @@ p_bool CountConstraint::getValue()
 
 p_bool CountInsideConstraint::getValue()
 {
-   this->constraint.reset();
+   this->constraint.loadLimit();
+   this->constraint.setValueToMinusOne();
 
    if (! this->context.v_exists->value || this->context.v_isfile->value) {
       return this->constraint.getFailureResult();
    }
 
-   this->constraint.reset();
+   this->constraint.setValueToZero();
+
    IC_State state = this->constraint.getState();
    if (state != IC_State::Unknown) {
       return state == IC_State::True;
@@ -107,6 +112,7 @@ p_bool CountInsideConstraint::getValue()
       
       this->constraint.incrementByOne();
       state = this->constraint.getState();
+
       if (state != IC_State::Unknown) {
          this->definition->reset();
          return state == IC_State::True;
@@ -119,7 +125,9 @@ p_bool CountInsideConstraint::getValue()
 
 p_bool SizeConstraint_Def::getValue()
 {
-   this->constraint.reset();
+   this->constraint.loadLimit();
+   this->constraint.setValueToZero();
+
    IC_State state = this->constraint.getState();
    if (state != IC_State::Unknown) {
       return state == IC_State::True;
@@ -137,6 +145,7 @@ p_bool SizeConstraint_Def::getValue()
       if (s != NINT_MINUS_ONE) {
          this->constraint.increment(s);
          state = this->constraint.getState();
+
          if (state != IC_State::Unknown) {
             this->definition->reset();
             return state == IC_State::True;
@@ -150,11 +159,15 @@ p_bool SizeConstraint_Def::getValue()
 
 p_bool SizeConstraint_List::getValue()
 {
-   this->constraint.reset();
+   this->constraint.loadLimit();
+   this->constraint.setValueToMinusOne();
+
    IC_State state = this->constraint.getState();
    if (state != IC_State::Unknown) {
       return state == IC_State::True;
    }
+
+   this->constraint.setValueToZero();
 
    const p_list vs = list->getValue();
    const p_size len = vs.size();
@@ -178,7 +191,7 @@ p_bool SizeConstraint_List::getValue()
          }
       }
    }
-
+   
    return any
       ? this->constraint.getFinalResult()
       : this->constraint.getFailureResult();

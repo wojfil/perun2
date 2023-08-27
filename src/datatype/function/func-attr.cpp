@@ -123,6 +123,8 @@ p_num F_SizeList::getValue()
    p_nint total = NINT_ZERO;
    const p_list vs = values->getValue();
    const p_size len = vs.size();
+   p_bool any = false;
+
    if (len == 0) {
       return p_num();
    }
@@ -137,11 +139,12 @@ p_num F_SizeList::getValue()
          const p_nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             total += s;
+            any = true;
          }
       }
    }
 
-   return p_num(total);
+   return p_num(any? total : NINT_MINUS_ONE);
 }
 
 

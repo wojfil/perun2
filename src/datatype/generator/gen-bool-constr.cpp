@@ -158,6 +158,7 @@ p_bool SizeConstraint_List::getValue()
 
    const p_list vs = list->getValue();
    const p_size len = vs.size();
+   p_bool any = false;
 
    if (len == 0) {
       return this->constraint.getFinalResult();
@@ -173,11 +174,14 @@ p_bool SizeConstraint_List::getValue()
          const p_nint s = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
          if (s != NINT_MINUS_ONE) {
             this->constraint.increment(s);
+            any = true;
          }
       }
    }
 
-   return this->constraint.getFinalResult();
+   return any
+      ? this->constraint.getFinalResult()
+      : this->constraint.getFailureResult();
 }
 
 

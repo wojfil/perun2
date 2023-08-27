@@ -73,6 +73,7 @@ add_executable(
     datatype/chars.cpp
     datatype/comparison.cpp
     datatype/concat.cpp
+    datatype/definition.cpp
     datatype/incr-constr.cpp
     datatype/math.cpp
     datatype/number.cpp

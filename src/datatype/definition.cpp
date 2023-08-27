@@ -12,37 +12,25 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEFINITION_H
-#define DEFINITION_H
-
-#include "generator.h"
-#include "primitives.h"
-#include <windows.h>
-#include <memory>
+#include "definition.h"
 
 
 namespace perun2
 {
 
-struct FileContext;
 
-// a lazy evaluated collection of strings
-// return next element on demand
-struct Definition : Generator<p_str>
+p_str Definition::getValue()
 {
-public:
-   virtual p_bool hasNext() = 0;
-   virtual void reset() = 0;
-
-   p_str getValue() override;
-   virtual FileContext* getFileContext();
-
-protected:
-   p_str value;
-};
-
-typedef std::unique_ptr<Definition> p_defptr;
-
+   return value;
 }
 
-#endif /* DEFINITION_H */
+
+FileContext* Definition::getFileContext()
+{
+   // designed to be overriden
+   // some reflection for parsing
+   return nullptr;
+};
+
+
+}

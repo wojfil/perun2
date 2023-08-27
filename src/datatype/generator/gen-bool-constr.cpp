@@ -125,8 +125,6 @@ p_bool SizeConstraint_Def::getValue()
       return state == IC_State::True;
    }
 
-   p_nint total = NINT_ZERO;
-
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
          this->definition->reset();
@@ -158,7 +156,6 @@ p_bool SizeConstraint_List::getValue()
       return state == IC_State::True;
    }
 
-   p_nint total = NINT_ZERO;
    const p_list vs = list->getValue();
    const p_size len = vs.size();
 

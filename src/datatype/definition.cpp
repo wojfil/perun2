@@ -27,10 +27,10 @@ p_str Definition::getValue()
 
 FileContext* Definition::getFileContext()
 {
-   // designed to be overriden
-   // some reflection for parsing
    return nullptr;
 };
+
+
 
 
 }

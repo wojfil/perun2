@@ -35,7 +35,10 @@ public:
    virtual void reset() = 0;
 
    p_str getValue() override;
+
+   // reflection for parsing
    virtual FileContext* getFileContext();
+
 
 protected:
    p_str value;

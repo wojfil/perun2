@@ -29,9 +29,21 @@ SizeConstraint::SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, F
    : ContextConstraint(limit, cmptype, ctx, p2) { };
 
 
+CountConstraint::CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, p_perun2& p2)
+   : constraint(limit, cmptype), definition(std::move(def)), perun2(p2) { };
+
+
 CountInsideConstraint::CountInsideConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, 
       p_lcptr& lctx, FileContext& ctx, p_perun2& p2)
    : ContextConstraint(limit, cmptype, ctx, p2), definition(std::move(def)), locContext(std::move(lctx)) { };
+
+
+SizeConstraint_Def::SizeConstraint_Def(p_genptr<p_num>& limit, p_defptr& def, const CompType cmptype, p_perun2& p2)
+   : definition(std::move(def)), constraint(limit, cmptype), context(*p2.contexts.getLocationContext()), perun2(p2) { };
+
+
+SizeConstraint_List::SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list>& lst, const CompType cmptype, p_perun2& p2)
+   : list(std::move(lst)), constraint(limit, cmptype), context(*p2.contexts.getLocationContext()), perun2(p2) { };
 
 
 p_bool SizeConstraint::getValue()
@@ -45,12 +57,38 @@ p_bool SizeConstraint::getValue()
 }
 
 
+p_bool CountConstraint::getValue()
+{
+   this->constraint.reset();
+   IC_State state = this->constraint.getState();
+   if (state != IC_State::Unknown) {
+      return state == IC_State::True;
+   }
+   
+   while (this->definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->definition->reset();
+         return false;
+      }
+
+      this->constraint.incrementByOne();
+      state = this->constraint.getState();
+      if (state != IC_State::Unknown) {
+         this->definition->reset();
+         return state == IC_State::True;
+      }
+   }
+
+   return this->constraint.getFinalResult();
+}
+
+
 p_bool CountInsideConstraint::getValue()
 {
    this->constraint.reset();
 
    if (! this->context.v_exists->value || this->context.v_isfile->value) {
-      return this->constraint.getFinalResult();
+      return this->constraint.getFailureResult();
    }
 
    this->constraint.reset();
@@ -72,6 +110,73 @@ p_bool CountInsideConstraint::getValue()
       if (state != IC_State::Unknown) {
          this->definition->reset();
          return state == IC_State::True;
+      }
+   }
+
+   return this->constraint.getFinalResult();
+}
+
+
+p_bool SizeConstraint_Def::getValue()
+{
+   this->constraint.reset();
+   IC_State state = this->constraint.getState();
+   if (state != IC_State::Unknown) {
+      return state == IC_State::True;
+   }
+
+   p_nint total = NINT_ZERO;
+
+   while (this->definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->definition->reset();
+         return false;
+      }
+
+      const p_str v = this->definition->getValue();
+      const p_nint s = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
+
+      if (s != NINT_MINUS_ONE) {
+         this->constraint.increment(s);
+         state = this->constraint.getState();
+         if (state != IC_State::Unknown) {
+            this->definition->reset();
+            return state == IC_State::True;
+         }
+      }
+   }
+
+   return this->constraint.getFinalResult();
+}
+
+
+p_bool SizeConstraint_List::getValue()
+{
+   this->constraint.reset();
+   IC_State state = this->constraint.getState();
+   if (state != IC_State::Unknown) {
+      return state == IC_State::True;
+   }
+
+   p_nint total = NINT_ZERO;
+   const p_list vs = list->getValue();
+   const p_size len = vs.size();
+
+   if (len == 0) {
+      return this->constraint.getFinalResult();
+   }
+
+   for (p_size i = 0; i < len; i++) {
+      if (this->perun2.isNotRunning()) {
+         return false;
+      }
+
+      const p_str v = os_trim(vs[i]);
+      if (!v.empty() && !os_isInvalid(v)) {
+         const p_nint s = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
+         if (s != NINT_MINUS_ONE) {
+            this->constraint.increment(s);
+         }
       }
    }
 

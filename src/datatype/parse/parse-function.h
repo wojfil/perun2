@@ -54,7 +54,7 @@ p_bool listFunction(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2);
 p_bool numListFunction(p_genptr<p_nlist>& result, const Tokens& tks, p_perun2& p2);
 
 void checkFunctionAttribute(const Token& word, p_perun2& p2);
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2);
+void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2);
 
 }
 

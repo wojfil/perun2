@@ -521,6 +521,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
    }
    else if (word.isWord(STRING_COUNTINSIDE, p2)) {
       if (len != 1) {
+         checkInOperatorCommaAmbiguity(word, args[0], p2);
          functionArgNumberException(len, word, p2);
       }
 
@@ -554,6 +555,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
    }
    else if (word.isWord(STRING_COUNT, p2)) {
       if (len != 1) {
+         checkInOperatorCommaAmbiguity(word, args[0], p2);
          functionArgNumberException(len, word, p2);
       }
 
@@ -1521,7 +1523,7 @@ void checkFunctionAttribute(const Token& word, p_perun2& p2)
    }
 }
 
-static void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2)
+void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, p_perun2& p2)
 {
    BracketsInfo bi;
    p_int end = tks.getEnd();

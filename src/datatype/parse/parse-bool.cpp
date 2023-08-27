@@ -908,6 +908,7 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
 
    if (word.isWord(STRING_COUNTINSIDE, p2)) {
       if (argsCount != 1) {
+         func::checkInOperatorCommaAmbiguity(word, args[0], p2);
          func::functionArgNumberException(argsCount, word, p2);
       }
 
@@ -922,7 +923,8 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
             func::functionArgException(0, STRING_DEFINITION, word, p2);
          }
 
-         return false;
+         result = std::make_unique<gen::CountConstraint>(rightSide, ct, def, p2);
+         return true;
       }
 
       p_lcptr lctx;
@@ -937,6 +939,40 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
       p2.contexts.retreatLocationContext();
       result = std::make_unique<gen::CountInsideConstraint>(rightSide, ct, def, lctx, *fctx, p2);
       return true;
+   }
+   else if (word.isWord(STRING_COUNT, p2)) {
+      if (argsCount != 1) {
+         func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         func::functionArgNumberException(argsCount, word, p2);
+      }
+
+      p_defptr def;
+      if (parse::parse(p2, args[0], def)) {
+         result = std::make_unique<gen::CountConstraint>(rightSide, ct, def, p2);
+         return true;
+      }
+
+      return false;
+   }
+   else if (word.isWord(STRING_SIZE, p2)) {
+      if (argsCount != 1) {
+         func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         func::functionArgNumberException(argsCount, word, p2);
+      }
+
+      p_defptr def;
+      if (parse::parse(p2, args[0], def)) {
+         result = std::make_unique<gen::SizeConstraint_Def>(rightSide, def, ct, p2);
+         return true;
+      }
+
+      p_genptr<p_list> list;
+      if (parse::parse(p2, args[0], list)) {
+         result = std::make_unique<gen::SizeConstraint_List>(rightSide, list, ct, p2);
+         return true;
+      }
+
+      return false;
    }
 
    return false;

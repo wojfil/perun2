@@ -43,6 +43,19 @@ public:
 };
 
 
+struct CountConstraint : Generator<p_bool>
+{
+public:
+   CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, p_perun2& p2);
+   p_bool getValue() override;
+
+private:
+   IncrementalConstraint constraint;
+   p_defptr definition;
+   p_perun2& perun2;
+};
+
+
 struct CountInsideConstraint : ContextConstraint
 {
 public:
@@ -53,6 +66,34 @@ public:
 private:
    p_lcptr locContext;
    p_defptr definition;
+};
+
+
+struct SizeConstraint_Def : Generator<p_bool>
+{
+public:
+   SizeConstraint_Def(p_genptr<p_num>& limit, p_defptr& def, const CompType cmptype, p_perun2& p2);
+   p_bool getValue() override;
+
+private:
+   p_defptr definition;
+   IncrementalConstraint constraint;
+   LocationContext& context;
+   p_perun2& perun2;
+};
+
+
+struct SizeConstraint_List : Generator<p_bool>
+{
+public:
+   SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list>& lst, const CompType cmptype, p_perun2& p2);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_list> list;
+   IncrementalConstraint constraint;
+   LocationContext& context;
+   p_perun2& perun2;
 };
 
 

@@ -59,6 +59,7 @@ public:
    void incrementByOne();
 
    IC_State getState() const;
+   p_bool getFailureResult() const;
    p_bool getFinalResult() const;
 
 protected:

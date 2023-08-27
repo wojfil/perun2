@@ -85,6 +85,34 @@ IC_State IncrementalConstraint::getState() const
 }
 
 
+p_bool IncrementalConstraint::getFailureResult() const
+{
+   switch (this->comparisonType) {
+      case CompType::ct_Equals: {
+         return p_num(NINT_MINUS_ONE) == this->limit;
+      }
+      case CompType::ct_NotEquals: {
+         return p_num(NINT_MINUS_ONE) != this->limit;
+      }
+      case CompType::ct_Smaller: {
+         return p_num(NINT_MINUS_ONE) < this->limit;
+      }
+      case CompType::ct_SmallerEquals: {
+         return p_num(NINT_MINUS_ONE) <= this->limit;
+      }
+      case CompType::ct_Bigger: {
+         return p_num(NINT_MINUS_ONE) > this->limit;
+      }
+      case CompType::ct_BiggerEquals: {
+         return p_num(NINT_MINUS_ONE) >= this->limit;
+      }
+      default: {
+         return false;
+      }
+   }
+}
+
+
 p_bool IncrementalConstraint::getFinalResult() const
 {
    switch (this->comparisonType) {

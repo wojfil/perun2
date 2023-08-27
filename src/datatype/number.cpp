@@ -534,4 +534,46 @@ p_bool Number::operator >= (const Number& num) const
    return value.i >= num.value.d;
 }
 
+p_bool Number::operator == (const p_nint num) const
+{
+   return isDouble
+      ? (value.d == static_cast<p_ndouble>(num))
+      : (value.i == num);
+}
+
+p_bool Number::operator != (const p_nint num) const
+{
+   return isDouble
+      ? (value.d != static_cast<p_ndouble>(num))
+      : (value.i != num);
+}
+
+p_bool Number::operator < (const p_nint num) const
+{
+   return isDouble
+      ? (value.d < num)
+      : (value.i < num);
+}
+
+p_bool Number::operator > (const p_nint num) const
+{
+   return isDouble
+      ? (value.d > num)
+      : (value.i > num);
+}
+
+p_bool Number::operator <= (const p_nint num) const
+{
+   return isDouble
+      ? (value.d <= num)
+      : (value.i <= num);
+}
+
+p_bool Number::operator >= (const p_nint num) const
+{
+   return isDouble
+      ? (value.d >= num)
+      : (value.i >= num);
+}
+
 }

@@ -71,6 +71,13 @@ struct Number
    p_bool operator <= (const Number& num) const;
    p_bool operator >= (const Number& num) const;
 
+   p_bool operator == (const p_nint num) const;
+   p_bool operator != (const p_nint num) const;
+   p_bool operator < (const p_nint num) const;
+   p_bool operator > (const p_nint num) const;
+   p_bool operator <= (const p_nint num) const;
+   p_bool operator >= (const p_nint num) const;
+
    // number consists of a value (int or double)
    // and a boolean flag indicating current state
    NumberValue value;

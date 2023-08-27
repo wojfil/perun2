@@ -908,7 +908,9 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
 
    if (word.isWord(STRING_COUNTINSIDE, p2)) {
       if (argsCount != 1) {
-         func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         if (argsCount != 0) {
+            func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         }
          func::functionArgNumberException(argsCount, word, p2);
       }
 
@@ -942,7 +944,9 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
    }
    else if (word.isWord(STRING_COUNT, p2)) {
       if (argsCount != 1) {
-         func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         if (argsCount != 0) {
+            func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         }
          func::functionArgNumberException(argsCount, word, p2);
       }
 
@@ -956,7 +960,9 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
    }
    else if (word.isWord(STRING_SIZE, p2)) {
       if (argsCount != 1) {
-         func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         if (argsCount != 0) {
+            func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         }
          func::functionArgNumberException(argsCount, word, p2);
       }
 

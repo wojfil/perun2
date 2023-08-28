@@ -44,7 +44,7 @@ public:
 protected:
    p_bool hasSpecialStart() const;
    p_size getMinLength(const p_str& pat) const override;
-   WildcardCharState checkState(const p_size n, const p_size m) override;
+   Logic checkState(const p_size n, const p_size m) override;
 
 private:
    const p_str prefix;

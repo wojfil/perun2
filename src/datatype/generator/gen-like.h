@@ -106,7 +106,7 @@ public:
    p_bool compareToPattern(const p_str& value) override;
 
 protected:
-   WildcardCharState checkState(const p_size n, const p_size m) override;
+   Logic checkState(const p_size n, const p_size m) override;
    p_size getMinLength(const p_str& pat) const override;
 
 private:

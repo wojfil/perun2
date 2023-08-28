@@ -62,9 +62,9 @@ p_bool CountConstraint::getValue()
    this->constraint.loadLimit();
    this->constraint.setValueToZero();
 
-   IC_State state = this->constraint.getState();
-   if (state != IC_State::Unknown) {
-      return state == IC_State::True;
+   Logic state = this->constraint.getState();
+   if (state != Logic::Unknown) {
+      return state == Logic::True;
    }
    
    while (this->definition->hasNext()) {
@@ -76,9 +76,9 @@ p_bool CountConstraint::getValue()
       this->constraint.incrementByOne();
       state = this->constraint.getState();
       
-      if (state != IC_State::Unknown) {
+      if (state != Logic::Unknown) {
          this->definition->reset();
-         return state == IC_State::True;
+         return state == Logic::True;
       }
    }
 
@@ -97,9 +97,9 @@ p_bool CountInsideConstraint::getValue()
 
    this->constraint.setValueToZero();
 
-   IC_State state = this->constraint.getState();
-   if (state != IC_State::Unknown) {
-      return state == IC_State::True;
+   Logic state = this->constraint.getState();
+   if (state != Logic::Unknown) {
+      return state == Logic::True;
    }
 
    this->locContext->loadData(this->context.trimmed);
@@ -113,9 +113,9 @@ p_bool CountInsideConstraint::getValue()
       this->constraint.incrementByOne();
       state = this->constraint.getState();
 
-      if (state != IC_State::Unknown) {
+      if (state != Logic::Unknown) {
          this->definition->reset();
-         return state == IC_State::True;
+         return state == Logic::True;
       }
    }
 
@@ -128,9 +128,9 @@ p_bool SizeConstraint_Def::getValue()
    this->constraint.loadLimit();
    this->constraint.setValueToZero();
 
-   IC_State state = this->constraint.getState();
-   if (state != IC_State::Unknown) {
-      return state == IC_State::True;
+   Logic state = this->constraint.getState();
+   if (state != Logic::Unknown) {
+      return state == Logic::True;
    }
 
    while (this->definition->hasNext()) {
@@ -146,9 +146,9 @@ p_bool SizeConstraint_Def::getValue()
          this->constraint.increment(s);
          state = this->constraint.getState();
 
-         if (state != IC_State::Unknown) {
+         if (state != Logic::Unknown) {
             this->definition->reset();
-            return state == IC_State::True;
+            return state == Logic::True;
          }
       }
    }
@@ -162,9 +162,9 @@ p_bool SizeConstraint_List::getValue()
    this->constraint.loadLimit();
    this->constraint.setValueToMinusOne();
 
-   IC_State state = this->constraint.getState();
-   if (state != IC_State::Unknown) {
-      return state == IC_State::True;
+   Logic state = this->constraint.getState();
+   if (state != Logic::Unknown) {
+      return state == Logic::True;
    }
 
    this->constraint.setValueToZero();

@@ -16,19 +16,11 @@
 #define WILDCARD_H_INCLUDED
 
 #include "primitives.h"
+#include "../logic.h"
 
 
 namespace perun2
 {
-
-
-enum WildcardCharState
-{
-   // these numbers are important
-   wcs_Unknown = -1,
-   wcs_NotMatches = 0,
-   wcs_Matches = 1
-};
 
 
 // base struct for pattern matching
@@ -43,13 +35,13 @@ protected:
    void clearCharStates();
 
    virtual p_size getMinLength(const p_str& pat) const = 0;
-   virtual WildcardCharState checkState(const p_size n, const p_size m) = 0;
+   virtual Logic checkState(const p_size n, const p_size m) = 0;
 
    const p_str pattern;
    const p_size patternLength;
    p_size minLength = 0;
    p_str const* valuePtr = nullptr;
-   std::vector<std::vector<WildcardCharState>> charStates;
+   std::vector<std::vector<Logic>> charStates;
 };
 
 
@@ -63,7 +55,7 @@ public:
 
 protected:
    p_size getMinLength(const p_str& pat) const override;
-   WildcardCharState checkState(const p_size n, const p_size m) override;
+   Logic checkState(const p_size n, const p_size m) override;
 };
 
 

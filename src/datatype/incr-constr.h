@@ -18,6 +18,7 @@
 #include "comparison.h"
 #include "datatype.h"
 #include "generator.h"
+#include "../logic.h"
 
 
 namespace perun2
@@ -39,14 +40,6 @@ namespace perun2
 // Incremental Constraints have more use cases
 
 
-enum IC_State
-{
-   True,
-   False,
-   Unknown
-};
-
-
 struct IncrementalConstraint
 {
 public:
@@ -60,7 +53,7 @@ public:
    void increment(const p_num& val);
    void incrementByOne();
 
-   IC_State getState() const;
+   Logic getState() const;
    p_bool getFailureResult() const;
    p_bool getFinalResult() const;
 

@@ -458,23 +458,23 @@ LC_Default::LC_Default(const p_str& pat)
 };
 
 
-WildcardCharState LC_Default::checkState(const p_size n, const p_size m)
+Logic LC_Default::checkState(const p_size n, const p_size m)
 {
-   if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
+   if (this->charStates[n][m] != Logic::Unknown) {
       return this->charStates[n][m];
    }
 
    if (n == 0 && m == 0) {
-      this->charStates[n][m] = WildcardCharState::wcs_Matches;
+      this->charStates[n][m] = Logic::True;
       return this->charStates[n][m];
    }
 
    if (n > 0 && m == 0) {
-      this->charStates[n][m] = WildcardCharState::wcs_NotMatches;
+      this->charStates[n][m] = Logic::False;
       return this->charStates[n][m];
    }
 
-   WildcardCharState ans = WildcardCharState::wcs_NotMatches;
+   Logic ans = Logic::False;
 
    if (this->pattern[m - 1] == WILDCARD_MULTIPLE_CHARS) {
       ans = std::max(ans, this->checkState(n, m - 1));

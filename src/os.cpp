@@ -730,9 +730,9 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
    constr.loadLimit();
    constr.setValueToZero();
    
-   IC_State state = constr.getState();
-   if (state != IC_State::Unknown) {
-      return state == IC_State::True;
+   Logic state = constr.getState();
+   if (state != Logic::Unknown) {
+      return state == Logic::True;
    }
 
    std::vector<p_entry> entries;
@@ -769,12 +769,12 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
             else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
                state = constr.getState();
-               if (state != IC_State::Unknown) {
+               if (state != Logic::Unknown) {
                   for (p_entry& entry : entries) {
                      os_closeEntry(entry);
                   }
 
-                  return state == IC_State::True;
+                  return state == Logic::True;
                }
             }
          }
@@ -808,12 +808,12 @@ p_bool os_constr_sizeDirectory(const p_str& path, IncrementalConstraint& constr,
                else {
                   constr.increment(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
                   state = constr.getState();
-                  if (state != IC_State::Unknown) {
+                  if (state != Logic::Unknown) {
                      for (p_entry& entry : entries) {
                         os_closeEntry(entry);
                      }
 
-                     return state == IC_State::True;
+                     return state == Logic::True;
                   }
                }
             }

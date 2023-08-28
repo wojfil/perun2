@@ -55,41 +55,41 @@ void IncrementalConstraint::incrementByOne()
 }
 
 
-IC_State IncrementalConstraint::getState() const
+Logic IncrementalConstraint::getState() const
 {
    switch (this->comparisonType) {
       case CompType::ct_Equals: {
          return (this->value > this->limit)
-            ? IC_State::False
-            : IC_State::Unknown;
+            ? Logic::False
+            : Logic::Unknown;
       }
       case CompType::ct_NotEquals: {
          return (this->value > this->limit)
-            ? IC_State::True
-            : IC_State::Unknown;
+            ? Logic::True
+            : Logic::Unknown;
       }
       case CompType::ct_Smaller: {
          return (this->value >= this->limit)
-            ? IC_State::False
-            : IC_State::Unknown;
+            ? Logic::False
+            : Logic::Unknown;
       }
       case CompType::ct_SmallerEquals: {
          return (this->value > this->limit)
-            ? IC_State::False
-            : IC_State::Unknown;
+            ? Logic::False
+            : Logic::Unknown;
       }
       case CompType::ct_Bigger: {
          return (this->value > this->limit)
-            ? IC_State::True
-            : IC_State::Unknown;
+            ? Logic::True
+            : Logic::Unknown;
       }
       case CompType::ct_BiggerEquals: {
          return (this->value >= this->limit)
-            ? IC_State::True
-            : IC_State::Unknown;
+            ? Logic::True
+            : Logic::Unknown;
       }
       default: {
-         return IC_State::Unknown;
+         return Logic::Unknown;
       }
    }
 }

@@ -32,14 +32,14 @@ p_bool WildcardComparer::matches(const p_str& val)
 
    this->valuePtr = &val;
    this->clearCharStates();
-   return this->checkState(val.size(), this->patternLength) == WildcardCharState::wcs_Matches;
+   return this->checkState(val.size(), this->patternLength) == Logic::True;
 }
 
 
 void WildcardComparer::clearCharStates()
 {
    if (this->charStates.empty()) {
-      this->charStates.emplace_back(this->patternLength + 1, WildcardCharState::wcs_Unknown);
+      this->charStates.emplace_back(this->patternLength + 1, Logic::Unknown);
    }
 
    const p_size prevSize = this->charStates.size() - 1;
@@ -49,16 +49,16 @@ void WildcardComparer::clearCharStates()
       this->charStates.reserve(nextSize + 1);
 
       for (p_size i = 0; i <= prevSize; i++) {
-         std::fill(this->charStates[i].begin(), this->charStates[i].end(), WildcardCharState::wcs_Unknown);
+         std::fill(this->charStates[i].begin(), this->charStates[i].end(), Logic::Unknown);
       }
 
       while (this->charStates.size() < nextSize + 1) {
-         this->charStates.emplace_back(this->patternLength + 1, WildcardCharState::wcs_Unknown);
+         this->charStates.emplace_back(this->patternLength + 1, Logic::Unknown);
       }
    }
    else {
       for (p_size i = 0; i <= nextSize; i++) {
-         std::fill(this->charStates[i].begin(), this->charStates[i].end(), WildcardCharState::wcs_Unknown);
+         std::fill(this->charStates[i].begin(), this->charStates[i].end(), Logic::Unknown);
       }
    }
 }
@@ -82,23 +82,23 @@ p_size SimpleWildcardComparer::getMinLength(const p_str& pat) const
 }
 
 
-WildcardCharState SimpleWildcardComparer::checkState(const p_size n, const p_size m)
+Logic SimpleWildcardComparer::checkState(const p_size n, const p_size m)
 {
-   if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
+   if (this->charStates[n][m] != Logic::Unknown) {
       return this->charStates[n][m];
    }
 
    if (n == 0 && m == 0) {
-      this->charStates[n][m] = WildcardCharState::wcs_Matches;
+      this->charStates[n][m] = Logic::True;
       return this->charStates[n][m];
    }
 
    if (n > 0 && m == 0) {
-      this->charStates[n][m] = WildcardCharState::wcs_NotMatches;
+      this->charStates[n][m] = Logic::False;
       return this->charStates[n][m];
    }
 
-   WildcardCharState ans = WildcardCharState::wcs_NotMatches;
+   Logic ans = Logic::False;
 
    if (this->pattern[m - 1] == CHAR_ASTERISK) {
       ans = std::max(ans, this->checkState(n, m - 1));

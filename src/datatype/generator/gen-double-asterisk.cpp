@@ -94,28 +94,28 @@ p_size DoubleAsteriskPattern::getMinLength(const p_str& pat) const
    return result;
 }
 
-WildcardCharState DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
+Logic DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
 {
-   if (this->charStates[n][m] != WildcardCharState::wcs_Unknown) {
+   if (this->charStates[n][m] != Logic::Unknown) {
       return this->charStates[n][m];
    }
 
    if (n == this->startId && m == this->startId) {
-      this->charStates[n][m] = WildcardCharState::wcs_Matches;
+      this->charStates[n][m] = Logic::True;
       return this->charStates[n][m];
    }
 
    if (n > this->startId && m == this->startId) {
-      this->charStates[n][m] = WildcardCharState::wcs_NotMatches;
+      this->charStates[n][m] = Logic::False;
       return this->charStates[n][m];
    }
 
    if (n == 0 && m == 2 && this->specialStart) {
-      this->charStates[n][m] = WildcardCharState::wcs_Matches;
+      this->charStates[n][m] = Logic::True;
       return this->charStates[n][m];
    }
 
-   WildcardCharState ans = WildcardCharState::wcs_NotMatches;
+   Logic ans = Logic::False;
 
    switch (this->pattern[m - 1]) {
       case WILDCARD_SINGLE_ASTERISK: {

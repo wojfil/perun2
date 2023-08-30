@@ -89,6 +89,7 @@ add_executable(
     command/com-core-aggr.cpp
     command/com-core.cpp
     command/com-create.cpp
+    command/com-def-action.cpp
     command/com-misc.cpp
     command/com-moveto.cpp
     command/com-parse-kw.cpp

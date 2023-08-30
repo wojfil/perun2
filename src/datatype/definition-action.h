@@ -12,42 +12,30 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEFINITION_H
-#define DEFINITION_H
+#ifndef DEFINITION_ACTION_H
+#define DEFINITION_ACTION_H
 
-#include "definition-action.h"
-#include "generator.h"
+#include "primitives.h"
 #include <memory>
 
 
 namespace perun2
 {
 
-struct FileContext;
-
-// a lazy evaluated collection of strings
-// returns next element on demand
-struct Definition : Generator<p_str>
+// Definition can contain a special action
+// that is executed on recursive tranversation of directories 
+// for example, some files are selected in the File Explorer when we know
+// that we do not enter certain directory again
+struct DefinitionAction
 {
 public:
-   virtual p_bool hasNext() = 0;
    virtual void reset() = 0;
+   virtual void atDirectoryExit() = 0;
 
-   p_str getValue() override;
-
-   // reflection for parsing
-   virtual FileContext* getFileContext();
-
-   // explained in 'definition-action.h'
-   virtual p_bool setAction(p_daptr& act);
-
-protected:
-   p_str value;
-   p_daptr action;
 };
 
-typedef std::unique_ptr<Definition> p_defptr;
+typedef std::unique_ptr<DefinitionAction> p_daptr;
 
 }
 
-#endif /* DEFINITION_H */
+#endif /* DEFINITION_ACTION_H */

@@ -31,6 +31,10 @@ FileContext* Definition::getFileContext()
 };
 
 
+p_bool Definition::setAction(p_daptr& act)
+{
+   return false;
+};
 
 
 }

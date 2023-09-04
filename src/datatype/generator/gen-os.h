@@ -105,6 +105,7 @@ public:
    OsDefinitionRecursive(P_GEN_OS_ARGS)
       : OsDefinition(P_GEN_OS_ARGS_2) { };
 
+   p_bool setAction(p_daptr& act) override;
    void reset() override;
 
 protected:

@@ -22,15 +22,17 @@
 namespace perun2
 {
 
-// Definition can contain a special action
-// that is executed on recursive tranversation of directories 
+// Definition can contain some special actions
+// that are executed on recursive tranversation of directories 
 // for example, some files are selected in the File Explorer when we know
-// that we do not enter certain directory again
+// that we do not enter certain directory ever again
 struct DefinitionAction
 {
 public:
    virtual void reset() = 0;
-   virtual void atDirectoryExit() = 0;
+   virtual void onDirectoryEnter() = 0;
+   virtual void onDirectoryExit() = 0;
+   virtual void add(const p_str& path) = 0;
 
 };
 

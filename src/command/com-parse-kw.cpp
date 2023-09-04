@@ -26,6 +26,7 @@
 #include "com-renameto.h"
 #include "com-copyto.h"
 #include "com-moveto.h"
+#include "com-def-action.h"
 #include "../datatype/generator/gen-string.h"
 #include "../datatype/patterns.h"
 
@@ -395,6 +396,14 @@ static p_bool c_select(p_comptr& result, const Token& word, const Tokens& tks, c
       
       p_defptr def;
       if (parse::parse(p2, tks, def)) {
+         p_daptr action = std::make_unique<SelectDefAction>(p2);
+         DefinitionAction& actionRef = *action.get();
+
+         if (def->setAction(action)) {
+            result = std::make_unique<C_SelectAsAction>(def, actionRef, p2);
+            return true;
+         }
+
          FileContext* ctx = def->getFileContext();
          if (ctx == nullptr) {
             result = std::make_unique<C_Select_Definition>(def, p2);

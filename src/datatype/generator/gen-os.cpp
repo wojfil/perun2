@@ -87,6 +87,10 @@ p_bool OsDefinitionPlain::isExceptional(const p_str& patt)
 void OsDefinitionRecursive::reset()
 {
    if (!first) {
+      if (this->action) {
+         this->action->reset();
+      }
+
       first = true;
       paths.clear();
       bases.clear();
@@ -98,6 +102,12 @@ void OsDefinitionRecursive::reset()
          handles.clear();
       }
    }
+}
+
+p_bool OsDefinitionRecursive::setAction(p_daptr& act)
+{
+   this->action = std::move(act);
+   return true;
 }
 
 p_bool All::hasNext()
@@ -301,6 +311,11 @@ p_bool Directories::hasNext()
 p_bool RecursiveFiles::hasNext()
 {
    if (first) {
+      if (this->action) {
+         this->action->reset();
+         this->action->onDirectoryEnter();
+      }
+
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
       goDeeper = true;
@@ -319,6 +334,11 @@ p_bool RecursiveFiles::hasNext()
             if (!os_hasFirstFile(path, handles.back(), data)) {
                handles.pop_back();
                paths.pop_back();
+
+               if (this->action) {
+                  this->action->onDirectoryExit();
+               }
+            
                if (paths.empty()) {
                   break;
                }
@@ -343,6 +363,11 @@ p_bool RecursiveFiles::hasNext()
          }
          else {
             paths.pop_back();
+
+            if (this->action) {
+               this->action->onDirectoryExit();
+            }
+
             if (paths.empty()) {
                break;
             }
@@ -367,6 +392,10 @@ p_bool RecursiveFiles::hasNext()
                         bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
                      }
 
+                     if (this->action) {
+                        this->action->onDirectoryEnter();
+                     
+                     }
                      goDeeper = true;
                   }
                }
@@ -383,6 +412,10 @@ p_bool RecursiveFiles::hasNext()
             }
          }
          else {
+            if (this->action) {
+               this->action->onDirectoryExit();
+            }
+
             os_closeEntry(handles.back());
             handles.pop_back();
             paths.pop_back();
@@ -404,6 +437,10 @@ p_bool RecursiveFiles::hasNext()
 p_bool RecursiveDirectories::hasNext()
 {
    if (first) {
+      if (this->action) {
+         this->action->reset();
+      }
+
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
       goDeeper = true;
@@ -418,10 +455,11 @@ p_bool RecursiveDirectories::hasNext()
          if (os_directoryExists(paths.back())) {
             const p_str path = str(paths.back(), gen::os::DEFAULT_PATTERN);
             handles.emplace_back();
-            
+
             if (!os_hasFirstFile(path, handles.back(), data)) {
                handles.pop_back();
                paths.pop_back();
+
                if (paths.empty()) {
                   break;
                }
@@ -429,9 +467,19 @@ p_bool RecursiveDirectories::hasNext()
                   bases.pop_back();
                }
             }
+            else {
+               if (this->action) {
+                  this->action->onDirectoryEnter();
+               }
+            }
          }
          else {
             paths.pop_back();
+
+            if (this->action) {
+               this->action->onDirectoryExit();
+            }
+
             if (paths.empty()) {
                break;
             }
@@ -457,7 +505,7 @@ p_bool RecursiveDirectories::hasNext()
                else {
                   bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
                }
-
+               
                goDeeper = true;
                this->context.index->value = index;
                index++;
@@ -469,6 +517,10 @@ p_bool RecursiveDirectories::hasNext()
             }
          }
          else {
+            if (this->action) {
+               this->action->onDirectoryExit();
+            }
+
             os_closeEntry(handles.back());
             handles.pop_back();
             paths.pop_back();
@@ -490,6 +542,10 @@ p_bool RecursiveDirectories::hasNext()
 p_bool RecursiveAll::hasNext()
 {
    if (first) {
+      if (this->action) {
+         this->action->reset();
+      }
+
       this->baseLocation = os_trim(location->getValue());
       this->paths.emplace_back(this->baseLocation);
       goDeeper = true;
@@ -508,6 +564,7 @@ p_bool RecursiveAll::hasNext()
             if (!os_hasFirstFile(path, handles.back(), data)) {
                handles.pop_back();
                paths.pop_back();
+
                if (paths.empty()) {
                   break;
                }
@@ -515,9 +572,19 @@ p_bool RecursiveAll::hasNext()
                   bases.pop_back();
                }
             }
+            else {
+               if (this->action) {
+                  this->action->onDirectoryEnter();
+               }
+            }
          }
          else {
             paths.pop_back();
+
+            if (this->action) {
+               this->action->onDirectoryExit();
+            }
+
             if (paths.empty()) {
                break;
             }
@@ -579,6 +646,10 @@ p_bool RecursiveAll::hasNext()
             }
          }
          else {
+            if (this->action) {
+               this->action->onDirectoryExit();
+            }
+
             os_closeEntry(handles.back());
             handles.pop_back();
             paths.pop_back();

@@ -13,12 +13,82 @@
 */
 
 #include "com-def-action.h"
+#include "com-core-aggr.h"
 #include "../perun2.h"
 #include "../os.h"
 
 
 namespace perun2::comm
 {
+
+
+SelectDefAction::SelectDefAction(p_perun2& p2)
+   : perun2(p2), locationContext(*p2.contexts.getLocationContext()) { };
+
+
+void SelectDefAction::reset()
+{
+   this->values.clear();
+}
+
+
+void SelectDefAction::onDirectoryEnter()
+{
+   this->values.emplace_back();
+}
+
+
+void SelectDefAction::onDirectoryExit()
+{
+   if (this->values.back().empty()) {
+      this->values.pop_back();
+      return;
+   }
+
+   const p_str root = os_parent(*this->values.back().begin());
+   const p_bool success = os_select(root, this->values.back());
+
+   if (success) {
+      for (const p_str& element : this->values.back()) {
+         logSelectSuccess(this->perun2, element);
+      }
+   }
+   else {
+      for (const p_str& element : this->values.back()) {
+         logSelectError(this->perun2, element);
+      }
+   }
+
+   this->perun2.contexts.success->value = success;
+   this->values.pop_back();
+}
+
+
+void SelectDefAction::add(const p_str& value)
+{
+   const p_str s = os_join(this->locationContext.location->value, value);
+   this->values.back().insert(s);
+}
+
+
+C_SelectAsAction::C_SelectAsAction(p_defptr& def, DefinitionAction& act, p_perun2& p2) 
+   : definition(std::move(def)), action(act), perun2(p2) { };
+
+
+void C_SelectAsAction::run()
+{
+    this->action.reset();
+
+   while (this->definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->definition->reset();
+         this->action.reset();
+         return;
+      }     
+
+      this->action.add(this->definition->getValue());
+   }
+}
 
 
 }

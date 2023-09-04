@@ -42,7 +42,7 @@ public:
    void add(const p_str& value) override;
 
 private:
-   std::vector<p_set> values;
+   std::stack<p_set> values;
    p_perun2& perun2;
    LocationContext& locationContext;
 };

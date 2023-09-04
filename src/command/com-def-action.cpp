@@ -28,46 +28,48 @@ SelectDefAction::SelectDefAction(p_perun2& p2)
 
 void SelectDefAction::reset()
 {
-   this->values.clear();
+   while(! this->values.empty()) {
+      this->values.pop();
+   }
 }
 
 
 void SelectDefAction::onDirectoryEnter()
 {
-   this->values.emplace_back();
+   this->values.emplace();
 }
 
 
 void SelectDefAction::onDirectoryExit()
 {
-   if (this->values.back().empty()) {
-      this->values.pop_back();
+   if (this->values.top().empty()) {
+      this->values.pop();
       return;
    }
 
-   const p_str root = os_parent(*this->values.back().begin());
-   const p_bool success = os_select(root, this->values.back());
+   const p_str root = os_parent(*this->values.top().begin());
+   const p_bool success = os_select(root, this->values.top());
 
    if (success) {
-      for (const p_str& element : this->values.back()) {
+      for (const p_str& element : this->values.top()) {
          logSelectSuccess(this->perun2, element);
       }
    }
    else {
-      for (const p_str& element : this->values.back()) {
+      for (const p_str& element : this->values.top()) {
          logSelectError(this->perun2, element);
       }
    }
 
    this->perun2.contexts.success->value = success;
-   this->values.pop_back();
+   this->values.pop();
 }
 
 
 void SelectDefAction::add(const p_str& value)
 {
    const p_str s = os_join(this->locationContext.location->value, value);
-   this->values.back().insert(s);
+   this->values.top().insert(s);
 }
 
 

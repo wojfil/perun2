@@ -37,6 +37,7 @@ struct DoubleAsteriskPattern : Definition, WildcardComparer
 public:
    DoubleAsteriskPattern() = delete;
    DoubleAsteriskPattern(p_rallptr& def, p_perun2& p2, const p_str& pat, const p_str& pref, const p_int retr);
+   p_bool setAction(p_daptr& act) override;
 
    p_bool hasNext() override;
    void reset() override;

@@ -33,6 +33,7 @@ public:
    virtual void onDirectoryEnter() = 0;
    virtual void onDirectoryExit() = 0;
    virtual void add(const p_str& path) = 0;
+   virtual void finish() = 0;
 
 };
 

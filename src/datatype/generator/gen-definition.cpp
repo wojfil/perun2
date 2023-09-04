@@ -64,6 +64,11 @@ void DefFilter::reset() {
    }
 }
 
+p_bool DefFilter::setAction(p_daptr& act)
+{
+   return this->definition->setAction(act);
+}
+
 
 DefFilter_Where::DefFilter_Where(p_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, p_perun2& p2)
    : DefFilter(def, ctx, p2), condition(std::move(cond)) { };

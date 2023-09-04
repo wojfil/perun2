@@ -73,13 +73,22 @@ void SelectDefAction::add(const p_str& value)
 }
 
 
+void SelectDefAction::finish()
+{
+   while(! this->values.empty()) {
+      this->onDirectoryExit();
+      this->values.pop();
+   }
+}
+
+
 C_SelectAsAction::C_SelectAsAction(p_defptr& def, DefinitionAction& act, p_perun2& p2) 
    : definition(std::move(def)), action(act), perun2(p2) { };
 
 
 void C_SelectAsAction::run()
 {
-    this->action.reset();
+   this->action.reset();
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
@@ -90,6 +99,8 @@ void C_SelectAsAction::run()
 
       this->action.add(this->definition->getValue());
    }
+
+   this->action.finish();
 }
 
 

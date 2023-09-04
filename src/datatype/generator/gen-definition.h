@@ -50,6 +50,7 @@ struct DefFilter : p_def
 public:
    DefFilter() = delete;
    DefFilter(p_defptr& def, FileContext* ctx, p_perun2& p2);
+   p_bool setAction(p_daptr& act) override;
 
    void reset() override;
    FileContext* getFileContext() override;

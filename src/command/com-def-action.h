@@ -40,6 +40,7 @@ public:
    void onDirectoryEnter() override;
    void onDirectoryExit() override;
    void add(const p_str& value) override;
+   void finish() override;
 
 private:
    std::stack<p_set> values;

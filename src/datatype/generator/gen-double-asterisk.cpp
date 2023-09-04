@@ -28,6 +28,12 @@ DoubleAsteriskPattern::DoubleAsteriskPattern(p_rallptr& def, p_perun2& p2, const
 };
 
 
+p_bool DoubleAsteriskPattern::setAction(p_daptr& act)
+{
+   return this->definition->setAction(act);
+}
+
+
 void DoubleAsteriskPattern::reset() {
    if (!first) {
       first = true;

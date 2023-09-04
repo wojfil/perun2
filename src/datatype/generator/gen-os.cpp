@@ -87,10 +87,6 @@ p_bool OsDefinitionPlain::isExceptional(const p_str& patt)
 void OsDefinitionRecursive::reset()
 {
    if (!first) {
-      if (this->action) {
-         this->action->reset();
-      }
-
       first = true;
       paths.clear();
       bases.clear();

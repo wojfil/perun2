@@ -172,48 +172,50 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
       else {
          this->location = cdLocation;
       }
+      
+      this->parseState = ArgsParseState::aps_Ok;
+      return;
+   }
+
+   p_str filePath = os_trim(value);
+   if (filePath.empty()) {
+      cmd::error::noInput();
+      return;
+   }
+
+   if (!os_isAbsolute(filePath)) {
+      filePath = os_join(cdLocation, filePath);
+   }
+
+   if (os_hasExtension(filePath)) {
+      if (!os_acceptableExtension(filePath)) {
+         cmd::error::wrongFileExtension();
+         return;
+      }
    }
    else {
-      p_str filePath = os_trim(value);
-      if (filePath.empty()) {
-         cmd::error::noInput();
-         return;
-      }
+      filePath = str(filePath, CHAR_DOT, metadata::EXTENSION);
+   }
 
-      if (!os_isAbsolute(filePath)) {
-         filePath = os_join(cdLocation, filePath);
-      }
+   if (!os_exists(filePath)) {
+      cmd::error::fileNotFound(os_fullname(filePath));
+      return;
+   }
 
-      if (os_hasExtension(filePath)) {
-         if (!os_acceptableExtension(filePath)) {
-            cmd::error::wrongFileExtension();
-            return;
-         }
-      }
-      else {
-         filePath = str(filePath, CHAR_DOT, metadata::EXTENSION);
-      }
+   if (!os_readFile(this->code, filePath)) {
+      cmd::error::fileReadFailure(os_fullname(filePath));
+      return;
+   }
 
-      if (!os_exists(filePath)) {
-         cmd::error::fileNotFound(os_fullname(filePath));
-         return;
-      }
+   const p_str basisLocation = here ? cdLocation : os_parent(filePath);
 
-      if (!os_readFile(this->code, filePath)) {
-         cmd::error::fileReadFailure(os_fullname(filePath));
-         return;
-      }
-
-      const p_str basisLocation = here ? cdLocation : os_parent(filePath);
-
-      if (d_has) {
-         this->location = os_isAbsolute(d_value)
-            ? d_value
-            : os_join(basisLocation, d_value);
-      }
-      else {
-         this->location = basisLocation;
-      }
+   if (d_has) {
+      this->location = os_isAbsolute(d_value)
+         ? d_value
+         : os_join(basisLocation, d_value);
+   }
+   else {
+      this->location = basisLocation;
    }
 
    this->parseState = ArgsParseState::aps_Ok;

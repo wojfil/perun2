@@ -188,7 +188,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
    }
 
    if (os_hasExtension(filePath)) {
-      if (!os_acceptableExtension(filePath)) {
+      if (! os_isPerun2Extension(filePath)) {
          cmd::error::wrongFileExtension();
          return;
       }

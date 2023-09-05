@@ -124,7 +124,7 @@ p_bool All::hasNext()
 
          if (!os_isBrowsePath(value)) {
             if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data)
-               || os_acceptableExtension(this->value))
+               || !os_isPerun2Extension(this->value))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
@@ -150,7 +150,7 @@ p_bool All::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data) || os_acceptableExtension(this->value))
+         if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data) || !os_isPerun2Extension(this->value))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
@@ -190,7 +190,7 @@ p_bool Files::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || os_acceptableExtension(this->value)))
+            if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(this->value)))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
@@ -212,7 +212,7 @@ p_bool Files::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || os_acceptableExtension(this->value)))
+         if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(this->value)))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
@@ -330,7 +330,7 @@ p_bool RecursiveFiles::hasNext()
             else if (!os_isDirectory(data)) {
                const p_str& v = data.cFileName;
 
-               if ((this->flags & FLAG_NOOMIT) || os_acceptableExtension(v)) {
+               if ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(v)) {
                   value = v;
                   this->context.index->value = index;
                   index++;
@@ -378,7 +378,7 @@ p_bool RecursiveFiles::hasNext()
 
                   goDeeper = true;
                }
-               else if ((this->flags & FLAG_NOOMIT) || os_acceptableExtension(v)) {
+               else if ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(v)) {
                   value = this->bases.empty() ? v : str(bases.back(), v);
                   this->context.index->value = index;
                   index++;
@@ -603,7 +603,7 @@ p_bool RecursiveAll::hasNext()
                   this->context.loadData(value, data);
                   return true;
                }
-               else if (!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || os_acceptableExtension(v)))
+               else if (!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(v)))
                {
                   if (!this->prevFile) {
                      this->prevFile = true;

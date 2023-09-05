@@ -137,7 +137,7 @@ p_str os_join(const p_str& path1, const p_str& path2);
 p_bool os_endsWithDoubleDot(const p_str& path);
 p_bool os_isAbsolute(const p_str& path);
 p_bool os_hasExtension(const p_str& value);
-p_bool os_acceptableExtension(const p_str& value);
+p_bool os_isPerun2Extension(const p_str& value);
 p_bool os_isDriveLetter(const p_char ch);
 p_bool os_isPath(const p_str& value);
 

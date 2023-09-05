@@ -1916,25 +1916,25 @@ p_bool os_hasExtension(const p_str& value)
    return false;
 }
 
-p_bool os_acceptableExtension(const p_str& value)
+p_bool os_isPerun2Extension(const p_str& value)
 {
    const p_size length = value.length();
 
    if (length <= metadata::EXTENSION_LENGTH) {
-      return true;
+      return false;
    }
 
    if (value[length - metadata::EXTENSION_LENGTH - 1] != CHAR_DOT) {
-      return true;
+      return false;
    }
 
    for (p_size i = 0; i < metadata::EXTENSION_LENGTH; i++) {
       if (metadata::EXTENSION[i] != value[length + i - metadata::EXTENSION_LENGTH]) {
-         return true;
+         return false;
       }
    }
 
-   return false;
+   return true;
 }
 
 p_bool os_isDriveLetter(const p_char ch)

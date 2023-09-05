@@ -59,8 +59,6 @@ p_constexpr p_char STRING_ARG_DOCS[] =             L"--docs";
 p_constexpr p_char STRING_ARG_WEBSITE[] =          L"--website";
 p_constexpr p_char STRING_ARG_HELP[] =             L"--help";
 
-p_constexpr p_char STRING_DOT_GIT[] =              L".git";
-p_constexpr p_char STRING_DOT_SVN[] =              L".svn";
 p_constexpr p_char STRING_MSPAINT_EXE[] =          L"mspaint.exe";
 p_constexpr p_char STRING_NOTEPAD_EXE[] =          L"notepad.exe";
 

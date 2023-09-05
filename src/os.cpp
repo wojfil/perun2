@@ -1921,19 +1921,6 @@ p_bool os_isPath(const p_str& value)
    return value.find(OS_SEPARATOR) != p_str::npos;
 }
 
-p_bool os_isExplorableDirectory(const p_str& name)
-{
-   // this is an equivalent to
-   // return name != .git && name != .svn
-   if (name.size() == 4) {
-      return name != STRING_DOT_GIT
-          && name != STRING_DOT_SVN;
-   }
-   else {
-      return true;
-   }
-}
-
 p_bool os_isAncestor(const p_str& path, const p_str& supposedChildPath)
 {
    if (supposedChildPath.size() <= path.size()) {

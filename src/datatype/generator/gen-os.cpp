@@ -125,7 +125,7 @@ p_bool All::hasNext()
          if (!os_isBrowsePath(value)) {
             const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
+            if (((this->flags & FLAG_NOOMIT) || isDir
                || (!isDir && os_extension(value) != metadata::EXTENSION))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
@@ -154,7 +154,7 @@ p_bool All::hasNext()
       if (!os_isBrowsePath(value)) {
          const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if (((this->flags & FLAG_NOOMIT) || (isDir && os_isExplorableDirectory(value))
+         if (((this->flags & FLAG_NOOMIT) || (isDir)
             || (!isDir && os_extension(value) != metadata::EXTENSION))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
@@ -260,8 +260,7 @@ p_bool Directories::hasNext()
          if (!os_isBrowsePath(value)) {
             const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-            if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
-               && (!this->exceptional || this->comparer.matches(this->value)))
+            if (isDir && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
                index++;
@@ -284,8 +283,7 @@ p_bool Directories::hasNext()
       if (!os_isBrowsePath(value)) {
          const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
-         if ((isDir && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(value)))
-            && (!this->exceptional || this->comparer.matches(this->value)))
+         if (isDir && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
             index++;
@@ -378,22 +376,20 @@ p_bool RecursiveFiles::hasNext()
 
             if (!os_isBrowsePath(v)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                  if ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)) {
-                     paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
+                  paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
-                     if (this->bases.empty()) {
-                        bases.emplace_back(str(v, OS_SEPARATOR));
-                     }
-                     else {
-                        bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
-                     }
-
-                     if (this->action) {
-                        this->action->onDirectoryEnter();
-                     
-                     }
-                     goDeeper = true;
+                  if (this->bases.empty()) {
+                     bases.emplace_back(str(v, OS_SEPARATOR));
                   }
+                  else {
+                     bases.emplace_back(str(bases.back(), v, OS_SEPARATOR));
+                  }
+
+                  if (this->action) {
+                     this->action->onDirectoryEnter();
+                  }
+                  
+                  goDeeper = true;
                }
                else if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
                   value = this->bases.empty() ? v : str(bases.back(), v);
@@ -488,8 +484,7 @@ p_bool RecursiveDirectories::hasNext()
          if (os_hasNextFile(handles.back(), data)) {
             const p_str v = data.cFileName;
 
-            if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
+            if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
             {
                const p_bool isBase = this->bases.empty();
                value = isBase ? v : str(bases.back(), v);
@@ -594,8 +589,7 @@ p_bool RecursiveAll::hasNext()
             const p_str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
-               if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                  && ((this->flags & FLAG_NOOMIT) || os_isExplorableDirectory(v)))
+               if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                {
                   if (this->prevFile) {
                      this->prevFile = false;

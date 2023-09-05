@@ -138,7 +138,6 @@ p_bool os_isAbsolute(const p_str& path);
 p_bool os_hasExtension(const p_str& value);
 p_bool os_isDriveLetter(const p_char ch);
 p_bool os_isPath(const p_str& value);
-p_bool os_isExplorableDirectory(const p_str& name);
 
 p_bool os_isAncestor(const p_str& path, const p_str& supposedChildPath);
 p_bool os_hasParentDirectory(const p_str& path);

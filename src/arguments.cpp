@@ -185,9 +185,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
       }
 
       if (os_hasExtension(filePath)) {
-         const p_str extension = os_extension(filePath);
-
-         if (extension != metadata::EXTENSION) {
+         if (!os_acceptableExtension(filePath)) {
             cmd::error::wrongFileExtension();
             return;
          }

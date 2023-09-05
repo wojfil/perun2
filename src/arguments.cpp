@@ -197,7 +197,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
       filePath = str(filePath, CHAR_DOT, metadata::EXTENSION);
    }
 
-   if (!os_exists(filePath)) {
+   if (!os_fileExists(filePath)) {
       cmd::error::fileNotFound(os_fullname(filePath));
       return;
    }

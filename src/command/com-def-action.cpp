@@ -77,7 +77,6 @@ void SelectDefAction::finish()
 {
    while(! this->values.empty()) {
       this->onDirectoryExit();
-      this->values.pop();
    }
 }
 

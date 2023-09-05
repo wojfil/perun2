@@ -123,10 +123,8 @@ p_bool All::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-            if (((this->flags & FLAG_NOOMIT) || isDir
-               || (!isDir && os_extension(value) != metadata::EXTENSION))
+            if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data)
+               || (os_extension(value) != metadata::EXTENSION))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
@@ -152,10 +150,8 @@ p_bool All::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-         if (((this->flags & FLAG_NOOMIT) || (isDir)
-            || (!isDir && os_extension(value) != metadata::EXTENSION))
+         if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data)
+            || (os_extension(value) != metadata::EXTENSION))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
@@ -195,9 +191,7 @@ p_bool Files::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-            if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
+            if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
@@ -219,9 +213,7 @@ p_bool Files::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-         if ((!isDir && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
+         if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || os_extension(value) != metadata::EXTENSION))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
@@ -258,9 +250,7 @@ p_bool Directories::hasNext()
          this->context.index->value = index;
 
          if (!os_isBrowsePath(value)) {
-            const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-            if (isDir && (!this->exceptional || this->comparer.matches(this->value)))
+            if (os_isDirectory(data) && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
                index++;
@@ -281,9 +271,7 @@ p_bool Directories::hasNext()
       value = data.cFileName;
 
       if (!os_isBrowsePath(value)) {
-         const p_bool isDir = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-         if (isDir && (!this->exceptional || this->comparer.matches(this->value)))
+         if (os_isDirectory(data) && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
             index++;
@@ -340,7 +328,7 @@ p_bool RecursiveFiles::hasNext()
                   bases.pop_back();
                }
             }
-            else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            else if (!os_isDirectory(data)) {
                const p_str& v = data.cFileName;
 
                if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
@@ -375,7 +363,7 @@ p_bool RecursiveFiles::hasNext()
             const p_str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
-               if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+               if (os_isDirectory(data)) {
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
                   if (this->bases.empty()) {
@@ -388,7 +376,7 @@ p_bool RecursiveFiles::hasNext()
                   if (this->action) {
                      this->action->onDirectoryEnter();
                   }
-                  
+
                   goDeeper = true;
                }
                else if ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION) {
@@ -484,7 +472,7 @@ p_bool RecursiveDirectories::hasNext()
          if (os_hasNextFile(handles.back(), data)) {
             const p_str v = data.cFileName;
 
-            if (!os_isBrowsePath(v) && (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            if (!os_isBrowsePath(v) && os_isDirectory(data))
             {
                const p_bool isBase = this->bases.empty();
                value = isBase ? v : str(bases.back(), v);
@@ -589,7 +577,7 @@ p_bool RecursiveAll::hasNext()
             const p_str v = data.cFileName;
 
             if (!os_isBrowsePath(v)) {
-               if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+               if (os_isDirectory(data))
                {
                   if (this->prevFile) {
                      this->prevFile = false;
@@ -616,7 +604,7 @@ p_bool RecursiveAll::hasNext()
                   this->context.loadData(value, data);
                   return true;
                }
-               else if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+               else if (!os_isDirectory(data)
                   && ((this->flags & FLAG_NOOMIT) || os_extension(v) != metadata::EXTENSION))
                {
                   if (!this->prevFile) {

@@ -580,6 +580,11 @@ p_bool os_isDirectory(const p_str& path)
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
 }
 
+p_bool os_isDirectory(const p_fdata& data)
+{
+   return data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+}
+
 p_per os_lifetime(const p_str& path)
 {
    p_adata data;

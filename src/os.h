@@ -61,6 +61,7 @@ p_bool os_hasAttribute(const p_str& path, const DWORD attribute);
 p_bool os_hidden(const p_str& path);
 p_bool os_isFile(const p_str& path);
 p_bool os_isDirectory(const p_str& path);
+p_bool os_isDirectory(const p_fdata& data);
 p_per os_lifetime(const p_str& path);
 p_tim os_modification(const p_str& path);
 p_bool os_readonly(const p_str& path);

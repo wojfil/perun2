@@ -48,7 +48,7 @@ extern const p_list STRINGS_ASCII;
 p_constexpr p_char STRING_FILE_OPEN_MODE[] =       L"rtS, ccs=UTF-8";
 p_constexpr p_char STRING_WINDOWS_PATH_PREFIX[] =  L"\\\\?\\";
 
-p_constexpr p_char EMPTY_STRING[] =                { };
+p_constexpr p_char EMPTY_STRING[] =                L"";
 p_constexpr p_char STRING_NO_TIME[] =              L"no time";
 p_constexpr p_char STRING_NO_PERIOD[] =            L"no period";
 p_constexpr p_char STRING_NOTHING[] =              L"nothing";

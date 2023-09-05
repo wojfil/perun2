@@ -84,7 +84,7 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   return parseTernary<p_bool>(result, tks, p2);
+   return parseBinary<p_bool>(result, tks, p2) || parseTernary<p_bool>(result, tks, p2);
 }
 
 

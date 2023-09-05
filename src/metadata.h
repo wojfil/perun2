@@ -27,6 +27,8 @@ p_constexpr p_char WEBSITE_FRONT[] =       L"https://perun2.org";
 p_constexpr p_char WEBSITE_DOCS[] =        L"https://perun2.org/docs";
 p_constexpr p_char EXECUTABLE_NAME[] =     L"perun2";
 
+p_constexpr p_size EXTENSION_LENGTH =      _countof(EXTENSION) - 1;
+
 }
 
 #endif // METADATA_H_INCLUDED

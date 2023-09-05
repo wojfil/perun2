@@ -87,7 +87,7 @@ p_bool parseTime(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   return parseTernary<p_tim>(result, tks, p2);
+   return parseBinary<p_tim>(result, tks, p2) || parseTernary<p_tim>(result, tks, p2);
 }
 
 p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)

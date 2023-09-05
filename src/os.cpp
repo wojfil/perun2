@@ -24,6 +24,7 @@
 #include <time.h>
 #include "perun2.h"
 #include "datatype/parse/parse-asterisk.h"
+#include "metadata.h"
 #include <shlobj.h>
 #include <cwctype>
 #include <shellapi.h>
@@ -1909,6 +1910,27 @@ p_bool os_hasExtension(const p_str& value)
       }
       else if (ch == OS_SEPARATOR) {
          return false;
+      }
+   }
+
+   return false;
+}
+
+p_bool os_acceptableExtension(const p_str& value)
+{
+   const p_size length = value.length();
+
+   if (length <= metadata::EXTENSION_LENGTH) {
+      return true;
+   }
+
+   if (value[length - metadata::EXTENSION_LENGTH - 1] != CHAR_DOT) {
+      return true;
+   }
+
+   for (p_size i = 0; i < metadata::EXTENSION_LENGTH; i++) {
+      if (metadata::EXTENSION[i] != value[length + i - metadata::EXTENSION_LENGTH]) {
+         return true;
       }
    }
 

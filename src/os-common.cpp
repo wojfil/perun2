@@ -154,7 +154,7 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_SIZE) || attribute->has(ATTR_SIZE_FILE_ONLY)) {
-      context.vp_size->value = p_num(NINT_MINUS_ONE);
+      context.v_size->value = p_num(NINT_MINUS_ONE);
    }
 }
 

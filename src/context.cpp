@@ -84,7 +84,7 @@ namespace perun2
       this->v_creation = this->insertVar<p_tim>(STRING_CREATION);
       this->v_modification = this->insertVar<p_tim>(STRING_MODIFICATION);
       this->v_lifetime = this->insertVar<p_per>(STRING_LIFETIME);
-      this->vp_size = this->insertVar<p_num>(STRING_SIZE);
+      this->v_size = this->insertVar<p_num>(STRING_SIZE);
       this->v_depth = this->insertVar<p_num>(STRING_DEPTH);
       this->v_drive = this->insertVar<p_str>(STRING_DRIVE);
       this->v_extension = this->insertVar<p_str>(STRING_EXTENSION);

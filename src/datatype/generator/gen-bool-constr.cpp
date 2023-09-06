@@ -57,7 +57,7 @@ p_bool SizeConstraint::getValue()
          this->constraint.setValue(os_sizeFile(this->context.v_path->value));
       }
       else {
-         this->constraint.setValue(this->context.vp_size->value);
+         this->constraint.setValue(this->context.v_size->value);
       }
 
       return this->constraint.getFinalResult();

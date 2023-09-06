@@ -250,22 +250,22 @@ void os_loadAttributes(FileContext& context)
 
    if (attribute->has(ATTR_SIZE)) {
       if (context.v_exists->value) {
-         context.vp_size->value = context.v_isfile->value
+         context.v_size->value = context.v_isfile->value
             ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
             : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
       }
       else {
-         context.vp_size->value = p_num(NINT_MINUS_ONE);
+         context.v_size->value = p_num(NINT_MINUS_ONE);
       }
    }
    else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
       if (context.v_exists->value) {
          if (context.v_isfile->value) {
-            context.vp_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+            context.v_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
          }
       }
       else {
-         context.vp_size->value = p_num(NINT_MINUS_ONE);
+         context.v_size->value = p_num(NINT_MINUS_ONE);
       }
    }
 }
@@ -383,13 +383,13 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
    }
 
    if (attribute->has(ATTR_SIZE)) {
-      context.vp_size->value = context.v_isfile->value
+      context.v_size->value = context.v_isfile->value
          ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
          : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
    }
    else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
       if (context.v_isfile->value) {
-         context.vp_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
+         context.v_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
       }
    }
 }

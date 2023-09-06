@@ -143,7 +143,7 @@ namespace perun2
       Variable<p_tim>* v_creation;
       Variable<p_tim>* v_modification;
       Variable<p_per>* v_lifetime;
-      Variable<p_num>* vp_size;
+      Variable<p_num>* v_size;
       Variable<p_num>* v_depth;
       Variable<p_str>* v_drive;
       Variable<p_str>* v_extension;

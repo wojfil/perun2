@@ -994,7 +994,7 @@ static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken,
    FileContext& context = *p2.contexts.getFileContext();
    context.attribute->setCoreCommandBase();
    context.attribute->set(ATTR_SIZE_FILE_ONLY);
-   result = std::make_unique<gen::SizeConstraint>(rightSide, ct, context, p2);
+   result = std::make_unique<gen::SizeConstraint>(rightSide, ct, context, isAlterableAttribute(varToken, p2), p2);
    return true;
 }
 

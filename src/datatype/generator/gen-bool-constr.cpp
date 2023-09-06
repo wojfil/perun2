@@ -25,8 +25,8 @@ ContextConstraint::ContextConstraint(p_genptr<p_num>& limit, const CompType cmpt
    : constraint(limit, cmptype), context(ctx), perun2(p2) { };
 
 
-SizeConstraint::SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2)
-   : ContextConstraint(limit, cmptype, ctx, p2) { };
+SizeConstraint::SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, const p_bool reread, p_perun2& p2)
+   : ContextConstraint(limit, cmptype, ctx, p2), rereadFileSize(reread) { };
 
 
 CountConstraint::CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, p_perun2& p2)
@@ -48,8 +48,18 @@ SizeConstraint_List::SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list
 
 p_bool SizeConstraint::getValue()
 {
-   if (! this->context.v_exists->value || this->context.v_isfile->value) {
-      this->constraint.setValue(this->context.vp_size->value);
+   if (! this->context.v_exists->value) {
+      return this->constraint.getFailureResult();
+   }
+
+   if (this->context.v_isfile->value) {
+      if (this->rereadFileSize)  {
+         this->constraint.setValue(os_sizeFile(this->context.v_path->value));
+      }
+      else {
+         this->constraint.setValue(this->context.vp_size->value);
+      }
+
       return this->constraint.getFinalResult();
    }
 

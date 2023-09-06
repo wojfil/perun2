@@ -38,8 +38,11 @@ protected:
 struct SizeConstraint : ContextConstraint
 {
 public:
-   SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2);
+   SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, const p_bool reread, p_perun2& p2);
    p_bool getValue() override;
+
+private:
+   const p_bool rereadFileSize;
 };
 
 

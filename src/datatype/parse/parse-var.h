@@ -20,6 +20,7 @@
 
 namespace perun2::parse
 {
+   p_bool isAlterableAttribute(const Token& tk, p_perun2& p2);
 
    p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_bool>& result, p_perun2& p2);
    p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_num>& result, p_perun2& p2);
@@ -42,9 +43,7 @@ namespace perun2::parse
          return false;
       }
 
-      if (var->type == VarType::vt_Attribute
-         && !p2.contexts.getFileContext()->attributeScope
-         && tk.isVariable(STRINGS_ALTERABLE_ATTR, p2))
+      if (var->type == VarType::vt_Attribute && isAlterableAttribute(tk, p2))
       {
          return makeVarRefAsFunction(tk, result, p2);
       }

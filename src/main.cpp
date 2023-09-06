@@ -26,8 +26,8 @@ int main(void)
       return perun2::EXITCODE_CLI_ERROR;
    }
 
-   // if Perun2 is used like an imported external library
-   // do not call these two inits
+   // these two inits below affect globally the flow of the program
+   // do not call them if Perun2 is used like an imported external library
    perun2::initConsole();
    perun2::initTerminator();
 

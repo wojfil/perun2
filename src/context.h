@@ -125,9 +125,9 @@ namespace perun2
       p_attrptr attribute;
       VarsContext fileVars;
       LocationContext* const locContext;
-      p_str trimmed; // this is the value of this_, but with trimmed spaces and with proper path separators... used only internally
-      p_bool invalid; // the value of this_ is invalid (has not allowed characters, is empty string etc.)
-      p_bool isInside = false; // this is file context of the Inside structure
+      p_str trimmed; // the value of this_, but with trimmed spaces and with proper path separators
+      p_bool invalid; // say whether the value of this_ is invalid (has not allowed characters, is empty string etc.)
+      p_bool isInside = false; // says that this is context of the Inside structure
 
       Variable<p_bool>* v_archive;
       Variable<p_bool>* v_compressed;

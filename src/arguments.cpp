@@ -31,7 +31,8 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
 {
    enum NextArg {
       Null,
-      Location
+      Location,
+      Code
    };
 
    NextArg nextArg = NextArg::Null;
@@ -51,6 +52,26 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
    for (p_int i = 1; i < argc; i++) {
       const p_str arg = p_str(argv[i]);
       const p_size len = arg.size();
+
+      if (options && nextArg == NextArg::Location) {
+         const p_str v = os_trim(arg);
+
+         if (v.empty()) {
+            continue;
+         }
+
+         d_value = v;
+         d_has = true;
+         nextArg = NextArg::Null;
+         continue;
+      }
+      else if (options && nextArg == NextArg::Code) {
+         value = arg;
+         hasCode = true;
+         hasValue = true;
+         nextArg = NextArg::Null;
+         continue;
+      }
 
       if (options && len >= 2 && arg[0] == CHAR_MINUS) {
          if (arg[1] == CHAR_MINUS) {
@@ -89,7 +110,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                switch (arg[j]) {
                   case CHAR_FLAG_CODE: 
                   case CHAR_FLAG_CODE_UPPER: {
-                     hasCode = true;
+                     nextArg = NextArg::Code;
                      break;
                   }
                   case CHAR_FLAG_DIRECTORY: 
@@ -133,19 +154,6 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
          continue;
       }
 
-      if (nextArg == NextArg::Location) {
-         const p_str v = os_trim(arg);
-
-         if (v.empty()) {
-            continue;
-         }
-
-         d_value = v;
-         d_has = true;
-         nextArg = NextArg::Null;
-         continue;
-      }
-
       if (hasValue) {
          this->args.emplace_back(arg);
       }
@@ -157,6 +165,11 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
 
    if (nextArg == NextArg::Location) {
       cmd::error::noDestination();
+      return;
+   }
+
+   if (nextArg == NextArg::Code) {
+      cmd::error::noCode();
       return;
    }
 

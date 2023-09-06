@@ -84,6 +84,12 @@ namespace error
       logger.print(L"Command-line error: destination directory has not been defined.");
    }
 
+   void noCode()
+   {
+      Logger logger;
+      logger.print(L"Command-line error: the argument with source code is missing.");
+   }
+
    void noMainArgument()
    {
       Logger logger;

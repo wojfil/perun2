@@ -32,6 +32,7 @@ namespace error
    void noArguments();
    void unknownOption(const p_str& option);
    void noDestination();
+   void noCode();
    void noMainArgument();
    void noInput();
    void fileNotFound(const p_str& fileName);

@@ -49,7 +49,8 @@ SizeConstraint_List::SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list
 p_bool SizeConstraint::getValue()
 {
    if (! this->context.v_exists->value) {
-      return this->constraint.getFailureResult();
+      this->constraint.setValue(this->context.v_size->value);
+      return this->constraint.getFinalResult();
    }
 
    if (this->context.v_isfile->value) {

@@ -50,10 +50,10 @@ void help()
    logger.print(L"  --version    Display interpreter version information.");
    logger.print(str(L"  --website    Enter the official ", metadata::NAME, L" website."));
    logger.print(str(L"  --docs       Enter the official ", metadata::NAME, L" documentation."));
-   logger.print(str(L"  -c           Pass ", metadata::NAME, L" code as an argument instead of file name."));
-   logger.print(L"  -d <name>    Set working location to certain value.");
+   logger.print(str(L"  -c <value>   Pass ", metadata::NAME, L" code to run."));
+   logger.print(L"  -d <value>   Set working location to certain value.");
    logger.print(L"  -h           Set working location to the place where this command was called from.");
-   logger.print(L"  -n           Run in noomit mode (iterate over all file system elements with no exceptions).");
+   logger.print(L"  -n           Run in noomit mode (iterate all filesystem elements with no exceptions).");
    logger.print(L"  -s           Run in silent mode (no command log messages).");
 }
 

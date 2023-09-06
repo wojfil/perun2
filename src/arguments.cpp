@@ -29,8 +29,13 @@ Arguments::Arguments(const p_str& loc, const p_str& cod, const p_flags fls)
 
 Arguments::Arguments(const p_int argc, p_char* const argv[])
 {
+   enum NextArg {
+      Null,
+      Location
+   };
+
+   NextArg nextArg = NextArg::Null;
    p_bool options = true;
-   p_bool nextParseLocation = false;
    p_bool hasCode = false;
    p_bool hasValue = false;
    p_bool here = false;
@@ -89,7 +94,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                   }
                   case CHAR_FLAG_DIRECTORY: 
                   case CHAR_FLAG_DIRECTORY_UPPER: {
-                     nextParseLocation = true;
+                     nextArg = NextArg::Location;
                      break;
                   }
                   case CHAR_FLAG_NOOMIT: 
@@ -128,7 +133,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
          continue;
       }
 
-      if (nextParseLocation) {
+      if (nextArg == NextArg::Location) {
          const p_str v = os_trim(arg);
 
          if (v.empty()) {
@@ -137,7 +142,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
 
          d_value = v;
          d_has = true;
-         nextParseLocation = false;
+         nextArg = NextArg::Null;
          continue;
       }
 
@@ -150,7 +155,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
       }
    }
 
-   if (nextParseLocation) {
+   if (nextArg == NextArg::Location) {
       cmd::error::noDestination();
       return;
    }

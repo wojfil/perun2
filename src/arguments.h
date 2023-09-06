@@ -52,7 +52,6 @@ enum ArgsParseState
 struct Arguments
 {
 public:
-
    Arguments() = delete;
 
    // Perun2 arguments parsed from the command-line
@@ -72,7 +71,6 @@ public:
    p_bool hasFlag(const p_flags flag) const;
 
 private:
-
    p_str code;
    p_flags flags = FLAG_NULL;
    p_list args;

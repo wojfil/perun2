@@ -643,6 +643,21 @@ p_nint os_size(const p_str& path, p_perun2& p2)
       : static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
+p_nint os_sizeFile(const p_str& path)
+{
+   p_adata data;
+   if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
+      return NINT_MINUS_ONE;
+   }
+
+   const DWORD& dwAttrib = data.dwFileAttributes;
+   if (dwAttrib == INVALID_FILE_ATTRIBUTES || (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+      return NINT_MINUS_ONE;
+   }
+
+   return static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
+}
+
 p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
 {
    std::vector<p_entry> entries;

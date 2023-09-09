@@ -16,6 +16,7 @@
 #define OS_H
 
 #include "os-common.h"
+#include "side-process.h"
 
 
 namespace perun2
@@ -109,6 +110,7 @@ p_bool os_copy(const p_set& paths);
 p_bool os_select(const p_str& parent, const p_set& paths);
 
 p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2);
+p_bool os_terminate(SideProcess& process);
 
 p_str os_trim(const p_str& path);
 p_bool os_isInvalid(const p_str& path);

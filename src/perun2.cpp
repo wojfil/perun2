@@ -58,7 +58,7 @@ void p_perun2::terminate()
    this->state = State::s_Exit;
    if (this->sideProcess.running) {
       this->sideProcess.running = false;
-      TerminateProcess(this->sideProcess.info.hProcess, 0);
+      os_terminate(this->sideProcess);
    }
 }
 

@@ -1380,6 +1380,11 @@ p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
    return p2.state == State::s_Running && dwExitCode == 0;
 }
 
+p_bool os_terminate(SideProcess& process)
+{
+   TerminateProcess(process.info.hProcess, 0);
+}
+
 p_bool os_isInvalid(const p_str& path)
 {
    const p_size length = path.size();

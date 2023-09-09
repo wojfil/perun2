@@ -17,7 +17,6 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD ${USED_CPP_STANDARD})
-set(CMAKE_CXX_COMPILER C:/MinGW/bin/gcc.exe)
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
 
 project(perun2)

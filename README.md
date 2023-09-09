@@ -25,10 +25,11 @@ There is a whole [page](FUTURE.md) dedicated to it.
 ## Build
 
 What is required? 
-Generally, you need CMake 3.10 and any version of GCC that fully supports at least C++14. 
+Generally, you need CMake 3.10 and any version of GCC that fully supports at least C++14.
+Source code will adjust to your version of C++ and with C++17 all possible optimizations are turned on.
 For Windows OS, the *MinGW Makefiles* generator is used.
 To build this project, select a proper batch script from [here](src/build) and run it. 
-A file named *perun2.exe* located there is the output.
+A file *perun2.exe* located there is the output.
 
 ## License
 

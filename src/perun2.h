@@ -48,14 +48,6 @@ enum State
 };
 
 
-enum ParseState
-{
-   ps_NotParsed,
-   ps_ParsingSuccess,
-   ps_ParsingFailure
-};
-
-
 // this is an instance of Perun2
 // used only internally within the namespace
 // for external facade, use struct 'Perun2' instead
@@ -77,7 +69,6 @@ public:
    comm::ConditionContext conditionContext;
    State state = State::s_Running;
    int exitCode = EXITCODE_OK;
-   ParseState parseState = ParseState::ps_NotParsed;
    Logger logger;
    Cache cache;
 
@@ -102,7 +93,6 @@ private:
 // facade for Perun2
 // create an object once
 // and run() it multiple times
-// the structure is cached, so the syntax analysis is performed only once at creation
 struct Perun2
 {
 public:

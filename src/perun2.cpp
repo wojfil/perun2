@@ -34,9 +34,6 @@ p_perun2::p_perun2(const Arguments& args) : arguments(args), contexts(*this),
 {
    p_perun2::init();
    Terminator::addPtr(this);
-   if (arguments.getParseState() == ArgsParseState::aps_Failed) {
-      this->parseState = ParseState::ps_ParsingFailure;
-   }
 };
 
 p_perun2::~p_perun2() noexcept
@@ -46,23 +43,14 @@ p_perun2::~p_perun2() noexcept
 
 p_bool p_perun2::run()
 {
-   if (this->parseState == ParseState::ps_NotParsed) {
-      const p_bool parsed = this->preParse() && this->parse() && this->postParse();
-
-      if (parsed) {
-         this->parseState = ParseState::ps_ParsingSuccess;
-         return this->runCommands();
-      }
-      else {
-         this->parseState = ParseState::ps_ParsingFailure;
-      }
-   }
-   else if (this->parseState == ParseState::ps_ParsingSuccess) {
-      this->exitCode = EXITCODE_OK;
-      return this->runCommands();
+   if (! arguments.areGood()) {
+      return false;
    }
 
-   return false;
+   return this->preParse() 
+       && this->parse() 
+       && this->postParse()
+       && this->runCommands();
 };
 
 void p_perun2::terminate()
@@ -112,7 +100,6 @@ p_bool p_perun2::parse()
       if (!comm::parseCommands(this->commands, tks, *this)) {
          return false;
       }
-      this->conditionContext.deleteClosedUnits();
    }
    catch (const SyntaxError& ex) {
       this->logger.print(ex.getMessage());
@@ -131,6 +118,7 @@ p_bool p_perun2::parse()
 
 p_bool p_perun2::postParse()
 {
+   this->conditionContext.deleteClosedUnits();
    this->math.init();
 
    // this is a potential direction of optimizations
@@ -164,12 +152,7 @@ void p_perun2::init()
 }
 
 Perun2::Perun2(const p_int argc, p_char* const argv[])
-   : arguments(argc, argv), process(this->arguments)
-{
-   if (this->process.exitCode == EXITCODE_CLI_ERROR) {
-      this->process.parseState = ParseState::ps_ParsingFailure;
-   }
-};
+   : arguments(argc, argv), process(this->arguments) { };
 
 Perun2::Perun2(const p_str& location, const p_str& code)
    : arguments(location, code), process(this->arguments) { };

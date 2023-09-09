@@ -239,6 +239,11 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
    this->parseState = ArgsParseState::aps_Ok;
 }
 
+p_bool Arguments::areGood() const
+{
+   return this->parseState == ArgsParseState::aps_Ok;
+}
+
 p_flags Arguments::getFlags() const
 {
    return this->flags;

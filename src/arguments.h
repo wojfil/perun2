@@ -63,6 +63,7 @@ public:
    // Perun2 arguments made from location, code and flags
    Arguments(const p_str& loc, const p_str& cod, const p_flags fls);
 
+   p_bool areGood() const;
    p_flags getFlags() const;
    p_list getArgs() const;
    p_str getLocation() const;

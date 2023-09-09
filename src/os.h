@@ -109,7 +109,7 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, p_perun2& 
 p_bool os_copy(const p_set& paths);
 p_bool os_select(const p_str& parent, const p_set& paths);
 
-p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2);
+p_bool os_run(const p_str& command, const p_str& location, p_perun2& p2);
 p_bool os_terminate(SideProcess& process);
 
 p_str os_trim(const p_str& path);

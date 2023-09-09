@@ -1065,21 +1065,18 @@ p_bool os_openAsCommand(const p_str& command, const p_str& location)
    si.cb = sizeof(si);
    ZeroMemory(&pi, sizeof(pi));
 
-   const p_size len = command.size() + 1;
-   p_char cmd[len];
-   wcscpy(cmd, command.c_str());
-
-   const p_size lenloc = location.size() + 1;
-   p_char loc[lenloc];
-   wcscpy(loc, location.c_str());
+   std::unique_ptr<p_char[]> cmd = std::make_unique<p_char[]>(command.size() + 1);
+   wcscpy(cmd.get(), command.c_str());
+   cmd[command.size()] = CHAR_NULL;
 
    return CreateProcessW
    (
       NULL,
-      cmd,
+      cmd.get(),
       NULL, NULL, FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
-      NULL, loc,
+      NULL, 
+      location.c_str(),
       &si, &pi
    ) != 0;
 }
@@ -1344,7 +1341,7 @@ p_bool os_select(const p_str& parent, const p_set& paths)
    return hr == S_OK;
 }
 
-p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
+p_bool os_run(const p_str& command, const p_str& location, p_perun2& p2)
 {
    p2.sideProcess.running = true;
    STARTUPINFO si;
@@ -1353,22 +1350,18 @@ p_bool os_run(const p_str& comm, const p_str& location, p_perun2& p2)
    si.cb = sizeof(si);
    ZeroMemory(&p2.sideProcess.info, sizeof(p2.sideProcess.info));
 
-   const p_size len = comm.size() + 1;
-   p_char cmd[len];
-   wcscpy(cmd, comm.c_str());
-
-   const p_size lenloc = location.size() + 1;
-   p_char loc[lenloc];
-   wcscpy(loc, location.c_str());
+   std::unique_ptr<p_char[]> cmd = std::make_unique<p_char[]>(command.size() + 1);
+   wcscpy(cmd.get(), command.c_str());
+   cmd[command.size()] = CHAR_NULL;
 
    CreateProcessW
    (
       NULL,
-      cmd,
+      cmd.get(),
       NULL,NULL,FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
-      loc,
+      location.c_str(),
       &si, &p2.sideProcess.info
    );
 

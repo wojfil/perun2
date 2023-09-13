@@ -47,7 +47,7 @@ HKEY RegistryIterator::getRootKey() const
 
 
 MultiRegistry::MultiRegistry(const RegistryRootType type, p_genptr<p_str>& rt, const p_str& pattern)
-   : RegistryIterator(type, rt) { };
+   : RegistryIterator(type, rt), comparer(pattern) { };
 
 
 void MultiRegistry::reset()
@@ -71,19 +71,25 @@ p_bool MultiRegistry::hasNext()
       this->first = false;
    }
 
-   this->result = RegEnumKeyExW(this->key, this->index, this->subkeyName, &this->subkeyNameSize, NULL, NULL, NULL, NULL);
+   while (true) {
+      this->result = RegEnumKeyExW(this->key, this->index, this->subkeyName, &this->subkeyNameSize, NULL, NULL, NULL, NULL);
 
-   if (this->result != ERROR_SUCCESS) {
-      this->reset();
-      return false;
+      if (this->result != ERROR_SUCCESS) {
+         this->reset();
+         return false;
+      }
+
+      this->value = this->subkeyName;
+      this->subkeyNameSize = MAX_PATH;
+      this->index++;
+
+      if (this->comparer.matches(this->value)) {
+         return true;
+      }
    }
 
-   this->value = this->subkeyName;
-   this->subkeyNameSize = MAX_PATH;
-   this->index++;
-
    this->reset();
-   return true;
+   return false;
 }
 
 

@@ -16,6 +16,7 @@
 #define REGISTRY_H_INCLUDED
 
 #include "../datatype/generator.h"
+#include "pattern.h"
 #include <windows.h>
 
 
@@ -37,7 +38,6 @@ public:
    RegistryIterator(const RegistryRootType type, p_genptr<p_str>& rt);
    virtual void reset() = 0;
    virtual p_bool hasNext() = 0;
-
    p_str getValue() override;
 
 protected:
@@ -63,6 +63,7 @@ public:
 
 private:
    p_bool first = true;
+   ProgramPatternComparer comparer;
 
    HKEY key;
    LONG result;

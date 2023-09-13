@@ -64,7 +64,7 @@ public:
 private:
    p_bool first = true;
 
-   HKEY hKey;
+   HKEY key;
    LONG result;
    DWORD index = 0;
    WCHAR subkeyName[MAX_PATH];

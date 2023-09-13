@@ -54,7 +54,7 @@ void MultiRegistry::reset()
 {
    if (! this->first) {
       this->first = true;
-      RegCloseKey(hKey);
+      RegCloseKey(this->key);
    }
 }
 
@@ -62,7 +62,7 @@ void MultiRegistry::reset()
 p_bool MultiRegistry::hasNext()
 {
    if (this->first) {
-      this->result = RegOpenKeyExW(this->getRootKey(), this->root->getValue().c_str(), 0, KEY_READ, &hKey);
+      this->result = RegOpenKeyExW(this->getRootKey(), this->root->getValue().c_str(), 0, KEY_READ, &this->key);
 
       if (this->result != ERROR_SUCCESS) {
          return false;
@@ -71,16 +71,16 @@ p_bool MultiRegistry::hasNext()
       this->first = false;
    }
 
-   result = RegEnumKeyExW(hKey, index, subkeyName, &subkeyNameSize, NULL, NULL, NULL, NULL);
+   this->result = RegEnumKeyExW(this->key, this->index, this->subkeyName, &this->subkeyNameSize, NULL, NULL, NULL, NULL);
 
-   if (result != ERROR_SUCCESS) {
+   if (this->result != ERROR_SUCCESS) {
       this->reset();
       return false;
    }
 
-   this->value = subkeyName;
-   subkeyNameSize = MAX_PATH;
-   index++;
+   this->value = this->subkeyName;
+   this->subkeyNameSize = MAX_PATH;
+   this->index++;
 
    this->reset();
    return true;

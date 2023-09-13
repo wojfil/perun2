@@ -132,6 +132,7 @@ add_executable(
     datatype/generator/gen-period.cpp
     datatype/generator/gen-string.cpp
     datatype/generator/gen-time.cpp
+    programs/registry.cpp
 )
 
 target_link_libraries(

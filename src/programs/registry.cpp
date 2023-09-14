@@ -93,9 +93,34 @@ p_bool MultiRegistry::hasNext()
 }
 
 
+SingleRegistry::SingleRegistry(const RegistryRootType type, p_genptr<p_str>& rt, const p_str& nam)
+   : RegistryIterator(type, rt), name(nam) { };
 
 
+void SingleRegistry::reset()
+{
+   this->taken = false;
+}
 
+
+p_bool SingleRegistry::hasNext()
+{
+   if (this->taken) {
+      this->reset();
+      return false;
+   }
+
+   this->result = RegOpenKeyExW(this->getRootKey(), this->name.c_str(), 0, KEY_READ, &this->key);
+
+   if (this->result != ERROR_SUCCESS) {
+      return false;
+   }
+
+   this->taken = true;
+   this->value = this->name;
+   RegCloseKey(this->key);
+   return true;
+}
 
 
 }

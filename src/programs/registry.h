@@ -73,6 +73,24 @@ private:
 };
 
 
+struct SingleRegistry : RegistryIterator
+{
+public:
+   SingleRegistry(const RegistryRootType type, p_genptr<p_str>& rt, const p_str& nam);
+   void reset() override;
+   p_bool hasNext() override;
+
+private:
+   p_bool taken = false;
+   const p_str name;
+
+   HKEY key;
+   LONG result;
+};
+
+
+
+
 
 }
 

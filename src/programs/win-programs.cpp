@@ -13,6 +13,7 @@
 */
 
 #include "win-programs.h"
+#include "win-programs-data.h"
 #include "../os.h"
 #include "../perun2.h"
 
@@ -138,35 +139,6 @@ void WinPrograms::insertVars(GlobalContext& ctx)
       }
    }
 }
-
-
-WP_Gimp::WP_Gimp(p_perun2& p2) : WinProgram(p2, { L"gimp" }) 
-{
-
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/gimp #/capabilities");
-   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"gimp*/defaulticon");
-};
-
-void WP_Gimp::actualize(const Token& tk)
-{
-   while (this->r_1->hasNext()) {
-      const p_str value = this->r_1->getRegistryValue(L"applicationicon");
-      const p_str before = this->beforeLastComma(value);
-
-      if (this->saveValue(tk, before)) {
-         return;
-      }
-   }
-
-   while (this->r_2->hasNext()) {
-      const p_str value = this->r_2->getRegistryValue(EMPTY_STRING);
-      const p_str before = this->beforeLastComma(value);
-
-      if (this->saveValue(tk, before)) {
-         return;
-      }
-   }
-};
 
 
 }

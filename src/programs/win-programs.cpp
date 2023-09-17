@@ -109,6 +109,22 @@ p_bool WinProgram::takeValue(const Token& tk, p_riptr& registry, const p_str& na
 }
 
 
+p_bool WinProgram::takeValueFirstArg(const Token& tk, p_riptr& registry, const p_str& name)
+{
+   const p_str v = registry->getRegistryValue(name);
+   const p_str first = this->firstArg(v);
+   return this->saveValue(tk, first);
+}
+
+
+p_bool WinProgram::takeValueBeforeLastComma(const Token& tk, p_riptr& registry, const p_str& name)
+{
+   const p_str v = registry->getRegistryValue(name);
+   const p_str before = this->beforeLastComma(v);
+   return this->saveValue(tk, before);
+}
+
+
 WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_Gimp>(p2));

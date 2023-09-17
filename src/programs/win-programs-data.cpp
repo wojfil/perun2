@@ -39,37 +39,25 @@ void WP_Gimp::actualize(const Token& tk)
    }
 
    while (this->r_2->hasNext()) {
-      const p_str value = this->r_2->getRegistryValue(L"applicationicon");
-      const p_str before = this->beforeLastComma(value);
-
-      if (this->saveValue(tk, before)) {
+      if (this->takeValueBeforeLastComma(tk, this->r_2, L"applicationicon")) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      const p_str value = this->r_3->getRegistryValue(L"applicationicon");
-      const p_str before = this->beforeLastComma(value);
-
-      if (this->saveValue(tk, before)) {
+      if (this->takeValueBeforeLastComma(tk, this->r_3, L"applicationicon")) {
          return;
       }
    }
 
    while (this->r_4->hasNext()) {
-      const p_str value = this->r_4->getRegistryValue(EMPTY_STRING);
-      const p_str first = this->firstArg(value);
-
-      if (this->saveValue(tk, first)) {
+      if (this->takeValueFirstArg(tk, this->r_4, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_5->hasNext()) {
-      const p_str value = this->r_5->getRegistryValue(EMPTY_STRING);
-      const p_str before = this->beforeLastComma(value);
-
-      if (this->saveValue(tk, before)) {
+      if (this->takeValueBeforeLastComma(tk, this->r_5, EMPTY_STRING)) {
          return;
       }
    }

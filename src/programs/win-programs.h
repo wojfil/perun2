@@ -42,6 +42,8 @@ public:
    p_bool saveValue(const Token& tk, const p_str& value);
 
    p_bool takeValue(const Token& tk, p_riptr& registry, const p_str& name);
+   p_bool takeValueFirstArg(const Token& tk, p_riptr& registry, const p_str& name);
+   p_bool takeValueBeforeLastComma(const Token& tk, p_riptr& registry, const p_str& name);
 
    const p_list names;
 

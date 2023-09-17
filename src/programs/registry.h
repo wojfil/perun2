@@ -32,10 +32,6 @@ enum RegistryRootType
 };
 
 
-p_list splitRegistryPath(const p_str& value);
-void addRegistryPattern(p_riptr& result, const RegistryRootType rootType, const p_str& pattern);
-
-
 struct RegistryIterator : Generator<p_str>
 {
 public:
@@ -57,6 +53,10 @@ private:
 
 
 typedef std::unique_ptr<RegistryIterator> p_riptr;
+
+
+p_list splitRegistryPath(const p_str& value);
+void addRegistryPattern(p_riptr& result, const RegistryRootType rootType, const p_str& pattern);
 
 
 struct MultiRegistryRoot : RegistryIterator

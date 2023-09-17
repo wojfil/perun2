@@ -131,7 +131,7 @@ p_bool WinPrograms::haveName(const Token& tk) const
 }
 
 
-void WinPrograms::insertVars(GlobalContext& ctx)
+void WinPrograms::insertVars(GlobalContext& ctx) const
 {
    for (const auto& program : this->programs) {
       for (const p_str& name : program->names) {

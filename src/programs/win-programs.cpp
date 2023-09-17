@@ -102,6 +102,13 @@ p_bool WinProgram::saveValue(const Token& tk, const p_str& value)
 };
 
 
+p_bool WinProgram::takeValue(const Token& tk, p_riptr& registry, const p_str& name)
+{
+   const p_str v = registry->getRegistryValue(name);
+   return this->saveValue(tk, v);
+}
+
+
 WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_Gimp>(p2));

@@ -41,6 +41,8 @@ public:
    p_str firstArg(const p_str& value) const;
    p_bool saveValue(const Token& tk, const p_str& value);
 
+   p_bool takeValue(const Token& tk, p_riptr& registry, const p_str& name);
+
    const p_list names;
 
 private:

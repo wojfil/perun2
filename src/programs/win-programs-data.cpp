@@ -33,9 +33,7 @@ WP_Gimp::WP_Gimp(p_perun2& p2) : WinProgram(p2, { L"gimp" })
 void WP_Gimp::actualize(const Token& tk)
 {
    while (this->r_1->hasNext()) {
-      const p_str value = this->r_1->getRegistryValue(L"displayicon");
-
-      if (this->saveValue(tk, value)) {
+      if (this->takeValue(tk, this->r_1, L"displayicon")) {
          return;
       }
    }

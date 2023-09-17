@@ -340,6 +340,10 @@ namespace perun2
 
    p_bool Contexts::varExists(const Token& tk, p_perun2& p2)
    {
+      if (p2.cache.programs.haveName(tk)) {
+         return true;
+      }
+
       const p_str word = tk.toLowerString(p2);
       Variable<p_bool>* b;
       Variable<p_tim>* t;

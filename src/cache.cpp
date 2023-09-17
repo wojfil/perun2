@@ -21,7 +21,10 @@ namespace perun2
 {
 
 Cache::Cache(p_perun2& p2)
-   : perun2(p2), context(p2.contexts.globalVars) { };
+   : perun2(p2), context(p2.contexts.globalVars), programs(p2) 
+{ 
+   p2.cache.programs.insertVars(p2.contexts);
+};
 
 void Cache::actualize(const Token& tk)
 {
@@ -72,7 +75,9 @@ void Cache::actualize(const Token& tk)
          }
       }
    }
-
+   else {
+      this->programs.actualize(tk);
+   }
 }
 
 void Cache::loadCmdPath()

@@ -134,6 +134,7 @@ add_executable(
     datatype/generator/gen-time.cpp
     programs/pattern.cpp
     programs/registry.cpp
+    programs/win-programs.cpp
 )
 
 target_link_libraries(

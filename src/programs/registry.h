@@ -35,15 +35,16 @@ enum RegistryRootType
 struct RegistryIterator : Generator<p_str>
 {
 public:
-   RegistryIterator(const RegistryRootType type, p_genptr<p_str>& rt);
+   RegistryIterator(const RegistryRootType type);
    virtual void reset() = 0;
    virtual p_bool hasNext() = 0;
+   p_str getRegistryValue(const p_str& name) const;
    p_str getValue() override;
+   p_bool hasEmptyValue() const;
 
 protected:
    HKEY getRootKey() const;
 
-   p_genptr<p_str> root;
    p_str value;
 
 private:
@@ -54,10 +55,10 @@ private:
 typedef std::unique_ptr<RegistryIterator> p_riptr;
 
 
-struct MultiRegistry : RegistryIterator
+struct MultiRegistryRoot : RegistryIterator
 {
 public:
-   MultiRegistry(const RegistryRootType type, p_genptr<p_str>& rt, const p_str& pattern);
+   MultiRegistryRoot(const RegistryRootType type, const p_str& pattern);
    void reset() override;
    p_bool hasNext() override;
 
@@ -73,23 +74,56 @@ private:
 };
 
 
-struct SingleRegistry : RegistryIterator
+struct SingleRegistryRoot : RegistryIterator
 {
 public:
-   SingleRegistry(const RegistryRootType type, p_genptr<p_str>& rt, const p_str& nam);
+   SingleRegistryRoot(const RegistryRootType type, const p_str& rt);
    void reset() override;
    p_bool hasNext() override;
 
 private:
+   const p_str root;
    p_bool taken = false;
-   const p_str name;
 
    HKEY key;
    LONG result;
 };
 
 
+struct MultiRegistry : RegistryIterator
+{
+public:
+   MultiRegistry(const RegistryRootType type, p_riptr& prev, const p_str& pattern);
+   void reset() override;
+   p_bool hasNext() override;
 
+private:
+   p_bool exploreRoot = true;
+   p_riptr previous;
+   ProgramPatternComparer comparer;
+
+   HKEY key;
+   LONG result;
+   DWORD index = 0;
+   WCHAR subkeyName[MAX_PATH];
+   DWORD subkeyNameSize = MAX_PATH;
+};
+
+
+struct SingleRegistry : RegistryIterator
+{
+public:
+   SingleRegistry(const RegistryRootType type, p_riptr& prev, const p_str& segm);
+   void reset() override;
+   p_bool hasNext() override;
+
+private:
+   p_riptr previous;
+   const p_str segment;
+
+   HKEY key;
+   LONG result;
+};
 
 
 }

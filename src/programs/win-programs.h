@@ -29,8 +29,6 @@ namespace perun2
 namespace perun2::prog
 {
 
-p_list splitRegistryPath(const p_str& value);
-void addRegistryPattern(p_riptr& result, const RegistryRootType rootType, const p_str& pattern);
 
 struct WinProgram
 {

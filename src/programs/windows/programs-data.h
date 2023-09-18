@@ -88,6 +88,14 @@ private:
 };
 
 
+struct WP_Notepad : WinProgram
+{
+public:
+   WP_Notepad(p_perun2& p2);
+   void actualize(const Token& tk) override;
+};
+
+
 struct WP_NotepadPlusPlus : WinProgram
 {
 public:
@@ -108,6 +116,14 @@ public:
 private:
    p_riptr r_1;
    p_riptr r_2;
+};
+
+
+struct WP_Paint : WinProgram
+{
+public:
+   WP_Paint(p_perun2& p2);
+   void actualize(const Token& tk) override;
 };
 
 

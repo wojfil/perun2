@@ -58,12 +58,6 @@ void Cache::actualize(const Token& tk)
          this->context.lists[STRING_ARGUMENTS]->value = this->perun2.arguments.getArgs();
       }
    }
-   else if (tk.isWord(STRING_MSPAINT, this->perun2) 
-         || tk.isWord(STRING_PAINT, this->perun2)
-         || tk.isWord(STRING_NOTEPAD, this->perun2)) 
-   {
-      this->loadSystem32Path(tk);
-   }
    else if (tk.isWord(STRING_PENDRIVE, this->perun2)
          || tk.isWord(STRING_PENDRIVES, this->perun2)) 
    {
@@ -114,24 +108,6 @@ p_list Cache::getAlphabet() const
       a[i] = CHAR_a + i;
    }
    return a;
-}
-
-void Cache::loadSystem32Path(const Token& tk)
-{
-   if (this->isNotLoaded(CACHE_SYSTEM32)) {
-      this->system32 = os_system32Path();
-   }
-
-   if (tk.isWord(STRING_MSPAINT, this->perun2) || tk.isWord(STRING_PAINT, this->perun2)) {
-      if (this->isNotLoaded(CACHE_MSPAINT)) {
-         this->context.strings[STRING_MSPAINT]->value = os_softJoin(this->system32, STRING_MSPAINT_EXE);
-      }
-   }
-   else if (tk.isWord(STRING_NOTEPAD, this->perun2)) {
-      if (this->isNotLoaded(CACHE_NOTEPAD)) {
-         this->context.strings[STRING_NOTEPAD]->value = os_softJoin(this->system32, STRING_NOTEPAD_EXE);
-      }
-   }
 }
 
 }

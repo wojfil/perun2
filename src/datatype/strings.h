@@ -59,12 +59,6 @@ p_constexpr p_char STRING_ARG_DOCS[] =             L"--docs";
 p_constexpr p_char STRING_ARG_WEBSITE[] =          L"--website";
 p_constexpr p_char STRING_ARG_HELP[] =             L"--help";
 
-p_constexpr p_char STRING_MSPAINT_EXE[] =          L"mspaint.exe";
-p_constexpr p_char STRING_NOTEPAD_EXE[] =          L"notepad.exe";
-
-p_constexpr p_char STRING_MSPAINT[] =              L"mspaint";
-p_constexpr p_char STRING_PAINT[] =                L"paint";
-p_constexpr p_char STRING_NOTEPAD[] =              L"notepad";
 p_constexpr p_char STRING_PENDRIVE[] =             L"pendrive";
 p_constexpr p_char STRING_PENDRIVES[] =            L"pendrives";
 
@@ -306,7 +300,6 @@ p_constexpr p_char STRING_CONTINUE[] =             L"continue";
 p_constexpr p_char STRING_EXIT[] =                 L"exit";
 p_constexpr p_char STRING_ERROR[] =                L"error";
 
-extern const p_list STRINGS_ALIASES;
 extern const p_list STRINGS_MONTHS;
 extern const p_list STRINGS_WEEKDAYS;
 extern const p_list STRINGS_PERIOD_SINGLE;

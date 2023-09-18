@@ -331,7 +331,7 @@ void Tokens::checkCommonExpressionExceptions(p_perun2& p2) const
 
    if (this->length == 1) {
       const Token& f = first();
-      if (f.type == Token::t_Word && (!p2.contexts.varExists(f, p2)) && !f.isWord(STRINGS_ALIASES, p2))
+      if (f.type == Token::t_Word && !p2.contexts.varExists(f, p2))
       {
          throw SyntaxError(str(L"variable '", f.getOriginString(p2), 
             L"' does not exist or is unreachable here. Look for a typo"), f.line);

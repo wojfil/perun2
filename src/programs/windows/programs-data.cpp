@@ -14,6 +14,7 @@
 
 #include "programs-data.h"
 #include "registry.h"
+#include "../../os.h"
 
 
 namespace perun2::prog
@@ -177,6 +178,19 @@ void WP_Gimp::actualize(const Token& tk)
 };
 
 
+WP_Notepad::WP_Notepad(p_perun2& p2) : WinProgram(p2, { L"notepad" }) { };
+
+
+void WP_Notepad::actualize(const Token& tk)
+{
+   const p_str system32 = os_system32Path();
+   if (! system32.empty()) {
+      const p_str path = str(system32, OS_SEPARATOR, L"notepad.exe");
+      this->saveValue(tk, path);
+   }
+};
+
+
 WP_NotepadPlusPlus::WP_NotepadPlusPlus(p_perun2& p2) : WinProgram(p2, { L"notepadplusplus" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/notepad++");
@@ -214,6 +228,20 @@ void WP_OpenOffice::actualize(const Token& tk)
       }
    }
 };
+
+
+WP_Paint::WP_Paint(p_perun2& p2) : WinProgram(p2, { L"paint", L"mspaint" }) { };
+
+
+void WP_Paint::actualize(const Token& tk)
+{
+   const p_str system32 = os_system32Path();
+   if (! system32.empty()) {
+      const p_str path = str(system32, OS_SEPARATOR, L"mspaint.exe");
+      this->saveValue(tk, path);
+   }
+};
+
 
 
 WP_Vlc::WP_Vlc(p_perun2& p2) : WinProgram(p2, { L"vlc", L"vlcmediaplayer" }) 

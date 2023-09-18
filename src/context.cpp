@@ -141,8 +141,6 @@ namespace perun2
       this->insertConstant<p_list>(STRING_ARGUMENTS);
       this->insertConstant<p_list>(STRING_NOTHING);
       this->insertConstant<p_list>(STRING_PENDRIVES);
-      this->insertConstant<p_str>(STRING_MSPAINT);
-      this->insertConstant<p_str>(STRING_NOTEPAD);
       this->insertConstant<p_str>(STRING_PENDRIVE);
       this->insertConstant<p_tim>(STRING_NEVER);
    };
@@ -210,12 +208,6 @@ namespace perun2
          LocationContext* last = this->locationContexts.back();
          if (last != nullptr) {
             result = last->location.get();
-            return true;
-         }
-      }
-      else if (tk.isWord(STRING_PAINT, p2)) {
-         if (this->globalVars.takeVar(STRING_MSPAINT, result)) {
-            p2.cache.actualize(tk);
             return true;
          }
       }

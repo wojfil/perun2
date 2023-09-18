@@ -22,6 +22,57 @@ namespace perun2::prog
 {
 
 
+struct WP_7zip : WinProgram
+{
+public:
+   WP_7zip(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+};
+
+
+struct WP_Acrobat : WinProgram
+{
+public:
+   WP_Acrobat(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+   p_riptr r_3;
+};
+
+
+struct WP_Audacity : WinProgram
+{
+public:
+   WP_Audacity(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+};
+
+
+struct WP_Firefox : WinProgram
+{
+public:
+   WP_Firefox(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+   p_riptr r_3;
+   p_riptr r_4;
+   p_riptr r_5;
+};
+
+
 struct WP_Gimp : WinProgram
 {
 public:
@@ -34,6 +85,56 @@ private:
    p_riptr r_3;
    p_riptr r_4;
    p_riptr r_5;
+};
+
+
+struct WP_NotepadPlusPlus : WinProgram
+{
+public:
+   WP_NotepadPlusPlus(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+};
+
+
+struct WP_OpenOffice : WinProgram
+{
+public:
+   WP_OpenOffice(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+};
+
+
+struct WP_Vlc : WinProgram
+{
+public:
+   WP_Vlc(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+   p_riptr r_3;
+   p_riptr r_4;
+};
+
+
+struct WP_Word : WinProgram
+{
+public:
+   WP_Word(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+   p_riptr r_3;
 };
 
 

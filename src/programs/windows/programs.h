@@ -16,7 +16,7 @@
 #define WIN_PROGRAMS_H_INCLUDED
 
 #include "registry.h"
-#include "../token.h"
+#include "../../token.h"
 
 
 namespace perun2

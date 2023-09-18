@@ -12,31 +12,31 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIN_PROGRAMS_DATA_H_INCLUDED
-#define WIN_PROGRAMS_DATA_H_INCLUDED
+#ifndef WIN_REGISTRY_PATTERN_H_INCLUDED
+#define WIN_REGISTRY_PATTERN_H_INCLUDED
 
-#include "win-programs.h"
+#include "../../datatype/wildcard.h"
 
 
 namespace perun2::prog
 {
 
 
-struct WP_Gimp : WinProgram
+// there are two wildcards
+// *     any sequence of characters, can be empty space
+// #     any sequence of numbers and dots, can be empty space
+struct ProgramPatternComparer : WildcardComparer
 {
 public:
-   WP_Gimp(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   ProgramPatternComparer() = delete;
+   ProgramPatternComparer(const p_str& pat);
 
-private:
-   p_riptr r_1;
-   p_riptr r_2;
-   p_riptr r_3;
-   p_riptr r_4;
-   p_riptr r_5;
+protected:
+   p_size getMinLength(const p_str& pat) const override;
+   Logic checkState(const p_size n, const p_size m) override;
 };
 
 
 }
 
-#endif // WIN_PROGRAMS_H_INCLUDED
+#endif // WIN_REGISTRY_PATTERN_H_INCLUDED

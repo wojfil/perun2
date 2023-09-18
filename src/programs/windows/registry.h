@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REGISTRY_H_INCLUDED
-#define REGISTRY_H_INCLUDED
+#ifndef WIN_REGISTRY_H_INCLUDED
+#define WIN_REGISTRY_H_INCLUDED
 
-#include "../datatype/generator.h"
+#include "../../datatype/generator.h"
 #include "pattern.h"
 #include <windows.h>
 
@@ -132,4 +132,4 @@ private:
 
 }
 
-#endif // REGISTRY_H_INCLUDED
+#endif // WIN_REGISTRY_H_INCLUDED

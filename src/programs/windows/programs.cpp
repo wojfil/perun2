@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "win-programs.h"
-#include "win-programs-data.h"
-#include "../os.h"
-#include "../perun2.h"
+#include "programs.h"
+#include "programs-data.h"
+#include "../../os.h"
+#include "../../perun2.h"
 
 
 namespace perun2::prog

@@ -16,7 +16,7 @@
 #define CACHE_H_INCLUDED
 
 #include "var.h"
-#include "programs/win-programs.h"
+#include "programs/windows/programs.h"
 
 
 namespace perun2

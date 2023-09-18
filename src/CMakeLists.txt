@@ -132,10 +132,10 @@ add_executable(
     datatype/generator/gen-period.cpp
     datatype/generator/gen-string.cpp
     datatype/generator/gen-time.cpp
-    programs/pattern.cpp
-    programs/registry.cpp
-    programs/win-programs.cpp
-    programs/win-programs-data.cpp
+    programs/windows/pattern.cpp
+    programs/windows/registry.cpp
+    programs/windows/programs.cpp
+    programs/windows/programs-data.cpp
 )
 
 target_link_libraries(

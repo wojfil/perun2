@@ -152,7 +152,6 @@ private:
    p_riptr r_2;
    p_riptr r_3;
    p_riptr r_4;
-   p_riptr r_5;
 };
 
 

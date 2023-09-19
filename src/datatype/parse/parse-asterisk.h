@@ -21,11 +21,11 @@
 namespace perun2::parse
 {
 
-p_constexpr uint32_t ASTERISK_INFO_NULL =             0b0000000;
-p_constexpr uint32_t ASTERISK_INFO_VALID =            0b0000001;
-p_constexpr uint32_t ASTERISK_INFO_ONE_ASTERISK =     0b0000010;
-p_constexpr uint32_t ASTERISK_INFO_DOUBLE_ASTERISK =  0b0000100;
-p_constexpr uint32_t ASTERISK_INFO_IS_ABSOLUTE =      0b0001000;
+p_constexpr uint32_t ASTERISK_INFO_NULL =              0;
+p_constexpr uint32_t ASTERISK_INFO_VALID =             1 << 0;
+p_constexpr uint32_t ASTERISK_INFO_ONE_ASTERISK =      1 << 1;
+p_constexpr uint32_t ASTERISK_INFO_DOUBLE_ASTERISK =   1 << 2;
+p_constexpr uint32_t ASTERISK_INFO_IS_ABSOLUTE =       1 << 3;
 
 
 struct AsteriskUnit

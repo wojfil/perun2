@@ -20,12 +20,12 @@
 namespace perun2
 {
 
-typedef uint32_t p_flags;
+typedef uint32_t     p_flags;
 
-p_constexpr p_flags FLAG_NULL =                 0b0000;
-p_constexpr p_flags FLAG_NOOMIT =               0b0001;
-p_constexpr p_flags FLAG_SILENT =               0b0010;
-p_constexpr p_flags FLAG_GUI =                  0b0100;
+p_constexpr p_flags FLAG_NULL =                 0;
+p_constexpr p_flags FLAG_NOOMIT =               1 << 0;
+p_constexpr p_flags FLAG_SILENT =               1 << 1;
+p_constexpr p_flags FLAG_GUI =                  1 << 2;
 
 p_constexpr p_char CHAR_FLAG_GUI =              CHAR_g;
 p_constexpr p_char CHAR_FLAG_NOOMIT =           CHAR_n;

@@ -28,11 +28,11 @@ namespace perun2
 namespace perun2::comm
 {
 
-typedef uint32_t p_agunit;
+typedef uint32_t     p_agunit;
 
-p_constexpr p_agunit AGGR_NULL =      0b000;
-p_constexpr p_agunit AGGR_COPY =      0b001;
-p_constexpr p_agunit AGGR_SELECT =    0b010;
+p_constexpr p_agunit AGGR_NULL =       0;
+p_constexpr p_agunit AGGR_COPY =       1 << 0;
+p_constexpr p_agunit AGGR_SELECT =     1 << 1;
 
 // commands Select and Copy are different from others
 // they have to be performed on multiple files and directories at once

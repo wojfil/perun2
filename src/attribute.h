@@ -24,28 +24,28 @@ namespace perun2
 
 typedef uint64_t     p_aunit;
 
-p_constexpr p_aunit ATTR_NULL =         0b00000000000000000000000000000000;
-p_constexpr p_aunit ATTR_ACCESS =       0b00000000000000000000000000000001;
-p_constexpr p_aunit ATTR_ARCHIVE =      0b00000000000000000000000000000010;
-p_constexpr p_aunit ATTR_CHANGE =       0b00000000000000000000000000000100;
-p_constexpr p_aunit ATTR_COMPRESSED =   0b00000000000000000000000000001000;
-p_constexpr p_aunit ATTR_CREATION =     0b00000000000000000000000000010000;
-p_constexpr p_aunit ATTR_DEPTH =        0b00000000000000000000000000100000;
-p_constexpr p_aunit ATTR_DRIVE =        0b00000000000000000000000001000000;
-p_constexpr p_aunit ATTR_EMPTY =        0b00000000000000000000000010000000;
-p_constexpr p_aunit ATTR_ENCRYPTED =    0b00000000000000000000000100000000;
-p_constexpr p_aunit ATTR_EXISTS =       0b00000000000000000000001000000000;
-p_constexpr p_aunit ATTR_EXTENSION =    0b00000000000000000000010000000000;
-p_constexpr p_aunit ATTR_FULLNAME =     0b00000000000000000000100000000000;
-p_constexpr p_aunit ATTR_HIDDEN =       0b00000000000000000001000000000000;
-p_constexpr p_aunit ATTR_LIFETIME =     0b00000000000000000010000000000000;
-p_constexpr p_aunit ATTR_MODIFICATION = 0b00000000000000000100000000000000;
-p_constexpr p_aunit ATTR_NAME =         0b00000000000000001000000000000000;
-p_constexpr p_aunit ATTR_PARENT =       0b00000000000000010000000000000000;
-p_constexpr p_aunit ATTR_PATH =         0b00000000000000100000000000000000;
-p_constexpr p_aunit ATTR_READONLY =     0b00000000000001000000000000000000;
-p_constexpr p_aunit ATTR_SIZE =         0b00000000000010000000000000000000;
-p_constexpr p_aunit ATTR_SIZE_FILE_ONLY=0b00000000000100000000000000000000;
+p_constexpr p_aunit ATTR_NULL =           0;
+p_constexpr p_aunit ATTR_ACCESS =         1 << 0;
+p_constexpr p_aunit ATTR_ARCHIVE =        1 << 1;
+p_constexpr p_aunit ATTR_CHANGE =         1 << 2;
+p_constexpr p_aunit ATTR_COMPRESSED =     1 << 3;
+p_constexpr p_aunit ATTR_CREATION =       1 << 4;
+p_constexpr p_aunit ATTR_DEPTH =          1 << 5;
+p_constexpr p_aunit ATTR_DRIVE =          1 << 6;
+p_constexpr p_aunit ATTR_EMPTY =          1 << 7;
+p_constexpr p_aunit ATTR_ENCRYPTED =      1 << 8;
+p_constexpr p_aunit ATTR_EXISTS =         1 << 9;
+p_constexpr p_aunit ATTR_EXTENSION =      1 << 10;
+p_constexpr p_aunit ATTR_FULLNAME =       1 << 11;
+p_constexpr p_aunit ATTR_HIDDEN =         1 << 12;
+p_constexpr p_aunit ATTR_LIFETIME =       1 << 13;
+p_constexpr p_aunit ATTR_MODIFICATION =   1 << 14;
+p_constexpr p_aunit ATTR_NAME =           1 << 15;
+p_constexpr p_aunit ATTR_PARENT =         1 << 16;
+p_constexpr p_aunit ATTR_PATH =           1 << 17;
+p_constexpr p_aunit ATTR_READONLY =       1 << 18;
+p_constexpr p_aunit ATTR_SIZE =           1 << 19;
+p_constexpr p_aunit ATTR_SIZE_FILE_ONLY=  1 << 20;
 
 // certain expression or syntax structure may require multiple file attributes:
 // for example - creation time, modification time, size and extension

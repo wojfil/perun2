@@ -22,23 +22,22 @@
 namespace perun2
 {
 
-typedef uint64_t p_cunit;
+typedef uint64_t     p_cunit;
 
-p_constexpr p_cunit CACHE_NULL =                 0b00000000000000000000000000000000;
-p_constexpr p_cunit CACHE_DESKTOP_PATH =         0b00000000000000000000000000000001;
-p_constexpr p_cunit CACHE_EXE_PATH =             0b00000000000000000000000000000010;
-p_constexpr p_cunit CACHE_CMD_PROCESS =          0b00000000000000000000000000000100;
-p_constexpr p_cunit CACHE_ALPHABET =             0b00000000000000000000000000001000;
-p_constexpr p_cunit CACHE_ASCII =                0b00000000000000000000000000010000;
-p_constexpr p_cunit CACHE_ORIGIN =               0b00000000000000000000000000100000;
-p_constexpr p_cunit CACHE_ARGUMENTS =            0b00000000000000000000000001000000;
-p_constexpr p_cunit CACHE_PENDRIVES =            0b00000000000000000000000010000000;
+p_constexpr p_cunit CACHE_NULL =                 0;
+p_constexpr p_cunit CACHE_DESKTOP_PATH =         1 << 0;
+p_constexpr p_cunit CACHE_EXE_PATH =             1 << 1;
+p_constexpr p_cunit CACHE_CMD_PROCESS =          1 << 2;
+p_constexpr p_cunit CACHE_ALPHABET =             1 << 3;
+p_constexpr p_cunit CACHE_ASCII =                1 << 4;
+p_constexpr p_cunit CACHE_ORIGIN =               1 << 5;
+p_constexpr p_cunit CACHE_ARGUMENTS =            1 << 6;
+p_constexpr p_cunit CACHE_PENDRIVES =            1 << 7;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop
 // they are rarely used, but when used, it is enough to load them only once
-// struct Cache solves all mentioned problems
-// it loads the values we need only once and ignores the rest
+// struct Cache loads the values we need and ignores the rest
 
 struct p_perun2;
 struct VarsContext;

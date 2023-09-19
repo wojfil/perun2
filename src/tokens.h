@@ -25,30 +25,30 @@ namespace perun2
 // Tokens' info about certain sequence of tokens
 // this info is generated only once at the sequence creation
 // and then read multiple times during parsing
-typedef uint64_t p_tinfo;
+typedef uint64_t     p_tinfo;
 
-p_constexpr p_tinfo TI_NULL =                    0b00000000000000000000000;
-p_constexpr p_tinfo TI_HAS_COMPARISON_CHAR =     0b00000000000000000000001;
-p_constexpr p_tinfo TI_HAS_FILTER_KEYWORD =      0b00000000000000000000010;
-p_constexpr p_tinfo TI_HAS_INDEP_BRACKETS =      0b00000000000000000000100;
-p_constexpr p_tinfo TI_HAS_INDEP_SQ_BRACKETS =   0b00000000000000000001000;
-p_constexpr p_tinfo TI_HAS_CHAR_QUESTION_MARK =  0b00000000000000000010000;
-p_constexpr p_tinfo TI_HAS_CHAR_COMMA =          0b00000000000000000100000;
-p_constexpr p_tinfo TI_HAS_CHAR_COLON =          0b00000000000000001000000;
-p_constexpr p_tinfo TI_HAS_CHAR_PLUS =           0b00000000000000010000000;
-p_constexpr p_tinfo TI_HAS_CHAR_MINUS =          0b00000000000000100000000;
-p_constexpr p_tinfo TI_HAS_CHAR_EQUALS =         0b00000000000001000000000;
-p_constexpr p_tinfo TI_IS_POSSIBLE_FUNCTION =    0b00000000000010000000000;
-p_constexpr p_tinfo TI_HAS_KEYWORD_IN =          0b00000000000100000000000;
-p_constexpr p_tinfo TI_HAS_KEYWORD_LIKE =        0b00000000001000000000000;
-p_constexpr p_tinfo TI_HAS_KEYWORD_TO =          0b00000000010000000000000;
-p_constexpr p_tinfo TI_HAS_KEYWORD_WITH =        0b00000000100000000000000;
-p_constexpr p_tinfo TI_HAS_KEYWORD_AS =          0b00000001000000000000000;
-p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =   0b00000010000000000000000;
-p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =      0b00000100000000000000000;
-p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =     0b00001000000000000000000;
-p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =     0b00010000000000000000000;
-p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =    0b00100000000000000000000;
+p_constexpr p_tinfo TI_NULL =                       0;
+p_constexpr p_tinfo TI_HAS_COMPARISON_CHAR =        1 << 0;
+p_constexpr p_tinfo TI_HAS_FILTER_KEYWORD =         1 << 1;
+p_constexpr p_tinfo TI_HAS_INDEP_BRACKETS =         1 << 2;
+p_constexpr p_tinfo TI_HAS_INDEP_SQ_BRACKETS =      1 << 3;
+p_constexpr p_tinfo TI_HAS_CHAR_QUESTION_MARK =     1 << 4;
+p_constexpr p_tinfo TI_HAS_CHAR_COMMA =             1 << 5;
+p_constexpr p_tinfo TI_HAS_CHAR_COLON =             1 << 6;
+p_constexpr p_tinfo TI_HAS_CHAR_PLUS =              1 << 7;
+p_constexpr p_tinfo TI_HAS_CHAR_MINUS =             1 << 8;
+p_constexpr p_tinfo TI_HAS_CHAR_EQUALS =            1 << 9;
+p_constexpr p_tinfo TI_IS_POSSIBLE_FUNCTION =       1 << 10;
+p_constexpr p_tinfo TI_HAS_KEYWORD_IN =             1 << 11;
+p_constexpr p_tinfo TI_HAS_KEYWORD_LIKE =           1 << 12;
+p_constexpr p_tinfo TI_HAS_KEYWORD_TO =             1 << 13;
+p_constexpr p_tinfo TI_HAS_KEYWORD_WITH =           1 << 14;
+p_constexpr p_tinfo TI_HAS_KEYWORD_AS =             1 << 15;
+p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =      1 << 16;
+p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =         1 << 17;
+p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 18;
+p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 19;
+p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 20;
 
 
 struct p_perun2;

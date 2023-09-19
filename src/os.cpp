@@ -1049,13 +1049,6 @@ p_bool os_open(const p_str& path)
    return (INT_PTR)ShellExecuteW(0, 0, P_WINDOWS_PATH(path), 0, P_WINDOWS_PATH(location) , SW_SHOW) > 32;
 }
 
-p_bool os_openWith(const p_str& program, const p_str& path)
-{
-   const p_str location = os_parent(path);
-   return (INT_PTR)ShellExecuteW(NULL, STRING_OPEN, P_WINDOWS_PATH(program), 
-      P_WINDOWS_PATH(path), P_WINDOWS_PATH(location), SW_SHOW) > 32;
-}
-
 p_bool os_openAsCommand(const p_str& command, const p_str& location)
 {
    STARTUPINFO si;

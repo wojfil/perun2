@@ -167,35 +167,20 @@ void C_OpenWith::run()
       this->perun2.contexts.success->value = false;
       return;
    }
+   
+   const p_str com = str(pro, CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
+   const p_str loc = os_hasParentDirectory(this->context->v_path->value) 
+      ? os_parent(this->context->v_path->value) 
+      : str(this->context->v_path->value, OS_SEPARATOR);
 
-   if (os_exists(proPath)) {
-      const p_bool s = os_openWith(proPath, this->context->v_path->value);
-      this->perun2.contexts.success->value = s;
+   const p_bool s = os_openAsCommand(com, loc);
+   this->perun2.contexts.success->value = s;
 
-      if (s) {
-         this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
-      }
-      else {
-         this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
-      }
+   if (s) {
+      this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
    }
    else {
-      if (!os_hasParentDirectory(this->context->v_path->value)) {
-         this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
-         this->perun2.contexts.success->value = false;
-         return;
-      }
-
-      const p_str com = str(pro, CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
-      const p_bool s = os_openAsCommand(com, os_parent(this->context->v_path->value));
-      this->perun2.contexts.success->value = s;
-
-      if (s) {
-         this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
-      }
-      else {
-         this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with '", pro, L"'");
-      }
+      this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
    }
 };
 

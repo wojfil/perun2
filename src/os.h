@@ -90,7 +90,6 @@ p_bool os_dropDirectory(const p_str& path, p_perun2& p2);
 p_bool os_hide(const p_str& path);
 p_bool os_lock(const p_str& path);
 p_bool os_open(const p_str& path);
-p_bool os_openWith(const p_str& program, const p_str& path);
 p_bool os_openAsCommand(const p_str& command, const p_str& location);
 p_bool os_unhide(const p_str& path);
 p_bool os_unlock(const p_str& path);

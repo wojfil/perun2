@@ -26,9 +26,6 @@ namespace perun2
 // it can be anything, but necessarily non-unsigned
 typedef p_int p_tnum;
 
-p_constexpr p_tnum TNUM_FIRST_YEAR =                  1601;
-p_constexpr p_tnum TNUM_LAST_YEAR =                  30000;
-
 p_constexpr p_tnum TNUM_DAYS_IN_NORMAL_MONTH =          30;
 p_constexpr p_tnum TNUM_DAYS_IN_NORMAL_YEAR =          365;
 p_constexpr p_tnum TNUM_DAYS_IN_LEAP_YEAR =            366;

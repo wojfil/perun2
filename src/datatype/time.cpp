@@ -388,14 +388,7 @@ void Time::setValue(const Time& tim)
       return;
    }
 
-   year = tim.year >= TNUM_FIRST_YEAR
-      ? tim.year
-      : TNUM_FIRST_YEAR;
-
-   if (year > TNUM_LAST_YEAR) {
-      year = TNUM_LAST_YEAR;
-   }
-
+   year = tim.year;
    month = tim.month;
 
    if (tim.type == TimeType::tt_YearMonth) {

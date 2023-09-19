@@ -141,6 +141,21 @@ private:
 };
 
 
+struct WP_WinRAR : WinProgram
+{
+public:
+   WP_WinRAR(p_perun2& p2);
+   void actualize(const Token& tk) override;
+
+private:
+   p_riptr r_1;
+   p_riptr r_2;
+   p_riptr r_3;
+   p_riptr r_4;
+   p_riptr r_5;
+};
+
+
 struct WP_Word : WinProgram
 {
 public:

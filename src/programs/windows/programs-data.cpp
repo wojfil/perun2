@@ -281,6 +281,50 @@ void WP_Vlc::actualize(const Token& tk)
 };
 
 
+WP_WinRAR::WP_WinRAR(p_perun2& p2) : WinProgram(p2, { L"winrar" }) 
+{
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/winrar");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/winrar");
+   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/winrar*");
+   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, L"winrar*/shell/open/command");
+   addRegistryPattern(this->r_5, RegistryRootType::ClassesRoot, L"winrar*/defaulticon");
+};
+
+
+void WP_WinRAR::actualize(const Token& tk)
+{
+   while (this->r_1->hasNext()) {
+      if (this->takeValue(tk, this->r_1, L"exe64")) {
+         return;
+      }
+   }
+
+   while (this->r_2->hasNext()) {
+      if (this->takeValue(tk, this->r_2, L"exe32")) {
+         return;
+      }
+   }
+
+   while (this->r_3->hasNext()) {
+      if (this->takeValue(tk, this->r_3, L"displayicon")) {
+         return;
+      }
+   }
+
+   while (this->r_4->hasNext()) {
+      if (this->takeValueFirstArg(tk, this->r_4, EMPTY_STRING)) {
+         return;
+      }
+   }
+
+   while (this->r_5->hasNext()) {
+      if (this->takeValueBeforeLastComma(tk, this->r_5, EMPTY_STRING)) {
+         return;
+      }
+   }
+};
+
+
 WP_Word::WP_Word(p_perun2& p2) : WinProgram(p2, { L"word", L"msword", L"microsoftword" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/classes/wordmhtmlfile/defaulticon");

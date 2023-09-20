@@ -38,7 +38,10 @@ p_list splitRegistryPath(const p_str& value)
       }
    }
 
-   result.push_back(token);
+   if (!token.empty()) {
+      result.push_back(token);
+   }
+
    return result;
 };
 
@@ -46,6 +49,11 @@ p_list splitRegistryPath(const p_str& value)
 void addRegistryPattern(p_riptr& result, const RegistryRootType rootType, const p_str& pattern)
 {
    const p_list segments = splitRegistryPath(pattern);
+   
+   if (segments.empty()) {
+      return;
+   }
+
    p_str token;
    
    for (const p_str& sg : segments) {

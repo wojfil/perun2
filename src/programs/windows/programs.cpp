@@ -95,9 +95,7 @@ p_bool WinProgram::saveValue(const Token& tk, const p_str& value)
       return false;
    }
 
-   p_str name = tk.getOriginString(this->perun2);
-   toLower(name);
-   this->context.strings[name]->value = value;
+   this->context.strings[this->names[0]]->value = value;
    return true;
 };
 

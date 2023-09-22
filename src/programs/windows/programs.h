@@ -46,6 +46,7 @@ public:
    p_bool takeValueBeforeLastComma(const Token& tk, p_riptr& registry, const p_str& name);
 
    const p_list names;
+   p_bool loaded = false;
 
 private:
    p_perun2& perun2;
@@ -63,6 +64,7 @@ public:
 
 private:
    p_perun2& perun2;
+   VarsContext& context;
    std::vector<std::unique_ptr<WinProgram>> programs;
 };
 

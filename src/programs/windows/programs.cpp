@@ -85,7 +85,7 @@ p_str WinProgram::firstArg(const p_str& value) const
 };
 
 
-p_bool WinProgram::saveValue(const Token& tk, const p_str& value)
+p_bool WinProgram::saveValue(const p_str& value)
 {
    if (value.empty() || this->isIcon(value)) {
       return false;
@@ -100,30 +100,30 @@ p_bool WinProgram::saveValue(const Token& tk, const p_str& value)
 };
 
 
-p_bool WinProgram::takeValue(const Token& tk, p_riptr& registry, const p_str& name)
+p_bool WinProgram::takeValue(p_riptr& registry, const p_str& name)
 {
    const p_str v = registry->getRegistryValue(name);
-   return this->saveValue(tk, v);
+   return this->saveValue(v);
 }
 
 
-p_bool WinProgram::takeValueFirstArg(const Token& tk, p_riptr& registry, const p_str& name)
+p_bool WinProgram::takeValueFirstArg(p_riptr& registry, const p_str& name)
 {
    const p_str v = registry->getRegistryValue(name);
    const p_str first = this->firstArg(v);
-   return this->saveValue(tk, first);
+   return this->saveValue(first);
 }
 
 
-p_bool WinProgram::takeValueBeforeLastComma(const Token& tk, p_riptr& registry, const p_str& name)
+p_bool WinProgram::takeValueBeforeLastComma(p_riptr& registry, const p_str& name)
 {
    const p_str v = registry->getRegistryValue(name);
    const p_str before = this->beforeLastComma(v);
-   return this->saveValue(tk, before);
+   return this->saveValue(before);
 }
 
 
-WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2), context(p2.contexts.globalVars) 
+WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_7zip>(p2));
    this->programs.emplace_back(std::make_unique<WP_Acrobat>(p2));
@@ -145,7 +145,7 @@ void WinPrograms::actualize(const Token& tk)
    for (auto& program : this->programs) {
       if (tk.isWord(program->names, this->perun2)) {
          if (! program->loaded) {
-            program->actualize(tk);
+            program->actualize();
             program->loaded = true;
          }
 

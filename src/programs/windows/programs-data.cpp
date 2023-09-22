@@ -27,10 +27,10 @@ WP_7zip::WP_7zip(p_perun2& p2) : WinProgram(p2, { L"7zip" })
 };
 
 
-void WP_7zip::actualize(const Token& tk)
+void WP_7zip::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, L"displayicon")) {
          return;
       }
    }
@@ -45,22 +45,22 @@ WP_Acrobat::WP_Acrobat(p_perun2& p2) : WinProgram(p2, { L"acrobat", L"acrobatrea
 };
 
 
-void WP_Acrobat::actualize(const Token& tk)
+void WP_Acrobat::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"acrobat.exe")) {
+      if (this->takeValue(this->r_1, L"acrobat.exe")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_2, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_2, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_3, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_3, EMPTY_STRING)) {
          return;
       }
    }
@@ -74,16 +74,16 @@ WP_Audacity::WP_Audacity(p_perun2& p2) : WinProgram(p2, { L"audacity" })
 };
 
 
-void WP_Audacity::actualize(const Token& tk)
+void WP_Audacity::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, L"displayicon")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_2, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_2, EMPTY_STRING)) {
          return;
       }
    }
@@ -100,34 +100,34 @@ WP_Firefox::WP_Firefox(p_perun2& p2) : WinProgram(p2, { L"firefox", L"mozillafir
 };
 
 
-void WP_Firefox::actualize(const Token& tk)
+void WP_Firefox::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_1, L"displayicon")) {
+      if (this->takeValueBeforeLastComma(this->r_1, L"displayicon")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValue(tk, this->r_2, L"pathtoexe")) {
+      if (this->takeValue(this->r_2, L"pathtoexe")) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValue(tk, this->r_3, L"pathtoexe")) {
+      if (this->takeValue(this->r_3, L"pathtoexe")) {
          return;
       }
    }
 
    while (this->r_4->hasNext()) {
-      if (this->takeValue(tk, this->r_4, L"pathtoexe")) {
+      if (this->takeValue(this->r_4, L"pathtoexe")) {
          return;
       }
    }
 
    while (this->r_5->hasNext()) {
-      if (this->takeValue(tk, this->r_5, L"pathtoexe")) {
+      if (this->takeValue(this->r_5, L"pathtoexe")) {
          return;
       }
    }
@@ -144,34 +144,34 @@ WP_Gimp::WP_Gimp(p_perun2& p2) : WinProgram(p2, { L"gimp" })
 };
 
 
-void WP_Gimp::actualize(const Token& tk)
+void WP_Gimp::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, L"displayicon")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_2, L"applicationicon")) {
+      if (this->takeValueBeforeLastComma(this->r_2, L"applicationicon")) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_3, L"applicationicon")) {
+      if (this->takeValueBeforeLastComma(this->r_3, L"applicationicon")) {
          return;
       }
    }
 
    while (this->r_4->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_4, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_4, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_5->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_5, EMPTY_STRING)) {
+      if (this->takeValueBeforeLastComma(this->r_5, EMPTY_STRING)) {
          return;
       }
    }
@@ -181,12 +181,12 @@ void WP_Gimp::actualize(const Token& tk)
 WP_Notepad::WP_Notepad(p_perun2& p2) : WinProgram(p2, { L"notepad" }) { };
 
 
-void WP_Notepad::actualize(const Token& tk)
+void WP_Notepad::actualize()
 {
    const p_str system32 = os_system32Path();
    if (! system32.empty()) {
       const p_str path = str(system32, OS_SEPARATOR, L"notepad.exe");
-      this->saveValue(tk, path);
+      this->saveValue(path);
    }
 };
 
@@ -197,10 +197,10 @@ WP_NotepadPlusPlus::WP_NotepadPlusPlus(p_perun2& p2) : WinProgram(p2, { L"notepa
 };
 
 
-void WP_NotepadPlusPlus::actualize(const Token& tk)
+void WP_NotepadPlusPlus::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, L"displayicon")) {
          return;
       }
    }
@@ -214,16 +214,16 @@ WP_OpenOffice::WP_OpenOffice(p_perun2& p2) : WinProgram(p2, { L"openoffice" })
 };
 
 
-void WP_OpenOffice::actualize(const Token& tk)
+void WP_OpenOffice::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"path")) {
+      if (this->takeValue(this->r_1, L"path")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_2, EMPTY_STRING)) {
+      if (this->takeValueBeforeLastComma(this->r_2, EMPTY_STRING)) {
          return;
       }
    }
@@ -233,12 +233,12 @@ void WP_OpenOffice::actualize(const Token& tk)
 WP_Paint::WP_Paint(p_perun2& p2) : WinProgram(p2, { L"paint", L"mspaint" }) { };
 
 
-void WP_Paint::actualize(const Token& tk)
+void WP_Paint::actualize()
 {
    const p_str system32 = os_system32Path();
    if (! system32.empty()) {
       const p_str path = str(system32, OS_SEPARATOR, L"mspaint.exe");
-      this->saveValue(tk, path);
+      this->saveValue(path);
    }
 };
 
@@ -253,28 +253,28 @@ WP_Vlc::WP_Vlc(p_perun2& p2) : WinProgram(p2, { L"vlc", L"vlcmediaplayer" })
 };
 
 
-void WP_Vlc::actualize(const Token& tk)
+void WP_Vlc::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, L"displayicon")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_2, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_2, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_3, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_3, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_4->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_4, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_4, EMPTY_STRING)) {
          return;
       }
    }
@@ -290,31 +290,31 @@ WP_WinRAR::WP_WinRAR(p_perun2& p2) : WinProgram(p2, { L"winrar" })
 };
 
 
-void WP_WinRAR::actualize(const Token& tk)
+void WP_WinRAR::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(tk, this->r_1, L"exe64")) {
+      if (this->takeValue(this->r_1, L"exe64")) {
          return;
       }
-      if (this->takeValue(tk, this->r_1, L"exe32")) {
+      if (this->takeValue(this->r_1, L"exe32")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValue(tk, this->r_2, L"displayicon")) {
+      if (this->takeValue(this->r_2, L"displayicon")) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_3, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_3, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_4->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_4, EMPTY_STRING)) {
+      if (this->takeValueBeforeLastComma(this->r_4, EMPTY_STRING)) {
          return;
       }
    }
@@ -329,22 +329,22 @@ WP_Word::WP_Word(p_perun2& p2) : WinProgram(p2, { L"word", L"msword", L"microsof
 };
 
 
-void WP_Word::actualize(const Token& tk)
+void WP_Word::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValueBeforeLastComma(tk, this->r_1, EMPTY_STRING)) {
+      if (this->takeValueBeforeLastComma(this->r_1, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_2, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_2, EMPTY_STRING)) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValueFirstArg(tk, this->r_3, EMPTY_STRING)) {
+      if (this->takeValueFirstArg(this->r_3, EMPTY_STRING)) {
          return;
       }
    }

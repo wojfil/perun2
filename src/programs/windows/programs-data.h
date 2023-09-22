@@ -26,7 +26,7 @@ struct WP_7zip : WinProgram
 {
 public:
    WP_7zip(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -37,7 +37,7 @@ struct WP_Acrobat : WinProgram
 {
 public:
    WP_Acrobat(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -50,7 +50,7 @@ struct WP_Audacity : WinProgram
 {
 public:
    WP_Audacity(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -62,7 +62,7 @@ struct WP_Firefox : WinProgram
 {
 public:
    WP_Firefox(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -77,7 +77,7 @@ struct WP_Gimp : WinProgram
 {
 public:
    WP_Gimp(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -92,7 +92,7 @@ struct WP_Notepad : WinProgram
 {
 public:
    WP_Notepad(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 };
 
 
@@ -100,7 +100,7 @@ struct WP_NotepadPlusPlus : WinProgram
 {
 public:
    WP_NotepadPlusPlus(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -111,7 +111,7 @@ struct WP_OpenOffice : WinProgram
 {
 public:
    WP_OpenOffice(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -123,7 +123,7 @@ struct WP_Paint : WinProgram
 {
 public:
    WP_Paint(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 };
 
 
@@ -131,7 +131,7 @@ struct WP_Vlc : WinProgram
 {
 public:
    WP_Vlc(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -145,7 +145,7 @@ struct WP_WinRAR : WinProgram
 {
 public:
    WP_WinRAR(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;
@@ -159,7 +159,7 @@ struct WP_Word : WinProgram
 {
 public:
    WP_Word(p_perun2& p2);
-   void actualize(const Token& tk) override;
+   void actualize() override;
 
 private:
    p_riptr r_1;

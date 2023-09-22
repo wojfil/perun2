@@ -34,16 +34,16 @@ struct WinProgram
 {
 public:
    WinProgram(p_perun2& p2, const p_list& nm);
-   virtual void actualize(const Token& tk) = 0;
+   virtual void actualize() = 0;
 
    p_bool isIcon(const p_str& value) const;
    p_str beforeLastComma(const p_str& value) const;
    p_str firstArg(const p_str& value) const;
-   p_bool saveValue(const Token& tk, const p_str& value);
+   p_bool saveValue(const p_str& value);
 
-   p_bool takeValue(const Token& tk, p_riptr& registry, const p_str& name);
-   p_bool takeValueFirstArg(const Token& tk, p_riptr& registry, const p_str& name);
-   p_bool takeValueBeforeLastComma(const Token& tk, p_riptr& registry, const p_str& name);
+   p_bool takeValue(p_riptr& registry, const p_str& name);
+   p_bool takeValueFirstArg(p_riptr& registry, const p_str& name);
+   p_bool takeValueBeforeLastComma(p_riptr& registry, const p_str& name);
 
    const p_list names;
    p_bool loaded = false;
@@ -64,7 +64,6 @@ public:
 
 private:
    p_perun2& perun2;
-   VarsContext& context;
    std::vector<std::unique_ptr<WinProgram>> programs;
 };
 

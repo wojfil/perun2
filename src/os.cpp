@@ -1368,7 +1368,7 @@ p_bool os_run(const p_str& command, const p_str& location, p_perun2& p2)
 
 p_bool os_terminate(SideProcess& process)
 {
-   TerminateProcess(process.info.hProcess, 0);
+   return TerminateProcess(process.info.hProcess, 0) != 0;
 }
 
 p_bool os_isInvalid(const p_str& path)

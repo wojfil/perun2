@@ -167,9 +167,18 @@ void C_OpenWith::run()
       this->perun2.contexts.success->value = false;
       return;
    }
+
+   const p_bool hasParent = os_hasParentDirectory(this->context->v_path->value);
+   const p_str p = hasParent 
+      ? this->context->v_path->value
+      : str(this->context->v_path->value, OS_SEPARATOR);
    
-   const p_str com = str(pro, CHAR_SPACE, os_quoteEmbraced(this->context->v_path->value));
-   const p_str loc = os_hasParentDirectory(this->context->v_path->value) 
+   const p_str com = str(
+      os_fileExists(proPath) ? os_quoteEmbraced(proPath) : pro, 
+      CHAR_SPACE, 
+      os_quoteEmbraced(p));
+
+   const p_str loc = hasParent
       ? os_parent(this->context->v_path->value) 
       : str(this->context->v_path->value, OS_SEPARATOR);
 

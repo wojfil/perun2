@@ -17,5 +17,19 @@
 namespace perun2
 {
 
+   IndexContext::IndexContext(p_perun2& p2)
+      : AggregateContext(p2),
+        index(std::make_unique<Variable<p_num>>(VarType::vt_Special)) { };
+
+
+   void IndexContext::resetIndex()
+   {
+      this->index->value.value.i = NINT_ZERO;
+   }
+
+   void IndexContext::incrementIndex()
+   {
+      this->index->value.value.i++;
+   }
 
 }

@@ -15,11 +15,27 @@
 #ifndef CTX_LOCATION_H_INCLUDED
 #define CTX_LOCATION_H_INCLUDED
 
-#include "../datatype/datatype.h"
+#include "ctx-vars.h"
+
 
 namespace perun2
 {
 
+   struct LocationContext
+   {
+   public:
+      LocationContext();
+      LocationContext(LocationContext* prev);
+      void loadData(const p_str& trimmedValue);
+
+      p_varptr<p_str> location;
+
+   private:
+      LocationContext* prevLocation;
+   };
+   
+   
+   typedef std::unique_ptr<LocationContext>        p_lcptr;
 }
 
 #endif // CTX_LOCATION_H_INCLUDED

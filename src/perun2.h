@@ -23,7 +23,8 @@
 #include "side-process.h"
 #include "command/com.h"
 #include "command/com-parse-unit.h"
-#include "context.h"
+#include "datatype/generator/gen-os.h"
+#include "context/ctx-main.h"
 #include "logger.h"
 #include "cache.h"
 

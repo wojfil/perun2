@@ -15,10 +15,35 @@
 #ifndef CTX_GLOBAL_H_INCLUDED
 #define CTX_GLOBAL_H_INCLUDED
 
-#include "../datatype/datatype.h"
+#include "ctx-vars.h"
+
 
 namespace perun2
 {
+   struct p_perun2;
+
+   struct GlobalContext
+   {
+   public:
+      GlobalContext() = delete;
+      GlobalContext(p_perun2& p2);
+
+      template <typename T>
+      void insertConstant(const p_str& name)
+      {
+         Variable<T>* v = this->globalVars.insertVar<T>(name, VarType::vt_Special);
+         v->isConstant_ = true;
+      }
+
+      VarsContext globalVars;
+
+   private:
+      template <typename T>
+      Variable<T>* insertVar(const p_str& name)
+      {
+         return this->globalVars.insertVar<T>(name, VarType::vt_Special);
+      }
+   };
 
 }
 

@@ -16,9 +16,24 @@
 #define CTX_AGGR_H_INCLUDED
 
 #include "../datatype/datatype.h"
+#include "../command/com-aggregate.h"
+
 
 namespace perun2
 {
+   struct p_perun2;
+
+   struct AggregateContext
+   {
+      AggregateContext() = delete;
+      AggregateContext(p_perun2& p2);
+      void runAggregate();
+
+      comm::Aggregate aggregate;
+   };
+
+
+   typedef std::unique_ptr<AggregateContext>       p_acptr;
 
 }
 

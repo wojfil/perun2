@@ -15,11 +15,27 @@
 #ifndef CTX_INDEX_H_INCLUDED
 #define CTX_INDEX_H_INCLUDED
 
-#include "../datatype/datatype.h"
+#include "ctx-aggr.h"
+#include "ctx-vars.h"
+
 
 namespace perun2
 {
 
+   struct IndexContext : AggregateContext
+   {
+   public:
+      IndexContext() = delete;
+      IndexContext(p_perun2& p2);
+      void resetIndex();
+      void incrementIndex();
+
+      p_varptr<p_num> index;
+   };
+
+
+   typedef std::unique_ptr<IndexContext>           p_icptr;
+   
 }
 
 #endif // CTX_INDEX_H_INCLUDED

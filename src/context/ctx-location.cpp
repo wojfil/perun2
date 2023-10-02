@@ -13,9 +13,25 @@
 */
 
 #include "ctx-location.h"
+#include "../os.h"
+
 
 namespace perun2
 {
 
+   LocationContext::LocationContext()
+      : location(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
+        prevLocation(nullptr) { };
 
+   LocationContext::LocationContext(LocationContext* prev)
+      : location(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
+        prevLocation(prev) { };
+
+   void LocationContext::loadData(const p_str& trimmedValue)
+   {
+      this->location->value = this->prevLocation == nullptr
+         ? trimmedValue
+         : os_leftJoin(this->prevLocation->location->value, trimmedValue);
+   }
+   
 }

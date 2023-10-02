@@ -15,7 +15,7 @@
 #ifndef PARSE_VAR_H_INCLUDED
 #define PARSE_VAR_H_INCLUDED
 
-#include "../../context.h"
+#include "../../perun2.h"
 
 
 namespace perun2::parse

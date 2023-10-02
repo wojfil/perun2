@@ -13,7 +13,7 @@
 */
 
 #include "gen-bool-constr.h"
-#include "../../context.h"
+#include "../../context/ctx-main.h"
 #include "../../os.h"
 #include "../../perun2.h"
 

@@ -16,10 +16,75 @@
 #define CTX_VARS_H_INCLUDED
 
 #include "../datatype/datatype.h"
+#include "../var.h"
+#include <unordered_map>
+
 
 namespace perun2
 {
 
+   template <typename T>
+   using p_varptr = std::unique_ptr<Variable<T>>;
+
+   template <typename T>
+   using p_varptrs = std::unordered_map<p_str, p_varptr<T>>;
+
+
+   struct VarsContext
+   {
+   public:
+
+      void takeVarsPtr(p_varptrs<p_bool>*& result) { result = &this->bools; };
+      void takeVarsPtr(p_varptrs<p_tim>*& result) { result = &this->times; };
+      void takeVarsPtr(p_varptrs<p_per>*& result) { result = &this->periods; };
+      void takeVarsPtr(p_varptrs<p_str>*& result) { result = &this->strings; };
+      void takeVarsPtr(p_varptrs<p_num>*& result) { result = &this->numbers; };
+      void takeVarsPtr(p_varptrs<p_tlist>*& result) { result = &this->timeLists; };
+      void takeVarsPtr(p_varptrs<p_nlist>*& result) { result = &this->numLists; };
+      void takeVarsPtr(p_varptrs<p_list>*& result) { result = &this->lists; };
+
+      template <typename T>
+      p_bool takeVar(const p_str& var, Variable<T>*& result)
+      {
+         p_varptrs<T>* vars;
+         this->takeVarsPtr(vars);
+         auto v = vars->find(var);
+         if (v != vars->end()) {
+            result = v->second.get();
+            return true;
+         }
+
+         return false;
+      }
+
+      template <typename T>
+      Variable<T>* insertVar(const p_str& var, const VarType type)
+      {
+         p_varptrs<T>* vars;
+         this->takeVarsPtr(vars);
+         auto a = vars->insert(std::make_pair(var, std::make_unique<Variable<T>>(type)));
+         return a.first->second.get();
+      }
+
+      p_varptrs<p_bool> bools;
+      p_varptrs<p_tim> times;
+      p_varptrs<p_per> periods;
+      p_varptrs<p_str> strings;
+      p_varptrs<p_num> numbers;
+      p_varptrs<p_tlist> timeLists;
+      p_varptrs<p_nlist> numLists;
+      p_varptrs<p_list> lists;
+   };
+
+
+   struct UserVarsContext
+   {
+      VarsContext userVars;
+   };
+
+
+   typedef std::unique_ptr<UserVarsContext>        p_ucptr;
+   
 }
 
 #endif // CTX_VARS_H_INCLUDED

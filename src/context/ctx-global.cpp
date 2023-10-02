@@ -13,9 +13,30 @@
 */
 
 #include "ctx-global.h"
+#include "../perun2.h"
+#include "../datatype/generator/gen-time.h"
+
 
 namespace perun2
 {
 
+   GlobalContext::GlobalContext(p_perun2& p2)
+   {
+      this->globalVars.times.insert(std::make_pair(STRING_NOW, std::make_unique<gen::v_Now>()));
+      this->globalVars.times.insert(std::make_pair(STRING_TODAY, std::make_unique<gen::v_Today>()));
+      this->globalVars.times.insert(std::make_pair(STRING_YESTERDAY, std::make_unique<gen::v_Yesterday>()));
+      this->globalVars.times.insert(std::make_pair(STRING_TOMORROW, std::make_unique<gen::v_Tomorrow>()));
+
+      this->insertConstant<p_str>(STRING_DESKTOP);
+      this->insertConstant<p_str>(STRING_PERUN2);
+      this->insertConstant<p_str>(STRING_ORIGIN);
+      this->insertConstant<p_list>(STRING_ALPHABET);
+      this->insertConstant<p_list>(STRING_ASCII);
+      this->insertConstant<p_list>(STRING_ARGUMENTS);
+      this->insertConstant<p_list>(STRING_NOTHING);
+      this->insertConstant<p_list>(STRING_PENDRIVES);
+      this->insertConstant<p_str>(STRING_PENDRIVE);
+      this->insertConstant<p_tim>(STRING_NEVER);
+   };
 
 }

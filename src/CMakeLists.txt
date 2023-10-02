@@ -54,7 +54,6 @@ add_executable(
     cache.cpp
     cmd.cpp
     console.cpp
-    context.cpp
     exception.cpp
     keyword.cpp
     lexer.cpp

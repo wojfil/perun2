@@ -98,6 +98,13 @@ add_executable(
     command/com-struct.cpp
     command/com-time.cpp
     command/com-var.cpp
+    context/ctx-aggr.cpp
+    context/ctx-file.cpp
+    context/ctx-global.cpp
+    context/ctx-index.cpp
+    context/ctx-location.cpp
+    context/ctx-main.cpp
+    context/ctx-vars.cpp
     datatype/function/func-aggr.cpp
     datatype/function/func-attr.cpp
     datatype/function/func-bool.cpp

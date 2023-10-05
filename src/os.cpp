@@ -2199,7 +2199,7 @@ p_str os_downloadsPath()
    }
 }
 
-p_size os_readFilep_size(const p_str& path)
+p_size os_readFileSize(const p_str& path)
 {
    struct _stat fileinfo;
    _wstat(path.c_str(), &fileinfo);
@@ -2214,7 +2214,7 @@ p_bool os_readFile(p_str& result, const p_str& path)
       return false;
    }
 
-   p_size filesize = os_readFilep_size(path);
+   const p_size filesize = os_readFileSize(path);
 
    if (filesize > 0) {
       result.resize(filesize);

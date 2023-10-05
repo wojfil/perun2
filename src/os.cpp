@@ -2201,9 +2201,9 @@ p_str os_downloadsPath()
 
 p_size os_readFilep_size(const p_str& path)
 {
-    struct _stat fileinfo;
-    _wstat(path.c_str(), &fileinfo);
-    return fileinfo.st_size;
+   struct _stat fileinfo;
+   _wstat(path.c_str(), &fileinfo);
+   return fileinfo.st_size;
 }
 
 p_bool os_readFile(p_str& result, const p_str& path)

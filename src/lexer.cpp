@@ -46,6 +46,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
    p_size wpos = 0;
    p_size wlen = 0;
    p_bool prevSymbol = false;
+   p_bool prevReset = false;
 
    for (p_size i = 0; i < len; i++) {
       const p_char c = code[i];
@@ -62,6 +63,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
                      mode = Mode::m_MultiComment;
                      tokens.pop_back();
                      prevSymbol = false;
+                     prevReset = true;
                   }
                   else if (c == CHAR_SLASH)  {
                      mode = Mode::m_SingleComment;
@@ -134,7 +136,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
             if (c == CHAR_QUOTATION_MARK) {
                throw SyntaxError::quotationMarkStringLteral(line);
             }
-            
+
             if (isAllowedInWord(c)) {
                wlen++;
             }
@@ -222,12 +224,19 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
             }
             else if (prev == CHAR_ASTERISK && c == CHAR_SLASH) {
                mode = Mode::m_Normal;
+               prevReset = true;
             }
             break;
          }
       }
 
-      prev = c;
+      if (prevReset) {
+         prevReset = false;
+         prev = CHAR_NULL;
+      }
+      else {
+         prev = c;
+      }
    }
 
    switch (mode) {

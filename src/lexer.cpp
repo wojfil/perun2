@@ -55,7 +55,8 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
             if (c == CHAR_QUOTATION_MARK) {
                throw SyntaxError::quotationMarkStringLteral(line);
             }
-            else if (isSymbol(c)) {
+
+            if (isSymbol(c)) {
                if (i != 0 && prev == CHAR_SLASH) {
                   if (c == CHAR_ASTERISK)  {
                      mode = Mode::m_MultiComment;
@@ -133,7 +134,8 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
             if (c == CHAR_QUOTATION_MARK) {
                throw SyntaxError::quotationMarkStringLteral(line);
             }
-            else if (isAllowedInWord(c)) {
+            
+            if (isAllowedInWord(c)) {
                wlen++;
             }
             else {

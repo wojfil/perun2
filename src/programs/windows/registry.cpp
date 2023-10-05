@@ -109,22 +109,22 @@ p_str RegistryIterator::getRegistryValue(const p_str& name) const
    HKEY hKey;
    LONG result = RegOpenKeyExW(this->getRootKey(), this->value.c_str(), 0, KEY_READ, &hKey);
 
-   if (result == ERROR_SUCCESS) {
-      p_char buffer[MAX_PATH];
-      DWORD bufferSize = sizeof(buffer);
-      result = RegQueryValueExW(hKey, name.c_str(), nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
-
-      if (result == ERROR_SUCCESS) {
-         return buffer;
-      } 
-      else {
-         return EMPTY_STRING;
-      }
-
+   if (result != ERROR_SUCCESS) {
       RegCloseKey(hKey);
+      return EMPTY_STRING;
+   }
+
+   p_char buffer[MAX_PATH];
+   DWORD bufferSize = sizeof(buffer);
+   result = RegQueryValueExW(hKey, name.c_str(), nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
+   RegCloseKey(hKey);
+
+   if (result == ERROR_SUCCESS) {
+      return buffer;
    } 
-    
-   return EMPTY_STRING;
+   else {
+      return EMPTY_STRING;
+   }
 }
 
 

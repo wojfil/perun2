@@ -2176,6 +2176,29 @@ p_str os_system32Path()
       : p_str();
 }
 
+p_str os_downloadsPath()
+{
+   HKEY hKey;
+   LONG result = RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_READ, &hKey);
+
+   if (result != ERROR_SUCCESS) {
+      RegCloseKey(hKey);
+      return EMPTY_STRING;
+   }
+
+   p_char buffer[MAX_PATH];
+   DWORD bufferSize = sizeof(buffer);
+   result = RegQueryValueExW(hKey, L"{374DE290-123F-4565-9164-39C4925E467B}", nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
+   RegCloseKey(hKey);
+
+   if (result == ERROR_SUCCESS) {
+      return buffer;
+   } 
+   else {
+      return EMPTY_STRING;
+   }
+}
+
 p_size os_readFilep_size(const p_str& path)
 {
     struct _stat fileinfo;

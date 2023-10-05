@@ -69,6 +69,11 @@ void Cache::actualize(const Token& tk)
          }
       }
    }
+   else if (tk.isWord(STRING_DOWNLOADS, this->perun2)) {
+      if (this->isNotLoaded(CACHE_DOWNLOADS_PATH)) {
+         this->context.strings[STRING_DOWNLOADS]->value = os_downloadsPath();
+      }
+   }
    else {
       this->programs.actualize(tk);
    }

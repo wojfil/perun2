@@ -37,6 +37,7 @@ namespace perun2
       this->insertConstant<p_list>(STRING_PENDRIVES);
       this->insertConstant<p_str>(STRING_PENDRIVE);
       this->insertConstant<p_tim>(STRING_NEVER);
+      this->insertConstant<p_str>(STRING_DOWNLOADS);
    };
 
 }

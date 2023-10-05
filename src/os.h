@@ -159,6 +159,7 @@ p_str os_desktopPath();
 p_list os_pendrives();
 p_str os_currentPath();
 p_str os_system32Path();
+p_str os_downloadsPath();
 
 p_bool os_readFile(p_str& result, const p_str& path);
 void os_showWebsite(const p_str& url);

@@ -33,6 +33,7 @@ p_constexpr p_cunit CACHE_ASCII =                1 << 4;
 p_constexpr p_cunit CACHE_ORIGIN =               1 << 5;
 p_constexpr p_cunit CACHE_ARGUMENTS =            1 << 6;
 p_constexpr p_cunit CACHE_PENDRIVES =            1 << 7;
+p_constexpr p_cunit CACHE_DOWNLOADS_PATH =       1 << 8;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop

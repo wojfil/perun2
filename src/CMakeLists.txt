@@ -103,7 +103,6 @@ add_executable(
     context/ctx-index.cpp
     context/ctx-location.cpp
     context/ctx-main.cpp
-    context/ctx-vars.cpp
     datatype/function/func-aggr.cpp
     datatype/function/func-attr.cpp
     datatype/function/func-bool.cpp

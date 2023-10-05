@@ -127,6 +127,28 @@ public:
 };
 
 
+struct WP_Photoshop : WinProgram
+{
+public:
+   WP_Photoshop(p_perun2& p2);
+   void actualize() override;
+
+private:
+   //p_riptr r_1;
+};
+
+
+struct WP_Sumatra : WinProgram
+{
+public:
+   WP_Sumatra(p_perun2& p2);
+   void actualize() override;
+
+private:
+   //p_riptr r_1;
+};
+
+
 struct WP_Vlc : WinProgram
 {
 public:

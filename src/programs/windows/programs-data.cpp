@@ -243,6 +243,23 @@ void WP_Paint::actualize()
 };
 
 
+WP_Photoshop::WP_Photoshop(p_perun2& p2) : WinProgram(p2, { L"photoshop", L"adobephotoshop" }) { };
+
+
+void WP_Photoshop::actualize()
+{
+   //
+};
+
+
+WP_Sumatra::WP_Sumatra(p_perun2& p2) : WinProgram(p2, { L"sumatra", L"sumatrapdf", L"sumatrapdfreader" }) { };
+
+
+void WP_Sumatra::actualize()
+{
+   //
+};
+
 
 WP_Vlc::WP_Vlc(p_perun2& p2) : WinProgram(p2, { L"vlc", L"vlcmediaplayer" }) 
 {

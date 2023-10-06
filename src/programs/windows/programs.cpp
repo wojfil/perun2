@@ -134,6 +134,8 @@ WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
    this->programs.emplace_back(std::make_unique<WP_NotepadPlusPlus>(p2));
    this->programs.emplace_back(std::make_unique<WP_OpenOffice>(p2));
    this->programs.emplace_back(std::make_unique<WP_Paint>(p2));
+   this->programs.emplace_back(std::make_unique<WP_Photoshop>(p2));
+   this->programs.emplace_back(std::make_unique<WP_Sumatra>(p2));
    this->programs.emplace_back(std::make_unique<WP_Vlc>(p2));
    this->programs.emplace_back(std::make_unique<WP_WinRAR>(p2));
    this->programs.emplace_back(std::make_unique<WP_Word>(p2));

@@ -95,7 +95,10 @@ p_bool WinProgram::saveValue(const p_str& value)
       return false;
    }
 
-   this->context.strings[this->names[0]]->value = value;
+   for (const p_str& name : this->names) {
+      this->context.strings[name]->value = value;
+   }
+
    return true;
 };
 

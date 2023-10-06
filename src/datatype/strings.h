@@ -60,6 +60,9 @@ p_constexpr p_char STRING_ARG_DOCS[] =             L"--docs";
 p_constexpr p_char STRING_ARG_WEBSITE[] =          L"--website";
 p_constexpr p_char STRING_ARG_HELP[] =             L"--help";
 
+p_constexpr p_char STRING_ICON_SUFFIX[] =          L".ico";
+p_constexpr p_size STRING_ICON_SUFFIX_LEN =        _countof(STRING_ICON_SUFFIX) - 1;
+
 p_constexpr p_char STRING_PENDRIVE[] =             L"pendrive";
 p_constexpr p_char STRING_PENDRIVES[] =            L"pendrives";
 

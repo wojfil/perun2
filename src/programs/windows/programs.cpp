@@ -28,12 +28,11 @@ WinProgram::WinProgram(p_perun2& p2, const p_list& nm)
 
 p_bool WinProgram::isIcon(const p_str& value) const
 {
-   if (value.length() < 4) {
+   if (value.length() < STRING_ICON_SUFFIX_LEN) {
       return false;
    }
 
-   const p_str iconSuffix = L".ico";
-   return value.substr(value.length() - iconSuffix.length()) == iconSuffix;
+   return value.substr(value.length() - STRING_ICON_SUFFIX_LEN) == STRING_ICON_SUFFIX;
 };
 
 

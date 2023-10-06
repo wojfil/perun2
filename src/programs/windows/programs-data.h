@@ -88,6 +88,17 @@ private:
 };
 
 
+struct WP_Inkscape : WinProgram
+{
+public:
+   WP_Inkscape(p_perun2& p2);
+   void actualize() override;
+
+private:
+   p_riptr r_1;
+};
+
+
 struct WP_Notepad : WinProgram
 {
 public:

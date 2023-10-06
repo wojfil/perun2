@@ -133,6 +133,7 @@ WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
    this->programs.emplace_back(std::make_unique<WP_Audacity>(p2));
    this->programs.emplace_back(std::make_unique<WP_Firefox>(p2));
    this->programs.emplace_back(std::make_unique<WP_Gimp>(p2));
+   this->programs.emplace_back(std::make_unique<WP_Inkscape>(p2));
    this->programs.emplace_back(std::make_unique<WP_Notepad>(p2));
    this->programs.emplace_back(std::make_unique<WP_NotepadPlusPlus>(p2));
    this->programs.emplace_back(std::make_unique<WP_OpenOffice>(p2));

@@ -178,6 +178,22 @@ void WP_Gimp::actualize()
 };
 
 
+WP_Inkscape::WP_Inkscape(p_perun2& p2) : WinProgram(p2, { L"inkscape" }) 
+{
+   addRegistryPattern(this->r_1, RegistryRootType::ClassesRoot, L"inkscape.*/shell/open/command");
+};
+
+
+void WP_Inkscape::actualize()
+{
+   while (this->r_1->hasNext()) {
+      if (this->takeValueFirstArg(this->r_1, EMPTY_STRING)) {
+         return;
+      }
+   }
+};
+
+
 WP_Notepad::WP_Notepad(p_perun2& p2) : WinProgram(p2, { L"notepad" }) { };
 
 

@@ -252,12 +252,29 @@ void WP_Photoshop::actualize()
 };
 
 
-WP_Sumatra::WP_Sumatra(p_perun2& p2) : WinProgram(p2, { L"sumatra", L"sumatrapdf", L"sumatrapdfreader" }) { };
+WP_Sumatra::WP_Sumatra(p_perun2& p2) : WinProgram(p2, { L"sumatra", L"sumatrapdf", L"sumatrapdfreader" }) 
+{
+   addRegistryPattern(this->r_1, RegistryRootType::CurrentUser, L"software/microsoft/windows/currentversion/uninstall/sumatrapdf");
+   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"sumatrapdf.*/shell/open/command");
+};
 
 
 void WP_Sumatra::actualize()
 {
-   //
+   while (this->r_1->hasNext()) {
+      if (this->takeValue(this->r_1, L"displayicon")) {
+         return;
+      }
+      if (this->takeValueFirstArg(this->r_1, L"uninstallstring")) {
+         return;
+      }
+   }
+
+   while (this->r_2->hasNext()) {
+      if (this->takeValueFirstArg(this->r_2, EMPTY_STRING)) {
+         return;
+      }
+   }
 };
 
 

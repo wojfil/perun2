@@ -150,7 +150,7 @@ exitAsteriskBeginning:
 
       p_defptr d = std::make_unique<gen::Directories>(base, p2, p, pathType, prefix);
 
-      parseDefinitionSuffix(result, d, suffix, pathType, gen::os::IS_FINAL, retreats, nullptr, p2);
+      parseDefinitionSuffix(result, d, suffix, pathType, SegmentType::Final, retreats, nullptr, p2);
       return true;
    }
 
@@ -202,7 +202,7 @@ exitAsteriskBeginning:
       }
       else {
          p_defptr d = std::make_unique<gen::Directories>(base, p2, p, pathType, prefix);
-         parseDefinitionSuffix(result, d, u.suffixPart, pathType, gen::os::IS_FINAL, retreats, nullptr, p2);
+         parseDefinitionSuffix(result, d, u.suffixPart, pathType, SegmentType::Final, retreats, nullptr, p2);
       }
       return true;
    }
@@ -215,11 +215,12 @@ exitAsteriskBeginning:
    }
    else {
       p_defptr d = std::make_unique<gen::Directories>(base, p2, firstPatt, pathType, prefix);
-      parseDefinitionSuffix(result, d, units[0].suffixPart, pathType, gen::os::IS_NOT_FINAL, retreats, nullptr, p2);
+      parseDefinitionSuffix(result, d, units[0].suffixPart, pathType, SegmentType::NotFinal, retreats, nullptr, p2);
    }
 
    for (p_size i = 1; i < ulen; i++) {
       const p_bool isFinal = i == (ulen - 1);
+      const SegmentType segmType = isFinal ? SegmentType::Final : SegmentType::NotFinal;
 
       p_genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
       if (!isAbsolute && retreats > 0) {
@@ -245,11 +246,11 @@ exitAsteriskBeginning:
       else {
          p_def* def = result.get();
          p_defptr d = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, pathType, p_str());
-         parseDefinitionSuffix(nextDef, d, units[i].suffixPart, pathType, isFinal, retreats, def, p2);
+         parseDefinitionSuffix(nextDef, d, units[i].suffixPart, pathType, segmType, retreats, def, p2);
       }
 
       p_defptr prev = std::move(result);
-      result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, pathType, isFinal, isFinal ? retreats : 0);
+      result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, pathType, segmType, isFinal ? retreats : 0);
    }
 
    return true;
@@ -377,20 +378,20 @@ p_bool parseDoubleAsterisk(p_defptr& result, p_genptr<p_str>& base, const p_str&
 }
 
 p_bool parseDefinitionSuffix(p_defptr& result, p_defptr& definition, const p_str& suffix,
-   const PathType pathType, const p_bool isFinal, const p_int retreats, p_def* previous, p_perun2& p2)
+   const PathType pathType, const SegmentType segmType, const p_int retreats, p_def* previous, p_perun2& p2)
 {
    if (pathType == PathType::Absolute) {
-      result = std::make_unique<gen::AbsoluteDefSuffix>(definition, suffix, isFinal);
+      result = std::make_unique<gen::AbsoluteDefSuffix>(definition, suffix, segmType);
    }
    else if (retreats == 0) {
-      result = std::make_unique<gen::RelativeDefSuffix>(definition, p2, suffix, isFinal, previous);
+      result = std::make_unique<gen::RelativeDefSuffix>(definition, p2, suffix, segmType, previous);
    }
    else {
       if (previous == nullptr) {
-         result = std::make_unique<gen::RetreatedDefSuffix>(definition, p2, suffix, isFinal, retreats, previous);
+         result = std::make_unique<gen::RetreatedDefSuffix>(definition, p2, suffix, segmType, retreats, previous);
       }
       else {
-         result = std::make_unique<gen::FarRetreatedDefSuffix>(definition, p2, suffix, isFinal, retreats, previous);
+         result = std::make_unique<gen::FarRetreatedDefSuffix>(definition, p2, suffix, segmType, retreats, previous);
       }
    }
 

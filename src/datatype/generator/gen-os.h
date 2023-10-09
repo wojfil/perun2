@@ -40,9 +40,6 @@ namespace perun2::gen
 
 namespace os
 {
-   p_constexpr p_bool IS_FINAL =                    true;
-   p_constexpr p_bool IS_NOT_FINAL =                false;
-
    extern const p_str DEFAULT_PATTERN;
 }
 

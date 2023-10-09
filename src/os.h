@@ -44,6 +44,14 @@ enum PathType
 };
 
 
+// info about a segment of a path
+enum SegmentType
+{
+   NotFinal,
+   Final
+};
+
+
 void os_init();
 
 p_tim os_now();

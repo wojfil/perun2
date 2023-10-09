@@ -113,13 +113,13 @@ p_bool DefFilter_Where::hasNext()
 }
 
 
-LocationVessel::LocationVessel(const p_bool abs, p_genptr<p_str>& loc)
-   : isAbsolute(abs), location(std::move(loc)) { };
+LocationVessel::LocationVessel(const PathType pt, p_genptr<p_str>& loc)
+   : pathType(pt), location(std::move(loc)) { };
 
 
 p_str LocationVessel::getValue()
 {
-   if (this->isAbsolute) {
+   if (this->pathType == PathType::Absolute) {
       return this->value;
    }
 
@@ -138,9 +138,9 @@ void LocationVessel::setValue(const p_str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const p_bool abs, const p_bool fin, const p_int retr)
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const PathType pt, const p_bool fin, const p_int retr)
    : vessel(ves), definition(std::move(def)), locations(std::move(locs)),
-     context(definition->getFileContext()), isAbsolute(abs), isFinal(fin), retreats(retr) { };
+     context(definition->getFileContext()), pathType(pt), isFinal(fin), retreats(retr) { };
 
 
 void NestedDefiniton::reset()
@@ -175,7 +175,7 @@ p_bool NestedDefiniton::hasNext()
       if (this->definition->hasNext()) {
          this->defOpened = true;
 
-         if (this->isAbsolute) {
+         if (this->pathType == PathType::Absolute) {
             this->value = this->definition->getValue();
          }
          else {

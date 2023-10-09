@@ -44,7 +44,7 @@ p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const 
          prefix = os_doubleDotsPrefix(retreats);
       }
 
-      result = std::make_unique<gen::All>(loc, p2, gen::os::DEFAULT_PATTERN, gen::os::IS_RELATIVE_PATH, prefix);
+      result = std::make_unique<gen::All>(loc, p2, gen::os::DEFAULT_PATTERN, PathType::Relative, prefix);
       return true;
    }
 
@@ -58,7 +58,7 @@ p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const 
          prefix = os_doubleDotsPrefix(retreats);
       }
 
-      result = std::make_unique<gen::RecursiveAll>(loc, p2, gen::os::IS_RELATIVE_PATH, prefix);
+      result = std::make_unique<gen::RecursiveAll>(loc, p2, PathType::Relative, prefix);
       return true;
    }
 
@@ -70,6 +70,7 @@ p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const 
    }
 
    const p_bool isAbsolute = info & ASTERISK_INFO_IS_ABSOLUTE;
+   const PathType pathType = isAbsolute ? PathType::Absolute : PathType::Relative;
    const p_size totalLength = pattern.size();
    const p_size patternStart = isAbsolute ? 3 : 0;
    p_int separatorId = -1;
@@ -130,11 +131,11 @@ exitAsteriskBeginning:
       if (separatorId2 == -1) {
          if (separatorId == -1) {
             result = std::make_unique<gen::All>(base, p2,
-               str(OS_SEPARATOR, isAbsolute ? pattern.substr(3) : pattern), isAbsolute, prefix, retreats);
+               str(OS_SEPARATOR, isAbsolute ? pattern.substr(3) : pattern), pathType, prefix, retreats);
          }
          else {
             const p_str s = pattern.substr(separatorId);
-            result = std::make_unique<gen::All>(base, p2, s, isAbsolute, prefix, retreats);
+            result = std::make_unique<gen::All>(base, p2, s, pathType, prefix, retreats);
          }
 
          return true;
@@ -147,16 +148,16 @@ exitAsteriskBeginning:
          ? str(OS_SEPARATOR, pattern.substr(patternStart2, patternLength))
          : pattern.substr(patternStart2, patternLength);
 
-      p_defptr d = std::make_unique<gen::Directories>(base, p2, p, isAbsolute, prefix);
+      p_defptr d = std::make_unique<gen::Directories>(base, p2, p, pathType, prefix);
 
-      parseDefinitionSuffix(result, d, suffix, isAbsolute, gen::os::IS_FINAL, retreats, nullptr, p2);
+      parseDefinitionSuffix(result, d, suffix, pathType, gen::os::IS_FINAL, retreats, nullptr, p2);
       return true;
    }
 
    p_size start = separatorId == -1 ? patternStart : static_cast<p_size>(separatorId + 1);
 
    if ((info & ASTERISK_INFO_DOUBLE_ASTERISK) != 0) {
-      return parseDoubleAsterisk(result, base, pattern, trimmed, start, isAbsolute, retreats, p2);
+      return parseDoubleAsterisk(result, base, pattern, trimmed, start, pathType, retreats, p2);
    }
 
    p_bool hasAsterisk = false;
@@ -197,11 +198,11 @@ exitAsteriskBeginning:
       const p_str p = str(OS_SEPARATOR, u.asteriskPart);
 
       if (u.suffixPart.empty()) {
-         result = std::make_unique<gen::All>(base, p2, p, isAbsolute, prefix, retreats);
+         result = std::make_unique<gen::All>(base, p2, p, pathType, prefix, retreats);
       }
       else {
-         p_defptr d = std::make_unique<gen::Directories>(base, p2, p, isAbsolute, prefix);
-         parseDefinitionSuffix(result, d, u.suffixPart, isAbsolute, gen::os::IS_FINAL, retreats, nullptr, p2);
+         p_defptr d = std::make_unique<gen::Directories>(base, p2, p, pathType, prefix);
+         parseDefinitionSuffix(result, d, u.suffixPart, pathType, gen::os::IS_FINAL, retreats, nullptr, p2);
       }
       return true;
    }
@@ -210,11 +211,11 @@ exitAsteriskBeginning:
    const p_str firstPatt = str(OS_SEPARATOR, units[0].asteriskPart);
 
    if (units[0].suffixPart.empty()) {
-      result = std::make_unique<gen::Directories>(base, p2, firstPatt, isAbsolute, prefix);
+      result = std::make_unique<gen::Directories>(base, p2, firstPatt, pathType, prefix);
    }
    else {
-      p_defptr d = std::make_unique<gen::Directories>(base, p2, firstPatt, isAbsolute, prefix);
-      parseDefinitionSuffix(result, d, units[0].suffixPart, isAbsolute, gen::os::IS_NOT_FINAL, retreats, nullptr, p2);
+      p_defptr d = std::make_unique<gen::Directories>(base, p2, firstPatt, pathType, prefix);
+      parseDefinitionSuffix(result, d, units[0].suffixPart, pathType, gen::os::IS_NOT_FINAL, retreats, nullptr, p2);
    }
 
    for (p_size i = 1; i < ulen; i++) {
@@ -226,7 +227,7 @@ exitAsteriskBeginning:
          loc = std::make_unique<gen::RetreatedPath>(prev, retreats);
       }
 
-      std::unique_ptr<gen::LocationVessel> vessel = std::make_unique<gen::LocationVessel>(isAbsolute, loc);
+      std::unique_ptr<gen::LocationVessel> vessel = std::make_unique<gen::LocationVessel>(pathType, loc);
       gen::LocationVessel& vesselRef = *(vessel.get());
       p_genptr<p_str> vesselPtr = std::move(vessel);
       p_defptr nextDef;
@@ -235,20 +236,20 @@ exitAsteriskBeginning:
 
       if (units[i].suffixPart.empty()) {
          if (isFinal) {
-            nextDef = std::make_unique<gen::All>(vesselPtr, p2, nextPatt, isAbsolute, p_str());
+            nextDef = std::make_unique<gen::All>(vesselPtr, p2, nextPatt, pathType, p_str());
          }
          else {
-            nextDef = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, isAbsolute, p_str());
+            nextDef = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, pathType, p_str());
          }
       }
       else {
          p_def* def = result.get();
-         p_defptr d = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, isAbsolute, p_str());
-         parseDefinitionSuffix(nextDef, d, units[i].suffixPart, isAbsolute, isFinal, retreats, def, p2);
+         p_defptr d = std::make_unique<gen::Directories>(vesselPtr, p2, nextPatt, pathType, p_str());
+         parseDefinitionSuffix(nextDef, d, units[i].suffixPart, pathType, isFinal, retreats, def, p2);
       }
 
       p_defptr prev = std::move(result);
-      result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, isAbsolute, isFinal, isFinal ? retreats : 0);
+      result = std::make_unique<gen::NestedDefiniton>(vesselRef, nextDef, prev, pathType, isFinal, isFinal ? retreats : 0);
    }
 
    return true;
@@ -280,7 +281,7 @@ void addAsteriskPatternUnit(p_str& asteriskPart, p_str& suffixPart, const p_str&
 
 
 p_bool parseDoubleAsterisk(p_defptr& result, p_genptr<p_str>& base, const p_str& pattern, const p_str& trimmed,
-   const p_size start, const p_bool isAbsolute, const p_int retreats, p_perun2& p2)
+   const p_size start, const PathType pathType, const p_int retreats, p_perun2& p2)
 {
    enum Mode {
       m_Normal,
@@ -366,19 +367,19 @@ p_bool parseDoubleAsterisk(p_defptr& result, p_genptr<p_str>& base, const p_str&
    }
 
    p_str prefix;
-   if (!isAbsolute) {
+   if (pathType == PathType::Relative) {
       prefix = pattern.substr(0, start);
    }
 
-   gen::p_rallptr loc = std::make_unique<gen::RecursiveAll>(base, p2, isAbsolute, p_str());
+   gen::p_rallptr loc = std::make_unique<gen::RecursiveAll>(base, p2, pathType, p_str());
    result = std::make_unique<gen::DoubleAsteriskPattern>(loc, p2, finalPattern, prefix, retreats);
    return true;
 }
 
 p_bool parseDefinitionSuffix(p_defptr& result, p_defptr& definition, const p_str& suffix,
-   const p_bool isAbsolute, const p_bool isFinal, const p_int retreats, p_def* previous, p_perun2& p2)
+   const PathType pathType, const p_bool isFinal, const p_int retreats, p_def* previous, p_perun2& p2)
 {
-   if (isAbsolute) {
+   if (pathType == PathType::Absolute) {
       result = std::make_unique<gen::AbsoluteDefSuffix>(definition, suffix, isFinal);
    }
    else if (retreats == 0) {

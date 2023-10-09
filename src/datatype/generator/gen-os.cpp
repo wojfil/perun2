@@ -29,7 +29,7 @@
 namespace perun2::gen
 {
 
-#define P_OS_GEN_VALUE_ALTERATION if (this->isAbsolute) { \
+#define P_OS_GEN_VALUE_ALTERATION if (this->pathType == PathType::Absolute) { \
       this->value = this->hasPrefix \
          ? str(this->prefix, this->baseLocation, OS_SEPARATOR, this->value) \
          : str(this->baseLocation, OS_SEPARATOR, this->value); \
@@ -48,7 +48,7 @@ namespace os
 
 OsDefinition::OsDefinition(P_GEN_OS_ARGS)
    : location(std::move(loc)), perun2(p2), context(p2),
-     flags(p2.flags), isAbsolute(abs),
+     flags(p2.flags), pathType(pt),
      hasPrefix(!pref.empty()), prefix(pref) { };
 
 

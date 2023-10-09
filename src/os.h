@@ -36,6 +36,14 @@ p_constexpr p_char OS_WRONG_SEPARATOR = CHAR_SLASH;
    : str(STRING_WINDOWS_PATH_PREFIX, path).c_str() \
 
 
+// a path to a file can be absolute or relative you know
+enum PathType
+{
+   Absolute,
+   Relative
+};
+
+
 void os_init();
 
 p_tim os_now();

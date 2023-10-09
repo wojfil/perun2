@@ -31,16 +31,15 @@ struct p_perun2;
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS p_genptr<p_str>& loc, p_perun2& p2, const p_bool abs, const p_str& pref
-#define P_GEN_OS_ARGS_2 loc, p2, abs, pref
-#define P_GEN_OS_ARGS_EXT p_genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const p_bool abs, const p_str& pref
-#define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, abs, pref
+#define P_GEN_OS_ARGS p_genptr<p_str>& loc, p_perun2& p2, const PathType pt, const p_str& pref
+#define P_GEN_OS_ARGS_2 loc, p2, pt, pref
+#define P_GEN_OS_ARGS_EXT p_genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const PathType pt, const p_str& pref
+#define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, pt, pref
+
 
 
 namespace os
 {
-   p_constexpr p_bool IS_ABSOLUTE_PATH =            true;
-   p_constexpr p_bool IS_RELATIVE_PATH =            false;
    p_constexpr p_bool IS_FINAL =                    true;
    p_constexpr p_bool IS_NOT_FINAL =                false;
 
@@ -65,7 +64,7 @@ protected:
    p_str baseLocation;
 
    const p_flags flags;
-   const p_bool isAbsolute;
+   const PathType pathType;
    const p_bool hasPrefix;
    const p_str prefix;
 };

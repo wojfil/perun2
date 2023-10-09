@@ -81,14 +81,14 @@ private:
 struct LocationVessel : Generator<p_str>
 {
 public:
-   LocationVessel(const p_bool abs, p_genptr<p_str>& loc);
+   LocationVessel(const PathType pt, p_genptr<p_str>& loc);
    p_str getValue() override;
    const p_str& getRawValue() const;
    void setValue(const p_str& val);
 
 private:
    p_str value;
-   const p_bool isAbsolute;
+   const PathType pathType;
    p_genptr<p_str> location;
 };
 
@@ -96,7 +96,7 @@ private:
 struct NestedDefiniton : p_def
 {
 public:
-   NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const p_bool abs, const p_bool fin, const p_int retr);
+   NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const PathType pt, const p_bool fin, const p_int retr);
    p_bool hasNext() override;
    void reset() override;
    FileContext* getFileContext() override;
@@ -110,7 +110,7 @@ private:
    p_bool locsOpened = false;
    p_num locDepth;
    FileContext* context;
-   const p_bool isAbsolute;
+   const PathType pathType;
    const p_bool isFinal;
    const p_int retreats;
 };

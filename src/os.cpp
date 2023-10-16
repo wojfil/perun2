@@ -1489,6 +1489,154 @@ exitEnd:
    return result;
 }
 
+void os_rightTrim(p_str& path, const p_bool separatorEnding)
+{
+   if (path.empty()) {
+      return;
+   }
+
+   p_int end = path.size() - 1;
+   p_int retreats = 0;
+
+   while (true) {
+      if (end >= 2 && path[end] == CHAR_DOT && path[end - 1] == CHAR_DOT
+       && (path[end - 2] == OS_SEPARATOR || path[end - 2] == OS_WRONG_SEPARATOR))
+      {
+         end -= 3;
+         retreats++;
+
+         while (end >= 0 && (path[end] == OS_SEPARATOR || path[end] == OS_WRONG_SEPARATOR)) {
+            end--;
+         }
+      }
+      else if (end >= 1 && path[end] == CHAR_DOT
+       && (path[end - 1] == OS_SEPARATOR || path[end - 1] == OS_WRONG_SEPARATOR))
+      {
+         end -= 2;
+
+         while (end >= 0 && (path[end] == OS_SEPARATOR || path[end] == OS_WRONG_SEPARATOR)) {
+            end--;
+         }
+      }
+      else if (end >= 0) {
+         switch (path[end]) {
+            case OS_WRONG_SEPARATOR:
+            case OS_SEPARATOR:{
+               end--;
+               if (retreats > 0) {
+                  retreats--;
+
+                  while (end >= 0 && (path[end] == OS_SEPARATOR || path[end] == OS_WRONG_SEPARATOR)) {
+                     end--;
+                  }
+               }
+
+               break;
+            }
+            case CHAR_SPACE: {
+               end--;
+               break;
+            }
+            default: {
+               if (retreats == 0) {
+                  goto rtExitEnd;
+               }
+               end--;
+               break;
+            }
+         }
+      }
+      else {
+         if (retreats == 0) {
+            break;
+         }
+      }
+
+      if (end == 0) {
+         switch (path.size()) {
+            case 0:
+            case 1: {
+               break;
+            }
+            case 2: {
+               if (path[0] == CHAR_DOT && path[1] == CHAR_DOT) {
+                  retreats++;
+               }
+               break;
+            }
+            default: {
+               if (path[0] == CHAR_DOT && path[1] == CHAR_DOT
+                  && (path[2] == OS_SEPARATOR || path[2] == OS_WRONG_SEPARATOR))
+               {
+                  retreats++;
+               }
+               break;
+            }
+         }
+
+         if (retreats == 0) {
+            if (!separatorEnding) {
+               path.resize(1);
+            }
+
+            return;
+         }
+
+         path = separatorEnding 
+            ? os_doubleDotsPrefix(retreats)
+            : os_doubleDots(retreats);
+         return;
+      }
+      else if (end == -1) {
+         if (retreats == 0) {
+            path = separatorEnding
+               ? str(CHAR_DOT, OS_SEPARATOR)
+               : toStr(CHAR_DOT);
+            return;
+         }
+
+         path = separatorEnding 
+            ? os_doubleDotsPrefix(retreats)
+            : os_doubleDots(retreats);
+         return;
+      }
+   }
+
+   rtExitEnd:
+
+   const p_int limit = static_cast<p_int>(path.size() - 1);
+
+   if (end != limit) {
+      if (separatorEnding) {
+         end++;
+
+         while (end <= limit) {
+            if (path[end] == OS_SEPARATOR || path[end] == OS_WRONG_SEPARATOR) {
+               end++;
+            }
+            else {
+               end--;
+               break;
+            }
+         }
+
+         path = path.substr(0, end + 1);
+         if (!os_endsWithSeparator(path)) {
+            path += OS_SEPARATOR;
+         }
+
+         return;
+      }
+
+      path = path.substr(0, end + 1);
+      return;
+   }
+
+   if (separatorEnding && !os_endsWithSeparator(path)) {
+      path += OS_SEPARATOR;
+   }
+}
+
 uint32_t os_patternInfo(const p_str& pattern)
 {
    uint32_t result = parse::ASTERISK_INFO_NULL;
@@ -1551,7 +1699,6 @@ uint32_t os_patternInfo(const p_str& pattern)
    return result;
 }
 
-
 p_str os_doubleDotsPrefix(p_int amount)
 {
    p_str result;
@@ -1561,6 +1708,23 @@ p_str os_doubleDotsPrefix(p_int amount)
       result += CHAR_DOT;
       result += CHAR_DOT;
       result += OS_SEPARATOR;
+      amount--;
+   }
+
+   return result;
+}
+
+p_str os_doubleDots(p_int amount)
+{
+   p_str result;
+   result.reserve(amount * 3 - 1);
+
+   while (amount > 0) {
+      result += CHAR_DOT;
+      result += CHAR_DOT;
+      if (amount > 1) {
+         result += OS_SEPARATOR;
+      }
       amount--;
    }
 
@@ -1732,6 +1896,43 @@ void os_retreatPath(p_str& path, p_int times)
 }
 
 
+void os_retreatDirtyPath(p_str& path)
+{
+   if (path.empty()) {
+      return;
+   }
+
+   for (p_int i = path.size() - 1; i >= 0; i--) {
+      switch (path[i]) {
+         case OS_SEPARATOR:
+         case OS_WRONG_SEPARATOR: {
+            path.resize(i + 1);
+            return;
+         }
+      }
+   }
+
+   path.clear();
+}
+
+
+p_bool os_pathHasHead(const p_str& path)
+{
+   switch (path.size()) {
+      case 0:
+         return false;
+      case 1:
+         return path[0] != CHAR_DOT;
+      case 2:
+         return ! (path[0] == CHAR_DOT && path[1] == CHAR_DOT);
+      default: 
+         return ! ((path[path.size() - 1] == CHAR_DOT) 
+                && (path[path.size() - 2] == CHAR_DOT)
+                && (path[path.size() - 3] == OS_SEPARATOR));
+   }
+}
+
+
 p_bool os_extendPath(p_str& result, const p_str& path)
 {
    if (path.empty()) {
@@ -1879,6 +2080,23 @@ p_bool os_endsWithDoubleDot(const p_str& path)
    return path[len - 1] == CHAR_DOT
        && path[len - 2] == CHAR_DOT
        && path[len - 3] == OS_SEPARATOR;
+}
+
+p_bool os_endsWithSeparator(const p_str& path)
+{
+   if (path.empty()) {
+      return false;
+   }
+
+   switch (path[path.size() - 1]) {
+      case OS_SEPARATOR:
+      case OS_WRONG_SEPARATOR: {
+         return true;
+      }
+      default: {
+         return false;
+      }
+   }
 }
 
 p_bool os_isAbsolute(const p_str& path)

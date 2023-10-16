@@ -21,6 +21,23 @@
 namespace perun2::comm
 {
 
+void changeValueOfThisAfterRenaming(FileContext& context)
+{
+   p_str headCheckString;
+   os_extendPath(headCheckString, context.trimmed);
+   
+   if (!os_pathHasHead(headCheckString)) {
+      return;
+   }
+
+   p_str p = context.this_->value;
+   os_rightTrim(p, false);
+   os_retreatDirtyPath(p);
+   os_rightTrim(p, true);
+   p += context.v_fullname->value;
+   context.this_->value = p;
+}
+
 void C_RenameTo::run()
 {
    P_CHECK_IF_PERUN2_IS_RUNNING;
@@ -62,7 +79,7 @@ void C_RenameTo::run()
          this->context->v_fullname->value = n;
          this->context->v_name->value = hasExt ? os_name(newPath) : n;
          this->context->v_path->value = newPath;
-         this->context->this_->value = newPath;
+         changeValueOfThisAfterRenaming(*this->context);
       }
    }
    else {
@@ -131,7 +148,7 @@ void C_RenameTo_Stack::run()
          this->context->v_fullname->value = n;
          this->context->v_name->value = hasExt ? os_name(n) : n;
          this->context->v_path->value = newPath;
-         this->context->this_->value = newPath;
+         changeValueOfThisAfterRenaming(*this->context);
       }
    }
    else {

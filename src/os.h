@@ -128,16 +128,26 @@ p_bool os_run(const p_str& command, const p_str& location, p_perun2& p2);
 p_bool os_terminate(SideProcess& process);
 
 p_str os_trim(const p_str& path);
+
+// trim only right side and do not alter separators
+void os_rightTrim(p_str& path, const p_bool separatorEnding);
 p_bool os_isInvalid(const p_str& path);
 uint32_t os_patternInfo(const p_str& pattern);
 
 p_str os_doubleDotsPrefix(p_int amount);
+p_str os_doubleDots(p_int amount);
 p_bool os_hasDotSegments(const p_str& path);
 p_str os_trimRetreats(const p_str& path, p_size& retreats);
 p_str os_segmentWithName(const p_str& path);
 p_str os_retreats(p_int times);
 p_bool os_retreatPath(p_str& path);
 void os_retreatPath(p_str& path, p_int times);
+
+// dirty means both separators (/ and \) are taken into account
+void os_retreatDirtyPath(p_str& path);
+
+// path has head if contains something more than . and ..
+p_bool os_pathHasHead(const p_str& path);
 
 // return true if the result is a 'true path' (has no .. nor .)
 p_bool os_extendPath(p_str& result, const p_str& path);
@@ -153,6 +163,7 @@ p_str os_leftJoin(const p_str& path1, const p_str& path2);
 p_str os_join(const p_str& path1, const p_str& path2);
 
 p_bool os_endsWithDoubleDot(const p_str& path);
+p_bool os_endsWithSeparator(const p_str& path);
 p_bool os_isAbsolute(const p_str& path);
 p_bool os_hasExtension(const p_str& value);
 p_bool os_isPerun2Extension(const p_str& value);

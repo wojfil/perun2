@@ -7,6 +7,11 @@ Together with its GUI applications, it makes it easy to create tiny programs run
 
 ![Menu examples](res/menuexample.png)
 
+## Versions
+
+Version 0.9 will provide eternal backward compatibility.
+Version 1.0 will be ready for production.
+
 ## Repository
 
 This repository contains source code of the main executable file of Perun2.

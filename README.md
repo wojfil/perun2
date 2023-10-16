@@ -1,3 +1,5 @@
+![Logo](res/perun2ico.png)
+
 # Perun2
 
 Perun2 is a statically typed scripting language for the file system. 

@@ -21,6 +21,14 @@
 namespace perun2
 {
 
+enum NumberState
+{
+   NaN,
+   Int,
+   Double
+};
+
+
 union NumberValue
 {
    p_nint i;
@@ -78,10 +86,10 @@ struct Number
    p_bool operator <= (const p_nint num) const;
    p_bool operator >= (const p_nint num) const;
 
-   // number consists of a value (int or double)
-   // and a boolean flag indicating current state
+   // number consists of the value (int or double)
+   // and the current state
    NumberValue value;
-   p_bool isDouble;
+   NumberState state;
 };
 
 }

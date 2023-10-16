@@ -235,7 +235,7 @@ select '*.pdf'
 
 ## Variable runtime stability check
 
-Look for integer overflows. In case of one, throw runtime exception.
+Look for integer overflows.
 These events are rare as 64 bits are used for storing ints... but they are still possible.
 
 ```
@@ -438,22 +438,13 @@ print (2 days + 5 weeks) as hours
 
 The operator should have relatively low precedence.
 
-## Subjective image variables
+## *Photos*
 
-Maybe we can introduce some special subgroups of *images* like *photos* or even *selfies*.
+Maybe we can introduce *photos* as a subgroup of *images*.
 All photos are images, but not all images are photos.
-However, it is not an easy task to differenciate these groups and the differenciation is soft and disputable.
 
 ```
-copy recursivePhotos
-```
-
-They can also have subjective properties. For example, boolean variables *dark* and *bright*.
-An image can be dark, but what does it exactly mean?
-
-```
-select directories 
-  where anyInside(selfies where dark)
+select photos
 ```
 
 ## Monochromatic images
@@ -465,27 +456,6 @@ select images
   where name like 'img%'
   and monochromatic 
 ```
-
-## Subjective audio variables
-
-Subgroups of *audios*: *music*, *podcasts*, *recordings*, etc.
-This feature is really controversial.
-What is music? Karlheinz Stockhausen and John Cage would fight with me.
-
-```
-select directories 
-  where anyInside(podcasts)
-```
-
-There are some subjective properties like *instrumental* or *loud*.
-
-```
-select directories 
-  where anyInside(music where instrumental)
-  and not anyInside(music where not instrumental)
-```
-
-This script finds all directories with only instrumental music inside.
 
 ## Time expressed as a week
 
@@ -641,7 +611,7 @@ This command selects two files: "a.txt" and "b.txt".
 
 ## *Resembles*
 
-The Like operator is very useful. However, is case sensitive, very strict and follows cold logic.
+The Like operator is very useful. However, is case sensitive and very strict.
 The *Resembles* operator would be a softer and more forgiving variant of it.
 
 ```
@@ -653,4 +623,4 @@ It would expect typos and missing letters.
 For example, 'perun3' and 'perun' do resemble 'perun2'. 
 But not 'pep34'.
 It needs some arbitrary rules.
-Like, for example, 1 mistake is acceptable for every 6 characters in phrase.
+Like, for example, 1 mistake is acceptable for every 3 characters in phrase.

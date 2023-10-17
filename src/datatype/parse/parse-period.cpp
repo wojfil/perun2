@@ -111,8 +111,8 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
    if (last.isWord(STRINGS_PERIOD_SINGLE, p2)) {
       const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
-      if (num.isDouble) {
-         if (num.value.d == NDOUBLE_ONE) {
+      if (num.state == NumberState::Int) {
+         if (num.value.i == NINT_ONE) {
             result = std::make_unique<gen::Constant<p_per>>(p_per(negated ? TNUM_MINUS_ONE : TNUM_ONE, unit));
             return true;
          }
@@ -120,8 +120,8 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
             throw SyntaxError::missingLetterS(last.getOriginString(p2), last.line);
          }
       }
-      else {
-         if (num.value.i == NINT_ONE) {
+      else if (num.state == NumberState::Double) {
+         if (num.value.d == NDOUBLE_ONE) {
             result = std::make_unique<gen::Constant<p_per>>(p_per(negated ? TNUM_MINUS_ONE : TNUM_ONE, unit));
             return true;
          }
@@ -134,7 +134,7 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
    if (last.isWord(STRINGS_PERIOD_MULTI, p2)) {
       const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
-      p_tnum v = num.isDouble
+      p_tnum v = (num.state == NumberState::Double)
          ? static_cast<p_tnum>(num.value.d)
          : static_cast<p_tnum>(num.value.i);
 

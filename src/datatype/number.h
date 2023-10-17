@@ -39,9 +39,13 @@ union NumberValue
 };
 
 
+#define P_NaN Number(NumberState::NaN);
+
+
 struct Number
 {
    Number();
+   Number(const NumberState st);
    Number(const p_int val);
    Number(const p_nint val);
    Number(const p_ndouble val);
@@ -54,6 +58,7 @@ struct Number
    void makeOpposite();
    void setToZero();
    void setToMinusOne();
+   void tryCastToInt();
 
    Number& operator += (const Number& num);
    Number& operator -= (const Number& num);
@@ -91,6 +96,7 @@ struct Number
    NumberValue value;
    NumberState state;
 };
+
 
 }
 

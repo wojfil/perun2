@@ -730,9 +730,15 @@ Period Time::operator - (const Time& tim) const
 
 p_tnum toTimeNumber(const Number& num)
 {
-   return num.isDouble
-      ? round(num.value.d)
-      : static_cast<p_tnum>(num.value.i);
+   if (num.state == NumberState::Int) {
+      return static_cast<p_tnum>(num.value.i);
+   }
+
+   if (num.state == NumberState::Double) {
+      return static_cast<p_tnum>(round(num.value.d));
+   }
+
+   return TNUM_ZERO;
 }
 
 p_str monthToString(const p_tnum month)

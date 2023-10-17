@@ -24,556 +24,890 @@ namespace perun2
 {
 
 Number::Number()
-   : value(NINT_ZERO), isDouble(false) { }
+   : value(NINT_ZERO), state(NumberState::Int) { }
+
+Number::Number(const NumberState st)
+   : state(st), value(NINT_ZERO)
+{
+   if (state == NumberState::Double) {
+      value = NDOUBLE_ZERO;
+   }
+};
 
 Number::Number(const p_int val)
-   : value(static_cast<p_nint>(val)), isDouble(false) { }
+   : value(static_cast<p_nint>(val)), state(NumberState::Int) { }
 
 Number::Number(const p_nint val)
-   : value(val), isDouble(false) { }
+   : value(val), state(NumberState::Int) { }
 
 Number::Number(const p_ndouble val)
-   : value(val), isDouble(true) { }
+   : value(val), state(NumberState::Double) { }
 
 
 // convert a number into string
 // if is double-precision, cut off ending zeros from the fractional part
 p_str Number::toString() const
 {
-   if (isDouble)  {
-      p_ostream stream;
-      stream << std::fixed << value.d;
-      const p_str str = stream.str();
-      const p_size len = str.size();
-
-      for (p_int i = len - 1; i >= 0; i--)  {
-         const p_char ch = str[i];
-         if (ch != CHAR_0) {
-            if (ch == CHAR_DOT) {
-               return i == 0
-                  ? toStr(CHAR_0)
-                  : str.substr(0, i);
-            }
-            else {
-               for (p_size j = 0; j < len; j++) {
-                  if (str[j] == CHAR_DOT) {
-                     return str.substr(0, i + 1);
-                  }
-               }
-
-               return str;
-            }
-         }
-      }
-
-      return toStr(CHAR_0);
-   }
-   else {
+   if (state == NumberState::Int) {
       return toStr(value.i);
    }
+   else if (state == NumberState::NaN) {
+      return STRING_NAN;
+   }
+
+   p_ostream stream;
+   stream << std::fixed << value.d;
+   const p_str str = stream.str();
+   const p_size len = str.size();
+
+   for (p_int i = len - 1; i >= 0; i--)  {
+      const p_char ch = str[i];
+      if (ch != CHAR_0) {
+         if (ch == CHAR_DOT) {
+            return i == 0
+               ? toStr(CHAR_0)
+               : str.substr(0, i);
+         }
+         else {
+            for (p_size j = 0; j < len; j++) {
+               if (str[j] == CHAR_DOT) {
+                  return str.substr(0, i + 1);
+               }
+            }
+
+            return str;
+         }
+      }
+   }
+
+   return toStr(CHAR_0);
 }
 
 p_nint Number::toInt() const
 {
-   return isDouble
-      ? static_cast<p_nint>(value.d)
-      : value.i;
+   if (state == NumberState::Int) {
+      return value.i;
+   }
+   else if (state == NumberState::NaN) {
+      return NINT_ZERO;
+   }
+
+   return static_cast<p_nint>(value.d);
 }
 
 p_bool Number::isZero() const
 {
-   return isDouble
-      ? (value.d == NDOUBLE_ZERO)
-      : (value.i == NINT_ZERO);
+   if (state == NumberState::Int) {
+      return value.i == NINT_ZERO;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d == NDOUBLE_ZERO;
 }
 
 p_bool Number::isOne() const
 {
-   return isDouble
-      ? (value.d == NDOUBLE_ONE)
-      : (value.i == NINT_ONE);
+   if (state == NumberState::Int) {
+      return value.i == NINT_ONE;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d == NDOUBLE_ONE;
 }
 
 p_bool Number::isMinusOne() const
 {
-   return isDouble
-      ? (value.d == NDOUBLE_MINUS_ONE)
-      : (value.i == NINT_MINUS_ONE);
+   if (state == NumberState::Int) {
+      return value.i == NINT_MINUS_ONE;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d == NDOUBLE_MINUS_ONE;
 }
 
 void Number::makeOpposite()
 {
-   if (isDouble) {
-      value.d *= NDOUBLE_MINUS_ONE;
-   }
-   else {
+   if (state == NumberState::Int) {
       value.i *= NINT_MINUS_ONE;
+   }
+   else if (state == NumberState::Double) {
+      value.d *= NDOUBLE_MINUS_ONE;
    }
 }
 
 void Number::setToZero()
 {
-   if (isDouble) {
+   if (state == NumberState::Int) {
+      value.i = NINT_ZERO;
+   }
+   else if (state == NumberState::Double) {
       value.d = NDOUBLE_ZERO;
    }
    else {
       value.i = NINT_ZERO;
+      state = NumberState::Int;
    }
 }
 
 void Number::setToMinusOne()
 {
-   if (isDouble) {
+   if (state == NumberState::Int) {
+      value.i = NINT_MINUS_ONE;
+   }
+   else if (state == NumberState::Double) {
       value.d = NDOUBLE_MINUS_ONE;
    }
    else {
       value.i = NINT_MINUS_ONE;
+      state = NumberState::Int;
+   }
+}
+
+void Number::tryCastToInt()
+{
+   if (std::trunc(value.d) == value.d) {
+      const p_ndouble d = value.d;
+      value.i = static_cast<p_nint>(d);
+      state = NumberState::Int;
    }
 }
 
 Number& Number::operator += (const Number& num)
 {
-   if (isDouble)  {
-      if (num.isDouble)  {
-         value.d += num.value.d;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         value.i += num.value.i;
+         return *this;
       }
-      else {
-         value.d += num.value.i;
+      
+      if (num.state == NumberState::NaN) {
+         state = NumberState::NaN;
+         return *this;
       }
+
+      value.d = static_cast<p_ndouble>(value.i) + num.value.d;
+      state = NumberState::Double;
       return *this;
    }
-   if (num.isDouble)  {
-      p_ndouble d = value.i + num.value.d;
-      value.d = d;
-      isDouble = true;
+
+   if (state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
    }
-   else {
-      value.i += num.value.i;
+
+   if (num.state == NumberState::Int) {
+      value.d += static_cast<p_ndouble>(num.value.i);
+      return *this;
    }
+
+   if (num.state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
+   }
+   
+   value.d += num.value.d;
+   tryCastToInt();
    return *this;
 }
 
 Number& Number::operator -= (const Number& num)
 {
-   if (isDouble) {
-      if (num.isDouble)  {
-         value.d -= num.value.d;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         value.i -= num.value.i;
+         return *this;
       }
-      else {
-         value.d -= num.value.i;
+      
+      if (num.state == NumberState::NaN) {
+         state = NumberState::NaN;
+         return *this;
       }
+
+      value.d = static_cast<p_ndouble>(value.i) - num.value.d;
+      state = NumberState::Double;
       return *this;
    }
-   if (num.isDouble) {
-      p_ndouble d = value.i - num.value.d;
-      value.d = d;
-      isDouble = true;
+
+   if (state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
    }
-   else {
-      value.i -= num.value.i;
+
+   if (num.state == NumberState::Int) {
+      value.d -= static_cast<p_ndouble>(num.value.i);
+      return *this;
    }
+
+   if (num.state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
+   }
+   
+   value.d -= num.value.d;
+   tryCastToInt();
    return *this;
 }
 
 Number& Number::operator *= (const Number& num)
 {
-   if (!num.isDouble && num.value.i == NINT_ZERO) {
-      value.i = NINT_ZERO;
-      isDouble = false;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         value.i *= num.value.i;
+         return *this;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         state = NumberState::NaN;
+         return *this;
+      }
+
+      value.d = value.i * num.value.d;
+      state = NumberState::Double;
+      tryCastToInt();
       return *this;
    }
 
-   if (isDouble) {
-      if (num.isDouble) {
-         value.d *= num.value.d;
-      }
-      else {
-         value.d *= num.value.i;
-      }
+   if (state == NumberState::NaN) {
+      state = NumberState::NaN;
       return *this;
    }
 
-   if (num.isDouble) {
-      p_ndouble d = value.i * num.value.d;
-      value.d = d;
-      isDouble = true;
+   if (num.state == NumberState::Int) {
+      value.d *= num.value.i;
+      tryCastToInt();
+      return *this;
    }
-   else {
-      value.i *= num.value.i;
+
+   if (num.state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
    }
+   
+   value.d *= num.value.d;
+   tryCastToInt();
    return *this;
 }
 
 Number& Number::operator /= (const Number& num)
 {
-   if (num.isDouble) {
-      if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError::divisionByZero();
-      }
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         if (num.value.i == NINT_ZERO) {
+            state = NumberState::NaN;
+            return *this;
+         }
 
-      if (isDouble) {
-         value.d /= num.value.d;
-      }
-      else {
-         const p_ndouble d = value.i / num.value.d;
-         value.d = d;
-         isDouble = true;
-      }
-   }
-   else
-   {
-      if (num.value.i == NINT_ZERO) {
-         throw RuntimeError::divisionByZero();
-      }
-
-      if (isDouble) {
-         value.d /= num.value.i;
-      }
-      else {
          if (value.i % num.value.i == NINT_ZERO) {
             value.i /= num.value.i;
+            return *this;
          }
-         else {
-            const p_ndouble d = static_cast<p_ndouble>(value.i) / static_cast<p_ndouble>(num.value.i);
-            value.d = d;
-            isDouble = true;
-         }
+
+         const p_ndouble d = static_cast<p_ndouble>(value.i) / static_cast<p_ndouble>(num.value.i);
+         value.d = d;
+         state = NumberState::Double;
+         return *this;
       }
+      
+      if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
+         state = NumberState::NaN;
+         return *this;
+      }
+
+      const p_ndouble d = value.i / num.value.d;
+      value.d = d;
+      state = NumberState::Double;
+      tryCastToInt();
+      return *this;
    }
 
+   if (state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
+   }
+
+   if (num.state == NumberState::Int) {
+      if (num.value.i == NINT_ZERO) {
+         state = NumberState::NaN;
+         return *this;
+      }
+
+      value.d /= num.value.i;
+      return *this;
+   }
+
+   if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
+      state = NumberState::NaN;
+      return *this;
+   }
+   
+   value.d /= num.value.d;
+   tryCastToInt();
    return *this;
 }
 
 Number& Number::operator %= (const Number& num)
 {
-   if (num.isDouble) {
-      if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError::moduloByZero();
-      }
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         if (num.value.i == NINT_ZERO) {
+            state = NumberState::NaN;
+            return *this;
+         }
 
-      if (isDouble) {
-         const p_ndouble d = std::fmod(value.d, num.value.d);
-         value.d = d;
-      }
-      else {
-         const p_ndouble d = std::fmod(value.i, num.value.d);
-         value.d = d;
-         isDouble = true;
-      }
-   }
-   else
-   {
-      if (num.value.i == NINT_ZERO) {
-         throw RuntimeError::moduloByZero();
-      }
-
-      if (isDouble) {
-         const p_ndouble d = std::fmod(value.d, num.value.i);
-         value.d = d;
-      }
-      else {
          value.i %= num.value.i;
+         return *this;
       }
+      
+      if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
+         state = NumberState::NaN;
+         return *this;
+      }
+
+      const p_ndouble d = std::fmod(value.i, num.value.d);
+      value.d = d;
+      state = NumberState::Double;
+      tryCastToInt();
+      return *this;
    }
+
+   if (state == NumberState::NaN) {
+      state = NumberState::NaN;
+      return *this;
+   }
+
+   if (num.state == NumberState::Int) {
+      if (num.value.i == NINT_ZERO) {
+         state = NumberState::NaN;
+         return *this;
+      }
+
+      const p_ndouble d = std::fmod(value.d, num.value.i);
+      value.d = d;
+      return *this;
+   }
+
+   if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
+      state = NumberState::NaN;
+      return *this;
+   }
+   
+   const p_ndouble d = std::fmod(value.d, num.value.d);
+   value.d = d;
+   tryCastToInt();
    return *this;
 }
 
 Number& Number::operator ++ (int)
 {
-   if (isDouble) {
-      value.d += NDOUBLE_ONE;
-   }
-   else {
+   if (state == NumberState::Int) {
       value.i++;
    }
+   else if (state == NumberState::Double) {
+      value.d += NDOUBLE_ONE;
+   }
+
    return *this;
 }
 
 Number& Number::operator -- (int)
 {
-   if (isDouble) {
-      value.d -= NDOUBLE_ONE;
-   }
-   else {
+   if (state == NumberState::Int) {
       value.i--;
    }
+   else if (state == NumberState::Double) {
+      value.d -= NDOUBLE_ONE;
+   }
+
    return *this;
 }
 
 Number Number::operator + (const Number& num) const
 {
-   if (isDouble) {
-      if (num.isDouble) {
-         const p_ndouble v = value.d + num.value.d;
-         return Number(v);
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i + num.value.i;
       }
-      else {
-         const p_ndouble v = value.d + num.value.i;
-         return Number(v);
+      
+      if (num.state == NumberState::NaN) {
+         return P_NaN;
       }
+
+      if (num.value.d == NDOUBLE_ZERO) {
+         return P_NaN;
+      }
+
+      const p_ndouble v = static_cast<p_ndouble>(value.i) + num.value.d;
+      return v;
    }
-   else
-   {
-      if (num.isDouble) {
-         const p_ndouble v = value.i + num.value.d;
-         return Number(v);
-      }
-      else {
-         const p_nint v = value.i + num.value.i;
-         return Number(v);
-      }
+
+   if (state == NumberState::NaN) {
+      return P_NaN;
    }
+
+   if (num.state == NumberState::Int) {
+      const p_ndouble v = value.d + static_cast<p_ndouble>(num.value.i);
+      return Number(v);
+   }
+
+   if (num.state == NumberState::NaN) {
+      return P_NaN;
+   }
+   
+   Number v(value.d + num.value.d);
+   v.tryCastToInt();
+   return v;
 }
 
 Number Number::operator - (const Number& num) const
 {
-   if (isDouble) {
-      if (num.isDouble) {
-         const p_ndouble v = value.d - num.value.d;
-         return Number(v);
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i - num.value.i;
       }
-      else {
-         const p_ndouble v = value.d - num.value.i;
-         return Number(v);
+      
+      if (num.state == NumberState::NaN) {
+         return P_NaN;
       }
+
+      if (num.value.d == NDOUBLE_ZERO) {
+         return P_NaN;
+      }
+
+      const p_ndouble v = static_cast<p_ndouble>(value.i) - num.value.d;
+      return v;
    }
-   else
-   {
-      if (num.isDouble) {
-         const p_ndouble v = value.i - num.value.d;
-         return Number(v);
-      }
-      else {
-         const p_nint v = value.i - num.value.i;
-         return Number(v);
-      }
+
+   if (state == NumberState::NaN) {
+      return P_NaN;
    }
+
+   if (num.state == NumberState::Int) {
+      const p_ndouble v = value.d - static_cast<p_ndouble>(num.value.i);
+      return Number(v);
+   }
+
+   if (num.state == NumberState::NaN) {
+      return P_NaN;
+   }
+   
+   Number v(value.d - num.value.d);
+   v.tryCastToInt();
+   return v;
 }
 
 Number Number::operator * (const Number& num) const
 {
-   if (isDouble) {
-      if (num.isDouble) {
-         const p_ndouble v = value.d * num.value.d;
-         return Number(v);
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i * num.value.i;
       }
-      else {
-         const p_ndouble v = value.d * num.value.i;
-         return Number(v);
+      
+      if (num.state == NumberState::NaN) {
+         return P_NaN;
       }
+
+      if (num.value.d == NDOUBLE_ZERO) {
+         return P_NaN;
+      }
+
+      const p_ndouble n = value.i * num.value.d;
+      Number v(n);
+      v.tryCastToInt();
+      return v;
    }
-   else
-   {
-      if (num.isDouble) {
-         const p_ndouble v = value.i * num.value.d;
-         return Number(v);
-      }
-      else {
-         const p_nint v = value.i * num.value.i;
-         return Number(v);
-      }
+
+   if (state == NumberState::NaN) {
+      return P_NaN;
    }
+
+   if (num.state == NumberState::Int) {
+      const p_ndouble n = value.d * num.value.i;
+      Number v(n);
+      v.tryCastToInt();
+      return Number(v);
+   }
+
+   if (num.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   const p_ndouble n = value.d * num.value.d;
+   Number v(n);
+   v.tryCastToInt();
+   return v;
 }
 
 Number Number::operator / (const Number& num) const
 {
-   if (num.isDouble) {
-      if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError::divisionByZero();
-      }
-      if (isDouble) {
-         const p_ndouble v = value.d / num.value.d;
-         return Number(v);
-      }
-      else {
-         const p_ndouble v = value.i / num.value.d;
-         return Number(v);
-      }
-   }
-   else
-   {
-      if (num.value.i == NINT_ZERO) {
-         throw RuntimeError::divisionByZero();
-      }
-      if (isDouble) {
-         const p_ndouble v = value.d / num.value.i;
-         return Number(v);
-      }
-      else {
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         if (num.value.i == NINT_ZERO) {
+            return P_NaN;
+         }
+
          if (value.i % num.value.i == NINT_ZERO) {
             return Number(value.i / num.value.i);
          }
-         else {
-            const p_ndouble d = static_cast<p_ndouble>(value.i) / static_cast<p_ndouble>(num.value.i);
-            return Number(d);
-         }
+
+         const p_ndouble d = static_cast<p_ndouble>(value.i) / static_cast<p_ndouble>(num.value.i);
+         return Number(d);
       }
+      
+      if (num.state == NumberState::NaN) {
+         return P_NaN;
+      }
+
+      if (num.value.d == NDOUBLE_ZERO) {
+         return P_NaN;
+      }
+
+      const p_ndouble n = value.i / num.value.d;
+      Number v(n);
+      v.tryCastToInt();
+      return v;
    }
+
+   if (state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   if (num.state == NumberState::Int) {
+      if (num.value.i == NINT_ZERO) {
+         return P_NaN;
+      }
+
+      const p_ndouble n = value.d / num.value.i;
+      return Number(n);
+   }
+
+   if (num.state == NumberState::NaN) {
+      return P_NaN;
+   }
+   
+   if (num.value.d == NDOUBLE_ZERO) {
+      return P_NaN;
+   }
+
+   const p_ndouble n = value.d / num.value.d;
+   Number v(n);
+   v.tryCastToInt();
+   return v;
 }
 
 Number Number::operator % (const Number& num) const
 {
-   if (num.isDouble) {
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         if (num.value.i == NINT_ZERO) {
+            return P_NaN;
+         }
+
+         return value.i % num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return P_NaN;
+      }
+
       if (num.value.d == NDOUBLE_ZERO) {
-         throw RuntimeError::moduloByZero();
+         return P_NaN;
       }
-      if (isDouble) {
-         const p_ndouble v = std::fmod(value.d, num.value.d);
-         return Number(v);
-      }
-      else {
-         const p_ndouble v = std::fmod(value.i, num.value.d);
-         return Number(v);
-      }
+
+      const p_ndouble n = std::fmod(value.i, num.value.d);
+      Number v(n);
+      v.tryCastToInt();
+      return v;
    }
-   else {
+
+   if (state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   if (num.state == NumberState::Int) {
       if (num.value.i == NINT_ZERO) {
-         throw RuntimeError::moduloByZero();
+         return P_NaN;
       }
-      if (isDouble) {
-         const p_ndouble v = std::fmod(value.d, num.value.i);
-         return Number(v);
-      }
-      else {
-         const p_nint v = value.i % num.value.i;
-         return Number(v);
-      }
+
+      return std::fmod(value.d, num.value.i);
    }
+
+   if (num.state == NumberState::NaN) {
+      return P_NaN;
+   }
+   
+   if (num.value.d == NDOUBLE_ZERO) {
+      return P_NaN;
+   }
+
+   const p_ndouble n = std::fmod(value.d, num.value.d);
+   Number v(n);
+   v.tryCastToInt();
+   return v;
 }
 
 Number Number::operator - () const
 {
-   return isDouble
-      ? Number(-value.d)
-      : Number(-value.i);
+   if (state == NumberState::Int) {
+      return Number(-value.i);
+   }
+
+   if (state == NumberState::Double) {
+      return Number(-value.d);
+   }
+
+   return P_NaN;
 }
 
 p_bool Number::operator == (const Number& num) const
 {
-   if (!isDouble && !num.isDouble) {
-      return value.i == num.value.i;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i == num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return false;
+      }
+
+      return static_cast<p_ndouble>(value.i) == num.value.d;
    }
-   else if (isDouble && num.isDouble) {
-      return value.d == num.value.d;
+
+   if (state == NumberState::NaN) {
+      return false;
    }
-   else if (isDouble && !num.isDouble) {
+
+   if (num.state == NumberState::Int) {
       return value.d == static_cast<p_ndouble>(num.value.i);
    }
-   return static_cast<p_ndouble>(value.i) == num.value.d;
-}
 
-// below are duplicates for the rest of comparisons:
+   if (num.state == NumberState::NaN) {
+      return false;
+   }
+   
+   return value.d == num.value.d;
+}
 
 p_bool Number::operator != (const Number& num) const
 {
-   if (!isDouble && !num.isDouble) {
-      return value.i != num.value.i;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i != num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return false;
+      }
+
+      return static_cast<p_ndouble>(value.i) != num.value.d;
    }
-   else if (isDouble && num.isDouble) {
-      return value.d != num.value.d;
+
+   if (state == NumberState::NaN) {
+      return false;
    }
-   else if (isDouble && !num.isDouble) {
+
+   if (num.state == NumberState::Int) {
       return value.d != static_cast<p_ndouble>(num.value.i);
    }
-   return static_cast<p_ndouble>(value.i) != num.value.d;
+
+   if (num.state == NumberState::NaN) {
+      return false;
+   }
+   
+   return value.d != num.value.d;
 }
 
 p_bool Number::operator < (const Number& num) const
 {
-   if (!isDouble && !num.isDouble) {
-      return value.i < num.value.i;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i < num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return false;
+      }
+
+      return static_cast<p_ndouble>(value.i) < num.value.d;
    }
-   else if (isDouble && num.isDouble) {
-      return value.d < num.value.d;
+
+   if (state == NumberState::NaN) {
+      return false;
    }
-   else if (isDouble && !num.isDouble) {
-      return value.d < num.value.i;
+
+   if (num.state == NumberState::Int) {
+      return value.d < static_cast<p_ndouble>(num.value.i);
    }
-   return value.i < num.value.d;
+
+   if (num.state == NumberState::NaN) {
+      return false;
+   }
+   
+   return value.d < num.value.d;
 }
 
 p_bool Number::operator > (const Number& num) const
 {
-   if (!isDouble && !num.isDouble) {
-      return value.i > num.value.i;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i > num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return false;
+      }
+
+      return static_cast<p_ndouble>(value.i) > num.value.d;
    }
-   else if (isDouble && num.isDouble) {
-      return value.d > num.value.d;
+
+   if (state == NumberState::NaN) {
+      return false;
    }
-   else if (isDouble && !num.isDouble) {
-      return value.d > num.value.i;
+
+   if (num.state == NumberState::Int) {
+      return value.d > static_cast<p_ndouble>(num.value.i);
    }
-   return value.i > num.value.d;
+
+   if (num.state == NumberState::NaN) {
+      return false;
+   }
+   
+   return value.d > num.value.d;
 }
 
 p_bool Number::operator <= (const Number& num) const
 {
-   if (!isDouble && !num.isDouble) {
-      return value.i <= num.value.i;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i <= num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return false;
+      }
+
+      return static_cast<p_ndouble>(value.i) <= num.value.d;
    }
-   else if (isDouble && num.isDouble) {
-      return value.d <= num.value.d;
+
+   if (state == NumberState::NaN) {
+      return false;
    }
-   else if (isDouble && !num.isDouble) {
-      return value.d <= num.value.i;
+
+   if (num.state == NumberState::Int) {
+      return value.d <= static_cast<p_ndouble>(num.value.i);
    }
-   return value.i <= num.value.d;
+
+   if (num.state == NumberState::NaN) {
+      return false;
+   }
+   
+   return value.d <= num.value.d;
 }
 
 p_bool Number::operator >= (const Number& num) const
 {
-   if (!isDouble && !num.isDouble) {
-      return value.i >= num.value.i;
+   if (state == NumberState::Int) {
+      if (num.state == NumberState::Int) {
+         return value.i >= num.value.i;
+      }
+      
+      if (num.state == NumberState::NaN) {
+         return false;
+      }
+
+      return static_cast<p_ndouble>(value.i) >= num.value.d;
    }
-   else if (isDouble && num.isDouble) {
-      return value.d >= num.value.d;
+
+   if (state == NumberState::NaN) {
+      return false;
    }
-   else if (isDouble && !num.isDouble) {
-      return value.d >= num.value.i;
+
+   if (num.state == NumberState::Int) {
+      return value.d >= static_cast<p_ndouble>(num.value.i);
    }
-   return value.i >= num.value.d;
+
+   if (num.state == NumberState::NaN) {
+      return false;
+   }
+   
+   return value.d >= num.value.d;
 }
 
 p_bool Number::operator == (const p_nint num) const
 {
-   return isDouble
-      ? (value.d == static_cast<p_ndouble>(num))
-      : (value.i == num);
+   if (state == NumberState::Int) {
+      return value.i == num;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d == static_cast<p_ndouble>(num);
 }
 
 p_bool Number::operator != (const p_nint num) const
 {
-   return isDouble
-      ? (value.d != static_cast<p_ndouble>(num))
-      : (value.i != num);
+   if (state == NumberState::Int) {
+      return value.i != num;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d != static_cast<p_ndouble>(num);
 }
 
 p_bool Number::operator < (const p_nint num) const
 {
-   return isDouble
-      ? (value.d < num)
-      : (value.i < num);
+   if (state == NumberState::Int) {
+      return value.i < num;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d < static_cast<p_ndouble>(num);
 }
 
 p_bool Number::operator > (const p_nint num) const
 {
-   return isDouble
-      ? (value.d > num)
-      : (value.i > num);
+   if (state == NumberState::Int) {
+      return value.i > num;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d > static_cast<p_ndouble>(num);
 }
 
 p_bool Number::operator <= (const p_nint num) const
 {
-   return isDouble
-      ? (value.d <= num)
-      : (value.i <= num);
+   if (state == NumberState::Int) {
+      return value.i <= num;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d <= static_cast<p_ndouble>(num);
 }
 
 p_bool Number::operator >= (const p_nint num) const
 {
-   return isDouble
-      ? (value.d >= num)
-      : (value.i >= num);
+   if (state == NumberState::Int) {
+      return value.i >= num;
+   }
+   else if (state == NumberState::NaN) {
+      return false;
+   }
+
+   return value.d >= static_cast<p_ndouble>(num);
 }
 
 }

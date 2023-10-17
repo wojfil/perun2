@@ -724,7 +724,7 @@ p_str F_Roman::getValue()
    p_nint number = base.toInt();
 
    if (number == NINT_ZERO) {
-      if (base.isDouble) {
+      if (base.state == NumberState::Double) {
          p_stream ss;
          appendFraction(base, ss);
          p_str result = ss.str();
@@ -766,7 +766,7 @@ p_str F_Roman::getValue()
       i--;
    }
 
-   if (base.isDouble) {
+   if (base.state == NumberState::Double) {
       appendFraction(base, ss);
    }
 

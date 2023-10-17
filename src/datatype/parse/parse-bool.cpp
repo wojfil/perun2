@@ -571,7 +571,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
                else if (tf.isMonth()) {
                   leftInTimeException(tf, STRING_MONTH, pair, negated, p2);
                }
-               else if (tf.type == Token::t_Number && !tf.value.num.n.isDouble) {
+               else if (tf.type == Token::t_Number && tf.value.num.n.state == NumberState::Int) {
                   leftInTimeException(tf, STRING_YEAR, pair, negated, p2);
                }
             }
@@ -586,7 +586,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
          else if (rf.isMonth()) {
             leftInTimeException(rf, STRING_MONTH, pair, negated, p2);
          }
-         else if (rf.type == Token::t_Number && !rf.value.num.n.isDouble) {
+         else if (rf.type == Token::t_Number && rf.value.num.n.state == NumberState::Int) {
             leftInTimeException(rf, STRING_YEAR, pair, negated, p2);
          }
       }
@@ -608,7 +608,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
                else if (tf.isMonth()) {
                   rightInTimeException(tf, STRING_MONTH, pair, negated, p2);
                }
-               else if (tf.type == Token::t_Number && !tf.value.num.n.isDouble) {
+               else if (tf.type == Token::t_Number && tf.value.num.n.state == NumberState::Int) {
                   rightInTimeException(tf, STRING_YEAR, pair, negated, p2);
                }
             }
@@ -623,7 +623,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
          else if (rf.isMonth()) {
             rightInTimeException(rf, STRING_MONTH, pair, negated, p2);
          }
-         else if (rf.type == Token::t_Number && !rf.value.num.n.isDouble) {
+         else if (rf.type == Token::t_Number && rf.value.num.n.state == NumberState::Int) {
             rightInTimeException(rf, STRING_YEAR, pair, negated, p2);
          }
       }
@@ -872,8 +872,8 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
          (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"'"), t1.line);
    }
 
-   const p_bool isInteger1 = (t1.type == Token::t_Number) && !t1.value.num.n.isDouble;
-   const p_bool isInteger2 = (t2.type == Token::t_Number) && !t2.value.num.n.isDouble;
+   const p_bool isInteger1 = (t1.type == Token::t_Number) && t1.value.num.n.state == NumberState::Int;
+   const p_bool isInteger2 = (t2.type == Token::t_Number) && t2.value.num.n.state == NumberState::Int;
 
    if (isVar1 && isInteger2) {
       const p_nint nm = t2.value.num.n.value.i;

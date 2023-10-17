@@ -21,12 +21,19 @@
 namespace perun2::comm
 {
 
+void changeValueOfThisAfterMoving(FileContext& context, const p_str& location, const p_str& newPath)
+{
+   const p_str fullname = os_fullname(newPath);
+   const p_str newThis = str(location, OS_SEPARATOR, fullname);
+   context.loadData(newThis);
+}
+
 void C_MoveTo::run()
 {
    P_CHECK_IF_PERUN2_IS_RUNNING;
 
    p_str& oldPath = this->context->v_path->value;
-   p_str n = os_trim(location->getValue());
+   const p_str n = os_trim(location->getValue());
 
    if (!this->context->v_exists->value || os_isInvalid(n)
          || !os_hasParentDirectory(oldPath)) {
@@ -72,7 +79,7 @@ void C_MoveTo::run()
       this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
       if (this->saveChanges) {
-         this->context->loadData(newPath);
+         changeValueOfThisAfterMoving(*this->context, n, newPath);
       }
    }
    else {
@@ -85,7 +92,7 @@ void C_MoveTo_Stack::run()
    P_CHECK_IF_PERUN2_IS_RUNNING;
 
    p_str& oldPath = this->context->v_path->value;
-   p_str n = os_trim(location->getValue());
+   const p_str n = os_trim(location->getValue());
 
    if (!this->context->v_exists->value || os_isInvalid(n) || !os_hasParentDirectory(oldPath)) {
       this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
@@ -131,7 +138,7 @@ void C_MoveTo_Stack::run()
       this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
 
       if (this->saveChanges) {
-         this->context->loadData(newPath);
+         changeValueOfThisAfterMoving(*this->context, n, newPath);
       }
    }
    else {
@@ -196,7 +203,7 @@ void C_MoveToAs::run()
       this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
       if (this->saveChanges) {
-         this->context->loadData(newPath);
+         changeValueOfThisAfterMoving(*this->context, loc, newPath);
       }
    }
    else {
@@ -274,7 +281,7 @@ void C_MoveToAs_Stack::run()
       this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
 
       if (this->saveChanges) {
-         this->context->loadData(newPath);
+         changeValueOfThisAfterMoving(*this->context, loc, newPath);
       }
    }
    else {

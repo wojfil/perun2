@@ -70,7 +70,6 @@ public:
    void clear();
    void reverse();
    inline void subtractUnit(const Period& per);
-   void turnWeeksToDays();
 
    Period& operator += (const Period& per);
    Period& operator -= (const Period& per);

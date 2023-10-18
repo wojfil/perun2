@@ -132,8 +132,7 @@ p_bool p_perun2::runCommands()
    try {
       this->commands->run();
    }
-   catch (const RuntimeError& re) {
-      this->logger.print(re.getMessage());
+   catch (...) {
       this->exitCode = EXITCODE_RUNTIME_ERROR;
       return false;
    }

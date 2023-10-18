@@ -298,37 +298,5 @@ SyntaxError SyntaxError::wrongSyntaxButProbablyAsteriskPattern(const p_int line)
       L"You should write it between two apostrophes like this: '*.txt'", line);
 }
 
-RuntimeError::RuntimeError(const p_str& msg)
-   : message(msg) { };
-
-p_str RuntimeError::getMessage() const
-{
-   return str(L"Runtime error: ", message, L".");
-}
-
-RuntimeError RuntimeError::divisionByZero()
-{
-   return RuntimeError(L"division by zero");
-}
-
-RuntimeError RuntimeError::moduloByZero()
-{
-   return RuntimeError(L"modulo by zero");
-}
-
-RuntimeError RuntimeError::numberTooBig(const p_str& value)
-{
-   return RuntimeError(str(L"number '", value, L"' is too big to be stored in the memory"));
-}
-
-RuntimeError RuntimeError::squareRootOfNegativeNumber(const p_str& value)
-{
-   return RuntimeError(str(L"square root of a negative number ", value));
-}
-
-RuntimeError RuntimeError::wrongResultOfExponentiation()
-{
-   return RuntimeError(L"result of exponentiation cannot be expressed");
-}
 
 }

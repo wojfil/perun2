@@ -86,25 +86,6 @@ private:
    const p_int line;
 };
 
-class RuntimeError
-{
-public:
-   RuntimeError() = delete;
-   RuntimeError(const p_str& msg);
-   p_str getMessage() const;
-
-   static RuntimeError divisionByZero();
-   static RuntimeError moduloByZero();
-   static RuntimeError numberTooBig(const p_str& value);
-   static RuntimeError squareRootOfNegativeNumber(const p_str& value);
-   static RuntimeError wrongResultOfExponentiation();
-   // to be continued
-   // all errors from the source code will finally end up here
-
-private:
-   const p_str message;
-};
-
 }
 
 #endif /* EXCEPTION_H */

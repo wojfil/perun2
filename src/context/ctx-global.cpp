@@ -38,6 +38,9 @@ namespace perun2
       this->insertConstant<p_str>(STRING_PENDRIVE);
       this->insertConstant<p_tim>(STRING_NEVER);
       this->insertConstant<p_str>(STRING_DOWNLOADS);
+      
+      this->insertConstant<p_num>(STRING_NAN);
+      this->globalVars.numbers[STRING_NAN]->value.setToNaN();
    };
 
 }

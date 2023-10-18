@@ -52,7 +52,7 @@ p_str Number::toString() const
       return toStr(value.i);
    }
    else if (state == NumberState::NaN) {
-      return STRING_NAN;
+      return STRING_PRINTABLE_NAN;
    }
 
    p_ostream stream;
@@ -139,6 +139,11 @@ void Number::makeOpposite()
    else if (state == NumberState::Double) {
       value.d *= NDOUBLE_MINUS_ONE;
    }
+}
+
+void Number::setToNaN()
+{
+   state = NumberState::NaN;
 }
 
 void Number::setToZero()

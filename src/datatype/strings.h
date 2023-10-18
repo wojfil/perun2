@@ -94,7 +94,8 @@ p_constexpr p_char STRING_NUMERIC_LIST[] =         L"numeric list";
 p_constexpr p_char STRING_TIME_LIST[] =            L"time list";
 p_constexpr p_char STRING_LIST[] =                 L"list";
 
-p_constexpr p_char STRING_NAN[] =                  L"NaN";
+p_constexpr p_char STRING_NAN[] =                  L"nan";
+p_constexpr p_char STRING_PRINTABLE_NAN[] =        L"NaN";
 
 p_constexpr p_char STRING_THIS[] =                 L"this";
 p_constexpr p_char STRING_ACCESS[] =               L"access";

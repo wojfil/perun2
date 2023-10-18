@@ -56,6 +56,7 @@ struct Number
    p_bool isOne() const;
    p_bool isMinusOne() const;
    void makeOpposite();
+   void setToNaN();
    void setToZero();
    void setToMinusOne();
    void tryCastToInt();

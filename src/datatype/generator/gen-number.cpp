@@ -72,21 +72,53 @@ TimeMember::TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit& pu)
 
 p_num TimeMember::getValue() 
 {
+   const p_tim t = this->time->getValue();
+   if (t.type == Time::tt_Null) {
+      return P_NaN;
+   }
+
    switch (this->unit) {
-      case Period::u_Years:
-         return static_cast<p_nint>(this->time->getValue().year);
-      case Period::u_Months:
-         return static_cast<p_nint>(this->time->getValue().month);
-      case Period::u_Weeks:
-         return static_cast<p_nint>(this->time->getValue().getWeekDay());
-      case Period::u_Days:
-         return static_cast<p_nint>(this->time->getValue().day);
-      case Period::u_Hours:
-         return static_cast<p_nint>(this->time->getValue().hour);
-      case Period::u_Minutes:
-         return static_cast<p_nint>(this->time->getValue().minute);
-      case Period::u_Seconds:
-         return static_cast<p_nint>(this->time->getValue().second);
+      case Period::u_Years: {
+         return static_cast<p_nint>(t.year);
+      }
+      case Period::u_Months: {
+         return static_cast<p_nint>(t.month);
+      }
+      case Period::u_Weeks: {
+         if (t.type == Time::tt_YearMonth) {
+            return P_NaN;
+         }
+
+         return static_cast<p_nint>(t.getWeekDay());
+      }
+      case Period::u_Days: {
+         if (t.type == Time::tt_YearMonth) {
+            return P_NaN;
+         }
+
+         return static_cast<p_nint>(t.day);
+      }
+      case Period::u_Hours: {
+         if (t.type <= Time::tt_Date) {
+            return P_NaN;
+         }
+
+         return static_cast<p_nint>(t.hour);
+      }
+      case Period::u_Minutes: {
+         if (t.type <= Time::tt_Date) {
+            return P_NaN;
+         }
+
+         return static_cast<p_nint>(t.minute);
+      }
+      case Period::u_Seconds: {
+         if (t.type <= Time::tt_ShortClock) {
+            return P_NaN;
+         }
+
+         return static_cast<p_nint>(t.second);
+      }
    }
 
    return p_num();

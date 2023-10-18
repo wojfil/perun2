@@ -400,10 +400,11 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
       for (p_size i = start; i < start + length; i++) {
          if (code[i] == CHAR_DOT) {
             pnt = i;
+            break;
          }
       }
 
-      if (pnt == length - 1) {
+      if (pnt == start + length - 1) {
          throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
       }
 

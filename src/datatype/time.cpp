@@ -257,13 +257,9 @@ void Time::setMonth(const p_tnum m)
       return;
    }
 
-   if (m < TNUM_JANUARY) {
-      throw RuntimeError(str(L"value of month cannot be smaller than 1 (received: ",
-         toStr(m), L")"));
-   }
-   else if (m > TNUM_DECEMBER) {
-      throw RuntimeError(str(L"value of month cannot be greater than 12 (received: ",
-         toStr(m), L")"));
+   if (m < TNUM_JANUARY || m > TNUM_DECEMBER) {
+      type = TimeType::tt_Null;
+      return;
    }
 
    month = m;
@@ -275,17 +271,16 @@ void Time::setDay(const p_tnum d)
       return;
    }
 
-   if (d < TNUM_JANUARY) {
-      throw RuntimeError(str(L"value of day cannot be smaller than 1 (received: ",
-         toStr(d), L")"));
+   if (d < TNUM_ONE) {
+      type = TimeType::tt_Null;
+      return;
    }
 
    const p_tnum inMonth = daysInMonth(month, year);
+
    if (d > inMonth) {
-      const p_str name = monthToString(month);
-      throw RuntimeError(str(name, L" ", toStr(year),
-         L"contains only ", toStr(inMonth), L" days (received day: ",
-         toStr(d), L")"));
+      type = TimeType::tt_Null;
+      return;
    }
 
    day = d;
@@ -297,13 +292,9 @@ void Time::setHour(const p_tnum h)
       return;
    }
 
-   if (h < TNUM_ZERO) {
-      throw RuntimeError(str(L"value of hours cannot be smaller than 0 (received: ",
-         toStr(h), L")"));
-   }
-   else if (h >= TNUM_HOURS_IN_DAY) {
-      throw RuntimeError(str(L"value of hours cannot be greater than 23 (received: ",
-         toStr(h), L")"));
+   if (h < TNUM_ZERO || h >= TNUM_HOURS_IN_DAY) {
+      type = TimeType::tt_Null;
+      return;
    }
 
    hour = h;
@@ -315,13 +306,9 @@ void Time::setMinute(const p_tnum m)
       return;
    }
 
-   if (m < TNUM_ZERO) {
-      throw RuntimeError(str(L"value of minutes cannot be smaller than 0 (received: ",
-         toStr(m), L")"));
-   }
-   else if (m >= TNUM_MINUTES_IN_HOUR) {
-      throw RuntimeError(str(L"value of minutes cannot be greater than 59 (received: ",
-         toStr(m), L")"));
+   if (m < TNUM_ZERO || m >= TNUM_MINUTES_IN_HOUR) {
+      type = TimeType::tt_Null;
+      return;
    }
 
    minute = m;
@@ -333,15 +320,11 @@ void Time::setSecond(const p_tnum s)
       return;
    }
 
-   if (s < TNUM_ZERO) {
-      throw RuntimeError(str(L"value of seconds cannot be smaller than 0 (received: ",
-         toStr(s), L")"));
+   if (s < TNUM_ZERO || s >= TNUM_SECONDS_IN_MINUTE) {
+      type = TimeType::tt_Null;
+      return;
    }
-   else if (s >= TNUM_SECONDS_IN_MINUTE) {
-      throw RuntimeError(str(L"value of seconds cannot be greater than 59 (received: ",
-         toStr(s), L")"));
-   }
-
+   
    second = s;
 }
 

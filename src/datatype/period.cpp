@@ -182,6 +182,22 @@ inline p_bool Period::isNegativeDifference() const
        || seconds < TNUM_ZERO;
 }
 
+void Period::clear()
+{
+   periodType = PeriodType::pt_Unit;
+   years = TNUM_ZERO;
+   months = TNUM_ZERO;
+   weeks = TNUM_ZERO;
+   days = TNUM_ZERO;
+   hours = TNUM_ZERO;
+   minutes = TNUM_ZERO;
+   seconds = TNUM_ZERO;
+   years_sec = TNUM_ZERO;
+   months_sec = TNUM_ZERO;
+   years_ad = TNUM_ZERO;
+   months_ad = TNUM_ZERO;
+}
+
 void Period::reverse()
 {
    if (periodType == PeriodType::pt_Unit) {
@@ -489,6 +505,11 @@ inline void Period::subtractUnit(const Period& per)
 
 Period& Period::operator *= (const Number& num)
 {
+   if (num.state == NumberState::NaN) {
+      clear();
+      return *this;
+   }
+
    const p_tnum n = static_cast<p_tnum>(num.toInt());
 
    if (periodType ==  PeriodType::pt_Unit) {
@@ -545,10 +566,16 @@ Period& Period::operator *= (const Number& num)
 
 Period& Period::operator /= (const Number& num)
 {
+   if (num.state == NumberState::NaN) {
+      clear();
+      return *this;
+   }
+
    const p_tnum n = static_cast<p_tnum>(num.toInt());
 
    if (n == TNUM_ZERO) {
-      throw RuntimeError(L"division by zero");
+      clear();
+      return *this;
    }
 
    if (periodType ==  PeriodType::pt_Unit) {

@@ -67,6 +67,7 @@ public:
    p_nint toSeconds() const;
    p_str toString() const;
 
+   void clear();
    void reverse();
    inline void subtractUnit(const Period& per);
    void turnWeeksToDays();

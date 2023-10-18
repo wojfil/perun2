@@ -753,109 +753,114 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, p_perun2& p2)
    if (last.type == Token::t_MultiSymbol &&
        (last.value.chars.ch == CHAR_PLUS || last.value.chars.ch == CHAR_MINUS))
    {
-      const p_bool isIncrement = last.value.chars.ch == CHAR_PLUS;
-      const p_str op = isIncrement ? L"incremented by one" : L"decremented by one";
-      const Token& first = tks.first();
+      return commandVarIncrOrDesr(result, tks, last, p2);
+   }
 
-      if (first.type == Token::t_Word) {
-         if (tks.getLength() == 2) {
-            Variable<p_num>* pvp_num;
+   return false;
+}
 
-            if (!p2.contexts.getVar(first, pvp_num, p2) || pvp_num->isImmutable()) {
-               throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-                  L"' cannot be ", op), first.line);
-            }
+static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const Token& last, p_perun2& p2)
+{
+   const p_bool isIncrement = last.value.chars.ch == CHAR_PLUS;
+   const p_str op = isIncrement ? L"incremented by one" : L"decremented by one";
+   const Token& first = tks.first();
 
-            pvp_num->makeNotConstant();
+   if (first.type == Token::t_Word) {
+      if (tks.getLength() == 2) {
+         Variable<p_num>* pvp_num;
 
-            if (isIncrement) {
-               result = std::make_unique<VarIncrement>(*pvp_num);
-            }
-            else {
-               result = std::make_unique<VarDecrement>(*pvp_num);
-            }
-
-            return true;
-         }
-         else {
-            Tokens tks2(tks);
-            tks2.trimRight();
-            tks2.trimRight();
-
-            if (varSquareBrackets(tks2)) {
-               p_genptr<p_num> index;
-               parseListElementIndex(index, tks2, p2);
-               Variable<p_nlist>* pvp_nlist;
-
-               if (!p2.contexts.getVar(first, pvp_nlist, p2) || pvp_nlist->isImmutable()) {
-                  throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-                     L"' cannot be ", op), first.line);
-               }
-
-               throw SyntaxError(str(L"an element of variable '", first.getOriginString(p2),
-                  L"' cannot be ", op, L", because collections in Perun2 are immutable"),
-                  first.line);
-            }
-            else {
-               throw SyntaxError(str(L"this structure cannot be ", op), first.line);
-            }
-         }
-      }
-      else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
-         if (first.isFirstWord(EMPTY_STRING, p2)) {
-            throw SyntaxError(L"the dot . should be preceded by a time variable name", first.line);
-         } 
-
-         Variable<p_tim>* pvp_tim;
-
-         if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-            throw SyntaxError(str(L"time variable from expression '", first.getOriginString(p2),
-               L"' does not exist or is unreachable here"), first.line);
-         }
-
-         if (pvp_tim->isImmutable()) {
-            throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
-         }
-
-         Period::PeriodUnit unit;
-
-         if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2))
-            unit = Period::u_Years;
-         else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2))
-            unit = Period::u_Months;
-         else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2))
-            unit = Period::u_Days;
-         else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2))
-            unit = Period::u_Hours;
-         else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2))
-            unit = Period::u_Minutes;
-         else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2))
-            unit = Period::u_Seconds;
-         else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-            throw SyntaxError(str(L"time variable member '", first.getOriginString_2(p2),
+         if (!p2.contexts.getVar(first, pvp_num, p2) || pvp_num->isImmutable()) {
+            throw SyntaxError(str(L"variable '", first.getOriginString(p2),
                L"' cannot be ", op), first.line);
          }
-         else {
-            parse::timeVariableMemberException(first, p2);
-         }
 
-         pvp_tim->makeNotConstant();
+         pvp_num->makeNotConstant();
 
          if (isIncrement) {
-            result = std::make_unique<VarTimeUnitIncrement>(*pvp_tim, unit);
+            result = std::make_unique<VarIncrement>(*pvp_num);
          }
          else {
-            result = std::make_unique<VarTimeUnitDecrement>(*pvp_tim, unit);
+            result = std::make_unique<VarDecrement>(*pvp_num);
          }
 
          return true;
       }
       else {
-         throw SyntaxError(str(L"only a variable of a singular data type can be ", op), first.line);
+         Tokens tks2(tks);
+         tks2.trimRight();
+         tks2.trimRight();
+
+         if (varSquareBrackets(tks2)) {
+            p_genptr<p_num> index;
+            parseListElementIndex(index, tks2, p2);
+            Variable<p_nlist>* pvp_nlist;
+
+            if (!p2.contexts.getVar(first, pvp_nlist, p2) || pvp_nlist->isImmutable()) {
+               throw SyntaxError(str(L"variable '", first.getOriginString(p2),
+                  L"' cannot be ", op), first.line);
+            }
+
+            throw SyntaxError(str(L"an element of variable '", first.getOriginString(p2),
+               L"' cannot be ", op, L", because collections in Perun2 are immutable"),
+               first.line);
+         }
+         else {
+            throw SyntaxError(str(L"this structure cannot be ", op), first.line);
+         }
       }
    }
+   else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
+      if (first.isFirstWord(EMPTY_STRING, p2)) {
+         throw SyntaxError(L"the dot . should be preceded by a time variable name", first.line);
+      } 
 
-   return false;
+      Variable<p_tim>* pvp_tim;
+
+      if (!p2.contexts.getVar(first, pvp_tim, p2)) {
+         throw SyntaxError(str(L"time variable from expression '", first.getOriginString(p2),
+            L"' does not exist or is unreachable here"), first.line);
+      }
+
+      if (pvp_tim->isImmutable()) {
+         throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+      }
+
+      Period::PeriodUnit unit;
+
+      if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2))
+         unit = Period::u_Years;
+      else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2))
+         unit = Period::u_Months;
+      else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2))
+         unit = Period::u_Days;
+      else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2))
+         unit = Period::u_Hours;
+      else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2))
+         unit = Period::u_Minutes;
+      else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2))
+         unit = Period::u_Seconds;
+      else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
+         throw SyntaxError(str(L"time variable member '", first.getOriginString_2(p2),
+            L"' cannot be ", op), first.line);
+      }
+      else {
+         parse::timeVariableMemberException(first, p2);
+      }
+
+      pvp_tim->makeNotConstant();
+
+      if (isIncrement) {
+         result = std::make_unique<VarTimeUnitIncrement>(*pvp_tim, unit);
+      }
+      else {
+         result = std::make_unique<VarTimeUnitDecrement>(*pvp_tim, unit);
+      }
+
+      return true;
+   }
+   else {
+      throw SyntaxError(str(L"only a variable of a singular data type can be ", op), first.line);
+   }
 }
 
 static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
@@ -1185,6 +1190,58 @@ static void makeVarAssignment(p_comptr& result, const Token& token, p_perun2& p2
 static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
 {
    const Token& first = left.first();
+
+   if (left.getLength() == 1 && first.type == Token::t_TwoWords) {
+      Variable<p_tim>* pvp_tim;
+      if (!p2.contexts.getVar(first, pvp_tim, p2)) {
+         throw SyntaxError(str(L"'", first.getOriginString(p2),
+            L"' is not a time variable for the member assignment operation"),
+            first.line);
+      }
+
+      if (pvp_tim->isImmutable()) {
+         throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+      }
+
+      if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
+         throw SyntaxError(str(L"value of '", first.getOriginString_2(p2),
+            L"' time variable member cannot be altered"), first.line);
+      }
+
+      p_genptr<p_num> num;
+
+      if (!parse::parse(p2, right, num)) {
+         throw SyntaxError(str(L"right side of the = operator cannot be resolved to a number"), first.line);
+      }
+
+      Variable<p_tim>& var = *pvp_tim;
+      pvp_tim->makeNotConstant();
+
+      if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2)) {
+         result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Years);
+         return true;
+      }
+      else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2)) {
+         result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Months);
+         return true;
+      }
+      else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2)) {
+         result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Days);
+         return true;
+      }
+      else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2)) {
+         result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Hours);
+         return true;
+      }
+      else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2)) {
+         result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Minutes);
+         return true;
+      }
+      else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2)) {
+         result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Seconds);
+         return true;
+      }
+   }
 
    if (first.type != Token::t_Word) {
       return false;

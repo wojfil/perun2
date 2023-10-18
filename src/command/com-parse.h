@@ -38,6 +38,7 @@ static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Toke
 static p_bool parseCommandsAsMember(p_comptr& result, const Tokens& tks, p_comptr* cond, p_perun2& p2);
 static p_bool command(p_comptr& result, Tokens& tks, p_perun2& p2);
 static p_bool commandMisc(p_comptr& result, const Tokens& tks, p_perun2& p2);
+static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const Token& last, p_perun2& p2);
 static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Tokens& right,
    const p_char sign, p_perun2& p2);
 static p_bool commandVarIncrement(p_comptr& result, const Token& first, const Tokens& tks,

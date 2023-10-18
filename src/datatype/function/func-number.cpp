@@ -32,14 +32,17 @@ p_num F_Absolute::getValue()
 {
    p_num n = arg1->getValue();
 
-   if (n.isDouble) {
-      if (n.value.d < NDOUBLE_ZERO) {
-         n.value.d *= NDOUBLE_MINUS_ONE;
-      }
-   }
-   else {
+   if (n.state == NumberState::Int) {
       if (n.value.i < NINT_ZERO) {
          n.value.i *= NINT_MINUS_ONE;
+      }
+   }
+   else if (n.state == NumberState::NaN) {
+      return P_NaN;
+   }
+   else {
+      if (n.value.d < NDOUBLE_ZERO) {
+         n.value.d *= NDOUBLE_MINUS_ONE;
       }
    }
 
@@ -51,10 +54,13 @@ p_num F_Ceil::getValue()
 {
    p_num n = arg1->getValue();
 
-   if (n.isDouble) {
+   if (n.state == NumberState::Double) {
       const p_nint val = static_cast<p_nint>(ceil(n.value.d));
       n.value.i = val;
-      n.isDouble = false;
+      n.state = NumberState::Int;
+   }
+   else if (n.state == NumberState::NaN) {
+      return P_NaN;
    }
 
    return n;
@@ -64,7 +70,7 @@ p_num F_Ceil::getValue()
 p_num F_CountInside::getValue()
 {
    if (!this->fileContext->v_exists->value || !this->fileContext->v_isdirectory->value) {
-      return NINT_MINUS_ONE;
+      return P_NaN;
    }
 
    this->locContext->loadData(this->fileContext->trimmed);
@@ -73,7 +79,7 @@ p_num F_CountInside::getValue()
    while (definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
          definition->reset();
-         break;
+         return P_NaN;
       }
       n++;
    }
@@ -86,10 +92,13 @@ p_num F_Floor::getValue()
 {
    p_num n = arg1->getValue();
 
-   if (n.isDouble) {
+   if (n.state == NumberState::Double) {
       const p_nint val = static_cast<p_nint>(floor(n.value.d));
       n.value.i = val;
-      n.isDouble = false;
+      n.state = NumberState::Int;
+   }
+   else if (n.state == NumberState::NaN) {
+      return P_NaN;
    }
 
    return n;
@@ -106,7 +115,7 @@ p_num F_Number::getValue()
 {
    const p_str s = this->arg1->getValue();
    if (!isNumber(s)) {
-      return p_num();
+      return P_NaN;
    }
 
    if (s.find(CHAR_DOT) == p_str::npos) {
@@ -115,7 +124,7 @@ p_num F_Number::getValue()
          return p_num(i);
       }
       catch (...) {
-         throw RuntimeError::numberTooBig(s);
+         return P_NaN;
       }
    }
    else {
@@ -128,10 +137,13 @@ p_num F_Round::getValue()
 {
    p_num n = arg1->getValue();
 
-   if (n.isDouble) {
+   if (n.state == NumberState::Double) {
       const p_nint val = static_cast<p_nint>(round(n.value.d));
       n.value.i = val;
-      n.isDouble = false;
+      n.state = NumberState::Int;
+   }
+   else if (n.state == NumberState::NaN) {
+      return P_NaN;
    }
 
    return n;
@@ -141,132 +153,130 @@ p_num F_Round::getValue()
 p_num F_Power::getValue()
 {
    const p_num n1 = arg1->getValue();
-   const p_num n2 = arg2->getValue();
 
-   if (n1.isDouble) {
-      const p_ndouble base = n1.value.d;
-
-      if (n2.isDouble) {
-         return doublePower(base, n2.value.d);
-      }
-      else {
-         p_nint exp = n2.value.i;
-
-         switch (exp) {
-            case NINT_MINUS_ONE: {
-               return p_num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
-            }
-            case NINT_ZERO: {
-               return p_num(NINT_ONE);
-            }
-            case NINT_ONE: {
-               return p_num(base);
-            }
-            case NINT_TWO: {
-               return p_num(base * base);
-            }
-            case NINT_THREE: {
-               return p_num(base * base * base);
-            }
-            case NINT_FOUR: {
-               const p_ndouble b2 = base * base;
-               return p_num(b2 * b2);
-            }
-         }
-
-         return doublePower(base, static_cast<p_ndouble>(exp));
-      }
+   if (n1.state == NumberState::NaN) {
+      return P_NaN;
    }
-   else {
+
+   const p_num n2 = arg2->getValue();
+   
+   if (n2.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   if (n1.state == NumberState::Int) {
       p_nint base = n1.value.i;
 
       if (base == NINT_ZERO) {
-         if (n2.isDouble) {
-            if (n2.value.d == NDOUBLE_ZERO) {
-               return p_num(NINT_ONE);
-            }
-            else if (n2.value.d < NDOUBLE_ZERO) {
-               throw RuntimeError::wrongResultOfExponentiation();
-            }
-            else {
-               return p_num();
-            }
-         }
-         else {
+         if (n2.state == NumberState::Int) {
             if (n2.value.i == NINT_ZERO) {
                return p_num(NINT_ONE);
             }
             else if (n2.value.i <= NINT_ZERO) {
-               throw RuntimeError::wrongResultOfExponentiation();
+               return P_NaN;
             }
-            else {
-               return p_num();
-            }
+
+            return p_num();
+         }
+      
+         if (n2.value.d == NDOUBLE_ZERO) {
+            return p_num(NINT_ONE);
+         }
+         else if (n2.value.d < NDOUBLE_ZERO) {
+            return P_NaN;
+         }
+
+         return p_num();
+      }
+
+      if (n2.state == NumberState::Double) {
+         return doublePower(static_cast<p_ndouble>(base), n2.value.d);
+      }
+   
+      switch (n2.value.i) {
+         case NINT_MINUS_ONE: {
+            return p_num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
+         }
+         case NINT_ZERO: {
+            return p_num(NINT_ONE);
+         }
+         case NINT_ONE: {
+            return p_num(base);
+         }
+         case NINT_TWO: {
+            return p_num(base * base);
+         }
+         case NINT_THREE: {
+            return p_num(base * base * base);
+         }
+         case NINT_FOUR: {
+            const p_nint b2 = base * base;
+            return p_num(b2 * b2);
          }
       }
 
-      if (n2.isDouble) {
-         const p_ndouble exp = n2.value.d;
-         return doublePower(static_cast<p_ndouble>(base), exp);
+      p_nint exp = n2.value.i;
+      p_bool inv = false;
+
+      if (exp < NINT_ZERO) {
+         exp *= NINT_MINUS_ONE;
+         inv = true;
       }
-      else {
-         p_nint exp = n2.value.i;
 
-         switch (exp) {
-            case NINT_MINUS_ONE: {
-               return p_num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
-            }
-            case NINT_ZERO: {
-               return p_num(NINT_ONE);
-            }
-            case NINT_ONE: {
-               return p_num(base);
-            }
-            case NINT_TWO: {
-               return p_num(base * base);
-            }
-            case NINT_THREE: {
-               return p_num(base * base * base);
-            }
-            case NINT_FOUR: {
-               const p_nint b2 = base * base;
-               return p_num(b2 * b2);
-            }
-         }
+      p_bool neg = false;
+      if (base < NINT_ZERO) {
+         base *= NINT_MINUS_ONE;
+         neg = (exp % NINT_TWO == NINT_ONE);
+      }
 
-         // if the number is inver
-         p_bool inv = false;
-         if (exp < NINT_ZERO) {
-            exp *= NINT_MINUS_ONE;
-            inv = true;
+      p_nint result = NINT_ONE;
+      while (true) {
+         if (exp & NINT_ONE) {
+            result *= base;
          }
+         exp >>= 1;
+         if (!exp) {
+            break;
+         }
+         base *= base;
+      }
 
-         p_bool neg = false;
-         if (base < NINT_ZERO) {
-            base *= NINT_MINUS_ONE;
-            neg = (exp % NINT_TWO == NINT_ONE);
-         }
+      if (inv) {
+         return p_num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / static_cast<p_ndouble>(result));
+      }
 
-         p_nint result = NINT_ONE;
-         while (true) {
-            if (exp & NINT_ONE) {
-               result *= base;
-            }
-            exp >>= 1;
-            if (!exp) {
-               break;
-            }
-            base *= base;
-         }
+      return p_num(neg ? (-result) : result);
+   }
 
-         if (inv) {
-            return p_num((neg ? NDOUBLE_MINUS_ONE : NDOUBLE_ONE) / static_cast<p_ndouble>(result));
-         }
-         else {
-            return p_num(neg ? (-result) : result);
-         }
+   const p_ndouble base = n1.value.d;
+
+   if (n2.state == NumberState::Double) {
+      return doublePower(base, n2.value.d);
+   }
+
+   switch (n2.value.i) {
+      case NINT_MINUS_ONE: {
+         return p_num(NDOUBLE_ONE / static_cast<p_ndouble>(base));
+      }
+      case NINT_ZERO: {
+         return p_num(NINT_ONE);
+      }
+      case NINT_ONE: {
+         return p_num(base);
+      }
+      case NINT_TWO: {
+         return p_num(base * base);
+      }
+      case NINT_THREE: {
+         return p_num(base * base * base);
+      }
+      case NINT_FOUR: {
+         const p_ndouble b2 = base * base;
+         return p_num(b2 * b2);
       }
    }
+
+   return doublePower(base, static_cast<p_ndouble>(n2.value.i));
 }
 
 p_num F_Power::doublePower(const p_ndouble base, const p_ndouble exp)
@@ -274,7 +284,7 @@ p_num F_Power::doublePower(const p_ndouble base, const p_ndouble exp)
    const p_ndouble v = pow(base, exp);
 
    if (isnan(v)) {
-      throw RuntimeError::wrongResultOfExponentiation();
+      return P_NaN;
    }
 
    return p_num(v);
@@ -284,25 +294,13 @@ p_num F_Sqrt::getValue()
 {
    const p_num n = arg1->getValue();
 
-   if (n.isDouble) {
-      if (n.value.d == NDOUBLE_ZERO) {
-         return p_num();
-      }
-      else if (n.value.d == NDOUBLE_ONE) {
-         return p_num(NINT_ONE);
-      }
-      else if (n.value.d < NDOUBLE_ZERO) {
-         throw RuntimeError::squareRootOfNegativeNumber(n.toString());
-      }
-
-      return p_num(sqrt(n.value.d));
-   }
-   else {
+   if (n.state == NumberState::Int) {
       if (n.value.i == NINT_ZERO || n.value.i == NINT_ONE) {
          return n;
       }
-      else if (n.value.i < NINT_ZERO) {
-         throw RuntimeError::squareRootOfNegativeNumber(n.toString());
+
+      if (n.value.i < NINT_ZERO) {
+         return P_NaN;
       }
 
       // look for perfect squares:
@@ -326,6 +324,24 @@ p_num F_Sqrt::getValue()
 
       return p_num(static_cast<p_ndouble>(sqrt(n.value.i)));
    }
+   
+   if (n.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   if (n.value.d == NDOUBLE_ZERO) {
+      return p_num();
+   }
+   
+   if (n.value.d == NDOUBLE_ONE) {
+      return p_num(NINT_ONE);
+   }
+   
+   if (n.value.d < NDOUBLE_ZERO) {
+      return P_NaN;
+   }
+
+   return p_num(sqrt(n.value.d));
 }
 
 
@@ -333,22 +349,31 @@ p_num F_Sign::getValue()
 {
    const p_num n = arg1->getValue();
 
-   if (n.isDouble) {
-      if (n.value.d > NDOUBLE_ZERO)
+   if (n.state == NumberState::Int) {
+      if (n.value.i > NINT_ZERO) {
          return p_num(NINT_ONE);
-      else if (n.value.d < NDOUBLE_ZERO)
+      }
+      
+      if (n.value.i < NINT_ZERO) {
          return p_num(NINT_MINUS_ONE);
-      else
-         return p_num();
+      }
+
+      return p_num();
    }
-   else {
-      if (n.value.i > NINT_ZERO)
-         return p_num(NINT_ONE);
-      else if (n.value.i < NINT_ZERO)
-         return p_num(NINT_MINUS_ONE);
-      else
-         return p_num();
+
+   if (n.state == NumberState::NaN) {
+      return P_NaN;
    }
+
+   if (n.value.d > NDOUBLE_ZERO) {
+      return p_num(NINT_ONE);
+   }
+
+   if (n.value.d < NDOUBLE_ZERO) {
+      return p_num(NINT_MINUS_ONE);
+   }
+
+   return p_num();
 }
 
 
@@ -356,10 +381,13 @@ p_num F_Truncate::getValue()
 {
    p_num n = arg1->getValue();
 
-   if (n.isDouble) {
+   if (n.state == NumberState::Double) {
       const p_nint val = static_cast<p_nint>(trunc(n.value.d));
       n.value.i = val;
-      n.isDouble = false;
+      n.state = NumberState::Int;
+   }
+   else if (n.state == NumberState::NaN) {
+      return P_NaN;
    }
 
    return n;
@@ -376,13 +404,16 @@ p_num F_RandomNumber::getValue()
 {
    p_num n = arg1->getValue();
 
-   if (n.isDouble) {
-      n.value.d *= this->math.randomDouble();
-      return n;
-   }
-   else {
+   if (n.state == NumberState::Int) {
       return p_num(this->math.randomInt(n.value.i - NINT_ONE));
    }
+
+   if (n.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   n.value.d *= this->math.randomDouble();
+   return n;
 }
 
 
@@ -405,12 +436,12 @@ p_num F_FromBinary::getValue()
       negative = true;
       i++;
       if (baseString.size() > BITS_IN_NINT - 2) {
-         throw RuntimeError::numberTooBig(baseString);
+         return P_NaN;
       }
    }
    else {
       if (baseString.size() > BITS_IN_NINT - 1) {
-         throw RuntimeError::numberTooBig(baseString);
+         return P_NaN;
       }
    }
 
@@ -462,8 +493,9 @@ p_num F_Count::getValue()
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
          this->definition->reset();
-         return NINT_MINUS_ONE;
+         return P_NaN;
       }
+
       result++;
    }
 
@@ -473,7 +505,17 @@ p_num F_Count::getValue()
 
 p_num F_ShiftMonth_Time::getValue()
 {
-   p_nint result = (static_cast<p_nint>(this->arg1->getValue().month) + this->arg2->getValue().toInt()) % NINT_MONTHS_IN_YEAR;
+   const p_tim time = this->arg1->getValue();
+   if (time.type == Time::tt_Null) {
+      return P_NaN;
+   }
+
+   const p_num shift = this->arg2->getValue();
+   if (shift.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   p_nint result = (static_cast<p_nint>(time.month) + shift.toInt()) % NINT_MONTHS_IN_YEAR;
 
    if (result <= NINT_ZERO) {
       result += NINT_MONTHS_IN_YEAR;
@@ -485,7 +527,17 @@ p_num F_ShiftMonth_Time::getValue()
 
 p_num F_ShiftMonth_Number::getValue()
 {
-   p_nint result = (this->arg1->getValue().toInt() + this->arg2->getValue().toInt()) % NINT_MONTHS_IN_YEAR;
+   const p_num base = this->arg1->getValue();
+   if (base.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   const p_num shift = this->arg2->getValue();
+   if (shift.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   p_nint result = (base.toInt() + shift.toInt()) % NINT_MONTHS_IN_YEAR;
 
    if (result <= NINT_ZERO) {
       result += NINT_MONTHS_IN_YEAR;
@@ -497,7 +549,17 @@ p_num F_ShiftMonth_Number::getValue()
 
 p_num F_ShiftWeekDay_Time::getValue()
 {
-   p_nint result = (static_cast<p_nint>(this->arg1->getValue().getWeekDay()) + this->arg2->getValue().toInt()) % NINT_DAYS_IN_WEEK;
+   const p_tim time = this->arg1->getValue();
+   if (time.type == Time::tt_Null) {
+      return P_NaN;
+   }
+
+   const p_num shift = this->arg2->getValue();
+   if (shift.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   p_nint result = (static_cast<p_nint>(time.getWeekDay()) + shift.toInt()) % NINT_DAYS_IN_WEEK;
 
    if (result <= NINT_ZERO) {
       result += NINT_DAYS_IN_WEEK;
@@ -509,7 +571,17 @@ p_num F_ShiftWeekDay_Time::getValue()
 
 p_num F_ShiftWeekDay_Number::getValue()
 {
-   p_nint result = (this->arg1->getValue().toInt() + this->arg2->getValue().toInt()) % NINT_DAYS_IN_WEEK;
+   const p_num base = this->arg1->getValue();
+   if (base.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   const p_num shift = this->arg2->getValue();
+   if (shift.state == NumberState::NaN) {
+      return P_NaN;
+   }
+
+   p_nint result = (base.toInt() + shift.toInt()) % NINT_DAYS_IN_WEEK;
 
    if (result <= NINT_ZERO) {
       result += NINT_DAYS_IN_WEEK;

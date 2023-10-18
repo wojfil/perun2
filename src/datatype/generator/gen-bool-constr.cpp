@@ -64,7 +64,7 @@ p_bool SizeConstraint::getValue()
       return this->constraint.getFinalResult();
    }
 
-   return os_sizeDirectory(this->context.v_path->value, this->constraint, this->perun2);
+   return os_sizeDirectorySatisfies(this->context.v_path->value, this->constraint, this->perun2);
 }
 
 

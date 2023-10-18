@@ -45,8 +45,6 @@ public:
    static SyntaxError filterKeywordAtEnd(const p_str& value, const p_int line);
    static SyntaxError hoursOutOfRange(const p_str& value, const p_int line);
    static SyntaxError incrementationInsideExpression(const p_int line);
-   static SyntaxError inevitableDivisionByZero(const p_int line);
-   static SyntaxError inevitableModuloByZero(const p_int line);
    static SyntaxError insteadOfYouShouldWrite(const p_str& value1, const p_str& value2, const p_int line);
    static SyntaxError invalidAsteriskPattern(const p_str& value, const p_int line);
    static SyntaxError invalidChar(const p_char value, const p_int line);

@@ -400,16 +400,10 @@ static p_bool numExpTreeMerge(p_genptr<p_num>& result, std::vector<ExpElement<p_
                      break;
                   }
                   case CHAR_SLASH: {
-                     if (v2.isZero()) {
-                        throw SyntaxError::inevitableDivisionByZero(secondElement.line);
-                     }
                      value = v1 / v2;
                      break;
                   }
                   case CHAR_PERCENT: {
-                     if (v2.isZero()) {
-                        throw SyntaxError::inevitableModuloByZero(secondElement.line);
-                     }
                      value = v1 % v2;
                      break;
                   }

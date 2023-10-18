@@ -115,16 +115,6 @@ SyntaxError SyntaxError::incrementationInsideExpression(const p_int line)
    return SyntaxError(L"incrementation signs ++ cannot appear inside an expression", line);
 }
 
-SyntaxError SyntaxError::inevitableDivisionByZero(const p_int line)
-{
-   return SyntaxError(L"inevitable division by zero", line);
-}
-
-SyntaxError SyntaxError::inevitableModuloByZero(const p_int line)
-{
-   return SyntaxError(L"inevitable modulo by zero", line);
-}
-
 SyntaxError SyntaxError::insteadOfYouShouldWrite(const p_str& value1, const p_str& value2, const p_int line)
 {
    return SyntaxError(str(L"instead of '", value1, L"', you should write '", value2, L"'"), line);

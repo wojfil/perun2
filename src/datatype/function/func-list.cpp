@@ -210,10 +210,7 @@ p_nlist F_Numbers::getValue()
                      const p_nint ii = std::stoll(value.substr(start, i - start));
                      numbers.emplace_back(ii);
                   }
-                  catch(...) {
-                     throw RuntimeError(str(L"number '", value.substr(start, i - start),
-                        L"' cannot be stored in the memory"));
-                  }
+                  catch (...) { }
                }
             }
             prevDigit = isDigit;
@@ -224,10 +221,7 @@ p_nlist F_Numbers::getValue()
                const p_nint ii = std::stoll(value.substr(start));
                numbers.emplace_back(ii);
             }
-            catch(...) {
-               throw RuntimeError(str(L"number '", value.substr(start),
-                  L"' cannot be stored in the memory"));
-            }
+            catch (...) { }
          }
 
          return numbers;

@@ -127,7 +127,13 @@ void VarCharAssignment::run()
 
 void VarTimeUnitAssignment::run()
 {
-   const p_tnum n = toTimeNumber(value->getValue());
+   const p_num num = value->getValue();
+   if (num.state == NumberState::NaN) {
+      variable.value.clear();
+      return;
+   }
+
+   const p_tnum n = toTimeNumber(num);
 
    switch (unit) {
       case Period::u_Years: {
@@ -159,7 +165,13 @@ void VarTimeUnitAssignment::run()
 
 void VarTimeUnitChange::run()
 {
-   const p_tnum n = toTimeNumber(value->getValue()) * (negative ? TNUM_MINUS_ONE : TNUM_ONE);
+   const p_num num = value->getValue();
+   if (num.state == NumberState::NaN) {
+      variable.value.clear();
+      return;
+   }
+
+   const p_tnum n = toTimeNumber(num) * (negative ? TNUM_MINUS_ONE : TNUM_ONE);
 
    switch (unit) {
       case Period::u_Years: {

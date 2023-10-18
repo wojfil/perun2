@@ -284,6 +284,10 @@ void Time::setDay(const p_tnum d)
    }
 
    day = d;
+
+   if (type < tt_Date) {
+      type = tt_Date;
+   }
 }
 
 void Time::setHour(const p_tnum h)
@@ -298,6 +302,10 @@ void Time::setHour(const p_tnum h)
    }
 
    hour = h;
+
+   if (type < tt_ShortClock) {
+      type = tt_ShortClock;
+   }
 }
 
 void Time::setMinute(const p_tnum m)
@@ -312,6 +320,10 @@ void Time::setMinute(const p_tnum m)
    }
 
    minute = m;
+
+   if (type < tt_ShortClock) {
+      type = tt_ShortClock;
+   }
 }
 
 void Time::setSecond(const p_tnum s)
@@ -326,6 +338,10 @@ void Time::setSecond(const p_tnum s)
    }
    
    second = s;
+
+   if (type != tt_Clock) {
+      type = tt_Clock;
+   }
 }
 
 Time Time::toDate() const
@@ -473,7 +489,7 @@ Time& Time::operator -= (const Period& per)
    return *this;
 }
 
-// add clock to an already existing time
+// add clock to an existing time
 void Time::initClock(const p_bool withSeconds, const p_tnum recentChange)
 {
    if (type == tt_YearMonth || type == tt_Date) {

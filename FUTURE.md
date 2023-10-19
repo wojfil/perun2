@@ -107,29 +107,6 @@ select images
   and bpp = 24
 ```
 
-## Common programs constants
-
-Introduce constant values with paths to common programs.
-They are constants, but not really deterministic.
-Values may differ depending on where user has installed them.
-If certain program is not installed, then this value is empty string.
-
-```
-open images
-  with 'C:\Program Files\GIMP 2\bin\gimp-2.10.exe'
-```
-
-Instead of this, we can write simply.
-
-```
-open images
-  with gimp
-```
-
-We can introduce hundreds of new constants.
-Not every program can be here.
-They should be rated by popularity.
-
 ## Order By acceleration
 
 Perun2 has one performance weak spot. It takes few seconds to sort hundreds of thousands of files. 

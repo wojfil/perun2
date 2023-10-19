@@ -62,7 +62,12 @@ void C_SleepPeriod::run()
 
 void C_SleepMs::run()
 {
-   os_sleepForMs(this->value->getValue().toInt(), this->perun2);
+   const p_num n = this->value->getValue();
+   if (n.state == NumberState::NaN) {
+      return;
+   }
+
+   os_sleepForMs(n.toInt(), this->perun2);
 }
 
 void C_Break::run()
@@ -89,7 +94,14 @@ void C_Error::run()
 void C_ErrorWithExitCode::run()
 {
    this->perun2.state = State::s_Exit;
-   const int code = static_cast<int>(this->exitCode->getValue().toInt());
+   const p_num n = this->exitCode->getValue();
+
+   if (n.state == NumberState::NaN) {
+      this->perun2.exitCode = EXITCODE_RUNTIME_ERROR;
+      return;
+   }
+
+   const int code = static_cast<int>(n.toInt());
    this->perun2.exitCode = (code == EXITCODE_OK)
       ? EXITCODE_RUNTIME_ERROR
       : code;

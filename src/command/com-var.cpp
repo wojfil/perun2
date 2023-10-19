@@ -66,7 +66,13 @@ void VarTimeSubtract::run()
 void VarCharAssignment::run()
 {
    const p_size len = variable.value.size();
-   p_nint n = index->getValue().toInt();
+   const p_num num = index->getValue();
+
+   if (num.state == NumberState::NaN) {
+      return;
+   }
+
+   p_nint n = num.toInt();
 
    if (n < NINT_ZERO) {
       n += len;

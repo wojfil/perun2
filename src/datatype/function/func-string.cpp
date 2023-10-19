@@ -119,8 +119,13 @@ p_str F_Digits::getValue()
 p_str F_Fill::getValue()
 {
    const p_str base = arg1->getValue();
-   const p_size len = base.size();
-   const p_nint v = arg2->getValue().toInt();
+   const p_num n = arg2->getValue();
+
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   const p_nint v = n.toInt();
 
    if (v <= NINT_ZERO) {
       return base;
@@ -128,9 +133,9 @@ p_str F_Fill::getValue()
 
    const p_size min = static_cast<p_size>(v);
 
-   return len >= min
+   return base.size() >= min
       ? base
-      : str(p_str(min - len, CHAR_0), base);
+      : str(p_str(min - base.size(), CHAR_0), base);
 }
 
 
@@ -213,7 +218,12 @@ p_str F_Upper::getValue()
 
 p_str F_Repeat::getValue()
 {
-   const p_nint repeats = arg2->getValue().toInt();
+   const p_num n = arg2->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   const p_nint repeats = n.toInt();
    if (repeats <= NINT_ZERO) {
       return p_str();
    }
@@ -268,7 +278,12 @@ p_str F_Reverse::getValue()
 
 p_str F_Left::getValue()
 {
-   const p_nint left = arg2->getValue().toInt();
+   const p_num n = arg2->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   const p_nint left = n.toInt();
    if (left <= NINT_ZERO) {
       return p_str();
    }
@@ -284,7 +299,12 @@ p_str F_Left::getValue()
 
 p_str F_Right::getValue()
 {
-   const p_nint right = arg2->getValue().toInt();
+   const p_num n = arg2->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   const p_nint right = n.toInt();
    if (right <= NINT_ZERO) {
       return p_str();
    }
@@ -300,7 +320,12 @@ p_str F_Right::getValue()
 
 p_str F_Substring_2::getValue()
 {
-   p_nint index = arg2->getValue().toInt();
+   const p_num n2 = arg2->getValue();
+   if (n2.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   p_nint index = n2.toInt();
    const p_str value = arg1->getValue();
 
    if (index == NINT_ZERO) {
@@ -326,14 +351,25 @@ p_str F_Substring_2::getValue()
 
 p_str F_Substring_3::getValue()
 {
-   const p_str value = arg1->getValue();
-   p_nint index = arg2->getValue().toInt();
-   p_nint index2 = arg3->getValue().toInt();
-   const p_nint length = static_cast<p_nint>(value.size());
+   const p_num n2 = arg2->getValue();
+   if (n2.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   const p_num n3 = arg3->getValue();
+   if (n3.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   p_nint index = n2.toInt();
+   p_nint index2 = n3.toInt();
 
    if (index2 <= NINT_ZERO) {
       return p_str();
    }
+
+   const p_str value = arg1->getValue();
+   const p_nint length = static_cast<p_nint>(value.size());
 
    if (index < NINT_ZERO) {
       index *= NINT_MINUS_ONE;
@@ -525,31 +561,55 @@ p_str F_String_P::getValue()
 
 p_str F_MonthName::getValue()
 {
-   return monthToString(static_cast<p_tnum>(arg1->getValue().toInt()));
+   const p_num n = arg1->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   return monthToString(static_cast<p_tnum>(n.toInt()));
 }
 
 
 p_str F_MonthNameFromTime::getValue()
 {
    const p_tim t = arg1->getValue();
-   return t.type == Time::tt_YearMonth
-      ? p_str()
-      : monthToString(t.month);
+
+   switch (t.type) {
+      case Time::tt_YearMonth:
+      case Time::tt_Null: {
+         return p_str();
+      }
+      default: {
+         return monthToString(t.month);
+      }
+   }
 }
 
 
 p_str F_WeekDayName::getValue()
 {
-   return weekdayToString(static_cast<p_tnum>(arg1->getValue().toInt()));
+   const p_num n = arg1->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   return weekdayToString(static_cast<p_tnum>(n.toInt()));
 }
 
 
 p_str F_WeekDayNameFromTime::getValue()
 {
    const p_tim t = arg1->getValue();
-   return t.type == Time::tt_YearMonth
-      ? p_str()
-      : weekdayToString(t.getWeekDay());
+
+   switch (t.type) {
+      case Time::tt_YearMonth:
+      case Time::tt_Null: {
+         return p_str();
+      }
+      default: {
+         return weekdayToString(t.getWeekDay());
+      }
+   }
 }
 
 
@@ -721,6 +781,10 @@ p_str F_Join::getValue()
 p_str F_Roman::getValue()
 {
    const p_num base = arg1->getValue();
+   if (base.state == NumberState::NaN) {
+      return p_str();
+   }
+   
    p_nint number = base.toInt();
 
    if (number == NINT_ZERO) {
@@ -793,7 +857,12 @@ inline void F_Roman::appendFraction(const p_num& base, p_stream& ss) const
 
 p_str F_Binary::getValue()
 {
-   p_nint v = arg1->getValue().toInt();
+   const p_num n = arg1->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   p_nint v = n.toInt();
    p_stream ss;
    p_bool negative = false;
 
@@ -818,7 +887,12 @@ p_str F_Binary::getValue()
 
 p_str F_Hex::getValue()
 {
-   p_nint v = arg1->getValue().toInt();
+   const p_num n = arg1->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   p_nint v = n.toInt();
 
    if (v < NINT_ZERO) {
       v *= NINT_MINUS_ONE;

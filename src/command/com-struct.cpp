@@ -41,7 +41,13 @@ void CS_Block::run()
 
 void CS_Times::run()
 {
-   p_nint repeats = this->times->getValue().toInt();
+   const p_num n = this->times->getValue();
+
+   if (n.state == NumberState::NaN) {
+      return;
+   }
+
+   p_nint repeats = n.toInt();
    if (repeats <= NINT_ZERO) {
       return;
    }

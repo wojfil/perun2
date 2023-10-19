@@ -106,50 +106,65 @@ p_list ListFilter_Where::getValue()
 
 p_list ListFilter_Limit::getValue() 
 {
-   const p_nint n = number->getValue().toInt();
+   const p_num n = number->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_list();
+   }
 
-   if (n <= NINT_ZERO) {
+   const p_nint limit = n.toInt();
+
+   if (limit <= NINT_ZERO) {
       return p_list();
    }
 
    const p_list lst = list->getValue();
 
-   return n >= static_cast<p_nint>(lst.size())
+   return limit >= static_cast<p_nint>(lst.size())
       ? lst
-      : p_list(lst.begin(), lst.begin() + n);
+      : p_list(lst.begin(), lst.begin() + limit);
 };
 
 
 p_list ListFilter_Skip::getValue()
 {
-   const p_nint n = number->getValue().toInt();
+   const p_num n = number->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_list();
+   }
+
+   const p_nint skip = n.toInt();
    const p_list lst = list->getValue();
 
-   if (n <= NINT_ZERO) {
+   if (skip <= NINT_ZERO) {
       return lst;
    }
 
-   return n >= static_cast<p_nint>(lst.size())
+   return skip >= static_cast<p_nint>(lst.size())
       ? p_list()
-      : p_list(lst.begin() + n, lst.end());
+      : p_list(lst.begin() + skip, lst.end());
 };
 
 
 p_list ListFilter_Every::getValue()
 {
-   const p_nint n = number->getValue().toInt();
+   const p_num n = number->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_list();
+   }
+
+   const p_nint every = n.toInt();
    const p_list lst = list->getValue();
 
-   if (n <= NINT_ONE) {
+   if (every <= NINT_ONE) {
       return lst;
    }
 
    const p_size baseSize = lst.size();
-   const p_size newSize = (baseSize / n) + ((baseSize % n == 0) ? 0 : 1);
+   const p_size newSize = (baseSize / every) + ((baseSize % every == 0) ? 0 : 1);
    p_list result(newSize);
 
    for (p_size i = 0; i < newSize; i++) {
-      result[i] = lst[i * n];
+      result[i] = lst[i * every];
    }
 
    return result;
@@ -158,17 +173,22 @@ p_list ListFilter_Every::getValue()
 
 p_list ListFilter_Final::getValue()
 {
-   const p_nint n = number->getValue().toInt();
+   const p_num n = number->getValue();
+   if (n.state == NumberState::NaN) {
+      return p_list();
+   }
 
-   if (n <= NINT_ZERO) {
+   const p_nint fin = n.toInt();
+
+   if (fin <= NINT_ZERO) {
       return p_list();
    }
 
    const p_list lst = list->getValue();
 
-   return n >= static_cast<p_nint>(lst.size())
+   return fin >= static_cast<p_nint>(lst.size())
       ? lst
-      : p_list(lst.end() - n, lst.end());
+      : p_list(lst.end() - fin, lst.end());
 };
 
 

@@ -231,7 +231,12 @@ FileContext* NestedDefiniton::getFileContext()
 p_bool DefFilter_Limit::hasNext()
 {
    if (first) {
-      limit = this->number->getValue().toInt();
+      const p_num n = this->number->getValue();
+      if (n.state == NumberState::NaN) {
+         return false;
+      }
+
+      limit = n.toInt();
       if (limit <= NINT_ZERO) {
          return false;
       }
@@ -258,7 +263,12 @@ p_bool DefFilter_Limit::hasNext()
 p_bool DefFilter_Skip::hasNext()
 {
    if (first) {
-      limit = this->number->getValue().toInt();
+      const p_num n = this->number->getValue();
+      if (n.state == NumberState::NaN) {
+         return false;
+      }
+
+      limit = n.toInt();
       if (limit < NINT_ZERO) {
          limit = NINT_ZERO;
       }
@@ -290,7 +300,12 @@ p_bool DefFilter_Skip::hasNext()
 p_bool DefFilter_Every::hasNext()
 {
    if (first) {
-      limit = this->number->getValue().toInt();
+      const p_num n = this->number->getValue();
+      if (n.state == NumberState::NaN) {
+         return false;
+      }
+
+      limit = n.toInt();
       if (limit < NINT_ONE) {
          limit = NINT_ONE;
       }
@@ -331,7 +346,12 @@ FileContext* DefFilter_Final::getFileContext()
 p_bool DefFilter_Final::hasNext()
 {
    if (first) {
-      const p_nint limit = this->number->getValue().toInt();
+      const p_num n = this->number->getValue();
+      if (n.state == NumberState::NaN) {
+         return false;
+      }
+
+      const p_nint limit = n.toInt();
       if (limit < NINT_ONE) {
          return false;
       }

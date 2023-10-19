@@ -749,6 +749,10 @@ p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
 p_bool os_sizeDirectorySatisfies(const p_str& path, IncrementalConstraint& constr, p_perun2& p2)
 {
    constr.loadLimit();
+   if (constr.limitIsNaN()) {
+      return false;
+   }
+
    constr.setValueToZero();
    
    Logic state = constr.getState();

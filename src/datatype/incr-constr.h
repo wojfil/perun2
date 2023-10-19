@@ -56,6 +56,7 @@ public:
    Logic getState() const;
    p_bool getFailureResult() const;
    p_bool getFinalResult() const;
+   p_bool limitIsNaN() const;
 
 private:
    p_genptr<p_num> limitGen;

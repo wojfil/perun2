@@ -163,7 +163,12 @@ public:
          return T();
       }
 
-      p_nint id = index->getValue().toInt();
+      const p_num num = index->getValue();
+      if (num.state == NumberState::NaN) {
+         return T();
+      }
+
+      p_nint id = num.toInt();
 
       if (id < NINT_ZERO) {
          id += lst.size();

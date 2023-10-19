@@ -23,10 +23,17 @@ namespace perun2::func
 p_num F_Average::getValue()
 {
    p_num sum;
-   p_int count = countSingle;
+   p_nint count = countSingle;
 
    for (p_genptr<p_num>& sv : this->singleValues) {
-      sum += sv->getValue();
+      const p_num n = sv->getValue();
+
+      if (n.state == NumberState::NaN) {
+         count--;
+      }
+      else {
+         sum += n;
+      }
    }
 
    for (p_genptr<p_nlist>& mv : this->multiValues) {
@@ -34,14 +41,20 @@ p_num F_Average::getValue()
       count += nlist.size();
 
       for (const p_num& n : nlist) {
-         sum += n;
+         if (n.state == NumberState::NaN) {
+            count--;
+         }
+         else {
+            sum += n;
+         }
       }
    }
 
-   if (count != 0) {
-      sum /= p_num(count);
+   if (count == 0) {
+      return P_NaN;
    }
 
+   sum /= count;
    return sum;
 }
 
@@ -56,9 +69,9 @@ p_num F_Max::getValue()
       max = singleValues[0]->getValue();
 
       for (p_size i = 1; i < countSingle; i++) {
-         const p_num v = singleValues[i]->getValue();
-         if (v > max) {
-            max = v;
+         const p_num n = singleValues[i]->getValue();
+         if (n.state != NumberState::NaN && n > max) {
+            max = n;
          }
       }
    }
@@ -66,11 +79,9 @@ p_num F_Max::getValue()
    for (p_genptr<p_nlist>& mv : this->multiValues) {
       p_nlist nlist = mv->getValue();
       if (!nlist.empty()) {
-         const p_size len = nlist.size();
-
          if (init) {
             for (const p_num& n : nlist) {
-               if (n > max) {
+               if (n.state != NumberState::NaN && n > max) {
                   max = n;
                }
             }
@@ -78,16 +89,17 @@ p_num F_Max::getValue()
          else {
             init = true;
             max = nlist[0];
-            for (p_size j = 1; j < len; j++) {
-               if (nlist[j] > max) {
-                  max = nlist[j];
+            for (p_size j = 1; j < nlist.size(); j++) {
+               const p_num& n = nlist[j];
+               if (n.state != NumberState::NaN && n > max) {
+                  max = n;
                }
             }
          }
       }
    }
 
-   return init ? max : p_num();
+   return init ? max : P_NaN;
 }
 
 

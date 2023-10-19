@@ -23,7 +23,12 @@ PeriodUnit::PeriodUnit(p_genptr<p_num>& val, Period::PeriodUnit un)
 
 p_per PeriodUnit::getValue()
 {
-   const p_tnum n = toTimeNumber(this->value->getValue());
+   const p_num num = this->value->getValue();
+   if (num.state == NumberState::NaN) {
+      return p_per();
+   }
+
+   const p_tnum n = toTimeNumber(num);
    return p_per(n, this->unit);
 }
 

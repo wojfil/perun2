@@ -134,7 +134,12 @@ p_str CharAtIndex::getValue()
       return v;
    }
 
-   p_nint n = index->getValue().toInt();
+   const p_num num = index->getValue();
+   if (num.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   p_nint n = num.toInt();
 
    if (n < NINT_ZERO) {
       n += v.size();
@@ -147,7 +152,12 @@ p_str CharAtIndex::getValue()
 
 p_str DefinitionElement::getValue()
 {
-   p_nint n = index->getValue().toInt();
+   const p_num num = index->getValue();
+   if (num.state == NumberState::NaN) {
+      return p_str();
+   }
+
+   p_nint n = num.toInt();
 
    if (n < NINT_ZERO) {
       return p_str();

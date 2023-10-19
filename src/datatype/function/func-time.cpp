@@ -19,15 +19,23 @@
 namespace perun2::func
 {
 
+#define P_NUM_ARG_IN_TIME_FUNC(a, n, v) \
+   const p_num n = arg1->getValue(); \
+   if (n.state == NumberState::NaN) { \
+      return p_tim();\
+   } \
+   const p_tnum v = static_cast<p_tnum>(n.toInt());
+
+
 p_tim F_Christmas::getValue()
 {
-   const p_tnum year = static_cast<p_tnum>(arg1->getValue().toInt());
-   return p_tim(25, 12, year);
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n, v);
+   return p_tim(25, 12, v);
 }
 
 p_tim F_Easter::getValue()
 {
-   const p_tnum year = static_cast<p_tnum>(arg1->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n, year);
 
    const p_tnum a = year % 19;
    const p_tnum b = year / 100;
@@ -42,7 +50,7 @@ p_tim F_Easter::getValue()
 
 p_tim F_NewYear::getValue()
 {
-   const p_tnum year = static_cast<p_tnum>(arg1->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n, year);
    return p_tim(1, 1, year, 0, 0, 0);
 }
 
@@ -78,25 +86,25 @@ inline p_bool wrongSecondsRuntime(const p_tnum second)
 
 p_tim F_Time_2::getValue()
 {
-   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n1, v1);
    if (wrongMonthRuntime(v1)) {
       return p_tim();
    }
 
-   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg2, n2, v2);
    return p_tim(v1, v2);
 }
 
 
 p_tim F_Time_3::getValue()
 {
-   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg2, n2, v2);
    if (wrongMonthRuntime(v2)) {
       return p_tim();
    }
 
-   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
-   const p_tnum v3 = static_cast<p_tnum>(arg3->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n1, v1);
+   P_NUM_ARG_IN_TIME_FUNC(arg3, n3, v3);
    if (wrongDayRuntime(v1, v2, v3)) {
       return p_tim();
    }
@@ -107,19 +115,19 @@ p_tim F_Time_3::getValue()
 
 p_tim F_Time_5::getValue()
 {
-   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg2, n2, v2);
    if (wrongMonthRuntime(v2)) {
       return p_tim();
    }
 
-   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
-   const p_tnum v3 = static_cast<p_tnum>(arg3->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n1, v1);
+   P_NUM_ARG_IN_TIME_FUNC(arg3, n3, v3);
    if (wrongDayRuntime(v1, v2, v3)) {
       return p_tim();
    }
 
-   const p_tnum v4 = static_cast<p_tnum>(arg4->getValue().toInt());
-   const p_tnum v5 = static_cast<p_tnum>(arg5->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg4, n4, v4);
+   P_NUM_ARG_IN_TIME_FUNC(arg5, n5, v5);
    if (wrongSmallClockRuntime(v4, v5)) {
       return p_tim();
    }
@@ -130,29 +138,30 @@ p_tim F_Time_5::getValue()
 
 p_tim F_Time_6::getValue()
 {
-   const p_tnum v2 = static_cast<p_tnum>(arg2->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg2, n2, v2);
    if (wrongMonthRuntime(v2)) {
       return p_tim();
    }
 
-   const p_tnum v1 = static_cast<p_tnum>(arg1->getValue().toInt());
-   const p_tnum v3 = static_cast<p_tnum>(arg3->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n1, v1);
+   P_NUM_ARG_IN_TIME_FUNC(arg3, n3, v3);
    if (wrongDayRuntime(v1, v2, v3)) {
       return p_tim();
    }
 
-   const p_tnum v4 = static_cast<p_tnum>(arg4->getValue().toInt());
-   const p_tnum v5 = static_cast<p_tnum>(arg5->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg4, n4, v4);
+   P_NUM_ARG_IN_TIME_FUNC(arg5, n5, v5);
    if (wrongSmallClockRuntime(v4, v5)) {
       return p_tim();
    }
 
-   const p_tnum v6 = static_cast<p_tnum>(arg6->getValue().toInt());
+   P_NUM_ARG_IN_TIME_FUNC(arg6, n6, v6);
    if (wrongSecondsRuntime(v6)) {
       return p_tim();
    }
 
    return p_tim(v1, v2, v3, v4, v5, v6);
 }
+
 
 }

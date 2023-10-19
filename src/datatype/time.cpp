@@ -173,7 +173,7 @@ void Time::addHours(const p_tnum h)
       return;
    }
 
-   initClock(TIME_WITHOUT_SECONDS, h);
+   initClock(false, h);
 
    const p_tnum h2 = h % TNUM_HOURS_IN_DAY;
    p_tnum d = h / TNUM_HOURS_IN_DAY;
@@ -198,7 +198,7 @@ void Time::addMinutes(const p_tnum m)
       return;
    }
 
-   initClock(TIME_WITHOUT_SECONDS, m);
+   initClock(false, m);
 
    const p_tnum m2 = m % TNUM_MINUTES_IN_HOUR;
    p_tnum h = m / TNUM_MINUTES_IN_HOUR;
@@ -223,7 +223,7 @@ void Time::addSeconds(const p_tnum s)
       return;
    }
 
-   initClock(TIME_WITH_SECONDS, s);
+   initClock(true, s);
 
    const p_tnum s2 = s % TNUM_SECONDS_IN_MINUTE;
    p_tnum m = s / TNUM_SECONDS_IN_MINUTE;

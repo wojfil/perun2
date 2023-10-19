@@ -22,9 +22,6 @@
 namespace perun2
 {
 
-p_constexpr p_bool TIME_WITH_SECONDS = true;
-p_constexpr p_bool TIME_WITHOUT_SECONDS = false;
-
 
 struct Time
 {

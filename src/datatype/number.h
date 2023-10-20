@@ -39,7 +39,7 @@ union NumberValue
 };
 
 
-#define P_NaN Number(NumberState::NaN);
+#define P_NaN Number(NumberState::NaN)
 
 
 struct Number

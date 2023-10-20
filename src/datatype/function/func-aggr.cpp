@@ -29,11 +29,10 @@ p_num F_Average::getValue()
       const p_num n = sv->getValue();
 
       if (n.state == NumberState::NaN) {
-         count--;
+         return P_NaN;
       }
-      else {
-         sum += n;
-      }
+
+      sum += n;
    }
 
    for (p_genptr<p_nlist>& mv : this->multiValues) {
@@ -42,11 +41,10 @@ p_num F_Average::getValue()
 
       for (const p_num& n : nlist) {
          if (n.state == NumberState::NaN) {
-            count--;
+            return P_NaN;
          }
-         else {
-            sum += n;
-         }
+
+         sum += n;
       }
    }
 
@@ -67,10 +65,19 @@ p_num F_Max::getValue()
    if (countSingle != 0) {
       init = true;
       max = singleValues[0]->getValue();
+      
+      if (max.state == NumberState::NaN) {
+         return P_NaN;
+      }
 
       for (p_size i = 1; i < countSingle; i++) {
          const p_num n = singleValues[i]->getValue();
-         if (n.state != NumberState::NaN && n > max) {
+
+         if (n.state == NumberState::NaN) {
+            return P_NaN;
+         }
+
+         if (n > max) {
             max = n;
          }
       }
@@ -81,7 +88,11 @@ p_num F_Max::getValue()
       if (!nlist.empty()) {
          if (init) {
             for (const p_num& n : nlist) {
-               if (n.state != NumberState::NaN && n > max) {
+               if (n.state == NumberState::NaN) {
+                  return P_NaN;
+               }
+
+               if (n > max) {
                   max = n;
                }
             }
@@ -89,9 +100,19 @@ p_num F_Max::getValue()
          else {
             init = true;
             max = nlist[0];
+            
+            if (max.state == NumberState::NaN) {
+               return P_NaN;
+            }
+
             for (p_size j = 1; j < nlist.size(); j++) {
                const p_num& n = nlist[j];
-               if (n.state != NumberState::NaN && n > max) {
+
+               if (n.state == NumberState::NaN) {
+                  return P_NaN;
+               }
+
+               if (n > max) {
                   max = n;
                }
             }
@@ -109,14 +130,29 @@ p_num F_Median::getValue()
    elements.reserve(countSingle);
 
    for (p_genptr<p_num>& sv : this->singleValues) {
-      elements.emplace_back(sv->getValue());
+      const p_num n = sv->getValue();
+
+      if (n.state == NumberState::NaN) {
+         return P_NaN;
+      }
+
+      elements.emplace_back(n);
    }
 
    for (p_genptr<p_nlist>& mv : this->multiValues) {
       p_nlist nlist = mv->getValue();
-      if (!nlist.empty()) {
-         langutil::appendVector(elements, nlist);
+
+      if (nlist.empty()) {
+         continue;
       }
+
+      for (const p_num& n : nlist) {
+         if (n.state == NumberState::NaN) {
+            return P_NaN;
+         }
+      }
+
+      langutil::appendVector(elements, nlist);
    }
 
    std::sort(elements.begin(), elements.end());
@@ -143,10 +179,19 @@ p_num F_Min::getValue()
       init = true;
       min = singleValues[0]->getValue();
 
+      if (min.state == NumberState::NaN) {
+         return P_NaN;
+      }
+
       for (p_size i = 1; i < countSingle; i++) {
-         const p_num v = singleValues[i]->getValue();
-         if (v < min) {
-            min = v;
+         const p_num n = singleValues[i]->getValue();
+         
+         if (n.state == NumberState::NaN) {
+            return P_NaN;
+         }
+
+         if (n < min) {
+            min = n;
          }
       }
    }
@@ -156,6 +201,10 @@ p_num F_Min::getValue()
       if (!nlist.empty()) {
          if (init) {
             for (const p_num& n : nlist) {
+               if (n.state == NumberState::NaN) {
+                  return P_NaN;
+               }
+
                if (n < min) {
                   min = n;
                }
@@ -164,16 +213,27 @@ p_num F_Min::getValue()
          else {
             init = true;
             min = nlist[0];
+
+            if (min.state == NumberState::NaN) {
+               return P_NaN;
+            }
+
             for (p_size j = 1; j < nlist.size(); j++) {
-               if (nlist[j] < min) {
-                  min = nlist[j];
+               const p_num& n = nlist[j];
+                     
+               if (n.state == NumberState::NaN) {
+                  return P_NaN;
+               }
+
+               if (n < min) {
+                  min = n;
                }
             }
          }
       }
    }
 
-   return init ? min : p_num();
+   return init ? min : P_NaN;
 }
 
 
@@ -182,11 +242,21 @@ p_num F_Sum::getValue()
    p_num sum;
 
    for (p_genptr<p_num>& sv : this->singleValues) {
-      sum += sv->getValue();
+      const p_num n = sv->getValue();
+   
+      if (n.state == NumberState::NaN) {
+         return P_NaN;
+      }
+
+      sum += n;
    }
 
    for (p_genptr<p_nlist>& mv : this->multiValues) {
       for (const p_num n : mv->getValue()) {
+         if (n.state == NumberState::NaN) {
+            return P_NaN;
+         }
+
          sum += n;
       }
    }

@@ -24,7 +24,8 @@ namespace perun2::gen
 #define P_INCR_CONSTR_START this->constraint.loadLimit(); \
    if (this->constraint.limitIsNaN()) { \
       return false;\
-   }
+   } \
+   this->constraint.setValueToZero();
 
 
 ContextConstraint::ContextConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2)
@@ -82,7 +83,6 @@ p_bool SizeConstraint::getValue()
 p_bool CountConstraint::getValue()
 {
    P_INCR_CONSTR_START;
-   this->constraint.setValueToZero();
 
    Logic state = this->constraint.getState();
    if (state != Logic::Unknown) {
@@ -111,7 +111,6 @@ p_bool CountConstraint::getValue()
 p_bool CountInsideConstraint::getValue()
 {
    P_INCR_CONSTR_START;
-   this->constraint.setValueToZero();
 
    if (! this->context.v_exists->value || this->context.v_isfile->value) {
       return false;
@@ -146,7 +145,6 @@ p_bool CountInsideConstraint::getValue()
 p_bool SizeConstraint_Def::getValue()
 {
    P_INCR_CONSTR_START;
-   this->constraint.setValueToZero();
 
    Logic state = this->constraint.getState();
    if (state != Logic::Unknown) {
@@ -182,7 +180,6 @@ p_bool SizeConstraint_Def::getValue()
 p_bool SizeConstraint_List::getValue()
 {
    P_INCR_CONSTR_START;
-   this->constraint.setValueToZero();
 
    const p_list vs = list->getValue();
    const p_size len = vs.size();

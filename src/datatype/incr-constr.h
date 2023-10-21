@@ -48,13 +48,13 @@ public:
 
    void loadLimit();
    void setValueToZero();
-   void setValueToMinusOne();
+   //void setValueToMinusOne();
    void setValue(const p_num& val);
    void increment(const p_num& val);
    void incrementByOne();
 
    Logic getState() const;
-   p_bool getFailureResult() const;
+   //p_bool getFailureResult() const;
    p_bool getFinalResult() const;
    p_bool limitIsNaN() const;
 

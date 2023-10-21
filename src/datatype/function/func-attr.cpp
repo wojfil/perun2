@@ -99,19 +99,22 @@ p_str F_Path_Multi::getValue()
 
 p_num F_SizeDefinition::getValue()
 {
-   p_nint total = NINT_ZERO;
+   p_num total;
 
    while (definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
          definition->reset();
-         return p_num(NINT_MINUS_ONE);
+         return P_NaN;
       }
 
       const p_str v = definition->getValue();
-      const p_nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
-      if (s != NINT_MINUS_ONE) {
-         total += s;
+      const p_num s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
+
+      if (s.state == NumberState::NaN) {
+         return P_NaN;
       }
+
+      total += s;
    }
 
    return p_num(total);
@@ -120,7 +123,7 @@ p_num F_SizeDefinition::getValue()
 
 p_num F_SizeList::getValue()
 {
-   p_nint total = NINT_ZERO;
+   p_num total;
    const p_list vs = values->getValue();
    const p_size len = vs.size();
    p_bool any = false;
@@ -131,20 +134,23 @@ p_num F_SizeList::getValue()
 
    for (p_size i = 0; i < len; i++) {
       if (this->perun2.isNotRunning()) {
-         return p_num(NINT_MINUS_ONE);
+         return P_NaN;
       }
 
       const p_str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvalid(v)) {
-         const p_nint s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
-         if (s != NINT_MINUS_ONE) {
-            total += s;
-            any = true;
+         const p_num s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
+         
+         if (s.state == NumberState::NaN) {
+            return P_NaN;
          }
+
+         total += s;
+         any = true;
       }
    }
 
-   return p_num(any? total : NINT_MINUS_ONE);
+   return any ? total : P_NaN;
 }
 
 
@@ -159,7 +165,7 @@ void F_Attribute::checkExistence()
 p_num F_Attr_Size::getValue()
 {
    return this->context.invalid
-      ? NINT_MINUS_ONE
+      ? P_NaN
       : os_size(this->context.v_path->value, this->perun2);
 }
 

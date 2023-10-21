@@ -82,7 +82,7 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_DEPTH)) {
-      context.v_depth->value = p_num(NINT_MINUS_ONE);
+      context.v_depth->value = P_NaN;
    }
 
    if (attribute->has(ATTR_DRIVE)) {
@@ -154,7 +154,7 @@ void os_loadEmptyAttributes(FileContext& context)
    }
 
    if (attribute->has(ATTR_SIZE) || attribute->has(ATTR_SIZE_FILE_ONLY)) {
-      context.v_size->value = p_num(NINT_MINUS_ONE);
+      context.v_size->value = P_NaN;
    }
 }
 

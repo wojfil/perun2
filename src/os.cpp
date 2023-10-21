@@ -251,11 +251,11 @@ void os_loadAttributes(FileContext& context)
    if (attribute->has(ATTR_SIZE)) {
       if (context.v_exists->value) {
          context.v_size->value = context.v_isfile->value
-            ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-            : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
+            ? static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
+            : os_sizeDirectory(context.v_path->value, context.attribute->perun2);
       }
       else {
-         context.v_size->value = p_num(NINT_MINUS_ONE);
+         context.v_size->value = P_NaN;
       }
    }
    else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
@@ -265,7 +265,7 @@ void os_loadAttributes(FileContext& context)
          }
       }
       else {
-         context.v_size->value = p_num(NINT_MINUS_ONE);
+         context.v_size->value = P_NaN;
       }
    }
 }
@@ -384,8 +384,8 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
 
    if (attribute->has(ATTR_SIZE)) {
       context.v_size->value = context.v_isfile->value
-         ? p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)))
-         : p_num(os_sizeDirectory(context.v_path->value, context.attribute->perun2));
+         ? static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
+         : os_sizeDirectory(context.v_path->value, context.attribute->perun2);
    }
    else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
       if (context.v_isfile->value) {
@@ -626,16 +626,16 @@ p_bool os_readonly(const p_str& path)
    return os_hasAttribute(path, FILE_ATTRIBUTE_READONLY);
 }
 
-p_nint os_size(const p_str& path, p_perun2& p2)
+p_num os_size(const p_str& path, p_perun2& p2)
 {
    p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return NINT_MINUS_ONE;
+      return P_NaN;
    }
 
    const DWORD& dwAttrib = data.dwFileAttributes;
    if (dwAttrib == INVALID_FILE_ATTRIBUTES) {
-      return NINT_MINUS_ONE;
+      return P_NaN;
    }
 
    return dwAttrib & FILE_ATTRIBUTE_DIRECTORY
@@ -643,22 +643,22 @@ p_nint os_size(const p_str& path, p_perun2& p2)
       : static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-p_nint os_sizeFile(const p_str& path)
+p_num os_sizeFile(const p_str& path)
 {
    p_adata data;
    if (!GetFileAttributesExW(P_WINDOWS_PATH(path), GetFileExInfoStandard, &data)) {
-      return NINT_MINUS_ONE;
+      return P_NaN;
    }
 
    const DWORD& dwAttrib = data.dwFileAttributes;
    if (dwAttrib == INVALID_FILE_ATTRIBUTES || (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
-      return NINT_MINUS_ONE;
+      return P_NaN;
    }
 
    return static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh));
 }
 
-p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
+p_num os_sizeDirectory(const p_str& path, p_perun2& p2)
 {
    std::vector<p_entry> entries;
    p_list paths = { path };
@@ -673,7 +673,7 @@ p_nint os_sizeDirectory(const p_str& path, p_perun2& p2)
             os_closeEntry(entry);
          }
 
-         return NINT_MINUS_ONE;
+         return P_NaN;
       }
 
       if (goDeeper) {

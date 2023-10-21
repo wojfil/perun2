@@ -61,7 +61,13 @@ p_bool SizeConstraint::getValue()
 
    if (this->context.v_isfile->value) {
       if (this->rereadFileSize)  {
-         this->constraint.setValue(os_sizeFile(this->context.v_path->value));
+         const p_num n = os_sizeFile(this->context.v_path->value);
+
+         if (n.state == NumberState::NaN) {
+            return false;
+         }
+
+         this->constraint.setValue(n);
       }
       else {
          this->constraint.setValue(this->context.v_size->value);
@@ -106,13 +112,11 @@ p_bool CountConstraint::getValue()
 p_bool CountInsideConstraint::getValue()
 {
    P_INCR_CONSTR_START;
-   this->constraint.setValueToMinusOne();
+   this->constraint.setValueToZero();
 
    if (! this->context.v_exists->value || this->context.v_isfile->value) {
-      return this->constraint.getFailureResult();
+      return false;
    }
-
-   this->constraint.setValueToZero();
 
    Logic state = this->constraint.getState();
    if (state != Logic::Unknown) {
@@ -157,16 +161,18 @@ p_bool SizeConstraint_Def::getValue()
       }
 
       const p_str v = this->definition->getValue();
-      const p_nint s = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
+      const p_num n = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
 
-      if (s != NINT_MINUS_ONE) {
-         this->constraint.increment(s);
-         state = this->constraint.getState();
+      if (n.state == NumberState::NaN) {
+         return false;
+      }
 
-         if (state != Logic::Unknown) {
-            this->definition->reset();
-            return state == Logic::True;
-         }
+      this->constraint.increment(n);
+      state = this->constraint.getState();
+
+      if (state != Logic::Unknown) {
+         this->definition->reset();
+         return state == Logic::True;
       }
    }
 
@@ -177,21 +183,19 @@ p_bool SizeConstraint_Def::getValue()
 p_bool SizeConstraint_List::getValue()
 {
    P_INCR_CONSTR_START;
-   this->constraint.setValueToMinusOne();
+   this->constraint.setValueToZero();
 
    Logic state = this->constraint.getState();
    if (state != Logic::Unknown) {
       return state == Logic::True;
    }
 
-   this->constraint.setValueToZero();
-
    const p_list vs = list->getValue();
    const p_size len = vs.size();
    p_bool any = false;
 
    if (len == 0) {
-      return this->constraint.getFinalResult();
+      return false;
    }
 
    for (p_size i = 0; i < len; i++) {
@@ -201,17 +205,20 @@ p_bool SizeConstraint_List::getValue()
 
       const p_str v = os_trim(vs[i]);
       if (!v.empty() && !os_isInvalid(v)) {
-         const p_nint s = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
-         if (s != NINT_MINUS_ONE) {
-            this->constraint.increment(s);
-            any = true;
+         const p_num n = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
+
+         if (n.state == NumberState::NaN) {
+            return false;
          }
+
+         this->constraint.increment(n);
+         any = true;
       }
    }
    
    return any
       ? this->constraint.getFinalResult()
-      : this->constraint.getFailureResult();
+      : false;
 }
 
 

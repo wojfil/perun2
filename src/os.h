@@ -82,9 +82,9 @@ p_bool os_isDirectory(const p_fdata& data);
 p_per os_lifetime(const p_str& path);
 p_tim os_modification(const p_str& path);
 p_bool os_readonly(const p_str& path);
-p_nint os_size(const p_str& path, p_perun2& p2);
-p_nint os_sizeFile(const p_str& path);
-p_nint os_sizeDirectory(const p_str& path, p_perun2& p2);
+p_num os_size(const p_str& path, p_perun2& p2);
+p_num os_sizeFile(const p_str& path);
+p_num os_sizeDirectory(const p_str& path, p_perun2& p2);
 p_bool os_sizeDirectorySatisfies(const p_str& path, IncrementalConstraint& constr, p_perun2& p2);
 
 p_bool os_exists(const p_str& path);

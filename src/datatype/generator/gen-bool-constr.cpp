@@ -55,8 +55,7 @@ SizeConstraint_List::SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list
 p_bool SizeConstraint::getValue()
 {
    if (! this->context.v_exists->value) {
-      this->constraint.setValue(this->context.v_size->value);
-      return this->constraint.getFinalResult();
+      return false;
    }
 
    if (this->context.v_isfile->value) {
@@ -185,11 +184,6 @@ p_bool SizeConstraint_List::getValue()
    P_INCR_CONSTR_START;
    this->constraint.setValueToZero();
 
-   Logic state = this->constraint.getState();
-   if (state != Logic::Unknown) {
-      return state == Logic::True;
-   }
-
    const p_list vs = list->getValue();
    const p_size len = vs.size();
    p_bool any = false;
@@ -213,6 +207,11 @@ p_bool SizeConstraint_List::getValue()
 
          this->constraint.increment(n);
          any = true;
+         const Logic state = this->constraint.getState();
+
+         if (state != Logic::Unknown) {
+            return state == Logic::True;
+         }
       }
    }
    

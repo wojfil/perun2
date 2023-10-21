@@ -39,6 +39,9 @@ void CS_StringComArg::run()
       this->context->loadData(this->string->getValue());
       this->command->run();
    }
+   else {
+      this->perun2.contexts.success->value = false;
+   }
 }
 
 
@@ -53,12 +56,26 @@ void CS_ListComArg::run()
 
    p_num index;
    this->context->resetIndex();
+   p_bool anyFailure = false;
 
-   while (this->perun2.isRunning() && index != length) {
+   while (index != length) {
+      if (this->perun2.isNotRunning()) {
+         anyFailure = true;
+         break;
+      }
+
       this->context->loadData(values[index.value.i]);
       this->command->run();
       index++;
       this->context->index->value = index;
+
+      if (!this->perun2.contexts.success->value) {
+         anyFailure = true;
+      }
+   }
+
+   if (anyFailure) {
+      this->perun2.contexts.success->value = false;
    }
 }
 
@@ -67,9 +84,11 @@ void CS_DefinitionComArg::run()
 {
    p_num index;
    this->context->resetIndex();
+   p_bool anyFailure = false;
 
    while (this->definition->hasNext()) {
       if (this->perun2.isNotRunning()) {
+         anyFailure = true;
          this->definition->reset();
          break;
       }
@@ -78,6 +97,14 @@ void CS_DefinitionComArg::run()
       this->command->run();
       index++;
       this->context->index->value = index;
+
+      if (!this->perun2.contexts.success->value) {
+         anyFailure = true;
+      }
+   }
+
+   if (anyFailure) {
+      this->perun2.contexts.success->value = false;
    }
 }
 

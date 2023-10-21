@@ -50,7 +50,7 @@ void CS_ListComArg::run()
    const p_list values = list->getValue();
    const p_num length = p_num(static_cast<p_nint>(values.size()));
 
-   if (length.value.i == NINT_ZERO) {
+   if (length.isZero()) {
       return;
    }
 

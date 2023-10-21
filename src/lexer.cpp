@@ -452,9 +452,9 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
 
       // try to convert the number into integer
       // if it equals the base double value, create an integer constant instead
-      const p_nint integer = static_cast<p_nint>(dbl);
-      if (dbl == integer) {
-         return Token(p_num(integer), line, start, length, mode, p2);
+      const p_ndouble trunc = std::trunc(dbl);
+      if (trunc == dbl) {
+         return Token(p_num(static_cast<p_nint>(trunc)), line, start, length, mode, p2);
       }
 
       return Token(p_num(dbl), line, start, length, mode, p2);

@@ -51,10 +51,11 @@ public:
    void onFinish();
 
    p_set copyPaths;
-   std::unordered_map<p_str, p_set> selectPaths;
    uint32_t failedCopy = 0;
-   uint32_t failedSelect = 0;
    p_set invalidCopy;
+
+   std::unordered_map<p_str, p_set> selectPaths;
+   uint32_t failedSelect = 0;
    p_set invalidSelect;
 
 private:

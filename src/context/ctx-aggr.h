@@ -27,7 +27,6 @@ namespace perun2
    {
       AggregateContext() = delete;
       AggregateContext(p_perun2& p2);
-      void runAggregate();
 
       comm::Aggregate aggregate;
    };

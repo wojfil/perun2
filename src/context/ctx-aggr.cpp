@@ -21,11 +21,5 @@ namespace perun2
 
    AggregateContext::AggregateContext(p_perun2& p2)
       : aggregate(p2) { };
-   
-   
-   void AggregateContext::runAggregate() 
-   { 
-      this->aggregate.run(); 
-   }
 
 }

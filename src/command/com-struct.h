@@ -31,7 +31,7 @@ struct CS_RawBlock : Command
 {
 public:
    CS_RawBlock(std::vector<p_comptr>& coms, p_ucptr& ctx, p_perun2& p2)
-      : length(coms.size()), context(std::move(ctx)), perun2(p2)
+      : context(std::move(ctx)), perun2(p2)
    {
       langutil::transferUniquePtrs(coms, commands);
    };
@@ -40,7 +40,6 @@ public:
 
 private:
    std::vector<p_comptr> commands;
-   const p_size length;
    p_perun2& perun2;
    p_ucptr context;
 };
@@ -50,7 +49,7 @@ struct CS_Block : Command
 {
 public:
    CS_Block(std::vector<p_comptr>& coms, p_acptr& ctx, p_perun2& p2)
-      : length(coms.size()), perun2(p2), context(std::move(ctx))
+      : perun2(p2), context(std::move(ctx))
    {
       langutil::transferUniquePtrs(coms, commands);
    };
@@ -59,7 +58,6 @@ public:
 
 private:
    std::vector<p_comptr> commands;
-   const p_size length;
    p_perun2& perun2;
    p_acptr context;
 };

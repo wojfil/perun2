@@ -23,8 +23,12 @@ namespace perun2::comm
 
 void CS_RawBlock::run()
 {
-   for (p_size i = 0; this->perun2.isRunning() && i < this->length; i++) {
-      (this->commands[i])->run();
+   for (p_comptr& cmd : this->commands) {
+      if (this->perun2.isNotRunning()) {
+         return;
+      }
+
+      cmd->run();
    }
 }
 
@@ -33,8 +37,12 @@ void CS_Block::run()
 {
    this->context->aggregate.onStart();
 
-   for (p_size i = 0; this->perun2.isRunning() && i < this->length; i++) {
-      (this->commands[i])->run();
+   for (p_comptr& cmd : this->commands) {
+      if (this->perun2.isNotRunning()) {
+         return;
+      }
+
+      cmd->run();
       this->context->aggregate.onIteration();
    }
 

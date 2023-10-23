@@ -48,6 +48,7 @@ public:
    Aggregate() = delete;
    Aggregate(p_perun2& p2);
    void set (const p_agunit v);
+   void onStart();
    void onFinish();
 
    p_set copyPaths;

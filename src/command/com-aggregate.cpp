@@ -31,6 +31,22 @@ void Aggregate::set(const p_agunit v)
    }
 }
 
+
+void Aggregate::onStart()
+{
+   if (this->has(AGGR_SELECT)) {
+      this->selectPaths.clear();
+      this->invalidSelect.clear();
+      this->failedSelect = 0;
+   }
+
+   if (this->has(AGGR_COPY)) {
+      this->copyPaths.clear();
+      this->invalidCopy.clear();
+      this->failedCopy = 0;
+   }
+}
+
 void Aggregate::onFinish()
 {
    if (this->value == AGGR_NULL) {
@@ -55,14 +71,12 @@ void Aggregate::copy()
       for (auto it = this->invalidCopy.begin(); it != this->invalidCopy.end(); it++) {
          logCopyError(this->perun2, *it);
       }
-      this->invalidCopy.clear();
    }
 
    if (this->failedCopy > 0) {
       for (uint32_t i = 0; i < this->failedCopy; i++) {
          logCopyError(this->perun2, p_str());
       }
-      this->failedCopy = 0;
    }
 
    if (!this->copyPaths.empty()) {
@@ -92,8 +106,6 @@ void Aggregate::copy()
             this->contexts.success->value = false;
          }
       }
-
-      this->copyPaths.clear();
    }
 }
 
@@ -105,7 +117,6 @@ void Aggregate::select()
       for (auto it = invalidSelect.begin(); it != invalidSelect.end(); it++) {
          logSelectError(this->perun2, *it);
       }
-      invalidSelect.clear();
    }
 
    if (failedSelect > 0) {
@@ -113,7 +124,6 @@ void Aggregate::select()
          logSelectError(this->perun2, p_str());
       }
 
-      failedSelect = 0;
       this->selectFailure = true;
    }
 
@@ -161,8 +171,6 @@ void Aggregate::select()
             anyGoodPath = false;
          }
       }
-
-      selectPaths.clear();
    }
 }
 

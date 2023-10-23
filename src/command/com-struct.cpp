@@ -31,6 +31,8 @@ void CS_RawBlock::run()
 
 void CS_Block::run()
 {
+   this->context->aggregate.onStart();
+
    for (p_size i = 0; this->perun2.isRunning() && i < this->length; i++) {
       (this->commands[i])->run();
    }
@@ -52,6 +54,7 @@ void CS_Times::run()
       return;
    }
 
+   this->context->aggregate.onStart();
    this->context->resetIndex();
 
    while (this->perun2.isRunning() && repeats != NINT_ZERO) {
@@ -68,6 +71,7 @@ void CS_Times::run()
 
 void CS_While::run()
 {
+   this->context->aggregate.onStart();
    this->context->resetIndex();
 
    while (this->perun2.isRunning() && this->condition->getValue()) {
@@ -84,6 +88,7 @@ void CS_While::run()
 void CS_StringLoop::run()
 {
    if (this->perun2.isRunning()) {
+      this->context->aggregate.onStart();
       this->context->resetIndex();
       this->context->loadData(this->string->getValue());
       this->command->run();
@@ -99,6 +104,7 @@ void CS_DefinitionLoop::run()
 {
    p_num index = NINT_ZERO;
    this->context->resetIndex();
+   this->context->aggregate.onStart();
 
    while (this->definition->hasNext()) {
       if (!this->perun2.isRunning()) {
@@ -126,6 +132,8 @@ CS_ContextlessLoop::CS_ContextlessLoop(p_defptr& def, p_comptr& com, p_perun2& p
 
 void CS_ContextlessLoop::run()
 {
+   this->context->aggregate.onStart();
+
    while (this->definition->hasNext()) {
       if (!this->perun2.isRunning()) {
          this->definition->reset();
@@ -150,6 +158,7 @@ void CS_ListLoop::run()
    }
 
    p_num index = NINT_ZERO;
+   this->context->aggregate.onStart();
    this->context->resetIndex();
 
    while (this->perun2.isRunning() && index != length) {
@@ -186,6 +195,7 @@ void CS_InsideString::run()
       this->context->loadData(this->string->getValue());
 
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
+         this->context->aggregate.onStart();
          this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
@@ -200,6 +210,7 @@ void CS_InsideString::run()
 void CS_InsideDefinition::run()
 {
    p_num index = NINT_ZERO;
+   this->context->aggregate.onStart();
    this->context->resetIndex();
 
    while (definition->hasNext()) {
@@ -232,6 +243,8 @@ CS_InsideContextless::CS_InsideContextless(p_defptr& def, p_comptr& com, p_lcptr
 
 void CS_InsideContextless::run()
 {
+   this->context->aggregate.onStart();
+
    while (definition->hasNext()) {
       if (!this->perun2.isRunning()) {
          this->definition->reset();
@@ -261,6 +274,7 @@ void CS_InsideList::run()
 
    p_num index = NINT_ZERO;
    p_nint outIndex = NINT_ZERO;
+   this->context->aggregate.onStart();
    this->context->resetIndex();
 
    while (this->perun2.isRunning() && index != length) {

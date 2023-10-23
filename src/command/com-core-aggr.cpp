@@ -24,6 +24,7 @@ namespace perun2::comm
 void C_AggrCopy_String::run()
 {
    const p_str n = os_trim(value->getValue());
+
    if (n.empty()) {
       aggregate->failedCopy++;
    }
@@ -37,11 +38,9 @@ void C_AggrCopy_String::run()
 
 void C_AggrCopy_List::run()
 {
-   const p_list list = value->getValue();
-   const p_size len = list.size();
+   for (const p_str& str : value->getValue()) {
+      const p_str n = os_trim(str);
 
-   for (p_size i = 0; i < len; i++) {
-      const p_str n = os_trim(list[i]);
       if (n.empty()) {
          aggregate->failedCopy++;
       }
@@ -90,13 +89,12 @@ void C_AggrSelect_String::run()
 
 void C_AggrSelect_List::run()
 {
-   const p_list elements = value->getValue();
-   const p_size length = elements.size();
    p_str prevParent;
-   p_set* prevSet;
+   p_set* prevSet = nullptr;
 
-   for (p_size i = 0; i < length; i++) {
-      const p_str n = os_trim(elements[i]);
+   for (const p_str& str : value->getValue()) {
+      const p_str n = os_trim(str);
+
       if (n.empty()) {
          aggregate->failedSelect++;
       }
@@ -109,7 +107,7 @@ void C_AggrSelect_List::run()
          if (os_hasParentDirectory(path)) {
             const p_str parent = os_parent(path);
 
-            if (i > 0 && parent == prevParent) {
+            if (prevSet != nullptr && parent == prevParent) {
                prevSet->insert(path);
             }
             else {
@@ -192,9 +190,8 @@ void C_Copy_String::run()
 void C_Copy_List::run()
 {
    const p_list elements = value->getValue();
-   const p_size length = elements.size();
 
-   if (length == 0) {
+   if (elements.empty()) {
       this->perun2.contexts.success->value = true;
       return;
    }
@@ -202,8 +199,8 @@ void C_Copy_List::run()
    p_set set;
    p_bool anyFailure = false;
 
-   for (p_size i = 0; i < length; i++) {
-      const p_str n = os_trim(elements[i]);
+   for (const p_str& str : elements) {
+      const p_str n = os_trim(str);
       if (os_isInvalid(n)) {
          logCopyError(this->perun2, n);
          anyFailure = true;
@@ -344,17 +341,16 @@ void C_Select_String::run()
 void C_Select_List::run()
 {
    const p_list elements = value->getValue();
-   const p_size length = elements.size();
 
-   if (length == 0) {
+   if (elements.empty()) {
       this->perun2.contexts.success->value = true;
       return;
    }
 
    this->selector.reset();
 
-   for (p_size i = 0; i < length; i++) {
-      const p_str n = os_trim(elements[i]);
+   for (const p_str& str : elements) {
+      const p_str n = os_trim(str);
 
       if (os_isInvalid(n)) {
          logSelectError(this->perun2, n);

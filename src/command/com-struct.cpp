@@ -243,7 +243,7 @@ CS_InsideContextless::CS_InsideContextless(p_defptr& def, p_comptr& com, p_lcptr
 
 void CS_InsideContextless::run()
 {
-   this->context->aggregate.onStart();
+   this->fileContext->aggregate.onStart();
 
    while (definition->hasNext()) {
       if (!this->perun2.isRunning()) {

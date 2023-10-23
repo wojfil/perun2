@@ -367,7 +367,8 @@ static p_bool c_select(p_comptr& result, const Token& word, const Tokens& tks, c
          FileContext* fc = p2.contexts.getFileContext();
          fc->attribute->setCoreCommandBase();
          fc->attribute->set(ATTR_PARENT);
-         result = std::make_unique<C_AggrSelect_This>(aggr, *fc);
+         aggr->markIterationSelect(fc);
+         result = std::make_unique<C_DoNothing>();
          return true;
       }
 
@@ -1010,7 +1011,8 @@ static p_bool c_copySimple(p_comptr& result, const Token& word, const Tokens& tk
       if (tks.isEmpty()) {
          FileContext* fc = p2.contexts.getFileContext();
          fc->attribute->setCoreCommandBase();
-         result = std::make_unique<C_AggrCopy_This>(aggr, *fc);
+         aggr->markIterationCopy(fc);
+         result = std::make_unique<C_DoNothing>();
          return true;
       }
 

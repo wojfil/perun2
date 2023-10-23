@@ -31,6 +31,17 @@ void Aggregate::set(const p_agunit v)
    }
 }
 
+void Aggregate::markIterationCopy(FileContext* ctx)
+{
+   this->iterationContext = ctx;
+   this->iterationCopy = true;
+}
+
+void Aggregate::markIterationSelect(FileContext* ctx)
+{
+   this->iterationContext = ctx;
+   this->iterationSelect = true;
+}
 
 void Aggregate::onStart()
 {
@@ -44,6 +55,41 @@ void Aggregate::onStart()
       this->copyPaths.clear();
       this->invalidCopy.clear();
       this->failedCopy = 0;
+   }
+}
+
+void Aggregate::onIteration()
+{
+   if (this->iterationCopy) {
+      if (this->iterationContext->v_exists->getValue()) {
+         this->copyPaths.insert(this->iterationContext->v_path->value);
+      }
+      else {
+         this->invalidCopy.insert(os_fullname(this->iterationContext->trimmed));
+      }
+   }
+
+   if (this->iterationSelect) {
+      if (this->iterationContext->v_exists->value) {
+         if (this->iterationContext->v_parent->value.empty()) {
+            this->invalidSelect.insert(os_fullname(this->iterationContext->trimmed));
+         }
+         else {
+            auto it = this->selectPaths.find(this->iterationContext->v_parent->value);
+
+            if (it == this->selectPaths.end()) {
+               p_set newSet;
+               newSet.insert(this->iterationContext->v_path->value);
+               this->selectPaths.insert(std::pair<p_str, p_set>(this->iterationContext->v_parent->value, newSet));
+            }
+            else {
+               it->second.insert(this->iterationContext->v_path->value);
+            }
+         }
+      }
+      else {
+         this->invalidSelect.insert(os_fullname(this->iterationContext->trimmed));
+      }
    }
 }
 

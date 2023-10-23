@@ -47,8 +47,11 @@ struct Aggregate
 public:
    Aggregate() = delete;
    Aggregate(p_perun2& p2);
-   void set (const p_agunit v);
+   void set(const p_agunit v);
+   void markIterationCopy(FileContext* ctx);
+   void markIterationSelect(FileContext* ctx);
    void onStart();
+   void onIteration();
    void onFinish();
 
    p_set copyPaths;
@@ -68,6 +71,10 @@ private:
    Contexts& contexts;
    p_agunit value = AGGR_NULL;
    p_bool selectFailure = false;
+   
+   p_bool iterationCopy = false;
+   p_bool iterationSelect = false;
+   FileContext* iterationContext;
 };
 
 }

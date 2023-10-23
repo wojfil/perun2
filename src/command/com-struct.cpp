@@ -35,6 +35,7 @@ void CS_Block::run()
 
    for (p_size i = 0; this->perun2.isRunning() && i < this->length; i++) {
       (this->commands[i])->run();
+      this->context->aggregate.onIteration();
    }
 
    this->context->aggregate.onFinish();
@@ -63,6 +64,7 @@ void CS_Times::run()
       repeats--;
 
       P_CHECK_LOOP_BREAK;
+      this->context->aggregate.onIteration();
    }
 
    this->context->aggregate.onFinish();
@@ -79,6 +81,7 @@ void CS_While::run()
       this->context->incrementIndex();
 
       P_CHECK_LOOP_BREAK;
+      this->context->aggregate.onIteration();
    }
 
    this->context->aggregate.onFinish();
@@ -95,6 +98,7 @@ void CS_StringLoop::run()
 
       P_CHECK_SOFT_LOOP_BREAK;
 
+      this->context->aggregate.onIteration();
       this->context->aggregate.onFinish();
    }
 }
@@ -115,10 +119,11 @@ void CS_DefinitionLoop::run()
       this->context->loadData(this->definition->getValue());
       this->command->run();
 
-      P_CHECK_LOOP_BREAK;
-
       index++;
       this->context->index->value = index;
+
+      P_CHECK_LOOP_BREAK;
+      this->context->aggregate.onIteration();
    }
 
    this->context->aggregate.onFinish();
@@ -142,6 +147,7 @@ void CS_ContextlessLoop::run()
 
       this->command->run();
       P_CHECK_LOOP_BREAK;
+      this->context->aggregate.onIteration();
    }
 
    this->context->aggregate.onFinish();
@@ -168,6 +174,7 @@ void CS_ListLoop::run()
       this->context->index->value = index;
 
       P_CHECK_LOOP_BREAK;
+      this->context->aggregate.onIteration();
    }
 
    this->context->aggregate.onFinish();
@@ -201,6 +208,7 @@ void CS_InsideString::run()
 
          P_CHECK_SOFT_LOOP_BREAK;
 
+         this->context->aggregate.onIteration();
          this->context->aggregate.onFinish();
       }
    }
@@ -225,10 +233,11 @@ void CS_InsideDefinition::run()
          this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
-         P_CHECK_LOOP_BREAK;
-
          index++;
          this->context->index->value = index;
+
+         P_CHECK_LOOP_BREAK;
+         this->context->aggregate.onIteration();
       }
    }
 
@@ -256,6 +265,7 @@ void CS_InsideContextless::run()
          this->command->run();
 
          P_CHECK_LOOP_BREAK;
+         this->fileContext->aggregate.onIteration();
       }
    }
 
@@ -283,10 +293,11 @@ void CS_InsideList::run()
          this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
-         P_CHECK_LOOP_BREAK;
-
          outIndex++;
          this->context->index->value = outIndex;
+
+         P_CHECK_LOOP_BREAK;
+         this->context->aggregate.onIteration();
       }
 
       index++;

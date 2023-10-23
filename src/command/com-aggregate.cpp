@@ -31,7 +31,7 @@ void Aggregate::set(const p_agunit v)
    }
 }
 
-void Aggregate::run()
+void Aggregate::onFinish()
 {
    if (this->value == AGGR_NULL) {
       return;

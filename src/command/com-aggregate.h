@@ -48,7 +48,7 @@ public:
    Aggregate() = delete;
    Aggregate(p_perun2& p2);
    void set (const p_agunit v);
-   void run();
+   void onFinish();
 
    p_set copyPaths;
    std::unordered_map<p_str, p_set> selectPaths;

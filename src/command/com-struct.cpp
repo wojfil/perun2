@@ -35,7 +35,7 @@ void CS_Block::run()
       (this->commands[i])->run();
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -62,7 +62,7 @@ void CS_Times::run()
       P_CHECK_LOOP_BREAK;
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -77,7 +77,7 @@ void CS_While::run()
       P_CHECK_LOOP_BREAK;
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -90,7 +90,7 @@ void CS_StringLoop::run()
 
       P_CHECK_SOFT_LOOP_BREAK;
 
-      this->context->aggregate.run();
+      this->context->aggregate.onFinish();
    }
 }
 
@@ -115,7 +115,7 @@ void CS_DefinitionLoop::run()
       this->context->index->value = index;
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -136,7 +136,7 @@ void CS_ContextlessLoop::run()
       P_CHECK_LOOP_BREAK;
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -161,7 +161,7 @@ void CS_ListLoop::run()
       P_CHECK_LOOP_BREAK;
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -191,7 +191,7 @@ void CS_InsideString::run()
 
          P_CHECK_SOFT_LOOP_BREAK;
 
-         this->context->aggregate.run();
+         this->context->aggregate.onFinish();
       }
    }
 }
@@ -221,7 +221,7 @@ void CS_InsideDefinition::run()
       }
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 
@@ -246,7 +246,7 @@ void CS_InsideContextless::run()
       }
    }
 
-   this->fileContext->aggregate.run();
+   this->fileContext->aggregate.onFinish();
 }
 
 
@@ -278,7 +278,7 @@ void CS_InsideList::run()
       index++;
    }
 
-   this->context->aggregate.run();
+   this->context->aggregate.onFinish();
 }
 
 }

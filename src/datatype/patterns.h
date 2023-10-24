@@ -23,6 +23,23 @@
    else if (this->perun2.state == State::s_Continue) { \
       this->perun2.state = State::s_Running; \
       continue; \
+   } \
+   else if (this->perun2.state == State::s_Exit) { \
+      return; \
+   }
+
+
+#define P_CHECK_DEFINITION_LOOP_BREAK if (this->perun2.state == State::s_Break) { \
+      this->perun2.state = State::s_Running; \
+      this->definition->reset(); \
+      break; \
+   } \
+   else if (this->perun2.state == State::s_Continue) { \
+      this->perun2.state = State::s_Running; \
+      continue; \
+   } \
+   else if (this->perun2.state == State::s_Exit) { \
+      return; \
    }
 
 
@@ -31,6 +48,9 @@
       case State::s_Continue: { \
          this->perun2.state = State::s_Running; \
          break; \
+      } \
+      case State::s_Exit: { \
+         return; \
       } \
    }
 

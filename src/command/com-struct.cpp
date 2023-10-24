@@ -66,7 +66,7 @@ void CS_Times::run()
    this->context->aggregate.onStart();
    this->context->resetIndex();
 
-   while (this->perun2.isRunning() && repeats != NINT_ZERO) {
+   while (repeats != NINT_ZERO) {
       this->command->run();
       this->context->incrementIndex();
       repeats--;
@@ -84,7 +84,7 @@ void CS_While::run()
    this->context->aggregate.onStart();
    this->context->resetIndex();
 
-   while (this->perun2.isRunning() && this->condition->getValue()) {
+   while (this->condition->getValue()) {
       this->command->run();
       this->context->incrementIndex();
 
@@ -119,18 +119,14 @@ void CS_DefinitionLoop::run()
    this->context->aggregate.onStart();
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.isRunning()) {
-         this->definition->reset();
-         break;
-      }
-
       this->context->loadData(this->definition->getValue());
       this->command->run();
 
       index++;
       this->context->index->value = index;
 
-      P_CHECK_LOOP_BREAK;
+      P_CHECK_DEFINITION_LOOP_BREAK;
+
       this->context->aggregate.onIteration();
    }
 
@@ -148,13 +144,10 @@ void CS_ContextlessLoop::run()
    this->context->aggregate.onStart();
 
    while (this->definition->hasNext()) {
-      if (!this->perun2.isRunning()) {
-         this->definition->reset();
-         break;
-      }
-
       this->command->run();
-      P_CHECK_LOOP_BREAK;
+
+      P_CHECK_DEFINITION_LOOP_BREAK;
+
       this->context->aggregate.onIteration();
    }
 
@@ -175,7 +168,7 @@ void CS_ListLoop::run()
    this->context->aggregate.onStart();
    this->context->resetIndex();
 
-   while (this->perun2.isRunning() && index != length) {
+   while (index != length) {
       this->context->loadData(values[static_cast<p_size>(index.value.i)]);
       this->command->run();
       index++;
@@ -230,11 +223,6 @@ void CS_InsideDefinition::run()
    this->context->resetIndex();
 
    while (definition->hasNext()) {
-      if (!this->perun2.isRunning()) {
-         this->definition->reset();
-         break;
-      }
-
       this->context->loadData(this->definition->getValue());
 
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
@@ -243,10 +231,10 @@ void CS_InsideDefinition::run()
 
          index++;
          this->context->index->value = index;
-
-         P_CHECK_LOOP_BREAK;
          this->context->aggregate.onIteration();
       }
+
+      P_CHECK_DEFINITION_LOOP_BREAK;
    }
 
    this->context->aggregate.onFinish();
@@ -263,18 +251,13 @@ void CS_InsideContextless::run()
    this->fileContext->aggregate.onStart();
 
    while (definition->hasNext()) {
-      if (!this->perun2.isRunning()) {
-         this->definition->reset();
-         break;
-      }
-
       if (this->fileContext->v_exists->value && this->fileContext->v_isdirectory->value) {
          this->locContext->loadData(os_trim(this->definition->getValue()));
          this->command->run();
-
-         P_CHECK_LOOP_BREAK;
          this->fileContext->aggregate.onIteration();
       }
+
+      P_CHECK_DEFINITION_LOOP_BREAK;
    }
 
    this->fileContext->aggregate.onFinish();
@@ -295,19 +278,19 @@ void CS_InsideList::run()
    this->context->aggregate.onStart();
    this->context->resetIndex();
 
-   while (this->perun2.isRunning() && index != length) {
+   while (index != length) {
       this->context->loadData(values[static_cast<p_size>(index.value.i)]);
+
       if (this->context->v_exists->value && this->context->v_isdirectory->value) {
          this->locContext->loadData(this->context->trimmed);
          this->command->run();
 
          outIndex++;
          this->context->index->value = outIndex;
-
-         P_CHECK_LOOP_BREAK;
          this->context->aggregate.onIteration();
       }
 
+      P_CHECK_LOOP_BREAK;
       index++;
    }
 

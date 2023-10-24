@@ -160,7 +160,7 @@ void CS_ListLoop::run()
    const p_list values = this->list->getValue();
    const p_num length = static_cast<p_nint>(values.size());
 
-   if (length == 0) {
+   if (length.isZero()) {
       return;
    }
 
@@ -269,7 +269,7 @@ void CS_InsideList::run()
    const p_list values = this->list->getValue();
    const p_num length = p_num(static_cast<p_nint>(values.size()));
 
-   if (length.value.i == 0) {
+   if (length.isZero()) {
       return;
    }
 

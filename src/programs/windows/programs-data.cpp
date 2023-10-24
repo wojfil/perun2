@@ -259,12 +259,40 @@ void WP_Paint::actualize()
 };
 
 
-WP_Photoshop::WP_Photoshop(p_perun2& p2) : WinProgram(p2, { L"photoshop", L"adobephotoshop" }) { };
+WP_Photoshop::WP_Photoshop(p_perun2& p2) : WinProgram(p2, { L"photoshop", L"adobephotoshop" }) 
+{ 
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/classes/photoshop.*file*/defaulticon");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/photoshop.*file*/shell/open/command");
+   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, L"photoshop.*file*/defaulticon");
+   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, L"photoshop.*file*/shell/open/command");
+};
 
 
 void WP_Photoshop::actualize()
 {
-   //
+   while (this->r_1->hasNext()) {
+      if (this->takeValueBeforeLastComma(this->r_1, EMPTY_STRING)) {
+         return;
+      }
+   }
+
+   while (this->r_2->hasNext()) {
+      if (this->takeValueFirstArg(this->r_2, EMPTY_STRING)) {
+         return;
+      }
+   }
+
+   while (this->r_3->hasNext()) {
+      if (this->takeValueBeforeLastComma(this->r_3, EMPTY_STRING)) {
+         return;
+      }
+   }
+
+   while (this->r_4->hasNext()) {
+      if (this->takeValueFirstArg(this->r_4, EMPTY_STRING)) {
+         return;
+      }
+   }
 };
 
 

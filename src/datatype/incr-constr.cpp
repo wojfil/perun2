@@ -33,11 +33,6 @@ void IncrementalConstraint::setValueToZero()
    this->value.setToZero();
 }
 
-/*void IncrementalConstraint::setValueToMinusOne()
-{
-   this->value.setToMinusOne();
-}*/
-
 void IncrementalConstraint::setValue(const p_num& val)
 {
    this->value = val;
@@ -94,34 +89,6 @@ Logic IncrementalConstraint::getState() const
    }
 }
 
-/*
-p_bool IncrementalConstraint::getFailureResult() const
-{
-   switch (this->comparisonType) {
-      case CompType::ct_Equals: {
-         return this->limit == NINT_MINUS_ONE;
-      }
-      case CompType::ct_NotEquals: {
-         return this->limit != NINT_MINUS_ONE;
-      }
-      case CompType::ct_Smaller: {
-         return this->limit > NINT_MINUS_ONE;
-      }
-      case CompType::ct_SmallerEquals: {
-         return this->limit >= NINT_MINUS_ONE;
-      }
-      case CompType::ct_Bigger: {
-         return this->limit < NINT_MINUS_ONE;
-      }
-      case CompType::ct_BiggerEquals: {
-         return this->limit <= NINT_MINUS_ONE;
-      }
-      default: {
-         return false;
-      }
-   }
-}
-*/
 
 p_bool IncrementalConstraint::getFinalResult() const
 {

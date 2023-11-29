@@ -96,8 +96,12 @@ p_str Time::toString() const
 
 void Time::addYears(const p_tnum y)
 {
-   if (type == TimeType::tt_Null) {
-      return;
+   switch (type) {
+      case TimeType::tt_Null:
+      case TimeType::tt_ShortClock:
+      case TimeType::tt_Clock: {
+         return;
+      }
    }
 
    year += y;
@@ -110,8 +114,12 @@ void Time::addYears(const p_tnum y)
 
 void Time::addMonths(const p_tnum m)
 {
-   if (type == TimeType::tt_Null) {
-      return;
+   switch (type) {
+      case TimeType::tt_Null:
+      case TimeType::tt_ShortClock:
+      case TimeType::tt_Clock: {
+         return;
+      }
    }
 
    const p_tnum m2 = m % TNUM_MONTHS_IN_YEAR;
@@ -139,8 +147,12 @@ void Time::addWeeks(const p_tnum w)
 
 void Time::addDays(const p_tnum d)
 {
-   if (type == TimeType::tt_Null) {
-      return;
+   switch (type) {
+      case TimeType::tt_Null:
+      case TimeType::tt_ShortClock:
+      case TimeType::tt_Clock: {
+         return;
+      }
    }
 
    if (type == tt_YearMonth) {
@@ -209,7 +221,7 @@ void Time::addHours(const p_tnum h)
       d--;
    }
 
-   if (d != TNUM_ZERO) {
+   if (d != TNUM_ZERO && type != TimeType::tt_ShortClock && type != TimeType::tt_Clock) {
       addDays(d);
    }
 }
@@ -266,8 +278,12 @@ void Time::addSeconds(const p_tnum s)
 
 void Time::setYear(const p_tnum y)
 {
-   if (type == TimeType::tt_Null) {
-      return;
+   switch (type) {
+      case TimeType::tt_Null:
+      case TimeType::tt_ShortClock:
+      case TimeType::tt_Clock: {
+         return;
+      }
    }
 
    year = y;
@@ -275,8 +291,12 @@ void Time::setYear(const p_tnum y)
 
 void Time::setMonth(const p_tnum m)
 {
-   if (type == TimeType::tt_Null) {
-      return;
+   switch (type) {
+      case TimeType::tt_Null:
+      case TimeType::tt_ShortClock:
+      case TimeType::tt_Clock: {
+         return;
+      }
    }
 
    if (m < TNUM_JANUARY || m > TNUM_DECEMBER) {
@@ -289,8 +309,12 @@ void Time::setMonth(const p_tnum m)
 
 void Time::setDay(const p_tnum d)
 {
-   if (type == TimeType::tt_Null) {
-      return;
+   switch (type) {
+      case TimeType::tt_Null:
+      case TimeType::tt_ShortClock:
+      case TimeType::tt_Clock: {
+         return;
+      }
    }
 
    if (d < TNUM_ONE) {

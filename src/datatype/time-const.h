@@ -23,7 +23,7 @@ namespace perun2
 
 // p_tnum is a data structure used for every element of Time and Period
 // let it be "int" by default
-// it can be anything, but necessarily non-unsigned
+// it can be anything, but necessarily signed
 typedef p_int p_tnum;
 
 p_constexpr p_tnum TNUM_DAYS_IN_NORMAL_MONTH =          30;

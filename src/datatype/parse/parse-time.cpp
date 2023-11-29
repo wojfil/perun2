@@ -141,7 +141,7 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       return true;
    }
 
-   // tt_ShortClock
+   // tt_DateShortClock
    if (!(len == 7 || len == 9)){
       return false;
    }
@@ -168,7 +168,7 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       return true;
    }
 
-   // tt_Clock:
+   // tt_DateClock:
    if (!tks.at(7).isSymbol(CHAR_COLON) || tks.at(8).type != Token::t_Number) {
       return false;
    }

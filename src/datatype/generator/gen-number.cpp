@@ -113,7 +113,7 @@ p_num TimeMember::getValue()
          return static_cast<p_nint>(t.minute);
       }
       case Period::u_Seconds: {
-         if (t.type <= Time::tt_ShortClock) {
+         if (t.type <= Time::tt_DateShortClock) {
             return P_NaN;
          }
 

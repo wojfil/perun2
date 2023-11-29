@@ -34,10 +34,10 @@ Time::Time(const p_tnum da, const p_tnum mo, const p_tnum ye)
    : day(da), month(mo), year(ye), type(TimeType::tt_Date) { };
 
 Time::Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi)
-   : day(da), month(mo), year(ye), hour(ho), minute(mi), type(TimeType::tt_ShortClock) { };
+   : day(da), month(mo), year(ye), hour(ho), minute(mi), type(TimeType::tt_DateShortClock) { };
 
 Time::Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi, const p_tnum sec)
-   : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_Clock) { };
+   : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_DateClock) { };
 
 
 p_str Time::toString() const
@@ -57,13 +57,13 @@ p_str Time::toString() const
    ss << CHAR_SPACE;
    ss << year;
 
-   if (type == tt_ShortClock || type == tt_Clock) {
+   if (type == tt_DateShortClock || type == tt_DateClock) {
       ss << CHAR_COMMA;
       ss << CHAR_SPACE;
       addTimeUnit(ss, hour);
       ss << CHAR_COLON;
       addTimeUnit(ss, minute);
-      if (type == tt_Clock) {
+      if (type == tt_DateClock) {
          ss << CHAR_COLON;
          addTimeUnit(ss, second);
       }
@@ -303,8 +303,8 @@ void Time::setHour(const p_tnum h)
 
    hour = h;
 
-   if (type < tt_ShortClock) {
-      type = tt_ShortClock;
+   if (type < tt_DateShortClock) {
+      type = tt_DateShortClock;
    }
 }
 
@@ -321,8 +321,8 @@ void Time::setMinute(const p_tnum m)
 
    minute = m;
 
-   if (type < tt_ShortClock) {
-      type = tt_ShortClock;
+   if (type < tt_DateShortClock) {
+      type = tt_DateShortClock;
    }
 }
 
@@ -339,8 +339,8 @@ void Time::setSecond(const p_tnum s)
    
    second = s;
 
-   if (type != tt_Clock) {
-      type = tt_Clock;
+   if (type != tt_DateClock) {
+      type = tt_DateClock;
    }
 }
 
@@ -407,7 +407,7 @@ void Time::setValue(const Time& tim)
    hour = tim.hour;
    minute = tim.minute;
 
-   if (tim.type == TimeType::tt_ShortClock) {
+   if (tim.type == TimeType::tt_DateShortClock) {
       return;
    }
 
@@ -522,7 +522,7 @@ void Time::initClock(const p_bool withSeconds, const p_tnum recentChange)
          }
       }
 
-      type = withSeconds ? tt_Clock : tt_ShortClock;
+      type = withSeconds ? tt_DateClock : tt_DateShortClock;
    }
 }
 
@@ -543,7 +543,7 @@ p_bool Time::operator == (const Time& tim) const
           && year == tim.year;
    }
 
-   if (type == tt_ShortClock || tim.type == tt_ShortClock) {
+   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) {
       return day == tim.day
           && month == tim.month
           && year == tim.year
@@ -576,7 +576,7 @@ p_bool Time::operator != (const Time& tim) const
           || year != tim.year;
    }
 
-   if (type == tt_ShortClock || tim.type == tt_ShortClock) {
+   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) {
       return day != tim.day
           || month != tim.month
           || year != tim.year
@@ -617,7 +617,7 @@ p_bool Time::operator < (const Time& tim) const
    if (minute < tim.minute) { return true; }
    else if (minute > tim.minute) { return false; }
 
-   if (type == tt_ShortClock || tim.type == tt_ShortClock) { return false; }
+   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return false; }
 
    return second < tim.second;
 }
@@ -647,7 +647,7 @@ p_bool Time::operator > (const Time& tim) const
    if (minute > tim.minute) { return true; }
    else if (minute < tim.minute) { return false; }
 
-   if (type == tt_ShortClock || tim.type == tt_ShortClock) { return false; }
+   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return false; }
 
    return second > tim.second;
 }
@@ -677,7 +677,7 @@ p_bool Time::operator <= (const Time& tim) const
    if (minute < tim.minute) { return true; }
    else if (minute > tim.minute) { return false; }
 
-   if (type == tt_ShortClock || tim.type == tt_ShortClock) { return true; }
+   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return true; }
 
    return second <= tim.second;
 }
@@ -707,7 +707,7 @@ p_bool Time::operator >= (const Time& tim) const
    if (minute > tim.minute) { return true; }
    else if (minute < tim.minute) { return false; }
 
-   if (type == tt_ShortClock || tim.type == tt_ShortClock) { return true; }
+   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return true; }
 
    return second >= tim.second;
 }
@@ -886,7 +886,7 @@ inline Period timeDifference(const Time& min, const Time& max)
 
          p.hours = max.hour;
          p.minutes = max.minute;
-         if (max.type == Time::tt_ShortClock) {
+         if (max.type == Time::tt_DateShortClock) {
             return p;
          }
 
@@ -910,14 +910,14 @@ inline Period timeDifference(const Time& min, const Time& max)
 
          p.hours = max.hour;
          p.minutes = max.minute;
-         if (max.type == Time::tt_ShortClock) {
+         if (max.type == Time::tt_DateShortClock) {
             return p;
          }
 
          p.seconds = max.second;
          return p;
       }
-      case Time::tt_ShortClock: {
+      case Time::tt_DateShortClock: {
          if (max.type == Time::tt_YearMonth) {
             decrementMonth(p, min, true);
             p.days -= min.day;
@@ -946,14 +946,14 @@ inline Period timeDifference(const Time& min, const Time& max)
             decrementDay(p, min);
          }
 
-         if (max.type == Time::tt_ShortClock) {
+         if (max.type == Time::tt_DateShortClock) {
             return p;
          }
 
          p.seconds = max.second;
          return p;
       }
-      case Time::tt_Clock: {
+      case Time::tt_DateClock: {
          if (max.type == Time::tt_YearMonth) {
             decrementMonth(p, min, true);
             p.days -= min.day;

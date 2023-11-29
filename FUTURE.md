@@ -92,7 +92,7 @@ select directories
   where anyInside(images)
 ```
 
-How to implement that? There is probably no better way than to just import *libmagic*.
+How to implement that? There is probably no better way than to just use *libmagic*.
 
 ## Image variables: *width*, *height*, *pixels*, *bpp*
 
@@ -114,19 +114,6 @@ It could be improved, as currently program uses a naive iterative single-threade
 Calculations are the bottleneck here. 
 Both filesystem access and console logs are very fast. 
 Sorting by a string is the slowest and should be improved in the first place.
-
-## "Compile" time function evaluation
-
-If certain function takes constant values as arguments, evaluate it during code interpretation.
-Of course not all function are elligible for this feature.
-
-```
-copy files
-  to path('a', 'b', 'c')
-```
-
-In this example, function path() is treated internally as a constant value 'a/b/c' or 'a\b\c' (depending on OS).
-Just some internal optimizations. This is nothing user will notice.
 
 ## Wildcard pattern matching microoptimizations
 
@@ -152,7 +139,7 @@ move recursiveRepositories
 ## *LikeAny*, *LikeAll*
 
 Basically the Like operator, but with a collection of patterns.
-Brackets are optional (but recommended for readability).
+Brackets are optional (but recommended).
 
 ```
 select '*.pdf'
@@ -476,21 +463,21 @@ inside pendrive {
 
 ## Internet communication
 
-This feature is quite controversial as of now because of security. We can imagine sending and downloading files.
+We can imagine sending and downloading files.
 
 ```
 download 'https://some/url'
 download 'https://some/url' as 'data.txt'
-send 'a.mp4' to 'https://some/url'
-send 'a.mp4' to 'https://some/url' as 'newname.mp4'
+upload '*.mp4' to 'https://some/url'
+upload 'a.mp4' to 'https://some/url' as 'newname.mp4'
 ```
 
 ## Google drive
 
-Integration with this third-party software would be useful. Only if we agree on Internet communication first.
+Integration with some third-party software would be useful. Only if we agree on Internet communication first.
 
 ```
-send videos
+upload videos
   to googleDrive '1pzschX6uMbxUblb5WZ6IleseAUE8MZ-t'
 ```
 
@@ -565,17 +552,18 @@ In Perun2, string literals can contain new lines.
 This little feature help us a lot.
 
 ```
-powershellCommand 
+runPowershell
 '
   -some -psh
   -command -here
 ';
 ```
 
-We could also read the output.
+We could also read the output. 
+Every printed line is a next value in the 'output' variable, which is a list.
 
 ```
-pythonCommand 
+runPython
 '
   print("a.txt")
   print("b.txt")
@@ -601,3 +589,24 @@ For example, 'perun3' and 'perun' do resemble 'perun2'.
 But not 'pep34'.
 It needs some arbitrary rules.
 Like, for example, 1 mistake is acceptable for every 3 characters in phrase.
+
+## File content check: operators *is* and *equals*
+
+These two operators would take only one argument.
+Use *is* to check if two values point to the exactly same file.
+
+```
+select files
+  where is not 'a.pdf'
+```
+
+Use *equals* to check if content of two files is the same: they are duplicates. 
+Code below deletes all files that are duplicates of pdfs from *c:/data*.
+
+```
+delete files
+  where equals 'c:/data/*.pdf'
+```
+
+
+

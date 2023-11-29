@@ -25,33 +25,13 @@ namespace perun2
 
 struct Time
 {
-   // time can be defined in 4 forms:
-   enum TimeType
-   {
-      tt_Null = -1,
-      tt_YearMonth = 0,     // contains month and year
-      tt_Date = 1,          // contains day, month and year
-      tt_ShortClock = 2,    // contains day, month, year, hour, minute
-      tt_Clock = 3          // contains day, month, year, hour, minute, second
-      // these numbers above are important and do not delete them
-   };
+public:
 
    Time();
    Time(const p_tnum mo, const p_tnum ye);
    Time(const p_tnum da, const p_tnum mo, const p_tnum ye);
    Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi);
    Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi, const p_tnum sec);
-
-// todo:
-// change these 6 numbers into one value: time_t
-// or do something else to reduce used memory
-   p_tnum year;
-   p_tnum day;
-   p_tnum month;
-   p_tnum hour = TNUM_ZERO;
-   p_tnum minute = TNUM_ZERO;
-   p_tnum second = TNUM_ZERO;
-   TimeType type;
 
    p_str toString() const;
    void initClock(const p_bool withSeconds, const p_tnum recentChange);
@@ -89,6 +69,25 @@ struct Time
 
    Period operator - (const Time& tim) const;
 
+
+   // time can take one of these 4 forms:
+   enum TimeType
+   {
+      tt_Null = -1,
+      tt_YearMonth = 0,     // contains month and year
+      tt_Date = 1,          // contains day, month and year
+      tt_ShortClock = 2,    // contains day, month, year, hour, minute
+      tt_Clock = 3          // contains day, month, year, hour, minute, second
+   };
+
+
+   p_tnum year;
+   p_tnum day;
+   p_tnum month;
+   p_tnum hour = TNUM_ZERO;
+   p_tnum minute = TNUM_ZERO;
+   p_tnum second = TNUM_ZERO;
+   TimeType type;
 };
 
 p_tnum toTimeNumber(const Number& num);

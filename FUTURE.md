@@ -474,7 +474,7 @@ upload 'a.mp4' to 'https://some/url' as 'newname.mp4'
 
 ## Google drive
 
-Integration with some third-party software would be useful. Only if we agree on Internet communication first.
+Integration with some common third-party software would be useful.
 
 ```
 upload videos
@@ -608,5 +608,17 @@ delete files
   where equals 'c:/data/*.pdf'
 ```
 
+## *Recent* as a file attribute
 
+Boolean value *recent* says if the file was created after the moment this Perun2 program started.
+We can for example run some external commands and operate on output.
+
+```
+run 'some shell script';
+
+delete '*.txt'
+  where recent and empty
+```
+
+There can be some more specific values: *recentlyCreated*, *recentlyModified* etc.
 

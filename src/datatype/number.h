@@ -59,7 +59,7 @@ struct Number
    void setToNaN();
    void setToZero();
    void setToMinusOne();
-   void tryCastToInt();
+   void turnToIntIfPossible();
 
    Number& operator += (const Number& num);
    Number& operator -= (const Number& num);

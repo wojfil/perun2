@@ -174,7 +174,7 @@ void Number::setToMinusOne()
    }
 }
 
-void Number::tryCastToInt()
+void Number::turnToIntIfPossible()
 {
    if (std::trunc(value.d) == value.d) {
       const p_ndouble d = value.d;
@@ -217,7 +217,7 @@ Number& Number::operator += (const Number& num)
    }
    
    value.d += num.value.d;
-   tryCastToInt();
+   turnToIntIfPossible();
    return *this;
 }
 
@@ -255,7 +255,7 @@ Number& Number::operator -= (const Number& num)
    }
    
    value.d -= num.value.d;
-   tryCastToInt();
+   turnToIntIfPossible();
    return *this;
 }
 
@@ -274,7 +274,7 @@ Number& Number::operator *= (const Number& num)
 
       value.d = value.i * num.value.d;
       state = NumberState::Double;
-      tryCastToInt();
+      turnToIntIfPossible();
       return *this;
    }
 
@@ -285,7 +285,7 @@ Number& Number::operator *= (const Number& num)
 
    if (num.state == NumberState::Int) {
       value.d *= num.value.i;
-      tryCastToInt();
+      turnToIntIfPossible();
       return *this;
    }
 
@@ -295,7 +295,7 @@ Number& Number::operator *= (const Number& num)
    }
    
    value.d *= num.value.d;
-   tryCastToInt();
+   turnToIntIfPossible();
    return *this;
 }
 
@@ -327,7 +327,7 @@ Number& Number::operator /= (const Number& num)
       const p_ndouble d = value.i / num.value.d;
       value.d = d;
       state = NumberState::Double;
-      tryCastToInt();
+      turnToIntIfPossible();
       return *this;
    }
 
@@ -352,7 +352,7 @@ Number& Number::operator /= (const Number& num)
    }
    
    value.d /= num.value.d;
-   tryCastToInt();
+   turnToIntIfPossible();
    return *this;
 }
 
@@ -377,7 +377,7 @@ Number& Number::operator %= (const Number& num)
       const p_ndouble d = std::fmod(value.i, num.value.d);
       value.d = d;
       state = NumberState::Double;
-      tryCastToInt();
+      turnToIntIfPossible();
       return *this;
    }
 
@@ -404,7 +404,7 @@ Number& Number::operator %= (const Number& num)
    
    const p_ndouble d = std::fmod(value.d, num.value.d);
    value.d = d;
-   tryCastToInt();
+   turnToIntIfPossible();
    return *this;
 }
 
@@ -465,7 +465,7 @@ Number Number::operator + (const Number& num) const
    }
    
    Number v(value.d + num.value.d);
-   v.tryCastToInt();
+   v.turnToIntIfPossible();
    return v;
 }
 
@@ -502,7 +502,7 @@ Number Number::operator - (const Number& num) const
    }
    
    Number v(value.d - num.value.d);
-   v.tryCastToInt();
+   v.turnToIntIfPossible();
    return v;
 }
 
@@ -523,7 +523,7 @@ Number Number::operator * (const Number& num) const
 
       const p_ndouble n = value.i * num.value.d;
       Number v(n);
-      v.tryCastToInt();
+      v.turnToIntIfPossible();
       return v;
    }
 
@@ -534,7 +534,7 @@ Number Number::operator * (const Number& num) const
    if (num.state == NumberState::Int) {
       const p_ndouble n = value.d * num.value.i;
       Number v(n);
-      v.tryCastToInt();
+      v.turnToIntIfPossible();
       return Number(v);
    }
 
@@ -544,7 +544,7 @@ Number Number::operator * (const Number& num) const
 
    const p_ndouble n = value.d * num.value.d;
    Number v(n);
-   v.tryCastToInt();
+   v.turnToIntIfPossible();
    return v;
 }
 
@@ -574,7 +574,7 @@ Number Number::operator / (const Number& num) const
 
       const p_ndouble n = value.i / num.value.d;
       Number v(n);
-      v.tryCastToInt();
+      v.turnToIntIfPossible();
       return v;
    }
 
@@ -601,7 +601,7 @@ Number Number::operator / (const Number& num) const
 
    const p_ndouble n = value.d / num.value.d;
    Number v(n);
-   v.tryCastToInt();
+   v.turnToIntIfPossible();
    return v;
 }
 
@@ -626,7 +626,7 @@ Number Number::operator % (const Number& num) const
 
       const p_ndouble n = std::fmod(value.i, num.value.d);
       Number v(n);
-      v.tryCastToInt();
+      v.turnToIntIfPossible();
       return v;
    }
 
@@ -652,7 +652,7 @@ Number Number::operator % (const Number& num) const
 
    const p_ndouble n = std::fmod(value.d, num.value.d);
    Number v(n);
-   v.tryCastToInt();
+   v.turnToIntIfPossible();
    return v;
 }
 

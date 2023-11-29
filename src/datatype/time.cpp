@@ -42,8 +42,30 @@ Time::Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, c
 
 p_str Time::toString() const
 {
-   if (type == TimeType::tt_Null) {
-      return STRING_NO_TIME;
+   switch (type) {
+      case TimeType::tt_Null: {
+         return STRING_NO_TIME;
+      }
+      case TimeType::tt_ShortClock: {
+         p_stream ss;
+
+         addTimeUnit(ss, hour);
+         ss << CHAR_COLON;
+         addTimeUnit(ss, minute);
+
+         return ss.str();
+      }
+      case TimeType::tt_Clock: {
+         p_stream ss;
+         
+         addTimeUnit(ss, hour);
+         ss << CHAR_COLON;
+         addTimeUnit(ss, minute);
+         ss << CHAR_COLON;
+         addTimeUnit(ss, second);
+
+         return ss.str();
+      }
    }
 
    p_stream ss;

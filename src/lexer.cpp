@@ -42,13 +42,12 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
    Mode mode = Mode::m_Normal;
    p_int line = 1;
    p_char prev = CHAR_SPACE;
-   const p_size len = code.length();
    p_size wpos = 0;
    p_size wlen = 0;
    p_bool prevSymbol = false;
    p_bool prevReset = false;
 
-   for (p_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < code.length(); i++) {
       const p_char c = code[i];
 
       switch (mode)  {

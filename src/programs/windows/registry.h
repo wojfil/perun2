@@ -35,7 +35,9 @@ enum RegistryRootType
 struct RegistryIterator : Generator<p_str>
 {
 public:
+   RegistryIterator() = delete;
    RegistryIterator(const RegistryRootType type);
+   
    virtual void reset() = 0;
    virtual p_bool hasNext() = 0;
    p_str getRegistryValue(const p_str& name) const;
@@ -62,7 +64,9 @@ void addRegistryPattern(p_riptr& result, const RegistryRootType rootType, const 
 struct MultiRegistryRoot : RegistryIterator
 {
 public:
+   MultiRegistryRoot() = delete;
    MultiRegistryRoot(const RegistryRootType type, const p_str& pattern);
+
    void reset() override;
    p_bool hasNext() override;
 
@@ -81,7 +85,9 @@ private:
 struct SingleRegistryRoot : RegistryIterator
 {
 public:
+   SingleRegistryRoot() = delete;
    SingleRegistryRoot(const RegistryRootType type, const p_str& rt);
+
    void reset() override;
    p_bool hasNext() override;
 
@@ -97,7 +103,9 @@ private:
 struct MultiRegistry : RegistryIterator
 {
 public:
+   MultiRegistry() = delete;
    MultiRegistry(const RegistryRootType type, p_riptr& prev, const p_str& pattern);
+
    void reset() override;
    p_bool hasNext() override;
 
@@ -117,7 +125,9 @@ private:
 struct SingleRegistry : RegistryIterator
 {
 public:
+   SingleRegistry() = delete;
    SingleRegistry(const RegistryRootType type, p_riptr& prev, const p_str& segm);
+
    void reset() override;
    p_bool hasNext() override;
 

@@ -33,7 +33,9 @@ namespace perun2::prog
 struct WinProgram
 {
 public:
+   WinProgram() = delete;
    WinProgram(p_perun2& p2, const p_list& nm);
+   
    virtual void actualize() = 0;
 
    p_bool isIcon(const p_str& value) const;
@@ -57,7 +59,9 @@ private:
 struct WinPrograms
 {
 public:
+   WinPrograms() = delete;
    WinPrograms(p_perun2& p2);
+
    void actualize(const Token& tk);
    p_bool haveName(const Token& tk) const;
    void insertVars(GlobalContext& ctx) const;

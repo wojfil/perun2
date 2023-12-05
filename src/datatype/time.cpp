@@ -570,6 +570,10 @@ void Time::initClock(const p_bool withSeconds, const p_tnum recentChange)
 
       type = withSeconds ? tt_DateClock : tt_DateShortClock;
    }
+   else if (withSeconds && type == tt_ShortClock) {
+      type = tt_Clock;
+      second = TNUM_ZERO;
+   }
 }
 
 p_bool Time::operator == (const Time& tim) const

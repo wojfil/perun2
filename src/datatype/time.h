@@ -70,7 +70,7 @@ public:
    Period operator - (const Time& tim) const;
 
 
-   // time can take one of these 4 forms:
+   // time can take one of these forms:
    enum TimeType
    {
       tt_Null = -1,

@@ -26,8 +26,6 @@ enum Logic
    True = 1
 };
 
-// these numbers above are actually important
-// do not remove them
 
 }
 

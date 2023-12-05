@@ -108,17 +108,17 @@ Logic DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
 
    if (n == this->startId && m == this->startId) {
       this->charStates[n][m] = Logic::True;
-      return this->charStates[n][m];
+      return Logic::True;
    }
 
    if (n > this->startId && m == this->startId) {
       this->charStates[n][m] = Logic::False;
-      return this->charStates[n][m];
+      return Logic::False;
    }
 
    if (n == 0 && m == 2 && this->specialStart) {
       this->charStates[n][m] = Logic::True;
-      return this->charStates[n][m];
+      return Logic::True;
    }
 
    Logic ans = Logic::False;

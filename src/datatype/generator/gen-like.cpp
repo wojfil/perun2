@@ -466,12 +466,12 @@ Logic LC_Default::checkState(const p_size n, const p_size m)
 
    if (n == 0 && m == 0) {
       this->charStates[n][m] = Logic::True;
-      return this->charStates[n][m];
+      return Logic::True;
    }
 
    if (n > 0 && m == 0) {
       this->charStates[n][m] = Logic::False;
-      return this->charStates[n][m];
+      return Logic::False;
    }
 
    Logic ans = Logic::False;

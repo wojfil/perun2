@@ -17,50 +17,50 @@
 namespace perun2::gen
 {
 
-   OrderByLimitOne::OrderByLimitOne(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_loptr& lo, p_perun2& p2)
-      : base(std::move(bas)), fileContext(ctx), nextContext(std::move(nextCtx)), limitOne(std::move(lo)), perun2(p2) { };
+OrderByLimitOne::OrderByLimitOne(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_loptr& lo, p_perun2& p2)
+   : base(std::move(bas)), fileContext(ctx), nextContext(std::move(nextCtx)), limitOne(std::move(lo)), perun2(p2) { };
 
 
-   FileContext* OrderByLimitOne::getFileContext()
-   {
-      return this->nextContext.get(); 
-   }
+FileContext* OrderByLimitOne::getFileContext()
+{
+   return this->nextContext.get(); 
+}
 
 
-   void OrderByLimitOne::reset() 
-   { 
+void OrderByLimitOne::reset() 
+{ 
+   this->valueTaken = false;
+}
+
+p_bool OrderByLimitOne::hasNext()
+{
+   if (this->valueTaken) {
       this->valueTaken = false;
+      return false;
    }
 
-   p_bool OrderByLimitOne::hasNext()
-   {
-      if (this->valueTaken) {
-         this->valueTaken = false;
+   if (this->base->hasNext()) {
+      this->value = this->base->getValue();
+      this->limitOne->loadData();
+   }
+   else {
+      return false;
+   }
+
+   while (this->base->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         this->base->reset();
          return false;
       }
 
-      if (this->base->hasNext()) {
+      if (this->limitOne->nextElementIsBetter()) {
          this->value = this->base->getValue();
-         this->limitOne->loadData();
       }
-      else {
-         return false;
-      }
-
-      while (this->base->hasNext()) {
-         if (this->perun2.isNotRunning()) {
-            this->base->reset();
-            return false;
-         }
-
-         if (this->limitOne->nextElementIsBetter()) {
-            this->value = this->base->getValue();
-         }
-      }
-
-      this->valueTaken = true;
-      this->nextContext->loadData(this->value);
-      this->nextContext->index->value.setToZero();
-      return true;
    }
+
+   this->valueTaken = true;
+   this->nextContext->loadData(this->value);
+   this->nextContext->index->value.setToZero();
+   return true;
+}
 }

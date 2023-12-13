@@ -30,7 +30,7 @@ namespace perun2
 std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
 {
    enum Mode {
-      m_Normal = 0,
+      m_Nothing = 0,
       m_Word,
       m_ALiteral, // apostrophe string literal
       m_BLiteral, // backtick string literal
@@ -39,7 +39,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
    }; // finite-state machine within function
 
    std::vector<Token> tokens;
-   Mode mode = Mode::m_Normal;
+   Mode mode = Mode::m_Nothing;
    p_int line = 1;
    p_char prev = CHAR_SPACE;
    p_size wpos = 0;
@@ -51,7 +51,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
       const p_char c = code[i];
 
       switch (mode)  {
-         case Mode::m_Normal: {
+         case Mode::m_Nothing: {
             if (c == CHAR_QUOTATION_MARK) {
                throw SyntaxError::quotationMarkStringLteral(line);
             }
@@ -142,7 +142,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
             else {
                tokens.push_back(wordToken(code, wpos, wlen, line, p2));
                wlen = 0;
-               mode = Mode::m_Normal;
+               mode = Mode::m_Nothing;
 
                if (isSymbol(c)) {
                   tokens.emplace_back(c, line, p2);
@@ -185,7 +185,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
 
                wpos = i;
                wlen = 0;
-               mode = Mode::m_Normal;
+               mode = Mode::m_Nothing;
             }
             else {
                wlen++;
@@ -200,7 +200,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
                tokens.emplace_back(wpos, wlen, line, p2);
                wpos = i;
                wlen = 0;
-               mode = Mode::m_Normal;
+               mode = Mode::m_Nothing;
             }
             else {
                wlen++;
@@ -213,7 +213,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
          case Mode::m_SingleComment: {
             if (isNewLine(c)) {
                line++;
-               mode = Mode::m_Normal;
+               mode = Mode::m_Nothing;
             }
             break;
          }
@@ -222,7 +222,7 @@ std::vector<Token> tokenize(const p_str& code, p_perun2& p2)
                line++;
             }
             else if (prev == CHAR_ASTERISK && c == CHAR_SLASH) {
-               mode = Mode::m_Normal;
+               mode = Mode::m_Nothing;
                prevReset = true;
             }
             break;

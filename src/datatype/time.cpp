@@ -582,6 +582,98 @@ p_bool Time::operator == (const Time& tim) const
       return type == tim.type;
    }
 
+   switch (type) {
+      case TimeType::tt_ShortClock: {
+         switch (tim.type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock: {
+               return hour == tim.hour
+                   && minute == tim.minute;
+            }
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour == tim.hour
+                   && minute == tim.minute
+                   && tim.second == TNUM_ZERO;
+            }
+         }
+
+         break;
+      }
+      case TimeType::tt_Clock: {
+         switch (tim.type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock: {
+               return hour == tim.hour
+                   && minute == tim.minute
+                   && second == TNUM_ZERO;
+            }
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour == tim.hour
+                   && minute == tim.minute
+                   && second == tim.second;
+            }
+         }
+
+         break;
+      }
+   }
+
+   switch (tim.type) {
+      case TimeType::tt_ShortClock: {
+         switch (type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock: {
+               return hour == tim.hour
+                   && minute == tim.minute;
+            }
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour == tim.hour
+                   && minute == tim.minute
+                   && second == TNUM_ZERO;
+            }
+         }
+
+         break;
+      }
+      case TimeType::tt_Clock: {
+         switch (type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock: {
+               return hour == tim.hour
+                   && minute == tim.minute
+                   && tim.second == TNUM_ZERO;
+            }
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour == tim.hour
+                   && minute == tim.minute
+                   && second == tim.second;
+            }
+         }
+
+         break;
+      }
+   }
+
    if (type == tt_YearMonth || tim.type == tt_YearMonth) {
       return month == tim.month
           && year == tim.year;

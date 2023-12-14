@@ -39,6 +39,24 @@ Time::Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, c
 Time::Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi, const p_tnum sec)
    : day(da), month(mo), year(ye), hour(ho), minute(mi), second(sec), type(TimeType::tt_DateClock) { };
 
+Time Time::clock(const p_tnum ho, const p_tnum mi)
+{
+   Time t;
+   t.type == tt_ShortClock;
+   t.hour = ho;
+   t.minute = mi;
+   return t;
+}
+
+Time Time::clock(const p_tnum ho, const p_tnum mi, const p_tnum sec)
+{
+   Time t;
+   t.type == tt_Clock;
+   t.hour = ho;
+   t.minute = mi;
+   t.second = sec;
+   return t;
+}
 
 p_str Time::toString() const
 {

@@ -32,6 +32,8 @@ public:
    Time(const p_tnum da, const p_tnum mo, const p_tnum ye);
    Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi);
    Time(const p_tnum da, const p_tnum mo, const p_tnum ye, const p_tnum ho, const p_tnum mi, const p_tnum sec);
+   static Time clock(const p_tnum ho, const p_tnum mi);
+   static Time clock(const p_tnum ho, const p_tnum mi, const p_tnum sec);
 
    p_str toString() const;
    void initClock(const p_bool withSeconds, const p_tnum recentChange);

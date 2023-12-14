@@ -385,7 +385,10 @@ void Time::setSecond(const p_tnum s)
    
    second = s;
 
-   if (type != tt_DateClock) {
+   if (type == tt_ShortClock) {
+      type = tt_Clock;
+   }
+   else if (type != tt_DateClock) {
       type = tt_DateClock;
    }
 }
@@ -396,7 +399,9 @@ Time Time::toDate() const
       case tt_YearMonth: {
          return Time(month, year);
       }
-      case tt_Null: {
+      case tt_Null:
+      case tt_ShortClock:
+      case tt_Clock: {
          return Time();
       }
       default: {
@@ -407,8 +412,13 @@ Time Time::toDate() const
 
 p_tnum Time::getWeekDay() const
 {
-   if (type == TimeType::tt_YearMonth || type == TimeType::tt_Null) {
-      return TNUM_MINUS_ONE;
+   switch (type) {
+      case tt_YearMonth:
+      case tt_Null:
+      case tt_ShortClock:
+      case tt_Clock: {
+         return TNUM_MINUS_ONE;
+      }
    }
 
    const p_tnum y = year - (month < TNUM_THREE);

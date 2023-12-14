@@ -600,15 +600,11 @@ p_bool Time::operator == (const Time& tim) const
                return false;
             }
             case tt_DateShortClock:
-            case tt_ShortClock: {
-               return hour == tim.hour
-                   && minute == tim.minute;
-            }
+            case tt_ShortClock:
             case tt_DateClock:
             case tt_Clock: {
                return hour == tim.hour
-                   && minute == tim.minute
-                   && tim.second == TNUM_ZERO;
+                   && minute == tim.minute;
             }
          }
 
@@ -623,8 +619,7 @@ p_bool Time::operator == (const Time& tim) const
             case tt_DateShortClock:
             case tt_ShortClock: {
                return hour == tim.hour
-                   && minute == tim.minute
-                   && second == TNUM_ZERO;
+                   && minute == tim.minute;
             }
             case tt_DateClock:
             case tt_Clock: {
@@ -646,15 +641,11 @@ p_bool Time::operator == (const Time& tim) const
                return false;
             }
             case tt_DateShortClock:
-            case tt_ShortClock: {
-               return hour == tim.hour
-                   && minute == tim.minute;
-            }
+            case tt_ShortClock:
             case tt_DateClock:
             case tt_Clock: {
                return hour == tim.hour
-                   && minute == tim.minute
-                   && second == TNUM_ZERO;
+                   && minute == tim.minute;
             }
          }
 
@@ -669,8 +660,7 @@ p_bool Time::operator == (const Time& tim) const
             case tt_DateShortClock:
             case tt_ShortClock: {
                return hour == tim.hour
-                   && minute == tim.minute
-                   && tim.second == TNUM_ZERO;
+                   && minute == tim.minute;
             }
             case tt_DateClock:
             case tt_Clock: {
@@ -715,6 +705,88 @@ p_bool Time::operator != (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
       return type != tim.type;
+   }
+
+   switch (type) {
+      case tt_ShortClock: {
+         switch (tim.type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock:
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour != tim.hour
+                   || minute != tim.minute;
+            }
+         }
+
+         break;
+      }
+      case tt_Clock: {
+         switch (tim.type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock: {
+               return hour != tim.hour
+                   || minute != tim.minute;
+            }
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour == tim.hour
+                   || minute == tim.minute
+                   || second == tim.second;
+            }
+         }
+
+         break;
+      }
+   }
+
+   switch (tim.type) {
+      case tt_ShortClock: {
+         switch (type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock:
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour != tim.hour
+                   || minute != tim.minute;
+            }
+         }
+
+         break;
+      }
+      case tt_Clock: {
+         switch (type) {
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+            case tt_DateShortClock:
+            case tt_ShortClock: {
+               return hour != tim.hour
+                   || minute != tim.minute;
+            }
+            case tt_DateClock:
+            case tt_Clock: {
+               return hour != tim.hour
+                   || minute != tim.minute
+                   || second != tim.second;
+            }
+         }
+
+         break;
+      }
    }
 
    if (type == tt_YearMonth || tim.type == tt_YearMonth) {

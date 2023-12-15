@@ -74,7 +74,7 @@ struct TimeMember : Generator<p_num>
 {
 public:
    TimeMember() = delete;
-   TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit& pu);
+   TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit pu);
    p_num getValue() override;
 
 protected:

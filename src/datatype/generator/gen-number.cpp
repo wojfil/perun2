@@ -67,7 +67,7 @@ p_num Modulo::getValue()
    return this->value1->getValue() % this->value2->getValue();
 }
 
-TimeMember::TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit& pu) 
+TimeMember::TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit pu) 
    : time(std::move(tim)), unit(pu) { };
 
 p_num TimeMember::getValue() 

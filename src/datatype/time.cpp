@@ -607,7 +607,7 @@ void Time::initClock(const p_bool withSeconds, const p_tnum recentChange)
 p_bool Time::operator == (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
-      return type == tim.type;
+      return false;
    }
 
    switch (type) {
@@ -722,7 +722,7 @@ p_bool Time::operator == (const Time& tim) const
 p_bool Time::operator != (const Time& tim) const
 {
    if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
-      return type != tim.type;
+      return false;
    }
 
    switch (type) {

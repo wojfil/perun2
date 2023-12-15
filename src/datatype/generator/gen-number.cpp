@@ -158,7 +158,7 @@ p_num TimeMember::getValue()
       }
    }
 
-   return p_num();
+   return P_NaN;
 }
 
 }

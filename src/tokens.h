@@ -49,6 +49,7 @@ p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =         1 << 17;
 p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 18;
 p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 19;
 p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 20;
+p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 21;
 
 
 struct p_perun2;

@@ -453,6 +453,9 @@ void Tokens::setData()
                      this->info |= TI_HAS_CHAR_COMMA;
                      break;
                   }
+                  case CHAR_PERCENT: {
+                     this->info |= TI_HAS_CHAR_PERCENT;
+                  }
                   case CHAR_COLON: {
                      this->info |= TI_HAS_CHAR_COLON;
                      if (firstColonId == -1) {

@@ -25,6 +25,7 @@ namespace perun2::parse
 p_bool parseTime(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2);
 
 p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2);
 static p_tnum tokenToTimeNumber(const Token& tk);
 static void checkDayCorrectness(const p_tnum day, const p_tnum month, const p_tnum year, const Token& tk);
 static p_bool parseTimeExp(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2);

@@ -87,6 +87,12 @@ p_bool parseTime(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
+   if (tks.check(TI_HAS_CHAR_COLON) && !tks.check(TI_HAS_CHAR_PERCENT)) {
+      if (parseClockConst(result, tks, p2)) {
+         return true;
+      }
+   }
+
    return parseBinary<p_tim>(result, tks, p2) || parseTernary<p_tim>(result, tks, p2);
 }
 
@@ -181,6 +187,12 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 
    result = std::make_unique<gen::Constant<p_tim>>(p_tim(day, month, year, hour, minute, secs));
    return true;
+}
+
+p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
+{
+   // todo
+   return false;
 }
 
 static p_tnum tokenToTimeNumber(const Token& tk)

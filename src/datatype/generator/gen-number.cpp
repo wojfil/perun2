@@ -77,7 +77,7 @@ p_num TimeMember::getValue()
    switch (this->unit) {
       case Period::u_Years: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_ShortClock:
             case Time::tt_Clock: {
                return P_NaN;
@@ -88,7 +88,7 @@ p_num TimeMember::getValue()
       }
       case Period::u_Months: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_ShortClock:
             case Time::tt_Clock: {
                return P_NaN;
@@ -99,7 +99,7 @@ p_num TimeMember::getValue()
       }
       case Period::u_Weeks: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_YearMonth:
             case Time::tt_ShortClock:
             case Time::tt_Clock: {
@@ -111,7 +111,7 @@ p_num TimeMember::getValue()
       }
       case Period::u_Days: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_YearMonth:
             case Time::tt_ShortClock:
             case Time::tt_Clock: {
@@ -123,7 +123,7 @@ p_num TimeMember::getValue()
       }
       case Period::u_Hours: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_YearMonth:
             case Time::tt_Date: {
                return P_NaN;
@@ -134,7 +134,7 @@ p_num TimeMember::getValue()
       }
       case Period::u_Minutes: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_YearMonth:
             case Time::tt_Date: {
                return P_NaN;
@@ -145,7 +145,7 @@ p_num TimeMember::getValue()
       }
       case Period::u_Seconds: {
          switch (t.type) {
-            case Time::tt_Null:
+            case Time::tt_Never:
             case Time::tt_YearMonth:
             case Time::tt_Date:
             case Time::tt_DateShortClock:

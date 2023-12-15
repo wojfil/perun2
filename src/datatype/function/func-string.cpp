@@ -576,7 +576,7 @@ p_str F_MonthNameFromTime::getValue()
 
    switch (t.type) {
       case Time::tt_YearMonth:
-      case Time::tt_Null: {
+      case Time::tt_Never: {
          return p_str();
       }
       default: {
@@ -603,7 +603,7 @@ p_str F_WeekDayNameFromTime::getValue()
 
    switch (t.type) {
       case Time::tt_YearMonth:
-      case Time::tt_Null: {
+      case Time::tt_Never: {
          return p_str();
       }
       default: {

@@ -25,7 +25,7 @@ namespace perun2
 
 Time::Time()
    : day(TNUM_MINUS_ONE), month(TNUM_MINUS_ONE), year(TNUM_MINUS_ONE), 
-     hour(TNUM_MINUS_ONE), minute(TNUM_MINUS_ONE), second(TNUM_MINUS_ONE), type(TimeType::tt_Null) { };
+     hour(TNUM_MINUS_ONE), minute(TNUM_MINUS_ONE), second(TNUM_MINUS_ONE), type(TimeType::tt_Never) { };
 
 Time::Time(const p_tnum mo, const p_tnum ye)
    : day(TNUM_ONE), month(mo), year(ye), type(TimeType::tt_YearMonth) { };
@@ -61,7 +61,7 @@ Time Time::clock(const p_tnum ho, const p_tnum mi, const p_tnum sec)
 p_str Time::toString() const
 {
    switch (type) {
-      case TimeType::tt_Null: {
+      case TimeType::tt_Never: {
          return STRING_NO_TIME;
       }
       case TimeType::tt_ShortClock: {
@@ -115,7 +115,7 @@ p_str Time::toString() const
 void Time::addYears(const p_tnum y)
 {
    switch (type) {
-      case TimeType::tt_Null:
+      case TimeType::tt_Never:
       case TimeType::tt_ShortClock:
       case TimeType::tt_Clock: {
          return;
@@ -133,7 +133,7 @@ void Time::addYears(const p_tnum y)
 void Time::addMonths(const p_tnum m)
 {
    switch (type) {
-      case TimeType::tt_Null:
+      case TimeType::tt_Never:
       case TimeType::tt_ShortClock:
       case TimeType::tt_Clock: {
          return;
@@ -166,7 +166,7 @@ void Time::addWeeks(const p_tnum w)
 void Time::addDays(const p_tnum d)
 {
    switch (type) {
-      case TimeType::tt_Null:
+      case TimeType::tt_Never:
       case TimeType::tt_ShortClock:
       case TimeType::tt_Clock: {
          return;
@@ -221,7 +221,7 @@ void Time::addDays(const p_tnum d)
 
 void Time::addHours(const p_tnum h)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
@@ -246,7 +246,7 @@ void Time::addHours(const p_tnum h)
 
 void Time::addMinutes(const p_tnum m)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
@@ -271,7 +271,7 @@ void Time::addMinutes(const p_tnum m)
 
 void Time::addSeconds(const p_tnum s)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
@@ -297,7 +297,7 @@ void Time::addSeconds(const p_tnum s)
 void Time::setYear(const p_tnum y)
 {
    switch (type) {
-      case TimeType::tt_Null:
+      case TimeType::tt_Never:
       case TimeType::tt_ShortClock:
       case TimeType::tt_Clock: {
          return;
@@ -310,7 +310,7 @@ void Time::setYear(const p_tnum y)
 void Time::setMonth(const p_tnum m)
 {
    switch (type) {
-      case TimeType::tt_Null:
+      case TimeType::tt_Never:
       case TimeType::tt_ShortClock:
       case TimeType::tt_Clock: {
          return;
@@ -318,7 +318,7 @@ void Time::setMonth(const p_tnum m)
    }
 
    if (m < TNUM_JANUARY || m > TNUM_DECEMBER) {
-      type = TimeType::tt_Null;
+      type = TimeType::tt_Never;
       return;
    }
 
@@ -328,7 +328,7 @@ void Time::setMonth(const p_tnum m)
 void Time::setDay(const p_tnum d)
 {
    switch (type) {
-      case TimeType::tt_Null:
+      case TimeType::tt_Never:
       case TimeType::tt_ShortClock:
       case TimeType::tt_Clock: {
          return;
@@ -336,14 +336,14 @@ void Time::setDay(const p_tnum d)
    }
 
    if (d < TNUM_ONE) {
-      type = TimeType::tt_Null;
+      type = TimeType::tt_Never;
       return;
    }
 
    const p_tnum inMonth = daysInMonth(month, year);
 
    if (d > inMonth) {
-      type = TimeType::tt_Null;
+      type = TimeType::tt_Never;
       return;
    }
 
@@ -356,12 +356,12 @@ void Time::setDay(const p_tnum d)
 
 void Time::setHour(const p_tnum h)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
    if (h < TNUM_ZERO || h >= TNUM_HOURS_IN_DAY) {
-      type = TimeType::tt_Null;
+      type = TimeType::tt_Never;
       return;
    }
 
@@ -374,12 +374,12 @@ void Time::setHour(const p_tnum h)
 
 void Time::setMinute(const p_tnum m)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
    if (m < TNUM_ZERO || m >= TNUM_MINUTES_IN_HOUR) {
-      type = TimeType::tt_Null;
+      type = TimeType::tt_Never;
       return;
    }
 
@@ -392,12 +392,12 @@ void Time::setMinute(const p_tnum m)
 
 void Time::setSecond(const p_tnum s)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
    if (s < TNUM_ZERO || s >= TNUM_SECONDS_IN_MINUTE) {
-      type = TimeType::tt_Null;
+      type = TimeType::tt_Never;
       return;
    }
    
@@ -417,7 +417,7 @@ Time Time::toDate() const
       case tt_YearMonth: {
          return Time(month, year);
       }
-      case tt_Null:
+      case tt_Never:
       case tt_ShortClock:
       case tt_Clock: {
          return Time();
@@ -432,7 +432,7 @@ p_tnum Time::getWeekDay() const
 {
    switch (type) {
       case tt_YearMonth:
-      case tt_Null:
+      case tt_Never:
       case tt_ShortClock:
       case tt_Clock: {
          return TNUM_MINUS_ONE;
@@ -452,11 +452,11 @@ p_bool Time::equalsExactly(const Time& tim) const
 
 void Time::setValue(const Time& tim)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return;
    }
 
-   if (tim.type == TimeType::tt_Null) {
+   if (tim.type == TimeType::tt_Never) {
       clear();
       return;
    }
@@ -490,7 +490,7 @@ void Time::setValue(const Time& tim)
 
 void Time::clear()
 {
-   type = TimeType::tt_Null;
+   type = TimeType::tt_Never;
    year = TNUM_MINUS_ONE;
    day = TNUM_MINUS_ONE;
    month = TNUM_MINUS_ONE;
@@ -501,7 +501,7 @@ void Time::clear()
 
 Time& Time::operator += (const Period& per)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return *this;
    }
 
@@ -533,7 +533,7 @@ Time& Time::operator += (const Period& per)
 
 Time& Time::operator -= (const Period& per)
 {
-   if (type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never) {
       return *this;
    }
 
@@ -606,7 +606,7 @@ void Time::initClock(const p_bool withSeconds, const p_tnum recentChange)
 
 p_bool Time::operator == (const Time& tim) const
 {
-   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
       return false;
    }
 
@@ -721,7 +721,7 @@ p_bool Time::operator == (const Time& tim) const
 
 p_bool Time::operator != (const Time& tim) const
 {
-   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
       return false;
    }
 
@@ -836,7 +836,7 @@ p_bool Time::operator != (const Time& tim) const
 
 p_bool Time::operator < (const Time& tim) const
 {
-   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
       return false;
    }
 
@@ -866,7 +866,7 @@ p_bool Time::operator < (const Time& tim) const
 
 p_bool Time::operator > (const Time& tim) const
 {
-   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
       return false;
    }
 
@@ -896,7 +896,7 @@ p_bool Time::operator > (const Time& tim) const
 
 p_bool Time::operator <= (const Time& tim) const
 {
-   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
       return type == tim.type;
    }
 
@@ -926,7 +926,7 @@ p_bool Time::operator <= (const Time& tim) const
 
 p_bool Time::operator >= (const Time& tim) const
 {
-   if (type == TimeType::tt_Null || tim.type == TimeType::tt_Null) {
+   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
       return type == tim.type;
    }
 
@@ -1078,7 +1078,7 @@ p_tnum daysInMonth(const p_tnum month, const p_tnum year)
 
 inline Period timeDifference(const Time& min, const Time& max)
 {
-   if (min.type == Time::TimeType::tt_Null || max.type == Time::TimeType::tt_Null) {
+   if (min.type == Time::TimeType::tt_Never || max.type == Time::TimeType::tt_Never) {
       return Period();
    }
 
@@ -1318,7 +1318,7 @@ std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base)
    std::vector<Time> result;
 
    for (const Time& t : base) {
-      if (t.type != Time::tt_Null) {
+      if (t.type != Time::tt_Never) {
          result.emplace_back(t);
       }
    }

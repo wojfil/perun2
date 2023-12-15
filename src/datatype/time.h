@@ -75,7 +75,7 @@ public:
    // time can take one of these forms:
    enum TimeType
    {
-      tt_Null = -1,
+      tt_Never = -1,
       tt_YearMonth = 0,         // contains month and year
       tt_Date = 1,              // contains day, month and year
       tt_DateShortClock = 2,    // contains day, month, year, hour, minute

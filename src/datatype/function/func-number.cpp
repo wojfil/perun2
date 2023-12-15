@@ -506,7 +506,7 @@ p_num F_Count::getValue()
 p_num F_ShiftMonth_Time::getValue()
 {
    const p_tim time = this->arg1->getValue();
-   if (time.type == Time::tt_Null) {
+   if (time.type == Time::tt_Never) {
       return P_NaN;
    }
 
@@ -550,7 +550,7 @@ p_num F_ShiftMonth_Number::getValue()
 p_num F_ShiftWeekDay_Time::getValue()
 {
    const p_tim time = this->arg1->getValue();
-   if (time.type == Time::tt_Null) {
+   if (time.type == Time::tt_Never) {
       return P_NaN;
    }
 

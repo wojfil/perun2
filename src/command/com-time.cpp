@@ -29,7 +29,7 @@ void C_ReaccessTo::run()
    p_tim t = this->context->v_access->value;
    t.setValue(time->getValue());
 
-   if (t.type == Time::tt_Null) {
+   if (t.type == Time::tt_Never) {
       this->perun2.logger.log(L"Failed to reaccess ", getCCName(this->context->v_path->value));
       this->perun2.contexts.success->value = false;
       return;
@@ -57,7 +57,7 @@ void C_RechangeTo::run()
    p_tim t = this->context->v_change->value;
    t.setValue(time->getValue());
    
-   if (t.type == Time::tt_Null) {
+   if (t.type == Time::tt_Never) {
       this->perun2.logger.log(L"Failed to rechange ", getCCName(this->context->v_path->value));
       this->perun2.contexts.success->value = false;
       return;
@@ -86,7 +86,7 @@ void C_RecreateTo::run()
    p_tim t = this->context->v_creation->value;
    t.setValue(time->getValue());
 
-   if (t.type == Time::tt_Null) {
+   if (t.type == Time::tt_Never) {
       this->perun2.logger.log(L"Failed to recreate ", getCCName(this->context->v_path->value));
       this->perun2.contexts.success->value = false;
       return;
@@ -114,7 +114,7 @@ void C_RemodifyTo::run()
    p_tim t = this->context->v_modification->value;
    t.setValue(time->getValue());
 
-   if (t.type == Time::tt_Null) {
+   if (t.type == Time::tt_Never) {
       this->perun2.logger.log(L"Failed to remodify ", getCCName(this->context->v_path->value));
       this->perun2.contexts.success->value = false;
       return;

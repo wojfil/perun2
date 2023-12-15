@@ -73,48 +73,85 @@ TimeMember::TimeMember(p_genptr<p_tim>& tim, const Period::PeriodUnit& pu)
 p_num TimeMember::getValue() 
 {
    const p_tim t = this->time->getValue();
-   if (t.type == Time::tt_Null) {
-      return P_NaN;
-   }
 
    switch (this->unit) {
       case Period::u_Years: {
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_ShortClock:
+            case Time::tt_Clock: {
+               return P_NaN;
+            }
+         }
+
          return static_cast<p_nint>(t.year);
       }
       case Period::u_Months: {
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_ShortClock:
+            case Time::tt_Clock: {
+               return P_NaN;
+            }
+         }
+
          return static_cast<p_nint>(t.month);
       }
       case Period::u_Weeks: {
-         if (t.type == Time::tt_YearMonth) {
-            return P_NaN;
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_YearMonth:
+            case Time::tt_ShortClock:
+            case Time::tt_Clock: {
+               return P_NaN;
+            }
          }
 
          return static_cast<p_nint>(t.getWeekDay());
       }
       case Period::u_Days: {
-         if (t.type == Time::tt_YearMonth) {
-            return P_NaN;
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_YearMonth:
+            case Time::tt_ShortClock:
+            case Time::tt_Clock: {
+               return P_NaN;
+            }
          }
 
          return static_cast<p_nint>(t.day);
       }
       case Period::u_Hours: {
-         if (t.type <= Time::tt_Date) {
-            return P_NaN;
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_YearMonth:
+            case Time::tt_Date: {
+               return P_NaN;
+            }
          }
 
          return static_cast<p_nint>(t.hour);
       }
       case Period::u_Minutes: {
-         if (t.type <= Time::tt_Date) {
-            return P_NaN;
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_YearMonth:
+            case Time::tt_Date: {
+               return P_NaN;
+            }
          }
 
          return static_cast<p_nint>(t.minute);
       }
       case Period::u_Seconds: {
-         if (t.type <= Time::tt_DateShortClock) {
-            return P_NaN;
+         switch (t.type) {
+            case Time::tt_Null:
+            case Time::tt_YearMonth:
+            case Time::tt_Date:
+            case Time::tt_DateShortClock:
+            case Time::tt_ShortClock: {
+               return P_NaN;
+            }
          }
 
          return static_cast<p_nint>(t.second);

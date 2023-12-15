@@ -161,7 +161,6 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
    const p_tnum minute = tokenToTimeNumber(tks.at(6));
 
    if (hour < 0 || hour >= 24) {
-
       throw SyntaxError::hoursOutOfRange(toStr(hour), tks.at(4).line);
    }
 
@@ -191,8 +190,56 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 
 p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
 {
-   // todo
-   return false;
+   const Token& first = tks.first();
+
+   if (first.isSymbol(CHAR_COLON)) {
+      throw SyntaxError::expressionCannotStartWith(CHAR_COLON, tks.first().line);
+   }
+
+   if (tks.last().isSymbol(CHAR_COLON)) {
+      throw SyntaxError::expressionCannotEndWith(CHAR_COLON, tks.last().line);
+   }
+
+   if (tks.getLength() != 3 && tks.getLength() != 5) {
+      return false;
+   }
+
+   const Token& third = tks.at(2);
+
+   if (first.type != Token::t_Number || !tks.second().isSymbol(CHAR_COLON) || third.type != Token::t_Number) {
+      return false;
+   }
+
+   const p_tnum hour = tokenToTimeNumber(first);
+   const p_tnum minute = tokenToTimeNumber(third);
+
+   if (hour < 0 || hour >= 24) {
+      throw SyntaxError::hoursOutOfRange(toStr(hour), tks.at(4).line);
+   }
+
+   if (minute < 0 || minute >= 60) {
+      throw SyntaxError::minutesOutOfRange(toStr(minute), tks.at(6).line);
+   }
+
+   if (tks.getLength() == 3) {
+      Time t = Time::clock(hour, minute);
+      result = std::make_unique<gen::Constant<p_tim>>(t);
+      return true;
+   }
+
+   if (!tks.at(3).isSymbol(CHAR_COLON) || tks.at(4).type != Token::t_Number) {
+      return false;
+   }
+
+   const p_tnum secs = tokenToTimeNumber(tks.at(4));
+
+   if (secs < 0 || secs >= 60) {
+      throw SyntaxError::secondsOutOfRange(toStr(secs), tks.at(4).line);
+   }
+
+   Time t = Time::clock(hour, minute, secs);
+   result = std::make_unique<gen::Constant<p_tim>>(t);
+   return true;
 }
 
 static p_tnum tokenToTimeNumber(const Token& tk)

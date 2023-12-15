@@ -62,7 +62,7 @@ p_str Time::toString() const
 {
    switch (type) {
       case TimeType::tt_Never: {
-         return STRING_NO_TIME;
+         return STRING_NEVER;
       }
       case TimeType::tt_ShortClock: {
          p_stream ss;

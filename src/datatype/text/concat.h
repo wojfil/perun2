@@ -15,7 +15,7 @@
 #ifndef CONCAT_H_INCLUDED
 #define CONCAT_H_INCLUDED
 
-#include "primitives.h"
+#include "../primitives.h"
 
 namespace perun2
 {

@@ -13,8 +13,8 @@
 */
 
 #include "registry.h"
-#include "../../datatype/concat.h"
-#include "../../datatype/strings.h"
+#include "../../datatype/text/concat.h"
+#include "../../datatype/text/strings.h"
 
 
 namespace perun2::prog

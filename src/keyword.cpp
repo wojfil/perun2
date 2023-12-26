@@ -13,7 +13,7 @@
 */
 
 #include "keyword.h"
-#include "datatype/strings.h"
+#include "datatype/text/strings.h"
 #include "perun2.h"
 
 

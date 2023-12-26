@@ -16,7 +16,7 @@
 #define GEN_DOUBLE_ASTERISK_H_INCLUDED
 
 #include "gen-os.h"
-#include "../wildcard.h"
+#include "../text/wildcard.h"
 #include <memory>
 
 

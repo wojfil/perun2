@@ -13,7 +13,7 @@
 */
 
 #include "pattern.h"
-#include "../../datatype/chars.h"
+#include "../../datatype/text/chars.h"
 
 
 namespace perun2::prog

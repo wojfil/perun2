@@ -13,9 +13,9 @@
 */
 
 #include "period.h"
-#include "chars.h"
+#include "text/chars.h"
 #include "numbers.h"
-#include "strings.h"
+#include "text/strings.h"
 #include <sstream>
 
 

@@ -15,7 +15,7 @@
 #ifndef WIN_REGISTRY_PATTERN_H_INCLUDED
 #define WIN_REGISTRY_PATTERN_H_INCLUDED
 
-#include "../../datatype/wildcard.h"
+#include "../../datatype/text/wildcard.h"
 
 
 namespace perun2::prog

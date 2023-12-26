@@ -16,7 +16,7 @@
 #include "number.h"
 #include "../exception.h"
 #include "primitives.h"
-#include "strings.h"
+#include "text/strings.h"
 #include "numbers.h"
 
 

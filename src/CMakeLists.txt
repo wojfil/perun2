@@ -68,9 +68,7 @@ add_executable(
     command/com-aggregate.cpp
     command/com-arg.cpp
     datatype/cast.cpp
-    datatype/chars.cpp
     datatype/comparison.cpp
-    datatype/concat.cpp
     datatype/definition.cpp
     datatype/incr-constr.cpp
     datatype/math.cpp
@@ -79,9 +77,11 @@ add_executable(
     datatype/order.cpp
     datatype/parse-gen.cpp
     datatype/period.cpp
-    datatype/strings.cpp
     datatype/time.cpp
-    datatype/wildcard.cpp
+    datatype/text/chars.cpp
+    datatype/text/concat.cpp
+    datatype/text/strings.cpp
+    datatype/text/wildcard.cpp
     command/com-condition.cpp
     command/com-copyto.cpp
     command/com-core-aggr.cpp

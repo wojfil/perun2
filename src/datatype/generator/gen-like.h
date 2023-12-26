@@ -16,7 +16,7 @@
 #define GEN_LIKE_H
 
 #include "../datatype.h"
-#include "../wildcard.h"
+#include "../text/wildcard.h"
 #include <unordered_set>
 #include <unordered_map>
 

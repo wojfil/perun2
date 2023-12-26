@@ -16,7 +16,7 @@
 #define GEN_OS_H_INCLUDED
 
 #include "../patterns.h"
-#include "../wildcard.h"
+#include "../text/wildcard.h"
 #include "../../os.h"
 #include "../../arguments.h"
 #include "../../context/ctx-file.h"

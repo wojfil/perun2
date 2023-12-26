@@ -16,7 +16,7 @@
 #define LOGGER_H_INCLUDED
 
 #include "datatype/primitives.h"
-#include "datatype/chars.h"
+#include "datatype/text/chars.h"
 #include <iostream>
 
 

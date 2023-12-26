@@ -13,7 +13,7 @@
 */
 
 #include "gen-like.h"
-#include "../strings.h"
+#include "../text/strings.h"
 #include <set>
 #include <cwctype>
 

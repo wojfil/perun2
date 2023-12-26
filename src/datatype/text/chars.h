@@ -15,7 +15,7 @@
 #ifndef CHARS_H_INCLUDED
 #define CHARS_H_INCLUDED
 
-#include "primitives.h"
+#include "../primitives.h"
 
 
 namespace perun2

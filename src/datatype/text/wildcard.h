@@ -15,8 +15,8 @@
 #ifndef WILDCARD_H_INCLUDED
 #define WILDCARD_H_INCLUDED
 
-#include "primitives.h"
-#include "../logic.h"
+#include "../primitives.h"
+#include "../../logic.h"
 
 
 namespace perun2

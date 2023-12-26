@@ -17,8 +17,8 @@
 
 #include "time.h"
 #include "definition.h"
-#include "concat.h"
-#include "strings.h"
+#include "text/concat.h"
+#include "text/strings.h"
 #include "numbers.h"
 #include <unordered_set>
 

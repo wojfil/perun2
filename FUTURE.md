@@ -197,6 +197,15 @@ select '*.pdf'
     and creation <= 14:30:30
 ```
 
+## Close programs
+
+We can open programs. What about closing them?
+Is this thing even possible?
+
+```
+close gimp, photoshop, paint;
+```
+
 ## Variable runtime stability check
 
 Look for integer overflows.
@@ -204,7 +213,7 @@ These events are rare as 64 bits are used for storing ints... but they are still
 
 ```
 a = 5000000000000000000;
-a += a; // error flows from here
+a += a; // a becomes NaN here
 a
 ```
 
@@ -411,16 +420,6 @@ All photos are images, but not all images are photos.
 select photos
 ```
 
-## Monochromatic images
-
-Another boolean variable. We could apply it to both to *images* and *videos*.
-
-```
-select images
-  where name like 'img%'
-  and monochromatic 
-```
-
 ## Time expressed as a week
 
 We can introduce three variables - *currentWeek*, *lastWeek*, *nextWeek*.
@@ -429,13 +428,6 @@ In this case, time means a period of 7 days.
 ```
 select files 
   where creation = currentWeek
-```
-
-There is one problem to be resolved. How to implement time shifting?
-
-```
-select files 
-  where creation = currentWeek - 30 hours
 ```
 
 ## More time variables
@@ -552,7 +544,7 @@ In Perun2, string literals can contain new lines.
 This little feature help us a lot.
 
 ```
-runPowershell
+runPowershellCode
 '
   -some -psh
   -command -here
@@ -563,7 +555,7 @@ We could also read the output.
 Every printed line is a next value in the 'output' variable, which is a list.
 
 ```
-runPython
+runPythonCode
 '
   print("a.txt")
   print("b.txt")

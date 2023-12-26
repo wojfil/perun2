@@ -492,7 +492,7 @@ p_str os_drive(const p_str& path)
    if (os_isAbsolute(path)) {
       p_char letter = path[0];
       toUpper(letter);
-      return str(toStr(letter), CHAR_COLON);
+      return str(letter, CHAR_COLON);
    }
    else {
       return p_str();

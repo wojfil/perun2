@@ -20,18 +20,6 @@
 namespace perun2
 {
 
-
-p_constexpr uint32_t RAW_DOUBLECHAR_NONE               = 0;
-p_constexpr uint32_t RAW_DOUBLECHAR_LOWER_OE           = 1 << 0;
-p_constexpr uint32_t RAW_DOUBLECHAR_LOWER_AE           = 1 << 1;
-p_constexpr uint32_t RAW_DOUBLECHAR_LOWER_AE_ACCENT    = 1 << 2;
-p_constexpr uint32_t RAW_DOUBLECHAR_LOWER_AE_MACRON    = 1 << 3;
-p_constexpr uint32_t RAW_DOUBLECHAR_UPPER_OE           = 1 << 4;
-p_constexpr uint32_t RAW_DOUBLECHAR_UPPER_AE           = 1 << 5;
-p_constexpr uint32_t RAW_DOUBLECHAR_UPPER_AE_ACCENT    = 1 << 6;
-p_constexpr uint32_t RAW_DOUBLECHAR_UPPER_AE_MACRON    = 1 << 7;
-
-
 // remove all diacritical marks from Latin letters of this text
 // case size stays the same
 // in addition, turn every Æ to AE and every Œ to OE

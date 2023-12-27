@@ -26,7 +26,6 @@
 #include <locale>
 #include <clocale>
 #include <cstdlib>
-#include <cwctype>
 #include <iostream>
 
 namespace perun2

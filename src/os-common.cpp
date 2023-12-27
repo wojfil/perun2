@@ -25,7 +25,6 @@
 #include "perun2.h"
 #include "datatype/parse/parse-asterisk.h"
 #include <shlobj.h>
-#include <cwctype>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <algorithm>

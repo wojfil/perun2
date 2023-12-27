@@ -28,7 +28,6 @@
 #include "../generator/gen-string.h"
 #include "../generator/gen-definition.h"
 #include "../math.h"
-#include <cwctype>
 
 
 namespace perun2::func

@@ -18,7 +18,6 @@
 #include "../generator/gen-definition.h"
 #include "../generator/gen-time.h"
 #include "../generator/gen-list.h"
-#include <cwctype>
 
 
 namespace perun2::parse

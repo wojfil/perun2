@@ -15,7 +15,6 @@
 #include "gen-like.h"
 #include "../text/strings.h"
 #include <set>
-#include <cwctype>
 
 
 namespace perun2::gen

@@ -18,7 +18,7 @@
 namespace perun2
 {
 
-void toRaw(p_str& value)
+void str_toRaw(p_str& value)
 {
    uint32_t doubleChars = RAW_DOUBLECHAR_NONE;
 

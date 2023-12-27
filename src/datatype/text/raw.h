@@ -35,7 +35,7 @@ p_constexpr uint32_t RAW_DOUBLECHAR_UPPER_AE_MACRON    = 1 << 7;
 // remove all diacritical marks from Latin letters of this text
 // case size stays the same
 // in addition, turn every Æ to AE and every Œ to OE
-void toRaw(p_str& value);
+void str_toRaw(p_str& value);
 
 // replace certain char with a pair of chars
 // string is expanded every replacement

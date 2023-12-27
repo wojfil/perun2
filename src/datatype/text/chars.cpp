@@ -26,15 +26,47 @@ void char_toLower(p_char& ch)
    ch = std::tolower(ch, std::locale(""));
 }
 
+
 void char_toUpper(p_char& ch)
 {
    ch = std::toupper(ch, std::locale(""));
 }
 
+
+p_bool char_isAlpha(const p_char ch)
+{
+   return std::iswalpha(ch);
+}
+
+
+p_bool char_isSpace(const p_char ch)
+{
+   return std::iswspace(ch);
+}
+
+
+p_bool char_isDigit(const p_char ch)
+{
+   return std::iswdigit(ch);
+}
+
+
+p_bool char_isUpper(const p_char ch)
+{
+   return std::iswupper(ch);
+}
+
+
+p_bool char_isLower(const p_char ch)
+{
+   return std::iswlower(ch);
+}
+
+
 p_bool charsEqualInsensitive(p_char ch1, p_char ch2)
 {
-   char_toLower(ch1);
-   char_toLower(ch2);
+   ch1 = std::tolower(ch1, std::locale(""));
+   ch2 = std::tolower(ch2, std::locale(""));
    return ch1 == ch2;
 }
 

@@ -492,7 +492,7 @@ Logic LC_Default::checkState(const p_size n, const p_size m)
             break;
          }
          case WILDCARD_ONE_DIGIT: {
-            if (std::iswdigit((*this->valuePtr)[n - 1])) {
+            if (char_isDigit((*this->valuePtr)[n - 1])) {
                ans = std::max(ans, this->checkState(n - 1, m - 1));
             }
             break;
@@ -739,7 +739,7 @@ p_bool LC_OnlyDigits::compareToPattern(const p_str& value)
    }
 
    for (p_size i = 0; i < length; i++) {
-      if (!std::iswdigit(value[i])) {
+      if (!char_isDigit(value[i])) {
          return false;
       }
    }
@@ -790,7 +790,7 @@ p_bool LC_Field_H::compareToPattern(const p_str& value)
 
    for (p_size i = 0; i < length; i++) {
       if (isHash[i]) {
-         if (!std::iswdigit(value[i])) {
+         if (!char_isDigit(value[i])) {
             return false;
          }
       }
@@ -819,7 +819,7 @@ p_bool LC_Field_UH::compareToPattern(const p_str& value)
             break;
          }
          case WILDCARD_ONE_DIGIT: {
-            if (!std::iswdigit(value[i])) {
+            if (!char_isDigit(value[i])) {
                return false;
             }
             break;

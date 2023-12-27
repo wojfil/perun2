@@ -16,10 +16,8 @@
 #include "../../lexer.h"
 #include "../../util.h"
 #include "../math.h"
-#include <cwctype>
 #include <algorithm>
 #include <sstream>
-#include <cwctype>
 #include <cmath>
 #include <bitset>
 
@@ -98,7 +96,7 @@ p_str F_Digits::getValue()
    p_size it = 0;
 
    for (const p_char ch : s1) {
-      if (std::iswdigit(ch)) {
+      if (char_isDigit(ch)) {
          len2++;
       }
    }
@@ -106,7 +104,7 @@ p_str F_Digits::getValue()
    p_str s2(len2, CHAR_SPACE);
 
    for (const p_char ch : s1) {
-      if (std::iswdigit(ch)) {
+      if (char_isDigit(ch)) {
          s2[it] = ch;
          it++;
       }
@@ -146,14 +144,14 @@ p_str F_Letters::getValue()
    p_size it = 0;
 
    for (const p_char ch : s1) {
-      if (std::iswalpha(ch)) {
+      if (char_isAlpha(ch)) {
          len2++;
       }
    }
 
    p_str s2(len2, CHAR_SPACE);
    for (const p_char ch : s1) {
-      if (std::iswalpha(ch)) {
+      if (char_isAlpha(ch)) {
          s2[it] = ch;
          it++;
       }
@@ -184,7 +182,7 @@ p_str F_Trim::getValue()
 
    p_int left;
    for (left = 0; left < length; left++) {
-      if (!(std::iswspace(value[left]))) {
+      if (!char_isSpace(value[left])) {
          break;
       }
    }
@@ -195,7 +193,7 @@ p_str F_Trim::getValue()
 
    p_int right;
    for (right = length - 1; right >= 0; --right) {
-      if (!(std::iswspace(value[right]))) {
+      if (!char_isSpace(value[right])) {
          break;
       }
    }
@@ -620,12 +618,12 @@ p_str F_AfterDigits::getValue()
 
    for (p_size i = 0; i < value.size(); i++) {
       if (after) {
-         if (!std::iswdigit(value[i])) {
+         if (!char_isDigit(value[i])) {
             return value.substr(i);
          }
       }
       else {
-         if (std::iswdigit(value[i])) {
+         if (char_isDigit(value[i])) {
             after = true;
          }
       }
@@ -642,12 +640,12 @@ p_str F_AfterLetters::getValue()
 
    for (p_size i = 0; i < value.size(); i++) {
       if (after) {
-         if (!std::iswalpha(value[i])) {
+         if (!char_isAlpha(value[i])) {
             return value.substr(i);
          }
       }
       else {
-         if (std::iswalpha(value[i])) {
+         if (char_isAlpha(value[i])) {
             after = true;
          }
       }
@@ -662,7 +660,7 @@ p_str F_BeforeDigits::getValue()
    const p_str value = arg1->getValue();
 
    for (p_size i = 0; i < value.size(); i++) {
-      if (std::iswdigit(value[i])) {
+      if (char_isDigit(value[i])) {
          return i == 0
             ? p_str()
             : value.substr(0, i);
@@ -678,7 +676,7 @@ p_str F_BeforeLetters::getValue()
    const p_str value = arg1->getValue();
 
    for (p_size i = 0; i < value.size(); i++) {
-      if (std::iswalpha(value[i])) {
+      if (char_isAlpha(value[i])) {
          return i == 0
             ? p_str()
             : value.substr(0, i);
@@ -716,7 +714,7 @@ p_str F_Capitalize::getValue()
    p_bool prevLetter = false;
 
    for (p_char& ch : value) {
-      const p_bool isLetter = std::iswalpha(ch);
+      const p_bool isLetter = char_isAlpha(ch);
 
       if (isLetter) {
          if (prevLetter) {

@@ -260,7 +260,7 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
    p_bool onlyDigitsAndDots = true;
 
    for (p_size i = start; i < start + length; i++) {
-      if (!std::iswdigit(code[i])) {
+      if (!char_isDigit(code[i])) {
          if (code[i] == CHAR_DOT) {
             dots++;
          }
@@ -284,7 +284,7 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
          p_bool hasLetters = false;
 
          for (p_size i = start; i < (start + length - 2); i++) {
-            if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
+            if (!char_isDigit(code[i]) && code[i] != CHAR_DOT) {
                hasLetters = true;
                break;
             }
@@ -305,7 +305,7 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
          p_bool hasLetters = false;
 
          for (p_size i = start; i < (start + length - 1); i++) {
-            if (!std::iswdigit(code[i]) && code[i] != CHAR_DOT) {
+            if (!char_isDigit(code[i]) && code[i] != CHAR_DOT) {
                hasLetters = true;
                break;
             }
@@ -334,7 +334,7 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
                break;
             }
          }
-         else if (!std::iswdigit(ch)) {
+         else if (!char_isDigit(ch)) {
             kid = -1;
             break;
          }
@@ -551,7 +551,7 @@ inline static p_bool isNewLine(const p_char ch)
 
 inline static p_bool isAllowedInWord(const p_char ch)
 {
-   return std::iswalpha(ch) || std::iswdigit(ch) || ch == CHAR_DOT;
+   return char_isAlpha(ch) || char_isDigit(ch) || ch == CHAR_DOT;
 }
 
 inline static p_bool isDoubleChar(const p_char ch)

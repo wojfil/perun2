@@ -26,7 +26,6 @@
 #include "datatype/parse/parse-asterisk.h"
 #include "metadata.h"
 #include <shlobj.h>
-#include <cwctype>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <algorithm>
@@ -2318,7 +2317,7 @@ p_bool os_pathWasStacked(const p_str& basePath)
             }
          }
       }
-      else if (!std::iswdigit(basePath[i])) {
+      else if (!char_isDigit(basePath[i])) {
          return false;
       }
    }
@@ -2331,7 +2330,7 @@ void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath)
    const p_size len = path.size();
 
    for (p_int i = static_cast<p_int>(len - 2); i >= 0; i--) {
-      if (!std::iswdigit(path[i])) {
+      if (!char_isDigit(path[i])) {
          basePath = path.substr(0, i);
          const p_str numStr = path.substr(i + 1, static_cast<p_int>(len) - i - 2);
 

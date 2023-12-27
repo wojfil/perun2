@@ -14,7 +14,6 @@
 
 #include "func-bool.h"
 #include "..\..\os.h"
-#include <cwctype>
 
 
 namespace perun2::func
@@ -85,8 +84,8 @@ p_bool F_IsLower::getValue()
    p_bool anyLetter = false;
 
    for (const p_char ch : value) {
-      if (std::iswalpha(ch)) {
-         if (std::iswupper(ch)) {
+      if (char_isAlpha(ch)) {
+         if (char_isUpper(ch)) {
             return false;
          }
          anyLetter = true;
@@ -107,8 +106,8 @@ p_bool F_IsUpper::getValue()
    p_bool anyLetter = false;
 
    for (const p_char ch : value) {
-      if (std::iswalpha(ch)) {
-         if (std::iswlower(ch)) {
+      if (char_isAlpha(ch)) {
+         if (char_isLower(ch)) {
             return false;
          }
          anyLetter = true;
@@ -150,7 +149,7 @@ p_bool isNumber(const p_str& value)
             return false;
          }
       }
-      else if (!std::iswdigit(ch)) {
+      else if (!char_isDigit(ch)) {
          return false;
       }
    }
@@ -340,7 +339,7 @@ p_bool F_IsLetter::getValue()
    }
 
    for (const p_char ch : value) {
-      if (!std::iswalpha(ch)) {
+      if (!char_isAlpha(ch)) {
          return false;
       }
    }
@@ -357,7 +356,7 @@ p_bool F_IsDigit::getValue()
    }
 
    for (const p_char ch : value) {
-      if (!std::iswdigit(ch)) {
+      if (!char_isDigit(ch)) {
          return false;
       }
    }

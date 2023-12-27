@@ -14,7 +14,6 @@
 
 #include "func-list.h"
 #include "../../lexer.h"
-#include <cwctype>
 
 
 namespace perun2::func
@@ -109,11 +108,11 @@ p_list F_Words::getValue()
          return p_list();
       }
       case 1: {
-         return std::iswalpha(value[0]) ? p_list{value} : p_list();
+         return char_isAlpha(value[0]) ? p_list{value} : p_list();
       }
       case 2: {
-         if (std::iswalpha(value[0])) {
-            if (std::iswalpha(value[1])) {
+         if (char_isAlpha(value[0])) {
+            if (char_isAlpha(value[1])) {
                return p_list{value};
             }
             else {
@@ -122,7 +121,7 @@ p_list F_Words::getValue()
             }
          }
          else {
-            if (std::iswalpha(value[1])) {
+            if (char_isAlpha(value[1])) {
                value.erase(value.begin());
                return p_list{value};
             }
@@ -137,7 +136,7 @@ p_list F_Words::getValue()
          p_size start = 0;
 
          for (p_size i = 0; i < len; i++) {
-            const p_bool isLetter = std::iswalpha(value[i]);
+            const p_bool isLetter = char_isAlpha(value[i]);
             if (isLetter) {
                if (!prevLetter) {
                   start = i;
@@ -175,19 +174,19 @@ p_nlist F_Numbers::getValue()
          return p_nlist();
       }
       case 1: {
-         return std::iswdigit(value[0])
+         return char_isDigit(value[0])
             ? p_nlist{fromChar(value[0])}
             : p_nlist();
       }
       case 2: {
-         if (std::iswdigit(value[0])) {
-            return p_nlist {std::iswdigit(value[1])
+         if (char_isDigit(value[0])) {
+            return p_nlist {char_isDigit(value[1])
                ? (NINT_TEN * fromChar(value[0]) + fromChar(value[1]))
                : fromChar(value[0])
             };
          }
          else {
-            return std::iswdigit(value[1])
+            return char_isDigit(value[1])
                ? p_nlist{fromChar(value[1])}
                : p_nlist();
          }
@@ -198,7 +197,7 @@ p_nlist F_Numbers::getValue()
          p_size start = 0;
 
          for (p_size i = 0; i < len; i++) {
-            const p_bool isDigit = std::iswdigit(value[i]);
+            const p_bool isDigit = char_isDigit(value[i]);
             if (isDigit) {
                if (!prevDigit) {
                   start = i;

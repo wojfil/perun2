@@ -23,6 +23,11 @@ namespace perun2
 
 void char_toLower(p_char& ch);
 void char_toUpper(p_char& ch);
+p_bool char_isAlpha(const p_char ch);
+p_bool char_isSpace(const p_char ch);
+p_bool char_isDigit(const p_char ch);
+p_bool char_isUpper(const p_char ch);
+p_bool char_isLower(const p_char ch);
 
 p_bool charsEqualInsensitive(p_char ch1, p_char ch2);
 

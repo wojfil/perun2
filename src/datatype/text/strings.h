@@ -36,8 +36,8 @@ p_str toStr(const T& n)
 
 p_ndouble stringToDouble(const p_str& value);
 
-void toLower(p_str& value);
-void toUpper(p_str& value);
+void str_toLower(p_str& value);
+void str_toUpper(p_str& value);
 
 p_constexpr p_int LETTERS_IN_ENGLISH_ALPHABET = 26;
 

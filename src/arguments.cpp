@@ -81,7 +81,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
             }
 
             p_str lowerArg = arg;
-            toLower(lowerArg);
+            str_toLower(lowerArg);
 
             if (lowerArg == STRING_ARG_VERSION) {
                this->parseState = ArgsParseState::aps_PrintInfo;

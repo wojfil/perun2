@@ -169,7 +169,7 @@ p_str os_extension(const p_str& value)
          }
 
          p_str result = value.substr(i + 1);
-         toLower(result);
+         str_toLower(result);
          return result;
       }
       else if (ch == OS_SEPARATOR) {

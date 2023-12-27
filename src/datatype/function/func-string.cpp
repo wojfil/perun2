@@ -167,7 +167,7 @@ p_str F_Lower::getValue()
 {
    p_str value = arg1->getValue();
    if (!value.empty()) {
-      toLower(value);
+      str_toLower(value);
    }
    return value;
 }
@@ -210,7 +210,7 @@ p_str F_Upper::getValue()
 {
    p_str value = arg1->getValue();
    if (!value.empty()) {
-      toUpper(value);
+      str_toUpper(value);
    }
    return value;
 }
@@ -720,11 +720,11 @@ p_str F_Capitalize::getValue()
 
       if (isLetter) {
          if (prevLetter) {
-            toLower(ch);
+            char_toLower(ch);
          }
          else {
             prevLetter = true;
-            toUpper(ch);
+            char_toUpper(ch);
          }
       }
       else {

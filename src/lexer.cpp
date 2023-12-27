@@ -373,7 +373,7 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
 
    if (dots == 0) {
       p_str word = code.substr(start, length);
-      toLower(word);
+      str_toLower(word);
 
       auto fm = p2.keywordsData.MONTHS.find(word);
       if (fm != p2.keywordsData.MONTHS.end()) {

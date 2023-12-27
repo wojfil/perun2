@@ -339,7 +339,7 @@ p_str Token::getOriginString_2(p_perun2& p2) const
 p_str Token::toLowerString(p_perun2& p2) const
 {
    p_str result = getOriginString(p2);
-   toLower(result);
+   str_toLower(result);
    return result;
 }
 

@@ -21,8 +21,9 @@
 namespace perun2
 {
 
-void toLower(p_char& ch);
-void toUpper(p_char& ch);
+void char_toLower(p_char& ch);
+void char_toUpper(p_char& ch);
+
 p_bool charsEqualInsensitive(p_char ch1, p_char ch2);
 
 p_constexpr p_char CHAR_COMMA =                  L',';

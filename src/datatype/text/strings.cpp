@@ -51,14 +51,14 @@ p_ndouble stringToDouble(const p_str& value)
    return n;
 }
 
-void toLower(p_str& value)
+void str_toLower(p_str& value)
 {
    for (p_char& ch : value) {
       ch = std::tolower(ch, std::locale(""));
    }
 }
 
-void toUpper(p_str& value)
+void str_toUpper(p_str& value)
 {
    for (p_char& ch : value) {
       ch = std::toupper(ch, std::locale(""));

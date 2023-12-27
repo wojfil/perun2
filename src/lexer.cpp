@@ -15,9 +15,6 @@
 #include "lexer.h"
 #include "exception.h"
 #include "brackets.h"
-#include <cwctype>
-#include <iostream>
-#include <sstream>
 
 
 namespace perun2

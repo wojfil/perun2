@@ -20,15 +20,9 @@
 namespace perun2
 {
 
-
-
-
-
-
-
-
-
-
+// remove all diacritical marks from Latin letters of this text
+// case size stays the same
+void toRaw(p_str& value);
 
 
 }

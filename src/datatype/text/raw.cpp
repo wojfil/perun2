@@ -20,8 +20,50 @@ namespace perun2
 
 void toRaw(p_str& value)
 {
+   uint32_t doubleChars = RAW_DOUBLECHAR_NONE;
+
    for (p_char& ch : value) {
       switch (ch) {
+         case L'œ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_LOWER_OE;
+            break;
+         }
+         case L'æ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_LOWER_AE;
+            break;
+         }
+         case L'ǽ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_LOWER_AE_ACCENT;
+            break;
+         }
+         case L'ǣ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_LOWER_AE_MACRON;
+            break;
+         }
+         case L'Œ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_UPPER_OE;
+            break;
+         }
+         case L'Æ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_UPPER_AE;
+            break;
+         }
+         case L'Ǽ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_UPPER_AE_ACCENT;
+            break;
+         }
+         case L'Ǣ':
+         {
+            doubleChars |= RAW_DOUBLECHAR_UPPER_AE_MACRON;
+            break;
+         }
          case L'Ą':
          //case L'A̧':
          //case L'Ą̊': 
@@ -297,21 +339,11 @@ void toRaw(p_str& value)
 
 // todo
 
-// Ǽ	Ǣ						
-// 						
-// 							
-
-
 
 // ą	a̧	ą̊	ɓ	ƈ	ç	đ	ɗ	ɖ	ę	ȩ	ə̧	ɛ̧	ƒ	ǥ	ɠ	ħ	ɦ	į	i̧	ɨ	ɨ̧	ƙ	ł	m̧	ɲ	ǫ	o̧	ø	ơ	ɔ̧	ƥ	ɍ	ş	ƭ	ţ	ŧ	ų	u̧	ư	ʉ	y̨	ƴ
-// á	à	ȧ	â	ä	ǟ	ǎ	ă	ā	ã	å	ǻ	ǽ	ǣ	ḅ	ć	ċ	ĉ	č	ď	ḍ	ḑ	ḓ	é	è	ė	ê	ë	ě	ĕ	ē	ẽ	e̊	ẹ	ǵ	ġ	ĝ	ǧ	ğ	g̃	ģ	ĥ	ḥ
+// á	à	ȧ	â	ä	ǟ	ǎ	ă	ā	ã	å	ǻ			ḅ	ć	ċ	ĉ	č	ď	ḍ	ḑ	ḓ	é	è	ė	ê	ë	ě	ĕ	ē	ẽ	e̊	ẹ	ǵ	ġ	ĝ	ǧ	ğ	g̃	ģ	ĥ	ḥ
 // í	ì	i	î	ï	ǐ	ĭ	ī	ĩ	ị	ĵ	ķ	ǩ	ĺ	ļ	ľ	ŀ	ḷ	ḽ	m̂	m̄	ŉ	ń	n̂	ṅ	n̈	ň	n̄	ñ	ņ	ṋ	ó	ò	ȯ	ȱ	ô	ö	ȫ	ǒ	ŏ	ō	õ	ȭ	ő	ọ	ǿ	ơ
 // p̄	ŕ	ř	ŗ	ṛ	ś	ŝ	ṡ	š	ș	ṣ	ť	ț	ṭ	ṱ	ú	ù	û	ü	ǔ	ŭ	ū	ũ	ű	ů	ụ	ẃ	ẁ	ŵ	ẅ	ẋ	ý	ỳ	ŷ	ÿ	ȳ	ỹ	ź	ż	ž	ẓ
-
-
-
-
-
 
 
 
@@ -319,9 +351,58 @@ void toRaw(p_str& value)
    }
 
 
+   if (doubleChars != RAW_DOUBLECHAR_NONE) {
+      if (doubleChars & RAW_DOUBLECHAR_LOWER_OE) {
+         replaceCharWithTwoChars(value, L'œ', L'o', L'e');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_LOWER_AE) {
+         replaceCharWithTwoChars(value, L'æ', L'a', L'e');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_LOWER_AE_ACCENT) {
+         replaceCharWithTwoChars(value, L'ǽ', L'a', L'e');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_LOWER_AE_MACRON) {
+         replaceCharWithTwoChars(value, L'ǣ', L'a', L'e');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_UPPER_OE) {
+         replaceCharWithTwoChars(value, L'Œ', L'O', L'E');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_UPPER_AE) {
+         replaceCharWithTwoChars(value, L'Æ', L'A', L'E');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_UPPER_AE_ACCENT) {
+         replaceCharWithTwoChars(value, L'Ǽ', L'A', L'E');
+      }
+
+      if (doubleChars & RAW_DOUBLECHAR_UPPER_AE_MACRON) {
+         replaceCharWithTwoChars(value, L'Ǣ', L'A', L'E');
+      }
+   }
+}
 
 
+inline static void replaceCharWithTwoChars(p_str& value,
+   const p_char old, const p_char new1, const p_char new2)
+{
+   p_size pos = value.find(old);
 
+   while (pos != p_str::npos) {
+      value += value[value.size() - 1];
+
+      for (p_int i = value.size() - 2; i > pos + 1; i--) {
+         value[i] = value[i - 1];
+      }
+
+      value[pos] = new1;
+      value[pos + 1] = new2;
+      pos = value.find(old, pos + 2);
+   }
 }
 
 }

@@ -45,9 +45,8 @@ void clearAndReserve(std::vector<T>& vec, const p_size length)
 template <typename T>
 void transferUniquePtrs(std::vector<std::unique_ptr<T>>& source, std::vector<std::unique_ptr<T>>& destination)
 {
-   const p_size len = source.size();
-   for (p_size i = 0; i < len; i++) {
-      std::unique_ptr<T>& s = source[i];
+   for (std::unique_ptr<T>& s : source)
+   {
       destination.push_back(std::move(s));
    }
 };

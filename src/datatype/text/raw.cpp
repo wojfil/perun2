@@ -344,19 +344,250 @@ void str_toRaw(p_str& value)
             ch = L'Z';
             break;
          }
-
-
-
-// todo
-
-
-// ą	a̧	ą̊	ɓ	ƈ	ç	đ	ɗ	ɖ	ę	ȩ	ə̧	ɛ̧	ƒ	ǥ	ɠ	ħ	ɦ	į	i̧	ɨ	ɨ̧	ƙ	ł	m̧	ɲ	ǫ	o̧	ø	ơ	ɔ̧	ƥ	ɍ	ş	ƭ	ţ	ŧ	ų	u̧	ư	ʉ	y̨	ƴ
-// á	à	ȧ	â	ä	ǟ	ǎ	ă	ā	ã	å	ǻ			ḅ	ć	ċ	ĉ	č	ď	ḍ	ḑ	ḓ	é	è	ė	ê	ë	ě	ĕ	ē	ẽ	e̊	ẹ	ǵ	ġ	ĝ	ǧ	ğ	g̃	ģ	ĥ	ḥ
-// í	ì	i	î	ï	ǐ	ĭ	ī	ĩ	ị	ĵ	ķ	ǩ	ĺ	ļ	ľ	ŀ	ḷ	ḽ	m̂	m̄	ŉ	ń	n̂	ṅ	n̈	ň	n̄	ñ	ņ	ṋ	ó	ò	ȯ	ȱ	ô	ö	ȫ	ǒ	ŏ	ō	õ	ȭ	ő	ọ	ǿ	ơ
-// p̄	ŕ	ř	ŗ	ṛ	ś	ŝ	ṡ	š	ș	ṣ	ť	ț	ṭ	ṱ	ú	ù	û	ü	ǔ	ŭ	ū	ũ	ű	ů	ụ	ẃ	ẁ	ŵ	ẅ	ẋ	ý	ỳ	ŷ	ÿ	ȳ	ỹ	ź	ż	ž	ẓ
-
-
-
+         case L'ą':
+         //case L'a̧':
+         //case L'ą̊':
+         case L'á':
+         case L'à':
+         case L'ȧ':
+         case L'â':
+         case L'ä':
+         case L'ǟ':
+         case L'ǎ':
+         case L'ă':
+         case L'ā':
+         case L'ã':
+         case L'å':
+         case L'ǻ': {
+            ch = L'a';
+            break;
+         }
+         case L'ɓ':
+         case L'ḅ': {
+            ch = L'b';
+            break;
+         }
+         case L'ƈ':
+         case L'ç':
+         case L'ć':
+         case L'ċ':
+         case L'ĉ':
+         case L'č': {
+            ch = L'c';
+            break;
+         }
+         case L'đ':
+         case L'ɗ':
+         case L'ɖ':
+         case L'ď':
+         case L'ḍ':
+         case L'ḑ':
+         case L'ḓ': {
+            ch = L'd';
+            break;
+         }
+         case L'ę':
+         case L'ȩ':
+         case L'ə̧':
+         case L'ɛ̧':
+         case L'é':
+         case L'è':
+         case L'ė':
+         case L'ê':
+         case L'ë':
+         case L'ě':
+         case L'ĕ':
+         case L'ē':
+         case L'ẽ':
+         //case L'e̊':
+         case L'ẹ': {
+            ch = L'e';
+            break;
+         }
+         case L'ƒ': {
+            ch = L'f';
+            break;
+         }
+         case L'ǥ':
+         case L'ɠ':
+         case L'ǵ':
+         case L'ġ':
+         case L'ĝ':
+         case L'ǧ':
+         case L'ğ':
+         //case L'g̃':
+         case L'ģ': {
+            ch = L'g';
+            break;
+         }
+         case L'ħ':
+         case L'ɦ':
+         case L'ĥ':
+         case L'ḥ': {
+            ch = L'h';
+            break;
+         }
+         case L'į':
+         //case L'i̧':
+         case L'ɨ':
+         //case L'ɨ̧':
+         case L'í':
+         case L'ì':
+         //case L'i':
+         case L'î':
+         case L'ï':
+         case L'ǐ':
+         case L'ĭ':
+         case L'ī':
+         case L'ĩ':
+         case L'ị': {
+            ch = L'i';
+            break;
+         }
+         case L'ĵ': {
+            ch = L'j';
+            break;
+         }
+         case L'ƙ':
+         case L'ķ':
+         case L'ǩ': {
+            ch = L'k';
+            break;
+         }
+         case L'ł':
+         case L'ĺ':
+         case L'ļ':
+         case L'ľ':
+         case L'ŀ':
+         case L'ḷ':
+         case L'ḽ': {
+            ch = L'l';
+            break;
+         }
+         //case L'm̧':
+         //case L'm̂':
+         //case L'm̄': {
+         //   ch = L'm';
+         //   break;
+         //}
+         case L'ɲ':
+         case L'ŉ':
+         case L'ń':
+         //case L'n̂':
+         case L'ṅ':
+         //case L'n̈':
+         case L'ň':
+         //case L'n̄':
+         case L'ñ':
+         case L'ņ':
+         case L'ṋ': {
+            ch = L'n';
+            break;
+         }
+         case L'ǫ':
+         //case L'o̧':
+         case L'ø':
+         case L'ơ':
+         case L'ɔ̧':
+         case L'ó':
+         case L'ò':
+         case L'ȯ':
+         case L'ȱ':
+         case L'ô':
+         case L'ö':
+         case L'ȫ':
+         case L'ǒ':
+         case L'ŏ':
+         case L'ō':
+         case L'õ':
+         case L'ȭ':
+         case L'ő':
+         case L'ọ':
+         case L'ǿ': {
+            ch = L'o';
+            break;
+         }
+         case L'ƥ':
+         //case L'p̄': 
+         {
+            ch = L'p';
+            break;
+         }
+         case L'ɍ':
+         case L'ŕ':
+         case L'ř':
+         case L'ŗ':
+         case L'ṛ': {
+            ch = L'r';
+            break;
+         }
+         case L'ş':
+         case L'ś':
+         case L'ŝ':
+         case L'ṡ':
+         case L'š':
+         case L'ș':
+         case L'ṣ': {
+            ch = L's';
+            break;
+         }
+         case L'ƭ':
+         case L'ţ':
+         case L'ŧ':
+         case L'ť':
+         case L'ț':
+         case L'ṭ':
+         case L'ṱ': {
+            ch = L't';
+            break;
+         }
+         case L'ų':
+         //case L'u̧':
+         case L'ư':
+         case L'ʉ':
+         case L'ú':
+         case L'ù':
+         case L'û':
+         case L'ü':
+         case L'ǔ':
+         case L'ŭ':
+         case L'ū':
+         case L'ũ':
+         case L'ű':
+         case L'ů':
+         case L'ụ': {
+            ch = L'u';
+            break;
+         }
+         case L'ẃ':
+         case L'ẁ':
+         case L'ŵ':
+         case L'ẅ': {
+            ch = L'w';
+            break;
+         }
+         case L'ẋ': {
+            ch = L'x';
+            break;
+         }
+         //case L'y̨':
+         case L'ƴ':
+         case L'ý':
+         case L'ỳ':
+         case L'ŷ':
+         case L'ÿ':
+         case L'ȳ':
+         case L'ỹ': {
+            ch = L'y';
+            break;
+         }
+         case L'ź':
+         case L'ż':
+         case L'ž':
+         case L'ẓ': {
+            ch = L'z';
+            break;
+         }
       }
    }
 

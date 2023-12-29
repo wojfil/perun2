@@ -148,30 +148,14 @@ void Number::setToNaN()
 
 void Number::setToZero()
 {
-   if (state == NumberState::Int) {
-      value.i = NINT_ZERO;
-   }
-   else if (state == NumberState::Double) {
-      value.d = NDOUBLE_ZERO;
-   }
-   else {
-      value.i = NINT_ZERO;
-      state = NumberState::Int;
-   }
+   value.i = NINT_ZERO;
+   state = NumberState::Int;
 }
 
 void Number::setToMinusOne()
 {
-   if (state == NumberState::Int) {
-      value.i = NINT_MINUS_ONE;
-   }
-   else if (state == NumberState::Double) {
-      value.d = NDOUBLE_MINUS_ONE;
-   }
-   else {
-      value.i = NINT_MINUS_ONE;
-      state = NumberState::Int;
-   }
+   value.i = NINT_MINUS_ONE;
+   state = NumberState::Int;
 }
 
 void Number::turnToIntIfPossible()

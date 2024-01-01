@@ -1293,7 +1293,7 @@ p_bool os_copy(const p_set& paths)
 {
    p_size totalSize = sizeof(DROPFILES) + sizeof(p_char);
 
-   for (const auto& p : paths) {
+   for (const p_str& p : paths) {
       totalSize += sizeof(p_char) * (p.size() + 1);
    }
 
@@ -1304,7 +1304,7 @@ p_bool os_copy(const p_set& paths)
 
    p_char* dstStart = (p_char*)(&df[1]);
 
-   for (const auto& p : paths) {
+   for (const p_str& p : paths) {
       wcscpy(dstStart, p.c_str());
       dstStart = &dstStart[p.size() + 1];
    }
@@ -1323,13 +1323,13 @@ p_bool os_select(const p_str& parent, const p_set& paths)
    ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
    std::vector<ITEMIDLIST*> v;
 
-   for (const auto& p : paths) {
+   for (const p_str& p : paths) {
       v.emplace_back(ILCreateFromPathW(p.c_str()));
    }
 
    HRESULT hr = SHOpenFolderAndSelectItems(folder, v.size(), (LPCITEMIDLIST*)v.data(), 0);
 
-   for (auto idl : v) {
+   for (ITEMIDLIST* idl : v) {
       ILFree(idl);
    }
 

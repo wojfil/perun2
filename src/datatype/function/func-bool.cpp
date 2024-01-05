@@ -460,4 +460,14 @@ p_bool F_Exist::getValue()
    return true;
 }
 
+p_bool F_IsNan::getValue()
+{
+   return this->arg1->getValue().state == NumberState::NaN;
+}
+
+p_bool F_IsNever::getValue()
+{
+   return this->arg1->getValue().type == Time::TimeType::tt_Never;
+}
+
 }

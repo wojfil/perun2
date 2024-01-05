@@ -330,6 +330,22 @@ private:
 };
 
 
+struct F_IsNan : Func_1<p_num>, Generator<p_bool>
+{
+public:
+   F_IsNan(p_genptr<p_num>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
+};
+
+
+struct F_IsNever : Func_1<p_tim>, Generator<p_bool>
+{
+public:
+   F_IsNever(p_genptr<p_tim>& a1) : Func_1(a1) { };
+   p_bool getValue() override;
+};
+
+
 }
 
 #endif // FUNC_BOOL_H_INCLUDED

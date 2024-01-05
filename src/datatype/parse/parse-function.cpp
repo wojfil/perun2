@@ -406,6 +406,32 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
       result = std::make_unique<F_FindText>(str_, ctx);
       return true;
    }
+   else if (word.isWord(STRING_ISNAN, p2)) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      p_genptr<p_num> num;
+      if (!parse::parse(p2, args[0], num)) {
+         functionArgException(0, STRING_NUMBER, word, p2);
+      }
+
+      result = std::make_unique<F_IsNan>(num);
+      return true;
+   }
+   else if (word.isWord(STRING_ISNEVER, p2)) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      p_genptr<p_tim> tim;
+      if (!parse::parse(p2, args[0], tim)) {
+         functionArgException(0, STRING_TIME, word, p2);
+      }
+
+      result = std::make_unique<F_IsNever>(tim);
+      return true;
+   }
 
    return false;
 };

@@ -838,6 +838,10 @@ p_bool Time::operator < (const Time& tim) const
 {
    P_CHECK_TIME_COMPARISON_FAILURE;
 
+   if (type >= tt_ShortClock || tim.type >= tt_ShortClock) {
+      goto dateEscape;
+   }
+
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
 
@@ -851,13 +855,16 @@ p_bool Time::operator < (const Time& tim) const
 
    if (type == tt_Date || tim.type == tt_Date) { return false; }
 
+dateEscape:
+
    if (hour < tim.hour) { return true; }
    else if (hour > tim.hour) { return false; }
 
    if (minute < tim.minute) { return true; }
    else if (minute > tim.minute) { return false; }
 
-   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return false; }
+   if (type == tt_DateShortClock || type == tt_ShortClock
+      || tim.type == tt_DateShortClock || tim.type == tt_ShortClock) { return false; }
 
    return second < tim.second;
 }
@@ -866,6 +873,10 @@ p_bool Time::operator > (const Time& tim) const
 {
    P_CHECK_TIME_COMPARISON_FAILURE;
 
+   if (type >= tt_ShortClock || tim.type >= tt_ShortClock) {
+      goto dateEscape;
+   }
+
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
 
@@ -879,13 +890,16 @@ p_bool Time::operator > (const Time& tim) const
 
    if (type == tt_Date || tim.type == tt_Date) { return false; }
 
+dateEscape:
+
    if (hour > tim.hour) { return true; }
    else if (hour < tim.hour) { return false; }
 
    if (minute > tim.minute) { return true; }
    else if (minute < tim.minute) { return false; }
 
-   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return false; }
+   if (type == tt_DateShortClock || type == tt_ShortClock
+      || tim.type == tt_DateShortClock || tim.type == tt_ShortClock) { return false; }
 
    return second > tim.second;
 }
@@ -893,6 +907,10 @@ p_bool Time::operator > (const Time& tim) const
 p_bool Time::operator <= (const Time& tim) const
 {
    P_CHECK_TIME_COMPARISON_FAILURE;
+
+   if (type >= tt_ShortClock || tim.type >= tt_ShortClock) {
+      goto dateEscape;
+   }
 
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
@@ -907,13 +925,16 @@ p_bool Time::operator <= (const Time& tim) const
 
    if (type == tt_Date || tim.type == tt_Date) { return true; }
 
+dateEscape:
+
    if (hour < tim.hour) { return true; }
    else if (hour > tim.hour) { return false; }
 
    if (minute < tim.minute) { return true; }
    else if (minute > tim.minute) { return false; }
 
-   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return true; }
+   if (type == tt_DateShortClock || type == tt_ShortClock
+      || tim.type == tt_DateShortClock || tim.type == tt_ShortClock) { return true; }
 
    return second <= tim.second;
 }
@@ -921,6 +942,10 @@ p_bool Time::operator <= (const Time& tim) const
 p_bool Time::operator >= (const Time& tim) const
 {
    P_CHECK_TIME_COMPARISON_FAILURE;
+
+   if (type >= tt_ShortClock || tim.type >= tt_ShortClock) {
+      goto dateEscape;
+   }
 
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
@@ -935,13 +960,16 @@ p_bool Time::operator >= (const Time& tim) const
 
    if (type == tt_Date || tim.type == tt_Date) { return true; }
 
+dateEscape:
+
    if (hour > tim.hour) { return true; }
    else if (hour < tim.hour) { return false; }
 
    if (minute > tim.minute) { return true; }
    else if (minute < tim.minute) { return false; }
 
-   if (type == tt_DateShortClock || tim.type == tt_DateShortClock) { return true; }
+   if (type == tt_DateShortClock || type == tt_ShortClock
+      || tim.type == tt_DateShortClock || tim.type == tt_ShortClock) { return true; }
 
    return second >= tim.second;
 }

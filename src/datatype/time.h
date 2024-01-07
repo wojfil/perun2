@@ -22,6 +22,12 @@
 namespace perun2
 {
 
+#define P_CHECK_TIME_COMPARISON_FAILURE                                            \
+   if (!((type >= tt_DateShortClock && tim.tt_DateShortClock >= tt_DateShortClock)  \
+      || (type >= tt_YearMonth && tim.type >= tt_YearMonth                          \
+       && type <= tt_DateClock && tim.type <= tt_DateClock))) { return false; }     
+
+
 
 struct Time
 {

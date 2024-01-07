@@ -836,9 +836,7 @@ p_bool Time::operator != (const Time& tim) const
 
 p_bool Time::operator < (const Time& tim) const
 {
-   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
-      return false;
-   }
+   P_CHECK_TIME_COMPARISON_FAILURE;
 
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
@@ -866,9 +864,7 @@ p_bool Time::operator < (const Time& tim) const
 
 p_bool Time::operator > (const Time& tim) const
 {
-   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
-      return false;
-   }
+   P_CHECK_TIME_COMPARISON_FAILURE;
 
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }
@@ -896,9 +892,7 @@ p_bool Time::operator > (const Time& tim) const
 
 p_bool Time::operator <= (const Time& tim) const
 {
-   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
-      return type == tim.type;
-   }
+   P_CHECK_TIME_COMPARISON_FAILURE;
 
    if (year < tim.year) { return true; }
    else if (year > tim.year) { return false; }
@@ -926,9 +920,7 @@ p_bool Time::operator <= (const Time& tim) const
 
 p_bool Time::operator >= (const Time& tim) const
 {
-   if (type == TimeType::tt_Never || tim.type == TimeType::tt_Never) {
-      return type == tim.type;
-   }
+   P_CHECK_TIME_COMPARISON_FAILURE;
 
    if (year > tim.year) { return true; }
    else if (year < tim.year) { return false; }

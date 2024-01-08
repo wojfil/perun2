@@ -80,6 +80,7 @@ add_executable(
     datatype/time.cpp
     datatype/text/chars.cpp
     datatype/text/concat.cpp
+    datatype/text/like.cpp
     datatype/text/strings.cpp
     datatype/text/wildcard.cpp
     command/com-condition.cpp
@@ -129,7 +130,6 @@ add_executable(
     datatype/generator/gen-bool.cpp
     datatype/generator/gen-definition.cpp
     datatype/generator/gen-double-asterisk.cpp
-    datatype/generator/gen-like.cpp
     datatype/generator/gen-list.cpp
     datatype/generator/gen-number.cpp
     datatype/generator/gen-os-gen.cpp

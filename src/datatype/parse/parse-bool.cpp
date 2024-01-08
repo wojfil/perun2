@@ -21,7 +21,7 @@
 #include "../generator/gen-bool-constr.h"
 #include "../../brackets.h"
 #include "../../lexer.h"
-#include "../generator/gen-like.h"
+#include "../text/like.h"
 #include "../parse-gen.h"
 #include "../incr-constr.h"
 

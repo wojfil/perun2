@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-like.h"
-#include "../text/strings.h"
+#include "like.h"
+#include "strings.h"
 #include <set>
 
 

@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_LIKE_H
-#define GEN_LIKE_H
+#ifndef LIKE_H
+#define LIKE_H
 
 #include "../datatype.h"
-#include "../text/wildcard.h"
+#include "wildcard.h"
 #include <unordered_set>
 #include <unordered_map>
 
@@ -364,4 +364,4 @@ private:
 
 }
 
-#endif /* GEN_LIKE_H */
+#endif /* LIKE_H */

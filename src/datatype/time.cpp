@@ -756,9 +756,9 @@ p_bool Time::operator != (const Time& tim) const
             }
             case tt_DateClock:
             case tt_Clock: {
-               return hour == tim.hour
-                   || minute == tim.minute
-                   || second == tim.second;
+               return hour != tim.hour
+                   || minute != tim.minute
+                   || second != tim.second;
             }
          }
 

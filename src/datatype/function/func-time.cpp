@@ -164,4 +164,33 @@ p_tim F_Time_6::getValue()
 }
 
 
+p_tim F_Clock_2::getValue()
+{
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n1, v1);
+   P_NUM_ARG_IN_TIME_FUNC(arg2, n2, v2);
+   if (wrongSmallClockRuntime(v1, v2)) {
+      return p_tim();
+   }
+
+   return p_tim::clock(v1, v2);
+}
+
+
+p_tim F_Clock_3::getValue()
+{
+   P_NUM_ARG_IN_TIME_FUNC(arg1, n1, v1);
+   P_NUM_ARG_IN_TIME_FUNC(arg2, n2, v2);
+   if (wrongSmallClockRuntime(v1, v2)) {
+      return p_tim();
+   }
+
+   P_NUM_ARG_IN_TIME_FUNC(arg3, n3, v3);
+   if (wrongSecondsRuntime(v3)) {
+      return p_tim();
+   }
+
+   return p_tim::clock(v1, v2, v3);
+}
+
+
 }

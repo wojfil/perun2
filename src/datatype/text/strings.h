@@ -250,6 +250,7 @@ p_constexpr p_char STRING_SHIFTMONTH[] =           L"shiftmonth";
 p_constexpr p_char STRING_SHIFTWEEKDAY[] =         L"shiftweekday";
 p_constexpr p_char STRING_ISNAN[] =                L"isnan";
 p_constexpr p_char STRING_ISNEVER[] =              L"isnever";
+p_constexpr p_char STRING_CLOCK[] =                L"clock";
 
 p_constexpr p_char STRING_COPY[] =                 L"copy";
 p_constexpr p_char STRING_CREATE[] =               L"create";

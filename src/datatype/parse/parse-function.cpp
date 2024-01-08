@@ -1364,6 +1364,34 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
       result = std::make_unique<F_Time_6>(arg1, arg2, arg3, arg4, arg5, arg6);
       return true;
    }
+   else if (word.isWord(STRING_CLOCK, p2)) {
+      if (! (len == 2 || len == 3)) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      p_genptr<p_num> arg1;
+      if (!parse::parse(p2, args[0], arg1)) {
+         functionArgException(1, STRING_NUMBER, word, p2);
+      }
+
+      p_genptr<p_num> arg2;
+      if (!parse::parse(p2, args[1], arg2)) {
+         functionArgException(2, STRING_NUMBER, word, p2);
+      }
+
+      if (len == 2) {
+         result = std::make_unique<F_Clock_2>(arg1, arg2);
+         return true;
+      }
+
+      p_genptr<p_num> arg3;
+      if (!parse::parse(p2, args[2], arg3)) {
+         functionArgException(3, STRING_NUMBER, word, p2);
+      }
+
+      result = std::make_unique<F_Clock_3>(arg1, arg2, arg3);
+      return true;
+   }
    else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);

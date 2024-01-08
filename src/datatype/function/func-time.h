@@ -107,6 +107,24 @@ private:
    p_genptr<p_num> arg6;
 };
 
+
+struct F_Clock_2 : Func_2<p_num, p_num>, Generator<p_tim>
+{
+public:
+   F_Clock_2(p_genptr<p_num>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
+   p_tim getValue() override;
+};
+
+
+struct F_Clock_3 : Func_3<p_num, p_num, p_num>, Generator<p_tim>
+{
+public:
+   F_Clock_3(p_genptr<p_num>& a1, p_genptr<p_num>& a2, p_genptr<p_num>& a3)
+      : Func_3(a1, a2, a3) { };
+   p_tim getValue() override;
+};
+
+
 }
 
 #endif // FUNC_TIME_H_INCLUDED

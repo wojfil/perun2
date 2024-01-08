@@ -13,6 +13,7 @@ EXIT_CODE_CMD_ERROR = 3
 TRUE = "1"
 FALSE = "0"
 NAN = "NaN"
+NEVER = "never"
 
 os.environ['PYTHONIOENCODING'] = ENCODING
 
@@ -1288,6 +1289,7 @@ if __name__ == '__main__':
   run_test_case("print -2.45 >= -nan", FALSE)
   run_test_case("print -nan >= -0.12", FALSE)
   run_test_case("print -nan >= -nan", FALSE)
+  run_test_case("print never", NEVER)
   run_test_case("print never.year", NAN)
   run_test_case("print never.month", NAN)
   run_test_case("print never.weekday", NAN)
@@ -3374,6 +3376,13 @@ if __name__ == '__main__':
   run_test_case("print isnever((4 june 2k23, 15:34:31))", FALSE)
   run_test_case("print isnever(12:34)", FALSE)
   run_test_case("print isnever(12:34:35)", FALSE)
+  run_test_case("print clock(20,12)",  "20:12")
+  run_test_case("print clock(20,12,6)",  "20:12:06")
+  run_test_case("a = 5; print clock(a, 6)",  "05:06")
+  run_test_case("a = 5; print clock(a, 6, 8)",  "05:06:08")
+  run_test_case("a = -5; print clock(-1, 34, 12)", NEVER)
+  run_test_case("a = -5; print clock(1, 74, 12)", NEVER)
+  run_test_case("a = -5; print clock(a, a, a)", NEVER)
 
   run_test_case(" 'a' { depth}", "0")
   run_test_case(" '.' { depth}", "-1")
@@ -5675,6 +5684,13 @@ if __name__ == '__main__':
   expect_syntax_error("print isnever((7,4))")
   expect_syntax_error("print isnever(*)")
   expect_syntax_error("print isnever(never, never)")
+  expect_syntax_error("print clock()")
+  expect_syntax_error("print clock(3)")
+  expect_syntax_error("print clock(3,4,3,2)")
+  expect_syntax_error("print clock(4, now)")
+  expect_syntax_error("print clock('sdf', 'gh')")
+  expect_syntax_error("print clock(4, files)")
+  expect_syntax_error("print clock(*, 7, 8)")
   expect_syntax_error("u = 6,1,2,4,3,5; print u skip")
   expect_syntax_error("u = 6,1,2,4,3,5; print u limit")
   expect_syntax_error("u = 6,1,2,4,3,5; print u where")
@@ -5931,6 +5947,19 @@ if __name__ == '__main__':
   expect_syntax_error("force rechange 'b' to 4 april 2021")
   expect_syntax_error("force reaccess 'b' to 4 april 2021")
   expect_syntax_error("force remodify 'b' to 4 april 2021")
+  expect_syntax_error(":20")
+  expect_syntax_error(":20:23")
+  expect_syntax_error("20:")
+  expect_syntax_error("120:3")
+  expect_syntax_error("20:-5")
+  expect_syntax_error("a = 4; a:a")
+  expect_syntax_error("a = 4; a:a:a")
+  expect_syntax_error("12:20:")
+  expect_syntax_error("12:120:3")
+  expect_syntax_error("12:20:-5")
+  expect_syntax_error("a = 4; a:21:34")
+  expect_syntax_error("a = 4; 12:a:2")
+  expect_syntax_error("a = 4; 12:3:a")
 
   print ("BLACK-BOX TESTS END")
   print ("All tests have passed successfully if there is no error message above.")

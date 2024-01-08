@@ -20,6 +20,8 @@
 namespace perun2
 {
 
+// this file is not used yet by this project
+
 // remove all diacritical marks from Latin letters of this text
 // case size stays the same
 // in addition, turn every Æ to AE and every Œ to OE

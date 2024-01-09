@@ -1098,8 +1098,17 @@ p_tnum daysInMonth(const p_tnum month, const p_tnum year)
 
 inline Period timeDifference(const Time& min, const Time& max)
 {
-   if (min.type == Time::TimeType::tt_Never || max.type == Time::TimeType::tt_Never) {
+   if (!((min.type >= Time::tt_DateShortClock && max.type >= Time::tt_DateShortClock)               
+      || (min.type >= Time::tt_YearMonth && max.type >= Time::tt_YearMonth                          
+       && min.type <= Time::tt_DateClock && max.type <= Time::tt_DateClock)))
+   { 
       return Period();
+   }
+
+   if (min.type >= Time::tt_ShortClock || max.type >= Time::tt_ShortClock) 
+   {
+      
+
    }
 
    Period p;

@@ -1105,14 +1105,60 @@ inline Period timeDifference(const Time& min, const Time& max)
       return Period();
    }
 
-   if (min.type >= Time::tt_ShortClock || max.type >= Time::tt_ShortClock) 
-   {
-      
-
-   }
-
    Period p;
    p.periodType = Period::pt_Difference;
+
+   if (min.type >= Time::tt_ShortClock || max.type >= Time::tt_ShortClock)
+   {
+      p.hours = max.hour - min.hour;
+      p.minutes = max.minute - min.minute;
+
+      if (static_cast<int>(max.type) % 2 == 0) { // is short clock
+         if (static_cast<int>(min.type) % 2 == 0) { // is short clock
+            if (p.minutes < TNUM_ZERO) {
+               p.minutes += TNUM_MINUTES_IN_HOUR;
+               p.hours--;
+            }
+         }
+         else {
+            p.seconds = TNUM_SECONDS_IN_MINUTE - min.second;
+            p.minutes--;
+           
+            if (p.minutes < TNUM_ZERO) {
+               p.minutes += TNUM_MINUTES_IN_HOUR;
+               p.hours--;
+            }
+         }
+
+         return p;
+      }
+
+      if (static_cast<int>(min.type) % 2 == 0) { // is short clock
+         p.seconds = max.second;
+
+         if (p.minutes < TNUM_ZERO) {
+            p.minutes += TNUM_MINUTES_IN_HOUR;
+            p.hours--;
+         }
+
+         return p;
+      }
+
+      p.seconds = max.second - min.second;
+
+      if (p.seconds < TNUM_ZERO) {
+         p.seconds += TNUM_SECONDS_IN_MINUTE;
+         p.minutes--;
+      }
+
+      if (p.minutes < TNUM_ZERO) {
+         p.minutes += TNUM_MINUTES_IN_HOUR;
+         p.hours--;
+      }
+
+      return p;
+   }
+
    p.years_sec = max.year - min.year;
    p.months_sec = max.month - min.month;
 

@@ -740,39 +740,38 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p
    }
 
    p_genptr<p_str> value;
-   if (!parse(p2, pair.first, value)) {
+   if (! parse(p2, pair.first, value)) {
       return false;
    }
 
    p_genptr<p_str> pattern;
-   if (parse(p2, pair.second, pattern)) {
-      if (pattern->isConstant()) {
-         const p_str cnst = pattern->getValue();
+   if (! parse(p2, pair.second, pattern)) {
+      return false;
+   }
 
-         if (neg) {
-            p_genptr<p_bool> b = std::make_unique<gen::LikeConst>(value, cnst);
-            result = std::make_unique<gen::Not>(b);
-         }
-         else {
-            result = std::make_unique<gen::LikeConst>(value, cnst);
-         }
-
-         return true;
-      }
+   if (pattern->isConstant()) {
+      const p_str cnst = pattern->getValue();
 
       if (neg) {
-         p_genptr<p_bool> b = std::make_unique<gen::Like>(value, pattern);
+         p_genptr<p_bool> b = std::make_unique<gen::LikeConst>(value, cnst);
          result = std::make_unique<gen::Not>(b);
       }
       else {
-         result = std::make_unique<gen::Like>(value, pattern);
+         result = std::make_unique<gen::LikeConst>(value, cnst);
       }
 
       return true;
    }
-   else {
-      return false;
+
+   if (neg) {
+      p_genptr<p_bool> b = std::make_unique<gen::Like>(value, pattern);
+      result = std::make_unique<gen::Not>(b);
    }
+   else {
+      result = std::make_unique<gen::Like>(value, pattern);
+   }
+
+   return true;
 }
 
 static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)

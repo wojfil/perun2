@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-// this file is not used yet by this project
+// this file is not yet used in this project
 
 // a hypothetical function that takes a string 
 // and transforms all non-latin characters (Cyrillic, Chinese, Japanese, ...) to the latin alphabet

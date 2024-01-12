@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-// this file is not used yet by this project
+// this file is not yet used in this project
 
 // remove all diacritical marks from Latin letters of this text
 // case size stays the same

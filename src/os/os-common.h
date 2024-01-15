@@ -18,7 +18,6 @@
 #include "..\datatype\incr-constr.h"
 #include "..\attribute.h"
 
-// here are all OS functions, that are implemented the same for all operating systems
 
 namespace perun2
 {

@@ -135,8 +135,11 @@ add_executable(
     datatype/generator/gen-period.cpp
     datatype/generator/gen-string.cpp
     datatype/generator/gen-time.cpp
-    os/os.cpp
     os/os-common.cpp
+    os/os-linux.cpp
+    os/os-mac.cpp
+    os/os-posix.cpp
+    os/os.cpp
     programs/windows/pattern.cpp
     programs/windows/registry.cpp
     programs/windows/programs.cpp

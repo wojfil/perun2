@@ -15,14 +15,49 @@
 #ifndef OS_H
 #define OS_H
 
-#include "os-common.h"
-#include "os-windows.h"
 
 
 namespace perun2
 {
 
+// path to a file can be absolute or relative
+enum PathType
+{
+   Absolute,
+   Relative
+};
+
+
+// info about a segment of a path
+enum SegmentType
+{
+   NotFinal,
+   Final
+};
 
 }
+
+// os-common    -> LINUX + MAC + WINDOWS
+// os-linux     -> LINUX
+// os-mac       -> MAC
+// os-posix     -> LINUX + MAC
+// os-windows   -> WINDOWS
+
+
+#ifdef _WIN32
+   #include "os-common.h"
+   #include "os-windows.h"
+#elif __APPLE__
+   #include "os-common.h"
+   #include "os-posix.h"
+   #include "os-mac.h"
+#elif __linux__
+   #include "os-common.h"
+   #include "os-posix.h"
+   #include "os-linux.h"
+#else
+   #error "Unsupported platform"
+#endif
+
 
 #endif /* OS_H */

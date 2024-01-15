@@ -14,7 +14,7 @@
 
 #include "com-aggregate.h"
 #include "com-core-aggr.h"
-#include "../os.h"
+#include "../os/os.h"
 #include "../perun2.h"
 
 

@@ -14,7 +14,7 @@
 
 #include "programs-data.h"
 #include "registry.h"
-#include "../../os.h"
+#include "../../os/os.h"
 
 
 namespace perun2::prog

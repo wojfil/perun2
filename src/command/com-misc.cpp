@@ -16,7 +16,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
-#include "../os.h"
+#include "../os/os.h"
 #include "../perun2.h"
 #include "com-core.h"
 #include <sstream>

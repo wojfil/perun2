@@ -21,7 +21,7 @@
 #include "util.h"
 #include "brackets.h"
 #include "lexer.h"
-#include "os.h"
+#include "os/os.h"
 #include "logger.h"
 #include "datatype/math.h"
 

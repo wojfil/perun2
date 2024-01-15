@@ -14,7 +14,7 @@
 
 #include "gen-bool-constr.h"
 #include "../../context/ctx-main.h"
-#include "../../os.h"
+#include "../../os/os.h"
 #include "../../perun2.h"
 
 

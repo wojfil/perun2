@@ -18,7 +18,7 @@
 #include "../generator/gen-string.h"
 #include "../generator/gen-time.h"
 #include "../generator/gen-os.h"
-#include "../../os.h"
+#include "../../os/os.h"
 #include "parse-number.h"
 #include "parse-asterisk.h"
 #include "parse-var.h"

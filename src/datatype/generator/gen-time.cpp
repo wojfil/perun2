@@ -15,7 +15,7 @@
 #include "gen-time.h"
 #include "gen-generic.h"
 #include "../generator.h"
-#include "../../os.h"
+#include "../../os/os.h"
 
 
 namespace perun2::gen

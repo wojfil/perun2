@@ -13,7 +13,7 @@
 */
 
 #include "func-attr.h"
-#include "..\..\os.h"
+#include "..\..\os/os.h"
 #include "..\..\util.h"
 
 

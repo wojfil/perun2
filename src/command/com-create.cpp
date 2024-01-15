@@ -14,7 +14,7 @@
 
 #include "com-create.h"
 #include "../perun2.h"
-#include "../os.h"
+#include "../os/os.h"
 #include "../datatype/patterns.h"
 
 

@@ -14,7 +14,7 @@
 
 #include "programs.h"
 #include "programs-data.h"
-#include "../../os.h"
+#include "../../os/os.h"
 #include "../../perun2.h"
 
 

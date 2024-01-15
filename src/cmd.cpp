@@ -13,7 +13,7 @@
 */
 
 #include "cmd.h"
-#include "os.h"
+#include "os/os.h"
 #include "perun2.h"
 #include "logger.h"
 #include "metadata.h"

@@ -15,7 +15,7 @@
 #include "com-def-action.h"
 #include "com-core-aggr.h"
 #include "../perun2.h"
-#include "../os.h"
+#include "../os/os.h"
 
 
 namespace perun2::comm

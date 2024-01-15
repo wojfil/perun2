@@ -22,9 +22,9 @@
 
 #include "os.h"
 #include <time.h>
-#include "perun2.h"
-#include "datatype/parse/parse-asterisk.h"
-#include "metadata.h"
+#include "../perun2.h"
+#include "../datatype/parse/parse-asterisk.h"
+#include "../metadata.h"
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>

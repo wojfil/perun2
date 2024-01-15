@@ -17,7 +17,7 @@
 
 #include "../patterns.h"
 #include "../text/wildcard.h"
-#include "../../os.h"
+#include "../../os/os.h"
 #include "../../arguments.h"
 #include "../../context/ctx-file.h"
 #include <windows.h>

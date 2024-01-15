@@ -13,7 +13,7 @@
 */
 
 #include "func-bool.h"
-#include "..\..\os.h"
+#include "..\..\os/os.h"
 
 
 namespace perun2::func

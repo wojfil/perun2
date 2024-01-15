@@ -58,8 +58,6 @@ add_executable(
     keyword.cpp
     lexer.cpp
     logger.cpp
-    os.cpp
-    os-common.cpp
     perun2.cpp
     terminator.cpp
     token.cpp
@@ -137,6 +135,8 @@ add_executable(
     datatype/generator/gen-period.cpp
     datatype/generator/gen-string.cpp
     datatype/generator/gen-time.cpp
+    os/os.cpp
+    os/os-common.cpp
     programs/windows/pattern.cpp
     programs/windows/registry.cpp
     programs/windows/programs.cpp

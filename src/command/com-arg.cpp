@@ -13,7 +13,7 @@
 */
 
 #include "com-arg.h"
-#include "..\os.h"
+#include "..\os/os.h"
 #include "..\perun2.h"
 
 

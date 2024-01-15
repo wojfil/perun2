@@ -16,7 +16,7 @@
 #define OS_H
 
 #include "os-common.h"
-#include "side-process.h"
+#include "../side-process.h"
 
 
 namespace perun2

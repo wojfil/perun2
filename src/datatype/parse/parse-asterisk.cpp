@@ -17,7 +17,7 @@
 #include "../generator/gen-generic.h"
 #include "../generator/gen-definition.h"
 #include "../generator/gen-double-asterisk.h"
-#include "../../os.h"
+#include "../../os/os.h"
 
 
 namespace perun2::parse

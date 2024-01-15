@@ -24,7 +24,7 @@
 #include "gen-string.h"
 #include "../../perun2.h"
 #include "../../metadata.h"
-#include "../../os.h"
+#include "../../os/os.h"
 
 namespace perun2::gen
 {

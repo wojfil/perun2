@@ -15,7 +15,7 @@
 #include "arguments.h"
 #include "cmd.h"
 #include "metadata.h"
-#include "os.h"
+#include "os/os.h"
 
 
 namespace perun2

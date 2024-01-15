@@ -139,6 +139,7 @@ add_executable(
     os/os-linux.cpp
     os/os-mac.cpp
     os/os-posix.cpp
+    os/os-windows.cpp
     os/os.cpp
     programs/windows/pattern.cpp
     programs/windows/registry.cpp

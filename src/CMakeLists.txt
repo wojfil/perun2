@@ -140,7 +140,6 @@ add_executable(
     os/os-mac.cpp
     os/os-posix.cpp
     os/os-windows.cpp
-    os/os.cpp
     programs/windows/pattern.cpp
     programs/windows/registry.cpp
     programs/windows/programs.cpp

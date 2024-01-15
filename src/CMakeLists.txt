@@ -62,25 +62,8 @@ add_executable(
     terminator.cpp
     token.cpp
     tokens.cpp
-    command/com.cpp
     command/com-aggregate.cpp
     command/com-arg.cpp
-    datatype/cast.cpp
-    datatype/comparison.cpp
-    datatype/definition.cpp
-    datatype/incr-constr.cpp
-    datatype/math.cpp
-    datatype/number.cpp
-    datatype/order-limit-one.cpp
-    datatype/order.cpp
-    datatype/parse-gen.cpp
-    datatype/period.cpp
-    datatype/time.cpp
-    datatype/text/chars.cpp
-    datatype/text/concat.cpp
-    datatype/text/like.cpp
-    datatype/text/strings.cpp
-    datatype/text/wildcard.cpp
     command/com-condition.cpp
     command/com-copyto.cpp
     command/com-core-aggr.cpp
@@ -96,30 +79,28 @@ add_executable(
     command/com-struct.cpp
     command/com-time.cpp
     command/com-var.cpp
+    command/com.cpp
     context/ctx-aggr.cpp
     context/ctx-file.cpp
     context/ctx-global.cpp
     context/ctx-index.cpp
     context/ctx-location.cpp
     context/ctx-main.cpp
+    datatype/cast.cpp
+    datatype/comparison.cpp
+    datatype/definition.cpp
+    datatype/incr-constr.cpp
+    datatype/math.cpp
+    datatype/number.cpp
+    datatype/order-limit-one.cpp
+    datatype/order.cpp
+    datatype/parse-gen.cpp
+    datatype/period.cpp
+    datatype/time.cpp
     datatype/function/func-aggr.cpp
     datatype/function/func-attr.cpp
     datatype/function/func-bool.cpp
     datatype/function/func-list.cpp
-    datatype/parse/parse-asterisk.cpp
-    datatype/parse/parse-bool.cpp
-    datatype/parse/parse-definition.cpp
-    datatype/parse/parse-function.cpp
-    datatype/parse/parse-generic.cpp
-    datatype/parse/parse-list.cpp
-    datatype/parse/parse-number.cpp
-    datatype/parse/parse-numlist.cpp
-    datatype/parse/parse-period.cpp
-    datatype/parse/parse-string.cpp
-    datatype/parse/parse-time.cpp
-    datatype/parse/parse-timlist.cpp
-    datatype/parse/parse-unit.cpp
-    datatype/parse/parse-var.cpp
     datatype/function/func-number.cpp
     datatype/function/func-string.cpp
     datatype/function/func-time.cpp
@@ -135,6 +116,25 @@ add_executable(
     datatype/generator/gen-period.cpp
     datatype/generator/gen-string.cpp
     datatype/generator/gen-time.cpp
+    datatype/parse/parse-asterisk.cpp
+    datatype/parse/parse-bool.cpp
+    datatype/parse/parse-definition.cpp
+    datatype/parse/parse-function.cpp
+    datatype/parse/parse-generic.cpp
+    datatype/parse/parse-list.cpp
+    datatype/parse/parse-number.cpp
+    datatype/parse/parse-numlist.cpp
+    datatype/parse/parse-period.cpp
+    datatype/parse/parse-string.cpp
+    datatype/parse/parse-time.cpp
+    datatype/parse/parse-timlist.cpp
+    datatype/parse/parse-unit.cpp
+    datatype/parse/parse-var.cpp
+    datatype/text/chars.cpp
+    datatype/text/concat.cpp
+    datatype/text/like.cpp
+    datatype/text/strings.cpp
+    datatype/text/wildcard.cpp
     os/os-common.cpp
     os/os-linux.cpp
     os/os-mac.cpp

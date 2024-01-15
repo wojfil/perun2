@@ -21,6 +21,10 @@
 namespace perun2
 {
 
+// default file path separator
+// in Linux and MacOS, this separator is / and the 'wrong separator' is \  
+p_constexpr p_char OS_SEPARATOR = CHAR_SLASH;
+p_constexpr p_char OS_WRONG_SEPARATOR = CHAR_BACKSLASH;
 
 
 }

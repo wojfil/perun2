@@ -150,7 +150,7 @@ exitAsteriskBeginning:
 
       p_defptr d = std::make_unique<gen::Directories>(base, p2, p, pathType, prefix);
 
-      parseDefinitionSuffix(result, d, suffix, pathType, SegmentType::Final, retreats, nullptr, p2);
+      parseDefinitionSuffix(result, d, suffix, pathType, PathSegmentType::Final, retreats, nullptr, p2);
       return true;
    }
 
@@ -202,7 +202,7 @@ exitAsteriskBeginning:
       }
       else {
          p_defptr d = std::make_unique<gen::Directories>(base, p2, p, pathType, prefix);
-         parseDefinitionSuffix(result, d, u.suffixPart, pathType, SegmentType::Final, retreats, nullptr, p2);
+         parseDefinitionSuffix(result, d, u.suffixPart, pathType, PathSegmentType::Final, retreats, nullptr, p2);
       }
       return true;
    }
@@ -215,12 +215,12 @@ exitAsteriskBeginning:
    }
    else {
       p_defptr d = std::make_unique<gen::Directories>(base, p2, firstPatt, pathType, prefix);
-      parseDefinitionSuffix(result, d, units[0].suffixPart, pathType, SegmentType::NotFinal, retreats, nullptr, p2);
+      parseDefinitionSuffix(result, d, units[0].suffixPart, pathType, PathSegmentType::NotFinal, retreats, nullptr, p2);
    }
 
    for (p_size i = 1; i < ulen; i++) {
       const p_bool isFinal = i == (ulen - 1);
-      const SegmentType segmType = isFinal ? SegmentType::Final : SegmentType::NotFinal;
+      const PathSegmentType segmType = isFinal ? PathSegmentType::Final : PathSegmentType::NotFinal;
 
       p_genptr<p_str> loc = std::make_unique<gen::LocationReference>(p2);
       if (!isAbsolute && retreats > 0) {
@@ -378,7 +378,7 @@ p_bool parseDoubleAsterisk(p_defptr& result, p_genptr<p_str>& base, const p_str&
 }
 
 p_bool parseDefinitionSuffix(p_defptr& result, p_defptr& definition, const p_str& suffix,
-   const PathType pathType, const SegmentType segmType, const p_int retreats, p_def* previous, p_perun2& p2)
+   const PathType pathType, const PathSegmentType segmType, const p_int retreats, p_def* previous, p_perun2& p2)
 {
    if (pathType == PathType::Absolute) {
       result = std::make_unique<gen::AbsoluteDefSuffix>(definition, suffix, segmType);

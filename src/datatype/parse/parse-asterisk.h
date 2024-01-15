@@ -46,7 +46,7 @@ void addAsteriskPatternUnit(p_str& asteriskPart, p_str& suffixPart, const p_str&
 p_bool parseDoubleAsterisk(p_defptr& result, p_genptr<p_str>& base, const p_str& pattern, const p_str& trimmed,
    const p_size start, const PathType pathType, const p_int retreats, p_perun2& p2);
 p_bool parseDefinitionSuffix(p_defptr& result, p_defptr& definition, const p_str& suffix, 
-   const PathType pathType, const SegmentType segmType, const p_int retreats, p_def* previous, p_perun2& p2);
+   const PathType pathType, const PathSegmentType segmType, const p_int retreats, p_def* previous, p_perun2& p2);
 
 }
 

@@ -96,7 +96,7 @@ private:
 struct NestedDefiniton : p_def
 {
 public:
-   NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const PathType pt, const SegmentType segmType, const p_int retr);
+   NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const PathType pt, const PathSegmentType segmType, const p_int retr);
    p_bool hasNext() override;
    void reset() override;
    FileContext* getFileContext() override;
@@ -111,7 +111,7 @@ private:
    p_num locDepth;
    FileContext* context;
    const PathType pathType;
-   const SegmentType segmentType;
+   const PathSegmentType segmentType;
    const p_int retreats;
 };
 
@@ -289,7 +289,7 @@ private:
 struct DefinitionSuffix : p_def
 {
 public:
-   DefinitionSuffix(p_defptr& def, const p_str& suf, const SegmentType segmType);
+   DefinitionSuffix(p_defptr& def, const p_str& suf, const PathSegmentType segmType);
    void reset() override;
 
 protected:
@@ -298,14 +298,14 @@ protected:
    p_bool first = true;
    p_num index;
    const p_str suffix;
-   const SegmentType segmentType;
+   const PathSegmentType segmentType;
 };
 
 
 struct AbsoluteDefSuffix : DefinitionSuffix
 {
 public:
-   AbsoluteDefSuffix(p_defptr& def, const p_str& suf, const SegmentType segmType);
+   AbsoluteDefSuffix(p_defptr& def, const p_str& suf, const PathSegmentType segmType);
    p_bool hasNext() override;
 };
 
@@ -313,7 +313,7 @@ public:
 struct RelativeDefSuffix : DefinitionSuffix
 {
 public:
-   RelativeDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const SegmentType segmType, p_def* const prev);
+   RelativeDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const PathSegmentType segmType, p_def* const prev);
    p_bool hasNext() override;
 
 private:
@@ -325,7 +325,7 @@ private:
 struct RetreatedDefSuffix : DefinitionSuffix
 {
 public:
-   RetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const SegmentType segmType, const p_int retr, p_def* const prev);
+   RetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const PathSegmentType segmType, const p_int retr, p_def* const prev);
    p_bool hasNext() override;
 
 private:
@@ -338,7 +338,7 @@ private:
 struct FarRetreatedDefSuffix : DefinitionSuffix
 {
 public:
-   FarRetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const SegmentType segmType, const p_int retr, p_def* const prev);
+   FarRetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const PathSegmentType segmType, const p_int retr, p_def* const prev);
    p_bool hasNext() override;
 
 private:

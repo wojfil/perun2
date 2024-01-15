@@ -16,26 +16,23 @@
 #define OS_H
 
 
-
 namespace perun2
 {
 
-// path to a file can be absolute or relative
 enum PathType
 {
    Absolute,
    Relative
 };
 
-
-// info about a segment of a path
-enum SegmentType
+enum PathSegmentType
 {
    NotFinal,
    Final
 };
 
 }
+
 
 // os-common    -> LINUX + MAC + WINDOWS
 // os-linux     -> LINUX

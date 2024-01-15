@@ -138,7 +138,7 @@ void LocationVessel::setValue(const p_str& val)
 };
 
 
-NestedDefiniton::NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const PathType pt, const SegmentType segmType, const p_int retr)
+NestedDefiniton::NestedDefiniton(LocationVessel& ves, p_defptr& def, p_defptr& locs, const PathType pt, const PathSegmentType segmType, const p_int retr)
    : vessel(ves), definition(std::move(def)), locations(std::move(locs)),
      context(definition->getFileContext()), pathType(pt), segmentType(segmType), retreats(retr) { };
 
@@ -162,7 +162,7 @@ p_bool NestedDefiniton::hasNext()
       if (this->locations->hasNext()) {
          this->locsOpened = true;
          this->vessel.setValue(this->locations->getValue());
-         if (this->segmentType == SegmentType::Final) {
+         if (this->segmentType == PathSegmentType::Final) {
             this->index.setToZero();
          }
       }
@@ -190,7 +190,7 @@ p_bool NestedDefiniton::hasNext()
             }
          }
 
-         if (this->segmentType == SegmentType::Final) {
+         if (this->segmentType == PathSegmentType::Final) {
             if (this->retreats > 0) {
                this->value = str(os_retreats(this->retreats), this->value);
             }
@@ -605,7 +605,7 @@ p_bool Join_DefDef::hasNext()
 
 
 
-DefinitionSuffix::DefinitionSuffix(p_defptr& def, const p_str& suf, const SegmentType segmType)
+DefinitionSuffix::DefinitionSuffix(p_defptr& def, const p_str& suf, const PathSegmentType segmType)
    : definition(std::move(def)), fileContext(definition->getFileContext()), suffix(suf), segmentType(segmType) { };
 
 
@@ -618,7 +618,7 @@ void DefinitionSuffix::reset()
 }
 
 
-AbsoluteDefSuffix::AbsoluteDefSuffix(p_defptr& def, const p_str& suf, const SegmentType segmType)
+AbsoluteDefSuffix::AbsoluteDefSuffix(p_defptr& def, const p_str& suf, const PathSegmentType segmType)
    : DefinitionSuffix(def, suf, segmType) { };
 
 
@@ -626,7 +626,7 @@ p_bool AbsoluteDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
-      if (this->segmentType == SegmentType::Final) {
+      if (this->segmentType == PathSegmentType::Final) {
          this->index.setToZero();
       }
    }
@@ -634,11 +634,11 @@ p_bool AbsoluteDefSuffix::hasNext()
    while (this->definition->hasNext()) {
       this->value = str(this->definition->getValue(), this->suffix);
 
-      if ((this->segmentType == SegmentType::Final) 
+      if ((this->segmentType == PathSegmentType::Final) 
          ? os_exists(this->value) 
          : os_directoryExists(this->value)) 
       {
-         if (this->segmentType == SegmentType::Final) {
+         if (this->segmentType == PathSegmentType::Final) {
             this->fileContext->index->value = index;
             index++;
          }
@@ -652,7 +652,7 @@ p_bool AbsoluteDefSuffix::hasNext()
 }
 
 
-RelativeDefSuffix::RelativeDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const SegmentType segmType, p_def* const prev)
+RelativeDefSuffix::RelativeDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const PathSegmentType segmType, p_def* const prev)
    : DefinitionSuffix(def, suf, segmType), locContext(p2.contexts.getLocationContext()), previous(prev) { };
 
 
@@ -660,7 +660,7 @@ p_bool RelativeDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
-      if (this->segmentType == SegmentType::Final) {
+      if (this->segmentType == PathSegmentType::Final) {
          this->index.setToZero();
       }
    }
@@ -672,11 +672,11 @@ p_bool RelativeDefSuffix::hasNext()
 
       const p_str path = str(this->locContext->location->value, OS_SEPARATOR, this->value);
 
-      if ((this->segmentType == SegmentType::Final)
+      if ((this->segmentType == PathSegmentType::Final)
          ? os_exists(path) 
          : os_directoryExists(path)) 
       {
-         if (this->segmentType == SegmentType::Final) {
+         if (this->segmentType == PathSegmentType::Final) {
             this->fileContext->index->value = index;
             index++;
          }
@@ -689,7 +689,7 @@ p_bool RelativeDefSuffix::hasNext()
 }
 
 
-RetreatedDefSuffix::RetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const SegmentType segmType, const p_int retr, p_def* const prev)
+RetreatedDefSuffix::RetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const PathSegmentType segmType, const p_int retr, p_def* const prev)
    : DefinitionSuffix(def, suf, segmType), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 
@@ -697,7 +697,7 @@ p_bool RetreatedDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
-      if (this->segmentType == SegmentType::Final) {
+      if (this->segmentType == PathSegmentType::Final) {
          this->index.setToZero();
       }
    }
@@ -720,11 +720,11 @@ p_bool RetreatedDefSuffix::hasNext()
       path += OS_SEPARATOR;
       path += this->value;
 
-      if ((this->segmentType == SegmentType::Final)
+      if ((this->segmentType == PathSegmentType::Final)
          ? os_exists(path)
          : os_directoryExists(path))
       {
-         if (this->segmentType == SegmentType::Final) {
+         if (this->segmentType == PathSegmentType::Final) {
             this->fileContext->index->value = index;
             index++;
 
@@ -745,7 +745,7 @@ p_bool RetreatedDefSuffix::hasNext()
 }
 
 
-FarRetreatedDefSuffix::FarRetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const SegmentType segmType, const p_int retr, p_def* const prev)
+FarRetreatedDefSuffix::FarRetreatedDefSuffix(p_defptr& def, p_perun2& p2, const p_str& suf, const PathSegmentType segmType, const p_int retr, p_def* const prev)
    : DefinitionSuffix(def, suf, segmType), locContext(p2.contexts.getLocationContext()), retreats(retr), previous(prev) { };
 
 
@@ -753,7 +753,7 @@ p_bool FarRetreatedDefSuffix::hasNext()
 {
    if (this->first) {
       this->first = false;
-      if (this->segmentType == SegmentType::Final) {
+      if (this->segmentType == PathSegmentType::Final) {
          this->index.setToZero();
       }
    }
@@ -767,11 +767,11 @@ p_bool FarRetreatedDefSuffix::hasNext()
       os_retreatPath(path, this->retreats);
       path = str(path, OS_SEPARATOR, this->value);
 
-      if ((this->segmentType == SegmentType::Final)
+      if ((this->segmentType == PathSegmentType::Final)
          ? os_exists(path) 
          : os_directoryExists(path)) 
       {
-         if (this->segmentType == SegmentType::Final) {
+         if (this->segmentType == PathSegmentType::Final) {
             this->fileContext->index->value = index;
             index++;
          }

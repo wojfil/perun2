@@ -41,7 +41,10 @@ p_str os_parent(const p_str& path);
 
 p_bool os_bothAreSeparators(const p_char left, const p_char right);
 p_str os_softTrim(const p_str& value);
+
 void os_escapeQuote(p_str& path);
+p_str os_makeArg(const p_str& value);
+p_str os_quoteEmbraced(const p_str& value);
 
 }
 

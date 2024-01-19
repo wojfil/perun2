@@ -214,11 +214,11 @@ p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
    const p_tnum minute = tokenToTimeNumber(third);
 
    if (hour < 0 || hour >= 24) {
-      throw SyntaxError::hoursOutOfRange(toStr(hour), tks.at(4).line);
+      throw SyntaxError::hoursOutOfRange(toStr(hour), tks.at(0).line);
    }
 
    if (minute < 0 || minute >= 60) {
-      throw SyntaxError::minutesOutOfRange(toStr(minute), tks.at(6).line);
+      throw SyntaxError::minutesOutOfRange(toStr(minute), tks.at(2).line);
    }
 
    if (tks.getLength() == 3) {

@@ -116,7 +116,7 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
          return false;
       }
 
-      const p_tnum month = static_cast<p_tnum>(first.value.num.n.toInt());
+      const p_tnum month = tokenToTimeNumber(first);
       const p_tnum year = tokenToTimeNumber(second);
       result = std::make_unique<gen::Constant<p_tim>>(p_tim(month, year));
       return true;
@@ -138,7 +138,7 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, p_perun2& p2)
    }
 
    const p_tnum day = tokenToTimeNumber(first);
-   const p_tnum month = static_cast<p_tnum>(second.value.num.n.toInt());
+   const p_tnum month = tokenToTimeNumber(second);
    const p_tnum year = tokenToTimeNumber(third);
    checkDayCorrectness(day, month, year, first);
 

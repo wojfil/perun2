@@ -996,7 +996,7 @@ p_tnum toTimeNumber(const Number& num)
    }
 
    if (num.state == NumberState::Double) {
-      return static_cast<p_tnum>(round(num.value.d));
+      return static_cast<p_tnum>(num.value.d);
    }
 
    return TNUM_ZERO;

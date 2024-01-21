@@ -285,6 +285,7 @@ p_constexpr p_char STRING_RUN[] =                  L"run";
 p_constexpr p_char STRING_SLEEP[] =                L"sleep";
 p_constexpr p_char STRING_IN[] =                   L"in";
 p_constexpr p_char STRING_LIKE[] =                 L"like";
+p_constexpr p_char STRING_RESEMBLES[] =            L"resembles";
 p_constexpr p_char STRING_ELSE[] =                 L"else";
 p_constexpr p_char STRING_IF[] =                   L"if";
 p_constexpr p_char STRING_INSIDE[] =               L"inside";

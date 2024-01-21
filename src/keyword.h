@@ -65,6 +65,7 @@ enum Keyword
       // expression elements:
    kw_In,
    kw_Like,
+   kw_Resembles,
       // command structs:
    kw_Else,
    kw_If,

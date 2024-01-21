@@ -422,7 +422,10 @@ p_bool LikeConst::getValue()
 
 
 Like::Like(p_genptr<p_str>& val, p_genptr<p_str>& pat)
-   : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue()) { };
+   : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue())
+{ 
+   parseLikeCmp(comparer, pattern->getValue());
+};
 
 
 // if the pattern of the operator LIKE is not a constan value (string literal, etc.)

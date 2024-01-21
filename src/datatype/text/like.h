@@ -362,6 +362,15 @@ private:
    const p_str pattern;
 };
 
+
+//  the pattern is empty string
+struct LC_Empty : LikeComparer
+{
+public:
+   p_bool compareToPattern(const p_str& value) override;
+};
+
+
 }
 
 #endif /* LIKE_H */

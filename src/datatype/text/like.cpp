@@ -131,7 +131,7 @@ void parseLikeCmp(p_likeptr& result, const p_str& pattern)
 
    switch (length) {
       case 0: {
-         result = std::make_unique<LC_Constant>(false);
+         result = std::make_unique<LC_Empty>();
          return;
       }
       case 1: {
@@ -836,6 +836,12 @@ p_bool LC_Field_UH::compareToPattern(const p_str& value)
    }
 
    return true;
+}
+
+
+p_bool LC_Empty::compareToPattern(const p_str& value)
+{
+   return value.empty();
 }
 
 }

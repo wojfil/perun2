@@ -187,16 +187,6 @@ select '*.pdf'
 
 In this variant, the year is not important and is not taken into account at all.
 
-## Time defined only by hours, minutes (and seconds)
-
-Two more possibilities for time definitions. They ignore the date.
-
-```
-select '*.pdf'
-  where creation >= 9:00
-    and creation <= 14:30:30
-```
-
 ## Close programs
 
 We can open programs. What about closing them?

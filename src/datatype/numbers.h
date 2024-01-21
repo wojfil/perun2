@@ -57,6 +57,8 @@ p_constexpr p_nint NINT_MONTHS_IN_YEAR =         static_cast<p_nint>(TNUM_MONTHS
 p_constexpr p_ndouble NDOUBLE_ZERO =            0L;
 p_constexpr p_ndouble NDOUBLE_HALF =          0.5L;
 p_constexpr p_ndouble NDOUBLE_ONE =             1L;
+p_constexpr p_ndouble NDOUBLE_TWO =             2L;
+p_constexpr p_ndouble NDOUBLE_THREE =           3L;
 p_constexpr p_ndouble NDOUBLE_MINUS_ONE =      -1L;
 p_constexpr p_ndouble NDOUBLE_TWELVE =         12L;
 

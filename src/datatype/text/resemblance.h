@@ -16,13 +16,35 @@
 #define RESEMBLANCE_H_INCLUDED
 
 #include "../datatype.h"
+#include "../generator.h"
+
 
 namespace perun2
 {
 
-// this file is not yet used in this project
+// for every 3 characters in the pattern, allow 1 mistake
+p_constexpr p_int RESEMBLANCE_MISTAKES_ALLOWED = 3;
+
+p_constexpr p_ndouble RESEMBLANCE_RATIO = 
+   NDOUBLE_ONE - (NDOUBLE_ONE / static_cast<p_ndouble>(RESEMBLANCE_MISTAKES_ALLOWED));
 
 
+struct Resembles : Generator<p_bool>
+{
+public:
+   Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_str> value;
+   p_genptr<p_str> pattern;
+   p_str prevPattern;
+};
+
+
+static p_ndouble str_resemblance(const p_str& value, const p_str& pattern);
+static p_int minOfThree(p_int a, p_int b, p_int c);
+static p_int damerauLevenshteinDistance(const p_str& str1, const p_str& str2);
 
 }
 

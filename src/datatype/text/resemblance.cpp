@@ -18,7 +18,62 @@
 namespace perun2
 {
 
+Resembles::Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat)
+   : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue()) { };
 
+
+p_bool Resembles::getValue()
+{
+   const p_str v = this->value->getValue();
+   const p_str p = this->pattern->getValue();
+
+   return str_resemblance(v, p) >= RESEMBLANCE_RATIO;
+};
+
+
+static p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
+{
+   return NDOUBLE_ZERO;
+}
+
+
+static p_int minOfThree(p_int a, p_int b, p_int c)
+{
+   return std::min(std::min(a, b), c);
+}
+
+
+static p_int damerauLevenshteinDistance(const p_str& str1, const p_str& str2)
+{
+   const p_int m = str1.length();
+   const p_int n = str2.length();
+
+   std::vector<std::vector<p_int>> dp(m + 1, std::vector<p_int>(n + 1, 0));
+
+   for (p_int i = 0; i <= m; ++i) {
+      for (p_int j = 0; j <= n; ++j) {
+         if (i == 0) {
+            dp[i][j] = j;
+         }
+         else if (j == 0) {
+            dp[i][j] = i;
+         }
+         else {
+            dp[i][j] = minOfThree(
+               dp[i - 1][j] + 1,
+               dp[i][j - 1] + 1,
+               dp[i - 1][j - 1] + (str1[i - 1] == str2[j - 1] ? 0 : 1)
+            );
+
+            if (i > 1 && j > 1 && str1[i - 1] == str2[j - 2] && str1[i - 2] == str2[j - 1]) {
+               dp[i][j] = std::min(dp[i][j], dp[i - 2][j - 2] + 1);
+            }
+         }
+      }
+   }
+
+   return dp[m][n];
+}
 
 
 }

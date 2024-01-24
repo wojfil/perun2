@@ -12,31 +12,35 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PROGRAMS_H_INCLUDED
-#define PROGRAMS_H_INCLUDED
+#include "mac-programs.h"
+#include "../../os/os.h"
+#include "../../perun2.h"
 
 
-#ifdef _WIN32
-   #include "windows/win-programs.h"
-   namespace perun2::prog 
-   {
-      typedef WindowsPrograms Programs;
-   }
-#elif __APPLE__
-   #include "mac/mac-programs.h"
-   namespace perun2::prog
-   {
-      typedef MacPrograms Programs;
-   }
-#elif __linux__
-   #include "linux/linux-programs.h"
-   namespace perun2::prog
-   {
-      typedef LinuxPrograms Programs;
-   }
-#else
-   #error "Unsupported platform"
-#endif
+namespace perun2::prog
+{
+   
+
+MacPrograms::MacPrograms(p_perun2& p2) : perun2(p2) { };
 
 
-#endif /* PROGRAMS_H_INCLUDED */
+void MacPrograms::actualize(const Token& tk)
+{
+   // todo
+}
+
+
+p_bool MacPrograms::haveName(const Token& tk) const
+{
+   // todo
+   return false;
+}
+
+
+void MacPrograms::insertVars(GlobalContext& ctx) const
+{
+   // todo
+}
+
+
+}

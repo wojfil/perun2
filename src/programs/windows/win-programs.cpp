@@ -125,7 +125,7 @@ p_bool WinProgram::takeValueBeforeLastComma(p_riptr& registry, const p_str& name
 }
 
 
-Programs::Programs(p_perun2& p2) : perun2(p2)
+WindowsPrograms::WindowsPrograms(p_perun2& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_7zip>(p2));
    this->programs.emplace_back(std::make_unique<WP_Acrobat>(p2));
@@ -145,7 +145,7 @@ Programs::Programs(p_perun2& p2) : perun2(p2)
 };
 
 
-void Programs::actualize(const Token& tk)
+void WindowsPrograms::actualize(const Token& tk)
 {
    for (auto& program : this->programs) {
       if (tk.isWord(program->names, this->perun2)) {
@@ -160,7 +160,7 @@ void Programs::actualize(const Token& tk)
 }
 
 
-p_bool Programs::haveName(const Token& tk) const
+p_bool WindowsPrograms::haveName(const Token& tk) const
 {
    for (const auto& program : this->programs) {
       if (tk.isWord(program->names, this->perun2)) {
@@ -172,7 +172,7 @@ p_bool Programs::haveName(const Token& tk) const
 }
 
 
-void Programs::insertVars(GlobalContext& ctx) const
+void WindowsPrograms::insertVars(GlobalContext& ctx) const
 {
    for (const auto& program : this->programs) {
       for (const p_str& name : program->names) {

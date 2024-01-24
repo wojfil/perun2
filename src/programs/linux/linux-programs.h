@@ -12,31 +12,37 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PROGRAMS_H_INCLUDED
-#define PROGRAMS_H_INCLUDED
+#ifndef LINUX_PROGRAMS_H_INCLUDED
+#define LINUX_PROGRAMS_H_INCLUDED
+
+#include "../../token.h"
 
 
-#ifdef _WIN32
-   #include "windows/win-programs.h"
-   namespace perun2::prog 
-   {
-      typedef WindowsPrograms Programs;
-   }
-#elif __APPLE__
-   #include "mac/mac-programs.h"
-   namespace perun2::prog
-   {
-      typedef MacPrograms Programs;
-   }
-#elif __linux__
-   #include "linux/linux-programs.h"
-   namespace perun2::prog
-   {
-      typedef LinuxPrograms Programs;
-   }
-#else
-   #error "Unsupported platform"
-#endif
+namespace perun2
+{
+   struct GlobalContext;
+   struct p_perun2;
+}
+
+namespace perun2::prog
+{
 
 
-#endif /* PROGRAMS_H_INCLUDED */
+struct LinuxPrograms
+{
+public:
+   LinuxPrograms() = delete;
+   LinuxPrograms(p_perun2& p2);
+
+   void actualize(const Token& tk);
+   p_bool haveName(const Token& tk) const;
+   void insertVars(GlobalContext& ctx) const;
+
+private:
+   p_perun2& perun2;
+};
+
+
+}
+
+#endif // LINUX_PROGRAMS_H_INCLUDED

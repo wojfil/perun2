@@ -15,7 +15,7 @@
 #ifndef WIN_PROGRAMS_DATA_H_INCLUDED
 #define WIN_PROGRAMS_DATA_H_INCLUDED
 
-#include "programs.h"
+#include "win-programs.h"
 
 
 namespace perun2::prog

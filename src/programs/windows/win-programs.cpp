@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "programs.h"
+#include "win-programs.h"
 #include "programs-data.h"
 #include "../../os/os.h"
 #include "../../perun2.h"
@@ -125,7 +125,7 @@ p_bool WinProgram::takeValueBeforeLastComma(p_riptr& registry, const p_str& name
 }
 
 
-WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
+Programs::Programs(p_perun2& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_7zip>(p2));
    this->programs.emplace_back(std::make_unique<WP_Acrobat>(p2));
@@ -145,7 +145,7 @@ WinPrograms::WinPrograms(p_perun2& p2) : perun2(p2)
 };
 
 
-void WinPrograms::actualize(const Token& tk)
+void Programs::actualize(const Token& tk)
 {
    for (auto& program : this->programs) {
       if (tk.isWord(program->names, this->perun2)) {
@@ -160,7 +160,7 @@ void WinPrograms::actualize(const Token& tk)
 }
 
 
-p_bool WinPrograms::haveName(const Token& tk) const
+p_bool Programs::haveName(const Token& tk) const
 {
    for (const auto& program : this->programs) {
       if (tk.isWord(program->names, this->perun2)) {
@@ -172,7 +172,7 @@ p_bool WinPrograms::haveName(const Token& tk) const
 }
 
 
-void WinPrograms::insertVars(GlobalContext& ctx) const
+void Programs::insertVars(GlobalContext& ctx) const
 {
    for (const auto& program : this->programs) {
       for (const p_str& name : program->names) {

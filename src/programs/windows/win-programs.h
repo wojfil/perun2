@@ -56,11 +56,11 @@ private:
 };
 
 
-struct WinPrograms
+struct Programs
 {
 public:
-   WinPrograms() = delete;
-   WinPrograms(p_perun2& p2);
+   Programs() = delete;
+   Programs(p_perun2& p2);
 
    void actualize(const Token& tk);
    p_bool haveName(const Token& tk) const;

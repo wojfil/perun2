@@ -142,8 +142,8 @@ add_executable(
     os/os-windows.cpp
     programs/windows/pattern.cpp
     programs/windows/registry.cpp
-    programs/windows/programs.cpp
     programs/windows/programs-data.cpp
+    programs/windows/win-programs.cpp
 )
 
 target_link_libraries(

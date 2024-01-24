@@ -16,7 +16,7 @@
 #define CACHE_H_INCLUDED
 
 #include "var.h"
-#include "programs/windows/programs.h"
+#include "programs/programs.h"
 
 
 namespace perun2
@@ -55,7 +55,7 @@ public:
    void loadCmdPath();
 
    p_str cmdProcessStartingArgs;
-   prog::WinPrograms programs; 
+   prog::Programs programs; 
 
 private:
    p_bool isNotLoaded(const p_cunit v);

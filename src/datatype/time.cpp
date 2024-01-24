@@ -514,7 +514,8 @@ p_bool Time::isComparableWith(const Time& tim) const
                return false;
             }
          }
-         break;
+
+         return true;
       }
       case tt_ShortClock:
       case tt_Clock: {
@@ -525,11 +526,13 @@ p_bool Time::isComparableWith(const Time& tim) const
                return false;
             }
          }
-         break;
+
+         return true;
+      }
+      default: {
+         return tim.type != tt_Never;
       }
    }
-
-   return true;
 }
 
 Time& Time::operator += (const Period& per)

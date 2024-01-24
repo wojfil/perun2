@@ -114,7 +114,6 @@ inline void decrementMonth(Period& p, const Time& t, const p_bool addDays);
 inline void decrementDay(Period& p, const Time& t);
 inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);
-std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base);
 
 }
 

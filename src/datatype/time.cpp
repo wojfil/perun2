@@ -1421,37 +1421,4 @@ inline void clockTillMidnight(Period& p, const Time& t)
    }
 }
 
-std::vector<Time> sortedAndUniqueTimeList(const std::vector<Time>& base)
-{
-   std::vector<Time> result;
-
-   for (const Time& t : base) {
-      if (t.type != Time::tt_Never) {
-         result.emplace_back(t);
-      }
-   }
-
-   if (result.size() <= 1) {
-      return result;
-   }
-
-   std::sort(result.begin(), result.end());
-   p_size len = result.size();
-
-   for (p_size i = 1; i < len; i++) {
-      if (result[i - 1] == result[i]) {
-         if (result[i - 1].type <= result[i].type) {
-            result.erase(result.begin() + i);
-         }
-         else {
-            result.erase(result.begin() + i - 1);
-         }
-         len--;
-         i--;
-      }
-   }
-
-   return result;
-}
-
 }

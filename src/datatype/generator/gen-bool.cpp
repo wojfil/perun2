@@ -51,11 +51,19 @@ p_bool Xor::getValue()
 }
 
 InConstTimeList::InConstTimeList(p_genptr<p_tim>& val, const p_tlist& li)
-   : value(std::move(val)), list(sortedAndUniqueTimeList(li)) { };
+   : value(std::move(val)), list(li) { };
 
 p_bool InConstTimeList::getValue() 
 {
-   return std::binary_search(list.begin(), list.end(), value->getValue());
+   const p_tim v = value->getValue();
+
+   for (const p_tim& t : list) {
+      if (v == t) {
+         return true;
+      }
+   }
+
+   return false;
 }
 
 }

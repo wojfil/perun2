@@ -499,6 +499,39 @@ void Time::clear()
    second = TNUM_MINUS_ONE;
 }
 
+p_bool Time::isComparableWith(const Time& tim) const
+{
+   switch (type) {
+      case tt_Never: {
+         return false;
+      }
+      case tt_YearMonth:
+      case tt_Date: {
+         switch (tim.type) {
+            case tt_Never:
+            case tt_ShortClock:
+            case tt_Clock: {
+               return false;
+            }
+         }
+         break;
+      }
+      case tt_ShortClock:
+      case tt_Clock: {
+         switch (tim.type) {
+            case tt_Never:
+            case tt_YearMonth:
+            case tt_Date: {
+               return false;
+            }
+         }
+         break;
+      }
+   }
+
+   return true;
+}
+
 Time& Time::operator += (const Period& per)
 {
    if (type == TimeType::tt_Never) {

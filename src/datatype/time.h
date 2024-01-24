@@ -64,6 +64,7 @@ public:
    p_bool equalsExactly(const Time& tim) const;
    void setValue(const Time& tim);
    void clear();
+   p_bool isComparableWith(const Time& tim) const;
 
    Time& operator += (const Period& per);
    Time& operator -= (const Period& per);

@@ -452,13 +452,91 @@ p_bool Time::equalsExactly(const Time& tim) const
 
 void Time::setValue(const Time& tim)
 {
-   if (type == TimeType::tt_Never) {
-      return;
-   }
-
    if (tim.type == TimeType::tt_Never) {
       clear();
       return;
+   }
+
+   switch (type) {
+      case tt_Never: {
+         return;
+      }
+      case tt_YearMonth: {
+         if (tim.type == tt_ShortClock) {
+            day = TNUM_ONE;
+            hour = tim.hour;
+            minute = tim.minute;
+            type = tt_DateShortClock;
+            return;
+         }
+         if (tim.type == tt_Clock) {
+            day = TNUM_ONE;
+            hour = tim.hour;
+            minute = tim.minute;
+            second = tim.second;
+            type = tt_DateClock;
+            return;
+         }
+
+         break;
+      }
+      case tt_Date: {
+         if (tim.type == tt_ShortClock) {
+            hour = tim.hour;
+            minute = tim.minute;
+            type = tt_DateShortClock;
+            return;
+         }
+         if (tim.type == tt_Clock) {
+            hour = tim.hour;
+            minute = tim.minute;
+            second = tim.second;
+            type = tt_DateClock;
+            return;
+         }
+
+         break;
+      }
+      case tt_ShortClock: {
+         if (tim.type == tt_YearMonth) {
+            year = tim.year;
+            month = tim.month;
+            day = TNUM_ONE;
+            type = tt_DateShortClock;
+            return;
+         }
+         if (tim.type == tt_Date) {
+            year = tim.year;
+            month = tim.month;
+            day = tim.day;
+            type = tt_DateShortClock;
+            return;
+         }
+
+         break;
+      }
+      case tt_Clock: {
+         if (tim.type == tt_YearMonth) {
+            year = tim.year;
+            month = tim.month;
+            day = TNUM_ONE;
+            type = tt_DateClock;
+            return;
+         }
+         if (tim.type == tt_Date) {
+            year = tim.year;
+            month = tim.month;
+            day = tim.day;
+            type = tt_DateClock;
+            return;
+         }
+
+         break;
+      }
+   }
+
+   if (tim.type == tt_Clock || tim.type == tt_ShortClock) { 
+      goto escapeData;
    }
 
    year = tim.year;
@@ -478,10 +556,12 @@ void Time::setValue(const Time& tim)
       return;
    }
 
+escapeData:
+
    hour = tim.hour;
    minute = tim.minute;
-
-   if (tim.type == TimeType::tt_DateShortClock) {
+   
+   if (tim.type == tt_DateShortClock || tim.type == tt_ShortClock) { 
       return;
    }
 

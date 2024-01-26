@@ -386,9 +386,8 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
       if (fk == p2.keywordsData.KEYWORDS.end()) {
          return Token(line, start, length, p2);
       }
-      else {
-         return Token(fk->second, line, start, length, p2);
-      }
+
+      return Token(fk->second, line, start, length, p2);
    }
 
    if (dots == 1) {

@@ -495,6 +495,10 @@ void Tokens::setData()
                      this->info |= TI_HAS_KEYWORD_LIKE;
                      break;
                   }
+                  case Keyword::kw_Resembles: {
+                     this->info |= TI_HAS_KEYWORD_RESEMBLES;
+                     break;
+                  }
                   case Keyword::kw_To: {
                      this->info |= TI_HAS_KEYWORD_TO;
                      break;

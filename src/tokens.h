@@ -41,15 +41,16 @@ p_constexpr p_tinfo TI_HAS_CHAR_EQUALS =            1 << 9;
 p_constexpr p_tinfo TI_IS_POSSIBLE_FUNCTION =       1 << 10;
 p_constexpr p_tinfo TI_HAS_KEYWORD_IN =             1 << 11;
 p_constexpr p_tinfo TI_HAS_KEYWORD_LIKE =           1 << 12;
-p_constexpr p_tinfo TI_HAS_KEYWORD_TO =             1 << 13;
-p_constexpr p_tinfo TI_HAS_KEYWORD_WITH =           1 << 14;
-p_constexpr p_tinfo TI_HAS_KEYWORD_AS =             1 << 15;
-p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =      1 << 16;
-p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =         1 << 17;
-p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 18;
-p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 19;
-p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 20;
-p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 21;
+p_constexpr p_tinfo TI_HAS_KEYWORD_RESEMBLES =      1 << 13;
+p_constexpr p_tinfo TI_HAS_KEYWORD_TO =             1 << 14;
+p_constexpr p_tinfo TI_HAS_KEYWORD_WITH =           1 << 15;
+p_constexpr p_tinfo TI_HAS_KEYWORD_AS =             1 << 16;
+p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =      1 << 17;
+p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =         1 << 18;
+p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 19;
+p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 20;
+p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 21;
+p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 22;
 
 
 struct p_perun2;

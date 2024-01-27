@@ -68,10 +68,6 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   if (!tks.hasBinaryBoolKeyword() && parseComparisons(result, tks, p2)) {
-      return true;
-   }
-
    if (tks.check(TI_HAS_KEYWORD_IN)) {
       if (parseIn(result, tks, p2)) {
          return true;
@@ -82,6 +78,10 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
       if (parseLike(result, tks, p2)) {
          return true;
       }
+   }
+
+   if (parseComparisons(result, tks, p2)) {
+      return true;
    }
 
    return parseBinary<p_bool>(result, tks, p2) || parseTernary<p_bool>(result, tks, p2);

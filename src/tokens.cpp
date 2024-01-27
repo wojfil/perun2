@@ -86,6 +86,13 @@ p_bool Tokens::check(const p_tinfo in) const
    return this->info & in;
 }
 
+p_bool Tokens::hasBinaryBoolKeyword() const
+{
+   return (this->info & TI_HAS_KEYWORD_IN)
+        | (this->info & TI_HAS_KEYWORD_LIKE)
+        | (this->info & TI_HAS_KEYWORD_RESEMBLES);
+}
+
 p_bool Tokens::isEmpty() const
 {
    return this->length == 0;

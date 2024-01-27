@@ -77,6 +77,7 @@ public:
    const std::vector<Token>& getList() const;
    p_tinfo getInfo() const;
    p_bool check(const p_tinfo in) const;
+   p_bool hasBinaryBoolKeyword() const;
    p_bool isEmpty() const;
    const Token& first() const;
    const Token& second() const;

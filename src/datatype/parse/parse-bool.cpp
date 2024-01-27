@@ -68,7 +68,7 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
       }
    }
 
-   if (parseComparisons(result, tks, p2)) {
+   if (!tks.hasBinaryBoolKeyword() && parseComparisons(result, tks, p2)) {
       return true;
    }
 
@@ -641,6 +641,10 @@ static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
    if (pair.second.isEmpty()) {
       throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
+   
+   if (pair.first.hasBinaryBoolKeyword()) {
+      return false;
+   }
 
    p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
 
@@ -727,6 +731,9 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p
    }
    if (pair.second.isEmpty()) {
       throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
+   }
+   if (pair.first.hasBinaryBoolKeyword()) {
+      return false;
    }
 
    const p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);

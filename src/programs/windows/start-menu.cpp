@@ -129,21 +129,11 @@ p_bool StartMenuLnk::getFilePath(p_str& path) const
       if (os_fileExists(path)) {
          return true;
       }
-
-      path = str(allUsersPath, OS_SEPARATOR, this->relativePath);
-      if (os_fileExists(path)) {
-         return true;
-      }
    }
 
    const p_str currentUserPath = this->getPathRoot(false);
    if (! currentUserPath.empty()) {
       path = str(currentUserPath, OS_SEPARATOR, STRING_PROGRAMS, OS_SEPARATOR, this->relativePath);
-      if (os_fileExists(path)) {
-         return true;
-      }
-
-      path = str(currentUserPath, OS_SEPARATOR, this->relativePath);
       if (os_fileExists(path)) {
          return true;
       }

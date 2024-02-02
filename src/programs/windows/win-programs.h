@@ -39,8 +39,6 @@ public:
    virtual void actualize() = 0;
 
    p_bool isIcon(const p_str& value) const;
-   p_str beforeLastComma(const p_str& value) const;
-   p_str firstArg(const p_str& value) const;
    p_bool saveValue(const p_str& value);
 
    p_bool takeValue(p_riptr& registry, const p_str& name);

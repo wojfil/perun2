@@ -134,6 +134,7 @@ add_executable(
     datatype/text/concat.cpp
     datatype/text/like.cpp
     datatype/text/strings.cpp
+    datatype/text/text-parsing.cpp
     datatype/text/wildcard.cpp
     os/os-common.cpp
     os/os-linux.cpp

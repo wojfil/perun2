@@ -16,6 +16,7 @@
 #include "programs-data.h"
 #include "../../os/os.h"
 #include "../../perun2.h"
+#include "../../datatype/text/text-parsing.h"
 
 
 namespace perun2::prog
@@ -33,54 +34,6 @@ p_bool WinProgram::isIcon(const p_str& value) const
    }
 
    return value.substr(value.length() - STRING_ICON_SUFFIX_LEN) == STRING_ICON_SUFFIX;
-};
-
-
-p_str WinProgram::beforeLastComma(const p_str& value) const
-{
-   if (value.empty()) {
-      return value;
-   }
-
-   for (p_int i = value.length() - 1; i >= 0; i--) {
-      switch (value[i]) {
-         case CHAR_SLASH:
-         case CHAR_BACKSLASH: {
-            return value;
-         }
-         case CHAR_COMMA: {
-            return value.substr(0, i);
-         }
-      }
-
-   }
-
-   return value;
-};
-
-
-p_str WinProgram::firstArg(const p_str& value) const
-{
-   if (value.empty()) {
-      return value;
-   }
-
-   p_bool started = false;
-   p_size start = 0;
-
-   for (p_size i = 0; i < value.size(); i++) {
-      if (value[i] == CHAR_QUOTATION_MARK) {
-         if (started) {
-            return value.substr(start + 1, i - start - 1);
-         }
-         else {
-            start = i;
-            started = true;
-         }
-      }
-   }
-
-   return EMPTY_STRING;
 };
 
 
@@ -112,7 +65,7 @@ p_bool WinProgram::takeValue(p_riptr& registry, const p_str& name)
 p_bool WinProgram::takeValueFirstArg(p_riptr& registry, const p_str& name)
 {
    const p_str v = registry->getRegistryValue(name);
-   const p_str first = this->firstArg(v);
+   const p_str first = str_firstArg(v);
    return this->saveValue(first);
 }
 
@@ -120,7 +73,7 @@ p_bool WinProgram::takeValueFirstArg(p_riptr& registry, const p_str& name)
 p_bool WinProgram::takeValueBeforeLastComma(p_riptr& registry, const p_str& name)
 {
    const p_str v = registry->getRegistryValue(name);
-   const p_str before = this->beforeLastComma(v);
+   const p_str before = str_beforeLastComma(v);
    return this->saveValue(before);
 }
 

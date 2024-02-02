@@ -113,8 +113,9 @@ p_str StartMenuLnk::getPathRoot(const p_bool allUsers) const
    if (SUCCEEDED(SHGetKnownFolderPath(
       allUsers ? FOLDERID_CommonStartMenu : FOLDERID_StartMenu, 0, NULL, &startMenuPath))) 
    {
+      const p_str result = startMenuPath;
       CoTaskMemFree(static_cast<void*>(startMenuPath));
-      return startMenuPath;
+      return result;
    }
 
    return EMPTY_STRING;

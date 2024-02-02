@@ -29,6 +29,7 @@ public:
    void actualize() override;
 
 private:
+   StartMenuLnk startMenuLink;
    p_riptr r_1;
 };
 
@@ -53,6 +54,7 @@ public:
    void actualize() override;
 
 private:
+   StartMenuLnk startMenuLink;
    p_riptr r_1;
    p_riptr r_2;
 };
@@ -65,6 +67,7 @@ public:
    void actualize() override;
 
 private:
+   StartMenuLnk startMenuLink;
    p_riptr r_1;
    p_riptr r_2;
    p_riptr r_3;
@@ -95,6 +98,7 @@ public:
    void actualize() override;
 
 private:
+   StartMenuLnk startMenuLink;
    p_riptr r_1;
 };
 
@@ -186,6 +190,7 @@ public:
    void actualize() override;
 
 private:
+   StartMenuLnk startMenuLink;
    p_riptr r_1;
    p_riptr r_2;
    p_riptr r_3;

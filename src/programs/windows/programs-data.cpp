@@ -21,7 +21,8 @@ namespace perun2::prog
 {
 
 
-WP_7zip::WP_7zip(p_perun2& p2) : WinProgram(p2, { L"7zip" }) 
+WP_7zip::WP_7zip(p_perun2& p2) : WinProgram(p2, { L"7zip" }),
+   startMenuLink(L"7-zip\\7-zip file manager.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/7-zip");
 };
@@ -29,6 +30,10 @@ WP_7zip::WP_7zip(p_perun2& p2) : WinProgram(p2, { L"7zip" })
 
 void WP_7zip::actualize()
 {
+   if (this->takeStartMenuLink(this->startMenuLink)) {
+      return;
+   }
+   
    while (this->r_1->hasNext()) {
       if (this->takeValue(this->r_1, L"displayicon")) {
          return;
@@ -67,7 +72,8 @@ void WP_Acrobat::actualize()
 };
 
 
-WP_Audacity::WP_Audacity(p_perun2& p2) : WinProgram(p2, { L"audacity" }) 
+WP_Audacity::WP_Audacity(p_perun2& p2) : WinProgram(p2, { L"audacity" }),
+   startMenuLink(L"audacity.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/audacity*");
    addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"audacity*/shell/open/command");
@@ -76,6 +82,10 @@ WP_Audacity::WP_Audacity(p_perun2& p2) : WinProgram(p2, { L"audacity" })
 
 void WP_Audacity::actualize()
 {
+   if (this->takeStartMenuLink(this->startMenuLink)) {
+      return;
+   }
+   
    while (this->r_1->hasNext()) {
       if (this->takeValue(this->r_1, L"displayicon")) {
          return;
@@ -90,7 +100,8 @@ void WP_Audacity::actualize()
 };
 
 
-WP_Firefox::WP_Firefox(p_perun2& p2) : WinProgram(p2, { L"firefox", L"mozillafirefox" }) 
+WP_Firefox::WP_Firefox(p_perun2& p2) : WinProgram(p2, { L"firefox", L"mozillafirefox" }),
+   startMenuLink(L"firefox.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/mozilla firefox*");
    addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/mozilla/mozilla firefox #/bin");
@@ -102,6 +113,10 @@ WP_Firefox::WP_Firefox(p_perun2& p2) : WinProgram(p2, { L"firefox", L"mozillafir
 
 void WP_Firefox::actualize()
 {
+   if (this->takeStartMenuLink(this->startMenuLink)) {
+      return;
+   }
+   
    while (this->r_1->hasNext()) {
       if (this->takeValueBeforeLastComma(this->r_1, L"displayicon")) {
          return;
@@ -178,7 +193,8 @@ void WP_Gimp::actualize()
 };
 
 
-WP_Inkscape::WP_Inkscape(p_perun2& p2) : WinProgram(p2, { L"inkscape" }) 
+WP_Inkscape::WP_Inkscape(p_perun2& p2) : WinProgram(p2, { L"inkscape" }) ,
+   startMenuLink(L"inkscape\\inkscape.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::ClassesRoot, L"inkscape.*/shell/open/command");
 };
@@ -186,6 +202,10 @@ WP_Inkscape::WP_Inkscape(p_perun2& p2) : WinProgram(p2, { L"inkscape" })
 
 void WP_Inkscape::actualize()
 {
+   if (this->takeStartMenuLink(this->startMenuLink)) {
+      return;
+   }
+   
    while (this->r_1->hasNext()) {
       if (this->takeValueFirstArg(this->r_1, EMPTY_STRING)) {
          return;
@@ -364,7 +384,8 @@ void WP_Vlc::actualize()
 };
 
 
-WP_WinRAR::WP_WinRAR(p_perun2& p2) : WinProgram(p2, { L"winrar" }) 
+WP_WinRAR::WP_WinRAR(p_perun2& p2) : WinProgram(p2, { L"winrar" }) ,
+   startMenuLink(L"winrar\\winrar.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/winrar");
    addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/winrar*");
@@ -375,6 +396,10 @@ WP_WinRAR::WP_WinRAR(p_perun2& p2) : WinProgram(p2, { L"winrar" })
 
 void WP_WinRAR::actualize()
 {
+   if (this->takeStartMenuLink(this->startMenuLink)) {
+      return;
+   }
+   
    while (this->r_1->hasNext()) {
       if (this->takeValue(this->r_1, L"exe64")) {
          return;

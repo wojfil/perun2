@@ -207,7 +207,8 @@ void WP_Notepad::actualize()
 };
 
 
-WP_NotepadPlusPlus::WP_NotepadPlusPlus(p_perun2& p2) : WinProgram(p2, { L"notepadplusplus" }) 
+WP_NotepadPlusPlus::WP_NotepadPlusPlus(p_perun2& p2) : WinProgram(p2, { L"notepadplusplus" }),
+   startMenuLink(L"notepad++.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/notepad++");
 };
@@ -215,6 +216,10 @@ WP_NotepadPlusPlus::WP_NotepadPlusPlus(p_perun2& p2) : WinProgram(p2, { L"notepa
 
 void WP_NotepadPlusPlus::actualize()
 {
+   if (this->takeStartMenuLink(this->startMenuLink)) {
+      return;
+   }
+
    while (this->r_1->hasNext()) {
       if (this->takeValue(this->r_1, L"displayicon")) {
          return;

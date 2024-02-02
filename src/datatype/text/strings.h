@@ -64,6 +64,7 @@ p_constexpr p_size STRING_ICON_SUFFIX_LEN =        _countof(STRING_ICON_SUFFIX) 
 
 p_constexpr p_char STRING_PENDRIVE[] =             L"pendrive";
 p_constexpr p_char STRING_PENDRIVES[] =            L"pendrives";
+p_constexpr p_char STRING_PROGRAMS[] =             L"programs";
 
 p_constexpr p_char STRING_WEEKDAY_MONDAY[] =       L"Monday";
 p_constexpr p_char STRING_WEEKDAY_TUESDAY[] =      L"Tuesday";

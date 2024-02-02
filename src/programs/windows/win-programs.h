@@ -16,6 +16,7 @@
 #define WIN_PROGRAMS_H_INCLUDED
 
 #include "registry.h"
+#include "start-menu.h"
 #include "../../token.h"
 
 
@@ -44,6 +45,7 @@ public:
    p_bool takeValue(p_riptr& registry, const p_str& name);
    p_bool takeValueFirstArg(p_riptr& registry, const p_str& name);
    p_bool takeValueBeforeLastComma(p_riptr& registry, const p_str& name);
+   p_bool takeStartMenuLink(StartMenuLnk& link);
 
    const p_list names;
    p_bool loaded = false;

@@ -144,8 +144,9 @@ add_executable(
     programs/linux/linux-programs.cpp
     programs/mac/mac-programs.cpp
     programs/windows/pattern.cpp
-    programs/windows/registry.cpp
     programs/windows/programs-data.cpp
+    programs/windows/registry.cpp
+    programs/windows/start-menu.cpp
     programs/windows/win-programs.cpp
 )
 
@@ -155,4 +156,5 @@ target_link_libraries(
     stdc++
     ole32 
     oleaut32
+    shell32
 )

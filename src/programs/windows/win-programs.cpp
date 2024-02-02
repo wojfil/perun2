@@ -78,6 +78,16 @@ p_bool WinProgram::takeValueBeforeLastComma(p_riptr& registry, const p_str& name
 }
 
 
+p_bool WinProgram::takeStartMenuLink(StartMenuLnk& link)
+{
+   if (! link.hasValue()) {
+      return false;
+   }
+
+   return this->saveValue(link.getValue());
+}
+
+
 WindowsPrograms::WindowsPrograms(p_perun2& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_7zip>(p2));

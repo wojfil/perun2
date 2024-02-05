@@ -428,6 +428,23 @@ Time Time::toDate() const
    }
 }
 
+Time Time::toClock() const
+{
+   switch (type) {
+      case tt_DateShortClock:
+      case tt_ShortClock: {
+         return Time::clock(hour, minute);
+      }
+      case tt_DateClock:
+      case tt_Clock: {
+         return Time::clock(hour, minute, second);
+      }
+      default: {
+         return Time();
+      }
+   }
+}
+
 p_tnum Time::getWeekDay() const
 {
    switch (type) {

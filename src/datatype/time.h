@@ -60,6 +60,8 @@ public:
    void setSecond(const p_tnum s);
 
    Time toDate() const;
+   Time toClock() const;
+
    p_tnum getWeekDay() const;
    p_bool equalsExactly(const Time& tim) const;
    void setValue(const Time& tim);

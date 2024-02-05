@@ -22,10 +22,6 @@ namespace perun2
 
 p_str str_beforeLastComma(const p_str& value)
 {
-   if (value.empty()) {
-      return value;
-   }
-
    for (p_int i = value.length() - 1; i >= 0; i--) {
       switch (value[i]) {
          case CHAR_SLASH:

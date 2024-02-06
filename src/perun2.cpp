@@ -75,7 +75,7 @@ p_bool p_perun2::isNotRunning() const
 p_bool p_perun2::preParse()
 {
    try {
-      this->tokens = tokenize(this->arguments.getCode(), *this);
+      this->tokens = tokenize(this->arguments.getCodeRef(), *this);
    }
    catch (const SyntaxError& ex) {
       this->logger.print(ex.getMessage());

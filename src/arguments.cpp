@@ -259,7 +259,12 @@ p_str Arguments::getLocation() const
    return this->location;
 }
 
-const p_str& Arguments::getCode() const
+p_str Arguments::getCode() const
+{
+   return this->code;
+}
+
+const p_str& Arguments::getCodeRef() const
 {
    return this->code;
 }

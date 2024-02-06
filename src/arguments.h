@@ -67,7 +67,8 @@ public:
    p_flags getFlags() const;
    p_list getArgs() const;
    p_str getLocation() const;
-   const p_str& getCode() const;
+   p_str getCode() const;
+   const p_str& getCodeRef() const;
    ArgsParseState getParseState() const;
    p_bool hasFlag(const p_flags flag) const;
 

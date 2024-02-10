@@ -2183,7 +2183,7 @@ p_bool os_isAncestor(const p_str& path, const p_str& supposedChildPath)
    }
 
    for (p_size i = 0; i < path.size(); i++) {
-      if (!charsEqualInsensitive(path[i], supposedChildPath[i])) {
+      if (!os_areEqualInPath(path[i], supposedChildPath[i])) {
          return false;
       }
    }
@@ -2477,6 +2477,11 @@ p_bool os_findText(const p_str& path, const p_str& value)
 
    stream.close();
    return result;
+}
+
+p_bool os_areEqualInPath(const p_char ch1, const p_char ch2)
+{
+   return std::tolower(ch1, std::locale("")) == std::tolower(ch2, std::locale(""));
 }
 
 inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high)

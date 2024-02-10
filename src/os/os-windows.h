@@ -178,6 +178,8 @@ p_bool os_readFile(p_str& result, const p_str& path);
 void os_showWebsite(const p_str& url);
 p_bool os_findText(const p_str& path, const p_str& value);
 
+p_bool os_areEqualInPath(const p_char ch1, const p_char ch2);
+
 inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high);
 inline p_bool os_isBrowsePath(const p_str& path);
 inline p_tim os_convertToPerun2Time(const p_ftim* time);

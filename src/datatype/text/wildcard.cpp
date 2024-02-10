@@ -14,6 +14,7 @@
 
 #include "wildcard.h"
 #include "chars.h"
+#include "../../os/os.h"
 
 
 namespace perun2
@@ -106,7 +107,7 @@ Logic SimpleWildcardComparer::checkState(const p_size n, const p_size m)
          ans = std::max(ans, this->checkState(n - 1, m));
       }
    }
-   else if (n > 0 && charsEqualInsensitive(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
+   else if (n > 0 && os_areEqualInPath(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
       ans = std::max(ans, this->checkState(n - 1, m - 1));
    }
 

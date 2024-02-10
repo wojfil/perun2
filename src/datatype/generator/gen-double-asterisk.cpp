@@ -144,7 +144,7 @@ Logic DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
       }
       default: {
          if (n > 0) {
-            if (charsEqualInsensitive(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
+            if (os_areEqualInPath(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
                ans = std::max(ans, this->checkState(n - 1, m - 1));
             }
          }

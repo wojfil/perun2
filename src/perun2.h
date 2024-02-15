@@ -86,8 +86,8 @@ private:
 
 // count how many Perun2 processes are there globally
    static p_int globalCount;
-   static void init();
-   static void deinit();
+   static void tryInit();
+   static void tryDeinit();
 };
 
 

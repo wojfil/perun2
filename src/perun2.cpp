@@ -32,13 +32,13 @@ namespace perun2
 Perun2Process::Perun2Process(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), logger(*this), cache(*this)
 {
-   Perun2Process::init();
+   Perun2Process::tryInit();
    Terminator::addPtr(this);
 };
 
 Perun2Process::~Perun2Process() noexcept
 {
-   Perun2Process::deinit();
+   Perun2Process::tryDeinit();
    Terminator::removePtr(this);
 }
 
@@ -143,7 +143,7 @@ p_bool Perun2Process::runCommands()
 
 p_int Perun2Process::globalCount = 0;
 
-void Perun2Process::init()
+void Perun2Process::tryInit()
 {
    if (globalCount == 0) {
       os_init();
@@ -152,7 +152,7 @@ void Perun2Process::init()
    globalCount++;
 }
 
-void Perun2Process::deinit()
+void Perun2Process::tryDeinit()
 {
    globalCount--;
    if (globalCount == 0) {

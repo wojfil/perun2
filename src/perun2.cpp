@@ -38,6 +38,7 @@ Perun2Process::Perun2Process(const Arguments& args) : arguments(args), contexts(
 
 Perun2Process::~Perun2Process() noexcept
 {
+   Perun2Process::deinit();
    Terminator::removePtr(this);
 }
 
@@ -140,15 +141,25 @@ p_bool Perun2Process::runCommands()
    return true;
 };
 
-p_bool Perun2Process::initialized = false;
+p_int Perun2Process::globalCount = 0;
 
 void Perun2Process::init()
 {
-   if (!initialized) {
-      initialized = true;
+   if (globalCount == 0) {
       os_init();
    }
+
+   globalCount++;
 }
+
+void Perun2Process::deinit()
+{
+   globalCount--;
+   if (globalCount == 0) {
+      os_deinit();
+   }
+}
+
 
 Perun2::Perun2(const p_int argc, p_char* const argv[])
    : arguments(argc, argv), process(this->arguments) { };

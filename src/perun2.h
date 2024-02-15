@@ -84,9 +84,10 @@ private:
    p_bool postParse();
    p_bool runCommands();
 
-// this initialization is global and performed only once for all struct instances
-   static p_bool initialized;
+// count how many Perun2 processes are there globally
+   static p_int globalCount;
    static void init();
+   static void deinit();
 };
 
 

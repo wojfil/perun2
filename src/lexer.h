@@ -21,7 +21,7 @@
 namespace perun2
 {
 
-std::vector<Token> tokenize(const p_str &code, p_perun2& p2);
+std::vector<Token> tokenize(const p_str& code, p_perun2& p2);
 static Token wordToken(const p_str& code, const p_size start, const p_size length, const p_int line, p_perun2& p2);
 inline static Token numberToken(const p_str& code, const p_str& value, const p_size start, const p_size length, 
    const p_nint multiplier, const NumberMode mode, const p_int dots, const p_int line, p_perun2& p2);

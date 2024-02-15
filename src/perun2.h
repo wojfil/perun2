@@ -59,6 +59,8 @@ public:
    ~Perun2Process() noexcept;
    p_bool run();
    void terminate();
+   p_bool isRunning() const;
+   p_bool isNotRunning() const;
 
    const Arguments& arguments;
    Math math;
@@ -72,13 +74,7 @@ public:
    Logger logger;
    Cache cache;
 
-   p_bool isRunning() const;
-   p_bool isNotRunning() const;
-
 private:
-   p_comptr commands;
-   std::vector<Token> tokens;
-
    p_bool preParse();
    p_bool parse();
    p_bool postParse();
@@ -88,6 +84,9 @@ private:
    static p_int globalCount;
    static void tryInit();
    static void tryDeinit();
+
+   p_comptr commands;
+   std::vector<Token> tokens;
 };
 
 

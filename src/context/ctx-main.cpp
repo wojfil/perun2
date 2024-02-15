@@ -19,7 +19,7 @@
 namespace perun2
 {
 
-   Contexts::Contexts(p_perun2& p2)
+   Contexts::Contexts(Perun2Process& p2)
       : GlobalContext(p2), success(std::make_unique<Variable<p_bool>>(VarType::vt_Special, false))
    {
       this->locationContexts.push_back(&this->rootLocation);
@@ -31,7 +31,7 @@ namespace perun2
       this->addOsGen(STRING_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
    };
 
-   p_bool Contexts::getVar(const Token& tk, Variable<p_bool>*& result, p_perun2& p2)
+   p_bool Contexts::getVar(const Token& tk, Variable<p_bool>*& result, Perun2Process& p2)
    {
       if (tk.isWord(STRING_SUCCESS, p2)) {
          result = this->success.get();
@@ -41,7 +41,7 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   p_bool Contexts::getVar(const Token& tk, Variable<p_num>*& result, p_perun2& p2)
+   p_bool Contexts::getVar(const Token& tk, Variable<p_num>*& result, Perun2Process& p2)
    {
       if (tk.isWord(STRING_INDEX, p2)) {
          if (this->indexContexts.empty()) {
@@ -59,7 +59,7 @@ namespace perun2
       return findVar(tk, result, p2);
    }
 
-   p_bool Contexts::getVar(const Token& tk, Variable<p_str>*& result, p_perun2& p2)
+   p_bool Contexts::getVar(const Token& tk, Variable<p_str>*& result, Perun2Process& p2)
    {
       if (tk.isWord(STRING_THIS, p2)) {
          if (this->fileContexts.empty()) {
@@ -189,7 +189,7 @@ namespace perun2
       return !this->indexContexts.empty();
    }
 
-   void Contexts::addOsGen(const p_str& name, const gen::OsElement element, p_perun2& p2)
+   void Contexts::addOsGen(const p_str& name, const gen::OsElement element, Perun2Process& p2)
    {
       osGenerators.insert(std::make_pair(name, gen::DefinitionGenerator(element, p2)));
    }
@@ -204,7 +204,7 @@ namespace perun2
       return this->userVarsContexts.back();
    }
 
-   p_bool Contexts::varExists(const Token& tk, p_perun2& p2)
+   p_bool Contexts::varExists(const Token& tk, Perun2Process& p2)
    {
       if (p2.cache.programs.haveName(tk)) {
          return true;

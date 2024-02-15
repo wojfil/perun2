@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-   GlobalContext::GlobalContext(p_perun2& p2)
+   GlobalContext::GlobalContext(Perun2Process& p2)
    {
       this->globalVars.times.insert(std::make_pair(STRING_NOW, std::make_unique<gen::v_Now>()));
       this->globalVars.times.insert(std::make_pair(STRING_TODAY, std::make_unique<gen::v_Today>()));

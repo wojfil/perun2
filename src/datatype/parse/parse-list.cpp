@@ -26,7 +26,7 @@
 namespace perun2::parse
 {
 
-p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& p2)
 {
    const p_size len = tks.getLength();
 
@@ -61,7 +61,7 @@ p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
 }
 
 
-static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& p2)
 {
    const p_size firstKeywordId = tks.getFilterKeywordId(p2);
    const Tokens tks2(tks, tks.getStart(), firstKeywordId - tks.getStart());

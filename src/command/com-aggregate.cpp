@@ -21,7 +21,7 @@
 namespace perun2::comm
 {
 
-Aggregate::Aggregate(p_perun2& p2)
+Aggregate::Aggregate(Perun2Process& p2)
    : contexts(p2.contexts), perun2(p2) { };
 
 void Aggregate::set(const p_agunit v)

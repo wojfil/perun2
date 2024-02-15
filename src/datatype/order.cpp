@@ -71,7 +71,7 @@ p_int OrderBy::partition(const p_int start, const p_int end)
    return ip;
 }
 
-OrderBy_List::OrderBy_List(p_genptr<p_list>& bas, p_fcptr& ctx, p_indptr& inds, p_ordptr& ord, p_perun2& p2)
+OrderBy_List::OrderBy_List(p_genptr<p_list>& bas, p_fcptr& ctx, p_indptr& inds, p_ordptr& ord, Perun2Process& p2)
       : OrderBy(inds, ord), context(std::move(ctx)), base(std::move(bas)) { };
 
 p_list OrderBy_List::getValue()
@@ -99,7 +99,7 @@ p_list OrderBy_List::getValue()
    return result;
 }
 
-OrderBy_Definition::OrderBy_Definition(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_indptr& inds, p_ordptr& ord, p_perun2& p2)
+OrderBy_Definition::OrderBy_Definition(p_defptr& bas, FileContext* ctx, p_fcptr& nextCtx, p_indptr& inds, p_ordptr& ord, Perun2Process& p2)
    : OrderBy(inds, ord), fileContext(ctx), base(std::move(bas)), perun2(p2), nextContext(std::move(nextCtx))
 {
    this->resultPtr = &this->result;

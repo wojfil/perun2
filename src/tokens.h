@@ -53,7 +53,7 @@ p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 21;
 p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 22;
 
 
-struct p_perun2;
+struct Perun2Process;
 
 // this is a subsequence of vector of tokens
 // it has a reference to the origin vector, some indexes and info
@@ -90,11 +90,11 @@ public:
    std::pair<Tokens, Tokens> divideBySymbol(const p_char symbol) const;
    std::vector<Tokens> splitBySymbol(const p_char symbol) const;
    p_int countSymbols(const p_char symbol) const;
-   p_int getFilterKeywordId(p_perun2& p2) const;
-   std::vector<Tokens> splitByFiltherKeywords(p_perun2& p2) const;
+   p_int getFilterKeywordId(Perun2Process& p2) const;
+   std::vector<Tokens> splitByFiltherKeywords(Perun2Process& p2) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 
-   void checkCommonExpressionExceptions(p_perun2& p2) const;
+   void checkCommonExpressionExceptions(Perun2Process& p2) const;
 
 private:
    p_int start;

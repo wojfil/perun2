@@ -20,23 +20,23 @@
 
 namespace perun2::parse
 {
-   p_bool isAlterableAttribute(const Token& tk, p_perun2& p2);
+   p_bool isAlterableAttribute(const Token& tk, Perun2Process& p2);
 
-   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_bool>& result, p_perun2& p2);
-   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_num>& result, p_perun2& p2);
-   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_per>& result, p_perun2& p2);
-   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_tim>& result, p_perun2& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_bool>& result, Perun2Process& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_num>& result, Perun2Process& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_per>& result, Perun2Process& p2);
+   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_tim>& result, Perun2Process& p2);
 
    template <typename T>
-   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<T>& result, p_perun2& p2)
+   p_bool makeVarRefAsFunction(const Token& tk, p_genptr<T>& result, Perun2Process& p2)
    {
       return false;
    }
 
-   p_bool makeVarRef(const Token& tk, p_defptr& result, p_perun2& p2);
+   p_bool makeVarRef(const Token& tk, p_defptr& result, Perun2Process& p2);
 
    template <typename T>
-   p_bool makeVarRef(const Token& tk, p_genptr<T>& result, p_perun2& p2)
+   p_bool makeVarRef(const Token& tk, p_genptr<T>& result, Perun2Process& p2)
    {
       Variable<T>* var;
       if (!p2.contexts.getVar(tk, var, p2)) {

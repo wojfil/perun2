@@ -20,16 +20,16 @@
 namespace perun2::comm
 {
 
-IterationLoop::IterationLoop(p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+IterationLoop::IterationLoop(p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
    : command(std::move(com)), context(std::move(ctx)), perun2(p2) { };
 
-CS_StringComArg::CS_StringComArg(p_genptr<p_str>& str, p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+CS_StringComArg::CS_StringComArg(p_genptr<p_str>& str, p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
    : IterationLoop(com, ctx, p2), string(std::move(str)) { };
 
-CS_ListComArg::CS_ListComArg(p_genptr<p_list>& li, p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+CS_ListComArg::CS_ListComArg(p_genptr<p_list>& li, p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
    : IterationLoop(com, ctx, p2), list(std::move(li)) { };
 
-CS_DefinitionComArg::CS_DefinitionComArg(p_defptr& def, p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+CS_DefinitionComArg::CS_DefinitionComArg(p_defptr& def, p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
    : IterationLoop(com, ctx, p2), definition(std::move(def)) { };
 
 void CS_StringComArg::run()

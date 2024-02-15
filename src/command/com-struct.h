@@ -30,7 +30,7 @@ namespace perun2::comm
 struct CS_RawBlock : Command
 {
 public:
-   CS_RawBlock(std::vector<p_comptr>& coms, p_ucptr& ctx, p_perun2& p2)
+   CS_RawBlock(std::vector<p_comptr>& coms, p_ucptr& ctx, Perun2Process& p2)
       : context(std::move(ctx)), perun2(p2)
    {
       langutil::transferUniquePtrs(coms, commands);
@@ -40,7 +40,7 @@ public:
 
 private:
    std::vector<p_comptr> commands;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    p_ucptr context;
 };
 
@@ -48,7 +48,7 @@ private:
 struct CS_Block : Command
 {
 public:
-   CS_Block(std::vector<p_comptr>& coms, p_acptr& ctx, p_perun2& p2)
+   CS_Block(std::vector<p_comptr>& coms, p_acptr& ctx, Perun2Process& p2)
       : perun2(p2), context(std::move(ctx))
    {
       langutil::transferUniquePtrs(coms, commands);
@@ -58,7 +58,7 @@ public:
 
 private:
    std::vector<p_comptr> commands;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    p_acptr context;
 };
 
@@ -66,7 +66,7 @@ private:
 struct CS_Times : Command
 {
 public:
-   CS_Times(p_genptr<p_num>& ts, p_comptr& com, p_icptr& ctx, p_perun2& p2)
+   CS_Times(p_genptr<p_num>& ts, p_comptr& com, p_icptr& ctx, Perun2Process& p2)
       : context(std::move(ctx)), times(std::move(ts)), command(std::move(com)), perun2(p2) { };
 
    void run() override;
@@ -74,7 +74,7 @@ public:
 private:
    p_genptr<p_num> times;
    p_comptr command;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    p_icptr context;
 };
 
@@ -82,7 +82,7 @@ private:
 struct CS_While : Command
 {
 public:
-   CS_While(p_genptr<p_bool>& cond, p_comptr& com, p_icptr& ctx, p_perun2& p2)
+   CS_While(p_genptr<p_bool>& cond, p_comptr& com, p_icptr& ctx, Perun2Process& p2)
       : context(std::move(ctx)), condition(std::move(cond)), command(std::move(com)), perun2(p2)  { };
 
    void run() override;
@@ -90,7 +90,7 @@ public:
 private:
    p_genptr<p_bool> condition;
    p_comptr command;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    p_icptr context;
 };
 
@@ -98,7 +98,7 @@ private:
 struct CS_StringLoop : IterationLoop
 {
 public:
-   CS_StringLoop(p_genptr<p_str>& str, p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+   CS_StringLoop(p_genptr<p_str>& str, p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
       : IterationLoop(com, ctx, p2), string(std::move(str)) { };
 
    void run() override;
@@ -111,7 +111,7 @@ private:
 struct CS_DefinitionLoop : IterationLoop
 {
 public:
-   CS_DefinitionLoop(p_defptr& def, p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+   CS_DefinitionLoop(p_defptr& def, p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
       : IterationLoop(com, ctx, p2), definition(std::move(def)) { };
 
    void run() override;
@@ -127,13 +127,13 @@ private:
 struct CS_ContextlessLoop : Command
 {
 public:
-   CS_ContextlessLoop(p_defptr& def, p_comptr& com, p_perun2& p2);
+   CS_ContextlessLoop(p_defptr& def, p_comptr& com, Perun2Process& p2);
    void run() override;
 
 private:
    p_defptr definition;
    p_comptr command;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    FileContext* const context;
 };
 
@@ -141,7 +141,7 @@ private:
 struct CS_ListLoop : IterationLoop
 {
 public:
-   CS_ListLoop(p_genptr<p_list>& li, p_comptr& com, p_fcptr& ctx, p_perun2& p2)
+   CS_ListLoop(p_genptr<p_list>& li, p_comptr& com, p_fcptr& ctx, Perun2Process& p2)
       : IterationLoop(com, ctx, p2), list(std::move(li)) { };
 
    void run() override;
@@ -154,7 +154,7 @@ private:
 struct CS_Inside : IterationLoop
 {
 public:
-   CS_Inside(p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, p_perun2& p2)
+   CS_Inside(p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, Perun2Process& p2)
       : IterationLoop(com, fctx, p2), locContext(std::move(lctx)) { };
 
 protected:
@@ -165,7 +165,7 @@ protected:
 struct CS_InsideThis : Command
 {
 public:
-   CS_InsideThis(p_comptr& com, p_lcptr& lctx, FileContext* fctx, p_perun2& p2)
+   CS_InsideThis(p_comptr& com, p_lcptr& lctx, FileContext* fctx, Perun2Process& p2)
       : command(std::move(com)), locContext(std::move(lctx)), fileContext(fctx), perun2(p2) { };
 
    void run() override;
@@ -174,14 +174,14 @@ private:
    p_comptr command;
    p_lcptr locContext;
    FileContext* const fileContext;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 
 struct CS_InsideString : CS_Inside
 {
 public:
-   CS_InsideString(p_genptr<p_str>& str, p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, p_perun2& p2)
+   CS_InsideString(p_genptr<p_str>& str, p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, Perun2Process& p2)
       : CS_Inside(com, lctx, fctx, p2), string(std::move(str)) { };
 
    void run() override;
@@ -194,7 +194,7 @@ private:
 struct CS_InsideDefinition : CS_Inside
 {
 public:
-   CS_InsideDefinition(p_defptr& def, p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, p_perun2& p2)
+   CS_InsideDefinition(p_defptr& def, p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, Perun2Process& p2)
       : CS_Inside(com, lctx, fctx, p2), definition(std::move(def)) { };
 
    void run() override;
@@ -208,7 +208,7 @@ private:
 struct CS_InsideContextless : Command
 {
 public:
-   CS_InsideContextless(p_defptr& def, p_comptr& com, p_lcptr& lctx, p_perun2& p2);
+   CS_InsideContextless(p_defptr& def, p_comptr& com, p_lcptr& lctx, Perun2Process& p2);
 
    void run() override;
 
@@ -217,14 +217,14 @@ private:
    p_comptr command;
    p_lcptr locContext;
    FileContext* const fileContext;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 
 struct CS_InsideList : CS_Inside
 {
 public:
-   CS_InsideList(p_genptr<p_list>& li, p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, p_perun2& p2)
+   CS_InsideList(p_genptr<p_list>& li, p_comptr& com, p_lcptr& lctx, p_fcptr& fctx, Perun2Process& p2)
       : CS_Inside(com, lctx, fctx, p2), list(std::move(li)) { };
 
    void run() override;

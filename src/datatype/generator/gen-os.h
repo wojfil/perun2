@@ -25,15 +25,15 @@
 
 namespace perun2
 {
-struct p_perun2;
+struct Perun2Process;
 }
 
 namespace perun2::gen
 {
 
-#define P_GEN_OS_ARGS p_genptr<p_str>& loc, p_perun2& p2, const PathType pt, const p_str& pref
+#define P_GEN_OS_ARGS p_genptr<p_str>& loc, Perun2Process& p2, const PathType pt, const p_str& pref
 #define P_GEN_OS_ARGS_2 loc, p2, pt, pref
-#define P_GEN_OS_ARGS_EXT p_genptr<p_str>& loc, p_perun2& p2, const p_str& patt, const PathType pt, const p_str& pref
+#define P_GEN_OS_ARGS_EXT p_genptr<p_str>& loc, Perun2Process& p2, const p_str& patt, const PathType pt, const p_str& pref
 #define P_GEN_OS_ARGS_EXT_2 loc, p2, patt, pt, pref
 
 
@@ -54,7 +54,7 @@ public:
 protected:
    p_bool first = true;
    p_genptr<p_str> location;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    FileContext context;
    p_fdata data;
    p_num index;

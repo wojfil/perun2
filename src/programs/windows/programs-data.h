@@ -25,7 +25,7 @@ namespace perun2::prog
 struct WP_7zip : WinProgram
 {
 public:
-   WP_7zip(p_perun2& p2);
+   WP_7zip(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -37,7 +37,7 @@ private:
 struct WP_Acrobat : WinProgram
 {
 public:
-   WP_Acrobat(p_perun2& p2);
+   WP_Acrobat(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -50,7 +50,7 @@ private:
 struct WP_Audacity : WinProgram
 {
 public:
-   WP_Audacity(p_perun2& p2);
+   WP_Audacity(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -63,7 +63,7 @@ private:
 struct WP_Firefox : WinProgram
 {
 public:
-   WP_Firefox(p_perun2& p2);
+   WP_Firefox(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -79,7 +79,7 @@ private:
 struct WP_Gimp : WinProgram
 {
 public:
-   WP_Gimp(p_perun2& p2);
+   WP_Gimp(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -94,7 +94,7 @@ private:
 struct WP_Inkscape : WinProgram
 {
 public:
-   WP_Inkscape(p_perun2& p2);
+   WP_Inkscape(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -106,7 +106,7 @@ private:
 struct WP_Notepad : WinProgram
 {
 public:
-   WP_Notepad(p_perun2& p2);
+   WP_Notepad(Perun2Process& p2);
    void actualize() override;
 };
 
@@ -114,7 +114,7 @@ public:
 struct WP_NotepadPlusPlus : WinProgram
 {
 public:
-   WP_NotepadPlusPlus(p_perun2& p2);
+   WP_NotepadPlusPlus(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -126,7 +126,7 @@ private:
 struct WP_OpenOffice : WinProgram
 {
 public:
-   WP_OpenOffice(p_perun2& p2);
+   WP_OpenOffice(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -138,7 +138,7 @@ private:
 struct WP_Paint : WinProgram
 {
 public:
-   WP_Paint(p_perun2& p2);
+   WP_Paint(Perun2Process& p2);
    void actualize() override;
 };
 
@@ -146,7 +146,7 @@ public:
 struct WP_Photoshop : WinProgram
 {
 public:
-   WP_Photoshop(p_perun2& p2);
+   WP_Photoshop(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -160,7 +160,7 @@ private:
 struct WP_Sumatra : WinProgram
 {
 public:
-   WP_Sumatra(p_perun2& p2);
+   WP_Sumatra(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -172,7 +172,7 @@ private:
 struct WP_Vlc : WinProgram
 {
 public:
-   WP_Vlc(p_perun2& p2);
+   WP_Vlc(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -186,7 +186,7 @@ private:
 struct WP_WinRAR : WinProgram
 {
 public:
-   WP_WinRAR(p_perun2& p2);
+   WP_WinRAR(Perun2Process& p2);
    void actualize() override;
 
 private:
@@ -201,7 +201,7 @@ private:
 struct WP_Word : WinProgram
 {
 public:
-   WP_Word(p_perun2& p2);
+   WP_Word(Perun2Process& p2);
    void actualize() override;
 
 private:

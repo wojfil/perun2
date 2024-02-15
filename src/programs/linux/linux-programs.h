@@ -21,7 +21,7 @@
 namespace perun2
 {
    struct GlobalContext;
-   struct p_perun2;
+   struct Perun2Process;
 }
 
 namespace perun2::prog
@@ -32,14 +32,14 @@ struct LinuxPrograms
 {
 public:
    LinuxPrograms() = delete;
-   LinuxPrograms(p_perun2& p2);
+   LinuxPrograms(Perun2Process& p2);
 
    void actualize(const Token& tk);
    p_bool haveName(const Token& tk) const;
    void insertVars(GlobalContext& ctx) const;
 
 private:
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 

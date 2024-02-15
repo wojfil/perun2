@@ -30,23 +30,23 @@ struct CoreCommand : Command
 {
 public:
    CoreCommand() = delete;
-   CoreCommand(FileContext* ctx, p_perun2& p2)
+   CoreCommand(FileContext* ctx, Perun2Process& p2)
       : saveChanges(true), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
-   CoreCommand(const p_bool save, FileContext* ctx, p_perun2& p2)
+   CoreCommand(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : saveChanges(save), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
 
 protected:
 
    FileContext* context;
    const p_bool saveChanges;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    LocationContext const* locationContext;
 };
 
 struct C_Delete : CoreCommand
 {
 public:
-   C_Delete(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Delete(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -55,7 +55,7 @@ public:
 struct C_Drop : CoreCommand
 {
 public:
-   C_Drop(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Drop(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -63,7 +63,7 @@ public:
 
 struct C_Hide : CoreCommand
 {
-   C_Hide(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Hide(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -71,7 +71,7 @@ struct C_Hide : CoreCommand
 
 struct C_Lock : CoreCommand
 {
-   C_Lock(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Lock(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -79,7 +79,7 @@ struct C_Lock : CoreCommand
 
 struct C_Open : CoreCommand
 {
-   C_Open(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Open(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -87,7 +87,7 @@ struct C_Open : CoreCommand
 
 struct C_Unlock : CoreCommand
 {
-   C_Unlock(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Unlock(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -95,7 +95,7 @@ struct C_Unlock : CoreCommand
 
 struct C_Unhide : CoreCommand
 {
-   C_Unhide(const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_Unhide(const p_bool save, FileContext* ctx, Perun2Process& p2)
       : CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -104,7 +104,7 @@ struct C_Unhide : CoreCommand
 struct C_OpenWith : CoreCommand
 {
 public:
-   C_OpenWith(p_genptr<p_str>& pro, const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_OpenWith(p_genptr<p_str>& pro, const p_bool save, FileContext* ctx, Perun2Process& p2)
       : program(std::move(pro)), CoreCommand(save, ctx, p2) { };
 
    void run() override;

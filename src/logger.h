@@ -23,13 +23,13 @@
 namespace perun2
 {
 
-struct p_perun2;
+struct Perun2Process;
 
 struct Logger
 {
 public:
    Logger();
-   Logger(const p_perun2& p2);
+   Logger(const Perun2Process& p2);
 
    // print something in a new line
    void print(const p_str& value) const;

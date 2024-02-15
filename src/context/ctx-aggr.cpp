@@ -19,7 +19,7 @@
 namespace perun2
 {
 
-   AggregateContext::AggregateContext(p_perun2& p2)
+   AggregateContext::AggregateContext(Perun2Process& p2)
       : aggregate(p2) { };
 
 }

@@ -28,28 +28,28 @@ namespace perun2::gen
    this->constraint.setValueToZero();
 
 
-ContextConstraint::ContextConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2)
+ContextConstraint::ContextConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, Perun2Process& p2)
    : constraint(limit, cmptype), context(ctx), perun2(p2) { };
 
 
-SizeConstraint::SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, const p_bool reread, p_perun2& p2)
+SizeConstraint::SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, const p_bool reread, Perun2Process& p2)
    : ContextConstraint(limit, cmptype, ctx, p2), rereadFileSize(reread) { };
 
 
-CountConstraint::CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, p_perun2& p2)
+CountConstraint::CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, Perun2Process& p2)
    : constraint(limit, cmptype), definition(std::move(def)), perun2(p2) { };
 
 
 CountInsideConstraint::CountInsideConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, 
-      p_lcptr& lctx, FileContext& ctx, p_perun2& p2)
+      p_lcptr& lctx, FileContext& ctx, Perun2Process& p2)
    : ContextConstraint(limit, cmptype, ctx, p2), definition(std::move(def)), locContext(std::move(lctx)) { };
 
 
-SizeConstraint_Def::SizeConstraint_Def(p_genptr<p_num>& limit, p_defptr& def, const CompType cmptype, p_perun2& p2)
+SizeConstraint_Def::SizeConstraint_Def(p_genptr<p_num>& limit, p_defptr& def, const CompType cmptype, Perun2Process& p2)
    : definition(std::move(def)), constraint(limit, cmptype), context(*p2.contexts.getLocationContext()), perun2(p2) { };
 
 
-SizeConstraint_List::SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list>& lst, const CompType cmptype, p_perun2& p2)
+SizeConstraint_List::SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list>& lst, const CompType cmptype, Perun2Process& p2)
    : list(std::move(lst)), constraint(limit, cmptype), context(*p2.contexts.getLocationContext()), perun2(p2) { };
 
 

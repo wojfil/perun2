@@ -24,7 +24,7 @@
 namespace perun2::parse
 {
 
-p_bool parseNumList(p_genptr<p_nlist>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseNumList(p_genptr<p_nlist>& result, const Tokens& tks, Perun2Process& p2)
 {
    const p_size len = tks.getLength();
 

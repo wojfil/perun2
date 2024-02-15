@@ -28,8 +28,8 @@ namespace perun2
 
    public:
       FileContext() = delete;
-      FileContext(p_perun2& p2);
-      FileContext(p_attrptr& attr, p_perun2& p2);
+      FileContext(Perun2Process& p2);
+      FileContext(p_attrptr& attr, Perun2Process& p2);
 
       void loadData(const p_str& newThis);
       void loadData(const p_str& newThis, const p_fdata& data);
@@ -70,7 +70,7 @@ namespace perun2
       Variable<p_str>* v_path;
 
    private:
-      void initVars(p_perun2& p2);
+      void initVars(Perun2Process& p2);
 
       template <typename T>
       Variable<T>* insertVar(const p_str& name)

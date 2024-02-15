@@ -28,7 +28,7 @@
 namespace perun2::comm
 {
 
-p_bool parseCommands(p_comptr& result, const Tokens& tks, p_perun2& p2)
+p_bool parseCommands(p_comptr& result, const Tokens& tks, Perun2Process& p2)
 {
    p_ucptr context = std::make_unique<UserVarsContext>();
    p2.contexts.addUserVarsContext(context.get());
@@ -105,7 +105,7 @@ p_bool parseCommands(p_comptr& result, const Tokens& tks, p_perun2& p2)
    return true;
 }
 
-void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, p_perun2& p2)
+void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Perun2Process& p2)
 {
    const p_int end = tks.getEnd();
 
@@ -121,7 +121,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, p_perun2& p2)
 
 
 static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sublen,
-   const p_int index, const p_int open, p_perun2& p2)
+   const p_int index, const p_int open, Perun2Process& p2)
 {
    const p_int leftStart = index - sublen;
    const p_int leftLen = open - leftStart;
@@ -333,7 +333,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    return parseIterationLoop(result, left, right, p2);
 }
 
-static p_bool parseIterationLoop(p_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
+static p_bool parseIterationLoop(p_comptr& result, const Tokens& left, const Tokens& right, Perun2Process& p2)
 {
    // string loop
    p_genptr<p_str> str_;
@@ -423,7 +423,7 @@ static p_bool parseIterationLoop(p_comptr& result, const Tokens& left, const Tok
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, p_perun2& p2)
+static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, Perun2Process& p2)
 {
    // inside { }
    if (left.isEmpty()) {
@@ -593,7 +593,7 @@ static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Toke
    throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
 }
 
-static p_bool parseCommandsAsMember(p_comptr& result, const Tokens& tks, p_comptr* cond, p_perun2& p2)
+static p_bool parseCommandsAsMember(p_comptr& result, const Tokens& tks, p_comptr* cond, Perun2Process& p2)
 {
    p2.conditionContext.add(cond);
    const p_bool success = parseCommands(result, tks, p2);
@@ -601,7 +601,7 @@ static p_bool parseCommandsAsMember(p_comptr& result, const Tokens& tks, p_compt
    return success;
 }
 
-static p_bool command(p_comptr& result, Tokens& tks, p_perun2& p2)
+static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
 {
    const Token& f = tks.first();
 
@@ -691,7 +691,7 @@ static p_bool command(p_comptr& result, Tokens& tks, p_perun2& p2)
    }
 }
 
-static p_bool commandMisc(p_comptr& result, const Tokens& tks, p_perun2& p2)
+static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2)
 {
    if (tks.check(TI_HAS_CHAR_EQUALS)) {
       std::pair<Tokens, Tokens> pair = tks.divideBySymbol(CHAR_EQUAL_SIGN);
@@ -759,7 +759,7 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, p_perun2& p2)
    return false;
 }
 
-static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const Token& last, p_perun2& p2)
+static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const Token& last, Perun2Process& p2)
 {
    const p_bool isIncrement = last.value.chars.ch == CHAR_PLUS;
    const p_str op = isIncrement ? L"incremented by one" : L"decremented by one";
@@ -863,7 +863,7 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
    }
 }
 
-static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
+static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Tokens& right, const p_char sign, Perun2Process& p2)
 {
    const Token& first = left.first();
 
@@ -1107,7 +1107,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
    return false;
 }
 
-static p_bool commandVarIncrement(p_comptr& result, const Token& first, const Tokens& tks, const p_int line, p_perun2& p2)
+static p_bool commandVarIncrement(p_comptr& result, const Token& first, const Tokens& tks, const p_int line, Perun2Process& p2)
 {
    Variable<p_str>* pvp_str;
    if (p2.contexts.getVar(first, pvp_str, p2)) {
@@ -1140,7 +1140,7 @@ static p_bool commandVarIncrement(p_comptr& result, const Token& first, const To
 }
 
 template <typename T>
-static p_bool makeVarAlteration(p_perun2& p2, const Tokens& tokens, const Token& first,
+static p_bool makeVarAlteration(Perun2Process& p2, const Tokens& tokens, const Token& first,
    Variable<T>*& varPtr, p_comptr& result, const p_str& dataTypeName)
 {
    if (p2.contexts.getVar(first, varPtr, p2)) {
@@ -1169,7 +1169,7 @@ static p_bool makeVarAlteration(p_perun2& p2, const Tokens& tokens, const Token&
 }
 
 template <typename T>
-static void makeVarAssignment(p_comptr& result, const Token& token, p_perun2& p2,
+static void makeVarAssignment(p_comptr& result, const Token& token, Perun2Process& p2,
    Variable<T>* varPtr, p_genptr<T>& valuePtr)
 {
    UserVarsContext* uvc = p2.contexts.getUserVarsContext();
@@ -1187,7 +1187,7 @@ static void makeVarAssignment(p_comptr& result, const Token& token, p_perun2& p2
    result = std::make_unique<comm::VarAssignment<T>>(*(*allVarsOfThisType)[name], valuePtr);
 }
 
-static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Tokens& right, p_perun2& p2)
+static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Tokens& right, Perun2Process& p2)
 {
    const Token& first = left.first();
 
@@ -1409,7 +1409,7 @@ static p_bool varSquareBrackets(const Tokens& tks)
 }
 
 static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
-   const Tokens& right, p_perun2& p2)
+   const Tokens& right, Perun2Process& p2)
 {
    const Token& first = left.first();
 
@@ -1452,7 +1452,7 @@ static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
       L"' was not expected before [] brackets"), first.line);
 }
 
-static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2)
 {
    const p_size start = tks.getStart() + 2;
    const p_size length = tks.getLength() - 3;
@@ -1469,7 +1469,7 @@ static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, 
    return true;
 }
 
-static void checkNoSemicolonBeforeBrackets(const Tokens& tks, p_perun2& p2)
+static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Perun2Process& p2)
 {
    const p_int end = tks.getEnd();
    const p_int start = tks.getStart() + 1;

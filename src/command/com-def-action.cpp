@@ -22,7 +22,7 @@ namespace perun2::comm
 {
 
 
-SelectDefAction::SelectDefAction(p_perun2& p2)
+SelectDefAction::SelectDefAction(Perun2Process& p2)
    : perun2(p2), locationContext(*p2.contexts.getLocationContext()) { };
 
 
@@ -81,7 +81,7 @@ void SelectDefAction::finish()
 }
 
 
-C_SelectAsAction::C_SelectAsAction(p_defptr& def, DefinitionAction& act, p_perun2& p2) 
+C_SelectAsAction::C_SelectAsAction(p_defptr& def, DefinitionAction& act, Perun2Process& p2) 
    : definition(std::move(def)), action(act), perun2(p2) { };
 
 

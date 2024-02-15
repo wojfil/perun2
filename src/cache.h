@@ -40,7 +40,7 @@ p_constexpr p_cunit CACHE_DOWNLOADS_PATH =       1 << 8;
 // they are rarely used, but when used, it is enough to load them only once
 // struct Cache loads the values we need and ignores the rest
 
-struct p_perun2;
+struct Perun2Process;
 struct VarsContext;
 struct Token;
 
@@ -49,7 +49,7 @@ struct Cache
 {
 public:
    Cache() = delete;
-   Cache(p_perun2& p2);
+   Cache(Perun2Process& p2);
 
    void actualize(const Token& tk);
    void loadCmdPath();
@@ -63,7 +63,7 @@ private:
    p_list getAlphabet() const;
 
    p_cunit value = CACHE_NULL;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    VarsContext& context;
 };
 

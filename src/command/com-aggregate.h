@@ -21,7 +21,7 @@
 
 namespace perun2
 {
-   struct p_perun2;
+   struct Perun2Process;
    struct Contexts;
 }
 
@@ -46,7 +46,7 @@ struct Aggregate
 {
 public:
    Aggregate() = delete;
-   Aggregate(p_perun2& p2);
+   Aggregate(Perun2Process& p2);
    void set(const p_agunit v);
    void markIterationCopy(FileContext* ctx);
    void markIterationSelect(FileContext* ctx);
@@ -67,7 +67,7 @@ private:
    void select();
    inline p_bool has(const p_agunit v) const;
 
-   p_perun2& perun2;
+   Perun2Process& perun2;
    Contexts& contexts;
    p_agunit value = AGGR_NULL;
    p_bool selectFailure = false;

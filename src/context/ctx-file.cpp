@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-   FileContext::FileContext(p_perun2& p2)
+   FileContext::FileContext(Perun2Process& p2)
       : IndexContext(p2), attribute(std::make_unique<Attribute>(p2)),
       this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
@@ -28,7 +28,7 @@ namespace perun2
       this->initVars(p2);
    };
 
-   FileContext::FileContext(p_attrptr& attr, p_perun2& p2)
+   FileContext::FileContext(p_attrptr& attr, Perun2Process& p2)
       : IndexContext(p2), attribute(std::move(attr)),
       this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
@@ -37,7 +37,7 @@ namespace perun2
    };
 
 
-   void FileContext::initVars(p_perun2& p2)
+   void FileContext::initVars(Perun2Process& p2)
    {
       this->v_archive = this->insertVar<p_bool>(STRING_ARCHIVE);
       this->v_compressed = this->insertVar<p_bool>(STRING_COMPRESSED);

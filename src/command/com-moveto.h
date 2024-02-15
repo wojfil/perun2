@@ -25,7 +25,7 @@ namespace perun2::comm
 struct C_MoveTo : CoreCommand
 {
 public:
-   C_MoveTo(p_genptr<p_str>& loc, const p_bool forc, FileContext* ctx, p_perun2& p2)
+   C_MoveTo(p_genptr<p_str>& loc, const p_bool forc, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), forced(forc), CoreCommand(ctx, p2) { };
 
    void run() override;
@@ -39,7 +39,7 @@ protected:
 struct C_MoveTo_Stack : CoreCommand
 {
 public:
-   C_MoveTo_Stack(p_genptr<p_str>& loc, FileContext* ctx, p_perun2& p2)
+   C_MoveTo_Stack(p_genptr<p_str>& loc, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), CoreCommand(ctx, p2) { };
 
    void run() override;
@@ -53,7 +53,7 @@ struct C_MoveToAs : CoreCommand
 {
 public:
    C_MoveToAs(p_genptr<p_str>& loc, p_genptr<p_str>& na, const p_bool forc,
-      const p_bool extless, FileContext* ctx, p_perun2& p2)
+      const p_bool extless, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), name(std::move(na)),
         forced(forc), extensionless(extless), CoreCommand(ctx, p2) { };
 
@@ -70,7 +70,7 @@ protected:
 struct C_MoveToAs_Stack : CoreCommand
 {
 public:
-   C_MoveToAs_Stack(p_genptr<p_str>& loc, p_genptr<p_str>& na, const p_bool extless, FileContext* ctx, p_perun2& p2)
+   C_MoveToAs_Stack(p_genptr<p_str>& loc, p_genptr<p_str>& na, const p_bool extless, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(ctx, p2) { };
 
    void run() override;

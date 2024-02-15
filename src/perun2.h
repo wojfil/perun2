@@ -49,15 +49,14 @@ enum State
 };
 
 
-// this is an instance of Perun2
-// used only internally within the namespace
-// for external facade, use struct 'Perun2' instead
-struct p_perun2
+// this struct is used only internally within the namespace
+// for external facade of the entire language, use struct 'Perun2' from below
+struct Perun2Process
 {
 public:
-   p_perun2() = delete;
-   p_perun2(const Arguments& args);
-   ~p_perun2() noexcept;
+   Perun2Process() = delete;
+   Perun2Process(const Arguments& args);
+   ~Perun2Process() noexcept;
    p_bool run();
    void terminate();
 
@@ -91,7 +90,7 @@ private:
 };
 
 
-// facade for Perun2
+// external facade for Perun2
 // create an object once
 // and run() it multiple times
 struct Perun2
@@ -110,7 +109,7 @@ public:
 
 private:
    Arguments arguments;
-   p_perun2 process;
+   Perun2Process process;
 };
 
 

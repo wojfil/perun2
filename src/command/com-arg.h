@@ -33,10 +33,10 @@ namespace perun2::comm
 struct IterationLoop : Command
 {
 public:
-   IterationLoop(p_comptr& com, p_fcptr& ctx, p_perun2& p2);
+   IterationLoop(p_comptr& com, p_fcptr& ctx, Perun2Process& p2);
 
 protected:
-   p_perun2& perun2;
+   Perun2Process& perun2;
    p_comptr command;
    p_fcptr context;
 };
@@ -45,7 +45,7 @@ protected:
 struct CS_StringComArg : IterationLoop
 {
 public:
-   CS_StringComArg(p_genptr<p_str>& str, p_comptr& com, p_fcptr& ctx, p_perun2& p2);
+   CS_StringComArg(p_genptr<p_str>& str, p_comptr& com, p_fcptr& ctx, Perun2Process& p2);
    void run() override;
 
 private:
@@ -56,7 +56,7 @@ private:
 struct CS_ListComArg : IterationLoop
 {
 public:
-   CS_ListComArg(p_genptr<p_list>& li, p_comptr& com, p_fcptr& ctx, p_perun2& p2);
+   CS_ListComArg(p_genptr<p_list>& li, p_comptr& com, p_fcptr& ctx, Perun2Process& p2);
    void run() override;
 
 private:
@@ -67,7 +67,7 @@ private:
 struct CS_DefinitionComArg : IterationLoop
 {
 public:
-   CS_DefinitionComArg(p_defptr& def, p_comptr& com, p_fcptr& ctx, p_perun2& p2);
+   CS_DefinitionComArg(p_defptr& def, p_comptr& com, p_fcptr& ctx, Perun2Process& p2);
    void run() override;
 
 private:

@@ -20,7 +20,7 @@
 namespace perun2
 {
 
-Cache::Cache(p_perun2& p2)
+Cache::Cache(Perun2Process& p2)
    : perun2(p2), context(p2.contexts.globalVars), programs(p2) 
 { 
    p2.cache.programs.insertVars(p2.contexts);

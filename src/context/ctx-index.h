@@ -26,7 +26,7 @@ namespace perun2
    {
    public:
       IndexContext() = delete;
-      IndexContext(p_perun2& p2);
+      IndexContext(Perun2Process& p2);
       void resetIndex();
       void incrementIndex();
 

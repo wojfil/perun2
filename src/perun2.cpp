@@ -29,19 +29,19 @@
 namespace perun2
 {
 
-p_perun2::p_perun2(const Arguments& args) : arguments(args), contexts(*this),
+Perun2Process::Perun2Process(const Arguments& args) : arguments(args), contexts(*this),
    flags(args.getFlags()), logger(*this), cache(*this)
 {
-   p_perun2::init();
+   Perun2Process::init();
    Terminator::addPtr(this);
 };
 
-p_perun2::~p_perun2() noexcept
+Perun2Process::~Perun2Process() noexcept
 {
    Terminator::removePtr(this);
 }
 
-p_bool p_perun2::run()
+p_bool Perun2Process::run()
 {
    if (! arguments.areGood()) {
       return false;
@@ -53,7 +53,7 @@ p_bool p_perun2::run()
        && this->runCommands();
 };
 
-void p_perun2::terminate()
+void Perun2Process::terminate()
 {
    this->state = State::s_Exit;
    if (this->sideProcess.running) {
@@ -62,17 +62,17 @@ void p_perun2::terminate()
    }
 }
 
-p_bool p_perun2::isRunning() const
+p_bool Perun2Process::isRunning() const
 {
    return this->state == State::s_Running;
 };
 
-p_bool p_perun2::isNotRunning() const
+p_bool Perun2Process::isNotRunning() const
 {
    return this->state != State::s_Running;
 };
 
-p_bool p_perun2::preParse()
+p_bool Perun2Process::preParse()
 {
    try {
       this->tokens = tokenize(this->arguments.getCodeRef(), *this);
@@ -93,7 +93,7 @@ p_bool p_perun2::preParse()
 };
 
 
-p_bool p_perun2::parse()
+p_bool Perun2Process::parse()
 {
    try {
       const Tokens tks(this->tokens);
@@ -116,7 +116,7 @@ p_bool p_perun2::parse()
    return true;
 };
 
-p_bool p_perun2::postParse()
+p_bool Perun2Process::postParse()
 {
    this->conditionContext.deleteClosedUnits();
    this->math.init();
@@ -127,7 +127,7 @@ p_bool p_perun2::postParse()
    return true;
 };
 
-p_bool p_perun2::runCommands()
+p_bool Perun2Process::runCommands()
 {
    try {
       this->commands->run();
@@ -140,9 +140,9 @@ p_bool p_perun2::runCommands()
    return true;
 };
 
-p_bool p_perun2::initialized = false;
+p_bool Perun2Process::initialized = false;
 
-void p_perun2::init()
+void Perun2Process::init()
 {
    if (!initialized) {
       initialized = true;

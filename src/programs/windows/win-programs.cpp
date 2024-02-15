@@ -23,7 +23,7 @@ namespace perun2::prog
 {
 
 
-WinProgram::WinProgram(p_perun2& p2, const p_list& nm) 
+WinProgram::WinProgram(Perun2Process& p2, const p_list& nm) 
    : names(nm), perun2(p2), context(p2.contexts.globalVars) { };
 
 
@@ -88,7 +88,7 @@ p_bool WinProgram::takeStartMenuLink(StartMenuLnk& link)
 }
 
 
-WindowsPrograms::WindowsPrograms(p_perun2& p2) : perun2(p2)
+WindowsPrograms::WindowsPrograms(Perun2Process& p2) : perun2(p2)
 { 
    this->programs.emplace_back(std::make_unique<WP_7zip>(p2));
    this->programs.emplace_back(std::make_unique<WP_Acrobat>(p2));

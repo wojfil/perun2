@@ -21,7 +21,7 @@ namespace perun2::prog
 {
    
 
-MacPrograms::MacPrograms(p_perun2& p2) : perun2(p2) { };
+MacPrograms::MacPrograms(Perun2Process& p2) : perun2(p2) { };
 
 
 void MacPrograms::actualize(const Token& tk)

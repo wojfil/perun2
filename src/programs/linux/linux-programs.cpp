@@ -21,7 +21,7 @@ namespace perun2::prog
 {
    
 
-LinuxPrograms::LinuxPrograms(p_perun2& p2) : perun2(p2) { };
+LinuxPrograms::LinuxPrograms(Perun2Process& p2) : perun2(p2) { };
 
 
 void LinuxPrograms::actualize(const Token& tk)

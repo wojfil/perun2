@@ -25,7 +25,7 @@ struct C_CopyTo : CoreCommand
 {
 public:
    C_CopyTo(p_genptr<p_str>& loc, const p_bool save,
-      const p_bool forc, FileContext* ctx, p_perun2& p2)
+      const p_bool forc, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), saveChanges(save), forced(forc), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -40,7 +40,7 @@ protected:
 struct C_CopyTo_Stack : CoreCommand
 {
 public:
-   C_CopyTo_Stack(p_genptr<p_str>& loc, const p_bool save, FileContext* ctx, p_perun2& p2)
+   C_CopyTo_Stack(p_genptr<p_str>& loc, const p_bool save, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), saveChanges(save), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -55,7 +55,7 @@ struct C_CopyToAs : CoreCommand
 {
 public:
    C_CopyToAs(p_genptr<p_str>& loc, p_genptr<p_str>& na,
-      const p_bool save, const p_bool forc, const p_bool extless, FileContext* ctx, p_perun2& p2)
+      const p_bool save, const p_bool forc, const p_bool extless, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), name(std::move(na)), forced(forc), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -72,7 +72,7 @@ struct C_CopyToAs_Stack : CoreCommand
 {
 public:
    C_CopyToAs_Stack(p_genptr<p_str>& loc, p_genptr<p_str>& na,
-      const p_bool save, const p_bool extless, FileContext* ctx, p_perun2& p2)
+      const p_bool save, const p_bool extless, FileContext* ctx, Perun2Process& p2)
       : location(std::move(loc)), name(std::move(na)), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;

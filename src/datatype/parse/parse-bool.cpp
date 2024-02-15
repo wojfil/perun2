@@ -29,7 +29,7 @@
 namespace perun2::parse
 {
 
-p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
+p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    const p_size len = tks.getLength();
 
@@ -91,7 +91,7 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 // build boolean expression
 // multiple logic statements
 // connected with keywords not, and, or, xor and brackets ()
-static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    std::vector<ExpElement<p_bool>> infList; // infix notation list
    const p_int start = tks.getStart();
@@ -464,7 +464,7 @@ static p_char toBoolExpOperator(const Token& tk)
 
 template <typename T>
 static p_bool parseIn_Unit(p_genptr<p_bool>& result, const p_bool negated,
-   const std::pair<Tokens, Tokens>& pair, p_perun2& p2)
+   const std::pair<Tokens, Tokens>& pair, Perun2Process& p2)
 {
    p_genptr<T> valLeft;
    if (!parse(p2, pair.first, valLeft)) {
@@ -510,7 +510,7 @@ static p_bool parseIn_Unit(p_genptr<p_bool>& result, const p_bool negated,
 }
 
 static void leftInTimeException(const Token& tk, const p_str& varMember,
-   const std::pair<Tokens, Tokens>& pair, const p_bool negated, p_perun2& p2)
+   const std::pair<Tokens, Tokens>& pair, const p_bool negated, Perun2Process& p2)
 {
    const Token& first = pair.first.first();
 
@@ -529,7 +529,7 @@ static void leftInTimeException(const Token& tk, const p_str& varMember,
 }
 
 static void rightInTimeException(const Token& tk, const p_str& varMember,
-   const std::pair<Tokens, Tokens>& pair, const p_bool negated, p_perun2& p2)
+   const std::pair<Tokens, Tokens>& pair, const p_bool negated, Perun2Process& p2)
 {
    const Token& first = pair.second.first();
 
@@ -547,7 +547,7 @@ static void rightInTimeException(const Token& tk, const p_str& varMember,
    }
 }
 
-static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, const p_bool negated, p_perun2& p2)
+static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, const p_bool negated, Perun2Process& p2)
 {
    const Token& f1 = pair.first.first();
    const Token& f2 = pair.second.first();
@@ -631,7 +631,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
 }
 
 
-static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
@@ -680,7 +680,7 @@ static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
 
 
 static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated,
-   const std::pair<Tokens, Tokens>& pair, p_perun2& p2)
+   const std::pair<Tokens, Tokens>& pair, Perun2Process& p2)
 {
    p_genptr<p_tim> tim;
    if (!parse(p2, pair.first, tim)) {
@@ -722,7 +722,7 @@ static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated,
    }
 }
 
-static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
@@ -781,7 +781,7 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p
    return true;
 }
 
-static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2)
+static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    BracketsInfo bi;
    const p_int end = tks.getEnd();
@@ -843,7 +843,7 @@ static p_bool comparison(p_genptr<p_bool>& result, p_genptr<T>& val1,
 
 template <typename T>
 p_bool parseComparisonUnit(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const CompType& ct, p_perun2& p2)
+   const Tokens& right, const CompType& ct, Perun2Process& p2)
 {
    p_genptr<T> v1;
    p_genptr<T> v2;
@@ -855,7 +855,7 @@ p_bool parseComparisonUnit(p_genptr<p_bool>& result, const Tokens& left,
 }
 
 
-static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& right, const p_char sign, p_perun2& p2)
+static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& right, const p_char sign, Perun2Process& p2)
 {
    const Token& t1 = left.first();
    const Token& t2 = right.first();
@@ -906,7 +906,7 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
 }
 
 static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens, 
-   p_genptr<p_num>& rightSide, const CompType ct, p_perun2& p2)
+   p_genptr<p_num>& rightSide, const CompType ct, Perun2Process& p2)
 {
    const Token& word = tokens.first();
    const std::vector<Tokens> args = func::toFunctionArgs(tokens);
@@ -991,7 +991,7 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
 }
 
 static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken, 
-   p_genptr<p_num>& rightSide, const CompType ct, p_perun2& p2)
+   p_genptr<p_num>& rightSide, const CompType ct, Perun2Process& p2)
 {
    if (! p2.contexts.hasFileContext()) {
       throw SyntaxError::undefinedVarValue(varToken.getOriginString(p2), varToken.line);
@@ -1006,7 +1006,7 @@ static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken,
 
 
 static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left, 
-   const Tokens& right, const CompType ct, p_perun2& p2)
+   const Tokens& right, const CompType ct, Perun2Process& p2)
 {
    if (left.getLength() == 1 && left.first().isWord(STRING_SIZE, p2)) {
       p_genptr<p_num> rightSide;
@@ -1030,7 +1030,7 @@ static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left,
 }
 
 
-static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2)
+static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, Perun2Process& p2)
 {
    CompType ct;
    const std::pair<Tokens, Tokens> pair = prepareComparison(tks, sign, ct);
@@ -1064,7 +1064,7 @@ static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const
 }
 
 p_bool comparisonDefList(p_genptr<p_bool>& result, p_defptr& def, p_genptr<p_list>& list, const CompType& ct,
-   const p_bool reversed, p_perun2& p2)
+   const p_bool reversed, Perun2Process& p2)
 {
    switch (ct) {
       case CompType::ct_Equals: {
@@ -1132,7 +1132,7 @@ p_bool comparisonDefList(p_genptr<p_bool>& result, p_defptr& def, p_genptr<p_lis
 
 template <typename T>
 p_bool comparisonCollections(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const CompType ct, p_perun2& p2)
+   const Tokens& right, const CompType ct, Perun2Process& p2)
 {
    p_genptr<std::vector<T>> leftValue;
    if (parse(p2, left, leftValue)) {
@@ -1175,7 +1175,7 @@ p_bool comparisonCollections(p_genptr<p_bool>& result, const Tokens& left,
 
 template <typename T>
 p_bool comparisonCollectionValue(p_genptr<p_bool>& result, const Tokens& left, const Tokens& right,
-   const CompType& ct, p_perun2& p2)
+   const CompType& ct, Perun2Process& p2)
 {
    p_genptr<T> leftValue;
    if (parse(p2, left, leftValue)) {
@@ -1258,7 +1258,7 @@ p_bool comparisonCollectionValue(p_genptr<p_bool>& result, const Tokens& left, c
 }
 
 static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const CompType ct, p_perun2& p2)
+   const Tokens& right, const CompType ct, Perun2Process& p2)
 {
    p_defptr leftDef;
    p_defptr rightDef;

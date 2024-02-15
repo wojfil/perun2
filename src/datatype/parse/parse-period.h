@@ -22,14 +22,14 @@
 namespace perun2::parse
 {
 
-p_bool parsePeriod(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2);
+p_bool parsePeriod(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2);
 
-p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool negated, p_perun2& p2);
-p_bool parsePeriodUnit(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2);
-p_bool parsePeriodExp(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2);
-p_bool parsePeriodExpDiff(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2);
-p_bool parseTimeDifference(p_genptr<p_per>& result, const Tokens& tks, p_perun2& p2);
-Period::PeriodUnit toPeriodUnit(const Token& tk, p_perun2& p2);
+p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool negated, Perun2Process& p2);
+p_bool parsePeriodUnit(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2);
+p_bool parsePeriodExp(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2);
+p_bool parsePeriodExpDiff(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2);
+p_bool parseTimeDifference(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2);
+Period::PeriodUnit toPeriodUnit(const Token& tk, Perun2Process& p2);
 
 }
 

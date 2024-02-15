@@ -24,7 +24,7 @@ namespace perun2
 {
    struct VarsContext;
    struct GlobalContext;
-   struct p_perun2;
+   struct Perun2Process;
 }
 
 namespace perun2::prog
@@ -35,7 +35,7 @@ struct WinProgram
 {
 public:
    WinProgram() = delete;
-   WinProgram(p_perun2& p2, const p_list& nm);
+   WinProgram(Perun2Process& p2, const p_list& nm);
    
    virtual void actualize() = 0;
 
@@ -51,7 +51,7 @@ public:
    p_bool loaded = false;
 
 private:
-   p_perun2& perun2;
+   Perun2Process& perun2;
    VarsContext& context;
 };
 
@@ -60,14 +60,14 @@ struct WindowsPrograms
 {
 public:
    WindowsPrograms() = delete;
-   WindowsPrograms(p_perun2& p2);
+   WindowsPrograms(Perun2Process& p2);
 
    void actualize(const Token& tk);
    p_bool haveName(const Token& tk) const;
    void insertVars(GlobalContext& ctx) const;
 
 private:
-   p_perun2& perun2;
+   Perun2Process& perun2;
    std::vector<std::unique_ptr<WinProgram>> programs;
 };
 

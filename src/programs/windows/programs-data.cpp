@@ -21,7 +21,7 @@ namespace perun2::prog
 {
 
 
-WP_7zip::WP_7zip(p_perun2& p2) : WinProgram(p2, { L"7zip" }),
+WP_7zip::WP_7zip(Perun2Process& p2) : WinProgram(p2, { L"7zip" }),
    startMenuLink(L"7-zip\\7-zip file manager.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/7-zip");
@@ -42,7 +42,7 @@ void WP_7zip::actualize()
 };
 
 
-WP_Acrobat::WP_Acrobat(p_perun2& p2) : WinProgram(p2, { L"acrobat", L"acrobatreader", L"adobeacrobat", L"adobeacrobatreader" }) 
+WP_Acrobat::WP_Acrobat(Perun2Process& p2) : WinProgram(p2, { L"acrobat", L"acrobatreader", L"adobeacrobat", L"adobeacrobatreader" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/adobe/adobe acrobat/*/installer");
    addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/acrobat.*/shell/open/command");
@@ -72,7 +72,7 @@ void WP_Acrobat::actualize()
 };
 
 
-WP_Audacity::WP_Audacity(p_perun2& p2) : WinProgram(p2, { L"audacity" }),
+WP_Audacity::WP_Audacity(Perun2Process& p2) : WinProgram(p2, { L"audacity" }),
    startMenuLink(L"audacity.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/audacity*");
@@ -100,7 +100,7 @@ void WP_Audacity::actualize()
 };
 
 
-WP_Firefox::WP_Firefox(p_perun2& p2) : WinProgram(p2, { L"firefox", L"mozillafirefox" }),
+WP_Firefox::WP_Firefox(Perun2Process& p2) : WinProgram(p2, { L"firefox", L"mozillafirefox" }),
    startMenuLink(L"firefox.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/mozilla firefox*");
@@ -149,7 +149,7 @@ void WP_Firefox::actualize()
 };
 
 
-WP_Gimp::WP_Gimp(p_perun2& p2) : WinProgram(p2, { L"gimp" }) 
+WP_Gimp::WP_Gimp(Perun2Process& p2) : WinProgram(p2, { L"gimp" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/gimp*");
    addRegistryPattern(this->r_2, RegistryRootType::CurrentUser, L"software/gimp #/capabilities");
@@ -193,7 +193,7 @@ void WP_Gimp::actualize()
 };
 
 
-WP_Inkscape::WP_Inkscape(p_perun2& p2) : WinProgram(p2, { L"inkscape" }) ,
+WP_Inkscape::WP_Inkscape(Perun2Process& p2) : WinProgram(p2, { L"inkscape" }) ,
    startMenuLink(L"inkscape\\inkscape.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::ClassesRoot, L"inkscape.*/shell/open/command");
@@ -214,7 +214,7 @@ void WP_Inkscape::actualize()
 };
 
 
-WP_Notepad::WP_Notepad(p_perun2& p2) : WinProgram(p2, { L"notepad" }) { };
+WP_Notepad::WP_Notepad(Perun2Process& p2) : WinProgram(p2, { L"notepad" }) { };
 
 
 void WP_Notepad::actualize()
@@ -227,7 +227,7 @@ void WP_Notepad::actualize()
 };
 
 
-WP_NotepadPlusPlus::WP_NotepadPlusPlus(p_perun2& p2) : WinProgram(p2, { L"notepadplusplus" }),
+WP_NotepadPlusPlus::WP_NotepadPlusPlus(Perun2Process& p2) : WinProgram(p2, { L"notepadplusplus" }),
    startMenuLink(L"notepad++.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/notepad++");
@@ -248,7 +248,7 @@ void WP_NotepadPlusPlus::actualize()
 };
 
 
-WP_OpenOffice::WP_OpenOffice(p_perun2& p2) : WinProgram(p2, { L"openoffice" }) 
+WP_OpenOffice::WP_OpenOffice(Perun2Process& p2) : WinProgram(p2, { L"openoffice" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/wow6432node/openoffice/openoffice/*");
    addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"openoffice*/defaulticon");
@@ -271,7 +271,7 @@ void WP_OpenOffice::actualize()
 };
 
 
-WP_Paint::WP_Paint(p_perun2& p2) : WinProgram(p2, { L"paint", L"mspaint" }) { };
+WP_Paint::WP_Paint(Perun2Process& p2) : WinProgram(p2, { L"paint", L"mspaint" }) { };
 
 
 void WP_Paint::actualize()
@@ -284,7 +284,7 @@ void WP_Paint::actualize()
 };
 
 
-WP_Photoshop::WP_Photoshop(p_perun2& p2) : WinProgram(p2, { L"photoshop", L"adobephotoshop" }) 
+WP_Photoshop::WP_Photoshop(Perun2Process& p2) : WinProgram(p2, { L"photoshop", L"adobephotoshop" }) 
 { 
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/classes/photoshop.*file*/defaulticon");
    addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/photoshop.*file*/shell/open/command");
@@ -321,7 +321,7 @@ void WP_Photoshop::actualize()
 };
 
 
-WP_Sumatra::WP_Sumatra(p_perun2& p2) : WinProgram(p2, { L"sumatra", L"sumatrapdf", L"sumatrapdfreader" }) 
+WP_Sumatra::WP_Sumatra(Perun2Process& p2) : WinProgram(p2, { L"sumatra", L"sumatrapdf", L"sumatrapdfreader" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::CurrentUser, L"software/microsoft/windows/currentversion/uninstall/sumatrapdf");
    addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"sumatrapdf.*/shell/open/command");
@@ -347,7 +347,7 @@ void WP_Sumatra::actualize()
 };
 
 
-WP_Vlc::WP_Vlc(p_perun2& p2) : WinProgram(p2, { L"vlc", L"vlcmediaplayer" }) 
+WP_Vlc::WP_Vlc(Perun2Process& p2) : WinProgram(p2, { L"vlc", L"vlcmediaplayer" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/vlc media player");
    addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"vlc*/defaulticon");
@@ -384,7 +384,7 @@ void WP_Vlc::actualize()
 };
 
 
-WP_WinRAR::WP_WinRAR(p_perun2& p2) : WinProgram(p2, { L"winrar" }) ,
+WP_WinRAR::WP_WinRAR(Perun2Process& p2) : WinProgram(p2, { L"winrar" }) ,
    startMenuLink(L"winrar\\winrar.lnk")
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/winrar");
@@ -429,7 +429,7 @@ void WP_WinRAR::actualize()
 };
 
 
-WP_Word::WP_Word(p_perun2& p2) : WinProgram(p2, { L"word", L"msword", L"microsoftword" }) 
+WP_Word::WP_Word(Perun2Process& p2) : WinProgram(p2, { L"word", L"msword", L"microsoftword" }) 
 {
    addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/classes/wordmhtmlfile/defaulticon");
    addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/wordhtmltemplate/shell/open/command");

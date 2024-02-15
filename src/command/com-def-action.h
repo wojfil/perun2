@@ -24,7 +24,7 @@
 
 namespace perun2
 {
-   struct p_perun2;
+   struct Perun2Process;
    struct LocationContext;
 }
 
@@ -35,7 +35,7 @@ namespace perun2::comm
 struct SelectDefAction : DefinitionAction
 {
 public:
-   SelectDefAction(p_perun2& p2);
+   SelectDefAction(Perun2Process& p2);
    void reset() override;
    void onDirectoryEnter() override;
    void onDirectoryExit() override;
@@ -44,7 +44,7 @@ public:
 
 private:
    std::stack<p_set> values;
-   p_perun2& perun2;
+   Perun2Process& perun2;
    LocationContext& locationContext;
 };
 
@@ -52,13 +52,13 @@ private:
 struct C_SelectAsAction : Command
 {
 public:
-   C_SelectAsAction(p_defptr& def, DefinitionAction& act, p_perun2& p2);
+   C_SelectAsAction(p_defptr& def, DefinitionAction& act, Perun2Process& p2);
    void run() override;
 
 private:
    p_defptr definition;
    DefinitionAction& action;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 

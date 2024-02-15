@@ -21,12 +21,12 @@
 
 namespace perun2
 {
-   struct p_perun2;
+   struct Perun2Process;
 
    struct AggregateContext
    {
       AggregateContext() = delete;
-      AggregateContext(p_perun2& p2);
+      AggregateContext(Perun2Process& p2);
 
       comm::Aggregate aggregate;
    };

@@ -17,7 +17,7 @@
 namespace perun2
 {
 
-   IndexContext::IndexContext(p_perun2& p2)
+   IndexContext::IndexContext(Perun2Process& p2)
       : AggregateContext(p2),
         index(std::make_unique<Variable<p_num>>(VarType::vt_Special)) { };
 

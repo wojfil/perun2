@@ -26,7 +26,7 @@ namespace perun2::func
 struct F_Parent : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Parent(p_genptr<p_str>& a1, p_perun2& p2) 
+   F_Parent(p_genptr<p_str>& a1, Perun2Process& p2) 
       : Func_1(a1), context(p2.contexts.getLocationContext()) { };
    p_str getValue() override;
 
@@ -38,7 +38,7 @@ private:
 struct F_Path_1 : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Path_1(p_genptr<p_str>& a1, p_perun2& p2) 
+   F_Path_1(p_genptr<p_str>& a1, Perun2Process& p2) 
       : Func_1(a1), context(p2.contexts.getLocationContext()) { };
    p_str getValue() override;
 
@@ -113,14 +113,14 @@ private:
 struct F_SizeDefinition : Generator<p_num>
 {
 public:
-   F_SizeDefinition(p_defptr& def, p_perun2& p2)
+   F_SizeDefinition(p_defptr& def, Perun2Process& p2)
       : definition(std::move(def)), perun2(p2), 
         context(p2.contexts.getLocationContext()) { };
 
    p_num getValue() override;
 
 private:
-   p_perun2& perun2;
+   Perun2Process& perun2;
    LocationContext* context;
    p_defptr definition;
 };
@@ -129,14 +129,14 @@ private:
 struct F_SizeList : Generator<p_num>
 {
 public:
-   F_SizeList(p_genptr<p_list>& vals, p_perun2& p2)
+   F_SizeList(p_genptr<p_list>& vals, Perun2Process& p2)
       : values(std::move(vals)), perun2(p2), 
         context(p2.contexts.getLocationContext()) { };
 
    p_num getValue() override;
 
 private:
-   p_perun2& perun2;
+   Perun2Process& perun2;
    LocationContext* context;
    p_genptr<p_list> values;
 };
@@ -145,20 +145,20 @@ private:
 struct F_Attribute
 {
 public:
-   F_Attribute(p_perun2& p2)
+   F_Attribute(Perun2Process& p2)
       : context(*p2.contexts.getFileContext()), perun2(p2) { };
 
 protected:
    void checkExistence();
    FileContext& context;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 
 struct F_Attr_Size : F_Attribute, Generator<p_num>
 {
 public:
-   F_Attr_Size(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Size(Perun2Process& p2) : F_Attribute(p2) { };
    p_num getValue() override;
 };
 
@@ -166,7 +166,7 @@ public:
 struct F_Attr_Lifetime : F_Attribute, Generator<p_per>
 {
 public:
-   F_Attr_Lifetime(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Lifetime(Perun2Process& p2) : F_Attribute(p2) { };
    p_per getValue() override;
 };
 
@@ -174,7 +174,7 @@ public:
 struct F_Attr_Access: F_Attribute, Generator<p_tim>
 {
 public:
-   F_Attr_Access(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Access(Perun2Process& p2) : F_Attribute(p2) { };
    p_tim getValue() override;
 };
 
@@ -182,7 +182,7 @@ public:
 struct F_Attr_Change: F_Attribute, Generator<p_tim>
 {
 public:
-   F_Attr_Change(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Change(Perun2Process& p2) : F_Attribute(p2) { };
    p_tim getValue() override;
 };
 
@@ -190,7 +190,7 @@ public:
 struct F_Attr_Creation: F_Attribute, Generator<p_tim>
 {
 public:
-   F_Attr_Creation(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Creation(Perun2Process& p2) : F_Attribute(p2) { };
    p_tim getValue() override;
 };
 
@@ -198,7 +198,7 @@ public:
 struct F_Attr_Modification: F_Attribute, Generator<p_tim>
 {
 public:
-   F_Attr_Modification(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Modification(Perun2Process& p2) : F_Attribute(p2) { };
    p_tim getValue() override;
 };
 
@@ -206,7 +206,7 @@ public:
 struct F_Attr_Archive: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Archive(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Archive(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -214,7 +214,7 @@ public:
 struct F_Attr_Compressed: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Compressed(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Compressed(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -222,7 +222,7 @@ public:
 struct F_Attr_Empty: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Empty(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Empty(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -230,7 +230,7 @@ public:
 struct F_Attr_Exists: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Exists(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Exists(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -238,7 +238,7 @@ public:
 struct F_Attr_Encrypted: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Encrypted(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Encrypted(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -246,7 +246,7 @@ public:
 struct F_Attr_Hidden: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Hidden(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Hidden(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -254,7 +254,7 @@ public:
 struct F_Attr_IsDirectory: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_IsDirectory(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_IsDirectory(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -262,7 +262,7 @@ public:
 struct F_Attr_IsFile: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_IsFile(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_IsFile(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 
@@ -270,7 +270,7 @@ public:
 struct F_Attr_Readonly: F_Attribute, Generator<p_bool>
 {
 public:
-   F_Attr_Readonly(p_perun2& p2) : F_Attribute(p2) { };
+   F_Attr_Readonly(Perun2Process& p2) : F_Attribute(p2) { };
    p_bool getValue() override;
 };
 

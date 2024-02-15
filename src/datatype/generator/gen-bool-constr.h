@@ -26,19 +26,19 @@ namespace perun2::gen
 struct ContextConstraint : Generator<p_bool>
 {
 public:
-   ContextConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, p_perun2& p2);
+   ContextConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, Perun2Process& p2);
 
 protected:
    IncrementalConstraint constraint;
    FileContext& context;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 
 struct SizeConstraint : ContextConstraint
 {
 public:
-   SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, const p_bool reread, p_perun2& p2);
+   SizeConstraint(p_genptr<p_num>& limit, const CompType cmptype, FileContext& ctx, const p_bool reread, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
@@ -49,13 +49,13 @@ private:
 struct CountConstraint : Generator<p_bool>
 {
 public:
-   CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, p_perun2& p2);
+   CountConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    IncrementalConstraint constraint;
    p_defptr definition;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 
@@ -63,7 +63,7 @@ struct CountInsideConstraint : ContextConstraint
 {
 public:
    CountInsideConstraint(p_genptr<p_num>& limit, const CompType cmptype, p_defptr& def, 
-      p_lcptr& lctx, FileContext& ctx, p_perun2& p2);
+      p_lcptr& lctx, FileContext& ctx, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
@@ -75,28 +75,28 @@ private:
 struct SizeConstraint_Def : Generator<p_bool>
 {
 public:
-   SizeConstraint_Def(p_genptr<p_num>& limit, p_defptr& def, const CompType cmptype, p_perun2& p2);
+   SizeConstraint_Def(p_genptr<p_num>& limit, p_defptr& def, const CompType cmptype, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    p_defptr definition;
    IncrementalConstraint constraint;
    LocationContext& context;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 
 struct SizeConstraint_List : Generator<p_bool>
 {
 public:
-   SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list>& lst, const CompType cmptype, p_perun2& p2);
+   SizeConstraint_List(p_genptr<p_num>& limit, p_genptr<p_list>& lst, const CompType cmptype, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    p_genptr<p_list> list;
    IncrementalConstraint constraint;
    LocationContext& context;
-   p_perun2& perun2;
+   Perun2Process& perun2;
 };
 
 

@@ -26,10 +26,10 @@ namespace perun2::comm
 struct Command_L : Command
 {
 public:
-   Command_L(p_perun2& p2) : perun2(p2) { };
+   Command_L(Perun2Process& p2) : perun2(p2) { };
 
 protected:
-   p_perun2& perun2;
+   Perun2Process& perun2;
 
 };
 

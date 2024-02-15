@@ -20,13 +20,13 @@
 
 namespace perun2
 {
-   struct p_perun2;
+   struct Perun2Process;
 
    struct GlobalContext
    {
    public:
       GlobalContext() = delete;
-      GlobalContext(p_perun2& p2);
+      GlobalContext(Perun2Process& p2);
 
       template <typename T>
       void insertConstant(const p_str& name)

@@ -27,7 +27,7 @@
 namespace perun2::parse
 {
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_bool>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_bool>& result)
 {
    const Token& tk = tks.first();
 
@@ -56,7 +56,7 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_bool>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_num>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_num>& result)
 {
    const Token& tk = tks.first();
 
@@ -115,7 +115,7 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_num>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_str>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_str>& result)
 {
    const Token& tk = tks.first();
 
@@ -137,25 +137,25 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_str>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_nlist>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_nlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_tlist>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_tlist>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_list>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_list>& result)
 {
    const Token& tk = tks.first();
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_tim>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_tim>& result)
 {
    const Token& tk = tks.first();
 
@@ -187,14 +187,14 @@ p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_tim>& result)
    }
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_genptr<p_per>& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_per>& result)
 {
    const Token& tk = tks.first();
 
    return tk.type == Token::t_Word && makeVarRef(tk, result, p2);
 };
 
-p_bool parseOneToken(p_perun2& p2, const Tokens& tks, p_defptr& result)
+p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result)
 {
    const Token& tk = tks.first();
 

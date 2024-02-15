@@ -233,7 +233,7 @@ p_int Tokens::countSymbols(const p_char symbol) const
    return count;
 }
 
-p_int Tokens::getFilterKeywordId(p_perun2& p2) const
+p_int Tokens::getFilterKeywordId(Perun2Process& p2) const
 {
    BracketsInfo bi;
 
@@ -258,7 +258,7 @@ p_int Tokens::getFilterKeywordId(p_perun2& p2) const
    return -1;
 }
 
-std::vector<Tokens> Tokens::splitByFiltherKeywords(p_perun2& p2) const
+std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
@@ -328,7 +328,7 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
    );
 }
 
-void Tokens::checkCommonExpressionExceptions(p_perun2& p2) const
+void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
 {
    p_bool prevExclamantion = false;
 

@@ -25,7 +25,7 @@ struct C_RenameTo : CoreCommand
 {
 public:
    C_RenameTo(p_genptr<p_str>& na, const p_bool save, const p_bool forc,
-      const p_bool extless, FileContext* ctx, p_perun2& p2)
+      const p_bool extless, FileContext* ctx, Perun2Process& p2)
       : name(std::move(na)), saveChanges(save), forced(forc), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;
@@ -41,7 +41,7 @@ protected:
 struct C_RenameTo_Stack : CoreCommand
 {
 public:
-   C_RenameTo_Stack(p_genptr<p_str>& na, const p_bool save, const p_bool extless, FileContext* ctx, p_perun2& p2)
+   C_RenameTo_Stack(p_genptr<p_str>& na, const p_bool save, const p_bool extless, FileContext* ctx, Perun2Process& p2)
       : name(std::move(na)), saveChanges(save), extensionless(extless), CoreCommand(save, ctx, p2) { };
 
    void run() override;

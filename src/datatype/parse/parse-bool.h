@@ -23,9 +23,9 @@
 namespace perun2::parse
 {
 
-p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
+p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 
-static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
+static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool boolExpTree(p_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& infList);
 static p_bool boolExpIntegrateNegations(p_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& elements);
 static p_bool boolExpTreeMerge(p_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& elements);
@@ -33,14 +33,14 @@ static p_bool isBoolExpComputable(const std::vector<ExpElement<p_bool>>& infList
 p_bool isBoolExpOperator(const Token& tk);
 static p_char toBoolExpOperator(const Token& tk);
 
-static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
-static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
+static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
+static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated, 
-   const std::pair<Tokens, Tokens>& pair, p_perun2& p2);
-static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, p_perun2& p2);
+   const std::pair<Tokens, Tokens>& pair, Perun2Process& p2);
+static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens& left,
-   const Tokens& right, const CompType ct, p_perun2& p2);
-static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, p_perun2& p2);
+   const Tokens& right, const CompType ct, Perun2Process& p2);
+static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const p_char sign, Perun2Process& p2);
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, CompType& ctype);
 
 }

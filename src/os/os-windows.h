@@ -38,12 +38,7 @@ p_constexpr p_char OS_WRONG_SEPARATOR = CHAR_SLASH;
    : str(STRING_WINDOWS_PATH_PREFIX, path).c_str() \
 
 
-// this function should be called only once globally
-// just some OS-specific settings
 void os_init();
-
-// this functions should be called only once globally at program exit
-// but only if os_init() was called before
 void os_deinit();
 
 p_tim os_now();

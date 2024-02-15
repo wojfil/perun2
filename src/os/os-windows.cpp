@@ -41,12 +41,15 @@
 namespace perun2
 {
 
-// this function should be called only once globally
-// just some OS-specific settings
 void os_init()
 {
    _setmode(_fileno(stdout), _O_U8TEXT);
    CoInitializeEx(0, COINIT_MULTITHREADED);
+}
+
+void os_deinit()
+{
+   // nothing as expected
 }
 
 p_tim os_now()

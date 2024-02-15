@@ -339,6 +339,15 @@ public:
    p_str getValue() override;
 };
 
+
+struct F_Raw : Func_1<p_str>, Generator<p_str>
+{
+public:
+   F_Raw(p_genptr<p_str>& a1) : Func_1(a1) { };
+   p_str getValue() override;
+};
+
+
 }
 
 #endif /* FUNC_STRING_H */

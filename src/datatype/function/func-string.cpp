@@ -16,6 +16,7 @@
 #include "../../lexer.h"
 #include "../../util.h"
 #include "../math.h"
+#include "../text/raw.h"
 #include <algorithm>
 #include <sstream>
 #include <cmath>
@@ -903,6 +904,13 @@ p_str F_Hex::getValue()
       oss << std::hex << v;
       return oss.str();
    }
+}
+
+p_str F_Raw::getValue()
+{
+   p_str result = arg1->getValue();
+   str_toRaw(result);
+   return result;
 }
 
 }

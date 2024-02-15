@@ -133,6 +133,8 @@ add_executable(
     datatype/text/chars.cpp
     datatype/text/concat.cpp
     datatype/text/like.cpp
+    datatype/text/raw.cpp
+    datatype/text/resemblance.cpp
     datatype/text/strings.cpp
     datatype/text/text-parsing.cpp
     datatype/text/wildcard.cpp

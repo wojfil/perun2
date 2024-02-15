@@ -1270,6 +1270,8 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
       result = std::make_unique<F_Capitalize>(arg1);
    else if (word.isWord(STRING_PARENT, p2))
       result = std::make_unique<F_Parent>(arg1, p2);
+   else if (word.isWord(STRING_RAW, p2))
+      result = std::make_unique<F_Raw>(arg1);
    else
       return false;
 

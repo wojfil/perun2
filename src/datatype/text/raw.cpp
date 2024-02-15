@@ -122,8 +122,8 @@ void str_toRaw(p_str& value)
          }
          case L'Ę':
          case L'Ȩ':
-         case L'Ə̧':
-         case L'Ɛ̧':
+         //case L'Ə̧':
+         //case L'Ɛ̧':
          case L'É':
          case L'È':
          case L'Ė':
@@ -234,7 +234,7 @@ void str_toRaw(p_str& value)
          //case L'O̧':
          case L'Ø':
          case L'Ơ':
-         case L'Ɔ̧':
+         //case L'Ɔ̧':
          case L'Ó':
          case L'Ò':
          case L'Ȯ':
@@ -388,8 +388,8 @@ void str_toRaw(p_str& value)
          }
          case L'ę':
          case L'ȩ':
-         case L'ə̧':
-         case L'ɛ̧':
+         //case L'ə̧':
+         //case L'ɛ̧':
          case L'é':
          case L'è':
          case L'ė':
@@ -488,7 +488,7 @@ void str_toRaw(p_str& value)
          //case L'o̧':
          case L'ø':
          case L'ơ':
-         case L'ɔ̧':
+         //case L'ɔ̧':
          case L'ó':
          case L'ò':
          case L'ȯ':

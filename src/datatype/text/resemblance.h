@@ -58,7 +58,7 @@ private:
 
 // before the Resemblance algorithm starts
 // its arguments should be transformed to raw lowercase
-void resemblancePreparation(p_str& value);
+void prepareForResemblance(p_str& value);
 
 // the main Resemblance algorithm
 p_ndouble str_resemblance(const p_str& value, const p_str& pattern);

@@ -22,14 +22,14 @@ namespace perun2
 ResemblesConst::ResemblesConst(p_genptr<p_str>& val, const p_str& pat)
    : value(std::move(val)), pattern(pat)
 {
-   resemblancePreparation(this->pattern);
+   prepareForResemblance(this->pattern);
 };
 
 
 p_bool ResemblesConst::getValue()
 {
    p_str v = this->value->getValue();
-   resemblancePreparation(v);
+   prepareForResemblance(v);
    return str_resemblance(v, this->pattern) >= RESEMBLANCE_RATIO;
 };
 
@@ -43,14 +43,14 @@ p_bool Resembles::getValue()
    p_str v = this->value->getValue();
    p_str p = this->pattern->getValue();
 
-   resemblancePreparation(v);
-   resemblancePreparation(p);
+   prepareForResemblance(v);
+   prepareForResemblance(p);
 
    return str_resemblance(v, p) >= RESEMBLANCE_RATIO;
 };
 
 
-void resemblancePreparation(p_str& value)
+void prepareForResemblance(p_str& value)
 {
    str_toLower(value);
    str_toRaw(value);

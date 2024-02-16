@@ -20,6 +20,7 @@
 #include "../../perun2.h"
 #include "../../os/os.h"
 #include "../math.h"
+#include "../text/resemblance.h"
 #include <math.h>
 #include <sstream>
 #include <cmath>
@@ -588,6 +589,33 @@ p_num F_ShiftWeekDay_Number::getValue()
    }
 
    return result;
+}
+
+
+p_num F_Resemblance::getValue()
+{
+   p_str v = this->arg1->getValue();
+   p_str p = this->arg2->getValue();
+
+   resemblancePreparation(v);
+   resemblancePreparation(p);
+
+   return str_resemblance(v, p);
+}
+
+
+F_ResemblanceConst::F_ResemblanceConst(p_genptr<p_str>& a1, const p_str& patt) 
+   : Func_1(a1), pattern(patt)
+{ 
+   resemblancePreparation(this->pattern);
+};
+
+
+p_num F_ResemblanceConst::getValue()
+{
+   p_str v = this->arg1->getValue();
+   resemblancePreparation(v);
+   return str_resemblance(v, this->pattern);
 }
 
 

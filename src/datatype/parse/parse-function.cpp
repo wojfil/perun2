@@ -742,6 +742,30 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
    }
+   else if (word.isWord(STRING_RESEMBLANCE, p2)) {
+      if (len != 2) {
+         functionArgNumberException(len, word, p2);
+      }
+      
+      p_genptr<p_str> str1;
+      if (! parse::parse(p2, args[0], str1)) {
+         functionArgException(1, STRING_STRING, word, p2);
+      }
+
+      p_genptr<p_str> str2;
+      if (! parse::parse(p2, args[1], str2)) {
+         functionArgException(2, STRING_STRING, word, p2);
+      }
+
+      if (str2->isConstant()) {
+         const p_str pattern = str2->getValue();
+         result = std::make_unique<F_ResemblanceConst>(str1, pattern);
+         return true;
+      }
+
+      result = std::make_unique<F_Resemblance>(str1, str2);
+      return true;
+   }
 
    return false;
 }

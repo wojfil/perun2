@@ -17,7 +17,6 @@
 
 #include "../datatype.h"
 #include "../generator.h"
-#include "raw.h"
 
 
 namespace perun2
@@ -57,16 +56,12 @@ private:
 };
 
 
-// before the resemblance algorithm starts
+// before the Resemblance algorithm starts
 // its arguments should be transformed to raw lowercase
-inline void resemblancePreparation(p_str& value)
-{
-   str_toLower(value);
-   str_toRaw(value);
-}
+void resemblancePreparation(p_str& value);
 
-
-static p_ndouble str_resemblance(const p_str& value, const p_str& pattern);
+// the main Resemblance algorithm
+p_ndouble str_resemblance(const p_str& value, const p_str& pattern);
 static p_int minOfThree(p_int a, p_int b, p_int c);
 static p_int damerauLevenshteinDistance(const p_str& str1, const p_str& str2);
 

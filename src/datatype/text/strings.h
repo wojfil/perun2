@@ -253,6 +253,7 @@ p_constexpr p_char STRING_ISNAN[] =                L"isnan";
 p_constexpr p_char STRING_ISNEVER[] =              L"isnever";
 p_constexpr p_char STRING_CLOCK[] =                L"clock";
 p_constexpr p_char STRING_RAW[] =                  L"raw";
+p_constexpr p_char STRING_RESEMBLANCE[] =          L"resemblance";
 
 p_constexpr p_char STRING_COPY[] =                 L"copy";
 p_constexpr p_char STRING_CREATE[] =               L"create";

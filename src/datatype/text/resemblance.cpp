@@ -13,6 +13,7 @@
 */
 
 #include "resemblance.h"
+#include "raw.h"
 
 
 namespace perun2
@@ -49,7 +50,14 @@ p_bool Resembles::getValue()
 };
 
 
-static p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
+void resemblancePreparation(p_str& value)
+{
+   str_toLower(value);
+   str_toRaw(value);
+}
+
+
+p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
 {
    return NDOUBLE_ZERO;
 }

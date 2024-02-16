@@ -107,27 +107,10 @@ select images
   and bpp = 24
 ```
 
-## Order By acceleration
-
-Perun2 has one performance weak spot. It takes few seconds to sort hundreds of thousands of files. 
-It could be improved, as currently program uses a naive iterative single-threaded quicksort. 
-Calculations are the bottleneck here. 
-Both filesystem access and console logs are very fast. 
-Sorting by a string is the slowest and should be improved in the first place.
-
-## Wildcard pattern matching microoptimizations
-
-These algorithms are used in several places. The most prominent one is the Like operator.
-Current implementation is not the most optimal and microoptimizations are possible.
-The algorithm is recursive and uses a vector of vectors of chars. It could be iterative.
-The size of the internal vector is constant and known at runtime and depends only on the pattern length.
-We could use a vector of arrays instead. Even one huge plain array of chars reserved in advance (exchange memory for performance).
-However, this is not really important. Microoptimizations are possible, but they would not be noticeable anyways.
-
 ## Repositories
 
 Variable *repositories* refers to directories that are code repositories.
-Analogously, there are variables *recursiveRepositories* and *isRepository*.
+Analogously, there would be variables *recursiveRepositories* and *isRepository*.
 If certain directory contains a directory *.git* or *.svn*, it is a repository for sure.
 There are more version control systems.
 
@@ -177,8 +160,7 @@ select files
 
 ## Time defined by days and months only
 
-Right now, time can take four forms. 
-The idea is to add another, fifth possibility. 
+The idea is to add another time form.
 
 ```
 select '*.pdf'
@@ -555,6 +537,8 @@ select output
 ```
 
 This command selects two files: "a.txt" and "b.txt".
+Including code in string literals could be seen as not elegant.
+We can imagine a command that takes source path as an argument: *runPowershellFile*, *runPythonFile*.
 
 ## *Resembles*
 

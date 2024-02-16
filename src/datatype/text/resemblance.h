@@ -29,6 +29,20 @@ p_constexpr p_ndouble RESEMBLANCE_RATIO =
    NDOUBLE_ONE - (NDOUBLE_ONE / static_cast<p_ndouble>(RESEMBLANCE_MISTAKES_ALLOWED));
 
 
+// operator RESEMBLES with pattern initialized with a string literal
+struct ResemblesConst : Generator<p_bool>
+{
+public:
+   ResemblesConst(p_genptr<p_str>& val, const p_str& pat);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_str> value;
+   const p_str pattern;
+};
+
+
+// operator RESEMBLES with pattern initialized with any string expression
 struct Resembles : Generator<p_bool>
 {
 public:

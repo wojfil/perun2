@@ -18,6 +18,17 @@
 namespace perun2
 {
 
+ResemblesConst::ResemblesConst(p_genptr<p_str>& val, const p_str& pat)
+   : value(std::move(val)), pattern(pat) { };
+
+
+p_bool ResemblesConst::getValue()
+{
+   const p_str v = this->value->getValue();
+   return str_resemblance(v, this->pattern) >= RESEMBLANCE_RATIO;
+};
+
+
 Resembles::Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat)
    : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue()) { };
 

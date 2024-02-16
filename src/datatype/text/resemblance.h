@@ -17,6 +17,7 @@
 
 #include "../datatype.h"
 #include "../generator.h"
+#include "raw.h"
 
 
 namespace perun2
@@ -38,7 +39,7 @@ public:
 
 private:
    p_genptr<p_str> value;
-   const p_str pattern;
+   p_str pattern;
 };
 
 
@@ -54,6 +55,15 @@ private:
    p_genptr<p_str> pattern;
    p_str prevPattern;
 };
+
+
+// before the resemblance algorithm starts
+// its arguments should be transformed to raw lowercase
+inline void resemblancePreparation(p_str& value)
+{
+   str_toLower(value);
+   str_toRaw(value);
+}
 
 
 static p_ndouble str_resemblance(const p_str& value, const p_str& pattern);

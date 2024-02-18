@@ -79,7 +79,6 @@ add_executable(
     command/com-struct.cpp
     command/com-time.cpp
     command/com-var.cpp
-    command/com.cpp
     context/ctx-aggr.cpp
     context/ctx-file.cpp
     context/ctx-global.cpp

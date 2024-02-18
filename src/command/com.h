@@ -21,8 +21,7 @@
 namespace perun2
 {
 
-// this is just a command
-// we can run it
+
 struct Command
 {
 public:
@@ -39,7 +38,7 @@ namespace perun2::comm
 struct C_DoNothing : Command
 {
 public:
-   void run() override;
+   void run() override { /* that's it */ };
 };
 
 

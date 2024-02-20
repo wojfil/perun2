@@ -44,15 +44,32 @@ Perun2Process::~Perun2Process() noexcept
 
 p_bool Perun2Process::run()
 {
-   if (! arguments.areGood()) {
+   if (! this->arguments.areGood()) {
+      this->exitCode = EXITCODE_CLI_ERROR;
       return false;
    }
+
+   this->exitCode = EXITCODE_OK;
 
    return this->preParse() 
        && this->parse() 
        && this->postParse()
        && this->runCommands();
 };
+
+p_bool Perun2Process::staticallyAnalyze()
+{
+   if (! this->arguments.areGood()) {
+      this->exitCode = EXITCODE_CLI_ERROR;
+      return false;
+   }
+
+   this->exitCode = EXITCODE_OK;
+
+   return this->preParse() 
+       && this->parse() 
+       && this->postParse();
+}
 
 void Perun2Process::terminate()
 {
@@ -173,6 +190,11 @@ Perun2::Perun2(const p_str& location, const p_str& code, const p_flags flags)
 p_bool Perun2::run()
 {
    return this->process.run();
+}
+
+p_bool Perun2::staticallyAnalyze()
+{
+   return this->process.staticallyAnalyze();
 }
 
 int Perun2::getExitCode() const

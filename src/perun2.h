@@ -57,8 +57,16 @@ public:
    Perun2Process() = delete;
    Perun2Process(const Arguments& args);
    ~Perun2Process() noexcept;
+
+   // perform all parsing and then run all parsed commands if parsing succeeded
    p_bool run();
+   
+   // perform all parsing, but do not run any command
+   p_bool staticallyAnalyze();
+
+   // stop running process
    void terminate();
+
    p_bool isRunning() const;
    p_bool isNotRunning() const;
 
@@ -104,7 +112,14 @@ public:
    Perun2(Perun2 const&) = delete;
    Perun2& operator= (Perun2 const&) = delete;
 
+   // perform all parsing and then run all parsed commands if parsing succeeded
    p_bool run();
+
+   // perform all parsing, but do not run any command
+   p_bool staticallyAnalyze();
+
+   // return exit code of last run or last static analysis
+   // if we never run or analyzed anything, return EXITCODE_OK
    int getExitCode() const;
 
 private:

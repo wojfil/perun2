@@ -22,7 +22,7 @@ namespace perun2
 
 // remove all diacritical marks from Latin letters of this text
 // case size stays the same
-// in addition, turn every Æ to AE and every Œ to OE
+// in addition, turn every Æ to AE, every Œ to OE and every ß to ss
 void str_toRaw(p_str& value);
 
 // replace certain char with a pair of chars

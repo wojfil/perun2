@@ -29,6 +29,7 @@ void str_toRaw(p_str& value)
    p_constexpr uint32_t DOUBLECHARS_UPPER_AE           = 1 << 5;
    p_constexpr uint32_t DOUBLECHARS_UPPER_AE_ACCENT    = 1 << 6;
    p_constexpr uint32_t DOUBLECHARS_UPPER_AE_MACRON    = 1 << 7;
+   p_constexpr uint32_t DOUBLECHARS_ESZETT             = 1 << 8;
 
    uint32_t doubleChars = DOUBLECHARS_NONE;
 
@@ -72,6 +73,10 @@ void str_toRaw(p_str& value)
          case L'Ǣ':
          {
             doubleChars |= DOUBLECHARS_UPPER_AE_MACRON;
+            break;
+         }
+         case L'ß': {
+            doubleChars |= DOUBLECHARS_ESZETT;
             break;
          }
          case L'Ą':
@@ -626,6 +631,10 @@ void str_toRaw(p_str& value)
 
    if (doubleChars & DOUBLECHARS_UPPER_AE_MACRON) {
       replaceCharWithTwoChars(value, L'Ǣ', L'A', L'E');
+   }
+
+   if (doubleChars & DOUBLECHARS_ESZETT) {
+      replaceCharWithTwoChars(value, L'ß', L's', L's');
    }
 }
 

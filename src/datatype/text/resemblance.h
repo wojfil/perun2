@@ -19,7 +19,7 @@
 #include "../generator.h"
 
 
-namespace perun2
+namespace perun2::gen
 {
 
 // for every 3 characters in the pattern, allow 1 mistake
@@ -52,7 +52,6 @@ public:
 private:
    p_genptr<p_str> value;
    p_genptr<p_str> pattern;
-   p_str prevPattern;
 };
 
 
@@ -63,7 +62,11 @@ void prepareForResemblance(p_str& value);
 // the main Resemblance algorithm
 p_ndouble str_resemblance(const p_str& value, const p_str& pattern);
 static p_int minOfThree(p_int a, p_int b, p_int c);
-static p_int damerauLevenshteinDistance(const p_str& str1, const p_str& str2);
+
+// this implementation of Damerau-Levenshtein Distance calculates
+// minimum of the distances between str2 and any substring of str1 that starts at index 0
+// so, for str1='abcd', these substrings would be 'a', 'ab', 'abc' and 'abcd'
+static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str2);
 
 }
 

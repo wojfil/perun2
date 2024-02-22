@@ -60,7 +60,7 @@ KeywordsData::KeywordsData() : KEYWORDS(
    // expression elements:
    { STRING_IN, Keyword::kw_In },
    { STRING_LIKE, Keyword::kw_Like },
-   //{ STRING_RESEMBLES, Keyword::kw_Resembles },
+   { STRING_RESEMBLES, Keyword::kw_Resembles },
    // command structs:
    { STRING_ELSE, Keyword::kw_Else },
    { STRING_IF, Keyword::kw_If },

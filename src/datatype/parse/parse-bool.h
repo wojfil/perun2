@@ -37,6 +37,7 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Proce
 static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated, 
    const std::pair<Tokens, Tokens>& pair, Perun2Process& p2);
+static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseCollectionComparisons(p_genptr<p_bool>& result, const Tokens& left,
    const Tokens& right, const CompType ct, Perun2Process& p2);

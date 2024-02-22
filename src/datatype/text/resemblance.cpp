@@ -14,9 +14,11 @@
 
 #include "resemblance.h"
 #include "raw.h"
+#include "../../logger.h"
+#include <limits>
 
 
-namespace perun2
+namespace perun2::gen
 {
 
 ResemblesConst::ResemblesConst(p_genptr<p_str>& val, const p_str& pat)
@@ -35,7 +37,7 @@ p_bool ResemblesConst::getValue()
 
 
 Resembles::Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat)
-   : value(std::move(val)), pattern(std::move(pat)), prevPattern(pattern->getValue()) { };
+   : value(std::move(val)), pattern(std::move(pat)) { };
 
 
 p_bool Resembles::getValue()
@@ -59,7 +61,26 @@ void prepareForResemblance(p_str& value)
 
 p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
 {
-   return NDOUBLE_ZERO;
+   if (pattern.empty()) {
+      return NDOUBLE_ONE;
+   }
+
+   if (value.empty()) {
+      return NDOUBLE_ZERO;
+   }
+
+   p_int minimum = std::numeric_limits<p_int>::max();
+
+   for (p_size i = 0; i < value.size(); i++) 
+   {
+      const p_str chunk = value.substr(i);
+      const p_int next = multiDamerauLevenshteinDistance(chunk, pattern);
+      if (next < minimum) {
+         minimum = next;
+      }
+   }
+   
+   return NDOUBLE_ONE - (static_cast<p_ndouble>(minimum) / static_cast<p_ndouble>(pattern.size()));
 }
 
 
@@ -69,36 +90,45 @@ static p_int minOfThree(p_int a, p_int b, p_int c)
 }
 
 
-static p_int damerauLevenshteinDistance(const p_str& str1, const p_str& str2)
+static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str2)
 {
-   const p_int m = str1.length();
-   const p_int n = str2.length();
+   const p_size len1 = str1.length();
+   const p_size len2 = str2.length();
 
-   std::vector<std::vector<p_int>> dp(m + 1, std::vector<p_int>(n + 1, 0));
+   std::vector<std::vector<p_int>> dp(len1 + 1, std::vector<p_int>(len2 + 1, 0));
 
-   for (p_int i = 0; i <= m; ++i) {
-      for (p_int j = 0; j <= n; ++j) {
-         if (i == 0) {
-            dp[i][j] = j;
-         }
-         else if (j == 0) {
-            dp[i][j] = i;
-         }
-         else {
-            dp[i][j] = minOfThree(
-               dp[i - 1][j] + 1,
-               dp[i][j - 1] + 1,
-               dp[i - 1][j - 1] + (str1[i - 1] == str2[j - 1] ? 0 : 1)
-            );
+   for (p_size i = 0; i <= len1; i++) {
+      dp[i][0] = i;
+   }
 
-            if (i > 1 && j > 1 && str1[i - 1] == str2[j - 2] && str1[i - 2] == str2[j - 1]) {
-               dp[i][j] = std::min(dp[i][j], dp[i - 2][j - 2] + 1);
-            }
+   for (p_size j = 0; j <= len2; j++) {
+      dp[0][j] = j;
+   }
+
+   for (p_size i = 1; i <= len1; i++) {
+      for (p_size j = 1; j <= len2; j++) {
+         dp[i][j] = minOfThree(
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + (str1[i - 1] == str2[j - 1] ? 0 : 1)
+         );
+
+         if (i > 1 && j > 1 && str1[i - 1] == str2[j - 2] && str1[i - 2] == str2[j - 1]) {
+            dp[i][j] = std::min(dp[i][j], dp[i - 2][j - 2] + 1);
          }
       }
    }
 
-   return dp[m][n];
+   p_int min = dp[0][len2];
+
+   for (p_size i = 1; i <= len1; i++) {
+      p_int nv = dp[i][len2];
+      if (nv < min) {
+         min = nv;
+      }
+   }
+
+   return min;
 }
 
 

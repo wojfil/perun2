@@ -597,25 +597,25 @@ p_num F_Resemblance::getValue()
    p_str v = this->arg1->getValue();
    p_str p = this->arg2->getValue();
 
-   prepareForResemblance(v);
-   prepareForResemblance(p);
+   gen::prepareForResemblance(v);
+   gen::prepareForResemblance(p);
 
-   return str_resemblance(v, p);
+   return gen::str_resemblance(v, p);
 }
 
 
 F_ResemblanceConst::F_ResemblanceConst(p_genptr<p_str>& a1, const p_str& patt) 
    : Func_1(a1), pattern(patt)
 { 
-   prepareForResemblance(this->pattern);
+   gen::prepareForResemblance(this->pattern);
 };
 
 
 p_num F_ResemblanceConst::getValue()
 {
    p_str v = this->arg1->getValue();
-   prepareForResemblance(v);
-   return str_resemblance(v, this->pattern);
+   gen::prepareForResemblance(v);
+   return gen::str_resemblance(v, this->pattern);
 }
 
 

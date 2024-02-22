@@ -22,6 +22,7 @@
 #include "../../brackets.h"
 #include "../../lexer.h"
 #include "../text/like.h"
+#include "../text/resemblance.h"
 #include "../parse-gen.h"
 #include "../incr-constr.h"
 
@@ -76,6 +77,12 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 
    if (tks.check(TI_HAS_KEYWORD_LIKE)) {
       if (parseLike(result, tks, p2)) {
+         return true;
+      }
+   }
+
+   if (tks.check(TI_HAS_KEYWORD_RESEMBLES)) {
+      if (parseResembles(result, tks, p2)) {
          return true;
       }
    }
@@ -630,6 +637,64 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
    }
 }
 
+static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
+{
+   std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Resembles);
+
+   if (pair.first.isEmpty()) {
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
+   }
+   if (pair.second.isEmpty()) {
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
+   }
+   if (pair.first.hasBinaryBoolKeyword()) {
+      return false;
+   }
+
+   const p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
+   if (neg) {
+      if (pair.first.getLength() == 1) {
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
+      }
+
+      pair.first.trimRight();
+   }
+
+   p_genptr<p_str> value;
+   if (! parse(p2, pair.first, value)) {
+      return false;
+   }
+
+   p_genptr<p_str> pattern;
+   if (! parse(p2, pair.second, pattern)) {
+      return false;
+   }
+
+   if (pattern->isConstant()) {
+      const p_str cnst = pattern->getValue();
+
+      if (neg) {
+         p_genptr<p_bool> b = std::make_unique<gen::ResemblesConst>(value, cnst);
+         result = std::make_unique<gen::Not>(b);
+      }
+      else {
+         result = std::make_unique<gen::ResemblesConst>(value, cnst);
+      }
+
+      return true;
+   }
+
+   if (neg) {
+      p_genptr<p_bool> b = std::make_unique<gen::Resembles>(value, pattern);
+      result = std::make_unique<gen::Not>(b);
+   }
+   else {
+      result = std::make_unique<gen::Resembles>(value, pattern);
+   }
+
+   return true;
+}
 
 static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {

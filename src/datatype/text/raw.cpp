@@ -647,7 +647,7 @@ inline static void replaceCharWithTwoChars(p_str& value,
    while (pos != p_str::npos) {
       value += value[value.size() - 1];
 
-      for (p_int i = value.size() - 2; i > pos + 1; i--) {
+      for (p_size i = value.size() - 2; i > pos + 1; i--) {
          value[i] = value[i - 1];
       }
 

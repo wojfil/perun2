@@ -120,16 +120,12 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                   }
                   case CHAR_FLAG_NOOMIT: 
                   case CHAR_FLAG_NOOMIT_UPPER: {
-                     if (!(this->flags & FLAG_NOOMIT)) {
-                        this->flags |= FLAG_NOOMIT;
-                     }
+                     this->flags |= FLAG_NOOMIT;
                      break;
                   }
                   case CHAR_FLAG_SILENT: 
                   case CHAR_FLAG_SILENT_UPPER: {
-                     if (!(this->flags & FLAG_SILENT)) {
-                        this->flags |= FLAG_SILENT;
-                     }
+                     this->flags |= FLAG_SILENT;
                      break;
                   }
                   case CHAR_FLAG_HERE: 
@@ -139,9 +135,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                   }
                   case CHAR_FLAG_GUI:
                   case CHAR_FLAG_GUI_UPPER: {
-                     if (!(this->flags & FLAG_GUI)) {
-                        this->flags |= FLAG_GUI;
-                     }
+                     this->flags |= FLAG_GUI;
                      break;
                   }
                   case CHAR_FLAG_STATIC_ANALYSIS:

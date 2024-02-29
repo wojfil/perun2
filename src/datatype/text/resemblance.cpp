@@ -132,4 +132,9 @@ static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str
 }
 
 
+static p_int resemblanceMistakesAllowed(const p_str& pattern)
+{
+   return static_cast<p_int>(pattern.size()) / RESEMBLANCE_MISTAKES_ALLOWED;
+}
+
 }

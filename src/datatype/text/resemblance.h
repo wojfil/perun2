@@ -68,6 +68,8 @@ static p_int minOfThree(p_int a, p_int b, p_int c);
 // so, for str1='abcd', these substrings would be 'a', 'ab', 'abc' and 'abcd'
 static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str2);
 
+static p_int resemblanceMistakesAllowed(const p_str& pattern);
+
 }
 
 #endif // RESEMBLANCE_H_INCLUDED

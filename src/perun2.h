@@ -122,6 +122,8 @@ public:
    // if we never run or analyzed anything, return EXITCODE_OK
    int getExitCode() const;
 
+   p_bool hasArgFlag(const p_flags flag) const;
+
 private:
    Arguments arguments;
    Perun2Process process;

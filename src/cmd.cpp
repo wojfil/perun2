@@ -55,6 +55,7 @@ void help()
    logger.print(L"  -h           Set working location to the place where this command was called from.");
    logger.print(L"  -n           Run in noomit mode (iterate all filesystem elements with no exceptions).");
    logger.print(L"  -s           Run in silent mode (no command log messages).");
+   logger.print(L"  -m           Static analysis. Check code correctness without running it. Print 'good' if no error detected.");
 }
 
 namespace error

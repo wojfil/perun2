@@ -202,4 +202,9 @@ int Perun2::getExitCode() const
    return this->process.exitCode;
 }
 
+p_bool Perun2::hasArgFlag(const p_flags flag) const
+{
+   return this->arguments.hasFlag(flag);
+}
+
 }

@@ -32,9 +32,17 @@ int main(void)
    perun2::initTerminator();
 
    perun2::Perun2 instance(argc, argv);
-   instance.run();
+
+   if (instance.hasArgFlag(perun2::FLAG_STATIC_ANALYSIS)) {
+      instance.staticallyAnalyze();
+      if (instance.getExitCode() == perun2::EXITCODE_OK) {
+         p_cout << perun2::STRING_GOOD << std::endl;
+      }
+   }
+   else {
+      instance.run();
+   }
 
    LocalFree(argv);
-
    return instance.getExitCode();
 }

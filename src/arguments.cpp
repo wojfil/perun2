@@ -144,6 +144,11 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                      }
                      break;
                   }
+                  case CHAR_FLAG_STATIC_ANALYSIS:
+                  case CHAR_FLAG_STATIC_ANALYSIS_UPPER: {
+                     this->flags |= FLAG_STATIC_ANALYSIS;
+                     break;
+                  }
                   default: {
                      cmd::error::unknownOption(toStr(arg[j]));
                      return;

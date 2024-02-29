@@ -41,7 +41,9 @@ p_bool ResemblesConst::getValue()
       return false;
    }
 
-   for (p_size i = 0; i < v.size(); i++)
+   const p_int limit = 1 + static_cast<p_int>(v.size()) - static_cast<p_int>(pattern.size()) + mistakesAllowed;
+
+   for (p_int i = 0; i < limit; i++)
    {
       const p_str chunk = v.substr(i);
       const p_int mistakes = multiDamerauLevenshteinDistance(chunk, pattern);
@@ -75,8 +77,9 @@ p_bool Resembles::getValue()
    }
 
    const p_int mistakesAllowed = resemblanceMistakesAllowed(p);
+   const p_int limit = 1 + static_cast<p_int>(v.size()) - static_cast<p_int>(p.size()) + mistakesAllowed;
 
-   for (p_size i = 0; i < v.size(); i++)
+   for (p_int i = 0; i < limit; i++)
    {
       const p_str chunk = v.substr(i);
       const p_int mistakes = multiDamerauLevenshteinDistance(chunk, p);

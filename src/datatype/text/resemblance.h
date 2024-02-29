@@ -39,6 +39,7 @@ public:
 private:
    p_genptr<p_str> value;
    p_str pattern;
+   const p_int mistakesAllowed;
 };
 
 

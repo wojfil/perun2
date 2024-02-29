@@ -22,7 +22,7 @@ namespace perun2::gen
 {
 
 ResemblesConst::ResemblesConst(p_genptr<p_str>& val, const p_str& pat)
-   : value(std::move(val)), pattern(pat)
+   : value(std::move(val)), pattern(pat), mistakesAllowed(resemblanceMistakesAllowed(pat))
 {
    prepareForResemblance(this->pattern);
 };
@@ -32,7 +32,25 @@ p_bool ResemblesConst::getValue()
 {
    p_str v = this->value->getValue();
    prepareForResemblance(v);
-   return str_resemblance(v, this->pattern) >= RESEMBLANCE_RATIO;
+
+   if (pattern.empty()) {
+      return true;
+   }
+
+   if (v.empty()) {
+      return false;
+   }
+
+   for (p_size i = 0; i < v.size(); i++)
+   {
+      const p_str chunk = v.substr(i);
+      const p_int mistakes = multiDamerauLevenshteinDistance(chunk, pattern);
+      if (mistakes <= mistakesAllowed) {
+         return true;
+      }
+   }
+
+   return false;
 };
 
 
@@ -48,7 +66,26 @@ p_bool Resembles::getValue()
    prepareForResemblance(v);
    prepareForResemblance(p);
 
-   return str_resemblance(v, p) >= RESEMBLANCE_RATIO;
+   if (p.empty()) {
+      return true;
+   }
+
+   if (v.empty()) {
+      return false;
+   }
+
+   const p_int mistakesAllowed = resemblanceMistakesAllowed(p);
+
+   for (p_size i = 0; i < v.size(); i++)
+   {
+      const p_str chunk = v.substr(i);
+      const p_int mistakes = multiDamerauLevenshteinDistance(chunk, p);
+      if (mistakes <= mistakesAllowed) {
+         return true;
+      }
+   }
+
+   return false;
 };
 
 

@@ -33,10 +33,6 @@ p_bool ResemblesConst::getValue()
    p_str v = this->value->getValue();
    prepareForResemblance(v);
 
-   if (pattern.empty()) {
-      return true;
-   }
-
    if (v.empty()) {
       return false;
    }

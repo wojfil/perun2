@@ -674,6 +674,12 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
    if (pattern->isConstant()) {
       const p_str cnst = pattern->getValue();
 
+      if (cnst.empty()) {
+         const p_bool value = ! neg;
+         result = std::make_unique<gen::Constant<p_bool>>(value);
+         return true;
+      }
+
       if (neg) {
          p_genptr<p_bool> b = std::make_unique<gen::ResemblesConst>(value, cnst);
          result = std::make_unique<gen::Not>(b);

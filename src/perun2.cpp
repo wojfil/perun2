@@ -66,9 +66,15 @@ p_bool Perun2Process::staticallyAnalyze()
 
    this->exitCode = EXITCODE_OK;
 
-   return this->preParse() 
+   if (this->preParse() 
        && this->parse() 
-       && this->postParse();
+       && this->postParse())
+   {
+      this->logger.log(STRING_GOOD);
+      return true;
+   }
+
+   return false;
 }
 
 void Perun2Process::terminate()

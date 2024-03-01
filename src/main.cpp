@@ -35,9 +35,6 @@ int main(void)
 
    if (instance.hasArgFlag(perun2::FLAG_STATIC_ANALYSIS)) {
       instance.staticallyAnalyze();
-      if (instance.getExitCode() == perun2::EXITCODE_OK) {
-         p_cout << perun2::STRING_GOOD << std::endl;
-      }
    }
    else {
       instance.run();

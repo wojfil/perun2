@@ -3665,6 +3665,8 @@ if __name__ == '__main__':
   run_test_case("print raw('Türkiye Türkçesi ÇçĞğÖöŞşÜü') ", 'Turkiye Turkcesi CcGgOoSsUu')
   run_test_case("print raw('áâãàçéêíóôõú ÁÂÃÀÇÉÊÍÓÔÕÚ') ", 'aaaaceeiooou AAAACEEIOOOU')
   run_test_case("print raw('ßÄÖÜäöü') ", 'ssAOUaou')
+  run_test_case("print raw('A̧A̧G̃I̧Ɨ̧M̧M̂M̄N̂N̈N̄O̧Ɔ̧P̄U̧Y̨')", 'AAGIIMMMNNNOƆPUY')
+  run_test_case("print raw('a̧ą̊ə̧ɛ̧e̊g̃i̧ɨ̧im̧m̂m̄n̂n̈n̄o̧ɔ̧p̄u̧y̨')", 'aaəɛegiiimmmnnnoɔpuy')
   run_test_case("print resemblance('KĄTEM', 'katem') ", '1')
   run_test_case("print resemblance('katem', 'KĄTEM') ", '1')
   run_test_case("print resemblance('KĄTEM', 'katex') ", '0.8')

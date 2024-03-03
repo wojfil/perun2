@@ -20,15 +20,20 @@
 namespace perun2
 {
 
-// remove all diacritical marks from Latin letters of this text
+// this function turns string into its "raw" format
+// it does 3 things:
+// 1) removes all diacritical marks from Latin letters of this text
+// 2) removes all combining marks from all characters
+// 3) turns every ß to ss, every æ to ae and every œ to oe (uppercase variants included)
 // case size stays the same
-// in addition, turn every Æ to AE, every Œ to OE and every ß to ss
 void str_toRaw(p_str& value);
 
 // replace certain char with a pair of chars
 // string is expanded every replacement
 inline static void replaceCharWithTwoChars(p_str& value, 
    const p_char old, const p_char new1, const p_char new2);
+
+inline static p_bool isCombiningMark(const p_char ch);
 
 }
 

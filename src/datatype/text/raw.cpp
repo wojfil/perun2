@@ -33,7 +33,9 @@ void str_toRaw(p_str& value)
 
    uint32_t doubleChars = DOUBLECHARS_NONE;
 
-   for (p_char& ch : value) {
+   for (p_int i = 0; i < static_cast<p_int>(value.size()); i++) {
+      const p_char ch = value[i];
+
       switch (ch) {
          case L'œ':
          {
@@ -80,8 +82,6 @@ void str_toRaw(p_str& value)
             break;
          }
          case L'Ą':
-         //case L'A̧':
-         //case L'Ą̊': 
          case L'Á':
          case L'À':
          case L'Ȧ':
@@ -95,13 +95,13 @@ void str_toRaw(p_str& value)
          case L'Å':
          case L'Ǻ':
          {
-            ch = L'A';
+            value[i] = L'A';
             break;
          }
          case L'Ɓ':
          case L'Ḅ':
          {
-            ch = L'B';
+            value[i] = L'B';
             break;
          }
          case L'Ƈ':
@@ -111,7 +111,7 @@ void str_toRaw(p_str& value)
          case L'Ĉ':
          case L'Č':
          {
-            ch = L'C';
+            value[i] = L'C';
             break;
          }
          case L'Đ':
@@ -122,13 +122,11 @@ void str_toRaw(p_str& value)
          case L'Ḑ':
          case L'Ḓ':
          {
-            ch = L'D';
+            value[i] = L'D';
             break;
          }
          case L'Ę':
          case L'Ȩ':
-         //case L'Ə̧':
-         //case L'Ɛ̧':
          case L'É':
          case L'È':
          case L'Ė':
@@ -138,15 +136,14 @@ void str_toRaw(p_str& value)
          case L'Ĕ':
          case L'Ē':
          case L'Ẽ':
-         //case L'E̊':
          case L'Ẹ':
          {
-            ch = L'E';
+            value[i] = L'E';
             break;
          }
          case L'Ƒ':
          {
-            ch = L'F';
+            value[i] = L'F';
             break;
          }
          case L'Ǥ':
@@ -156,10 +153,9 @@ void str_toRaw(p_str& value)
          case L'Ĝ':
          case L'Ǧ':
          case L'Ğ':
-         //case L'G̃':
          case L'Ģ':
          {
-            ch = L'G';
+            value[i] = L'G';
             break;
          }
          case L'Ħ':
@@ -167,13 +163,11 @@ void str_toRaw(p_str& value)
          case L'Ĥ':
          case L'Ḥ':
          {
-            ch = L'H';
+            value[i] = L'H';
             break;
          }
          case L'Į':
-         //case L'I̧':
          case L'Ɨ':
-         //case L'Ɨ̧':
          case L'Í':
          case L'Ì':
          case L'İ':
@@ -185,19 +179,19 @@ void str_toRaw(p_str& value)
          case L'Ĩ':
          case L'Ị':
          {
-            ch = L'I';
+            value[i] = L'I';
             break;
          }
          case L'Ĵ':
          {
-            ch = L'J';
+            value[i] = L'J';
             break;
          }
          case L'Ƙ':
          case L'Ķ':
          case L'Ǩ':
          {
-            ch = L'K';
+            value[i] = L'K';
             break;
          }
          case L'Ł':
@@ -208,38 +202,26 @@ void str_toRaw(p_str& value)
          case L'Ḷ':
          case L'Ḽ':
          {
-            ch = L'L';
+            value[i] = L'L';
             break;
          }
-         //case L'M̧':
-         //case L'M̂':
-         //case L'M̄':
-         //{
-         //   ch = L'M';
-         //   break;
-         //}
          case L'Ɲ':
          // notice that there is no ʼN character here
          // the N-apostrophe character from Afrikaans has only lower case variant
          // upper case has never been included in any international keyboard
          case L'Ń':
-         //case L'N̂':
          case L'Ṅ':
-         //case L'N̈':
          case L'Ň':
-         //case L'N̄':
          case L'Ñ':
          case L'Ņ':
          case L'Ṋ':
          {
-            ch = L'N';
+            value[i] = L'N';
             break;
          }
          case L'Ǫ':
-         //case L'O̧':
          case L'Ø':
          case L'Ơ':
-         //case L'Ɔ̧':
          case L'Ó':
          case L'Ò':
          case L'Ȯ':
@@ -256,13 +238,12 @@ void str_toRaw(p_str& value)
          case L'Ọ':
          case L'Ǿ':
          {
-            ch = L'O';
+            value[i] = L'O';
             break;
          }
          case L'Ƥ':
-         //case L'P̄':
          {
-            ch = L'P';
+            value[i] = L'P';
             break;
          }
          case L'Ɍ':
@@ -271,7 +252,7 @@ void str_toRaw(p_str& value)
          case L'Ŗ':
          case L'Ṛ':
          {
-            ch = L'R';
+            value[i] = L'R';
             break;
          }
          case L'Ş':
@@ -282,7 +263,7 @@ void str_toRaw(p_str& value)
          case L'Ș':
          case L'Ṣ':
          {
-            ch = L'S';
+            value[i] = L'S';
             break;
          }
          case L'Ƭ':
@@ -293,11 +274,10 @@ void str_toRaw(p_str& value)
          case L'Ṭ':
          case L'Ṱ':
          {
-            ch = L'T';
+            value[i] = L'T';
             break;
          }
          case L'Ų':
-         //case L'U̧':
          case L'Ư':
          case L'Ʉ':
          case L'Ú':
@@ -312,7 +292,7 @@ void str_toRaw(p_str& value)
          case L'Ů':
          case L'Ụ':
          {
-            ch = L'U';
+            value[i] = L'U';
             break;
          }
          case L'Ẃ':
@@ -320,16 +300,14 @@ void str_toRaw(p_str& value)
          case L'Ŵ':
          case L'Ẅ':
          {
-            ch = L'W';
+            value[i] = L'W';
             break;
          }
          case L'Ẋ':
          {
-            ch = L'X';
+            value[i] = L'X';
             break;
          }
-
-         //case L'Y̨':
          case L'Ƴ':
          case L'Ý':
          case L'Ỳ':
@@ -338,7 +316,7 @@ void str_toRaw(p_str& value)
          case L'Ȳ':
          case L'Ỹ':
          {
-            ch = L'Y';
+            value[i] = L'Y';
             break;
          }
          case L'Ź':	
@@ -346,12 +324,10 @@ void str_toRaw(p_str& value)
          case L'Ž':
          case L'Ẓ':
          {
-            ch = L'Z';
+            value[i] = L'Z';
             break;
          }
          case L'ą':
-         //case L'a̧':
-         //case L'ą̊':
          case L'á':
          case L'à':
          case L'ȧ':
@@ -364,12 +340,12 @@ void str_toRaw(p_str& value)
          case L'ã':
          case L'å':
          case L'ǻ': {
-            ch = L'a';
+            value[i] = L'a';
             break;
          }
          case L'ɓ':
          case L'ḅ': {
-            ch = L'b';
+            value[i] = L'b';
             break;
          }
          case L'ƈ':
@@ -378,7 +354,7 @@ void str_toRaw(p_str& value)
          case L'ċ':
          case L'ĉ':
          case L'č': {
-            ch = L'c';
+            value[i] = L'c';
             break;
          }
          case L'đ':
@@ -388,13 +364,11 @@ void str_toRaw(p_str& value)
          case L'ḍ':
          case L'ḑ':
          case L'ḓ': {
-            ch = L'd';
+            value[i] = L'd';
             break;
          }
          case L'ę':
          case L'ȩ':
-         //case L'ə̧':
-         //case L'ɛ̧':
          case L'é':
          case L'è':
          case L'ė':
@@ -404,13 +378,12 @@ void str_toRaw(p_str& value)
          case L'ĕ':
          case L'ē':
          case L'ẽ':
-         //case L'e̊':
          case L'ẹ': {
-            ch = L'e';
+            value[i] = L'e';
             break;
          }
          case L'ƒ': {
-            ch = L'f';
+            value[i] = L'f';
             break;
          }
          case L'ǥ':
@@ -420,25 +393,21 @@ void str_toRaw(p_str& value)
          case L'ĝ':
          case L'ǧ':
          case L'ğ':
-         //case L'g̃':
          case L'ģ': {
-            ch = L'g';
+            value[i] = L'g';
             break;
          }
          case L'ħ':
          case L'ɦ':
          case L'ĥ':
          case L'ḥ': {
-            ch = L'h';
+            value[i] = L'h';
             break;
          }
          case L'į':
-         //case L'i̧':
          case L'ɨ':
-         //case L'ɨ̧':
          case L'í':
          case L'ì':
-         //case L'i':
          case L'î':
          case L'ï':
          case L'ǐ':
@@ -446,17 +415,17 @@ void str_toRaw(p_str& value)
          case L'ī':
          case L'ĩ':
          case L'ị': {
-            ch = L'i';
+            value[i] = L'i';
             break;
          }
          case L'ĵ': {
-            ch = L'j';
+            value[i] = L'j';
             break;
          }
          case L'ƙ':
          case L'ķ':
          case L'ǩ': {
-            ch = L'k';
+            value[i] = L'k';
             break;
          }
          case L'ł':
@@ -466,34 +435,23 @@ void str_toRaw(p_str& value)
          case L'ŀ':
          case L'ḷ':
          case L'ḽ': {
-            ch = L'l';
+            value[i] = L'l';
             break;
          }
-         //case L'm̧':
-         //case L'm̂':
-         //case L'm̄': {
-         //   ch = L'm';
-         //   break;
-         //}
          case L'ɲ':
          case L'ŉ':
          case L'ń':
-         //case L'n̂':
          case L'ṅ':
-         //case L'n̈':
          case L'ň':
-         //case L'n̄':
          case L'ñ':
          case L'ņ':
          case L'ṋ': {
-            ch = L'n';
+            value[i] = L'n';
             break;
          }
          case L'ǫ':
-         //case L'o̧':
          case L'ø':
          case L'ơ':
-         //case L'ɔ̧':
          case L'ó':
          case L'ò':
          case L'ȯ':
@@ -509,13 +467,12 @@ void str_toRaw(p_str& value)
          case L'ő':
          case L'ọ':
          case L'ǿ': {
-            ch = L'o';
+            value[i] = L'o';
             break;
          }
          case L'ƥ':
-         //case L'p̄': 
          {
-            ch = L'p';
+            value[i] = L'p';
             break;
          }
          case L'ɍ':
@@ -523,7 +480,7 @@ void str_toRaw(p_str& value)
          case L'ř':
          case L'ŗ':
          case L'ṛ': {
-            ch = L'r';
+            value[i] = L'r';
             break;
          }
          case L'ş':
@@ -533,7 +490,7 @@ void str_toRaw(p_str& value)
          case L'š':
          case L'ș':
          case L'ṣ': {
-            ch = L's';
+            value[i] = L's';
             break;
          }
          case L'ƭ':
@@ -543,11 +500,10 @@ void str_toRaw(p_str& value)
          case L'ț':
          case L'ṭ':
          case L'ṱ': {
-            ch = L't';
+            value[i] = L't';
             break;
          }
          case L'ų':
-         //case L'u̧':
          case L'ư':
          case L'ʉ':
          case L'ú':
@@ -561,21 +517,20 @@ void str_toRaw(p_str& value)
          case L'ű':
          case L'ů':
          case L'ụ': {
-            ch = L'u';
+            value[i] = L'u';
             break;
          }
          case L'ẃ':
          case L'ẁ':
          case L'ŵ':
          case L'ẅ': {
-            ch = L'w';
+            value[i] = L'w';
             break;
          }
          case L'ẋ': {
-            ch = L'x';
+            value[i] = L'x';
             break;
          }
-         //case L'y̨':
          case L'ƴ':
          case L'ý':
          case L'ỳ':
@@ -583,19 +538,25 @@ void str_toRaw(p_str& value)
          case L'ÿ':
          case L'ȳ':
          case L'ỹ': {
-            ch = L'y';
+            value[i] = L'y';
             break;
          }
          case L'ź':
          case L'ż':
          case L'ž':
          case L'ẓ': {
-            ch = L'z';
+            value[i] = L'z';
+            break;
+         }
+         default: {
+            if (isCombiningMark(ch)) {
+               value.erase(i, 1);
+               i--;
+            }
             break;
          }
       }
    }
-
 
    if (doubleChars == DOUBLECHARS_NONE) {
       return;
@@ -655,6 +616,16 @@ inline static void replaceCharWithTwoChars(p_str& value,
       value[pos + 1] = new2;
       pos = value.find(old, pos + 2);
    }
+}
+
+
+inline static p_bool isCombiningMark(const p_char ch)
+{
+   return (ch >= 0x0300 && ch <= 0x036F)       // Combining Diacritical Marks
+       || (ch >= 0x1AB0 && ch <= 0x1AFF)       // Combining Diacritical Marks Extended
+       || (ch >= 0x1DC0 && ch <= 0x1DFF)       // Combining Diacritical Marks Supplement
+       || (ch >= 0x20D0 && ch <= 0x20FF)       // Combining Diacritical Marks for Symbols
+       || (ch >= 0xFE20 && ch <= 0xFE2F);      // Combining Half Marks
 }
 
 }

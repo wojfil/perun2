@@ -90,8 +90,8 @@ p_bool Resembles::getValue()
 
 void prepareForResemblance(p_str& value)
 {
-   str_toLower(value);
    str_toRaw(value);
+   str_toLower(value);
 }
 
 

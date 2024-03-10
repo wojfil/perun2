@@ -34,9 +34,7 @@ void str_toRaw(p_str& value)
    uint32_t doubleChars = DOUBLECHARS_NONE;
 
    for (p_int i = 0; i < static_cast<p_int>(value.size()); i++) {
-      const p_char ch = value[i];
-
-      switch (ch) {
+      switch (value[i]) {
          case L'œ':
          {
             doubleChars |= DOUBLECHARS_LOWER_OE;
@@ -549,7 +547,7 @@ void str_toRaw(p_str& value)
             break;
          }
          default: {
-            if (isCombiningMark(ch)) {
+            if (isCombiningMark(value[i])) {
                value.erase(i, 1);
                i--;
             }

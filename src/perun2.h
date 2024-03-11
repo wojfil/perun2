@@ -38,6 +38,7 @@ p_constexpr int EXITCODE_OK =             0;
 p_constexpr int EXITCODE_RUNTIME_ERROR =  1;
 p_constexpr int EXITCODE_SYNTAX_ERROR =   2;
 p_constexpr int EXITCODE_CLI_ERROR =      3;
+p_constexpr int EXITCODE_NO_LOCATION =    4;
 
 
 enum State

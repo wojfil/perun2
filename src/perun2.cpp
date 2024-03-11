@@ -49,6 +49,11 @@ p_bool Perun2Process::run()
       return false;
    }
 
+   if (! os_directoryExists(this->arguments.getLocation())) {
+      this->exitCode = EXITCODE_NO_LOCATION;
+      return false;
+   }
+
    this->exitCode = EXITCODE_OK;
 
    return this->preParse() 

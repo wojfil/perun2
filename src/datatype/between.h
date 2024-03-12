@@ -17,10 +17,38 @@
 
 
 #include "datatype.h"
+#include "generator.h"
 
 
 namespace perun2::gen
 {
+
+template <typename T>
+struct Between : Generator<p_bool>
+{
+public:
+   Between<T>(p_genptr<T>& val, p_genptr<T>& b1, p_genptr<T>& b2)
+      : value(std::move(val)), bound1(std::move(b1)), bound2(std::move(b2)) { };
+
+   p_bool getValue() override 
+   {
+      const T v = value->getValue();
+      const T b1 = bound1->getValue();
+      const T b2 = bound2->getValue();
+
+      if (b1 < b2) {
+         return v >= b1 && v <= b2;
+      }
+
+      return v >= b2 && v <= b1;
+   };
+
+private:
+   p_genptr<T> value;
+   p_genptr<T> bound1;
+   p_genptr<T> bound2;
+};
+
 
 
 }

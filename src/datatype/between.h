@@ -51,6 +51,55 @@ private:
 
 
 
+template <typename T>
+struct BetweenHalfConst : Generator<p_bool>
+{
+public:
+   BetweenHalfConst<T>(p_genptr<T>& val, p_genptr<T>& b1, const T& b2)
+      : value(std::move(val)), bound1(std::move(b1)), bound2(b2) { };
+
+   p_bool getValue() override 
+   {
+      const T v = value->getValue();
+      const T b1 = bound1->getValue();
+
+      if (b1 < bound2) {
+         return v >= b1 && v <= bound2;
+      }
+
+      return v >= bound2 && v <= b1;
+   };
+
+private:
+   p_genptr<T> value;
+   p_genptr<T> bound1;
+   const T bound2;
+};
+
+
+
+template <typename T>
+struct BetweenConst : Generator<p_bool>
+{
+public:
+   BetweenConst<T>(p_genptr<T>& val, const T& b1, const T& b2)
+      : value(std::move(val)), 
+        bound1((b1 < b2) ? b1 : b2), 
+        bound2((b1 > b2) ? b1 : b2) { };
+
+   p_bool getValue() override 
+   {
+      const T v = value->getValue();
+      return v >= bound1 && v <= bound2;
+   };
+
+private:
+   p_genptr<T> value;
+   const T bound1;
+   const T bound2;
+};
+
+
 }
 
 #endif /* BETWEEN_H */

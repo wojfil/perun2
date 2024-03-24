@@ -19,4 +19,63 @@ namespace perun2::gen
 {
 
 
+BetweenTimes::BetweenTimes(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, p_genptr<p_tim>& b2)
+   : value(std::move(val)), bound1(std::move(b1)), bound2(std::move(b2)) { };
+
+
+p_bool BetweenTimes::getValue() 
+{
+   const p_tim b1 = bound1->getValue();
+   const p_tim b2 = bound2->getValue();
+
+   if (! b1.isComparableWith(b2)) {
+      return false;
+   }
+
+   const p_tim v = value->getValue();
+
+   if (! v.isComparableWith(b1)) {
+      return false;
+   }
+
+   if (b1 < b2) {
+      return v >= b1 && v <= b2;
+   }
+
+   return v >= b2 && v <= b1;
+};
+
+
+BetweenNumbers::BetweenNumbers(p_genptr<p_num>& val, p_genptr<p_num>& b1, p_genptr<p_num>& b2)
+   : value(std::move(val)), bound1(std::move(b1)), bound2(std::move(b2)) { };
+
+
+p_bool BetweenNumbers::getValue() 
+{
+   const p_num v = value->getValue();
+
+   if (v.isNaN()) {
+      return false;
+   }
+
+   const p_num b1 = bound1->getValue();
+
+   if (b1.isNaN()) {
+      return false;
+   }
+
+   const p_num b2 = bound2->getValue();
+
+   if (b2.isNaN()) {
+      return false;
+   }
+
+   if (b1 < b2) {
+      return v >= b1 && v <= b2;
+   }
+
+   return v >= b2 && v <= b1;
+};
+
+
 }

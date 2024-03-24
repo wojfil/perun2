@@ -100,6 +100,33 @@ private:
 };
 
 
+struct BetweenTimes : Generator<p_bool>
+{
+public:
+   BetweenTimes(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, p_genptr<p_tim>& b2);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_tim> value;
+   p_genptr<p_tim> bound1;
+   p_genptr<p_tim> bound2;
+};
+
+
+struct BetweenNumbers : Generator<p_bool>
+{
+public:
+   BetweenNumbers(p_genptr<p_num>& val, p_genptr<p_num>& b1, p_genptr<p_num>& b2);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_num> value;
+   p_genptr<p_num> bound1;
+   p_genptr<p_num> bound2;
+};
+
+
+
 }
 
 #endif /* BETWEEN_H */

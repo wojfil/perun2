@@ -21,7 +21,7 @@ namespace perun2::func
 
 #define P_NUM_ARG_IN_TIME_FUNC(a, n, v) \
    const p_num n = a->getValue(); \
-   if (n.state == NumberState::NaN) { \
+   if (n.isNaN()) { \
       return p_tim();\
    } \
    const p_tnum v = static_cast<p_tnum>(n.toInt());

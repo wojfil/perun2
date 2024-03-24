@@ -135,7 +135,7 @@ p_str CharAtIndex::getValue()
    }
 
    const p_num num = index->getValue();
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return p_str();
    }
 
@@ -153,7 +153,7 @@ p_str CharAtIndex::getValue()
 p_str DefinitionElement::getValue()
 {
    const p_num num = index->getValue();
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return p_str();
    }
 

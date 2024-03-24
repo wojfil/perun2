@@ -63,7 +63,7 @@ void C_SleepPeriod::run()
 void C_SleepMs::run()
 {
    const p_num n = this->value->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return;
    }
 
@@ -96,7 +96,7 @@ void C_ErrorWithExitCode::run()
    this->perun2.state = State::s_Exit;
    const p_num n = this->exitCode->getValue();
 
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       this->perun2.exitCode = EXITCODE_RUNTIME_ERROR;
       return;
    }

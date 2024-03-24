@@ -164,7 +164,7 @@ public:
       }
 
       const p_num num = index->getValue();
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return T();
       }
 

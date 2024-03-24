@@ -63,7 +63,7 @@ p_bool SizeConstraint::getValue()
       if (this->rereadFileSize)  {
          const p_num n = os_sizeFile(this->context.v_path->value);
 
-         if (n.state == NumberState::NaN) {
+         if (n.isNaN()) {
             return false;
          }
 
@@ -160,7 +160,7 @@ p_bool SizeConstraint_Def::getValue()
       const p_str v = this->definition->getValue();
       const p_num n = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
 
-      if (n.state == NumberState::NaN) {
+      if (n.isNaN()) {
          return false;
       }
 
@@ -198,7 +198,7 @@ p_bool SizeConstraint_List::getValue()
       if (!v.empty() && !os_isInvalid(v)) {
          const p_num n = os_size(os_leftJoin(this->context.location->value, v), this->perun2);
 
-         if (n.state == NumberState::NaN) {
+         if (n.isNaN()) {
             return false;
          }
 

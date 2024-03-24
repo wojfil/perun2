@@ -24,7 +24,7 @@ PeriodUnit::PeriodUnit(p_genptr<p_num>& val, Period::PeriodUnit un)
 p_per PeriodUnit::getValue()
 {
    const p_num num = this->value->getValue();
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return p_per();
    }
 

@@ -51,7 +51,7 @@ p_str Number::toString() const
    if (state == NumberState::Int) {
       return toStr(value.i);
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return STRING_PRINTABLE_NAN;
    }
 
@@ -88,7 +88,7 @@ p_nint Number::toInt() const
    if (state == NumberState::Int) {
       return value.i;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return NINT_ZERO;
    }
 
@@ -100,7 +100,7 @@ p_bool Number::isZero() const
    if (state == NumberState::Int) {
       return value.i == NINT_ZERO;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -112,7 +112,7 @@ p_bool Number::isOne() const
    if (state == NumberState::Int) {
       return value.i == NINT_ONE;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -124,7 +124,7 @@ p_bool Number::isMinusOne() const
    if (state == NumberState::Int) {
       return value.i == NINT_MINUS_ONE;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -180,8 +180,8 @@ Number& Number::operator += (const Number& num)
          return *this;
       }
       
-      if (num.state == NumberState::NaN) {
-         state = NumberState::NaN;
+      if (num.isNaN()) {
+         setToNaN();
          return *this;
       }
 
@@ -190,8 +190,8 @@ Number& Number::operator += (const Number& num)
       return *this;
    }
 
-   if (state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (isNaN()) {
+      setToNaN();
       return *this;
    }
 
@@ -200,8 +200,8 @@ Number& Number::operator += (const Number& num)
       return *this;
    }
 
-   if (num.state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (num.isNaN()) {
+      setToNaN();
       return *this;
    }
    
@@ -218,8 +218,8 @@ Number& Number::operator -= (const Number& num)
          return *this;
       }
       
-      if (num.state == NumberState::NaN) {
-         state = NumberState::NaN;
+      if (num.isNaN()) {
+         setToNaN();
          return *this;
       }
 
@@ -228,8 +228,8 @@ Number& Number::operator -= (const Number& num)
       return *this;
    }
 
-   if (state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (isNaN()) {
+      setToNaN();
       return *this;
    }
 
@@ -238,8 +238,8 @@ Number& Number::operator -= (const Number& num)
       return *this;
    }
 
-   if (num.state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (num.isNaN()) {
+      setToNaN();
       return *this;
    }
    
@@ -256,8 +256,8 @@ Number& Number::operator *= (const Number& num)
          return *this;
       }
       
-      if (num.state == NumberState::NaN) {
-         state = NumberState::NaN;
+      if (num.isNaN()) {
+         setToNaN();
          return *this;
       }
 
@@ -267,8 +267,8 @@ Number& Number::operator *= (const Number& num)
       return *this;
    }
 
-   if (state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (isNaN()) {
+      setToNaN();
       return *this;
    }
 
@@ -278,8 +278,8 @@ Number& Number::operator *= (const Number& num)
       return *this;
    }
 
-   if (num.state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (num.isNaN()) {
+      setToNaN();
       return *this;
    }
    
@@ -293,7 +293,7 @@ Number& Number::operator /= (const Number& num)
    if (state == NumberState::Int) {
       if (num.state == NumberState::Int) {
          if (num.value.i == NINT_ZERO) {
-            state = NumberState::NaN;
+            setToNaN();
             return *this;
          }
 
@@ -308,8 +308,8 @@ Number& Number::operator /= (const Number& num)
          return *this;
       }
       
-      if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
-         state = NumberState::NaN;
+      if (num.isNaN() || num.value.d == NDOUBLE_ZERO) {
+         setToNaN();
          return *this;
       }
 
@@ -320,14 +320,14 @@ Number& Number::operator /= (const Number& num)
       return *this;
    }
 
-   if (state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (isNaN()) {
+      setToNaN();
       return *this;
    }
 
    if (num.state == NumberState::Int) {
       if (num.value.i == NINT_ZERO) {
-         state = NumberState::NaN;
+         setToNaN();
          return *this;
       }
 
@@ -335,8 +335,8 @@ Number& Number::operator /= (const Number& num)
       return *this;
    }
 
-   if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
-      state = NumberState::NaN;
+   if (num.isNaN() || num.value.d == NDOUBLE_ZERO) {
+      setToNaN();
       return *this;
    }
    
@@ -350,7 +350,7 @@ Number& Number::operator %= (const Number& num)
    if (state == NumberState::Int) {
       if (num.state == NumberState::Int) {
          if (num.value.i == NINT_ZERO) {
-            state = NumberState::NaN;
+            setToNaN();
             return *this;
          }
 
@@ -358,8 +358,8 @@ Number& Number::operator %= (const Number& num)
          return *this;
       }
       
-      if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
-         state = NumberState::NaN;
+      if (num.isNaN() || num.value.d == NDOUBLE_ZERO) {
+         setToNaN();
          return *this;
       }
 
@@ -370,14 +370,14 @@ Number& Number::operator %= (const Number& num)
       return *this;
    }
 
-   if (state == NumberState::NaN) {
-      state = NumberState::NaN;
+   if (isNaN()) {
+      setToNaN();
       return *this;
    }
 
    if (num.state == NumberState::Int) {
       if (num.value.i == NINT_ZERO) {
-         state = NumberState::NaN;
+         setToNaN();
          return *this;
       }
 
@@ -386,8 +386,8 @@ Number& Number::operator %= (const Number& num)
       return *this;
    }
 
-   if (num.state == NumberState::NaN || num.value.d == NDOUBLE_ZERO) {
-      state = NumberState::NaN;
+   if (num.isNaN() || num.value.d == NDOUBLE_ZERO) {
+      setToNaN();
       return *this;
    }
    
@@ -428,7 +428,7 @@ Number Number::operator + (const Number& num) const
          return value.i + num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return P_NaN;
       }
 
@@ -440,7 +440,7 @@ Number Number::operator + (const Number& num) const
       return v;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return P_NaN;
    }
 
@@ -449,7 +449,7 @@ Number Number::operator + (const Number& num) const
       return Number(v);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return P_NaN;
    }
    
@@ -465,7 +465,7 @@ Number Number::operator - (const Number& num) const
          return value.i - num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return P_NaN;
       }
 
@@ -477,7 +477,7 @@ Number Number::operator - (const Number& num) const
       return v;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return P_NaN;
    }
 
@@ -486,7 +486,7 @@ Number Number::operator - (const Number& num) const
       return Number(v);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return P_NaN;
    }
    
@@ -502,7 +502,7 @@ Number Number::operator * (const Number& num) const
          return value.i * num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return P_NaN;
       }
 
@@ -516,7 +516,7 @@ Number Number::operator * (const Number& num) const
       return v;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return P_NaN;
    }
 
@@ -527,7 +527,7 @@ Number Number::operator * (const Number& num) const
       return Number(v);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return P_NaN;
    }
 
@@ -553,7 +553,7 @@ Number Number::operator / (const Number& num) const
          return Number(d);
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return P_NaN;
       }
 
@@ -567,7 +567,7 @@ Number Number::operator / (const Number& num) const
       return v;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return P_NaN;
    }
 
@@ -580,7 +580,7 @@ Number Number::operator / (const Number& num) const
       return Number(n);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return P_NaN;
    }
    
@@ -605,7 +605,7 @@ Number Number::operator % (const Number& num) const
          return value.i % num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return P_NaN;
       }
 
@@ -619,7 +619,7 @@ Number Number::operator % (const Number& num) const
       return v;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return P_NaN;
    }
 
@@ -631,7 +631,7 @@ Number Number::operator % (const Number& num) const
       return std::fmod(value.d, num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return P_NaN;
    }
    
@@ -665,14 +665,14 @@ p_bool Number::operator == (const Number& num) const
          return value.i == num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return false;
       }
 
       return static_cast<p_ndouble>(value.i) == num.value.d;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return false;
    }
 
@@ -680,7 +680,7 @@ p_bool Number::operator == (const Number& num) const
       return value.d == static_cast<p_ndouble>(num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return false;
    }
    
@@ -694,14 +694,14 @@ p_bool Number::operator != (const Number& num) const
          return value.i != num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return false;
       }
 
       return static_cast<p_ndouble>(value.i) != num.value.d;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return false;
    }
 
@@ -709,7 +709,7 @@ p_bool Number::operator != (const Number& num) const
       return value.d != static_cast<p_ndouble>(num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return false;
    }
    
@@ -723,14 +723,14 @@ p_bool Number::operator < (const Number& num) const
          return value.i < num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return false;
       }
 
       return static_cast<p_ndouble>(value.i) < num.value.d;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return false;
    }
 
@@ -738,7 +738,7 @@ p_bool Number::operator < (const Number& num) const
       return value.d < static_cast<p_ndouble>(num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return false;
    }
    
@@ -752,14 +752,14 @@ p_bool Number::operator > (const Number& num) const
          return value.i > num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return false;
       }
 
       return static_cast<p_ndouble>(value.i) > num.value.d;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return false;
    }
 
@@ -767,7 +767,7 @@ p_bool Number::operator > (const Number& num) const
       return value.d > static_cast<p_ndouble>(num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return false;
    }
    
@@ -781,14 +781,14 @@ p_bool Number::operator <= (const Number& num) const
          return value.i <= num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return false;
       }
 
       return static_cast<p_ndouble>(value.i) <= num.value.d;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return false;
    }
 
@@ -796,7 +796,7 @@ p_bool Number::operator <= (const Number& num) const
       return value.d <= static_cast<p_ndouble>(num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return false;
    }
    
@@ -810,14 +810,14 @@ p_bool Number::operator >= (const Number& num) const
          return value.i >= num.value.i;
       }
       
-      if (num.state == NumberState::NaN) {
+      if (num.isNaN()) {
          return false;
       }
 
       return static_cast<p_ndouble>(value.i) >= num.value.d;
    }
 
-   if (state == NumberState::NaN) {
+   if (isNaN()) {
       return false;
    }
 
@@ -825,7 +825,7 @@ p_bool Number::operator >= (const Number& num) const
       return value.d >= static_cast<p_ndouble>(num.value.i);
    }
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return false;
    }
    
@@ -837,7 +837,7 @@ p_bool Number::operator == (const p_nint num) const
    if (state == NumberState::Int) {
       return value.i == num;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -849,7 +849,7 @@ p_bool Number::operator != (const p_nint num) const
    if (state == NumberState::Int) {
       return value.i != num;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -861,7 +861,7 @@ p_bool Number::operator < (const p_nint num) const
    if (state == NumberState::Int) {
       return value.i < num;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -873,7 +873,7 @@ p_bool Number::operator > (const p_nint num) const
    if (state == NumberState::Int) {
       return value.i > num;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -885,7 +885,7 @@ p_bool Number::operator <= (const p_nint num) const
    if (state == NumberState::Int) {
       return value.i <= num;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 
@@ -897,7 +897,7 @@ p_bool Number::operator >= (const p_nint num) const
    if (state == NumberState::Int) {
       return value.i >= num;
    }
-   else if (state == NumberState::NaN) {
+   else if (isNaN()) {
       return false;
    }
 

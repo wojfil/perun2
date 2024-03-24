@@ -120,7 +120,7 @@ p_bool IncrementalConstraint::getFinalResult() const
 
 p_bool IncrementalConstraint::limitIsNaN() const
 {
-   return this->limit.state == NumberState::NaN;
+   return this->limit.isNaN();
 }
 
 

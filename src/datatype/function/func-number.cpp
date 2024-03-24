@@ -38,7 +38,7 @@ p_num F_Absolute::getValue()
          n.value.i *= NINT_MINUS_ONE;
       }
    }
-   else if (n.state == NumberState::NaN) {
+   else if (n.isNaN()) {
       return P_NaN;
    }
    else {
@@ -60,7 +60,7 @@ p_num F_Ceil::getValue()
       n.value.i = val;
       n.state = NumberState::Int;
    }
-   else if (n.state == NumberState::NaN) {
+   else if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -98,7 +98,7 @@ p_num F_Floor::getValue()
       n.value.i = val;
       n.state = NumberState::Int;
    }
-   else if (n.state == NumberState::NaN) {
+   else if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -143,7 +143,7 @@ p_num F_Round::getValue()
       n.value.i = val;
       n.state = NumberState::Int;
    }
-   else if (n.state == NumberState::NaN) {
+   else if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -155,13 +155,13 @@ p_num F_Power::getValue()
 {
    const p_num n1 = arg1->getValue();
 
-   if (n1.state == NumberState::NaN) {
+   if (n1.isNaN()) {
       return P_NaN;
    }
 
    const p_num n2 = arg2->getValue();
    
-   if (n2.state == NumberState::NaN) {
+   if (n2.isNaN()) {
       return P_NaN;
    }
 
@@ -326,7 +326,7 @@ p_num F_Sqrt::getValue()
       return p_num(static_cast<p_ndouble>(sqrt(n.value.i)));
    }
    
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -362,7 +362,7 @@ p_num F_Sign::getValue()
       return p_num();
    }
 
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -387,7 +387,7 @@ p_num F_Truncate::getValue()
       n.value.i = val;
       n.state = NumberState::Int;
    }
-   else if (n.state == NumberState::NaN) {
+   else if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -409,7 +409,7 @@ p_num F_RandomNumber::getValue()
       return p_num(this->math.randomInt(n.value.i - NINT_ONE));
    }
 
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return P_NaN;
    }
 
@@ -512,7 +512,7 @@ p_num F_ShiftMonth_Time::getValue()
    }
 
    const p_num shift = this->arg2->getValue();
-   if (shift.state == NumberState::NaN) {
+   if (shift.isNaN()) {
       return P_NaN;
    }
 
@@ -529,12 +529,12 @@ p_num F_ShiftMonth_Time::getValue()
 p_num F_ShiftMonth_Number::getValue()
 {
    const p_num base = this->arg1->getValue();
-   if (base.state == NumberState::NaN) {
+   if (base.isNaN()) {
       return P_NaN;
    }
 
    const p_num shift = this->arg2->getValue();
-   if (shift.state == NumberState::NaN) {
+   if (shift.isNaN()) {
       return P_NaN;
    }
 
@@ -556,7 +556,7 @@ p_num F_ShiftWeekDay_Time::getValue()
    }
 
    const p_num shift = this->arg2->getValue();
-   if (shift.state == NumberState::NaN) {
+   if (shift.isNaN()) {
       return P_NaN;
    }
 
@@ -573,12 +573,12 @@ p_num F_ShiftWeekDay_Time::getValue()
 p_num F_ShiftWeekDay_Number::getValue()
 {
    const p_num base = this->arg1->getValue();
-   if (base.state == NumberState::NaN) {
+   if (base.isNaN()) {
       return P_NaN;
    }
 
    const p_num shift = this->arg2->getValue();
-   if (shift.state == NumberState::NaN) {
+   if (shift.isNaN()) {
       return P_NaN;
    }
 

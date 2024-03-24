@@ -505,7 +505,7 @@ inline void Period::subtractUnit(const Period& per)
 
 Period& Period::operator *= (const Number& num)
 {
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       clear();
       return *this;
    }
@@ -566,7 +566,7 @@ Period& Period::operator *= (const Number& num)
 
 Period& Period::operator /= (const Number& num)
 {
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       clear();
       return *this;
    }

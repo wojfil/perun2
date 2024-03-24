@@ -462,7 +462,7 @@ p_bool F_Exist::getValue()
 
 p_bool F_IsNan::getValue()
 {
-   return this->arg1->getValue().state == NumberState::NaN;
+   return this->arg1->getValue().isNaN();
 }
 
 p_bool F_IsNever::getValue()

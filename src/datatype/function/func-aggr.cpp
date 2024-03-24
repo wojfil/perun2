@@ -28,8 +28,8 @@ p_num F_Average::getValue()
    for (p_genptr<p_num>& sv : this->singleValues) {
       const p_num n = sv->getValue();
 
-      if (n.state == NumberState::NaN) {
-         return P_NaN;
+      if (n.isNaN()) {
+         return n;
       }
 
       sum += n;
@@ -40,8 +40,8 @@ p_num F_Average::getValue()
       count += nlist.size();
 
       for (const p_num& n : nlist) {
-         if (n.state == NumberState::NaN) {
-            return P_NaN;
+         if (n.isNaN()) {
+            return n;
          }
 
          sum += n;
@@ -66,15 +66,15 @@ p_num F_Max::getValue()
       init = true;
       max = singleValues[0]->getValue();
       
-      if (max.state == NumberState::NaN) {
-         return P_NaN;
+      if (max.isNaN()) {
+         return max;
       }
 
       for (p_size i = 1; i < countSingle; i++) {
          const p_num n = singleValues[i]->getValue();
 
-         if (n.state == NumberState::NaN) {
-            return P_NaN;
+         if (n.isNaN()) {
+            return n;
          }
 
          if (n > max) {
@@ -88,8 +88,8 @@ p_num F_Max::getValue()
       if (!nlist.empty()) {
          if (init) {
             for (const p_num& n : nlist) {
-               if (n.state == NumberState::NaN) {
-                  return P_NaN;
+               if (n.isNaN()) {
+                  return n;
                }
 
                if (n > max) {
@@ -101,15 +101,15 @@ p_num F_Max::getValue()
             init = true;
             max = nlist[0];
             
-            if (max.state == NumberState::NaN) {
-               return P_NaN;
+            if (max.isNaN()) {
+               return max;
             }
 
             for (p_size j = 1; j < nlist.size(); j++) {
                const p_num& n = nlist[j];
 
-               if (n.state == NumberState::NaN) {
-                  return P_NaN;
+               if (n.isNaN()) {
+                  return n;
                }
 
                if (n > max) {
@@ -132,8 +132,8 @@ p_num F_Median::getValue()
    for (p_genptr<p_num>& sv : this->singleValues) {
       const p_num n = sv->getValue();
 
-      if (n.state == NumberState::NaN) {
-         return P_NaN;
+      if (n.isNaN()) {
+         return n;
       }
 
       elements.emplace_back(n);
@@ -147,8 +147,8 @@ p_num F_Median::getValue()
       }
 
       for (const p_num& n : nlist) {
-         if (n.state == NumberState::NaN) {
-            return P_NaN;
+         if (n.isNaN()) {
+            return n;
          }
       }
 
@@ -179,15 +179,15 @@ p_num F_Min::getValue()
       init = true;
       min = singleValues[0]->getValue();
 
-      if (min.state == NumberState::NaN) {
-         return P_NaN;
+      if (min.isNaN()) {
+         return min;
       }
 
       for (p_size i = 1; i < countSingle; i++) {
          const p_num n = singleValues[i]->getValue();
          
-         if (n.state == NumberState::NaN) {
-            return P_NaN;
+         if (n.isNaN()) {
+            return n;
          }
 
          if (n < min) {
@@ -201,8 +201,8 @@ p_num F_Min::getValue()
       if (!nlist.empty()) {
          if (init) {
             for (const p_num& n : nlist) {
-               if (n.state == NumberState::NaN) {
-                  return P_NaN;
+               if (n.isNaN()) {
+                  return n;
                }
 
                if (n < min) {
@@ -214,15 +214,15 @@ p_num F_Min::getValue()
             init = true;
             min = nlist[0];
 
-            if (min.state == NumberState::NaN) {
-               return P_NaN;
+            if (min.isNaN()) {
+               return min;
             }
 
             for (p_size j = 1; j < nlist.size(); j++) {
                const p_num& n = nlist[j];
                      
-               if (n.state == NumberState::NaN) {
-                  return P_NaN;
+               if (n.isNaN()) {
+                  return n;
                }
 
                if (n < min) {
@@ -244,8 +244,8 @@ p_num F_Sum::getValue()
    for (p_genptr<p_num>& sv : this->singleValues) {
       const p_num n = sv->getValue();
    
-      if (n.state == NumberState::NaN) {
-         return P_NaN;
+      if (n.isNaN()) {
+         return n;
       }
 
       sum += n;
@@ -253,8 +253,8 @@ p_num F_Sum::getValue()
 
    for (p_genptr<p_nlist>& mv : this->multiValues) {
       for (const p_num n : mv->getValue()) {
-         if (n.state == NumberState::NaN) {
-            return P_NaN;
+         if (n.isNaN()) {
+            return n;
          }
 
          sum += n;

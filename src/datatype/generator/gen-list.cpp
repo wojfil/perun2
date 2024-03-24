@@ -107,7 +107,7 @@ p_list ListFilter_Where::getValue()
 p_list ListFilter_Limit::getValue() 
 {
    const p_num n = number->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_list();
    }
 
@@ -128,7 +128,7 @@ p_list ListFilter_Limit::getValue()
 p_list ListFilter_Skip::getValue()
 {
    const p_num n = number->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_list();
    }
 
@@ -148,7 +148,7 @@ p_list ListFilter_Skip::getValue()
 p_list ListFilter_Every::getValue()
 {
    const p_num n = number->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_list();
    }
 
@@ -174,7 +174,7 @@ p_list ListFilter_Every::getValue()
 p_list ListFilter_Final::getValue()
 {
    const p_num n = number->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_list();
    }
 

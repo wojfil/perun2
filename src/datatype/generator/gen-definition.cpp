@@ -232,7 +232,7 @@ p_bool DefFilter_Limit::hasNext()
 {
    if (first) {
       const p_num n = this->number->getValue();
-      if (n.state == NumberState::NaN) {
+      if (n.isNaN()) {
          return false;
       }
 
@@ -264,7 +264,7 @@ p_bool DefFilter_Skip::hasNext()
 {
    if (first) {
       const p_num n = this->number->getValue();
-      if (n.state == NumberState::NaN) {
+      if (n.isNaN()) {
          return false;
       }
 
@@ -301,7 +301,7 @@ p_bool DefFilter_Every::hasNext()
 {
    if (first) {
       const p_num n = this->number->getValue();
-      if (n.state == NumberState::NaN) {
+      if (n.isNaN()) {
          return false;
       }
 
@@ -347,7 +347,7 @@ p_bool DefFilter_Final::hasNext()
 {
    if (first) {
       const p_num n = this->number->getValue();
-      if (n.state == NumberState::NaN) {
+      if (n.isNaN()) {
          return false;
       }
 

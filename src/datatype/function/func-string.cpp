@@ -120,7 +120,7 @@ p_str F_Fill::getValue()
    const p_str base = arg1->getValue();
    const p_num n = arg2->getValue();
 
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -218,7 +218,7 @@ p_str F_Upper::getValue()
 p_str F_Repeat::getValue()
 {
    const p_num n = arg2->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -278,7 +278,7 @@ p_str F_Reverse::getValue()
 p_str F_Left::getValue()
 {
    const p_num n = arg2->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -299,7 +299,7 @@ p_str F_Left::getValue()
 p_str F_Right::getValue()
 {
    const p_num n = arg2->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -320,7 +320,7 @@ p_str F_Right::getValue()
 p_str F_Substring_2::getValue()
 {
    const p_num n2 = arg2->getValue();
-   if (n2.state == NumberState::NaN) {
+   if (n2.isNaN()) {
       return p_str();
    }
 
@@ -351,12 +351,12 @@ p_str F_Substring_2::getValue()
 p_str F_Substring_3::getValue()
 {
    const p_num n2 = arg2->getValue();
-   if (n2.state == NumberState::NaN) {
+   if (n2.isNaN()) {
       return p_str();
    }
 
    const p_num n3 = arg3->getValue();
-   if (n3.state == NumberState::NaN) {
+   if (n3.isNaN()) {
       return p_str();
    }
 
@@ -561,7 +561,7 @@ p_str F_String_P::getValue()
 p_str F_MonthName::getValue()
 {
    const p_num n = arg1->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -588,7 +588,7 @@ p_str F_MonthNameFromTime::getValue()
 p_str F_WeekDayName::getValue()
 {
    const p_num n = arg1->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -780,7 +780,7 @@ p_str F_Join::getValue()
 p_str F_Roman::getValue()
 {
    const p_num base = arg1->getValue();
-   if (base.state == NumberState::NaN) {
+   if (base.isNaN()) {
       return p_str();
    }
    
@@ -857,7 +857,7 @@ inline void F_Roman::appendFraction(const p_num& base, p_stream& ss) const
 p_str F_Binary::getValue()
 {
    const p_num n = arg1->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 
@@ -887,7 +887,7 @@ p_str F_Binary::getValue()
 p_str F_Hex::getValue()
 {
    const p_num n = arg1->getValue();
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return p_str();
    }
 

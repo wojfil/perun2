@@ -110,8 +110,8 @@ p_num F_SizeDefinition::getValue()
       const p_str v = definition->getValue();
       const p_num s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
 
-      if (s.state == NumberState::NaN) {
-         return P_NaN;
+      if (s.isNaN()) {
+         return s;
       }
 
       total += s;
@@ -141,8 +141,8 @@ p_num F_SizeList::getValue()
       if (!v.empty() && !os_isInvalid(v)) {
          const p_num s = os_size(os_leftJoin(this->context->location->value, v), this->perun2);
          
-         if (s.state == NumberState::NaN) {
-            return P_NaN;
+         if (s.isNaN()) {
+            return s;
          }
 
          total += s;

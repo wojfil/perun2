@@ -68,7 +68,7 @@ void VarCharAssignment::run()
    const p_size len = variable.value.size();
    const p_num num = index->getValue();
 
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       return;
    }
 
@@ -134,7 +134,7 @@ void VarCharAssignment::run()
 void VarTimeUnitAssignment::run()
 {
    const p_num num = value->getValue();
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       variable.value.clear();
       return;
    }
@@ -172,7 +172,7 @@ void VarTimeUnitAssignment::run()
 void VarTimeUnitChange::run()
 {
    const p_num num = value->getValue();
-   if (num.state == NumberState::NaN) {
+   if (num.isNaN()) {
       variable.value.clear();
       return;
    }

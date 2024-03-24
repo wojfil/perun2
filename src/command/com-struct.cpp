@@ -54,7 +54,7 @@ void CS_Times::run()
 {
    const p_num n = this->times->getValue();
 
-   if (n.state == NumberState::NaN) {
+   if (n.isNaN()) {
       return;
    }
 

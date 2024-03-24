@@ -90,7 +90,8 @@ p_bool Tokens::hasBinaryBoolKeyword() const
 {
    return (this->info & TI_HAS_KEYWORD_IN)
         | (this->info & TI_HAS_KEYWORD_LIKE)
-        | (this->info & TI_HAS_KEYWORD_RESEMBLES);
+        | (this->info & TI_HAS_KEYWORD_RESEMBLES)
+        | (this->info & TI_HAS_KEYWORD_BETWEEN);
 }
 
 p_bool Tokens::isEmpty() const
@@ -516,6 +517,14 @@ void Tokens::setData()
                   }
                   case Keyword::kw_As: {
                      this->info |= TI_HAS_KEYWORD_AS;
+                     break;
+                  }
+                  case Keyword::kw_Between: {
+                     this->info |= TI_HAS_KEYWORD_BETWEEN;
+                     break;
+                  }
+                  case Keyword::kw_And: {
+                     this->info |= TI_HAS_KEYWORD_AND;
                      break;
                   }
                   default: {

@@ -702,6 +702,27 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
    return true;
 }
 
+static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
+{
+   std::pair<Tokens, Tokens> firstDivision = tks.divideByKeyword(Keyword::kw_Between);
+
+   if (firstDivision.first.isEmpty()) {
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
+   }
+
+   if (firstDivision.second.isEmpty()) {
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
+   }
+
+   if (! firstDivision.second.check(TI_HAS_KEYWORD_AND)) {
+      // todo throw exception
+   }
+
+   // to be continued soon
+
+   return false;
+}
+
 static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);

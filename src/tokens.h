@@ -45,12 +45,14 @@ p_constexpr p_tinfo TI_HAS_KEYWORD_RESEMBLES =      1 << 13;
 p_constexpr p_tinfo TI_HAS_KEYWORD_TO =             1 << 14;
 p_constexpr p_tinfo TI_HAS_KEYWORD_WITH =           1 << 15;
 p_constexpr p_tinfo TI_HAS_KEYWORD_AS =             1 << 16;
-p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =      1 << 17;
-p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =         1 << 18;
-p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 19;
-p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 20;
-p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 21;
-p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 22;
+p_constexpr p_tinfo TI_HAS_KEYWORD_AND =            1 << 17;
+p_constexpr p_tinfo TI_HAS_KEYWORD_BETWEEN =        1 << 18;
+p_constexpr p_tinfo TI_IS_POSSIBLE_LIST_ELEM =      1 << 19;
+p_constexpr p_tinfo TI_IS_POSSIBLE_BINARY =         1 << 20;
+p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 21;
+p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 22;
+p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 23;
+p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 24;
 
 
 struct Perun2Process;

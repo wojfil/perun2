@@ -131,6 +131,11 @@ p_bool Number::isMinusOne() const
    return value.d == NDOUBLE_MINUS_ONE;
 }
 
+p_bool Number::isNaN() const
+{
+   return state == NumberState::NaN;
+}
+
 void Number::makeOpposite()
 {
    if (state == NumberState::Int) {

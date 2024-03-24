@@ -55,6 +55,7 @@ struct Number
    p_bool isZero() const;
    p_bool isOne() const;
    p_bool isMinusOne() const;
+   p_bool isNaN() const;
    void makeOpposite();
    void setToNaN();
    void setToZero();

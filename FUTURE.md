@@ -540,22 +540,6 @@ This command selects two files: "a.txt" and "b.txt".
 Including code in string literals could be seen as not elegant.
 We can imagine a command that takes source path as an argument: *runPowershellFile*, *runPythonFile*.
 
-## *Resembles*
-
-The Like operator is very useful. However, is case sensitive and very strict.
-The *Resembles* operator would be a softer and more forgiving variant of it.
-
-```
-select files
-  where name resembles 'perun2'
-```
-
-It would expect typos and missing letters.
-For example, 'perun3' and 'perun' do resemble 'perun2'. 
-But not 'pep34'.
-It needs some arbitrary rules.
-Like, for example, 1 mistake is acceptable for every 3 characters in phrase.
-
 ## File content check: operators *is* and *equals*
 
 These two operators would take only one argument.

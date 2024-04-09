@@ -845,6 +845,11 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Proce
 
    p_genptr<p_str> pattern;
    if (! parse(p2, pair.second, pattern)) {
+      if (pair.second.getLength() == 1 && pair.second.first().type == Token::t_Pattern) {
+         const p_str pattern = pair.second.first().getOriginString(p2);
+         throw SyntaxError::asteriskIsNotWildcardInLikeOperator(pattern, pair.second.first().line);
+      }
+
       return false;
    }
 

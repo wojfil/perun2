@@ -15,6 +15,8 @@
 #include "exception.h"
 #include "metadata.h"
 #include "datatype/datatype.h"
+#include "datatype/text/like.h"
+#include <algorithm>
 
 
 namespace perun2
@@ -37,6 +39,15 @@ SyntaxError SyntaxError::asteriskPatternCannotContainDotSegments(const p_str& va
 {
    return SyntaxError(str(L"asterisk pattern '", value, 
       L"' cannot contain dot segments in the middle of a path"), line);
+}
+
+SyntaxError SyntaxError::asteriskIsNotWildcardInLikeOperator(const p_str& value, const p_int line)
+{
+   p_str proper = value;
+   std::replace(proper.begin(), proper.end(), CHAR_ASTERISK, gen::WILDCARD_MULTIPLE_CHARS);
+
+   return SyntaxError(str(L"asterisk in not a wildcard of the Like operator. You should write '", 
+      proper,  L"' instead"), line);
 }
 
 SyntaxError SyntaxError::bracketIsNotClosed(const p_char value, const p_int line)

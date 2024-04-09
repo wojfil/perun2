@@ -723,7 +723,7 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
    if (! firstDivision.second.check(TI_HAS_KEYWORD_AND)) {
       const Token& t = tks.at(firstDivision.first.getLength());
       const p_str between = t.getOriginString(p2);
-      throw SyntaxError::operatorBetweenShouldBeFolowedByAnd(between, t.line);
+      throw SyntaxError::operatorBetweenShouldBeFollowedByAnd(between, t.line);
    }
 
    std::pair<Tokens, Tokens> secondDivision = firstDivision.second.divideByKeyword(Keyword::kw_And);

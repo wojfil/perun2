@@ -66,6 +66,7 @@ public:
    static SyntaxError negationByExclamation(const p_int line);
    static SyntaxError numberTooBig(const p_str& value, const p_int line);
    static SyntaxError openedStringLteral(const p_int line);
+   static SyntaxError operatorBetweenShouldBeFolowedByAnd(const p_str& value, const p_int line);
    static SyntaxError rightSideOfOperatorIsEmpty(const p_str& operator_, const p_int line);
    static SyntaxError secondsOutOfRange(const p_str& value, const p_int line);
    static SyntaxError supposedUnintentionalAsteriskPattern(const p_str& value, const p_int line);

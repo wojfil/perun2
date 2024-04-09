@@ -87,6 +87,12 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
       }
    }
 
+   if (tks.check(TI_HAS_KEYWORD_BETWEEN)) {
+      if (parseBetween(result, tks, p2)) {
+         return true;
+      }
+   }
+
    if (parseComparisons(result, tks, p2)) {
       return true;
    }
@@ -715,10 +721,12 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
    }
 
    if (! firstDivision.second.check(TI_HAS_KEYWORD_AND)) {
-      // todo throw exception
+      const Token& t = tks.at(firstDivision.first.getLength());
+      const p_str between = t.getOriginString(p2);
+      throw SyntaxError::operatorBetweenShouldBeFolowedByAnd(between, t.line);
    }
 
-   // to be continued soon
+
 
    return false;
 }

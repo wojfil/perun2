@@ -240,6 +240,11 @@ SyntaxError SyntaxError::openedStringLteral(const p_int line)
    return SyntaxError(L"an opened string literal is not closed", line);
 }
 
+SyntaxError SyntaxError::operatorBetweenShouldBeFolowedByAnd(const p_str& value, const p_int line)
+{
+   return SyntaxError(str(L"operator '", value, L"' should be followed by the keyword 'and'"), line);
+}
+
 SyntaxError SyntaxError::rightSideOfOperatorIsEmpty(const p_str& operator_, const p_int line)
 {
    return SyntaxError(str(L"right side of operator '", operator_, L"' is empty"), line);

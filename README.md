@@ -22,7 +22,6 @@ The documentation is hosted at [this website](https://perun2.org/docs).
 Perun2 is currently developed by WojFil Games.
 Rules for external contributions are not specified yet.
 However, you can help the development by suggesting new features.
-There is a whole [page](FUTURE.md) dedicated to it.
 
 ## Build
 

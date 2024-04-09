@@ -726,6 +726,18 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       throw SyntaxError::operatorBetweenShouldBeFolowedByAnd(between, t.line);
    }
 
+   std::pair<Tokens, Tokens> secondDivision = firstDivision.second.divideByKeyword(Keyword::kw_And);
+
+   if (secondDivision.first.isEmpty()) {
+      throw SyntaxError::leftSideOfOperatorIsEmpty(
+         firstDivision.second.first().getOriginString(p2), firstDivision.second.first().line);
+   }
+
+   if (secondDivision.second.isEmpty()) {
+      throw SyntaxError::rightSideOfOperatorIsEmpty(
+         firstDivision.second.last().getOriginString(p2), firstDivision.second.last().line);
+   }
+
 
 
    return false;

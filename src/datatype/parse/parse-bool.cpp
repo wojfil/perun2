@@ -92,17 +92,27 @@ static p_bool tryToParseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Per
 
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
-      if (t.type == Token::t_Keyword && isBoolExpOperator(t) && bi.isBracketFree())
-      {
-         if (!(t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()))
-         {
-            if (!parseBoolExp(result, tks, p2)) {
-               throw SyntaxError::syntaxOfBooleanExpressionNotValid(tks.first().line);
-            }
-            return true;
-         }
+
+      if (t.type != Token::t_Keyword) {
+         bi.refresh(t);
+         continue;
       }
-      bi.refresh(t);
+
+      if (! bi.isBracketFree()) {
+         continue;
+      }
+
+      if (isBoolExpOperator(t)) {
+         if (t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()) {
+            continue;
+         }
+
+         if (!parseBoolExp(result, tks, p2)) {
+            throw SyntaxError::syntaxOfBooleanExpressionNotValid(tks.first().line);
+         }
+
+         return true;
+      }
    }
 
    return false;

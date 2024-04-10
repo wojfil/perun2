@@ -166,14 +166,14 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
                      }
                      else {
                         p_genptr<p_bool> boo;
-                        if (parse(p2, tks2, boo)) {
-                           infList.emplace_back(boo, line);
-                           infList.emplace_back(ch, line);
-                           sublen = 0;
-                        }
-                        else {
+
+                        if (! parse(p2, tks2, boo)) {
                            return false;
                         }
+
+                        infList.emplace_back(boo, line);
+                        infList.emplace_back(ch, line);
+                        sublen = 0;
                      }
                   }
                   else {

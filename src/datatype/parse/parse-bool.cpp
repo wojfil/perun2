@@ -161,8 +161,6 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
                      if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
                         const p_bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
                         infList.emplace_back(boo, line);
-                        infList.emplace_back(ch, line);
-                        sublen = 0;
                      }
                      else {
                         p_genptr<p_bool> boo;
@@ -172,9 +170,10 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
                         }
 
                         infList.emplace_back(boo, line);
-                        infList.emplace_back(ch, line);
-                        sublen = 0;
                      }
+
+                     infList.emplace_back(ch, line);
+                     sublen = 0;
                   }
                   else {
                      sublen++;

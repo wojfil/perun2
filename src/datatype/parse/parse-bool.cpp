@@ -89,6 +89,7 @@ static p_bool tryToParseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Per
    BracketsInfo bi;
    const p_int end = tks.getEnd();
    const p_int start = tks.getStart();
+   p_int betweens = 0;
 
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
@@ -102,9 +103,19 @@ static p_bool tryToParseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Per
          continue;
       }
 
-      if (isBoolExpOperator(t)) {
+      if (t.isKeyword(Keyword::kw_Between)) {
+         betweens++;
+      }
+      else if (isBoolExpOperator(t)) {
          if (t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()) {
             continue;
+         }
+
+         if (t.isKeyword(Keyword::kw_And)) {
+            if (betweens > 0) {
+               betweens--;
+               continue;
+            }
          }
 
          if (!parseBoolExp(result, tks, p2)) {

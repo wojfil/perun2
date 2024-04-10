@@ -165,7 +165,6 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
          continue;
       }
 
-      
       if (! bi.isBracketFree()) {
          sublen++;
          continue;

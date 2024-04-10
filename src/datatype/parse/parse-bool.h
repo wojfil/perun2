@@ -25,6 +25,7 @@ namespace perun2::parse
 
 p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 
+static p_bool tryToParseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool boolExpTree(p_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& infList);
 static p_bool boolExpIntegrateNegations(p_genptr<p_bool>& result, std::vector<ExpElement<p_bool>>& elements);

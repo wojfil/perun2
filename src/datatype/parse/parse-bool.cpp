@@ -48,24 +48,8 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
       return func::boolFunction(result, tks, p2);
    }
    else if (len >= 2 && !possibleBinary) {
-      // build numeric expression (but only if sequence has any operator)
-      BracketsInfo bi;
-      const p_int end = tks.getEnd();
-      const p_int start = tks.getStart();
-
-      for (p_int i = start; i <= end; i++) {
-         const Token& t = tks.listAt(i);
-         if (t.type == Token::t_Keyword && isBoolExpOperator(t) && bi.isBracketFree())
-         {
-            if (!(t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()))
-            {
-               if (!parseBoolExp(result, tks, p2)) {
-                  throw SyntaxError::syntaxOfBooleanExpressionNotValid(tks.first().line);
-               }
-               return true;
-            }
-         }
-         bi.refresh(t);
+      if (tryToParseBoolExp(result, tks, p2)) {
+         return true;
       }
    }
 
@@ -100,6 +84,29 @@ p_bool parseBool(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
    return parseBinary<p_bool>(result, tks, p2) || parseTernary<p_bool>(result, tks, p2);
 }
 
+static p_bool tryToParseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
+{
+   BracketsInfo bi;
+   const p_int end = tks.getEnd();
+   const p_int start = tks.getStart();
+
+   for (p_int i = start; i <= end; i++) {
+      const Token& t = tks.listAt(i);
+      if (t.type == Token::t_Keyword && isBoolExpOperator(t) && bi.isBracketFree())
+      {
+         if (!(t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator()))
+         {
+            if (!parseBoolExp(result, tks, p2)) {
+               throw SyntaxError::syntaxOfBooleanExpressionNotValid(tks.first().line);
+            }
+            return true;
+         }
+      }
+      bi.refresh(t);
+   }
+
+   return false;
+}
 
 // build boolean expression
 // multiple logic statements

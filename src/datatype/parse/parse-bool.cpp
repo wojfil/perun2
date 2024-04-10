@@ -146,48 +146,49 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       if (t.type != Token::t_Keyword) {
          bi.refresh(t);
          sublen++;
+         continue;
       }
 
-      if (isBoolExpOperator(t)) {
-         if (t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator())
-         {
-            sublen++;
-         }
-         else {
-            const p_char ch = toBoolExpOperator(t);
-            if (sublen == 0) {
-               infList.emplace_back(ch, t.line);
-            }
-            else {
-               if (bi.isBracketFree()) {
-                  const Tokens tks2(tks, i - sublen, sublen);
-                  const p_int line = tks2.first().line;
+      if (! isBoolExpOperator(t)) {
+         sublen++;
+         continue;
+      }
 
-                  if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-                     const p_bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
-                     infList.emplace_back(boo, line);
-                  }
-                  else {
-                     p_genptr<p_bool> boo;
-
-                     if (! parse(p2, tks2, boo)) {
-                        return false;
-                     }
-
-                     infList.emplace_back(boo, line);
-                  }
-
-                  infList.emplace_back(ch, line);
-                  sublen = 0;
-               }
-               else {
-                  sublen++;
-               }
-            }
-         }
+      if (t.isKeyword(Keyword::kw_Not) && i != end && tks.listAt(i + 1).isNegatableKeywordOperator())
+      {
+         sublen++;
       }
       else {
-         sublen++;
+         const p_char ch = toBoolExpOperator(t);
+         if (sublen == 0) {
+            infList.emplace_back(ch, t.line);
+         }
+         else {
+            if (bi.isBracketFree()) {
+               const Tokens tks2(tks, i - sublen, sublen);
+               const p_int line = tks2.first().line;
+
+               if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
+                  const p_bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
+                  infList.emplace_back(boo, line);
+               }
+               else {
+                  p_genptr<p_bool> boo;
+
+                  if (! parse(p2, tks2, boo)) {
+                     return false;
+                  }
+
+                  infList.emplace_back(boo, line);
+               }
+
+               infList.emplace_back(ch, line);
+               sublen = 0;
+            }
+            else {
+               sublen++;
+            }
+         }
       }
    }
 

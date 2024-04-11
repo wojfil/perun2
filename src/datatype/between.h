@@ -139,6 +139,18 @@ private:
 };
 
 
+struct BetweenTimesHalfConst : Generator<p_bool>
+{
+public:
+   BetweenTimesHalfConst(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, const p_tim& b2);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_tim> value;
+   p_genptr<p_tim> bound1;
+   const p_tim bound2;
+};
+
 
 }
 

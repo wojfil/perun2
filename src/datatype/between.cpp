@@ -104,6 +104,31 @@ p_bool BetweenNumbersHalfConst::getValue()
 };
 
 
+BetweenTimesHalfConst::BetweenTimesHalfConst(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, const p_tim& b2)
+   : value(std::move(val)), bound1(std::move(b1)), bound2(b2) { };
+
+
+p_bool BetweenTimesHalfConst::getValue() 
+{
+   const p_tim v = value->getValue();
+   
+   if (! v.isComparableWith(bound2)) {
+      return false;
+   }
+
+   const p_tim b1 = bound1->getValue();
+
+   if (! v.isComparableWith(b1)) {
+      return false;
+   }
+
+   if (b1 < bound2) {
+      return v >= b1 && v <= bound2;
+   }
+
+   return v >= bound2 && v <= b1;
+};
+
 
 
 

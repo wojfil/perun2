@@ -769,9 +769,14 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
    const Tokens& left = secondDivision.first;
    const Tokens& right = secondDivision.second;
 
-   p_genptr<p_num> value;
-   if (parse(p2, firstDivision.first, value)) {
-      return parseBetweenNumbers(result, value, left, right, p2);
+   p_genptr<p_num> number;
+   if (parse(p2, firstDivision.first, number)) {
+      return parseBetweenNumbers(result, number, left, right, p2);
+   }
+
+   p_genptr<p_tim> time;
+   if (parse(p2, firstDivision.first, time)) {
+      return parseBetweenTimes(result, time, left, right, p2);
    }
 
    return false;
@@ -831,6 +836,63 @@ static p_bool parseBetweenNumbers(p_genptr<p_bool>& result,
    }
 
    result = std::make_unique<gen::BetweenNumbers>(value, leftGen, rightGen);
+   return true;
+}
+
+
+static p_bool parseBetweenTimes(p_genptr<p_bool>& result, 
+   p_genptr<p_tim>& value, const Tokens& left, const Tokens& right, Perun2Process& p2)
+{
+   p_genptr<p_tim> leftGen;
+
+   if (! parse(p2, left, leftGen)) {
+      return false;
+   }
+
+   p_genptr<p_tim> rightGen;
+
+   if (! parse(p2, right, rightGen)) {
+      return false;
+   }
+
+   const bool leftConst = leftGen->isConstant();
+   const bool rightConst = rightGen->isConstant();
+
+   if (leftConst) {
+      const p_tim leftBound = leftGen->getValue();
+      if (leftBound.isNever()) {
+         result = std::make_unique<gen::Constant<p_bool>>(false);
+         return true;
+      }
+
+      if (rightConst) {
+         const p_tim rightBound = rightGen->getValue();
+         if (rightBound.isNever() || ! leftBound.isComparableWith(rightBound)) {
+            result = std::make_unique<gen::Constant<p_bool>>(false);
+            return true;
+         }
+
+         result = std::make_unique<gen::BetweenConst<p_tim>>(value, leftBound, rightBound);
+         return true;
+      }
+
+      result = std::make_unique<gen::BetweenTimesHalfConst>(value, rightGen, leftBound);
+      return true;
+   }
+   else {
+      if (rightConst) {
+         const p_tim rightBound = rightGen->getValue();
+         if (rightBound.isNever()) {
+            result = std::make_unique<gen::Constant<p_bool>>(false);
+            return true;
+         }
+
+         result = std::make_unique<gen::BetweenTimesHalfConst>(value, leftGen, rightBound);
+         return true;
+      }
+   }
+
+   result = std::make_unique<gen::BetweenTimes>(value, leftGen, rightGen);
    return true;
 }
 

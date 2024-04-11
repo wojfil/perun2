@@ -596,6 +596,11 @@ void Time::clear()
    second = TNUM_MINUS_ONE;
 }
 
+p_bool Time::isNever() const
+{
+   return type == TimeType::tt_Never;
+}
+
 p_bool Time::isComparableWith(const Time& tim) const
 {
    switch (type) {

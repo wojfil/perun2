@@ -25,6 +25,7 @@
 #include "../text/resemblance.h"
 #include "../parse-gen.h"
 #include "../incr-constr.h"
+#include "../between.h"
 
 
 namespace perun2::parse
@@ -765,10 +766,74 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
          firstDivision.second.last().getOriginString(p2), firstDivision.second.last().line);
    }
 
+   const Tokens& left = secondDivision.first;
+   const Tokens& right = secondDivision.second;
 
+   p_genptr<p_num> value;
+   if (parse(p2, firstDivision.first, value)) {
+      return parseBetweenNumbers(result, value, left, right, p2);
+   }
 
    return false;
 }
+
+
+static p_bool parseBetweenNumbers(p_genptr<p_bool>& result, 
+   p_genptr<p_num>& value, const Tokens& left, const Tokens& right, Perun2Process& p2)
+{
+   p_genptr<p_num> leftGen;
+
+   if (! parse(p2, left, leftGen)) {
+      return false;
+   }
+
+   p_genptr<p_num> rightGen;
+
+   if (! parse(p2, right, rightGen)) {
+      return false;
+   }
+
+   const bool leftConst = leftGen->isConstant();
+   const bool rightConst = rightGen->isConstant();
+
+   if (leftConst) {
+      const p_num leftBound = leftGen->getValue();
+      if (leftBound.isNaN()) {
+         result = std::make_unique<gen::Constant<p_bool>>(false);
+         return true;
+      }
+
+      if (rightConst) {
+         const p_num rightBound = rightGen->getValue();
+         if (rightBound.isNaN()) {
+            result = std::make_unique<gen::Constant<p_bool>>(false);
+            return true;
+         }
+
+         result = std::make_unique<gen::BetweenConst<p_num>>(value, leftBound, rightBound);
+         return true;
+      }
+
+      result = std::make_unique<gen::BetweenNumbersHalfConst>(value, rightGen, leftBound);
+      return true;
+   }
+   else {
+      if (rightConst) {
+         const p_num rightBound = rightGen->getValue();
+         if (rightBound.isNaN()) {
+            result = std::make_unique<gen::Constant<p_bool>>(false);
+            return true;
+         }
+
+         result = std::make_unique<gen::BetweenNumbersHalfConst>(value, leftGen, rightBound);
+         return true;
+      }
+   }
+
+   result = std::make_unique<gen::BetweenNumbers>(value, leftGen, rightGen);
+   return true;
+}
+
 
 static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {

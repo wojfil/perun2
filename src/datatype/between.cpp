@@ -78,4 +78,33 @@ p_bool BetweenNumbers::getValue()
 };
 
 
+BetweenNumbersHalfConst::BetweenNumbersHalfConst(p_genptr<p_num>& val, p_genptr<p_num>& b1, const p_num& b2)
+   : value(std::move(val)), bound1(std::move(b1)), bound2(b2) { };
+
+
+p_bool BetweenNumbersHalfConst::getValue() 
+{
+   const p_num v = value->getValue();
+
+   if (v.isNaN()) {
+      return false;
+   }
+
+   const p_num b1 = bound1->getValue();
+
+   if (b1.isNaN()) {
+      return false;
+   }
+
+   if (b1 < bound2) {
+      return v >= b1 && v <= bound2;
+   }
+
+   return v >= bound2 && v <= b1;
+};
+
+
+
+
+
 }

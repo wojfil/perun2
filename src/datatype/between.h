@@ -126,6 +126,19 @@ private:
 };
 
 
+struct BetweenNumbersHalfConst : Generator<p_bool>
+{
+public:
+   BetweenNumbersHalfConst(p_genptr<p_num>& val, p_genptr<p_num>& b1, const p_num& b2);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_num> value;
+   p_genptr<p_num> bound1;
+   const p_num bound2;
+};
+
+
 
 }
 

@@ -736,6 +736,64 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
    return true;
 }
 
+
+template <typename T>
+static p_bool parseBetweenGeneric(p_genptr<p_bool>& result, p_genptr<T>& value, 
+   const Tokens& left, const Tokens& right, const p_bool negated, Perun2Process& p2)
+{
+   p_genptr<T> leftGen;
+
+   if (! parse(p2, left, leftGen)) {
+      return false;
+   }
+
+   p_genptr<T> rightGen;
+
+   if (! parse(p2, right, rightGen)) {
+      return false;
+   }
+
+   const bool leftConst = leftGen->isConstant();
+   const bool rightConst = rightGen->isConstant();
+
+   if (leftConst) {
+      const T leftBound = leftGen->getValue();
+
+      if (rightConst) {
+         const T rightBound = rightGen->getValue();
+         result = std::make_unique<gen::BetweenConst<T>>(value, leftBound, rightBound);
+
+         if (negated) {
+            result = std::make_unique<gen::Not>(result);
+         }
+         return true;
+      }
+
+      result = std::make_unique<gen::BetweenHalfConst<T>>(value, rightGen, leftBound);
+      if (negated) {
+         result = std::make_unique<gen::Not>(result);
+      }
+      return true;
+   }
+
+   if (rightConst) {
+      const T rightBound = rightGen->getValue();
+      result = std::make_unique<gen::BetweenHalfConst<T>>(value, leftGen, rightBound);
+
+      if (negated) {
+         result = std::make_unique<gen::Not>(result);
+      }
+      return true;
+   }
+
+   result = std::make_unique<gen::Between<T>>(value, leftGen, rightGen);
+   if (negated) {
+      result = std::make_unique<gen::Not>(result);
+   }
+   return true;
+}
+
+
 static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    std::pair<Tokens, Tokens> firstDivision = tks.divideByKeyword(Keyword::kw_Between);
@@ -781,12 +839,30 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
 
    p_genptr<p_num> number;
    if (parse(p2, firstDivision.first, number)) {
-      return parseBetweenNumbers(result, number, left, right, neg, p2);
+      if (parseBetweenNumbers(result, number, left, right, neg, p2)) {
+         return true;
+      }
    }
 
    p_genptr<p_tim> time;
    if (parse(p2, firstDivision.first, time)) {
-      return parseBetweenTimes(result, time, left, right, neg, p2);
+      if (parseBetweenTimes(result, time, left, right, neg, p2)) {
+         return true;
+      }
+   }
+
+   p_genptr<p_per> period;
+   if (parse(p2, firstDivision.first, period)) {
+      if (parseBetweenGeneric(result, period, left, right, neg, p2)) {
+         return true;
+      }
+   }
+
+   p_genptr<p_str> string;
+   if (parse(p2, firstDivision.first, string)) {
+      if (parseBetweenGeneric(result, string, left, right, neg, p2)) {
+         return true;
+      }
    }
 
    return false;

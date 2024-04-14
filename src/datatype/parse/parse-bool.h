@@ -41,10 +41,10 @@ static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated,
 static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 
 static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
-static p_bool parseBetweenNumbers(p_genptr<p_bool>& result, 
-   p_genptr<p_num>& value, const Tokens& left, const Tokens& right, Perun2Process& p2);
-static p_bool parseBetweenTimes(p_genptr<p_bool>& result, 
-   p_genptr<p_tim>& value, const Tokens& left, const Tokens& right, Perun2Process& p2);
+static p_bool parseBetweenNumbers(p_genptr<p_bool>& result, p_genptr<p_num>& value, 
+   const Tokens& left, const Tokens& right, const p_bool negated, Perun2Process& p2);
+static p_bool parseBetweenTimes(p_genptr<p_bool>& result, p_genptr<p_tim>& value, 
+   const Tokens& left, const Tokens& right, const p_bool negated, Perun2Process& p2);
 
 
 

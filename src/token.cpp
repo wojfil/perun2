@@ -187,6 +187,7 @@ p_bool Token::isNegatableKeywordOperator() const
       case Keyword::kw_In:
       case Keyword::kw_Like:
       case Keyword::kw_Resembles:
+      case Keyword::kw_Between:
          return true;
       default:
          return false;

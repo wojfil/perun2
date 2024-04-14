@@ -744,6 +744,16 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
 
+   const p_bool neg = firstDivision.first.last().isKeyword(Keyword::kw_Not);
+   if (neg) {
+      if (firstDivision.first.getLength() == 1) {
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
+      }
+
+      firstDivision.first.trimRight();
+   }
+
    if (firstDivision.second.isEmpty()) {
       throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
@@ -771,20 +781,20 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
 
    p_genptr<p_num> number;
    if (parse(p2, firstDivision.first, number)) {
-      return parseBetweenNumbers(result, number, left, right, p2);
+      return parseBetweenNumbers(result, number, left, right, neg, p2);
    }
 
    p_genptr<p_tim> time;
    if (parse(p2, firstDivision.first, time)) {
-      return parseBetweenTimes(result, time, left, right, p2);
+      return parseBetweenTimes(result, time, left, right, neg, p2);
    }
 
    return false;
 }
 
 
-static p_bool parseBetweenNumbers(p_genptr<p_bool>& result, 
-   p_genptr<p_num>& value, const Tokens& left, const Tokens& right, Perun2Process& p2)
+static p_bool parseBetweenNumbers(p_genptr<p_bool>& result, p_genptr<p_num>& value, 
+   const Tokens& left, const Tokens& right, const p_bool negated, Perun2Process& p2)
 {
    p_genptr<p_num> leftGen;
 
@@ -804,44 +814,56 @@ static p_bool parseBetweenNumbers(p_genptr<p_bool>& result,
    if (leftConst) {
       const p_num leftBound = leftGen->getValue();
       if (leftBound.isNaN()) {
-         result = std::make_unique<gen::Constant<p_bool>>(false);
+         result = std::make_unique<gen::Constant<p_bool>>(negated);
          return true;
       }
 
       if (rightConst) {
          const p_num rightBound = rightGen->getValue();
          if (rightBound.isNaN()) {
-            result = std::make_unique<gen::Constant<p_bool>>(false);
+            result = std::make_unique<gen::Constant<p_bool>>(negated);
             return true;
          }
 
          result = std::make_unique<gen::BetweenConst<p_num>>(value, leftBound, rightBound);
+         if (negated) {
+            result = std::make_unique<gen::Not>(result);
+         }
          return true;
       }
 
       result = std::make_unique<gen::BetweenNumbersHalfConst>(value, rightGen, leftBound);
+      if (negated) {
+         result = std::make_unique<gen::Not>(result);
+      }
       return true;
    }
    else {
       if (rightConst) {
          const p_num rightBound = rightGen->getValue();
          if (rightBound.isNaN()) {
-            result = std::make_unique<gen::Constant<p_bool>>(false);
+            result = std::make_unique<gen::Constant<p_bool>>(negated);
             return true;
          }
 
          result = std::make_unique<gen::BetweenNumbersHalfConst>(value, leftGen, rightBound);
+         if (negated) {
+            result = std::make_unique<gen::Not>(result);
+         }
          return true;
       }
    }
 
    result = std::make_unique<gen::BetweenNumbers>(value, leftGen, rightGen);
+   if (negated) {
+      result = std::make_unique<gen::Not>(result);
+   }
    return true;
 }
 
 
-static p_bool parseBetweenTimes(p_genptr<p_bool>& result, 
-   p_genptr<p_tim>& value, const Tokens& left, const Tokens& right, Perun2Process& p2)
+static p_bool parseBetweenTimes(p_genptr<p_bool>& result, p_genptr<p_tim>& value, 
+   const Tokens& left, const Tokens& right, const p_bool negated, Perun2Process& p2)
 {
    p_genptr<p_tim> leftGen;
 
@@ -861,38 +883,50 @@ static p_bool parseBetweenTimes(p_genptr<p_bool>& result,
    if (leftConst) {
       const p_tim leftBound = leftGen->getValue();
       if (leftBound.isNever()) {
-         result = std::make_unique<gen::Constant<p_bool>>(false);
+         result = std::make_unique<gen::Constant<p_bool>>(negated);
          return true;
       }
 
       if (rightConst) {
          const p_tim rightBound = rightGen->getValue();
          if (rightBound.isNever() || ! leftBound.isComparableWith(rightBound)) {
-            result = std::make_unique<gen::Constant<p_bool>>(false);
+            result = std::make_unique<gen::Constant<p_bool>>(negated);
             return true;
          }
 
          result = std::make_unique<gen::BetweenConst<p_tim>>(value, leftBound, rightBound);
+         if (negated) {
+            result = std::make_unique<gen::Not>(result);
+         }
          return true;
       }
 
       result = std::make_unique<gen::BetweenTimesHalfConst>(value, rightGen, leftBound);
+      if (negated) {
+         result = std::make_unique<gen::Not>(result);
+      }
       return true;
    }
    else {
       if (rightConst) {
          const p_tim rightBound = rightGen->getValue();
          if (rightBound.isNever()) {
-            result = std::make_unique<gen::Constant<p_bool>>(false);
+            result = std::make_unique<gen::Constant<p_bool>>(negated);
             return true;
          }
 
          result = std::make_unique<gen::BetweenTimesHalfConst>(value, leftGen, rightBound);
+         if (negated) {
+            result = std::make_unique<gen::Not>(result);
+         }
          return true;
       }
    }
 
    result = std::make_unique<gen::BetweenTimes>(value, leftGen, rightGen);
+   if (negated) {
+      result = std::make_unique<gen::Not>(result);
+   }
    return true;
 }
 

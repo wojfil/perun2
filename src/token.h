@@ -177,6 +177,7 @@ public:
    p_bool isWeekDay() const;
    p_bool isMonth() const;
    p_bool isOne() const;
+   p_bool isIntegerLiteral() const;
    p_bool isTimeAttribute(Perun2Process& p2) const;
    p_str getOriginString(Perun2Process& p2) const;
    p_str getOriginString_2(Perun2Process& p2) const;

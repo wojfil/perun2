@@ -293,6 +293,11 @@ p_bool Token::isOne() const
    return type == Token::t_Number && value.num.n.isOne();
 }
 
+p_bool Token::isIntegerLiteral() const
+{
+   return type == Token::t_Number && value.num.n.state == NumberState::Int;
+}
+
 p_bool Token::isTimeAttribute(Perun2Process& p2) const
 {
    return this->type == Token::t_Word && isWord(STRINGS_TIME_ATTR, p2);

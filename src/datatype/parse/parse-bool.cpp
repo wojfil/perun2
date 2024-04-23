@@ -816,10 +816,11 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
 
+   const Token& betweenToken = tks.at(firstDivision.first.getLength());
+
    if (! firstDivision.second.check(TI_HAS_KEYWORD_AND)) {
-      const Token& t = tks.at(firstDivision.first.getLength());
-      const p_str between = t.getOriginString(p2);
-      throw SyntaxError::operatorBetweenShouldBeFollowedByAnd(between, t.line);
+      const p_str between = betweenToken.getOriginString(p2);
+      throw SyntaxError::operatorBetweenShouldBeFollowedByAnd(between, betweenToken.line);
    }
 
    std::pair<Tokens, Tokens> secondDivision = firstDivision.second.divideByKeyword(Keyword::kw_And);
@@ -834,32 +835,37 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
          firstDivision.second.last().getOriginString(p2), firstDivision.second.last().line);
    }
 
+   const Tokens& valueTokens = firstDivision.first;
    const Tokens& left = secondDivision.first;
    const Tokens& right = secondDivision.second;
 
+   if (valueTokens.getLength() == 1 && left.getLength() == 1 && right.getLength() == 1) {
+      // check common exceptions
+   }
+
    p_genptr<p_num> number;
-   if (parse(p2, firstDivision.first, number)) {
+   if (parse(p2, valueTokens, number)) {
       if (parseBetweenNumbers(result, number, left, right, neg, p2)) {
          return true;
       }
    }
 
    p_genptr<p_tim> time;
-   if (parse(p2, firstDivision.first, time)) {
+   if (parse(p2, valueTokens, time)) {
       if (parseBetweenTimes(result, time, left, right, neg, p2)) {
          return true;
       }
    }
 
    p_genptr<p_per> period;
-   if (parse(p2, firstDivision.first, period)) {
+   if (parse(p2, valueTokens, period)) {
       if (parseBetweenGeneric(result, period, left, right, neg, p2)) {
          return true;
       }
    }
 
    p_genptr<p_str> string;
-   if (parse(p2, firstDivision.first, string)) {
+   if (parse(p2, valueTokens, string)) {
       if (parseBetweenGeneric(result, string, left, right, neg, p2)) {
          return true;
       }
@@ -1285,6 +1291,7 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
       }
    }
 }
+
 
 static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens, 
    p_genptr<p_num>& rightSide, const CompType ct, Perun2Process& p2)

@@ -794,6 +794,66 @@ static p_bool parseBetweenGeneric(p_genptr<p_bool>& result, p_genptr<T>& value,
 }
 
 
+static void checkCommonExceptions_Between(const Tokens& value, const Tokens& left, 
+   const Tokens& right, const Token& betweenKeyword, Perun2Process& p2)
+{
+   const Token& t1 = value.first();
+   const Token& t2 = left.first();
+   const Token& t3 = right.first();
+
+   if (! t1.isWord(STRINGS_TIME_VAR, p2)) {
+      return;
+   }
+   
+   if (t2.isWeekDay() || t2.isMonth()) {
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", 
+            t2.getOriginString(p2), L"', you should write '", 
+            t1.getOriginString(p2), L".", (t2.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+            L" ", betweenKeyword.getOriginString(p2), L" ", t2.getOriginString(p2), L"'"), t1.line);   
+   }
+
+   if (t3.isWeekDay() || t3.isMonth()) {
+         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", 
+            t3.getOriginString(p2), L"', you should write '", 
+            t1.getOriginString(p2), L".", (t3.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+            L" ", betweenKeyword.getOriginString(p2), L" ", t3.getOriginString(p2), L"'"), t1.line);   
+   }
+
+   const p_bool isInteger2 = (t2.type == Token::t_Number) && t2.value.num.n.state == NumberState::Int;
+   const p_bool isInteger3 = (t3.type == Token::t_Number) && t3.value.num.n.state == NumberState::Int;
+
+   if (isInteger2) {
+      const p_nint nm = t2.value.num.n.value.i;
+
+      if (nm >= NINT_1950 && nm <= NINT_2100) {
+         throw SyntaxError(str(L"instead of '", 
+            t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", toStr(nm),
+            L"', you should write '", 
+            t1.getOriginString(p2), L".year ", betweenKeyword.getOriginString(p2), L" ", toStr(nm), L"'"), t1.line);
+      }
+      else {
+         throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
+            L"' cannot be compared with a number"), t1.line);
+      }
+   }
+
+   if (isInteger3) {
+      const p_nint nm = t3.value.num.n.value.i;
+
+      if (nm >= NINT_1950 && nm <= NINT_2100) {
+         throw SyntaxError(str(L"instead of '", 
+            t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", toStr(nm),
+            L"', you should write '", 
+            t1.getOriginString(p2), L".year ", betweenKeyword.getOriginString(p2), L" ", toStr(nm), L"'"), t1.line);
+      }
+      else {
+         throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
+            L"' cannot be compared with a number"), t1.line);
+      }
+   }
+}
+
+
 static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2)
 {
    std::pair<Tokens, Tokens> firstDivision = tks.divideByKeyword(Keyword::kw_Between);
@@ -840,7 +900,7 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
    const Tokens& right = secondDivision.second;
 
    if (valueTokens.getLength() == 1 && left.getLength() == 1 && right.getLength() == 1) {
-      // check common exceptions
+      checkCommonExceptions_Between(valueTokens, left, right, betweenToken, p2);
    }
 
    p_genptr<p_num> number;

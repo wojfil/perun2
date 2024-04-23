@@ -46,9 +46,17 @@ void Attribute::add(const Token& tk)
       return;
    }
 
-   if (!tk.isVariable(STRING_PATH, this->perun2) && !tk.isVariable(STRING_FULLNAME, this->perun2)) {
-      this->set(ATTR_EXISTS);
+   if (tk.isVariable(STRING_FULLNAME, this->perun2)) {
+      this->set(ATTR_FULLNAME);
+      return;
    }
+
+   if (tk.isVariable(STRING_PATH, this->perun2)) {
+      return;
+   }
+
+   this->set(ATTR_EXISTS);
+   
    if (tk.isVariable(STRING_ACCESS, this->perun2)) {
       this->set(ATTR_ACCESS);
    }
@@ -76,9 +84,6 @@ void Attribute::add(const Token& tk)
    else if (tk.isVariable(STRING_EXTENSION, this->perun2)) {
       this->set(ATTR_EXTENSION);
    }
-   else if (tk.isVariable(STRING_FULLNAME, this->perun2)) {
-      this->set(ATTR_FULLNAME);
-   }
    else if (tk.isVariable(STRING_HIDDEN, this->perun2)) {
       this->set(ATTR_HIDDEN);
    }
@@ -95,9 +100,6 @@ void Attribute::add(const Token& tk)
    }
    else if (tk.isVariable(STRING_PARENT, this->perun2)) {
       this->set(ATTR_PARENT);
-   }
-   else if (tk.isVariable(STRING_PATH, this->perun2)) {
-      this->set(ATTR_PATH);
    }
    else if (tk.isVariable(STRING_READONLY, this->perun2)) {
       this->set(ATTR_READONLY);

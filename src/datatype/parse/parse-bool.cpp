@@ -819,10 +819,7 @@ static void checkCommonExceptions_Between(const Tokens& value, const Tokens& lef
             L" ", betweenKeyword.getOriginString(p2), L" ", t3.getOriginString(p2), L"'"), t1.line);   
    }
 
-   const p_bool isInteger2 = (t2.type == Token::t_Number) && t2.value.num.n.state == NumberState::Int;
-   const p_bool isInteger3 = (t3.type == Token::t_Number) && t3.value.num.n.state == NumberState::Int;
-
-   if (isInteger2) {
+   if (t2.isIntegerLiteral()) {
       const p_nint nm = t2.value.num.n.value.i;
 
       if (nm >= NINT_1950 && nm <= NINT_2100) {
@@ -837,7 +834,7 @@ static void checkCommonExceptions_Between(const Tokens& value, const Tokens& lef
       }
    }
 
-   if (isInteger3) {
+   if (t3.isIntegerLiteral()) {
       const p_nint nm = t3.value.num.n.value.i;
 
       if (nm >= NINT_1950 && nm <= NINT_2100) {
@@ -1325,10 +1322,7 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
          (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"'"), t1.line);
    }
 
-   const p_bool isInteger1 = (t1.type == Token::t_Number) && t1.value.num.n.state == NumberState::Int;
-   const p_bool isInteger2 = (t2.type == Token::t_Number) && t2.value.num.n.state == NumberState::Int;
-
-   if (isVar1 && isInteger2) {
+   if (isVar1 && t2.isIntegerLiteral()) {
       const p_nint nm = t2.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
          throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", toStr(nm),
@@ -1339,7 +1333,7 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
             L"' cannot be compared with a number"), t1.line);
       }
    }
-   else if (isInteger1 && isVar2) {
+   else if (t1.isIntegerLiteral() && isVar2) {
       const p_nint nm = t1.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
          throw SyntaxError(str(L"instead of '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2),

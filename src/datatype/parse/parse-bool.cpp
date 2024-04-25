@@ -26,6 +26,7 @@
 #include "../parse-gen.h"
 #include "../incr-constr.h"
 #include "../between.h"
+#include <stack>
 
 
 namespace perun2::parse
@@ -141,16 +142,52 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
    p_int sublen = 0;
    BracketsInfo bi;
 
+   // the Between expression is problematic as it disables the preceding And boolean operator
+   // we have to keep track of Betweens
+   std::stack<p_int> countBetweens;
+   countBetweens.push(0);
+
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
 
-      if (t.type != Token::t_Keyword) {
+      if (t.type == Token::t_Symbol) {
          bi.refresh(t);
+
+         switch (t.value.ch) {
+            case CHAR_OPENING_ROUND_BRACKET:
+            case CHAR_OPENING_SQUARE_BRACKET: {
+               countBetweens.push(0);
+               break;
+            }
+            case CHAR_CLOSING_ROUND_BRACKET:
+            case CHAR_CLOSING_SQUARE_BRACKET: {
+               countBetweens.pop();
+               break;
+            }
+         }
+
+         sublen++;
+         continue;
+      }
+
+      if (t.isKeyword(Keyword::kw_Between)) {
+         countBetweens.top()++;
+         sublen++;
+         continue;
+      }
+
+      if (t.type != Token::t_Keyword) {
          sublen++;
          continue;
       }
 
       if (! isBoolExpOperator(t)) {
+         sublen++;
+         continue;
+      }
+
+      if (t.isKeyword(Keyword::kw_And) && countBetweens.top() != 0) {
+         countBetweens.top()--;
          sublen++;
          continue;
       }

@@ -39,6 +39,7 @@ static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process
 static p_bool parseInTimList(p_genptr<p_bool>& result, const bool& negated, 
    const std::pair<Tokens, Tokens>& pair, Perun2Process& p2);
 static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
+static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 
 static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& p2);
 static p_bool parseBetweenNumbers(p_genptr<p_bool>& result, p_genptr<p_num>& value, 

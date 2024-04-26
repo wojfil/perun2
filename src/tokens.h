@@ -53,6 +53,7 @@ p_constexpr p_tinfo TI_IS_POSSIBLE_TERNARY =        1 << 21;
 p_constexpr p_tinfo TI_IS_LIST_ELEM_MEMBER =        1 << 22;
 p_constexpr p_tinfo TI_EVALUATE_DEFINITIONS =       1 << 23;
 p_constexpr p_tinfo TI_HAS_CHAR_PERCENT =           1 << 24;
+p_constexpr p_tinfo TI_HAS_KEYWORD_REGEXP =         1 << 25;
 
 
 struct Perun2Process;

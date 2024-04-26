@@ -19,7 +19,7 @@
 #include <regex>
 
 
-namespace perun2
+namespace perun2::gen
 {
 
 

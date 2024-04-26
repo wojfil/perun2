@@ -15,7 +15,7 @@
 #include "regexp.h"
 
 
-namespace perun2
+namespace perun2::gen
 {
 
 Regexp::Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat)

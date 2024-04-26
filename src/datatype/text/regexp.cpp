@@ -18,5 +18,25 @@
 namespace perun2
 {
 
+Regexp::Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat)
+   : value(std::move(val)), pattern(std::move(pat)) { };
+
+
+p_bool Regexp::getValue()
+{
+   std::wregex pattern(this->pattern->getValue());
+   return std::regex_match(this->value->getValue(), pattern);
+}
+
+
+RegexpConst::RegexpConst(p_genptr<p_str>& val, const p_str& pat)
+   : value(std::move(val)), pattern(pat) { };
+
+
+p_bool RegexpConst::getValue()
+{
+   return std::regex_match(this->value->getValue(), this->pattern);
+}
+
 
 }

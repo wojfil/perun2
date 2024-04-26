@@ -15,13 +15,36 @@
 #ifndef REGEXP_H_INCLUDED
 #define REGEXP_H_INCLUDED
 
-#include "../primitives.h"
+#include "../datatype.h"
+#include <regex>
 
 
 namespace perun2
 {
 
 
+struct Regexp : Generator<p_bool>
+{
+public:
+   Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_str> value;
+   p_genptr<p_str> pattern;
+};
+
+
+struct RegexpConst : Generator<p_bool>
+{
+public:
+   RegexpConst(p_genptr<p_str>& val, const p_str& pat);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_str> value;
+   const std::wregex pattern;
+};
 
 
 }

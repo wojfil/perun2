@@ -134,6 +134,7 @@ add_executable(
     datatype/text/concat.cpp
     datatype/text/like.cpp
     datatype/text/raw.cpp
+    datatype/text/regexp.cpp
     datatype/text/resemblance.cpp
     datatype/text/strings.cpp
     datatype/text/text-parsing.cpp

@@ -67,6 +67,7 @@ enum Keyword
    kw_Like,
    kw_Resembles,
    kw_Between,
+   kw_Regexp,
       // command structs:
    kw_Else,
    kw_If,

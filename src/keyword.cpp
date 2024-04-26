@@ -62,6 +62,7 @@ KeywordsData::KeywordsData() : KEYWORDS(
    { STRING_LIKE, Keyword::kw_Like },
    { STRING_RESEMBLES, Keyword::kw_Resembles },
    { STRING_BETWEEN, Keyword::kw_Between },
+   { STRING_REGEXP, Keyword::kw_Regexp },
    // command structs:
    { STRING_ELSE, Keyword::kw_Else },
    { STRING_IF, Keyword::kw_If },

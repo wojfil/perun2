@@ -328,9 +328,29 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       return false;
    }
 
+   const Token& first = left.first();
+   bool explicitForeach = false;
+
+   if (left.first().isKeyword(Keyword::kw_Foreach)) {
+      left.trimLeft();
+
+      if (left.isEmpty()) {
+         throw SyntaxError(str(L"keyword '", first.getOriginString(p2), L"' is not followed by a value"), first.line);
+      }
+
+      explicitForeach = true;
+   }
+
    left.checkCommonExpressionExceptions(p2);
    Tokens right(tks, rightStart, rightLen);
-   return parseIterationLoop(result, left, right, p2);
+
+   bool success = parseIterationLoop(result, left, right, p2);
+
+   if (!success && explicitForeach) {
+      throw SyntaxError(str(L"keyword '", first.getOriginString(p2), L"' is not followed by a valid value"), first.line);
+   }
+
+   return success;
 }
 
 static p_bool parseIterationLoop(p_comptr& result, const Tokens& left, const Tokens& right, Perun2Process& p2)

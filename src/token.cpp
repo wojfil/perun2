@@ -274,7 +274,6 @@ p_bool Token::isExpForbiddenKeyword() const
    switch (value.keyword.k) {
       case Keyword::kw_Force:
       case Keyword::kw_Stack:
-      case Keyword::kw_Foreach:
          return true;
       default:
          return false;

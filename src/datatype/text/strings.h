@@ -47,6 +47,7 @@ extern const p_list STRINGS_ASCII;
 
 p_constexpr p_char STRING_FILE_OPEN_MODE[] =       L"rtS, ccs=UTF-8";
 p_constexpr p_char STRING_WINDOWS_PATH_PREFIX[] =  L"\\\\?\\";
+p_constexpr p_char STRING_POPUP_TITLE[] =          L"Perun2 Message";
 p_constexpr p_char STRING_GOOD[] =                 L"good";
 
 p_constexpr p_char EMPTY_STRING[] =                L"";

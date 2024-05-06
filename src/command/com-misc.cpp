@@ -337,4 +337,10 @@ void C_RunWithPerun2With::run()
    }
 }
 
+void C_Popup::run()
+{
+   os_popup(this->value->getValue());
+}
+
+
 }

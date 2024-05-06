@@ -114,6 +114,8 @@ p_bool os_select(const p_str& parent, const p_set& paths);
 p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2);
 p_bool os_terminate(SideProcess& process);
 
+p_bool os_popup(const p_str& text);
+
 p_str os_trim(const p_str& path);
 
 // trim only right side and do not alter separators

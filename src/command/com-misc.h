@@ -285,6 +285,19 @@ private:
    FileContext* context;
 };
 
+
+struct C_Popup : Command
+{
+public:
+   C_Popup(p_genptr<p_str>& val)
+      : value(std::move(val)) { };
+
+   void run() override;
+
+private:
+   p_genptr<p_str> value;
+};
+
 }
 
 #endif /* COM_MISC_H */

@@ -1378,6 +1378,11 @@ p_bool os_terminate(SideProcess& process)
    return TerminateProcess(process.info.hProcess, 0) != 0;
 }
 
+p_bool os_popup(const p_str& text)
+{
+   return MessageBoxW(NULL, text.c_str(), STRING_POPUP_TITLE, MB_OK | MB_ICONINFORMATION) == IDOK;
+}
+
 p_bool os_isInvalid(const p_str& path)
 {
    const p_size length = path.size();

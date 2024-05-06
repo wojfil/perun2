@@ -108,6 +108,10 @@ p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
          checkUselessFlags(word, line, mode, p2);
          return c_sleep(result, word, tks, line, p2);
       }
+      case Keyword::kw_Popup: {
+         checkUselessFlags(word, line, mode, p2);
+         return c_popup(result, word, tks, line, p2);
+      }
    }
 
    throw SyntaxError(str(L"command cannot start with a keyword '", word.getOriginString(p2), L"'"), line);
@@ -1314,6 +1318,18 @@ static p_bool c_sleep(p_comptr& result, const Token& word, const Tokens& tks, co
    p_genptr<p_num> num;
    if (parse::parse(p2, tks, num)) {
       result = std::make_unique<C_SleepMs>(num, p2);
+      return true;
+   }
+
+   commandSyntaxError(word.getOriginString(p2), line);
+   return false;
+}
+
+static p_bool c_popup(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2)
+{
+   p_genptr<p_str> str;
+   if (parse::parse(p2, tks, str)) {
+      result = std::make_unique<C_Popup>(str);
       return true;
    }
 

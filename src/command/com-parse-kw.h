@@ -89,6 +89,7 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
 
 p_bool c_print(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, const p_bool directError, Perun2Process& p2);
 static p_bool c_sleep(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2);
+static p_bool c_popup(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2);
 static p_bool c_error(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2);
 
 static p_bool c_run(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2);

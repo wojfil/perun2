@@ -57,6 +57,7 @@ KeywordsData::KeywordsData() : KEYWORDS(
    { STRING_PRINT, Keyword::kw_Print },
    { STRING_RUN, Keyword::kw_Run },
    { STRING_SLEEP, Keyword::kw_Sleep },
+   { STRING_POPUP, Keyword::kw_Popup },
    // expression elements:
    { STRING_IN, Keyword::kw_In },
    { STRING_LIKE, Keyword::kw_Like },
@@ -69,6 +70,7 @@ KeywordsData::KeywordsData() : KEYWORDS(
    { STRING_INSIDE, Keyword::kw_Inside },
    { STRING_TIMES, Keyword::kw_Times },
    { STRING_WHILE, Keyword::kw_While },
+   { STRING_FOREACH, Keyword::kw_Foreach },
    // filthers:
    { STRING_EVERY, Keyword::kw_Every },
    { STRING_FINAL, Keyword::kw_Final },

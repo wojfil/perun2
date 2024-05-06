@@ -62,6 +62,7 @@ enum Keyword
    kw_Print,
    kw_Run,
    kw_Sleep,
+   kw_Popup,
       // expression elements:
    kw_In,
    kw_Like,
@@ -74,6 +75,7 @@ enum Keyword
    kw_Inside,
    kw_Times,
    kw_While,
+   kw_Foreach,
       // filthers:
    kw_Every,
    kw_Final,

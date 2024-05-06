@@ -235,6 +235,7 @@ p_bool Token::isCommandKeyword() const
       case Keyword::kw_Error:
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
+      case Keyword::kw_Popup:
          return true;
       default:
          return false;
@@ -273,6 +274,7 @@ p_bool Token::isExpForbiddenKeyword() const
    switch (value.keyword.k) {
       case Keyword::kw_Force:
       case Keyword::kw_Stack:
+      case Keyword::kw_Foreach:
          return true;
       default:
          return false;

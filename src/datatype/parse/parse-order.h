@@ -79,7 +79,7 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
          L"' should be followed by a keyword 'by'"), first.line);
    }
 
-   tks.trimLeft();
+   tks.popLeft();
    if (tks.isEmpty()) {
       throw SyntaxError(str(L"declaration of '", keyword.getOriginString(p2),
          L" ", first.getOriginString(p2), L"' filter is empty"), first.line);
@@ -103,7 +103,7 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
       if (last.type == Token::t_Keyword) {
          const Keyword& kw = last.value.keyword.k;
          if (kw == Keyword::kw_Asc) {
-            tk.trimRight();
+            tk.popRight();
             if (tk.isEmpty()) {
                throw SyntaxError(str(L"keyword '", last.getOriginString(p2),
                   L"' is not preceded by a value used for order"), last.line);
@@ -111,7 +111,7 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
          }
          else if (kw == Keyword::kw_Desc) {
             desc = true;
-            tk.trimRight();
+            tk.popRight();
             if (tk.isEmpty()) {
                throw SyntaxError(str(L"keyword '", last.getOriginString(p2),
                   L"' is not preceded by a value used for order"), last.line);

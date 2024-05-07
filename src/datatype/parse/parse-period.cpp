@@ -49,7 +49,7 @@ p_bool parsePeriod(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2
    p_bool hasMinuses;
    if (startsWithMinus) {
       Tokens tks2(tks);
-      tks2.trimLeft();
+      tks2.popLeft();
       hasMinuses = tks2.check(TI_HAS_CHAR_MINUS);
    }
    else {
@@ -70,7 +70,7 @@ p_bool parsePeriod(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2
       }
       else if (len == 3 && startsWithMinus) {
          Tokens tks2(tks);
-         tks2.trimLeft();
+         tks2.popLeft();
          if (parsePeriodConst(result, tks2, true, p2)) {
             return true;
          }
@@ -85,7 +85,7 @@ p_bool parsePeriod(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2
 
    if (len >= 2 && !hasPluses && !hasMinuses && startsWithMinus) {
       Tokens tks2(tks);
-      tks2.trimLeft();
+      tks2.popLeft();
 
       p_genptr<p_per> per;
       if (parse(p2, tks2, per)) {
@@ -160,7 +160,7 @@ p_bool parsePeriodUnit(p_genptr<p_per>& result, const Tokens& tks, Perun2Process
    }
 
    Tokens tks2(tks);
-   tks2.trimRight();
+   tks2.popRight();
 
    p_genptr<p_num> num;
    if (!parse(p2, tks2, num)) {
@@ -222,7 +222,7 @@ p_bool parsePeriodExpDiff(p_genptr<p_per>& result, const Tokens& tks, Perun2Proc
 
    Tokens tks2(tks);
    if (minusAwaits) {
-      tks2.trimLeft();
+      tks2.popLeft();
    }
 
    if (!tks2.check(TI_HAS_CHAR_MINUS)) {

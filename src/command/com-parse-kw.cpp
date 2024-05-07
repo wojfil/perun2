@@ -455,7 +455,7 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
 
    if (right.first().isKeyword(Keyword::kw_Extensionless)) {
       extless = true;
-      right.trimLeft();
+      right.popLeft();
       if (right.isEmpty()) {
          throw SyntaxError(L"keyword 'extensionless' is not followed by a declaration of new file name", line);
       }
@@ -833,7 +833,7 @@ static p_bool c_moveToAsContextless(p_comptr& result, const Token& word, const T
 
    if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
       extless = true;
-      postAs.trimLeft();
+      postAs.popLeft();
       if (postAs.isEmpty()) {
          throw SyntaxError(str(L"keyword '", paf.getOriginString(p2),
             L"' is not followed by a declaration of new file name"), line);
@@ -923,7 +923,7 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
 
    if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
       extless = true;
-      postAs.trimLeft();
+      postAs.popLeft();
       if (postAs.isEmpty()) {
          throw SyntaxError(str(L"keyword '", postAs.first().getOriginString(p2),
             L"' is not followed by a declaration of a new file name"), line);
@@ -1106,7 +1106,7 @@ static p_bool c_copyToAsContextless(p_comptr& result, const Token& word, const T
 
    if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
       extless = true;
-      postAs.trimLeft();
+      postAs.popLeft();
       if (postAs.isEmpty()) {
          throw SyntaxError(str(L"keyword '", postAs.first().getOriginString(p2),
             L"' is not followed by a declaration of new file name"), line);
@@ -1196,7 +1196,7 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
 
    if (postAs.first().isKeyword(Keyword::kw_Extensionless)) {
       extless = true;
-      postAs.trimLeft();
+      postAs.popLeft();
       if (postAs.isEmpty()) {
          throw SyntaxError(str(L"keyword '", postAs.first().getOriginString(p2),
             L"' is not followed by a declaration of new file name"), line);

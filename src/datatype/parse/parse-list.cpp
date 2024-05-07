@@ -81,7 +81,7 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
       const Keyword& kw = tsf.value.keyword.k;
-      ts.trimLeft();
+      ts.popLeft();
 
       switch (kw) {
          case Keyword::kw_Final: {

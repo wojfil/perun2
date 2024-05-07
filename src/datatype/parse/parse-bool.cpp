@@ -736,7 +736,7 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
             CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
-      pair.first.trimRight();
+      pair.first.popRight();
    }
 
    p_genptr<p_str> value;
@@ -802,7 +802,7 @@ static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pro
             CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
-      pair.first.trimRight();
+      pair.first.popRight();
    }
 
    p_genptr<p_str> value;
@@ -976,7 +976,7 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
             CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
-      firstDivision.first.trimRight();
+      firstDivision.first.popRight();
    }
 
    if (firstDivision.second.isEmpty()) {
@@ -1203,7 +1203,7 @@ static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process
             CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
-      pair.first.trimRight();
+      pair.first.popRight();
    }
    
    // first: try to build "Number IN NumList"
@@ -1292,7 +1292,7 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Proce
             CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
-      pair.first.trimRight();
+      pair.first.popRight();
    }
 
    p_genptr<p_str> value;
@@ -1901,7 +1901,7 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_ch
             L"= comparison is empty"), result.second.first().line);
       }
 
-      result.second.trimLeft();
+      result.second.popLeft();
       eq = true;
    }
    else if (sign == CHAR_EXCLAMATION_MARK) {

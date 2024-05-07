@@ -38,7 +38,7 @@ Tokens::Tokens(const Tokens& tks, const p_int st, const p_int ln)
    this->setData();
 }
 
-void Tokens::trimLeft()
+void Tokens::popLeft()
 {
    if (this->length != 0) {
       this->start++;
@@ -47,7 +47,7 @@ void Tokens::trimLeft()
    }
 }
 
-void Tokens::trimRight()
+void Tokens::popRight()
 {
    if (this->length != 0) {
       this->end--;

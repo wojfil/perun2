@@ -94,7 +94,7 @@ p_bool parseNumber(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2
 
       if (!anyOperator && tks.first().isSymbol(CHAR_MINUS)) {
          Tokens tks2(tks);
-         tks2.trimLeft();
+         tks2.popLeft();
          p_genptr<p_num> num;
 
          if (parse(p2, tks2, num)) {

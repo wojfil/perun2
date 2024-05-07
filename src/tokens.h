@@ -70,8 +70,8 @@ public:
 
    // shorten this sequence by one
    // remove the first or the last token
-   void trimLeft();
-   void trimRight();
+   void popLeft();
+   void popRight();
 
    p_int getStart() const;
    p_int getLength() const;

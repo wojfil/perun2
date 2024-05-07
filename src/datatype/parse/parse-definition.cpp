@@ -260,7 +260,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
       const Keyword& kw = tsf.value.keyword.k;
-      ts.trimLeft();
+      ts.popLeft();
 
       switch (kw) {
          case Keyword::kw_Final: {

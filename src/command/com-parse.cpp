@@ -148,7 +148,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    // build "times"
    const Token& leftLast = left.last();
    if (leftLast.isKeyword(Keyword::kw_Times)) {
-      left.trimRight();
+      left.popRight();
       if (left.isEmpty()) {
          throw SyntaxError(str(L"keyword '", leftLast.getOriginString(p2),
             L"' is not preceded by a number"), leftLast.line);
@@ -185,7 +185,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    // build "while"
    const Token& leftFirst = left.first();
    if (leftFirst.isKeyword(Keyword::kw_While)) {
-      left.trimLeft();
+      left.popLeft();
       if (left.isEmpty()) {
          throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2),
             L"' is not followed by a condition"), leftFirst.line);
@@ -224,14 +224,14 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
          return false;
       }
 
-      left.trimLeft();
+      left.popLeft();
       Tokens right(tks, rightStart, rightLen);
       return parseInsideLoop(result, leftFirst, left, right, p2);
    }
 
    // build "if"
    if (leftFirst.isKeyword(Keyword::kw_If)) {
-      left.trimLeft();
+      left.popLeft();
       if (left.isEmpty()) {
          throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2), L"' is not followed by a condition"),
             leftFirst.line);
@@ -266,7 +266,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    }
 
    if (leftFirst.isKeyword(Keyword::kw_Else)) {
-      left.trimLeft();
+      left.popLeft();
 
       if (left.isEmpty()) { // build "else"
          if (rightLen == 0) {
@@ -291,7 +291,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
          }
 
          const Token& ifToken = left.first();
-         left.trimLeft();
+         left.popLeft();
 
          if (left.isEmpty()) {
             throw SyntaxError(str(L"keywords '", leftFirst.getOriginString(p2), L" ",
@@ -332,7 +332,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    bool explicitForeach = false;
 
    if (left.first().isKeyword(Keyword::kw_Foreach)) {
-      left.trimLeft();
+      left.popLeft();
 
       if (left.isEmpty()) {
          throw SyntaxError(str(L"keyword '", first.getOriginString(p2), L"' is not followed by a value"), first.line);
@@ -658,7 +658,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
    if (f2.type == Token::t_Keyword) {
       switch (f2.value.keyword.k) {
          case Keyword::kw_Force: {
-            tks.trimLeft();
+            tks.popLeft();
             mode = CoreCommandMode::ccm_Force;
 
             if (tks.isEmpty()) {
@@ -668,7 +668,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
             break;
          }
          case Keyword::kw_Stack: {
-            tks.trimLeft();
+            tks.popLeft();
             mode = CoreCommandMode::ccm_Stack;
 
             if (tks.isEmpty()) {
@@ -689,7 +689,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
             break;
          }
          default: {
-            tks.trimLeft();
+            tks.popLeft();
             tks.checkCommonExpressionExceptions(p2);
             return keywordCommands(result, f3, tks, f.line, mode, p2);
          }
@@ -749,7 +749,7 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2
             case CHAR_ASTERISK:
             case CHAR_SLASH:
             case CHAR_PERCENT: {
-               left.trimRight();
+               left.popRight();
                if (left.isEmpty()) {
                   throw SyntaxError(str(L"left side of the ", toStr(ch),
                      L"= operator is empty"), tks.last().line);
@@ -807,8 +807,8 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
       }
       else {
          Tokens tks2(tks);
-         tks2.trimRight();
-         tks2.trimRight();
+         tks2.popRight();
+         tks2.popRight();
 
          if (varSquareBrackets(tks2)) {
             p_genptr<p_num> index;
@@ -916,7 +916,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
 
          if (arom.type == Token::t_TwoWords && arom.isFirstWord(EMPTY_STRING, p2)) {
             Tokens aro(left);
-            aro.trimRight();
+            aro.popRight();
 
             if (varSquareBrackets(aro)) {
                Variable<p_tlist>* pvp_tlist;
@@ -1270,7 +1270,7 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    if (left.getLength() >= 5 ) {
       if (left.last().type == Token::t_TwoWords && left.last().isFirstWord(EMPTY_STRING, p2)) {
          Tokens le(left);
-         le.trimRight();
+         le.popRight();
 
          if (varSquareBrackets(le)) {
             Variable<p_nlist>* pvp_nlist;

@@ -4920,6 +4920,16 @@ if __name__ == '__main__':
   run_test_case("print 2 hours not between 2 hours and 3 hours ", FALSE)
   run_test_case("print 180 minutes not between 2 hours and 3 hours ", FALSE)
   run_test_case("print 181 minutes not between 2 hours and 3 hours ", TRUE)
+  run_test_case("print april 2022 between march 2022 and june 2022 ", TRUE)
+  run_test_case("print 12 april 2022 between march 2022 and june 2022 ", TRUE)
+  run_test_case("print 12 march 2022 between march 2022 and june 2022 ", TRUE)
+  run_test_case("print 12 june 2022 between march 2022 and june 2022 ", TRUE)
+  run_test_case("print 12:12 between march 2022 and june 2022 ", FALSE)
+#  run_test_case("print 12:12 not between march 2022 and june 2022 ", FALSE)
+  run_test_case("print 14 january 2011 between 12:34 and 10:32:04 ", FALSE)
+#  run_test_case("print 14 january 2011 not between 12:34 and 10:32:04 ", FALSE)
+  run_test_case("print 12:34 between 14 january 2011 and 10:32:04 ", FALSE)
+#  run_test_case("print 12:34 not between 14 january 2011 and 10:32:04 ", FALSE)
 
 
   run_test_case("inside 'defchain' { recursivefiles order by name asc { name } }", lines("a", "b", "c", "gg", "i", "ko", "z"))

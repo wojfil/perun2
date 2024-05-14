@@ -4910,6 +4910,17 @@ if __name__ == '__main__':
   run_test_case("print 423 not between nan and nan ", TRUE)
   run_test_case("print nan not between 4.3 and nan ", TRUE)
   run_test_case("print nan not between nan and nan ", TRUE)
+  run_test_case("print 0 days between 1 day and 3 days ", FALSE)
+  run_test_case("print 2 days between 1 day and 3 days ", TRUE)
+  run_test_case("print 3 days between 2 days and 3 days ", TRUE)
+  run_test_case("print 72 hours between 2 days and 3 days ", TRUE)
+  run_test_case("print 73 hours between 2 days and 3 days ", FALSE)
+  run_test_case("print 0 hours not between 1 hour and 3 hours ", TRUE)
+  run_test_case("print 2 hours not between 1 hour and 3 hours ", FALSE)
+  run_test_case("print 2 hours not between 2 hours and 3 hours ", FALSE)
+  run_test_case("print 180 minutes not between 2 hours and 3 hours ", FALSE)
+  run_test_case("print 181 minutes not between 2 hours and 3 hours ", TRUE)
+
 
   run_test_case("inside 'defchain' { recursivefiles order by name asc { name } }", lines("a", "b", "c", "gg", "i", "ko", "z"))
   run_test_case("inside 'defchain' { index; recursivefiles order by name asc { index }; index }", lines("0", "0", "1", "2", "3", "4", "5", "6", "0"))

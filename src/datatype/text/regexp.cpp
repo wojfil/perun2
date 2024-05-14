@@ -25,7 +25,7 @@ Regexp::Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat)
 p_bool Regexp::getValue()
 {
    std::wregex pattern(this->pattern->getValue());
-   return std::regex_match(this->value->getValue(), pattern);
+   return std::regex_search(this->value->getValue(), pattern);
 }
 
 
@@ -35,7 +35,7 @@ RegexpConst::RegexpConst(p_genptr<p_str>& val, const p_str& pat)
 
 p_bool RegexpConst::getValue()
 {
-   return std::regex_match(this->value->getValue(), this->pattern);
+   return std::regex_search(this->value->getValue(), this->pattern);
 }
 
 

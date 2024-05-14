@@ -4930,6 +4930,21 @@ if __name__ == '__main__':
 #  run_test_case("print 14 january 2011 not between 12:34 and 10:32:04 ", FALSE)
   run_test_case("print 12:34 between 14 january 2011 and 10:32:04 ", FALSE)
 #  run_test_case("print 12:34 not between 14 january 2011 and 10:32:04 ", FALSE)
+  run_test_case("print 'pong' REGEXP 'ong' ", TRUE)
+  run_test_case("print 'ponn' REGEXP 'ong' ", FALSE)
+  run_test_case("print 'onge' REGEXP 'ong' ", TRUE)
+  run_test_case("print 'onng' REGEXP 'ong' ", FALSE)
+  run_test_case("print '123' REGEXP '4|h' ", FALSE)
+  run_test_case("print '12h3' REGEXP '4|h' ", TRUE)
+  run_test_case("print '4123' REGEXP '4|h' ", TRUE)
+  run_test_case("print 'piopiopkpo' REGEXP '4|h' ", FALSE)
+  run_test_case("print 'hghjghb' REGEXP '^[ab]' ", FALSE)
+  run_test_case("print 'bhghjaghb' REGEXP '^[ab]' ", TRUE)
+  run_test_case("print 'Ahghjgh' REGEXP '^[ab]' ", FALSE)
+  run_test_case("print 'ahghjgh' REGEXP '^[ab]' ", TRUE)
+  run_test_case("print 'ahghjgh' not REGEXP '^[ab]' ", FALSE)
+
+
 
 
   run_test_case("inside 'defchain' { recursivefiles order by name asc { name } }", lines("a", "b", "c", "gg", "i", "ko", "z"))

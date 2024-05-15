@@ -100,55 +100,88 @@ private:
 };
 
 
-struct BetweenTimes : Generator<p_bool>
-{
-public:
-   BetweenTimes(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, p_genptr<p_tim>& b2);
-   p_bool getValue() override;
-
-private:
-   p_genptr<p_tim> value;
-   p_genptr<p_tim> bound1;
-   p_genptr<p_tim> bound2;
-};
-
 
 struct BetweenNumbers : Generator<p_bool>
 {
 public:
-   BetweenNumbers(p_genptr<p_num>& val, p_genptr<p_num>& b1, p_genptr<p_num>& b2);
+   BetweenNumbers(p_genptr<p_num>& val, p_genptr<p_num>& b1, p_genptr<p_num>& b2, const bool neg);
    p_bool getValue() override;
 
 private:
    p_genptr<p_num> value;
    p_genptr<p_num> bound1;
    p_genptr<p_num> bound2;
+   const bool negated;
 };
 
 
 struct BetweenNumbersHalfConst : Generator<p_bool>
 {
 public:
-   BetweenNumbersHalfConst(p_genptr<p_num>& val, p_genptr<p_num>& b1, const p_num& b2);
+   BetweenNumbersHalfConst(p_genptr<p_num>& val, p_genptr<p_num>& b1, const p_num& b2, const bool neg);
    p_bool getValue() override;
 
 private:
    p_genptr<p_num> value;
    p_genptr<p_num> bound1;
    const p_num bound2;
+   const bool negated;
+};
+
+
+struct BetweenNumbersConst : Generator<p_bool>
+{
+public:
+   BetweenNumbersConst(p_genptr<p_num>& val, const p_num& b1, const p_num& b2, const bool neg);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_num> value;
+   const p_num bound1;
+   const p_num bound2;
+   const bool negated;
+};
+
+
+struct BetweenTimes : Generator<p_bool>
+{
+public:
+   BetweenTimes(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, p_genptr<p_tim>& b2, const bool neg);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_tim> value;
+   p_genptr<p_tim> bound1;
+   p_genptr<p_tim> bound2;
+   const bool negated;
 };
 
 
 struct BetweenTimesHalfConst : Generator<p_bool>
 {
 public:
-   BetweenTimesHalfConst(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, const p_tim& b2);
+   BetweenTimesHalfConst(p_genptr<p_tim>& val, p_genptr<p_tim>& b1, const p_tim& b2, const bool neg);
    p_bool getValue() override;
 
 private:
    p_genptr<p_tim> value;
    p_genptr<p_tim> bound1;
    const p_tim bound2;
+   const bool negated;
+};
+
+
+struct BetweenTimesConst : Generator<p_bool>
+{
+public:
+   BetweenTimesConst(p_genptr<p_tim>& val, const p_tim& b1, const p_tim& b2, const bool neg);
+   p_bool getValue() override;
+
+private:
+   p_genptr<p_tim> value;
+   const p_tim bound1;
+   const p_tim bound2;
+   const bool negated;
 };
 
 

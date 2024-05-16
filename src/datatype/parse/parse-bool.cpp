@@ -819,8 +819,7 @@ static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pro
       const p_str cnst = pattern->getValue();
 
       if (cnst.empty()) {
-         // empty regexp is always true
-         result = std::make_unique<gen::Constant<p_bool>>(neg);
+         result = std::make_unique<gen::Constant<p_bool>>(! neg);
          return true;
       }
 

@@ -230,6 +230,26 @@ p_str os_parent(const p_str& path)
    return p_str();
 }
 
+p_str os_attr_extension(const p_str& path)
+{
+   return os_extension(path);
+}
+
+p_str os_attr_fullname(const p_str& path)
+{
+   return os_fullname(path);
+}
+
+p_str os_attr_name(const p_str& path)
+{
+   return os_name(path);
+}
+
+p_str os_attr_parent(const p_str& path)
+{
+   return os_parent(path);
+}
+
 p_bool os_bothAreSeparators(const p_char left, const p_char right)
 {
    return (left == right)

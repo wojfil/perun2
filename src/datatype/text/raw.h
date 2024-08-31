@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RAW_H_INCLUDED
-#define RAW_H_INCLUDED
+#pragma once
 
 #include "../primitives.h"
 
@@ -36,5 +35,3 @@ inline static void replaceCharWithTwoChars(p_str& value,
 inline static p_bool isCombiningMark(const p_char ch);
 
 }
-
-#endif // RAW_H_INCLUDED

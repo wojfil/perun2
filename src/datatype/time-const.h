@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TIME_CONST_H_INCLUDED
-#define TIME_CONST_H_INCLUDED
+#pragma once
 
 #include "primitives.h"
 
@@ -93,5 +92,3 @@ p_constexpr p_tnum TNUM_WEEKDAY_DATA[] =
    { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
 
 }
-
-#endif // TIME_CONST_H_INCLUDED

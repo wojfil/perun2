@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COMPARISON_H
-#define COMPARISON_H
+#pragma once
 
 namespace perun2
 {
@@ -31,5 +30,3 @@ enum CompType
 CompType mirrorCompType(const CompType value);
 
 }
-
-#endif /* COMPARISON_H */

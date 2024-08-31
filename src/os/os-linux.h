@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_LINUX_H
-#define OS_LINUX_H
+#pragma once
 
 #include "../datatype/datatype.h"
 
@@ -24,6 +23,3 @@ namespace perun2
 
 
 }
-
-
-#endif /* OS_LINUX_H */

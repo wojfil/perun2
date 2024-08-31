@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_POSIX_H
-#define OS_POSIX_H
+#pragma once
 
 #include "../datatype/datatype.h"
 
@@ -28,6 +27,3 @@ p_constexpr p_char OS_WRONG_SEPARATOR = CHAR_BACKSLASH;
 
 
 }
-
-
-#endif /* OS_POSIX_H */

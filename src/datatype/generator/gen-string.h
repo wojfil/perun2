@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_STRING_H
-#define GEN_STRING_H
+#pragma once
 
 #include "../generator.h"
 #include "../datatype.h"
@@ -189,6 +188,3 @@ private:
 };
 
 }
-
-#endif /* GEN_STRING_H */
-

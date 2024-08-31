@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_BOOL_CONSTR_H
-#define GEN_BOOL_CONSTR_H
+#pragma once
 
 #include "../incr-constr.h"
 #include "../../perun2.h"
@@ -101,5 +100,3 @@ private:
 
 
 }
-
-#endif /* GEN_BOOL_CONSTR_H */

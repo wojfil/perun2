@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TOKEN_H
-#define TOKEN_H
+#pragma once
 
 #include <unordered_set>
 #include "datatype/datatype.h"
@@ -196,5 +195,3 @@ private:
 
 
 }
-
-#endif /* TOKEN_H */

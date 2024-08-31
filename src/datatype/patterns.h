@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PATTERNS_H_INCLUDED
-#define PATTERNS_H_INCLUDED
+#pragma once
 
 
 #define P_CHECK_LOOP_BREAK if (this->perun2.state == State::s_Break) { \
@@ -62,5 +61,3 @@
 
 #define P_CHECK_IF_PERUN2_IS_RUNNING if (this->perun2.isNotRunning()) { return; }
 
-
-#endif // PATTERNS_H_INCLUDED

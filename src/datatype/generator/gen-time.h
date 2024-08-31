@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_TIME_H
-#define GEN_TIME_H
+#pragma once
 
 #include "../generator.h"
 #include "gen-generic.h"
@@ -90,6 +89,3 @@ public:
 };
 
 }
-
-#endif /* GEN_TIME_H */
-

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CTX_LOCATION_H_INCLUDED
-#define CTX_LOCATION_H_INCLUDED
+#pragma once
 
 #include "ctx-vars.h"
 
@@ -37,5 +36,3 @@ namespace perun2
    
    typedef std::unique_ptr<LocationContext>        p_lcptr;
 }
-
-#endif // CTX_LOCATION_H_INCLUDED

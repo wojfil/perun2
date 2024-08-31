@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CTX_VARS_H_INCLUDED
-#define CTX_VARS_H_INCLUDED
+#pragma once
 
 #include "../datatype/datatype.h"
 #include "../var.h"
@@ -86,5 +85,3 @@ namespace perun2
    typedef std::unique_ptr<UserVarsContext>        p_ucptr;
    
 }
-
-#endif // CTX_VARS_H_INCLUDED

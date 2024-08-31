@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CTX_AGGR_H_INCLUDED
-#define CTX_AGGR_H_INCLUDED
+#pragma once
 
 #include "../datatype/datatype.h"
 #include "../command/com-aggregate.h"
@@ -35,5 +34,3 @@ namespace perun2
    typedef std::unique_ptr<AggregateContext>       p_acptr;
 
 }
-
-#endif // CTX_AGGR_H_INCLUDED

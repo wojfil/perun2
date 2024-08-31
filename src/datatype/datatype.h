@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATATYPE_H
-#define DATATYPE_H
+#pragma once
 
 #include "time.h"
 #include "definition.h"
@@ -28,7 +27,7 @@ namespace perun2
 
 // these aliases follow a convention
 // read them like: 
-// p_tim = "perun time" or "perunian time"
+// p_tim = "perun time"
 
 typedef Number                              p_num;
 typedef Time                                p_tim;
@@ -38,7 +37,5 @@ typedef std::vector<p_tim>                  p_tlist;
 typedef Definition                          p_def;
 typedef std::unordered_set<p_str>           p_set;
 
-
 }
 
-#endif /* DATATYPE_H */

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONCAT_H_INCLUDED
-#define CONCAT_H_INCLUDED
+#pragma once
 
 #include "../primitives.h"
 
@@ -53,5 +52,3 @@ p_str str(Args const&... args)
 }
 
 }
-
-#endif // CONCAT_H_INCLUDED

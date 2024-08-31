@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_GEN_H
-#define PARSE_GEN_H
+#pragma once
 
 #include "exp-element.h"
 #include "cast.h"
@@ -53,5 +52,3 @@ p_bool parse(Perun2Process& p2, const Tokens& tks, p_genptr<p_per>& result);
 p_bool parse(Perun2Process& p2, const Tokens& tks, p_defptr& result);
 
 }
-
-#endif /* PARSE_GEN_H */

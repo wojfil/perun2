@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#pragma once
 
 #include "primitives.h"
 #include <memory>
@@ -46,5 +45,3 @@ template <typename T>
 using p_genptr = std::unique_ptr<Generator<T>>;
 
 }
-
-#endif /* GENERATOR_H */

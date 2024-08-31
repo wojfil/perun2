@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ORDER_H
-#define ORDER_H
+#pragma once
 
 #include "generator.h"
 #include "datatype.h"
@@ -194,5 +193,3 @@ private:
 };
 
 }
-
-#endif /* ORDER_H */

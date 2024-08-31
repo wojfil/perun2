@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TOKENS_H
-#define TOKENS_H
+#pragma once
 
 #include "token.h"
 #include <vector>
@@ -111,4 +110,3 @@ private:
 
 }
 
-#endif /* TOKENS_H */

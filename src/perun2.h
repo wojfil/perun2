@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PERUN2_H
-#define PERUN2_H
+#pragma once
 
 #include "console.h"
 #include "arguments.h"
@@ -132,5 +131,3 @@ private:
 
 
 }
-
-#endif /* PERUN2_H */

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIN_REGISTRY_PATTERN_H_INCLUDED
-#define WIN_REGISTRY_PATTERN_H_INCLUDED
+#pragma once
 
 #include "../../datatype/text/wildcard.h"
 
@@ -38,5 +37,3 @@ protected:
 
 
 }
-
-#endif // WIN_REGISTRY_PATTERN_H_INCLUDED

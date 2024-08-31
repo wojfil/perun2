@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_VAR_H
-#define COM_VAR_H
+#pragma once
 
 #include "com.h"
 #include "..\var.h"
@@ -270,5 +269,3 @@ private:
 };
 
 }
-
-#endif /* COM_VAR_H */

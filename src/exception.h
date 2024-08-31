@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#pragma once
 
 #include "datatype/primitives.h"
 
@@ -87,5 +86,3 @@ private:
 };
 
 }
-
-#endif /* EXCEPTION_H */

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_DOUBLE_ASTERISK_H_INCLUDED
-#define GEN_DOUBLE_ASTERISK_H_INCLUDED
+#pragma once
 
 #include "gen-os.h"
 #include "../text/wildcard.h"
@@ -64,5 +63,3 @@ private:
 
 
 }
-
-#endif // GEN_DOUBLE_ASTERISK_H_INCLUDED

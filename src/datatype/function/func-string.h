@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC_STRING_H
-#define FUNC_STRING_H
+#pragma once
 
 #include "func-generic.h"
 
@@ -349,5 +348,3 @@ public:
 
 
 }
-
-#endif /* FUNC_STRING_H */

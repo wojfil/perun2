@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_STRUCT_H
-#define COM_STRUCT_H
+#pragma once
 
 #include "../util.h"
 #include "../attribute.h"
@@ -234,6 +233,3 @@ private:
 };
 
 }
-
-#endif /* COM_STRUCT_H */
-

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC_ATTR_H_INCLUDED
-#define FUNC_ATTR_H_INCLUDED
+#pragma once
 
 #include "func-generic.h"
 #include "../../perun2.h"
@@ -276,5 +275,3 @@ public:
 
 
 }
-
-#endif // FUNC_ATTR_H_INCLUDED

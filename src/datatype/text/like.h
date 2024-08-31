@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIKE_H
-#define LIKE_H
+#pragma once
 
 #include "../datatype.h"
 #include "wildcard.h"
@@ -372,5 +371,3 @@ public:
 
 
 }
-
-#endif /* LIKE_H */

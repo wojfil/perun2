@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RESEMBLANCE_H_INCLUDED
-#define RESEMBLANCE_H_INCLUDED
+#pragma once
 
 #include "../datatype.h"
 #include "../generator.h"
@@ -72,5 +71,3 @@ static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str
 static p_int resemblanceMistakesAllowed(const p_str& pattern);
 
 }
-
-#endif // RESEMBLANCE_H_INCLUDED

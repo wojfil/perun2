@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NUMBER_H
-#define NUMBER_H
+#pragma once
 
 #include "primitives.h"
 
@@ -101,5 +100,3 @@ struct Number
 
 
 }
-
-#endif /* NUMBER_H */

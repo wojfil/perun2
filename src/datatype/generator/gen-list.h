@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_LIST_H
-#define GEN_LIST_H
+#pragma once
 
 #include "../generator.h"
 #include "../order.h"
@@ -136,6 +135,3 @@ private:
 
 
 }
-
-#endif /* GEN_LIST_H */
-

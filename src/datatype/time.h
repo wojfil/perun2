@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TIME_H
-#define TIME_H
+#pragma once
 
 #include "period.h"
 #include <vector>
@@ -119,5 +118,3 @@ inline void shortClockTillMidnight(Period& p, const Time& t);
 inline void clockTillMidnight(Period& p, const Time& t);
 
 }
-
-#endif /* TIME_H */

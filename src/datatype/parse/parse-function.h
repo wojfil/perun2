@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_FUNCTION_H_INCLUDED
-#define PARSE_FUNCTION_H_INCLUDED
+#pragma once
 
 #include "../generator.h"
 #include "../../tokens.h"
@@ -57,6 +56,3 @@ void checkFunctionAttribute(const Token& word, Perun2Process& p2);
 void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Perun2Process& p2);
 
 }
-
-
-#endif // PARSE_FUNCTION_H_INCLUDED

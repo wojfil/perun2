@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PERIOD_H
-#define PERIOD_H
+#pragma once
 
 #include <vector>
 #include "number.h"
@@ -102,6 +101,3 @@ inline p_tnum periodDiffUnitCmp(const Period& diff, const Period& unit);
 // return < 0       left period is smaller
 
 }
-
-#endif /* PERIOD_H */
-

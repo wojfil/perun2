@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_GENERIC_H
-#define PARSE_GENERIC_H
+#pragma once
 
 #include "../parse-gen.h"
 #include "../../util.h"
@@ -227,5 +226,3 @@ static p_bool parseCollectionElement(p_genptr<T>& result, const Tokens& tks, Per
 }
 
 }
-
-#endif /* PARSE_GENERIC_H */

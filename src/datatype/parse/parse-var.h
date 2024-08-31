@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_VAR_H_INCLUDED
-#define PARSE_VAR_H_INCLUDED
+#pragma once
 
 #include "../../perun2.h"
 
@@ -52,5 +51,3 @@ namespace perun2::parse
       return true;
    };
 }
-
-#endif // PARSE_VAR_H_INCLUDED

@@ -12,9 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CAST_H
-#define CAST_H
-
+#pragma once
 
 #include "generator.h"
 #include "datatype.h"
@@ -145,5 +143,3 @@ private:
 };
 
 }
-
-#endif /* CAST_H */

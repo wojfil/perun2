@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EXP_ELEMENT_H
-#define EXP_ELEMENT_H
+#pragma once
 
 #include "generator.h"
 #include "generator\gen-generic.h"
@@ -100,6 +99,3 @@ public:
 };
 
 }
-
-#endif /* EXP_ELEMENT_H */
-

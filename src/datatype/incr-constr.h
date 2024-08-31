@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef INCR_CONSTR_H
-#define INCR_CONSTR_H
+#pragma once
 
 #include "comparison.h"
 #include "datatype.h"
@@ -65,6 +64,3 @@ private:
 
 
 }
-
-
-#endif /* INCR_CONSTR_H */

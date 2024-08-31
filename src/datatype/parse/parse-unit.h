@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_UNIT_H_INCLUDED
-#define PARSE_UNIT_H_INCLUDED
+#pragma once
 
 #include "../../tokens.h"
 
@@ -31,5 +30,3 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_per>& resu
 p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result);
 
 }
-
-#endif // PARSE_UNIT_H_INCLUDED

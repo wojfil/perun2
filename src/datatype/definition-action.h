@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEFINITION_ACTION_H
-#define DEFINITION_ACTION_H
+#pragma once
 
 #include "primitives.h"
 #include <memory>
@@ -40,5 +39,3 @@ public:
 typedef std::unique_ptr<DefinitionAction> p_daptr;
 
 }
-
-#endif /* DEFINITION_ACTION_H */

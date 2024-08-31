@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC_BOOL_H_INCLUDED
-#define FUNC_BOOL_H_INCLUDED
+#pragma once
 
 #include "func-generic.h"
 #include <wctype.h>
@@ -347,5 +346,3 @@ public:
 
 
 }
-
-#endif // FUNC_BOOL_H_INCLUDED

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REGEXP_H_INCLUDED
-#define REGEXP_H_INCLUDED
+#pragma once
 
 #include "../datatype.h"
 #include <regex>
@@ -48,5 +47,3 @@ private:
 
 
 }
-
-#endif // REGEXP_H_INCLUDED

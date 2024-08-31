@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_NUMLIST_H
-#define PARSE_NUMLIST_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -25,5 +24,3 @@ namespace perun2::parse
 p_bool parseNumList(p_genptr<p_nlist>& result, const Tokens& tks, Perun2Process& p2);
 
 }
-
-#endif /* PARSE_NUMLIST_H */

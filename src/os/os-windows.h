@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_WINDOWS_H
-#define OS_WINDOWS_H
+#pragma once
 
 #include "../side-process.h"
 #include "../datatype/incr-constr.h"
@@ -189,6 +188,3 @@ inline p_tim os_convertToPerun2Time(const p_ftim* time);
 inline p_bool os_convertToFileTime(const p_tim& perunTime, p_ftim& result);
 
 }
-
-
-#endif /* OS_WINDOWS_H */

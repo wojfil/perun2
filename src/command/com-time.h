@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_TIME_H
-#define COM_TIME_H
+#pragma once
 
 #include "com-core.h"
 
@@ -70,5 +69,3 @@ struct C_RemodifyTo : C_TimeAlter
 
 
 }
-
-#endif /* COM_TIME_H */

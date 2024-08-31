@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EXP_PARSE_NUMBER_H
-#define EXP_PARSE_NUMBER_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -36,5 +35,3 @@ static p_bool isNumExpHighPriority(const p_char ch);
 void timeVariableMemberException(const Token& tk, Perun2Process& p2);
 
 }
-
-#endif /* EXP_PARSE_NUMBER_H */

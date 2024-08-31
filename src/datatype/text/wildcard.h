@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WILDCARD_H_INCLUDED
-#define WILDCARD_H_INCLUDED
+#pragma once
 
 #include "../primitives.h"
 #include "../../logic.h"
@@ -60,5 +59,3 @@ protected:
 
 
 }
-
-#endif // WILDCARD_H_INCLUDED

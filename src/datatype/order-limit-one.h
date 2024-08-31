@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ORDER_LIMIT_ONE_H_INCLUDED
-#define ORDER_LIMIT_ONE_H_INCLUDED
+#pragma once
 
 #include "generator.h"
 #include "datatype.h"
@@ -139,5 +138,3 @@ private:
 
 
 }
-
-#endif // ORDER_LIMIT_ONE_H_INCLUDED

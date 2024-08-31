@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_STRING_H
-#define PARSE_STRING_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -26,5 +25,3 @@ p_bool parseString(p_genptr<p_str>& result, const Tokens& tks, Perun2Process& p2
 p_bool parseStringConcat(p_genptr<p_str>& res, const Tokens& tks, Perun2Process& p2);
 
 }
-
-#endif /* PARSE_STRING_H */

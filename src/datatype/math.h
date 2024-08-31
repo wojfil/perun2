@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MATH_H_INCLUDED
-#define MATH_H_INCLUDED
+#pragma once
 
 #include "primitives.h"
 #include <random>
@@ -40,5 +39,3 @@ private:
 };
 
 }
-
-#endif // MATH_H_INCLUDED

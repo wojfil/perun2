@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONSOLE_H_INCLUDED
-#define CONSOLE_H_INCLUDED
+#pragma once
 
 namespace perun2
 {
@@ -21,5 +20,3 @@ namespace perun2
 void initConsole();
 
 }
-
-#endif // CONSOLE_H_INCLUDED

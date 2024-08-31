@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_BOOL_H
-#define GEN_BOOL_H
+#pragma once
 
 #include "../generator.h"
 #include "../datatype.h"
@@ -124,5 +123,3 @@ private:
 };
 
 }
-
-#endif /* GEN_BOOL_H */

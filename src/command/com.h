@@ -12,15 +12,13 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_H
-#define COM_H
+#pragma once
 
 #include <memory>
 
 
 namespace perun2
 {
-
 
 struct Command
 {
@@ -42,7 +40,4 @@ public:
 };
 
 
-
 }
-
-#endif /* COM_H */

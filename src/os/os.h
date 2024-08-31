@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_H
-#define OS_H
+#pragma once
 
 
 namespace perun2
@@ -56,5 +55,3 @@ enum PathSegmentType
    #error "Unsupported platform"
 #endif
 
-
-#endif /* OS_H */

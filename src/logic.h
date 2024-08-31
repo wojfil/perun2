@@ -12,9 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LOGIC_H_INCLUDED
-#define LOGIC_H_INCLUDED
-
+#pragma once
 
 namespace perun2
 {
@@ -28,5 +26,3 @@ enum Logic
 
 
 }
-
-#endif // LOGIC_H_INCLUDED

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC_TIME_H_INCLUDED
-#define FUNC_TIME_H_INCLUDED
+#pragma once
 
 #include "func-generic.h"
 
@@ -126,5 +125,3 @@ public:
 
 
 }
-
-#endif // FUNC_TIME_H_INCLUDED

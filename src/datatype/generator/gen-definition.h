@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_DEFINITION_H_INCLUDED
-#define GEN_DEFINITION_H_INCLUDED
+#pragma once
 
 #include "gen-list.h"
 #include "gen-os.h"
@@ -387,6 +386,3 @@ private:
 };
 
 }
-
-
-#endif // GEN_DEFINITION_H_INCLUDED

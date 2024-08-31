@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEXT_PARSING_H_INCLUDED
-#define TEXT_PARSING_H_INCLUDED
+#pragma once
 
 #include "../primitives.h"
 
@@ -26,5 +25,3 @@ p_str str_firstArg(const p_str& value);
 
 
 }
-
-#endif // TEXT_PARSING_H_INCLUDED

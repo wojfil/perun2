@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_ASTERISK_H_INCLUDED
-#define PARSE_ASTERISK_H_INCLUDED
+#pragma once
 
 #include "../generator/gen-os.h"
 
@@ -49,5 +48,3 @@ p_bool parseDefinitionSuffix(p_defptr& result, p_defptr& definition, const p_str
    const PathType pathType, const PathSegmentType segmType, const p_int retreats, p_def* previous, Perun2Process& p2);
 
 }
-
-#endif // PARSE_ASTERISK_H_INCLUDED

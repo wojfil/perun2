@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_TIME_H
-#define PARSE_TIME_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -33,5 +32,3 @@ static p_bool timeExpUnit(p_int& sublen, const p_bool subtract, p_bool& prevSubt
    p_genptr<p_tim>& prevTim, p_genptr<p_tim>& time, const Tokens& tks, p_int& numReserve, Perun2Process& p2);
 
 }
-
-#endif /* PARSE_TIME_H */

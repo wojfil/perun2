@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LATIN_H_INCLUDED
-#define LATIN_H_INCLUDED
+#pragma once
 
 #include "../primitives.h"
 
@@ -30,5 +29,3 @@ namespace perun2
 void str_toLatin(p_str& value);
 
 }
-
-#endif // LATIN_H_INCLUDED

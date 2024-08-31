@@ -12,9 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BETWEEN_H
-#define BETWEEN_H
-
+#pragma once
 
 #include "datatype.h"
 #include "generator.h"
@@ -186,5 +184,3 @@ private:
 
 
 }
-
-#endif /* BETWEEN_H */

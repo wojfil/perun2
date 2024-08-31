@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PRIMITIVES_H
-#define PRIMITIVES_H
+#pragma once
 
 #include <cstdlib>
 #include <cstdint>
@@ -59,5 +58,3 @@ typedef HANDLE                      p_entry;
 
 
 }
-
-#endif /* PRIMITIVES_H */

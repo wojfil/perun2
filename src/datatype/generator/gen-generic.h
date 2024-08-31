@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_GENERIC_H
-#define GEN_GENERIC_H
+#pragma once
 
 #include <algorithm>
 #include <set>
@@ -185,5 +184,3 @@ private:
 };
 
 }
-
-#endif /* GEN_GENERIC_H */

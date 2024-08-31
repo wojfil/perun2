@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC_NUMBER_H
-#define FUNC_NUMBER_H
+#pragma once
 
 #include "func-generic.h"
 #include "../../perun2.h"
@@ -247,5 +246,3 @@ private:
 
 
 }
-
-#endif /* FUNC_NUMBER_H */

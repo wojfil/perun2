@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LOGGER_H_INCLUDED
-#define LOGGER_H_INCLUDED
+#pragma once
 
 #include "datatype/primitives.h"
 #include "datatype/text/chars.h"
@@ -77,5 +76,3 @@ private:
 };
 
 }
-
-#endif // LOGGER_H_INCLUDED

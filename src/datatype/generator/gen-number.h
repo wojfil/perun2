@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_NUMBER_H
-#define GEN_NUMBER_H
+#pragma once
 
 #include "../generator.h"
 #include "gen-generic.h"
@@ -83,6 +82,3 @@ protected:
 };
 
 }
-
-#endif /* GEN_NUMBER_H */
-

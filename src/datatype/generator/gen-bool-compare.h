@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_BOOL_COMPARE_H
-#define GEN_BOOL_COMPARE_H
+#pragma once
 
 #include "../datatype.h"
 #include "../comparison.h"
@@ -517,6 +516,3 @@ public:
 };
 
 }
-
-
-#endif /* GEN_BOOL_COMPARE_H */

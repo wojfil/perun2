@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TERMINATOR_H_INCLUDED
-#define TERMINATOR_H_INCLUDED
+#pragma once
 
 #include "datatype/primitives.h"
 #include <unordered_set>
@@ -46,5 +45,3 @@ private:
 void initTerminator();
 
 }
-
-#endif // TERMINATOR_H_INCLUDED

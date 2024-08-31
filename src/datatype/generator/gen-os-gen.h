@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_OS_GEN_H_INCLUDED
-#define GEN_OS_GEN_H_INCLUDED
+#pragma once
 
 #include "../datatype.h"
 #include "gen-string.h"
@@ -53,5 +52,3 @@ private:
 };
 
 }
-
-#endif // GEN_OS_GEN_H_INCLUDED

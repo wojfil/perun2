@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_LIST_H
-#define PARSE_LIST_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -27,5 +26,3 @@ p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& p2)
 static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& p2);
 
 }
-
-#endif /* PARSE_LIST_H */

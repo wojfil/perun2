@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHARS_H_INCLUDED
-#define CHARS_H_INCLUDED
+#pragma once
 
 #include "../primitives.h"
 
@@ -113,5 +112,3 @@ p_constexpr p_char CHAR_8 =                      L'8';
 p_constexpr p_char CHAR_9 =                      L'9';
 
 }
-
-#endif // CHARS_H_INCLUDED

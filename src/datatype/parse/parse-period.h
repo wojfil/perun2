@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_PERIOD_H
-#define PARSE_PERIOD_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -32,5 +31,3 @@ p_bool parseTimeDifference(p_genptr<p_per>& result, const Tokens& tks, Perun2Pro
 Period::PeriodUnit toPeriodUnit(const Token& tk, Perun2Process& p2);
 
 }
-
-#endif /* PARSE_PERIOD_H */

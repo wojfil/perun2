@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_DEFINITION_H_INCLUDED
-#define PARSE_DEFINITION_H_INCLUDED
+#pragma once
 
 #include "../../tokens.h"
 #include "../../perun2.h"
@@ -30,5 +29,3 @@ static p_bool parseDefBinary(p_defptr& result, const Tokens& tks, Perun2Process&
 static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process& p2);
 
 }
-
-#endif // PARSE_DEFINITION_H_INCLUDED

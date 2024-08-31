@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SIDE_PROCESS_H_INCLUDED
-#define SIDE_PROCESS_H_INCLUDED
+#pragma once
 
 #include "datatype/primitives.h"
 #include <Windows.h>
@@ -31,5 +30,3 @@ public:
 };
 
 }
-
-#endif // SIDE_PROCESS_H_INCLUDED

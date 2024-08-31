@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EXP_PARSE_BOOL_H
-#define EXP_PARSE_BOOL_H
+#pragma once
 
 #include "../../tokens.h"
 #include "../exp-element.h"
@@ -56,5 +55,3 @@ static p_bool parseComparison(p_genptr<p_bool>& result, const Tokens& tks, const
 static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_char sign, CompType& ctype);
 
 }
-
-#endif /* EXP_PARSE_BOOL_H */

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LEXER_H
-#define LEXER_H
+#pragma once
 
 #include "tokens.h"
 #include "perun2.h"
@@ -34,5 +33,3 @@ inline static p_nint fileSizeSuffixMulti(const p_char ch1, const p_char ch2);
 inline static p_nint decimalSuffixMulti(const p_char ch);
 
 }
-
-#endif /* LEXER_H */

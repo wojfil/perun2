@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NUMBERS_H_INCLUDED
-#define NUMBERS_H_INCLUDED
+#pragma once
 
 #include "primitives.h"
 #include "time-const.h"
@@ -71,5 +70,3 @@ p_constexpr p_nint ROMAN_NUMBER_LITERALS[] = { 1LL, 4LL, 5LL, 9LL, 10LL, 40LL, 5
 
 
 }
-
-#endif // NUMBERS_H_INCLUDED

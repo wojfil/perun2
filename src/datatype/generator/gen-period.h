@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GEN_PERIOD_H
-#define GEN_PERIOD_H
+#pragma once
 
 #include "../generator.h"
 #include "gen-generic.h"
@@ -78,5 +77,3 @@ private:
 };
 
 }
-
-#endif /* GEN_PERIOD_H */

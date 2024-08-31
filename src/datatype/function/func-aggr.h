@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FUNC_AGGR_H_INCLUDED
-#define FUNC_AGGR_H_INCLUDED
+#pragma once
 
 #include "../datatype.h"
 #include "../../util.h"
@@ -80,5 +79,3 @@ struct F_Sum : FuncAggr
 };
 
 }
-
-#endif // FUNC_AGGR_H_INCLUDED

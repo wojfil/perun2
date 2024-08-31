@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CTX_GLOBAL_H_INCLUDED
-#define CTX_GLOBAL_H_INCLUDED
+#pragma once
 
 #include "ctx-vars.h"
 
@@ -46,5 +45,3 @@ namespace perun2
    };
 
 }
-
-#endif // CTX_GLOBAL_H_INCLUDED

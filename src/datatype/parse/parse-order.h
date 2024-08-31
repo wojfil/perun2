@@ -12,9 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_ORDER_H_INCLUDED
-#define PARSE_ORDER_H_INCLUDED
-
+#pragma once
 
 #include "../../perun2.h"
 #include "../../tokens.h"
@@ -159,5 +157,3 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
 }
 
 }
-
-#endif // PARSE_ORDER_H_INCLUDED

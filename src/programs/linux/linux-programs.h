@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LINUX_PROGRAMS_H_INCLUDED
-#define LINUX_PROGRAMS_H_INCLUDED
+#pragma once
 
 #include "../../token.h"
 
@@ -44,5 +43,3 @@ private:
 
 
 }
-
-#endif // LINUX_PROGRAMS_H_INCLUDED

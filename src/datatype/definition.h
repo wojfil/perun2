@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEFINITION_H
-#define DEFINITION_H
+#pragma once
 
 #include "definition-action.h"
 #include "generator.h"
@@ -49,5 +48,3 @@ protected:
 typedef std::unique_ptr<Definition> p_defptr;
 
 }
-
-#endif /* DEFINITION_H */

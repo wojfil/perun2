@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PROGRAMS_H_INCLUDED
-#define PROGRAMS_H_INCLUDED
+#pragma once
 
 
 #ifdef _WIN32
@@ -37,6 +36,3 @@
 #else
    #error "Unsupported platform"
 #endif
-
-
-#endif /* PROGRAMS_H_INCLUDED */

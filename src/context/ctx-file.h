@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CTX_FILE_H_INCLUDED
-#define CTX_FILE_H_INCLUDED
+#pragma once
 
 #include "ctx-index.h"
 #include "ctx-location.h"
@@ -82,5 +81,3 @@ namespace perun2
 
    typedef std::unique_ptr<FileContext>            p_fcptr;
 }
-
-#endif // CTX_FILE_H_INCLUDED

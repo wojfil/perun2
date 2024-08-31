@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STRINGS_H_INCLUDED
-#define STRINGS_H_INCLUDED
+#pragma once
 
 #include "chars.h"
 #include <vector>
@@ -336,5 +335,3 @@ extern const p_list STRINGS_FUNC_STR_NUM;
 extern const p_list STRINGS_FUNC_TIM_NUM;
 
 }
-
-#endif // STRINGS_H_INCLUDED

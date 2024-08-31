@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIN_PROGRAMS_H_INCLUDED
-#define WIN_PROGRAMS_H_INCLUDED
+#pragma once
 
 #include "registry.h"
 #include "start-menu.h"
@@ -73,5 +72,3 @@ private:
 
 
 }
-
-#endif // WIN_PROGRAMS_H_INCLUDED

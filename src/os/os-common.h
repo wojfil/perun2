@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OS_COMMON_H
-#define OS_COMMON_H
+#pragma once
 
 #include "..\datatype\incr-constr.h"
 #include "..\attribute.h"
@@ -52,5 +51,3 @@ p_str os_makeArg(const p_str& value);
 p_str os_quoteEmbraced(const p_str& value);
 
 }
-
-#endif /* OS_COMMON_H */

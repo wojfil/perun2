@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef METADATA_H_INCLUDED
-#define METADATA_H_INCLUDED
+#pragma once
 
 #include "datatype/primitives.h"
 
@@ -30,5 +29,3 @@ p_constexpr p_char EXECUTABLE_NAME[] =     L"perun2";
 p_constexpr p_size EXTENSION_LENGTH =      _countof(EXTENSION) - 1;
 
 }
-
-#endif // METADATA_H_INCLUDED

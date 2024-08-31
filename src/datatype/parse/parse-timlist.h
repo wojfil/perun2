@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSE_TIMLIST_H
-#define PARSE_TIMLIST_H
+#pragma once
 
 #include "../parse-gen.h"
 
@@ -29,5 +28,3 @@ static p_bool timeFromTwoSeqs(p_genptr<p_tim>& result, const Tokens& prev, const
 static p_bool parseListedTimLists(p_genptr<p_tlist>& res, const std::vector<Tokens>& elements, Perun2Process& p2);
 
 }
-
-#endif /* PARSE_TIMLIST_H */

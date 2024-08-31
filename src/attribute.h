@@ -45,6 +45,9 @@ p_constexpr p_aunit ATTR_PATH =           1 << 17;
 p_constexpr p_aunit ATTR_READONLY =       1 << 18;
 p_constexpr p_aunit ATTR_SIZE =           1 << 19;
 p_constexpr p_aunit ATTR_SIZE_FILE_ONLY=  1 << 20;
+p_constexpr p_aunit ATTR_WIDTH =          1 << 21;
+p_constexpr p_aunit ATTR_HEIGHT =         1 << 22;
+p_constexpr p_aunit ATTR_DURATION =       1 << 23;
 
 // certain expression or syntax structure may require multiple file attributes:
 // for example - creation time, modification time, size and extension

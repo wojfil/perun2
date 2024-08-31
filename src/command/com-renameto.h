@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_RENAMETO_H
-#define COM_RENAMETO_H
+#pragma once
 
 #include "com-core.h"
 
@@ -54,5 +53,3 @@ protected:
 
 
 }
-
-#endif /* COM_RENAMETO_H */

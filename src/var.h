@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef VAR_H_INCLUDED
-#define VAR_H_INCLUDED
+#pragma once
 
 #include "datatype/generator.h"
 #include "datatype/primitives.h"
@@ -92,5 +91,3 @@ namespace perun2
       Variable<T>& variable;
    };
 }
-
-#endif // VAR_H_INCLUDED

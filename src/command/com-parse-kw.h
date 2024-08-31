@@ -12,9 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_PARSE_KW_H
-#define COM_PARSE_KW_H
-
+#pragma once
 
 #include "../token.h"
 #include "../tokens.h"
@@ -109,6 +107,3 @@ static void commandSyntaxError(const p_str& name, const p_int line);
 static void commandNoArgException(const p_str& name, const p_int line);
 
 }
-
-#endif /* COM_PARSE_KW_H */
-

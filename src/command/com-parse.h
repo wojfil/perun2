@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_PARSE_H
-#define COM_PARSE_H
+#pragma once
 
 #include <vector>
 #include "../token.h"
@@ -51,5 +50,3 @@ static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, 
 static void checkNoSemicolonBeforeBrackets(const Tokens& tkss, Perun2Process& p2);
 
 }
-
-#endif /* COM_PARSE_H */

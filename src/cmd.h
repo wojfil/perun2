@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CMD_H_INCLUDED
-#define CMD_H_INCLUDED
+#pragma once
 
 #include "datatype/primitives.h"
 
@@ -41,5 +40,3 @@ namespace error
 }
 
 }
-
-#endif // CMD_H_INCLUDED

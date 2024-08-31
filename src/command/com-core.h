@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_CORE_H
-#define COM_CORE_H
+#pragma once
 
 #include "com-listener.h"
 #include "../datatype/datatype.h"
@@ -118,6 +117,3 @@ p_str getCCName(const p_str& path);
 p_str getCCNameShort(const p_str& path);
 
 }
-
-#endif /* COM_CORE_H */
-

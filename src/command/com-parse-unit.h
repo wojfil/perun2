@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_PARSE_UNIT_H
-#define COM_PARSE_UNIT_H
+#pragma once
 
 #include "../datatype/primitives.h"
 #include "../datatype/generator.h"
@@ -83,5 +82,3 @@ private:
 };
 
 }
-
-#endif /* COM_PARSE_UNIT_H */

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_LISTENER_H_INCLUDED
-#define COM_LISTENER_H_INCLUDED
+#pragma once
 
 #include "com.h"
 #include "../perun2.h"
@@ -34,6 +33,3 @@ protected:
 };
 
 }
-
-
-#endif // COM_LISTENER_H_INCLUDED

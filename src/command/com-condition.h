@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_CONDITION_H_INCLUDED
-#define COM_CONDITION_H_INCLUDED
+#pragma once
 
 #include "com.h"
 #include "../datatype/generator.h"
@@ -127,4 +126,3 @@ private:
 
 }
 
-#endif // COM_CONDITION_H_INCLUDED

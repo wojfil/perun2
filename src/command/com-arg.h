@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_ARG_H_INCLUDED
-#define COM_ARG_H_INCLUDED
+#pragma once
 
 #include "com.h"
 #include "../attribute.h"
@@ -76,5 +75,3 @@ private:
 
 
 }
-
-#endif // COM_ARG_H_INCLUDED

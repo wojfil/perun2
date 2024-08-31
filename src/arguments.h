@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ARGUMENTS_H_INCLUDED
-#define ARGUMENTS_H_INCLUDED
+#pragma once
 
 #include "datatype/datatype.h"
 
@@ -84,5 +83,3 @@ private:
 };
 
 }
-
-#endif // ARGUMENTS_H_INCLUDED

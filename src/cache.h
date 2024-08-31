@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CACHE_H_INCLUDED
-#define CACHE_H_INCLUDED
+#pragma once
 
 #include "var.h"
 #include "programs/programs.h"
@@ -68,5 +67,3 @@ private:
 };
 
 }
-
-#endif // CACHE_H_INCLUDED

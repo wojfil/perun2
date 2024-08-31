@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UTIL_H
-#define UTIL_H
+#pragma once
 
 #include <map>
 #include <memory>
@@ -51,7 +50,4 @@ void transferUniquePtrs(std::vector<std::unique_ptr<T>>& source, std::vector<std
    }
 };
 
-
 }
-
-#endif /* UTIL_H */

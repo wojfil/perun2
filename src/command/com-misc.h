@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_MISC_H
-#define COM_MISC_H
+#pragma once
 
 #include "com-listener.h"
 #include "../datatype/datatype.h"
@@ -299,6 +298,3 @@ private:
 };
 
 }
-
-#endif /* COM_MISC_H */
-

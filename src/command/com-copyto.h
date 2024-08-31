@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_COPYTO_H
-#define COM_COPYTO_H
+#pragma once
 
 #include "com-core.h"
 
@@ -84,5 +83,3 @@ protected:
 };
 
 }
-
-#endif /* COM_COPYTO_H */

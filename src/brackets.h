@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BRACKETS_H
-#define BRACKETS_H
+#pragma once
 
 #include "tokens.h"
 
@@ -36,6 +35,3 @@ private:
 void checkBracketsThoroughly(const Tokens& tks);
 
 }
-
-#endif /* BRACKETS_H */
-

@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_AGGREGATE_H_INCLUDED
-#define COM_AGGREGATE_H_INCLUDED
+#pragma once
 
 #include "../datatype/datatype.h"
 #include <unordered_map>
@@ -78,5 +77,3 @@ private:
 };
 
 }
-
-#endif /* COM_AGGREGATE_H_INCLUDED */

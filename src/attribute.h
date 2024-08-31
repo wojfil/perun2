@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATTRIB_H
-#define ATTRIB_H
+#pragma once
 
 #include "token.h"
 #include <memory>
@@ -79,5 +78,3 @@ private:
 typedef std::unique_ptr<Attribute> p_attrptr;
 
 }
-
-#endif /* ATTRIB_H */

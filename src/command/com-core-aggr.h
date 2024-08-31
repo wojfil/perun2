@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_CORE_AGGR_H
-#define COM_CORE_AGGR_H
+#pragma once
 
 #include "com-core.h"
 #include "com-aggregate.h"
@@ -205,5 +204,3 @@ private:
 
 
 }
-
-#endif /* COM_CORE_AGGR_H */

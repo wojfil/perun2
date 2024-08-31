@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_MOVETO_H
-#define COM_MOVETO_H
+#pragma once
 
 #include "com-core.h"
 
@@ -82,5 +81,3 @@ protected:
 };
 
 }
-
-#endif /* COM_MOVETO_H */

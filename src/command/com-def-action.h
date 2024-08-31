@@ -12,8 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COM_DEF_ACTION_H_INCLUDED
-#define COM_DEF_ACTION_H_INCLUDED
+#pragma once
 
 #include "com.h"
 #include "../datatype/datatype.h"
@@ -63,5 +62,3 @@ private:
 
 
 }
-
-#endif // COM_DEF_ACTION_H_INCLUDED

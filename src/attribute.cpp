@@ -107,6 +107,26 @@ void Attribute::add(const Token& tk)
    else if (tk.isVariable(STRING_SIZE, this->perun2)) {
       this->set(ATTR_SIZE);
    }
+   else if (tk.isVariable(STRING_ISIMAGE, this->perun2)) {
+      this->set(ATTR_ISIMAGE);
+   }
+   else if (tk.isVariable(STRING_ISVIDEO, this->perun2)) {
+      this->set(ATTR_ISVIDEO);
+   }
+   else if (tk.isVariable(STRING_DURATION, this->perun2)) {
+      this->set(ATTR_ISVIDEO);
+      this->set(ATTR_DURATION);
+   }
+   else if (tk.isVariable(STRING_WIDTH, this->perun2)) {
+      this->set(ATTR_WIDTH);
+      this->set(ATTR_ISVIDEO);
+      this->set(ATTR_ISIMAGE);
+   }
+   else if (tk.isVariable(STRING_HEIGHT, this->perun2)) {
+      this->set(ATTR_HEIGHT);
+      this->set(ATTR_ISVIDEO);
+      this->set(ATTR_ISIMAGE);
+   }
 }
 
 void Attribute::set(const p_aunit v)

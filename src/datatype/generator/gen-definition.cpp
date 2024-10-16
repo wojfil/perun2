@@ -69,6 +69,47 @@ p_bool DefFilter::setAction(p_daptr& act)
    return this->definition->setAction(act);
 }
 
+FileClass::FileClass(p_defptr& def, FileContext* ctx, const Variable<p_bool>& crit, Perun2Process& p2)
+   : DefFilter(def, ctx, p2), criterion(crit) { };
+
+
+void FileClass::reset() {
+   if (!first) {
+      first = true;
+      if (!finished) {
+         definition->reset();
+      }
+   }
+}
+
+
+p_bool FileClass::hasNext()
+{
+   if (first) {
+      finished = false;
+      first = false;
+      index.setToZero();
+   }
+
+   while (definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         break;
+      }
+
+      value = definition->getValue();
+
+      if (criterion.value) {
+         this->context->index->value = index;
+         index++;
+         return true;
+      }
+   }
+
+   finished = true;
+   reset();
+   return false;
+}
+
 
 DefFilter_Where::DefFilter_Where(p_genptr<p_bool>& cond, p_defptr& def, FileContext* ctx, Perun2Process& p2)
    : DefFilter(def, ctx, p2), condition(std::move(cond)) { };

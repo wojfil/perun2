@@ -26,7 +26,6 @@
 namespace perun2::gen
 {
 
-
 struct DefWithContext : p_def
 {
 public:
@@ -59,6 +58,21 @@ protected:
    p_bool first;
    p_defptr definition;
    FileContext* context;
+};
+
+
+struct FileClass : DefFilter
+{
+public:
+   FileClass(p_defptr& def, FileContext* ctx, const Variable<p_bool>& crit, Perun2Process& p2);
+
+   p_bool hasNext() override;
+   void reset() override;
+
+private:
+   const Variable<p_bool>& criterion;
+   p_bool finished = true;
+   p_num index;
 };
 
 

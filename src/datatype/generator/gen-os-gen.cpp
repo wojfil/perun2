@@ -59,6 +59,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
          context->attribute->set(ATTR_ISIMAGE);
+         context->attribute->set(ATTR_IMAGE_CORE);
          result = std::make_unique<FileClass>(prev, context, *context->v_isimage, perun2);
          break;
       }
@@ -67,6 +68,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
          context->attribute->set(ATTR_ISIMAGE);
+         context->attribute->set(ATTR_IMAGE_CORE);
          result = std::make_unique<FileClass>(prev, context, *context->v_isimage, perun2);
          break;
       }
@@ -75,6 +77,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
          context->attribute->set(ATTR_ISVIDEO);
+         context->attribute->set(ATTR_VIDEO_CORE);
          result = std::make_unique<FileClass>(prev, context, *context->v_isvideo, perun2);
          break;
       }
@@ -83,6 +86,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
          context->attribute->set(ATTR_ISVIDEO);
+         context->attribute->set(ATTR_VIDEO_CORE);
          result = std::make_unique<FileClass>(prev, context, *context->v_isvideo, perun2);
          break;
       }

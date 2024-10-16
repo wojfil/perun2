@@ -47,6 +47,8 @@ namespace perun2
       this->v_hidden = this->insertVar<p_bool>(STRING_HIDDEN);
       this->v_isdirectory = this->insertVar<p_bool>(STRING_ISDIRECTORY);
       this->v_isfile = this->insertVar<p_bool>(STRING_ISFILE);
+      this->v_isimage = this->insertVar<p_bool>(STRING_ISIMAGE);
+      this->v_isvideo = this->insertVar<p_bool>(STRING_ISVIDEO);
       this->v_readonly = this->insertVar<p_bool>(STRING_READONLY);
       this->v_access = this->insertVar<p_tim>(STRING_ACCESS);
       this->v_change = this->insertVar<p_tim>(STRING_CHANGE);
@@ -55,12 +57,15 @@ namespace perun2
       this->v_lifetime = this->insertVar<p_per>(STRING_LIFETIME);
       this->v_size = this->insertVar<p_num>(STRING_SIZE);
       this->v_depth = this->insertVar<p_num>(STRING_DEPTH);
+      this->v_width = this->insertVar<p_num>(STRING_WIDTH);
+      this->v_height = this->insertVar<p_num>(STRING_HEIGHT);
       this->v_drive = this->insertVar<p_str>(STRING_DRIVE);
       this->v_extension = this->insertVar<p_str>(STRING_EXTENSION);
       this->v_fullname = this->insertVar<p_str>(STRING_FULLNAME);
       this->v_name = this->insertVar<p_str>(STRING_NAME);
       this->v_parent = this->insertVar<p_str>(STRING_PARENT);
       this->v_path = this->insertVar<p_str>(STRING_PATH);
+      this->v_duration = this->insertVar<p_per>(STRING_DURATION);
    }
 
 

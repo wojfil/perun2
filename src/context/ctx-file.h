@@ -53,6 +53,8 @@ namespace perun2
       Variable<p_bool>* v_hidden;
       Variable<p_bool>* v_isdirectory;
       Variable<p_bool>* v_isfile;
+      Variable<p_bool>* v_isimage;
+      Variable<p_bool>* v_isvideo;
       Variable<p_bool>* v_readonly;
       Variable<p_tim>* v_access;
       Variable<p_tim>* v_change;
@@ -61,12 +63,15 @@ namespace perun2
       Variable<p_per>* v_lifetime;
       Variable<p_num>* v_size;
       Variable<p_num>* v_depth;
+      Variable<p_num>* v_height;
+      Variable<p_num>* v_width;
       Variable<p_str>* v_drive;
       Variable<p_str>* v_extension;
       Variable<p_str>* v_fullname;
       Variable<p_str>* v_name;
       Variable<p_str>* v_parent;
       Variable<p_str>* v_path;
+      Variable<p_per>* v_duration;
 
    private:
       void initVars(Perun2Process& p2);

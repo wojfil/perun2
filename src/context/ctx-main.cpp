@@ -29,6 +29,10 @@ namespace perun2
       this->addOsGen(STRING_RECURSIVEFILES, gen::OsElement::oe_RecursiveFiles, p2);
       this->addOsGen(STRING_DIRECTORIES, gen::OsElement::oe_Directories, p2);
       this->addOsGen(STRING_RECURSIVEDIRECTORIES, gen::OsElement::oe_RecursiveDirectories, p2);
+      this->addOsGen(STRING_IMAGES, gen::OsElement::oe_Images, p2);
+      this->addOsGen(STRING_RECURSIVEIMAGES, gen::OsElement::oe_RecursiveImages, p2);
+      this->addOsGen(STRING_VIDEOS, gen::OsElement::oe_Videos, p2);
+      this->addOsGen(STRING_RECURSIVEVIDEOS, gen::OsElement::oe_RecursiveVideos, p2);
    };
 
    p_bool Contexts::getVar(const Token& tk, Variable<p_bool>*& result, Perun2Process& p2)

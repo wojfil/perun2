@@ -15,6 +15,7 @@
 #include "gen-os-gen.h"
 #include "gen-os.h"
 #include "gen-string.h"
+#include "gen-definition.h"
 
 
 namespace perun2::gen
@@ -51,6 +52,38 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
       }
       case OsElement::oe_RecursiveAll: {
          result = std::make_unique<RecursiveAll>(P_GEN_OS_ARGS_DEFAULT);
+         break;
+      }
+      case OsElement::oe_Images: {
+         p_defptr prev = std::make_unique<Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
+         FileContext* context = prev->getFileContext();
+         context->attribute->setCoreCommandBase();
+         context->attribute->set(ATTR_ISIMAGE);
+         result = std::make_unique<FileClass>(prev, context, *context->v_isimage, perun2);
+         break;
+      }
+      case OsElement::oe_RecursiveImages: {
+         p_defptr prev = std::make_unique<RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
+         FileContext* context = prev->getFileContext();
+         context->attribute->setCoreCommandBase();
+         context->attribute->set(ATTR_ISIMAGE);
+         result = std::make_unique<FileClass>(prev, context, *context->v_isimage, perun2);
+         break;
+      }
+      case OsElement::oe_Videos: {
+         p_defptr prev = std::make_unique<Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
+         FileContext* context = prev->getFileContext();
+         context->attribute->setCoreCommandBase();
+         context->attribute->set(ATTR_ISVIDEO);
+         result = std::make_unique<FileClass>(prev, context, *context->v_isvideo, perun2);
+         break;
+      }
+      case OsElement::oe_RecursiveVideos: {
+         p_defptr prev = std::make_unique<RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
+         FileContext* context = prev->getFileContext();
+         context->attribute->setCoreCommandBase();
+         context->attribute->set(ATTR_ISVIDEO);
+         result = std::make_unique<FileClass>(prev, context, *context->v_isvideo, perun2);
          break;
       }
       default: {

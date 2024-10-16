@@ -32,9 +32,13 @@ enum OsElement
    oe_All,
    oe_Directories,
    oe_Files,
+   oe_Images,
+   oe_Videos,
    oe_RecursiveAll,
    oe_RecursiveDirectories,
-   oe_RecursiveFiles
+   oe_RecursiveFiles,
+   oe_RecursiveImages,
+   oe_RecursiveVideos
 };
 
 

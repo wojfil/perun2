@@ -186,5 +186,7 @@ inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high);
 inline p_bool os_isBrowsePath(const p_str& path);
 inline p_tim os_convertToPerun2Time(const p_ftim* time);
 inline p_bool os_convertToFileTime(const p_tim& perunTime, p_ftim& result);
+std::string os_toUtf8(const p_str& value);
+
 
 }

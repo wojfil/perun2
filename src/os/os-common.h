@@ -50,4 +50,11 @@ void os_escapeQuote(p_str& path);
 p_str os_makeArg(const p_str& value);
 p_str os_quoteEmbraced(const p_str& value);
 
+static p_str os_toWideString(const std::string& str);
+void os_ffmpegAttributes(FileContext& context);
+void os_ffmpegEmpty(FileContext& context);
+static p_per os_ffmpegPeriod(const int64_t units);
+static bool os_isFfmpegVideoFormat(const std::string& value);
+static bool os_isAnyFfmpegFormat(const std::string& value);
+
 }

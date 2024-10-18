@@ -33,6 +33,13 @@
 #include <fcntl.h>
 
 
+
+extern "C" {
+   #include <libavformat/avformat.h>
+   #include <libavcodec/avcodec.h>
+   #include <libavutil/imgutils.h> 
+}
+
 namespace perun2
 {
 
@@ -154,6 +161,10 @@ void os_loadEmptyAttributes(FileContext& context)
 
    if (attribute->has(ATTR_SIZE) || attribute->has(ATTR_SIZE_FILE_ONLY)) {
       context.v_size->value = P_NaN;
+   }
+   
+   if (attribute->has(ATTR_IMAGE_OR_VIDEO)) {
+      os_ffmpegEmpty(context);
    }
 }
 
@@ -342,5 +353,224 @@ p_str os_quoteEmbraced(const p_str& value)
       : str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
 }
 
+static p_str os_toWideString(const std::string& str)
+{
+   std::locale loc("");
+   std::vector<p_char> buffer(str.size());
+   std::mbstowcs(&buffer[0], str.c_str(), str.size());
+   return p_str(buffer.begin(), buffer.end());
+}
+
+void os_ffmpegAttributes(FileContext& context)
+{
+   const std::string path = os_toUtf8(context.v_path->value);
+   AVFormatContext* formatCtx = nullptr;
+
+   if (avformat_open_input(&formatCtx, path.c_str(), nullptr, nullptr) != 0) {
+      os_ffmpegEmpty(context);
+      return;
+   }
+
+   if (avformat_find_stream_info(formatCtx, nullptr) < 0) {
+      avformat_close_input(&formatCtx);
+      os_ffmpegEmpty(context);
+      return;
+   }
+
+   AVCodecParameters* codecParams = nullptr;
+   int videoStreamIndex = -1;
+   bool hasAudio = false;
+   bool hasVideo = false;
+   bool hasAdditionalStream = false;
+
+   for (p_size i = 0; i < formatCtx->nb_streams; i++) {
+      const auto codecType = formatCtx->streams[i]->codecpar->codec_type;
+
+      if (codecType == AVMEDIA_TYPE_AUDIO) {
+         hasAudio = true;
+      }
+      else if (videoStreamIndex == -1 && codecType == AVMEDIA_TYPE_VIDEO) {
+         hasVideo = true;
+         videoStreamIndex = i;
+         codecParams = formatCtx->streams[i]->codecpar;
+      }
+
+      if (codecType != AVMEDIA_TYPE_VIDEO) {
+         hasAdditionalStream = true;
+      }
+   }
+
+   if (! hasVideo) {
+      avformat_close_input(&formatCtx);
+      os_ffmpegEmpty(context);
+      return;
+   }
+
+   // we know that this file has width and height
+   // now check whether is a video
+
+   context.v_width->value = static_cast<int64_t>(codecParams->width);
+   context.v_height->value = static_cast<int64_t>(codecParams->height);
+   
+   if (hasAudio || hasAdditionalStream || os_isFfmpegVideoFormat(formatCtx->iformat->name)) {
+      context.v_isvideo->value = true;
+      context.v_isimage->value = false;
+      context.v_duration->value = os_ffmpegPeriod(formatCtx->duration);
+
+      avformat_close_input(&formatCtx);
+      return;
+   }
+
+   if (! os_isAnyFfmpegFormat(formatCtx->iformat->name)) {
+      avformat_close_input(&formatCtx);
+      os_ffmpegEmpty(context);
+      return;
+   }
+
+   context.v_isvideo->value = false;
+   context.v_isimage->value = true;
+   context.v_duration->value = p_per();
+
+   avformat_close_input(&formatCtx);
+   return;
+}
+
+void os_ffmpegEmpty(FileContext& context)
+{
+   context.v_isimage->value = false;
+   context.v_isvideo->value = false;
+   
+   context.v_duration->value = p_per();
+   context.v_height->value = P_NaN;
+   context.v_width->value = P_NaN;
+}
+
+static p_per os_ffmpegPeriod(const int64_t units)
+{
+   if (units <= 0) {
+      return p_per();
+   }
+
+   p_tnum seconds = (units + AV_TIME_BASE / 2) / AV_TIME_BASE;
+
+   if (seconds < TNUM_SECONDS_IN_MINUTE) {
+      return p_per(seconds, Period::u_Seconds);
+   }
+
+   p_per period;
+   period.periodType = Period::pt_Difference;
+
+   if (seconds >= TNUM_SECONDS_IN_DAY) {
+      period.days = seconds / TNUM_SECONDS_IN_DAY;
+      seconds %= TNUM_SECONDS_IN_DAY;
+
+      if (period.days > TNUM_DAYS_IN_FEBRUARY) {
+         period.periodType = Period::pt_Mingled;
+      }
+   }
+
+   if (seconds >= TNUM_SECONDS_IN_HOUR) {
+      period.hours = seconds / TNUM_SECONDS_IN_HOUR;
+      seconds %= TNUM_SECONDS_IN_HOUR;
+   }
+
+   if (seconds >= TNUM_SECONDS_IN_MINUTE) {
+      period.minutes = seconds / TNUM_SECONDS_IN_MINUTE;
+      seconds %= TNUM_SECONDS_IN_MINUTE;
+   }
+
+   period.seconds = seconds;
+   return period;
+}
+
+static bool os_isFfmpegVideoFormat(const std::string& value)
+{
+   // the ambiguity is still here
+   // after all these checks, file can be an image or a video
+   // this function is called in the last resort
+   // formats below were taken from documentation of FFmpeg
+   // they mean things that are video or audio/video
+
+   static const std::unordered_set<std::string> FORMATS_OF_NOT_IMAGES = {
+      "3g2", "3gp", "4xm", "a64", "alias_pix", "amv", "anm", "argo_asf", 
+      "argo_brp", "argo_cvg", "asf", "asf_o", "asf_stream", "av1", "avi", 
+      "avisynth", "avm2", "avs", "avs2", "avs3", "bethsoftvid", "bfi", 
+      "bink", "binka", "bit", "bitpacked", "bmv", "brender_pix", "c93", 
+      "cavsvideo", "cdxl", "cine", "dash", "derf", "dhav", "dirac", "dnxhd", 
+      "dshow", "dv", "dvd", "dvdvideo", "dxa", "evc", "f4v", "film_cpk", "filmstrip", 
+      "flic", "flv", "frm", "fwse", "gdigrab", "gdv", "gem_pipe", "h261", "h263", 
+      "h264", "gxf", "hcom", "hds", "hevc", "hls", "idcin", "ifv", "ingenient", 
+      "ipmovie", "ipod", "ipu", "ismv", "iv8", "ivf", "jv", "kux", "live_flv", "lvf", 
+      "lxf", "matroska", "matroska,webm", "m4v", "mgsts", "mjpeg", "mjpeg_2000", "mlv", 
+      "moflex", "mov", "mpeg1video", "mpeg2video", "mpegts", "mpegtsraw", "mpegvideo", 
+      "mpjpeg", "mtv", "mv", "mvi", "mxg", "mov", "mp4", "mpeg", "nsv", "nuv", "pdv", 
+      "nut", "ogg", "pva", "r3d", "rawvideo", "rl2", "roq", "rm", "sami", "sap", "sbc", 
+      "sbg", "scc", "scd", "sdl,sdl2", "sdns", "sdp", "sdr2", "sds", "sdx", "segment", 
+      "ser", "sga", "sgi_pipe", "shn", "siff", "simbiosis_imx", "sln", "smjpeg", "smk", 
+      "smoothstreaming", "smush", "sol", "sox", "spdif", "spx", "srt", "stl", 
+      "stream_segment,ssegment", "streamhash", "subviewer", "subviewer1", "sunrast_pipe", 
+      "sup", "svag", "svcd", "svg_pipe", "svs", "swf", "sga", "smjpeg", "smk", "svcd", 
+      "swf", "thp", "tiertexseq", "tmv", "usm", "v210", "v210x", "vc1", "vc1test", "vcd", 
+      "vfwcap", "vidc", "vividas", "vivo", "vmd", "vob", "vplayer", "vvc", "wc3movie", 
+      "webm", "webm_chunk", "webm_dash_manifest", "wsvqa", 
+      "wtv", "wve", "xmv", "yop", "yuv4mpegpipe" 
+   };
+
+   return FORMATS_OF_NOT_IMAGES.find(value) != FORMATS_OF_NOT_IMAGES.end();
+}
+
+static bool os_isAnyFfmpegFormat(const std::string& value)
+{
+   static const std::unordered_set<std::string> ALL_FORMATS = {
+      "3g2", "3gp", "4xm", "a64", "aa", "aac", "aax", "ac3", "ac4", "ace", "acm", "act", 
+      "adf", "adp", "ads", "adts", "adx", "aea", "afc", "aiff", "aix", "alaw", "alias_pix", 
+      "alp", "amr", "amrnb", "amrwb", "amv", "anm", "apac", "apc", "ape", "apm", "apng", 
+      "aptx", "aptx_hd", "aqtitle", "argo_asf", "argo_brp", "argo_cvg", "asf", "asf_o", 
+      "asf_stream", "ast", "au", "av1", "avi", "avif", "avisynth", "avm2", "avr", 
+      "avs", "avs2", "avs3", "bethsoftvid", "bfi", "bfstm", "bink", "binka", "bit", 
+      "bitpacked", "bmp_pipe", "bmv", "boa", "bonk", "brender_pix", "brstm", "c93", "caf", 
+      "cavsvideo", "cdxl", "chromaprint", "cine", "codec2", "codec2raw",
+      "cri_pipe", "dash", "daud", "dcstr", "dds_pipe", "derf", "dfa", "dfpwm", 
+      "dhav", "dirac", "dnxhd", "dpx_pipe", "dsf", "dshow", "dsicin", "dss", "dts", "dtshd", 
+      "dv", "dvd", "dvdvideo", "dxa", "ea", "ea_cdata", "eac3", "epaf", 
+      "evc", "exr_pipe", "f32be", "f32le", "f4v", "f64be", "f64le",
+      "film_cpk", "filmstrip", "fits", "flac", "flic", "flv",
+      "frm", "fsb", "fwse", "g722", "g723_1", "g726", "g726le", "g729", 
+      "gdigrab", "gdv", "gem_pipe", "genh", "gif", "gif_pipe", "gsm", "h261", 
+      "h263", "h264", "hca", "hcom", "hdr_pipe", "hds", "hevc", "hls", 
+      "iamf", "ico", "idcin", "idf", "ifv", "ilbc", "image2", "image2pipe", 
+      "imf", "ingenient", "ipmovie", "ipod", "ipu", "ircam", "ismv", "iv8", 
+      "ivf", "ivr", "j2k_pipe", "jpeg_pipe", "jpegls_pipe", "jpegxl_anim", 
+      "jpegxl_pipe", "jv", "kux", "kvag", "laf", "latm", "lc3", "libgme", 
+      "libopenmpt", "live_flv", "lmlm4", "loas", "lvf", "lxf", "m4v", 
+      "matroska", "matroska,webm", "mca", "mgsts", "mjpeg", 
+      "mjpeg_2000", "mkvtimestamp_v2", "mlp", "mlv", "mmf", "mods", "moflex", 
+      "mp2", "mp3", "mpc", "mpc8", 
+      "mpeg1video", "mpeg2video", "mpegts", "mpegtsraw", "mpegvideo", "mpjpeg",
+      "msp", "mtaf", "mtv", "mulaw", "musx", "mv", "mvi", 
+      "mxf", "mxf_d10", "mxf_opatom", "mxg", "nsv", "null", 
+      "nuv", "oga", "ogv", "oma", "openal", "opus",  "paf", 
+      "pam_pipe", "pbm_pipe", "pcx_pipe", "pdv", "pfm_pipe", "pgm_pipe", "pgmyuv_pipe", 
+      "pgx_pipe", "phm_pipe", "photocd_pipe", "pictor_pipe", "png_pipe", 
+      "pp_bnk", "ppm_pipe", "psd_pipe", "psp", "psxstr", "pva", "pvf", "qcp", "qdraw_pipe", 
+      "qoa", "qoi_pipe", "r3d", "rawvideo", "rka", "rl2", 
+      "roq", "rpl", "rtp_mpegts", "s16be", "s16le", 
+      "s24be", "s24le", "s32be", "s32le", "s337m", "s8", "sap", "sbc",
+      "sdns", "sdr2", "sds", "sdx",
+      "sga", "sgi_pipe", "shn", "sln", "smjpeg", "smk", 
+      "smoothstreaming", "sox", "spdif", "spx", 
+      "sunrast_pipe", 
+      "svag", "svcd", "svg_pipe", "svs", "swf", "tak", "thp", 
+      "tiertexseq", "tiff_pipe", "tmv", "truehd", "tta", "ty", "u16be", 
+      "u16le", "u24be", "u24le", "u32be", "u32le", "u8", "usm", "v210", 
+      "v210x", "vag", "vc1", "vc1test", "vcd", "vfwcap", "vidc", "vividas", 
+      "vivo", "vmd", "vob", "voc", "vplayer", "vqf", "vvc", "w64",
+      "wav", "wc3movie", "webm", "webm_chunk", "webm_dash_manifest", "webp", 
+      "webp_pipe",  "wsaud", "wsvqa", "wtv", "wv", "wve", "xa",
+      "xbm_pipe", "xmv", "xpm_pipe", "xvag", "xwd_pipe", "xwma", "yop", "yuv4mpegpipe"
+   };
+   
+   return ALL_FORMATS.find(value) != ALL_FORMATS.end();
+}
 
 }

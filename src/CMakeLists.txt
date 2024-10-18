@@ -19,6 +19,7 @@ set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD ${USED_CPP_STANDARD})
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
 
+
 project(perun2)
 
 enable_language(RC)
@@ -153,11 +154,42 @@ add_executable(
     programs/windows/win-programs.cpp
 )
 
+
+set(FFMPEG_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../external/ffmpeg/include)
+
+if(EXISTS ${FFMPEG_INCLUDE_DIR})
+    message(STATUS "FFmpeg include directory found: ${FFMPEG_INCLUDE_DIR}")
+    target_include_directories(perun2 PRIVATE ${FFMPEG_INCLUDE_DIR})
+else()
+    message(FATAL_ERROR "FFmpeg include directory not found: ${FFMPEG_INCLUDE_DIR}")
+endif()
+
+
+set(FFMPEG_LIBS
+    ${CMAKE_SOURCE_DIR}/../external/ffmpeg/lib/avcodec.lib
+    ${CMAKE_SOURCE_DIR}/../external/ffmpeg/lib/avformat.lib
+    ${CMAKE_SOURCE_DIR}/../external/ffmpeg/lib/avutil.lib
+)
+
+foreach(lib ${FFMPEG_LIBS})
+    if(EXISTS ${lib})
+        message(STATUS "FFmpeg library found: ${lib}")
+    else()
+        message(FATAL_ERROR "FFmpeg library not found: ${lib}")
+    endif()
+endforeach()
+
+find_library(AVCODEC_LIB NAMES avcodec PATHS ${CMAKE_SOURCE_DIR}/../external/ffmpeg/lib)
+find_library(AVFORMAT_LIB NAMES avformat PATHS ${CMAKE_SOURCE_DIR}/../external/ffmpeg/lib)
+find_library(AVUTIL_LIB NAMES avutil PATHS ${CMAKE_SOURCE_DIR}/../external/ffmpeg/lib)
+
 target_link_libraries(
+    
     perun2 PRIVATE
 
     stdc++
     ole32 
     oleaut32
     shell32
+    ${FFMPEG_LIBS}
 )

@@ -395,6 +395,15 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
          context.v_size->value = p_num(static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh)));
       }
    }
+
+   if (attribute->has(ATTR_IMAGE_OR_VIDEO)) {
+      if (context.v_isfile->value) {
+         os_ffmpegAttributes(context);
+      }
+      else {
+         os_ffmpegEmpty(context);
+      }
+   }
 }
 
 p_tim os_access(const p_str& path)
@@ -2552,6 +2561,20 @@ inline p_bool os_convertToFileTime(const p_tim& perunTime, p_ftim& result)
    }
 
    return LocalFileTimeToFileTime(&ftime, &result);
+}
+
+
+std::string os_toUtf8(const p_str& value)
+{
+   if (value.empty()) {
+      return std::string();
+   }
+    
+   const int length = WideCharToMultiByte(CP_UTF8, 0, &value[0], (int)value.size(), nullptr, 0, nullptr, nullptr);
+   std::string result(length, 0);
+
+   WideCharToMultiByte(CP_UTF8, 0, &value[0], (int)value.size(), &result[0], length, nullptr, nullptr);
+   return result;
 }
 
 }

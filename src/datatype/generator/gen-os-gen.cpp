@@ -58,8 +58,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          p_defptr prev = std::make_unique<Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
-         context->attribute->set(ATTR_ISIMAGE);
-         context->attribute->set(ATTR_IMAGE_CORE);
+         context->attribute->set(ATTR_IMAGE_OR_VIDEO);
          result = std::make_unique<FileClass>(prev, context, *context->v_isimage, perun2);
          break;
       }
@@ -67,8 +66,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          p_defptr prev = std::make_unique<RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
-         context->attribute->set(ATTR_ISIMAGE);
-         context->attribute->set(ATTR_IMAGE_CORE);
+         context->attribute->set(ATTR_IMAGE_OR_VIDEO);
          result = std::make_unique<FileClass>(prev, context, *context->v_isimage, perun2);
          break;
       }
@@ -76,8 +74,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          p_defptr prev = std::make_unique<Files>(P_GEN_OS_ARGS_DEFAULT_EXT);
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
-         context->attribute->set(ATTR_ISVIDEO);
-         context->attribute->set(ATTR_VIDEO_CORE);
+         context->attribute->set(ATTR_IMAGE_OR_VIDEO);
          result = std::make_unique<FileClass>(prev, context, *context->v_isvideo, perun2);
          break;
       }
@@ -85,8 +82,7 @@ p_bool DefinitionGenerator::generate(p_defptr& result) const
          p_defptr prev = std::make_unique<RecursiveFiles>(P_GEN_OS_ARGS_DEFAULT);
          FileContext* context = prev->getFileContext();
          context->attribute->setCoreCommandBase();
-         context->attribute->set(ATTR_ISVIDEO);
-         context->attribute->set(ATTR_VIDEO_CORE);
+         context->attribute->set(ATTR_IMAGE_OR_VIDEO);
          result = std::make_unique<FileClass>(prev, context, *context->v_isvideo, perun2);
          break;
       }

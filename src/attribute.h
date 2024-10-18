@@ -45,13 +45,7 @@ p_constexpr p_aunit ATTR_PATH =           1 << 17;
 p_constexpr p_aunit ATTR_READONLY =       1 << 18;
 p_constexpr p_aunit ATTR_SIZE =           1 << 19;
 p_constexpr p_aunit ATTR_SIZE_FILE_ONLY=  1 << 20;
-p_constexpr p_aunit ATTR_WIDTH =          1 << 21;
-p_constexpr p_aunit ATTR_HEIGHT =         1 << 22;
-p_constexpr p_aunit ATTR_DURATION =       1 << 23;
-p_constexpr p_aunit ATTR_ISIMAGE =        1 << 24;
-p_constexpr p_aunit ATTR_ISVIDEO =        1 << 25;
-p_constexpr p_aunit ATTR_IMAGE_CORE =     1 << 26;
-p_constexpr p_aunit ATTR_VIDEO_CORE =     1 << 27;
+p_constexpr p_aunit ATTR_IMAGE_OR_VIDEO = 1 << 21;
 
 // certain expression or syntax structure may require multiple file attributes:
 // for example - creation time, modification time, size and extension

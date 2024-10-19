@@ -1313,5 +1313,34 @@ inline p_tnum periodDiffUnitCmp(const Period& diff, const Period& unit)
    return TNUM_ZERO;
 }
 
+Period alignPeriod(Period value)
+{
+   if (value.seconds >= TNUM_SECONDS_IN_MINUTE) {
+      value.minutes += value.seconds / TNUM_SECONDS_IN_MINUTE;
+      value.seconds %= TNUM_SECONDS_IN_MINUTE;
+   }
+
+   if (value.minutes >= TNUM_MINUTES_IN_HOUR) {
+      value.hours += value.minutes / TNUM_MINUTES_IN_HOUR;
+      value.minutes %= TNUM_MINUTES_IN_HOUR;
+   }
+
+   if (value.hours >= TNUM_HOURS_IN_DAY) {
+      value.days += value.hours / TNUM_HOURS_IN_DAY;
+      value.hours %= TNUM_HOURS_IN_DAY;
+   }
+
+   if (value.days > TNUM_DAYS_IN_FEBRUARY 
+      || value.years_sec != TNUM_ZERO || value.months_sec != TNUM_ZERO
+      || value.years_ad != TNUM_ZERO || value.months_ad != TNUM_ZERO)
+   {
+      value.periodType = Period::pt_Mingled;
+      return value;
+   }
+
+   value.periodType = Period::pt_Difference;
+   return value;
+}
+
 }
 

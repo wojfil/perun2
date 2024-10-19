@@ -168,7 +168,7 @@ p_per F_DurationDefinition::getValue()
       total += os_attr_duration(os_leftJoin(this->context->location->value, v));
    }
 
-   return total;
+   return alignPeriod(total);
 }
 
 
@@ -194,7 +194,7 @@ p_per F_DurationList::getValue()
       }
    }
 
-   return total;
+   return alignPeriod(total);
 }
 
 

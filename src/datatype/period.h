@@ -100,4 +100,10 @@ inline p_tnum periodDiffUnitCmp(const Period& diff, const Period& unit);
 // return = 0       periods are equal
 // return < 0       left period is smaller
 
+// turn period to a more pleasant form
+// for example, instead of "1 minute 162 seconds"
+// let there be "3 minutes 42 seconds"
+// note: this function ignores units greater than Day
+Period alignPeriod(Period value);
+
 }

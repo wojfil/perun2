@@ -842,6 +842,35 @@ static p_bool aggrFunction(p_genptr<p_num>& result, const std::vector<Tokens>& a
 
 p_bool periodFunction(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2)
 {
+   const Token& word = tks.first();
+   const std::vector<Tokens> args = toFunctionArgs(tks);
+   const p_size len = args.size();
+
+   if (word.isWord(STRING_DURATION, p2)) {
+      if (len != 1) {
+         if (len != 0) {
+            func::checkInOperatorCommaAmbiguity(word, args[0], p2);
+         }
+         functionArgNumberException(len, word, p2);
+      }
+
+      p_defptr def;
+      if (parse::parse(p2, args[0], def)) {
+         result = std::make_unique<F_DurationDefinition>(def, p2);
+         return true;
+      }
+
+      p_genptr<p_list> list;
+      if (parse::parse(p2, args[0], list)) {
+         result = std::make_unique<F_DurationList>(list, p2);
+         return true;
+      }
+      else {
+         throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
+            L"' cannot be resolved to a collection"), word.line);
+      }
+   }
+
    return false;
 }
 

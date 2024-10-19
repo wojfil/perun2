@@ -141,6 +141,39 @@ private:
 };
 
 
+struct F_DurationDefinition : Generator<p_per>
+{
+public:
+   F_DurationDefinition(p_defptr& def, Perun2Process& p2)
+      : definition(std::move(def)), perun2(p2), 
+        context(p2.contexts.getLocationContext()) { };
+
+   p_per getValue() override;
+
+private:
+   Perun2Process& perun2;
+   LocationContext* context;
+   p_defptr definition;
+};
+
+
+struct F_DurationList : Generator<p_per>
+{
+public:
+   F_DurationList(p_genptr<p_list>& vals, Perun2Process& p2)
+      : values(std::move(vals)), perun2(p2), 
+        context(p2.contexts.getLocationContext()) { };
+
+   p_per getValue() override;
+
+private:
+   Perun2Process& perun2;
+   LocationContext* context;
+   p_genptr<p_list> values;
+};
+
+
+
 struct F_Attribute
 {
 public:
@@ -273,5 +306,44 @@ public:
    p_bool getValue() override;
 };
 
+
+struct F_Attr_IsImage: F_Attribute, Generator<p_bool>
+{
+public:
+   F_Attr_IsImage(Perun2Process& p2) : F_Attribute(p2) { };
+   p_bool getValue() override;
+};
+
+
+struct F_Attr_IsVideo: F_Attribute, Generator<p_bool>
+{
+public:
+   F_Attr_IsVideo(Perun2Process& p2) : F_Attribute(p2) { };
+   p_bool getValue() override;
+};
+
+
+struct F_Attr_Width : F_Attribute, Generator<p_num>
+{
+public:
+   F_Attr_Width(Perun2Process& p2) : F_Attribute(p2) { };
+   p_num getValue() override;
+};
+
+
+struct F_Attr_Height : F_Attribute, Generator<p_num>
+{
+public:
+   F_Attr_Height(Perun2Process& p2) : F_Attribute(p2) { };
+   p_num getValue() override;
+};
+
+
+struct F_Attr_Duration : F_Attribute, Generator<p_per>
+{
+public:
+   F_Attr_Duration(Perun2Process& p2) : F_Attribute(p2) { };
+   p_per getValue() override;
+};
 
 }

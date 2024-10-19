@@ -43,6 +43,21 @@ p_str os_attr_fullname(const p_str& path);
 p_str os_attr_name(const p_str& path);
 p_str os_attr_parent(const p_str& path);
 
+struct MediaAttributes
+{
+    p_bool isImage = false;
+    p_bool isVideo = false;
+    p_num width = P_NaN;
+    p_num height = P_NaN;
+    p_per duration;
+};
+
+p_bool os_attr_isImage(const p_str& path);
+p_bool os_attr_isVideo(const p_str& path);
+p_num os_attr_width(const p_str& path);
+p_num os_attr_height(const p_str& path);
+p_per os_attr_duration(const p_str& path);
+
 p_bool os_bothAreSeparators(const p_char left, const p_char right);
 p_str os_softTrim(const p_str& value);
 
@@ -51,8 +66,7 @@ p_str os_makeArg(const p_str& value);
 p_str os_quoteEmbraced(const p_str& value);
 
 static p_str os_toWideString(const std::string& str);
-void os_ffmpegAttributes(FileContext& context);
-void os_ffmpegEmpty(FileContext& context);
+MediaAttributes os_ffmpegAttributes(const p_str& filePath);
 static p_per os_ffmpegPeriod(const int64_t units);
 static bool os_isFfmpegVideoFormat(const std::string& value);
 static bool os_isAnyFfmpegFormat(const std::string& value);

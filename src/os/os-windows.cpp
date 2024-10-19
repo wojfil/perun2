@@ -271,6 +271,15 @@ void os_loadAttributes(FileContext& context)
          context.v_size->value = P_NaN;
       }
    }
+   
+   if (attribute->has(ATTR_IMAGE_OR_VIDEO)) {
+      const MediaAttributes media = os_ffmpegAttributes(context.v_path->value);
+      context.v_isimage->value = media.isImage;
+      context.v_isvideo->value = media.isVideo;
+      context.v_width->value = media.width;
+      context.v_height->value = media.height;
+      context.v_duration->value = media.duration;
+   }
 }
 
 // load attributes, but we already have some data
@@ -397,12 +406,12 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
    }
 
    if (attribute->has(ATTR_IMAGE_OR_VIDEO)) {
-      if (context.v_isfile->value) {
-         os_ffmpegAttributes(context);
-      }
-      else {
-         os_ffmpegEmpty(context);
-      }
+      const MediaAttributes media = os_ffmpegAttributes(context.v_path->value);
+      context.v_isimage->value = media.isImage;
+      context.v_isvideo->value = media.isVideo;
+      context.v_width->value = media.width;
+      context.v_height->value = media.height;
+      context.v_duration->value = media.duration;
    }
 }
 

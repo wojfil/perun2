@@ -154,6 +154,50 @@ p_num F_SizeList::getValue()
 }
 
 
+p_per F_DurationDefinition::getValue()
+{
+   p_per total;
+
+   while (definition->hasNext()) {
+      if (this->perun2.isNotRunning()) {
+         definition->reset();
+         return p_per();
+      }
+
+      const p_str v = definition->getValue();
+      total += os_attr_duration(os_leftJoin(this->context->location->value, v));
+   }
+
+   return total;
+}
+
+
+p_per F_DurationList::getValue()
+{
+   p_per total;
+
+   const p_list vs = values->getValue();
+   const p_size len = vs.size();
+
+   if (len == 0) {
+      return p_per();
+   }
+
+   for (p_size i = 0; i < len; i++) {
+      if (this->perun2.isNotRunning()) {
+         return p_per();
+      }
+
+      const p_str v = os_trim(vs[i]);
+      if (!v.empty() && !os_isInvalid(v)) {
+         total += os_attr_duration(os_leftJoin(this->context->location->value, v));
+      }
+   }
+
+   return total;
+}
+
+
 void F_Attribute::checkExistence()
 {
    this->context.v_exists->value = this->context.invalid
@@ -280,5 +324,46 @@ p_bool F_Attr_Readonly::getValue()
       ? false
       : os_readonly(this->context.v_path->value);
 }
+
+
+p_bool F_Attr_IsImage::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_attr_isImage(this->context.v_path->value);
+}
+
+
+p_bool F_Attr_IsVideo::getValue()
+{
+   return this->context.invalid
+      ? false
+      : os_attr_isVideo(this->context.v_path->value);
+}
+
+
+p_num F_Attr_Width::getValue()
+{
+   return this->context.invalid
+      ? P_NaN
+      : os_attr_width(this->context.v_path->value);
+}
+
+
+p_num F_Attr_Height::getValue()
+{
+   return this->context.invalid
+      ? P_NaN
+      : os_attr_height(this->context.v_path->value);
+}
+
+
+p_per F_Attr_Duration::getValue()
+{
+   return this->context.invalid
+      ? p_per()
+      : os_attr_duration(this->context.v_path->value);
+}
+
 
 }

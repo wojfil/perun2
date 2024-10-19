@@ -63,6 +63,14 @@ namespace perun2::parse
          result = std::make_unique<func::F_Attr_Readonly>(p2);
          return true;
       }
+      else if (tk.isVariable(STRING_ISIMAGE, p2)) {
+         result = std::make_unique<func::F_Attr_IsImage>(p2);
+         return true;
+      }
+      else if (tk.isVariable(STRING_ISVIDEO, p2)) {
+         result = std::make_unique<func::F_Attr_IsVideo>(p2);
+         return true;
+      }
 
       return false;
    }
@@ -73,6 +81,14 @@ namespace perun2::parse
          result = std::make_unique<func::F_Attr_Size>(p2);
          return true;
       }
+      else if (tk.isVariable(STRING_WIDTH, p2)) {
+         result = std::make_unique<func::F_Attr_Width>(p2);
+         return true;
+      }
+      else if (tk.isVariable(STRING_HEIGHT, p2)) {
+         result = std::make_unique<func::F_Attr_Height>(p2);
+         return true;
+      }
 
       return false;
    }
@@ -81,6 +97,10 @@ namespace perun2::parse
    {
       if (tk.isVariable(STRING_LIFETIME, p2)) {
          result = std::make_unique<func::F_Attr_Lifetime>(p2);
+         return true;
+      }
+      else if (tk.isVariable(STRING_DURATION, p2)) {
+         result = std::make_unique<func::F_Attr_Duration>(p2);
          return true;
       }
 

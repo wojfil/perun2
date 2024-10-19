@@ -164,7 +164,11 @@ void os_loadEmptyAttributes(FileContext& context)
    }
    
    if (attribute->has(ATTR_IMAGE_OR_VIDEO)) {
-      os_ffmpegEmpty(context);
+      context.v_isimage->value = false;
+      context.v_isvideo->value = false;
+      context.v_width->value = P_NaN;
+      context.v_height->value = P_NaN;
+      context.v_duration->value = p_per();
    }
 }
 
@@ -239,6 +243,37 @@ p_str os_parent(const p_str& path)
    }
 
    return p_str();
+}
+
+
+p_bool os_attr_isImage(const p_str& path)
+{
+   const MediaAttributes media = os_ffmpegAttributes(path);
+   return media.isImage;
+}
+
+p_bool os_attr_isVideo(const p_str& path)
+{
+   const MediaAttributes media = os_ffmpegAttributes(path);
+   return media.isVideo;
+}
+
+p_num os_attr_width(const p_str& path)
+{
+   const MediaAttributes media = os_ffmpegAttributes(path);
+   return media.width;
+}
+
+p_num os_attr_height(const p_str& path)
+{
+   const MediaAttributes media = os_ffmpegAttributes(path);
+   return media.height;
+}
+
+p_per os_attr_duration(const p_str& path)
+{
+   const MediaAttributes media = os_ffmpegAttributes(path);
+   return media.duration;
 }
 
 p_str os_attr_extension(const p_str& path)
@@ -361,20 +396,19 @@ static p_str os_toWideString(const std::string& str)
    return p_str(buffer.begin(), buffer.end());
 }
 
-void os_ffmpegAttributes(FileContext& context)
+MediaAttributes os_ffmpegAttributes(const p_str& filePath)
 {
-   const std::string path = os_toUtf8(context.v_path->value);
+   const std::string path = os_toUtf8(filePath);
    AVFormatContext* formatCtx = nullptr;
+   MediaAttributes result;
 
    if (avformat_open_input(&formatCtx, path.c_str(), nullptr, nullptr) != 0) {
-      os_ffmpegEmpty(context);
-      return;
+      return result;
    }
 
    if (avformat_find_stream_info(formatCtx, nullptr) < 0) {
       avformat_close_input(&formatCtx);
-      os_ffmpegEmpty(context);
-      return;
+      return result;
    }
 
    AVCodecParameters* codecParams = nullptr;
@@ -402,47 +436,31 @@ void os_ffmpegAttributes(FileContext& context)
 
    if (! hasVideo) {
       avformat_close_input(&formatCtx);
-      os_ffmpegEmpty(context);
-      return;
+      return result;
    }
 
    // we know that this file has width and height
    // now check whether is a video
 
-   context.v_width->value = static_cast<int64_t>(codecParams->width);
-   context.v_height->value = static_cast<int64_t>(codecParams->height);
+   result.width = static_cast<int64_t>(codecParams->width);
+   result.height = static_cast<int64_t>(codecParams->height);
    
    if (hasAudio || hasAdditionalStream || os_isFfmpegVideoFormat(formatCtx->iformat->name)) {
-      context.v_isvideo->value = true;
-      context.v_isimage->value = false;
-      context.v_duration->value = os_ffmpegPeriod(formatCtx->duration);
+      result.isVideo = true;
+      result.duration = os_ffmpegPeriod(formatCtx->duration);
 
       avformat_close_input(&formatCtx);
-      return;
+      return result;
    }
 
    if (! os_isAnyFfmpegFormat(formatCtx->iformat->name)) {
       avformat_close_input(&formatCtx);
-      os_ffmpegEmpty(context);
-      return;
+      return MediaAttributes();
    }
 
-   context.v_isvideo->value = false;
-   context.v_isimage->value = true;
-   context.v_duration->value = p_per();
-
+   result.isImage = true;
    avformat_close_input(&formatCtx);
-   return;
-}
-
-void os_ffmpegEmpty(FileContext& context)
-{
-   context.v_isimage->value = false;
-   context.v_isvideo->value = false;
-   
-   context.v_duration->value = p_per();
-   context.v_height->value = P_NaN;
-   context.v_width->value = P_NaN;
+   return result;
 }
 
 static p_per os_ffmpegPeriod(const int64_t units)

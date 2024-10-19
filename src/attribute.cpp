@@ -113,6 +113,7 @@ void Attribute::add(const Token& tk)
          || tk.isVariable(STRING_WIDTH, this->perun2)
          || tk.isVariable(STRING_HEIGHT, this->perun2))
    {
+      this->setCoreCommandBase();
       this->set(ATTR_IMAGE_OR_VIDEO);
    }
 }

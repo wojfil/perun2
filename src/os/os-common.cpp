@@ -505,13 +505,12 @@ static bool os_isFfmpegVideoFormat(const std::string& value)
       "vfwcap", "4xm", "3gp", "3g2", "a64", "matroska", "matroska,webm", "ivr",
       "amv", "argo_asf", "argo_brp", "argo_cvg", "asf", "asf_o", "asf_stream", "av1",
       "avi", "avr", "bethsoftvid", "bfi", "bink", "binka", "bmv", "cavsvideo", "cdxl", "m4v",
-      "cdg", "cine", "cri_pipe", "dash", "dcstr", "derf", "dfa", "dhav", "dirac", "dnxhd",
+      "cdg", "cine", "dash", "dcstr", "derf", "dfa", "dhav", "dirac", "dnxhd",
       "dshow", "dsicin", "dv", "dvd", "dvdvideo", "dxa", "ea", "ea_cdata", "evc", "f4v",
       "film_cpk", "flic", "flv", "frm", "gdigrab", "gdv", "gem_pipe", "gxf", "h261", "h263",
       "h264", "hds", "hevc", "hls", "hnm", "idcin", "ifv", "ogv", "mjpeg", "mjpeg_2000", "mp4",
       "mov,mp4,m4a,3gp,3g2,mj2", "nuv", "imf", "ingenient", "ipmovie",
-      "ipod", "ipu", "ismv", "iv8", "ivf", "j2k_pipe", "jpeg_pipe", "jpegls_pipe", "jpegxl_anim",
-      "jpegxl_pipe", "kux", "live_flv", "luodat", "lvf", "lxf", "mgsts", "mlv", "mm", "mods",
+      "ipod", "ipu", "ismv", "iv8", "ivf",  "kux", "live_flv", "luodat", "lvf", "lxf", "mgsts", "mlv", "mm", "mods",
       "moflex", "mov", "mpeg", "mpeg1video", "mpeg2video", "mpegts", "mpegtsraw", "mpegvideo",
       "msnwctcp", "mtaf", "mtv", "mv", "mvi", "mxf", "mxf_d10", "mxf_opatom", "mxg", "nc",
       "nsv", "null", "nut", "obu", "rawvideo", "pdv", "paf", "pmp", "psp", "pva", "r3d", "redspark",
@@ -533,7 +532,9 @@ static bool os_isFfmpegImageFormat(const std::string& value)
       "pam_pipe", "pbm_pipe", "pcx_pipe", "pfm_pipe", "pgm_pipe", "pgmyuv_pipe", "pgx_pipe", "phm_pipe",
       "photocd_pipe", "pictor_pipe", "png_pipe", "ppm_pipe", "psd_pipe", "qdraw_pipe", "qoi_pipe",
       "sgi_pipe", "svg_pipe", "xbm_pipe", "sga", "sunrast_pipe", "tiff_pipe", "vbn_pipe", "webp_pipe",
-      "xpm_pipe", "xwd_pipe", "txd", "webp", "image2", "image2pipe"
+      "xpm_pipe", "xwd_pipe", "txd", "webp", "image2", "image2pipe",
+      "j2k_pipe", "jpeg_pipe", "jpegls_pipe", "jpegxl_anim",
+      "jpegxl_pipe",
    };
 
    return FORMATS_OF_IMAGES.find(value) != FORMATS_OF_IMAGES.end();

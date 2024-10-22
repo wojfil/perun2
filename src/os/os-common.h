@@ -69,6 +69,6 @@ static p_str os_toWideString(const std::string& str);
 MediaAttributes os_ffmpegAttributes(const p_str& filePath);
 static p_per os_ffmpegPeriod(const int64_t units);
 static bool os_isFfmpegVideoFormat(const std::string& value);
-static bool os_isAnyFfmpegFormat(const std::string& value);
+static bool os_isFfmpegImageFormat(const std::string& value);
 
 }

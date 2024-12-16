@@ -210,7 +210,7 @@ namespace perun2
 
    p_bool Contexts::varExists(const Token& tk, Perun2Process& p2)
    {
-      if (p2.cache.programs.haveName(tk)) {
+      if (p2.constCache.programs.haveName(tk)) {
          return true;
       }
 

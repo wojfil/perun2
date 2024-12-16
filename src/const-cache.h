@@ -23,32 +23,32 @@ namespace perun2
 
 typedef uint64_t     p_cunit;
 
-p_constexpr p_cunit CACHE_NULL =                 0;
-p_constexpr p_cunit CACHE_DESKTOP_PATH =         1 << 0;
-p_constexpr p_cunit CACHE_EXE_PATH =             1 << 1;
-p_constexpr p_cunit CACHE_CMD_PROCESS =          1 << 2;
-p_constexpr p_cunit CACHE_ALPHABET =             1 << 3;
-p_constexpr p_cunit CACHE_ASCII =                1 << 4;
-p_constexpr p_cunit CACHE_ORIGIN =               1 << 5;
-p_constexpr p_cunit CACHE_ARGUMENTS =            1 << 6;
-p_constexpr p_cunit CACHE_PENDRIVES =            1 << 7;
-p_constexpr p_cunit CACHE_DOWNLOADS_PATH =       1 << 8;
+p_constexpr p_cunit CONST_CACHE_NULL =                 0;
+p_constexpr p_cunit CONST_CACHE_DESKTOP_PATH =         1 << 0;
+p_constexpr p_cunit CONST_CACHE_EXE_PATH =             1 << 1;
+p_constexpr p_cunit CONST_CACHE_CMD_PROCESS =          1 << 2;
+p_constexpr p_cunit CONST_CACHE_ALPHABET =             1 << 3;
+p_constexpr p_cunit CONST_CACHE_ASCII =                1 << 4;
+p_constexpr p_cunit CONST_CACHE_ORIGIN =               1 << 5;
+p_constexpr p_cunit CONST_CACHE_ARGUMENTS =            1 << 6;
+p_constexpr p_cunit CONST_CACHE_PENDRIVES =            1 << 7;
+p_constexpr p_cunit CONST_CACHE_DOWNLOADS_PATH =       1 << 8;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop
 // they are rarely used, but when used, it is enough to load them only once
-// struct Cache loads the values we need and ignores the rest
+// struct ConstCache loads the values we need and ignores the rest
 
 struct Perun2Process;
 struct VarsContext;
 struct Token;
 
 
-struct Cache
+struct ConstCache
 {
 public:
-   Cache() = delete;
-   Cache(Perun2Process& p2);
+   ConstCache() = delete;
+   ConstCache(Perun2Process& p2);
 
    void actualize(const Token& tk);
    void loadCmdPath();
@@ -61,7 +61,7 @@ private:
    p_str getCmdProcessStartingArgs() const;
    p_list getAlphabet() const;
 
-   p_cunit value = CACHE_NULL;
+   p_cunit value = CONST_CACHE_NULL;
    Perun2Process& perun2;
    VarsContext& context;
 };

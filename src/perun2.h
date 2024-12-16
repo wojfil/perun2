@@ -80,7 +80,7 @@ public:
    State state = State::s_Running;
    int exitCode = EXITCODE_OK;
    Logger logger;
-   Cache cache;
+   ConstCache constCache;
 
 private:
    p_bool preParse();

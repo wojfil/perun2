@@ -91,7 +91,7 @@ namespace perun2
 
          // look in global variables
          if (this->globalVars.takeVar(name, result)) {
-            p2.cache.actualize(tk);
+            p2.constCache.actualize(tk);
             return true;
          }
 

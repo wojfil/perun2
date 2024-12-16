@@ -23,7 +23,7 @@ namespace perun2
 ConstCache::ConstCache(Perun2Process& p2)
    : perun2(p2), context(p2.contexts.globalVars), programs(p2) 
 { 
-   p2.constCache.programs.insertVars(p2.contexts);
+   programs.insertVars(p2.contexts);
 };
 
 void ConstCache::actualize(const Token& tk)

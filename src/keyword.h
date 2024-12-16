@@ -88,10 +88,11 @@ enum Keyword
    kw_To,
    kw_Extensionless,
    kw_With,
+   kw_From,
       // order:
    kw_Asc,
    kw_Desc,
-   // one-word command:
+      // one-word command:
    kw_Break,
    kw_Continue,
    kw_Exit,

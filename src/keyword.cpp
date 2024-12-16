@@ -84,6 +84,7 @@ KeywordsData::KeywordsData() : KEYWORDS(
    { STRING_TO, Keyword::kw_To },
    { STRING_EXTENSIONLESS, Keyword::kw_Extensionless },
    { STRING_WITH, Keyword::kw_With },
+   { STRING_FROM, Keyword::kw_From },
    // order:
    { STRING_ASC, Keyword::kw_Asc },
    { STRING_DESC, Keyword::kw_Desc },

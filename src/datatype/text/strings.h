@@ -315,6 +315,7 @@ p_constexpr p_char STRING_LIMIT[] =                L"limit";
 p_constexpr p_char STRING_ORDER[] =                L"order";
 p_constexpr p_char STRING_SKIP[] =                 L"skip";
 p_constexpr p_char STRING_WHERE[] =                L"where";
+p_constexpr p_char STRING_FROM[] =                 L"from";
 p_constexpr p_char STRING_AS[] =                   L"as";
 p_constexpr p_char STRING_BY[] =                   L"by";
 p_constexpr p_char STRING_TO[] =                   L"to";

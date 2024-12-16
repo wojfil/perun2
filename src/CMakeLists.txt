@@ -52,9 +52,9 @@ add_executable(
     arguments.cpp
     attribute.cpp
     brackets.cpp
-    cache.cpp
     cmd.cpp
     console.cpp
+    const-cache.cpp
     exception.cpp
     keyword.cpp
     lexer.cpp

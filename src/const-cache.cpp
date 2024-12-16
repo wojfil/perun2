@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cache.h"
+#include "const-cache.h"
 #include "perun2.h"
 #include "os/os.h"
 

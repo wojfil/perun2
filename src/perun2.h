@@ -25,7 +25,7 @@
 #include "datatype/generator/gen-os.h"
 #include "context/ctx-main.h"
 #include "logger.h"
-#include "cache.h"
+#include "const-cache.h"
 
 
 namespace perun2

@@ -20,17 +20,6 @@ namespace perun2
 
 void str_toRaw(p_str& value)
 {
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_NONE               = 0;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_LOWER_OE           = 1 << 0;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_LOWER_AE           = 1 << 1;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_LOWER_AE_ACCENT    = 1 << 2;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_LOWER_AE_MACRON    = 1 << 3;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_UPPER_OE           = 1 << 4;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_UPPER_AE           = 1 << 5;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_UPPER_AE_ACCENT    = 1 << 6;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_UPPER_AE_MACRON    = 1 << 7;
-   p_constexpr uint32_t TO_RAW_DOUBLECHARS_ESZETT             = 1 << 8;
-
    uint32_t doubleChars = TO_RAW_DOUBLECHARS_NONE;
 
    for (p_int i = 0; i < static_cast<p_int>(value.size()); i++) {

@@ -28,6 +28,11 @@ PostParseData::PostParseData(Perun2Process& p2)
 
 void PostParseData::actualize(const Token& tk)
 {
+   // ignore this all during static analysis
+   if (perun2.getExecutionType() == ExecutionType::et_StaticAnalysis) {
+      return;
+   }
+
    if (tk.isWord(STRING_DESKTOP, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_DESKTOP_PATH)) {
          this->context.strings[STRING_DESKTOP]->value = os_desktopPath();

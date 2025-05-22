@@ -642,7 +642,7 @@ void Tokens::setData()
 
       if (last.isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
-            throw SyntaxError(L"empty space between the square brackets []", last.line);
+            throw SyntaxError(L"empty space inside the square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
             throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);
@@ -653,7 +653,7 @@ void Tokens::setData()
 
       if (this->list[this->end - 1].isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
-            throw SyntaxError(L"empty space between the square brackets []", last.line);
+            throw SyntaxError(L"empty space inside the square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
             throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);

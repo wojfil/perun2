@@ -30,7 +30,7 @@ namespace perun2
 {
 
 Perun2Process::Perun2Process(const Arguments& args) : arguments(args), contexts(*this),
-   flags(args.getFlags()), logger(*this), constCache(*this)
+   flags(args.getFlags()), logger(*this), postParseData(*this)
 {
    Perun2Process::tryInit();
    Terminator::addPtr(this);

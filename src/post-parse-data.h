@@ -37,18 +37,18 @@ p_constexpr p_cunit CONST_CACHE_DOWNLOADS_PATH =       1 << 8;
 // Perun2 offers access to some special constant values
 // like path to the desktop
 // they are rarely used, but when used, it is enough to load them only once
-// struct ConstCache loads the values we need and ignores the rest
+// the struct PostParseData loads the values we need for fast access
 
 struct Perun2Process;
 struct VarsContext;
 struct Token;
 
 
-struct ConstCache
+struct PostParseData
 {
 public:
-   ConstCache() = delete;
-   ConstCache(Perun2Process& p2);
+   PostParseData() = delete;
+   PostParseData(Perun2Process& p2);
 
    void actualize(const Token& tk);
    void loadCmdPath();

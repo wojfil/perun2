@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "const-cache.h"
+#include "post-parse-data.h"
 #include "perun2.h"
 #include "os/os.h"
 
@@ -20,13 +20,13 @@
 namespace perun2
 {
 
-ConstCache::ConstCache(Perun2Process& p2)
+PostParseData::PostParseData(Perun2Process& p2)
    : perun2(p2), context(p2.contexts.globalVars), programs(p2) 
 { 
    programs.insertVars(p2.contexts);
 };
 
-void ConstCache::actualize(const Token& tk)
+void PostParseData::actualize(const Token& tk)
 {
    if (tk.isWord(STRING_DESKTOP, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_DESKTOP_PATH)) {
@@ -79,7 +79,7 @@ void ConstCache::actualize(const Token& tk)
    }
 }
 
-void ConstCache::loadCmdPath()
+void PostParseData::loadCmdPath()
 {
    if (this->isNotLoaded(CONST_CACHE_EXE_PATH)) {
       this->context.strings[STRING_PERUN2]->value = os_executablePath();
@@ -90,7 +90,7 @@ void ConstCache::loadCmdPath()
    }
 }
 
-p_bool ConstCache::isNotLoaded(const p_cunit v)
+p_bool PostParseData::isNotLoaded(const p_cunit v)
 {
    const p_bool notLoaded = !(this->value & v);
    if (notLoaded) {
@@ -100,13 +100,13 @@ p_bool ConstCache::isNotLoaded(const p_cunit v)
    return notLoaded;
 }
 
-p_str ConstCache::getCmdProcessStartingArgs() const
+p_str PostParseData::getCmdProcessStartingArgs() const
 {
    return str(os_quoteEmbraced(this->context.strings[STRING_PERUN2]->value),
       CHAR_SPACE, CHAR_MINUS, CHAR_FLAG_SILENT, CHAR_SPACE);
 }
 
-p_list ConstCache::getAlphabet() const
+p_list PostParseData::getAlphabet() const
 {
    p_list a(LETTERS_IN_ENGLISH_ALPHABET);
    for (p_int i = 0; i < LETTERS_IN_ENGLISH_ALPHABET; i++) {

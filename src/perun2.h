@@ -25,7 +25,7 @@
 #include "datatype/generator/gen-os.h"
 #include "context/ctx-main.h"
 #include "logger.h"
-#include "const-cache.h"
+#include "post-parse-data.h"
 
 
 namespace perun2
@@ -80,7 +80,7 @@ public:
    State state = State::s_Running;
    int exitCode = EXITCODE_OK;
    Logger logger;
-   ConstCache constCache;
+   PostParseData postParseData;
 
 private:
    p_bool preParse();

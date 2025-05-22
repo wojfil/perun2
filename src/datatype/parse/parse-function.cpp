@@ -141,8 +141,8 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          return true;
       }
 
-      throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-         L"' cannot be resolved to any collection"), word.line);
+      throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+         L"\" cannot be resolved to any collection"), word.line);
    }
    else if (word.isWord(STRING_EXIST, p2)) {
       if (len != 1) {
@@ -237,8 +237,8 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          }
       }
       else {
-         throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
-            L"' cannot be resolved to a string nor any collection"), word.line);
+         throw SyntaxError(str(L"first argument of the function \"", word.getOriginString(p2),
+            L"\" cannot be resolved to a string nor any collection"), word.line);
       }
    }
    else if (word.isWord(STRING_EXISTSINSIDE, p2)) {
@@ -485,9 +485,9 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-            L"' cannot be resolved to a string. "
-            L"If you want to count elements in a collection, then use function 'count' instead"), word.line);
+         throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+            L"\" cannot be resolved to a string. "
+            L"If you want to count elements in a collection, use the function \"count\" instead"), word.line);
       }
    }
    else if (word.isWord(STRING_FROMBINARY, p2) || word.isWord(STRING_FROMHEX, p2)) {
@@ -528,8 +528,8 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-            L"' cannot be resolved to a collection"), word.line);
+         throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+            L"\" cannot be resolved to a collection"), word.line);
       }
    }
    else if (word.isWord(STRING_NUMBER, p2)) {
@@ -542,8 +542,8 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-            L"' cannot be resolved to a string"), word.line);
+         throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+            L"\" cannot be resolved to a string"), word.line);
       }
    }
    else if (word.isWord(STRING_COUNTINSIDE, p2)) {
@@ -614,8 +614,8 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-         L"' cannot be resolved to any collection"), word.line);
+      throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+         L"\" cannot be resolved to any collection"), word.line);
    }
    else if (word.isWord(STRING_POWER, p2)) {
       if (len != 2)
@@ -655,8 +655,8 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
-         L"' cannot be resolved to a time nor a number"), word.line);
+      throw SyntaxError(str(L"first argument of the function \"", word.getOriginString(p2),
+         L"\" cannot be resolved to a time nor a number"), word.line);
    }
    else if (word.isWord(STRING_SHIFTWEEKDAY, p2)) {
       if (len != 2)
@@ -679,13 +679,13 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"first argument of function '", word.getOriginString(p2),
-         L"' cannot be resolved to a time nor a number"), word.line);
+      throw SyntaxError(str(L"first argument of the function \"", word.getOriginString(p2),
+         L"\" cannot be resolved to a time nor a number"), word.line);
    }
    else if (word.isWord(STRINGS_AGGRFUNC, p2)) {
       if (len == 0) {
-         throw SyntaxError(str(L"aggregate function '", word.getOriginString(p2),
-            L"' needs at least one argument"), word.line);
+         throw SyntaxError(str(L"the aggregate function \"", word.getOriginString(p2),
+            L"\" needs at least one argument"), word.line);
       }
 
       return aggrFunction(result, args, word, p2);
@@ -697,8 +697,8 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
 
       p_genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         throw SyntaxError(str(L"function '", word.getOriginString(p2),
-            L"' can only take a collection of values as an argument"), word.line);
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+            L"\" can only take a collection as an argument"), word.line);
       }
 
       p_genptr<p_nlist> nlist;
@@ -818,8 +818,8 @@ static p_bool aggrFunction(p_genptr<p_num>& result, const std::vector<Tokens>& a
          }
          else {
             throw SyntaxError(str(ordinalNumber(i + 1),
-               L" argument of aggregate function '", word.getOriginString(p2),
-               L"' cannot be resolved to a number nor a numeric list"), word.line);
+               L" the argument of the aggregate function \"", word.getOriginString(p2),
+               L"\" cannot be resolved to a number nor a numeric list"), word.line);
          }
       }
    }
@@ -866,8 +866,8 @@ p_bool periodFunction(p_genptr<p_per>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-            L"' cannot be resolved to a collection"), word.line);
+         throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+            L"\" cannot be resolved to a collection"), word.line);
       }
    }
 
@@ -894,7 +894,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
    }
    else if (word.isWord(STRING_REVERSED, p2)) {
       const p_str sub = (word.getOriginString(p2)).substr(0, 7);
-      throw SyntaxError(str(L"the proper name for this function is '", sub, L"'"), word.line);
+      throw SyntaxError(str(L"a proper name for this function is \"", sub, L"\""), word.line);
    }
    else if (word.isWord(STRINGS_FUNC_STR_STR_NUM, p2)) {
       if (len != 2) {
@@ -947,7 +947,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
    }
    else if (word.isWord(STRING_SUBSTRING, p2)) {
       if (len < 2 || len > 3) {
-         throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' can only take"
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2), L"\" can only take"
             L" two or three arguments"), word.line);
       }
 
@@ -976,8 +976,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
    }
    else if (word.isWord(STRING_CONCATENATE, p2)) {
       if (len < 1) {
-         throw SyntaxError(str(L"function '", word.getOriginString(p2),
-            L"' needs at least one arguments"), word.line);
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+            L"\" needs at least one argument"), word.line);
       }
 
       std::vector<p_genptr<p_str>> values;
@@ -997,8 +997,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
             values.push_back(std::make_unique<F_ConcatenateUnit>(list));
          }
          else {
-            throw SyntaxError(str(ordinalNumber(i + 1), L" argument of the function '",
-               word.getOriginString(p2), L"' cannot be resolved to any data type"), word.line);
+            throw SyntaxError(str(ordinalNumber(i + 1), L" argument of the function \"",
+               word.getOriginString(p2), L"\" cannot be resolved to any data type"), word.line);
          }
       }
 
@@ -1012,8 +1012,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
 
       p_genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         throw SyntaxError(str(L"function '", word.getOriginString(p2),
-            L"' can only take a collection of values as an argument"), word.line);
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+            L"\" can only take a collection as an argument"), word.line);
       }
 
       p_defptr def;
@@ -1048,8 +1048,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-            L"' cannot be resolved to any collection"), word.line);
+         throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+            L"\" cannot be resolved to any collection"), word.line);
       }
    }
    else if (word.isWord(STRING_PATH, p2)) {
@@ -1144,8 +1144,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"the argument of function '", word.getOriginString(p2),
-        L"' cannot be resolved to any singular data type. If you want to concatenate a collection, use function 'concatenate' instead"), word.line);
+      throw SyntaxError(str(L"the argument of the function \"", word.getOriginString(p2),
+        L"\" cannot be resolved to any singular data type. If you want to concatenate a collection, use the function \"concatenate\" instead"), word.line);
    }
    else if (word.isWord(STRINGS_FUNC_STR_NUM, p2)) {
       if (len != 1) {
@@ -1233,7 +1233,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"wrong arguments of function '", word.getOriginString(p2), L"'"),
+         throw SyntaxError(str(L"wrong arguments of the function \"", word.getOriginString(p2), L"\""),
             word.line);
       }
    }
@@ -1248,8 +1248,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       }
 
       if (len == 1) {
-         throw SyntaxError(str(L"function '", word.getOriginString(p2),
-            L"' cannot be called with one argument. If you want to join multiple strings without a separator, use function 'concatenate' instead"), word.line);
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+            L"\" cannot be called with one argument. If you want to join multiple strings without a separator, use the function \"concatenate\" instead"), word.line);
       }
 
       checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -1454,8 +1454,8 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
 
       p_genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         throw SyntaxError(str(L"function '", word.getOriginString(p2),
-            L"' can only take a collection of values as an argument"), word.line);
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+            L"\" can only take a collection of values as an argument"), word.line);
       }
 
       p_genptr<p_tlist> tlist;
@@ -1516,14 +1516,14 @@ static p_bool simpleTimeFunction(p_genptr<p_tim>& result, const Tokens& tks, con
 
 void functionArgNumberException(const p_int argNumber, const Token& word, Perun2Process& p2)
 {
-   throw SyntaxError(str(L"function '", word.getOriginString(p2), L"' cannot be called with ",
+   throw SyntaxError(str(L"the function \"", word.getOriginString(p2), L"\" cannot be called with ",
       toStr(argNumber), L" argument", (argNumber == 1 ? p_str() : L"s")), word.line);
 }
 
 void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, Perun2Process& p2)
 {
-   throw SyntaxError(str(ordinalNumber(argNumber), L" argument of function '",
-      word.getOriginString(p2), L"' cannot be resolved to a ", typeName), word.line);
+   throw SyntaxError(str(ordinalNumber(argNumber), L" argument of the function \"",
+      word.getOriginString(p2), L"\" cannot be resolved to a ", typeName), word.line);
 }
 
 p_str ordinalNumber(const p_int number)
@@ -1600,8 +1600,8 @@ p_bool listFunction(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& 
       return true;
    }
 
-   throw SyntaxError(str(L"function with name '", word.getOriginString(p2),
-      L"' does not exist"), word.line);
+   throw SyntaxError(str(L"a function with name \"", word.getOriginString(p2),
+      L"\" does not exist"), word.line);
 }
 
 
@@ -1632,8 +1632,8 @@ p_bool numListFunction(p_genptr<p_nlist>& result, const Tokens& tks, Perun2Proce
 void checkFunctionAttribute(const Token& word, Perun2Process& p2)
 {
    if (!p2.contexts.hasFileContext()) {
-      throw SyntaxError(str(L"function '", word.getOriginString(p2),
-         L"' can be called only within a loop iterating over strings"), word.line);
+      throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+         L"\" can be called only within a loop iterating over strings"), word.line);
    }
 }
 
@@ -1670,9 +1670,9 @@ void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Perun2P
    }
 
    const Token& inToken = tks.listAt(index);
-   throw SyntaxError(str(L"the right side of the operator '", inToken.getOriginString(p2),
-      L"' used in function '", word.getOriginString(p2),
-      L"' should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
+   throw SyntaxError(str(L"the right side of the operator \"", inToken.getOriginString(p2),
+      L"\" used in the function \"", word.getOriginString(p2),
+      L"\" should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);
 }
 

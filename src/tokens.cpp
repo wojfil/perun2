@@ -341,15 +341,15 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
       const Token& f = first();
       if (f.type == Token::t_Word && !p2.contexts.varExists(f, p2))
       {
-         throw SyntaxError(str(L"variable '", f.getOriginString(p2), 
-            L"' does not exist or is unreachable here. Look for a typo"), f.line);
+         throw SyntaxError(str(L"the variable \"", f.getOriginString(p2), 
+            L"\" does not exist or is unreachable here. Look for a typo"), f.line);
       }
    }
 
    if (this->list[this->start].isSymbol(CHAR_OPENING_SQUARE_BRACKET)) {
       throw SyntaxError(
-         L"a collection variable was expected before [ bracket. "
-         L"If your intention was to define an array, then you should write values inside a pair of round brackets () and separate them by commas", 
+         L"a collection variable was expected before the square bracket [. "
+         L"If your intention was to define an array, you should write values inside a pair of round brackets () and separate them using commas", 
          this->list[this->start].line);
    }
 
@@ -611,25 +611,25 @@ void Tokens::setData()
 
    if ((this->info & TI_HAS_CHAR_QUESTION_MARK) != TI_NULL) {
       if (firstQuestionMarkId == this->start) {
-         throw SyntaxError(L"sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
+         throw SyntaxError(L"the sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
       }
 
       if ((this->info & TI_HAS_CHAR_COLON) == TI_NULL) {
          if (firstQuestionMarkId == this->end) {
-            throw SyntaxError(L"sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(L"the sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
          }
 
          this->info |= TI_IS_POSSIBLE_BINARY;
       }
       else {
          if (firstQuestionMarkId > firstColonId) {
-            throw SyntaxError(L"signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(L"the signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
          }
          else if (firstColonId == this->end) {
-            throw SyntaxError(L"sign : is followed by empty space", this->list[firstColonId].line);
+            throw SyntaxError(L"the sign : is followed by empty space", this->list[firstColonId].line);
          }
          else if (firstQuestionMarkId + 1 == firstColonId) {
-            throw SyntaxError(L"empty space between signs ? and :", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(L"empty space between the signs ? and :", this->list[firstQuestionMarkId].line);
          }
 
          this->info |= TI_IS_POSSIBLE_TERNARY;
@@ -642,10 +642,10 @@ void Tokens::setData()
 
       if (last.isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
-            throw SyntaxError(L"empty space between square brackets []", last.line);
+            throw SyntaxError(L"empty space between the square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
-            throw SyntaxError(L"square brackets [] can be preceded only by a variable name", first.line);
+            throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);
          }
 
          this->info |= TI_IS_POSSIBLE_LIST_ELEM;
@@ -653,10 +653,10 @@ void Tokens::setData()
 
       if (this->list[this->end - 1].isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
-            throw SyntaxError(L"empty space between square brackets []", last.line);
+            throw SyntaxError(L"empty space between the square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
-            throw SyntaxError(L"square brackets [] can be preceded only by a variable name", first.line);
+            throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);
          }
 
          if (last.type == Token::Type::t_TwoWords && last.value.twoWords.os1.length == 0) {

@@ -73,7 +73,7 @@ void C_RenameTo::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
+      this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to ", argQuoted(n));
 
       if (saveChanges) {
          this->context->v_fullname->value = n;
@@ -142,7 +142,7 @@ void C_RenameTo_Stack::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to '", n, L"'");
+      this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to ", argQuoted(n));
 
       if (saveChanges) {
          this->context->v_fullname->value = n;

@@ -177,13 +177,13 @@ p_bool ConditionContext::isExpandable() const
 void ConditionContext::addElse(p_comptr& com, const p_int line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
+      throw SyntaxError(L"the structure \"else\" is not preceded by a structure \"if\"", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxError(L"structure 'if' already contains an assigned structure 'else'", line);
+      throw SyntaxError(L"the structure \"if\" already contains an assigned structure \"else\"", line);
    }
 
    cu.setElse(com);
@@ -193,13 +193,13 @@ void ConditionContext::addElse(p_comptr& com, const p_int line)
 void ConditionContext::addEmptyElse(const p_int line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxError(L"structure 'else' is not preceded by a structure 'if' ", line);
+      throw SyntaxError(L"the structure \"else\" is not preceded by a structure \"if\"", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxError(L"structure 'if' already contains an assigned structure 'else'", line);
+      throw SyntaxError(L"the structure \"if\" already contains an assigned structure \"else\"", line);
    }
 
    cu.closeElse();
@@ -208,13 +208,13 @@ void ConditionContext::addEmptyElse(const p_int line)
 void ConditionContext::addElseIf(p_genptr<p_bool>& cond, p_comptr& com, const p_int line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxError(L"structure 'else if' is not preceded by a structure 'if'", line);
+      throw SyntaxError(L"the structure \"else if\" is not preceded by a structure \"if\"", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxError(L"structure 'else if' should have appeared before the structure 'else'", line);
+      throw SyntaxError(L"the structure \"else if\" should have appeared before the structure \"else\"", line);
    }
 
    cu.addElseIf(com, cond);

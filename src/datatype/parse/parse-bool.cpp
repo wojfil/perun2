@@ -915,31 +915,31 @@ static void checkCommonExceptions_Between(const Tokens& value, const Tokens& lef
    }
    
    if (t2.isWeekDay() || t2.isMonth()) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", 
-            t2.getOriginString(p2), L"', you should write '", 
+         throw SyntaxError(str(L"instead of \"", t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", 
+            t2.getOriginString(p2), L"\", you should write \"", 
             t1.getOriginString(p2), L".", (t2.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
-            L" ", betweenKeyword.getOriginString(p2), L" ", t2.getOriginString(p2), L"'"), t1.line);   
+            L" ", betweenKeyword.getOriginString(p2), L" ", t2.getOriginString(p2), L"\""), t1.line);   
    }
 
    if (t3.isWeekDay() || t3.isMonth()) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", 
-            t3.getOriginString(p2), L"', you should write '", 
+         throw SyntaxError(str(L"instead of \"", t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", 
+            t3.getOriginString(p2), L"\", you should write \"", 
             t1.getOriginString(p2), L".", (t3.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
-            L" ", betweenKeyword.getOriginString(p2), L" ", t3.getOriginString(p2), L"'"), t1.line);   
+            L" ", betweenKeyword.getOriginString(p2), L" ", t3.getOriginString(p2), L"\""), t1.line);   
    }
 
    if (t2.isIntegerLiteral()) {
       const p_nint nm = t2.value.num.n.value.i;
 
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of '", 
+         throw SyntaxError(str(L"instead of \"", 
             t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", toStr(nm),
-            L"', you should write '", 
-            t1.getOriginString(p2), L".year ", betweenKeyword.getOriginString(p2), L" ", toStr(nm), L"'"), t1.line);
+            L"\", you should write \"", 
+            t1.getOriginString(p2), L".year ", betweenKeyword.getOriginString(p2), L" ", toStr(nm), L"\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
-            L"' cannot be compared with a number"), t1.line);
+         throw SyntaxError(str(L"the time variable \"", t1.getOriginString(p2),
+            L"\" cannot be compared to a number"), t1.line);
       }
    }
 
@@ -947,14 +947,14 @@ static void checkCommonExceptions_Between(const Tokens& value, const Tokens& lef
       const p_nint nm = t3.value.num.n.value.i;
 
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of '", 
+         throw SyntaxError(str(L"instead of \"", 
             t1.getOriginString(p2), L" ", betweenKeyword.getOriginString(p2), L" ", toStr(nm),
-            L"', you should write '", 
-            t1.getOriginString(p2), L".year ", betweenKeyword.getOriginString(p2), L" ", toStr(nm), L"'"), t1.line);
+            L"\", you should write \"", 
+            t1.getOriginString(p2), L".year ", betweenKeyword.getOriginString(p2), L" ", toStr(nm), L"\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
-            L"' cannot be compared with a number"), t1.line);
+         throw SyntaxError(str(L"the time variable \"", t1.getOriginString(p2),
+            L"\" cannot be compared to a number"), t1.line);
       }
    }
 }
@@ -1397,36 +1397,36 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
    const p_bool isVar2 = t2.isWord(STRINGS_TIME_VAR, p2);
    
    if (isVar1 && (isWeek2 || isMonth2)) {
-      throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
-         L"', you should write '", t1.getOriginString(p2), L".", (isWeek2 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
-         L" ", toStr(sign), L" ", t2.getOriginString(p2), L"'"), t1.line);
+      throw SyntaxError(str(L"instead of \"", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
+         L"\", you should write \"", t1.getOriginString(p2), L".", (isWeek2 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+         L" ", toStr(sign), L" ", t2.getOriginString(p2), L"\""), t1.line);
    }
    else if ((isWeek1 || isMonth1) && isVar2) {
-      throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
-         L"', you should write '", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".",
-         (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"'"), t1.line);
+      throw SyntaxError(str(L"instead of \"", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2),
+         L"\", you should write \"", t1.getOriginString(p2), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".",
+         (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"\""), t1.line);
    }
 
    if (isVar1 && t2.isIntegerLiteral()) {
       const p_nint nm = t2.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of '", t1.getOriginString(p2), L" ", toStr(sign), L" ", toStr(nm),
-            L"', you should write '", t1.getOriginString(p2), L".year ", toStr(sign), L" ", toStr(nm), L"'"), t1.line);
+         throw SyntaxError(str(L"instead of \"", t1.getOriginString(p2), L" ", toStr(sign), L" ", toStr(nm),
+            L"\", you should write \"", t1.getOriginString(p2), L".year ", toStr(sign), L" ", toStr(nm), L"\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"time variable '", t1.getOriginString(p2),
-            L"' cannot be compared with a number"), t1.line);
+         throw SyntaxError(str(L"the time variable \"", t1.getOriginString(p2),
+            L"\" cannot be compared to a number"), t1.line);
       }
    }
    else if (t1.isIntegerLiteral() && isVar2) {
       const p_nint nm = t1.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2),
-            L"', you should write '", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".year'"), t1.line);
+         throw SyntaxError(str(L"instead of \"", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2),
+            L"\", you should write \"", toStr(nm), L" ", toStr(sign), L" ", t2.getOriginString(p2), L".year\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"time variable '", t2.getOriginString(p2),
-            L"' cannot be compared with a number"), t1.line);
+         throw SyntaxError(str(L"the time variable \"", t2.getOriginString(p2),
+            L"\" cannot be compared to a number"), t1.line);
       }
    }
 }
@@ -1856,23 +1856,23 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_ch
 
    if (result.first.isEmpty()) {
       if (result.second.isEmpty()) {
-         throw SyntaxError(str(L"both sides of ", toStr(sign),
+         throw SyntaxError(str(L"both sides of the ", toStr(sign),
             L" comparison are empty"), tks.first().line);
       }
       else {
-         throw SyntaxError(str(L"left side of ", toStr(sign),
+         throw SyntaxError(str(L"the left side of the ", toStr(sign),
             L" comparison is empty"), tks.first().line);
       }
    }
 
    if (result.second.isEmpty()) {
-      throw SyntaxError(str(L"right side of ", toStr(sign),
+      throw SyntaxError(str(L"the right side of the ", toStr(sign),
          L" comparison is empty"), tks.last().line);
    }
 
    if (result.second.first().isSymbol(CHAR_EQUAL_SIGN)) {
       if (result.second.getLength() == 1) {
-         throw SyntaxError(str(L"right side of ", toStr(sign),
+         throw SyntaxError(str(L"the right side of the ", toStr(sign),
             L"= comparison is empty"), result.second.first().line);
       }
 
@@ -1881,7 +1881,7 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_ch
    }
    else if (sign == CHAR_EXCLAMATION_MARK) {
       throw SyntaxError(L"expected = after exclamation mark. "
-         L"For a simple negation, use keyword 'not' instead",
+         L"For a simple negation, use keyword \"not\" instead",
          result.second.first().line);
    }
 

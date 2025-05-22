@@ -113,8 +113,8 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Perun2Process& p2)
       const Token& t = tks.listAt(i);
 
       if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
-         throw SyntaxError(str(L"a command-ending semicolon ; was expected somewhere between keyword '",
-            t.getOriginString(p2), L"' and curly brackets {}"), t.line);
+         throw SyntaxError(str(L"a command-ending semicolon ; was expected somewhere between the keyword \"",
+            t.getOriginString(p2), L"\" and the curly bracket {"), t.line);
       }
    }
 }
@@ -150,8 +150,8 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    if (leftLast.isKeyword(Keyword::kw_Times)) {
       left.popRight();
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"keyword '", leftLast.getOriginString(p2),
-            L"' is not preceded by a number"), leftLast.line);
+         throw SyntaxError(str(L"the keyword \"", leftLast.getOriginString(p2),
+            L"\" is not preceded by a number"), leftLast.line);
       }
 
       if (rightLen == 0) {
@@ -161,8 +161,8 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       left.checkCommonExpressionExceptions(p2);
       p_genptr<p_num> num;
       if (!parse::parse(p2, left, num)) {
-         throw SyntaxError(str(L"keyword '", leftLast.getOriginString(p2),
-            L"' is not preceded by a valid number"), leftLast.line);
+         throw SyntaxError(str(L"the keyword \"", leftLast.getOriginString(p2),
+            L"\" is not preceded by a valid number"), leftLast.line);
       }
 
       Tokens right(tks, rightStart, rightLen);
@@ -187,20 +187,20 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    if (leftFirst.isKeyword(Keyword::kw_While)) {
       left.popLeft();
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2),
-            L"' is not followed by a condition"), leftFirst.line);
+         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2),
+            L"\" is not followed by a condition"), leftFirst.line);
       }
 
       if (rightLen == 0) {
-         throw SyntaxError(str(L"structure '", leftFirst.getOriginString(p2),
-            L"' is empty. It would either never run or cause an infinite loop"), leftFirst.line);
+         throw SyntaxError(str(L"the structure \"", leftFirst.getOriginString(p2),
+            L"\" is empty. It would either never run or cause an infinite loop"), leftFirst.line);
       }
 
       left.checkCommonExpressionExceptions(p2);
       p_genptr<p_bool> boo;
       if (!parse::parse(p2, left, boo)) {
-         throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2),
-            L"' is not followed by a valid condition"), leftFirst.line);
+         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2),
+            L"\" is not followed by a valid condition"), leftFirst.line);
       }
 
       Tokens right(tks, rightStart, rightLen);
@@ -233,14 +233,14 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    if (leftFirst.isKeyword(Keyword::kw_If)) {
       left.popLeft();
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2), L"' is not followed by a condition"),
+         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2), L"\" is not followed by a condition"),
             leftFirst.line);
       }
 
       left.checkCommonExpressionExceptions(p2);
       p_genptr<p_bool> boo;
       if (!parse::parse(p2, left, boo)) {
-         throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2), L"' is not followed by a valid condition"),
+         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2), L"\" is not followed by a valid condition"),
             leftFirst.line);
       }
 
@@ -286,23 +286,23 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       }
       else { // build "else if"
          if (!left.first().isKeyword(Keyword::kw_If)) {
-            throw SyntaxError(str(L"keyword '", leftFirst.getOriginString(p2),
-               L"' cannot be followed by an expression"), leftFirst.line);
+            throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2),
+               L"\" cannot be followed by an expression"), leftFirst.line);
          }
 
          const Token& ifToken = left.first();
          left.popLeft();
 
          if (left.isEmpty()) {
-            throw SyntaxError(str(L"keywords '", leftFirst.getOriginString(p2), L" ",
-               ifToken.getOriginString(p2), L"' are not followed by a condition"), leftFirst.line);
+            throw SyntaxError(str(L"the keywords \"", leftFirst.getOriginString(p2), L" ",
+               ifToken.getOriginString(p2), L"\" are not followed by a condition"), leftFirst.line);
          }
 
          left.checkCommonExpressionExceptions(p2);
          p_genptr<p_bool> boo;
          if (!parse::parse(p2, left, boo)) {
-            throw SyntaxError(str(L"keywords '", leftFirst.getOriginString(p2), L" ",
-               ifToken.getOriginString(p2), L"' are not followed by a valid condition"), leftFirst.line);
+            throw SyntaxError(str(L"the keywords \"", leftFirst.getOriginString(p2), L" ",
+               ifToken.getOriginString(p2), L"\" are not followed by a valid condition"), leftFirst.line);
          }
 
          if (rightLen == 0) {
@@ -335,7 +335,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       left.popLeft();
 
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"keyword '", first.getOriginString(p2), L"' is not followed by a value"), first.line);
+         throw SyntaxError(str(L"the keyword \"", first.getOriginString(p2), L"\" is not followed by a value"), first.line);
       }
 
       explicitForeach = true;
@@ -347,7 +347,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    bool success = parseIterationLoop(result, left, right, p2);
 
    if (!success && explicitForeach) {
-      throw SyntaxError(str(L"keyword '", first.getOriginString(p2), L"' is not followed by a valid value"), first.line);
+      throw SyntaxError(str(L"the keyword \"", first.getOriginString(p2), L"\" is not followed by a valid value"), first.line);
    }
 
    return success;
@@ -440,7 +440,7 @@ static p_bool parseIterationLoop(p_comptr& result, const Tokens& left, const Tok
       return success;
    }
 
-   throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
+   throw SyntaxError(L"tokens before the curly bracket { do not form any valid syntax structure", left.first().line);
 }
 
 static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Tokens& left, const Tokens& right, Perun2Process& p2)
@@ -448,15 +448,15 @@ static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Toke
    // inside { }
    if (left.isEmpty()) {
       if (!p2.contexts.hasFileContext()) {
-         throw SyntaxError(str(L"argumentless structure '", keyword.getOriginString(p2),
-            L"' can be declared only within an iteration loop"), keyword.line);
+         throw SyntaxError(str(L"an argumentless structure \"", keyword.getOriginString(p2),
+            L"\" can be declared only within an iteration loop"), keyword.line);
       }
 
       FileContext* fc = p2.contexts.getFileContext();
 
       if (fc->isInside) {
-         throw SyntaxError(str(L"argumentless structure '", keyword.getOriginString(p2),
-            L"' is forbidden here. We already operate inside a directory, so it cannot be visited again"), keyword.line);
+         throw SyntaxError(str(L"an argumentless structure \"", keyword.getOriginString(p2),
+            L"\" is forbidden here. We already operate inside a directory, so it cannot be visited again"), keyword.line);
       }
 
       fc->attribute->setCoreCommandBase();
@@ -610,7 +610,7 @@ static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Toke
       return success;
    }
 
-   throw SyntaxError(L"tokens before { bracket do not form any valid syntax structure", left.first().line);
+   throw SyntaxError(L"tokens before the curly bracket { do not form any valid syntax structure", left.first().line);
 }
 
 static p_bool parseCommandsAsMember(p_comptr& result, const Tokens& tks, p_comptr* cond, Perun2Process& p2)
@@ -640,8 +640,8 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
                }
             }
             else {
-               throw SyntaxError(str(L"command '", f.getOriginString(p2),
-                  L"' can be called only inside a loop"), f.line);
+               throw SyntaxError(str(L"the command \"", f.getOriginString(p2),
+                  L"\" can be called only inside a loop"), f.line);
             }
             break;
          }
@@ -662,8 +662,8 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
             mode = CoreCommandMode::ccm_Force;
 
             if (tks.isEmpty()) {
-               throw SyntaxError(str(L"command cannot consist of only one keyword: '",
-                  f2.getOriginString(p2), L"'"), f.line);
+               throw SyntaxError(str(L"a command cannot consist of only one keyword: \"",
+                  f2.getOriginString(p2), L"\""), f.line);
             }
             break;
          }
@@ -672,8 +672,8 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
             mode = CoreCommandMode::ccm_Stack;
 
             if (tks.isEmpty()) {
-               throw SyntaxError(str(L"command cannot consist of only one keyword: '",
-                  f2.getOriginString(p2), L"'"), f.line);
+               throw SyntaxError(str(L"a command cannot consist of only one keyword: \"",
+                  f2.getOriginString(p2), L"\""), f.line);
             }
             break;
          }
@@ -697,8 +697,8 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
    }
 
    if (mode != CoreCommandMode::ccm_Normal) {
-      throw SyntaxError(str(L"only a core command can start with a keyword '", 
-         f2.getOriginString(p2), L"'"), f.line);
+      throw SyntaxError(str(L"only a core command can start with the keyword \"", 
+         f2.getOriginString(p2), L"\""), f.line);
    }
 
    if (commandMisc(result, tks, p2)) {
@@ -721,16 +721,16 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2
       if (left.isEmpty()) {
          if (right.isEmpty()) {
             throw SyntaxError(
-               L"left and right side of the = operator are empty",
+               L"both the left and the right side of the = operator are empty",
                tks.first().line);
          }
          else {
-            throw SyntaxError(L"left side of the = operator is empty",
+            throw SyntaxError(L"the left side of the = operator is empty",
                tks.first().line);
          }
       }
       if (right.isEmpty()) {
-         throw SyntaxError(L"right side of the = operator is empty",
+         throw SyntaxError(L"the right side of the = operator is empty",
             tks.last().line);
       }
 
@@ -751,7 +751,7 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2
             case CHAR_PERCENT: {
                left.popRight();
                if (left.isEmpty()) {
-                  throw SyntaxError(str(L"left side of the ", toStr(ch),
+                  throw SyntaxError(str(L"the left side of the ", toStr(ch),
                      L"= operator is empty"), tks.last().line);
                }
 
@@ -790,8 +790,8 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
          Variable<p_num>* pvp_num;
 
          if (!p2.contexts.getVar(first, pvp_num, p2) || pvp_num->isImmutable()) {
-            throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-               L"' cannot be ", op), first.line);
+            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+               L"\" cannot be ", op), first.line);
          }
 
          pvp_num->makeNotConstant();
@@ -816,12 +816,12 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
             Variable<p_nlist>* pvp_nlist;
 
             if (!p2.contexts.getVar(first, pvp_nlist, p2) || pvp_nlist->isImmutable()) {
-               throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-                  L"' cannot be ", op), first.line);
+               throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+                  L"\" cannot be ", op), first.line);
             }
 
-            throw SyntaxError(str(L"an element of variable '", first.getOriginString(p2),
-               L"' cannot be ", op, L", because collections in Perun2 are immutable"),
+            throw SyntaxError(str(L"an element of the variable \"", first.getOriginString(p2),
+               L"\" cannot be ", op, L", because collections in Perun2 are immutable"),
                first.line);
          }
          else {
@@ -837,12 +837,12 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
       Variable<p_tim>* pvp_tim;
 
       if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-         throw SyntaxError(str(L"time variable from expression '", first.getOriginString(p2),
-            L"' does not exist or is unreachable here"), first.line);
+         throw SyntaxError(str(L"the time variable from the expression \"", first.getOriginString(p2),
+            L"\" does not exist or is unreachable here"), first.line);
       }
 
       if (pvp_tim->isImmutable()) {
-         throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
       }
 
       Period::PeriodUnit unit;
@@ -860,8 +860,8 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
       else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2))
          unit = Period::u_Seconds;
       else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-         throw SyntaxError(str(L"time variable member '", first.getOriginString_2(p2),
-            L"' cannot be ", op), first.line);
+         throw SyntaxError(str(L"the time variable member \"", first.getOriginString_2(p2),
+            L"\" cannot be ", op), first.line);
       }
       else {
          parse::timeVariableMemberException(first, p2);
@@ -897,14 +897,14 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
           || p2.contexts.getVar(first, pvp_nlist, p2)
           || p2.contexts.getVar(first, pvp_tlist, p2))
          {
-            throw SyntaxError(str(L"collection variable '", first.getOriginString(p2),
-               L"' is immutable, so its elements cannot be modified"), right.first().line);
+            throw SyntaxError(str(L"the collection variable \"", first.getOriginString(p2),
+               L"\" is immutable, so its elements cannot be modified"), right.first().line);
          }
 
          Variable<p_str>* pvp_str;
 
          if (p2.contexts.getVar(first, pvp_str, p2)) {
-            throw SyntaxError(str(L"operation ", toStr(sign),
+            throw SyntaxError(str(L"the operation ", toStr(sign),
                L"= cannot be performed on a character from string variable"), first.line);
          }
 
@@ -921,13 +921,13 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
             if (varSquareBrackets(aro)) {
                Variable<p_tlist>* pvp_tlist;
                if (p2.contexts.getVar(first, pvp_tlist, p2)) {
-                  throw SyntaxError(str(L"operation ", toStr(sign),
+                  throw SyntaxError(str(L"the operation ", toStr(sign),
                      L"= cannot be performed on a time list variable member. Collections in Perun2 are immutable"), first.line);
                }
             }
          }
 
-         throw SyntaxError(str(L"operator ", toStr(sign),
+         throw SyntaxError(str(L"the operator ", toStr(sign),
             L"= should be preceded by a variable name"), first.line);
       }
    }
@@ -938,12 +938,12 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          p_genptr<p_num> num;
 
          if (!parse::parse(p2, right, num)) {
-            throw SyntaxError(str(L"right side of operator ", toStr(sign),
+            throw SyntaxError(str(L"the right side of the operator ", toStr(sign),
                L"= cannot be resolved to a number"), first.line);
          }
 
          if (pvp_num->isImmutable()) {
-            throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
          }
 
          Variable<p_num>& var = *pvp_num;
@@ -983,12 +983,12 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
                p_genptr<p_per> per;
 
                if (!parse::parse(p2, right, per)) {
-                  throw SyntaxError(str(L"right side of operator ", toStr(sign),
+                  throw SyntaxError(str(L"the right side of the operator ", toStr(sign),
                      L"= cannot be resolved to a period"), first.line);
                }
 
                if (pvp_per->isImmutable()) {
-                  throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+                  throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
                }
 
                pvp_per->makeNotConstant();
@@ -1006,7 +1006,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
             case CHAR_ASTERISK:
             case CHAR_SLASH:
             case CHAR_PERCENT: {
-               throw SyntaxError(str(L"operation ",  toStr(sign),
+               throw SyntaxError(str(L"the operation ",  toStr(sign),
                   L"= cannot be performed on a period"), first.line);
             }
          }
@@ -1018,7 +1018,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
             case CHAR_ASTERISK:
             case CHAR_SLASH:
             case CHAR_PERCENT: {
-               throw SyntaxError(str(L"operation ", toStr(sign),
+               throw SyntaxError(str(L"the operation ", toStr(sign),
                   L"= is not valid for a time variable"), first.line);
             }
          }
@@ -1026,15 +1026,15 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          p_genptr<p_per> per;
 
          if (!parse::parse(p2, right, per)) {
-            throw SyntaxError(str(L"right side of operator '", first.getOriginString(p2),
-               L" ", toStr(sign), L"=' cannot be resolved to a period"), first.line);
+            throw SyntaxError(str(L"the right side of operator \"", first.getOriginString(p2),
+               L" ", toStr(sign), L"=\" cannot be resolved to a period"), first.line);
          }
 
          Variable<p_tim>& var = *pvp_tim;
          pvp_tim->makeNotConstant();
 
          if (pvp_tim->isImmutable()) {
-            throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
          }
 
          if (sign == CHAR_PLUS) {
@@ -1051,36 +1051,36 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          return commandVarIncrement(result, first, right, first.line, p2);
       }
 
-      throw SyntaxError(str(L"'", first.getOriginString(p2),
-         L"' is neither a numeric, time, nor period variable"), first.line);
+      throw SyntaxError(str(L"\"", first.getOriginString(p2),
+         L"\" is neither a numeric, time, nor period variable"), first.line);
    }
    else if (first.type == Token::t_TwoWords) {
       switch (sign) {
          case CHAR_ASTERISK:
          case CHAR_SLASH:
          case CHAR_PERCENT: {
-            throw SyntaxError(str(L"operation ", toStr(sign),
+            throw SyntaxError(str(L"the operation ", toStr(sign),
                L"= is not valid for a time variable"), first.line);
          }
       }
 
       Variable<p_tim>* pvp_tim;
       if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-         throw SyntaxError(str(L"'", first.getOriginString(p2),
-            L"' is not a time variable for the ", toStr(sign), L"= operation"),
+         throw SyntaxError(str(L"\"", first.getOriginString(p2),
+            L"\" is not a time variable for the ", toStr(sign), L"= operation"),
             first.line);
       }
 
       if (pvp_tim->isImmutable()) {
-         throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
       }
 
       p_genptr<p_num> num;
 
       if (!parse::parse(p2, right, num)) {
-         throw SyntaxError(str(L"right side of operation '", first.getOriginString(p2), L".",
+         throw SyntaxError(str(L"the right side of the operation \"", first.getOriginString(p2), L".",
             first.getOriginString_2(p2), L" ", toStr(sign),
-            L"=' cannot be resolved to a number"), first.line);
+            L"=\" cannot be resolved to a number"), first.line);
       }
 
       Variable<p_tim>& var = *pvp_tim;
@@ -1112,14 +1112,14 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          return true;
       }
       else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-         throw SyntaxError(str(L"value of '", first.getOriginString_2(p2),
-            L"' time variable member cannot be altered"), first.line);
+         throw SyntaxError(str(L"the value of \"", first.getOriginString_2(p2),
+            L"\" time variable member cannot be altered"), first.line);
       }
 
       parse::timeVariableMemberException(first, p2);
    }
    else {
-      throw SyntaxError(str(L"operator ", toStr(sign),
+      throw SyntaxError(str(L"the operator ", toStr(sign),
          L"= should be preceded by a single word, which is a variable name"),
          first.line);
    }
@@ -1136,7 +1136,7 @@ static p_bool commandVarIncrement(p_comptr& result, const Token& first, const To
          pvp_str->makeNotConstant();
 
          if (pvp_str->isImmutable()) {
-            throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
          }
 
          result = std::make_unique<VarAdd_<p_str>>(*pvp_str, str_);
@@ -1146,17 +1146,17 @@ static p_bool commandVarIncrement(p_comptr& result, const Token& first, const To
       p_genptr<p_list> list;
 
       if (parse::parse(p2, tks, list)) {
-         throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-            L"' can be incremented only by a string"), line);
+         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+            L"\" can be incremented only by a string"), line);
       }
       else {
-         throw SyntaxError(L"right side of operator '+=' cannot"
+         throw SyntaxError(L"the right side of the operator \"+=\" cannot"
             L" be resolved to a string", line);
       }
    }
 
-   throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-      L"' cannot be incremented by a value"), line);
+   throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+      L"\" cannot be incremented by a value"), line);
 }
 
 template <typename T>
@@ -1165,7 +1165,7 @@ static p_bool makeVarAlteration(Perun2Process& p2, const Tokens& tokens, const T
 {
    if (p2.contexts.getVar(first, varPtr, p2)) {
       if (varPtr->isImmutable()) {
-         throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
       }
 
       p_genptr<T> value;
@@ -1180,8 +1180,8 @@ static p_bool makeVarAlteration(Perun2Process& p2, const Tokens& tokens, const T
          return true;
       }
       else {
-         throw SyntaxError(str(L"value assigned to variable '", first.getOriginString(p2),
-            L"' has to be of ", dataTypeName, L" type"), first.line);
+         throw SyntaxError(str(L"the value assigned to the variable \"", first.getOriginString(p2),
+            L"\" has to be of ", dataTypeName, L" type"), first.line);
       }
    }
 
@@ -1214,24 +1214,24 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    if (left.getLength() == 1 && first.type == Token::t_TwoWords) {
       Variable<p_tim>* pvp_tim;
       if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-         throw SyntaxError(str(L"'", first.getOriginString(p2),
-            L"' is not a time variable for the member assignment operation"),
+         throw SyntaxError(str(L"\"", first.getOriginString(p2),
+            L"\" is not a time variable for the member assignment operation"),
             first.line);
       }
 
       if (pvp_tim->isImmutable()) {
-         throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
       }
 
       if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-         throw SyntaxError(str(L"value of '", first.getOriginString_2(p2),
-            L"' time variable member cannot be altered"), first.line);
+         throw SyntaxError(str(L"the value of \"", first.getOriginString_2(p2),
+            L"\" time variable member cannot be altered"), first.line);
       }
 
       p_genptr<p_num> num;
 
       if (!parse::parse(p2, right, num)) {
-         throw SyntaxError(str(L"right side of the = operator cannot be resolved to a number"), first.line);
+         throw SyntaxError(str(L"the right side of the = operator cannot be resolved to a number"), first.line);
       }
 
       Variable<p_tim>& var = *pvp_tim;
@@ -1281,12 +1281,12 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
                 p2.contexts.getVar(first, pvp_tlist, p2) ||
                 p2.contexts.getVar(first, pvp_list, p2))
             {
-               throw SyntaxError(str(L"collection variable '", first.getOriginString(p2),
-                  L"' is immutable, so its elements cannot me modified"), first.line);
+               throw SyntaxError(str(L"the collection variable \"", first.getOriginString(p2),
+                  L"\" is immutable, so its elements cannot me modified"), first.line);
             }
             else {
-               throw SyntaxError(str(L"unknown collection variable '", first.getOriginString(p2),
-                  L"'. Collection variables are immutable in Perun2 anyways"), first.line);
+               throw SyntaxError(str(L"unknown collection variable \"", first.getOriginString(p2),
+                  L"\". Collection variables are immutable in Perun2 anyway"), first.line);
             }
          }
       }
@@ -1301,7 +1301,7 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    ////
 
    if (first.isWord(STRINGS_VARS_IMMUTABLES, p2)) {
-      throw SyntaxError(str(L"variable '", first.getOriginString(p2), L"' is immutable"), first.line);
+      throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
    }
 
    Variable<p_bool>* pv_boo = nullptr;
@@ -1350,8 +1350,8 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
 
    const p_size wordLength = first.value.word.os.length;
    if (wordLength != 1) {
-      throw SyntaxError(str(L"name '", first.getOriginString(p2),
-         L"' is not valid for a new variable. In Perun2, user defined variables can be only one-character long"), first.line);
+      throw SyntaxError(str(L"the name \"", first.getOriginString(p2),
+         L"\" is not valid for a new variable. In Perun2, user defined variables can be only one-character long"), first.line);
    }
 
    p_genptr<p_bool> boo;
@@ -1402,8 +1402,8 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
       return true;
    }
 
-   throw SyntaxError(str(L"value assigned to variable '", first.getOriginString(p2),
-      L"' cannot be resolved to any data type"), first.line);
+   throw SyntaxError(str(L"the value assigned to the variable \"", first.getOriginString(p2),
+      L"\" cannot be resolved to any data type"), first.line);
 }
 
 static p_bool varSquareBrackets(const Tokens& tks)
@@ -1416,12 +1416,12 @@ static p_bool varSquareBrackets(const Tokens& tks)
    }
 
    if (tks.first().type != Token::t_Word) {
-      throw SyntaxError(L"brackets [] have to be preceded by a collection variable name",
+      throw SyntaxError(L"the square brackets [] should be be preceded by a collection variable name",
          tks.first().line);
    }
 
    if (length == 3) {
-      throw SyntaxError(L"empty space between [] brackets",
+      throw SyntaxError(L"empty space inside the square brackets []",
          tks.second().line);
    }
 
@@ -1441,8 +1441,8 @@ static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
        p2.contexts.getVar(first, pvp_nlist, p2) ||
        p2.contexts.getVar(first, pvp_tlist, p2))
    {
-      throw SyntaxError(str(L"collection variable '", first.getOriginString(p2),
-         L"' is immutable, so its elements cannot me modified"), first.line);
+      throw SyntaxError(str(L"the collection variable \"", first.getOriginString(p2),
+         L"\" is immutable, so its elements cannot me modified"), first.line);
    }
 
    Variable<p_str>* pvp_str;
@@ -1458,18 +1458,18 @@ static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
             return true;
          }
          else {
-            throw SyntaxError(str(L"new value in character assignment of variable '",
-               first.getOriginString(p2), L"' cannot be resolved to a string"), first.line);
+            throw SyntaxError(str(L"new value in character assignment of the variable \"",
+               first.getOriginString(p2), L"\" cannot be resolved to a string"), first.line);
          }
       }
       else {
-         throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-            L"' does not exist or is unreachable here"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+            L"\" does not exist or is unreachable here"), first.line);
       }
    }
 
-   throw SyntaxError(str(L"variable '", first.getOriginString(p2),
-      L"' was not expected before [] brackets"), first.line);
+   throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+      L"\" was not expected before the square brackets []"), first.line);
 }
 
 static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2)
@@ -1481,7 +1481,7 @@ static p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, 
 
    if (!parse::parse(p2, tks2, index)) {
       throw SyntaxError(
-        L"content of square brackets [] cannot be resolved to a number",
+        L"the content of the square brackets [] cannot be resolved to a number",
         tks.second().line);
    }
 
@@ -1501,19 +1501,19 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Perun2Process& p2)
          switch (t.value.keyword.k) {
             case Keyword::kw_While:
             case Keyword::kw_Inside: {
-               throw SyntaxError(str(L"a semicolon ; is missing before keyword '",
-                  t.getOriginString(p2), L"'"), t.line);
+               throw SyntaxError(str(L"a semicolon ; is missing before the keyword \"",
+                  t.getOriginString(p2), L"\""), t.line);
             }
             case Keyword::kw_If: {
                if (!(i == start && startsWithElse)) {
-                  throw SyntaxError(str(L"a semicolon ; is missing before keyword '",
-                     t.getOriginString(p2), L"'"), t.line);
+                  throw SyntaxError(str(L"a semicolon ; is missing before the keyword \"",
+                     t.getOriginString(p2), L"\""), t.line);
                }
                break;
             }
             case Keyword::kw_Else: {
-               throw SyntaxError(str(L"keyword '", t.getOriginString(p2),
-                  L"' should be preceded by curly brackets {}"), t.line);
+               throw SyntaxError(str(L"the keyword \"", t.getOriginString(p2),
+                  L"\" should be preceded by curly brackets {}"), t.line);
             }
          }
       }

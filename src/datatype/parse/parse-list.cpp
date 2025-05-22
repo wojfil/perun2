@@ -39,7 +39,7 @@ p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& p2)
          return true;
       }
       else {
-         throw SyntaxError(L"this syntax structure cannot be resolved to any collection of values", tks.first().line);
+         throw SyntaxError(L"this syntax structure cannot be resolved to a collection", tks.first().line);
       }
    }
 

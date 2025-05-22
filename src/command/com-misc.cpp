@@ -132,10 +132,10 @@ void C_Run::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run '", command, L"'");
+      this->perun2.logger.log(L"Run ", argQuoted(command));
    }
    else {
-      this->perun2.logger.log(L"Failed to run '", command, L"'");
+      this->perun2.logger.log(L"Failed to run ", argQuoted(command));
    }
 }
 
@@ -144,7 +144,7 @@ void C_RunWith::run()
    p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -155,10 +155,10 @@ void C_RunWith::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
    }
 }
 
@@ -167,7 +167,7 @@ void C_RunWithWithString::run()
    p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -181,10 +181,12 @@ void C_RunWithWithString::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
+      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), 
+         L" with ", argQuoted(base), L" with ", argQuoted(rawArg));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"' with '", rawArg, L"'");
+      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), 
+         L" with ", argQuoted(base), L" with ", argQuoted(rawArg));
    }
 }
 
@@ -193,7 +195,7 @@ void C_RunWithWith::run()
    p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -208,22 +210,22 @@ void C_RunWithWith::run()
       this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+         this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
       }
       else {
-         this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with '", base, L"'");
+         this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
       }
    }
    else {
       p_stream comStream;
       p_stream logStream;
       const p_str& first = rawArgs[0];
-      logStream << str(getCCName(this->context->trimmed), L" with '", base, L"' with '", first, L"'");
+      logStream << str(getCCName(this->context->trimmed), L" with ", argQuoted(base), L" with ", argQuoted(first));
       comStream << str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
       for (p_size i = 1; i < len; i++) {
          const p_str& a = rawArgs[i];
-         logStream << str(L", '", a, L"'");
+         logStream << str(L", ", argQuoted(a));
          comStream << str(CHAR_SPACE, os_makeArg(a));
       }
 
@@ -279,10 +281,10 @@ void C_RunWithPerun2WithString::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Perun2 with '", rawArg, L"'");
+      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Perun2 with ", argQuoted(rawArg));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2 with '", rawArg, L"'");
+      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2 with ", argQuoted(rawArg));
    }
 }
 
@@ -314,12 +316,13 @@ void C_RunWithPerun2With::run()
       p_stream comStream;
       p_stream logStream;
       const p_str& first = rawArgs[0];
-      logStream << str(getCCName(this->context->trimmed), L" with Perun2 with '", first, L"'");
-      comStream << str(this->perun2.constCache.cmdProcessStartingArgs, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
+      logStream << str(getCCName(this->context->trimmed), L" with Perun2 with ", argQuoted(first));
+      comStream << str(this->perun2.constCache.cmdProcessStartingArgs, 
+         os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
       for (p_size i = 1; i < len; i++) {
          const p_str& a = rawArgs[i];
-         logStream << str(L", '", a, L"'");
+         logStream << str(L", ", argQuoted(a));
          comStream << str(CHAR_SPACE, os_makeArg(a));
       }
 

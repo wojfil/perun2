@@ -200,8 +200,8 @@ p_str getCCName(const p_str& path)
    }
 
    return os_hasParentDirectory(path) || path.size() != 2
-      ? str(CHAR_APOSTROPHE, os_fullname(path), CHAR_APOSTROPHE)
-      : str(CHAR_APOSTROPHE, path, OS_SEPARATOR, CHAR_APOSTROPHE);
+      ? str(CHAR_QUOTATION_MARK, os_fullname(path), CHAR_QUOTATION_MARK)
+      : str(CHAR_QUOTATION_MARK, path, OS_SEPARATOR, CHAR_QUOTATION_MARK);
 }
 
 p_str getCCNameShort(const p_str& path)
@@ -216,8 +216,13 @@ p_str getCCNameShort(const p_str& path)
    }
 
    return f.size() == 2 && f[1] == CHAR_COLON && os_isDriveLetter(f[0])
-      ? str(CHAR_APOSTROPHE, f, OS_SEPARATOR, CHAR_APOSTROPHE)
-      : str(CHAR_APOSTROPHE, f, CHAR_APOSTROPHE);
+      ? str(CHAR_QUOTATION_MARK, f, OS_SEPARATOR, CHAR_QUOTATION_MARK)
+      : str(CHAR_QUOTATION_MARK, f, CHAR_QUOTATION_MARK);
+}
+
+p_str argQuoted(const p_str& value)
+{
+   return str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
 }
 
 }

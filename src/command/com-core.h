@@ -115,5 +115,6 @@ protected:
 
 p_str getCCName(const p_str& path);
 p_str getCCNameShort(const p_str& path);
+p_str argQuoted(const p_str& value);
 
 }

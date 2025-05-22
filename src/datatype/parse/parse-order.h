@@ -73,14 +73,14 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {
-      throw SyntaxError(str(L"keyword '", keyword.getOriginString(p2),
-         L"' should be followed by a keyword 'by'"), first.line);
+      throw SyntaxError(str(L"the keyword \"", keyword.getOriginString(p2),
+         L"\" should be followed by a keyword \"by\""), first.line);
    }
 
    tks.popLeft();
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"declaration of '", keyword.getOriginString(p2),
-         L" ", first.getOriginString(p2), L"' filter is empty"), first.line);
+      throw SyntaxError(str(L"the declaration of the filter \"", keyword.getOriginString(p2),
+         L" ", first.getOriginString(p2), L"\" is empty"), first.line);
    }
 
    std::vector<Tokens> tokensList;
@@ -103,16 +103,16 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
          if (kw == Keyword::kw_Asc) {
             tk.popRight();
             if (tk.isEmpty()) {
-               throw SyntaxError(str(L"keyword '", last.getOriginString(p2),
-                  L"' is not preceded by a value used for order"), last.line);
+               throw SyntaxError(str(L"the keyword \"", last.getOriginString(p2),
+                  L"\" is not preceded by a value used for order"), last.line);
             }
          }
          else if (kw == Keyword::kw_Desc) {
             desc = true;
             tk.popRight();
             if (tk.isEmpty()) {
-               throw SyntaxError(str(L"keyword '", last.getOriginString(p2),
-                  L"' is not preceded by a value used for order"), last.line);
+               throw SyntaxError(str(L"the keyword \"", last.getOriginString(p2),
+                  L"\" is not preceded by a value used for order"), last.line);
             }
          }
       }
@@ -147,7 +147,7 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
          continue;
       }
       else {
-         throw SyntaxError(L"value of this order unit cannot be resolved to any valid data type. "
+         throw SyntaxError(L"the value of this order unit cannot be resolved to any valid data type. "
             L"Hint: if you use multiple variables for order, separate them by commas",
             tk.first().line);
       }

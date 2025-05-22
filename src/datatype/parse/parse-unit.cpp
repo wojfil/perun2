@@ -70,13 +70,13 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_num>& resu
       }
       case Token::t_TwoWords: {
          if (tk.isFirstWord(EMPTY_STRING, p2)) {
-            throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
+            throw SyntaxError(L"the dot . should be preceded by a time variable", tk.line);
          }
 
          p_genptr<p_tim> var;
          if (!makeVarRef(tk, var, p2)) {
-            throw SyntaxError(str(L"time variable from expression '", tk.getOriginString(p2),
-               L".", tk.getOriginString_2(p2), L"' does not exist or is unreachable here"), tk.line);
+            throw SyntaxError(str(L"the time variable from expression \"", tk.getOriginString(p2),
+               L".", tk.getOriginString_2(p2), L"\" does not exist or is unreachable here"), tk.line);
          }
 
          if (tk.isSecondWord(STRING_YEAR, p2) || tk.isSecondWord(STRING_YEARS, p2)) {
@@ -165,12 +165,12 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_tim>& resu
       }
       case Token::t_TwoWords: {
          if (tk.isFirstWord(EMPTY_STRING, p2)) {
-            throw SyntaxError(L"dot . should be preceded by a time variable name", tk.line);
+            throw SyntaxError(L"the dot . should be preceded by a time variable", tk.line);
          }
 
          p_genptr<p_tim> var;
          if (!makeVarRef(tk, var, p2)) {
-            throw SyntaxError(str(L"time variable '", tk.getOriginString(p2), L"' does not exist"), tk.line);
+            throw SyntaxError(str(L"the time variable \"", tk.getOriginString(p2), L"\" does not exist"), tk.line);
          }
 
          if (tk.isSecondWord(STRING_DATE, p2)) {

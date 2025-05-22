@@ -200,7 +200,7 @@ void C_MoveToAs::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as ", argQuoted(fulln));
 
       if (this->saveChanges) {
          changeValueOfThisAfterMoving(*this->context, loc, newPath);
@@ -278,7 +278,7 @@ void C_MoveToAs_Stack::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as ", argQuoted(fulln));
 
       if (this->saveChanges) {
          changeValueOfThisAfterMoving(*this->context, loc, newPath);

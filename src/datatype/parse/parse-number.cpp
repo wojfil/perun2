@@ -104,7 +104,7 @@ p_bool parseNumber(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2
          else {
             p_genptr<p_per> per;
             if (!parse(p2, tks2, per)) {
-               throw SyntaxError(L"sign '-' is not followed by a valid number nor a valid period", tks.first().line);
+               throw SyntaxError(L"the sign \"-\" is not followed by a valid number nor period", tks.first().line);
             }
          }
       }
@@ -179,7 +179,7 @@ static p_bool parseNumExp(p_genptr<p_num>& result, const Tokens& tks, Perun2Proc
 
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
-               // check if character '-' represents binary subtraction
+               // check if character \"-\" represents binary subtraction
                // or unary negation
                const p_char ch2 = (ch == CHAR_MINUS && (prev || i == start)) ? CHAR_UNARY_MINUS : ch;
                infList.emplace_back(ch2, t.line);
@@ -619,8 +619,8 @@ static p_bool isNumExpHighPriority(const p_char ch)
 
 void timeVariableMemberException(const Token& tk, Perun2Process& p2)
 {
-   throw SyntaxError(str(L"'", tk.getOriginString_2(p2),
-      L"' is not a time variable member"), tk.line);
+   throw SyntaxError(str(L"\"", tk.getOriginString_2(p2),
+      L"\" is not a time variable member"), tk.line);
 }
 
 }

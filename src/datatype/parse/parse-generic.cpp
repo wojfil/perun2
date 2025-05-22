@@ -33,7 +33,7 @@ p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, Perun2P
       return true;
    }
    else {
-      throw SyntaxError(L"content of square brackets [] cannot be resolved to a number",
+      throw SyntaxError(L"the content of square brackets [] cannot be resolved to a number",
          tks.first().line);
    }
 
@@ -44,8 +44,8 @@ void checkLimitBySize(const Tokens& tks, Perun2Process& p2)
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
       if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
-         throw SyntaxError(str(L"collection cannot be limited by file size '", tk.getOriginString(p2),
-            L"' in this way. You have to iterate over files in a loop, add their size to a helper variable and provide a loop break condition"),
+         throw SyntaxError(str(L"a collection cannot be limited by file size \"", tk.getOriginString(p2),
+            L"\" this way"),
             tk.line);
       }
    }

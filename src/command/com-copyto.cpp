@@ -183,7 +183,7 @@ void C_CopyToAs::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+      this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as ", argQuoted(fulln));
    }
    else {
       this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));
@@ -256,7 +256,7 @@ void C_CopyToAs_Stack::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as '", fulln, L"'");
+      this->perun2.logger.log(L"Copy ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as ", argQuoted(fulln));
    }
    else {
       this->perun2.logger.log(L"Failed to copy ", getCCName(oldPath));

@@ -55,7 +55,7 @@ void help()
    logger.print(L"  -h           Set working location to the place where this command was called from.");
    logger.print(L"  -n           Run in noomit mode (iterate all filesystem elements with no exceptions).");
    logger.print(L"  -s           Run in silent mode (no command log messages).");
-   logger.print(L"  -m           Static analysis. Check code correctness without running it. Print 'good' if no error detected.");
+   logger.print(L"  -m           Static analysis. Check code correctness without running it. Print \"good\" if no error detected.");
 }
 
 namespace error
@@ -69,32 +69,32 @@ namespace error
    void noArguments()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: missing arguments. Run '", 
-         metadata::EXECUTABLE_NAME, L" --help' for command-line tips."));
+      logger.print(str(L"Command-line error: missing arguments. Run \"", 
+         metadata::EXECUTABLE_NAME, L" --help\" for command-line tips."));
    }
 
    void unknownOption(const p_str& option)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: unknown option '", option, L"'."));
+      logger.print(str(L"Command-line error: unknown option \"", option, L"\"."));
    }
 
    void noDestination()
    {
       Logger logger;
-      logger.print(L"Command-line error: destination directory has not been defined.");
+      logger.print(L"Command-line error: a destination directory has not been defined.");
    }
 
    void noCode()
    {
       Logger logger;
-      logger.print(L"Command-line error: the argument with source code is missing.");
+      logger.print(L"Command-line error: an argument with source code is missing.");
    }
 
    void noMainArgument()
    {
       Logger logger;
-      logger.print(L"Command-line error: main argument is missing.");
+      logger.print(L"Command-line error: the main argument is missing.");
    }
 
    void noInput()
@@ -106,19 +106,19 @@ namespace error
    void fileNotFound(const p_str& fileName)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: input file '", fileName, L"' does not exist."));
+      logger.print(str(L"Command-line error: an input file \"", fileName, L"\" does not exist."));
    }
 
    void wrongFileExtension()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: wrong input file extension. Only '", metadata::EXTENSION, L"' is allowed."));
+      logger.print(str(L"Command-line error: wrong input file extension. Only \"", metadata::EXTENSION, L"\" is allowed."));
    }
 
    void fileReadFailure(const p_str& fileName)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: input file '", fileName, L"' could not be read."));
+      logger.print(str(L"Command-line error: the input file \"", fileName, L"\" could not be read."));
    }
 }
 

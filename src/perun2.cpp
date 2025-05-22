@@ -100,6 +100,11 @@ p_bool Perun2Process::isNotRunning() const
    return this->state != State::s_Running;
 };
 
+ExecutionType Perun2Process::getExecutionType() const
+{
+   return this->executionType;
+};
+
 p_bool Perun2Process::preParse()
 {
    try {

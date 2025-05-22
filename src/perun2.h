@@ -76,6 +76,7 @@ public:
 
    p_bool isRunning() const;
    p_bool isNotRunning() const;
+   ExecutionType getExecutionType() const;
 
    const Arguments& arguments;
    Math math;

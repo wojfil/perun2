@@ -48,6 +48,13 @@ enum State
    s_Exit
 };
 
+enum ExecutionType
+{
+   et_None = 0,
+   et_Run,
+   et_StaticAnalysis
+};
+
 
 // this struct is used only internally within the namespace
 // for external facade of the entire language, use struct 'Perun2' from below
@@ -95,6 +102,7 @@ private:
 
    p_comptr commands;
    std::vector<Token> tokens;
+   ExecutionType executionType = ExecutionType::et_None;
 };
 
 

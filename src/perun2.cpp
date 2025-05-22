@@ -54,6 +54,7 @@ p_bool Perun2Process::run()
       return false;
    }
 
+   this->executionType = ExecutionType::et_Run;
    this->exitCode = EXITCODE_OK;
 
    return this->preParse() 
@@ -69,6 +70,7 @@ p_bool Perun2Process::staticallyAnalyze()
       return false;
    }
 
+   this->executionType = ExecutionType::et_StaticAnalysis;
    this->exitCode = EXITCODE_OK;
 
    if (this->preParse() 

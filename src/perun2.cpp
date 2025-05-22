@@ -85,10 +85,7 @@ p_bool Perun2Process::staticallyAnalyze()
 void Perun2Process::terminate()
 {
    this->state = State::s_Exit;
-   if (this->sideProcess.running) {
-      this->sideProcess.running = false;
-      os_terminate(this->sideProcess);
-   }
+   this->sideProcess.terminate();
 }
 
 p_bool Perun2Process::isRunning() const

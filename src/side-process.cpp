@@ -12,22 +12,19 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "datatype/primitives.h"
-#include <Windows.h>
+#include "side-process.h"
+#include "os/os.h"
 
 
 namespace perun2
 {
 
-struct SideProcess
+void SideProcess::terminate()
 {
-public:
-    void terminate();
-
-    p_bool running = false;
-    PROCESS_INFORMATION info;
-};
+   if (this->running) {
+      this->running = false;
+      os_terminate(*this);
+   }
+}
 
 }

@@ -55,6 +55,7 @@ add_executable(
     cmd.cpp
     console.cpp
     post-parse-data.cpp
+    side-process.cpp
     exception.cpp
     keyword.cpp
     lexer.cpp

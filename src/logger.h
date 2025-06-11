@@ -38,7 +38,7 @@ public:
    template<typename... Args>
    void log(const Args&... args) const
    {
-      if (this->isSilent) {
+      if (this->isSilent || this->isMaxPerformance) {
          return;
       }
 
@@ -69,6 +69,10 @@ private:
    // it runs in silent mode and there are no logs of filesystem commands
    // however, critical error messages and Print should still work
    const p_bool isSilent;
+   
+   // if program was called with -o
+   // all logs are turned off
+   const p_bool isMaxPerformance;
 
    // if the logger sends messages to the GUI program, flush the buffer every line
    // otherwise (messages go straight to the console), do not do that

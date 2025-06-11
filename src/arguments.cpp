@@ -143,6 +143,11 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                      this->flags |= FLAG_STATIC_ANALYSIS;
                      break;
                   }
+                  case CHAR_FLAG_MAX_PERFORMANCE:
+                  case CHAR_FLAG_MAX_PERFORMANCE_UPPER: {
+                     this->flags |= FLAG_MAX_PERFORMANCE;
+                     break;
+                  }
                   default: {
                      cmd::error::unknownOption(toStr(arg[j]));
                      return;

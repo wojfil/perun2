@@ -99,6 +99,8 @@ p_constexpr p_char CHAR_f =                      L'f';
 p_constexpr p_char CHAR_F =                      L'F';
 p_constexpr p_char CHAR_z =                      L'z';
 p_constexpr p_char CHAR_Z =                      L'Z';
+p_constexpr p_char CHAR_o =                      L'o';
+p_constexpr p_char CHAR_O =                      L'O';
 
 p_constexpr p_char CHAR_0 =                      L'0';
 p_constexpr p_char CHAR_1 =                      L'1';

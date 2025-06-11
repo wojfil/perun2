@@ -18,14 +18,21 @@ namespace perun2
 {
 
 Logger::Logger()
-    : isSilent(false), flushBuffer(true) { };
+    : isSilent(false), 
+      flushBuffer(true),
+      isMaxPerformance(false) { };
 
 Logger::Logger(const Perun2Process& p2)
     : isSilent(p2.arguments.hasFlag(FLAG_SILENT)),
-      flushBuffer(p2.arguments.hasFlag(FLAG_GUI)) { };
+      flushBuffer(p2.arguments.hasFlag(FLAG_GUI)),
+      isMaxPerformance(p2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)) { };
 
 void Logger::print(const p_str& value) const
 {
+   if (this->isMaxPerformance) {
+      return;
+   }
+
    if (this->flushBuffer) {
       p_cout << value << std::endl;
    }
@@ -36,6 +43,10 @@ void Logger::print(const p_str& value) const
 
 void Logger::emptyLine() const
 {
+   if (this->isMaxPerformance) {
+      return;
+   }
+   
    if (this->flushBuffer) {
       p_cout << std::endl;
    }

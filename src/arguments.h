@@ -26,6 +26,7 @@ p_constexpr p_flags FLAG_NOOMIT =               1 << 0;
 p_constexpr p_flags FLAG_SILENT =               1 << 1;
 p_constexpr p_flags FLAG_GUI =                  1 << 2;
 p_constexpr p_flags FLAG_STATIC_ANALYSIS =      1 << 3;
+p_constexpr p_flags FLAG_MAX_PERFORMANCE =      1 << 4;
 
 p_constexpr p_char CHAR_FLAG_GUI =              CHAR_g;
 p_constexpr p_char CHAR_FLAG_NOOMIT =           CHAR_n;
@@ -34,6 +35,7 @@ p_constexpr p_char CHAR_FLAG_DIRECTORY =        CHAR_d;
 p_constexpr p_char CHAR_FLAG_HERE =             CHAR_h;
 p_constexpr p_char CHAR_FLAG_CODE =             CHAR_c;
 p_constexpr p_char CHAR_FLAG_STATIC_ANALYSIS =  CHAR_m;
+p_constexpr p_char CHAR_FLAG_MAX_PERFORMANCE =  CHAR_o;
 
 p_constexpr p_char CHAR_FLAG_GUI_UPPER =        CHAR_G;
 p_constexpr p_char CHAR_FLAG_NOOMIT_UPPER =     CHAR_N;
@@ -42,6 +44,7 @@ p_constexpr p_char CHAR_FLAG_DIRECTORY_UPPER =  CHAR_D;
 p_constexpr p_char CHAR_FLAG_HERE_UPPER =       CHAR_H;
 p_constexpr p_char CHAR_FLAG_CODE_UPPER =       CHAR_C;
 p_constexpr p_char CHAR_FLAG_STATIC_ANALYSIS_UPPER =  CHAR_M;
+p_constexpr p_char CHAR_FLAG_MAX_PERFORMANCE_UPPER =  CHAR_O;
 
 
 enum ArgsParseState 

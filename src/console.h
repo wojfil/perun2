@@ -17,6 +17,23 @@
 namespace perun2
 {
 
-void initConsole();
+struct Perun2Process;
+
+
+struct ConsoleBuffers
+{
+public:
+    ConsoleBuffers() = delete;
+    ConsoleBuffers(Perun2Process& p2);
+
+    void preRun();
+    void postRun();
+
+private:
+    void generalInit() const;
+
+    Perun2Process& perun2;
+};
+
 
 }

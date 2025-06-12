@@ -30,7 +30,23 @@
 
 namespace perun2
 {
-   void initConsole()
+   ConsoleBuffers::ConsoleBuffers(Perun2Process& p2)
+      : perun2(p2)
+   {
+      generalInit();
+   }
+   
+   void ConsoleBuffers::preRun()
+   {
+      
+   }
+
+   void ConsoleBuffers::postRun()
+   {
+
+   }
+
+   void ConsoleBuffers::generalInit() const
    {
       p_cin.tie(0);
       p_cout.tie(0);

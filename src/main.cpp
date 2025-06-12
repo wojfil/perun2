@@ -26,7 +26,6 @@ int main(void)
       return perun2::EXITCODE_CLI_ERROR;
    }
 
-   perun2::initConsole();
    perun2::Perun2 instance(argc, argv);
 
    if (instance.hasArgFlag(perun2::FLAG_STATIC_ANALYSIS)) {

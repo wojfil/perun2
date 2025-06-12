@@ -31,6 +31,11 @@
 namespace perun2
 {
 
+// Warning:
+// Perun2 modifies the global settings of the program it runs in.
+// These changes include, among others, character encoding, output console behavior, system locale.
+// It is recommended to compile Perun2 as a separate program and run it via the CLI.
+
 struct Contexts;
 
 p_constexpr int EXITCODE_OK =             0;
@@ -57,7 +62,7 @@ enum ExecutionType
 
 
 // this struct is used only internally within the namespace
-// for external facade of the entire language, use struct 'Perun2' from below
+// for the external facade of the entire language, use the struct 'Perun2' from below
 struct Perun2Process
 {
 public:

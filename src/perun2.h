@@ -109,6 +109,7 @@ private:
    p_comptr commands;
    std::vector<Token> tokens;
    ExecutionType executionType = ExecutionType::et_None;
+   Terminator terminator;
 };
 
 

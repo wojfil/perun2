@@ -15,7 +15,6 @@
 #pragma once
 
 #include "datatype/primitives.h"
-#include <unordered_set>
 
 
 namespace perun2
@@ -23,25 +22,17 @@ namespace perun2
 
 struct Perun2Process;
 
-// Terminator keeps track of every initialized instance of Perun2
-// it overrides the default Ctrl+C termination signal
-// when this event happens, all Perun2 instances are stopped softly (as their commands are designed to be atomic)
-// works only, if Terminator has been initialized
+// Terminator overrides the default Ctrl+C termination signal
+// when this event happens, the Perun2 instance is stopped softly (as commands are designed to be atomic)
 struct Terminator
 {
 public:
    Terminator() = delete;
-
-   static void init();
-   static void addPtr(Perun2Process* p2);
-   static void removePtr(Perun2Process* p2);
+   Terminator(Perun2Process& p2);
 
 private:
-   static p_bool initialized;
-   static std::unordered_set<Perun2Process*> processes;
    static p_int HandlerRoutine(p_ulong dwCtrlType);
+   static Perun2Process* perun2;
 };
-
-void initTerminator();
 
 }

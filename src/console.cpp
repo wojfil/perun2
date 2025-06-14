@@ -35,20 +35,20 @@ extern "C" {
 
 namespace perun2
 {
-   ConsoleBuffers::ConsoleBuffers()
+   ConsoleSettings::ConsoleSettings()
    {
       generalInit();
       libInit();
    }
 
-   void ConsoleBuffers::generalInit() const
+   void ConsoleSettings::generalInit() const
    {
       p_cin.tie(0);
       p_cout.tie(0);
       std::setlocale(LC_CTYPE, "");
    }
 
-   void ConsoleBuffers::libInit() const
+   void ConsoleSettings::libInit() const
    {
       av_log_set_level(AV_LOG_QUIET);
    }

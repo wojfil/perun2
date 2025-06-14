@@ -84,7 +84,7 @@ public:
    ExecutionType getExecutionType() const;
 
    const Arguments& arguments;
-   ConsoleBuffers consoleBuffers;
+   ConsoleSettings consoleSettings;
    Math math;
    Contexts contexts;
    const KeywordsData keywordsData;

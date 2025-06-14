@@ -18,10 +18,10 @@
 namespace perun2
 {
 
-struct ConsoleBuffers
+struct ConsoleSettings
 {
 public:
-    ConsoleBuffers();
+    ConsoleSettings();
 
 private:
     void generalInit() const;

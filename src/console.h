@@ -14,8 +14,10 @@
 
 #pragma once
 
+
 namespace perun2
 {
+
 
 struct Perun2Process;
 
@@ -24,16 +26,14 @@ struct ConsoleBuffers
 {
 public:
     ConsoleBuffers() = delete;
-    ConsoleBuffers(Perun2Process& p2);
+    ConsoleBuffers();
 
     void preRun();
     void postRun();
 
 private:
     void generalInit() const;
-
-    Perun2Process& perun2;
+    void libInit() const;
 };
-
 
 }

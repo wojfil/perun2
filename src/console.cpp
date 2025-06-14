@@ -22,28 +22,32 @@
 
 #include "console.h"
 #include "datatype/primitives.h"
+#include "perun2.h"
 
 #include <locale>
 #include <clocale>
 #include <cstdlib>
 #include <iostream>
 
+extern "C" {
+   #include <libavutil/log.h>
+}
+
+
 namespace perun2
 {
-   ConsoleBuffers::ConsoleBuffers(Perun2Process& p2)
-      : perun2(p2)
+   ConsoleBuffers::ConsoleBuffers()
    {
       generalInit();
+      libInit();
    }
    
    void ConsoleBuffers::preRun()
    {
-      
    }
 
    void ConsoleBuffers::postRun()
    {
-
    }
 
    void ConsoleBuffers::generalInit() const
@@ -51,5 +55,10 @@ namespace perun2
       p_cin.tie(0);
       p_cout.tie(0);
       std::setlocale(LC_CTYPE, "");
+   }
+
+   void ConsoleBuffers::libInit() const
+   {
+      av_log_set_level(AV_LOG_QUIET);
    }
 }

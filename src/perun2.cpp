@@ -173,11 +173,6 @@ p_bool Perun2Process::runCommands()
    return true;
 };
 
-p_bool Perun2Process::postCommands()
-{
-   return true;
-};
-
 p_int Perun2Process::globalCount = 0;
 
 void Perun2Process::tryInit()

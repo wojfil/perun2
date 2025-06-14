@@ -101,7 +101,6 @@ private:
    p_bool parse();
    p_bool postParse();
    p_bool runCommands();
-   p_bool postCommands();
 
 // count how many Perun2 processes are there globally
    static p_int globalCount;

@@ -18,18 +18,10 @@
 namespace perun2
 {
 
-
-struct Perun2Process;
-
-
 struct ConsoleBuffers
 {
 public:
-    ConsoleBuffers() = delete;
     ConsoleBuffers();
-
-    void preRun();
-    void postRun();
 
 private:
     void generalInit() const;

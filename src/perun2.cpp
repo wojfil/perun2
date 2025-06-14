@@ -29,7 +29,7 @@
 namespace perun2
 {
 
-Perun2Process::Perun2Process(const Arguments& args) : arguments(args), consoleBuffers(*this), contexts(*this),
+Perun2Process::Perun2Process(const Arguments& args) : arguments(args), consoleBuffers(), contexts(*this),
    flags(args.getFlags()), logger(*this), postParseData(*this), terminator(*this)
 {
    Perun2Process::tryInit();
@@ -42,17 +42,13 @@ Perun2Process::~Perun2Process() noexcept
 
 p_bool Perun2Process::run()
 {
-   this->consoleBuffers.preRun();
-
    if (! this->arguments.areGood()) {
       this->exitCode = EXITCODE_CLI_ERROR;
-      this->consoleBuffers.postRun();
       return false;
    }
 
    if (! os_directoryExists(this->arguments.getLocation())) {
       this->exitCode = EXITCODE_NO_LOCATION;
-      this->consoleBuffers.postRun();
       return false;
    }
 
@@ -64,17 +60,13 @@ p_bool Perun2Process::run()
        && this->postParse()
        && this->runCommands();
 
-   this->consoleBuffers.postRun();
    return result;
 };
 
 p_bool Perun2Process::staticallyAnalyze()
 {
-   this->consoleBuffers.preRun();
-
    if (! this->arguments.areGood()) {
       this->exitCode = EXITCODE_CLI_ERROR;
-      this->consoleBuffers.postRun();
       return false;
    }
 
@@ -86,11 +78,9 @@ p_bool Perun2Process::staticallyAnalyze()
        && this->postParse())
    {
       this->logger.log(STRING_GOOD);
-      this->consoleBuffers.postRun();
       return true;
    }
 
-   this->consoleBuffers.postRun();
    return false;
 }
 
@@ -185,7 +175,6 @@ p_bool Perun2Process::runCommands()
 
 p_bool Perun2Process::postCommands()
 {
-   this->consoleBuffers.postRun();
    return true;
 };
 

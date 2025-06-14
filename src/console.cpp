@@ -22,7 +22,6 @@
 
 #include "console.h"
 #include "datatype/primitives.h"
-#include "perun2.h"
 
 #include <locale>
 #include <clocale>
@@ -40,14 +39,6 @@ namespace perun2
    {
       generalInit();
       libInit();
-   }
-   
-   void ConsoleBuffers::preRun()
-   {
-   }
-
-   void ConsoleBuffers::postRun()
-   {
    }
 
    void ConsoleBuffers::generalInit() const

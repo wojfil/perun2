@@ -265,6 +265,8 @@ p_constexpr p_char STRING_ISNEVER[] =              L"isnever";
 p_constexpr p_char STRING_CLOCK[] =                L"clock";
 p_constexpr p_char STRING_RAW[] =                  L"raw";
 p_constexpr p_char STRING_RESEMBLANCE[] =          L"resemblance";
+p_constexpr p_char STRING_ASKPYTHON[] =            L"askpython";
+p_constexpr p_char STRING_ASKPYTHON3[] =           L"askpython3";
 
 p_constexpr p_char STRING_COPY[] =                 L"copy";
 p_constexpr p_char STRING_CREATE[] =               L"create";
@@ -327,6 +329,8 @@ p_constexpr p_char STRING_BREAK[] =                L"break";
 p_constexpr p_char STRING_CONTINUE[] =             L"continue";
 p_constexpr p_char STRING_EXIT[] =                 L"exit";
 p_constexpr p_char STRING_ERROR[] =                L"error";
+p_constexpr p_char STRING_PYTHON[] =               L"python";
+p_constexpr p_char STRING_PYTHON3[] =              L"python3";
 
 extern const p_list STRINGS_MONTHS;
 extern const p_list STRINGS_WEEKDAYS;

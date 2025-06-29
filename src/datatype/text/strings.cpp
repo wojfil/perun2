@@ -65,6 +65,40 @@ void str_toUpper(p_str& value)
    }
 }
 
+void str_trimEndNewLines(p_str& value)
+{
+   if (value.empty()) {
+      return;
+   }
+
+   p_int i = value.size() - 1;
+
+   for (; i >= 0; i--) {
+      if (value[i] != L'\r' && value[i] != L'\n') {
+         break;
+      }
+   }
+
+   if (i != static_cast<p_int>(value.size() - 1)) {
+      value = value.substr(0, i + 1);
+   }
+}
+
+p_bool str_startsWith(const p_str& value, const p_str& phrase) 
+{
+   if (value.size() < phrase.size()) {
+      return false;
+   }
+
+   for (p_size i = 0; i < phrase.size(); i++) {
+      if (value[i] != phrase[i]) {
+         return false;
+      }
+   }
+
+   return true;
+}
+
 const p_list STRINGS_MONTHS = 
 {
    STRING_JANUARY, STRING_FEBRUARY, STRING_MARCH,

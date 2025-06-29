@@ -37,6 +37,8 @@ p_ndouble stringToDouble(const p_str& value);
 
 void str_toLower(p_str& value);
 void str_toUpper(p_str& value);
+void str_trimEndNewLines(p_str& value);
+p_bool str_startsWith(const p_str& value, const p_str& phrase);
 
 p_constexpr p_int LETTERS_IN_ENGLISH_ALPHABET = 26;
 

@@ -15,6 +15,8 @@
 #pragma once
 
 #include "var.h"
+#include "logic.h"
+#include "side-process.h"
 #include "programs/programs.h"
 
 
@@ -52,6 +54,7 @@ public:
 
    void actualize(const Token& tk);
    void loadCmdPath();
+   Python3State getPython3State(p_str& cmdPath);
 
    p_str cmdProcessStartingArgs;
    prog::Programs programs; 
@@ -64,6 +67,8 @@ private:
    p_cunit value = CONST_CACHE_NULL;
    Perun2Process& perun2;
    VarsContext& context;
+   p_str python3CmdPath;
+   Python3State python3State = Python3State::P3_Unknown;
 };
 
 }

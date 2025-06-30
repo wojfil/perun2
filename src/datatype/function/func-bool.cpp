@@ -470,4 +470,10 @@ p_bool F_IsNever::getValue()
    return this->arg1->getValue().type == Time::TimeType::tt_Never;
 }
 
+p_bool F_AskPython3::getValue()
+{
+   // todo
+   return false;
+}
+
 }

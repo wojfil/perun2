@@ -21,6 +21,16 @@
 namespace perun2
 {
 
+
+enum Python3State
+{
+    P3_Unknown,
+    P3_Installed,
+    P3_NotInstalled,
+    P3_DifferentVersionThan3
+};
+
+
 struct SideProcess
 {
 public:

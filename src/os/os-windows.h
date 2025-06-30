@@ -175,10 +175,12 @@ p_list os_pendrives();
 p_str os_currentPath();
 p_str os_system32Path();
 p_str os_downloadsPath();
+Python3State os_getPython3(p_str& cmdPath);
 
 p_bool os_readFile(p_str& result, const p_str& path);
 void os_showWebsite(const p_str& url);
 p_bool os_findText(const p_str& path, const p_str& value);
+void os_normalizeNewLines(const char (&old)[256], char (&next)[256]);
 
 p_bool os_areEqualInPath(const p_char ch1, const p_char ch2);
 

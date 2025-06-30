@@ -95,6 +95,19 @@ void PostParseData::loadCmdPath()
    }
 }
 
+Python3State PostParseData::getPython3State(p_str& cmdPath)
+{
+   if (this->python3State == Python3State::P3_Unknown) {
+      this->python3State = os_getPython3(this->python3CmdPath);
+   }
+
+   if (this->python3State == Python3State::P3_Installed) {
+      cmdPath = this->python3CmdPath;
+   }  
+
+   return this->python3State;
+}
+
 p_bool PostParseData::isNotLoaded(const p_cunit v)
 {
    const p_bool notLoaded = !(this->value & v);

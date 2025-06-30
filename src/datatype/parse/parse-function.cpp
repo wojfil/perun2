@@ -432,6 +432,28 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_IsNever>(tim);
       return true;
    }
+   else if (word.isWord(STRING_ASKPYTHON, p2)) {
+      throw SyntaxError(str(L"the function \"", word.getOriginString(p2),
+         L"\" does not exist. You probably meant askPython3"), word.line);
+   }
+   else if (word.isWord(STRING_ASKPYTHON3, p2)) {
+      if (len != 1) {
+         functionArgNumberException(len, word, p2);
+      }
+
+      checkFunctionAttribute(word, p2);
+
+      FileContext* fctx = p2.contexts.getFileContext();
+      fctx->attribute->setCoreCommandBase();
+
+      p_genptr<p_str> string;
+      if (! parse::parse(p2, args[0], string)) {
+         functionArgException(1, STRING_STRING, word, p2);
+      }
+
+      result = std::make_unique<F_AskPython3>(string, fctx);
+      return true;
+   }
 
    return false;
 };

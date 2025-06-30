@@ -62,6 +62,8 @@ enum Keyword
    kw_Run,
    kw_Sleep,
    kw_Popup,
+   kw_Python,
+   kw_Python3,
       // expression elements:
    kw_In,
    kw_Like,

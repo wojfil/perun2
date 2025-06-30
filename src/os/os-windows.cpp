@@ -25,6 +25,7 @@
 #include <time.h>
 #include "../perun2.h"
 #include "../datatype/parse/parse-asterisk.h"
+#include "../datatype/text/strings.h"
 #include "../metadata.h"
 #include <shlobj.h>
 #include <shellapi.h>
@@ -36,6 +37,9 @@
 #include <setupapi.h>
 #include <initguid.h>
 #include <Usbiodef.h>
+#include <cstdlib>
+#include <array>
+#include <optional>
 
 
 namespace perun2
@@ -1361,7 +1365,6 @@ p_bool os_select(const p_str& parent, const p_set& paths)
 
 p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
 {
-   p2.sideProcess.running = true;
    STARTUPINFO si;
 
    ZeroMemory(&si, sizeof(si));
@@ -1372,8 +1375,7 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
    wcscpy(cmd.get(), command.c_str());
    cmd[command.size()] = CHAR_NULL;
 
-   CreateProcessW
-   (
+   const BOOL creation = CreateProcessW(
       NULL,
       cmd.get(),
       NULL,NULL,FALSE,
@@ -1382,6 +1384,12 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
       location.c_str(),
       &si, &p2.sideProcess.info
    );
+
+   if (! creation) {
+      return false;
+   }
+
+   p2.sideProcess.running = true;
 
    WaitForSingleObject(p2.sideProcess.info.hProcess, INFINITE);
    DWORD dwExitCode = 0;
@@ -2447,6 +2455,195 @@ p_str os_downloadsPath()
    }
 }
 
+std::optional<p_str> os_readStringFromCmd(const p_str& cmd)
+{
+   std::array<p_char, 256> buffer;
+   p_str result;
+   FILE* pipe = _wpopen(cmd.c_str(), L"r");
+   
+   if (! pipe) {
+      return std::nullopt;
+   }
+
+   if (fgetws(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
+      result += buffer.data();
+   }
+
+   _pclose(pipe);
+   return result.empty()
+      ? std::nullopt
+      : std::make_optional<p_str>(result);
+}
+
+std::optional<p_str> os_registry_readPython3Path(const p_str& version, HKEY rootKey) 
+{
+   HKEY hKey;
+   const p_str regPath = str(L"SOFTWARE\\Python\\PythonCore\\", version, L"\\InstallPath");
+   
+   LONG result = RegOpenKeyExW(rootKey, regPath.c_str(), 0, KEY_READ, &hKey);
+   if (result != ERROR_SUCCESS) {
+      return std::nullopt;
+   }
+
+   p_char value[MAX_PATH];
+   DWORD valueSize = sizeof(value);
+   DWORD type = 0;
+
+   result = RegQueryValueExW(hKey, L"ExecutablePath", nullptr, &type, (LPBYTE)value, &valueSize);
+   RegCloseKey(hKey);
+
+   if (result == ERROR_SUCCESS && type == REG_SZ) {
+      return std::make_optional<p_str>(value);
+   } 
+   else {
+      return std::nullopt;
+   }
+}
+
+std::vector<p_str> os_registry_getAllPython3s(HKEY rootKey)
+{
+   std::vector<p_str> output;
+
+   const p_char* subKey = L"SOFTWARE\\Python\\PythonCore";
+   HKEY hKey;
+   
+   LONG result = RegOpenKeyExW(rootKey, subKey, 0, KEY_READ, &hKey);
+   if (result != ERROR_SUCCESS) {
+      return output;
+   }
+
+   DWORD index = 0;
+   DWORD nameSize;
+   p_char name[MAX_PATH];
+   
+   while (true) {
+      nameSize = sizeof(name) / sizeof(p_char);
+      result = RegEnumKeyExW(hKey, index, name, &nameSize, nullptr, nullptr, nullptr, nullptr);
+      
+      if (result == ERROR_NO_MORE_ITEMS) {
+         break;
+      }
+      else if (result == ERROR_SUCCESS) {
+         const p_str nameAsString = name;
+         const std::optional<p_str> path = os_registry_readPython3Path(nameAsString, rootKey);
+
+         if (path.has_value() && os_fileExists(path.value())) {
+            p_str realPath = path.value();
+            str_toLower(realPath);
+            output.emplace_back(realPath);
+         }
+      }
+
+      ++index;
+   }
+
+   RegCloseKey(hKey);
+   return output;
+}
+
+std::optional<p_str> os_readPython3PathFromCmd(const p_str& alias, std::optional<p_str>& versionString) 
+{
+   versionString = os_readStringFromCmd(str(alias, L" --version 2>nul"));
+
+   if (versionString.has_value() && str_startsWith(versionString.value(), L"Python 3.")) {
+      std::optional<p_str> path = os_readStringFromCmd(str(L"where ", alias, L" 2>nul"));
+
+      if (path.has_value()) {
+         p_str output = path.value();
+         str_toLower(output);
+         str_trimEndNewLines(output);
+         return std::make_optional<p_str>(output);
+      }
+   }
+
+   return std::nullopt;
+}
+
+Python3State os_getPython3(p_str& cmdPath)
+{
+   // The algorithm is quite complex.
+   // 1. Read all paths to Python3 from the registry. Give up if nothing is found.
+   // 2. Try to get the path by executing "python3 --version". 
+   // If this path exists and is also found in the registry, return it.
+   // 3. Try to get the path by executing "python --version". Then do the same as in 2.
+   // 4. Try to return the first value from HKCU.
+   // 5. Try to return the first value from HKLM.
+   // 6. Give up and return nothing. Try to give a message about Python being not 3.*, if possible.
+
+   // Step 1.
+   const std::vector<p_str> hkcu = os_registry_getAllPython3s(HKEY_CURRENT_USER);
+   const std::vector<p_str> hklm = os_registry_getAllPython3s(HKEY_LOCAL_MACHINE);
+
+   if (hkcu.empty() && hklm.empty()) {
+      return Python3State::P3_NotInstalled;
+   }
+
+   // Step 2.
+   std::optional<p_str> versionStringPython3;
+   std::optional<p_str> python3 = os_readPython3PathFromCmd(L"python3", versionStringPython3);
+   if (python3.has_value()) {
+      const p_str& path = python3.value();
+         
+      for (const p_str& registryPath : hkcu) {
+         if (registryPath == path) {
+            cmdPath = path;
+            return Python3State::P3_Installed;
+         }
+      }
+
+      for (const p_str& registryPath : hklm) {
+         if (registryPath == path) {
+            cmdPath = path;
+            return Python3State::P3_Installed;
+         }
+      }
+   }
+
+   // Step 3.
+   std::optional<p_str> versionStringPython;
+   std::optional<p_str> python = os_readPython3PathFromCmd(L"python", versionStringPython);
+   if (python.has_value()) {
+      const p_str& path = python.value();
+         
+      for (const p_str& registryPath : hkcu) {
+         if (registryPath == path) {
+            cmdPath = path;
+            return Python3State::P3_Installed;
+         }
+      }
+
+      for (const p_str& registryPath : hklm) {
+         if (registryPath == path) {
+            cmdPath = path;
+            return Python3State::P3_Installed;
+         }
+      }
+   }
+
+   // Step 4.
+   if (! hkcu.empty()) {
+      cmdPath = hkcu[0];
+      return Python3State::P3_Installed;
+   }
+
+   // Step 5.
+   if (! hklm.empty()) {
+      cmdPath = hklm[0];
+      return Python3State::P3_Installed;
+   }
+   
+   // Step 6.
+   if (versionStringPython.has_value()) {
+      const p_str& version = versionStringPython.value();
+
+      if (str_startsWith(version, L"Python ") && ! str_startsWith(version, L"Python 3")) {
+         return Python3State::P3_DifferentVersionThan3;
+      }
+   }
+
+   return Python3State::P3_NotInstalled;
+}
+
 p_size os_readFileSize(const p_str& path)
 {
    struct _stat fileinfo;
@@ -2503,6 +2700,29 @@ p_bool os_findText(const p_str& path, const p_str& value)
 
    stream.close();
    return result;
+}
+
+void os_normalizeNewLines(const char (&old)[256], char (&next)[256])
+{
+   memset(next, 0, sizeof(char) * 256);
+
+   p_size index = 0;
+   
+   for (p_size i = 0; i < 255; i++) {
+      if (old[i] == '\0') {
+         next[index] = '\0';
+         break;
+      }
+
+      if (old[i] == '\r' && old[i + 1] == '\n') {
+         next[index] = '\n';
+         index++;
+         i += 1;
+      } else {
+         next[index] = old[i];
+         index++;
+      }
+   }
 }
 
 p_bool os_areEqualInPath(const p_char ch1, const p_char ch2)

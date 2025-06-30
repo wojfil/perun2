@@ -58,6 +58,8 @@ KeywordsData::KeywordsData() : KEYWORDS(
    { STRING_RUN, Keyword::kw_Run },
    { STRING_SLEEP, Keyword::kw_Sleep },
    { STRING_POPUP, Keyword::kw_Popup },
+   { STRING_PYTHON, Keyword::kw_Python },
+   { STRING_PYTHON3, Keyword::kw_Python3 },
    // expression elements:
    { STRING_IN, Keyword::kw_In },
    { STRING_LIKE, Keyword::kw_Like },

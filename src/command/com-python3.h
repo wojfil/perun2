@@ -75,6 +75,8 @@ public:
    void run() override;
 
 private:
+   p_str evalArguments() const;
+
    p_genptr<p_str> python3;
    p_genptr<p_list> arguments;
 };

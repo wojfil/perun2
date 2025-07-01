@@ -233,9 +233,25 @@ void C_Python3::run()
 
 void C_Python3With::run()
 {
+   runPython(this->evalArguments());
+}
 
+p_str C_Python3With::evalArguments() const
+{
+   const p_list args = this->arguments->getValue();
 
-   // todo
+   if (args.empty()) {
+      return L"";
+   }
+
+   p_str result = os_makeArg(args[0]);
+
+   for (size_t i = 1; i < args.size(); i++) {
+      result += CHAR_SPACE;
+      result += os_makeArg(args[i]);
+   }
+
+   return result;
 }
 
 }

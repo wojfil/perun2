@@ -2709,15 +2709,10 @@ p_bool os_areEqualInPath(const p_char ch1, const p_char ch2)
 
 p_str os_makeArg(const p_str& value)
 {
-   p_bool anySpace = false;
    p_size quotes = 0;
 
    for (const p_char ch : value) {
       switch (ch) {
-         case CHAR_SPACE: {
-            anySpace = true;
-            break;
-         }
          case CHAR_QUOTATION_MARK: {
             quotes++;
             break;
@@ -2726,9 +2721,7 @@ p_str os_makeArg(const p_str& value)
    }
 
    if (quotes == 0) {
-      return anySpace
-         ? str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK)
-         : value;
+      return str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
    }
    else {
       p_str result;
@@ -2741,9 +2734,7 @@ p_str os_makeArg(const p_str& value)
          result.push_back(ch);
       }
 
-      return anySpace
-         ? str(CHAR_QUOTATION_MARK, result, CHAR_QUOTATION_MARK)
-         : result;
+      return str(CHAR_QUOTATION_MARK, result, CHAR_QUOTATION_MARK);
    }
 }
 

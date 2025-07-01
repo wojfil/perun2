@@ -25,6 +25,30 @@
 namespace perun2::comm
 {
 
+   
+static void normalizeNewLines(const char (&old)[256], char (&next)[256])
+{
+   memset(next, 0, sizeof(char) * 256);
+
+   p_size index = 0;
+   
+   for (p_size i = 0; i < 255; i++) {
+      if (old[i] == '\0') {
+         next[index] = '\0';
+         break;
+      }
+
+      if (old[i] == '\r' && old[i + 1] == '\n') {
+         next[index] = '\n';
+         index++;
+         i += 1;
+      } else {
+         next[index] = old[i];
+         index++;
+      }
+   }
+}
+
 
 void Python3Base::runPython(const p_str& additionalArgs) const
 {
@@ -141,7 +165,7 @@ void Python3Base::runLoudly(const p_str& python, const p_str& path,
       }
 
       buffer[bytesRead / sizeof(char)] = '\0';
-      os_normalizeNewLines(buffer, nextOutput);
+      normalizeNewLines(buffer, nextOutput);
       p_cout << nextOutput << std::flush;
    }
 

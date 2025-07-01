@@ -2702,29 +2702,6 @@ p_bool os_findText(const p_str& path, const p_str& value)
    return result;
 }
 
-void os_normalizeNewLines(const char (&old)[256], char (&next)[256])
-{
-   memset(next, 0, sizeof(char) * 256);
-
-   p_size index = 0;
-   
-   for (p_size i = 0; i < 255; i++) {
-      if (old[i] == '\0') {
-         next[index] = '\0';
-         break;
-      }
-
-      if (old[i] == '\r' && old[i + 1] == '\n') {
-         next[index] = '\n';
-         index++;
-         i += 1;
-      } else {
-         next[index] = old[i];
-         index++;
-      }
-   }
-}
-
 p_bool os_areEqualInPath(const p_char ch1, const p_char ch2)
 {
    return std::tolower(ch1, std::locale("")) == std::tolower(ch2, std::locale(""));

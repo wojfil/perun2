@@ -28,6 +28,7 @@ namespace perun2::comm
 
 static p_constexpr p_size PYTHON3_PIPE_BUFFER_SIZE = 256;
 
+static void normalizeNewLines(const char (&old)[256], char (&next)[256]);
 
 struct Python3Base
 {

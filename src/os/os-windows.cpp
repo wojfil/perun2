@@ -2709,33 +2709,43 @@ p_bool os_areEqualInPath(const p_char ch1, const p_char ch2)
 
 p_str os_makeArg(const p_str& value)
 {
-   p_size quotes = 0;
+   p_size specials = 0;
 
-   for (const p_char ch : value) {
-      switch (ch) {
-         case CHAR_QUOTATION_MARK: {
-            quotes++;
-            break;
-         }
+   for (size_t i = 0; i < value.size(); i++) {
+      const p_char ch = value[i];
+
+      if (ch == CHAR_QUOTATION_MARK) {
+         specials++;
+         continue;
+      }
+
+      if (ch == CHAR_BACKSLASH && i != (value.size() - 1) && value[i + 1] == CHAR_QUOTATION_MARK) {
+         specials++;
       }
    }
 
-   if (quotes == 0) {
+   if (specials == 0) {
       return str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
    }
-   else {
-      p_str result;
-      result.reserve(value.size() + quotes);
 
-      for (const p_char ch : value) {
-         if (ch == CHAR_QUOTATION_MARK) {
-            result.push_back(CHAR_BACKSLASH);
-         }
-         result.push_back(ch);
+   p_str result = toStr(CHAR_QUOTATION_MARK);
+   result.reserve(value.size() + specials + 2);
+
+   for (size_t i = 0; i < value.size(); i++) {
+      const p_char ch = value[i];
+
+      if (ch == CHAR_QUOTATION_MARK) {
+         result += CHAR_BACKSLASH;
+      }
+      else if (ch == CHAR_BACKSLASH && i != (value.size() - 1) && value[i + 1] == CHAR_QUOTATION_MARK) {
+         result += CHAR_BACKSLASH;
       }
 
-      return str(CHAR_QUOTATION_MARK, result, CHAR_QUOTATION_MARK);
+      result += ch;
    }
+
+   result += CHAR_QUOTATION_MARK;
+   return result;
 }
 
 inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high)

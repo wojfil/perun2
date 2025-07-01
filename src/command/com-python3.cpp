@@ -26,9 +26,9 @@ namespace perun2::comm
 {
 
    
-static void normalizeNewLines(const char (&old)[256], char (&next)[256])
+static void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], char (&next)[PYTHON3_PIPE_BUFFER_SIZE])
 {
-   memset(next, 0, sizeof(char) * 256);
+   memset(next, 0, sizeof(char) * PYTHON3_PIPE_BUFFER_SIZE);
 
    p_size index = 0;
    

@@ -209,7 +209,9 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
       filePath = os_join(cdLocation, filePath);
    }
 
-   if (os_hasExtension(filePath)) {
+   const p_bool hasExtension = os_hasExtension(filePath);
+
+   if (hasExtension) {
       if (! os_isPerun2Extension(filePath)) {
          cmd::error::wrongFileExtension();
          return;
@@ -219,13 +221,21 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
       filePath = str(filePath, CHAR_DOT, metadata::EXTENSION);
    }
 
-   if (!os_fileExists(filePath)) {
-      cmd::error::fileNotFound(os_fullname(filePath));
+   if (! os_fileExists(filePath)) {
+      const p_str errorFile = hasExtension 
+         ? value 
+         : str(value, CHAR_DOT, metadata::EXTENSION);
+
+      cmd::error::fileNotFound(errorFile);
       return;
    }
 
    if (!os_readFile(this->code, filePath)) {
-      cmd::error::fileReadFailure(os_fullname(filePath));
+      const p_str errorFile = hasExtension 
+         ? value 
+         : str(value, CHAR_DOT, metadata::EXTENSION);
+
+      cmd::error::fileReadFailure(errorFile);
       return;
    }
 

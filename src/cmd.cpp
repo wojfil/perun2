@@ -55,7 +55,7 @@ void help()
    logger.print(L"  -h           Set working location to the place where this command was called from.");
    logger.print(L"  -n           Run in noomit mode (iterate all filesystem elements with no exceptions).");
    logger.print(L"  -s           Run in silent mode (no command log messages).");
-   logger.print(L"  -o           Maximum performance mode. Terminal completely disabled.");
+   logger.print(L"  -o           Maximum performance mode. The terminal is completely disabled.");
    logger.print(L"  -m           Static analysis. Check code correctness without running it. Prints \"good\" if no error detected.");
 }
 
@@ -64,13 +64,13 @@ namespace error
    void argumentsNotAccessed()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: arguments could not be accessed."));
+      logger.print(str(L"Command-line error: the arguments could not be accessed."));
    }
 
    void noArguments()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: missing arguments. Run \"", 
+      logger.print(str(L"Command-line error: the arguments are missing. Run \"", 
          metadata::EXECUTABLE_NAME, L" --help\" for command-line tips."));
    }
 
@@ -83,13 +83,13 @@ namespace error
    void noDestination()
    {
       Logger logger;
-      logger.print(L"Command-line error: a destination directory has not been defined.");
+      logger.print(L"Command-line error: the destination directory has not been defined.");
    }
 
    void noCode()
    {
       Logger logger;
-      logger.print(L"Command-line error: an argument with source code is missing.");
+      logger.print(L"Command-line error: the argument with source code is missing.");
    }
 
    void noMainArgument()
@@ -101,13 +101,13 @@ namespace error
    void noInput()
    {
       Logger logger;
-      logger.print(L"Command-line error: no input file.");
+      logger.print(L"Command-line error: the input file is missing.");
    }
 
    void fileNotFound(const p_str& fileName)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: an input file \"", fileName, L"\" does not exist."));
+      logger.print(str(L"Command-line error: the input file \"", fileName, L"\" does not exist."));
    }
 
    void wrongFileExtension()

@@ -72,12 +72,12 @@ add_executable(
     command/com-core.cpp
     command/com-create.cpp
     command/com-def-action.cpp
+    command/com-execute.cpp
     command/com-misc.cpp
     command/com-moveto.cpp
     command/com-parse-kw.cpp
     command/com-parse-unit.cpp
     command/com-parse.cpp
-    command/com-python3.cpp
     command/com-renameto.cpp
     command/com-struct.cpp
     command/com-time.cpp

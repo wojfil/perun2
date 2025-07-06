@@ -14,7 +14,7 @@
 
 #include "com-parse-kw.h"
 #include "com-misc.h"
-#include "com-python3.h"
+#include "com-execute.h"
 #include "com-core.h"
 #include "../exception.h"
 #include "../lexer.h"

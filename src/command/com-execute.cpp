@@ -26,12 +26,12 @@ namespace perun2::comm
 {
 
 
-ExecuteBase::ExecuteBase(Perun2Process& p2)
+ExecutorBase::ExecutorBase(Perun2Process& p2)
    : perun2(p2), 
      locationCtx(p2.contexts.getLocationContext()) { };
 
 
-ExecutionResult ExecuteBase::executeLoudly(const p_str& command, const p_str& location) const
+ExecutionResult ExecutorBase::executeLoudly(const p_str& command, const p_str& location) const
 {
    HANDLE hRead;
    HANDLE hWrite;
@@ -109,7 +109,7 @@ ExecutionResult ExecuteBase::executeLoudly(const p_str& command, const p_str& lo
    return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
-ExecutionResult ExecuteBase::executeSilently(const p_str& command, const p_str& location) const
+ExecutionResult ExecutorBase::executeSilently(const p_str& command, const p_str& location) const
 {
    const p_bool success = os_run(command, location, this->perun2);
    this->perun2.contexts.success->value = success;
@@ -117,13 +117,13 @@ ExecutionResult ExecuteBase::executeSilently(const p_str& command, const p_str& 
    return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
-p_str ExecuteBase::getLocation() const
+p_str ExecutorBase::getLocation() const
 {
    return this->locationCtx->location->value;
 }
 
 
-void ExecuteBase::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
+void ExecutorBase::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
    char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const
 {
    memset(next, 0, sizeof(char) * PYTHON3_PIPE_BUFFER_SIZE);
@@ -149,7 +149,7 @@ void ExecuteBase::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
 
 
 Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
-   : ExecuteBase(p2),  python3(std::move(pyth3)) { };
+   : ExecutorBase(p2),  python3(std::move(pyth3)) { };
 
 
 void Python3Base::runPython(const p_str& additionalArgs) const

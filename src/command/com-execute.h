@@ -37,11 +37,11 @@ enum ExecutionResult {
 };
 
 
-struct ExecuteBase
+struct ExecutorBase
 {
 public:
-   ExecuteBase() = delete;
-   ExecuteBase(Perun2Process& p2);
+   ExecutorBase() = delete;
+   ExecutorBase(Perun2Process& p2);
 
 protected:
    ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
@@ -56,7 +56,7 @@ protected:
 };
 
 
-struct Python3Base : ExecuteBase
+struct Python3Base : ExecutorBase
 {
 public:
    Python3Base() = delete;

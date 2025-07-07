@@ -28,6 +28,7 @@ namespace perun2::comm
 
 static p_constexpr p_size PYTHON3_PIPE_BUFFER_SIZE = 256;
 
+
 enum ExecutionResult {
    ER_Good,
    ER_Bad,
@@ -36,9 +37,26 @@ enum ExecutionResult {
 };
 
 
-static void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], char (&next)[PYTHON3_PIPE_BUFFER_SIZE]);
+struct Executor
+{
+public:
+   Executor() = delete;
+   Executor(Perun2Process& p2);
 
-struct Python3Base
+protected:
+   ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
+   ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
+   p_str getLocation() const;
+   
+   void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], 
+      char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const;
+
+   Perun2Process& perun2;
+   LocationContext* locationCtx;
+};
+
+
+struct Python3Base : Executor
 {
 public:
    Python3Base() = delete;
@@ -48,25 +66,17 @@ protected:
    void runPython(const p_str& additionalArgs) const;
 
 private:
-   ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
-   ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
-
-   p_str getLocation() const;
    p_str prepareCmd(const p_str& python, const p_str& path, 
       const p_str& additionalArgs) const;
 
    p_genptr<p_str> python3;
-   Perun2Process& perun2;
-   LocationContext* locationCtx;
 };
 
 
 struct C_Python3 : Command, Python3Base
 {
 public:
-   C_Python3(p_genptr<p_str>& pyth3, Perun2Process& p2)
-      : Python3Base(pyth3, p2) { };
-
+   C_Python3(p_genptr<p_str>& pyth3, Perun2Process& p2);
    void run() override;
 };
 
@@ -74,15 +84,12 @@ public:
 struct C_Python3With : Command, Python3Base
 {
 public:
-   C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Perun2Process& p2)
-      : Python3Base(pyth3, p2), arguments(std::move(args)) { };
-
+   C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Perun2Process& p2);
    void run() override;
 
 private:
    p_str evalArguments() const;
 
-   p_genptr<p_str> python3;
    p_genptr<p_list> arguments;
 };
 

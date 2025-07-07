@@ -25,8 +25,106 @@
 namespace perun2::comm
 {
 
+
+Executor::Executor(Perun2Process& p2)
+   : perun2(p2), 
+     locationCtx(p2.contexts.getLocationContext()) { };
+
+
+ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& location) const
+{
+   HANDLE hRead;
+   HANDLE hWrite;
+   SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
+
+   if (! CreatePipe(&hRead, &hWrite, &sa, 0)) {
+      this->perun2.contexts.success->value = false;
+      return ExecutionResult::ER_Bad_PipeNotCreated;
+   }
+
+   SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
+
+   STARTUPINFOW si = { sizeof(si) };
+   PROCESS_INFORMATION& pi = this->perun2.sideProcess.info;
+   ZeroMemory(&pi, sizeof(pi));
+
+   si.dwFlags |= STARTF_USESTDHANDLES;
+   si.hStdOutput = hWrite;
+   si.hStdError  = hWrite;
+   si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
+
+   p_str alterableCommand = command;
+
+   const BOOL creation = CreateProcessW(
+      NULL, 
+      &alterableCommand[0], 
+      NULL, NULL, 
+      TRUE, 
+      0, 
+      NULL, 
+      location.c_str(), 
+      &si, 
+      &pi);
+
+   if (! creation) {
+      CloseHandle(hRead);
+      CloseHandle(hWrite);
+      this->perun2.contexts.success->value = false;
+      return ExecutionResult::ER_Bad_ProcessNotStarted;
+   }
+
+   this->perun2.sideProcess.running = true;
    
-static void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], char (&next)[PYTHON3_PIPE_BUFFER_SIZE])
+   CloseHandle(hWrite);
+
+   char buffer[PYTHON3_PIPE_BUFFER_SIZE];
+   char nextOutput[PYTHON3_PIPE_BUFFER_SIZE];
+   DWORD bytesRead;
+   p_bool broken = false;
+
+   while (ReadFile(hRead, buffer, sizeof(buffer) - 1, &bytesRead, NULL) && bytesRead > 0) {
+      if (! this->perun2.isRunning()) {
+         broken = true;
+         break;
+      }
+
+      buffer[bytesRead / sizeof(char)] = '\0';
+      this->normalizeNewLines(buffer, nextOutput);
+      p_cout << nextOutput << std::flush;
+   }
+
+   WaitForSingleObject(pi.hProcess, INFINITE);
+   DWORD dwExitCode = 0;
+   ::GetExitCodeProcess(pi.hProcess, &dwExitCode);
+
+   this->perun2.sideProcess.running = false;
+
+   CloseHandle(hRead);
+   CloseHandle(pi.hProcess);
+   CloseHandle(pi.hThread);
+
+   const p_bool success = ! broken && perun2.isRunning() && dwExitCode == 0;
+   this->perun2.contexts.success->value = success;
+
+   return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
+}
+
+ExecutionResult Executor::executeSilently(const p_str& command, const p_str& location) const
+{
+   const p_bool success = os_run(command, location, this->perun2);
+   this->perun2.contexts.success->value = success;
+
+   return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
+}
+
+p_str Executor::getLocation() const
+{
+   return this->locationCtx->location->value;
+}
+
+
+void Executor::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
+   char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const
 {
    memset(next, 0, sizeof(char) * PYTHON3_PIPE_BUFFER_SIZE);
 
@@ -48,6 +146,10 @@ static void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], char 
       }
    }
 }
+
+
+Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
+   : Executor(p2),  python3(std::move(pyth3)) { };
 
 
 void Python3Base::runPython(const p_str& additionalArgs) const
@@ -121,104 +223,6 @@ void Python3Base::runPython(const p_str& additionalArgs) const
    }
 }
 
-ExecutionResult Python3Base::executeLoudly(const p_str& command, const p_str& location) const
-{
-   HANDLE hRead;
-   HANDLE hWrite;
-   SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
-
-   if (! CreatePipe(&hRead, &hWrite, &sa, 0)) {
-      this->perun2.contexts.success->value = false;
-      return ExecutionResult::ER_Bad_PipeNotCreated;
-   }
-
-   SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
-
-   STARTUPINFOW si = { sizeof(si) };
-   PROCESS_INFORMATION& pi = this->perun2.sideProcess.info;
-   ZeroMemory(&pi, sizeof(pi));
-
-   si.dwFlags |= STARTF_USESTDHANDLES;
-   si.hStdOutput = hWrite;
-   si.hStdError  = hWrite;
-   si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
-
-   p_str alterableCommand = command;
-
-   const BOOL creation = CreateProcessW(
-      NULL, 
-      &alterableCommand[0], 
-      NULL, NULL, 
-      TRUE, 
-      0, 
-      NULL, 
-      location.c_str(), 
-      &si, 
-      &pi);
-
-   if (! creation) {
-      CloseHandle(hRead);
-      CloseHandle(hWrite);
-      this->perun2.contexts.success->value = false;
-      return ExecutionResult::ER_Bad_ProcessNotStarted;
-   }
-
-   this->perun2.sideProcess.running = true;
-   
-   CloseHandle(hWrite);
-
-   char buffer[PYTHON3_PIPE_BUFFER_SIZE];
-   char nextOutput[PYTHON3_PIPE_BUFFER_SIZE];
-   DWORD bytesRead;
-   p_bool broken = false;
-
-   while (ReadFile(hRead, buffer, sizeof(buffer) - 1, &bytesRead, NULL) && bytesRead > 0) {
-      if (! this->perun2.isRunning()) {
-         broken = true;
-         break;
-      }
-
-      buffer[bytesRead / sizeof(char)] = '\0';
-      normalizeNewLines(buffer, nextOutput);
-      p_cout << nextOutput << std::flush;
-   }
-
-   WaitForSingleObject(pi.hProcess, INFINITE);
-   DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(pi.hProcess, &dwExitCode);
-
-   this->perun2.sideProcess.running = false;
-
-   CloseHandle(hRead);
-   CloseHandle(pi.hProcess);
-   CloseHandle(pi.hThread);
-
-   const p_bool success = ! broken && perun2.isRunning() && dwExitCode == 0;
-   this->perun2.contexts.success->value = success;
-
-   return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
-}
-
-
-ExecutionResult Python3Base::executeSilently(const p_str& command, const p_str& location) const
-{
-   const p_bool success = os_run(command, location, this->perun2);
-   this->perun2.contexts.success->value = success;
-
-   return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
-}
-
-Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
-   : perun2(p2), 
-     python3(std::move(pyth3)),
-     locationCtx(p2.contexts.getLocationContext()) { };
-
-
-p_str Python3Base::getLocation() const
-{
-   return this->locationCtx->location->value;
-}
-
 p_str Python3Base::prepareCmd(const p_str& python, const p_str& path, 
    const p_str& additionalArgs) const
 {
@@ -227,10 +231,16 @@ p_str Python3Base::prepareCmd(const p_str& python, const p_str& path,
       : str(L"\"", python, L"\" -u \"", path, L"\" ", additionalArgs);
 }
 
+C_Python3::C_Python3(p_genptr<p_str>& pyth3, Perun2Process& p2)
+   : Python3Base(pyth3, p2) { };
+
 void C_Python3::run()
 {
    runPython(L"");
 }
+
+C_Python3With::C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Perun2Process& p2)
+   : Python3Base(pyth3, p2), arguments(std::move(args)) { };
 
 void C_Python3With::run()
 {

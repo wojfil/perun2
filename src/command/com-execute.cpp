@@ -13,12 +13,12 @@
 */
 
 #include "com-execute.h"
-#include <chrono>
-#include <thread>
-#include <algorithm>
 #include "../os/os.h"
 #include "../perun2.h"
 #include "com-core.h"
+#include <chrono>
+#include <thread>
+#include <algorithm>
 #include <sstream>
 
 
@@ -168,7 +168,53 @@ ExecuteBase::ExecuteBase(p_genptr<p_str>& cmd, Perun2Process& p2)
 
 void ExecuteBase::execute(const p_str& additionalArgs) const
 {
-   // todo
+   p_str baseCommand = this->command->getValue();
+   str_trim(baseCommand);
+
+   if (baseCommand.empty()) {
+      this->perun2.contexts.success->value = false;
+      this->perun2.logger.log(L"Failed to execute the empty command");
+      return;
+   }
+
+   const p_str location = this->getLocation();
+
+   if (! os_directoryExists(location)) {
+      this->perun2.contexts.success->value = false;
+      this->perun2.logger.log(L"Failed to execute the command, because the working location \"", location, L"\" does not exist");
+      return;
+   }
+
+   if (! this->perun2.isRunning()) {
+      return;
+   }
+
+   const p_str command = additionalArgs.empty()
+      ? baseCommand
+      : str(baseCommand, CHAR_SPACE, additionalArgs);
+
+   const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
+      ? this->executeSilently(command, location)
+      : this->executeLoudly(command, location);
+
+   switch (executionResult) {
+      case ExecutionResult::ER_Good: {
+         this->perun2.logger.log(L"Execute \"", command, L"\"");
+         break;
+      }
+      case ExecutionResult::ER_Bad: {
+         this->perun2.logger.log(L"Failed to execute \"", command, L"\"");
+         break;
+      }
+      case ExecutionResult::ER_Bad_PipeNotCreated: {
+         this->perun2.logger.log(L"Failed to execute \"", command, L"\". A new pipe could not be created");
+         break;
+      }
+      case ExecutionResult::ER_Bad_ProcessNotStarted: {
+         this->perun2.logger.log(L"Failed to execute \"", command, L"\". A new process could not be started");
+         break;
+      }
+   }
 }
 
 C_Execute::C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2)
@@ -253,11 +299,11 @@ void Python3Base::runPython(const p_str& additionalArgs) const
          break;
       }
       case ExecutionResult::ER_Bad_PipeNotCreated: {
-         this->perun2.logger.log(L"Failed to run Python3. A new pipe could not be created");
+         this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\". A new pipe could not be created");
          break;
       }
       case ExecutionResult::ER_Bad_ProcessNotStarted: {
-         this->perun2.logger.log(L"Failed to run Python3. A new process could not be started");
+         this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\". A new process could not be started");
          break;
       }
    }

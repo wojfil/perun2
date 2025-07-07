@@ -37,6 +37,7 @@ p_ndouble stringToDouble(const p_str& value);
 
 void str_toLower(p_str& value);
 void str_toUpper(p_str& value);
+void str_trim(p_str& value);
 void str_trimEndNewLines(p_str& value);
 p_bool str_startsWith(const p_str& value, const p_str& phrase);
 

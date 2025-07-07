@@ -65,6 +65,36 @@ void str_toUpper(p_str& value)
    }
 }
 
+void str_trim(p_str& value)
+{
+   if (value.empty()) {
+      return;
+   }
+
+   p_int left;
+   for (left = 0; left < value.size(); left++) {
+      if (! char_isSpace(value[left])) {
+         break;
+      }
+   }
+
+   if (left == value.size()) {
+      value.clear();
+      return;
+   }
+
+   p_int right;
+   for (right = value.size() - 1; right >= 0; --right) {
+      if (! char_isSpace(value[right])) {
+         break;
+      }
+   }
+
+   value = right == value.size() - 1
+      ? value.substr(left)
+      : value.substr(left, right - left + 1);
+}
+
 void str_trimEndNewLines(p_str& value)
 {
    if (value.empty()) {

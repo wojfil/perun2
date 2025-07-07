@@ -37,17 +37,17 @@ enum ExecutionResult {
 };
 
 
-struct Executor
+struct ExecuteBase
 {
 public:
-   Executor() = delete;
-   Executor(Perun2Process& p2);
+   ExecuteBase() = delete;
+   ExecuteBase(Perun2Process& p2);
 
 protected:
    ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
    ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
    p_str getLocation() const;
-   
+
    void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], 
       char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const;
 
@@ -56,7 +56,7 @@ protected:
 };
 
 
-struct Python3Base : Executor
+struct Python3Base : ExecuteBase
 {
 public:
    Python3Base() = delete;

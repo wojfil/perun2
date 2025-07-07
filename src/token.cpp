@@ -236,6 +236,9 @@ p_bool Token::isCommandKeyword() const
       case Keyword::kw_Break:
       case Keyword::kw_Continue:
       case Keyword::kw_Popup:
+      case Keyword::kw_Python:
+      case Keyword::kw_Python3:
+      case Keyword::kw_Execute:
          return true;
       default:
          return false;

@@ -225,7 +225,7 @@ void C_Execute::run()
    this->execute(L"");
 }
 
-C_ExecuteWith::C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args)
+C_ExecuteWith::C_ExecuteWith(p_genptr<p_str>& cmd, p_genptr<p_list>& args, Perun2Process& p2)
    : ExecuteBase(cmd, p2), arguments(std::move(args)) { };
 
 void C_ExecuteWith::run()

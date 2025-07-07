@@ -120,6 +120,10 @@ p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
          checkUselessFlags(word, line, mode, p2);
          return c_python3(result, word, tks, line, p2);
       }
+      case Keyword::kw_Execute: {
+         checkUselessFlags(word, line, mode, p2);
+         return c_execute(result, word, tks, line, p2);
+      }
    }
 
    throw SyntaxError(str(L"the command cannot start with a keyword \"", word.getOriginString(p2), L"\""), line);
@@ -1650,8 +1654,6 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
    return false;
 }
 
-
-
 static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2)
 {
    p2.contexts.closeAttributeScope();
@@ -1698,6 +1700,55 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
    result = std::make_unique<C_Python3With>(string, list, p2);
    return true;
 }
+
+static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2)
+{
+   p2.contexts.closeAttributeScope();
+
+   if (tks.isEmpty()) {
+      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+         L"\" needs an argument here"), line);
+   }
+
+   if (! tks.check(TI_HAS_KEYWORD_WITH)) {
+      p_genptr<p_str> string;
+      if (parse::parse(p2, tks, string)) {
+         result = std::make_unique<C_Execute>(string, p2);
+         return true;
+      }
+      else {
+         throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+            L"\" cannot be resolved to a string"), line);
+      }
+   }
+
+   P_DIVIDE_BY_KEYWORD(kw_With);
+
+   if (left.isEmpty()) {
+      throw SyntaxError(str(L"the left side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+   }
+
+   if (right.isEmpty()) {
+      throw SyntaxError(str(L"the right side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+   }
+
+   p_genptr<p_str> string;
+   if (! parse::parse(p2, left, string)) {
+      throw SyntaxError(str(L"the first argument of the command \"", word.getOriginString(p2), 
+         L" with\" cannot be resolved to a string"), line);
+   }
+
+   p_genptr<p_list> list;
+   if (! parse::parse(p2, right, list)) {
+      throw SyntaxError(str(L"the second argument of the command \"", word.getOriginString(p2), 
+         L" with\" cannot be resolved to a list"), line);
+   }
+
+   result = std::make_unique<C_ExecuteWith>(string, list, p2);
+   return true;
+}
+
+
 
 static void checkUselessFlags(const Token& word, const p_int line,
    const CoreCommandMode mode, Perun2Process& p2)

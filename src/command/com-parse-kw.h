@@ -101,6 +101,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
    const Tokens& right, const p_int line, Perun2Process& p2);
    
 static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2);
+static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2);
 
 static void checkUselessFlags(const Token& word, const p_int line,
    const CoreCommandMode mode, Perun2Process& p2);

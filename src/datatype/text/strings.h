@@ -270,6 +270,7 @@ p_constexpr p_char STRING_RAW[] =                  L"raw";
 p_constexpr p_char STRING_RESEMBLANCE[] =          L"resemblance";
 p_constexpr p_char STRING_ASKPYTHON[] =            L"askpython";
 p_constexpr p_char STRING_ASKPYTHON3[] =           L"askpython3";
+p_constexpr p_char STRING_EXECUTE[] =              L"execute";
 
 p_constexpr p_char STRING_COPY[] =                 L"copy";
 p_constexpr p_char STRING_CREATE[] =               L"create";

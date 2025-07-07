@@ -83,7 +83,7 @@ public:
 struct C_ExecuteWith : Command, ExecuteBase
 {
 public:
-   C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args);
+   C_ExecuteWith(p_genptr<p_str>& cmd, p_genptr<p_list>& args, Perun2Process& p2);
    void run() override;
 
 private:

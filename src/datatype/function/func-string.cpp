@@ -174,34 +174,9 @@ p_str F_Lower::getValue()
 
 p_str F_Trim::getValue()
 {
-   const p_str value = arg1->getValue();
-   const p_int length = value.size();
-
-   if (length == 0) {
-      return value;
-   }
-
-   p_int left;
-   for (left = 0; left < length; left++) {
-      if (!char_isSpace(value[left])) {
-         break;
-      }
-   }
-
-   if (left == length) {
-      return p_str();
-   }
-
-   p_int right;
-   for (right = length - 1; right >= 0; --right) {
-      if (!char_isSpace(value[right])) {
-         break;
-      }
-   }
-
-   return right == length - 1
-      ? value.substr(left)
-      : value.substr(left, right - left + 1);
+   p_str value = arg1->getValue();
+   str_trim(value);
+   return value;
 }
 
 

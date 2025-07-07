@@ -28,6 +28,14 @@ namespace perun2::comm
 
 static p_constexpr p_size PYTHON3_PIPE_BUFFER_SIZE = 256;
 
+enum ExecutionResult {
+   ER_Good,
+   ER_Bad,
+   ER_Bad_PipeNotCreated,
+   ER_Bad_ProcessNotStarted
+};
+
+
 static void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], char (&next)[PYTHON3_PIPE_BUFFER_SIZE]);
 
 struct Python3Base

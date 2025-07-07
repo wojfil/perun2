@@ -122,6 +122,21 @@ p_str Executor::getLocation() const
    return this->locationCtx->location->value;
 }
 
+p_str Executor::mergeArguments(const p_list& args) const
+{
+   if (args.empty()) {
+      return L"";
+   }
+
+   p_str result = os_makeArg(args[0]);
+
+   for (size_t i = 1; i < args.size(); i++) {
+      result += CHAR_SPACE;
+      result += os_makeArg(args[i]);
+   }
+
+   return result;
+}
 
 void Executor::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
    char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const
@@ -147,20 +162,30 @@ void Executor::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
    }
 }
 
-C_Execute::C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2)
+
+ExecuteBase::ExecuteBase(p_genptr<p_str>& cmd, Perun2Process& p2)
    : Executor(p2), command(std::move(cmd)) { };
 
-void C_Execute::run()
+void ExecuteBase::execute(const p_str& additionalArgs) const
 {
    // todo
 }
 
+C_Execute::C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2)
+   : ExecuteBase(cmd, p2) { };
+
+void C_Execute::run()
+{
+   this->execute(L"");
+}
+
 C_ExecuteWith::C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args)
-   : Executor(p2), command(std::move(cmd)), arguments(std::move(args)) { };
+   : ExecuteBase(cmd, p2), arguments(std::move(args)) { };
 
 void C_ExecuteWith::run()
 {
-   // todo
+   const p_list args = this->arguments->getValue();
+   this->execute(this->mergeArguments(args));
 }
 
 Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
@@ -251,7 +276,7 @@ C_Python3::C_Python3(p_genptr<p_str>& pyth3, Perun2Process& p2)
 
 void C_Python3::run()
 {
-   runPython(L"");
+   this->runPython(L"");
 }
 
 C_Python3With::C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Perun2Process& p2)
@@ -259,25 +284,8 @@ C_Python3With::C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Per
 
 void C_Python3With::run()
 {
-   runPython(this->evalArguments());
-}
-
-p_str C_Python3With::evalArguments() const
-{
    const p_list args = this->arguments->getValue();
-
-   if (args.empty()) {
-      return L"";
-   }
-
-   p_str result = os_makeArg(args[0]);
-
-   for (size_t i = 1; i < args.size(); i++) {
-      result += CHAR_SPACE;
-      result += os_makeArg(args[i]);
-   }
-
-   return result;
+   this->runPython(this->mergeArguments(args));
 }
 
 }

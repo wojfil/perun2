@@ -47,6 +47,7 @@ protected:
    ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
    ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
    p_str getLocation() const;
+   p_str mergeArguments(const p_list& args) const;
 
    void normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE], 
       char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const;
@@ -54,6 +55,41 @@ protected:
    Perun2Process& perun2;
    LocationContext* locationCtx;
 };
+
+
+
+struct ExecuteBase : Executor
+{
+public:
+   ExecuteBase() = delete;
+   ExecuteBase(p_genptr<p_str>& cmd, Perun2Process& p2);
+
+protected:
+   void execute(const p_str& additionalArgs) const;
+
+private:
+   p_genptr<p_str> command;
+};
+
+
+struct C_Execute : Command, ExecuteBase
+{
+public:
+   C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2);
+   void run() override;
+};
+
+
+struct C_ExecuteWith : Command, ExecuteBase
+{
+public:
+   C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args);
+   void run() override;
+
+private:
+   p_genptr<p_list> arguments;
+};
+
 
 
 struct Python3Base : Executor
@@ -73,29 +109,6 @@ private:
 };
 
 
-struct C_Execute : Command, Executor
-{
-public:
-   C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2);
-   void run() override;
-
-private:
-   p_genptr<p_str> command;
-};
-
-
-struct C_ExecuteWith : Command, Executor
-{
-public:
-   C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args);
-   void run() override;
-
-private:
-   p_genptr<p_str> command;
-   p_genptr<p_list> arguments;
-};
-
-
 struct C_Python3 : Command, Python3Base
 {
 public:
@@ -111,8 +124,6 @@ public:
    void run() override;
 
 private:
-   p_str evalArguments() const;
-
    p_genptr<p_list> arguments;
 };
 

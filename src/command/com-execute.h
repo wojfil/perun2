@@ -48,11 +48,8 @@ protected:
    void runPython(const p_str& additionalArgs) const;
 
 private:
-   ExecutionResult executeLoudly(const p_str& python, const p_str& path, 
-      const p_str& additionalArgs, const p_str& location) const;
-
-   ExecutionResult executeSilently(const p_str& python, const p_str& path, 
-      const p_str& additionalArgs, const p_str& location) const;
+   ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
+   ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
 
    p_str getLocation() const;
    p_str prepareCmd(const p_str& python, const p_str& path, 

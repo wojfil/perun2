@@ -95,9 +95,11 @@ void Python3Base::runPython(const p_str& additionalArgs) const
       return;
    }
 
+   const p_str command = prepareCmd(python, path, additionalArgs);
+
    const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
-      ? this->executeSilently(python, path, additionalArgs, location)
-      : this->executeLoudly(python, path, additionalArgs, location);
+      ? this->executeSilently(command, location)
+      : this->executeLoudly(command, location);
 
    switch (executionResult) {
       case ExecutionResult::ER_Good: {
@@ -119,8 +121,7 @@ void Python3Base::runPython(const p_str& additionalArgs) const
    }
 }
 
-ExecutionResult Python3Base::executeLoudly(const p_str& python, const p_str& path, 
-   const p_str& additionalArgs, const p_str& location) const
+ExecutionResult Python3Base::executeLoudly(const p_str& command, const p_str& location) const
 {
    HANDLE hRead;
    HANDLE hWrite;
@@ -142,12 +143,11 @@ ExecutionResult Python3Base::executeLoudly(const p_str& python, const p_str& pat
    si.hStdError  = hWrite;
    si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
 
-   const p_str baseCommand = prepareCmd(python, path, additionalArgs);
-   p_str command = baseCommand;
+   p_str alterableCommand = command;
 
    const BOOL creation = CreateProcessW(
       NULL, 
-      &command[0], 
+      &alterableCommand[0], 
       NULL, NULL, 
       TRUE, 
       0, 
@@ -200,10 +200,8 @@ ExecutionResult Python3Base::executeLoudly(const p_str& python, const p_str& pat
 }
 
 
-ExecutionResult Python3Base::executeSilently(const p_str& python, const p_str& path, 
-   const p_str& additionalArgs, const p_str& location) const
+ExecutionResult Python3Base::executeSilently(const p_str& command, const p_str& location) const
 {
-   const p_str command = prepareCmd(python, path, additionalArgs);
    const p_bool success = os_run(command, location, this->perun2);
    this->perun2.contexts.success->value = success;
 

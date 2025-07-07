@@ -484,7 +484,7 @@ p_str F_Replace::getValue()
          break;
       }
       default: {
-         size_t i = 0;
+         p_size i = 0;
 
          switch (v2.size()) {
             case 0: {

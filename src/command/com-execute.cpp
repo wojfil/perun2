@@ -130,7 +130,7 @@ p_str Executor::mergeArguments(const p_list& args) const
 
    p_str result = os_makeArg(args[0]);
 
-   for (size_t i = 1; i < args.size(); i++) {
+   for (p_size i = 1; i < args.size(); i++) {
       result += CHAR_SPACE;
       result += os_makeArg(args[i]);
    }

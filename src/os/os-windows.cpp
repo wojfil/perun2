@@ -2711,7 +2711,7 @@ p_str os_makeArg(const p_str& value)
 {
    p_size specials = 0;
 
-   for (size_t i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       const p_char ch = value[i];
 
       if (ch == CHAR_QUOTATION_MARK) {
@@ -2731,7 +2731,7 @@ p_str os_makeArg(const p_str& value)
    p_str result = toStr(CHAR_QUOTATION_MARK);
    result.reserve(value.size() + specials + 2);
 
-   for (size_t i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       const p_char ch = value[i];
 
       if (ch == CHAR_QUOTATION_MARK) {

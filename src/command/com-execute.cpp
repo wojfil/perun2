@@ -26,12 +26,12 @@ namespace perun2::comm
 {
 
 
-ExecutorBase::ExecutorBase(Perun2Process& p2)
+Executor::Executor(Perun2Process& p2)
    : perun2(p2), 
      locationCtx(p2.contexts.getLocationContext()) { };
 
 
-ExecutionResult ExecutorBase::executeLoudly(const p_str& command, const p_str& location) const
+ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& location) const
 {
    HANDLE hRead;
    HANDLE hWrite;
@@ -109,7 +109,7 @@ ExecutionResult ExecutorBase::executeLoudly(const p_str& command, const p_str& l
    return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
-ExecutionResult ExecutorBase::executeSilently(const p_str& command, const p_str& location) const
+ExecutionResult Executor::executeSilently(const p_str& command, const p_str& location) const
 {
    const p_bool success = os_run(command, location, this->perun2);
    this->perun2.contexts.success->value = success;
@@ -117,13 +117,13 @@ ExecutionResult ExecutorBase::executeSilently(const p_str& command, const p_str&
    return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
-p_str ExecutorBase::getLocation() const
+p_str Executor::getLocation() const
 {
    return this->locationCtx->location->value;
 }
 
 
-void ExecutorBase::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
+void Executor::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
    char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const
 {
    memset(next, 0, sizeof(char) * PYTHON3_PIPE_BUFFER_SIZE);
@@ -148,7 +148,7 @@ void ExecutorBase::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE]
 }
 
 C_Execute::C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2)
-   : ExecutorBase(p2), command(std::move(cmd)) { };
+   : Executor(p2), command(std::move(cmd)) { };
 
 void C_Execute::run()
 {
@@ -156,7 +156,7 @@ void C_Execute::run()
 }
 
 C_ExecuteWith::C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args)
-   : ExecutorBase(p2), command(std::move(cmd)), arguments(std::move(args)) { };
+   : Executor(p2), command(std::move(cmd)), arguments(std::move(args)) { };
 
 void C_ExecuteWith::run()
 {
@@ -164,7 +164,7 @@ void C_ExecuteWith::run()
 }
 
 Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
-   : ExecutorBase(p2),  python3(std::move(pyth3)) { };
+   : Executor(p2),  python3(std::move(pyth3)) { };
 
 
 void Python3Base::runPython(const p_str& additionalArgs) const

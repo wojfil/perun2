@@ -37,11 +37,11 @@ enum ExecutionResult {
 };
 
 
-struct ExecutorBase
+struct Executor
 {
 public:
-   ExecutorBase() = delete;
-   ExecutorBase(Perun2Process& p2);
+   Executor() = delete;
+   Executor(Perun2Process& p2);
 
 protected:
    ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
@@ -56,7 +56,7 @@ protected:
 };
 
 
-struct Python3Base : ExecutorBase
+struct Python3Base : Executor
 {
 public:
    Python3Base() = delete;
@@ -73,7 +73,7 @@ private:
 };
 
 
-struct C_Execute : Command, ExecutorBase
+struct C_Execute : Command, Executor
 {
 public:
    C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2);
@@ -84,7 +84,7 @@ private:
 };
 
 
-struct C_ExecuteWith : Command, ExecutorBase
+struct C_ExecuteWith : Command, Executor
 {
 public:
    C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args);

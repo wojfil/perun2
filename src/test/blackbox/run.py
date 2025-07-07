@@ -3321,27 +3321,27 @@ if __name__ == '__main__':
   run_test_case("print path('c:/d', '..') ", "c:")
   run_test_case("print path('c:/d', '.') ", path("c:", "d"))
   run_test_case("print path('c:/dd/ee', '..') ", path("c:", "dd"))
-  run_test_case("print path('c:/d/b', '..\..') ", "c:")
-  run_test_case("print path('c:/d/b/..', '..\..') ", EMPTY_STRING)
-  run_test_case("print path('c:/d/b/.', '..\../..') ", EMPTY_STRING)
-  run_test_case("print path('c:/d/b/.', '..\../../..') ", EMPTY_STRING)
+  run_test_case("print path('c:/d/b', '..\\..') ", "c:")
+  run_test_case("print path('c:/d/b/..', '..\\..') ", EMPTY_STRING)
+  run_test_case("print path('c:/d/b/.', '..\\../..') ", EMPTY_STRING)
+  run_test_case("print path('c:/d/b/.', '..\\../../..') ", EMPTY_STRING)
   run_test_case("print path('c:/d/../b/.', '..') ", "c:")
   run_test_case("print path('c:/d/../', '.') ", "c:")
   run_test_case("print path('c:/d/gt/../', '.') ", path("c:", "d"))
   run_test_case("print path('c:/d/gt/./', '.') ", path("c:", "d", "gt"))
-  run_test_case("print path('c:/d/gt/..\./', '.') ", path("c:", "d"))
+  run_test_case("print path('c:/d/gt/..\\./', '.') ", path("c:", "d"))
   run_test_case("print path('c:/d/gt/../', 'a') ", path("c:", "d", "a"))
   run_test_case("print path('c:/d/gt/./', 'a') ", path("c:", "d", "gt", "a"))
   run_test_case("print path('c:/d/gt/./', '/.') ", path("c:", "d", "gt"))
   run_test_case("print path('a', 'b') ", path("a", "b"))
   run_test_case("print path('a', '.') ", "a")
   run_test_case("print path('a', '..') ", ".")
-  run_test_case("print path('a', '..\.') ", ".")
-  run_test_case("print path('a', '.\..') ", ".")
-  run_test_case("print path('a', '..\..') ", "..")
-  run_test_case("print path('a\.', '..\..') ", "..")
-  run_test_case("print path('a\.', '..\.\../.') ", "..")
-  run_test_case("print path('a\.', '..\.\../.\..') ", path("..", ".."))
+  run_test_case("print path('a', '..\\.') ", ".")
+  run_test_case("print path('a', '.\\..') ", ".")
+  run_test_case("print path('a', '..\\..') ", "..")
+  run_test_case("print path('a\\.', '..\\..') ", "..")
+  run_test_case("print path('a\\.', '..\\.\\../.') ", "..")
+  run_test_case("print path('a\\.', '..\\.\\../.\\..') ", path("..", ".."))
   run_test_case("print path('.', '.') ", ".")
   run_test_case("print path('.', '..') ", "..")
   run_test_case("print path('.', 'a') ", "a")
@@ -3720,23 +3720,23 @@ if __name__ == '__main__':
   run_test_case(" '.' { depth}", "-1")
   run_test_case(" 'dgfd' { depth}", "0")
   run_test_case(" 'dgf/djgf' { depth}", "1")
-  run_test_case(" 'dgf/djgf/.\mg/g' { depth}", "3")
+  run_test_case(" 'dgf/djgf/.\\mg/g' { depth}", "3")
   run_test_case(" '..' { depth}", "-2")
   run_test_case(" '../.' { depth}", "-2")
   run_test_case(" './..' { depth}", "-2")
-  run_test_case(" '../..\..' { depth}", "-4")
-  run_test_case(" '../..\..\k' { depth}", "-3")
-  run_test_case(" '../..\k\..' { depth}", "-3")
-  run_test_case(" '../..\k\..\po' { depth}", "-2")
-  run_test_case(" '../..\k\..\dpo\du\djh\dp' { depth}", "1")
-  run_test_case(" 'dgf/djgf\..' { depth}", "0")
-  run_test_case(" 'dgf/djgf\..\.' { depth}", "0")
-  run_test_case(" 'dgf/djgghf\.\..' { depth}", "0")
-  run_test_case(" 'dgf/djgf\..\..' { depth}", "-1")
+  run_test_case(" '../..\\..' { depth}", "-4")
+  run_test_case(" '../..\\..\\k' { depth}", "-3")
+  run_test_case(" '../..\\k\\..' { depth}", "-3")
+  run_test_case(" '../..\\k\\..\\po' { depth}", "-2")
+  run_test_case(" '../..\\k\\..\\dpo\\du\\djh\\dp' { depth}", "1")
+  run_test_case(" 'dgf/djgf\\..' { depth}", "0")
+  run_test_case(" 'dgf/djgf\\..\\.' { depth}", "0")
+  run_test_case(" 'dgf/djgghf\\.\\..' { depth}", "0")
+  run_test_case(" 'dgf/djgf\\..\\..' { depth}", "-1")
   run_test_case(" 'dgf/./h' { depth}", "1")
   run_test_case(" 'dgf/../h' { depth}", "0")
-  run_test_case(" './dgf/djgghf\.\..' { depth}", "0")
-  run_test_case(" './dgf/djgf\..\..' { depth}", "-1")
+  run_test_case(" './dgf/djgghf\\.\\..' { depth}", "0")
+  run_test_case(" './dgf/djgf\\..\\..' { depth}", "-1")
   run_test_case(" './dgf/./h' { depth}", "1")
   run_test_case(" './dgf/../h' { depth}", "0")
   run_test_case(" 'd:' { depth}", "0")
@@ -3744,7 +3744,7 @@ if __name__ == '__main__':
   run_test_case(" 'c:/j' { depth}", "1")
   run_test_case(" 'c:/k/o' { depth}", "2")
   run_test_case(" 'c:/k/o/..' { depth}", "1")
-  run_test_case(" 'c:/k/o/.././..\/\/\/\/\ ' { depth}", "0")
+  run_test_case(" 'c:/k/o/.././..\\/\\/\\/\\/\\ ' { depth}", "0")
 
   run_test_case("u = 6,1,2,4,3,5; print u", lines("6", "1", "2", "4", "3", "5"))
   run_test_case("u = 6,1,2,4,3,5; print u skip 1", lines("1", "2", "4", "3", "5"))
@@ -5135,28 +5135,28 @@ if __name__ == '__main__':
   "483413.js", "532624.txt", "561442", "581940.txt", "593214.js", "646362.js", "674295", "960542.txt")))
   run_test_case("inside 'tree' { print '*4*7*' order asc }", lines("047909.txt", "449147.txt"))
   run_test_case("inside 'tree' { print '4*7*' order asc} ", "449147.txt")
-  (run_test_case("inside 'tree' { print '029719\*' order asc }", lines(path("029719", "011952.js"), path("029719", "286109"), 
+  (run_test_case("inside 'tree' { print '029719\\*' order asc }", lines(path("029719", "011952.js"), path("029719", "286109"), 
   path("029719", "559227"), path("029719", "636110.txt"), path("029719", "743013.txt"), path("029719","877639"))))
-  run_test_case("inside 'tree' { print '029719\*.txt' order asc }", lines(path("029719", "636110.txt"), path("029719", "743013.txt")))
-  run_test_case("inside 'tree' { print '029719\*.js' order asc }", path("029719", "011952.js"))
+  run_test_case("inside 'tree' { print '029719\\*.txt' order asc }", lines(path("029719", "636110.txt"), path("029719", "743013.txt")))
+  run_test_case("inside 'tree' { print '029719\\*.js' order asc }", path("029719", "011952.js"))
   run_test_case("inside 'tree' { print '029719/7*.txt' order asc }", path("029719", "743013.txt"))
-  (run_test_case("inside 'tree' { print '029719\*\*7*' order asc }", lines(path("029719", "286109", "660170.js"), 
+  (run_test_case("inside 'tree' { print '029719\\*\\*7*' order asc }", lines(path("029719", "286109", "660170.js"), 
   path("029719", "286109", "677910.txt"), path("029719", "286109", "687411"), path("029719", "877639", "057239.chh"), path("029719", "877639", "690072.js"))))
-  (run_test_case("inside 'tree' { print '029719\*\*' order asc } ", lines(path("029719", "286109", "080295"), path("029719", "286109", "215429.txt"), 
+  (run_test_case("inside 'tree' { print '029719\\*\\*' order asc } ", lines(path("029719", "286109", "080295"), path("029719", "286109", "215429.txt"), 
   path("029719", "286109", "626654.chh"), path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
   path("029719", "286109", "687411"), path("029719", "559227", "438292.txt"), path("029719", "559227", "488903"), 
   path("029719", "559227", "539553"), path("029719", "877639", "057239.chh"), 
   path("029719", "877639", "402318"), path("029719", "877639", "690072.js"))))
-  (run_test_case("inside 'tree' { print '029719\*\*' where isFile order asc }", lines(path("029719", "286109", "215429.txt"), 
+  (run_test_case("inside 'tree' { print '029719\\*\\*' where isFile order asc }", lines(path("029719", "286109", "215429.txt"), 
   path("029719", "286109", "626654.chh"), path("029719", "286109", "660170.js"), path("029719", "286109", "677910.txt"), 
   path("029719", "559227", "438292.txt"), path("029719", "877639", "057239.chh"), path("029719", "877639", "690072.js"))))
-  (run_test_case("inside 'tree' { print '029719\*\*' where isDirectory order asc }", lines(path("029719", "286109", "080295"),
+  (run_test_case("inside 'tree' { print '029719\\*\\*' where isDirectory order asc }", lines(path("029719", "286109", "080295"),
   path("029719", "286109", "687411"), path("029719", "559227", "488903"), 
   path("029719", "559227", "539553"), path("029719", "877639", "402318"),)))
-  (run_test_case("inside 'tree' { print '029719\*\*2*' order asc }", lines(path("029719", "286109", "080295"), 
+  (run_test_case("inside 'tree' { print '029719\\*\\*2*' order asc }", lines(path("029719", "286109", "080295"), 
   path("029719", "286109", "215429.txt"), path("029719", "286109", "626654.chh"), path("029719", "559227", "438292.txt"), 
   path("029719", "877639", "057239.chh"), path("029719", "877639", "402318"), path("029719", "877639", "690072.js"))))
-  (run_test_case("print 'tree/029719\*\*2*' order asc", lines(path("tree", "029719", "286109", "080295"), 
+  (run_test_case("print 'tree/029719\\*\\*2*' order asc", lines(path("tree", "029719", "286109", "080295"), 
   path("tree", "029719", "286109", "215429.txt"), path("tree", "029719", "286109", "626654.chh"), path("tree", "029719", "559227", "438292.txt"), 
   path("tree", "029719", "877639", "057239.chh"), path("tree", "029719", "877639", "402318"), path("tree", "029719", "877639", "690072.js"))))
   run_test_case("inside 'tree' { print '*7*/*7*.chh' order asc }", path("674295", "415734.chh"))

@@ -96,8 +96,8 @@ void Python3Base::runPython(const p_str& additionalArgs) const
    }
 
    const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
-      ? this->runSilently(python, path, additionalArgs, location)
-      : this->runLoudly(python, path, additionalArgs, location);
+      ? this->executeSilently(python, path, additionalArgs, location)
+      : this->executeLoudly(python, path, additionalArgs, location);
 
    switch (executionResult) {
       case ExecutionResult::ER_Good: {
@@ -119,7 +119,7 @@ void Python3Base::runPython(const p_str& additionalArgs) const
    }
 }
 
-ExecutionResult Python3Base::runLoudly(const p_str& python, const p_str& path, 
+ExecutionResult Python3Base::executeLoudly(const p_str& python, const p_str& path, 
    const p_str& additionalArgs, const p_str& location) const
 {
    HANDLE hRead;
@@ -200,7 +200,7 @@ ExecutionResult Python3Base::runLoudly(const p_str& python, const p_str& path,
 }
 
 
-ExecutionResult Python3Base::runSilently(const p_str& python, const p_str& path, 
+ExecutionResult Python3Base::executeSilently(const p_str& python, const p_str& path, 
    const p_str& additionalArgs, const p_str& location) const
 {
    const p_str command = prepareCmd(python, path, additionalArgs);

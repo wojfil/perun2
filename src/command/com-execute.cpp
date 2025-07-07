@@ -143,7 +143,7 @@ ExecutionResult Python3Base::runLoudly(const p_str& python, const p_str& path,
    si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
 
    const p_str baseCommand = prepareCmd(python, path, additionalArgs);
-   std::wstring command = baseCommand;
+   p_str command = baseCommand;
 
    const BOOL creation = CreateProcessW(
       NULL, 

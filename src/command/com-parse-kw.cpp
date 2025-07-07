@@ -1716,10 +1716,16 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
          result = std::make_unique<C_Execute>(string, p2);
          return true;
       }
-      else {
+
+      if (tks.getLength() == 1 && tks.first().type == Token::t_Pattern) {
          throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
-            L"\" cannot be resolved to a string"), line);
+            L"\" contains asterisks. It should be written using backtick characters instead of regular quotes. For example: ",
+            CHAR_BACKTICK, tks.first().getOriginString(p2), CHAR_BACKTICK
+         ), line);
       }
+
+      throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+         L"\" cannot be resolved to a string"), line);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_With);
@@ -1734,6 +1740,13 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
 
    p_genptr<p_str> string;
    if (! parse::parse(p2, left, string)) {
+      if (left.getLength() == 1 && left.first().type == Token::t_Pattern) {
+         throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+            L"\" contains asterisks. It should be written using backtick characters instead of regular quotes. For example: ",
+            CHAR_BACKTICK, left.first().getOriginString(p2), CHAR_BACKTICK
+         ), line);
+      }
+
       throw SyntaxError(str(L"the first argument of the command \"", word.getOriginString(p2), 
          L" with\" cannot be resolved to a string"), line);
    }

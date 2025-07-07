@@ -95,15 +95,31 @@ void Python3Base::runPython(const p_str& additionalArgs) const
       return;
    }
 
-   if (this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)) {
-      this->runSilently(python, path, additionalArgs, location);
-   }
-   else {
-      this->runLoudly(python, path, additionalArgs, location);
+   const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
+      ? this->runSilently(python, path, additionalArgs, location)
+      : this->runLoudly(python, path, additionalArgs, location);
+
+   switch (executionResult) {
+      case ExecutionResult::ER_Good: {
+         this->perun2.logger.log(L"Run Python3 \"", path, L"\"");
+         break;
+      }
+      case ExecutionResult::ER_Bad: {
+         this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\"");
+         break;
+      }
+      case ExecutionResult::ER_Bad_PipeNotCreated: {
+         this->perun2.logger.log(L"Failed to run Python3. A new pipe could not be created");
+         break;
+      }
+      case ExecutionResult::ER_Bad_ProcessNotStarted: {
+         this->perun2.logger.log(L"Failed to run Python3. A new process could not be started");
+         break;
+      }
    }
 }
 
-void Python3Base::runLoudly(const p_str& python, const p_str& path, 
+ExecutionResult Python3Base::runLoudly(const p_str& python, const p_str& path, 
    const p_str& additionalArgs, const p_str& location) const
 {
    HANDLE hRead;
@@ -112,8 +128,7 @@ void Python3Base::runLoudly(const p_str& python, const p_str& path,
 
    if (! CreatePipe(&hRead, &hWrite, &sa, 0)) {
       this->perun2.contexts.success->value = false;
-      this->perun2.logger.log(L"Failed to run Python3. A new pipe could not be created");
-      return;
+      return ExecutionResult::ER_Bad_PipeNotCreated;
    }
 
    SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
@@ -145,8 +160,7 @@ void Python3Base::runLoudly(const p_str& python, const p_str& path,
       CloseHandle(hRead);
       CloseHandle(hWrite);
       this->perun2.contexts.success->value = false;
-      this->perun2.logger.log(L"Failed to run Python3. A new process could not be started");
-      return;
+      return ExecutionResult::ER_Bad_ProcessNotStarted;
    }
 
    this->perun2.sideProcess.running = true;
@@ -182,29 +196,18 @@ void Python3Base::runLoudly(const p_str& python, const p_str& path,
    const p_bool success = ! broken && perun2.isRunning() && dwExitCode == 0;
    this->perun2.contexts.success->value = success;
 
-   if (success) {
-      this->perun2.logger.log(L"Run Python3 \"", path, L"\"");
-   }
-   else {
-      this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\"");
-   }
+   return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
 
-void Python3Base::runSilently(const p_str& python, const p_str& path, 
+ExecutionResult Python3Base::runSilently(const p_str& python, const p_str& path, 
    const p_str& additionalArgs, const p_str& location) const
 {
    const p_str command = prepareCmd(python, path, additionalArgs);
    const p_bool success = os_run(command, location, this->perun2);
-
    this->perun2.contexts.success->value = success;
 
-   if (success) {
-      this->perun2.logger.log(L"Run Python3 \"", path, L"\"");
-   }
-   else {
-      this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\"");
-   }
+   return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
 Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)

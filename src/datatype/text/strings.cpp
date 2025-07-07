@@ -71,8 +71,8 @@ void str_trim(p_str& value)
       return;
    }
 
-   p_int left;
-   for (left = 0; left < value.size(); left++) {
+   p_size left = 0;
+   for (; left < value.size(); left++) {
       if (! char_isSpace(value[left])) {
          break;
       }
@@ -84,15 +84,15 @@ void str_trim(p_str& value)
    }
 
    p_int right;
-   for (right = value.size() - 1; right >= 0; --right) {
-      if (! char_isSpace(value[right])) {
+   for (right = static_cast<p_int>(value.size() - 1); right >= 0; --right) {
+      if (! char_isSpace(value[static_cast<p_size>(right)])) {
          break;
       }
    }
 
-   value = right == value.size() - 1
+   value = static_cast<p_size>(right) == (value.size() - 1)
       ? value.substr(left)
-      : value.substr(left, right - left + 1);
+      : value.substr(left, static_cast<p_size>(right) + 1 - left);
 }
 
 void str_trimEndNewLines(p_str& value)

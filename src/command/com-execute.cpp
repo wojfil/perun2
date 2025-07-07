@@ -147,6 +147,21 @@ void ExecutorBase::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE]
    }
 }
 
+C_Execute::C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2)
+   : ExecutorBase(p2), command(std::move(cmd)) { };
+
+void C_Execute::run()
+{
+   // todo
+}
+
+C_ExecuteWith::C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args)
+   : ExecutorBase(p2), command(std::move(cmd)), arguments(std::move(args)) { };
+
+void C_ExecuteWith::run()
+{
+   // todo
+}
 
 Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
    : ExecutorBase(p2),  python3(std::move(pyth3)) { };

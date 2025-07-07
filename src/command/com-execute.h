@@ -73,6 +73,29 @@ private:
 };
 
 
+struct C_Execute : Command, ExecutorBase
+{
+public:
+   C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2);
+   void run() override;
+
+private:
+   p_genptr<p_str> command;
+};
+
+
+struct C_ExecuteWith : Command, ExecutorBase
+{
+public:
+   C_ExecuteWith(p_genptr<p_str>& cmd, Perun2Process& p2, p_genptr<p_list>& args);
+   void run() override;
+
+private:
+   p_genptr<p_str> command;
+   p_genptr<p_list> arguments;
+};
+
+
 struct C_Python3 : Command, Python3Base
 {
 public:

@@ -28,6 +28,7 @@
 #include "com-copyto.h"
 #include "com-moveto.h"
 #include "com-def-action.h"
+#include "../python3/com-python3.h"
 #include "../datatype/generator/gen-string.h"
 #include "../datatype/patterns.h"
 

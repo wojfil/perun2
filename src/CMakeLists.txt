@@ -154,6 +154,7 @@ add_executable(
     programs/windows/registry.cpp
     programs/windows/start-menu.cpp
     programs/windows/win-programs.cpp
+    python3/com-python3.cpp
 )
 
 

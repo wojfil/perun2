@@ -21,6 +21,7 @@
 #include "keyword.h"
 #include "side-process.h"
 #include "command/com.h"
+#include "python3/python3-processes.h"
 #include "command/com-parse-unit.h"
 #include "datatype/generator/gen-os.h"
 #include "context/ctx-main.h"
@@ -95,6 +96,7 @@ public:
    int exitCode = EXITCODE_OK;
    Logger logger;
    PostParseData postParseData;
+   Python3Processes python3Processes;
 
 private:
    p_bool preParse();

@@ -348,12 +348,12 @@ public:
 struct F_AskPython3 : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_AskPython3(p_genptr<p_str>& a1, FileContext* fctx) 
-      : Func_1(a1), fileContext(fctx) { };
+   F_AskPython3(p_genptr<p_str>& a1, FileContext* fctx, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    FileContext* fileContext;
+   Perun2Process& perun2;
 };
 
 

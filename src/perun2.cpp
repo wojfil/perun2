@@ -88,6 +88,7 @@ void Perun2Process::terminate()
 {
    this->state = State::s_Exit;
    this->sideProcess.terminate();
+   this->python3Processes.terminate();
 }
 
 p_bool Perun2Process::isRunning() const

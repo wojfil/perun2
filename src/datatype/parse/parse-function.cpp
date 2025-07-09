@@ -451,7 +451,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      result = std::make_unique<F_AskPython3>(string, fctx);
+      result = std::make_unique<F_AskPython3>(string, fctx, p2);
       return true;
    }
 

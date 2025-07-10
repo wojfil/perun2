@@ -26,9 +26,54 @@ namespace perun2::comm
 {
 
 
-Python3Base::Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2)
-   : Executor(p2),  python3(std::move(pyth3)) { };
+Python3Base::Python3Base(const p_str& script, Perun2Process& p2)
+   : Executor(p2), scriptPath(script) { };
 
+
+void Python3Base::staticallyAnalyze(const p_int line, const p_str& name) const
+{
+   p_str python;
+   const Python3State p3 = this->perun2.postParseData.getPython3State(python);
+
+   if (p3 == Python3State::P3_NotInstalled) {
+      throw SyntaxError(str(L"static analysis of the command \"", name, 
+         L"\" has failed. Python3 is not installed on your machine"), line);
+   }
+
+   if (p3 == Python3State::P3_DifferentVersionThan3) {
+      throw SyntaxError(str(L"static analysis of the command \"", name, 
+         L"\" has failed. The installed Python has a version different from 3"), line);
+   }
+
+   if (! os_fileExists(this->scriptPath)) {
+      throw SyntaxError(str(L"static analysis of the command \"", name, 
+         L"\" has failed. The Python3 script file \"", this->scriptPath, L"\" does not exist"), line);
+   }
+
+   const p_str command = prepareStatAnalyzeCmd(python, this->scriptPath);
+
+   const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
+      ? this->executeSilently(command, L"")
+      : this->executeLoudly(command, L"");
+
+   switch (executionResult) {
+      case ExecutionResult::ER_Good: {
+         break;
+      }
+      case ExecutionResult::ER_Bad: {
+         throw SyntaxError(str(L"static analysis of the command \"", name, 
+            L"\" has failed. The Python3 script file \"", this->scriptPath, L"\" has thrown a syntax error"), line);
+      }
+      case ExecutionResult::ER_Bad_PipeNotCreated: {
+         throw SyntaxError(str(L"static analysis of the command \"", name, 
+            L"\" has failed. A new pipe could not be created"), line);
+      }
+      case ExecutionResult::ER_Bad_ProcessNotStarted: {
+         throw SyntaxError(str(L"static analysis of the command \"", name, 
+            L"\" has failed. A new process could not be started"), line);
+      }
+   }
+}
 
 void Python3Base::runPython(const p_str& additionalArgs) const
 {
@@ -47,19 +92,9 @@ void Python3Base::runPython(const p_str& additionalArgs) const
       return;
    }
 
-   const p_str path = os_trim(this->python3->getValue());
-
-   if (! os_isAbsolute(path)) {
-      if (p3 == Python3State::P3_NotInstalled) {
-         this->perun2.contexts.success->value = false;
-         this->perun2.logger.log(L"Failed to run Python3, because the argument \"", path, L"\" is not an absolute path");
-         return;
-      }
-   }
-
-   if (! os_fileExists(path)) {
+   if (! os_fileExists(this->scriptPath)) {
       this->perun2.contexts.success->value = false;
-      this->perun2.logger.log(L"Failed to run Python3, because the file \"", path, L"\" does not exist");
+      this->perun2.logger.log(L"Failed to run Python3, because the file \"", this->scriptPath, L"\" does not exist");
       return;
    }
 
@@ -75,7 +110,7 @@ void Python3Base::runPython(const p_str& additionalArgs) const
       return;
    }
 
-   const p_str command = prepareCmd(python, path, additionalArgs);
+   const p_str command = prepareRunCmd(python, this->scriptPath, additionalArgs);
 
    const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
       ? this->executeSilently(command, location)
@@ -83,25 +118,25 @@ void Python3Base::runPython(const p_str& additionalArgs) const
 
    switch (executionResult) {
       case ExecutionResult::ER_Good: {
-         this->perun2.logger.log(L"Run Python3 \"", path, L"\"");
+         this->perun2.logger.log(L"Run Python3 \"", this->scriptPath, L"\"");
          break;
       }
       case ExecutionResult::ER_Bad: {
-         this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\"");
+         this->perun2.logger.log(L"Failed to run Python3 \"", this->scriptPath, L"\"");
          break;
       }
       case ExecutionResult::ER_Bad_PipeNotCreated: {
-         this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\". A new pipe could not be created");
+         this->perun2.logger.log(L"Failed to run Python3 \"", this->scriptPath, L"\". A new pipe could not be created");
          break;
       }
       case ExecutionResult::ER_Bad_ProcessNotStarted: {
-         this->perun2.logger.log(L"Failed to run Python3 \"", path, L"\". A new process could not be started");
+         this->perun2.logger.log(L"Failed to run Python3 \"", this->scriptPath, L"\". A new process could not be started");
          break;
       }
    }
 }
 
-p_str Python3Base::prepareCmd(const p_str& python, const p_str& path, 
+p_str Python3Base::prepareRunCmd(const p_str& python, const p_str& path, 
    const p_str& additionalArgs) const
 {
    return additionalArgs.empty()
@@ -109,16 +144,22 @@ p_str Python3Base::prepareCmd(const p_str& python, const p_str& path,
       : str(L"\"", python, L"\" -u \"", path, L"\" ", additionalArgs);
 }
 
-C_Python3::C_Python3(p_genptr<p_str>& pyth3, Perun2Process& p2)
-   : Python3Base(pyth3, p2) { };
+p_str Python3Base::prepareStatAnalyzeCmd(const p_str& python, const p_str& path) const
+{
+   return str(L"\"", python, L"\" -u -m py_compile \"", path, L"\"");
+}
+
+
+C_Python3::C_Python3(const p_str& script, Perun2Process& p2)
+   : Python3Base(script, p2) { };
 
 void C_Python3::run()
 {
    this->runPython(L"");
 }
 
-C_Python3With::C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Perun2Process& p2)
-   : Python3Base(pyth3, p2), arguments(std::move(args)) { };
+C_Python3With::C_Python3With(const p_str& script, p_genptr<p_list>& args, Perun2Process& p2)
+   : Python3Base(script, p2), arguments(std::move(args)) { };
 
 void C_Python3With::run()
 {

@@ -1655,6 +1655,31 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
    return false;
 }
 
+static p_str getPythonScriptName(p_genptr<p_str>& generator, const p_int line, const p_str& name) 
+{
+   if (! generator->isConstant()) {
+      throw SyntaxError(str(L"the command \"", name, 
+         L"\" needs a constant value as an argument"), line);
+   }
+
+   p_str value = generator->getValue();
+   str_trim(value);
+
+   if (value.empty()) {
+      throw SyntaxError(str(L"the argument of the command \"", name, L"\" is empty"), line);
+   }
+
+   if (! os_isAbsolute(value)) {
+      throw SyntaxError(str(L"the argument of the command \"", name, L"\" is not an absolute path"), line);
+   }
+
+   if (! os_fileExists(value)) {
+      throw SyntaxError(str(L"the argument of the command \"", name, L"\" does not point to an existing file"), line);
+   }
+
+   return value;
+}
+
 static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2)
 {
    p2.contexts.closeAttributeScope();
@@ -1666,14 +1691,19 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
 
    if (! tks.check(TI_HAS_KEYWORD_WITH)) {
       p_genptr<p_str> string;
-      if (parse::parse(p2, tks, string)) {
-         result = std::make_unique<C_Python3>(string, p2);
-         return true;
-      }
-      else {
+      if (! parse::parse(p2, tks, string)) {
          throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
             L"\" cannot be resolved to a string"), line);
       }
+
+      const p_str commandName = word.getOriginString(p2);
+      const p_str scriptName = getPythonScriptName(string, line, commandName);
+
+      std::unique_ptr<C_Python3> python3 = std::make_unique<C_Python3>(scriptName, p2);
+      python3->staticallyAnalyze(line, commandName);
+
+      result = std::move(python3);
+      return true;
    }
 
    P_DIVIDE_BY_KEYWORD(kw_With);
@@ -1692,15 +1722,22 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
          L" with\" cannot be resolved to a string"), line);
    }
 
+   const p_str commandName = str(word.getOriginString(p2), L" with");
+   const p_str scriptName = getPythonScriptName(string, line, commandName);
+
    p_genptr<p_list> list;
    if (! parse::parse(p2, right, list)) {
       throw SyntaxError(str(L"the second argument of the command \"", word.getOriginString(p2), 
          L" with\" cannot be resolved to a list"), line);
    }
 
-   result = std::make_unique<C_Python3With>(string, list, p2);
+   std::unique_ptr<C_Python3With> python3With = std::make_unique<C_Python3With>(scriptName, list, p2);
+   python3With->staticallyAnalyze(line, commandName);
+
+   result = std::move(python3With);
    return true;
 }
+
 
 static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2)
 {
@@ -1714,7 +1751,20 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
    if (! tks.check(TI_HAS_KEYWORD_WITH)) {
       p_genptr<p_str> string;
       if (parse::parse(p2, tks, string)) {
-         result = std::make_unique<C_Execute>(string, p2);
+         if (! string->isConstant()) {
+            throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+               L"\" needs a constant value as an argument"), line);
+         }
+
+         p_str command = string->getValue();
+         str_trim(command);
+
+         if (command.empty()) {
+            throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+               L"\" is empty"), line);
+         }
+
+         result = std::make_unique<C_Execute>(command, p2);
          return true;
       }
 
@@ -1752,13 +1802,26 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
          L" with\" cannot be resolved to a string"), line);
    }
 
+   if (! string->isConstant()) {
+      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+         L" with\" needs a constant value as an argument"), line);
+   }
+
+   p_str command = string->getValue();
+   str_trim(command);
+
+   if (command.empty()) {
+      throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+         L" with\" is empty"), line);
+   }
+
    p_genptr<p_list> list;
    if (! parse::parse(p2, right, list)) {
       throw SyntaxError(str(L"the second argument of the command \"", word.getOriginString(p2), 
          L" with\" cannot be resolved to a list"), line);
    }
 
-   result = std::make_unique<C_ExecuteWith>(string, list, p2);
+   result = std::make_unique<C_ExecuteWith>(command, list, p2);
    return true;
 }
 

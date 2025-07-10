@@ -29,7 +29,8 @@ namespace perun2::comm
 static p_constexpr p_size PYTHON3_PIPE_BUFFER_SIZE = 256;
 
 
-enum ExecutionResult {
+enum ExecutionResult 
+{
    ER_Good,
    ER_Bad,
    ER_Bad_PipeNotCreated,
@@ -62,20 +63,20 @@ struct ExecuteBase : Executor
 {
 public:
    ExecuteBase() = delete;
-   ExecuteBase(p_genptr<p_str>& cmd, Perun2Process& p2);
+   ExecuteBase(const p_str& cmd, Perun2Process& p2);
 
 protected:
    void execute(const p_str& additionalArgs) const;
 
 private:
-   p_genptr<p_str> command;
+   const p_str baseCommand;
 };
 
 
 struct C_Execute : Command, ExecuteBase
 {
 public:
-   C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2);
+   C_Execute(const p_str& cmd, Perun2Process& p2);
    void run() override;
 };
 
@@ -83,7 +84,7 @@ public:
 struct C_ExecuteWith : Command, ExecuteBase
 {
 public:
-   C_ExecuteWith(p_genptr<p_str>& cmd, p_genptr<p_list>& args, Perun2Process& p2);
+   C_ExecuteWith(const p_str& cmd, p_genptr<p_list>& args, Perun2Process& p2);
    void run() override;
 
 private:

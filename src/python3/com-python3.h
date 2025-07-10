@@ -20,28 +20,39 @@
 namespace perun2::comm
 {
 
+enum Python3ParseResult {
+   P3PR_Good,
+   P3PR_MissingFile,
+   P3PR_MissingFiled,
+
+};
+
 
 struct Python3Base : Executor
 {
 public:
    Python3Base() = delete;
-   Python3Base(p_genptr<p_str>& pyth3, Perun2Process& p2);
+   Python3Base(const p_str& script, Perun2Process& p2);
+
+   void staticallyAnalyze(const p_int line, const p_str& name) const;
 
 protected:
    void runPython(const p_str& additionalArgs) const;
 
 private:
-   p_str prepareCmd(const p_str& python, const p_str& path, 
+   p_str prepareRunCmd(const p_str& python, const p_str& path, 
       const p_str& additionalArgs) const;
 
-   p_genptr<p_str> python3;
+   p_str prepareStatAnalyzeCmd(const p_str& python, const p_str& path) const;
+
+   const p_str scriptPath;
 };
 
 
 struct C_Python3 : Command, Python3Base
 {
 public:
-   C_Python3(p_genptr<p_str>& pyth3, Perun2Process& p2);
+   C_Python3(const p_str& script, Perun2Process& p2);
    void run() override;
 };
 
@@ -49,7 +60,7 @@ public:
 struct C_Python3With : Command, Python3Base
 {
 public:
-   C_Python3With(p_genptr<p_str>& pyth3, p_genptr<p_list>& args, Perun2Process& p2);
+   C_Python3With(const p_str& script, p_genptr<p_list>& args, Perun2Process& p2);
    void run() override;
 
 private:

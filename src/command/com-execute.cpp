@@ -62,7 +62,7 @@ ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& locat
       TRUE, 
       0, 
       NULL, 
-      location.c_str(), 
+      location.empty() ? NULL : location.c_str(), 
       &si, 
       &pi);
 
@@ -163,20 +163,11 @@ void Executor::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
 }
 
 
-ExecuteBase::ExecuteBase(p_genptr<p_str>& cmd, Perun2Process& p2)
-   : Executor(p2), command(std::move(cmd)) { };
+ExecuteBase::ExecuteBase(const p_str& cmd, Perun2Process& p2)
+   : Executor(p2), baseCommand(cmd) { };
 
 void ExecuteBase::execute(const p_str& additionalArgs) const
 {
-   p_str baseCommand = this->command->getValue();
-   str_trim(baseCommand);
-
-   if (baseCommand.empty()) {
-      this->perun2.contexts.success->value = false;
-      this->perun2.logger.log(L"Failed to execute the empty command");
-      return;
-   }
-
    const p_str location = this->getLocation();
 
    if (! os_directoryExists(location)) {
@@ -217,7 +208,7 @@ void ExecuteBase::execute(const p_str& additionalArgs) const
    }
 }
 
-C_Execute::C_Execute(p_genptr<p_str>& cmd, Perun2Process& p2)
+C_Execute::C_Execute(const p_str& cmd, Perun2Process& p2)
    : ExecuteBase(cmd, p2) { };
 
 void C_Execute::run()
@@ -225,7 +216,7 @@ void C_Execute::run()
    this->execute(L"");
 }
 
-C_ExecuteWith::C_ExecuteWith(p_genptr<p_str>& cmd, p_genptr<p_list>& args, Perun2Process& p2)
+C_ExecuteWith::C_ExecuteWith(const p_str& cmd, p_genptr<p_list>& args, Perun2Process& p2)
    : ExecuteBase(cmd, p2), arguments(std::move(args)) { };
 
 void C_ExecuteWith::run()

@@ -481,13 +481,15 @@ p_bool F_AskPython3::getValue()
       return false;
    }
 
-   const p_str python3 = os_trim(this->arg1->getValue());
+   return true;
+
+   /*const p_str python3 = os_trim(this->arg1->getValue());
 
    if (os_isAbsolute(python3)) {
       return false;
    }
 
-   return this->perun2.python3Processes.askPython3(fileContext->this_->getValue(), python3);
+   return this->perun2.python3Processes.askPython3(fileContext->this_->getValue(), python3);*/
 }
 
 }

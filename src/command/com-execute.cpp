@@ -77,8 +77,8 @@ ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& locat
    
    CloseHandle(hWrite);
 
-   char buffer[PYTHON3_PIPE_BUFFER_SIZE];
-   char nextOutput[PYTHON3_PIPE_BUFFER_SIZE];
+   char buffer[EXECUTION_PIPE_BUFFER_SIZE];
+   char nextOutput[EXECUTION_PIPE_BUFFER_SIZE];
    DWORD bytesRead;
    p_bool broken = false;
 
@@ -138,10 +138,10 @@ p_str Executor::mergeArguments(const p_list& args) const
    return result;
 }
 
-void Executor::normalizeNewLines(const char (&old)[PYTHON3_PIPE_BUFFER_SIZE],
-   char (&next)[PYTHON3_PIPE_BUFFER_SIZE]) const
+void Executor::normalizeNewLines(const char (&old)[EXECUTION_PIPE_BUFFER_SIZE],
+   char (&next)[EXECUTION_PIPE_BUFFER_SIZE]) const
 {
-   memset(next, 0, sizeof(char) * PYTHON3_PIPE_BUFFER_SIZE);
+   memset(next, 0, sizeof(char) * EXECUTION_PIPE_BUFFER_SIZE);
 
    p_size index = 0;
    

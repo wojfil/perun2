@@ -2148,7 +2148,7 @@ p_bool os_isAbsolute(const p_str& path)
          break;
       }
       default: {
-         if (path[2] != OS_SEPARATOR) {
+         if (path[2] != OS_SEPARATOR && path[2] != OS_WRONG_SEPARATOR) {
             return false;
          }
          break;

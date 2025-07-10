@@ -1381,7 +1381,7 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
       NULL,NULL,FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
-      location.c_str(),
+      location.empty() ? NULL : location.c_str(),
       &si, &p2.sideProcess.info
    );
 

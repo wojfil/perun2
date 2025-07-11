@@ -36,17 +36,17 @@ void Python3Base::staticallyAnalyze(const p_int line, const p_str& name) const
    const Python3State p3 = this->perun2.postParseData.getPython3State(python);
 
    if (p3 == Python3State::P3_NotInstalled) {
-      throw SyntaxError(str(L"static analysis of the command \"", name, 
+      throw SyntaxError(str(L"static analysis of the \"", name, 
          L"\" has failed. Python3 is not installed on your machine"), line);
    }
 
    if (p3 == Python3State::P3_DifferentVersionThan3) {
-      throw SyntaxError(str(L"static analysis of the command \"", name, 
+      throw SyntaxError(str(L"static analysis of the \"", name, 
          L"\" has failed. The installed Python has a version different from 3"), line);
    }
 
    if (! os_fileExists(this->scriptPath)) {
-      throw SyntaxError(str(L"static analysis of the command \"", name, 
+      throw SyntaxError(str(L"static analysis of the \"", name, 
          L"\" has failed. The Python3 script file \"", this->scriptPath, L"\" does not exist"), line);
    }
 
@@ -61,15 +61,15 @@ void Python3Base::staticallyAnalyze(const p_int line, const p_str& name) const
          break;
       }
       case ExecutionResult::ER_Bad: {
-         throw SyntaxError(str(L"static analysis of the command \"", name, 
+         throw SyntaxError(str(L"static analysis of the \"", name, 
             L"\" has failed. The Python3 script file \"", this->scriptPath, L"\" has thrown a syntax error"), line);
       }
       case ExecutionResult::ER_Bad_PipeNotCreated: {
-         throw SyntaxError(str(L"static analysis of the command \"", name, 
+         throw SyntaxError(str(L"static analysis of the \"", name, 
             L"\" has failed. A new pipe could not be created"), line);
       }
       case ExecutionResult::ER_Bad_ProcessNotStarted: {
-         throw SyntaxError(str(L"static analysis of the command \"", name, 
+         throw SyntaxError(str(L"static analysis of the \"", name, 
             L"\" has failed. A new process could not be started"), line);
       }
    }

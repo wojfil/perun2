@@ -53,7 +53,7 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, cons
          L"\" does not exist. To solve this problem, reinstall Perun2"), line);
    }
 
-   
+
 
    // todo
 }
@@ -153,12 +153,10 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
       return;
    }
 
-         p_cout << L"out 1 " << command << std::endl;
    SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
 
    STARTUPINFOW si = { sizeof(si) };
-   PROCESS_INFORMATION pi;
-   //PROCESS_INFORMATION& pi = this->perun2.sideProcess.info;
+   PROCESS_INFORMATION& pi = python3Process.info;
    ZeroMemory(&pi, sizeof(pi));
 
    si.dwFlags |= STARTF_USESTDHANDLES;
@@ -187,19 +185,16 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
       return;
    }
 
+   python3Process.running = true;
    CloseHandle(hWrite);
 
-         p_cout << L"out 2" << std::endl;
    char buffer[EXECUTION_PIPE_BUFFER_SIZE];
    char nextOutput[EXECUTION_PIPE_BUFFER_SIZE];
    DWORD bytesRead;
-   p_bool broken = false;
    midResultPromise.set_value(Python3AskerResult::PAR_Good);
 
    while (ReadFile(hRead, buffer, sizeof(buffer) - 1, &bytesRead, NULL) && bytesRead > 0) {
-      if (! this->perun2.isRunning()) {
-         broken = true;
-         p_cout << L"broken" << std::flush;
+      if (this->perun2.isNotRunning()) {
          break;
       }
 
@@ -208,6 +203,7 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
       p_cout << nextOutput << std::flush;
    }
 
+   python3Process.running = false;
 
    WaitForSingleObject(pi.hProcess, INFINITE);
    DWORD dwExitCode = 0;
@@ -216,17 +212,6 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
    CloseHandle(hRead);
    CloseHandle(pi.hProcess);
    CloseHandle(pi.hThread);
-
-   const p_bool success = ! broken && perun2.isRunning() && dwExitCode == 0;
-
-
-         p_cout << L"out 3" << std::endl;
-
-
-
-
-
-   //midResultPromise.set_value(true); 
 }
 
 void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midResultPromise, const p_str& command)
@@ -242,6 +227,7 @@ void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midRes
 void AskablePython3Script::terminate()
 {
    if (thread) {
+      python3Process.terminate();
       thread->join();
       thread.reset();
    }
@@ -253,9 +239,7 @@ Python3Processes::Python3Processes(Perun2Process& p2)
 
 Python3Processes::~Python3Processes()
 {
-   for (AskablePython3Script& script : askableScripts) {
-      script.terminate();
-   }
+   this->terminate();
 }
 
 AskablePython3Script& Python3Processes::addAskableScript(const FileContext& fctx, const LocationContext& lctx, 
@@ -277,22 +261,14 @@ AskablePython3Script& Python3Processes::addAskableScript(const FileContext& fctx
    this->askableScripts.emplace_back(fctx, lctx, perun2);
    AskablePython3Script& newScript = this->askableScripts.back();
    newScript.start(askerScript, funcName, filePath, line);
-
-
- /*  if (! newScript.start(askerScript, funcName, filePath, line)) {
-      throw SyntaxError(str(L"static analysis of the function \"", funcName, 
-         L"\" has failed. The Python3 script file \"", filePath, L"\" has thrown a syntax error"), line);
-   }*/
-
-
-
-   
    return newScript;
 }
 
 void Python3Processes::terminate()
 {
-
+   for (AskablePython3Script& script : askableScripts) {
+      script.terminate();
+   }
 }
 
 }

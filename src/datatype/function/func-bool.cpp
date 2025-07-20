@@ -470,11 +470,15 @@ p_bool F_IsNever::getValue()
    return this->arg1->getValue().type == Time::TimeType::tt_Never;
 }
 
-F_AskPython3::F_AskPython3(comm::AskablePython3Script& ask) 
-   : askable(ask) { };
+F_AskPython3::F_AskPython3(comm::AskablePython3Script& ask, const Perun2Process& p2) 
+   : askable(ask), perun2(p2) { };
 
 p_bool F_AskPython3::getValue()
 {
+   if (perun2.isNotRunning()) {
+      return false;
+   }
+   
    return this->askable.ask();
 }
 

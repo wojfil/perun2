@@ -15,6 +15,7 @@
 #pragma once
 
 #include "../datatype/datatype.h"
+#include "../side-process.h"
 #include <optional>
 #include <unordered_map>
 #include <iostream>
@@ -75,6 +76,7 @@ private:
    const FileContext& fileContext;
    const LocationContext& locationContext;
    Perun2Process& perun2;
+   SideProcess python3Process;
    std::unique_ptr<std::thread> thread;
 };
 
@@ -89,12 +91,9 @@ public:
    AskablePython3Script& addAskableScript(const FileContext& fctx, const LocationContext& lctx, 
       const p_str& funcName, const p_str& filePath, const p_int line);
 
-
-
    void terminate();
 
 private:
-   
    Perun2Process& perun2;
    std::vector<AskablePython3Script> askableScripts;
 };

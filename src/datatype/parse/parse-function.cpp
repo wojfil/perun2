@@ -462,7 +462,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
 
       const p_str funcName = word.getOriginString(p2);
       comm::AskablePython3Script& askable = p2.python3Processes.addAskableScript(*fctx, *lctx, funcName, value, word.line);
-      result = std::make_unique<F_AskPython3>(askable);
+      result = std::make_unique<F_AskPython3>(askable, p2);
       return true;
    }
 

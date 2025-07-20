@@ -21,6 +21,7 @@
 namespace perun2
 {
 
+struct Perun2Process;
 struct AskablePython3Script;
 
 }
@@ -354,11 +355,12 @@ public:
 struct F_AskPython3 : Generator<p_bool>
 {
 public:
-   F_AskPython3(comm::AskablePython3Script& ask);
+   F_AskPython3(comm::AskablePython3Script& ask, const Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    comm::AskablePython3Script& askable;
+   const Perun2Process& perun2;
 };
 
 

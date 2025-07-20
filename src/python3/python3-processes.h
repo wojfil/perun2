@@ -15,22 +15,86 @@
 #pragma once
 
 #include "../datatype/datatype.h"
+#include <optional>
+#include <unordered_map>
+#include <iostream>
+#include <thread>
+#include <future>
+#include <chrono>
 
 
 namespace perun2
 {
+struct FileContext;
+struct LocationContext;
+struct Perun2Process;
+}
+
+namespace perun2::comm
+{
+
+
+enum Python3AskerResult 
+{
+   PAR_Good = 0,
+   PAR_Bad = 1,
+   PAR_Bad_PipeNotCreated = 2,
+   PAR_Bad_ProcessNotStarted = 3
+};
+
+
+
+p_constexpr p_char PYTHON_ASKER_ROOT_FILE[] = L"asker.py";
+
+
+
+p_constexpr p_char SHM_NAME[] = L"Local\\MySharedMem";
+p_constexpr int SHM_SIZE = 12;  // 3 * 4 bytes (int32)
+
+
+struct AskablePython3Script
+{
+public:
+   AskablePython3Script() = delete;
+   AskablePython3Script(const FileContext& fctx, const LocationContext& lctx, Perun2Process& p2);
+   
+   void start(const p_str& askerScript, const p_str& funcName, 
+      const p_str& filePath, const p_int line);
+
+   void terminate();
+   p_bool ask();
+
+private:
+   p_str askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const;
+   p_str getLocation() const;
+   void startLoudly(std::promise<Python3AskerResult> midResultPromise, const p_str& command);
+   void startSilently(std::promise<Python3AskerResult> midResultPromise, const p_str& command);
+
+   const FileContext& fileContext;
+   const LocationContext& locationContext;
+   Perun2Process& perun2;
+   std::unique_ptr<std::thread> thread;
+};
 
 
 struct Python3Processes
 {
 public:
-   //Python3Processes();
+   Python3Processes() = delete;
+   Python3Processes(Perun2Process& p2);
+   ~Python3Processes();
 
-   p_bool askPython3(const p_str& file, const p_str& python3);
+   AskablePython3Script& addAskableScript(const FileContext& fctx, const LocationContext& lctx, 
+      const p_str& funcName, const p_str& filePath, const p_int line);
+
+
+
    void terminate();
 
 private:
    
+   Perun2Process& perun2;
+   std::vector<AskablePython3Script> askableScripts;
 };
 
 

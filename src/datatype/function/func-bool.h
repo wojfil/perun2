@@ -18,9 +18,15 @@
 #include <wctype.h>
 
 
-namespace perun2::func
+namespace perun2
 {
 
+struct AskablePython3Script;
+
+}
+
+namespace perun2::func
+{
 
 struct F_AnyInside : Generator<p_bool>
 {
@@ -345,15 +351,14 @@ public:
 };
 
 
-struct F_AskPython3 : Func_1<p_str>, Generator<p_bool>
+struct F_AskPython3 : Generator<p_bool>
 {
 public:
-   F_AskPython3(p_genptr<p_str>& a1, FileContext* fctx, Perun2Process& p2);
+   F_AskPython3(comm::AskablePython3Script& ask);
    p_bool getValue() override;
 
 private:
-   FileContext* fileContext;
-   Perun2Process& perun2;
+   comm::AskablePython3Script& askable;
 };
 
 

@@ -1700,7 +1700,8 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
       const p_str scriptName = getPythonScriptName(string, line, commandName);
 
       std::unique_ptr<C_Python3> python3 = std::make_unique<C_Python3>(scriptName, p2);
-      python3->staticallyAnalyze(line, commandName);
+      const p_str commandName2 = str(L"the command \"", word.getOriginString(p2), L"\"");
+      python3->staticallyAnalyze(line, commandName2);
 
       result = std::move(python3);
       return true;
@@ -1732,8 +1733,9 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
    }
 
    std::unique_ptr<C_Python3With> python3With = std::make_unique<C_Python3With>(scriptName, list, p2);
-   python3With->staticallyAnalyze(line, commandName);
-
+   
+   const p_str commandName2 = str(L"the command \"", word.getOriginString(p2), L" with\"");
+   python3With->staticallyAnalyze(line, commandName2);
    result = std::move(python3With);
    return true;
 }

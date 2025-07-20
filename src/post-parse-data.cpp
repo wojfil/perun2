@@ -108,6 +108,15 @@ Python3State PostParseData::getPython3State(p_str& cmdPath)
    return this->python3State;
 }
 
+p_str PostParseData::getPython3AskerPath()
+{
+   if (this->isNotLoaded(CONST_CACHE_EXE_PATH)) {
+      this->context.strings[STRING_PERUN2]->value = os_executablePath();
+   }
+
+   return str(os_parent(this->context.strings[STRING_PERUN2]->value), OS_SEPARATOR, comm::PYTHON_ASKER_ROOT_FILE);
+}
+
 p_bool PostParseData::isNotLoaded(const p_cunit v)
 {
    const p_bool notLoaded = !(this->value & v);

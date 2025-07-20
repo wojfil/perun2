@@ -445,13 +445,24 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
 
       FileContext* fctx = p2.contexts.getFileContext();
       fctx->attribute->setCoreCommandBase();
+      LocationContext* lctx = p2.contexts.getLocationContext();
 
       p_genptr<p_str> string;
       if (! parse::parse(p2, args[0], string)) {
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      result = std::make_unique<F_AskPython3>(string, fctx, p2);
+      if (! string->isConstant()) {
+         throw SyntaxError(str(L"the function \"", word.getOriginString(p2), 
+            L"\" needs a constant value as an argument"), word.line);
+      }
+
+      p_str value = string->getValue();
+      str_trim(value);
+
+      const p_str funcName = word.getOriginString(p2);
+      comm::AskablePython3Script& askable = p2.python3Processes.addAskableScript(*fctx, *lctx, funcName, value, word.line);
+      result = std::make_unique<F_AskPython3>(askable);
       return true;
    }
 

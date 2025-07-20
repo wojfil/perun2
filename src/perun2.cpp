@@ -30,7 +30,7 @@ namespace perun2
 {
 
 Perun2Process::Perun2Process(const Arguments& args) : arguments(args), consoleSettings(), contexts(*this),
-   flags(args.getFlags()), logger(*this), postParseData(*this), terminator(*this)
+   flags(args.getFlags()), logger(*this), postParseData(*this), terminator(*this), python3Processes(*this)
 {
    Perun2Process::tryInit();
 };

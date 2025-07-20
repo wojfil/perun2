@@ -35,6 +35,7 @@ p_constexpr p_cunit CONST_CACHE_ORIGIN =               1 << 5;
 p_constexpr p_cunit CONST_CACHE_ARGUMENTS =            1 << 6;
 p_constexpr p_cunit CONST_CACHE_PENDRIVES =            1 << 7;
 p_constexpr p_cunit CONST_CACHE_DOWNLOADS_PATH =       1 << 8;
+p_constexpr p_cunit CONST_CACHE_P3_ASKER_PATH =        1 << 9;
 
 // Perun2 offers access to some special constant values
 // like path to the desktop
@@ -55,6 +56,7 @@ public:
    void actualize(const Token& tk);
    void loadCmdPath();
    Python3State getPython3State(p_str& cmdPath);
+   p_str getPython3AskerPath();
 
    p_str cmdProcessStartingArgs;
    prog::Programs programs; 

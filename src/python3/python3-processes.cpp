@@ -13,14 +13,264 @@
 */
 
 #include "python3-processes.h"
+#include "../context/ctx-file.h"
+#include "../command/com-execute.h"
+#include "../perun2.h"
+#include "com-python3.h"
+#include <iostream>
+#include <thread>
+#include <future>
+#include <chrono>
 
-namespace perun2
+
+namespace perun2::comm
 {
 
-p_bool Python3Processes::askPython3(const p_str& path, const p_str& python3)
+
+AskablePython3Script::AskablePython3Script(const FileContext& fctx, const LocationContext& lctx, Perun2Process& p2)
+   : fileContext(fctx), locationContext(lctx), perun2(p2) { };
+
+p_bool AskablePython3Script::ask()
 {
-   
+   if (! fileContext.v_exists->getValue()) {
+      return false;
+   }
+
+   if (! os_directoryExists(locationContext.location->getValue())) {
+      return false;
+   }
+
    return true;
+}
+
+p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
+{
+   return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\"");
+}
+
+p_str AskablePython3Script::getLocation() const
+{
+   return this->locationContext.location->value;
+}
+
+void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName, 
+   const p_str& filePath, const p_int line)
+{
+   if (filePath.empty()) {
+      throw SyntaxError(str(L"the argument of the function \"", funcName, 
+         L"\" is empty"), line);
+   }
+
+   if (! os_isAbsolute(filePath)) {
+      throw SyntaxError(str(L"the argument of the function \"", funcName, 
+         L"\" is not an absolute path"), line);
+   }
+
+   if (! os_fileExists(filePath)) {
+      throw SyntaxError(str(L"the argument of the function \"", funcName, 
+         L"\" does not point to an existing file"), line);
+   }
+
+   p_str python;
+   const Python3State p3 = this->perun2.postParseData.getPython3State(python);
+
+   if (p3 == Python3State::P3_NotInstalled) {
+      throw SyntaxError(str(L"the function \"", funcName,
+         L"\" could not be prepared to run. Python3 is not installed on this machine"), line);
+   }
+
+   if (p3 == Python3State::P3_DifferentVersionThan3) {
+      throw SyntaxError(str(L"the function \"", funcName,
+         L"\" could not be prepared to run. The version of Python on this machine is different from 3"), line);
+   }
+
+   if (! os_fileExists(filePath)) {
+      throw SyntaxError(str(L"the function \"", funcName,
+         L"\" could not be prepared to run. The file \"", filePath, L"\" does not exist"), line);
+   }
+
+   const p_str command = askerPython3RunCmd(python, askerScript, filePath);
+   std::promise<Python3AskerResult> promise;
+   std::future<Python3AskerResult> future = promise.get_future();
+
+   if (this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)) {
+      thread = std::make_unique<std::thread>(&AskablePython3Script::startSilently, 
+         this, std::move(promise), command);
+   }
+   else {
+      thread = std::make_unique<std::thread>(&AskablePython3Script::startLoudly, 
+         this, std::move(promise), command);
+   }
+
+   perun2.logger.log(L"Main: Waiting for mid-execution result...");
+   const Python3AskerResult result = future.get();
+   perun2.logger.log(L"Main: Got value from worker: ", toStr(result));
+
+
+   switch (result) {
+      case ExecutionResult::ER_Bad: {
+         throw SyntaxError(str(L"the function \"", funcName,
+            L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\""), line);
+      }
+      case ExecutionResult::ER_Bad_PipeNotCreated: {
+         throw SyntaxError(str(L"the function \"", funcName,
+            L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\". A new pipe could not be created"), line);
+      }
+      case ExecutionResult::ER_Bad_ProcessNotStarted: {
+         throw SyntaxError(str(L"the function \"", funcName,
+            L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\". A new process could not be started"), line);
+      }
+   }
+
+}
+
+
+void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResultPromise, const p_str& command)
+{
+   HANDLE hRead;
+   HANDLE hWrite;
+   SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
+
+   if (! CreatePipe(&hRead, &hWrite, &sa, 0)) {
+      midResultPromise.set_value(Python3AskerResult::PAR_Bad_PipeNotCreated);
+      return;
+   }
+
+         p_cout << L"out 1 " << command << std::endl;
+   SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
+
+   STARTUPINFOW si = { sizeof(si) };
+   PROCESS_INFORMATION pi;
+   //PROCESS_INFORMATION& pi = this->perun2.sideProcess.info;
+   ZeroMemory(&pi, sizeof(pi));
+
+   si.dwFlags |= STARTF_USESTDHANDLES;
+   si.hStdOutput = hWrite;
+   si.hStdError  = hWrite;
+   si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
+
+   const p_str location = getLocation();
+   p_str alterableCommand = command;
+
+   const BOOL creation = CreateProcessW(
+      NULL, 
+      &alterableCommand[0], 
+      NULL, NULL, 
+      TRUE, 
+      0, 
+      NULL, 
+      NULL, 
+      &si, 
+      &pi);
+
+   if (! creation) {
+      CloseHandle(hRead);
+      CloseHandle(hWrite);
+      midResultPromise.set_value(Python3AskerResult::PAR_Bad_ProcessNotStarted);
+      return;
+   }
+
+   CloseHandle(hWrite);
+
+         p_cout << L"out 2" << std::endl;
+   char buffer[EXECUTION_PIPE_BUFFER_SIZE];
+   char nextOutput[EXECUTION_PIPE_BUFFER_SIZE];
+   DWORD bytesRead;
+   p_bool broken = false;
+   midResultPromise.set_value(Python3AskerResult::PAR_Good);
+
+   while (ReadFile(hRead, buffer, sizeof(buffer) - 1, &bytesRead, NULL) && bytesRead > 0) {
+      if (! this->perun2.isRunning()) {
+         broken = true;
+         p_cout << L"broken" << std::flush;
+         break;
+      }
+
+      buffer[bytesRead / sizeof(char)] = '\0';
+      normalizeNewLines(buffer, nextOutput);
+      p_cout << nextOutput << std::flush;
+   }
+
+
+   WaitForSingleObject(pi.hProcess, INFINITE);
+   DWORD dwExitCode = 0;
+   ::GetExitCodeProcess(pi.hProcess, &dwExitCode);
+
+   CloseHandle(hRead);
+   CloseHandle(pi.hProcess);
+   CloseHandle(pi.hThread);
+
+   const p_bool success = ! broken && perun2.isRunning() && dwExitCode == 0;
+
+
+         p_cout << L"out 3" << std::endl;
+
+
+
+
+
+   //midResultPromise.set_value(true); 
+}
+
+void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midResultPromise, const p_str& command)
+{
+
+
+
+
+   midResultPromise.set_value(Python3AskerResult::PAR_Good); 
+}
+
+
+void AskablePython3Script::terminate()
+{
+   if (thread) {
+      thread->join();
+      thread.reset();
+   }
+}
+
+
+Python3Processes::Python3Processes(Perun2Process& p2)
+    : perun2(p2) { };
+
+Python3Processes::~Python3Processes()
+{
+   for (AskablePython3Script& script : askableScripts) {
+      script.terminate();
+   }
+}
+
+AskablePython3Script& Python3Processes::addAskableScript(const FileContext& fctx, const LocationContext& lctx, 
+   const p_str& funcName, const p_str& filePath, const p_int line)
+{
+   const p_str askerScript = perun2.postParseData.getPython3AskerPath();
+
+   if (! os_fileExists(askerScript)) {
+      throw SyntaxError(str(L"the function \"", funcName, 
+         L"\" could not be prepared to run, because the internal source file \"", PYTHON_ASKER_ROOT_FILE,
+         L"\" does not exist. To solve this problem, reinstall Perun2"), line);
+   }
+
+   comm::Python3Base python3ForAnalysis(filePath, perun2);
+   
+   const p_str statAnalysisName = str(L"the function \"", funcName, L"\"");
+   python3ForAnalysis.staticallyAnalyze(line, statAnalysisName);
+
+   this->askableScripts.emplace_back(fctx, lctx, perun2);
+   AskablePython3Script& newScript = this->askableScripts.back();
+   newScript.start(askerScript, funcName, filePath, line);
+
+
+ /*  if (! newScript.start(askerScript, funcName, filePath, line)) {
+      throw SyntaxError(str(L"static analysis of the function \"", funcName, 
+         L"\" has failed. The Python3 script file \"", filePath, L"\" has thrown a syntax error"), line);
+   }*/
+
+
+
+   
+   return newScript;
 }
 
 void Python3Processes::terminate()

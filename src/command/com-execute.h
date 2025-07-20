@@ -26,7 +26,7 @@
 namespace perun2::comm
 {
 
-static p_constexpr p_size EXECUTION_PIPE_BUFFER_SIZE = 256;
+p_constexpr p_size EXECUTION_PIPE_BUFFER_SIZE = 256;
 
 
 enum ExecutionResult 
@@ -36,6 +36,10 @@ enum ExecutionResult
    ER_Bad_PipeNotCreated,
    ER_Bad_ProcessNotStarted
 };
+
+
+void normalizeNewLines(const char (&old)[EXECUTION_PIPE_BUFFER_SIZE], 
+   char (&next)[EXECUTION_PIPE_BUFFER_SIZE]);
 
 
 struct Executor
@@ -49,9 +53,6 @@ protected:
    ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
    p_str getLocation() const;
    p_str mergeArguments(const p_list& args) const;
-
-   void normalizeNewLines(const char (&old)[EXECUTION_PIPE_BUFFER_SIZE], 
-      char (&next)[EXECUTION_PIPE_BUFFER_SIZE]) const;
 
    Perun2Process& perun2;
    LocationContext* locationCtx;

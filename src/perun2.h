@@ -96,7 +96,7 @@ public:
    int exitCode = EXITCODE_OK;
    Logger logger;
    PostParseData postParseData;
-   Python3Processes python3Processes;
+   comm::Python3Processes python3Processes;
 
 private:
    p_bool preParse();

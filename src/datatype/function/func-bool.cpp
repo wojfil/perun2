@@ -13,8 +13,8 @@
 */
 
 #include "func-bool.h"
-#include "..\..\os/os.h"
-
+#include "../../os/os.h"
+#include "../../python3/python3-processes.h"
 
 namespace perun2::func
 {
@@ -470,26 +470,12 @@ p_bool F_IsNever::getValue()
    return this->arg1->getValue().type == Time::TimeType::tt_Never;
 }
 
-F_AskPython3::F_AskPython3(p_genptr<p_str>& a1, FileContext* fctx, Perun2Process& p2) 
-   : Func_1(a1), 
-     fileContext(fctx),
-     perun2(p2) { };
+F_AskPython3::F_AskPython3(comm::AskablePython3Script& ask) 
+   : askable(ask) { };
 
 p_bool F_AskPython3::getValue()
 {
-   if (! fileContext->v_exists->getValue()) {
-      return false;
-   }
-
-   return true;
-
-   /*const p_str python3 = os_trim(this->arg1->getValue());
-
-   if (os_isAbsolute(python3)) {
-      return false;
-   }
-
-   return this->perun2.python3Processes.askPython3(fileContext->this_->getValue(), python3);*/
+   return this->askable.ask();
 }
 
 }

@@ -25,6 +25,30 @@
 namespace perun2::comm
 {
 
+void normalizeNewLines(const char (&old)[EXECUTION_PIPE_BUFFER_SIZE],
+   char (&next)[EXECUTION_PIPE_BUFFER_SIZE])
+{
+   memset(next, 0, sizeof(char) * EXECUTION_PIPE_BUFFER_SIZE);
+
+   p_size index = 0;
+   
+   for (p_size i = 0; i < 255; i++) {
+      if (old[i] == '\0') {
+         next[index] = '\0';
+         break;
+      }
+
+      if (old[i] == '\r' && old[i + 1] == '\n') {
+         next[index] = '\n';
+         index++;
+         i += 1;
+      } else {
+         next[index] = old[i];
+         index++;
+      }
+   }
+}
+
 
 Executor::Executor(Perun2Process& p2)
    : perun2(p2), 
@@ -89,7 +113,7 @@ ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& locat
       }
 
       buffer[bytesRead / sizeof(char)] = '\0';
-      this->normalizeNewLines(buffer, nextOutput);
+      normalizeNewLines(buffer, nextOutput);
       p_cout << nextOutput << std::flush;
    }
 
@@ -136,30 +160,6 @@ p_str Executor::mergeArguments(const p_list& args) const
    }
 
    return result;
-}
-
-void Executor::normalizeNewLines(const char (&old)[EXECUTION_PIPE_BUFFER_SIZE],
-   char (&next)[EXECUTION_PIPE_BUFFER_SIZE]) const
-{
-   memset(next, 0, sizeof(char) * EXECUTION_PIPE_BUFFER_SIZE);
-
-   p_size index = 0;
-   
-   for (p_size i = 0; i < 255; i++) {
-      if (old[i] == '\0') {
-         next[index] = '\0';
-         break;
-      }
-
-      if (old[i] == '\r' && old[i + 1] == '\n') {
-         next[index] = '\n';
-         index++;
-         i += 1;
-      } else {
-         next[index] = old[i];
-         index++;
-      }
-   }
 }
 
 

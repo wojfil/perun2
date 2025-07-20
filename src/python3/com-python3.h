@@ -27,8 +27,6 @@ enum Python3ParseResult {
 
 };
 
-p_str python3RunCmd(const p_str& python, const p_str& path, const p_str& additionalArgs);
-p_str python3StatAnalyzeCmd(const p_str& python, const p_str& path);
 
 struct Python3Base : Executor
 {
@@ -40,6 +38,8 @@ public:
 
 protected:
    void runPython(const p_str& additionalArgs) const;
+   p_str python3RunCmd(const p_str& python, const p_str& path, const p_str& additionalArgs) const;
+   p_str python3StatAnalyzeCmd(const p_str& python, const p_str& path) const;
 
 private:
    const p_str scriptPath;

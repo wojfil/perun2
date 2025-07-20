@@ -26,19 +26,6 @@ namespace perun2::comm
 {
 
 
-p_str python3RunCmd(const p_str& python, const p_str& path, const p_str& additionalArgs)
-{
-   return additionalArgs.empty()
-      ? str(L"\"", python, L"\" -u \"", path, L"\"")
-      : str(L"\"", python, L"\" -u \"", path, L"\" ", additionalArgs);
-}
-
-p_str python3StatAnalyzeCmd(const p_str& python, const p_str& path)
-{
-   return str(L"\"", python, L"\" -u -m py_compile \"", path, L"\"");
-}
-
-
 Python3Base::Python3Base(const p_str& script, Perun2Process& p2)
    : Executor(p2), scriptPath(script) { };
 
@@ -63,7 +50,7 @@ void Python3Base::staticallyAnalyze(const p_int line, const p_str& name) const
          L" has failed. The Python3 script file \"", this->scriptPath, L"\" does not exist"), line);
    }
 
-   const p_str command = python3StatAnalyzeCmd(python, this->scriptPath);
+   const p_str command = this->python3StatAnalyzeCmd(python, this->scriptPath);
 
    const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
       ? this->executeSilently(command, L"")
@@ -123,7 +110,7 @@ void Python3Base::runPython(const p_str& additionalArgs) const
       return;
    }
 
-   const p_str command = python3RunCmd(python, this->scriptPath, additionalArgs);
+   const p_str command = this->python3RunCmd(python, this->scriptPath, additionalArgs);
 
    const ExecutionResult executionResult = this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
       ? this->executeSilently(command, location)
@@ -147,6 +134,18 @@ void Python3Base::runPython(const p_str& additionalArgs) const
          break;
       }
    }
+}
+
+p_str Python3Base::python3RunCmd(const p_str& python, const p_str& path, const p_str& additionalArgs) const
+{
+   return additionalArgs.empty()
+      ? str(L"\"", python, L"\" -u \"", path, L"\"")
+      : str(L"\"", python, L"\" -u \"", path, L"\" ", additionalArgs);
+}
+
+p_str Python3Base::python3StatAnalyzeCmd(const p_str& python, const p_str& path) const
+{
+   return str(L"\"", python, L"\" -u -m py_compile \"", path, L"\"");
 }
 
 C_Python3::C_Python3(const p_str& script, Perun2Process& p2)

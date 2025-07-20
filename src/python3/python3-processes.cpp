@@ -43,6 +43,21 @@ p_bool AskablePython3Script::ask()
    return true;
 }
 
+void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, const p_str& filePath, const p_int line)
+{
+   const p_str analyzerScript = perun2.postParseData.getPython3AnalyzerPath();
+
+   if (! os_fileExists(analyzerScript)) {
+      throw SyntaxError(str(L"the function \"", funcName, 
+         L"\" could not be prepared to run, because the internal source file \"", PYTHON_ANALYZER_ROOT_FILE,
+         L"\" does not exist. To solve this problem, reinstall Perun2"), line);
+   }
+
+   
+
+   // todo
+}
+
 p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
 {
    return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\"");
@@ -88,6 +103,8 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
       throw SyntaxError(str(L"the function \"", funcName,
          L"\" could not be prepared to run. The file \"", filePath, L"\" does not exist"), line);
    }
+
+   python3StaticTypeAnalysis(funcName, filePath, line);
 
    const p_str command = askerPython3RunCmd(python, askerScript, filePath);
    std::promise<Python3AskerResult> promise;
@@ -254,8 +271,8 @@ AskablePython3Script& Python3Processes::addAskableScript(const FileContext& fctx
 
    comm::Python3Base python3ForAnalysis(filePath, perun2);
    
-   const p_str statAnalysisName = str(L"the function \"", funcName, L"\"");
-   python3ForAnalysis.staticallyAnalyze(line, statAnalysisName);
+   const p_str name = str(L"the function \"", funcName, L"\"");
+   python3ForAnalysis.staticallyAnalyze(line, name);
 
    this->askableScripts.emplace_back(fctx, lctx, perun2);
    AskablePython3Script& newScript = this->askableScripts.back();

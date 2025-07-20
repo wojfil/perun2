@@ -45,6 +45,7 @@ enum Python3AskerResult
 
 
 p_constexpr p_char PYTHON_ASKER_ROOT_FILE[] = L"asker.py";
+p_constexpr p_char PYTHON_ANALYZER_ROOT_FILE[] = L"analyzer.py";
 
 
 
@@ -65,6 +66,7 @@ public:
    p_bool ask();
 
 private:
+   void python3StaticTypeAnalysis(const p_str& funcName, const p_str& filePath, const p_int line);
    p_str askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const;
    p_str getLocation() const;
    void startLoudly(std::promise<Python3AskerResult> midResultPromise, const p_str& command);

@@ -128,13 +128,21 @@ p_bool SharedMemory::ask()
 
    if (this->location != this->lastLocation) {
       this->lastLocation = this->location;
-      this->writeString(OFFSET_LOCATION_PATH, this->location.c_str());
+
+      if (! this->tryToWriteString(OFFSET_LOCATION_PATH, this->location.c_str())) {
+         return false;
+      }
+
       this->writeInt(OFFSET_LENGTH_LOCATION_PATH, static_cast<p_int>(this->location.size()));
       this->writeInt(OFFSET_LOCATION_STATUS, STATUS_LOCATION_CHANGED);
    }
 
    this->fileName = this->fileContext.this_->getValue();
-   this->writeString(OFFSET_FILE_NAME, this->fileName.c_str());
+
+   if (! this->tryToWriteString(OFFSET_FILE_NAME, this->fileName.c_str())) {
+      return false;
+   }
+
    this->writeInt(OFFSET_LENGTH_FILE_NAME, static_cast<p_int>(this->fileName.size()));
    this->writeInt(OFFSET_PERUN_STATUS, STATUS_PERUN_ASKS);
 
@@ -185,17 +193,32 @@ void SharedMemory::writeInt(const size_t offset, const p_int value)
 
 void SharedMemory::writeString(const size_t offset, const p_str& value)
 {
-   // The shared memory string areas have enough space for any file path.
-   // I don't do guardian checks for string length.
- 
    uint16_t* integers = static_cast<uint16_t*>(this->pointer);
    size_t start = offset / sizeof(uint16_t);
 
    for (p_size i = 0; i < value.size(); i++) {
       integers[start + i] = static_cast<uint16_t>(value[i]);
    }
+}
 
-   // This wchar_t -> uint16_t works only on Windows. Do not forget that. I am writing to my future self.
+p_bool SharedMemory::tryToWriteString(const size_t offset, const p_str& value)
+{
+   if (value.size() <= static_cast<size_t>(STRING_LENGTH)) {
+      this->writeString(offset, value);
+      return true;
+   }
+
+   const p_str newValue = os_trim(value);
+   
+   if (newValue.size() > static_cast<size_t>(STRING_LENGTH)) {
+      // This situation is practically impossible.
+      // The existence of this file has been confirmed.
+      // So the trimmed name must fit the 33k char limit.
+      return false;
+   }
+
+   this->writeString(offset, newValue);
+   return true;
 }
 
 }

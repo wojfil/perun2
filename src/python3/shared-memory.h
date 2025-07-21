@@ -94,6 +94,7 @@ private:
    p_int readInt(const size_t offset) const;
    void writeInt(const size_t offset, const p_int value);
    void writeString(const size_t offset, const p_str& value);
+   p_bool tryToWriteString(const size_t offset, const p_str& value);
 
    p_str fileName;
    p_str location;

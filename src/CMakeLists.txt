@@ -156,6 +156,7 @@ add_executable(
     programs/windows/win-programs.cpp
     python3/com-python3.cpp
     python3/python3-processes.cpp
+    python3/shared-memory.cpp
 )
 
 

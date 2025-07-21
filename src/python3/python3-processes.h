@@ -51,9 +51,6 @@ p_constexpr p_char PYTHON_ANALYZER_ROOT_FILE[] = L"analyzer.py";
 
 
 
-p_constexpr p_char SHM_NAME[] = L"Local\\MySharedMem";
-p_constexpr int SHM_SIZE = 12;  // 3 * 4 bytes (int32)
-
 
 struct AskablePython3Script
 {
@@ -79,6 +76,7 @@ private:
    Perun2Process& perun2;
    std::atomic<SideProcess> python3Process;
    std::unique_ptr<std::thread> thread;
+   p_int memoryId = -1;
 };
 
 

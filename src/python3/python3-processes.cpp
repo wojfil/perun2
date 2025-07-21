@@ -17,6 +17,7 @@
 #include "../command/com-execute.h"
 #include "../perun2.h"
 #include "com-python3.h"
+#include "shared-memory.h"
 #include <iostream>
 #include <thread>
 #include <future>
@@ -61,7 +62,7 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, cons
 
 p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
 {
-   return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\"");
+   return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\" \"", toStr(memoryId), L"\"");
 }
 
 p_str AskablePython3Script::getLocation() const
@@ -107,6 +108,7 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
 
    python3StaticTypeAnalysis(funcName, filePath, line);
 
+   memoryId = shm::nextSharedMemoryId();
    const p_str command = askerPython3RunCmd(python, askerScript, filePath);
    std::promise<Python3AskerResult> promise;
    std::future<Python3AskerResult> future = promise.get_future();
@@ -166,7 +168,6 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
    si.hStdError  = hWrite;
    si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
 
-   const p_str location = getLocation();
    p_str alterableCommand = command;
 
    const BOOL creation = CreateProcessW(

@@ -22,6 +22,7 @@
 #include <thread>
 #include <future>
 #include <chrono>
+#include <atomic>
 
 
 namespace perun2
@@ -76,7 +77,7 @@ private:
    const FileContext& fileContext;
    const LocationContext& locationContext;
    Perun2Process& perun2;
-   SideProcess python3Process;
+   std::atomic<SideProcess> python3Process;
    std::unique_ptr<std::thread> thread;
 };
 
@@ -95,7 +96,7 @@ public:
 
 private:
    Perun2Process& perun2;
-   std::vector<AskablePython3Script> askableScripts;
+   std::vector<std::unique_ptr<AskablePython3Script>> askableScripts;
 };
 
 

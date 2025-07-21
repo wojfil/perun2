@@ -21,6 +21,7 @@
 #include <thread>
 #include <future>
 #include <chrono>
+#include <atomic>
 
 
 namespace perun2::comm
@@ -156,7 +157,8 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
    SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
 
    STARTUPINFOW si = { sizeof(si) };
-   PROCESS_INFORMATION& pi = python3Process.info;
+   SideProcess sideProcess;
+   PROCESS_INFORMATION& pi = sideProcess.info;
    ZeroMemory(&pi, sizeof(pi));
 
    si.dwFlags |= STARTF_USESTDHANDLES;
@@ -185,7 +187,8 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
       return;
    }
 
-   python3Process.running = true;
+   sideProcess.running = true;
+   python3Process.store(sideProcess);
    CloseHandle(hWrite);
 
    char buffer[EXECUTION_PIPE_BUFFER_SIZE];
@@ -203,7 +206,8 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
       p_cout << nextOutput << std::flush;
    }
 
-   python3Process.running = false;
+   sideProcess.running = false;
+   python3Process.store(sideProcess);
 
    WaitForSingleObject(pi.hProcess, INFINITE);
    DWORD dwExitCode = 0;
@@ -227,7 +231,7 @@ void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midRes
 void AskablePython3Script::terminate()
 {
    if (thread) {
-      python3Process.terminate();
+      python3Process.load().terminate();
       thread->join();
       thread.reset();
    }
@@ -258,16 +262,17 @@ AskablePython3Script& Python3Processes::addAskableScript(const FileContext& fctx
    const p_str name = str(L"the function \"", funcName, L"\"");
    python3ForAnalysis.staticallyAnalyze(line, name);
 
-   this->askableScripts.emplace_back(fctx, lctx, perun2);
-   AskablePython3Script& newScript = this->askableScripts.back();
+   std::unique_ptr<AskablePython3Script> script = std::make_unique<AskablePython3Script>(fctx, lctx, perun2);
+   this->askableScripts.emplace_back(std::move(script));
+   AskablePython3Script& newScript = *this->askableScripts.back().get();
    newScript.start(askerScript, funcName, filePath, line);
    return newScript;
 }
 
 void Python3Processes::terminate()
 {
-   for (AskablePython3Script& script : askableScripts) {
-      script.terminate();
+   for (std::unique_ptr<AskablePython3Script>& script : askableScripts) {
+      script->terminate();
    }
 }
 

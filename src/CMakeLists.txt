@@ -191,6 +191,7 @@ target_link_libraries(
     
     perun2 PRIVATE
 
+    atomic
     stdc++
     ole32 
     oleaut32

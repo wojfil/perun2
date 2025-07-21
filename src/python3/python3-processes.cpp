@@ -114,22 +114,27 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
    const Python3AskerResult result = future.get();
    perun2.logger.log(L"Main: Got value from worker: ", toStr(result));
 
+   if (! this->sharedMemory.start()) {
+      throw SyntaxError(str(L"the function \"", funcName,
+         L"\" could not be prepared to run. Failed to run Python3 \"", filePath, 
+         L"\". A connection to shared memory could not be opened"), line);
+   }
+
 
    switch (result) {
-      case ExecutionResult::ER_Bad: {
+      case Python3AskerResult::PAR_Bad: {
          throw SyntaxError(str(L"the function \"", funcName,
             L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\""), line);
       }
-      case ExecutionResult::ER_Bad_PipeNotCreated: {
+      case Python3AskerResult::PAR_Bad_PipeNotCreated: {
          throw SyntaxError(str(L"the function \"", funcName,
             L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\". A new pipe could not be created"), line);
       }
-      case ExecutionResult::ER_Bad_ProcessNotStarted: {
+      case Python3AskerResult::PAR_Bad_ProcessNotStarted: {
          throw SyntaxError(str(L"the function \"", funcName,
             L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\". A new process could not be started"), line);
       }
    }
-
 }
 
 
@@ -223,6 +228,7 @@ void AskablePython3Script::terminate()
       python3Process.load().terminate();
       thread->join();
       thread.reset();
+      sharedMemory.terminate();
    }
 }
 

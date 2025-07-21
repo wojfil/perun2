@@ -34,7 +34,36 @@ namespace perun2::shm
 static p_constexpr p_char SHM_NAME_HEAD[] = L"Local\\SharedMemoryPerunPython";
 
 
-//p_constexpr int SHM_SIZE = 12;  // 3 * 4 bytes (int32)
+static p_constexpr p_int STATUS_PERUN_NULL = 0;
+static p_constexpr p_int STATUS_PERUN_IDLE = 1;
+static p_constexpr p_int STATUS_PERUN_ASKS = 2;
+
+static p_constexpr p_int STATUS_PYTHON_NULL = 0;
+static p_constexpr p_int STATUS_PYTHON_IDLE = 1;
+static p_constexpr p_int STATUS_PYTHON_WORKING = 2;
+static p_constexpr p_int STATUS_PYTHON_RESPONDED = 3;
+static p_constexpr p_int STATUS_PYTHON_ERROR = 4;
+
+static p_constexpr p_int STATUS_LOCATION_NOT_SET = 0;
+static p_constexpr p_int STATUS_LOCATION_STILL_THE_SAME = 1;
+static p_constexpr p_int STATUS_LOCATION_CHANGED = 2;
+
+static p_constexpr p_int STRING_LENGTH = 33000;
+
+static p_constexpr p_int OFFSET_PERUN_STATUS =          sizeof(p_int) * 0;
+static p_constexpr p_int OFFSET_PYTHON_STATUS =         sizeof(p_int) * 1;
+static p_constexpr p_int OFFSET_RESULT =                sizeof(p_int) * 2;
+static p_constexpr p_int OFFSET_LOCATION_STATUS =       sizeof(p_int) * 3;
+static p_constexpr p_int OFFSET_LENGTH_FILE_PATH =      sizeof(p_int) * 4;
+static p_constexpr p_int OFFSET_LENGTH_LOCATION_PATH =  sizeof(p_int) * 5;
+static p_constexpr p_int OFFSET_FILE_PATH =             sizeof(p_int) * 6;
+static p_constexpr p_int OFFSET_LOCATION_PATH =         sizeof(p_int) * 6 + (STRING_LENGTH * sizeof(p_char));
+
+static p_constexpr p_int AMOUNT_INTS = 7;
+static p_constexpr p_int AMOUNT_STRINGS = 2;
+
+static p_constexpr p_int TOTAL_SIZE = AMOUNT_INTS * sizeof(p_int) + AMOUNT_STRINGS * STRING_LENGTH * sizeof(p_char);
+
 
 static p_bool sharedMemoryExists(const p_str& name);
 static p_int nextSharedMemoryId();
@@ -58,7 +87,11 @@ private:
    const FileContext& fileContext;
    const LocationContext& locationContext;
    p_int memoryId = -1;
+   p_str name;
 
+   p_bool isRunning = false;
+   HANDLE map;
+   void* pointer;
 };
 
 

@@ -24,9 +24,9 @@ namespace perun2::shm
 
 p_bool sharedMemoryExists(const p_str& name)
 {
-   HANDLE hMap = OpenFileMappingW(FILE_MAP_READ, FALSE, name.c_str());
+   HANDLE map = OpenFileMappingW(FILE_MAP_READ, FALSE, name.c_str());
 
-   if (hMap == NULL) {
+   if (map == NULL) {
       DWORD err = GetLastError();
 
       if (err == ERROR_FILE_NOT_FOUND) {
@@ -36,7 +36,7 @@ p_bool sharedMemoryExists(const p_str& name)
       return false;
    }
 
-   CloseHandle(hMap);
+   CloseHandle(map);
    return true;
 }
 
@@ -62,6 +62,7 @@ SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx)
 void SharedMemory::makeMemoryId()
 {
    this->memoryId = nextSharedMemoryId();
+   this->name = str(SHM_NAME_HEAD, toStr(this->memoryId));
 }
 
 p_int SharedMemory::getMemoryId() const
@@ -71,7 +72,51 @@ p_int SharedMemory::getMemoryId() const
 
 p_bool SharedMemory::start()
 {
+   // This ugly solution to a race condition must stay here for a while.
+   // When the main Python3 process starts, we know the exact moment of it from C++.
+   // However, it takes some unknown time to make the shared memory.
+   // Usually 15-25 ms delay here.
 
+   const p_nint WAIT_UNIT = 5;
+   p_nint wait = 2000;
+
+   while (true) {
+      this->map = OpenFileMappingW(
+         FILE_MAP_ALL_ACCESS,
+         FALSE,
+         this->name.c_str()
+      );
+
+      if (this->map != NULL) {
+         break;
+      }
+
+      wait -= WAIT_UNIT;
+      if (wait <= 0) {
+         break;
+      }
+
+      os_rawSleepForMs(WAIT_UNIT);
+   }
+
+   if (this->map == NULL) {
+      return false;
+   }
+
+   this->pointer = MapViewOfFile(
+      this->map,
+      FILE_MAP_ALL_ACCESS,
+      0, 0,
+      TOTAL_SIZE
+   );
+
+   if (this->pointer == NULL) {
+      CloseHandle(this->map);
+      return false;
+   }
+
+   this->isRunning = true;
+   return true;
 }
 
 p_bool SharedMemory::ask()
@@ -89,7 +134,10 @@ p_bool SharedMemory::ask()
 
 void SharedMemory::terminate()
 {
-
+   if (this->isRunning) {
+      UnmapViewOfFile(this->pointer);
+      CloseHandle(this->map);
+   }
 }
 
 p_str SharedMemory::getLocation() const

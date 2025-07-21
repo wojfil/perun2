@@ -17,6 +17,7 @@
 #include "../command/com-execute.h"
 #include "../perun2.h"
 #include "com-python3.h"
+#include <cstring>
 
 
 namespace perun2::shm
@@ -143,6 +144,26 @@ void SharedMemory::terminate()
 p_str SharedMemory::getLocation() const
 {
    return this->locationContext.location->value;
+}
+
+p_int SharedMemory::readInt(const size_t offset) const
+{
+   const p_int* integers = static_cast<p_int*>(this->pointer);
+   return integers[offset];
+}
+
+void SharedMemory::writeInt(const size_t offset, const p_int value)
+{
+   p_int* integers = static_cast<p_int*>(this->pointer);
+   integers[offset] = value;
+}
+
+void SharedMemory::writeString(const size_t offset, const p_str& value)
+{
+   // The shared memory string areas have enough space for any file path.
+   // I don't do guardian checks for string length;
+   p_char* destination = reinterpret_cast<p_char*>(reinterpret_cast<char*>(this->pointer) + offset);
+   memcpy(destination, value.c_str(), value.size() * sizeof(p_char));
 }
 
 }

@@ -17,8 +17,6 @@
 #include "../command/com-execute.h"
 #include "../perun2.h"
 #include "com-python3.h"
-#include <iostream>
-#include <windows.h>
 
 
 namespace perun2::shm
@@ -57,6 +55,35 @@ p_int nextSharedMemoryId()
 }
 
 
+SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx)
+   : fileContext(fctx), locationContext(lctx) { };
 
+p_bool SharedMemory::start()
+{
+
+}
+
+p_bool SharedMemory::ask()
+{
+   if (! fileContext.v_exists->getValue()) {
+      return false;
+   }
+
+   if (! os_directoryExists(locationContext.location->getValue())) {
+      return false;
+   }
+
+   return true;
+}
+
+void SharedMemory::terminate()
+{
+
+}
+
+p_str SharedMemory::getLocation() const
+{
+   return this->locationContext.location->value;
+}
 
 }

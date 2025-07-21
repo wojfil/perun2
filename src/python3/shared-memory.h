@@ -15,7 +15,17 @@
 #pragma once
 
 #include "../datatype/datatype.h"
+#include <iostream>
+#include <windows.h>
 
+
+
+namespace perun2
+{
+struct FileContext;
+struct LocationContext;
+struct Perun2Process;
+}
 
 namespace perun2::shm
 {
@@ -32,6 +42,19 @@ p_int nextSharedMemoryId();
 
 struct SharedMemory
 {
+public:
+   SharedMemory() = delete;
+   SharedMemory(const FileContext& fctx, const LocationContext& lctx);
+
+   p_bool start();
+   p_bool ask();
+   void terminate();
+
+private:
+   p_str getLocation() const;
+
+   const FileContext& fileContext;
+   const LocationContext& locationContext;
 
 };
 

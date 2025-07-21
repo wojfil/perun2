@@ -17,7 +17,6 @@
 #include "../command/com-execute.h"
 #include "../perun2.h"
 #include "com-python3.h"
-#include "shared-memory.h"
 #include <iostream>
 #include <thread>
 #include <future>
@@ -30,19 +29,11 @@ namespace perun2::comm
 
 
 AskablePython3Script::AskablePython3Script(const FileContext& fctx, const LocationContext& lctx, Perun2Process& p2)
-   : fileContext(fctx), locationContext(lctx), perun2(p2) { };
+   : sharedMemory(fctx, lctx), perun2(p2) { };
 
 p_bool AskablePython3Script::ask()
 {
-   if (! fileContext.v_exists->getValue()) {
-      return false;
-   }
-
-   if (! os_directoryExists(locationContext.location->getValue())) {
-      return false;
-   }
-
-   return true;
+   return this->sharedMemory.ask();
 }
 
 void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, const p_str& filePath, const p_int line)
@@ -63,11 +54,6 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, cons
 p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
 {
    return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\" \"", toStr(memoryId), L"\"");
-}
-
-p_str AskablePython3Script::getLocation() const
-{
-   return this->locationContext.location->value;
 }
 
 void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName, 

@@ -28,12 +28,6 @@ p_bool sharedMemoryExists(const p_str& name)
    HANDLE map = OpenFileMappingW(FILE_MAP_READ, FALSE, name.c_str());
 
    if (map == NULL) {
-      DWORD err = GetLastError();
-
-      if (err == ERROR_FILE_NOT_FOUND) {
-         return false;
-      }
-
       return false;
    }
 
@@ -56,8 +50,8 @@ p_int nextSharedMemoryId()
 }
 
 
-SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx)
-   : fileContext(fctx), locationContext(lctx) { };
+SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx, const Perun2Process& p2)
+   : fileContext(fctx), locationContext(lctx), perun2(p2) { };
 
 
 void SharedMemory::makeMemoryId()
@@ -122,15 +116,46 @@ p_bool SharedMemory::start()
 
 p_bool SharedMemory::ask()
 {
-   if (! fileContext.v_exists->getValue()) {
+   if (! this->fileContext.v_exists->getValue()) {
       return false;
    }
 
-   if (! os_directoryExists(locationContext.location->getValue())) {
+   this->location = this->locationContext.location->getValue();
+
+   if (! os_directoryExists(this->location)) {
       return false;
    }
 
-   return true;
+   if (this->location != this->lastLocation) {
+      this->lastLocation = this->location;
+      this->writeString(OFFSET_LOCATION_PATH, this->location.c_str());
+      this->writeInt(OFFSET_LENGTH_LOCATION_PATH, static_cast<p_int>(this->location.size()));
+      this->writeInt(OFFSET_LOCATION_STATUS, STATUS_LOCATION_CHANGED);
+   }
+
+   this->fileName = this->fileContext.this_->getValue();
+   this->writeString(OFFSET_FILE_NAME, this->fileName.c_str());
+   this->writeInt(OFFSET_LENGTH_FILE_NAME, static_cast<p_int>(this->fileName.size()));
+   this->writeInt(OFFSET_PERUN_STATUS, STATUS_PERUN_ASKS);
+
+   while (true) {
+      if (this->readInt(OFFSET_PYTHON_STATUS) == STATUS_PYTHON_RESPONDED) {
+         this->writeInt(OFFSET_PYTHON_STATUS, STATUS_PYTHON_IDLE);
+         this->writeInt(OFFSET_PERUN_STATUS, STATUS_PERUN_IDLE);
+         const p_int result = this->readInt(OFFSET_RESULT);
+         return result != 0;
+      }
+
+      if (perun2.isNotRunning()) {
+         break;
+      }
+
+      for (int i = 0; i < 100; ++i) {
+         _mm_pause();
+      }
+   }
+
+   return false;
 }
 
 void SharedMemory::terminate()
@@ -149,21 +174,28 @@ p_str SharedMemory::getLocation() const
 p_int SharedMemory::readInt(const size_t offset) const
 {
    const p_int* integers = static_cast<p_int*>(this->pointer);
-   return integers[offset];
+   return integers[offset / sizeof(p_int)];
 }
 
 void SharedMemory::writeInt(const size_t offset, const p_int value)
 {
    p_int* integers = static_cast<p_int*>(this->pointer);
-   integers[offset] = value;
+   integers[offset / sizeof(p_int)] = value;
 }
 
 void SharedMemory::writeString(const size_t offset, const p_str& value)
 {
    // The shared memory string areas have enough space for any file path.
-   // I don't do guardian checks for string length;
-   p_char* destination = reinterpret_cast<p_char*>(reinterpret_cast<char*>(this->pointer) + offset);
-   memcpy(destination, value.c_str(), value.size() * sizeof(p_char));
+   // I don't do guardian checks for string length.
+ 
+   uint16_t* integers = static_cast<uint16_t*>(this->pointer);
+   size_t start = offset / sizeof(uint16_t);
+
+   for (p_size i = 0; i < value.size(); i++) {
+      integers[start + i] = static_cast<uint16_t>(value[i]);
+   }
+
+   // This wchar_t -> uint16_t works only on Windows. Do not forget that. I am writing to my future self.
 }
 
 }

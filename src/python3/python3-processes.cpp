@@ -29,7 +29,7 @@ namespace perun2::comm
 
 
 AskablePython3Script::AskablePython3Script(const FileContext& fctx, const LocationContext& lctx, Perun2Process& p2)
-   : sharedMemory(fctx, lctx), perun2(p2) { };
+   : sharedMemory(fctx, lctx, p2), perun2(p2) { };
 
 p_bool AskablePython3Script::ask()
 {
@@ -110,9 +110,7 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
          this, std::move(promise), command);
    }
 
-   perun2.logger.log(L"Main: Waiting for mid-execution result...");
    const Python3AskerResult result = future.get();
-   perun2.logger.log(L"Main: Got value from worker: ", toStr(result));
 
    if (! this->sharedMemory.start()) {
       throw SyntaxError(str(L"the function \"", funcName,

@@ -46,11 +46,11 @@ p_bool sharedMemoryExists(const p_str& name)
 p_int nextSharedMemoryId()
 {
    p_int id = 0;
-   p_str name = str(SHM_NAME_HEAD, id);
+   p_str name = str(SHM_NAME_HEAD, toStr(id));
 
    while (sharedMemoryExists(name)) {
       id++;
-      name = str(SHM_NAME_HEAD, id);
+      name = str(SHM_NAME_HEAD, toStr(id));
    }
 
    return id;

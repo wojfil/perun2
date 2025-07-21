@@ -31,13 +31,13 @@ namespace perun2::shm
 {
 
 
-p_constexpr p_char SHM_NAME_HEAD[] = L"Local\\SharedMemoryPerunPython";
+static p_constexpr p_char SHM_NAME_HEAD[] = L"Local\\SharedMemoryPerunPython";
 
 
 //p_constexpr int SHM_SIZE = 12;  // 3 * 4 bytes (int32)
 
 static p_bool sharedMemoryExists(const p_str& name);
-p_int nextSharedMemoryId();
+static p_int nextSharedMemoryId();
 
 
 struct SharedMemory
@@ -46,6 +46,8 @@ public:
    SharedMemory() = delete;
    SharedMemory(const FileContext& fctx, const LocationContext& lctx);
 
+   void makeMemoryId();
+   p_int getMemoryId() const;
    p_bool start();
    p_bool ask();
    void terminate();
@@ -55,6 +57,7 @@ private:
 
    const FileContext& fileContext;
    const LocationContext& locationContext;
+   p_int memoryId = -1;
 
 };
 

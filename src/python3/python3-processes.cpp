@@ -51,7 +51,8 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, cons
    // todo
 }
 
-p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
+p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, 
+   const p_str& filePath, const p_int memoryId) const
 {
    return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\" \"", toStr(memoryId), L"\"");
 }
@@ -94,8 +95,9 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
 
    python3StaticTypeAnalysis(funcName, filePath, line);
 
-   memoryId = shm::nextSharedMemoryId();
-   const p_str command = askerPython3RunCmd(python, askerScript, filePath);
+   this->sharedMemory.makeMemoryId();
+   const p_int memoryId = this->sharedMemory.getMemoryId();
+   const p_str command = askerPython3RunCmd(python, askerScript, filePath, memoryId);
    std::promise<Python3AskerResult> promise;
    std::future<Python3AskerResult> future = promise.get_future();
 

@@ -58,6 +58,17 @@ p_int nextSharedMemoryId()
 SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx)
    : fileContext(fctx), locationContext(lctx) { };
 
+
+void SharedMemory::makeMemoryId()
+{
+   this->memoryId = nextSharedMemoryId();
+}
+
+p_int SharedMemory::getMemoryId() const
+{
+   return this->memoryId;
+}
+
 p_bool SharedMemory::start()
 {
 

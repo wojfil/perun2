@@ -63,6 +63,15 @@ static p_constexpr p_int AMOUNT_STRINGS = 2;
 
 static p_constexpr p_int TOTAL_SIZE = AMOUNT_INTS * sizeof(p_int) + AMOUNT_STRINGS * STRING_LENGTH * sizeof(p_char);
 
+// Shared memory description.
+// Byte 1-4:            Perun2 state
+// Byte 5-8:            Python3 state
+// Byte 9-12:           result
+// Byte 13-16:          location state
+// Byte 17-20:          length of file path
+// Byte 21-24:          length of location path
+// Byte 25-33024:       file path
+// Byte 33025-66024:    location path
 
 static p_bool sharedMemoryExists(const p_str& name);
 static p_int nextSharedMemoryId();

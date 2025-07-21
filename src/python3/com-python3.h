@@ -20,13 +20,6 @@
 namespace perun2::comm
 {
 
-enum Python3ParseResult {
-   P3PR_Good,
-   P3PR_MissingFile,
-   P3PR_MissingFiled,
-
-};
-
 
 struct Python3Base : Executor
 {

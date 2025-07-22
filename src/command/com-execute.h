@@ -51,11 +51,9 @@ public:
 protected:
    ExecutionResult executeLoudly(const p_str& command, const p_str& location) const;
    ExecutionResult executeSilently(const p_str& command, const p_str& location) const;
-   p_str getLocation() const;
    p_str mergeArguments(const p_list& args) const;
 
    Perun2Process& perun2;
-   LocationContext* locationCtx;
 };
 
 
@@ -68,9 +66,11 @@ public:
 
 protected:
    void execute(const p_str& additionalArgs) const;
+   p_str getLocation() const;
 
 private:
    const p_str baseCommand;
+   LocationContext* locationCtx;
 };
 
 

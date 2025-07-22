@@ -33,9 +33,11 @@ protected:
    void runPython(const p_str& additionalArgs) const;
    p_str python3RunCmd(const p_str& python, const p_str& path, const p_str& additionalArgs) const;
    p_str python3StatAnalyzeCmd(const p_str& python, const p_str& path) const;
+   p_str getLocation() const;
 
 private:
    const p_str scriptPath;
+   LocationContext* locationCtx;
 };
 
 

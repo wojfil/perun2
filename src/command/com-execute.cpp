@@ -51,8 +51,7 @@ void normalizeNewLines(const char (&old)[EXECUTION_PIPE_BUFFER_SIZE],
 
 
 Executor::Executor(Perun2Process& p2)
-   : perun2(p2), 
-     locationCtx(p2.contexts.getLocationContext()) { };
+   : perun2(p2) { };
 
 
 ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& location) const
@@ -141,11 +140,6 @@ ExecutionResult Executor::executeSilently(const p_str& command, const p_str& loc
    return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
-p_str Executor::getLocation() const
-{
-   return this->locationCtx->location->value;
-}
-
 p_str Executor::mergeArguments(const p_list& args) const
 {
    if (args.empty()) {
@@ -164,7 +158,8 @@ p_str Executor::mergeArguments(const p_list& args) const
 
 
 ExecuteBase::ExecuteBase(const p_str& cmd, Perun2Process& p2)
-   : Executor(p2), baseCommand(cmd) { };
+   : Executor(p2), baseCommand(cmd), 
+     locationCtx(p2.contexts.getLocationContext()) { };
 
 void ExecuteBase::execute(const p_str& additionalArgs) const
 {
@@ -206,6 +201,11 @@ void ExecuteBase::execute(const p_str& additionalArgs) const
          break;
       }
    }
+}
+
+p_str ExecuteBase::getLocation() const
+{
+   return this->locationCtx->location->value;
 }
 
 C_Execute::C_Execute(const p_str& cmd, Perun2Process& p2)

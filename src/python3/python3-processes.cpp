@@ -36,7 +36,8 @@ p_bool AskablePython3Script::ask()
    return this->sharedMemory.ask();
 }
 
-void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, const p_str& filePath, const p_int line)
+void AskablePython3Script::python3StaticTypeAnalysis(const p_str& python, const p_str& funcName, 
+   const p_str& filePath, const p_int line)
 {
    const p_str analyzerScript = perun2.postParseData.getPython3AnalyzerPath();
 
@@ -46,6 +47,7 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& funcName, cons
          L"\" does not exist. To solve this problem, reinstall Perun2"), line);
    }
 
+   const p_str command = analyzerPython3RunCmd(python, analyzerScript, filePath);
 
 
    // todo
@@ -55,6 +57,12 @@ p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str&
    const p_str& filePath, const p_int memoryId) const
 {
    return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\" \"", toStr(memoryId), L"\"");
+}
+
+
+p_str AskablePython3Script::analyzerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
+{
+   return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\"");
 }
 
 void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName, 
@@ -93,7 +101,7 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
          L"\" could not be prepared to run. The file \"", filePath, L"\" does not exist"), line);
    }
 
-   python3StaticTypeAnalysis(funcName, filePath, line);
+   python3StaticTypeAnalysis(python, funcName, filePath, line);
 
    this->sharedMemory.makeMemoryId();
    const p_int memoryId = this->sharedMemory.getMemoryId();
@@ -239,7 +247,7 @@ void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midRes
 
    midResultPromise.set_value(Python3AskerResult::PAR_Good);
    WaitForSingleObject(pi.hProcess, INFINITE);
-   
+
    sideProcess.running = false;
    python3Process.store(sideProcess);
 

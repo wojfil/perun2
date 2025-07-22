@@ -64,9 +64,11 @@ public:
    p_bool ask();
 
 private:
-   void python3StaticTypeAnalysis(const p_str& funcName, const p_str& filePath, const p_int line);
+   void python3StaticTypeAnalysis(const p_str& python, const p_str& funcName, 
+      const p_str& filePath, const p_int line);
    p_str askerPython3RunCmd(const p_str& python, const p_str& path, 
       const p_str& filePath, const p_int memoryId) const;
+   p_str analyzerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const;
    void startLoudly(std::promise<Python3AskerResult> midResultPromise, const p_str& command);
    void startSilently(std::promise<Python3AskerResult> midResultPromise, const p_str& command);
 

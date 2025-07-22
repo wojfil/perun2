@@ -159,7 +159,7 @@ p_str Executor::mergeArguments(const p_list& args) const
 
 ExecuteBase::ExecuteBase(const p_str& cmd, Perun2Process& p2)
    : Executor(p2), baseCommand(cmd), 
-     locationCtx(p2.contexts.getLocationContext()) { };
+     locationCtx(*p2.contexts.getLocationContext()) { };
 
 void ExecuteBase::execute(const p_str& additionalArgs) const
 {
@@ -205,7 +205,7 @@ void ExecuteBase::execute(const p_str& additionalArgs) const
 
 p_str ExecuteBase::getLocation() const
 {
-   return this->locationCtx->location->value;
+   return this->locationCtx.location->value;
 }
 
 C_Execute::C_Execute(const p_str& cmd, Perun2Process& p2)

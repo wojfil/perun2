@@ -28,7 +28,7 @@ namespace perun2::comm
 
 Python3Base::Python3Base(const p_str& script, Perun2Process& p2)
    : Executor(p2), scriptPath(script), 
-     locationCtx(p2.contexts.getLocationContext()) { };
+     locationCtx(*p2.contexts.getLocationContext()) { };
 
 
 void Python3Base::staticallyAnalyze(const p_int line, const p_str& name) const
@@ -151,7 +151,7 @@ p_str Python3Base::python3StatAnalyzeCmd(const p_str& python, const p_str& path)
 
 p_str Python3Base::getLocation() const
 {
-   return this->locationCtx->location->value;
+   return this->locationCtx.location->value;
 }
 
 C_Python3::C_Python3(const p_str& script, Perun2Process& p2)

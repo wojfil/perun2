@@ -37,7 +37,7 @@ protected:
 
 private:
    const p_str scriptPath;
-   LocationContext* locationCtx;
+   const LocationContext& locationCtx;
 };
 
 

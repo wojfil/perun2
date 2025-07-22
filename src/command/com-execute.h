@@ -70,7 +70,7 @@ protected:
 
 private:
    const p_str baseCommand;
-   LocationContext* locationCtx;
+   const LocationContext& locationCtx;
 };
 
 

@@ -19,6 +19,7 @@
 #include "../datatype/generator.h"
 #include "../attribute.h"
 #include "../perun2.h"
+#include "../context/ctx-location.h"
 
 
 namespace perun2::comm
@@ -29,13 +30,10 @@ struct CoreCommand : Command
 {
 public:
    CoreCommand() = delete;
-   CoreCommand(FileContext* ctx, Perun2Process& p2)
-      : saveChanges(true), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
-   CoreCommand(const p_bool save, FileContext* ctx, Perun2Process& p2)
-      : saveChanges(save), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
+   CoreCommand(FileContext* ctx, Perun2Process& p2);
+   CoreCommand(const p_bool save, FileContext* ctx, Perun2Process& p2);
 
 protected:
-
    FileContext* context;
    const p_bool saveChanges;
    Perun2Process& perun2;

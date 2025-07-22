@@ -21,6 +21,11 @@
 namespace perun2::comm
 {
 
+CoreCommand::CoreCommand(FileContext* ctx, Perun2Process& p2)
+   : saveChanges(true), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
+   
+CoreCommand::CoreCommand(const p_bool save, FileContext* ctx, Perun2Process& p2)
+   : saveChanges(save), context(ctx), perun2(p2), locationContext(p2.contexts.getLocationContext()) { };
 
 
 ////

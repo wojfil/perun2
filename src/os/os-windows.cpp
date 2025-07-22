@@ -1091,8 +1091,7 @@ p_bool os_openAsCommand(const p_str& command, const p_str& location)
    wcscpy(cmd.get(), command.c_str());
    cmd[command.size()] = CHAR_NULL;
 
-   return CreateProcessW
-   (
+   const BOOL creation = CreateProcessW (
       NULL,
       cmd.get(),
       NULL, NULL, FALSE,
@@ -1100,7 +1099,12 @@ p_bool os_openAsCommand(const p_str& command, const p_str& location)
       NULL, 
       location.c_str(),
       &si, &pi
-   ) != 0;
+   );
+
+   CloseHandle(pi.hProcess);
+   CloseHandle(pi.hThread);
+
+   return creation != 0;
 }
 
 p_bool os_unhide(const p_str& path)
@@ -1394,6 +1398,9 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
    WaitForSingleObject(p2.sideProcess.info.hProcess, INFINITE);
    DWORD dwExitCode = 0;
    ::GetExitCodeProcess(p2.sideProcess.info.hProcess, &dwExitCode);
+   
+   CloseHandle(p2.sideProcess.info.hProcess);
+   CloseHandle(p2.sideProcess.info.hThread);
 
    p2.sideProcess.running = false;
    return p2.state == State::s_Running && dwExitCode == 0;

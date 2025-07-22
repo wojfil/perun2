@@ -202,8 +202,6 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
    python3Process.store(sideProcess);
 
    WaitForSingleObject(pi.hProcess, INFINITE);
-   DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(pi.hProcess, &dwExitCode);
 
    CloseHandle(hRead);
    CloseHandle(pi.hProcess);
@@ -212,11 +210,41 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
 
 void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midResultPromise, const p_str& command)
 {
+   STARTUPINFOW si = { sizeof(si) };
+   SideProcess sideProcess;
+   PROCESS_INFORMATION& pi = sideProcess.info;
+   ZeroMemory(&pi, sizeof(pi));
 
+   std::unique_ptr<p_char[]> cmd = std::make_unique<p_char[]>(command.size() + 1);
+   wcscpy(cmd.get(), command.c_str());
+   cmd[command.size()] = CHAR_NULL;
 
+   const BOOL creation = CreateProcessW(
+      NULL,
+      cmd.get(),
+      NULL,NULL,FALSE,
+      CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
+      NULL,
+      NULL,
+      &si, &pi
+   );
 
+   if (! creation) {
+      midResultPromise.set_value(Python3AskerResult::PAR_Bad_ProcessNotStarted);
+      return;
+   }
 
-   midResultPromise.set_value(Python3AskerResult::PAR_Good); 
+   sideProcess.running = true;
+   python3Process.store(sideProcess);
+
+   midResultPromise.set_value(Python3AskerResult::PAR_Good);
+   WaitForSingleObject(pi.hProcess, INFINITE);
+   
+   sideProcess.running = false;
+   python3Process.store(sideProcess);
+
+   CloseHandle(pi.hProcess);
+   CloseHandle(pi.hThread);
 }
 
 

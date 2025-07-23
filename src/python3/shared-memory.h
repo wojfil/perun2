@@ -27,12 +27,15 @@ struct LocationContext;
 struct Perun2Process;
 }
 
+namespace perun2::comm
+{
+struct AskablePython3Script;
+}
+
 namespace perun2::shm
 {
 
-
 static p_constexpr p_char SHM_NAME_HEAD[] = L"Local\\SharedMemoryPerunPython";
-
 
 static p_constexpr p_int STATUS_PERUN_NULL = 0;
 static p_constexpr p_int STATUS_PERUN_IDLE = 1;
@@ -81,7 +84,8 @@ struct SharedMemory
 {
 public:
    SharedMemory() = delete;
-   SharedMemory(const FileContext& fctx, const LocationContext& lctx, const Perun2Process& p2);
+   SharedMemory(const FileContext& fctx, const LocationContext& lctx, 
+      comm::AskablePython3Script& scr, const Perun2Process& p2);
 
    void makeMemoryId();
    p_int getMemoryId() const;
@@ -105,6 +109,7 @@ private:
    p_int memoryId = -1;
    p_str name;
 
+   comm::AskablePython3Script& script;
    p_bool isRunning = false;
    HANDLE map;
    void* pointer;

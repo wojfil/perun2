@@ -61,6 +61,7 @@ public:
    void start(const p_str& askerScript, const p_str& funcName, 
       const p_str& filePath, const p_int line);
 
+   void pythonError();
    void terminate();
    p_bool ask();
 
@@ -76,6 +77,7 @@ private:
    shm::SharedMemory sharedMemory;
    Perun2Process& perun2;
    std::atomic<SideProcess> python3Process;
+   p_bool finished = false;
    std::unique_ptr<std::thread> thread;
 };
 

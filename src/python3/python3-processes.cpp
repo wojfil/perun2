@@ -29,10 +29,15 @@ namespace perun2::comm
 
 
 AskablePython3Script::AskablePython3Script(const FileContext& fctx, const LocationContext& lctx, Perun2Process& p2)
-   : sharedMemory(fctx, lctx, p2), perun2(p2) { };
+   : sharedMemory(fctx, lctx, *this, p2), perun2(p2), finished(false) { };
 
 p_bool AskablePython3Script::ask()
 {
+   if (finished) {
+      terminate();
+      return false;
+   }
+
    return this->sharedMemory.ask();
 }
 
@@ -221,10 +226,10 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
       p_cout << nextOutput << std::flush;
    }
 
+   WaitForSingleObject(pi.hProcess, INFINITE);
+
    sideProcess.running = false;
    python3Process.store(sideProcess);
-
-   WaitForSingleObject(pi.hProcess, INFINITE);
 
    CloseHandle(hRead);
    CloseHandle(pi.hProcess);
@@ -270,6 +275,10 @@ void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midRes
    CloseHandle(pi.hThread);
 }
 
+void AskablePython3Script::pythonError()
+{
+   finished = true;
+}
 
 void AskablePython3Script::terminate()
 {

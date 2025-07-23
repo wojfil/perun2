@@ -17,6 +17,7 @@
 #include "../command/com-execute.h"
 #include "../perun2.h"
 #include "com-python3.h"
+#include "python3-processes.h"
 #include <cstring>
 
 
@@ -50,8 +51,9 @@ p_int nextSharedMemoryId()
 }
 
 
-SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx, const Perun2Process& p2)
-   : fileContext(fctx), locationContext(lctx), perun2(p2) { };
+SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx, 
+   comm::AskablePython3Script& scr, const Perun2Process& p2)
+   : fileContext(fctx), locationContext(lctx), perun2(p2), script(scr) { };
 
 
 void SharedMemory::makeMemoryId()
@@ -70,7 +72,7 @@ p_bool SharedMemory::start()
    // This ugly solution to a race condition must stay here for a while.
    // When the main Python3 process starts, we know the exact moment of it from C++.
    // However, it takes some unknown time to make the shared memory.
-   // Usually 15-25 ms delay here.
+   // Usually 15-25 ms delay here. After 2000 ms, give up.
 
    const p_nint WAIT_UNIT = 5;
    p_nint wait = 2000;
@@ -146,19 +148,28 @@ p_bool SharedMemory::ask()
    this->writeInt(OFFSET_LENGTH_FILE_NAME, static_cast<p_int>(this->fileName.size()));
    this->writeInt(OFFSET_PERUN_STATUS, STATUS_PERUN_ASKS);
 
+   p_int python3State;
+
    while (true) {
-      if (this->readInt(OFFSET_PYTHON_STATUS) == STATUS_PYTHON_RESPONDED) {
+      python3State = this->readInt(OFFSET_PYTHON_STATUS);
+
+      if (python3State == STATUS_PYTHON_RESPONDED) {
          this->writeInt(OFFSET_PYTHON_STATUS, STATUS_PYTHON_IDLE);
          this->writeInt(OFFSET_PERUN_STATUS, STATUS_PERUN_IDLE);
          const p_int result = this->readInt(OFFSET_RESULT);
          return result != 0;
+      }
+      else if (python3State == STATUS_PYTHON_ERROR) {
+         script.pythonError();
+         break;
       }
 
       if (perun2.isNotRunning()) {
          break;
       }
 
-      for (int i = 0; i < 100; ++i) {
+      // The Python3 script needs more computing power than Perun2.
+      for (p_int i = 0; i < 200; i++) {
          _mm_pause();
       }
    }
@@ -171,6 +182,7 @@ void SharedMemory::terminate()
    if (this->isRunning) {
       UnmapViewOfFile(this->pointer);
       CloseHandle(this->map);
+      this->isRunning = false;
    }
 }
 
@@ -211,9 +223,6 @@ p_bool SharedMemory::tryToWriteString(const size_t offset, const p_str& value)
    const p_str newValue = os_trim(value);
    
    if (newValue.size() > static_cast<size_t>(STRING_LENGTH)) {
-      // This situation is practically impossible.
-      // The existence of this file has been confirmed.
-      // So the trimmed name must fit the 33k char limit.
       return false;
    }
 

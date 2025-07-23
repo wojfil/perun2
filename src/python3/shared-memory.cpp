@@ -72,10 +72,10 @@ p_bool SharedMemory::start()
    // This ugly solution to a race condition must stay here for a while.
    // When the main Python3 process starts, we know the exact moment of it from C++.
    // However, it takes some unknown time to make the shared memory.
-   // Usually 15-25 ms delay here. After 2000 ms, give up.
+   // Usually 15-25 ms delay here. After 500 ms, give up.
 
    const p_nint WAIT_UNIT = 5;
-   p_nint wait = 2000;
+   p_nint wait = 500;
 
    while (true) {
       this->map = OpenFileMappingW(

@@ -132,6 +132,18 @@ ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& locat
    return success ? ExecutionResult::ER_Good : ExecutionResult::ER_Bad;
 }
 
+
+SimpleExecutor::SimpleExecutor(Perun2Process& p2)
+   : Executor(p2) { };
+
+ExecutionResult SimpleExecutor::execute(const p_str& command) const
+{
+   return this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
+      ? this->executeSilently(command, L"")
+      : this->executeLoudly(command, L"");
+}
+
+
 ExecutionResult Executor::executeSilently(const p_str& command, const p_str& location) const
 {
    const p_bool success = os_run(command, location, this->perun2);

@@ -49,8 +49,24 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& python, const 
 
    const p_str command = analyzerPython3RunCmd(python, analyzerScript, filePath);
 
+   SimpleExecutor analyzer(perun2);
+   const ExecutionResult executionResult = analyzer.execute(command);
 
-   // todo
+   switch (executionResult) {
+      case ExecutionResult::ER_Bad: {
+         throw SyntaxError(str(L"the function \"", funcName, 
+            L"\" could not be prepared to run. The file \"", filePath,
+            L"\" contains a syntax error"), line);
+      }
+      case ExecutionResult::ER_Bad_PipeNotCreated: {
+         throw SyntaxError(str(L"the function \"", funcName, 
+            L"\" could not be prepared to run. A new pipe could not be created for static analysis"), line);
+      }
+      case ExecutionResult::ER_Bad_ProcessNotStarted: {
+         throw SyntaxError(str(L"the function \"", funcName, 
+            L"\" could not be prepared to run. A new process could not be started for static analysis"), line);
+      }
+   }
 }
 
 p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, 
@@ -125,7 +141,6 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
          L"\" could not be prepared to run. Failed to run Python3 \"", filePath, 
          L"\". A connection to shared memory could not be opened"), line);
    }
-
 
    switch (result) {
       case Python3AskerResult::PAR_Bad: {

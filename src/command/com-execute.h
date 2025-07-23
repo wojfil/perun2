@@ -14,14 +14,14 @@
 
 #pragma once
 
-#include "com-listener.h"
 #include "../datatype/datatype.h"
-#include "../datatype/generator.h"
-#include "com-aggregate.h"
 #include "com-core.h"
-#include "../attribute.h"
-#include "../perun2.h"
 
+
+namespace perun2
+{
+   struct LocationContext;
+}
 
 namespace perun2::comm
 {
@@ -56,6 +56,15 @@ protected:
    Perun2Process& perun2;
 };
 
+
+struct SimpleExecutor : Executor
+{
+public:
+   SimpleExecutor() = delete;
+   SimpleExecutor(Perun2Process& p2);
+
+   ExecutionResult execute(const p_str& command) const;
+};
 
 
 struct ExecuteBase : Executor

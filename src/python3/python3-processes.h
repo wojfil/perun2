@@ -17,7 +17,6 @@
 #include "../datatype/datatype.h"
 #include "../side-process.h"
 #include "shared-memory.h"
-#include <optional>
 #include <unordered_map>
 #include <iostream>
 #include <thread>
@@ -29,6 +28,8 @@
 namespace perun2
 {
 struct Perun2Process;
+struct FileContext;
+struct LocationContext;
 }
 
 namespace perun2::comm
@@ -95,6 +96,7 @@ private:
    Perun2Process& perun2;
    std::vector<std::unique_ptr<AskablePython3Script>> askableScripts;
 };
+
 
 
 

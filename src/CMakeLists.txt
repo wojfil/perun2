@@ -52,6 +52,7 @@ add_executable(
     arguments.cpp
     attribute.cpp
     brackets.cpp
+    cache.cpp
     cmd.cpp
     console.cpp
     post-parse-data.cpp

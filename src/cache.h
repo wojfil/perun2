@@ -15,10 +15,34 @@
 #pragma once
 
 #include "datatype/datatype.h"
-
+#include <unordered_map>
 
 namespace perun2
 {
 
+
+p_constexpr size_t CACHE_SIZE = 100;
+
+
+struct CacheUnit
+{
+
+
+};
+
+
+struct Cache
+{
+public:
+   Cache();
+
+
+private:
+
+   std::unordered_map<std::wstring, size_t> elements;
+
+   std::vector<CacheUnit> realData;
+
+};
 
 }

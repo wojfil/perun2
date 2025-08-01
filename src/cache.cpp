@@ -18,5 +18,11 @@
 namespace perun2
 {
 
+Cache::Cache()
+{
+   
+}
+
+
 
 }

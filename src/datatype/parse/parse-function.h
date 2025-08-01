@@ -55,4 +55,7 @@ p_bool numListFunction(p_genptr<p_nlist>& result, const Tokens& tks, Perun2Proce
 void checkFunctionAttribute(const Token& word, Perun2Process& p2);
 void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Perun2Process& p2);
 
+static p_str getPythonScriptName(p_genptr<p_str>& generator, const p_int line, const p_str& name);
+
+
 }

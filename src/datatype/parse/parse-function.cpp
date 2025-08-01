@@ -452,15 +452,8 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      if (! string->isConstant()) {
-         throw SyntaxError(str(L"the function \"", word.getOriginString(p2), 
-            L"\" needs a constant value as an argument"), word.line);
-      }
-
-      p_str value = string->getValue();
-      str_trim(value);
-
       const p_str funcName = word.getOriginString(p2);
+      const p_str value = getPythonScriptName(string, word.line, funcName);
       comm::AskablePython3Script& askable = p2.python3Processes.addAskableScript(*fctx, *lctx, funcName, value, word.line);
       result = std::make_unique<F_AskPython3>(askable, p2);
       return true;
@@ -1707,6 +1700,32 @@ void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Perun2P
       L"\" used in the function \"", word.getOriginString(p2),
       L"\" should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);
+}
+
+
+static p_str getPythonScriptName(p_genptr<p_str>& generator, const p_int line, const p_str& name) 
+{
+   if (! generator->isConstant()) {
+      throw SyntaxError(str(L"the function \"", name, 
+         L"\" needs a constant value as an argument"), line);
+   }
+
+   p_str value = generator->getValue();
+   str_trim(value);
+
+   if (value.empty()) {
+      throw SyntaxError(str(L"the argument of the function \"", name, L"\" is empty"), line);
+   }
+
+   if (! os_isAbsolute(value)) {
+      throw SyntaxError(str(L"the argument of the function \"", name, L"\" is not an absolute path"), line);
+   }
+
+   if (! os_fileExists(value)) {
+      throw SyntaxError(str(L"the argument of the function \"", name, L"\" does not point to an existing file"), line);
+   }
+
+   return value;
 }
 
 }

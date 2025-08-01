@@ -1696,7 +1696,7 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
             L"\" cannot be resolved to a string"), line);
       }
 
-      const p_str commandName = str(L"command ", word.getOriginString(p2));
+      const p_str commandName = word.getOriginString(p2);
       const p_str scriptName = getPythonScriptName(string, line, commandName);
 
       std::unique_ptr<C_Python3> python3 = std::make_unique<C_Python3>(scriptName, p2);
@@ -1723,7 +1723,7 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
          L" with\" cannot be resolved to a string"), line);
    }
 
-   const p_str commandName = str(L"command ", word.getOriginString(p2), L" with");
+   const p_str commandName = str(word.getOriginString(p2), L" with");
    const p_str scriptName = getPythonScriptName(string, line, commandName);
 
    p_genptr<p_list> list;

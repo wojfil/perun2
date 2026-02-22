@@ -12,17 +12,17 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-parse.hpp"
-#include "com-misc.hpp"
-#include "../exception.hpp"
-#include "com-struct.hpp"
-#include "../datatype/parse-gen.hpp"
-#include "../datatype/parse/parse-number.hpp"
-#include "com-parse-kw.hpp"
-#include "com-parse-unit.hpp"
-#include "com-condition.hpp"
-#include "../datatype/generator/gen-string.hpp"
-#include "../datatype/parse/parse-number.hpp"
+#include "../../include/perun2/command/com-parse.hpp"
+#include "../../include/perun2/command/com-misc.hpp"
+#include "../../include/perun2/exception.hpp"
+#include "../../include/perun2/command/com-struct.hpp"
+#include "../../include/perun2/datatype/parse-gen.hpp"
+#include "../../include/perun2/datatype/parse/parse-number.hpp"
+#include "../../include/perun2/command/com-parse-kw.hpp"
+#include "../../include/perun2/command/com-parse-unit.hpp"
+#include "../../include/perun2/command/com-condition.hpp"
+#include "../../include/perun2/datatype/generator/gen-string.hpp"
+#include "../../include/perun2/datatype/parse/parse-number.hpp"
 
 
 namespace perun2::comm

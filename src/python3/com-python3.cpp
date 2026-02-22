@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-python3.hpp"
-#include "../os/os.hpp"
-#include "../perun2.hpp"
-#include "../command/com-core.hpp"
+#include "../../include/perun2/python3/com-python3.hpp"
+#include "../../include/perun2/os/os.hpp"
+#include "../../include/perun2/perun2.hpp"
+#include "../../include/perun2/command/com-core.hpp"
 #include <chrono>
 #include <thread>
 #include <algorithm>

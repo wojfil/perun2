@@ -12,21 +12,21 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-bool.hpp"
-#include "parse-list.hpp"
-#include "parse-generic.hpp"
-#include "parse-function.hpp"
-#include "../parse/parse-function.hpp"
-#include "../generator/gen-bool.hpp"
-#include "../generator/gen-bool-constr.hpp"
-#include "../../brackets.hpp"
-#include "../../lexer.hpp"
-#include "../text/like.hpp"
-#include "../text/resemblance.hpp"
-#include "../text/regexp.hpp"
-#include "../parse-gen.hpp"
-#include "../incr-constr.hpp"
-#include "../between.hpp"
+#include "../../../include/perun2/datatype/parse/parse-bool.hpp"
+#include "../../../include/perun2/datatype/parse/parse-list.hpp"
+#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
+#include "../../../include/perun2/datatype/parse/parse-function.hpp"
+#include "../../../include/perun2/datatype/parse/parse-function.hpp"
+#include "../../../include/perun2/datatype/generator/gen-bool.hpp"
+#include "../../../include/perun2/datatype/generator/gen-bool-constr.hpp"
+#include "../../../include/perun2/brackets.hpp"
+#include "../../../include/perun2/lexer.hpp"
+#include "../../../include/perun2/datatype/text/like.hpp"
+#include "../../../include/perun2/datatype/text/resemblance.hpp"
+#include "../../../include/perun2/datatype/text/regexp.hpp"
+#include "../../../include/perun2/datatype/parse-gen.hpp"
+#include "../../../include/perun2/datatype/incr-constr.hpp"
+#include "../../../include/perun2/datatype/between.hpp"
 #include <stack>
 
 

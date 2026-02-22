@@ -12,22 +12,22 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-function.hpp"
-#include "../../exception.hpp"
-#include "../../brackets.hpp"
-#include "../function/func-bool.hpp"
-#include "../function/func-number.hpp"
-#include "../function/func-string.hpp"
-#include "../function/func-time.hpp"
-#include "../function/func-list.hpp"
-#include "../function/func-aggr.hpp"
-#include "../function/func-attr.hpp"
-#include "../parse-gen.hpp"
-#include "../generator/gen-generic.hpp"
-#include "../generator/gen-number.hpp"
-#include "../generator/gen-string.hpp"
-#include "../generator/gen-definition.hpp"
-#include "../math.hpp"
+#include "../../../include/perun2/datatype/parse/parse-function.hpp"
+#include "../../../include/perun2/exception.hpp"
+#include "../../../include/perun2/brackets.hpp"
+#include "../../../include/perun2/datatype/function/func-bool.hpp"
+#include "../../../include/perun2/datatype/function/func-number.hpp"
+#include "../../../include/perun2/datatype/function/func-string.hpp"
+#include "../../../include/perun2/datatype/function/func-time.hpp"
+#include "../../../include/perun2/datatype/function/func-list.hpp"
+#include "../../../include/perun2/datatype/function/func-aggr.hpp"
+#include "../../../include/perun2/datatype/function/func-attr.hpp"
+#include "../../../include/perun2/datatype/parse-gen.hpp"
+#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
+#include "../../../include/perun2/datatype/generator/gen-number.hpp"
+#include "../../../include/perun2/datatype/generator/gen-string.hpp"
+#include "../../../include/perun2/datatype/generator/gen-definition.hpp"
+#include "../../../include/perun2/datatype/math.hpp"
 
 
 namespace perun2::func

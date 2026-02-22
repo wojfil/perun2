@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "raw.hpp"
+#include "../../../include/perun2/datatype/text/raw.hpp"
 
 
 namespace perun2

@@ -20,13 +20,12 @@
 #define _UNICODE
 #endif
 
-#include "os-windows.hpp"
-
+#include "../../include/perun2/os/os-windows.hpp"
+#include "../../include/perun2/perun2.hpp"
+#include "../../include/perun2/datatype/parse/parse-asterisk.hpp"
+#include "../../include/perun2/datatype/text/strings.hpp"
+#include "../../include/perun2/metadata.hpp"
 #include <time.h>
-#include "../perun2.hpp"
-#include "../datatype/parse/parse-asterisk.hpp"
-#include "../datatype/text/strings.hpp"
-#include "../metadata.hpp"
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>

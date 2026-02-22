@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "programs-data.hpp"
-#include "registry.hpp"
-#include "../../os/os.hpp"
+#include "../../../include/perun2/programs/windows/programs-data.hpp"
+#include "../../../include/perun2/programs/windows/registry.hpp"
+#include "../../../include/perun2/os/os.hpp"
 
 
 namespace perun2::prog

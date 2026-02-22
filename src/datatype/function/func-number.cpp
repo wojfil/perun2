@@ -12,15 +12,15 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "func-number.hpp"
-#include "../../exception.hpp"
-#include "func-bool.hpp"
-#include "../../util.hpp"
-#include "../../lexer.hpp"
-#include "../../perun2.hpp"
-#include "../../os/os.hpp"
-#include "../math.hpp"
-#include "../text/resemblance.hpp"
+#include "../../../include/perun2/datatype/function/func-number.hpp"
+#include "../../../include/perun2/exception.hpp"
+#include "../../../include/perun2/datatype/function/func-bool.hpp"
+#include "../../../include/perun2/util.hpp"
+#include "../../../include/perun2/lexer.hpp"
+#include "../../../include/perun2/perun2.hpp"
+#include "../../../include/perun2/os/os.hpp"
+#include "../../../include/perun2/datatype/math.hpp"
+#include "../../../include/perun2/datatype/text/resemblance.hpp"
 #include <math.h>
 #include <sstream>
 #include <cmath>

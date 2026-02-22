@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ctx-location.hpp"
-#include "../os/os.hpp"
+#include "../../include/perun2/context/ctx-location.hpp"
+#include "../../include/perun2/os/os.hpp"
 
 
 namespace perun2

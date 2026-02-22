@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "tokens.hpp"
-#include "brackets.hpp"
-#include "exception.hpp"
-#include "lexer.hpp"
-#include "perun2.hpp"
+#include "../include/perun2/tokens.hpp"
+#include "../include/perun2/brackets.hpp"
+#include "../include/perun2/exception.hpp"
+#include "../include/perun2/lexer.hpp"
+#include "../include/perun2/perun2.hpp"
 
 
 namespace perun2

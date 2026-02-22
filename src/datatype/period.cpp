@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "period.hpp"
-#include "text/chars.hpp"
-#include "numbers.hpp"
-#include "text/strings.hpp"
+#include "../../include/perun2/datatype/period.hpp"
+#include "../../include/perun2/datatype/text/chars.hpp"
+#include "../../include/perun2/datatype/numbers.hpp"
+#include "../../include/perun2/datatype/text/strings.hpp"
 #include <sstream>
 
 

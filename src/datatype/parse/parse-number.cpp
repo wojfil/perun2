@@ -12,14 +12,14 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-number.hpp"
-#include "parse-generic.hpp"
-#include "parse-var.hpp"
-#include "../parse/parse-function.hpp"
-#include "../generator/gen-number.hpp"
-#include "../generator/gen-generic.hpp"
-#include "../parse-gen.hpp"
-#include "../../brackets.hpp"
+#include "../../../include/perun2/datatype/parse/parse-number.hpp"
+#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
+#include "../../../include/perun2/datatype/parse/parse-var.hpp"
+#include "../../../include/perun2/datatype/parse/parse-function.hpp"
+#include "../../../include/perun2/datatype/generator/gen-number.hpp"
+#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
+#include "../../../include/perun2/datatype/parse-gen.hpp"
+#include "../../../include/perun2/brackets.hpp"
 
 
 namespace perun2::parse

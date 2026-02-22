@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "latin.hpp"
+#include "../../../include/perun2/datatype/text/latin.hpp"
 
 
 namespace perun2

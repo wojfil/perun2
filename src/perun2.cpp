@@ -14,16 +14,16 @@
 
 #include <vector>
 #include <cstdlib>
-#include "perun2.hpp"
-#include "exception.hpp"
-#include "command/com-parse.hpp"
-#include "tokens.hpp"
-#include "util.hpp"
-#include "brackets.hpp"
-#include "lexer.hpp"
-#include "os/os.hpp"
-#include "logger.hpp"
-#include "datatype/math.hpp"
+#include "../include/perun2/perun2.hpp"
+#include "../include/perun2/exception.hpp"
+#include "../include/perun2/command/com-parse.hpp"
+#include "../include/perun2/tokens.hpp"
+#include "../include/perun2/util.hpp"
+#include "../include/perun2/brackets.hpp"
+#include "../include/perun2/lexer.hpp"
+#include "../include/perun2/os/os.hpp"
+#include "../include/perun2/logger.hpp"
+#include "../include/perun2/datatype/math.hpp"
 
 
 namespace perun2

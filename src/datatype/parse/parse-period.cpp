@@ -12,15 +12,15 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-period.hpp"
-#include "parse-generic.hpp"
-#include "../generator/gen-generic.hpp"
-#include "../generator/gen-period.hpp"
-#include "../generator/gen-time.hpp"
-#include "../../brackets.hpp"
-#include "../../util.hpp"
-#include "../parse/parse-function.hpp"
-#include "../parse-gen.hpp"
+#include "../../../include/perun2/datatype/parse/parse-period.hpp"
+#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
+#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
+#include "../../../include/perun2/datatype/generator/gen-period.hpp"
+#include "../../../include/perun2/datatype/generator/gen-time.hpp"
+#include "../../../include/perun2/brackets.hpp"
+#include "../../../include/perun2/util.hpp"
+#include "../../../include/perun2/datatype/parse/parse-function.hpp"
+#include "../../../include/perun2/datatype/parse-gen.hpp"
 
 
 namespace perun2::parse

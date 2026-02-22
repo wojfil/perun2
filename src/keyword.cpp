@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "keyword.hpp"
-#include "datatype/text/strings.hpp"
-#include "perun2.hpp"
+#include "../include/perun2/keyword.hpp"
+#include "../include/perun2/datatype/text/strings.hpp"
+#include "../include/perun2/perun2.hpp"
 
 
 namespace perun2

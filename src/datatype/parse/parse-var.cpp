@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-var.hpp"
-#include "../../perun2.hpp"
-#include "../function/func-attr.hpp"
+#include "../../../include/perun2/datatype/parse/parse-var.hpp"
+#include "../../../include/perun2/perun2.hpp"
+#include "../../../include/perun2/datatype/function/func-attr.hpp"
 
 
 namespace perun2::parse

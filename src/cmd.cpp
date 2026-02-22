@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cmd.hpp"
-#include "os/os.hpp"
-#include "perun2.hpp"
-#include "logger.hpp"
-#include "metadata.hpp"
+#include "../include/perun2/cmd.hpp"
+#include "../include/perun2/os/os.hpp"
+#include "../include/perun2/perun2.hpp"
+#include "../include/perun2/logger.hpp"
+#include "../include/perun2/metadata.hpp"
 
 
 namespace perun2::cmd

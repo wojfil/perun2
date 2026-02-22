@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "exception.hpp"
-#include "metadata.hpp"
-#include "datatype/datatype.hpp"
-#include "datatype/text/like.hpp"
+#include "../include/perun2/exception.hpp"
+#include "../include/perun2/metadata.hpp"
+#include "../include/perun2/datatype/datatype.hpp"
+#include "../include/perun2/datatype/text/like.hpp"
 #include <algorithm>
 
 

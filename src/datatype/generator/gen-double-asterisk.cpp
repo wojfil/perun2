@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-double-asterisk.hpp"
-#include "../../perun2.hpp"
+#include "../../../include/perun2/datatype/generator/gen-double-asterisk.hpp"
+#include "../../../include/perun2/perun2.hpp"
 
 
 namespace perun2::gen

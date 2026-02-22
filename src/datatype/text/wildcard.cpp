@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "wildcard.hpp"
-#include "chars.hpp"
-#include "../../os/os.hpp"
+#include "../../../include/perun2/datatype/text/wildcard.hpp"
+#include "../../../include/perun2/datatype/text/chars.hpp"
+#include "../../../include/perun2/os/os.hpp"
 
 
 namespace perun2

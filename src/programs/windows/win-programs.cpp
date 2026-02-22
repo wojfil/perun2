@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "win-programs.hpp"
-#include "programs-data.hpp"
-#include "../../os/os.hpp"
-#include "../../perun2.hpp"
-#include "../../datatype/text/text-parsing.hpp"
+#include "../../../include/perun2/programs/windows/win-programs.hpp"
+#include "../../../include/perun2/programs/windows/programs-data.hpp"
+#include "../../../include/perun2/os/os.hpp"
+#include "../../../include/perun2/perun2.hpp"
+#include "../../../include/perun2/datatype/text/text-parsing.hpp"
 
 
 namespace perun2::prog

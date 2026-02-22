@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cast.hpp"
-#include "../perun2.hpp"
+#include "../../include/perun2/datatype/cast.hpp"
+#include "../../include/perun2/perun2.hpp"
 
 
 namespace perun2::gen

@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "func-list.hpp"
-#include "../../lexer.hpp"
+#include "../../../include/perun2/datatype/function/func-list.hpp"
+#include "../../../include/perun2/lexer.hpp"
 
 
 namespace perun2::func

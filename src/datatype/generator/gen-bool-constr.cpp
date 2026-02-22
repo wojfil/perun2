@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-bool-constr.hpp"
-#include "../../context/ctx-main.hpp"
-#include "../../os/os.hpp"
-#include "../../perun2.hpp"
+#include "../../../include/perun2/datatype/generator/gen-bool-constr.hpp"
+#include "../../../include/perun2/context/ctx-main.hpp"
+#include "../../../include/perun2/os/os.hpp"
+#include "../../../include/perun2/perun2.hpp"
 
 
 namespace perun2::gen

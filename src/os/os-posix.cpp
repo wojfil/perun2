@@ -13,7 +13,7 @@
 */
 
 
-#include "os-posix.hpp"
+#include "../../include/perun2/os/os-posix.hpp"
 
 
 namespace perun2

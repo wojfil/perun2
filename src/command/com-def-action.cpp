@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-def-action.hpp"
-#include "com-core-aggr.hpp"
-#include "../perun2.hpp"
-#include "../os/os.hpp"
+#include "../../include/perun2/command/com-def-action.hpp"
+#include "../../include/perun2/command/com-core-aggr.hpp"
+#include "../../include/perun2/perun2.hpp"
+#include "../../include/perun2/os/os.hpp"
 
 
 namespace perun2::comm

@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "order-limit-one.hpp"
+#include "../../include/perun2/datatype/order-limit-one.hpp"
 
 namespace perun2::gen
 {

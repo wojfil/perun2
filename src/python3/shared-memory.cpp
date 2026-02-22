@@ -12,12 +12,12 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shared-memory.hpp"
-#include "../context/ctx-file.hpp"
-#include "../command/com-execute.hpp"
-#include "../perun2.hpp"
-#include "com-python3.hpp"
-#include "python3-processes.hpp"
+#include "../../include/perun2/python3/shared-memory.hpp"
+#include "../../include/perun2/context/ctx-file.hpp"
+#include "../../include/perun2/command/com-execute.hpp"
+#include "../../include/perun2/perun2.hpp"
+#include "../../include/perun2/python3/com-python3.hpp"
+#include "../../include/perun2/python3/python3-processes.hpp"
 #include <cstring>
 
 

@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "func-bool.hpp"
-#include "../../os/os.hpp"
-#include "../../python3/python3-processes.hpp"
+#include "../../../include/perun2/datatype/function/func-bool.hpp"
+#include "../../../include/perun2/os/os.hpp"
+#include "../../../include/perun2/python3/python3-processes.hpp"
 
 namespace perun2::func
 {

@@ -11,8 +11,8 @@
     You should have received a copy of the GNU General Public License
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
-#include "logger.hpp"
-#include "perun2.hpp"
+#include "../include/perun2/logger.hpp"
+#include "../include/perun2/perun2.hpp"
 
 namespace perun2
 {

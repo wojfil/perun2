@@ -13,7 +13,7 @@
 */
 
 
-#include "os-mac.hpp"
+#include "../../include/perun2/os/os-mac.hpp"
 
 
 namespace perun2

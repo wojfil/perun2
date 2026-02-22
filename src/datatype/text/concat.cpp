@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "concat.hpp"
+#include "../../../include/perun2/datatype/text/concat.hpp"
 #include <wchar.h>
 
 

@@ -20,8 +20,8 @@
 #define _UNICODE
 #endif
 
-#include "console.hpp"
-#include "datatype/primitives.hpp"
+#include "../include/perun2/console.hpp"
+#include "../include/perun2/datatype/primitives.hpp"
 
 #include <locale>
 #include <clocale>

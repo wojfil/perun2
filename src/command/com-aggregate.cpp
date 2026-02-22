@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-aggregate.hpp"
-#include "com-core-aggr.hpp"
-#include "../os/os.hpp"
-#include "../perun2.hpp"
+#include "../../include/perun2/command/com-aggregate.hpp"
+#include "../../include/perun2/command/com-core-aggr.hpp"
+#include "../../include/perun2/os/os.hpp"
+#include "../../include/perun2/perun2.hpp"
 
 
 namespace perun2::comm

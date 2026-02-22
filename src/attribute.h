@@ -53,14 +53,12 @@ p_constexpr p_aunit ATTR_IMAGE_OR_VIDEO = 1 << 21;
 // instead of reading them one by one
 // all attributes from an expression are joined together and read at once at the beginning of expression evaluation
 
-struct Perun2Process;
 
 struct Attribute
 {
 public:
-   Attribute() = delete;
-   Attribute(Perun2Process& p2);
-   Attribute(const p_aunit val, Perun2Process& p2);
+   Attribute();
+   Attribute(const p_aunit val);
 
    void add(const Token& tk);
    void set(const p_aunit v);
@@ -69,11 +67,9 @@ public:
    p_bool has(const p_aunit v) const;
    p_bool hasAny() const;
    p_aunit getValue() const;
-   
-   Perun2Process& perun2;
 
 private:
-   p_aunit value = ATTR_NULL;
+   p_aunit value;
 };
 
 typedef std::unique_ptr<Attribute> p_attrptr;

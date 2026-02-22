@@ -259,7 +259,7 @@ void os_loadAttributes(FileContext& context)
       if (context.v_exists->value) {
          context.v_size->value = context.v_isfile->value
             ? static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
-            : os_sizeDirectory(context.v_path->value, context.attribute->perun2);
+            : os_sizeDirectory(context.v_path->value, context.perun2);
       }
       else {
          context.v_size->value = P_NaN;
@@ -401,7 +401,7 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
    if (attribute->has(ATTR_SIZE)) {
       context.v_size->value = context.v_isfile->value
          ? static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
-         : os_sizeDirectory(context.v_path->value, context.attribute->perun2);
+         : os_sizeDirectory(context.v_path->value, context.perun2);
    }
    else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
       if (context.v_isfile->value) {

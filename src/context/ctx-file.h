@@ -36,6 +36,7 @@ namespace perun2
       void loadAttributes();
       void loadAttributes(const p_fdata& data);
 
+      Perun2Process& perun2;
       p_bool attributeScope = true;
       p_varptr<p_str> this_;
       p_attrptr attribute;

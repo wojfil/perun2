@@ -163,7 +163,7 @@ static p_bool parseLooped(const Tokens& tks, p_comptr& innerCommand, p_fcptr& ct
 
 static void makeCoreCommandContext(p_fcptr& result, Perun2Process& p2)
 {
-   p_attrptr attr = std::make_unique<Attribute>(p2);
+   p_attrptr attr = std::make_unique<Attribute>();
    attr->setCoreCommandBase();
    result = std::make_unique<FileContext>(attr, p2);
 }
@@ -260,7 +260,7 @@ static p_bool kwCommandTime(p_comptr& result, const Token& word, Tokens& tks, co
       commandSyntaxError(str(word.origin, L" to\""), line);
    }
 
-   p_attrptr attr = std::make_unique<Attribute>(p2);
+   p_attrptr attr = std::make_unique<Attribute>();
    attr->setTimeCommandBase();
    p2.contexts.closeAttributeScope();
    p_fcptr ctx = std::make_unique<FileContext>(attr, p2);

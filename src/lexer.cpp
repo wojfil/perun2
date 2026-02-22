@@ -445,7 +445,7 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
             p_nint i2 = integer * multiplier;
 
             if (multiplier != NINT_ZERO && i2 / multiplier != integer) {
-               throw SyntaxError::numberTooBig(code.substr(start, length), line);
+               throw SyntaxError::numberTooBig(origin, line);
             }
 
             return Token(p_num(i2), mode, line, origin);
@@ -454,7 +454,7 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
          return Token(p_num(integer), mode, line, origin);
       }
       catch (...) {
-         throw SyntaxError::numberTooBig(code.substr(start, length), line);
+         throw SyntaxError::numberTooBig(origin, line);
       }
    }
 
@@ -463,11 +463,11 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
    }
 
    if (code[start] == CHAR_DOT) {
-      throw SyntaxError::numberStartingWithDot(code.substr(start, length), line);
+      throw SyntaxError::numberStartingWithDot(origin, line);
    }
 
    if (code[start + length - 1] == CHAR_DOT) {
-      throw SyntaxError::numberEndingWithDot(code.substr(start, length), line);
+      throw SyntaxError::numberEndingWithDot(origin, line);
    }
 
    try {
@@ -484,7 +484,7 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
       return Token(p_num(dbl), mode, line, origin);
    }
    catch (...) {
-      throw SyntaxError::numberTooBig(code.substr(start, length), line);
+      throw SyntaxError::numberTooBig(origin, line);
    }     
 }
 

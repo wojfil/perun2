@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-moveto.h"
-#include "../perun2.h"
-#include "../os/os.h"
-#include "../datatype/patterns.h"
+#include "com-moveto.hpp"
+#include "../perun2.hpp"
+#include "../os/os.hpp"
+#include "../datatype/patterns.hpp"
 
 
 namespace perun2::comm

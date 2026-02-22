@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-condition.h"
-#include "../perun2.h"
-#include "../util.h"
+#include "com-condition.hpp"
+#include "../perun2.hpp"
+#include "../util.hpp"
 
 
 namespace perun2::comm

@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "order.h"
-#include "../util.h"
-#include "../datatype/patterns.h"
+#include "order.hpp"
+#include "../util.hpp"
+#include "../datatype/patterns.hpp"
 
 
 namespace perun2::gen

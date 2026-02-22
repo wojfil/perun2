@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "resemblance.h"
-#include "raw.h"
-#include "../../logger.h"
+#include "resemblance.hpp"
+#include "raw.hpp"
+#include "../../logger.hpp"
 #include <limits>
 
 

@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "lexer.h"
-#include "exception.h"
-#include "brackets.h"
+#include "lexer.hpp"
+#include "exception.hpp"
+#include "brackets.hpp"
 
 
 namespace perun2

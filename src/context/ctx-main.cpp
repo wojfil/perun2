@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ctx-main.h"
-#include "../perun2.h"
+#include "ctx-main.hpp"
+#include "../perun2.hpp"
 
 
 namespace perun2

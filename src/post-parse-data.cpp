@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "post-parse-data.h"
-#include "perun2.h"
-#include "os/os.h"
+#include "post-parse-data.hpp"
+#include "perun2.hpp"
+#include "os/os.hpp"
 
 
 namespace perun2

@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-execute.h"
-#include "../os/os.h"
-#include "../perun2.h"
-#include "com-core.h"
+#include "com-execute.hpp"
+#include "../os/os.hpp"
+#include "../perun2.hpp"
+#include "com-core.hpp"
 #include <chrono>
 #include <thread>
 #include <algorithm>

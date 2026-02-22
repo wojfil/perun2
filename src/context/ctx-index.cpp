@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ctx-index.h"
+#include "ctx-index.hpp"
 
 namespace perun2
 {

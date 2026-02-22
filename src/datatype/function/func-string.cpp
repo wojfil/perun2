@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "func-string.h"
-#include "../../lexer.h"
-#include "../../util.h"
-#include "../math.h"
-#include "../text/raw.h"
+#include "func-string.hpp"
+#include "../../lexer.hpp"
+#include "../../util.hpp"
+#include "../math.hpp"
+#include "../text/raw.hpp"
 #include <algorithm>
 #include <sstream>
 #include <cmath>

@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ctx-file.h"
-#include "../perun2.h"
-#include "../os/os.h"
+#include "ctx-file.hpp"
+#include "../perun2.hpp"
+#include "../os/os.hpp"
 
 
 namespace perun2

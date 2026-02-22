@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "arguments.h"
-#include "cmd.h"
-#include "metadata.h"
-#include "os/os.h"
+#include "arguments.hpp"
+#include "cmd.hpp"
+#include "metadata.hpp"
+#include "os/os.hpp"
 
 
 namespace perun2

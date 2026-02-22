@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "registry.h"
-#include "../../datatype/text/concat.h"
-#include "../../datatype/text/strings.h"
+#include "registry.hpp"
+#include "../../datatype/text/concat.hpp"
+#include "../../datatype/text/strings.hpp"
 
 
 namespace perun2::prog

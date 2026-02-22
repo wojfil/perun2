@@ -15,7 +15,7 @@
 #include <cwctype>
 #include <clocale>
 #include <locale>
-#include "chars.h"
+#include "chars.hpp"
 
 
 namespace perun2

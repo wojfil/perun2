@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ctx-global.h"
-#include "../perun2.h"
-#include "../datatype/generator/gen-time.h"
+#include "ctx-global.hpp"
+#include "../perun2.hpp"
+#include "../datatype/generator/gen-time.hpp"
 
 
 namespace perun2

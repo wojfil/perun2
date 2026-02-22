@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "side-process.h"
-#include "os/os.h"
+#include "side-process.hpp"
+#include "os/os.hpp"
 
 
 namespace perun2

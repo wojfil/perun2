@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "between.h"
+#include "between.hpp"
 
 
 namespace perun2::gen

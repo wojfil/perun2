@@ -12,12 +12,12 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-asterisk.h"
-#include "../generator/gen-string.h"
-#include "../generator/gen-generic.h"
-#include "../generator/gen-definition.h"
-#include "../generator/gen-double-asterisk.h"
-#include "../../os/os.h"
+#include "parse-asterisk.hpp"
+#include "../generator/gen-string.hpp"
+#include "../generator/gen-generic.hpp"
+#include "../generator/gen-definition.hpp"
+#include "../generator/gen-double-asterisk.hpp"
+#include "../../os/os.hpp"
 
 
 namespace perun2::parse

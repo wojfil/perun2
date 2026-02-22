@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-time.h"
-#include "gen-generic.h"
-#include "../generator.h"
-#include "../../os/os.h"
+#include "gen-time.hpp"
+#include "gen-generic.hpp"
+#include "../generator.hpp"
+#include "../../os/os.hpp"
 
 
 namespace perun2::gen

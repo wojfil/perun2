@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "perun2.h"
-#include "cmd.h"
+#include "perun2.hpp"
+#include "cmd.hpp"
 
 
 int main(void)

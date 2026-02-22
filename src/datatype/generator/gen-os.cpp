@@ -20,11 +20,11 @@
 #define _UNICODE
 #endif
 
-#include "gen-os.h"
-#include "gen-string.h"
-#include "../../perun2.h"
-#include "../../metadata.h"
-#include "../../os/os.h"
+#include "gen-os.hpp"
+#include "gen-string.hpp"
+#include "../../perun2.hpp"
+#include "../../metadata.hpp"
+#include "../../os/os.hpp"
 
 namespace perun2::gen
 {

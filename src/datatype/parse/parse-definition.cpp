@@ -12,16 +12,16 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-definition.h"
-#include "parse-generic.h"
-#include "../../lexer.h"
-#include "../order.h"
-#include "../generator/gen-definition.h"
-#include "../cast.h"
-#include "../parse/parse-function.h"
-#include "parse-generic.h"
-#include "../parse-gen.h"
-#include "parse-order.h"
+#include "parse-definition.hpp"
+#include "parse-generic.hpp"
+#include "../../lexer.hpp"
+#include "../order.hpp"
+#include "../generator/gen-definition.hpp"
+#include "../cast.hpp"
+#include "../parse/parse-function.hpp"
+#include "parse-generic.hpp"
+#include "../parse-gen.hpp"
+#include "parse-order.hpp"
 
 
 namespace perun2::parse

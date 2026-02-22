@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "attribute.h"
-#include "perun2.h"
-#include "os/os.h"
+#include "attribute.hpp"
+#include "perun2.hpp"
+#include "os/os.hpp"
 
 
 namespace perun2

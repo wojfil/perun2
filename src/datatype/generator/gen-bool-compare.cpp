@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gen-bool-compare.h"
-#include "../../perun2.h"
+#include "gen-bool-compare.hpp"
+#include "../../perun2.hpp"
 
 
 namespace perun2::gen

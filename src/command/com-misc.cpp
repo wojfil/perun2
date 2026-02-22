@@ -12,13 +12,13 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-misc.h"
+#include "com-misc.hpp"
 #include <chrono>
 #include <thread>
 #include <algorithm>
-#include "../os/os.h"
-#include "../perun2.h"
-#include "com-core.h"
+#include "../os/os.hpp"
+#include "../perun2.hpp"
+#include "com-core.hpp"
 #include <sstream>
 
 

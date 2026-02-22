@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "definition.h"
+#include "definition.hpp"
 
 
 namespace perun2

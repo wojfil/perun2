@@ -20,8 +20,8 @@
 #define _UNICODE
 #endif
 
-#include "start-menu.h"
-#include "../../os/os.h"
+#include "start-menu.hpp"
+#include "../../os/os.hpp"
 #include <windows.h>
 #include <shobjidl.h>
 #include <objbase.h>

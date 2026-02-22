@@ -12,21 +12,21 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-bool.h"
-#include "parse-list.h"
-#include "parse-generic.h"
-#include "parse-function.h"
-#include "../parse/parse-function.h"
-#include "../generator/gen-bool.h"
-#include "../generator/gen-bool-constr.h"
-#include "../../brackets.h"
-#include "../../lexer.h"
-#include "../text/like.h"
-#include "../text/resemblance.h"
-#include "../text/regexp.h"
-#include "../parse-gen.h"
-#include "../incr-constr.h"
-#include "../between.h"
+#include "parse-bool.hpp"
+#include "parse-list.hpp"
+#include "parse-generic.hpp"
+#include "parse-function.hpp"
+#include "../parse/parse-function.hpp"
+#include "../generator/gen-bool.hpp"
+#include "../generator/gen-bool-constr.hpp"
+#include "../../brackets.hpp"
+#include "../../lexer.hpp"
+#include "../text/like.hpp"
+#include "../text/resemblance.hpp"
+#include "../text/regexp.hpp"
+#include "../parse-gen.hpp"
+#include "../incr-constr.hpp"
+#include "../between.hpp"
 #include <stack>
 
 

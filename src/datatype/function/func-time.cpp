@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "func-time.h"
-#include "../../exception.h"
+#include "func-time.hpp"
+#include "../../exception.hpp"
 
 
 namespace perun2::func

@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "like.h"
-#include "strings.h"
+#include "like.hpp"
+#include "strings.hpp"
 #include <set>
 
 

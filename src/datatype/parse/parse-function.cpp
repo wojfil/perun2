@@ -12,22 +12,22 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-function.h"
-#include "../../exception.h"
-#include "../../brackets.h"
-#include "../function/func-bool.h"
-#include "../function/func-number.h"
-#include "../function/func-string.h"
-#include "../function/func-time.h"
-#include "../function/func-list.h"
-#include "../function/func-aggr.h"
-#include "../function/func-attr.h"
-#include "../parse-gen.h"
-#include "../generator/gen-generic.h"
-#include "../generator/gen-number.h"
-#include "../generator/gen-string.h"
-#include "../generator/gen-definition.h"
-#include "../math.h"
+#include "parse-function.hpp"
+#include "../../exception.hpp"
+#include "../../brackets.hpp"
+#include "../function/func-bool.hpp"
+#include "../function/func-number.hpp"
+#include "../function/func-string.hpp"
+#include "../function/func-time.hpp"
+#include "../function/func-list.hpp"
+#include "../function/func-aggr.hpp"
+#include "../function/func-attr.hpp"
+#include "../parse-gen.hpp"
+#include "../generator/gen-generic.hpp"
+#include "../generator/gen-number.hpp"
+#include "../generator/gen-string.hpp"
+#include "../generator/gen-definition.hpp"
+#include "../math.hpp"
 
 
 namespace perun2::func

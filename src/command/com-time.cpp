@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-time.h"
-#include "../perun2.h"
-#include "../os/os.h"
-#include "../datatype/patterns.h"
+#include "com-time.hpp"
+#include "../perun2.hpp"
+#include "../os/os.hpp"
+#include "../datatype/patterns.hpp"
 
 
 namespace perun2::comm

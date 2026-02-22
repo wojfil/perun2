@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "comparison.h"
+#include "comparison.hpp"
 
 
 namespace perun2

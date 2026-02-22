@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "brackets.h"
-#include "exception.h"
+#include "brackets.hpp"
+#include "exception.hpp"
 
 
 namespace perun2

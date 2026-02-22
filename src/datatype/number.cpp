@@ -13,11 +13,11 @@
 */
 
 #include <cmath>
-#include "number.h"
-#include "../exception.h"
-#include "primitives.h"
-#include "text/strings.h"
-#include "numbers.h"
+#include "number.hpp"
+#include "../exception.hpp"
+#include "primitives.hpp"
+#include "text/strings.hpp"
+#include "numbers.hpp"
 
 
 namespace perun2

@@ -12,14 +12,14 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-number.h"
-#include "parse-generic.h"
-#include "parse-var.h"
-#include "../parse/parse-function.h"
-#include "../generator/gen-number.h"
-#include "../generator/gen-generic.h"
-#include "../parse-gen.h"
-#include "../../brackets.h"
+#include "parse-number.hpp"
+#include "parse-generic.hpp"
+#include "parse-var.hpp"
+#include "../parse/parse-function.hpp"
+#include "../generator/gen-number.hpp"
+#include "../generator/gen-generic.hpp"
+#include "../parse-gen.hpp"
+#include "../../brackets.hpp"
 
 
 namespace perun2::parse

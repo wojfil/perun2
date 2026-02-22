@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "python3-processes.h"
-#include "../context/ctx-file.h"
-#include "../command/com-execute.h"
-#include "../perun2.h"
-#include "com-python3.h"
+#include "python3-processes.hpp"
+#include "../context/ctx-file.hpp"
+#include "../command/com-execute.hpp"
+#include "../perun2.hpp"
+#include "com-python3.hpp"
 #include <iostream>
 #include <thread>
 #include <future>

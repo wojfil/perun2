@@ -20,10 +20,10 @@
 #define _UNICODE
 #endif
 
-#include "os.h"
+#include "os.hpp"
 #include <time.h>
-#include "../perun2.h"
-#include "../datatype/parse/parse-asterisk.h"
+#include "../perun2.hpp"
+#include "../datatype/parse/parse-asterisk.hpp"
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>

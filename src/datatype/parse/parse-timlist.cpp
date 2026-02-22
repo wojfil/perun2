@@ -12,13 +12,13 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-numlist.h"
-#include "parse-generic.h"
-#include "../generator/gen-generic.h"
-#include "../../lexer.h"
-#include "../../datatype/order.h"
-#include "../../util.h"
-#include "../parse-gen.h"
+#include "parse-numlist.hpp"
+#include "parse-generic.hpp"
+#include "../generator/gen-generic.hpp"
+#include "../../lexer.hpp"
+#include "../../datatype/order.hpp"
+#include "../../util.hpp"
+#include "../parse-gen.hpp"
 
 
 namespace perun2::parse

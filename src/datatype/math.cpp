@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "math.h"
-#include "numbers.h"
+#include "math.hpp"
+#include "numbers.hpp"
 
 
 namespace perun2

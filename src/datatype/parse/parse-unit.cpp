@@ -12,16 +12,16 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-unit.h"
-#include "../generator/gen-generic.h"
-#include "../generator/gen-number.h"
-#include "../generator/gen-string.h"
-#include "../generator/gen-time.h"
-#include "../generator/gen-os.h"
-#include "../../os/os.h"
-#include "parse-number.h"
-#include "parse-asterisk.h"
-#include "parse-var.h"
+#include "parse-unit.hpp"
+#include "../generator/gen-generic.hpp"
+#include "../generator/gen-number.hpp"
+#include "../generator/gen-string.hpp"
+#include "../generator/gen-time.hpp"
+#include "../generator/gen-os.hpp"
+#include "../../os/os.hpp"
+#include "parse-number.hpp"
+#include "parse-asterisk.hpp"
+#include "parse-var.hpp"
 
 
 namespace perun2::parse

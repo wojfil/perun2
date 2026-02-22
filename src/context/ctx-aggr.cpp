@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ctx-aggr.h"
-#include "../perun2.h"
+#include "ctx-aggr.hpp"
+#include "../perun2.hpp"
 
 
 namespace perun2

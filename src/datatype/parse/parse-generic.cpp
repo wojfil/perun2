@@ -12,12 +12,12 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse-generic.h"
-#include "../../brackets.h"
-#include "../../lexer.h"
-#include "../generator/gen-definition.h"
-#include "../generator/gen-time.h"
-#include "../generator/gen-list.h"
+#include "parse-generic.hpp"
+#include "../../brackets.hpp"
+#include "../../lexer.hpp"
+#include "../generator/gen-definition.hpp"
+#include "../generator/gen-time.hpp"
+#include "../generator/gen-list.hpp"
 
 
 namespace perun2::parse

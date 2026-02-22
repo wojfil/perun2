@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "com-parse-unit.h"
-#include "../datatype/number.h"
-#include "../exception.h"
-#include "com-condition.h"
+#include "com-parse-unit.hpp"
+#include "../datatype/number.hpp"
+#include "../exception.hpp"
+#include "com-condition.hpp"
 
 
 namespace perun2::comm

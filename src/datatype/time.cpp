@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "time.h"
-#include "datatype.h"
+#include "time.hpp"
+#include "datatype.hpp"
 #include <vector>
 #include <sstream>
 #include <math.h>

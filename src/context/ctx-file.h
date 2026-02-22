@@ -74,7 +74,7 @@ namespace perun2
       Variable<p_per>* v_duration;
 
    private:
-      void initVars(Perun2Process& p2);
+      void initVars();
 
       template <typename T>
       Variable<T>* insertVar(const p_str& name)

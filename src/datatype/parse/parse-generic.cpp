@@ -43,8 +43,8 @@ void checkLimitBySize(const Tokens& tks, Perun2Process& p2)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
-      if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
-         throw SyntaxError(str(L"a collection cannot be limited by file size \"", tk.getOriginString(p2),
+      if (tk.type == Token::t_Number && tk.value.number.mode == NumberMode::nm_Size) {
+         throw SyntaxError(str(L"a collection cannot be limited by file size \"", tk.origin,
             L"\" this way"),
             tk.line);
       }

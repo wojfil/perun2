@@ -106,9 +106,9 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
       return false;
    }
 
-   const p_num& num = first.value.num.n;
+   const p_num& num = first.value.number.value;
 
-   if (last.isWord(STRINGS_PERIOD_SINGLE, p2)) {
+   if (last.isWord(STRINGS_PERIOD_SINGLE)) {
       const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
       if (num.state == NumberState::Int) {
@@ -117,7 +117,7 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
             return true;
          }
          else {
-            throw SyntaxError::missingLetterS(last.getOriginString(p2), last.line);
+            throw SyntaxError::missingLetterS(last.origin, last.line);
          }
       }
       else if (num.state == NumberState::Double) {
@@ -126,12 +126,12 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
             return true;
          }
          else {
-            throw SyntaxError::missingLetterS(last.getOriginString(p2), last.line);
+            throw SyntaxError::missingLetterS(last.origin, last.line);
          }
       }
    }
 
-   if (last.isWord(STRINGS_PERIOD_MULTI, p2)) {
+   if (last.isWord(STRINGS_PERIOD_MULTI)) {
       const Period::PeriodUnit unit = toPeriodUnit(last, p2);
 
       p_tnum v = (num.state == NumberState::Double)
@@ -152,8 +152,8 @@ p_bool parsePeriodConst(p_genptr<p_per>& result, const Tokens& tks, const p_bool
 p_bool parsePeriodUnit(p_genptr<p_per>& result, const Tokens& tks, Perun2Process& p2)
 {
    const Token& last = tks.last();
-   const p_bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE, p2);
-   const p_bool lastIsMulti = last.isWord(STRINGS_PERIOD_MULTI, p2);
+   const p_bool lastIsSingle = last.isWord(STRINGS_PERIOD_SINGLE);
+   const p_bool lastIsMulti = last.isWord(STRINGS_PERIOD_MULTI);
 
    if (!(lastIsSingle || lastIsMulti)) {
       return false;
@@ -168,7 +168,7 @@ p_bool parsePeriodUnit(p_genptr<p_per>& result, const Tokens& tks, Perun2Process
    }
 
    if (lastIsSingle) {
-      throw SyntaxError::missingLetterS(last.getOriginString(p2), last.line);
+      throw SyntaxError::missingLetterS(last.origin, last.line);
    }
 
    if (lastIsMulti) {
@@ -373,22 +373,22 @@ p_bool parseTimeDifference(p_genptr<p_per>& result, const Tokens& tks, Perun2Pro
 
 Period::PeriodUnit toPeriodUnit(const Token& tk, Perun2Process& p2)
 {
-   if (tk.isWord(STRING_YEAR, p2) || tk.isWord(STRING_YEARS, p2))
+   if (tk.isWord(STRING_YEAR) || tk.isWord(STRING_YEARS))
       return Period::u_Years;
 
-   if (tk.isWord(STRING_MONTH, p2) || tk.isWord(STRING_MONTHS, p2))
+   if (tk.isWord(STRING_MONTH) || tk.isWord(STRING_MONTHS))
       return Period::u_Months;
 
-   if (tk.isWord(STRING_WEEK, p2) || tk.isWord(STRING_WEEKS, p2))
+   if (tk.isWord(STRING_WEEK) || tk.isWord(STRING_WEEKS))
       return Period::u_Weeks;
 
-   if (tk.isWord(STRING_DAY, p2) || tk.isWord(STRING_DAYS, p2))
+   if (tk.isWord(STRING_DAY) || tk.isWord(STRING_DAYS))
       return Period::u_Days;
 
-   if (tk.isWord(STRING_HOUR, p2) || tk.isWord(STRING_HOURS, p2))
+   if (tk.isWord(STRING_HOUR) || tk.isWord(STRING_HOURS))
       return Period::u_Hours;
 
-   if (tk.isWord(STRING_MINUTE, p2) || tk.isWord(STRING_MINUTES, p2))
+   if (tk.isWord(STRING_MINUTE) || tk.isWord(STRING_MINUTES))
       return Period::u_Minutes;
 
    return Period::u_Seconds;

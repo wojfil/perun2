@@ -111,7 +111,7 @@ WindowsPrograms::WindowsPrograms(Perun2Process& p2) : perun2(p2)
 void WindowsPrograms::actualize(const Token& tk)
 {
    for (auto& program : this->programs) {
-      if (tk.isWord(program->names, this->perun2)) {
+      if (tk.isWord(program->names)) {
          if (! program->loaded) {
             program->actualize();
             program->loaded = true;
@@ -126,7 +126,7 @@ void WindowsPrograms::actualize(const Token& tk)
 p_bool WindowsPrograms::haveName(const Token& tk) const
 {
    for (const auto& program : this->programs) {
-      if (tk.isWord(program->names, this->perun2)) {
+      if (tk.isWord(program->names)) {
          return true;
       }
    }

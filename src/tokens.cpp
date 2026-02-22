@@ -243,10 +243,10 @@ p_int Tokens::getFilterKeywordId(Perun2Process& p2) const
 
       if (t.isFilterKeyword() && bi.isBracketFree()) {
          if (i == this->start) {
-            throw SyntaxError::filterKeywordAtStart(t.getOriginString(p2), t.line);
+            throw SyntaxError::filterKeywordAtStart(t.origin, t.line);
          }
          else if (i == this->start + getLength() - 1) {
-            throw SyntaxError::filterKeywordAtEnd(t.getOriginString(p2), t.line);
+            throw SyntaxError::filterKeywordAtEnd(t.origin, t.line);
          }
 
          return i;
@@ -271,7 +271,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
       if (t.isFilterKeyword() && bi.isBracketFree()) {
          if (sublen == 0) {
             const Token& prev = this->listAt(i - 1);
-            throw SyntaxError::adjacentFilterKeywords(prev.getOriginString(p2), t.getOriginString(p2), t.line);
+            throw SyntaxError::adjacentFilterKeywords(prev.origin, t.origin, t.line);
          }
 
          result.emplace_back(*this, i - sublen - 1, sublen + 1);
@@ -284,7 +284,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
    }
 
    if (sublen == 0) {
-      throw SyntaxError::expressionCannotEndWithFilterKeyword(last().getOriginString(p2), last().line);
+      throw SyntaxError::expressionCannotEndWithFilterKeyword(last().origin, last().line);
    }
    else {
       result.emplace_back(*this, this->end - sublen, sublen + 1);
@@ -306,13 +306,13 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
             if (hasQuestionMark) {
-               if (t.value.ch == CHAR_COLON) {
+               if (t.value.singleChar == CHAR_COLON) {
                   loop = false;
                   colonId = i;
                }
             }
             else {
-               if (t.value.ch == CHAR_QUESTION_MARK) {
+               if (t.value.singleChar == CHAR_QUESTION_MARK) {
                   hasQuestionMark = true;
                   questionMarkId = i;
                }
@@ -341,7 +341,7 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
       const Token& f = first();
       if (f.type == Token::t_Word && !p2.contexts.varExists(f, p2))
       {
-         throw SyntaxError(str(L"the variable \"", f.getOriginString(p2), 
+         throw SyntaxError(str(L"the variable \"", f.origin, 
             L"\" does not exist or is unreachable here. Look for a typo"), f.line);
       }
    }
@@ -361,7 +361,7 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
       }
 
       if (t.type == Token::t_MultiSymbol) {
-         switch (t.value.chars.ch) {
+         switch (t.value.repeatedChars.value) {
             case CHAR_PLUS: {
                if (i == this->start) {
                   throw SyntaxError::expressionCannotStartWithIncrementation(t.line);
@@ -383,7 +383,7 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
          }
       }
       else if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
-         throw SyntaxError::expectedSemicolonBeforeKeyword(t.getOriginString(p2), t.line);
+         throw SyntaxError::expectedSemicolonBeforeKeyword(t.origin, t.line);
       }
 
       prevExclamantion = t.isSymbol(CHAR_EXCLAMATION_MARK);
@@ -404,7 +404,7 @@ void Tokens::setData()
          for (p_int i = this->start; b && i <= this->end; i++) {
             const Token& t = this->list[i];
             if (t.type == Token::t_Symbol) {
-               switch (t.value.ch) {
+               switch (t.value.singleChar) {
                   case CHAR_OPENING_ROUND_BRACKET: {
                      lvl++;
                      break;
@@ -449,7 +449,7 @@ void Tokens::setData()
       if (round == 0 && square == 0) {
          switch (t.type) {
             case Token::t_Symbol: {
-               switch (t.value.ch) {
+               switch (t.value.singleChar) {
                   case CHAR_QUESTION_MARK: {
                      this->info |= TI_HAS_CHAR_QUESTION_MARK;
                      if (firstQuestionMarkId == -1) {
@@ -494,7 +494,7 @@ void Tokens::setData()
                break;
             }
             case Token::t_Keyword: {
-               switch (t.value.keyword.k) {
+               switch (t.value.keyword) {
                   case Keyword::kw_In: {
                      this->info |= TI_HAS_KEYWORD_IN;
                      break;
@@ -544,7 +544,7 @@ void Tokens::setData()
       }
 
       if (t.type == Token::t_Symbol) {
-         switch (t.value.ch) {
+         switch (t.value.singleChar) {
             case CHAR_OPENING_ROUND_BRACKET:  {
                round++;
                break;
@@ -659,7 +659,7 @@ void Tokens::setData()
             throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);
          }
 
-         if (last.type == Token::Type::t_TwoWords && last.value.twoWords.os1.length == 0) {
+         if (last.type == Token::Type::t_TwoWords && last.origin2.size() == 0) {
             this->info |= TI_IS_LIST_ELEM_MEMBER;
          }
       }

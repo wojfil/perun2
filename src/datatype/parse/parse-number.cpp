@@ -58,8 +58,8 @@ p_bool parseNumber(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2
 
       for (p_int i = start; i <= end; i++) {
          const Token& t = tks.listAt(i);
-         if (t.type == Token::t_Symbol && isNumExpOperator(t.value.ch) && bi.isBracketFree()
-             && !(i == start && t.value.ch == CHAR_MINUS))
+         if (t.type == Token::t_Symbol && isNumExpOperator(t.value.singleChar) && bi.isBracketFree()
+             && !(i == start && t.value.singleChar == CHAR_MINUS))
          {
             if (parseNumExp(result, tks, p2)) {
                return true;
@@ -78,7 +78,7 @@ p_bool parseNumber(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2
                      for (const Tokens& tk : elements) {
                         const Token& f = tk.first();
                         if (tk.getLength() == 1 && f.type == Token::t_Pattern) {
-                           throw SyntaxError::supposedUnintentionalAsteriskPattern(f.getOriginString(p2), f.line);
+                           throw SyntaxError::supposedUnintentionalAsteriskPattern(f.origin, f.line);
                         }
                      }
 
@@ -125,28 +125,28 @@ p_bool parseNumber(p_genptr<p_num>& result, const Tokens& tks, Perun2Process& p2
          const Token& last = tks.last();
          p_genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
 
-         if (last.isSecondWord(STRING_YEAR, p2) || last.isSecondWord(STRING_YEARS, p2)) {
+         if (last.isSecondWord(STRING_YEAR) || last.isSecondWord(STRING_YEARS)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Years);
          }
-         else if (last.isSecondWord(STRING_MONTH, p2) || last.isSecondWord(STRING_MONTHS, p2)) {
+         else if (last.isSecondWord(STRING_MONTH) || last.isSecondWord(STRING_MONTHS)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Months);
          }
-         else if (last.isSecondWord(STRING_WEEKDAY, p2)) {
+         else if (last.isSecondWord(STRING_WEEKDAY)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Weeks);
          }
-         else if (last.isSecondWord(STRING_DAY, p2) || last.isSecondWord(STRING_DAYS, p2)) {
+         else if (last.isSecondWord(STRING_DAY) || last.isSecondWord(STRING_DAYS)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Days);
          }
-         else if (last.isSecondWord(STRING_HOUR, p2) || last.isSecondWord(STRING_HOURS, p2)) {
+         else if (last.isSecondWord(STRING_HOUR) || last.isSecondWord(STRING_HOURS)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Hours);
          }
-         else if (last.isSecondWord(STRING_MINUTE, p2) || last.isSecondWord(STRING_MINUTES, p2)) {
+         else if (last.isSecondWord(STRING_MINUTE) || last.isSecondWord(STRING_MINUTES)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Minutes);
          }
-         else if (last.isSecondWord(STRING_SECOND, p2) || last.isSecondWord(STRING_SECONDS, p2)) {
+         else if (last.isSecondWord(STRING_SECOND) || last.isSecondWord(STRING_SECONDS)) {
             result = std::make_unique<gen::TimeMember>(tim, Period::u_Seconds);
          }
-         else if (last.isSecondWord(STRING_DATE, p2)) {
+         else if (last.isSecondWord(STRING_DATE)) {
             return false;
          }
          else {
@@ -175,7 +175,7 @@ static p_bool parseNumExp(p_genptr<p_num>& result, const Tokens& tks, Perun2Proc
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         const p_char ch = t.value.ch;
+         const p_char ch = t.value.singleChar;
 
          if (isNumExpOperator(ch)) {
             if (sublen == 0) {
@@ -192,7 +192,7 @@ static p_bool parseNumExp(p_genptr<p_num>& result, const Tokens& tks, Perun2Proc
                   if (tks2.getLength() == 1
                      && tks2.first().type == Token::t_Number) {
 
-                     const p_num num = tks2.first().value.num.n;
+                     const p_num num = tks2.first().value.number.value;
                      infList.emplace_back(num, line);
                      infList.emplace_back(ch, line);
                      sublen = 0;
@@ -239,7 +239,7 @@ static p_bool parseNumExp(p_genptr<p_num>& result, const Tokens& tks, Perun2Proc
       Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().type == Token::t_Number) {
-         infList.emplace_back(tks2.first().value.num.n, tks2.first().line);
+         infList.emplace_back(tks2.first().value.number.value, tks2.first().line);
       }
       else {
          p_genptr<p_num> num;
@@ -619,7 +619,7 @@ static p_bool isNumExpHighPriority(const p_char ch)
 
 void timeVariableMemberException(const Token& tk, Perun2Process& p2)
 {
-   throw SyntaxError(str(L"\"", tk.getOriginString_2(p2),
+   throw SyntaxError(str(L"\"", tk.origin2,
       L"\" is not a time variable member"), tk.line);
 }
 

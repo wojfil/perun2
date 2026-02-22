@@ -39,7 +39,7 @@ namespace perun2::comm
 p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
    const p_int line, const CoreCommandMode mode, Perun2Process& p2)
 {
-   switch (word.value.keyword.k) {
+   switch (word.value.keyword) {
       case Keyword::kw_Delete:
       case Keyword::kw_Drop:
       case Keyword::kw_Hide:
@@ -75,7 +75,7 @@ p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
       case Keyword::kw_Continue:
       case Keyword::kw_Exit: {
          checkUselessFlags(word, line, mode, p2);
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L"\" cannot be called with an argument"), line);
+         throw SyntaxError(str(L"the command \"", word.origin, L"\" cannot be called with an argument"), line);
       }
       case Keyword::kw_Error: {
          checkUselessFlags(word, line, mode, p2);
@@ -115,7 +115,7 @@ p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
          return c_popup(result, word, tks, line, p2);
       }
       case Keyword::kw_Python: {
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L"\" does not exist. You probably meant Python3"), line);
+         throw SyntaxError(str(L"the command \"", word.origin, L"\" does not exist. You probably meant Python3"), line);
       }
       case Keyword::kw_Python3: {
          checkUselessFlags(word, line, mode, p2);
@@ -127,7 +127,7 @@ p_bool keywordCommands(p_comptr& result, const Token& word, Tokens& tks,
       }
    }
 
-   throw SyntaxError(str(L"the command cannot start with a keyword \"", word.getOriginString(p2), L"\""), line);
+   throw SyntaxError(str(L"the command cannot start with a keyword \"", word.origin, L"\""), line);
    return false;
 }
 
@@ -171,7 +171,7 @@ static void makeCoreCommandContext(p_fcptr& result, Perun2Process& p2)
 static p_bool kwCommandSimple(p_comptr& result, const Token& word, Tokens& tks, const p_int line, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -187,13 +187,13 @@ static p_bool kwCommandSimple(p_comptr& result, const Token& word, Tokens& tks, 
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
 static p_bool coreCommandSimple(p_comptr& result, const Token& word, FileContext* context, const p_bool saveChanges, Perun2Process& p2)
 {
-   switch (word.value.keyword.k) {
+   switch (word.value.keyword) {
       case Keyword::kw_Delete: {
          result = std::make_unique<C_Delete>(saveChanges, context, p2);
          break;
@@ -229,35 +229,35 @@ static p_bool coreCommandSimple(p_comptr& result, const Token& word, FileContext
 static p_bool kwCommandTime(p_comptr& result, const Token& word, Tokens& tks, const p_int line, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to\" is empty"), line);
+      throw SyntaxError(str(L"the command \"", word.origin, L" to\" is empty"), line);
    }
 
    if (!tks.check(TI_HAS_KEYWORD_TO)) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to\" does not contain a keyword \"to\""), line);
+      throw SyntaxError(str(L"the command \"", word.origin, L" to\" does not contain a keyword \"to\""), line);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to\" does not contain its time argument"), line);
+      throw SyntaxError(str(L"the command \"", word.origin, L" to\" does not contain its time argument"), line);
    }
 
    if (left.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setTimeCommandBase();
       p2.contexts.closeDeepAttributeScope();
 
       p_genptr<p_tim> tim;
       if (!parse::parse(p2, right, tim)) {
-         throw SyntaxError(str(L"the time argument of the command \"", word.getOriginString(p2), L" to\" is invalid"), line);
+         throw SyntaxError(str(L"the time argument of the command \"", word.origin, L" to\" is invalid"), line);
       }
 
       if (coreCommandTime(result, word, ctx, tim, true, p2)) {
          return true;
       }
 
-      commandSyntaxError(str(word.getOriginString(p2), L" to\""), line);
+      commandSyntaxError(str(word.origin, L" to\""), line);
    }
 
    p_attrptr attr = std::make_unique<Attribute>(p2);
@@ -269,7 +269,7 @@ static p_bool kwCommandTime(p_comptr& result, const Token& word, Tokens& tks, co
 
    p_genptr<p_tim> tim;
    if (!parse::parse(p2, right, tim)) {
-      throw SyntaxError(str(L"the time argument of the command \"", word.getOriginString(p2), L" to\" is invalid"), line);
+      throw SyntaxError(str(L"the time argument of the command \"", word.origin, L" to\" is invalid"), line);
    }
 
    p2.contexts.retreatFileContext();
@@ -279,14 +279,14 @@ static p_bool kwCommandTime(p_comptr& result, const Token& word, Tokens& tks, co
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
 static p_bool coreCommandTime(p_comptr& result, const Token& word, FileContext* context,
    p_genptr<p_tim>& time, const p_bool saveChanges, Perun2Process& p2)
 {
-   switch (word.value.keyword.k) {
+   switch (word.value.keyword) {
       case Keyword::kw_Reaccess: {
          result = std::make_unique<C_ReaccessTo>(time, saveChanges, context, p2);
          break;
@@ -314,7 +314,7 @@ static p_bool coreCommandTime(p_comptr& result, const Token& word, FileContext* 
 static p_bool c_open(p_comptr& result, const Token& word, const Tokens& tks, const p_int line, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -326,7 +326,7 @@ static p_bool c_open(p_comptr& result, const Token& word, const Tokens& tks, con
       P_DIVIDE_BY_KEYWORD(kw_With);
 
       if (right.isEmpty()) {
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2),  L" with\" does not "
+         throw SyntaxError(str(L"the command \"", word.origin,  L" with\" does not "
             L"contain its last argument"), line);
       }
 
@@ -336,14 +336,14 @@ static p_bool c_open(p_comptr& result, const Token& word, const Tokens& tks, con
 
       p_genptr<p_str> prog;
       if (!parse::parse(p2, right, prog)) {
-         throw SyntaxError(str(L"the last argument of the command \"", word.getOriginString(p2), L" with\" "
+         throw SyntaxError(str(L"the last argument of the command \"", word.origin, L" with\" "
             L"cannot be resolved to a string"), line);
       }
 
       p2.contexts.retreatFileContext();
 
       if (left.isEmpty()) {
-         checkFileContextExistence(str(word.getOriginString(p2), L" with"), line, p2);
+         checkFileContextExistence(str(word.origin, L" with"), line, p2);
          FileContext* ctx = p2.contexts.getFileContext();
          ctx->attribute->setCoreCommandBase();
          p2.contexts.closeDeepAttributeScope();
@@ -357,7 +357,7 @@ static p_bool c_open(p_comptr& result, const Token& word, const Tokens& tks, con
             return true;
          }
 
-         throw SyntaxError(str(L"wrong syntax of the command \"", word.getOriginString(p2), L" with\""), line);
+         throw SyntaxError(str(L"wrong syntax of the command \"", word.origin, L" with\""), line);
       }
    }
 
@@ -370,7 +370,7 @@ static p_bool c_open(p_comptr& result, const Token& word, const Tokens& tks, con
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -403,7 +403,7 @@ static p_bool c_select(p_comptr& result, const Token& word, const Tokens& tks, c
    }
    else {
       if (tks.isEmpty()) {
-         commandNoArgException(word.getOriginString(p2), line);
+         commandNoArgException(word.origin, line);
       }
 
       p_genptr<p_str> str;
@@ -442,7 +442,7 @@ static p_bool c_select(p_comptr& result, const Token& word, const Tokens& tks, c
       }
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -450,17 +450,17 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to\" is empty"), line);
+      throw SyntaxError(str(L"the command \"", word.origin, L" to\" is empty"), line);
    }
 
    if (!tks.check(TI_HAS_KEYWORD_TO)) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),  L" to\" does not contain a keyword \"to\""), line);
+      throw SyntaxError(str(L"the command \"", word.origin,  L" to\" does not contain a keyword \"to\""), line);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_To);
 
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to\" ",
+      throw SyntaxError(str(L"the command \"", word.origin, L" to\" ",
          L"does not contain a declaration of a new file name"), line);
    }
 
@@ -475,7 +475,7 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
    }
 
    if (left.isEmpty()) {
-      checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
+      checkFileContextExistence(str(word.origin, L" to"), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -483,7 +483,7 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
 
       p_genptr<p_str> newName;
       if (!parse::parse(p2, right, newName)) {
-         throw SyntaxError(str(L"the declaration of a new name in the command \"", word.getOriginString(p2), L" to\" is invalid"), line);
+         throw SyntaxError(str(L"the declaration of a new name in the command \"", word.origin, L" to\" is invalid"), line);
       }
 
       if (mode == CoreCommandMode::ccm_Stack) {
@@ -504,7 +504,7 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
 
    p_genptr<p_str> newName;
    if (!parse::parse(p2, right, newName)) {
-      throw SyntaxError(str(L"the declaration of a new name in the command \"", word.getOriginString(p2), L" to\" is invalid"), line);
+      throw SyntaxError(str(L"the declaration of a new name in the command \"", word.origin, L" to\" is invalid"), line);
    }
 
    p2.contexts.retreatFileContext();
@@ -539,7 +539,7 @@ static p_bool c_rename(p_comptr& result, const Token& word, const Tokens& tks, c
       return true;
    }
 
-   commandSyntaxError(str(word.getOriginString(p2), L" to"), line);
+   commandSyntaxError(str(word.origin, L" to"), line);
    return false;
 }
 
@@ -547,7 +547,7 @@ static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, c
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -588,7 +588,7 @@ static p_bool c_create(p_comptr& result, const Token& word, const Tokens& tks, c
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -597,7 +597,7 @@ static p_bool c_createFile(p_comptr& result, const Token& word, const Tokens& tk
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -626,14 +626,14 @@ static p_bool c_createFile(p_comptr& result, const Token& word, const Tokens& tk
       return true;
    }
 
-   throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), L"\" cannot be resolved to a string"), line);
+   throw SyntaxError(str(L"the argument of the command \"", word.origin, L"\" cannot be resolved to a string"), line);
 }
 
 static p_bool c_createDirectory(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -662,14 +662,14 @@ static p_bool c_createDirectory(p_comptr& result, const Token& word, const Token
       return true;
    }
 
-   throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), L"\" cannot be resolved to a string"), line);
+   throw SyntaxError(str(L"the argument of the command \"", word.origin, L"\" cannot be resolved to a string"), line);
 }
 
 static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& tks, const p_int line,
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -710,7 +710,7 @@ static p_bool c_createFiles(p_comptr& result, const Token& word, const Tokens& t
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -718,7 +718,7 @@ static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tok
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      checkFileContextExistence(word.getOriginString(p2), line, p2);
+      checkFileContextExistence(word.origin, line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
       p2.contexts.closeDeepAttributeScope();
@@ -759,7 +759,7 @@ static p_bool c_createDirectories(p_comptr& result, const Token& word, const Tok
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -767,14 +767,14 @@ static p_bool c_moveTo(p_comptr& result, const Token& word, const Tokens& tks, c
    const CoreCommandMode mode, Perun2Process& p2)
 {
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to\" is empty"), line);
+      throw SyntaxError(str(L"the command \"", word.origin, L" to\" is empty"), line);
    }
 
    const p_bool hasTo = tks.check(TI_HAS_KEYWORD_TO);
    const p_bool hasAs = tks.check(TI_HAS_KEYWORD_AS);
 
    if (!hasTo) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L" to\" cannot be called without a keyword \"to\""), line);
    }
 
@@ -799,18 +799,18 @@ static p_bool c_moveToContextless(p_comptr& result, const Token& word, const Tok
    const p_int line, const CoreCommandMode mode, Perun2Process& p2)
 {
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L" to\" lacks a declaration of a new location"), line);
    }
 
    p_genptr<p_str> str_;
    if (!parse::parse(p2, right, str_)) {
       throw SyntaxError(str(L"new location in the command \"",
-         word.getOriginString(p2), L" to\" cannot be resolved to a string"), line);
+         word.origin, L" to\" cannot be resolved to a string"), line);
       return false;
    }
    
-   checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
+   checkFileContextExistence(str(word.origin, L" to"), line, p2);
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
@@ -832,12 +832,12 @@ static p_bool c_moveToAsContextless(p_comptr& result, const Token& word, const T
    Tokens& postAs = pair2.second;
 
    if (preAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of new location written between "
          L"keywords \"to\" and \"as\""), line);
    }
    if (postAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of a new name written after keyword \"as\""), line);
    }
 
@@ -848,24 +848,24 @@ static p_bool c_moveToAsContextless(p_comptr& result, const Token& word, const T
       extless = true;
       postAs.popLeft();
       if (postAs.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", paf.getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", paf.origin,
             L"\" is not followed by a declaration of a new file name"), line);
       }
    }
 
    p_genptr<p_str> nname;
    if (!parse::parse(p2, postAs, nname)) {
-      throw SyntaxError(str(L"new name in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new name in the command \"", word.origin,
          L" to as\" cannot be resolved to a string"), line);
    }
 
    p_genptr<p_str> dest;
    if (!parse::parse(p2, preAs, dest)) {
-      throw SyntaxError(str(L"new location in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new location in the command \"", word.origin,
          L" to\" cannot be resolved to a string"), line);
    }
 
-   checkFileContextExistence(str(word.getOriginString(p2), L" to as"), line, p2);
+   checkFileContextExistence(str(word.origin, L" to as"), line, p2);
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
@@ -888,7 +888,7 @@ static p_bool c_moveToContextfull(p_comptr& result, const Token& word, const Tok
 
    p_genptr<p_str> dest;
    if (!parse::parse(p2, right, dest)) {
-      throw SyntaxError(str(L"new location in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new location in the command \"", word.origin,
          L" to\" cannot be resolved to a string"), line);
    }
 
@@ -906,7 +906,7 @@ static p_bool c_moveToContextfull(p_comptr& result, const Token& word, const Tok
       return true;
    }
 
-   commandSyntaxError(str(word.getOriginString(p2), L" to"), line);
+   commandSyntaxError(str(word.origin, L" to"), line);
    return false;
 }
 
@@ -915,7 +915,7 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
 {
    if (left.check(TI_HAS_KEYWORD_AS)) {
       throw SyntaxError(str(L"keywords \"to\" and \"as\" appear in the command \"",
-         word.getOriginString(p2), L" to as\" in reverse order"), line);
+         word.origin, L" to as\" in reverse order"), line);
    }
 
    std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
@@ -923,12 +923,12 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
    Tokens& postAs = pair2.second;
 
    if (preAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of a new location written between "
          L"keywords \"to\" and \"as\""), line);
    }
    if (postAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of a new name written after keyword \"as\""), line);
    }
 
@@ -938,7 +938,7 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
       extless = true;
       postAs.popLeft();
       if (postAs.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", postAs.first().getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", postAs.first().origin,
             L"\" is not followed by a declaration of a new file name"), line);
       }
    }
@@ -949,13 +949,13 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
 
    p_genptr<p_str> nname;
    if (!parse::parse(p2, postAs, nname)) {
-      throw SyntaxError(str(L"new name in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new name in the command \"", word.origin,
          L" to as\" cannot be resolved to a string"), line);
    }
 
    p_genptr<p_str> dest;
    if (!parse::parse(p2, preAs, dest)) {
-      throw SyntaxError(str(L"new location in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new location in the command \"", word.origin,
          L" to\" cannot be resolved to a string"), line);
    }
 
@@ -973,7 +973,7 @@ static p_bool c_moveToAsContextfull(p_comptr& result, const Token& word, const T
       return true;
    }
 
-   commandSyntaxError(str(word.getOriginString(p2), L" to as"), line);
+   commandSyntaxError(str(word.origin, L" to as"), line);
    return false;
 }
 
@@ -985,17 +985,17 @@ static p_bool c_copy(p_comptr& result, const Token& word, const Tokens& tks, con
 
    if (!hasTo) {
       if (hasAs) {
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(L"the command \"", word.origin,
             L" to as\" cannot be called without a keyword \"to\""), line);
       }
 
       if (mode == CoreCommandMode::ccm_Force) {
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(L"the command \"", word.origin,
             L"\" cannot be preceded by a flag \"forced\""), line);
       }
 
       if (mode == CoreCommandMode::ccm_Stack) {
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(L"the command \"", word.origin,
             L"\" cannot be preceded by a flag \"stack\""), line);
       }
 
@@ -1047,7 +1047,7 @@ static p_bool c_copySimple(p_comptr& result, const Token& word, const Tokens& tk
    }
    else {
       if (tks.isEmpty()) {
-         commandNoArgException(word.getOriginString(p2), line);
+         commandNoArgException(word.origin, line);
       }
 
       p_genptr<p_str> str;
@@ -1063,7 +1063,7 @@ static p_bool c_copySimple(p_comptr& result, const Token& word, const Tokens& tk
       }
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -1071,13 +1071,13 @@ static p_bool c_copyToContextless(p_comptr& result, const Token& word, const Tok
    const p_int line, const CoreCommandMode mode, Perun2Process& p2)
 {
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L" to\" lacks a declaration of a new location"), line);
    }
 
    p_genptr<p_str> str_;
    if (parse::parse(p2, right, str_)) {
-      checkFileContextExistence(str(word.getOriginString(p2), L" to"), line, p2);
+      checkFileContextExistence(str(word.origin, L" to"), line, p2);
       FileContext* ctx = p2.contexts.getFileContext();
       ctx->attribute->setCoreCommandBase();
 
@@ -1092,7 +1092,7 @@ static p_bool c_copyToContextless(p_comptr& result, const Token& word, const Tok
    }
    else {
       throw SyntaxError(str(L"new location in the command \"",
-         word.getOriginString(p2), L" to\" cannot be resolved to a string"), line);
+         word.origin, L" to\" cannot be resolved to a string"), line);
    }
 
    return false;
@@ -1106,12 +1106,12 @@ static p_bool c_copyToAsContextless(p_comptr& result, const Token& word, const T
    Tokens& postAs = pair2.second;
 
    if (preAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of new location written between "
          L"keywords \"to\" and \"as\""), line);
    }
    if (postAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of new name written after the keyword \"as\""), line);
    }
 
@@ -1121,24 +1121,24 @@ static p_bool c_copyToAsContextless(p_comptr& result, const Token& word, const T
       extless = true;
       postAs.popLeft();
       if (postAs.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", postAs.first().getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", postAs.first().origin,
             L"\" is not followed by a declaration of new file name"), line);
       }
    }
 
    p_genptr<p_str> nname;
    if (!parse::parse(p2, postAs, nname)) {
-      throw SyntaxError(str(L"new name in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new name in the command \"", word.origin,
          L" to as\" cannot be resolved to a string"), line);
    }
 
    p_genptr<p_str> dest;
    if (!parse::parse(p2, preAs, dest)) {
-      throw SyntaxError(str(L"new location in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new location in the command \"", word.origin,
          L" to\" cannot be resolved to a string"), line);
    }
 
-   checkFileContextExistence(str(word.getOriginString(p2), L" to as"), line, p2);
+   checkFileContextExistence(str(word.origin, L" to as"), line, p2);
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
@@ -1161,7 +1161,7 @@ static p_bool c_copyToContextfull(p_comptr& result, const Token& word, const Tok
 
    p_genptr<p_str> dest;
    if (!parse::parse(p2, right, dest)) {
-      throw SyntaxError(str(L"new location in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new location in the command \"", word.origin,
          L" to\" cannot be resolved to a string"), line);
    }
 
@@ -1179,7 +1179,7 @@ static p_bool c_copyToContextfull(p_comptr& result, const Token& word, const Tok
       return true;
    }
 
-   commandSyntaxError(str(word.getOriginString(p2), L" to"), line);
+   commandSyntaxError(str(word.origin, L" to"), line);
    return false;
 }
 
@@ -1188,7 +1188,7 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
 {
    if (left.check(TI_HAS_KEYWORD_AS)) {
       throw SyntaxError(str(L"keywords \"to\" and \"as\" appear in "
-         L"the command \"", word.getOriginString(p2), L" to as\" in reverse order"), line);
+         L"the command \"", word.origin, L" to as\" in reverse order"), line);
    }
 
    std::pair<Tokens, Tokens> pair2 = right.divideByKeyword(Keyword::kw_As);
@@ -1196,12 +1196,12 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
    Tokens& postAs = pair2.second;
 
    if (preAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of new location written between "
          L"keywords \"to\" and \"as\""), line);
    }
    if (postAs.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" to as\" "
+      throw SyntaxError(str(L"the command \"", word.origin, L" to as\" "
          L"does not contain a declaration of new name written after the keyword \"as\""), line);
    }
 
@@ -1211,7 +1211,7 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
       extless = true;
       postAs.popLeft();
       if (postAs.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", postAs.first().getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", postAs.first().origin,
             L"\" is not followed by a declaration of new file name"), line);
       }
    }
@@ -1222,13 +1222,13 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
 
    p_genptr<p_str> nname;
    if (!parse::parse(p2, postAs, nname)) {
-      throw SyntaxError(str(L"new name in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new name in the command \"", word.origin,
          L" to as\" cannot be resolved to a string"), line);
    }
 
    p_genptr<p_str> dest;
    if (!parse::parse(p2, preAs, dest)) {
-      throw SyntaxError(str(L"new location in the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"new location in the command \"", word.origin,
          L" to\" cannot be resolved to a string"), line);
    }
 
@@ -1246,7 +1246,7 @@ static p_bool c_copyToAsContextfull(p_comptr& result, const Token& word, const T
       return true;
    }
 
-   commandSyntaxError(str(word.getOriginString(p2), L" to as"), line);
+   commandSyntaxError(str(word.origin, L" to as"), line);
    return false;
 }
 
@@ -1261,9 +1261,9 @@ void finalSyntaxError(const Tokens& tks, const Token& word, const p_int line, co
       if (length == 2) {
          const Token& second = tks.second();
 
-         if (second.isFirstWord(EMPTY_STRING, p2)) {
+         if (second.isFirstWord(EMPTY_STRING)) {
             throw SyntaxError::youShouldUseApostrophesAndWrite(
-               str(CHAR_ASTERISK, CHAR_DOT, second.getOriginString_2(p2)), tks.first().line);
+               str(CHAR_ASTERISK, CHAR_DOT, second.origin2), tks.first().line);
             return;
          }
       }
@@ -1273,7 +1273,7 @@ void finalSyntaxError(const Tokens& tks, const Token& word, const p_int line, co
    }
 
    if (directError) {
-      commandSyntaxError(word.getOriginString(p2), line);
+      commandSyntaxError(word.origin, line);
    }
    else {
       throw SyntaxError::wrongSyntax(line);
@@ -1284,7 +1284,7 @@ p_bool c_print(p_comptr& result, const Token& word, const Tokens& tks, const p_i
 {
    if (tks.isEmpty()) {
       if (!p2.contexts.hasIterationContext()) {
-         throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L"\" needs an argument here. "
+         throw SyntaxError(str(L"the command \"", word.origin, L"\" needs an argument here. "
             L"The value of the variable \"this\" is undefined here"), line);
          return false;
       }
@@ -1295,7 +1295,7 @@ p_bool c_print(p_comptr& result, const Token& word, const Tokens& tks, const p_i
          return true;
       }
       
-      commandSyntaxError(word.getOriginString(p2), line);
+      commandSyntaxError(word.origin, line);
    }
 
    p_genptr<p_str> str;
@@ -1334,7 +1334,7 @@ static p_bool c_sleep(p_comptr& result, const Token& word, const Tokens& tks, co
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -1346,7 +1346,7 @@ static p_bool c_popup(p_comptr& result, const Token& word, const Tokens& tks, co
       return true;
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -1364,7 +1364,7 @@ static p_bool c_error(p_comptr& result, const Token& word, const Tokens& tks, co
       return true;
    }
    else {
-      throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the argument of the command \"", word.origin,
          L"\" cannot be resolved to a number"), line);
    }
 
@@ -1382,14 +1382,14 @@ static p_bool c_run(p_comptr& result, const Token& word, const Tokens& tks, cons
          return true;
       }
       else {
-         commandSyntaxError(word.getOriginString(p2), line);
+         commandSyntaxError(word.origin, line);
       }
    }
 
    P_DIVIDE_BY_KEYWORD(kw_With);
 
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the right side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+      throw SyntaxError(str(L"the right side of the command \"", word.origin, L" with\" is empty"), line);
    }
 
    if (left.isEmpty()) {
@@ -1399,7 +1399,7 @@ static p_bool c_run(p_comptr& result, const Token& word, const Tokens& tks, cons
       return c_runContextfull(result, word, left, right, line, p2);
    }
 
-   commandSyntaxError(word.getOriginString(p2), line);
+   commandSyntaxError(word.origin, line);
    return false;
 }
 
@@ -1416,11 +1416,11 @@ static p_bool c_runContextless(p_comptr& result, const Token& word, const Tokens
 static p_bool c_runContextless_simple(p_comptr& result, const Token& word, const Tokens& right, const p_int line, Perun2Process& p2)
 {
    if (!p2.contexts.hasFileContext()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L" with\" needs first argument here"), line);
    }
 
-   checkFileContextExistence(str(word.getOriginString(p2), L" with"), line, p2);
+   checkFileContextExistence(str(word.origin, L" with"), line, p2);
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
@@ -1428,7 +1428,7 @@ static p_bool c_runContextless_simple(p_comptr& result, const Token& word, const
    if (parse::parse(p2, right, exec)) {
       if (right.getLength() == 1) {
          const Token& cf = right.first();
-         if (cf.isWord(STRING_PERUN2, p2)) {
+         if (cf.isWord(STRING_PERUN2)) {
             result = std::make_unique<C_RunWithPerun2>(ctx, p2);
             p2.postParseData.loadCmdPath();
             return true;
@@ -1439,7 +1439,7 @@ static p_bool c_runContextless_simple(p_comptr& result, const Token& word, const
    }
    else {
       throw SyntaxError(str(L"last argument of the command \"",
-         word.getOriginString(p2), L" with\" cannot be resolved to a string"), line);
+         word.origin, L" with\" cannot be resolved to a string"), line);
    }
 
    return false;
@@ -1448,10 +1448,10 @@ static p_bool c_runContextless_simple(p_comptr& result, const Token& word, const
 static p_bool c_runContextless_with(p_comptr& result, const Token& word, const Tokens& right, const p_int line, Perun2Process& p2)
 {
    if (!p2.contexts.hasFileContext()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), L" with with\" needs first argument here"), line);
+      throw SyntaxError(str(L"the command \"", word.origin, L" with with\" needs first argument here"), line);
    }
 
-   checkFileContextExistence(str(word.getOriginString(p2), L" with with"), line, p2);
+   checkFileContextExistence(str(word.origin, L" with with"), line, p2);
    FileContext* ctx = p2.contexts.getFileContext();
    ctx->attribute->setCoreCommandBase();
 
@@ -1460,23 +1460,23 @@ static p_bool c_runContextless_with(p_comptr& result, const Token& word, const T
    Tokens& right2 = pair2.second;
 
    if (left2.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L"\" cannot be called with adjacent \"with\" keywords"), line);
    }
    else if (right2.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L" with with\" cannot be called without its last argument"), line);
    }
 
    p_genptr<p_str> exec;
    if (!parse::parse(p2, left2, exec)) {
-      throw SyntaxError(str(L"second argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"second argument of the command \"", word.origin,
          L" with with\" cannot be resolved to a string"), line);
    }
 
    if (left2.getLength() == 1) {
       const Token& cf = left2.first();
-      if (cf.isWord(STRING_PERUN2, p2)) {
+      if (cf.isWord(STRING_PERUN2)) {
          p_genptr<p_str> str_;
 
          if (parse::parse(p2, right2, str_)) {
@@ -1493,7 +1493,7 @@ static p_bool c_runContextless_with(p_comptr& result, const Token& word, const T
             }
             else {
                throw SyntaxError(str(L"last argument of the command \"",
-                  word.getOriginString(p2), L" with Perun2 with\" cannot be resolved to a list"), line);
+                  word.origin, L" with Perun2 with\" cannot be resolved to a list"), line);
             }
          }
       }
@@ -1512,7 +1512,7 @@ static p_bool c_runContextless_with(p_comptr& result, const Token& word, const T
       }
       else {
          throw SyntaxError(str(L"last argument of the command \"",
-            word.getOriginString(p2), L" with with\" cannot be resolved to a list"), line);
+            word.origin, L" with with\" cannot be resolved to a list"), line);
       }
    }
 }
@@ -1536,7 +1536,7 @@ static p_bool c_runContextfull_simple(p_comptr& result, const Token& word, const
 
    p_genptr<p_str> exec;
    if (!parse::parse(p2, right, exec)) {
-      throw SyntaxError(str(L"last argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"last argument of the command \"", word.origin,
          L" with\" cannot be resolved to a string"), line);
    }
 
@@ -1544,14 +1544,14 @@ static p_bool c_runContextfull_simple(p_comptr& result, const Token& word, const
 
    if (right.getLength() == 1) {
       const Token& cf = right.first();
-      if (cf.isWord(STRING_PERUN2, p2)) {
+      if (cf.isWord(STRING_PERUN2)) {
          p_comptr inner= std::make_unique<C_RunWithPerun2>(ctx.get(), p2);
          if (parseLooped(left, inner, ctx, result, p2)) {
             p2.postParseData.loadCmdPath();
             return true;
          }
 
-         throw SyntaxError(str(L"first argument of the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(L"first argument of the command \"", word.origin,
             L" with Perun2\" cannot be resolved to a list"), line);
       }
    }
@@ -1561,7 +1561,7 @@ static p_bool c_runContextfull_simple(p_comptr& result, const Token& word, const
       return true;
    }
 
-   throw SyntaxError(str(L"first argument of the command \"", word.getOriginString(p2),
+   throw SyntaxError(str(L"first argument of the command \"", word.origin,
       L" with\" cannot be resolved to a list"), line);
 }
 
@@ -1573,11 +1573,11 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
    Tokens& right2 = pair2.second;
 
    if (left2.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L"\" cannot be called with adjacent \"with\" keywords"), line);
    }
    else if (right2.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"the command \"", word.origin,
          L" with with\" cannot be called without its last argument"), line);
    }
 
@@ -1587,7 +1587,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 
    p_genptr<p_str> exec;
    if (!parse::parse(p2, left2, exec)) {
-      throw SyntaxError(str(L"second argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"second argument of the command \"", word.origin,
          L" with with\" cannot be resolved to a string"), line);
    }
 
@@ -1597,14 +1597,14 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 
       if (left2.getLength() == 1) {
          const Token& cf = left2.first();
-         if (cf.isWord(STRING_PERUN2, p2)) {
+         if (cf.isWord(STRING_PERUN2)) {
             p_comptr inner= std::make_unique<C_RunWithPerun2WithString>(lastStr, ctx.get(), p2);
             if (parseLooped(left, inner, ctx, result, p2)) {
                p2.postParseData.loadCmdPath();
                return true;
             }
 
-            throw SyntaxError(str(L"first argument of the command \"", word.getOriginString(p2),
+            throw SyntaxError(str(L"first argument of the command \"", word.origin,
                L" with Perun2 with\" cannot be resolved to a list"), line);
          }
       }
@@ -1614,7 +1614,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
          return true;
       }
 
-      throw SyntaxError(str(L"first argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(L"first argument of the command \"", word.origin,
          L" with with\" cannot be resolved to a list"), line);
    }
    else {
@@ -1622,7 +1622,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 
       if (!parse::parse(p2, right2, lastList)) {
          p2.contexts.retreatFileContext();
-         throw SyntaxError(str(L"last argument of the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(L"last argument of the command \"", word.origin,
             L" with with\" cannot be resolved to a list"), line);
       }
       else {
@@ -1630,14 +1630,14 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 
          if (left2.getLength() == 1) {
             const Token& cf = left2.first();
-            if (cf.isWord(STRING_PERUN2, p2)) {
+            if (cf.isWord(STRING_PERUN2)) {
                p_comptr inner= std::make_unique<C_RunWithPerun2With>(lastList, ctx.get(), p2);
                if (parseLooped(left, inner, ctx, result, p2)) {
                   p2.postParseData.loadCmdPath();
                   return true;
                }
 
-               throw SyntaxError(str(L"first argument of the command \"", word.getOriginString(p2),
+               throw SyntaxError(str(L"first argument of the command \"", word.origin,
                   L" with Perun2 with\" cannot be resolved to a list"), line);
             }
          }
@@ -1647,7 +1647,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
             return true;
          }
 
-         throw SyntaxError(str(L"first argument of the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(L"first argument of the command \"", word.origin,
             L" with with\" cannot be resolved to a list"), line);
       }
    }
@@ -1685,22 +1685,22 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
    p2.contexts.closeAttributeScope();
 
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the command \"", word.origin, 
          L"\" needs an argument here"), line);
    }
 
    if (! tks.check(TI_HAS_KEYWORD_WITH)) {
       p_genptr<p_str> string;
       if (! parse::parse(p2, tks, string)) {
-         throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+         throw SyntaxError(str(L"the argument of the command \"", word.origin, 
             L"\" cannot be resolved to a string"), line);
       }
 
-      const p_str commandName = word.getOriginString(p2);
+      const p_str commandName = word.origin;
       const p_str scriptName = getPythonScriptName(string, line, commandName);
 
       std::unique_ptr<C_Python3> python3 = std::make_unique<C_Python3>(scriptName, p2);
-      const p_str commandName2 = str(L"the command \"", word.getOriginString(p2), L"\"");
+      const p_str commandName2 = str(L"the command \"", word.origin, L"\"");
       python3->staticallyAnalyze(line, commandName2);
 
       result = std::move(python3);
@@ -1710,31 +1710,31 @@ static p_bool c_python3(p_comptr& result, const Token& word, const Tokens& tks, 
    P_DIVIDE_BY_KEYWORD(kw_With);
 
    if (left.isEmpty()) {
-      throw SyntaxError(str(L"the left side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+      throw SyntaxError(str(L"the left side of the command \"", word.origin, L" with\" is empty"), line);
    }
 
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the right side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+      throw SyntaxError(str(L"the right side of the command \"", word.origin, L" with\" is empty"), line);
    }
 
    p_genptr<p_str> string;
    if (! parse::parse(p2, left, string)) {
-      throw SyntaxError(str(L"the first argument of the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the first argument of the command \"", word.origin, 
          L" with\" cannot be resolved to a string"), line);
    }
 
-   const p_str commandName = str(word.getOriginString(p2), L" with");
+   const p_str commandName = str(word.origin, L" with");
    const p_str scriptName = getPythonScriptName(string, line, commandName);
 
    p_genptr<p_list> list;
    if (! parse::parse(p2, right, list)) {
-      throw SyntaxError(str(L"the second argument of the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the second argument of the command \"", word.origin, 
          L" with\" cannot be resolved to a list"), line);
    }
 
    std::unique_ptr<C_Python3With> python3With = std::make_unique<C_Python3With>(scriptName, list, p2);
    
-   const p_str commandName2 = str(L"the command \"", word.getOriginString(p2), L" with\"");
+   const p_str commandName2 = str(L"the command \"", word.origin, L" with\"");
    python3With->staticallyAnalyze(line, commandName2);
    result = std::move(python3With);
    return true;
@@ -1746,7 +1746,7 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
    p2.contexts.closeAttributeScope();
 
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the command \"", word.origin, 
          L"\" needs an argument here"), line);
    }
 
@@ -1754,7 +1754,7 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
       p_genptr<p_str> string;
       if (parse::parse(p2, tks, string)) {
          if (! string->isConstant()) {
-            throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+            throw SyntaxError(str(L"the command \"", word.origin, 
                L"\" needs a constant value as an argument"), line);
          }
 
@@ -1762,7 +1762,7 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
          str_trim(command);
 
          if (command.empty()) {
-            throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+            throw SyntaxError(str(L"the argument of the command \"", word.origin, 
                L"\" is empty"), line);
          }
 
@@ -1771,41 +1771,41 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
       }
 
       if (tks.getLength() == 1 && tks.first().type == Token::t_Pattern) {
-         throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+         throw SyntaxError(str(L"the argument of the command \"", word.origin, 
             L"\" contains asterisks. It should be written using backtick characters instead of regular quotes. For example: ",
-            CHAR_BACKTICK, tks.first().getOriginString(p2), CHAR_BACKTICK
+            CHAR_BACKTICK, tks.first().origin, CHAR_BACKTICK
          ), line);
       }
 
-      throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the argument of the command \"", word.origin, 
          L"\" cannot be resolved to a string"), line);
    }
 
    P_DIVIDE_BY_KEYWORD(kw_With);
 
    if (left.isEmpty()) {
-      throw SyntaxError(str(L"the left side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+      throw SyntaxError(str(L"the left side of the command \"", word.origin, L" with\" is empty"), line);
    }
 
    if (right.isEmpty()) {
-      throw SyntaxError(str(L"the right side of the command \"", word.getOriginString(p2), L" with\" is empty"), line);
+      throw SyntaxError(str(L"the right side of the command \"", word.origin, L" with\" is empty"), line);
    }
 
    p_genptr<p_str> string;
    if (! parse::parse(p2, left, string)) {
       if (left.getLength() == 1 && left.first().type == Token::t_Pattern) {
-         throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+         throw SyntaxError(str(L"the argument of the command \"", word.origin, 
             L"\" contains asterisks. It should be written using backtick characters instead of regular quotes. For example: ",
-            CHAR_BACKTICK, left.first().getOriginString(p2), CHAR_BACKTICK
+            CHAR_BACKTICK, left.first().origin, CHAR_BACKTICK
          ), line);
       }
 
-      throw SyntaxError(str(L"the first argument of the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the first argument of the command \"", word.origin, 
          L" with\" cannot be resolved to a string"), line);
    }
 
    if (! string->isConstant()) {
-      throw SyntaxError(str(L"the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the command \"", word.origin, 
          L" with\" needs a constant value as an argument"), line);
    }
 
@@ -1813,13 +1813,13 @@ static p_bool c_execute(p_comptr& result, const Token& word, const Tokens& tks, 
    str_trim(command);
 
    if (command.empty()) {
-      throw SyntaxError(str(L"the argument of the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the argument of the command \"", word.origin, 
          L" with\" is empty"), line);
    }
 
    p_genptr<p_list> list;
    if (! parse::parse(p2, right, list)) {
-      throw SyntaxError(str(L"the second argument of the command \"", word.getOriginString(p2), 
+      throw SyntaxError(str(L"the second argument of the command \"", word.origin, 
          L" with\" cannot be resolved to a list"), line);
    }
 
@@ -1834,11 +1834,11 @@ static void checkUselessFlags(const Token& word, const p_int line,
 {
    switch (mode) {
       case CoreCommandMode::ccm_Force: {
-         throw SyntaxError(str(L"the keyword \"", word.getOriginString(p2), L"\" cannot be preceded by a flag \"forced\""), line);
+         throw SyntaxError(str(L"the keyword \"", word.origin, L"\" cannot be preceded by a flag \"forced\""), line);
          break;
       }
       case CoreCommandMode::ccm_Stack: {
-         throw SyntaxError(str(L"the keyword \"", word.getOriginString(p2), L"\" cannot be preceded by a flag \"stack\""), line);
+         throw SyntaxError(str(L"the keyword \"", word.origin, L"\" cannot be preceded by a flag \"stack\""), line);
          break;
       }
    }

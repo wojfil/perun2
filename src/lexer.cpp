@@ -68,34 +68,40 @@ std::vector<Token> tokenize(const p_str& code, Perun2Process& p2)
                   }
                   else {
                      if (prevSymbol) {
-                        if (isDoubleChar(c) && tokens.back().value.ch == c) {
+                        if (isDoubleChar(c) && tokens.back().value.singleChar == c) {
                            tokens.pop_back();
-                           tokens.emplace_back(c, 2, line, p2);
+                           const p_str origin = str(toStr(c), toStr(c));
+                           tokens.emplace_back(c, 2, line, origin);
                            prevSymbol = false;
                         }
                         else {
-                           tokens.emplace_back(c, line, p2);
+                           const p_str origin = toStr(c);
+                           tokens.emplace_back(c, line, origin);
                         }
                      }
                      else {
-                        tokens.emplace_back(c, line, p2);
+                        const p_str origin = toStr(c);
+                        tokens.emplace_back(c, line, origin);
                         prevSymbol = true;
                      }
                   }
                }
                else {
                   if (prevSymbol) {
-                     if (isDoubleChar(c) && tokens.back().value.ch == c) {
+                     if (isDoubleChar(c) && tokens.back().value.singleChar == c) {
                         tokens.pop_back();
-                        tokens.emplace_back(c, 2, line, p2);
+                        const p_str origin = str(toStr(c), toStr(c));
+                        tokens.emplace_back(c, 2, line, origin);
                         prevSymbol = false;
                      }
                      else {
-                        tokens.emplace_back(c, line, p2);
+                        const p_str origin = toStr(c);
+                        tokens.emplace_back(c, line, origin);
                      }
                   }
                   else {
-                     tokens.emplace_back(c, line, p2);
+                     const p_str origin = toStr(c);
+                     tokens.emplace_back(c, line, origin);
                      prevSymbol = true;
                   }
                }
@@ -142,7 +148,8 @@ std::vector<Token> tokenize(const p_str& code, Perun2Process& p2)
                mode = Mode::m_Nothing;
 
                if (isSymbol(c)) {
-                  tokens.emplace_back(c, line, p2);
+                  const p_str origin = toStr(c);
+                  tokens.emplace_back(c, line, origin);
                   prevSymbol = true;
                }
                else if (isNewLine(c)) {
@@ -173,11 +180,13 @@ std::vector<Token> tokenize(const p_str& code, Perun2Process& p2)
                   }
                }
 
+               const p_str origin = code.substr(wpos, wlen);
+
                if (asteriskId == -1) {
-                  tokens.emplace_back(wpos, wlen, line, p2);
+                  tokens.emplace_back(Token::t_Quotation, line, origin);
                }
                else {
-                  tokens.emplace_back(wpos, wlen, asteriskId, line, p2);
+                  tokens.emplace_back(Token::t_Pattern, line, origin);
                }
 
                wpos = i;
@@ -194,7 +203,8 @@ std::vector<Token> tokenize(const p_str& code, Perun2Process& p2)
          }
          case Mode::m_BLiteral: {
             if (c == CHAR_BACKTICK) {
-               tokens.emplace_back(wpos, wlen, line, p2);
+               const p_str origin = code.substr(wpos, wlen);
+               tokens.emplace_back(Token::t_Quotation, line, origin);
                wpos = i;
                wlen = 0;
                mode = Mode::m_Nothing;
@@ -360,7 +370,8 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
             throw SyntaxError::numberTooBig(secondString, line);
          }
 
-         return Token(p_num(first * NINT_THOUSAND + second), line, start, length, NumberMode::nm_Infix, p2);
+         const p_str origin = code.substr(start, length);
+         return Token(p_num(first * NINT_THOUSAND + second), NumberMode::nm_Infix, line, origin);
       }
    }
 
@@ -369,25 +380,26 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
    }
 
    if (dots == 0) {
-      p_str word = code.substr(start, length);
+      const p_str origin = code.substr(start, length);
+      p_str word = origin;
       str_toLower(word);
-
+      
       auto fm = p2.keywordsData.MONTHS.find(word);
       if (fm != p2.keywordsData.MONTHS.end()) {
-         return Token(p_num(fm->second), line, start, length, NumberMode::nm_Month, p2);
+         return Token(p_num(fm->second), NumberMode::nm_Month, line, origin);
       }
 
       auto fw = p2.keywordsData.WEEKDAYS.find(word);
       if (fw != p2.keywordsData.WEEKDAYS.end()) {
-         return Token(p_num(fw->second), line, start, length, NumberMode::nm_WeekDay, p2);
+         return Token(p_num(fw->second), NumberMode::nm_WeekDay, line, origin);
       }
 
       auto fk = p2.keywordsData.KEYWORDS.find(word);
       if (fk == p2.keywordsData.KEYWORDS.end()) {
-         return Token(line, start, length, p2);
+         return Token(Token::t_Word, line, origin);
       }
 
-      return Token(fk->second, line, start, length, p2);
+      return Token(fk->second, line, origin);
    }
 
    if (dots == 1) {
@@ -402,11 +414,14 @@ static Token wordToken(const p_str& code, const p_size start, const p_size lengt
       if (pnt == start + length - 1) {
          throw SyntaxError::missingTimeVariableMember(code.substr(start, length), line);
       }
-
-      return Token(line, start, pnt - start, pnt + 1, start + length - pnt - 1, p2);
+      
+      const p_str origin = code.substr(start, pnt - start);
+      const p_str origin2 = code.substr(pnt + 1, start + length - pnt - 1);
+      return Token(line, origin, origin2);
    }
    
-   return Token(start, length, line, p2);
+   const p_str origin = code.substr(start, length);
+   return Token(Token::t_Word, line, origin);
 }
 
 inline static Token numberToken(const p_str& code, const p_str& value, const p_size start, const p_size length, 
@@ -415,6 +430,8 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
    if (dots > 1) {
       throw SyntaxError::multipleDotsInNumber(value, line);
    }
+
+   const p_str origin = code.substr(start, length);
 
    if (dots == 0) {
       try {
@@ -431,10 +448,10 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
                throw SyntaxError::numberTooBig(code.substr(start, length), line);
             }
 
-            return Token(p_num(i2), line, start, length, mode, p2);
+            return Token(p_num(i2), mode, line, origin);
          }
 
-         return Token(p_num(integer), line, start, length, mode, p2);
+         return Token(p_num(integer), mode, line, origin);
       }
       catch (...) {
          throw SyntaxError::numberTooBig(code.substr(start, length), line);
@@ -449,10 +466,10 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
       // if it equals the base double value, create an integer constant instead
       const p_ndouble trunc = std::trunc(dbl);
       if (trunc == dbl) {
-         return Token(p_num(static_cast<p_nint>(trunc)), line, start, length, mode, p2);
+         return Token(p_num(static_cast<p_nint>(trunc)), mode, line, origin);
       }
 
-      return Token(p_num(dbl), line, start, length, mode, p2);
+      return Token(p_num(dbl), mode, line, origin);
    }
    catch (...) {
       throw SyntaxError::numberTooBig(code.substr(start, length), line);

@@ -57,7 +57,7 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
    const Token& first = tks.first();
    
    if (tks.getLength() == 1 && first.type == Token::t_Keyword) {
-      const Keyword& kw = first.value.keyword.k;
+      const Keyword& kw = first.value.keyword;
       FileContext* fc = p2.contexts.getFileContext();
 
       if (kw == Keyword::kw_Asc) {
@@ -73,14 +73,14 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
    }
 
    if (!first.isKeyword(Keyword::kw_By)) {
-      throw SyntaxError(str(L"the keyword \"", keyword.getOriginString(p2),
+      throw SyntaxError(str(L"the keyword \"", keyword.origin,
          L"\" should be followed by a keyword \"by\""), first.line);
    }
 
    tks.popLeft();
    if (tks.isEmpty()) {
-      throw SyntaxError(str(L"the declaration of the filter \"", keyword.getOriginString(p2),
-         L" ", first.getOriginString(p2), L"\" is empty"), first.line);
+      throw SyntaxError(str(L"the declaration of the filter \"", keyword.origin,
+         L" ", first.origin, L"\" is empty"), first.line);
    }
 
    std::vector<Tokens> tokensList;
@@ -99,11 +99,11 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
       const Token last = tk.last();
 
       if (last.type == Token::t_Keyword) {
-         const Keyword& kw = last.value.keyword.k;
+         const Keyword& kw = last.value.keyword;
          if (kw == Keyword::kw_Asc) {
             tk.popRight();
             if (tk.isEmpty()) {
-               throw SyntaxError(str(L"the keyword \"", last.getOriginString(p2),
+               throw SyntaxError(str(L"the keyword \"", last.origin,
                   L"\" is not preceded by a value used for order"), last.line);
             }
          }
@@ -111,7 +111,7 @@ p_bool parseOrder(T2& result, gen::OrderIndices* indices, Tokens& tks, const Tok
             desc = true;
             tk.popRight();
             if (tk.isEmpty()) {
-               throw SyntaxError(str(L"the keyword \"", last.getOriginString(p2),
+               throw SyntaxError(str(L"the keyword \"", last.origin,
                   L"\" is not preceded by a value used for order"), last.line);
             }
          }

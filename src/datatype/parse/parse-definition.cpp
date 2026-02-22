@@ -259,7 +259,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
    for (p_size i = 0; i < flength; i++) {
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
-      const Keyword& kw = tsf.value.keyword.k;
+      const Keyword& kw = tsf.value.keyword;
       ts.popLeft();
 
       switch (kw) {
@@ -268,7 +268,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
 
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
             }
 
             p_fcptr nextContext = std::make_unique<FileContext>(p2);
@@ -288,7 +288,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
 
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
             }
 
             p2.contexts.addFileContext(contextPtr);
@@ -314,7 +314,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
          case Keyword::kw_Where: {
             p_genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
-               throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
+               throw SyntaxError::keywordNotFollowedByBool(tsf.origin, tsf.line);
             }
 
             p_defptr prev = std::move(base);

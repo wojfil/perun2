@@ -28,7 +28,7 @@ Attribute::Attribute(const p_aunit val, Perun2Process& p2)
 
 void Attribute::add(const Token& tk)
 {
-   if (!tk.isVariable(STRINGS_ATTR, this->perun2)) {
+   if (!tk.isVariable(STRINGS_ATTR)) {
       return;
    }
 
@@ -36,82 +36,82 @@ void Attribute::add(const Token& tk)
       this->set(ATTR_PATH);
    }
 
-   if (tk.isVariable(STRING_DRIVE, this->perun2)) {
+   if (tk.isVariable(STRING_DRIVE)) {
       this->set(ATTR_DRIVE);
       return;
    }
 
-   if (tk.isVariable(STRING_DEPTH, this->perun2)) {
+   if (tk.isVariable(STRING_DEPTH)) {
       this->set(ATTR_DEPTH);
       return;
    }
 
-   if (tk.isVariable(STRING_FULLNAME, this->perun2)) {
+   if (tk.isVariable(STRING_FULLNAME)) {
       this->set(ATTR_FULLNAME);
       return;
    }
 
-   if (tk.isVariable(STRING_PATH, this->perun2)) {
+   if (tk.isVariable(STRING_PATH)) {
       return;
    }
 
    this->set(ATTR_EXISTS);
    
-   if (tk.isVariable(STRING_ACCESS, this->perun2)) {
+   if (tk.isVariable(STRING_ACCESS)) {
       this->set(ATTR_ACCESS);
    }
-   else if (tk.isVariable(STRING_ARCHIVE, this->perun2)) {
+   else if (tk.isVariable(STRING_ARCHIVE)) {
       this->set(ATTR_ARCHIVE);
    }
-   else if (tk.isVariable(STRING_COMPRESSED, this->perun2)) {
+   else if (tk.isVariable(STRING_COMPRESSED)) {
       this->set(ATTR_COMPRESSED);
    }
-   else if (tk.isVariable(STRING_CREATION, this->perun2)) {
+   else if (tk.isVariable(STRING_CREATION)) {
       this->set(ATTR_CREATION);
    }
-   else if (tk.isVariable(STRING_CHANGE, this->perun2)) {
+   else if (tk.isVariable(STRING_CHANGE)) {
       this->set(ATTR_CHANGE);
    }
-   else if (tk.isVariable(STRING_DRIVE, this->perun2)) {
+   else if (tk.isVariable(STRING_DRIVE)) {
       this->set(ATTR_DRIVE);
    }
-   else if (tk.isVariable(STRING_EMPTY, this->perun2)) {
+   else if (tk.isVariable(STRING_EMPTY)) {
       this->set(ATTR_EMPTY);
    }
-   else if (tk.isVariable(STRING_ENCRYPTED, this->perun2)) {
+   else if (tk.isVariable(STRING_ENCRYPTED)) {
       this->set(ATTR_ENCRYPTED);
    }
-   else if (tk.isVariable(STRING_EXTENSION, this->perun2)) {
+   else if (tk.isVariable(STRING_EXTENSION)) {
       this->set(ATTR_EXTENSION);
    }
-   else if (tk.isVariable(STRING_HIDDEN, this->perun2)) {
+   else if (tk.isVariable(STRING_HIDDEN)) {
       this->set(ATTR_HIDDEN);
    }
-   else if (tk.isVariable(STRING_LIFETIME, this->perun2)) {
+   else if (tk.isVariable(STRING_LIFETIME)) {
       this->set(ATTR_CREATION);
       this->set(ATTR_MODIFICATION);
       this->set(ATTR_LIFETIME);
    }
-   else if (tk.isVariable(STRING_MODIFICATION, this->perun2)) {
+   else if (tk.isVariable(STRING_MODIFICATION)) {
       this->set(ATTR_MODIFICATION);
    }
-   else if (tk.isVariable(STRING_NAME, this->perun2)) {
+   else if (tk.isVariable(STRING_NAME)) {
       this->set(ATTR_NAME);
    }
-   else if (tk.isVariable(STRING_PARENT, this->perun2)) {
+   else if (tk.isVariable(STRING_PARENT)) {
       this->set(ATTR_PARENT);
    }
-   else if (tk.isVariable(STRING_READONLY, this->perun2)) {
+   else if (tk.isVariable(STRING_READONLY)) {
       this->set(ATTR_READONLY);
    }
-   else if (tk.isVariable(STRING_SIZE, this->perun2)) {
+   else if (tk.isVariable(STRING_SIZE)) {
       this->set(ATTR_SIZE);
    }
-   else if (tk.isVariable(STRING_ISIMAGE, this->perun2)
-         || tk.isVariable(STRING_ISVIDEO, this->perun2)
-         || tk.isVariable(STRING_DURATION, this->perun2)
-         || tk.isVariable(STRING_WIDTH, this->perun2)
-         || tk.isVariable(STRING_HEIGHT, this->perun2))
+   else if (tk.isVariable(STRING_ISIMAGE)
+         || tk.isVariable(STRING_ISVIDEO)
+         || tk.isVariable(STRING_DURATION)
+         || tk.isVariable(STRING_WIDTH)
+         || tk.isVariable(STRING_HEIGHT))
    {
       this->setCoreCommandBase();
       this->set(ATTR_IMAGE_OR_VIDEO);

@@ -65,6 +65,13 @@ void str_toUpper(p_str& value)
    }
 }
 
+p_str str_lowercased(const p_str& value)
+{
+   p_str v = value;
+   str_toLower(v);
+   return v;
+}
+
 void str_trim(p_str& value)
 {
    if (value.empty()) {

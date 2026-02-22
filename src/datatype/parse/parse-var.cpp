@@ -22,52 +22,52 @@ namespace perun2::parse
    p_bool isAlterableAttribute(const Token& tk, Perun2Process& p2)
    {
       return !p2.contexts.getFileContext()->attributeScope
-         && tk.isVariable(STRINGS_ALTERABLE_ATTR, p2);
+         && tk.isVariable(STRINGS_ALTERABLE_ATTR);
    }
 
    p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_bool>& result, Perun2Process& p2)
    {
-      if (tk.isVariable(STRING_ARCHIVE, p2)) {
+      if (tk.isVariable(STRING_ARCHIVE)) {
          result = std::make_unique<func::F_Attr_Archive>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_COMPRESSED, p2)) {
+      else if (tk.isVariable(STRING_COMPRESSED)) {
          result = std::make_unique<func::F_Attr_Compressed>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_EMPTY, p2)) {
+      else if (tk.isVariable(STRING_EMPTY)) {
          result = std::make_unique<func::F_Attr_Empty>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_EXISTS, p2)) {
+      else if (tk.isVariable(STRING_EXISTS)) {
          result = std::make_unique<func::F_Attr_Exists>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_ENCRYPTED, p2)) {
+      else if (tk.isVariable(STRING_ENCRYPTED)) {
          result = std::make_unique<func::F_Attr_Encrypted>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_HIDDEN, p2)) {
+      else if (tk.isVariable(STRING_HIDDEN)) {
          result = std::make_unique<func::F_Attr_Hidden>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_ISDIRECTORY, p2)) {
+      else if (tk.isVariable(STRING_ISDIRECTORY)) {
          result = std::make_unique<func::F_Attr_IsDirectory>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_ISFILE, p2)) {
+      else if (tk.isVariable(STRING_ISFILE)) {
          result = std::make_unique<func::F_Attr_IsFile>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_READONLY, p2)) {
+      else if (tk.isVariable(STRING_READONLY)) {
          result = std::make_unique<func::F_Attr_Readonly>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_ISIMAGE, p2)) {
+      else if (tk.isVariable(STRING_ISIMAGE)) {
          result = std::make_unique<func::F_Attr_IsImage>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_ISVIDEO, p2)) {
+      else if (tk.isVariable(STRING_ISVIDEO)) {
          result = std::make_unique<func::F_Attr_IsVideo>(p2);
          return true;
       }
@@ -77,15 +77,15 @@ namespace perun2::parse
 
    p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_num>& result, Perun2Process& p2)
    {
-      if (tk.isVariable(STRING_SIZE, p2)) {
+      if (tk.isVariable(STRING_SIZE)) {
          result = std::make_unique<func::F_Attr_Size>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_WIDTH, p2)) {
+      else if (tk.isVariable(STRING_WIDTH)) {
          result = std::make_unique<func::F_Attr_Width>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_HEIGHT, p2)) {
+      else if (tk.isVariable(STRING_HEIGHT)) {
          result = std::make_unique<func::F_Attr_Height>(p2);
          return true;
       }
@@ -95,11 +95,11 @@ namespace perun2::parse
 
    p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_per>& result, Perun2Process& p2)
    {
-      if (tk.isVariable(STRING_LIFETIME, p2)) {
+      if (tk.isVariable(STRING_LIFETIME)) {
          result = std::make_unique<func::F_Attr_Lifetime>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_DURATION, p2)) {
+      else if (tk.isVariable(STRING_DURATION)) {
          result = std::make_unique<func::F_Attr_Duration>(p2);
          return true;
       }
@@ -109,19 +109,19 @@ namespace perun2::parse
 
    p_bool makeVarRefAsFunction(const Token& tk, p_genptr<p_tim>& result, Perun2Process& p2)
    {
-      if (tk.isVariable(STRING_ACCESS, p2)) {
+      if (tk.isVariable(STRING_ACCESS)) {
          result = std::make_unique<func::F_Attr_Access>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_CHANGE, p2)) {
+      else if (tk.isVariable(STRING_CHANGE)) {
          result = std::make_unique<func::F_Attr_Change>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_CREATION, p2)) {
+      else if (tk.isVariable(STRING_CREATION)) {
          result = std::make_unique<func::F_Attr_Creation>(p2);
          return true;
       }
-      else if (tk.isVariable(STRING_MODIFICATION, p2)) {
+      else if (tk.isVariable(STRING_MODIFICATION)) {
          result = std::make_unique<func::F_Attr_Modification>(p2);
          return true;
       }
@@ -131,7 +131,7 @@ namespace perun2::parse
 
    p_bool makeVarRef(const Token& tk, p_defptr& result, Perun2Process& p2)
    {
-      p_str var = tk.toLowerString(p2);
+      p_str var = tk.toLowerString();
       auto v = p2.contexts.osGenerators.find(var);
 
       if (v != p2.contexts.osGenerators.end()) {

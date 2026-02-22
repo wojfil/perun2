@@ -77,7 +77,7 @@ p_bool parseTime(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p2)
          const Token& last = tks.last();
          p_genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
 
-         if (last.isSecondWord(STRING_DATE, p2)) {
+         if (last.isSecondWord(STRING_DATE)) {
             result = std::make_unique<gen::TimeDate>(tim);
             return true;
          }
@@ -109,10 +109,10 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process&
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxError::invalidMonthName(first.getOriginString(p2), first.line);
+         throw SyntaxError::invalidMonthName(first.origin, first.line);
       }
 
-      if (first.type != Token::t_Number || first.value.num.nm != NumberMode::nm_Month) {
+      if (first.type != Token::t_Number || first.value.number.mode != NumberMode::nm_Month) {
          return false;
       }
 
@@ -130,10 +130,10 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process&
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxError::invalidMonthName(second.getOriginString(p2), second.line);
+      throw SyntaxError::invalidMonthName(second.origin, second.line);
    }
 
-   if (second.type != Token::t_Number || second.value.num.nm != NumberMode::nm_Month) {
+   if (second.type != Token::t_Number || second.value.number.mode != NumberMode::nm_Month) {
       return false;
    }
 
@@ -244,7 +244,7 @@ p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process
 
 static p_tnum tokenToTimeNumber(const Token& tk)
 {
-   return toTimeNumber(tk.value.num.n);
+   return toTimeNumber(tk.value.number.value);
 }
 
 static void checkDayCorrectness(const p_tnum day, const p_tnum month,
@@ -275,7 +275,7 @@ static p_bool parseTimeExp(p_genptr<p_tim>& result, const Tokens& tks, Perun2Pro
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         switch (t.value.ch) {
+         switch (t.value.singleChar) {
             case CHAR_PLUS: {
                if (bi.isBracketFree()) {
                   if (sublen == 0) {

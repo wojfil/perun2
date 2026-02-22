@@ -80,14 +80,14 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
    for (p_size i = 0; i < flength; i++) {
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
-      const Keyword& kw = tsf.value.keyword.k;
+      const Keyword& kw = tsf.value.keyword;
       ts.popLeft();
 
       switch (kw) {
          case Keyword::kw_Final: {
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
             }
 
             p_genptr<p_list> prev = std::move(base);
@@ -103,7 +103,7 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
 
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
             }
 
             p_genptr<p_list> prev = std::move(base);
@@ -131,7 +131,7 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
 
             p_genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
-               throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
+               throw SyntaxError::keywordNotFollowedByBool(tsf.origin, tsf.line);
             }
 
             p2.contexts.retreatFileContext();

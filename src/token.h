@@ -44,83 +44,35 @@ enum NumberMode
 };
 
 
-// representation of certain token in the source code string
-// index of starting character + length of the character sequence
-struct OriginStringInfo
-{
-public:
-   OriginStringInfo() = delete;
-   OriginStringInfo(const p_size ind, const p_size len);
-
-   const p_size index;
-   const p_size length;
-};
-
-
-typedef OriginStringInfo p_osi;
-
-
-// the value of token can be...
 union TokenValue
 {
    // single symbol
-   p_char ch;
+   p_char singleChar;
 
    // the same symbol repeated multiple times in a row
    struct
    {
-      p_char ch;
-      p_int am; // amount
-   } chars;
+      p_char value;
+      p_int amount;
+   } repeatedChars;
 
    // number literal (123), file size (123mb) or time constant (June)
    struct
    {
-      p_num n;
-      p_osi os; // os = original appearance of token in the source code
-      NumberMode nm;
-   } num;
-
-   // string literal
-   p_osi str;
-
-   // pattern
-   struct
-   {
-      p_osi os;
-      p_int id; // index of first asterisk
-   } pattern;
-
-   // word - variable name, function name
-   struct
-   {
-      p_osi os;
-   } word;
+      p_num value;
+      NumberMode mode;
+   } number;
 
    // keyword - important syntax element (print, if, copy...)
-   struct
-   {
-      Keyword k;
-      p_osi os;
-   } keyword;
+   Keyword keyword;
 
-   // two words - time variable member (creation.year)
-   struct
-   {
-      p_osi os1;
-      p_osi os2;
-   } twoWords;
 
    // constructors:
-   TokenValue() = delete;
+   TokenValue();
    TokenValue(const p_char ch);
    TokenValue(const p_char ch, const p_int am);
-   TokenValue(const p_num& n, const p_size os_id, const p_size os_len, const NumberMode nm);
-   TokenValue(const p_size os_id, const p_size os_len);
-   TokenValue(const p_size os_id, const p_size os_len, const p_int id);
-   TokenValue(const p_size os_id, const p_size os_len, const p_size len2);
-   TokenValue(const Keyword k, const p_size os_id, const p_size os_len);
-   TokenValue(const p_size os_id1, const p_size os_len1, const p_size os_id2, const p_size os_len2);
+   TokenValue(const p_num& n, const NumberMode nm);
+   TokenValue(const Keyword k);
 };
 
 
@@ -140,14 +92,12 @@ public:
    };
 
    Token() = delete;
-   Token(const p_char v, const p_int li, Perun2Process& p2);
-   Token(const p_char v, const p_int am, const p_int li, Perun2Process& p2);
-   Token(const p_num& v, const p_int li, const p_size os_id, const p_size os_len, const NumberMode nm, Perun2Process& p2);
-   Token(const p_size os_id, const p_size os_len, const p_int li, Perun2Process& p2);
-   Token(const p_size os_id, const p_size os_len, const p_int id, const p_int li, Perun2Process& p2);
-   Token(const p_int li, const p_size os_id, const p_size os_len, Perun2Process& p2);
-   Token(const Keyword v, const p_int li, const p_size os_id, const p_size os_len, Perun2Process& p2);
-   Token(const p_int li, const p_size os_id1, const p_size os_len1, const p_size os_id2, const p_size os_len2, Perun2Process& p2);
+   Token(const p_char v, const p_int li, const p_str& o);
+   Token(const p_char v, const p_int am, const p_int li, const p_str& o);
+   Token(const p_num& v, const NumberMode nm, const p_int li, const p_str& o);
+   Token(const Type type, const p_int li, const p_str& o);
+   Token(const Keyword v, const p_int li, const p_str& o);
+   Token(const p_int li, const p_str& o, const p_str& o2);
 
    p_bool isCommandKeyword() const;
    p_bool isFilterKeyword() const;
@@ -156,20 +106,20 @@ public:
    p_bool isKeyword(const Keyword kw) const;
 
    // is single word (CREATION)
-   p_bool isWord(const p_char (&word)[], Perun2Process& p2) const;
-   p_bool isWord(const std::vector<p_str>& words, Perun2Process& p2) const;
+   p_bool isWord(const p_char (&word)[]) const;
+   p_bool isWord(const std::vector<p_str>& words) const;
 
    // is first word of two (CREATION.year)
-   p_bool isFirstWord(const p_char (&word)[], Perun2Process& p2) const;
-   p_bool isFirstWord(const std::vector<p_str>& words, Perun2Process& p2) const;
+   p_bool isFirstWord(const p_char (&word)[]) const;
+   p_bool isFirstWord(const std::vector<p_str>& words) const;
 
    // is second word of two (creation.YEAR)
-   p_bool isSecondWord(const p_char (&word)[], Perun2Process& p2) const;
-   p_bool isSecondWord(const std::vector<p_str>& words, Perun2Process& p2) const;
+   p_bool isSecondWord(const p_char (&word)[]) const;
+   p_bool isSecondWord(const std::vector<p_str>& words) const;
 
    // is single word (CREATION) OR is first word of two (CREATION.year)
-   p_bool isVariable(const p_char (&word)[], Perun2Process& p2) const;
-   p_bool isVariable(const std::vector<p_str>& words, Perun2Process& p2) const;
+   p_bool isVariable(const p_char (&word)[]) const;
+   p_bool isVariable(const std::vector<p_str>& words) const;
 
    p_bool isNegatableKeywordOperator() const;
    p_bool isLogicConstant() const;
@@ -177,19 +127,20 @@ public:
    p_bool isMonth() const;
    p_bool isOne() const;
    p_bool isIntegerLiteral() const;
-   p_bool isTimeAttribute(Perun2Process& p2) const;
-   p_str getOriginString(Perun2Process& p2) const;
-   p_str getOriginString_2(Perun2Process& p2) const;
-   p_str toLowerString(Perun2Process& p2) const;
+   p_bool isTimeAttribute() const;
+   p_str toLowerString() const;
 
    const Type type;
-   const p_int line;
    const TokenValue value;
+   const p_int line;
+   
+   const p_str origin;
+   const p_str lowercase;
+   const p_str origin2;
+   const p_str lowercase2;
    
 private:
-   p_str getCodeSubstr(const p_osi& osi, Perun2Process& p2) const;
-   p_bool isCodeSubstr(const p_char (&word)[], const p_osi& osi, Perun2Process& p2) const;
-   p_bool isCodeSubstr(const p_str& word, const p_osi& osi, Perun2Process& p2) const;
+   p_str getTotalOrigin() const;
 
 };
 

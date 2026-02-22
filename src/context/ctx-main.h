@@ -83,11 +83,10 @@ namespace perun2
       std::unordered_map<p_str, gen::DefinitionGenerator> osGenerators;
 
    private:
-
       template <typename T>
       p_bool findVar(const Token& tk, Variable<T>*& result, Perun2Process& p2)
       {
-         const p_str name = tk.toLowerString(p2);
+         p_str name = tk.lowercase;
 
          // look in global variables
          if (this->globalVars.takeVar(name, result)) {
@@ -103,9 +102,9 @@ namespace perun2
          }
 
          // look in file attributes
-         if (tk.isVariable(STRINGS_ATTR, p2)) {
+         if (tk.isVariable(STRINGS_ATTR)) {
             if (this->fileContexts.empty()) {
-               throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
+               throw SyntaxError::undefinedVarValue(tk.origin, tk.line);
             }
 
             FileContext* lastFileCtx = this->fileContexts.back();

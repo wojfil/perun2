@@ -42,7 +42,7 @@ p_bool parseCommands(p_comptr& result, const Tokens& tks, Perun2Process& p2)
    for (p_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol)  {
-         switch(t.value.ch) {
+         switch(t.value.singleChar) {
             case CHAR_SEMICOLON: {
                if (depth == 0) {
                   if (sublen != 0) {
@@ -114,7 +114,7 @@ void checkKeywordsBeforeCurlyBrackets(const Tokens& tks, Perun2Process& p2)
 
       if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
          throw SyntaxError(str(L"a command-ending semicolon ; was expected somewhere between the keyword \"",
-            t.getOriginString(p2), L"\" and the curly bracket {"), t.line);
+            t.origin, L"\" and the curly bracket {"), t.line);
       }
    }
 }
@@ -150,7 +150,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    if (leftLast.isKeyword(Keyword::kw_Times)) {
       left.popRight();
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", leftLast.getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", leftLast.origin,
             L"\" is not preceded by a number"), leftLast.line);
       }
 
@@ -161,7 +161,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       left.checkCommonExpressionExceptions(p2);
       p_genptr<p_num> num;
       if (!parse::parse(p2, left, num)) {
-         throw SyntaxError(str(L"the keyword \"", leftLast.getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", leftLast.origin,
             L"\" is not preceded by a valid number"), leftLast.line);
       }
 
@@ -187,19 +187,19 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    if (leftFirst.isKeyword(Keyword::kw_While)) {
       left.popLeft();
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", leftFirst.origin,
             L"\" is not followed by a condition"), leftFirst.line);
       }
 
       if (rightLen == 0) {
-         throw SyntaxError(str(L"the structure \"", leftFirst.getOriginString(p2),
+         throw SyntaxError(str(L"the structure \"", leftFirst.origin,
             L"\" is empty. It would either never run or cause an infinite loop"), leftFirst.line);
       }
 
       left.checkCommonExpressionExceptions(p2);
       p_genptr<p_bool> boo;
       if (!parse::parse(p2, left, boo)) {
-         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2),
+         throw SyntaxError(str(L"the keyword \"", leftFirst.origin,
             L"\" is not followed by a valid condition"), leftFirst.line);
       }
 
@@ -233,14 +233,14 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    if (leftFirst.isKeyword(Keyword::kw_If)) {
       left.popLeft();
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2), L"\" is not followed by a condition"),
+         throw SyntaxError(str(L"the keyword \"", leftFirst.origin, L"\" is not followed by a condition"),
             leftFirst.line);
       }
 
       left.checkCommonExpressionExceptions(p2);
       p_genptr<p_bool> boo;
       if (!parse::parse(p2, left, boo)) {
-         throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2), L"\" is not followed by a valid condition"),
+         throw SyntaxError(str(L"the keyword \"", leftFirst.origin, L"\" is not followed by a valid condition"),
             leftFirst.line);
       }
 
@@ -286,7 +286,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       }
       else { // build "else if"
          if (!left.first().isKeyword(Keyword::kw_If)) {
-            throw SyntaxError(str(L"the keyword \"", leftFirst.getOriginString(p2),
+            throw SyntaxError(str(L"the keyword \"", leftFirst.origin,
                L"\" cannot be followed by an expression"), leftFirst.line);
          }
 
@@ -294,15 +294,15 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
          left.popLeft();
 
          if (left.isEmpty()) {
-            throw SyntaxError(str(L"the keywords \"", leftFirst.getOriginString(p2), L" ",
-               ifToken.getOriginString(p2), L"\" are not followed by a condition"), leftFirst.line);
+            throw SyntaxError(str(L"the keywords \"", leftFirst.origin, L" ",
+               ifToken.origin, L"\" are not followed by a condition"), leftFirst.line);
          }
 
          left.checkCommonExpressionExceptions(p2);
          p_genptr<p_bool> boo;
          if (!parse::parse(p2, left, boo)) {
-            throw SyntaxError(str(L"the keywords \"", leftFirst.getOriginString(p2), L" ",
-               ifToken.getOriginString(p2), L"\" are not followed by a valid condition"), leftFirst.line);
+            throw SyntaxError(str(L"the keywords \"", leftFirst.origin, L" ",
+               ifToken.origin, L"\" are not followed by a valid condition"), leftFirst.line);
          }
 
          if (rightLen == 0) {
@@ -335,7 +335,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
       left.popLeft();
 
       if (left.isEmpty()) {
-         throw SyntaxError(str(L"the keyword \"", first.getOriginString(p2), L"\" is not followed by a value"), first.line);
+         throw SyntaxError(str(L"the keyword \"", first.origin, L"\" is not followed by a value"), first.line);
       }
 
       explicitForeach = true;
@@ -347,7 +347,7 @@ static p_bool commandStruct(p_comptr& result, const Tokens& tks, const p_int sub
    bool success = parseIterationLoop(result, left, right, p2);
 
    if (!success && explicitForeach) {
-      throw SyntaxError(str(L"the keyword \"", first.getOriginString(p2), L"\" is not followed by a valid value"), first.line);
+      throw SyntaxError(str(L"the keyword \"", first.origin, L"\" is not followed by a valid value"), first.line);
    }
 
    return success;
@@ -448,14 +448,14 @@ static p_bool parseInsideLoop(p_comptr& result, const Token& keyword, const Toke
    // inside { }
    if (left.isEmpty()) {
       if (!p2.contexts.hasFileContext()) {
-         throw SyntaxError(str(L"an argumentless structure \"", keyword.getOriginString(p2),
+         throw SyntaxError(str(L"an argumentless structure \"", keyword.origin,
             L"\" can be declared only within an iteration loop"), keyword.line);
       }
 
       FileContext* fc = p2.contexts.getFileContext();
 
       if (fc->isInside) {
-         throw SyntaxError(str(L"an argumentless structure \"", keyword.getOriginString(p2),
+         throw SyntaxError(str(L"an argumentless structure \"", keyword.origin,
             L"\" is forbidden here. We already operate inside a directory, so it cannot be visited again"), keyword.line);
       }
 
@@ -626,11 +626,11 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
    const Token& f = tks.first();
 
    if (tks.getLength() == 1 && f.type == Token::t_Keyword) {
-      switch (f.value.keyword.k) {
+      switch (f.value.keyword) {
          case Keyword::kw_Break:
          case Keyword::kw_Continue: {
             if (p2.contexts.hasIndexContext()) {
-               if (f.value.keyword.k == Keyword::kw_Break) {
+               if (f.value.keyword == Keyword::kw_Break) {
                   result = std::make_unique<C_Break>(p2);
                   return true;
                }
@@ -640,7 +640,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
                }
             }
             else {
-               throw SyntaxError(str(L"the command \"", f.getOriginString(p2),
+               throw SyntaxError(str(L"the command \"", f.origin,
                   L"\" can be called only inside a loop"), f.line);
             }
             break;
@@ -656,14 +656,14 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
 
    const Token& f2 = tks.first();
    if (f2.type == Token::t_Keyword) {
-      switch (f2.value.keyword.k) {
+      switch (f2.value.keyword) {
          case Keyword::kw_Force: {
             tks.popLeft();
             mode = CoreCommandMode::ccm_Force;
 
             if (tks.isEmpty()) {
                throw SyntaxError(str(L"a command cannot consist of only one keyword: \"",
-                  f2.getOriginString(p2), L"\""), f.line);
+                  f2.origin, L"\""), f.line);
             }
             break;
          }
@@ -673,7 +673,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
 
             if (tks.isEmpty()) {
                throw SyntaxError(str(L"a command cannot consist of only one keyword: \"",
-                  f2.getOriginString(p2), L"\""), f.line);
+                  f2.origin, L"\""), f.line);
             }
             break;
          }
@@ -682,7 +682,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
 
    const Token& f3 = tks.first();
    if (f3.type == Token::t_Keyword) {
-      switch (f3.value.keyword.k) {
+      switch (f3.value.keyword) {
          case Keyword::kw_Not:
          case Keyword::kw_True:
          case Keyword::kw_False: {
@@ -698,7 +698,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
 
    if (mode != CoreCommandMode::ccm_Normal) {
       throw SyntaxError(str(L"only a core command can start with the keyword \"", 
-         f2.getOriginString(p2), L"\""), f.line);
+         f2.origin, L"\""), f.line);
    }
 
    if (commandMisc(result, tks, p2)) {
@@ -706,8 +706,7 @@ static p_bool command(p_comptr& result, Tokens& tks, Perun2Process& p2)
    }
    else {
       tks.checkCommonExpressionExceptions(p2);
-      return c_print(result, Token(Keyword::kw_Print, f.line, static_cast<p_size>(0),
-         static_cast<p_size>(0), p2), tks, f.line, false, p2);
+      return c_print(result, Token(Keyword::kw_Print, f.line, L""), tks, f.line, false, p2);
    }
 }
 
@@ -742,7 +741,7 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2
 
       const Token& leftLast = left.last();
       if (leftLast.type == Token::t_Symbol) {
-         const char& ch = leftLast.value.ch;
+         const char& ch = leftLast.value.singleChar;
          switch (ch) {
             case CHAR_PLUS:
             case CHAR_MINUS:
@@ -771,7 +770,7 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2
    const Token& last = tks.last();
 
    if (last.type == Token::t_MultiSymbol &&
-       (last.value.chars.ch == CHAR_PLUS || last.value.chars.ch == CHAR_MINUS))
+       (last.value.repeatedChars.value == CHAR_PLUS || last.value.repeatedChars.value == CHAR_MINUS))
    {
       return commandVarIncrOrDesr(result, tks, last, p2);
    }
@@ -781,7 +780,7 @@ static p_bool commandMisc(p_comptr& result, const Tokens& tks, Perun2Process& p2
 
 static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const Token& last, Perun2Process& p2)
 {
-   const p_bool isIncrement = last.value.chars.ch == CHAR_PLUS;
+   const p_bool isIncrement = last.value.repeatedChars.value == CHAR_PLUS;
    const p_str op = isIncrement ? L"incremented by one" : L"decremented by one";
    const Token& first = tks.first();
 
@@ -790,7 +789,7 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
          Variable<p_num>* pvp_num;
 
          if (!p2.contexts.getVar(first, pvp_num, p2) || pvp_num->isImmutable()) {
-            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+            throw SyntaxError(str(L"the variable \"", first.origin,
                L"\" cannot be ", op), first.line);
          }
 
@@ -816,11 +815,11 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
             Variable<p_nlist>* pvp_nlist;
 
             if (!p2.contexts.getVar(first, pvp_nlist, p2) || pvp_nlist->isImmutable()) {
-               throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+               throw SyntaxError(str(L"the variable \"", first.origin,
                   L"\" cannot be ", op), first.line);
             }
 
-            throw SyntaxError(str(L"an element of the variable \"", first.getOriginString(p2),
+            throw SyntaxError(str(L"an element of the variable \"", first.origin,
                L"\" cannot be ", op, L", because collections in Perun2 are immutable"),
                first.line);
          }
@@ -830,37 +829,37 @@ static p_bool commandVarIncrOrDesr(p_comptr& result, const Tokens& tks, const To
       }
    }
    else if (first.type == Token::t_TwoWords && tks.getLength() == 2) {
-      if (first.isFirstWord(EMPTY_STRING, p2)) {
+      if (first.isFirstWord(EMPTY_STRING)) {
          throw SyntaxError(L"the dot . should be preceded by a time variable name", first.line);
       } 
 
       Variable<p_tim>* pvp_tim;
 
       if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-         throw SyntaxError(str(L"the time variable from the expression \"", first.getOriginString(p2),
+         throw SyntaxError(str(L"the time variable from the expression \"", first.origin,
             L"\" does not exist or is unreachable here"), first.line);
       }
 
       if (pvp_tim->isImmutable()) {
-         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
       }
 
       Period::PeriodUnit unit;
 
-      if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2))
+      if (first.isSecondWord(STRING_YEAR) || first.isSecondWord(STRING_YEARS))
          unit = Period::u_Years;
-      else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2))
+      else if (first.isSecondWord(STRING_MONTH) || first.isSecondWord(STRING_MONTHS))
          unit = Period::u_Months;
-      else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2))
+      else if (first.isSecondWord(STRING_DAY) || first.isSecondWord(STRING_DAYS))
          unit = Period::u_Days;
-      else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2))
+      else if (first.isSecondWord(STRING_HOUR) || first.isSecondWord(STRING_HOURS))
          unit = Period::u_Hours;
-      else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2))
+      else if (first.isSecondWord(STRING_MINUTE) || first.isSecondWord(STRING_MINUTES))
          unit = Period::u_Minutes;
-      else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2))
+      else if (first.isSecondWord(STRING_SECOND) || first.isSecondWord(STRING_SECONDS))
          unit = Period::u_Seconds;
-      else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-         throw SyntaxError(str(L"the time variable member \"", first.getOriginString_2(p2),
+      else if (first.isSecondWord(STRING_DATE) || first.isSecondWord(STRING_WEEKDAY)) {
+         throw SyntaxError(str(L"the time variable member \"", first.origin2,
             L"\" cannot be ", op), first.line);
       }
       else {
@@ -897,7 +896,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
           || p2.contexts.getVar(first, pvp_nlist, p2)
           || p2.contexts.getVar(first, pvp_tlist, p2))
          {
-            throw SyntaxError(str(L"the collection variable \"", first.getOriginString(p2),
+            throw SyntaxError(str(L"the collection variable \"", first.origin,
                L"\" is immutable, so its elements cannot be modified"), right.first().line);
          }
 
@@ -908,13 +907,13 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
                L"= cannot be performed on a character from string variable"), first.line);
          }
 
-         throw SyntaxError(str(first.getOriginString(p2),
+         throw SyntaxError(str(first.origin,
             L" is not a collection variable, which are expected before [] brackets"), first.line);
       }
       else {
          const Token& arom = left.last();
 
-         if (arom.type == Token::t_TwoWords && arom.isFirstWord(EMPTY_STRING, p2)) {
+         if (arom.type == Token::t_TwoWords && arom.isFirstWord(EMPTY_STRING)) {
             Tokens aro(left);
             aro.popRight();
 
@@ -943,7 +942,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          }
 
          if (pvp_num->isImmutable()) {
-            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+            throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
          }
 
          Variable<p_num>& var = *pvp_num;
@@ -988,7 +987,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
                }
 
                if (pvp_per->isImmutable()) {
-                  throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+                  throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
                }
 
                pvp_per->makeNotConstant();
@@ -1026,7 +1025,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          p_genptr<p_per> per;
 
          if (!parse::parse(p2, right, per)) {
-            throw SyntaxError(str(L"the right side of operator \"", first.getOriginString(p2),
+            throw SyntaxError(str(L"the right side of operator \"", first.origin,
                L" ", toStr(sign), L"=\" cannot be resolved to a period"), first.line);
          }
 
@@ -1034,7 +1033,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          pvp_tim->makeNotConstant();
 
          if (pvp_tim->isImmutable()) {
-            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+            throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
          }
 
          if (sign == CHAR_PLUS) {
@@ -1051,7 +1050,7 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
          return commandVarIncrement(result, first, right, first.line, p2);
       }
 
-      throw SyntaxError(str(L"\"", first.getOriginString(p2),
+      throw SyntaxError(str(L"\"", first.origin,
          L"\" is neither a numeric, time, nor period variable"), first.line);
    }
    else if (first.type == Token::t_TwoWords) {
@@ -1066,20 +1065,20 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
 
       Variable<p_tim>* pvp_tim;
       if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-         throw SyntaxError(str(L"\"", first.getOriginString(p2),
+         throw SyntaxError(str(L"\"", first.origin,
             L"\" is not a time variable for the ", toStr(sign), L"= operation"),
             first.line);
       }
 
       if (pvp_tim->isImmutable()) {
-         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
       }
 
       p_genptr<p_num> num;
 
       if (!parse::parse(p2, right, num)) {
-         throw SyntaxError(str(L"the right side of the operation \"", first.getOriginString(p2), L".",
-            first.getOriginString_2(p2), L" ", toStr(sign),
+         throw SyntaxError(str(L"the right side of the operation \"", first.origin, L".",
+            first.origin2, L" ", toStr(sign),
             L"=\" cannot be resolved to a number"), first.line);
       }
 
@@ -1087,32 +1086,32 @@ static p_bool commandVarChange(p_comptr& result, const Tokens& left, const Token
       const p_bool negative = (sign == CHAR_MINUS);
       pvp_tim->makeNotConstant();
 
-      if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2)) {
+      if (first.isSecondWord(STRING_YEAR) || first.isSecondWord(STRING_YEARS)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Years, negative);
          return true;
       }
-      else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2)) {
+      else if (first.isSecondWord(STRING_MONTH) || first.isSecondWord(STRING_MONTHS)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Months, negative);
          return true;
       }
-      else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2)) {
+      else if (first.isSecondWord(STRING_DAY) || first.isSecondWord(STRING_DAYS)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Days, negative);
          return true;
       }
-      else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2)) {
+      else if (first.isSecondWord(STRING_HOUR) || first.isSecondWord(STRING_HOURS)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Hours, negative);
          return true;
       }
-      else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2)) {
+      else if (first.isSecondWord(STRING_MINUTE) || first.isSecondWord(STRING_MINUTES)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Minutes, negative);
          return true;
       }
-      else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2)) {
+      else if (first.isSecondWord(STRING_SECOND) || first.isSecondWord(STRING_SECONDS)) {
          result = std::make_unique<VarTimeUnitChange>(var, num, Period::u_Seconds, negative);
          return true;
       }
-      else if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-         throw SyntaxError(str(L"the value of \"", first.getOriginString_2(p2),
+      else if (first.isSecondWord(STRING_DATE) || first.isSecondWord(STRING_WEEKDAY)) {
+         throw SyntaxError(str(L"the value of \"", first.origin2,
             L"\" time variable member cannot be altered"), first.line);
       }
 
@@ -1136,7 +1135,7 @@ static p_bool commandVarIncrement(p_comptr& result, const Token& first, const To
          pvp_str->makeNotConstant();
 
          if (pvp_str->isImmutable()) {
-            throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+            throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
          }
 
          result = std::make_unique<VarAdd_<p_str>>(*pvp_str, str_);
@@ -1146,7 +1145,7 @@ static p_bool commandVarIncrement(p_comptr& result, const Token& first, const To
       p_genptr<p_list> list;
 
       if (parse::parse(p2, tks, list)) {
-         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+         throw SyntaxError(str(L"the variable \"", first.origin,
             L"\" can be incremented only by a string"), line);
       }
       else {
@@ -1155,7 +1154,7 @@ static p_bool commandVarIncrement(p_comptr& result, const Token& first, const To
       }
    }
 
-   throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+   throw SyntaxError(str(L"the variable \"", first.origin,
       L"\" cannot be incremented by a value"), line);
 }
 
@@ -1165,7 +1164,7 @@ static p_bool makeVarAlteration(Perun2Process& p2, const Tokens& tokens, const T
 {
    if (p2.contexts.getVar(first, varPtr, p2)) {
       if (varPtr->isImmutable()) {
-         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
       }
 
       p_genptr<T> value;
@@ -1180,7 +1179,7 @@ static p_bool makeVarAlteration(Perun2Process& p2, const Tokens& tokens, const T
          return true;
       }
       else {
-         throw SyntaxError(str(L"the value assigned to the variable \"", first.getOriginString(p2),
+         throw SyntaxError(str(L"the value assigned to the variable \"", first.origin,
             L"\" has to be of ", dataTypeName, L" type"), first.line);
       }
    }
@@ -1196,7 +1195,7 @@ static void makeVarAssignment(p_comptr& result, const Token& token, Perun2Proces
    const p_bool isConstant = !p2.contexts.hasAggregate() && valuePtr->isConstant();
    p_varptrs<T>* allVarsOfThisType;
    uvc->userVars.takeVarsPtr(allVarsOfThisType);
-   p_str name = token.toLowerString(p2);
+   p_str name = token.toLowerString();
    allVarsOfThisType->insert(std::make_pair(name, std::make_unique<Variable<T>>(VarType::vt_User)));
 
    (*allVarsOfThisType)[name]->isConstant_ = isConstant;
@@ -1214,17 +1213,17 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    if (left.getLength() == 1 && first.type == Token::t_TwoWords) {
       Variable<p_tim>* pvp_tim;
       if (!p2.contexts.getVar(first, pvp_tim, p2)) {
-         throw SyntaxError(str(L"\"", first.getOriginString(p2),
+         throw SyntaxError(str(L"\"", first.origin,
             L"\" is not a time variable for the member assignment operation"),
             first.line);
       }
 
       if (pvp_tim->isImmutable()) {
-         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+         throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
       }
 
-      if (first.isSecondWord(STRING_DATE, p2) || first.isSecondWord(STRING_WEEKDAY, p2)) {
-         throw SyntaxError(str(L"the value of \"", first.getOriginString_2(p2),
+      if (first.isSecondWord(STRING_DATE) || first.isSecondWord(STRING_WEEKDAY)) {
+         throw SyntaxError(str(L"the value of \"", first.origin2,
             L"\" time variable member cannot be altered"), first.line);
       }
 
@@ -1237,27 +1236,27 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
       Variable<p_tim>& var = *pvp_tim;
       pvp_tim->makeNotConstant();
 
-      if (first.isSecondWord(STRING_YEAR, p2) || first.isSecondWord(STRING_YEARS, p2)) {
+      if (first.isSecondWord(STRING_YEAR) || first.isSecondWord(STRING_YEARS)) {
          result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Years);
          return true;
       }
-      else if (first.isSecondWord(STRING_MONTH, p2) || first.isSecondWord(STRING_MONTHS, p2)) {
+      else if (first.isSecondWord(STRING_MONTH) || first.isSecondWord(STRING_MONTHS)) {
          result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Months);
          return true;
       }
-      else if (first.isSecondWord(STRING_DAY, p2) || first.isSecondWord(STRING_DAYS, p2)) {
+      else if (first.isSecondWord(STRING_DAY) || first.isSecondWord(STRING_DAYS)) {
          result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Days);
          return true;
       }
-      else if (first.isSecondWord(STRING_HOUR, p2) || first.isSecondWord(STRING_HOURS, p2)) {
+      else if (first.isSecondWord(STRING_HOUR) || first.isSecondWord(STRING_HOURS)) {
          result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Hours);
          return true;
       }
-      else if (first.isSecondWord(STRING_MINUTE, p2) || first.isSecondWord(STRING_MINUTES, p2)) {
+      else if (first.isSecondWord(STRING_MINUTE) || first.isSecondWord(STRING_MINUTES)) {
          result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Minutes);
          return true;
       }
-      else if (first.isSecondWord(STRING_SECOND, p2) || first.isSecondWord(STRING_SECONDS, p2)) {
+      else if (first.isSecondWord(STRING_SECOND) || first.isSecondWord(STRING_SECONDS)) {
          result = std::make_unique<VarTimeUnitAssignment>(var, num, Period::u_Seconds);
          return true;
       }
@@ -1268,7 +1267,7 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    }
 
    if (left.getLength() >= 5 ) {
-      if (left.last().type == Token::t_TwoWords && left.last().isFirstWord(EMPTY_STRING, p2)) {
+      if (left.last().type == Token::t_TwoWords && left.last().isFirstWord(EMPTY_STRING)) {
          Tokens le(left);
          le.popRight();
 
@@ -1281,11 +1280,11 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
                 p2.contexts.getVar(first, pvp_tlist, p2) ||
                 p2.contexts.getVar(first, pvp_list, p2))
             {
-               throw SyntaxError(str(L"the collection variable \"", first.getOriginString(p2),
+               throw SyntaxError(str(L"the collection variable \"", first.origin,
                   L"\" is immutable, so its elements cannot me modified"), first.line);
             }
             else {
-               throw SyntaxError(str(L"unknown collection variable \"", first.getOriginString(p2),
+               throw SyntaxError(str(L"unknown collection variable \"", first.origin,
                   L"\". Collection variables are immutable in Perun2 anyway"), first.line);
             }
          }
@@ -1300,8 +1299,8 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    // assign value to an existing variable
    ////
 
-   if (first.isWord(STRINGS_VARS_IMMUTABLES, p2)) {
-      throw SyntaxError(str(L"the variable \"", first.getOriginString(p2), L"\" is immutable"), first.line);
+   if (first.isWord(STRINGS_VARS_IMMUTABLES)) {
+      throw SyntaxError(str(L"the variable \"", first.origin, L"\" is immutable"), first.line);
    }
 
    Variable<p_bool>* pv_boo = nullptr;
@@ -1348,9 +1347,9 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
    // create a new variable
    ////
 
-   const p_size wordLength = first.value.word.os.length;
+   const p_size wordLength = first.origin.size();
    if (wordLength != 1) {
-      throw SyntaxError(str(L"the name \"", first.getOriginString(p2),
+      throw SyntaxError(str(L"the name \"", first.origin,
          L"\" is not valid for a new variable. In Perun2, user defined variables can be only one-character long"), first.line);
    }
 
@@ -1402,7 +1401,7 @@ static p_bool commandVarAssign(p_comptr& result, const Tokens& left, const Token
       return true;
    }
 
-   throw SyntaxError(str(L"the value assigned to the variable \"", first.getOriginString(p2),
+   throw SyntaxError(str(L"the value assigned to the variable \"", first.origin,
       L"\" cannot be resolved to any data type"), first.line);
 }
 
@@ -1441,7 +1440,7 @@ static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
        p2.contexts.getVar(first, pvp_nlist, p2) ||
        p2.contexts.getVar(first, pvp_tlist, p2))
    {
-      throw SyntaxError(str(L"the collection variable \"", first.getOriginString(p2),
+      throw SyntaxError(str(L"the collection variable \"", first.origin,
          L"\" is immutable, so its elements cannot me modified"), first.line);
    }
 
@@ -1459,16 +1458,16 @@ static p_bool commandVarAssign_Element(p_comptr& result, const Tokens& left,
          }
          else {
             throw SyntaxError(str(L"new value in character assignment of the variable \"",
-               first.getOriginString(p2), L"\" cannot be resolved to a string"), first.line);
+               first.origin, L"\" cannot be resolved to a string"), first.line);
          }
       }
       else {
-         throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+         throw SyntaxError(str(L"the variable \"", first.origin,
             L"\" does not exist or is unreachable here"), first.line);
       }
    }
 
-   throw SyntaxError(str(L"the variable \"", first.getOriginString(p2),
+   throw SyntaxError(str(L"the variable \"", first.origin,
       L"\" was not expected before the square brackets []"), first.line);
 }
 
@@ -1498,21 +1497,21 @@ static void checkNoSemicolonBeforeBrackets(const Tokens& tks, Perun2Process& p2)
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Keyword) {
-         switch (t.value.keyword.k) {
+         switch (t.value.keyword) {
             case Keyword::kw_While:
             case Keyword::kw_Inside: {
                throw SyntaxError(str(L"a semicolon ; is missing before the keyword \"",
-                  t.getOriginString(p2), L"\""), t.line);
+                  t.origin, L"\""), t.line);
             }
             case Keyword::kw_If: {
                if (!(i == start && startsWithElse)) {
                   throw SyntaxError(str(L"a semicolon ; is missing before the keyword \"",
-                     t.getOriginString(p2), L"\""), t.line);
+                     t.origin, L"\""), t.line);
                }
                break;
             }
             case Keyword::kw_Else: {
-               throw SyntaxError(str(L"the keyword \"", t.getOriginString(p2),
+               throw SyntaxError(str(L"the keyword \"", t.origin,
                   L"\" should be preceded by curly brackets {}"), t.line);
             }
          }

@@ -22,7 +22,7 @@ namespace perun2
 void BracketsInfo::refresh(const Token& tk)
 {
    if (tk.type == Token::t_Symbol) {
-      switch (tk.value.ch) {
+      switch (tk.value.singleChar) {
          case CHAR_OPENING_ROUND_BRACKET:  {
             round++;
             break;
@@ -62,7 +62,7 @@ void checkBracketsThoroughly(const Tokens& tks)
       const Token& t = tks.listAt(i);
       if (t.type != Token::t_Symbol) { continue; }
 
-      switch (t.value.ch)  {
+      switch (t.value.singleChar)  {
          case CHAR_OPENING_ROUND_BRACKET: {
             roundLvl++;
             roundId = t.line;

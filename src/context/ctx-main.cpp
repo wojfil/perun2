@@ -37,7 +37,7 @@ namespace perun2
 
    p_bool Contexts::getVar(const Token& tk, Variable<p_bool>*& result, Perun2Process& p2)
    {
-      if (tk.isWord(STRING_SUCCESS, p2)) {
+      if (tk.isWord(STRING_SUCCESS)) {
          result = this->success.get();
          return true;
       }
@@ -47,9 +47,9 @@ namespace perun2
 
    p_bool Contexts::getVar(const Token& tk, Variable<p_num>*& result, Perun2Process& p2)
    {
-      if (tk.isWord(STRING_INDEX, p2)) {
+      if (tk.isWord(STRING_INDEX)) {
          if (this->indexContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
+            throw SyntaxError::undefinedVarValue(tk.origin, tk.line);
             return false;
          }
 
@@ -65,9 +65,9 @@ namespace perun2
 
    p_bool Contexts::getVar(const Token& tk, Variable<p_str>*& result, Perun2Process& p2)
    {
-      if (tk.isWord(STRING_THIS, p2)) {
+      if (tk.isWord(STRING_THIS)) {
          if (this->fileContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
+            throw SyntaxError::undefinedVarValue(tk.origin, tk.line);
             return false;
          }
 
@@ -77,9 +77,9 @@ namespace perun2
             return true;
          }
       }
-      else if (tk.isWord(STRING_LOCATION, p2)) {
+      else if (tk.isWord(STRING_LOCATION)) {
          if (this->locationContexts.empty()) {
-            throw SyntaxError::undefinedVarValue(tk.getOriginString(p2), tk.line);
+            throw SyntaxError::undefinedVarValue(tk.origin, tk.line);
             return false;
          }
 
@@ -214,7 +214,7 @@ namespace perun2
          return true;
       }
 
-      const p_str word = tk.toLowerString(p2);
+      const p_str word = tk.toLowerString();
       Variable<p_bool>* b;
       Variable<p_tim>* t;
       Variable<p_per>* p;

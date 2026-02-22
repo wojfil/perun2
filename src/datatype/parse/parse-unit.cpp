@@ -33,7 +33,7 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_bool>& res
 
    switch (tk.type) {
       case Token::t_Keyword: {
-         switch (tk.value.keyword.k) {
+         switch (tk.value.keyword) {
             case Keyword::kw_True: {
                result = std::make_unique<gen::Constant<p_bool>>(true);
                return true;
@@ -62,45 +62,45 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_num>& resu
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = std::make_unique<gen::Constant<p_num>>(tk.value.num.n);
+         result = std::make_unique<gen::Constant<p_num>>(tk.value.number.value);
          return true;
       }
       case Token::t_Word: {
          return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         if (tk.isFirstWord(EMPTY_STRING, p2)) {
+         if (tk.isFirstWord(EMPTY_STRING)) {
             throw SyntaxError(L"the dot . should be preceded by a time variable", tk.line);
          }
 
          p_genptr<p_tim> var;
-         if (!makeVarRef(tk, var, p2)) {
-            throw SyntaxError(str(L"the time variable from expression \"", tk.getOriginString(p2),
-               L".", tk.getOriginString_2(p2), L"\" does not exist or is unreachable here"), tk.line);
+         if (! makeVarRef(tk, var, p2)) {
+            throw SyntaxError(str(L"the time variable from expression \"", tk.origin,
+               L".", tk.origin2, L"\" does not exist or is unreachable here"), tk.line);
          }
 
-         if (tk.isSecondWord(STRING_YEAR, p2) || tk.isSecondWord(STRING_YEARS, p2)) {
+         if (tk.isSecondWord(STRING_YEAR) || tk.isSecondWord(STRING_YEARS)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Years);
          }
-         else if (tk.isSecondWord(STRING_MONTH, p2) || tk.isSecondWord(STRING_MONTHS, p2)) {
+         else if (tk.isSecondWord(STRING_MONTH) || tk.isSecondWord(STRING_MONTHS)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Months);
          }
-         else if (tk.isSecondWord(STRING_WEEKDAY, p2)) {
+         else if (tk.isSecondWord(STRING_WEEKDAY)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Weeks);
          }
-         else if (tk.isSecondWord(STRING_DAY, p2) || tk.isSecondWord(STRING_DAYS, p2)) {
+         else if (tk.isSecondWord(STRING_DAY) || tk.isSecondWord(STRING_DAYS)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Days);
          }
-         else if (tk.isSecondWord(STRING_HOUR, p2) || tk.isSecondWord(STRING_HOURS, p2)) {
+         else if (tk.isSecondWord(STRING_HOUR) || tk.isSecondWord(STRING_HOURS)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Hours);
          }
-         else if (tk.isSecondWord(STRING_MINUTE, p2) || tk.isSecondWord(STRING_MINUTES, p2)) {
+         else if (tk.isSecondWord(STRING_MINUTE) || tk.isSecondWord(STRING_MINUTES)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Minutes);
          }
-         else if (tk.isSecondWord(STRING_SECOND, p2) || tk.isSecondWord(STRING_SECOND, p2)) {
+         else if (tk.isSecondWord(STRING_SECOND) || tk.isSecondWord(STRING_SECOND)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Seconds);
          }
-         else if (tk.isSecondWord(STRING_DATE, p2)) {
+         else if (tk.isSecondWord(STRING_DATE)) {
             return false;
          }
          else {
@@ -121,11 +121,11 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_str>& resu
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = std::make_unique<gen::Constant<p_str>>(tk.value.num.n.toString());
+         result = std::make_unique<gen::Constant<p_str>>(tk.value.number.value.toString());
          return true;
       }
       case Token::t_Quotation: {
-         result = std::make_unique<gen::Constant<p_str>>(tk.getOriginString(p2));
+         result = std::make_unique<gen::Constant<p_str>>(tk.origin);
          return true;
       }
       case Token::t_Word: {
@@ -164,16 +164,16 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_tim>& resu
          return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         if (tk.isFirstWord(EMPTY_STRING, p2)) {
+         if (tk.isFirstWord(EMPTY_STRING)) {
             throw SyntaxError(L"the dot . should be preceded by a time variable", tk.line);
          }
 
          p_genptr<p_tim> var;
          if (!makeVarRef(tk, var, p2)) {
-            throw SyntaxError(str(L"the time variable \"", tk.getOriginString(p2), L"\" does not exist"), tk.line);
+            throw SyntaxError(str(L"the time variable \"", tk.origin, L"\" does not exist"), tk.line);
          }
 
-         if (tk.isSecondWord(STRING_DATE, p2)) {
+         if (tk.isSecondWord(STRING_DATE)) {
             result = std::make_unique<gen::TimeDate>(var);
             return true;
          }
@@ -203,7 +203,7 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result)
          return makeVarRef(tk, result, p2);
       }
       case Token::t_MultiSymbol: {
-         if (tk.value.chars.ch == CHAR_ASTERISK) {
+         if (tk.value.repeatedChars.value == CHAR_ASTERISK) {
             return parseAsteriskPattern(result, str(CHAR_ASTERISK, CHAR_ASTERISK), tk.line, p2);
          }
          else {
@@ -211,7 +211,7 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result)
          }
       }
       case Token::t_Symbol: {
-         if (tk.value.ch == CHAR_ASTERISK) {
+         if (tk.value.singleChar == CHAR_ASTERISK) {
             return parseAsteriskPattern(result, toStr(CHAR_ASTERISK), tk.line, p2);
          }
          else {
@@ -219,7 +219,7 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result)
          }
       }
       case Token::t_Pattern: {
-         return parseAsteriskPattern(result, tk.getOriginString(p2), tk.line, p2);
+         return parseAsteriskPattern(result, tk.origin, tk.line, p2);
       }
       default: {
          return false;

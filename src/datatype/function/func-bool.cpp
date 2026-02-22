@@ -137,7 +137,7 @@ p_bool isNumber(const p_str& value)
       const p_char ch = value[i];
       
       if (ch == CHAR_DOT) {
-         if (hasDot) {
+         if (hasDot || i == 0 || i == (len - 1) || (i == 1 && value[0] == CHAR_MINUS)) {
             return false;
          }
          else {

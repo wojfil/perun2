@@ -458,6 +458,18 @@ inline static Token numberToken(const p_str& code, const p_str& value, const p_s
       }
    }
 
+   if (length == 1) {
+      throw SyntaxError::numberDotOnly(line);
+   }
+
+   if (code[start] == CHAR_DOT) {
+      throw SyntaxError::numberStartingWithDot(code.substr(start, length), line);
+   }
+
+   if (code[start + length - 1] == CHAR_DOT) {
+      throw SyntaxError::numberEndingWithDot(code.substr(start, length), line);
+   }
+
    try {
       p_ndouble dbl = stringToDouble(value);
       dbl *= multiplier;

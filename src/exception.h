@@ -63,6 +63,9 @@ public:
    static SyntaxError multipleDotsInNumber(const p_str& value, const p_int line);
    static SyntaxError multipleDotsInWord(const p_str& value, const p_int line);
    static SyntaxError negationByExclamation(const p_int line);
+   static SyntaxError numberDotOnly(const p_int line);
+   static SyntaxError numberEndingWithDot(const p_str& value, const p_int line);
+   static SyntaxError numberStartingWithDot(const p_str& value, const p_int line);
    static SyntaxError numberTooBig(const p_str& value, const p_int line);
    static SyntaxError openedStringLteral(const p_int line);
    static SyntaxError operatorBetweenShouldBeFollowedByAnd(const p_str& value, const p_int line);

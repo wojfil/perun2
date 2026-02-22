@@ -230,6 +230,23 @@ SyntaxError SyntaxError::negationByExclamation(const p_int line)
    return SyntaxError(L"you should use the keyword \"not\" instead of the character \"!\" for boolean negation", line);
 }
 
+SyntaxError SyntaxError::numberDotOnly(const p_int line)
+{
+   return SyntaxError(str(L"the character . is not part of any expression"), line);
+}
+
+SyntaxError SyntaxError::numberEndingWithDot(const p_str& value, const p_int line)
+{
+   return SyntaxError(str(L"the number declaration \"", value, 
+      L"\" is not clear enough. It should be written as \"", value, L"0\""), line);
+}
+
+SyntaxError SyntaxError::numberStartingWithDot(const p_str& value, const p_int line)
+{
+   return SyntaxError(str(L"the number declaration \"", value, 
+      L"\" is not clear enough. It should be written as \"0", value, L"\""), line);
+}
+
 SyntaxError SyntaxError::numberTooBig(const p_str& value, const p_int line)
 {
    return SyntaxError(str(L"the number \"", value, L"\" is too big to be stored in the memory"), line);

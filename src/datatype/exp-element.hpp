@@ -15,7 +15,7 @@
 #pragma once
 
 #include "generator.hpp"
-#include "generator\gen-generic.hpp"
+#include "generator/gen-generic.hpp"
 #include "primitives.hpp"
 
 

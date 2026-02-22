@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "..\datatype\incr-constr.hpp"
-#include "..\attribute.hpp"
+#include "../datatype/incr-constr.hpp"
+#include "../attribute.hpp"
 
 
 namespace perun2

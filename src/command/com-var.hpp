@@ -15,9 +15,9 @@
 #pragma once
 
 #include "com.hpp"
-#include "..\var.hpp"
-#include "..\util.hpp"
-#include "..\datatype\datatype.hpp"
+#include "../var.hpp"
+#include "../util.hpp"
+#include "../datatype/datatype.hpp"
 
 
 namespace perun2::comm

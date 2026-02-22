@@ -13,8 +13,8 @@
 */
 
 #include "func-attr.hpp"
-#include "..\..\os/os.hpp"
-#include "..\..\util.hpp"
+#include "../../os/os.hpp"
+#include "../../util.hpp"
 
 
 namespace perun2::func

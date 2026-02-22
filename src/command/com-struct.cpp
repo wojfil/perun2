@@ -13,8 +13,8 @@
 */
 
 #include "com-struct.hpp"
-#include "..\os/os.hpp"
-#include "..\perun2.hpp"
+#include "../os/os.hpp"
+#include "../perun2.hpp"
 
 
 namespace perun2::comm

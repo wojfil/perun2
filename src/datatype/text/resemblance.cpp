@@ -106,7 +106,7 @@ p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
       return NDOUBLE_ZERO;
    }
 
-   p_int minimum = std::numeric_limits<p_int>::max();
+   p_int minimum = MAX_P_INT;
 
    for (p_size i = 0; i < value.size(); i++) 
    {

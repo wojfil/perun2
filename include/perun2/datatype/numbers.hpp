@@ -61,6 +61,7 @@ p_constexpr p_ndouble NDOUBLE_THREE =           3L;
 p_constexpr p_ndouble NDOUBLE_MINUS_ONE =      -1L;
 p_constexpr p_ndouble NDOUBLE_TWELVE =         12L;
 
+p_constexpr p_int MAX_P_INT = 0x7FFFFFFF;
 
 p_constexpr p_nint ROMAN_VINCULUM_THRESHOLD = 4000LL;
 p_constexpr p_nint ROMAN_MAXIMUM = 5000000LL;

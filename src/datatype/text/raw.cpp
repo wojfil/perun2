@@ -24,47 +24,47 @@ void str_toRaw(p_str& value)
 
    for (p_int i = 0; i < static_cast<p_int>(value.size()); i++) {
       switch (value[i]) {
-         case L'œ':
+         case 0x0153:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_LOWER_OE;
             break;
          }
-         case L'æ':
+         case 0x00E6:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_LOWER_AE;
             break;
          }
-         case L'ǽ':
+         case 0x01FD:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_LOWER_AE_ACCENT;
             break;
          }
-         case L'ǣ':
+         case 0x01E3:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_LOWER_AE_MACRON;
             break;
          }
-         case L'Œ':
+         case 0x0152:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_UPPER_OE;
             break;
          }
-         case L'Æ':
+         case 0x00C6:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_UPPER_AE;
             break;
          }
-         case L'Ǽ':
+         case 0x01FC:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_UPPER_AE_ACCENT;
             break;
          }
-         case L'Ǣ':
+         case 0x01E2:
          {
             doubleChars |= TO_RAW_DOUBLECHARS_UPPER_AE_MACRON;
             break;
          }
-         case L'ß': {
+         case 0x00DF: {
             doubleChars |= TO_RAW_DOUBLECHARS_ESZETT;
             break;
          }
@@ -550,39 +550,39 @@ void str_toRaw(p_str& value)
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_OE) {
-      replaceCharWithTwoChars(value, L'œ', L'o', L'e');
+      replaceCharWithTwoChars(value, 0x0153, L'o', L'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_AE) {
-      replaceCharWithTwoChars(value, L'æ', L'a', L'e');
+      replaceCharWithTwoChars(value, 0x00E6, L'a', L'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_AE_ACCENT) {
-      replaceCharWithTwoChars(value, L'ǽ', L'a', L'e');
+      replaceCharWithTwoChars(value, 0x01FD, L'a', L'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_AE_MACRON) {
-      replaceCharWithTwoChars(value, L'ǣ', L'a', L'e');
+      replaceCharWithTwoChars(value, 0x01E3, L'a', L'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_OE) {
-      replaceCharWithTwoChars(value, L'Œ', L'O', L'E');
+      replaceCharWithTwoChars(value, 0x0152, L'O', L'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_AE) {
-      replaceCharWithTwoChars(value, L'Æ', L'A', L'E');
+      replaceCharWithTwoChars(value, 0x00C6, L'A', L'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_AE_ACCENT) {
-      replaceCharWithTwoChars(value, L'Ǽ', L'A', L'E');
+      replaceCharWithTwoChars(value, 0x01FC, L'A', L'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_AE_MACRON) {
-      replaceCharWithTwoChars(value, L'Ǣ', L'A', L'E');
+      replaceCharWithTwoChars(value, 0x01E2, L'A', L'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_ESZETT) {
-      replaceCharWithTwoChars(value, L'ß', L's', L's');
+      replaceCharWithTwoChars(value, 0x00DF, L's', L's');
    }
 }
 

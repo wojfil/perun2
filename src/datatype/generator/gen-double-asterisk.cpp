@@ -125,27 +125,27 @@ Logic DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
 
    switch (this->pattern[m - 1]) {
       case WILDCARD_SINGLE_ASTERISK: {
-         ans = std::max(ans, this->checkState(n, m - 1));
+         ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
          if (n > 0 && (*this->valuePtr)[n - 1] != OS_SEPARATOR) {
-            ans = std::max(ans, this->checkState(n - 1, m));
+            ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
          }
          break;
       }
       case WILDCARD_DOUBLE_ASTERISK: {
-         ans = std::max(ans, this->checkState(n, m - 1));
+         ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
          if (n > 0) {
             if (m >= 2 && this->pattern[m - 2] == OS_SEPARATOR && m < this->patternLength && this->pattern[m] == OS_SEPARATOR) {
-               ans = std::max(ans, this->checkState(n, m - 2));
+               ans = perun2::langutil::maximum(ans, this->checkState(n, m - 2));
             }
 
-            ans = std::max(ans, this->checkState(n - 1, m));
+            ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
          }
          break;
       }
       default: {
          if (n > 0) {
             if (os_areEqualInPath(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
-               ans = std::max(ans, this->checkState(n - 1, m - 1));
+               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
             }
          }
          break;

@@ -15,6 +15,7 @@
 #include "../../../include/perun2/datatype/text/wildcard.hpp"
 #include "../../../include/perun2/datatype/text/chars.hpp"
 #include "../../../include/perun2/os/os.hpp"
+#include "../../../include/perun2/util.hpp"
 
 
 namespace perun2
@@ -102,13 +103,13 @@ Logic SimpleWildcardComparer::checkState(const p_size n, const p_size m)
    Logic ans = Logic::False;
 
    if (this->pattern[m - 1] == CHAR_ASTERISK) {
-      ans = std::max(ans, this->checkState(n, m - 1));
+      ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
       if (n > 0) {
-         ans = std::max(ans, this->checkState(n - 1, m));
+         ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
       }
    }
    else if (n > 0 && os_areEqualInPath(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
-      ans = std::max(ans, this->checkState(n - 1, m - 1));
+      ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
    }
 
    this->charStates[n][m] = ans;

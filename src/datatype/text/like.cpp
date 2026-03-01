@@ -14,6 +14,7 @@
 
 #include "../../../include/perun2/datatype/text/like.hpp"
 #include "../../../include/perun2/datatype/text/strings.hpp"
+#include "../../../include/perun2/util.hpp"
 #include <set>
 
 
@@ -479,9 +480,9 @@ Logic LC_Default::checkState(const p_size n, const p_size m)
    Logic ans = Logic::False;
 
    if (this->pattern[m - 1] == WILDCARD_MULTIPLE_CHARS) {
-      ans = std::max(ans, this->checkState(n, m - 1));
+      ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
       if (n > 0) {
-         ans = std::max(ans, this->checkState(n - 1, m));
+         ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
       }
    }
 
@@ -490,24 +491,24 @@ Logic LC_Default::checkState(const p_size n, const p_size m)
 
       switch (pch) {
          case WILDCARD_ONE_CHAR: {
-            ans = std::max(ans, this->checkState(n - 1, m - 1));
+            ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
             break;
          }
          case WILDCARD_ONE_DIGIT: {
             if (char_isDigit((*this->valuePtr)[n - 1])) {
-               ans = std::max(ans, this->checkState(n - 1, m - 1));
+               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
             }
             break;
          }
          case WILDCARD_SET: {
             if (this->charSets.at(m - 1).contains((*this->valuePtr)[n - 1])) {
-               ans = std::max(ans, this->checkState(n - 1, m - 1));
+               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
             }
             break;
          }
          default: {
             if (pch == (*this->valuePtr)[n - 1]) {
-               ans = std::max(ans, this->checkState(n - 1, m - 1));
+               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
             }
             break;
          }

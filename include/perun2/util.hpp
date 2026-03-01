@@ -50,4 +50,33 @@ void transferUniquePtrs(std::vector<std::unique_ptr<T>>& source, std::vector<std
    }
 };
 
+
+// take the biggest value of two values
+template <typename T>
+T maximum(const T& a, const T& b)
+{
+   return ((a) < (b)) ? (b) : (a);
+}
+
+
+// take the smallest value of two values
+template <typename T>
+T minimum(const T& a, const T& b)
+{
+   return ((a) < (b)) ? (a) : (b);
+}
+
+// take the smallest value of three values
+template <typename T>
+T minimum(const T& a, const T& b, const T& c)
+{
+   if (a < b) {
+      return ((a) < (c)) ? (a) : (c);
+   }
+
+   return ((b) < (c)) ? (b) : (c);
+}
+
+
+
 }

@@ -61,7 +61,6 @@ void prepareForResemblance(p_str& value);
 
 // the main Resemblance algorithm
 p_ndouble str_resemblance(const p_str& value, const p_str& pattern);
-static p_int minOfThree(p_int a, p_int b, p_int c);
 
 // this implementation of Damerau-Levenshtein Distance calculates
 // minimum of the distances between str2 and any substring of str1 that starts at index 0

@@ -68,76 +68,76 @@ void str_toRaw(p_str& value)
             doubleChars |= TO_RAW_DOUBLECHARS_ESZETT;
             break;
          }
-         case L'Ą':
-         case L'Á':
-         case L'À':
-         case L'Ȧ':
-         case L'Â':
-         case L'Ä':
-         case L'Ǟ':
-         case L'Ǎ':
-         case L'Ă':
-         case L'Ā':
-         case L'Ã':
-         case L'Å':
-         case L'Ǻ':
+         case 0x0104:
+         case 0x00C1:
+         case 0x00C0:
+         case 0x0226:
+         case 0x00C2:
+         case 0x00C4:
+         case 0x01DE:
+         case 0x01CD:
+         case 0x0102:
+         case 0x0100:
+         case 0x00C3:
+         case 0x00C5:
+         case 0x01FA:
          {
             value[i] = L'A';
             break;
          }
-         case L'Ɓ':
-         case L'Ḅ':
+         case 0x0181:
+         case 0x1E04:
          {
             value[i] = L'B';
             break;
          }
-         case L'Ƈ':
-         case L'Ç':
-         case L'Ć':
-         case L'Ċ':
-         case L'Ĉ':
-         case L'Č':
+         case 0x0187:
+         case 0x00C7:
+         case 0x0106:
+         case 0x010A:
+         case 0x0108:
+         case 0x010C:
          {
             value[i] = L'C';
             break;
          }
-         case L'Đ':
-         case L'Ɗ':
-         case L'Ɖ':
-         case L'Ď':
-         case L'Ḍ':
-         case L'Ḑ':
-         case L'Ḓ':
+         case 0x0110:
+         case 0x018A:
+         case 0x0189:
+         case 0x010E:
+         case 0x1E0C:
+         case 0x1E10:
+         case 0x1E12:
          {
             value[i] = L'D';
             break;
          }
-         case L'Ę':
-         case L'Ȩ':
-         case L'É':
-         case L'È':
-         case L'Ė':
-         case L'Ê':
-         case L'Ë':
-         case L'Ě':
-         case L'Ĕ':
-         case L'Ē':
-         case L'Ẽ':
-         case L'Ẹ':
+         case 0x0118:
+         case 0x0228:
+         case 0x00C9:
+         case 0x00C8:
+         case 0x0116:
+         case 0x00CA:
+         case 0x00CB:
+         case 0x011A:
+         case 0x0114:
+         case 0x0112:
+         case 0x1EBC:
+         case 0x1EB8:
          {
             value[i] = L'E';
             break;
          }
-         case L'Ƒ':
+         case 0x0191:
          {
             value[i] = L'F';
             break;
          }
-         case L'Ǥ':
-         case L'Ɠ':
-         case L'Ǵ':
-         case L'Ġ':
-         case L'Ĝ':
+         case 0x01E4:
+         case 0x0193:
+         case 0x01F4:
+         case 0x0120:
+         case 0x011C:
          case L'Ǧ':
          case L'Ğ':
          case L'Ģ':

@@ -70,7 +70,7 @@ T minimum(const T& a, const T& b)
 template <typename T>
 T minimum(const T& a, const T& b, const T& c)
 {
-   if (a < b) {
+   if ((a) < (b)) {
       return ((a) < (c)) ? (a) : (c);
    }
 

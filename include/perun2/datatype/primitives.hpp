@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include <windows.h>
+#include <string_view>
 
 
 namespace perun2
@@ -43,6 +44,7 @@ typedef std::size_t                 p_size;
 typedef wchar_t                     p_char;
 typedef std::wstring                p_str;
 typedef std::vector<p_str>          p_list;
+typedef std::wstring_view           p_strv;
 
 typedef int64_t                     p_nint;
 typedef long double                 p_ndouble;

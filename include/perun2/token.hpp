@@ -106,19 +106,19 @@ public:
    p_bool isKeyword(const Keyword kw) const;
 
    // is single word (CREATION)
-   p_bool isWord(const p_char (&word)[]) const;
+   p_bool isWord(p_strv word) const;
    p_bool isWord(const std::vector<p_str>& words) const;
 
    // is first word of two (CREATION.year)
-   p_bool isFirstWord(const p_char (&word)[]) const;
+   p_bool isFirstWord(p_strv word) const;
    p_bool isFirstWord(const std::vector<p_str>& words) const;
 
    // is second word of two (creation.YEAR)
-   p_bool isSecondWord(const p_char (&word)[]) const;
+   p_bool isSecondWord(p_strv word) const;
    p_bool isSecondWord(const std::vector<p_str>& words) const;
 
    // is single word (CREATION) OR is first word of two (CREATION.year)
-   p_bool isVariable(const p_char (&word)[]) const;
+   p_bool isVariable(p_strv word) const;
    p_bool isVariable(const std::vector<p_str>& words) const;
 
    p_bool isNegatableKeywordOperator() const;

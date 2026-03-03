@@ -67,9 +67,9 @@ p_bool Token::isKeyword(const Keyword kw) const
    return type == t_Keyword && value.keyword == kw;
 }
 
-p_bool Token::isWord(p_strv word) const
+p_bool Token::isWord(const p_strv word) const
 {
-   return type == t_Word && p_str(word) == lowercase;
+   return type == t_Word && word == lowercase;
 }
 
 p_bool Token::isWord(const std::vector<p_str>& words) const
@@ -87,9 +87,9 @@ p_bool Token::isWord(const std::vector<p_str>& words) const
    return false;
 }
 
-p_bool Token::isFirstWord(p_strv word) const
+p_bool Token::isFirstWord(const p_strv word) const
 {
-   return type == t_TwoWords && p_str(word) == lowercase;
+   return type == t_TwoWords && word == lowercase;
 }
 
 p_bool Token::isFirstWord(const std::vector<p_str>& words) const
@@ -107,9 +107,9 @@ p_bool Token::isFirstWord(const std::vector<p_str>& words) const
    return false;
 }
 
-p_bool Token::isSecondWord(p_strv word) const
+p_bool Token::isSecondWord(const p_strv word) const
 {
-   return type == t_TwoWords && p_str(word) == lowercase2;
+   return type == t_TwoWords && word == lowercase2;
 }
 
 p_bool Token::isSecondWord(const std::vector<p_str>& words) const
@@ -127,7 +127,7 @@ p_bool Token::isSecondWord(const std::vector<p_str>& words) const
    return false;
 }
 
-p_bool Token::isVariable(p_strv word) const
+p_bool Token::isVariable(const p_strv word) const
 {
    switch (this->type) {
       case Token::t_Word: {

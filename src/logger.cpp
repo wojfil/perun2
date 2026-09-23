@@ -11,8 +11,9 @@
     You should have received a copy of the GNU General Public License
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
-#include "../include/perun2/logger.hpp"
-#include "../include/perun2/perun2.hpp"
+#include "logger.h"
+#include "perun2.h"
+#include "unicode\convert.h"
 
 namespace perun2
 {
@@ -34,10 +35,10 @@ void Logger::print(const p_str& value) const
    }
 
    if (this->flushBuffer) {
-      p_cout << value << std::endl;
+      p_cout << utf32_to_utf16(value) << std::endl;
    }
    else {
-      p_cout << value << CHAR_NEW_LINE;
+      p_cout << utf32_to_utf16(value) << L'\n';
    }
 }
 
@@ -51,13 +52,13 @@ void Logger::emptyLine() const
       p_cout << std::endl;
    }
    else {
-      p_cout << CHAR_NEW_LINE;
+      p_cout << L'\n';
    }
 }
 
 void Logger::write(const p_str& first) const
 {
-   p_cout << first;
+   p_cout << utf32_to_utf16(first);
 }
 
 }

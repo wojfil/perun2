@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/generator/gen-list.hpp"
-#include "../../../include/perun2/perun2.hpp"
-#include "../../../include/perun2/util.hpp"
+#include "gen-list.h"
+#include "../../perun2.h"
+#include "../../util.h"
 
 
 namespace perun2::gen

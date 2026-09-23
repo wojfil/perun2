@@ -12,16 +12,16 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-unit.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
-#include "../../../include/perun2/datatype/generator/gen-number.hpp"
-#include "../../../include/perun2/datatype/generator/gen-string.hpp"
-#include "../../../include/perun2/datatype/generator/gen-time.hpp"
-#include "../../../include/perun2/datatype/generator/gen-os.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/datatype/parse/parse-number.hpp"
-#include "../../../include/perun2/datatype/parse/parse-asterisk.hpp"
-#include "../../../include/perun2/datatype/parse/parse-var.hpp"
+#include "parse-unit.h"
+#include "../generator/gen-generic.h"
+#include "../generator/gen-number.h"
+#include "../generator/gen-string.h"
+#include "../generator/gen-time.h"
+#include "../generator/gen-os.h"
+#include "../../os/os.h"
+#include "parse-number.h"
+#include "parse-asterisk.h"
+#include "parse-var.h"
 
 
 namespace perun2::parse
@@ -33,7 +33,7 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_bool>& res
 
    switch (tk.type) {
       case Token::t_Keyword: {
-         switch (tk.value.keyword) {
+         switch (tk.value.keyword.k) {
             case Keyword::kw_True: {
                result = std::make_unique<gen::Constant<p_bool>>(true);
                return true;
@@ -62,45 +62,45 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_num>& resu
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = std::make_unique<gen::Constant<p_num>>(tk.value.number.value);
+         result = std::make_unique<gen::Constant<p_num>>(tk.value.num.n);
          return true;
       }
       case Token::t_Word: {
          return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         if (tk.isFirstWord(EMPTY_STRING)) {
-            throw SyntaxError(L"the dot . should be preceded by a time variable", tk.line);
+         if (tk.isFirstWord(EMPTY_STRING, p2)) {
+            throw SyntaxError(U"the dot . should be preceded by a time variable", tk.line);
          }
 
          p_genptr<p_tim> var;
-         if (! makeVarRef(tk, var, p2)) {
-            throw SyntaxError(str(L"the time variable from expression \"", tk.origin,
-               L".", tk.origin2, L"\" does not exist or is unreachable here"), tk.line);
+         if (!makeVarRef(tk, var, p2)) {
+            throw SyntaxError(str(U"the time variable from expression \"", tk.getOriginString(p2),
+               U".", tk.getOriginString_2(p2), U"\" does not exist or is unreachable here"), tk.line);
          }
 
-         if (tk.isSecondWord(STRING_YEAR) || tk.isSecondWord(STRING_YEARS)) {
+         if (tk.isSecondWord(STRING_YEAR, p2) || tk.isSecondWord(STRING_YEARS, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Years);
          }
-         else if (tk.isSecondWord(STRING_MONTH) || tk.isSecondWord(STRING_MONTHS)) {
+         else if (tk.isSecondWord(STRING_MONTH, p2) || tk.isSecondWord(STRING_MONTHS, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Months);
          }
-         else if (tk.isSecondWord(STRING_WEEKDAY)) {
+         else if (tk.isSecondWord(STRING_WEEKDAY, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Weeks);
          }
-         else if (tk.isSecondWord(STRING_DAY) || tk.isSecondWord(STRING_DAYS)) {
+         else if (tk.isSecondWord(STRING_DAY, p2) || tk.isSecondWord(STRING_DAYS, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Days);
          }
-         else if (tk.isSecondWord(STRING_HOUR) || tk.isSecondWord(STRING_HOURS)) {
+         else if (tk.isSecondWord(STRING_HOUR, p2) || tk.isSecondWord(STRING_HOURS, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Hours);
          }
-         else if (tk.isSecondWord(STRING_MINUTE) || tk.isSecondWord(STRING_MINUTES)) {
+         else if (tk.isSecondWord(STRING_MINUTE, p2) || tk.isSecondWord(STRING_MINUTES, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Minutes);
          }
-         else if (tk.isSecondWord(STRING_SECOND) || tk.isSecondWord(STRING_SECOND)) {
+         else if (tk.isSecondWord(STRING_SECOND, p2) || tk.isSecondWord(STRING_SECOND, p2)) {
             result = std::make_unique<gen::TimeMember>(var, Period::u_Seconds);
          }
-         else if (tk.isSecondWord(STRING_DATE)) {
+         else if (tk.isSecondWord(STRING_DATE, p2)) {
             return false;
          }
          else {
@@ -121,11 +121,11 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_str>& resu
 
    switch (tk.type) {
       case Token::t_Number: {
-         result = std::make_unique<gen::Constant<p_str>>(tk.value.number.value.toString());
+         result = std::make_unique<gen::Constant<p_str>>(tk.value.num.n.toString());
          return true;
       }
       case Token::t_Quotation: {
-         result = std::make_unique<gen::Constant<p_str>>(tk.origin);
+         result = std::make_unique<gen::Constant<p_str>>(tk.getOriginString(p2));
          return true;
       }
       case Token::t_Word: {
@@ -164,16 +164,16 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_genptr<p_tim>& resu
          return makeVarRef(tk, result, p2);
       }
       case Token::t_TwoWords: {
-         if (tk.isFirstWord(EMPTY_STRING)) {
-            throw SyntaxError(L"the dot . should be preceded by a time variable", tk.line);
+         if (tk.isFirstWord(EMPTY_STRING, p2)) {
+            throw SyntaxError(U"the dot . should be preceded by a time variable", tk.line);
          }
 
          p_genptr<p_tim> var;
          if (!makeVarRef(tk, var, p2)) {
-            throw SyntaxError(str(L"the time variable \"", tk.origin, L"\" does not exist"), tk.line);
+            throw SyntaxError(str(U"the time variable \"", tk.getOriginString(p2), U"\" does not exist"), tk.line);
          }
 
-         if (tk.isSecondWord(STRING_DATE)) {
+         if (tk.isSecondWord(STRING_DATE, p2)) {
             result = std::make_unique<gen::TimeDate>(var);
             return true;
          }
@@ -203,7 +203,7 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result)
          return makeVarRef(tk, result, p2);
       }
       case Token::t_MultiSymbol: {
-         if (tk.value.repeatedChars.value == CHAR_ASTERISK) {
+         if (tk.value.chars.ch == CHAR_ASTERISK) {
             return parseAsteriskPattern(result, str(CHAR_ASTERISK, CHAR_ASTERISK), tk.line, p2);
          }
          else {
@@ -211,15 +211,15 @@ p_bool parseOneToken(Perun2Process& p2, const Tokens& tks, p_defptr& result)
          }
       }
       case Token::t_Symbol: {
-         if (tk.value.singleChar == CHAR_ASTERISK) {
-            return parseAsteriskPattern(result, toStr(CHAR_ASTERISK), tk.line, p2);
+         if (tk.value.ch == CHAR_ASTERISK) {
+            return parseAsteriskPattern(result, charToString(CHAR_ASTERISK), tk.line, p2);
          }
          else {
             return false;
          }
       }
       case Token::t_Pattern: {
-         return parseAsteriskPattern(result, tk.origin, tk.line, p2);
+         return parseAsteriskPattern(result, tk.getOriginString(p2), tk.line, p2);
       }
       default: {
          return false;

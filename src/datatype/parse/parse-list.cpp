@@ -12,15 +12,15 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-list.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/datatype/generator/gen-list.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
-#include "../../../include/perun2/lexer.hpp"
-#include "../../../include/perun2/datatype/order.hpp"
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/datatype/parse-gen.hpp"
+#include "parse-list.h"
+#include "parse-generic.h"
+#include "../generator/gen-list.h"
+#include "../generator/gen-generic.h"
+#include "../../lexer.h"
+#include "../../datatype/order.h"
+#include "../parse/parse-function.h"
+#include "parse-generic.h"
+#include "../parse-gen.h"
 
 
 namespace perun2::parse
@@ -39,7 +39,7 @@ p_bool parseList(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& p2)
          return true;
       }
       else {
-         throw SyntaxError(L"this syntax structure cannot be resolved to a collection", tks.first().line);
+         throw SyntaxError(U"this syntax structure cannot be resolved to a collection", tks.first().line);
       }
    }
 
@@ -80,14 +80,14 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
    for (p_size i = 0; i < flength; i++) {
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
-      const Keyword& kw = tsf.value.keyword;
+      const Keyword& kw = tsf.value.keyword.k;
       ts.popLeft();
 
       switch (kw) {
          case Keyword::kw_Final: {
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
             p_genptr<p_list> prev = std::move(base);
@@ -103,7 +103,7 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
 
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
             p_genptr<p_list> prev = std::move(base);
@@ -131,7 +131,7 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
 
             p_genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
-               throw SyntaxError::keywordNotFollowedByBool(tsf.origin, tsf.line);
+               throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
             }
 
             p2.contexts.retreatFileContext();

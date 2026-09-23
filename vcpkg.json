@@ -1,0 +1,8 @@
+{
+  "name": "perun2",
+  "version": "0.8.10.2",
+  "dependencies": [
+    "icu",
+    "ffmpeg"
+  ]
+}

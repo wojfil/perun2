@@ -12,12 +12,12 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-asterisk.hpp"
-#include "../../../include/perun2/datatype/generator/gen-string.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
-#include "../../../include/perun2/datatype/generator/gen-definition.hpp"
-#include "../../../include/perun2/datatype/generator/gen-double-asterisk.hpp"
-#include "../../../include/perun2/os/os.hpp"
+#include "parse-asterisk.h"
+#include "../generator/gen-string.h"
+#include "../generator/gen-generic.h"
+#include "../generator/gen-definition.h"
+#include "../generator/gen-double-asterisk.h"
+#include "../../os/os.h"
 
 
 namespace perun2::parse
@@ -26,7 +26,7 @@ namespace perun2::parse
 p_bool parseAsteriskPattern(p_defptr& result, const p_str& originPattern, const p_int line, Perun2Process& p2)
 {
    const p_str trimmed = os_trim(originPattern);
-   p_size retreats = 0;
+   p_int retreats = 0;
    const p_str pattern = os_trimRetreats(trimmed, retreats);
 
    if (os_hasDotSegments(pattern)) {

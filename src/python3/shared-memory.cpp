@@ -12,12 +12,13 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/python3/shared-memory.hpp"
-#include "../../include/perun2/context/ctx-file.hpp"
-#include "../../include/perun2/command/com-execute.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/python3/com-python3.hpp"
-#include "../../include/perun2/python3/python3-processes.hpp"
+#include "shared-memory.h"
+#include "../context/ctx-file.h"
+#include "../command/com-execute.h"
+#include "../perun2.h"
+#include "../unicode/convert.h"
+#include "com-python3.h"
+#include "python3-processes.h"
 #include <cstring>
 
 
@@ -26,7 +27,7 @@ namespace perun2::shm
 
 p_bool sharedMemoryExists(const p_str& name)
 {
-   HANDLE map = OpenFileMappingW(FILE_MAP_READ, FALSE, name.c_str());
+   HANDLE map = OpenFileMappingW(FILE_MAP_READ, FALSE, utf32_to_utf16(name).c_str());
 
    if (map == NULL) {
       return false;
@@ -40,11 +41,11 @@ p_bool sharedMemoryExists(const p_str& name)
 p_int nextSharedMemoryId()
 {
    p_int id = 0;
-   p_str name = str(SHM_NAME_HEAD, toStr(id));
+   p_str name = str(SHM_NAME_HEAD, intToString(id));
 
    while (sharedMemoryExists(name)) {
       id++;
-      name = str(SHM_NAME_HEAD, toStr(id));
+      name = str(SHM_NAME_HEAD, intToString(id));
    }
 
    return id;
@@ -59,7 +60,7 @@ SharedMemory::SharedMemory(const FileContext& fctx, const LocationContext& lctx,
 void SharedMemory::makeMemoryId()
 {
    this->memoryId = nextSharedMemoryId();
-   this->name = str(SHM_NAME_HEAD, toStr(this->memoryId));
+   this->name = str(SHM_NAME_HEAD, intToString(this->memoryId));
 }
 
 p_int SharedMemory::getMemoryId() const
@@ -81,7 +82,7 @@ p_bool SharedMemory::start()
       this->map = OpenFileMappingW(
          FILE_MAP_ALL_ACCESS,
          FALSE,
-         this->name.c_str()
+         utf32_to_utf16(this->name).c_str()
       );
 
       if (this->map != NULL) {

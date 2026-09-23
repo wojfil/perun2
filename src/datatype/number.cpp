@@ -13,11 +13,11 @@
 */
 
 #include <cmath>
-#include "../../include/perun2/datatype/number.hpp"
-#include "../../include/perun2/exception.hpp"
-#include "../../include/perun2/datatype/primitives.hpp"
-#include "../../include/perun2/datatype/text/strings.hpp"
-#include "../../include/perun2/datatype/numbers.hpp"
+#include "number.h"
+#include "../exception.h"
+#include "primitives.h"
+#include "text/strings.h"
+#include "numbers.h"
 
 
 namespace perun2
@@ -49,38 +49,13 @@ Number::Number(const p_ndouble val)
 p_str Number::toString() const
 {
    if (state == NumberState::Int) {
-      return toStr(value.i);
+      return intToString(value.i);
    }
    else if (isNaN()) {
       return STRING_PRINTABLE_NAN;
    }
 
-   p_ostream stream;
-   stream << std::fixed << value.d;
-   const p_str str = stream.str();
-   const p_size len = str.size();
-
-   for (p_int i = len - 1; i >= 0; i--)  {
-      const p_char ch = str[i];
-      if (ch != CHAR_0) {
-         if (ch == CHAR_DOT) {
-            return i == 0
-               ? toStr(CHAR_0)
-               : str.substr(0, i);
-         }
-         else {
-            for (p_size j = 0; j < len; j++) {
-               if (str[j] == CHAR_DOT) {
-                  return str.substr(0, i + 1);
-               }
-            }
-
-            return str;
-         }
-      }
-   }
-
-   return toStr(CHAR_0);
+   return doubleToString(value.d);
 }
 
 p_nint Number::toInt() const

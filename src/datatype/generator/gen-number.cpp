@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/generator/gen-number.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
+#include "gen-number.h"
+#include "gen-generic.h"
 
 
 namespace perun2::gen

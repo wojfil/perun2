@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/generator/gen-string.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/perun2.hpp"
+#include "gen-string.h"
+#include "../../os/os.h"
+#include "../../perun2.h"
 
 
 namespace perun2::gen
@@ -73,13 +73,13 @@ ConcatString_Multi::ConcatString_Multi(std::vector<p_genptr<p_str>>& val)
 
 p_str ConcatString_Multi::getValue()
 {
-   p_stream ss;
+   p_str ss;
 
    for (const p_genptr<p_str>& val : this->values) {
-      ss << val->getValue();
+      ss += val->getValue();
    }
 
-   return ss.str();
+   return ss;
 }
 
 p_str StringBinary::getValue()
@@ -145,8 +145,14 @@ p_str CharAtIndex::getValue()
       n += v.size();
    }
 
-   return (n >= NINT_ZERO && n < static_cast<p_nint>(v.size()))
-      ? toStr(v[static_cast<p_size>(n)])
+   const std::optional<p_list> graphemes = toGraphemes(v);
+
+   if (! graphemes.has_value()) {
+      return p_str();
+   }
+
+   return (n >= NINT_ZERO && n < static_cast<p_nint>(graphemes.value().size()))
+      ? graphemes.value()[static_cast<p_size>(n)]
       : p_str();
 }
 

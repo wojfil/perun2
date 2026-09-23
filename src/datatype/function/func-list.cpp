@@ -12,8 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/function/func-list.hpp"
-#include "../../../include/perun2/lexer.hpp"
+#include "func-list.h"
+#include "../../lexer.h"
+#include "../../unicode/convert.h"
 
 
 namespace perun2::func
@@ -21,14 +22,13 @@ namespace perun2::func
 
 inline p_list toChars(const p_str& value)
 {
-   p_list r;
-   r.reserve(value.size());
+   const std::optional<p_list> graphemes = toGraphemes(value);
 
-   for (const p_char ch : value) {
-      r.emplace_back(1, ch);
+   if (! graphemes.has_value()) {
+      return p_list();
    }
 
-   return r;
+   return graphemes.value();
 }
 
 
@@ -50,51 +50,74 @@ p_list F_Split::getValue()
    }
 
    const p_str v2 = arg2->getValue();
+   const std::optional<p_list> graphemes = toGraphemes(v1);
+   const std::optional<p_list> graphemes2 = toGraphemes(v2);
 
-   switch (v2.size()) {
-      case 0: {
-         return toChars(v1);
+   if (! graphemes.has_value() || ! graphemes2.has_value()) {
+      return p_list();
+   }
+
+   if (graphemes2.value().empty()) {
+      return graphemes.value();
+   }
+
+   if (graphemes2.value().size() == 1) {
+      const p_str& sep = graphemes2.value()[0];
+      
+      p_str temp;
+      p_list r;
+
+      for (const p_str& g : graphemes.value()) {
+         if (g == sep) {
+            r.emplace_back(temp);
+
+            if (! temp.empty()) {
+               temp.clear();
+            }
+         }
+         else {
+            temp += g;
+         }
       }
-      case 1: {
-         p_size start = 0;
-         p_list r;
 
-         for (p_size i = 0; i < v1.size(); i++) {
-            if (v1[i] == v2[0]) {
-               if (start == i) {
-                  r.emplace_back();
-               }
-               else {
-                  r.emplace_back(v1.substr(start, i - start));
-               }
-               start = i + 1;
+      r.emplace_back(temp);
+      return r;
+   }
+
+   const p_list& sep = graphemes2.value();
+   p_str temp;
+   p_list r;
+
+   for (size_t i = 0; i < graphemes.value().size(); i++) {
+      const p_str& g = graphemes.value()[i];
+
+      if (g == sep[0] && (i + sep.size()) <= graphemes.value().size()) {
+         p_bool fit = true;
+
+         for (size_t j = 1; j < sep.size(); j++) {
+            if (graphemes.value()[i + j] != sep[j]) {
+               fit = false;
+               break;
             }
          }
 
-         if (start == v1.size()) {
-            r.emplace_back();
-         }
-         else {
-            r.emplace_back(v1.substr(start));
-         }
+         if (fit) {
+            r.emplace_back(temp);
 
-         return r;
+            if (! temp.empty()) {
+               temp.clear();
+            }
+
+            i += sep.size() - 1;
+            continue;
+         }
       }
-      default: {
-         const p_size len2 = v2.size();
-         p_size index = v1.find(v2);
-         p_list r;
 
-         while (index != p_str::npos) {
-            r.emplace_back(v1.substr(0, index));
-            v1 = v1.substr(index + len2);
-            index = v1.find(v2);
-         }
-
-         r.emplace_back(v1);
-         return r;
-      }
+      temp += g;
    }
+
+   r.emplace_back(temp);
+   return r;
 }
 
 
@@ -206,7 +229,7 @@ p_nlist F_Numbers::getValue()
             else {
                if (prevDigit) {
                   try {
-                     const p_nint ii = std::stoll(value.substr(start, i - start));
+                     const p_nint ii = std::stoll(utf32_to_utf8(value.substr(start, i - start)));
                      numbers.emplace_back(ii);
                   }
                   catch (...) { }
@@ -217,7 +240,7 @@ p_nlist F_Numbers::getValue()
 
          if (prevDigit) {
             try {
-               const p_nint ii = std::stoll(value.substr(start));
+               const p_nint ii = std::stoll(utf32_to_utf8(value.substr(start)));
                numbers.emplace_back(ii);
             }
             catch (...) { }

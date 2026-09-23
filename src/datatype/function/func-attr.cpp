@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/function/func-attr.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/util.hpp"
+#include "func-attr.h"
+#include "..\..\os/os.h"
+#include "..\..\util.h"
 
 
 namespace perun2::func

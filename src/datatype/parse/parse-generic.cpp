@@ -12,12 +12,12 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/brackets.hpp"
-#include "../../../include/perun2/lexer.hpp"
-#include "../../../include/perun2/datatype/generator/gen-definition.hpp"
-#include "../../../include/perun2/datatype/generator/gen-time.hpp"
-#include "../../../include/perun2/datatype/generator/gen-list.hpp"
+#include "parse-generic.h"
+#include "../../brackets.h"
+#include "../../lexer.h"
+#include "../generator/gen-definition.h"
+#include "../generator/gen-time.h"
+#include "../generator/gen-list.h"
 
 
 namespace perun2::parse
@@ -33,7 +33,7 @@ p_bool parseListElementIndex(p_genptr<p_num>& result, const Tokens& tks, Perun2P
       return true;
    }
    else {
-      throw SyntaxError(L"the content of square brackets [] cannot be resolved to a number",
+      throw SyntaxError(U"the content of square brackets [] cannot be resolved to a number",
          tks.first().line);
    }
 
@@ -43,9 +43,9 @@ void checkLimitBySize(const Tokens& tks, Perun2Process& p2)
 {
    if (tks.getLength() == 1) {
       const Token& tk = tks.first();
-      if (tk.type == Token::t_Number && tk.value.number.mode == NumberMode::nm_Size) {
-         throw SyntaxError(str(L"a collection cannot be limited by file size \"", tk.origin,
-            L"\" this way"),
+      if (tk.type == Token::t_Number && tk.value.num.nm == NumberMode::nm_Size) {
+         throw SyntaxError(str(U"a collection cannot be limited by file size \"", tk.getOriginString(p2),
+            U"\" this way"),
             tk.line);
       }
    }

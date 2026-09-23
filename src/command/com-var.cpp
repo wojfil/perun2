@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-var.hpp"
+#include "com-var.h"
 
 
 namespace perun2::comm

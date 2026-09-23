@@ -12,13 +12,13 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-misc.hpp"
-#include "../../include/perun2/os/os.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/command/com-core.hpp"
+#include "com-misc.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include "../os/os.h"
+#include "../perun2.h"
+#include "com-core.h"
 #include <sstream>
 
 
@@ -122,7 +122,7 @@ void C_Run::run()
    p_str command = os_softTrim(this->value->getValue());
 
    if (command.empty()) {
-      this->perun2.logger.log(L"Failed to run an empty command");
+      this->perun2.logger.log(U"Failed to run an empty command");
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -132,10 +132,10 @@ void C_Run::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", argQuoted(command));
+      this->perun2.logger.log(U"Run ", argQuoted(command));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", argQuoted(command));
+      this->perun2.logger.log(U"Failed to run ", argQuoted(command));
    }
 }
 
@@ -144,7 +144,7 @@ void C_RunWith::run()
    p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -155,10 +155,10 @@ void C_RunWith::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+      this->perun2.logger.log(U"Run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
    }
 }
 
@@ -167,7 +167,7 @@ void C_RunWithWithString::run()
    p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -181,12 +181,12 @@ void C_RunWithWithString::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), 
-         L" with ", argQuoted(base), L" with ", argQuoted(rawArg));
+      this->perun2.logger.log(U"Run ", getCCName(this->context->trimmed), 
+         U" with ", argQuoted(base), U" with ", argQuoted(rawArg));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), 
-         L" with ", argQuoted(base), L" with ", argQuoted(rawArg));
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), 
+         U" with ", argQuoted(base), U" with ", argQuoted(rawArg));
    }
 }
 
@@ -195,7 +195,7 @@ void C_RunWithWith::run()
    p_str base = os_softTrim(value->getValue());
 
    if (!this->context->v_exists->value || base.empty()) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -210,35 +210,34 @@ void C_RunWithWith::run()
       this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+         this->perun2.logger.log(U"Run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
       }
       else {
-         this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with ", argQuoted(base));
+         this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with ", argQuoted(base));
       }
    }
    else {
-      p_stream comStream;
-      p_stream logStream;
+      p_str comString;
+      p_str logString;
       const p_str& first = rawArgs[0];
-      logStream << str(getCCName(this->context->trimmed), L" with ", argQuoted(base), L" with ", argQuoted(first));
-      comStream << str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
+      logString += str(getCCName(this->context->trimmed), U" with ", argQuoted(base), U" with ", argQuoted(first));
+      comString += str(base, CHAR_SPACE, os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
       for (p_size i = 1; i < len; i++) {
          const p_str& a = rawArgs[i];
-         logStream << str(L", ", argQuoted(a));
-         comStream << str(CHAR_SPACE, os_makeArg(a));
+         logString += str(U", ", argQuoted(a));
+         comString += str(CHAR_SPACE, os_makeArg(a));
       }
 
-      const p_str com = comStream.str();
       const p_str loc = this->getLocation();
-      const p_bool s = os_run(com, loc, this->perun2);
+      const p_bool s = os_run(comString, loc, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->perun2.logger.log(L"Run ", logStream.str());
+         this->perun2.logger.log(U"Run ", logString);
       }
       else {
-         this->perun2.logger.log(L"Failed to run ", logStream.str());
+         this->perun2.logger.log(U"Failed to run ", logString);
       }
    }
 }
@@ -246,7 +245,7 @@ void C_RunWithWith::run()
 void C_RunWithPerun2::run()
 {
    if (!this->context->v_exists->value) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2");
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with Perun2");
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -257,17 +256,17 @@ void C_RunWithPerun2::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Perun2");
+      this->perun2.logger.log(U"Run ", getCCName(this->context->trimmed), U" with Perun2");
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2");
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with Perun2");
    }
 }
 
 void C_RunWithPerun2WithString::run()
 {
    if (!this->context->v_exists->value) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2");
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with Perun2");
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -281,17 +280,17 @@ void C_RunWithPerun2WithString::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Perun2 with ", argQuoted(rawArg));
+      this->perun2.logger.log(U"Run ", getCCName(this->context->trimmed), U" with Perun2 with ", argQuoted(rawArg));
    }
    else {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2 with ", argQuoted(rawArg));
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with Perun2 with ", argQuoted(rawArg));
    }
 }
 
 void C_RunWithPerun2With::run()
 {
    if (!this->context->v_exists->value) {
-      this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2");
+      this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with Perun2");
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -306,36 +305,35 @@ void C_RunWithPerun2With::run()
       this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->perun2.logger.log(L"Run ", getCCName(this->context->trimmed), L" with Perun2");
+         this->perun2.logger.log(U"Run ", getCCName(this->context->trimmed), U" with Perun2");
       }
       else {
-         this->perun2.logger.log(L"Failed to run ", getCCName(this->context->trimmed), L" with Perun2");
+         this->perun2.logger.log(U"Failed to run ", getCCName(this->context->trimmed), U" with Perun2");
       }
    }
    else {
-      p_stream comStream;
-      p_stream logStream;
+      p_str comString;
+      p_str logString;
       const p_str& first = rawArgs[0];
-      logStream << str(getCCName(this->context->trimmed), L" with Perun2 with ", argQuoted(first));
-      comStream << str(this->perun2.postParseData.cmdProcessStartingArgs, 
+      logString += str(getCCName(this->context->trimmed), U" with Perun2 with ", argQuoted(first));
+      comString += str(this->perun2.postParseData.cmdProcessStartingArgs, 
          os_quoteEmbraced(this->context->trimmed), CHAR_SPACE, os_makeArg(first));
 
       for (p_size i = 1; i < len; i++) {
          const p_str& a = rawArgs[i];
-         logStream << str(L", ", argQuoted(a));
-         comStream << str(CHAR_SPACE, os_makeArg(a));
+         logString += str(U", ", argQuoted(a));
+         comString += str(CHAR_SPACE, os_makeArg(a));
       }
 
-      const p_str com = comStream.str();
       const p_str loc = this->getLocation();
-      const p_bool s = os_run(com, loc, this->perun2);
+      const p_bool s = os_run(comString, loc, this->perun2);
       this->perun2.contexts.success->value = s;
 
       if (s) {
-         this->perun2.logger.log(L"Run ", logStream.str());
+         this->perun2.logger.log(U"Run ", logString);
       }
       else {
-         this->perun2.logger.log(L"Failed to run ", logStream.str());
+         this->perun2.logger.log(U"Failed to run ", logString);
       }
    }
 }

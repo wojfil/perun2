@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/generator/gen-period.hpp"
+#include "gen-period.h"
 
 namespace perun2::gen
 {

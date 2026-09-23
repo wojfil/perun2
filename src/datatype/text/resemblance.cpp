@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/text/resemblance.hpp"
-#include "../../../include/perun2/datatype/text/raw.hpp"
-#include "../../../include/perun2/logger.hpp"
-#include "../../../include/perun2/util.hpp"
+#include "resemblance.h"
+#include "raw.h"
+#include "../../logger.h"
+#include "../math.h"
 #include <limits>
 
 
@@ -121,6 +121,12 @@ p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
 }
 
 
+static p_int minOfThree(p_int a, p_int b, p_int c)
+{
+   return minimum(minimum(a, b), c);
+}
+
+
 static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str2)
 {
    const p_size len1 = str1.length();
@@ -138,14 +144,14 @@ static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str
 
    for (p_size i = 1; i <= len1; i++) {
       for (p_size j = 1; j <= len2; j++) {
-         dp[i][j] = perun2::langutil::minimum(
+         dp[i][j] = minOfThree(
             dp[i - 1][j] + 1,
             dp[i][j - 1] + 1,
             dp[i - 1][j - 1] + (str1[i - 1] == str2[j - 1] ? 0 : 1)
          );
 
          if (i > 1 && j > 1 && str1[i - 1] == str2[j - 2] && str1[i - 2] == str2[j - 1]) {
-            dp[i][j] = perun2::langutil::minimum(dp[i][j], dp[i - 2][j - 2] + 1);
+            dp[i][j] = minimum(dp[i][j], dp[i - 2][j - 2] + 1);
          }
       }
    }

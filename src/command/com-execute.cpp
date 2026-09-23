@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-execute.hpp"
-#include "../../include/perun2/os/os.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/command/com-core.hpp"
+#include "com-execute.h"
+#include "../os/os.h"
+#include "../perun2.h"
+#include "com-core.h"
 #include <chrono>
 #include <thread>
 #include <algorithm>
@@ -76,7 +76,7 @@ ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& locat
    si.hStdError  = hWrite;
    si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
 
-   p_str alterableCommand = command;
+   std::wstring alterableCommand = utf32_to_utf16(command);
 
    const BOOL creation = CreateProcessW(
       NULL, 
@@ -85,7 +85,7 @@ ExecutionResult Executor::executeLoudly(const p_str& command, const p_str& locat
       TRUE, 
       0, 
       NULL, 
-      location.empty() ? NULL : location.c_str(), 
+      location.empty() ? NULL : utf32_to_utf16(location).c_str(), 
       &si, 
       &pi);
 
@@ -139,8 +139,8 @@ SimpleExecutor::SimpleExecutor(Perun2Process& p2)
 ExecutionResult SimpleExecutor::execute(const p_str& command) const
 {
    return this->perun2.arguments.hasFlag(FLAG_MAX_PERFORMANCE)
-      ? this->executeSilently(command, L"")
-      : this->executeLoudly(command, L"");
+      ? this->executeSilently(command, U"")
+      : this->executeLoudly(command, U"");
 }
 
 
@@ -155,7 +155,7 @@ ExecutionResult Executor::executeSilently(const p_str& command, const p_str& loc
 p_str Executor::mergeArguments(const p_list& args) const
 {
    if (args.empty()) {
-      return L"";
+      return U"";
    }
 
    p_str result = os_makeArg(args[0]);
@@ -179,7 +179,7 @@ void ExecuteBase::execute(const p_str& additionalArgs) const
 
    if (! os_directoryExists(location)) {
       this->perun2.contexts.success->value = false;
-      this->perun2.logger.log(L"Failed to execute the command, because the working location \"", location, L"\" does not exist");
+      this->perun2.logger.log(U"Failed to execute the command, because the working location \"", location, U"\" does not exist");
       return;
    }
 
@@ -197,19 +197,19 @@ void ExecuteBase::execute(const p_str& additionalArgs) const
 
    switch (executionResult) {
       case ExecutionResult::ER_Good: {
-         this->perun2.logger.log(L"Execute \"", command, L"\"");
+         this->perun2.logger.log(U"Execute \"", command, U"\"");
          break;
       }
       case ExecutionResult::ER_Bad: {
-         this->perun2.logger.log(L"Failed to execute \"", command, L"\"");
+         this->perun2.logger.log(U"Failed to execute \"", command, U"\"");
          break;
       }
       case ExecutionResult::ER_Bad_PipeNotCreated: {
-         this->perun2.logger.log(L"Failed to execute \"", command, L"\". A new pipe could not be created");
+         this->perun2.logger.log(U"Failed to execute \"", command, U"\". A new pipe could not be created");
          break;
       }
       case ExecutionResult::ER_Bad_ProcessNotStarted: {
-         this->perun2.logger.log(L"Failed to execute \"", command, L"\". A new process could not be started");
+         this->perun2.logger.log(U"Failed to execute \"", command, U"\". A new process could not be started");
          break;
       }
    }
@@ -225,7 +225,7 @@ C_Execute::C_Execute(const p_str& cmd, Perun2Process& p2)
 
 void C_Execute::run()
 {
-   this->execute(L"");
+   this->execute(U"");
 }
 
 C_ExecuteWith::C_ExecuteWith(const p_str& cmd, p_genptr<p_list>& args, Perun2Process& p2)

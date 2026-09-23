@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/tokens.hpp"
-#include "../include/perun2/brackets.hpp"
-#include "../include/perun2/exception.hpp"
-#include "../include/perun2/lexer.hpp"
-#include "../include/perun2/perun2.hpp"
+#include "tokens.h"
+#include "brackets.h"
+#include "exception.h"
+#include "lexer.h"
+#include "perun2.h"
 
 
 namespace perun2
@@ -243,10 +243,10 @@ p_int Tokens::getFilterKeywordId(Perun2Process& p2) const
 
       if (t.isFilterKeyword() && bi.isBracketFree()) {
          if (i == this->start) {
-            throw SyntaxError::filterKeywordAtStart(t.origin, t.line);
+            throw SyntaxError::filterKeywordAtStart(t.getOriginString(p2), t.line);
          }
          else if (i == this->start + getLength() - 1) {
-            throw SyntaxError::filterKeywordAtEnd(t.origin, t.line);
+            throw SyntaxError::filterKeywordAtEnd(t.getOriginString(p2), t.line);
          }
 
          return i;
@@ -271,7 +271,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
       if (t.isFilterKeyword() && bi.isBracketFree()) {
          if (sublen == 0) {
             const Token& prev = this->listAt(i - 1);
-            throw SyntaxError::adjacentFilterKeywords(prev.origin, t.origin, t.line);
+            throw SyntaxError::adjacentFilterKeywords(prev.getOriginString(p2), t.getOriginString(p2), t.line);
          }
 
          result.emplace_back(*this, i - sublen - 1, sublen + 1);
@@ -284,7 +284,7 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
    }
 
    if (sublen == 0) {
-      throw SyntaxError::expressionCannotEndWithFilterKeyword(last().origin, last().line);
+      throw SyntaxError::expressionCannotEndWithFilterKeyword(last().getOriginString(p2), last().line);
    }
    else {
       result.emplace_back(*this, this->end - sublen, sublen + 1);
@@ -306,13 +306,13 @@ std::tuple<Tokens, Tokens, Tokens> Tokens::divideForTernary() const
       if (t.type == Token::t_Symbol) {
          if (bi.isBracketFree()) {
             if (hasQuestionMark) {
-               if (t.value.singleChar == CHAR_COLON) {
+               if (t.value.ch == CHAR_COLON) {
                   loop = false;
                   colonId = i;
                }
             }
             else {
-               if (t.value.singleChar == CHAR_QUESTION_MARK) {
+               if (t.value.ch == CHAR_QUESTION_MARK) {
                   hasQuestionMark = true;
                   questionMarkId = i;
                }
@@ -341,15 +341,15 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
       const Token& f = first();
       if (f.type == Token::t_Word && !p2.contexts.varExists(f, p2))
       {
-         throw SyntaxError(str(L"the variable \"", f.origin, 
-            L"\" does not exist or is unreachable here. Look for a typo"), f.line);
+         throw SyntaxError(str(U"the variable \"", f.getOriginString(p2), 
+            U"\" does not exist or is unreachable here. Look for a typo"), f.line);
       }
    }
 
    if (this->list[this->start].isSymbol(CHAR_OPENING_SQUARE_BRACKET)) {
       throw SyntaxError(
-         L"a collection variable was expected before the square bracket [. "
-         L"If your intention was to define an array, you should write values inside a pair of round brackets () and separate them using commas", 
+         U"a collection variable was expected before the square bracket [. "
+         U"If your intention was to define an array, you should write values inside a pair of round brackets () and separate them using commas", 
          this->list[this->start].line);
    }
 
@@ -361,7 +361,7 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
       }
 
       if (t.type == Token::t_MultiSymbol) {
-         switch (t.value.repeatedChars.value) {
+         switch (t.value.chars.ch) {
             case CHAR_PLUS: {
                if (i == this->start) {
                   throw SyntaxError::expressionCannotStartWithIncrementation(t.line);
@@ -383,7 +383,7 @@ void Tokens::checkCommonExpressionExceptions(Perun2Process& p2) const
          }
       }
       else if (t.type == Token::t_Keyword && t.isExpForbiddenKeyword()) {
-         throw SyntaxError::expectedSemicolonBeforeKeyword(t.origin, t.line);
+         throw SyntaxError::expectedSemicolonBeforeKeyword(t.getOriginString(p2), t.line);
       }
 
       prevExclamantion = t.isSymbol(CHAR_EXCLAMATION_MARK);
@@ -404,7 +404,7 @@ void Tokens::setData()
          for (p_int i = this->start; b && i <= this->end; i++) {
             const Token& t = this->list[i];
             if (t.type == Token::t_Symbol) {
-               switch (t.value.singleChar) {
+               switch (t.value.ch) {
                   case CHAR_OPENING_ROUND_BRACKET: {
                      lvl++;
                      break;
@@ -449,7 +449,7 @@ void Tokens::setData()
       if (round == 0 && square == 0) {
          switch (t.type) {
             case Token::t_Symbol: {
-               switch (t.value.singleChar) {
+               switch (t.value.ch) {
                   case CHAR_QUESTION_MARK: {
                      this->info |= TI_HAS_CHAR_QUESTION_MARK;
                      if (firstQuestionMarkId == -1) {
@@ -494,7 +494,7 @@ void Tokens::setData()
                break;
             }
             case Token::t_Keyword: {
-               switch (t.value.keyword) {
+               switch (t.value.keyword.k) {
                   case Keyword::kw_In: {
                      this->info |= TI_HAS_KEYWORD_IN;
                      break;
@@ -544,7 +544,7 @@ void Tokens::setData()
       }
 
       if (t.type == Token::t_Symbol) {
-         switch (t.value.singleChar) {
+         switch (t.value.ch) {
             case CHAR_OPENING_ROUND_BRACKET:  {
                round++;
                break;
@@ -611,25 +611,25 @@ void Tokens::setData()
 
    if ((this->info & TI_HAS_CHAR_QUESTION_MARK) != TI_NULL) {
       if (firstQuestionMarkId == this->start) {
-         throw SyntaxError(L"the sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
+         throw SyntaxError(U"the sign ? is preceded by empty space", this->list[firstQuestionMarkId].line);
       }
 
       if ((this->info & TI_HAS_CHAR_COLON) == TI_NULL) {
          if (firstQuestionMarkId == this->end) {
-            throw SyntaxError(L"the sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(U"the sign ? is followed by empty space", this->list[firstQuestionMarkId].line);
          }
 
          this->info |= TI_IS_POSSIBLE_BINARY;
       }
       else {
          if (firstQuestionMarkId > firstColonId) {
-            throw SyntaxError(L"the signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(U"the signs ? and : appear in reverse order", this->list[firstQuestionMarkId].line);
          }
          else if (firstColonId == this->end) {
-            throw SyntaxError(L"the sign : is followed by empty space", this->list[firstColonId].line);
+            throw SyntaxError(U"the sign : is followed by empty space", this->list[firstColonId].line);
          }
          else if (firstQuestionMarkId + 1 == firstColonId) {
-            throw SyntaxError(L"empty space between the signs ? and :", this->list[firstQuestionMarkId].line);
+            throw SyntaxError(U"empty space between the signs ? and :", this->list[firstQuestionMarkId].line);
          }
 
          this->info |= TI_IS_POSSIBLE_TERNARY;
@@ -642,10 +642,10 @@ void Tokens::setData()
 
       if (last.isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
-            throw SyntaxError(L"empty space inside the square brackets []", last.line);
+            throw SyntaxError(U"empty space inside the square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
-            throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);
+            throw SyntaxError(U"the square brackets [] can be preceded only by a variable name", first.line);
          }
 
          this->info |= TI_IS_POSSIBLE_LIST_ELEM;
@@ -653,13 +653,13 @@ void Tokens::setData()
 
       if (this->list[this->end - 1].isSymbol(CHAR_CLOSING_SQUARE_BRACKET)) {
          if (this->length == 3) {
-            throw SyntaxError(L"empty space inside the square brackets []", last.line);
+            throw SyntaxError(U"empty space inside the square brackets []", last.line);
          }
          else if (first.type != Token::t_Word) {
-            throw SyntaxError(L"the square brackets [] can be preceded only by a variable name", first.line);
+            throw SyntaxError(U"the square brackets [] can be preceded only by a variable name", first.line);
          }
 
-         if (last.type == Token::Type::t_TwoWords && last.origin2.size() == 0) {
+         if (last.type == Token::Type::t_TwoWords && last.value.twoWords.os1.length == 0) {
             this->info |= TI_IS_LIST_ELEM_MEMBER;
          }
       }

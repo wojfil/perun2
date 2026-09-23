@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-core.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/os/os.hpp"
-#include "../../include/perun2/datatype/patterns.hpp"
+#include "com-core.h"
+#include "../perun2.h"
+#include "../os/os.h"
+#include "../datatype/patterns.h"
 
 
 namespace perun2::comm
@@ -40,11 +40,11 @@ void C_Delete::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Delete ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Delete ", getCCName(this->context->v_path->value));
       this->context->reloadData();
    }
    else {
-      this->perun2.logger.log(L"Failed to delete ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to delete ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -56,13 +56,13 @@ void C_Drop::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Drop ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Drop ", getCCName(this->context->v_path->value));
       if (saveChanges) {
          this->context->reloadData();
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to drop ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to drop ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -74,13 +74,13 @@ void C_Hide::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Hide ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Hide ", getCCName(this->context->v_path->value));
       if (saveChanges) {
          this->context->v_hidden->value = true;
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to hide ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to hide ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -92,13 +92,13 @@ void C_Lock::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Lock ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Lock ", getCCName(this->context->v_path->value));
       if (saveChanges) {
          this->context->v_readonly->value = true;
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to lock ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to lock ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -110,10 +110,10 @@ void C_Open::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Open ", getCCName(this->context->v_path->value));
    }
    else {
-      this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to open ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -125,13 +125,13 @@ void C_Unlock::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Unlock ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Unlock ", getCCName(this->context->v_path->value));
       if (saveChanges) {
          this->context->v_readonly->value = false;
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to unlock ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to unlock ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -143,13 +143,13 @@ void C_Unhide::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Unhide ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Unhide ", getCCName(this->context->v_path->value));
       if (saveChanges) {
          this->context->v_hidden->value = false;
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to unhide ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to unhide ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -160,7 +160,7 @@ void C_OpenWith::run()
    const p_str pro = os_trim(program->getValue());
 
    if (!this->context->v_exists->value || pro.empty()) {
-      this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
+      this->perun2.logger.log(U"Failed to open ", getCCName(this->context->v_path->value), U" with ", getCCNameShort(pro));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -168,7 +168,7 @@ void C_OpenWith::run()
    const p_str proPath = os_leftJoin(this->locationContext->location->value, pro);
 
    if (proPath.empty()) {
-      this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCNameShort(pro));
+      this->perun2.logger.log(U"Failed to open ", getCCName(this->context->v_path->value), U" with ", getCCNameShort(pro));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -191,10 +191,10 @@ void C_OpenWith::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
+      this->perun2.logger.log(U"Open ", getCCName(this->context->v_path->value), U" with ", getCCName(proPath));
    }
    else {
-      this->perun2.logger.log(L"Failed to open ", getCCName(this->context->v_path->value), L" with ", getCCName(proPath));
+      this->perun2.logger.log(U"Failed to open ", getCCName(this->context->v_path->value), U" with ", getCCName(proPath));
    }
 };
 

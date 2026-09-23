@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/programs/windows/win-programs.hpp"
-#include "../../../include/perun2/programs/windows/programs-data.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/perun2.hpp"
-#include "../../../include/perun2/datatype/text/text-parsing.hpp"
+#include "win-programs.h"
+#include "programs-data.h"
+#include "../../os/os.h"
+#include "../../perun2.h"
+#include "../../datatype/text/text-parsing.h"
 
 
 namespace perun2::prog
@@ -29,11 +29,11 @@ WinProgram::WinProgram(Perun2Process& p2, const p_list& nm)
 
 p_bool WinProgram::isIcon(const p_str& value) const
 {
-   if (value.length() < STRING_ICON_SUFFIX_LEN) {
+   if (value.length() < STRING_ICON_SUFFIX.size()) {
       return false;
    }
 
-   return value.substr(value.length() - STRING_ICON_SUFFIX_LEN) == STRING_ICON_SUFFIX;
+   return value.substr(value.length() - STRING_ICON_SUFFIX.size()) == STRING_ICON_SUFFIX;
 };
 
 
@@ -111,7 +111,7 @@ WindowsPrograms::WindowsPrograms(Perun2Process& p2) : perun2(p2)
 void WindowsPrograms::actualize(const Token& tk)
 {
    for (auto& program : this->programs) {
-      if (tk.isWord(program->names)) {
+      if (tk.isWord(program->names, this->perun2)) {
          if (! program->loaded) {
             program->actualize();
             program->loaded = true;
@@ -126,7 +126,7 @@ void WindowsPrograms::actualize(const Token& tk)
 p_bool WindowsPrograms::haveName(const Token& tk) const
 {
    for (const auto& program : this->programs) {
-      if (tk.isWord(program->names)) {
+      if (tk.isWord(program->names, this->perun2)) {
          return true;
       }
    }

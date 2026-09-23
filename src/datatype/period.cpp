@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/datatype/period.hpp"
-#include "../../include/perun2/datatype/text/chars.hpp"
-#include "../../include/perun2/datatype/numbers.hpp"
-#include "../../include/perun2/datatype/text/strings.hpp"
+#include "period.h"
+#include "text/chars.h"
+#include "numbers.h"
+#include "text/strings.h"
 #include <sstream>
 
 
@@ -89,85 +89,85 @@ p_nint Period::toSeconds() const
 
 p_str Period::toString() const
 {
-   p_stream ss;
+   p_str ss;
    p_bool first = true;
 
    const p_tnum y = years + years_sec;
    const p_tnum m = months + months_sec;
 
    if (y != TNUM_ZERO || years != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << y;
+      if (!first) ss += CHAR_SPACE;
+      ss += y;
       if (y == TNUM_ONE || y == TNUM_MINUS_ONE)
-         ss << L" year";
+         ss += U" year";
       else
-         ss << L" years";
+         ss += U" years";
       if (first) first = false;
    }
 
    if (m != TNUM_ZERO || months != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << m;
+      if (!first) ss += CHAR_SPACE;
+      ss += m;
       if (m == TNUM_ONE || m == TNUM_MINUS_ONE)
-         ss << L" month";
+         ss += U" month";
       else
-         ss << L" months";
+         ss += U" months";
       if (first) first = false;
    }
 
    if (weeks != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << weeks;
+      if (!first) ss += CHAR_SPACE;
+      ss += weeks;
       if (weeks == TNUM_ONE || weeks == TNUM_MINUS_ONE)
-         ss << L" week";
+         ss += U" week";
       else
-         ss << L" weeks";
+         ss += U" weeks";
       if (first) first = false;
    }
 
    if (days != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << days;
+      if (!first) ss += CHAR_SPACE;
+      ss += days;
       if (days == TNUM_ONE || days == TNUM_MINUS_ONE)
-         ss << L" day";
+         ss += U" day";
       else
-         ss << L" days";
+         ss += U" days";
       if (first) first = false;
    }
 
    if (hours != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << hours;
+      if (!first) ss += CHAR_SPACE;
+      ss += hours;
       if (hours == TNUM_ONE || hours == TNUM_MINUS_ONE)
-         ss << L" hour";
+         ss += U" hour";
       else
-         ss << L" hours";
+         ss += U" hours";
       if (first) first = false;
    }
 
    if (minutes != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << minutes;
+      if (!first) ss += CHAR_SPACE;
+      ss += minutes;
       if (minutes == TNUM_ONE || minutes == TNUM_MINUS_ONE)
-         ss << L" minute";
+         ss += U" minute";
       else
-         ss << L" minutes";
+         ss += U" minutes";
       if (first) first = false;
    }
 
    if (seconds != TNUM_ZERO) {
-      if (!first) ss << CHAR_SPACE;
-      ss << seconds;
+      if (!first) ss += CHAR_SPACE;
+      ss += seconds;
       if (seconds == TNUM_ONE || seconds == TNUM_MINUS_ONE)
-         ss << L" second";
+         ss += U" second";
       else
-         ss << L" seconds";
+         ss += U" seconds";
       if (first) first = false;
    }
 
    return first
       ? STRING_NO_PERIOD
-      : ss.str();
+      : ss;
 }
 
 inline p_bool Period::isNegativeDifference() const

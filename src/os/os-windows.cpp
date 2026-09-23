@@ -20,12 +20,13 @@
 #define _UNICODE
 #endif
 
-#include "../../include/perun2/os/os-windows.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/datatype/parse/parse-asterisk.hpp"
-#include "../../include/perun2/datatype/text/strings.hpp"
-#include "../../include/perun2/metadata.hpp"
+#include "os-windows.h"
+
 #include <time.h>
+#include "../perun2.h"
+#include "../datatype/parse/parse-asterisk.h"
+#include "../datatype/text/strings.h"
+#include "../metadata.h"
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
@@ -39,6 +40,7 @@
 #include <cstdlib>
 #include <array>
 #include <optional>
+#include <io.h>
 
 
 namespace perun2
@@ -258,7 +260,7 @@ void os_loadAttributes(FileContext& context)
       if (context.v_exists->value) {
          context.v_size->value = context.v_isfile->value
             ? static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
-            : os_sizeDirectory(context.v_path->value, context.perun2);
+            : os_sizeDirectory(context.v_path->value, context.attribute->perun2);
       }
       else {
          context.v_size->value = P_NaN;
@@ -400,7 +402,7 @@ void os_loadDataAttributes(FileContext& context, const p_fdata& data)
    if (attribute->has(ATTR_SIZE)) {
       context.v_size->value = context.v_isfile->value
          ? static_cast<p_nint>(os_bigInteger(data.nFileSizeLow, data.nFileSizeHigh))
-         : os_sizeDirectory(context.v_path->value, context.perun2);
+         : os_sizeDirectory(context.v_path->value, context.attribute->perun2);
    }
    else if (attribute->has(ATTR_SIZE_FILE_ONLY)) {
       if (context.v_isfile->value) {
@@ -732,10 +734,9 @@ p_num os_sizeDirectory(const p_str& path, Perun2Process& p2)
       }
       else {
          if (os_hasNextFile(entries.back(), data)) {
-            const p_str v = data.cFileName;
-
-            if (!os_isBrowsePath(v)) {
+            if (!os_isBrowsePath(data.cFileName)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                  const p_str v = utf16_to_utf32(data.cFileName);
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
                   if (bases.empty()) {
@@ -839,10 +840,9 @@ p_bool os_sizeDirectorySatisfies(const p_str& path, IncrementalConstraint& const
       }
       else {
          if (os_hasNextFile(entries.back(), data)) {
-            const p_str v = data.cFileName;
-
-            if (!os_isBrowsePath(v)) {
+            if (!os_isBrowsePath(data.cFileName)) {
                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                  const p_str v = utf16_to_utf32(data.cFileName);
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
                   if (bases.empty()) {
@@ -939,8 +939,10 @@ void os_closeEntry(p_entry& entry)
 
 p_bool os_delete(const p_str& path)
 {
-   p_char wszFrom[MAX_PATH] = { 0 };
-   wcscpy(wszFrom, path.c_str());
+   wchar_t wszFrom[MAX_PATH] = { 0 };
+   std::wstring path_utf16 = utf32_to_utf16(path);
+
+   wcscpy(wszFrom, path_utf16.c_str());
    CopyMemory(wszFrom + lstrlenW(wszFrom), "\0\0", 2);
 
    SHFILEOPSTRUCTW sfo = {0};
@@ -977,15 +979,17 @@ p_bool os_dropDirectory(const p_str& path, Perun2Process& p2)
    p_entry hFind;
    p_fdata FindFileData;
 
-   p_char DirPath[MAX_PATH];
-   p_char FileName[MAX_PATH];
+   wchar_t DirPath[MAX_PATH];
+   wchar_t FileName[MAX_PATH];
 
-   wcscpy(DirPath, const_cast<p_char*>(path.c_str()));
-   wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
-   wcscpy(FileName, const_cast<p_char*>(path.c_str()));
-   wcscat(FileName, toStr(OS_SEPARATOR).c_str());
+   const std::wstring path_utf16 = utf32_to_utf16(path);
+   const p_str firstPattern = str(path, U"\\*");
+   const p_str firstStart = str(path, U"\\");
 
-   if (!os_hasFirstFile(DirPath, hFind, FindFileData)) {
+   wcscpy(DirPath, const_cast<wchar_t*>(utf32_to_utf16(firstPattern).c_str()));
+   wcscpy(FileName, const_cast<wchar_t*>(utf32_to_utf16(firstStart).c_str()));
+
+   if (!os_hasFirstFile(firstPattern, hFind, FindFileData)) {
       return false;
    }
 
@@ -999,15 +1003,13 @@ p_bool os_dropDirectory(const p_str& path, Perun2Process& p2)
             return false;
          }
 
-         const p_str v = FindFileData.cFileName;
-
-         if (os_isBrowsePath(v)) {
+         if (os_isBrowsePath(FindFileData.cFileName)) {
             continue;
          }
 
          wcscat(FileName,FindFileData.cFileName);
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_dropDirectory(FileName, p2)) {
+            if (!os_dropDirectory(utf16_to_utf32(std::wstring(FileName)), p2)) {
                os_closeEntry(hFind);
                return false;
             }
@@ -1016,8 +1018,9 @@ p_bool os_dropDirectory(const p_str& path, Perun2Process& p2)
             wcscpy(FileName,DirPath);
          }
          else {
-            if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-               os_unlock(FileName);
+            if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
+               os_unlock(utf16_to_utf32(std::wstring(FileName)));
+            }
 
             if (!DeleteFileW(FileName)) {
                os_closeEntry(hFind);
@@ -1038,7 +1041,7 @@ p_bool os_dropDirectory(const p_str& path, Perun2Process& p2)
    }
    os_closeEntry(hFind);
 
-   return RemoveDirectoryW(const_cast<p_char*>(P_WINDOWS_PATH(path))) != 0;
+   return RemoveDirectoryW(const_cast<wchar_t*>(P_WINDOWS_PATH(path))) != 0;
 }
 
 p_bool os_hide(const p_str& path)
@@ -1086,8 +1089,8 @@ p_bool os_openAsCommand(const p_str& command, const p_str& location)
    si.cb = sizeof(si);
    ZeroMemory(&pi, sizeof(pi));
 
-   std::unique_ptr<p_char[]> cmd = std::make_unique<p_char[]>(command.size() + 1);
-   wcscpy(cmd.get(), command.c_str());
+   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command.size() + 1);
+   wcscpy(cmd.get(), utf32_to_utf16(command).c_str());
    cmd[command.size()] = CHAR_NULL;
 
    const BOOL creation = CreateProcessW (
@@ -1096,7 +1099,7 @@ p_bool os_openAsCommand(const p_str& command, const p_str& location)
       NULL, NULL, FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL, 
-      location.c_str(),
+      utf32_to_utf16(location).c_str(),
       &si, &pi
    );
 
@@ -1256,15 +1259,15 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, Perun2Proc
    p_entry hFind;
    p_fdata FindFileData;
 
-   p_char DirPath[MAX_PATH];
-   p_char FileName[MAX_PATH];
+   wchar_t DirPath[MAX_PATH];
+   wchar_t FileName[MAX_PATH];
 
-   wcscpy(DirPath, const_cast<p_char*>(oldPath.c_str()));
-   wcscat(DirPath, str(OS_SEPARATOR, CHAR_ASTERISK).c_str());
-   wcscpy(FileName, const_cast<p_char*>(oldPath.c_str()));
-   wcscat(FileName, toStr(OS_SEPARATOR).c_str());
+   const p_str firstPattern = str(oldPath, U"\\*");
+   const p_str firstStart = str(oldPath, U"\\");
+   wcscpy(DirPath, const_cast<wchar_t*>(utf32_to_utf16(firstPattern).c_str()));
+   wcscpy(FileName, const_cast<wchar_t*>(utf32_to_utf16(firstStart).c_str()));
 
-   if (!os_hasFirstFile(DirPath, hFind, FindFileData)) {
+   if (!os_hasFirstFile(firstPattern, hFind, FindFileData)) {
       return false;
    }
 
@@ -1278,17 +1281,16 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, Perun2Proc
             return false;
          }
 
-         const p_str v = FindFileData.cFileName;
-
-         if (os_isBrowsePath(v)) {
+         if (os_isBrowsePath(FindFileData.cFileName)) {
             continue;
          }
 
          wcscat(FileName, FindFileData.cFileName);
-         const p_str np = str(newPath, OS_SEPARATOR, p_str(FileName).substr(length));
+         const p_str FileNameUtf32 = utf16_to_utf32(FileName);
+         const p_str np = str(newPath, OS_SEPARATOR, FileNameUtf32.substr(length));
 
          if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_copyToDirectory(FileName, np, p2)) {
+            if (!os_copyToDirectory(FileNameUtf32, np, p2)) {
                os_closeEntry(hFind);
                return false;
             }
@@ -1296,7 +1298,7 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, Perun2Proc
             wcscpy(FileName, DirPath);
          }
          else {
-            if (!os_copyToFile(FileName, np)) {
+            if (!os_copyToFile(FileNameUtf32, np)) {
                os_closeEntry(hFind);
                return false;
             }
@@ -1320,10 +1322,17 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, Perun2Proc
 
 p_bool os_copy(const p_set& paths)
 {
-   p_size totalSize = sizeof(DROPFILES) + sizeof(p_char);
+   std::vector<std::wstring> paths_utf16;
+   paths_utf16.reserve(paths.size());
 
    for (const p_str& p : paths) {
-      totalSize += sizeof(p_char) * (p.size() + 1);
+      paths_utf16.emplace_back(utf32_to_utf16(p));
+   }
+
+   p_size totalSize = sizeof(DROPFILES) + sizeof(wchar_t);
+
+   for (const std::wstring& pu : paths_utf16) {
+      totalSize += sizeof(wchar_t) * (pu.size() + 1);
    }
 
    HDROP hdrop   = static_cast<HDROP>(GlobalAlloc(GHND, totalSize));
@@ -1331,11 +1340,11 @@ p_bool os_copy(const p_set& paths)
    df->pFiles    = sizeof(DROPFILES);
    df->fWide     = true;
 
-   p_char* dstStart = (p_char*)(&df[1]);
+   wchar_t* dstStart = (wchar_t*)(&df[1]);
 
-   for (const p_str& p : paths) {
-      wcscpy(dstStart, p.c_str());
-      dstStart = &dstStart[p.size() + 1];
+   for (const std::wstring& pu : paths_utf16) {
+      wcscpy(dstStart, pu.c_str());
+      dstStart = &dstStart[pu.size() + 1];
    }
 
    GlobalUnlock(hdrop);
@@ -1349,21 +1358,30 @@ p_bool os_copy(const p_set& paths)
 
 p_bool os_select(const p_str& parent, const p_set& paths)
 {
-   ITEMIDLIST* folder = ILCreateFromPathW(parent.c_str());
-   std::vector<ITEMIDLIST*> v;
+   std::wstring parent_utf16 = utf32_to_utf16(parent);
 
-   for (const p_str& p : paths) {
-      v.emplace_back(ILCreateFromPathW(p.c_str()));
+   LPITEMIDLIST folder = ILCreateFromPathW(parent_utf16.c_str());
+   std::vector<LPITEMIDLIST> v;
+
+   for (const p_str& path : paths) {
+      std::wstring path_utf16 = utf32_to_utf16(path);
+      v.emplace_back(ILCreateFromPathW(path_utf16.c_str()));
    }
 
-   HRESULT hr = SHOpenFolderAndSelectItems(folder, v.size(), (LPCITEMIDLIST*)v.data(), 0);
+   HRESULT hr = SHOpenFolderAndSelectItems(
+      folder,
+      v.size(),
+      (LPCITEMIDLIST*)v.data(),
+      0
+   );
 
-   for (ITEMIDLIST* idl : v) {
+   for (LPITEMIDLIST idl : v) {
       ILFree(idl);
    }
 
    ILFree(folder);
-   return hr == S_OK;
+
+   return SUCCEEDED(hr);
 }
 
 p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
@@ -1374,8 +1392,8 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
    si.cb = sizeof(si);
    ZeroMemory(&p2.sideProcess.info, sizeof(p2.sideProcess.info));
 
-   std::unique_ptr<p_char[]> cmd = std::make_unique<p_char[]>(command.size() + 1);
-   wcscpy(cmd.get(), command.c_str());
+   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command.size() + 1);
+   wcscpy(cmd.get(), utf32_to_utf16(command).c_str());
    cmd[command.size()] = CHAR_NULL;
 
    const BOOL creation = CreateProcessW(
@@ -1384,7 +1402,7 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
       NULL,NULL,FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
-      location.empty() ? NULL : location.c_str(),
+      location.empty() ? NULL : utf32_to_utf16(location).c_str(),
       &si, &p2.sideProcess.info
    );
 
@@ -1412,7 +1430,9 @@ p_bool os_terminate(SideProcess& process)
 
 p_bool os_popup(const p_str& text)
 {
-   return MessageBoxW(NULL, text.c_str(), STRING_POPUP_TITLE, MB_OK | MB_ICONINFORMATION) == IDOK;
+   return MessageBoxW(NULL, utf32_to_utf16(text).c_str(), 
+      utf32_to_utf16(STRING_POPUP_TITLE).c_str(), 
+      MB_OK | MB_ICONINFORMATION) == IDOK;
 }
 
 p_bool os_isInvalid(const p_str& path)
@@ -1481,7 +1501,7 @@ p_str os_trim(const p_str& path)
 exitStart:
 
    if (start == len) {
-      return anyDot ? toStr(CHAR_DOT) : p_str();
+      return anyDot ? charToString(CHAR_DOT) : p_str();
    }
 
    p_int end = len - 1;
@@ -1635,7 +1655,7 @@ void os_rightTrim(p_str& path, const p_bool separatorEnding)
          if (retreats == 0) {
             path = separatorEnding
                ? str(CHAR_DOT, OS_SEPARATOR)
-               : toStr(CHAR_DOT);
+               : charToString(CHAR_DOT);
             return;
          }
 
@@ -1802,7 +1822,7 @@ p_bool os_hasDotSegments(const p_str& path)
       || (len == 1 && path[0] == CHAR_DOT);
 }
 
-p_str os_trimRetreats(const p_str& path, p_size& retreats)
+p_str os_trimRetreats(const p_str& path, p_int& retreats)
 {
    if (path.empty()) {
       return p_str();
@@ -1839,7 +1859,7 @@ p_str os_trimRetreats(const p_str& path, p_size& retreats)
       return path.substr(prevId);
    }
 
-   return toStr(CHAR_DOT);
+   return charToString(CHAR_DOT);
 }
 
 p_str os_segmentWithName(const p_str& path)
@@ -2258,7 +2278,7 @@ p_str os_stackPath(const p_str& path)
 
    while (os_exists(newPath))
    {
-      newPath = str(path, CHAR_OPENING_ROUND_BRACKET, toStr(index), CHAR_CLOSING_ROUND_BRACKET);
+      newPath = str(path, CHAR_OPENING_ROUND_BRACKET, intToString(index), CHAR_CLOSING_ROUND_BRACKET);
       index++;
    }
 
@@ -2276,7 +2296,7 @@ p_str os_stackPathExt(const p_str& basePath, const p_str& extension)
 
    while (os_exists(newPath))
    {
-      newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET, toStr(index),
+      newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET, intToString(index),
          CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
       index++;
    }
@@ -2302,13 +2322,13 @@ p_str os_stackPathStacked(const p_str& path)
    os_getStackedData(path, index, basePath);
 
    p_str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
-      toStr(index), CHAR_CLOSING_ROUND_BRACKET);
+      intToString(index), CHAR_CLOSING_ROUND_BRACKET);
 
    while (os_exists(newPath))
    {
       index++;
       newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
-         toStr(index), CHAR_CLOSING_ROUND_BRACKET);
+         intToString(index), CHAR_CLOSING_ROUND_BRACKET);
    }
 
    return newPath;
@@ -2321,13 +2341,13 @@ p_str os_stackPathExtStacked(const p_str& path, const p_str& extension)
    os_getStackedData(path, index, basePath);
 
    p_str newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
-      toStr(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
+      intToString(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
 
    while (os_exists(newPath))
    {
       index++;
       newPath = str(basePath, CHAR_OPENING_ROUND_BRACKET,
-         toStr(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
+         intToString(index), CHAR_CLOSING_ROUND_BRACKET, CHAR_DOT, extension);
    }
 
    return newPath;
@@ -2376,7 +2396,7 @@ void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath)
          const p_str numStr = path.substr(i + 1, static_cast<p_int>(len) - i - 2);
 
          try {
-            index = std::stoll(numStr);
+            index = std::stoll(utf32_to_utf8(numStr));
          }
          catch (...) {
             index = NINT_TWO;
@@ -2389,16 +2409,21 @@ void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath)
 
 p_str os_executablePath()
 {
-   p_char path[MAX_PATH];
-   GetModuleFileNameW(NULL, path, MAX_PATH);
-   return p_str(path);
+   wchar_t path[MAX_PATH];
+   DWORD length = GetModuleFileNameW(NULL, path, MAX_PATH);
+
+   if (length == 0) {
+      return p_str();
+   }
+
+   return utf16_to_utf32(std::wstring(path));
 }
 
 p_str os_desktopPath()
 {
-   p_char path[MAX_PATH];
+   wchar_t path[MAX_PATH];
    return SHGetSpecialFolderPathW(0, path, CSIDL_DESKTOP, FALSE)
-      ? p_str(path)
+      ? utf16_to_utf32(std::wstring(path))
       : p_str();
 }
 
@@ -2410,7 +2435,7 @@ p_list os_pendrives()
    for (p_char drive = CHAR_A; drive <= CHAR_Z; drive++) {
       if (drivesBitMask & 1) {
          const p_str rootPath = str(drive, CHAR_COLON, CHAR_BACKSLASH);
-         const UINT driveType = GetDriveTypeW(rootPath.c_str());
+         const UINT driveType = GetDriveTypeW(utf32_to_utf16(rootPath).c_str());
 
          if (driveType == DRIVE_REMOVABLE) {
             result.push_back(rootPath);
@@ -2425,36 +2450,39 @@ p_list os_pendrives()
 
 p_str os_currentPath()
 {
-   p_char path[MAX_PATH];
+   wchar_t path[MAX_PATH];
    GetCurrentDirectory(MAX_PATH, path);
-   return p_str(path);
+   return utf16_to_utf32(std::wstring(path));
 }
 
 p_str os_system32Path()
 {
-   p_char path[MAX_PATH];
+   wchar_t path[MAX_PATH];
    return SHGetSpecialFolderPathW(0, path, CSIDL_SYSTEM, FALSE)
-      ? p_str(path)
+      ? utf16_to_utf32(std::wstring(path))
       : p_str();
 }
 
 p_str os_downloadsPath()
 {
    HKEY hKey;
-   LONG result = RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_READ, &hKey);
+   LONG result = RegOpenKeyExW(HKEY_CURRENT_USER, 
+      L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 
+      0, KEY_READ, &hKey);
 
    if (result != ERROR_SUCCESS) {
       RegCloseKey(hKey);
       return EMPTY_STRING;
    }
 
-   p_char buffer[MAX_PATH];
+   wchar_t buffer[MAX_PATH];
    DWORD bufferSize = sizeof(buffer);
-   result = RegQueryValueExW(hKey, L"{374DE290-123F-4565-9164-39C4925E467B}", nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
+   result = RegQueryValueExW(hKey, L"{374DE290-123F-4565-9164-39C4925E467B}", nullptr, nullptr, 
+      reinterpret_cast<BYTE*>(buffer), &bufferSize);
    RegCloseKey(hKey);
 
    if (result == ERROR_SUCCESS) {
-      return buffer;
+      return utf16_to_utf32(buffer);
    } 
    else {
       return EMPTY_STRING;
@@ -2463,16 +2491,17 @@ p_str os_downloadsPath()
 
 std::optional<p_str> os_readStringFromCmd(const p_str& cmd)
 {
-   std::array<p_char, 256> buffer;
+   std::array<wchar_t, 256> buffer;
    p_str result;
-   FILE* pipe = _wpopen(cmd.c_str(), L"r");
+   FILE* pipe = _wpopen(utf32_to_utf16(cmd).c_str(), L"r");
    
    if (! pipe) {
       return std::nullopt;
    }
 
    if (fgetws(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
-      result += buffer.data();
+      const std::wstring d = buffer.data();
+      result += utf16_to_utf32(d);
    }
 
    _pclose(pipe);
@@ -2484,14 +2513,14 @@ std::optional<p_str> os_readStringFromCmd(const p_str& cmd)
 std::optional<p_str> os_registry_readPython3Path(const p_str& version, HKEY rootKey) 
 {
    HKEY hKey;
-   const p_str regPath = str(L"SOFTWARE\\Python\\PythonCore\\", version, L"\\InstallPath");
+   const p_str regPath = str(U"SOFTWARE\\Python\\PythonCore\\", version, U"\\InstallPath");
    
-   LONG result = RegOpenKeyExW(rootKey, regPath.c_str(), 0, KEY_READ, &hKey);
+   LONG result = RegOpenKeyExW(rootKey, utf32_to_utf16(regPath).c_str(), 0, KEY_READ, &hKey);
    if (result != ERROR_SUCCESS) {
       return std::nullopt;
    }
 
-   p_char value[MAX_PATH];
+   wchar_t value[MAX_PATH];
    DWORD valueSize = sizeof(value);
    DWORD type = 0;
 
@@ -2499,7 +2528,7 @@ std::optional<p_str> os_registry_readPython3Path(const p_str& version, HKEY root
    RegCloseKey(hKey);
 
    if (result == ERROR_SUCCESS && type == REG_SZ) {
-      return std::make_optional<p_str>(value);
+      return utf16_to_utf32(std::wstring(value));
    } 
    else {
       return std::nullopt;
@@ -2510,27 +2539,27 @@ std::vector<p_str> os_registry_getAllPython3s(HKEY rootKey)
 {
    std::vector<p_str> output;
 
-   const p_char* subKey = L"SOFTWARE\\Python\\PythonCore";
+   const std::wstring subKey = L"SOFTWARE\\Python\\PythonCore";
    HKEY hKey;
    
-   LONG result = RegOpenKeyExW(rootKey, subKey, 0, KEY_READ, &hKey);
+   LONG result = RegOpenKeyExW(rootKey, subKey.c_str(), 0, KEY_READ, &hKey);
    if (result != ERROR_SUCCESS) {
       return output;
    }
 
    DWORD index = 0;
    DWORD nameSize;
-   p_char name[MAX_PATH];
+   wchar_t name[MAX_PATH];
    
    while (true) {
-      nameSize = sizeof(name) / sizeof(p_char);
+      nameSize = sizeof(name) / sizeof(wchar_t);
       result = RegEnumKeyExW(hKey, index, name, &nameSize, nullptr, nullptr, nullptr, nullptr);
       
       if (result == ERROR_NO_MORE_ITEMS) {
          break;
       }
       else if (result == ERROR_SUCCESS) {
-         const p_str nameAsString = name;
+         const p_str nameAsString = utf16_to_utf32(name);
          const std::optional<p_str> path = os_registry_readPython3Path(nameAsString, rootKey);
 
          if (path.has_value() && os_fileExists(path.value())) {
@@ -2549,10 +2578,10 @@ std::vector<p_str> os_registry_getAllPython3s(HKEY rootKey)
 
 std::optional<p_str> os_readPython3PathFromCmd(const p_str& alias, std::optional<p_str>& versionString) 
 {
-   versionString = os_readStringFromCmd(str(alias, L" --version 2>nul"));
+   versionString = os_readStringFromCmd(str(alias, U" --version 2>nul"));
 
-   if (versionString.has_value() && str_startsWith(versionString.value(), L"Python 3.")) {
-      std::optional<p_str> path = os_readStringFromCmd(str(L"where ", alias, L" 2>nul"));
+   if (versionString.has_value() && str_startsWith(versionString.value(), U"Python 3.")) {
+      std::optional<p_str> path = os_readStringFromCmd(str(U"where ", alias, U" 2>nul"));
 
       if (path.has_value()) {
          p_str output = path.value();
@@ -2586,7 +2615,7 @@ Python3State os_getPython3(p_str& cmdPath)
 
    // Step 2.
    std::optional<p_str> versionStringPython3;
-   std::optional<p_str> python3 = os_readPython3PathFromCmd(L"python3", versionStringPython3);
+   std::optional<p_str> python3 = os_readPython3PathFromCmd(U"python3", versionStringPython3);
    if (python3.has_value()) {
       const p_str& path = python3.value();
          
@@ -2607,7 +2636,7 @@ Python3State os_getPython3(p_str& cmdPath)
 
    // Step 3.
    std::optional<p_str> versionStringPython;
-   std::optional<p_str> python = os_readPython3PathFromCmd(L"python", versionStringPython);
+   std::optional<p_str> python = os_readPython3PathFromCmd(U"python", versionStringPython);
    if (python.has_value()) {
       const p_str& path = python.value();
          
@@ -2642,7 +2671,7 @@ Python3State os_getPython3(p_str& cmdPath)
    if (versionStringPython.has_value()) {
       const p_str& version = versionStringPython.value();
 
-      if (str_startsWith(version, L"Python ") && ! str_startsWith(version, L"Python 3")) {
+      if (str_startsWith(version, U"Python ") && ! str_startsWith(version, U"Python 3")) {
          return Python3State::P3_DifferentVersionThan3;
       }
    }
@@ -2650,28 +2679,31 @@ Python3State os_getPython3(p_str& cmdPath)
    return Python3State::P3_NotInstalled;
 }
 
-p_size os_readFileSize(const p_str& path)
+static p_size os_readFileSize(const std::wstring& wpath)
 {
    struct _stat fileinfo;
-   _wstat(path.c_str(), &fileinfo);
+   _wstat(wpath.c_str(), &fileinfo);
    return fileinfo.st_size;
 }
 
 p_bool os_readFile(p_str& result, const p_str& path)
 {
-   FILE* f = _wfopen(path.c_str(), STRING_FILE_OPEN_MODE);
+   const std::wstring wpath = utf32_to_utf16(path);
+   FILE* f = _wfopen(wpath.c_str(), L"rtS, ccs=UTF-8");
 
    if (f == NULL) {
       return false;
    }
 
-   const p_size filesize = os_readFileSize(path);
+   const p_size filesize = os_readFileSize(wpath);
 
    if (filesize > 0) {
-      result.resize(filesize);
-      p_size wchars_read = fread(&(result.front()), sizeof(p_char), filesize, f);
-      result.resize(wchars_read);
-      result.shrink_to_fit();
+      std::wstring wresult;
+      wresult.resize(filesize);
+      p_size wchars_read = fread(&(wresult.front()), sizeof(wchar_t), filesize, f);
+      wresult.resize(wchars_read);
+      wresult.shrink_to_fit();
+      result = utf16_to_utf32(wresult);
    }
 
    fclose(f);
@@ -2680,7 +2712,8 @@ p_bool os_readFile(p_str& result, const p_str& path)
 
 void os_showWebsite(const p_str& url)
 {
-   ShellExecuteW(NULL, STRING_OPEN, url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+   ShellExecuteW(NULL, utf32_to_utf16(STRING_OPEN).c_str(), 
+      utf32_to_utf16(url).c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 p_bool os_findText(const p_str& path, const p_str& value)
@@ -2694,11 +2727,12 @@ p_bool os_findText(const p_str& path, const p_str& value)
       return true;
    }
 
-   p_str line;
+   std::wstring line;
+   const std::wstring valueAsUtf16 = utf32_to_utf16(value);
    p_bool result = false;
 
    while (std::getline(stream, line)) {
-      if (line.find(value) != p_str::npos) {
+      if (line.find(valueAsUtf16) != p_str::npos) {
          result = true;
          break;
       }
@@ -2710,7 +2744,7 @@ p_bool os_findText(const p_str& path, const p_str& value)
 
 p_bool os_areEqualInPath(const p_char ch1, const p_char ch2)
 {
-   return std::tolower(ch1, std::locale("")) == std::tolower(ch2, std::locale(""));
+   return charsEqualInsensitive(ch1, ch2);
 }
 
 p_str os_makeArg(const p_str& value)
@@ -2734,7 +2768,7 @@ p_str os_makeArg(const p_str& value)
       return str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
    }
 
-   p_str result = toStr(CHAR_QUOTATION_MARK);
+   p_str result = charToString(CHAR_QUOTATION_MARK);
    result.reserve(value.size() + specials + 2);
 
    for (p_size i = 0; i < value.size(); i++) {
@@ -2762,21 +2796,10 @@ inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high)
    return n;
 }
 
-inline p_bool os_isBrowsePath(const p_str& path)
+p_bool os_isBrowsePath(const std::wstring& path)
 {
-   // this is an equivalent to
-   // return path == . || path == ..
-   switch (path.size()) {
-      case 1: {
-         return path[0] == CHAR_DOT;
-      }
-      case 2: {
-         return path[0] == CHAR_DOT && path[1] == CHAR_DOT;
-      }
-      default: {
-         return false;
-      }
-   }
+   return path == L"." 
+       || path == L"..";
 }
 
 inline p_tim os_convertToPerun2Time(const p_ftim* time)
@@ -2816,18 +2839,5 @@ inline p_bool os_convertToFileTime(const p_tim& perunTime, p_ftim& result)
    return LocalFileTimeToFileTime(&ftime, &result);
 }
 
-
-std::string os_toUtf8(const p_str& value)
-{
-   if (value.empty()) {
-      return std::string();
-   }
-    
-   const int length = WideCharToMultiByte(CP_UTF8, 0, &value[0], (int)value.size(), nullptr, 0, nullptr, nullptr);
-   std::string result(length, 0);
-
-   WideCharToMultiByte(CP_UTF8, 0, &value[0], (int)value.size(), &result[0], length, nullptr, nullptr);
-   return result;
-}
 
 }

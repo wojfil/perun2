@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-core-aggr.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/os/os.hpp"
+#include "com-core-aggr.h"
+#include "../perun2.h"
+#include "../os/os.h"
 
 
 namespace perun2::comm
@@ -138,22 +138,22 @@ void C_AggrSelect_List::run()
 
 void logCopyError(Perun2Process& p2, const p_str& name)
 {
-   p2.logger.log(L"Failed to copy ", getCCNameShort(name));
+   p2.logger.log(U"Failed to copy ", getCCNameShort(name));
 }
 
 void logCopySuccess(Perun2Process& p2, const p_str& name)
 {
-   p2.logger.log(L"Copy ", getCCNameShort(name));
+   p2.logger.log(U"Copy ", getCCNameShort(name));
 }
 
 void logSelectError(Perun2Process& p2, const p_str& name)
 {
-   p2.logger.log(L"Failed to select ", getCCNameShort(name));
+   p2.logger.log(U"Failed to select ", getCCNameShort(name));
 }
 
 void logSelectSuccess(Perun2Process& p2, const p_str& name)
 {
-   p2.logger.log(L"Select ", getCCNameShort(name));
+   p2.logger.log(U"Select ", getCCNameShort(name));
 }
 
 

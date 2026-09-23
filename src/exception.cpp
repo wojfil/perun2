@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/exception.hpp"
-#include "../include/perun2/metadata.hpp"
-#include "../include/perun2/datatype/datatype.hpp"
-#include "../include/perun2/datatype/text/like.hpp"
+#include "exception.h"
+#include "metadata.h"
+#include "datatype/datatype.h"
+#include "datatype/text/like.h"
 #include <algorithm>
 
 
@@ -27,18 +27,18 @@ SyntaxError::SyntaxError(const p_str& msg, const p_int li)
 
 p_str SyntaxError::getMessage() const
 {
-   return str(L"Error at line ", toStr(line), L": ", message, L".");
+   return str(U"Error at line ", intToString(line), U": ", message, U".");
 }
 
 SyntaxError SyntaxError::adjacentSymbols(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"adjacent ", toStr(value), L" symbols"), line);
+   return SyntaxError(str(U"adjacent ", intToString(value), U" symbols"), line);
 }
 
 SyntaxError SyntaxError::asteriskPatternCannotContainDotSegments(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the asterisk pattern \"", value, 
-      L"\" cannot contain dot segments in the middle of a path"), line);
+   return SyntaxError(str(U"the asterisk pattern \"", value, 
+      U"\" cannot contain dot segments in the middle of a path"), line);
 }
 
 SyntaxError SyntaxError::asteriskIsNotWildcardInLikeOperator(const p_str& value, const p_int line)
@@ -46,279 +46,262 @@ SyntaxError SyntaxError::asteriskIsNotWildcardInLikeOperator(const p_str& value,
    p_str proper = value;
    std::replace(proper.begin(), proper.end(), CHAR_ASTERISK, gen::WILDCARD_MULTIPLE_CHARS);
 
-   return SyntaxError(str(L"the asterisk in not a wildcard character of the Like operator. You should write \"", 
-      proper,  L"\" instead"), line);
+   return SyntaxError(str(U"the asterisk in not a wildcard character of the Like operator. You should write \"", 
+      proper,  U"\" instead"), line);
 }
 
 SyntaxError SyntaxError::bracketIsNotClosed(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"the bracket ", toStr(value), L" is not closed"), line);
+   return SyntaxError(str(U"the bracket ", intToString(value), U" is not closed"), line);
 }
 
 SyntaxError SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"the bracket ", toStr(value),
-      L" should to be closed before the opening of the curly bracket {"), line);
+   return SyntaxError(str(U"the bracket ", intToString(value),
+      U" should to be closed before the opening of the curly bracket {"), line);
 }
 
 SyntaxError SyntaxError::adjacentFilterKeywords(const p_str& value1, const p_str& value2, const p_int line)
 {
-   return SyntaxError(str(L"adjacent filter keywords \"", value1, L"\" and \"", value2, L"\""), line);
+   return SyntaxError(str(U"adjacent filter keywords \"", value1, U"\" and \"", value2, U"\""), line);
 }
 
 SyntaxError SyntaxError::dayCannotBeSmallerThanOne(const p_int line)
 {
-   return SyntaxError(L"the value of days cannot be smaller than 1", line);
+   return SyntaxError(U"the value of days cannot be smaller than 1", line);
 }
 
 SyntaxError SyntaxError::decrementationInsideExpression(const p_int line)
 {
-   return SyntaxError(L"the decrementation signs -- cannot appear inside an expression", line);
+   return SyntaxError(U"the decrementation signs -- cannot appear inside an expression", line);
 }
 
 SyntaxError SyntaxError::expectedSemicolonBeforeKeyword(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"expected ; before the keyword \"", value, L"\""), line);
+   return SyntaxError(str(U"expected ; before the keyword \"", value, U"\""), line);
 }
 
 SyntaxError SyntaxError::expressionCannotEndWith(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"an expression cannot end with the ", toStr(value), L" symbol"), line);
+   return SyntaxError(str(U"an expression cannot end with the ", intToString(value), U" symbol"), line);
 }
 
 SyntaxError SyntaxError::expressionCannotEndWithFilterKeyword(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"an expression cannot end with the filter keyword \"", value, L"\""), line);
+   return SyntaxError(str(U"an expression cannot end with the filter keyword \"", value, U"\""), line);
 }
 
 SyntaxError SyntaxError::expressionCannotStartWith(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"an expression cannot start with the ", toStr(value), L" symbol"), line);
+   return SyntaxError(str(U"an expression cannot start with the ", intToString(value), U" symbol"), line);
 }
 
 SyntaxError SyntaxError::expressionCannotStartWithIncrementation(const p_int line)
 {
-   return SyntaxError(L"an expression cannot start with the incrementation signs ++", line);
+   return SyntaxError(U"an expression cannot start with the incrementation signs ++", line);
 }
 
 SyntaxError SyntaxError::expressionCannotStartWithDecrementation(const p_int line)
 {
-   return SyntaxError(L"an expression cannot start with the decrementation signs --", line);
+   return SyntaxError(U"an expression cannot start with the decrementation signs --", line);
 }
 
 SyntaxError SyntaxError::filterKeywordAtStart(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the filter keyword \"", value, L"\" is not preceded by a collection of values"), line);
+   return SyntaxError(str(U"the filter keyword \"", value, U"\" is not preceded by a collection of values"), line);
 }
 
 SyntaxError SyntaxError::filterKeywordAtEnd(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the filter keyword \"", value, L"\" cannot stand at the end of an expression"), line);
+   return SyntaxError(str(U"the filter keyword \"", value, U"\" cannot stand at the end of an expression"), line);
 }
 
 SyntaxError SyntaxError::hoursOutOfRange(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the value of hours (", value, L") went out of range"), line);
+   return SyntaxError(str(U"the value of hours (", value, U") went out of range"), line);
 }
 
 SyntaxError SyntaxError::incrementationInsideExpression(const p_int line)
 {
-   return SyntaxError(L"the incrementation signs ++ cannot appear inside an expression", line);
+   return SyntaxError(U"the incrementation signs ++ cannot appear inside an expression", line);
 }
 
 SyntaxError SyntaxError::insteadOfYouShouldWrite(const p_str& value1, const p_str& value2, const p_int line)
 {
-   return SyntaxError(str(L"instead of \"", value1, L"\", you should write \"", value2, L"\""), line);
+   return SyntaxError(str(U"instead of \"", value1, U"\", you should write \"", value2, U"\""), line);
 }
 
 SyntaxError SyntaxError::invalidAsteriskPattern(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the asterisk pattern \"", value, L"\" is invalid"), line);
+   return SyntaxError(str(U"the asterisk pattern \"", value, U"\" is invalid"), line);
 }
 
 SyntaxError SyntaxError::invalidChar(const p_char value, const p_int line)
 {
    switch (value) {
       case CHAR_CARET: {
-         return SyntaxError(L"you should use the keyword \"xor\" instead of the character \"^\" as a boolean operator. "
-            L"If your intention was to perform exponentiation, then the function \"power()\" is the right tool", line);
+         return SyntaxError(U"you should use the keyword \"xor\" instead of the character \"^\" as a boolean operator. "
+            U"If your intention was to perform exponentiation, then the function \"power()\" is the right tool", line);
       }
       case CHAR_AMPERSAND: {
-         return SyntaxError(L"you should use the keyword \"and\" instead of the character \"&\" as a boolean operator", line);
+         return SyntaxError(U"you should use the keyword \"and\" instead of the character \"&\" as a boolean operator", line);
       }
       case CHAR_VERTICAL_BAR: {
-         return SyntaxError(L"you should use the keyword \"or\" instead of the character \"|\" as a boolean operator", line);
+         return SyntaxError(U"you should use the keyword \"or\" instead of the character \"|\" as a boolean operator", line);
       }
       default: {
-         return SyntaxError(str(L"the character \"", toStr(value), L"\" is not allowed in ", metadata::NAME), line);
+         return SyntaxError(str(U"the character \"", charToString(value), U"\" is not allowed in ", metadata::NAME), line);
       }
    }
 }
 
 SyntaxError SyntaxError::invalidExpression(const p_int line)
 {
-   return SyntaxError(L"syntax of this expression is invalid", line);
+   return SyntaxError(U"syntax of this expression is invalid", line);
 }
 
 SyntaxError SyntaxError::invalidFunctionName(const p_int line)
 {
-   return SyntaxError(L"the function name is invalid", line);
+   return SyntaxError(U"the function name is invalid", line);
 }
 
 SyntaxError SyntaxError::invalidMonthName(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"\"", value, L"\" is not a valid month name"), line);
+   return SyntaxError(str(U"\"", value, U"\" is not a valid month name"), line);
 }
 
 SyntaxError SyntaxError::invalidNumericalExpression(const p_int line)
 {
-   return SyntaxError(L"the syntax of a numerical expression is invalid", line);
+   return SyntaxError(U"the syntax of a numerical expression is invalid", line);
 }
 
 SyntaxError SyntaxError::keywordNotFound(const p_int line)
 {
-   return SyntaxError(L"keyword not found", line);
+   return SyntaxError(U"keyword not found", line);
 }
 
 SyntaxError SyntaxError::keywordNotFollowedByBool(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"tokens after the keyword \"",value, L"\" cannot be resolved to a logical condition"), line);
+   return SyntaxError(str(U"tokens after the keyword \"",value, U"\" cannot be resolved to a logical condition"), line);
 }
 
 SyntaxError SyntaxError::keywordNotFollowedByNumber(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"tokens after the keyword \"",value, L"\" cannot be resolved to a number"), line);
+   return SyntaxError(str(U"tokens after the keyword \"",value, U"\" cannot be resolved to a number"), line);
 }
 
 SyntaxError SyntaxError::leftSideOfOperatorIsEmpty(const p_str& operator_, const p_int line)
 {
-   return SyntaxError(str(L"left side of the operator \"", operator_, L"\" is empty"), line);
+   return SyntaxError(str(U"left side of the operator \"", operator_, U"\" is empty"), line);
 }
 
 SyntaxError SyntaxError::minutesOutOfRange(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the value of minutes (", value, L") went out of range"), line);
+   return SyntaxError(str(U"the value of minutes (", value, U") went out of range"), line);
 }
 
 SyntaxError SyntaxError::missingTimeVariableMember(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"a time variable member was expected after \"", value, L"\""), line);
+   return SyntaxError(str(U"a time variable member was expected after \"", value, U"\""), line);
 }
 
 SyntaxError SyntaxError::missingLetterS(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"missing letter \"s\" at the end of the word \"", value, L"\""), line);
+   return SyntaxError(str(U"missing letter \"s\" at the end of the word \"", value, U"\""), line);
 }
 
 SyntaxError SyntaxError::monthHasFewerDays(const p_str& month, const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the month ", month, L" has only ", value, L" days"), line);
+   return SyntaxError(str(U"the month ", month, U" has only ", value, U" days"), line);
 }
 
 SyntaxError SyntaxError::multipleDotsInNumber(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the number \"", value, L"\" contains multiple dots"), line);
+   return SyntaxError(str(U"the number \"", value, U"\" contains multiple dots"), line);
 }
 
 SyntaxError SyntaxError::multipleDotsInWord(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the word \"", value, L"\" cannot contain multiple dots"), line);
+   return SyntaxError(str(U"the word \"", value, U"\" cannot contain multiple dots"), line);
 }
 
 SyntaxError SyntaxError::negationByExclamation(const p_int line)
 {
-   return SyntaxError(L"you should use the keyword \"not\" instead of the character \"!\" for boolean negation", line);
-}
-
-SyntaxError SyntaxError::numberDotOnly(const p_int line)
-{
-   return SyntaxError(str(L"the character . is not part of any expression"), line);
-}
-
-SyntaxError SyntaxError::numberEndingWithDot(const p_str& value, const p_int line)
-{
-   return SyntaxError(str(L"the number declaration \"", value, 
-      L"\" is not clear enough. It should be written as \"", value, L"0\""), line);
-}
-
-SyntaxError SyntaxError::numberStartingWithDot(const p_str& value, const p_int line)
-{
-   return SyntaxError(str(L"the number declaration \"", value, 
-      L"\" is not clear enough. It should be written as \"0", value, L"\""), line);
+   return SyntaxError(U"you should use the keyword \"not\" instead of the character \"!\" for boolean negation", line);
 }
 
 SyntaxError SyntaxError::numberTooBig(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the number \"", value, L"\" is too big to be stored in the memory"), line);
+   return SyntaxError(str(U"the number \"", value, U"\" is too big to be stored in the memory"), line);
 }
 
 SyntaxError SyntaxError::openedStringLteral(const p_int line)
 {
-   return SyntaxError(L"an opened string literal is not closed", line);
+   return SyntaxError(U"an opened string literal is not closed", line);
 }
 
 SyntaxError SyntaxError::operatorBetweenShouldBeFollowedByAnd(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the operator \"", value, L"\" should be followed by a keyword \"and\""), line);
+   return SyntaxError(str(U"the operator \"", value, U"\" should be followed by a keyword \"and\""), line);
 }
 
 SyntaxError SyntaxError::rightSideOfOperatorIsEmpty(const p_str& operator_, const p_int line)
 {
-   return SyntaxError(str(L"the right side of the operator \"", operator_, L"\" is empty"), line);
+   return SyntaxError(str(U"the right side of the operator \"", operator_, U"\" is empty"), line);
 }
 
 SyntaxError SyntaxError::secondsOutOfRange(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the value of seconds (", value, L") went out of range"), line);
+   return SyntaxError(str(U"the value of seconds (", value, U") went out of range"), line);
 }
 
 SyntaxError SyntaxError::supposedUnintentionalAsteriskPattern(const p_str& value, const p_int line)
 {  
-   return SyntaxError(str(L"the syntax of this expression is invalid. The value \"", 
+   return SyntaxError(str(U"the syntax of this expression is invalid. The value \"", 
       value, 
-      L"\" is an Asterisk Pattern. "
-      L"If you want to treat it like a normal string, replace apostrophes \" with backtick characters `"), line);
+      U"\" is an Asterisk Pattern. "
+      U"If you want to treat it like a normal string, replace apostrophes \" with backtick characters `"), line);
 }
 
 SyntaxError SyntaxError::symbolNotFound(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"symbol \"", toStr(value), L"\" not found"), line);
+   return SyntaxError(str(U"symbol \"", charToString(value), U"\" not found"), line);
 }
 
 SyntaxError SyntaxError::syntaxOfBooleanExpressionNotValid(const p_int line)
 {
-   return SyntaxError(L"syntax of this boolean expression is invalid", line);
+   return SyntaxError(U"syntax of this boolean expression is invalid", line);
 }
 
 SyntaxError SyntaxError::quotationMarkStringLteral(const p_int line)
 {
-   return SyntaxError(L"you should use apostrophes \" instead of quotation marks \" for string literals", line);
+   return SyntaxError(U"you should use apostrophes \" instead of quotation marks \" for string literals", line);
 }
 
 SyntaxError SyntaxError::youShouldUseApostrophesAndWrite(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"you should use apostrophes and write \"", value, L"\" instead"), line);
+   return SyntaxError(str(U"you should use apostrophes and write \"", value, U"\" instead"), line);
 }
 
 SyntaxError SyntaxError::undefinedVarValue(const p_str& value, const p_int line)
 {
-   return SyntaxError(str(L"the value of the variable \"", value, L"\" is undefined here"), line);
+   return SyntaxError(str(U"the value of the variable \"", value, U"\" is undefined here"), line);
 }
 
 SyntaxError SyntaxError::unopenedBracketIsClosed(const p_char value, const p_int line)
 {
-   return SyntaxError(str(L"unopened bracket ", toStr(value), L" is closed"), line);
+   return SyntaxError(str(U"unopened bracket ", charToString(value), U" is closed"), line);
 }
 
 SyntaxError SyntaxError::wrongSyntax(const p_int line)
 {
-   return SyntaxError(L"wrong syntax. No valid command can be formed from this code", line);
+   return SyntaxError(U"wrong syntax. No valid command can be formed from this code", line);
 }
 
 SyntaxError SyntaxError::wrongSyntaxButProbablyAsteriskPattern(const p_int line)
 {
-   return SyntaxError(L"wrong syntax. You probably wanted to express an Asterisk Pattern. This notation is incorrect. "
-      L"You should write it between two apostrophes like this: \"*.txt\"", line);
+   return SyntaxError(U"wrong syntax. You probably wanted to express an Asterisk Pattern. This notation is incorrect. "
+      U"You should write it between two apostrophes like this: \"*.txt\"", line);
 }
 
 

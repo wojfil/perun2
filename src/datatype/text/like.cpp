@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/text/like.hpp"
-#include "../../../include/perun2/datatype/text/strings.hpp"
-#include "../../../include/perun2/util.hpp"
+#include "like.h"
+#include "strings.h"
+#include "../math.h"
 #include <set>
 
 
@@ -72,7 +72,7 @@ static void defaultLikeCmp(p_likeptr& result, const p_str& pattern)
 {
    std::unordered_map<p_size, LikeSet> sets;
    const p_size length = pattern.size();
-   p_stream ss;
+   p_str ss;
    p_bool prevWasMulti = false;
    p_size resultLength = 0;
 
@@ -83,8 +83,8 @@ static void defaultLikeCmp(p_likeptr& result, const p_str& pattern)
          i++;
 
          if (i == length) {
-            ss << WILDCARD_SET_START;
-            result = std::make_unique<LC_Default>(ss.str(), sets);
+            ss += WILDCARD_SET_START;
+            result = std::make_unique<LC_Default>(ss, sets);
             return;
          }
 
@@ -93,8 +93,8 @@ static void defaultLikeCmp(p_likeptr& result, const p_str& pattern)
          while (pattern[i] != WILDCARD_SET_END) {
             i++;
             if (i == length) {
-               ss << pattern.substr(startId - 1);
-               result = std::make_unique<LC_Default>(ss.str(), sets);
+               ss += pattern.substr(startId - 1);
+               result = std::make_unique<LC_Default>(ss, sets);
                return;
             }
          }
@@ -105,21 +105,21 @@ static void defaultLikeCmp(p_likeptr& result, const p_str& pattern)
          }
 
          sets.emplace(resultLength, makeLikeSet(pattern, startId, i - 1));
-         ss << WILDCARD_SET;
+         ss += WILDCARD_SET;
          resultLength++;
          prevWasMulti = false;
       }
       else {
          const p_bool isMulti = (ch == WILDCARD_MULTIPLE_CHARS);
          if (!(isMulti && prevWasMulti)) {
-            ss << ch;
+            ss += ch;
             resultLength++;
          }
          prevWasMulti = isMulti;
       }
    }
 
-   result = std::make_unique<LC_Default>(ss.str(), sets);
+   result = std::make_unique<LC_Default>(ss, sets);
 }
 
 
@@ -480,9 +480,9 @@ Logic LC_Default::checkState(const p_size n, const p_size m)
    Logic ans = Logic::False;
 
    if (this->pattern[m - 1] == WILDCARD_MULTIPLE_CHARS) {
-      ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
+      ans = maximum(ans, this->checkState(n, m - 1));
       if (n > 0) {
-         ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
+         ans = maximum(ans, this->checkState(n - 1, m));
       }
    }
 
@@ -491,24 +491,24 @@ Logic LC_Default::checkState(const p_size n, const p_size m)
 
       switch (pch) {
          case WILDCARD_ONE_CHAR: {
-            ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
+            ans = maximum(ans, this->checkState(n - 1, m - 1));
             break;
          }
          case WILDCARD_ONE_DIGIT: {
             if (char_isDigit((*this->valuePtr)[n - 1])) {
-               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
+               ans = maximum(ans, this->checkState(n - 1, m - 1));
             }
             break;
          }
          case WILDCARD_SET: {
             if (this->charSets.at(m - 1).contains((*this->valuePtr)[n - 1])) {
-               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
+               ans = maximum(ans, this->checkState(n - 1, m - 1));
             }
             break;
          }
          default: {
             if (pch == (*this->valuePtr)[n - 1]) {
-               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
+               ans = maximum(ans, this->checkState(n - 1, m - 1));
             }
             break;
          }

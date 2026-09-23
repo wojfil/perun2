@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/datatype/time.hpp"
-#include "../../include/perun2/datatype/datatype.hpp"
+#include "time.h"
+#include "datatype.h"
 #include <vector>
 #include <sstream>
 #include <math.h>
@@ -65,51 +65,51 @@ p_str Time::toString() const
          return STRING_NEVER;
       }
       case TimeType::tt_ShortClock: {
-         p_stream ss;
+         p_str ss;
 
          addTimeUnit(ss, hour);
-         ss << CHAR_COLON;
+         ss += CHAR_COLON;
          addTimeUnit(ss, minute);
 
-         return ss.str();
+         return ss;
       }
       case TimeType::tt_Clock: {
-         p_stream ss;
+         p_str ss;
          
          addTimeUnit(ss, hour);
-         ss << CHAR_COLON;
+         ss += CHAR_COLON;
          addTimeUnit(ss, minute);
-         ss << CHAR_COLON;
+         ss += CHAR_COLON;
          addTimeUnit(ss, second);
 
-         return ss.str();
+         return ss;
       }
    }
 
-   p_stream ss;
+   p_str ss;
 
    if (type != tt_YearMonth) {
-      ss << day;
-      ss << CHAR_SPACE;
+      ss += day;
+      ss += CHAR_SPACE;
    }
 
-   ss << monthToString(month);
-   ss << CHAR_SPACE;
-   ss << year;
+   ss += monthToString(month);
+   ss += CHAR_SPACE;
+   ss += year;
 
    if (type == tt_DateShortClock || type == tt_DateClock) {
-      ss << CHAR_COMMA;
-      ss << CHAR_SPACE;
+      ss += CHAR_COMMA;
+      ss += CHAR_SPACE;
       addTimeUnit(ss, hour);
-      ss << CHAR_COLON;
+      ss += CHAR_COLON;
       addTimeUnit(ss, minute);
       if (type == tt_DateClock) {
-         ss << CHAR_COLON;
+         ss += CHAR_COLON;
          addTimeUnit(ss, second);
       }
    }
 
-   return ss.str();
+   return ss;
 }
 
 void Time::addYears(const p_tnum y)
@@ -1194,12 +1194,13 @@ p_str weekdayToString(const p_tnum wday)
    }
 }
 
-inline void addTimeUnit(p_stream& stream, const p_tnum val)
+inline void addTimeUnit(p_str& result, const p_tnum val)
 {
    if (val <= TNUM_NINE) {
-      stream << CHAR_0;
+      result += CHAR_0;
    }
-   stream << val;
+   
+   result += val;
 }
 
 inline p_bool isLeapYear(const p_tnum year)

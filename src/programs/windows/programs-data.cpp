@@ -12,19 +12,19 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/programs/windows/programs-data.hpp"
-#include "../../../include/perun2/programs/windows/registry.hpp"
-#include "../../../include/perun2/os/os.hpp"
+#include "programs-data.h"
+#include "registry.h"
+#include "../../os/os.h"
 
 
 namespace perun2::prog
 {
 
 
-WP_7zip::WP_7zip(Perun2Process& p2) : WinProgram(p2, { L"7zip" }),
-   startMenuLink(L"7-zip\\7-zip file manager.lnk")
+WP_7zip::WP_7zip(Perun2Process& p2) : WinProgram(p2, { U"7zip" }),
+   startMenuLink(U"7-zip\\7-zip file manager.lnk")
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/7-zip");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/7-zip");
 };
 
 
@@ -35,25 +35,25 @@ void WP_7zip::actualize()
    }
    
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, U"displayicon")) {
          return;
       }
    }
 };
 
 
-WP_Acrobat::WP_Acrobat(Perun2Process& p2) : WinProgram(p2, { L"acrobat", L"acrobatreader", L"adobeacrobat", L"adobeacrobatreader" }) 
+WP_Acrobat::WP_Acrobat(Perun2Process& p2) : WinProgram(p2, { U"acrobat", U"acrobatreader", U"adobeacrobat", U"adobeacrobatreader" }) 
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/adobe/adobe acrobat/*/installer");
-   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/acrobat.*/shell/open/command");
-   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, L"software/classes/acrobat/shell/open/command");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/adobe/adobe acrobat/*/installer");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, U"software/classes/acrobat.*/shell/open/command");
+   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, U"software/classes/acrobat/shell/open/command");
 };
 
 
 void WP_Acrobat::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"acrobat.exe")) {
+      if (this->takeValue(this->r_1, U"acrobat.exe")) {
          return;
       }
    }
@@ -72,11 +72,11 @@ void WP_Acrobat::actualize()
 };
 
 
-WP_Audacity::WP_Audacity(Perun2Process& p2) : WinProgram(p2, { L"audacity" }),
-   startMenuLink(L"audacity.lnk")
+WP_Audacity::WP_Audacity(Perun2Process& p2) : WinProgram(p2, { U"audacity" }),
+   startMenuLink(U"audacity.lnk")
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/audacity*");
-   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"audacity*/shell/open/command");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/audacity*");
+   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, U"audacity*/shell/open/command");
 };
 
 
@@ -87,7 +87,7 @@ void WP_Audacity::actualize()
    }
    
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, U"displayicon")) {
          return;
       }
    }
@@ -100,14 +100,14 @@ void WP_Audacity::actualize()
 };
 
 
-WP_Firefox::WP_Firefox(Perun2Process& p2) : WinProgram(p2, { L"firefox", L"mozillafirefox" }),
-   startMenuLink(L"firefox.lnk")
+WP_Firefox::WP_Firefox(Perun2Process& p2) : WinProgram(p2, { U"firefox", U"mozillafirefox" }),
+   startMenuLink(U"firefox.lnk")
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/mozilla firefox*");
-   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/mozilla/mozilla firefox #/bin");
-   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, L"software/mozilla/mozilla firefox/*/main");
-   addRegistryPattern(this->r_4, RegistryRootType::CurrentUser, L"software/mozilla/mozilla firefox/*/main");
-   addRegistryPattern(this->r_5, RegistryRootType::CurrentUser, L"software/mozilla/mozilla firefox */bin");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/mozilla firefox*");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, U"software/mozilla/mozilla firefox #/bin");
+   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, U"software/mozilla/mozilla firefox/*/main");
+   addRegistryPattern(this->r_4, RegistryRootType::CurrentUser, U"software/mozilla/mozilla firefox/*/main");
+   addRegistryPattern(this->r_5, RegistryRootType::CurrentUser, U"software/mozilla/mozilla firefox */bin");
 };
 
 
@@ -118,63 +118,63 @@ void WP_Firefox::actualize()
    }
    
    while (this->r_1->hasNext()) {
-      if (this->takeValueBeforeLastComma(this->r_1, L"displayicon")) {
+      if (this->takeValueBeforeLastComma(this->r_1, U"displayicon")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValue(this->r_2, L"pathtoexe")) {
+      if (this->takeValue(this->r_2, U"pathtoexe")) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValue(this->r_3, L"pathtoexe")) {
+      if (this->takeValue(this->r_3, U"pathtoexe")) {
          return;
       }
    }
 
    while (this->r_4->hasNext()) {
-      if (this->takeValue(this->r_4, L"pathtoexe")) {
+      if (this->takeValue(this->r_4, U"pathtoexe")) {
          return;
       }
    }
 
    while (this->r_5->hasNext()) {
-      if (this->takeValue(this->r_5, L"pathtoexe")) {
+      if (this->takeValue(this->r_5, U"pathtoexe")) {
          return;
       }
    }
 };
 
 
-WP_Gimp::WP_Gimp(Perun2Process& p2) : WinProgram(p2, { L"gimp" }) 
+WP_Gimp::WP_Gimp(Perun2Process& p2) : WinProgram(p2, { U"gimp" }) 
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/gimp*");
-   addRegistryPattern(this->r_2, RegistryRootType::CurrentUser, L"software/gimp #/capabilities");
-   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, L"software/gimp #/capabilities");
-   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, L"gimp*/shell/open/command");
-   addRegistryPattern(this->r_5, RegistryRootType::ClassesRoot, L"gimp*/defaulticon");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/gimp*");
+   addRegistryPattern(this->r_2, RegistryRootType::CurrentUser, U"software/gimp #/capabilities");
+   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, U"software/gimp #/capabilities");
+   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, U"gimp*/shell/open/command");
+   addRegistryPattern(this->r_5, RegistryRootType::ClassesRoot, U"gimp*/defaulticon");
 };
 
 
 void WP_Gimp::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, U"displayicon")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValueBeforeLastComma(this->r_2, L"applicationicon")) {
+      if (this->takeValueBeforeLastComma(this->r_2, U"applicationicon")) {
          return;
       }
    }
 
    while (this->r_3->hasNext()) {
-      if (this->takeValueBeforeLastComma(this->r_3, L"applicationicon")) {
+      if (this->takeValueBeforeLastComma(this->r_3, U"applicationicon")) {
          return;
       }
    }
@@ -193,10 +193,10 @@ void WP_Gimp::actualize()
 };
 
 
-WP_Inkscape::WP_Inkscape(Perun2Process& p2) : WinProgram(p2, { L"inkscape" }) ,
-   startMenuLink(L"inkscape\\inkscape.lnk")
+WP_Inkscape::WP_Inkscape(Perun2Process& p2) : WinProgram(p2, { U"inkscape" }) ,
+   startMenuLink(U"inkscape\\inkscape.lnk")
 {
-   addRegistryPattern(this->r_1, RegistryRootType::ClassesRoot, L"inkscape.*/shell/open/command");
+   addRegistryPattern(this->r_1, RegistryRootType::ClassesRoot, U"inkscape.*/shell/open/command");
 };
 
 
@@ -214,23 +214,23 @@ void WP_Inkscape::actualize()
 };
 
 
-WP_Notepad::WP_Notepad(Perun2Process& p2) : WinProgram(p2, { L"notepad" }) { };
+WP_Notepad::WP_Notepad(Perun2Process& p2) : WinProgram(p2, { U"notepad" }) { };
 
 
 void WP_Notepad::actualize()
 {
    const p_str system32 = os_system32Path();
    if (! system32.empty()) {
-      const p_str path = str(system32, OS_SEPARATOR, L"notepad.exe");
+      const p_str path = str(system32, OS_SEPARATOR, U"notepad.exe");
       this->saveValue(path);
    }
 };
 
 
-WP_NotepadPlusPlus::WP_NotepadPlusPlus(Perun2Process& p2) : WinProgram(p2, { L"notepadplusplus" }),
-   startMenuLink(L"notepad++.lnk")
+WP_NotepadPlusPlus::WP_NotepadPlusPlus(Perun2Process& p2) : WinProgram(p2, { U"notepadplusplus" }),
+   startMenuLink(U"notepad++.lnk")
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/notepad++");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/notepad++");
 };
 
 
@@ -241,24 +241,24 @@ void WP_NotepadPlusPlus::actualize()
    }
 
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, U"displayicon")) {
          return;
       }
    }
 };
 
 
-WP_OpenOffice::WP_OpenOffice(Perun2Process& p2) : WinProgram(p2, { L"openoffice" }) 
+WP_OpenOffice::WP_OpenOffice(Perun2Process& p2) : WinProgram(p2, { U"openoffice" }) 
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/wow6432node/openoffice/openoffice/*");
-   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"openoffice*/defaulticon");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/wow6432node/openoffice/openoffice/*");
+   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, U"openoffice*/defaulticon");
 };
 
 
 void WP_OpenOffice::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"path")) {
+      if (this->takeValue(this->r_1, U"path")) {
          return;
       }
    }
@@ -271,25 +271,25 @@ void WP_OpenOffice::actualize()
 };
 
 
-WP_Paint::WP_Paint(Perun2Process& p2) : WinProgram(p2, { L"paint", L"mspaint" }) { };
+WP_Paint::WP_Paint(Perun2Process& p2) : WinProgram(p2, { U"paint", U"mspaint" }) { };
 
 
 void WP_Paint::actualize()
 {
    const p_str system32 = os_system32Path();
    if (! system32.empty()) {
-      const p_str path = str(system32, OS_SEPARATOR, L"mspaint.exe");
+      const p_str path = str(system32, OS_SEPARATOR, U"mspaint.exe");
       this->saveValue(path);
    }
 };
 
 
-WP_Photoshop::WP_Photoshop(Perun2Process& p2) : WinProgram(p2, { L"photoshop", L"adobephotoshop" }) 
+WP_Photoshop::WP_Photoshop(Perun2Process& p2) : WinProgram(p2, { U"photoshop", U"adobephotoshop" }) 
 { 
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/classes/photoshop.*file*/defaulticon");
-   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/photoshop.*file*/shell/open/command");
-   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, L"photoshop.*file*/defaulticon");
-   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, L"photoshop.*file*/shell/open/command");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/classes/photoshop.*file*/defaulticon");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, U"software/classes/photoshop.*file*/shell/open/command");
+   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, U"photoshop.*file*/defaulticon");
+   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, U"photoshop.*file*/shell/open/command");
 };
 
 
@@ -321,20 +321,20 @@ void WP_Photoshop::actualize()
 };
 
 
-WP_Sumatra::WP_Sumatra(Perun2Process& p2) : WinProgram(p2, { L"sumatra", L"sumatrapdf", L"sumatrapdfreader" }) 
+WP_Sumatra::WP_Sumatra(Perun2Process& p2) : WinProgram(p2, { U"sumatra", U"sumatrapdf", U"sumatrapdfreader" }) 
 {
-   addRegistryPattern(this->r_1, RegistryRootType::CurrentUser, L"software/microsoft/windows/currentversion/uninstall/sumatrapdf");
-   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"sumatrapdf.*/shell/open/command");
+   addRegistryPattern(this->r_1, RegistryRootType::CurrentUser, U"software/microsoft/windows/currentversion/uninstall/sumatrapdf");
+   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, U"sumatrapdf.*/shell/open/command");
 };
 
 
 void WP_Sumatra::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, U"displayicon")) {
          return;
       }
-      if (this->takeValueFirstArg(this->r_1, L"uninstallstring")) {
+      if (this->takeValueFirstArg(this->r_1, U"uninstallstring")) {
          return;
       }
    }
@@ -347,19 +347,19 @@ void WP_Sumatra::actualize()
 };
 
 
-WP_Vlc::WP_Vlc(Perun2Process& p2) : WinProgram(p2, { L"vlc", L"vlcmediaplayer" }) 
+WP_Vlc::WP_Vlc(Perun2Process& p2) : WinProgram(p2, { U"vlc", U"vlcmediaplayer" }) 
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/vlc media player");
-   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, L"vlc*/defaulticon");
-   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, L"vlc*/shell/open/command");
-   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, L"vlc*/shell/playwithvlc/command");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/vlc media player");
+   addRegistryPattern(this->r_2, RegistryRootType::ClassesRoot, U"vlc*/defaulticon");
+   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, U"vlc*/shell/open/command");
+   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, U"vlc*/shell/playwithvlc/command");
 };
 
 
 void WP_Vlc::actualize()
 {
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"displayicon")) {
+      if (this->takeValue(this->r_1, U"displayicon")) {
          return;
       }
    }
@@ -384,13 +384,13 @@ void WP_Vlc::actualize()
 };
 
 
-WP_WinRAR::WP_WinRAR(Perun2Process& p2) : WinProgram(p2, { L"winrar" }) ,
-   startMenuLink(L"winrar\\winrar.lnk")
+WP_WinRAR::WP_WinRAR(Perun2Process& p2) : WinProgram(p2, { U"winrar" }) ,
+   startMenuLink(U"winrar\\winrar.lnk")
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/winrar");
-   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/microsoft/windows/currentversion/uninstall/winrar*");
-   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, L"winrar*/shell/open/command");
-   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, L"winrar*/defaulticon");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/winrar");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, U"software/microsoft/windows/currentversion/uninstall/winrar*");
+   addRegistryPattern(this->r_3, RegistryRootType::ClassesRoot, U"winrar*/shell/open/command");
+   addRegistryPattern(this->r_4, RegistryRootType::ClassesRoot, U"winrar*/defaulticon");
 };
 
 
@@ -401,16 +401,16 @@ void WP_WinRAR::actualize()
    }
    
    while (this->r_1->hasNext()) {
-      if (this->takeValue(this->r_1, L"exe64")) {
+      if (this->takeValue(this->r_1, U"exe64")) {
          return;
       }
-      if (this->takeValue(this->r_1, L"exe32")) {
+      if (this->takeValue(this->r_1, U"exe32")) {
          return;
       }
    }
 
    while (this->r_2->hasNext()) {
-      if (this->takeValue(this->r_2, L"displayicon")) {
+      if (this->takeValue(this->r_2, U"displayicon")) {
          return;
       }
    }
@@ -429,11 +429,11 @@ void WP_WinRAR::actualize()
 };
 
 
-WP_Word::WP_Word(Perun2Process& p2) : WinProgram(p2, { L"word", L"msword", L"microsoftword" }) 
+WP_Word::WP_Word(Perun2Process& p2) : WinProgram(p2, { U"word", U"msword", U"microsoftword" }) 
 {
-   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, L"software/classes/wordmhtmlfile/defaulticon");
-   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, L"software/classes/wordhtmltemplate/shell/open/command");
-   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, L"software/classes/wordhtmlfile/shell/open/command");
+   addRegistryPattern(this->r_1, RegistryRootType::LocalMachine, U"software/classes/wordmhtmlfile/defaulticon");
+   addRegistryPattern(this->r_2, RegistryRootType::LocalMachine, U"software/classes/wordhtmltemplate/shell/open/command");
+   addRegistryPattern(this->r_3, RegistryRootType::LocalMachine, U"software/classes/wordhtmlfile/shell/open/command");
 };
 
 

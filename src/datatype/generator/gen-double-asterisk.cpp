@@ -12,8 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/generator/gen-double-asterisk.hpp"
-#include "../../../include/perun2/perun2.hpp"
+#include "gen-double-asterisk.h"
+#include "../math.h"
+#include "../../perun2.h"
 
 
 namespace perun2::gen
@@ -125,27 +126,27 @@ Logic DoubleAsteriskPattern::checkState(const p_size n, const p_size m)
 
    switch (this->pattern[m - 1]) {
       case WILDCARD_SINGLE_ASTERISK: {
-         ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
+         ans = maximum(ans, this->checkState(n, m - 1));
          if (n > 0 && (*this->valuePtr)[n - 1] != OS_SEPARATOR) {
-            ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
+            ans = maximum(ans, this->checkState(n - 1, m));
          }
          break;
       }
       case WILDCARD_DOUBLE_ASTERISK: {
-         ans = perun2::langutil::maximum(ans, this->checkState(n, m - 1));
+         ans = maximum(ans, this->checkState(n, m - 1));
          if (n > 0) {
             if (m >= 2 && this->pattern[m - 2] == OS_SEPARATOR && m < this->patternLength && this->pattern[m] == OS_SEPARATOR) {
-               ans = perun2::langutil::maximum(ans, this->checkState(n, m - 2));
+               ans = maximum(ans, this->checkState(n, m - 2));
             }
 
-            ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m));
+            ans = maximum(ans, this->checkState(n - 1, m));
          }
          break;
       }
       default: {
          if (n > 0) {
             if (os_areEqualInPath(this->pattern[m - 1], (*this->valuePtr)[n - 1])) {
-               ans = perun2::langutil::maximum(ans, this->checkState(n - 1, m - 1));
+               ans = maximum(ans, this->checkState(n - 1, m - 1));
             }
          }
          break;

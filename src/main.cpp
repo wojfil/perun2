@@ -12,21 +12,14 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/perun2.hpp"
-#include "../include/perun2/cmd.hpp"
+#include "perun2.h"
+#include "unicode/convert.h"
+#include "cmd.h"
 
 
-int main(void)
+static int mainRun(const perun2::p_list& args)
 {
-   int argc;
-   LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-
-   if (argv == NULL) {
-      perun2::cmd::error::argumentsNotAccessed();
-      return perun2::EXITCODE_CLI_ERROR;
-   }
-
-   perun2::Perun2 instance(argc, argv);
+   perun2::Perun2 instance(args);
 
    if (instance.hasArgFlag(perun2::FLAG_STATIC_ANALYSIS)) {
       instance.staticallyAnalyze();
@@ -35,6 +28,49 @@ int main(void)
       instance.run();
    }
 
-   LocalFree(argv);
    return instance.getExitCode();
 }
+
+
+#if defined(_WIN32)
+
+   int main(void)
+   {
+      int argc;
+      LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+      if (argv == NULL) {
+         perun2::cmd::error::argumentsNotAccessed();
+         return perun2::EXITCODE_CLI_ERROR;
+      }
+
+      perun2::p_list args;
+      args.reserve(argc);
+
+      for (int i = 0; i < argc; ++i) {
+         std::wstring arg = argv[i];
+         args.emplace_back(perun2::utf16_to_utf32(arg));
+      }
+
+      LocalFree(argv);
+      return mainRun(args);
+   }
+
+#elif defined(__APPLE__) || defined(__linux__)
+
+   int main(int argc, char* argv[])
+   {
+      perun2::p_list args;
+      args.reserve(argc);
+
+      for (int i = 0; i < argc; ++i) {
+         std::string arg = argv[i];
+         args.emplace_back(perun2::utf8_to_utf32(arg));
+      }
+
+      return mainRun(args);
+   }
+
+#else
+   #error "Unsupported platform"
+#endif

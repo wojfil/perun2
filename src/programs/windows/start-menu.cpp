@@ -20,8 +20,8 @@
 #define _UNICODE
 #endif
 
-#include "../../../include/perun2/programs/windows/start-menu.hpp"
-#include "../../../include/perun2/os/os.hpp"
+#include "start-menu.h"
+#include "../../os/os.h"
 #include <windows.h>
 #include <shobjidl.h>
 #include <objbase.h>
@@ -72,7 +72,7 @@ p_bool StartMenuLnk::hasValue()
       P_FAILURE;
    }
 
-   hr = persistFile->Load(linkFilePath.c_str(), STGM_READ);
+   hr = persistFile->Load(utf32_to_utf16(linkFilePath).c_str(), STGM_READ);
 
    if (FAILED(hr)) {
       shellLink->Release();
@@ -82,7 +82,7 @@ p_bool StartMenuLnk::hasValue()
       P_FAILURE;
    }
 
-   p_char targetPath[MAX_PATH];
+   wchar_t targetPath[MAX_PATH];
    hr = shellLink->GetPath(targetPath, MAX_PATH, NULL, SLGP_UNCPRIORITY);
    
    persistFile->Release();
@@ -91,7 +91,7 @@ p_bool StartMenuLnk::hasValue()
    CoInitializeEx(0, COINIT_MULTITHREADED);
 
    if (SUCCEEDED(hr)) {
-      result = targetPath;
+      result = utf16_to_utf32(targetPath);
       this->state = Logic::True;
       return true;
    }
@@ -108,12 +108,12 @@ p_str StartMenuLnk::getValue()
 
 p_str StartMenuLnk::getPathRoot(const p_bool allUsers) const
 {
-   p_char* startMenuPath;
+   wchar_t* startMenuPath;
 
    if (SUCCEEDED(SHGetKnownFolderPath(
       allUsers ? FOLDERID_CommonStartMenu : FOLDERID_StartMenu, 0, NULL, &startMenuPath))) 
    {
-      const p_str result = startMenuPath;
+      const p_str result = utf16_to_utf32(std::wstring(startMenuPath));
       CoTaskMemFree(static_cast<void*>(startMenuPath));
       return result;
    }

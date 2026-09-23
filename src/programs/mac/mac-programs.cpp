@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/programs/mac/mac-programs.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/perun2.hpp"
+#include "mac-programs.h"
+#include "../../os/os.h"
+#include "../../perun2.h"
 
 
 namespace perun2::prog

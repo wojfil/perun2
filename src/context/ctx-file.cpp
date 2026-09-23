@@ -12,34 +12,32 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/context/ctx-file.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/os/os.hpp"
+#include "ctx-file.h"
+#include "../perun2.h"
+#include "../os/os.h"
 
 
 namespace perun2
 {
 
    FileContext::FileContext(Perun2Process& p2)
-      : IndexContext(p2), 
-      perun2(p2), attribute(std::make_unique<Attribute>()),
+      : IndexContext(p2), attribute(std::make_unique<Attribute>(p2)),
       this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
    {
-      this->initVars();
+      this->initVars(p2);
    };
 
    FileContext::FileContext(p_attrptr& attr, Perun2Process& p2)
-      : IndexContext(p2), 
-      perun2(p2), attribute(std::move(attr)),
+      : IndexContext(p2), attribute(std::move(attr)),
       this_(std::make_unique<Variable<p_str>>(VarType::vt_Special)),
       locContext(p2.contexts.getLocationContext())
    {
-      this->initVars();
+      this->initVars(p2);
    };
 
 
-   void FileContext::initVars()
+   void FileContext::initVars(Perun2Process& p2)
    {
       this->v_archive = this->insertVar<p_bool>(STRING_ARCHIVE);
       this->v_compressed = this->insertVar<p_bool>(STRING_COMPRESSED);

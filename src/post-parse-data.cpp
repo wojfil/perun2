@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/post-parse-data.hpp"
-#include "../include/perun2/perun2.hpp"
-#include "../include/perun2/os/os.hpp"
+#include "post-parse-data.h"
+#include "perun2.h"
+#include "os/os.h"
 
 
 namespace perun2
@@ -33,38 +33,38 @@ void PostParseData::actualize(const Token& tk)
       return;
    }
 
-   if (tk.isWord(STRING_DESKTOP)) {
+   if (tk.isWord(STRING_DESKTOP, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_DESKTOP_PATH)) {
          this->context.strings[STRING_DESKTOP]->value = os_desktopPath();
       }
    }
-   else if (tk.isWord(STRING_PERUN2)) {
+   else if (tk.isWord(STRING_PERUN2, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_EXE_PATH)) {
          this->context.strings[STRING_PERUN2]->value = os_executablePath();
       }
    }
-   else if (tk.isWord(STRING_ALPHABET)) {
+   else if (tk.isWord(STRING_ALPHABET, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_ALPHABET)) {
          this->context.lists[STRING_ALPHABET]->value = this->getAlphabet();
       }
    }
-   else if (tk.isWord(STRING_ASCII)) {
+   else if (tk.isWord(STRING_ASCII, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_ASCII)) {
          this->context.lists[STRING_ASCII]->value = STRINGS_ASCII;
       }
    }
-   else if (tk.isWord(STRING_ORIGIN)) {
+   else if (tk.isWord(STRING_ORIGIN, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_ORIGIN)) {
          this->context.strings[STRING_ORIGIN]->value = this->perun2.arguments.getLocation();
       }
    }
-   else if (tk.isWord(STRING_ARGUMENTS)) {
+   else if (tk.isWord(STRING_ARGUMENTS, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_ARGUMENTS)) {
          this->context.lists[STRING_ARGUMENTS]->value = this->perun2.arguments.getArgs();
       }
    }
-   else if (tk.isWord(STRING_PENDRIVE)
-         || tk.isWord(STRING_PENDRIVES)) 
+   else if (tk.isWord(STRING_PENDRIVE, this->perun2)
+         || tk.isWord(STRING_PENDRIVES, this->perun2)) 
    {
       if (this->isNotLoaded(CONST_CACHE_PENDRIVES)) {
          const p_list pendrives = os_pendrives();
@@ -74,7 +74,7 @@ void PostParseData::actualize(const Token& tk)
          }
       }
    }
-   else if (tk.isWord(STRING_DOWNLOADS)) {
+   else if (tk.isWord(STRING_DOWNLOADS, this->perun2)) {
       if (this->isNotLoaded(CONST_CACHE_DOWNLOADS_PATH)) {
          this->context.strings[STRING_DOWNLOADS]->value = os_downloadsPath();
       }

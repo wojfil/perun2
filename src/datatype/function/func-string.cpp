@@ -12,11 +12,12 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/function/func-string.hpp"
-#include "../../../include/perun2/lexer.hpp"
-#include "../../../include/perun2/util.hpp"
-#include "../../../include/perun2/datatype/math.hpp"
-#include "../../../include/perun2/datatype/text/raw.hpp"
+#include "func-string.h"
+#include "../../lexer.h"
+#include "../../util.h"
+#include "../../unicode/convert.h"
+#include "../math.h"
+#include "../text/raw.h"
 #include <algorithm>
 #include <sstream>
 #include <cmath>
@@ -389,25 +390,25 @@ p_str F_ConcatenateUnit::getValue()
       }
    }
 
-   p_stream ss;
+   p_str ss;
 
    for (const p_str& v : values) {
-      ss << v;
+      ss += v;
    }
 
-   return ss.str();
+   return ss;
 }
 
 
 p_str F_Concatenate::getValue()
 {
-   p_stream ss;
+   p_str ss;
 
    for (p_genptr<p_str>& gen : values) {
-      ss << gen->getValue();
+      ss += gen->getValue();
    }
 
-   return ss.str();
+   return ss;
 }
 
 
@@ -511,7 +512,7 @@ p_str F_Replace::getValue()
 
 p_str F_String_B::getValue()
 {
-   return arg1->getValue() ? toStr(CHAR_1) : toStr(CHAR_0);
+   return arg1->getValue() ? charToString(CHAR_1) : charToString(CHAR_0);
 }
 
 
@@ -673,7 +674,7 @@ p_str F_RandomChar::getValue()
          return value;
       }
       default: {
-         return toStr(value[math.randomInt(value.size() - 1)]);
+         return charToString(value[math.randomInt(value.size() - 1)]);
       }
    }
 }
@@ -728,24 +729,24 @@ p_str F_Join::getValue()
          const p_str separator = arg2->getValue();
 
          if (separator.empty()) {
-            p_stream ss;
+            p_str ss;
 
             for (const p_str& val : values) {
-               ss << val;
+               ss += val;
             }
 
-            return ss.str();
+            return ss;
          }
          else {
-            p_stream ss;
-            ss << values[0];
+            p_str ss;
+            ss += values[0];
 
             for (p_size i = 1; i < values.size(); i++) {
-               ss << separator;
-               ss << values[i];
+               ss += separator;
+               ss += values[i];
             }
 
-            return ss.str();
+            return ss;
          }
       }
    }
@@ -763,9 +764,8 @@ p_str F_Roman::getValue()
 
    if (number == NINT_ZERO) {
       if (base.state == NumberState::Double) {
-         p_stream ss;
-         appendFraction(base, ss);
-         p_str result = ss.str();
+         p_str result;
+         appendFraction(base, result);
 
          if (result.empty()) {
             result = CHAR_N;
@@ -777,16 +777,16 @@ p_str F_Roman::getValue()
          return result;
       }
       else {
-         return toStr(CHAR_N);
+         return charToString(CHAR_N);
       }
    }
    else if (number >= ROMAN_MAXIMUM || number <= -ROMAN_MAXIMUM) {
       return base.toString();
    }
 
-   p_stream ss;
+   p_str result;
    if (number < NINT_ZERO) {
-      ss << CHAR_MINUS;
+      result += CHAR_MINUS;
       number *= NINT_MINUS_ONE;
    }
 
@@ -797,7 +797,7 @@ p_str F_Roman::getValue()
       p_nint div = number / ROMAN_NUMBER_LITERALS[i];
       number = number % ROMAN_NUMBER_LITERALS[i];
       while (div--) {
-         ss << ((isBig && i == 12) 
+         result += ((isBig && i == 12) 
             ? ROMAN_VINCULUM_THOUSAND 
             : ROMAN_STRING_LITERALS[i]);
       }
@@ -805,14 +805,14 @@ p_str F_Roman::getValue()
    }
 
    if (base.state == NumberState::Double) {
-      appendFraction(base, ss);
+      appendFraction(base, result);
    }
 
-   return ss.str();
+   return result;
 }
 
 
-inline void F_Roman::appendFraction(const p_num& base, p_stream& ss) const
+inline void F_Roman::appendFraction(const p_num& base, p_str& result) const
 {
    p_int oc = static_cast<p_int>(std::fmod(base.value.d, NDOUBLE_ONE) * NDOUBLE_TWELVE);
    if (oc < 0) {
@@ -820,11 +820,11 @@ inline void F_Roman::appendFraction(const p_num& base, p_stream& ss) const
    }
    if (oc >= 6) {
       oc -= 6;
-      ss << CHAR_S;
+      result += CHAR_S;
    }
 
    if (oc > 0) {
-      ss << p_str(oc,  CHAR_INTERPUNCT);
+      result += p_str(oc,  CHAR_INTERPUNCT);
    }
 }
 
@@ -837,7 +837,6 @@ p_str F_Binary::getValue()
    }
 
    p_nint v = n.toInt();
-   p_stream ss;
    p_bool negative = false;
 
    if (v < 0) {
@@ -845,18 +844,21 @@ p_str F_Binary::getValue()
       negative = true;
    }
 
+   std::stringstream ss;
    ss << std::bitset<BITS_IN_NINT>(v);
-   const p_str val = ss.str();
+   const std::string val = ss.str();
 
    for (p_size i = 0; i < val.size(); i++) {
-      if (val[i] != CHAR_0) {
+      const char ch = val[i];
+
+      if (ch != '0') {
          return negative
-            ? str(CHAR_MINUS, val.substr(i))
-            : val.substr(i);
+            ? str(CHAR_MINUS, utf8_to_utf32(val.substr(i)))
+            : utf8_to_utf32(val.substr(i));
       }
    }
 
-   return toStr(CHAR_0);
+   return charToString(CHAR_0);
 }
 
 p_str F_Hex::getValue()
@@ -867,17 +869,16 @@ p_str F_Hex::getValue()
    }
 
    p_nint v = n.toInt();
+   std::ostringstream oss;
 
    if (v < NINT_ZERO) {
       v *= NINT_MINUS_ONE;
-      p_stream oss;
       oss << std::hex << v;
-      return str(CHAR_MINUS, oss.str());
+      return str(CHAR_MINUS, utf8_to_utf32(oss.str()));
    }
    else {
-      p_stream oss;
       oss << std::hex << v;
-      return oss.str();
+      return utf8_to_utf32(oss.str());
    }
 }
 

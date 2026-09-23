@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/python3/python3-processes.hpp"
-#include "../../include/perun2/context/ctx-file.hpp"
-#include "../../include/perun2/command/com-execute.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/python3/com-python3.hpp"
+#include "python3-processes.h"
+#include "../context/ctx-file.h"
+#include "../command/com-execute.h"
+#include "../perun2.h"
+#include "com-python3.h"
 #include <iostream>
 #include <thread>
 #include <future>
@@ -47,9 +47,9 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& python, const 
    const p_str analyzerScript = perun2.postParseData.getPython3AnalyzerPath();
 
    if (! os_fileExists(analyzerScript)) {
-      throw SyntaxError(str(L"the function \"", funcName, 
-         L"\" could not be prepared to run, because the internal source file \"", PYTHON_ANALYZER_ROOT_FILE,
-         L"\" does not exist. To solve this problem, reinstall Perun2"), line);
+      throw SyntaxError(str(U"the function \"", funcName, 
+         U"\" could not be prepared to run, because the internal source file \"", PYTHON_ANALYZER_ROOT_FILE,
+         U"\" does not exist. To solve this problem, reinstall Perun2"), line);
    }
 
    const p_str command = analyzerPython3RunCmd(python, analyzerScript, filePath);
@@ -59,17 +59,17 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& python, const 
 
    switch (executionResult) {
       case ExecutionResult::ER_Bad: {
-         throw SyntaxError(str(L"the function \"", funcName, 
-            L"\" could not be prepared to run. The file \"", filePath,
-            L"\" contains a syntax error"), line);
+         throw SyntaxError(str(U"the function \"", funcName, 
+            U"\" could not be prepared to run. The file \"", filePath,
+            U"\" contains a syntax error"), line);
       }
       case ExecutionResult::ER_Bad_PipeNotCreated: {
-         throw SyntaxError(str(L"the function \"", funcName, 
-            L"\" could not be prepared to run. A new pipe could not be created for static analysis"), line);
+         throw SyntaxError(str(U"the function \"", funcName, 
+            U"\" could not be prepared to run. A new pipe could not be created for static analysis"), line);
       }
       case ExecutionResult::ER_Bad_ProcessNotStarted: {
-         throw SyntaxError(str(L"the function \"", funcName, 
-            L"\" could not be prepared to run. A new process could not be started for static analysis"), line);
+         throw SyntaxError(str(U"the function \"", funcName, 
+            U"\" could not be prepared to run. A new process could not be started for static analysis"), line);
       }
    }
 }
@@ -77,49 +77,49 @@ void AskablePython3Script::python3StaticTypeAnalysis(const p_str& python, const 
 p_str AskablePython3Script::askerPython3RunCmd(const p_str& python, const p_str& path, 
    const p_str& filePath, const p_int memoryId) const
 {
-   return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\" \"", toStr(memoryId), L"\"");
+   return str(U"\"", python, U"\" -u \"", path, U"\" \"", filePath, U"\" \"", intToString(memoryId), U"\"");
 }
 
 
 p_str AskablePython3Script::analyzerPython3RunCmd(const p_str& python, const p_str& path, const p_str& filePath) const
 {
-   return str(L"\"", python, L"\" -u \"", path, L"\" \"", filePath, L"\"");
+   return str(U"\"", python, U"\" -u \"", path, U"\" \"", filePath, U"\"");
 }
 
 void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName, 
    const p_str& filePath, const p_int line)
 {
    if (filePath.empty()) {
-      throw SyntaxError(str(L"the argument of the function \"", funcName, 
-         L"\" is empty"), line);
+      throw SyntaxError(str(U"the argument of the function \"", funcName, 
+         U"\" is empty"), line);
    }
 
    if (! os_isAbsolute(filePath)) {
-      throw SyntaxError(str(L"the argument of the function \"", funcName, 
-         L"\" is not an absolute path"), line);
+      throw SyntaxError(str(U"the argument of the function \"", funcName, 
+         U"\" is not an absolute path"), line);
    }
 
    if (! os_fileExists(filePath)) {
-      throw SyntaxError(str(L"the argument of the function \"", funcName, 
-         L"\" does not point to an existing file"), line);
+      throw SyntaxError(str(U"the argument of the function \"", funcName, 
+         U"\" does not point to an existing file"), line);
    }
 
    p_str python;
    const Python3State p3 = this->perun2.postParseData.getPython3State(python);
 
    if (p3 == Python3State::P3_NotInstalled) {
-      throw SyntaxError(str(L"the function \"", funcName,
-         L"\" could not be prepared to run. Python3 is not installed on this machine"), line);
+      throw SyntaxError(str(U"the function \"", funcName,
+         U"\" could not be prepared to run. Python3 is not installed on this machine"), line);
    }
 
    if (p3 == Python3State::P3_DifferentVersionThan3) {
-      throw SyntaxError(str(L"the function \"", funcName,
-         L"\" could not be prepared to run. The version of Python on this machine is different from 3"), line);
+      throw SyntaxError(str(U"the function \"", funcName,
+         U"\" could not be prepared to run. The version of Python on this machine is different from 3"), line);
    }
 
    if (! os_fileExists(filePath)) {
-      throw SyntaxError(str(L"the function \"", funcName,
-         L"\" could not be prepared to run. The file \"", filePath, L"\" does not exist"), line);
+      throw SyntaxError(str(U"the function \"", funcName,
+         U"\" could not be prepared to run. The file \"", filePath, U"\" does not exist"), line);
    }
 
    python3StaticTypeAnalysis(python, funcName, filePath, line);
@@ -142,23 +142,23 @@ void AskablePython3Script::start(const p_str& askerScript, const p_str& funcName
    const Python3AskerResult result = future.get();
 
    if (! this->sharedMemory.start()) {
-      throw SyntaxError(str(L"the function \"", funcName,
-         L"\" could not be prepared to run. Failed to run Python3 \"", filePath, 
-         L"\". A connection to shared memory could not be opened"), line);
+      throw SyntaxError(str(U"the function \"", funcName,
+         U"\" could not be prepared to run. Failed to run Python3 \"", filePath, 
+         U"\". A connection to shared memory could not be opened"), line);
    }
 
    switch (result) {
       case Python3AskerResult::PAR_Bad: {
-         throw SyntaxError(str(L"the function \"", funcName,
-            L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\""), line);
+         throw SyntaxError(str(U"the function \"", funcName,
+            U"\" could not be prepared to run. Failed to run Python3 \"", filePath, U"\""), line);
       }
       case Python3AskerResult::PAR_Bad_PipeNotCreated: {
-         throw SyntaxError(str(L"the function \"", funcName,
-            L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\". A new pipe could not be created"), line);
+         throw SyntaxError(str(U"the function \"", funcName,
+            U"\" could not be prepared to run. Failed to run Python3 \"", filePath, U"\". A new pipe could not be created"), line);
       }
       case Python3AskerResult::PAR_Bad_ProcessNotStarted: {
-         throw SyntaxError(str(L"the function \"", funcName,
-            L"\" could not be prepared to run. Failed to run Python3 \"", filePath, L"\". A new process could not be started"), line);
+         throw SyntaxError(str(U"the function \"", funcName,
+            U"\" could not be prepared to run. Failed to run Python3 \"", filePath, U"\". A new process could not be started"), line);
       }
    }
 }
@@ -187,7 +187,7 @@ void AskablePython3Script::startLoudly(std::promise<Python3AskerResult> midResul
    si.hStdError  = hWrite;
    si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
 
-   p_str alterableCommand = command;
+   std::wstring alterableCommand = utf32_to_utf16(command);
 
    const BOOL creation = CreateProcessW(
       NULL, 
@@ -243,8 +243,8 @@ void AskablePython3Script::startSilently(std::promise<Python3AskerResult> midRes
    PROCESS_INFORMATION& pi = sideProcess.info;
    ZeroMemory(&pi, sizeof(pi));
 
-   std::unique_ptr<p_char[]> cmd = std::make_unique<p_char[]>(command.size() + 1);
-   wcscpy(cmd.get(), command.c_str());
+   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command.size() + 1);
+   wcscpy(cmd.get(), utf32_to_utf16(command).c_str());
    cmd[command.size()] = CHAR_NULL;
 
    const BOOL creation = CreateProcessW(
@@ -305,14 +305,14 @@ AskablePython3Script& Python3Processes::addAskableScript(const FileContext& fctx
    const p_str askerScript = perun2.postParseData.getPython3AskerPath();
 
    if (! os_fileExists(askerScript)) {
-      throw SyntaxError(str(L"the function \"", funcName, 
-         L"\" could not be prepared to run, because the internal source file \"", PYTHON_ASKER_ROOT_FILE,
-         L"\" does not exist. To solve this problem, reinstall Perun2"), line);
+      throw SyntaxError(str(U"the function \"", funcName, 
+         U"\" could not be prepared to run, because the internal source file \"", PYTHON_ASKER_ROOT_FILE,
+         U"\" does not exist. To solve this problem, reinstall Perun2"), line);
    }
 
    comm::Python3Base python3ForAnalysis(filePath, perun2);
    
-   const p_str name = str(L"the function \"", funcName, L"\"");
+   const p_str name = str(U"the function \"", funcName, U"\"");
    python3ForAnalysis.staticallyAnalyze(line, name);
 
    std::unique_ptr<AskablePython3Script> script = std::make_unique<AskablePython3Script>(fctx, lctx, perun2);

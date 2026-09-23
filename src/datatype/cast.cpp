@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/datatype/cast.hpp"
-#include "../../include/perun2/perun2.hpp"
+#include "cast.h"
+#include "../perun2.h"
 
 
 namespace perun2::gen
@@ -31,12 +31,12 @@ p_nlist Cast_B_NL::getValue()
 
 p_str Cast_B_S::getValue()
 {
-   return this->base->getValue() ? toStr(CHAR_1) : toStr(CHAR_0);
+   return this->base->getValue() ? charToString(CHAR_1) : charToString(CHAR_0);
 };
 
 p_list Cast_B_L::getValue()
 {
-   return p_list { this->base->getValue() ? toStr(CHAR_1) : toStr(CHAR_0) };
+   return p_list { this->base->getValue() ? charToString(CHAR_1) : charToString(CHAR_0) };
 };
 
 p_nlist Cast_N_NL::getValue(){

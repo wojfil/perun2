@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/datatype/incr-constr.hpp"
+#include "incr-constr.h"
 
 
 namespace perun2

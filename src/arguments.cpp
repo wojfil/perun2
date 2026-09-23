@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/arguments.hpp"
-#include "../include/perun2/cmd.hpp"
-#include "../include/perun2/metadata.hpp"
-#include "../include/perun2/os/os.hpp"
+#include "arguments.h"
+#include "cmd.h"
+#include "metadata.h"
+#include "os/os.h"
 
 
 namespace perun2
@@ -27,7 +27,7 @@ Arguments::Arguments(const p_str& loc, const p_str& cod)
 Arguments::Arguments(const p_str& loc, const p_str& cod, const p_flags fls)
    : location(loc), code(cod), flags(fls), parseState(ArgsParseState::aps_Ok) { };
 
-Arguments::Arguments(const p_int argc, p_char* const argv[])
+Arguments::Arguments(const p_list& args)
 {
    enum NextArg {
       Null,
@@ -44,13 +44,13 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
    p_bool d_has = false;
    p_str d_value;
 
-   if (argc == 1) {
+   if (args.size() == 1) {
       cmd::error::noArguments();
       return;
    }
 
-   for (p_int i = 1; i < argc; i++) {
-      const p_str arg = p_str(argv[i]);
+   for (p_int i = 1; i < args.size(); i++) {
+      const p_str& arg = args[i];
       const p_size len = arg.size();
 
       if (options && nextArg == NextArg::Location) {
@@ -149,7 +149,7 @@ Arguments::Arguments(const p_int argc, p_char* const argv[])
                      break;
                   }
                   default: {
-                     cmd::error::unknownOption(toStr(arg[j]));
+                     cmd::error::unknownOption(args[j]);
                      return;
                   }
                }

@@ -15,7 +15,13 @@
 #include <cwctype>
 #include <clocale>
 #include <locale>
-#include "../../../include/perun2/datatype/text/chars.hpp"
+#include <charconv>
+#include <unicode/locid.h>
+#include <unicode/unistr.h>
+#include <unicode/ustream.h>
+#include <unicode/uchar.h>
+#include "chars.h"
+#include "../../unicode/convert.h"
 
 
 namespace perun2
@@ -23,31 +29,39 @@ namespace perun2
 
 void char_toLower(p_char& ch)
 {
-   ch = std::tolower(ch, std::locale(""));
+   p_str string;
+   string += ch;
+
+   const p_str lowerString = toLowercase(string);
+   ch = lowerString[0];
 }
 
 
 void char_toUpper(p_char& ch)
 {
-   ch = std::toupper(ch, std::locale(""));
+   p_str string;
+   string += ch;
+
+   const p_str upperString = toUppercase(string);
+   ch = upperString[0];
 }
 
 
 p_bool char_isAlpha(const p_char ch)
 {
-   return std::iswalpha(ch);
+   return u_isalpha(ch);
 }
 
 
 p_bool char_isSpace(const p_char ch)
 {
-   return std::iswspace(ch);
+   return u_isUWhiteSpace(ch);
 }
 
 
 p_bool char_isDigit(const p_char ch)
 {
-   return std::iswdigit(ch);
+   return ch >= U'0' && ch <= U'9';
 }
 
 
@@ -65,8 +79,8 @@ p_bool char_isLower(const p_char ch)
 
 p_bool charsEqualInsensitive(p_char ch1, p_char ch2)
 {
-   ch1 = std::tolower(ch1, std::locale(""));
-   ch2 = std::tolower(ch2, std::locale(""));
+   char_toLower(ch1);
+   char_toLower(ch2);
    return ch1 == ch2;
 }
 

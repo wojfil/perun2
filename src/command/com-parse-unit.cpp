@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-parse-unit.hpp"
-#include "../../include/perun2/datatype/number.hpp"
-#include "../../include/perun2/exception.hpp"
-#include "../../include/perun2/command/com-condition.hpp"
+#include "com-parse-unit.h"
+#include "../datatype/number.h"
+#include "../exception.h"
+#include "com-condition.h"
 
 
 namespace perun2::comm
@@ -177,13 +177,13 @@ p_bool ConditionContext::isExpandable() const
 void ConditionContext::addElse(p_comptr& com, const p_int line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxError(L"the structure \"else\" is not preceded by a structure \"if\"", line);
+      throw SyntaxError(U"the structure \"else\" is not preceded by a structure \"if\"", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxError(L"the structure \"if\" already contains an assigned structure \"else\"", line);
+      throw SyntaxError(U"the structure \"if\" already contains an assigned structure \"else\"", line);
    }
 
    cu.setElse(com);
@@ -193,13 +193,13 @@ void ConditionContext::addElse(p_comptr& com, const p_int line)
 void ConditionContext::addEmptyElse(const p_int line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxError(L"the structure \"else\" is not preceded by a structure \"if\"", line);
+      throw SyntaxError(U"the structure \"else\" is not preceded by a structure \"if\"", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxError(L"the structure \"if\" already contains an assigned structure \"else\"", line);
+      throw SyntaxError(U"the structure \"if\" already contains an assigned structure \"else\"", line);
    }
 
    cu.closeElse();
@@ -208,13 +208,13 @@ void ConditionContext::addEmptyElse(const p_int line)
 void ConditionContext::addElseIf(p_genptr<p_bool>& cond, p_comptr& com, const p_int line)
 {
    if (!this->isExpandable()) {
-      throw SyntaxError(L"the structure \"else if\" is not preceded by a structure \"if\"", line);
+      throw SyntaxError(U"the structure \"else if\" is not preceded by a structure \"if\"", line);
    }
 
    ConditionUnit& cu = this->units.back();
 
    if (cu.isElseClosed()) {
-      throw SyntaxError(L"the structure \"else if\" should have appeared before the structure \"else\"", line);
+      throw SyntaxError(U"the structure \"else if\" should have appeared before the structure \"else\"", line);
    }
 
    cu.addElseIf(com, cond);

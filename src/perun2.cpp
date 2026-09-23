@@ -14,16 +14,16 @@
 
 #include <vector>
 #include <cstdlib>
-#include "../include/perun2/perun2.hpp"
-#include "../include/perun2/exception.hpp"
-#include "../include/perun2/command/com-parse.hpp"
-#include "../include/perun2/tokens.hpp"
-#include "../include/perun2/util.hpp"
-#include "../include/perun2/brackets.hpp"
-#include "../include/perun2/lexer.hpp"
-#include "../include/perun2/os/os.hpp"
-#include "../include/perun2/logger.hpp"
-#include "../include/perun2/datatype/math.hpp"
+#include "perun2.h"
+#include "exception.h"
+#include "command/com-parse.h"
+#include "tokens.h"
+#include "util.h"
+#include "brackets.h"
+#include "lexer.h"
+#include "os/os.h"
+#include "logger.h"
+#include "datatype/math.h"
 
 
 namespace perun2
@@ -194,8 +194,8 @@ void Perun2Process::tryDeinit()
 }
 
 
-Perun2::Perun2(const p_int argc, p_char* const argv[])
-   : arguments(argc, argv), process(this->arguments) { };
+Perun2::Perun2(const p_list& args)
+   : arguments(args), process(this->arguments) { };
 
 Perun2::Perun2(const p_str& location, const p_str& code)
    : arguments(location, code), process(this->arguments) { };

@@ -12,9 +12,9 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/function/func-bool.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/python3/python3-processes.hpp"
+#include "func-bool.h"
+#include "../../os/os.h"
+#include "../../python3/python3-processes.h"
 
 namespace perun2::func
 {
@@ -137,7 +137,7 @@ p_bool isNumber(const p_str& value)
       const p_char ch = value[i];
       
       if (ch == CHAR_DOT) {
-         if (hasDot || i == 0 || i == (len - 1) || (i == 1 && value[0] == CHAR_MINUS)) {
+         if (hasDot) {
             return false;
          }
          else {

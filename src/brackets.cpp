@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/brackets.hpp"
-#include "../include/perun2/exception.hpp"
+#include "brackets.h"
+#include "exception.h"
 
 
 namespace perun2
@@ -22,7 +22,7 @@ namespace perun2
 void BracketsInfo::refresh(const Token& tk)
 {
    if (tk.type == Token::t_Symbol) {
-      switch (tk.value.singleChar) {
+      switch (tk.value.ch) {
          case CHAR_OPENING_ROUND_BRACKET:  {
             round++;
             break;
@@ -62,7 +62,7 @@ void checkBracketsThoroughly(const Tokens& tks)
       const Token& t = tks.listAt(i);
       if (t.type != Token::t_Symbol) { continue; }
 
-      switch (t.value.singleChar)  {
+      switch (t.value.ch)  {
          case CHAR_OPENING_ROUND_BRACKET: {
             roundLvl++;
             roundId = t.line;

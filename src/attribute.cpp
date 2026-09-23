@@ -12,23 +12,23 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/attribute.hpp"
-#include "../include/perun2/perun2.hpp"
-#include "../include/perun2/os/os.hpp"
+#include "attribute.h"
+#include "perun2.h"
+#include "os/os.h"
 
 
 namespace perun2
 {
 
-Attribute::Attribute() 
-   : value(ATTR_NULL) { };
+Attribute::Attribute(Perun2Process& p2)
+   : perun2(p2) { };
 
-Attribute::Attribute(const p_aunit val) 
-   : value(val) { };
+Attribute::Attribute(const p_aunit val, Perun2Process& p2)
+   : value(val), perun2(p2) { };
 
 void Attribute::add(const Token& tk)
 {
-   if (!tk.isVariable(STRINGS_ATTR)) {
+   if (!tk.isVariable(STRINGS_ATTR, this->perun2)) {
       return;
    }
 
@@ -36,82 +36,82 @@ void Attribute::add(const Token& tk)
       this->set(ATTR_PATH);
    }
 
-   if (tk.isVariable(STRING_DRIVE)) {
+   if (tk.isVariable(STRING_DRIVE, this->perun2)) {
       this->set(ATTR_DRIVE);
       return;
    }
 
-   if (tk.isVariable(STRING_DEPTH)) {
+   if (tk.isVariable(STRING_DEPTH, this->perun2)) {
       this->set(ATTR_DEPTH);
       return;
    }
 
-   if (tk.isVariable(STRING_FULLNAME)) {
+   if (tk.isVariable(STRING_FULLNAME, this->perun2)) {
       this->set(ATTR_FULLNAME);
       return;
    }
 
-   if (tk.isVariable(STRING_PATH)) {
+   if (tk.isVariable(STRING_PATH, this->perun2)) {
       return;
    }
 
    this->set(ATTR_EXISTS);
    
-   if (tk.isVariable(STRING_ACCESS)) {
+   if (tk.isVariable(STRING_ACCESS, this->perun2)) {
       this->set(ATTR_ACCESS);
    }
-   else if (tk.isVariable(STRING_ARCHIVE)) {
+   else if (tk.isVariable(STRING_ARCHIVE, this->perun2)) {
       this->set(ATTR_ARCHIVE);
    }
-   else if (tk.isVariable(STRING_COMPRESSED)) {
+   else if (tk.isVariable(STRING_COMPRESSED, this->perun2)) {
       this->set(ATTR_COMPRESSED);
    }
-   else if (tk.isVariable(STRING_CREATION)) {
+   else if (tk.isVariable(STRING_CREATION, this->perun2)) {
       this->set(ATTR_CREATION);
    }
-   else if (tk.isVariable(STRING_CHANGE)) {
+   else if (tk.isVariable(STRING_CHANGE, this->perun2)) {
       this->set(ATTR_CHANGE);
    }
-   else if (tk.isVariable(STRING_DRIVE)) {
+   else if (tk.isVariable(STRING_DRIVE, this->perun2)) {
       this->set(ATTR_DRIVE);
    }
-   else if (tk.isVariable(STRING_EMPTY)) {
+   else if (tk.isVariable(STRING_EMPTY, this->perun2)) {
       this->set(ATTR_EMPTY);
    }
-   else if (tk.isVariable(STRING_ENCRYPTED)) {
+   else if (tk.isVariable(STRING_ENCRYPTED, this->perun2)) {
       this->set(ATTR_ENCRYPTED);
    }
-   else if (tk.isVariable(STRING_EXTENSION)) {
+   else if (tk.isVariable(STRING_EXTENSION, this->perun2)) {
       this->set(ATTR_EXTENSION);
    }
-   else if (tk.isVariable(STRING_HIDDEN)) {
+   else if (tk.isVariable(STRING_HIDDEN, this->perun2)) {
       this->set(ATTR_HIDDEN);
    }
-   else if (tk.isVariable(STRING_LIFETIME)) {
+   else if (tk.isVariable(STRING_LIFETIME, this->perun2)) {
       this->set(ATTR_CREATION);
       this->set(ATTR_MODIFICATION);
       this->set(ATTR_LIFETIME);
    }
-   else if (tk.isVariable(STRING_MODIFICATION)) {
+   else if (tk.isVariable(STRING_MODIFICATION, this->perun2)) {
       this->set(ATTR_MODIFICATION);
    }
-   else if (tk.isVariable(STRING_NAME)) {
+   else if (tk.isVariable(STRING_NAME, this->perun2)) {
       this->set(ATTR_NAME);
    }
-   else if (tk.isVariable(STRING_PARENT)) {
+   else if (tk.isVariable(STRING_PARENT, this->perun2)) {
       this->set(ATTR_PARENT);
    }
-   else if (tk.isVariable(STRING_READONLY)) {
+   else if (tk.isVariable(STRING_READONLY, this->perun2)) {
       this->set(ATTR_READONLY);
    }
-   else if (tk.isVariable(STRING_SIZE)) {
+   else if (tk.isVariable(STRING_SIZE, this->perun2)) {
       this->set(ATTR_SIZE);
    }
-   else if (tk.isVariable(STRING_ISIMAGE)
-         || tk.isVariable(STRING_ISVIDEO)
-         || tk.isVariable(STRING_DURATION)
-         || tk.isVariable(STRING_WIDTH)
-         || tk.isVariable(STRING_HEIGHT))
+   else if (tk.isVariable(STRING_ISIMAGE, this->perun2)
+         || tk.isVariable(STRING_ISVIDEO, this->perun2)
+         || tk.isVariable(STRING_DURATION, this->perun2)
+         || tk.isVariable(STRING_WIDTH, this->perun2)
+         || tk.isVariable(STRING_HEIGHT, this->perun2))
    {
       this->setCoreCommandBase();
       this->set(ATTR_IMAGE_OR_VIDEO);

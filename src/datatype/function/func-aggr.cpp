@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/function/func-aggr.hpp"
-#include "../../../include/perun2/util.hpp"
+#include "func-aggr.h"
+#include "../../util.h"
 #include <algorithm>
 
 

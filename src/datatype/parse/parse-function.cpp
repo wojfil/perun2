@@ -12,22 +12,22 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/exception.hpp"
-#include "../../../include/perun2/brackets.hpp"
-#include "../../../include/perun2/datatype/function/func-bool.hpp"
-#include "../../../include/perun2/datatype/function/func-number.hpp"
-#include "../../../include/perun2/datatype/function/func-string.hpp"
-#include "../../../include/perun2/datatype/function/func-time.hpp"
-#include "../../../include/perun2/datatype/function/func-list.hpp"
-#include "../../../include/perun2/datatype/function/func-aggr.hpp"
-#include "../../../include/perun2/datatype/function/func-attr.hpp"
-#include "../../../include/perun2/datatype/parse-gen.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
-#include "../../../include/perun2/datatype/generator/gen-number.hpp"
-#include "../../../include/perun2/datatype/generator/gen-string.hpp"
-#include "../../../include/perun2/datatype/generator/gen-definition.hpp"
-#include "../../../include/perun2/datatype/math.hpp"
+#include "parse-function.h"
+#include "../../exception.h"
+#include "../../brackets.h"
+#include "../function/func-bool.h"
+#include "../function/func-number.h"
+#include "../function/func-string.h"
+#include "../function/func-time.h"
+#include "../function/func-list.h"
+#include "../function/func-aggr.h"
+#include "../function/func-attr.h"
+#include "../parse-gen.h"
+#include "../generator/gen-generic.h"
+#include "../generator/gen-number.h"
+#include "../generator/gen-string.h"
+#include "../generator/gen-definition.h"
+#include "../math.h"
 
 
 namespace perun2::func
@@ -47,7 +47,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRINGS_FUNC_BOO_STR))
+   if (word.isWord(STRINGS_FUNC_BOO_STR, p2))
    {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
@@ -55,7 +55,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
 
       return simpleBoolFunction(result, args[0], word, p2);
    }
-   else if (word.isWord(STRING_EXISTINSIDE)) {
+   else if (word.isWord(STRING_EXISTINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -79,7 +79,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       }
       return true;
    }
-   else if (word.isWord(STRING_ANYINSIDE)) {
+   else if (word.isWord(STRING_ANYINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -112,7 +112,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_AnyInside>(def, lctx, fctx);
       return true;
    }
-   else if (word.isWord(STRING_ANY)) {
+   else if (word.isWord(STRING_ANY, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -141,10 +141,10 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          return true;
       }
 
-      throw SyntaxError(str(L"the argument of the function \"", word.origin,
-         L"\" cannot be resolved to any collection"), word.line);
+      throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+         U"\" cannot be resolved to any collection"), word.line);
    }
-   else if (word.isWord(STRING_EXIST)) {
+   else if (word.isWord(STRING_EXIST, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -157,7 +157,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_Exist>(list, p2);
       return true;
    }
-   else if (word.isWord(STRING_EXISTS)) {
+   else if (word.isWord(STRING_EXISTS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -170,7 +170,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_Exists>(str_, p2);
       return true;
    }
-   else if (word.isWord(STRING_CONTAINS)) {
+   else if (word.isWord(STRING_CONTAINS, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -237,11 +237,11 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          }
       }
       else {
-         throw SyntaxError(str(L"first argument of the function \"", word.origin,
-            L"\" cannot be resolved to a string nor any collection"), word.line);
+         throw SyntaxError(str(U"first argument of the function \"", word.getOriginString(p2),
+            U"\" cannot be resolved to a string nor any collection"), word.line);
       }
    }
-   else if (word.isWord(STRING_EXISTSINSIDE)) {
+   else if (word.isWord(STRING_EXISTSINSIDE, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -265,7 +265,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       }
       return true;
    }
-   else if (word.isWord(STRING_STARTSWITH)) {
+   else if (word.isWord(STRING_STARTSWITH, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -279,7 +279,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               const p_str os = f.origin;
+               const p_str os = f.getOriginString(p2);
 
                switch (os.size()) {
                   case 0: {
@@ -300,7 +300,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
                return true;
             }
             case Token::t_Number: {
-               const p_str conv = f.value.number.value.toString();
+               const p_str conv = f.value.num.n.toString();
                switch (conv.size()) {
                   case 1: {
                      const p_char ch = conv[0];
@@ -327,7 +327,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          functionArgException(2, STRING_STRING, word, p2);
       }
    }
-   else if (word.isWord(STRING_ENDSWITH)) {
+   else if (word.isWord(STRING_ENDSWITH, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -341,7 +341,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          const Token& f = args[1].first();
          switch (f.type) {
             case Token::t_Quotation: {
-               const p_str os = f.origin;
+               const p_str os = f.getOriginString(p2);
 
                switch (os.size()) {
                   case 0: {
@@ -362,7 +362,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
                return true;
             }
             case Token::t_Number: {
-               const p_str conv = f.value.number.value.toString();
+               const p_str conv = f.value.num.n.toString();
                switch (conv.size()) {
                   case 1: {
                      const p_char ch = conv[0];
@@ -388,7 +388,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_EndsWith>(str, str2);
       return true;
    }
-   else if (word.isWord(STRING_FINDTEXT)) {
+   else if (word.isWord(STRING_FINDTEXT, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -406,7 +406,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_FindText>(str_, ctx);
       return true;
    }
-   else if (word.isWord(STRING_ISNAN)) {
+   else if (word.isWord(STRING_ISNAN, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -419,7 +419,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_IsNan>(num);
       return true;
    }
-   else if (word.isWord(STRING_ISNEVER)) {
+   else if (word.isWord(STRING_ISNEVER, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -432,11 +432,11 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       result = std::make_unique<F_IsNever>(tim);
       return true;
    }
-   else if (word.isWord(STRING_ASKPYTHON)) {
-      throw SyntaxError(str(L"the function \"", word.origin,
-         L"\" does not exist. You probably meant askPython3"), word.line);
+   else if (word.isWord(STRING_ASKPYTHON, p2)) {
+      throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+         U"\" does not exist. You probably meant askPython3"), word.line);
    }
-   else if (word.isWord(STRING_ASKPYTHON3)) {
+   else if (word.isWord(STRING_ASKPYTHON3, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -452,7 +452,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      const p_str funcName = word.origin;
+      const p_str funcName = word.getOriginString(p2);
       const p_str value = getPythonScriptName(string, word.line, funcName);
       comm::AskablePython3Script& askable = p2.python3Processes.addAskableScript(*fctx, *lctx, funcName, value, word.line);
       result = std::make_unique<F_AskPython3>(askable, p2);
@@ -469,19 +469,19 @@ p_bool simpleBoolFunction(p_genptr<p_bool>& result, const Tokens& tks, const Tok
       functionArgException(1, STRING_STRING, word, p2);
    }
 
-   if (word.isWord(STRING_ISLOWER))
+   if (word.isWord(STRING_ISLOWER, p2))
       result = std::make_unique<F_IsLower>(arg1);
-   else if (word.isWord(STRING_ISUPPER))
+   else if (word.isWord(STRING_ISUPPER, p2))
       result = std::make_unique<F_IsUpper>(arg1);
-   else if (word.isWord(STRING_ISNUMBER))
+   else if (word.isWord(STRING_ISNUMBER, p2))
       result = std::make_unique<F_IsNumber>(arg1);
-   else if (word.isWord(STRING_ISLETTER))
+   else if (word.isWord(STRING_ISLETTER, p2))
       result = std::make_unique<F_IsLetter>(arg1);
-   else if (word.isWord(STRING_ISDIGIT))
+   else if (word.isWord(STRING_ISDIGIT, p2))
       result = std::make_unique<F_IsDigit>(arg1);
-   else if (word.isWord(STRING_ISBINARY))
+   else if (word.isWord(STRING_ISBINARY, p2))
       result = std::make_unique<F_IsBinary>(arg1);
-   else if (word.isWord(STRING_ISHEX))
+   else if (word.isWord(STRING_ISHEX, p2))
       result = std::make_unique<F_IsHex>(arg1);
    else
       return false;
@@ -495,13 +495,13 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRINGS_FUNC_NUM_NUM)) {
+   if (word.isWord(STRINGS_FUNC_NUM_NUM, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       return simpleNumberFunction(result, args[0], word, p2);
    }
-   else if (word.isWord(STRING_LENGTH)) {
+   else if (word.isWord(STRING_LENGTH, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
@@ -511,19 +511,19 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of the function \"", word.origin,
-            L"\" cannot be resolved to a string. "
-            L"If you want to count elements in a collection, use the function \"count\" instead"), word.line);
+         throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+            U"\" cannot be resolved to a string. "
+            U"If you want to count elements in a collection, use the function \"count\" instead"), word.line);
       }
    }
-   else if (word.isWord(STRING_FROMBINARY) || word.isWord(STRING_FROMHEX)) {
+   else if (word.isWord(STRING_FROMBINARY, p2) || word.isWord(STRING_FROMHEX, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       p_genptr<p_str> arg1;
 
       if (parse::parse(p2, args[0], arg1)) {
-         if (word.isWord(STRING_FROMBINARY))
+         if (word.isWord(STRING_FROMBINARY, p2))
             result = std::make_unique<F_FromBinary>(arg1);
          else
             result = std::make_unique<F_FromHex>(arg1);
@@ -534,7 +534,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          functionArgException(1, STRING_STRING, word, p2);
       }
    }
-   else if (word.isWord(STRING_SIZE)) {
+   else if (word.isWord(STRING_SIZE, p2)) {
       if (len != 1) {
          if (len != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -554,11 +554,11 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of the function \"", word.origin,
-            L"\" cannot be resolved to a collection"), word.line);
+         throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+            U"\" cannot be resolved to a collection"), word.line);
       }
    }
-   else if (word.isWord(STRING_NUMBER)) {
+   else if (word.isWord(STRING_NUMBER, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
@@ -568,11 +568,11 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of the function \"", word.origin,
-            L"\" cannot be resolved to a string"), word.line);
+         throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+            U"\" cannot be resolved to a string"), word.line);
       }
    }
-   else if (word.isWord(STRING_COUNTINSIDE)) {
+   else if (word.isWord(STRING_COUNTINSIDE, p2)) {
       if (len != 1) {
          if (len != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -608,7 +608,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
       result = std::make_unique<F_CountInside>(def, lctx, fctx, p2);
       return true;
    }
-   else if (word.isWord(STRING_COUNT)) {
+   else if (word.isWord(STRING_COUNT, p2)) {
       if (len != 1) {
          if (len != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -640,10 +640,10 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"the argument of the function \"", word.origin,
-         L"\" cannot be resolved to any collection"), word.line);
+      throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+         U"\" cannot be resolved to any collection"), word.line);
    }
-   else if (word.isWord(STRING_POWER)) {
+   else if (word.isWord(STRING_POWER, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
@@ -660,7 +660,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
       result = std::make_unique<F_Power>(arg1, arg2);
       return true;
    }
-   else if (word.isWord(STRING_SHIFTMONTH)) {
+   else if (word.isWord(STRING_SHIFTMONTH, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
@@ -681,10 +681,10 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"first argument of the function \"", word.origin,
-         L"\" cannot be resolved to a time nor a number"), word.line);
+      throw SyntaxError(str(U"first argument of the function \"", word.getOriginString(p2),
+         U"\" cannot be resolved to a time nor a number"), word.line);
    }
-   else if (word.isWord(STRING_SHIFTWEEKDAY)) {
+   else if (word.isWord(STRING_SHIFTWEEKDAY, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
@@ -705,26 +705,26 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"first argument of the function \"", word.origin,
-         L"\" cannot be resolved to a time nor a number"), word.line);
+      throw SyntaxError(str(U"first argument of the function \"", word.getOriginString(p2),
+         U"\" cannot be resolved to a time nor a number"), word.line);
    }
-   else if (word.isWord(STRINGS_AGGRFUNC)) {
+   else if (word.isWord(STRINGS_AGGRFUNC, p2)) {
       if (len == 0) {
-         throw SyntaxError(str(L"the aggregate function \"", word.origin,
-            L"\" needs at least one argument"), word.line);
+         throw SyntaxError(str(U"the aggregate function \"", word.getOriginString(p2),
+            U"\" needs at least one argument"), word.line);
       }
 
       return aggrFunction(result, args, word, p2);
    }
-   else if (word.isWord(STRING_FIRST) || word.isWord(STRING_LAST)) {
+   else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
 
       p_genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         throw SyntaxError(str(L"the function \"", word.origin,
-            L"\" can only take a collection as an argument"), word.line);
+         throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+            U"\" can only take a collection as an argument"), word.line);
       }
 
       p_genptr<p_nlist> nlist;
@@ -734,7 +734,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
             functionArgNumberException(len, word, p2);
          }
 
-         if (word.isWord(STRING_FIRST)) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_First<p_num>>(nlist);
          }
          else {
@@ -744,7 +744,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
    }
-   else if (word.isWord(STRING_RANDOM)) {
+   else if (word.isWord(STRING_RANDOM, p2)) {
       if (len > 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -768,7 +768,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
    }
-   else if (word.isWord(STRING_RESEMBLANCE)) {
+   else if (word.isWord(STRING_RESEMBLANCE, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -803,19 +803,19 @@ static p_bool simpleNumberFunction(p_genptr<p_num>& result, const Tokens& tks, c
       functionArgException(1, STRING_NUMBER, word, p2);
    }
 
-   if (word.isWord(STRING_ABSOLUTE))
+   if (word.isWord(STRING_ABSOLUTE, p2))
       result = std::make_unique<F_Absolute>(arg);
-   else if (word.isWord(STRING_CEIL))
+   else if (word.isWord(STRING_CEIL, p2))
       result = std::make_unique<F_Ceil>(arg);
-   else if (word.isWord(STRING_FLOOR))
+   else if (word.isWord(STRING_FLOOR, p2))
       result = std::make_unique<F_Floor>(arg);
-   else if (word.isWord(STRING_ROUND))
+   else if (word.isWord(STRING_ROUND, p2))
       result = std::make_unique<F_Round>(arg);
-   else if (word.isWord(STRING_SIGN))
+   else if (word.isWord(STRING_SIGN, p2))
       result = std::make_unique<F_Sign>(arg);
-   else if (word.isWord(STRING_SQRT))
+   else if (word.isWord(STRING_SQRT, p2))
       result = std::make_unique<F_Sqrt>(arg);
-   else if (word.isWord(STRING_TRUNCATE))
+   else if (word.isWord(STRING_TRUNCATE, p2))
       result = std::make_unique<F_Truncate>(arg);
    else
       return false;
@@ -844,21 +844,21 @@ static p_bool aggrFunction(p_genptr<p_num>& result, const std::vector<Tokens>& a
          }
          else {
             throw SyntaxError(str(ordinalNumber(i + 1),
-               L" the argument of the aggregate function \"", word.origin,
-               L"\" cannot be resolved to a number nor a numeric list"), word.line);
+               U" the argument of the aggregate function \"", word.getOriginString(p2),
+               U"\" cannot be resolved to a number nor a numeric list"), word.line);
          }
       }
    }
 
-   if (word.isWord(STRING_AVERAGE))
+   if (word.isWord(STRING_AVERAGE, p2))
       result = std::make_unique<F_Average>(singles, multis);
-   else if (word.isWord(STRING_MAX))
+   else if (word.isWord(STRING_MAX, p2))
       result = std::make_unique<F_Max>(singles, multis);
-   else if (word.isWord(STRING_MEDIAN))
+   else if (word.isWord(STRING_MEDIAN, p2))
       result = std::make_unique<F_Median>(singles, multis);
-   else if (word.isWord(STRING_MIN))
+   else if (word.isWord(STRING_MIN, p2))
       result = std::make_unique<F_Min>(singles, multis);
-   else if (word.isWord(STRING_SUM))
+   else if (word.isWord(STRING_SUM, p2))
       result = std::make_unique<F_Sum>(singles, multis);
    else
       return false;
@@ -872,7 +872,7 @@ p_bool periodFunction(p_genptr<p_per>& result, const Tokens& tks, Perun2Process&
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRING_DURATION)) {
+   if (word.isWord(STRING_DURATION, p2)) {
       if (len != 1) {
          if (len != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -892,8 +892,8 @@ p_bool periodFunction(p_genptr<p_per>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of the function \"", word.origin,
-            L"\" cannot be resolved to a collection"), word.line);
+         throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+            U"\" cannot be resolved to a collection"), word.line);
       }
    }
 
@@ -906,23 +906,23 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRING_AFTER) || word.isWord(STRING_BEFORE)) {
+   if (word.isWord(STRING_AFTER, p2) || word.isWord(STRING_BEFORE, p2)) {
       if (len != 2)
          functionArgNumberException(len, word, p2);
 
       return stringTwoArgFunction(result, args, word, p2);
    }
-   else if (word.isWord(STRINGS_FUNC_STR_STR)) {
+   else if (word.isWord(STRINGS_FUNC_STR_STR, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       return simpleStringFunction(result, args[0], word, p2);
    }
-   else if (word.isWord(STRING_REVERSED)) {
-      const p_str sub = (word.origin).substr(0, 7);
-      throw SyntaxError(str(L"a proper name for this function is \"", sub, L"\""), word.line);
+   else if (word.isWord(STRING_REVERSED, p2)) {
+      const p_str sub = (word.getOriginString(p2)).substr(0, 7);
+      throw SyntaxError(str(U"a proper name for this function is \"", sub, U"\""), word.line);
    }
-   else if (word.isWord(STRINGS_FUNC_STR_STR_NUM)) {
+   else if (word.isWord(STRINGS_FUNC_STR_STR_NUM, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -937,18 +937,18 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          functionArgException(2, STRING_NUMBER, word, p2);
       }
 
-      if (word.isWord(STRING_REPEAT))
+      if (word.isWord(STRING_REPEAT, p2))
          result = std::make_unique<F_Repeat>(str, num);
-      else if (word.isWord(STRING_LEFT))
+      else if (word.isWord(STRING_LEFT, p2))
          result = std::make_unique<F_Left>(str, num);
-      else if (word.isWord(STRING_RIGHT))
+      else if (word.isWord(STRING_RIGHT, p2))
          result = std::make_unique<F_Right>(str, num);
-      else if (word.isWord(STRING_FILL))
+      else if (word.isWord(STRING_FILL, p2))
          result = std::make_unique<F_Fill>(str, num);
 
       return true;
    }
-   else if (word.isWord(STRING_REPLACE)) {
+   else if (word.isWord(STRING_REPLACE, p2)) {
       if (len != 3) {
          functionArgNumberException(len, word, p2);
       }
@@ -971,10 +971,10 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       result = std::make_unique<F_Replace>(str1, str2, str3);
       return true;
    }
-   else if (word.isWord(STRING_SUBSTRING)) {
+   else if (word.isWord(STRING_SUBSTRING, p2)) {
       if (len < 2 || len > 3) {
-         throw SyntaxError(str(L"the function \"", word.origin, L"\" can only take"
-            L" two or three arguments"), word.line);
+         throw SyntaxError(str(U"the function \"", word.getOriginString(p2), U"\" can only take"
+            U" two or three arguments"), word.line);
       }
 
       p_genptr<p_str> str;
@@ -1000,10 +1000,10 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       result = std::make_unique<F_Substring_3>(str, num, num2);
       return true;
    }
-   else if (word.isWord(STRING_CONCATENATE)) {
+   else if (word.isWord(STRING_CONCATENATE, p2)) {
       if (len < 1) {
-         throw SyntaxError(str(L"the function \"", word.origin,
-            L"\" needs at least one argument"), word.line);
+         throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+            U"\" needs at least one argument"), word.line);
       }
 
       std::vector<p_genptr<p_str>> values;
@@ -1023,23 +1023,23 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
             values.push_back(std::make_unique<F_ConcatenateUnit>(list));
          }
          else {
-            throw SyntaxError(str(ordinalNumber(i + 1), L" argument of the function \"",
-               word.origin, L"\" cannot be resolved to any data type"), word.line);
+            throw SyntaxError(str(ordinalNumber(i + 1), U" argument of the function \"",
+               word.getOriginString(p2), U"\" cannot be resolved to any data type"), word.line);
          }
       }
 
       result = std::make_unique<F_Concatenate>(values);
       return true;
    }
-   else if (word.isWord(STRING_FIRST) || word.isWord(STRING_LAST)) {
+   else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
 
       p_genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         throw SyntaxError(str(L"the function \"", word.origin,
-            L"\" can only take a collection as an argument"), word.line);
+         throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+            U"\" can only take a collection as an argument"), word.line);
       }
 
       p_defptr def;
@@ -1049,7 +1049,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
             functionArgNumberException(len, word, p2);
          }
 
-         if (word.isWord(STRING_FIRST)) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_FirstDef>(def);
          }
          else {
@@ -1065,7 +1065,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
             functionArgNumberException(len, word, p2);
          }
 
-         if (word.isWord(STRING_FIRST)) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_First<p_str>>(list);
          }
          else {
@@ -1074,11 +1074,11 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"the argument of the function \"", word.origin,
-            L"\" cannot be resolved to any collection"), word.line);
+         throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+            U"\" cannot be resolved to any collection"), word.line);
       }
    }
-   else if (word.isWord(STRING_PATH)) {
+   else if (word.isWord(STRING_PATH, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -1141,7 +1141,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
    }
-   else if (word.isWord(STRING_STRING)) {
+   else if (word.isWord(STRING_STRING, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1170,10 +1170,10 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(L"the argument of the function \"", word.origin,
-        L"\" cannot be resolved to any singular data type. If you want to concatenate a collection, use the function \"concatenate\" instead"), word.line);
+      throw SyntaxError(str(U"the argument of the function \"", word.getOriginString(p2),
+        U"\" cannot be resolved to any singular data type. If you want to concatenate a collection, use the function \"concatenate\" instead"), word.line);
    }
-   else if (word.isWord(STRINGS_FUNC_STR_NUM)) {
+   else if (word.isWord(STRINGS_FUNC_STR_NUM, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1181,11 +1181,11 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       p_genptr<p_num> num;
 
       if (parse::parse(p2, args[0], num)) {
-         if (word.isWord(STRING_ROMAN))
+         if (word.isWord(STRING_ROMAN, p2))
             result = std::make_unique<F_Roman>(num);
-         else if (word.isWord(STRING_BINARY))
+         else if (word.isWord(STRING_BINARY, p2))
             result = std::make_unique<F_Binary>(num);
-         else if (word.isWord(STRING_HEX))
+         else if (word.isWord(STRING_HEX, p2))
             result = std::make_unique<F_Hex>(num);
 
          return true;
@@ -1194,7 +1194,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          functionArgException(1, STRING_NUMBER, word, p2);
       }
    }
-   else if (word.isWord(STRING_MONTHNAME)) {
+   else if (word.isWord(STRING_MONTHNAME, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1214,7 +1214,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          functionArgException(1, STRING_NUMBER, word, p2);
       }
    }
-   else if (word.isWord(STRING_WEEKDAYNAME)) {
+   else if (word.isWord(STRING_WEEKDAYNAME, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1234,7 +1234,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          functionArgException(1, STRING_NUMBER, word, p2);
       }
    }
-   else if (word.isWord(STRING_RANDOM)) {
+   else if (word.isWord(STRING_RANDOM, p2)) {
       if (len == 0) {
          return false;
       }
@@ -1259,11 +1259,11 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          return true;
       }
       else {
-         throw SyntaxError(str(L"wrong arguments of the function \"", word.origin, L"\""),
+         throw SyntaxError(str(U"wrong arguments of the function \"", word.getOriginString(p2), U"\""),
             word.line);
       }
    }
-   else if (word.isWord(STRING_JOIN)) {
+   else if (word.isWord(STRING_JOIN, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
@@ -1274,8 +1274,8 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       }
 
       if (len == 1) {
-         throw SyntaxError(str(L"the function \"", word.origin,
-            L"\" cannot be called with one argument. If you want to join multiple strings without a separator, use the function \"concatenate\" instead"), word.line);
+         throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+            U"\" cannot be called with one argument. If you want to join multiple strings without a separator, use the function \"concatenate\" instead"), word.line);
       }
 
       checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -1308,9 +1308,9 @@ static p_bool stringTwoArgFunction(p_genptr<p_str>& result, const std::vector<To
       functionArgException(2, STRING_STRING, word, p2);
    }
 
-   if (word.isWord(STRING_AFTER))
+   if (word.isWord(STRING_AFTER, p2))
       result = std::make_unique<F_After>(arg1, arg2);
-   else if (word.isWord(STRING_BEFORE))
+   else if (word.isWord(STRING_BEFORE, p2))
       result = std::make_unique<F_Before>(arg1, arg2);
    else
       return false;
@@ -1325,31 +1325,31 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
       functionArgException(1, STRING_STRING, word, p2);
    }
 
-   if (word.isWord(STRING_DIGITS))
+   if (word.isWord(STRING_DIGITS, p2))
       result = std::make_unique<F_Digits>(arg1);
-   else if (word.isWord(STRING_LETTERS))
+   else if (word.isWord(STRING_LETTERS, p2))
       result = std::make_unique<F_Letters>(arg1);
-   else if (word.isWord(STRING_LOWER))
+   else if (word.isWord(STRING_LOWER, p2))
       result = std::make_unique<F_Lower>(arg1);
-   else if (word.isWord(STRING_TRIM))
+   else if (word.isWord(STRING_TRIM, p2))
       result = std::make_unique<F_Trim>(arg1);
-   else if (word.isWord(STRING_UPPER))
+   else if (word.isWord(STRING_UPPER, p2))
       result = std::make_unique<F_Upper>(arg1);
-   else if (word.isWord(STRING_REVERSE))
+   else if (word.isWord(STRING_REVERSE, p2))
       result = std::make_unique<F_Reverse>(arg1);
-   else if (word.isWord(STRING_AFTERDIGITS))
+   else if (word.isWord(STRING_AFTERDIGITS, p2))
       result = std::make_unique<F_AfterDigits>(arg1);
-   else if (word.isWord(STRING_AFTERLETTERS))
+   else if (word.isWord(STRING_AFTERLETTERS, p2))
       result = std::make_unique<F_AfterLetters>(arg1);
-   else if (word.isWord(STRING_BEFOREDIGITS))
+   else if (word.isWord(STRING_BEFOREDIGITS, p2))
       result = std::make_unique<F_BeforeDigits>(arg1);
-   else if (word.isWord(STRING_BEFORELETTERS))
+   else if (word.isWord(STRING_BEFORELETTERS, p2))
       result = std::make_unique<F_BeforeLetters>(arg1);
-   else if (word.isWord(STRING_CAPITALIZE))
+   else if (word.isWord(STRING_CAPITALIZE, p2))
       result = std::make_unique<F_Capitalize>(arg1);
-   else if (word.isWord(STRING_PARENT))
+   else if (word.isWord(STRING_PARENT, p2))
       result = std::make_unique<F_Parent>(arg1, p2);
-   else if (word.isWord(STRING_RAW))
+   else if (word.isWord(STRING_RAW, p2))
       result = std::make_unique<F_Raw>(arg1);
    else
       return false;
@@ -1363,14 +1363,14 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRINGS_FUNC_TIM_NUM)) {
+   if (word.isWord(STRINGS_FUNC_TIM_NUM, p2)) {
       if (len != 1)
          functionArgNumberException(len, word, p2);
 
       return simpleTimeFunction(result, args[0], word, p2);
    }
 
-   else if (word.isWord(STRING_DATE)) {
+   else if (word.isWord(STRING_DATE, p2)) {
       if (len != 3)
          functionArgNumberException(len, word, p2);
 
@@ -1392,7 +1392,7 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
       result = std::make_unique<F_Time_3>(arg1, arg2, arg3);
       return true;
    }
-   else if (word.isWord(STRING_TIME)) {
+   else if (word.isWord(STRING_TIME, p2)) {
       if (len < 2 || len == 4 || len > 6) {
          functionArgNumberException(len, word, p2);
       }
@@ -1445,7 +1445,7 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
       result = std::make_unique<F_Time_6>(arg1, arg2, arg3, arg4, arg5, arg6);
       return true;
    }
-   else if (word.isWord(STRING_CLOCK)) {
+   else if (word.isWord(STRING_CLOCK, p2)) {
       if (! (len == 2 || len == 3)) {
          functionArgNumberException(len, word, p2);
       }
@@ -1473,15 +1473,15 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
       result = std::make_unique<F_Clock_3>(arg1, arg2, arg3);
       return true;
    }
-   else if (word.isWord(STRING_FIRST) || word.isWord(STRING_LAST)) {
+   else if (word.isWord(STRING_FIRST, p2) || word.isWord(STRING_LAST, p2)) {
       if (len == 0) {
          functionArgNumberException(len, word, p2);
       }
 
       p_genptr<p_str> str_;
       if (parse::parse(p2, args[0], str_)) {
-         throw SyntaxError(str(L"the function \"", word.origin,
-            L"\" can only take a collection of values as an argument"), word.line);
+         throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+            U"\" can only take a collection of values as an argument"), word.line);
       }
 
       p_genptr<p_tlist> tlist;
@@ -1491,7 +1491,7 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
             functionArgNumberException(len, word, p2);
          }
 
-         if (word.isWord(STRING_FIRST)) {
+         if (word.isWord(STRING_FIRST, p2)) {
             result = std::make_unique<F_First<p_tim>>(tlist);
          }
          else {
@@ -1501,7 +1501,7 @@ p_bool timeFunction(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p
          return true;
       }
    }
-   else if (word.isWord(STRING_RANDOM)) {
+   else if (word.isWord(STRING_RANDOM, p2)) {
       if (len > 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1527,11 +1527,11 @@ static p_bool simpleTimeFunction(p_genptr<p_tim>& result, const Tokens& tks, con
       functionArgException(1, STRING_NUMBER, word, p2);
    }
 
-   if (word.isWord(STRING_CHRISTMAS))
+   if (word.isWord(STRING_CHRISTMAS, p2))
       result = std::make_unique<F_Christmas>(arg1);
-   else if (word.isWord(STRING_EASTER))
+   else if (word.isWord(STRING_EASTER, p2))
       result = std::make_unique<F_Easter>(arg1);
-   else if (word.isWord(STRING_NEWYEAR))
+   else if (word.isWord(STRING_NEWYEAR, p2))
       result = std::make_unique<F_NewYear>(arg1);
    else
       return false;
@@ -1542,43 +1542,43 @@ static p_bool simpleTimeFunction(p_genptr<p_tim>& result, const Tokens& tks, con
 
 void functionArgNumberException(const p_int argNumber, const Token& word, Perun2Process& p2)
 {
-   throw SyntaxError(str(L"the function \"", word.origin, L"\" cannot be called with ",
-      toStr(argNumber), L" argument", (argNumber == 1 ? p_str() : L"s")), word.line);
+   throw SyntaxError(str(U"the function \"", word.getOriginString(p2), U"\" cannot be called with ",
+      intToString(argNumber), U" argument", (argNumber == 1 ? p_str() : U"s")), word.line);
 }
 
 void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, Perun2Process& p2)
 {
-   throw SyntaxError(str(ordinalNumber(argNumber), L" argument of the function \"",
-      word.origin, L"\" cannot be resolved to a ", typeName), word.line);
+   throw SyntaxError(str(ordinalNumber(argNumber), U" argument of the function \"",
+      word.getOriginString(p2), U"\" cannot be resolved to a ", typeName), word.line);
 }
 
 p_str ordinalNumber(const p_int number)
 {
    switch (number) {
       case 1:
-         return L"first";
+         return U"first";
       case 2:
-         return L"second";
+         return U"second";
       case 3:
-         return L"third";
+         return U"third";
       case 4:
-         return L"fourth";
+         return U"fourth";
       case 5:
-         return L"fifth";
+         return U"fifth";
       default: {
          if (number >= 11 && number <= 19) {
-            return str(toStr(number), L"th");
+            return str(intToString(number), U"th");
          }
 
          switch (number % 10) {
             case 1:
-               return str(toStr(number), L"st");
+               return str(intToString(number), U"st");
             case 2:
-               return str(toStr(number), L"nd");
+               return str(intToString(number), U"nd");
             case 3:
-               return str(toStr(number), L"rd");
+               return str(intToString(number), U"rd");
             default:
-               return str(toStr(number), L"th");
+               return str(intToString(number), U"th");
          }
       }
    }
@@ -1590,7 +1590,7 @@ p_bool listFunction(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& 
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRING_CHARACTERS) || word.isWord(STRING_WORDS)) {
+   if (word.isWord(STRING_CHARACTERS, p2) || word.isWord(STRING_WORDS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1600,14 +1600,14 @@ p_bool listFunction(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& 
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      if (word.isWord(STRING_CHARACTERS))
+      if (word.isWord(STRING_CHARACTERS, p2))
          result = std::make_unique<F_Characters>(str);
       else
          result = std::make_unique<F_Words>(str);
 
       return true;
    }
-   if (word.isWord(STRING_SPLIT)) {
+   if (word.isWord(STRING_SPLIT, p2)) {
       if (len != 2) {
          functionArgNumberException(len, word, p2);
       }
@@ -1626,8 +1626,8 @@ p_bool listFunction(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& 
       return true;
    }
 
-   throw SyntaxError(str(L"a function with name \"", word.origin,
-      L"\" does not exist"), word.line);
+   throw SyntaxError(str(U"a function with name \"", word.getOriginString(p2),
+      U"\" does not exist"), word.line);
 }
 
 
@@ -1637,7 +1637,7 @@ p_bool numListFunction(p_genptr<p_nlist>& result, const Tokens& tks, Perun2Proce
    const std::vector<Tokens> args = toFunctionArgs(tks);
    const p_size len = args.size();
 
-   if (word.isWord(STRING_NUMBERS)) {
+   if (word.isWord(STRING_NUMBERS, p2)) {
       if (len != 1) {
          functionArgNumberException(len, word, p2);
       }
@@ -1658,8 +1658,8 @@ p_bool numListFunction(p_genptr<p_nlist>& result, const Tokens& tks, Perun2Proce
 void checkFunctionAttribute(const Token& word, Perun2Process& p2)
 {
    if (!p2.contexts.hasFileContext()) {
-      throw SyntaxError(str(L"the function \"", word.origin,
-         L"\" can be called only within a loop iterating over strings"), word.line);
+      throw SyntaxError(str(U"the function \"", word.getOriginString(p2),
+         U"\" can be called only within a loop iterating over strings"), word.line);
    }
 }
 
@@ -1696,9 +1696,9 @@ void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Perun2P
    }
 
    const Token& inToken = tks.listAt(index);
-   throw SyntaxError(str(L"the right side of the operator \"", inToken.origin,
-      L"\" used in the function \"", word.origin,
-      L"\" should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
+   throw SyntaxError(str(U"the right side of the operator \"", inToken.getOriginString(p2),
+      U"\" used in the function \"", word.getOriginString(p2),
+      U"\" should be embraced by brackets. Comma is a function argument separator and causes ambiguity here"),
       word.line);
 }
 
@@ -1706,23 +1706,23 @@ void checkInOperatorCommaAmbiguity(const Token& word, const Tokens& tks, Perun2P
 static p_str getPythonScriptName(p_genptr<p_str>& generator, const p_int line, const p_str& name) 
 {
    if (! generator->isConstant()) {
-      throw SyntaxError(str(L"the function \"", name, 
-         L"\" needs a constant value as an argument"), line);
+      throw SyntaxError(str(U"the function \"", name, 
+         U"\" needs a constant value as an argument"), line);
    }
 
    p_str value = generator->getValue();
    str_trim(value);
 
    if (value.empty()) {
-      throw SyntaxError(str(L"the argument of the function \"", name, L"\" is empty"), line);
+      throw SyntaxError(str(U"the argument of the function \"", name, U"\" is empty"), line);
    }
 
    if (! os_isAbsolute(value)) {
-      throw SyntaxError(str(L"the argument of the function \"", name, L"\" is not an absolute path"), line);
+      throw SyntaxError(str(U"the argument of the function \"", name, U"\" is not an absolute path"), line);
    }
 
    if (! os_fileExists(value)) {
-      throw SyntaxError(str(L"the argument of the function \"", name, L"\" does not point to an existing file"), line);
+      throw SyntaxError(str(U"the argument of the function \"", name, U"\" does not point to an existing file"), line);
    }
 
    return value;

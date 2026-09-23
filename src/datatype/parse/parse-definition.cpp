@@ -12,16 +12,16 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-definition.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/lexer.hpp"
-#include "../../../include/perun2/datatype/order.hpp"
-#include "../../../include/perun2/datatype/generator/gen-definition.hpp"
-#include "../../../include/perun2/datatype/cast.hpp"
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/datatype/parse-gen.hpp"
-#include "../../../include/perun2/datatype/parse/parse-order.hpp"
+#include "parse-definition.h"
+#include "parse-generic.h"
+#include "../../lexer.h"
+#include "../order.h"
+#include "../generator/gen-definition.h"
+#include "../cast.h"
+#include "../parse/parse-function.h"
+#include "parse-generic.h"
+#include "../parse-gen.h"
+#include "parse-order.h"
 
 
 namespace perun2::parse
@@ -259,7 +259,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
    for (p_size i = 0; i < flength; i++) {
       Tokens& ts = filterTokens[i];
       const Token tsf = ts.first();
-      const Keyword& kw = tsf.value.keyword;
+      const Keyword& kw = tsf.value.keyword.k;
       ts.popLeft();
 
       switch (kw) {
@@ -268,7 +268,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
 
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
             p_fcptr nextContext = std::make_unique<FileContext>(p2);
@@ -288,7 +288,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
 
             p_genptr<p_num> num;
             if (!parse(p2, ts, num)) {
-               throw SyntaxError::keywordNotFollowedByNumber(tsf.origin, tsf.line);
+               throw SyntaxError::keywordNotFollowedByNumber(tsf.getOriginString(p2), tsf.line);
             }
 
             p2.contexts.addFileContext(contextPtr);
@@ -314,7 +314,7 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
          case Keyword::kw_Where: {
             p_genptr<p_bool> boo;
             if (!parse(p2, ts, boo)) {
-               throw SyntaxError::keywordNotFollowedByBool(tsf.origin, tsf.line);
+               throw SyntaxError::keywordNotFollowedByBool(tsf.getOriginString(p2), tsf.line);
             }
 
             p_defptr prev = std::move(base);

@@ -12,9 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/programs/windows/registry.hpp"
-#include "../../../include/perun2/datatype/text/concat.hpp"
-#include "../../../include/perun2/datatype/text/strings.hpp"
+#include "registry.h"
+#include "../../datatype/text/concat.h"
+#include "../../datatype/text/strings.h"
+#include "../../unicode/convert.h"
 
 
 namespace perun2::prog
@@ -107,7 +108,7 @@ RegistryIterator::RegistryIterator(const RegistryRootType type)
 p_str RegistryIterator::getRegistryValue(const p_str& name) const
 {
    HKEY hKey;
-   LONG result = RegOpenKeyExW(this->getRootKey(), this->value.c_str(), 0, KEY_READ, &hKey);
+   LONG result = RegOpenKeyExW(this->getRootKey(), utf32_to_utf16(this->value).c_str(), 0, KEY_READ, &hKey);
 
    if (result != ERROR_SUCCESS) {
       RegCloseKey(hKey);
@@ -116,7 +117,7 @@ p_str RegistryIterator::getRegistryValue(const p_str& name) const
 
    p_char buffer[MAX_PATH];
    DWORD bufferSize = sizeof(buffer);
-   result = RegQueryValueExW(hKey, name.c_str(), nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
+   result = RegQueryValueExW(hKey, utf32_to_utf16(name).c_str(), nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
    RegCloseKey(hKey);
 
    if (result == ERROR_SUCCESS) {
@@ -189,7 +190,7 @@ p_bool MultiRegistryRoot::hasNext()
          return false;
       }
 
-      this->value = this->subkeyName;
+      this->value = utf16_to_utf32(std::wstring(this->subkeyName));
       this->subkeyNameSize = MAX_PATH;
       this->index++;
 
@@ -220,7 +221,9 @@ p_bool SingleRegistryRoot::hasNext()
       return false;
    }
 
-   this->result = RegOpenKeyExW(this->getRootKey(), this->root.empty() ? NULL : this->root.c_str(), 0, KEY_READ, &this->key);
+   this->result = RegOpenKeyExW(this->getRootKey(), 
+      this->root.empty() ? NULL : utf32_to_utf16(this->root).c_str(), 
+      0, KEY_READ, &this->key);
 
    if (this->result != ERROR_SUCCESS) {
       return false;
@@ -252,7 +255,8 @@ p_bool MultiRegistry::hasNext()
             return false;
          }
 
-         this->result = RegOpenKeyExW(this->getRootKey(), this->previous->getValue().c_str(), 0, KEY_READ, &this->key);
+         this->result = RegOpenKeyExW(this->getRootKey(), 
+            utf32_to_utf16(this->previous->getValue()).c_str(), 0, KEY_READ, &this->key);
 
          if (this->result == ERROR_SUCCESS) {
             this->exploreRoot = false;
@@ -265,14 +269,14 @@ p_bool MultiRegistry::hasNext()
       this->result = RegEnumKeyExW(this->key, this->index, this->subkeyName, &this->subkeyNameSize, NULL, NULL, NULL, NULL);
 
       if (this->result == ERROR_SUCCESS) {
-         this->value = this->subkeyName;
+         this->value = utf16_to_utf32(std::wstring(this->subkeyName));
          this->subkeyNameSize = MAX_PATH;
          this->index++;
 
          if (this->comparer.matches(this->value)) {
             const p_str v = this->previous->hasEmptyValue() 
-               ? this->subkeyName 
-               : str(this->previous->getValue(), CHAR_BACKSLASH, this->subkeyName);
+               ? utf16_to_utf32(std::wstring(this->subkeyName))
+               : str(this->previous->getValue(), CHAR_BACKSLASH, utf16_to_utf32(std::wstring(this->subkeyName)));
 
             this->value = v;
             return true;
@@ -304,7 +308,8 @@ p_bool SingleRegistry::hasNext()
          ? this->segment 
          : str(this->previous->getValue(), CHAR_BACKSLASH, this->segment);
 
-      this->result = RegOpenKeyExW(this->getRootKey(), v.c_str(), 0, KEY_READ, &this->key);
+      this->result = RegOpenKeyExW(this->getRootKey(), 
+         utf32_to_utf16(v).c_str(), 0, KEY_READ, &this->key);
 
       if (this->result == ERROR_SUCCESS) {
          this->value = v;

@@ -12,21 +12,21 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-bool.hpp"
-#include "../../../include/perun2/datatype/parse/parse-list.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/datatype/generator/gen-bool.hpp"
-#include "../../../include/perun2/datatype/generator/gen-bool-constr.hpp"
-#include "../../../include/perun2/brackets.hpp"
-#include "../../../include/perun2/lexer.hpp"
-#include "../../../include/perun2/datatype/text/like.hpp"
-#include "../../../include/perun2/datatype/text/resemblance.hpp"
-#include "../../../include/perun2/datatype/text/regexp.hpp"
-#include "../../../include/perun2/datatype/parse-gen.hpp"
-#include "../../../include/perun2/datatype/incr-constr.hpp"
-#include "../../../include/perun2/datatype/between.hpp"
+#include "parse-bool.h"
+#include "parse-list.h"
+#include "parse-generic.h"
+#include "parse-function.h"
+#include "../parse/parse-function.h"
+#include "../generator/gen-bool.h"
+#include "../generator/gen-bool-constr.h"
+#include "../../brackets.h"
+#include "../../lexer.h"
+#include "../text/like.h"
+#include "../text/resemblance.h"
+#include "../text/regexp.h"
+#include "../parse-gen.h"
+#include "../incr-constr.h"
+#include "../between.h"
 #include <stack>
 
 
@@ -160,7 +160,7 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       if (t.type == Token::t_Symbol) {
          bi.refresh(t);
 
-         switch (t.value.singleChar) {
+         switch (t.value.ch) {
             case CHAR_OPENING_ROUND_BRACKET:
             case CHAR_OPENING_SQUARE_BRACKET: {
                countBetweens.push(0);
@@ -219,7 +219,7 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       const p_int line = tks2.first().line;
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-         const p_bool boo = tks2.first().value.keyword == Keyword::kw_True;
+         const p_bool boo = tks2.first().value.keyword.k == Keyword::kw_True;
          infList.emplace_back(boo, line);
       }
       else {
@@ -240,7 +240,7 @@ static p_bool parseBoolExp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
       const Tokens tks2(tks, 1 + end - sublen, sublen);
 
       if (tks2.getLength() == 1 && tks2.first().isLogicConstant()) {
-         const p_bool boo = (tks2.first().value.keyword == Keyword::kw_True);
+         const p_bool boo = (tks2.first().value.keyword.k == Keyword::kw_True);
          infList.emplace_back(boo, tks2.first().line);
       }
       else {
@@ -520,7 +520,7 @@ static p_bool isBoolExpComputable(const std::vector<ExpElement<p_bool>>& infList
 
 p_bool isBoolExpOperator(const Token& tk)
 {
-   switch (tk.value.keyword) {
+   switch (tk.value.keyword.k) {
       case Keyword::kw_And:
       case Keyword::kw_Or:
       case Keyword::kw_Xor:
@@ -533,7 +533,7 @@ p_bool isBoolExpOperator(const Token& tk)
 
 static p_char toBoolExpOperator(const Token& tk)
 {
-   switch (tk.value.keyword) {
+   switch (tk.value.keyword.k) {
       case Keyword::kw_And:
          return CHAR_AMPERSAND;
       case Keyword::kw_Or:
@@ -600,15 +600,15 @@ static void leftInTimeException(const Token& tk, const p_str& varMember,
    const Token& first = pair.first.first();
 
    if (negated) {
-      const p_str v1 = str(first.origin, L" not in ", tk.origin);
-      const p_str v2 = str(first.origin,
-         CHAR_DOT, varMember, L" != ", tk.origin);
+      const p_str v1 = str(first.getOriginString(p2), U" not in ", tk.getOriginString(p2));
+      const p_str v2 = str(first.getOriginString(p2),
+         CHAR_DOT, varMember, U" != ", tk.getOriginString(p2));
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
    }
    else {
-      const p_str v1 = str(first.origin, L" in ", tk.origin);
-      const p_str v2 = str(first.origin,
-         CHAR_DOT, varMember, L" = ", tk.origin);
+      const p_str v1 = str(first.getOriginString(p2), U" in ", tk.getOriginString(p2));
+      const p_str v2 = str(first.getOriginString(p2),
+         CHAR_DOT, varMember, U" = ", tk.getOriginString(p2));
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, first.line);
    }
 }
@@ -619,14 +619,14 @@ static void rightInTimeException(const Token& tk, const p_str& varMember,
    const Token& first = pair.second.first();
 
    if (negated) {
-      const p_str v1 = str(tk.origin , L" not in ", first.origin);
-      const p_str v2 = str(tk.origin, L" != ", first.origin,
+      const p_str v1 = str(tk.getOriginString(p2) , U" not in ", first.getOriginString(p2));
+      const p_str v2 = str(tk.getOriginString(p2), U" != ", first.getOriginString(p2),
          CHAR_DOT, varMember);
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
    }
    else {
-      const p_str v1 = str(tk.origin, L" in ", first.origin);
-      const p_str v2 = str(tk.origin, L" = ", first.origin,
+      const p_str v1 = str(tk.getOriginString(p2), U" in ", first.getOriginString(p2));
+      const p_str v2 = str(tk.getOriginString(p2), U" = ", first.getOriginString(p2),
          CHAR_DOT, varMember);
       throw SyntaxError::insteadOfYouShouldWrite(v1, v2, tk.line);
    }
@@ -637,8 +637,8 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
    const Token& f1 = pair.first.first();
    const Token& f2 = pair.second.first();
 
-   const p_bool leftTimeVar = pair.first.getLength() == 1 && f1.isWord(STRINGS_TIME_VAR);
-   const p_bool rightTimeVar = pair.second.getLength() == 1 && f2.isWord(STRINGS_TIME_VAR);
+   const p_bool leftTimeVar = pair.first.getLength() == 1 && f1.isWord(STRINGS_TIME_VAR, p2);
+   const p_bool rightTimeVar = pair.second.getLength() == 1 && f2.isWord(STRINGS_TIME_VAR, p2);
 
    // check cases when left side is a time variable (creation, modification...)
    if (leftTimeVar)
@@ -656,7 +656,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
                else if (tf.isMonth()) {
                   leftInTimeException(tf, STRING_MONTH, pair, negated, p2);
                }
-               else if (tf.type == Token::t_Number && tf.value.number.value.state == NumberState::Int) {
+               else if (tf.type == Token::t_Number && tf.value.num.n.state == NumberState::Int) {
                   leftInTimeException(tf, STRING_YEAR, pair, negated, p2);
                }
             }
@@ -671,7 +671,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
          else if (rf.isMonth()) {
             leftInTimeException(rf, STRING_MONTH, pair, negated, p2);
          }
-         else if (rf.type == Token::t_Number && rf.value.number.value.state == NumberState::Int) {
+         else if (rf.type == Token::t_Number && rf.value.num.n.state == NumberState::Int) {
             leftInTimeException(rf, STRING_YEAR, pair, negated, p2);
          }
       }
@@ -693,7 +693,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
                else if (tf.isMonth()) {
                   rightInTimeException(tf, STRING_MONTH, pair, negated, p2);
                }
-               else if (tf.type == Token::t_Number && tf.value.number.value.state == NumberState::Int) {
+               else if (tf.type == Token::t_Number && tf.value.num.n.state == NumberState::Int) {
                   rightInTimeException(tf, STRING_YEAR, pair, negated, p2);
                }
             }
@@ -708,7 +708,7 @@ static void checkCommonExceptions_InTime(const std::pair<Tokens, Tokens>& pair, 
          else if (rf.isMonth()) {
             rightInTimeException(rf, STRING_MONTH, pair, negated, p2);
          }
-         else if (rf.type == Token::t_Number && rf.value.number.value.state == NumberState::Int) {
+         else if (rf.type == Token::t_Number && rf.value.num.n.state == NumberState::Int) {
             rightInTimeException(rf, STRING_YEAR, pair, negated, p2);
          }
       }
@@ -720,10 +720,10 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Resembles);
 
    if (pair.first.isEmpty()) {
-      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().origin, tks.first().line);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
    if (pair.second.isEmpty()) {
-      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().origin, tks.last().line);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
    if (pair.first.hasBinaryBoolKeyword()) {
       return false;
@@ -732,8 +732,8 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
    const p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       if (pair.first.getLength() == 1) {
-         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().origin, 
-            CHAR_SPACE, tks.second().origin), tks.first().line);
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
       pair.first.popRight();
@@ -786,10 +786,10 @@ static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pro
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Regexp);
 
    if (pair.first.isEmpty()) {
-      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().origin, tks.first().line);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
    if (pair.second.isEmpty()) {
-      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().origin, tks.last().line);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
    if (pair.first.hasBinaryBoolKeyword()) {
       return false;
@@ -798,8 +798,8 @@ static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pro
    const p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       if (pair.first.getLength() == 1) {
-         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().origin, 
-            CHAR_SPACE, tks.second().origin), tks.first().line);
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
       pair.first.popRight();
@@ -910,51 +910,51 @@ static void checkCommonExceptions_Between(const Tokens& value, const Tokens& lef
    const Token& t2 = left.first();
    const Token& t3 = right.first();
 
-   if (! t1.isWord(STRINGS_TIME_VAR)) {
+   if (! t1.isWord(STRINGS_TIME_VAR, p2)) {
       return;
    }
    
    if (t2.isWeekDay() || t2.isMonth()) {
-         throw SyntaxError(str(L"instead of \"", t1.origin, L" ", betweenKeyword.origin, L" ", 
-            t2.origin, L"\", you should write \"", 
-            t1.origin, L".", (t2.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
-            L" ", betweenKeyword.origin, L" ", t2.origin, L"\""), t1.line);   
+         throw SyntaxError(str(U"instead of \"", t1.getOriginString(p2), U" ", betweenKeyword.getOriginString(p2), U" ", 
+            t2.getOriginString(p2), U"\", you should write \"", 
+            t1.getOriginString(p2), U".", (t2.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+            U" ", betweenKeyword.getOriginString(p2), U" ", t2.getOriginString(p2), U"\""), t1.line);   
    }
 
    if (t3.isWeekDay() || t3.isMonth()) {
-         throw SyntaxError(str(L"instead of \"", t1.origin, L" ", betweenKeyword.origin, L" ", 
-            t3.origin, L"\", you should write \"", 
-            t1.origin, L".", (t3.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
-            L" ", betweenKeyword.origin, L" ", t3.origin, L"\""), t1.line);   
+         throw SyntaxError(str(U"instead of \"", t1.getOriginString(p2), U" ", betweenKeyword.getOriginString(p2), U" ", 
+            t3.getOriginString(p2), U"\", you should write \"", 
+            t1.getOriginString(p2), U".", (t3.isWeekDay() ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+            U" ", betweenKeyword.getOriginString(p2), U" ", t3.getOriginString(p2), U"\""), t1.line);   
    }
 
    if (t2.isIntegerLiteral()) {
-      const p_nint nm = t2.value.number.value.value.i;
+      const p_nint nm = t2.value.num.n.value.i;
 
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of \"", 
-            t1.origin, L" ", betweenKeyword.origin, L" ", toStr(nm),
-            L"\", you should write \"", 
-            t1.origin, L".year ", betweenKeyword.origin, L" ", toStr(nm), L"\""), t1.line);
+         throw SyntaxError(str(U"instead of \"", 
+            t1.getOriginString(p2), U" ", betweenKeyword.getOriginString(p2), U" ", intToString(nm),
+            U"\", you should write \"", 
+            t1.getOriginString(p2), U".year ", betweenKeyword.getOriginString(p2), U" ", intToString(nm), U"\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"the time variable \"", t1.origin,
-            L"\" cannot be compared to a number"), t1.line);
+         throw SyntaxError(str(U"the time variable \"", t1.getOriginString(p2),
+            U"\" cannot be compared to a number"), t1.line);
       }
    }
 
    if (t3.isIntegerLiteral()) {
-      const p_nint nm = t3.value.number.value.value.i;
+      const p_nint nm = t3.value.num.n.value.i;
 
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of \"", 
-            t1.origin, L" ", betweenKeyword.origin, L" ", toStr(nm),
-            L"\", you should write \"", 
-            t1.origin, L".year ", betweenKeyword.origin, L" ", toStr(nm), L"\""), t1.line);
+         throw SyntaxError(str(U"instead of \"", 
+            t1.getOriginString(p2), U" ", betweenKeyword.getOriginString(p2), U" ", intToString(nm),
+            U"\", you should write \"", 
+            t1.getOriginString(p2), U".year ", betweenKeyword.getOriginString(p2), U" ", intToString(nm), U"\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"the time variable \"", t1.origin,
-            L"\" cannot be compared to a number"), t1.line);
+         throw SyntaxError(str(U"the time variable \"", t1.getOriginString(p2),
+            U"\" cannot be compared to a number"), t1.line);
       }
    }
 }
@@ -965,27 +965,27 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
    std::pair<Tokens, Tokens> firstDivision = tks.divideByKeyword(Keyword::kw_Between);
 
    if (firstDivision.first.isEmpty()) {
-      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().origin, tks.first().line);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
 
    const p_bool neg = firstDivision.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       if (firstDivision.first.getLength() == 1) {
-         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().origin, 
-            CHAR_SPACE, tks.second().origin), tks.first().line);
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
       firstDivision.first.popRight();
    }
 
    if (firstDivision.second.isEmpty()) {
-      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().origin, tks.last().line);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
 
    const Token& betweenToken = tks.at(firstDivision.first.getLength());
 
    if (! firstDivision.second.check(TI_HAS_KEYWORD_AND)) {
-      const p_str between = betweenToken.origin;
+      const p_str between = betweenToken.getOriginString(p2);
       throw SyntaxError::operatorBetweenShouldBeFollowedByAnd(between, betweenToken.line);
    }
 
@@ -993,12 +993,12 @@ static p_bool parseBetween(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pr
 
    if (secondDivision.first.isEmpty()) {
       throw SyntaxError::leftSideOfOperatorIsEmpty(
-         firstDivision.second.first().origin, firstDivision.second.first().line);
+         firstDivision.second.first().getOriginString(p2), firstDivision.second.first().line);
    }
 
    if (secondDivision.second.isEmpty()) {
       throw SyntaxError::rightSideOfOperatorIsEmpty(
-         firstDivision.second.last().origin, firstDivision.second.last().line);
+         firstDivision.second.last().getOriginString(p2), firstDivision.second.last().line);
    }
 
    const Tokens& valueTokens = firstDivision.first;
@@ -1160,10 +1160,10 @@ static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_In);
 
    if (pair.first.isEmpty()) {
-      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().origin, tks.first().line);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
    if (pair.second.isEmpty()) {
-      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().origin, tks.last().line);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
    
    if (pair.first.hasBinaryBoolKeyword()) {
@@ -1174,8 +1174,8 @@ static p_bool parseIn(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process
 
    if (neg) {
       if (pair.first.getLength() == 1) {
-         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().origin, 
-            CHAR_SPACE, tks.second().origin), tks.first().line);
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
       pair.first.popRight();
@@ -1251,10 +1251,10 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Proce
    std::pair<Tokens, Tokens> pair = tks.divideByKeyword(Keyword::kw_Like);
 
    if (pair.first.isEmpty()) {
-      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().origin, tks.first().line);
+      throw SyntaxError::leftSideOfOperatorIsEmpty(tks.first().getOriginString(p2), tks.first().line);
    }
    if (pair.second.isEmpty()) {
-      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().origin, tks.last().line);
+      throw SyntaxError::rightSideOfOperatorIsEmpty(tks.last().getOriginString(p2), tks.last().line);
    }
    if (pair.first.hasBinaryBoolKeyword()) {
       return false;
@@ -1263,8 +1263,8 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Proce
    const p_bool neg = pair.first.last().isKeyword(Keyword::kw_Not);
    if (neg) {
       if (pair.first.getLength() == 1) {
-         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().origin, 
-            CHAR_SPACE, tks.second().origin), tks.first().line);
+         throw SyntaxError::leftSideOfOperatorIsEmpty(str(tks.first().getOriginString(p2), 
+            CHAR_SPACE, tks.second().getOriginString(p2)), tks.first().line);
       }
 
       pair.first.popRight();
@@ -1278,7 +1278,7 @@ static p_bool parseLike(p_genptr<p_bool>& result, const Tokens& tks, Perun2Proce
    p_genptr<p_str> pattern;
    if (! parse(p2, pair.second, pattern)) {
       if (pair.second.getLength() == 1 && pair.second.first().type == Token::t_Pattern) {
-         const p_str pattern = pair.second.first().origin;
+         const p_str pattern = pair.second.first().getOriginString(p2);
          throw SyntaxError::asteriskIsNotWildcardInLikeOperator(pattern, pair.second.first().line);
       }
 
@@ -1318,12 +1318,12 @@ static p_bool parseComparisons(p_genptr<p_bool>& result, const Tokens& tks, Peru
    for (p_int i = tks.getStart(); i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol && bi.isBracketFree()) {
-         switch (t.value.singleChar) {
+         switch (t.value.ch) {
             case CHAR_SMALLER:
             case CHAR_GREATER:
             case CHAR_EXCLAMATION_MARK:
             case CHAR_EQUAL_SIGN: {
-               return parseComparison(result, tks, t.value.singleChar, p2);
+               return parseComparison(result, tks, t.value.ch, p2);
             }
          }
       }
@@ -1393,40 +1393,40 @@ static void checkCommonExceptions_Comparison(const Tokens& left, const Tokens& r
    const p_bool isWeek2 = t2.isWeekDay();
    const p_bool isMonth1 = t1.isMonth();
    const p_bool isMonth2 = t2.isMonth();
-   const p_bool isVar1 = t1.isWord(STRINGS_TIME_VAR);
-   const p_bool isVar2 = t2.isWord(STRINGS_TIME_VAR);
+   const p_bool isVar1 = t1.isWord(STRINGS_TIME_VAR, p2);
+   const p_bool isVar2 = t2.isWord(STRINGS_TIME_VAR, p2);
    
    if (isVar1 && (isWeek2 || isMonth2)) {
-      throw SyntaxError(str(L"instead of \"", t1.origin, L" ", toStr(sign), L" ", t2.origin,
-         L"\", you should write \"", t1.origin, L".", (isWeek2 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
-         L" ", toStr(sign), L" ", t2.origin, L"\""), t1.line);
+      throw SyntaxError(str(U"instead of \"", t1.getOriginString(p2), U" ", charToString(sign), U" ", t2.getOriginString(p2),
+         U"\", you should write \"", t1.getOriginString(p2), U".", (isWeek2 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH),
+         U" ", charToString(sign), U" ", t2.getOriginString(p2), U"\""), t1.line);
    }
    else if ((isWeek1 || isMonth1) && isVar2) {
-      throw SyntaxError(str(L"instead of \"", t1.origin, L" ", toStr(sign), L" ", t2.origin,
-         L"\", you should write \"", t1.origin, L" ", toStr(sign), L" ", t2.origin, L".",
-         (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), L"\""), t1.line);
+      throw SyntaxError(str(U"instead of \"", t1.getOriginString(p2), U" ", charToString(sign), U" ", t2.getOriginString(p2),
+         U"\", you should write \"", t1.getOriginString(p2), U" ", charToString(sign), U" ", t2.getOriginString(p2), U".",
+         (isWeek1 ? STRING_WEEKDAY_CAMELCASE : STRING_MONTH), U"\""), t1.line);
    }
 
    if (isVar1 && t2.isIntegerLiteral()) {
-      const p_nint nm = t2.value.number.value.value.i;
+      const p_nint nm = t2.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of \"", t1.origin, L" ", toStr(sign), L" ", toStr(nm),
-            L"\", you should write \"", t1.origin, L".year ", toStr(sign), L" ", toStr(nm), L"\""), t1.line);
+         throw SyntaxError(str(U"instead of \"", t1.getOriginString(p2), U" ", charToString(sign), U" ", intToString(nm),
+            U"\", you should write \"", t1.getOriginString(p2), U".year ", charToString(sign), U" ", intToString(nm), U"\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"the time variable \"", t1.origin,
-            L"\" cannot be compared to a number"), t1.line);
+         throw SyntaxError(str(U"the time variable \"", t1.getOriginString(p2),
+            U"\" cannot be compared to a number"), t1.line);
       }
    }
    else if (t1.isIntegerLiteral() && isVar2) {
-      const p_nint nm = t1.value.number.value.value.i;
+      const p_nint nm = t1.value.num.n.value.i;
       if (nm >= NINT_1950 && nm <= NINT_2100) {
-         throw SyntaxError(str(L"instead of \"", toStr(nm), L" ", toStr(sign), L" ", t2.origin,
-            L"\", you should write \"", toStr(nm), L" ", toStr(sign), L" ", t2.origin, L".year\""), t1.line);
+         throw SyntaxError(str(U"instead of \"", intToString(nm), U" ", charToString(sign), U" ", t2.getOriginString(p2),
+            U"\", you should write \"", intToString(nm), U" ", charToString(sign), U" ", t2.getOriginString(p2), U".year\""), t1.line);
       }
       else {
-         throw SyntaxError(str(L"the time variable \"", t2.origin,
-            L"\" cannot be compared to a number"), t1.line);
+         throw SyntaxError(str(U"the time variable \"", t2.getOriginString(p2),
+            U"\" cannot be compared to a number"), t1.line);
       }
    }
 }
@@ -1439,7 +1439,7 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
    const std::vector<Tokens> args = func::toFunctionArgs(tokens);
    const p_size argsCount = args.size();
 
-   if (word.isWord(STRING_COUNTINSIDE)) {
+   if (word.isWord(STRING_COUNTINSIDE, p2)) {
       if (argsCount != 1) {
          if (argsCount != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -1475,7 +1475,7 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
       result = std::make_unique<gen::CountInsideConstraint>(rightSide, ct, def, lctx, *fctx, p2);
       return true;
    }
-   else if (word.isWord(STRING_COUNT)) {
+   else if (word.isWord(STRING_COUNT, p2)) {
       if (argsCount != 1) {
          if (argsCount != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -1491,7 +1491,7 @@ static p_bool functionIncrConstr(p_genptr<p_bool>& result, const Tokens& tokens,
 
       return false;
    }
-   else if (word.isWord(STRING_SIZE)) {
+   else if (word.isWord(STRING_SIZE, p2)) {
       if (argsCount != 1) {
          if (argsCount != 0) {
             func::checkInOperatorCommaAmbiguity(word, args[0], p2);
@@ -1521,7 +1521,7 @@ static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken,
    p_genptr<p_num>& rightSide, const CompType ct, Perun2Process& p2)
 {
    if (! p2.contexts.hasFileContext()) {
-      throw SyntaxError::undefinedVarValue(varToken.origin, varToken.line);
+      throw SyntaxError::undefinedVarValue(varToken.getOriginString(p2), varToken.line);
    }
 
    FileContext& context = *p2.contexts.getFileContext();
@@ -1535,7 +1535,7 @@ static p_bool sizeIncrConstr(p_genptr<p_bool>& result, const Token& varToken,
 static p_bool parseIncrConstr(p_genptr<p_bool>& result, const Tokens& left, 
    const Tokens& right, const CompType ct, Perun2Process& p2)
 {
-   if (left.getLength() == 1 && left.first().isWord(STRING_SIZE)) {
+   if (left.getLength() == 1 && left.first().isWord(STRING_SIZE, p2)) {
       p_genptr<p_num> rightSide;
       if (!parse(p2, right, rightSide)) {
          return false;
@@ -1856,32 +1856,32 @@ static std::pair<Tokens, Tokens> prepareComparison(const Tokens& tks, const p_ch
 
    if (result.first.isEmpty()) {
       if (result.second.isEmpty()) {
-         throw SyntaxError(str(L"both sides of the ", toStr(sign),
-            L" comparison are empty"), tks.first().line);
+         throw SyntaxError(str(U"both sides of the ", charToString(sign),
+            U" comparison are empty"), tks.first().line);
       }
       else {
-         throw SyntaxError(str(L"the left side of the ", toStr(sign),
-            L" comparison is empty"), tks.first().line);
+         throw SyntaxError(str(U"the left side of the ", charToString(sign),
+            U" comparison is empty"), tks.first().line);
       }
    }
 
    if (result.second.isEmpty()) {
-      throw SyntaxError(str(L"the right side of the ", toStr(sign),
-         L" comparison is empty"), tks.last().line);
+      throw SyntaxError(str(U"the right side of the ", charToString(sign),
+         U" comparison is empty"), tks.last().line);
    }
 
    if (result.second.first().isSymbol(CHAR_EQUAL_SIGN)) {
       if (result.second.getLength() == 1) {
-         throw SyntaxError(str(L"the right side of the ", toStr(sign),
-            L"= comparison is empty"), result.second.first().line);
+         throw SyntaxError(str(U"the right side of the ", charToString(sign),
+            U"= comparison is empty"), result.second.first().line);
       }
 
       result.second.popLeft();
       eq = true;
    }
    else if (sign == CHAR_EXCLAMATION_MARK) {
-      throw SyntaxError(L"expected = after exclamation mark. "
-         L"For a simple negation, use keyword \"not\" instead",
+      throw SyntaxError(U"expected = after exclamation mark. "
+         U"For a simple negation, use keyword \"not\" instead",
          result.second.first().line);
    }
 

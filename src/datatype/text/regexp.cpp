@@ -12,7 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/text/regexp.hpp"
+#include "regexp.h"
+#include "../../unicode/convert.h"
 
 
 namespace perun2::gen
@@ -24,18 +25,18 @@ Regexp::Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat)
 
 p_bool Regexp::getValue()
 {
-   std::wregex pattern(this->pattern->getValue());
-   return std::regex_search(this->value->getValue(), pattern);
+   std::wregex pattern(utf32_to_utf16(this->pattern->getValue()));
+   return std::regex_search(utf32_to_utf16(this->value->getValue()), pattern);
 }
 
 
 RegexpConst::RegexpConst(p_genptr<p_str>& val, const p_str& pat)
-   : value(std::move(val)), pattern(pat) { };
+   : value(std::move(val)), pattern(utf32_to_utf16(pat)) { };
 
 
 p_bool RegexpConst::getValue()
 {
-   return std::regex_search(this->value->getValue(), this->pattern);
+   return std::regex_search(utf32_to_utf16(this->value->getValue()), this->pattern);
 }
 
 

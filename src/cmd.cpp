@@ -12,11 +12,11 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../include/perun2/cmd.hpp"
-#include "../include/perun2/os/os.hpp"
-#include "../include/perun2/perun2.hpp"
-#include "../include/perun2/logger.hpp"
-#include "../include/perun2/metadata.hpp"
+#include "cmd.h"
+#include "os/os.h"
+#include "perun2.h"
+#include "logger.h"
+#include "metadata.h"
 
 
 namespace perun2::cmd
@@ -25,7 +25,7 @@ namespace perun2::cmd
 void version()
 {
    Logger logger;
-   logger.print(str(metadata::NAME, L" version ", metadata::VERSION));
+   logger.print(str(metadata::NAME, U" version ", metadata::VERSION));
 }
 
 void docs()
@@ -42,21 +42,21 @@ void help()
 {
    Logger logger;
    logger.emptyLine();
-   logger.print(L"In order to run a script, pass a file name or its path as an argument. Extension is not mandatory.");
-   logger.print(L"By default, working location is the directory where the script is located.");
+   logger.print(U"In order to run a script, pass a file name or its path as an argument. Extension is not mandatory.");
+   logger.print(U"By default, working location is the directory where the script is located.");
    logger.emptyLine();
-   logger.print(L"Options:");
-   logger.print(L"  --help       Display this information again.");
-   logger.print(L"  --version    Display interpreter version information.");
-   logger.print(str(L"  --website    Enter the official ", metadata::NAME, L" website."));
-   logger.print(str(L"  --docs       Enter the official ", metadata::NAME, L" documentation."));
-   logger.print(str(L"  -c <value>   Pass ", metadata::NAME, L" code to run."));
-   logger.print(L"  -d <value>   Set working location to certain value.");
-   logger.print(L"  -h           Set working location to the place where this command was called from.");
-   logger.print(L"  -n           Run in noomit mode (iterate all filesystem elements with no exceptions).");
-   logger.print(L"  -s           Run in silent mode (no command log messages).");
-   logger.print(L"  -o           Maximum performance mode. The terminal is completely disabled.");
-   logger.print(L"  -m           Static analysis. Check code correctness without running it. Prints \"good\" if no error detected.");
+   logger.print(U"Options:");
+   logger.print(U"  --help       Display this information again.");
+   logger.print(U"  --version    Display interpreter version information.");
+   logger.print(str(U"  --website    Enter the official ", metadata::NAME, U" website."));
+   logger.print(str(U"  --docs       Enter the official ", metadata::NAME, U" documentation."));
+   logger.print(str(U"  -c <value>   Pass ", metadata::NAME, U" code to run."));
+   logger.print(U"  -d <value>   Set working location to certain value.");
+   logger.print(U"  -h           Set working location to the place where this command was called from.");
+   logger.print(U"  -n           Run in noomit mode (iterate all filesystem elements with no exceptions).");
+   logger.print(U"  -s           Run in silent mode (no command log messages).");
+   logger.print(U"  -o           Maximum performance mode. The terminal is completely disabled.");
+   logger.print(U"  -m           Static analysis. Check code correctness without running it. Prints \"good\" if no error detected.");
 }
 
 namespace error
@@ -64,62 +64,62 @@ namespace error
    void argumentsNotAccessed()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: the arguments could not be accessed."));
+      logger.print(str(U"Command-line error: the arguments could not be accessed."));
    }
 
    void noArguments()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: the arguments are missing. Run \"", 
-         metadata::EXECUTABLE_NAME, L" --help\" for command-line tips."));
+      logger.print(str(U"Command-line error: the arguments are missing. Run \"", 
+         metadata::EXECUTABLE_NAME, U" --help\" for command-line tips."));
    }
 
    void unknownOption(const p_str& option)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: unknown option \"", option, L"\"."));
+      logger.print(str(U"Command-line error: unknown option \"", option, U"\"."));
    }
 
    void noDestination()
    {
       Logger logger;
-      logger.print(L"Command-line error: the destination directory has not been defined.");
+      logger.print(U"Command-line error: the destination directory has not been defined.");
    }
 
    void noCode()
    {
       Logger logger;
-      logger.print(L"Command-line error: the argument with source code is missing.");
+      logger.print(U"Command-line error: the argument with source code is missing.");
    }
 
    void noMainArgument()
    {
       Logger logger;
-      logger.print(L"Command-line error: the main argument is missing.");
+      logger.print(U"Command-line error: the main argument is missing.");
    }
 
    void noInput()
    {
       Logger logger;
-      logger.print(L"Command-line error: the input file is missing.");
+      logger.print(U"Command-line error: the input file is missing.");
    }
 
    void fileNotFound(const p_str& fileName)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: the input file \"", fileName, L"\" does not exist."));
+      logger.print(str(U"Command-line error: the input file \"", fileName, U"\" does not exist."));
    }
 
    void wrongFileExtension()
    {
       Logger logger;
-      logger.print(str(L"Command-line error: wrong input file extension. Only \"", metadata::EXTENSION, L"\" is allowed."));
+      logger.print(str(U"Command-line error: wrong input file extension. Only \"", metadata::EXTENSION, U"\" is allowed."));
    }
 
    void fileReadFailure(const p_str& fileName)
    {
       Logger logger;
-      logger.print(str(L"Command-line error: the input file \"", fileName, L"\" could not be read."));
+      logger.print(str(U"Command-line error: the input file \"", fileName, U"\" could not be read."));
    }
 }
 

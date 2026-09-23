@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/text/raw.hpp"
+#include "raw.h"
 
 
 namespace perun2
@@ -82,13 +82,13 @@ void str_toRaw(p_str& value)
          case 0x00C5:
          case 0x01FA:
          {
-            value[i] = L'A';
+            value[i] = U'A';
             break;
          }
          case 0x0181:
          case 0x1E04:
          {
-            value[i] = L'B';
+            value[i] = U'B';
             break;
          }
          case 0x0187:
@@ -98,7 +98,7 @@ void str_toRaw(p_str& value)
          case 0x0108:
          case 0x010C:
          {
-            value[i] = L'C';
+            value[i] = U'C';
             break;
          }
          case 0x0110:
@@ -109,7 +109,7 @@ void str_toRaw(p_str& value)
          case 0x1E10:
          case 0x1E12:
          {
-            value[i] = L'D';
+            value[i] = U'D';
             break;
          }
          case 0x0118:
@@ -125,12 +125,12 @@ void str_toRaw(p_str& value)
          case 0x1EBC:
          case 0x1EB8:
          {
-            value[i] = L'E';
+            value[i] = U'E';
             break;
          }
          case 0x0191:
          {
-            value[i] = L'F';
+            value[i] = U'F';
             break;
          }
          case 0x01E4:
@@ -142,7 +142,7 @@ void str_toRaw(p_str& value)
          case 0x011E:
          case 0x0122:
          {
-            value[i] = L'G';
+            value[i] = U'G';
             break;
          }
          case 0x0126:
@@ -150,7 +150,7 @@ void str_toRaw(p_str& value)
          case 0x0124:
          case 0x1E24:
          {
-            value[i] = L'H';
+            value[i] = U'H';
             break;
          }
          case 0x012E:
@@ -166,19 +166,19 @@ void str_toRaw(p_str& value)
          case 0x0128:
          case 0x1ECA:
          {
-            value[i] = L'I';
+            value[i] = U'I';
             break;
          }
          case 0x0134:
          {
-            value[i] = L'J';
+            value[i] = U'J';
             break;
          }
          case 0x0198:
          case 0x0136:
          case 0x01E8:
          {
-            value[i] = L'K';
+            value[i] = U'K';
             break;
          }
          case 0x0141:
@@ -189,7 +189,7 @@ void str_toRaw(p_str& value)
          case 0x1E36:
          case 0x1E3C:
          {
-            value[i] = L'L';
+            value[i] = U'U';
             break;
          }
          case 0x019D:
@@ -203,7 +203,7 @@ void str_toRaw(p_str& value)
          case 0x0145:
          case 0x1E4A:
          {
-            value[i] = L'N';
+            value[i] = U'N';
             break;
          }
          case 0x01EA:
@@ -225,12 +225,12 @@ void str_toRaw(p_str& value)
          case 0x1ECC:
          case 0x01FE:
          {
-            value[i] = L'O';
+            value[i] = U'O';
             break;
          }
          case 0x01A4:
          {
-            value[i] = L'P';
+            value[i] = U'P';
             break;
          }
          case 0x024C:
@@ -239,7 +239,7 @@ void str_toRaw(p_str& value)
          case 0x0156:
          case 0x1E5A:
          {
-            value[i] = L'R';
+            value[i] = U'R';
             break;
          }
          case 0x015E:
@@ -250,7 +250,7 @@ void str_toRaw(p_str& value)
          case 0x0218:
          case 0x1E62:
          {
-            value[i] = L'S';
+            value[i] = U'S';
             break;
          }
          case 0x01AC:
@@ -261,7 +261,7 @@ void str_toRaw(p_str& value)
          case 0x1E6C:
          case 0x1E70:
          {
-            value[i] = L'T';
+            value[i] = U'T';
             break;
          }
          case 0x0172:
@@ -279,7 +279,7 @@ void str_toRaw(p_str& value)
          case 0x016E:
          case 0x1EE4:
          {
-            value[i] = L'U';
+            value[i] = U'U';
             break;
          }
          case 0x1E82:
@@ -287,12 +287,12 @@ void str_toRaw(p_str& value)
          case 0x0174:
          case 0x1E84:
          {
-            value[i] = L'W';
+            value[i] = U'W';
             break;
          }
          case 0x1E8A:
          {
-            value[i] = L'X';
+            value[i] = U'X';
             break;
          }
          case 0x01B3:
@@ -303,7 +303,7 @@ void str_toRaw(p_str& value)
          case 0x0232:
          case 0x1EF8:
          {
-            value[i] = L'Y';
+            value[i] = U'Y';
             break;
          }
          case 0x0179:  
@@ -311,7 +311,7 @@ void str_toRaw(p_str& value)
          case 0x017D:
          case 0x1E92:
          {
-            value[i] = L'Z';
+            value[i] = U'Z';
             break;
          }
          case 0x0105:
@@ -327,12 +327,12 @@ void str_toRaw(p_str& value)
          case 0x00E3:
          case 0x00E5:
          case 0x01FB: {
-            value[i] = L'a';
+            value[i] = U'a';
             break;
          }
          case 0x0253:
          case 0x1E05: {
-            value[i] = L'b';
+            value[i] = U'b';
             break;
          }
          case 0x0188:
@@ -341,7 +341,7 @@ void str_toRaw(p_str& value)
          case 0x010B:
          case 0x0109:
          case 0x010D: {
-            value[i] = L'c';
+            value[i] = U'c';
             break;
          }
          case 0x0111:
@@ -351,7 +351,7 @@ void str_toRaw(p_str& value)
          case 0x1E0D:
          case 0x1E11:
          case 0x1E13: {
-            value[i] = L'd';
+            value[i] = U'd';
             break;
          }
          case 0x0119:
@@ -366,11 +366,11 @@ void str_toRaw(p_str& value)
          case 0x0113:
          case 0x1EBD:
          case 0x1EB9: {
-            value[i] = L'e';
+            value[i] = U'e';
             break;
          }
          case 0x0192: {
-            value[i] = L'f';
+            value[i] = U'f';
             break;
          }
          case 0x01E5:
@@ -381,14 +381,14 @@ void str_toRaw(p_str& value)
          case 0x01E7:
          case 0x011F:
          case 0x0123: {
-            value[i] = L'g';
+            value[i] = U'g';
             break;
          }
          case 0x0127:
          case 0x0266:
          case 0x0125:
          case 0x1E25: {
-            value[i] = L'h';
+            value[i] = U'h';
             break;
          }
          case 0x012F:
@@ -402,17 +402,17 @@ void str_toRaw(p_str& value)
          case 0x012B:
          case 0x0129:
          case 0x1ECB: {
-            value[i] = L'i';
+            value[i] = U'i';
             break;
          }
          case 0x0135: {
-            value[i] = L'j';
+            value[i] = U'j';
             break;
          }
          case 0x0199:
          case 0x0137:
          case 0x01E9: {
-            value[i] = L'k';
+            value[i] = U'k';
             break;
          }
          case 0x0142:
@@ -422,7 +422,7 @@ void str_toRaw(p_str& value)
          case 0x0140:
          case 0x1E37:
          case 0x1E3D: {
-            value[i] = L'l';
+            value[i] = U'l';
             break;
          }
          case 0x0272:
@@ -433,7 +433,7 @@ void str_toRaw(p_str& value)
          case 0x00F1:
          case 0x0146:
          case 0x1E4B: {
-            value[i] = L'n';
+            value[i] = U'n';
             break;
          }
          case 0x01EB:
@@ -454,12 +454,12 @@ void str_toRaw(p_str& value)
          case 0x0151:
          case 0x1ECD:
          case 0x01FF: {
-            value[i] = L'o';
+            value[i] = U'o';
             break;
          }
          case 0x01A5:
          {
-            value[i] = L'p';
+            value[i] = U'p';
             break;
          }
          case 0x024D:
@@ -467,7 +467,7 @@ void str_toRaw(p_str& value)
          case 0x0159:
          case 0x0157:
          case 0x1E5B: {
-            value[i] = L'r';
+            value[i] = U'r';
             break;
          }
          case 0x015F:
@@ -477,7 +477,7 @@ void str_toRaw(p_str& value)
          case 0x0161:
          case 0x0219:
          case 0x1E63: {
-            value[i] = L's';
+            value[i] = U's';
             break;
          }
          case 0x01AD:
@@ -487,7 +487,7 @@ void str_toRaw(p_str& value)
          case 0x021B:
          case 0x1E6D:
          case 0x1E71: {
-            value[i] = L't';
+            value[i] = U't';
             break;
          }
          case 0x0173:
@@ -504,18 +504,18 @@ void str_toRaw(p_str& value)
          case 0x0171:
          case 0x016F:
          case 0x1EE5: {
-            value[i] = L'u';
+            value[i] = U'u';
             break;
          }
          case 0x1E83:
          case 0x1E81:
          case 0x0175:
          case 0x1E85: {
-            value[i] = L'w';
+            value[i] = U'w';
             break;
          }
          case 0x1E8B: {
-            value[i] = L'x';
+            value[i] = U'x';
             break;
          }
          case 0x01B4:
@@ -525,14 +525,14 @@ void str_toRaw(p_str& value)
          case 0x00FF:
          case 0x0233:
          case 0x1EF9: {
-            value[i] = L'y';
+            value[i] = U'y';
             break;
          }
          case 0x017A:
          case 0x017C:
          case 0x017E:
          case 0x1E93: {
-            value[i] = L'z';
+            value[i] = U'z';
             break;
          }
          default: {
@@ -550,39 +550,39 @@ void str_toRaw(p_str& value)
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_OE) {
-      replaceCharWithTwoChars(value, 0x0153, L'o', L'e');
+      replaceCharWithTwoChars(value, 0x0153, U'o', U'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_AE) {
-      replaceCharWithTwoChars(value, 0x00E6, L'a', L'e');
+      replaceCharWithTwoChars(value, 0x00E6, U'a', U'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_AE_ACCENT) {
-      replaceCharWithTwoChars(value, 0x01FD, L'a', L'e');
+      replaceCharWithTwoChars(value, 0x01FD, U'a', U'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_LOWER_AE_MACRON) {
-      replaceCharWithTwoChars(value, 0x01E3, L'a', L'e');
+      replaceCharWithTwoChars(value, 0x01E3, U'a', U'e');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_OE) {
-      replaceCharWithTwoChars(value, 0x0152, L'O', L'E');
+      replaceCharWithTwoChars(value, 0x0152, U'O', U'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_AE) {
-      replaceCharWithTwoChars(value, 0x00C6, L'A', L'E');
+      replaceCharWithTwoChars(value, 0x00C6, U'A', U'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_AE_ACCENT) {
-      replaceCharWithTwoChars(value, 0x01FC, L'A', L'E');
+      replaceCharWithTwoChars(value, 0x01FC, U'A', U'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_UPPER_AE_MACRON) {
-      replaceCharWithTwoChars(value, 0x01E2, L'A', L'E');
+      replaceCharWithTwoChars(value, 0x01E2, U'A', U'E');
    }
 
    if (doubleChars & TO_RAW_DOUBLECHARS_ESZETT) {
-      replaceCharWithTwoChars(value, 0x00DF, L's', L's');
+      replaceCharWithTwoChars(value, 0x00DF, U's', U's');
    }
 }
 

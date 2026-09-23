@@ -12,15 +12,16 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/function/func-number.hpp"
-#include "../../../include/perun2/exception.hpp"
-#include "../../../include/perun2/datatype/function/func-bool.hpp"
-#include "../../../include/perun2/util.hpp"
-#include "../../../include/perun2/lexer.hpp"
-#include "../../../include/perun2/perun2.hpp"
-#include "../../../include/perun2/os/os.hpp"
-#include "../../../include/perun2/datatype/math.hpp"
-#include "../../../include/perun2/datatype/text/resemblance.hpp"
+#include "func-number.h"
+#include "../../exception.h"
+#include "func-bool.h"
+#include "../../util.h"
+#include "../../lexer.h"
+#include "../../perun2.h"
+#include "../../os/os.h"
+#include "../math.h"
+#include "../text/resemblance.h"
+#include "../../unicode/convert.h"
 #include <math.h>
 #include <sstream>
 #include <cmath>
@@ -121,7 +122,7 @@ p_num F_Number::getValue()
 
    if (s.find(CHAR_DOT) == p_str::npos) {
       try {
-         const p_nint i = std::stoll(s);
+         const p_nint i = std::stoll(utf32_to_utf8(s));
          return p_num(i);
       }
       catch (...) {
@@ -480,7 +481,7 @@ p_num F_FromHex::getValue()
 
    p_nint x;
    p_stream ss;
-   ss << std::hex << baseString;
+   ss << std::hex << utf32_to_utf8(baseString);
    ss >> x;
 
    return p_num(x);

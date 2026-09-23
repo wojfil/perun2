@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-renameto.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/os/os.hpp"
-#include "../../include/perun2/datatype/patterns.hpp"
+#include "com-renameto.h"
+#include "../perun2.h"
+#include "../os/os.h"
+#include "../datatype/patterns.h"
 
 
 namespace perun2::comm
@@ -47,7 +47,7 @@ void C_RenameTo::run()
    if (!this->context->v_exists->value || os_isInvalid(n)
          || !os_hasParentDirectory(this->context->v_path->value) || os_isAbsolute(n)) {
 
-      this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to rename ", getCCName(this->context->v_path->value));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -63,7 +63,7 @@ void C_RenameTo::run()
 
    if (os_exists(newPath)) {
       if (!(forced && os_drop(newPath, this->perun2))) {
-         this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+         this->perun2.logger.log(U"Failed to rename ", getCCName(this->context->v_path->value));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -73,7 +73,7 @@ void C_RenameTo::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to ", argQuoted(n));
+      this->perun2.logger.log(U"Rename ", getCCName(this->context->v_path->value), U" to ", argQuoted(n));
 
       if (saveChanges) {
          this->context->v_fullname->value = n;
@@ -83,7 +83,7 @@ void C_RenameTo::run()
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to rename ", getCCName(this->context->v_path->value));
    }
 }
 
@@ -96,7 +96,7 @@ void C_RenameTo_Stack::run()
    if (!this->context->v_exists->value || os_isInvalid(n)
          || !os_hasParentDirectory(oldPath) || os_isAbsolute(n)) {
 
-      this->perun2.logger.log(L"Failed to rename ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to rename ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -142,7 +142,7 @@ void C_RenameTo_Stack::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Rename ", getCCName(this->context->v_path->value), L" to ", argQuoted(n));
+      this->perun2.logger.log(U"Rename ", getCCName(this->context->v_path->value), U" to ", argQuoted(n));
 
       if (saveChanges) {
          this->context->v_fullname->value = n;
@@ -152,7 +152,7 @@ void C_RenameTo_Stack::run()
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to rename ", getCCName(this->context->v_path->value));
+      this->perun2.logger.log(U"Failed to rename ", getCCName(this->context->v_path->value));
    }
 }
 

@@ -20,11 +20,11 @@
 #define _UNICODE
 #endif
 
-#include "../../../include/perun2/datatype/generator/gen-os.hpp"
-#include "../../../include/perun2/datatype/generator/gen-string.hpp"
-#include "../../../include/perun2/perun2.hpp"
-#include "../../../include/perun2/metadata.hpp"
-#include "../../../include/perun2/os/os.hpp"
+#include "gen-os.h"
+#include "gen-string.h"
+#include "../../perun2.h"
+#include "../../metadata.h"
+#include "../../os/os.h"
 
 namespace perun2::gen
 {
@@ -118,11 +118,11 @@ p_bool All::hasNext()
          }
 
          first = false;
-         value = data.cFileName;
+         value = utf16_to_utf32(data.cFileName);
          index.setToZero();
          this->context.index->value = index;
 
-         if (!os_isBrowsePath(value)) {
+         if (!os_isBrowsePath(data.cFileName)) {
             if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data)
                || !os_isPerun2Extension(this->value))
                && (!this->exceptional || this->comparer.matches(this->value)))
@@ -147,9 +147,9 @@ p_bool All::hasNext()
    }
 
    while (os_hasNextFile(handle, data)) {
-      value = data.cFileName;
+      value = utf16_to_utf32(data.cFileName);
 
-      if (!os_isBrowsePath(value)) {
+      if (!os_isBrowsePath(data.cFileName)) {
          if (((this->flags & FLAG_NOOMIT) || os_isDirectory(data) || !os_isPerun2Extension(this->value))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
@@ -185,11 +185,11 @@ p_bool Files::hasNext()
          }
 
          first = false;
-         value = data.cFileName;
+         value = utf16_to_utf32(data.cFileName);
          index.setToZero();
          this->context.index->value = index;
 
-         if (!os_isBrowsePath(value)) {
+         if (!os_isBrowsePath(data.cFileName)) {
             if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(this->value)))
                && (!this->exceptional || this->comparer.matches(this->value)))
             {
@@ -209,9 +209,9 @@ p_bool Files::hasNext()
    }
 
    while (os_hasNextFile(handle, data)) {
-      value = data.cFileName;
+      value = utf16_to_utf32(data.cFileName);
 
-      if (!os_isBrowsePath(value)) {
+      if (!os_isBrowsePath(data.cFileName)) {
          if ((!os_isDirectory(data) && ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(this->value)))
             && (!this->exceptional || this->comparer.matches(this->value)))
          {
@@ -244,11 +244,11 @@ p_bool Directories::hasNext()
          }
 
          first = false;
-         value = data.cFileName;
+         value = utf16_to_utf32(data.cFileName);
          index.setToZero();
          this->context.index->value = index;
 
-         if (!os_isBrowsePath(value)) {
+         if (!os_isBrowsePath(data.cFileName)) {
             if (os_isDirectory(data) && (!this->exceptional || this->comparer.matches(this->value)))
             {
                this->context.index->value = index;
@@ -267,9 +267,9 @@ p_bool Directories::hasNext()
    }
 
    while (os_hasNextFile(handle, data)) {
-      value = data.cFileName;
+      value = utf16_to_utf32(data.cFileName);
 
-      if (!os_isBrowsePath(value)) {
+      if (!os_isBrowsePath(data.cFileName)) {
          if (os_isDirectory(data) && (!this->exceptional || this->comparer.matches(this->value)))
          {
             this->context.index->value = index;
@@ -328,7 +328,7 @@ p_bool RecursiveFiles::hasNext()
                }
             }
             else if (!os_isDirectory(data)) {
-               const p_str& v = data.cFileName;
+               const p_str& v = utf16_to_utf32(data.cFileName);
 
                if ((this->flags & FLAG_NOOMIT) || !os_isPerun2Extension(v)) {
                   value = v;
@@ -359,9 +359,9 @@ p_bool RecursiveFiles::hasNext()
       }
       else {
          if (os_hasNextFile(handles.back(), data)) {
-            const p_str v = data.cFileName;
+            const p_str v = utf16_to_utf32(data.cFileName);
 
-            if (!os_isBrowsePath(v)) {
+            if (!os_isBrowsePath(data.cFileName)) {
                if (os_isDirectory(data)) {
                   paths.emplace_back(str(paths.back(), OS_SEPARATOR, v));
 
@@ -469,9 +469,9 @@ p_bool RecursiveDirectories::hasNext()
       }
       else {
          if (os_hasNextFile(handles.back(), data)) {
-            const p_str v = data.cFileName;
+            const p_str v = utf16_to_utf32(data.cFileName);
 
-            if (!os_isBrowsePath(v) && os_isDirectory(data))
+            if (!os_isBrowsePath(data.cFileName) && os_isDirectory(data))
             {
                const p_bool isBase = this->bases.empty();
                value = isBase ? v : str(bases.back(), v);
@@ -573,9 +573,9 @@ p_bool RecursiveAll::hasNext()
       }
       else {
          if (os_hasNextFile(handles.back(), data)) {
-            const p_str v = data.cFileName;
+            const p_str v = utf16_to_utf32(data.cFileName);
 
-            if (!os_isBrowsePath(v)) {
+            if (!os_isBrowsePath(data.cFileName)) {
                if (os_isDirectory(data))
                {
                   if (this->prevFile) {

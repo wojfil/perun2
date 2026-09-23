@@ -12,8 +12,8 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/text/text-parsing.hpp"
-#include "../../../include/perun2/datatype/text/strings.hpp"
+#include "text-parsing.h"
+#include "strings.h"
 
 
 namespace perun2

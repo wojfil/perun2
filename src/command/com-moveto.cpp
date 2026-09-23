@@ -12,10 +12,10 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../include/perun2/command/com-moveto.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/os/os.hpp"
-#include "../../include/perun2/datatype/patterns.hpp"
+#include "com-moveto.h"
+#include "../perun2.h"
+#include "../os/os.h"
+#include "../datatype/patterns.h"
 
 
 namespace perun2::comm
@@ -38,7 +38,7 @@ void C_MoveTo::run()
    if (!this->context->v_exists->value || os_isInvalid(n)
          || !os_hasParentDirectory(oldPath)) {
 
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -46,14 +46,14 @@ void C_MoveTo::run()
    const p_str newLoc = os_leftJoin(this->locationContext->location->value, n);
 
    if (newLoc.empty()) {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
 
    if (!os_directoryExists(newLoc)) {
       if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -66,7 +66,7 @@ void C_MoveTo::run()
       if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath)) 
             && os_drop(newPath, this->perun2))) 
       {
-         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -76,14 +76,14 @@ void C_MoveTo::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
+      this->perun2.logger.log(U"Move ", getCCName(oldPath), U" to ", getCCName(newLoc));
 
       if (this->saveChanges) {
          changeValueOfThisAfterMoving(*this->context, n, newPath);
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
    }
 }
 
@@ -95,7 +95,7 @@ void C_MoveTo_Stack::run()
    const p_str n = os_trim(location->getValue());
 
    if (!this->context->v_exists->value || os_isInvalid(n) || !os_hasParentDirectory(oldPath)) {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -103,14 +103,14 @@ void C_MoveTo_Stack::run()
    p_str newLoc = os_leftJoin(this->locationContext->location->value, n);
    
    if (newLoc.empty()) {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
 
    if (!os_directoryExists(newLoc)) {
       if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -135,14 +135,14 @@ void C_MoveTo_Stack::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc));
+      this->perun2.logger.log(U"Move ", getCCName(oldPath), U" to ", getCCName(newLoc));
 
       if (this->saveChanges) {
          changeValueOfThisAfterMoving(*this->context, n, newPath);
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
    }
 }
 
@@ -157,7 +157,7 @@ void C_MoveToAs::run()
    if (!this->context->v_exists->value || os_isInvalid(fulln)
          || os_isInvalid(loc) || !os_hasParentDirectory(oldPath)) {
 
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -171,14 +171,14 @@ void C_MoveToAs::run()
    const p_str newLoc = os_leftJoin(this->locationContext->location->value, loc);
 
    if (newLoc.empty()) {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
 
    if (!os_directoryExists(newLoc)) {
       if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -190,7 +190,7 @@ void C_MoveToAs::run()
       if (!(forced && !(this->context->v_isdirectory->value && os_isAncestor(oldPath, newPath))
             && os_drop(newPath, this->perun2))) 
       {
-         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -200,14 +200,14 @@ void C_MoveToAs::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as ", argQuoted(fulln));
+      this->perun2.logger.log(U"Move ", getCCName(oldPath), U" to ", getCCName(newLoc), U" as ", argQuoted(fulln));
 
       if (this->saveChanges) {
          changeValueOfThisAfterMoving(*this->context, loc, newPath);
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
    }
 }
 
@@ -222,7 +222,7 @@ void C_MoveToAs_Stack::run()
    if (!this->context->v_exists->value || os_isInvalid(fulln)
          || os_isInvalid(loc) || !os_hasParentDirectory(oldPath)) {
 
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
@@ -231,14 +231,14 @@ void C_MoveToAs_Stack::run()
    const p_str newLoc = os_leftJoin(this->locationContext->location->value, loc);
 
    if (newLoc.empty()) {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
       this->perun2.contexts.success->value = false;
       return;
    }
 
    if (!os_directoryExists(newLoc)) {
       if (!(os_hasParentDirectory(newLoc) && os_createDirectory(newLoc))) {
-         this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+         this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
          this->perun2.contexts.success->value = false;
          return;
       }
@@ -278,14 +278,14 @@ void C_MoveToAs_Stack::run()
    this->perun2.contexts.success->value = s;
 
    if (s) {
-      this->perun2.logger.log(L"Move ", getCCName(oldPath), L" to ", getCCName(newLoc), L" as ", argQuoted(fulln));
+      this->perun2.logger.log(U"Move ", getCCName(oldPath), U" to ", getCCName(newLoc), U" as ", argQuoted(fulln));
 
       if (this->saveChanges) {
          changeValueOfThisAfterMoving(*this->context, loc, newPath);
       }
    }
    else {
-      this->perun2.logger.log(L"Failed to move ", getCCName(oldPath));
+      this->perun2.logger.log(U"Failed to move ", getCCName(oldPath));
    }
 }
 

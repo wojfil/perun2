@@ -13,7 +13,7 @@
 */
 
 
-#include "../../include/perun2/os/os-linux.hpp"
+#include "os-linux.h"
 
 
 namespace perun2

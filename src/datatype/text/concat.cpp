@@ -12,7 +12,7 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/text/concat.hpp"
+#include "concat.h"
 #include <wchar.h>
 
 
@@ -26,7 +26,7 @@ p_size unitLen(const p_char value)
 
 p_size unitLen(const p_char (&value)[])
 {
-   return wcslen(value);
+   return std::char_traits<char32_t>::length(value);
 }
 
 p_size unitLen(const p_str& value)

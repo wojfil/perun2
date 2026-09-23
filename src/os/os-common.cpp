@@ -20,10 +20,10 @@
 #define _UNICODE
 #endif
 
-#include "../../include/perun2/os/os.hpp"
-#include "../../include/perun2/perun2.hpp"
-#include "../../include/perun2/datatype/parse/parse-asterisk.hpp"
+#include "os.h"
 #include <time.h>
+#include "../perun2.h"
+#include "../datatype/parse/parse-asterisk.h"
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
@@ -348,17 +348,9 @@ p_str os_quoteEmbraced(const p_str& value)
       : str(CHAR_QUOTATION_MARK, value, CHAR_QUOTATION_MARK);
 }
 
-static p_str os_toWideString(const std::string& str)
-{
-   std::locale loc("");
-   std::vector<p_char> buffer(str.size());
-   std::mbstowcs(&buffer[0], str.c_str(), str.size());
-   return p_str(buffer.begin(), buffer.end());
-}
-
 MediaAttributes os_ffmpegAttributes(const p_str& filePath)
 {
-   const std::string path = os_toUtf8(filePath);
+   const std::string path = utf32_to_utf8(filePath);
    AVFormatContext* formatCtx = nullptr;
    MediaAttributes result;
 

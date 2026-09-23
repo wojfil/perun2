@@ -12,16 +12,16 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-time.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/datatype/parse/parse-var.hpp"
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/datatype/generator/gen-time.hpp"
-#include "../../../include/perun2/datatype/generator/gen-period.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
-#include "../../../include/perun2/brackets.hpp"
-#include "../../../include/perun2/util.hpp"
-#include "../../../include/perun2/datatype/parse-gen.hpp"
+#include "parse-time.h"
+#include "parse-generic.h"
+#include "parse-var.h"
+#include "../parse/parse-function.h"
+#include "../generator/gen-time.h"
+#include "../generator/gen-period.h"
+#include "../generator/gen-generic.h"
+#include "../../brackets.h"
+#include "../../util.h"
+#include "../parse-gen.h"
 
 
 namespace perun2::parse
@@ -77,7 +77,7 @@ p_bool parseTime(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process& p2)
          const Token& last = tks.last();
          p_genptr<p_tim> tim = std::make_unique<gen::ListElement<p_tim>>(tlist, num);
 
-         if (last.isSecondWord(STRING_DATE)) {
+         if (last.isSecondWord(STRING_DATE, p2)) {
             result = std::make_unique<gen::TimeDate>(tim);
             return true;
          }
@@ -109,10 +109,10 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process&
       }
 
       if (first.type == Token::t_Word) {
-         throw SyntaxError::invalidMonthName(first.origin, first.line);
+         throw SyntaxError::invalidMonthName(first.getOriginString(p2), first.line);
       }
 
-      if (first.type != Token::t_Number || first.value.number.mode != NumberMode::nm_Month) {
+      if (first.type != Token::t_Number || first.value.num.nm != NumberMode::nm_Month) {
          return false;
       }
 
@@ -130,10 +130,10 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process&
    }
 
    if (second.type == Token::t_Word) {
-      throw SyntaxError::invalidMonthName(second.origin, second.line);
+      throw SyntaxError::invalidMonthName(second.getOriginString(p2), second.line);
    }
 
-   if (second.type != Token::t_Number || second.value.number.mode != NumberMode::nm_Month) {
+   if (second.type != Token::t_Number || second.value.num.nm != NumberMode::nm_Month) {
       return false;
    }
 
@@ -161,11 +161,11 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process&
    const p_tnum minute = tokenToTimeNumber(tks.at(6));
 
    if (hour < 0 || hour >= 24) {
-      throw SyntaxError::hoursOutOfRange(toStr(hour), tks.at(4).line);
+      throw SyntaxError::hoursOutOfRange(intToString(hour), tks.at(4).line);
    }
 
    if (minute < 0 || minute >= 60) {
-      throw SyntaxError::minutesOutOfRange(toStr(minute), tks.at(6).line);
+      throw SyntaxError::minutesOutOfRange(intToString(minute), tks.at(6).line);
    }
 
    if (len == 7) {
@@ -181,7 +181,7 @@ p_bool parseTimeConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process&
    const p_tnum secs = tokenToTimeNumber(tks.at(8));
 
    if (secs < 0 || secs >= 60) {
-      throw SyntaxError::secondsOutOfRange(toStr(secs), tks.at(8).line);
+      throw SyntaxError::secondsOutOfRange(intToString(secs), tks.at(8).line);
    }
 
    result = std::make_unique<gen::Constant<p_tim>>(p_tim(day, month, year, hour, minute, secs));
@@ -214,11 +214,11 @@ p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process
    const p_tnum minute = tokenToTimeNumber(third);
 
    if (hour < 0 || hour >= 24) {
-      throw SyntaxError::hoursOutOfRange(toStr(hour), first.line);
+      throw SyntaxError::hoursOutOfRange(intToString(hour), first.line);
    }
 
    if (minute < 0 || minute >= 60) {
-      throw SyntaxError::minutesOutOfRange(toStr(minute), third.line);
+      throw SyntaxError::minutesOutOfRange(intToString(minute), third.line);
    }
 
    if (tks.getLength() == 3) {
@@ -234,7 +234,7 @@ p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process
    const p_tnum secs = tokenToTimeNumber(tks.at(4));
 
    if (secs < 0 || secs >= 60) {
-      throw SyntaxError::secondsOutOfRange(toStr(secs), tks.at(4).line);
+      throw SyntaxError::secondsOutOfRange(intToString(secs), tks.at(4).line);
    }
 
    Time t = Time::clock(hour, minute, secs);
@@ -244,7 +244,7 @@ p_bool parseClockConst(p_genptr<p_tim>& result, const Tokens& tks, Perun2Process
 
 static p_tnum tokenToTimeNumber(const Token& tk)
 {
-   return toTimeNumber(tk.value.number.value);
+   return toTimeNumber(tk.value.num.n);
 }
 
 static void checkDayCorrectness(const p_tnum day, const p_tnum month,
@@ -256,7 +256,7 @@ static void checkDayCorrectness(const p_tnum day, const p_tnum month,
 
    const p_tnum expected = daysInMonth(month, year);
    if (day > expected) {
-      throw SyntaxError::monthHasFewerDays(monthToString(month), toStr(expected), tk.line);
+      throw SyntaxError::monthHasFewerDays(monthToString(month), intToString(expected), tk.line);
    }
 }
 
@@ -275,7 +275,7 @@ static p_bool parseTimeExp(p_genptr<p_tim>& result, const Tokens& tks, Perun2Pro
    for (p_int i = start; i <= end; i++) {
       const Token& t = tks.listAt(i);
       if (t.type == Token::t_Symbol) {
-         switch (t.value.singleChar) {
+         switch (t.value.ch) {
             case CHAR_PLUS: {
                if (bi.isBracketFree()) {
                   if (sublen == 0) {

@@ -12,17 +12,17 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../../../include/perun2/datatype/parse/parse-string.hpp"
-#include "../../../include/perun2/datatype/parse/parse-generic.hpp"
-#include "../../../include/perun2/datatype/parse/parse-var.hpp"
-#include "../../../include/perun2/datatype/cast.hpp"
-#include "../../../include/perun2/datatype/parse/parse-function.hpp"
-#include "../../../include/perun2/datatype/generator/gen-string.hpp"
-#include "../../../include/perun2/datatype/generator/gen-number.hpp"
-#include "../../../include/perun2/datatype/generator/gen-time.hpp"
-#include "../../../include/perun2/datatype/generator/gen-period.hpp"
-#include "../../../include/perun2/datatype/generator/gen-generic.hpp"
-#include "../../../include/perun2/datatype/parse-gen.hpp"
+#include "parse-string.h"
+#include "parse-generic.h"
+#include "parse-var.h"
+#include "../cast.h"
+#include "../parse/parse-function.h"
+#include "../generator/gen-string.h"
+#include "../generator/gen-number.h"
+#include "../generator/gen-time.h"
+#include "../generator/gen-period.h"
+#include "../generator/gen-generic.h"
+#include "../parse-gen.h"
 
 
 namespace perun2::parse

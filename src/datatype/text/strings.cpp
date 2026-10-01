@@ -21,9 +21,9 @@ namespace perun2
 
 const p_list ROMAN_STRING_LITERALS = 
 { 
-   U"I", U"IV", U"V", U"IX", U"X", U"XU", U"U", U"XC", U"C", U"CD", U"D", U"CM", U"M",
+   U"I", U"IV", U"V", U"IX", U"X", U"XL", U"L", U"XC", U"C", U"CD", U"D", U"CM", U"M",
    (U"I" U"̅" U"V" U"̅"), (U"V" U"̅"), (U"I" U"̅" U"X" U"̅"), (U"X" U"̅"),
-   (U"X" U"̅" U"U" U"̅"), (U"U" U"̅"), (U"X" U"̅" U"C" U"̅"),
+   (U"X" U"̅" U"L" U"̅"), (U"L" U"̅"), (U"X" U"̅" U"C" U"̅"),
    (U"C" U"̅"), (U"C" U"̅" U"D" U"̅"), (U"D" U"̅"),
    (U"C" U"̅" U"M" U"̅"), (U"M" U"̅")
 };

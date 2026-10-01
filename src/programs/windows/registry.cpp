@@ -115,13 +115,13 @@ p_str RegistryIterator::getRegistryValue(const p_str& name) const
       return EMPTY_STRING;
    }
 
-   p_char buffer[MAX_PATH];
+   wchar_t buffer[MAX_PATH];
    DWORD bufferSize = sizeof(buffer);
    result = RegQueryValueExW(hKey, utf32_to_utf16(name).c_str(), nullptr, nullptr, reinterpret_cast<BYTE*>(buffer), &bufferSize);
    RegCloseKey(hKey);
 
    if (result == ERROR_SUCCESS) {
-      return buffer;
+      return utf16_to_utf32(std::wstring(buffer));
    } 
    else {
       return EMPTY_STRING;

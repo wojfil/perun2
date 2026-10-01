@@ -22,10 +22,10 @@ namespace perun2
 const p_list ROMAN_STRING_LITERALS = 
 { 
    U"I", U"IV", U"V", U"IX", U"X", U"XL", U"L", U"XC", U"C", U"CD", U"D", U"CM", U"M",
-   (U"I" U"̅" U"V" U"̅"), (U"V" U"̅"), (U"I" U"̅" U"X" U"̅"), (U"X" U"̅"),
-   (U"X" U"̅" U"L" U"̅"), (U"L" U"̅"), (U"X" U"̅" U"C" U"̅"),
-   (U"C" U"̅"), (U"C" U"̅" U"D" U"̅"), (U"D" U"̅"),
-   (U"C" U"̅" U"M" U"̅"), (U"M" U"̅")
+   (U"I" U"\u0305" U"V" U"\u0305"), (U"V" U"\u0305"), (U"I" U"\u0305" U"X" U"\u0305"), (U"X" U"\u0305"),
+   (U"X" U"\u0305" U"L" U"\u0305"), (U"L" U"\u0305"), (U"X" U"\u0305" U"C" U"\u0305"),
+   (U"C" U"\u0305"), (U"C" U"\u0305" U"D" U"\u0305"), (U"D" U"\u0305"),
+   (U"C" U"\u0305" U"M" U"\u0305"), (U"M" U"\u0305")
 };
 
 const p_list STRINGS_ASCII = 
@@ -175,7 +175,7 @@ p_bool str_startsWith(const p_str& value, const p_str& phrase)
    return true;
 }
 
-const p_str ROMAN_VINCULUM_THOUSAND =     U"I" U"̅";
+const p_str ROMAN_VINCULUM_THOUSAND =     U"I" U"\u0305";
 
 const p_str STRING_WINDOWS_PATH_PREFIX =  U"\\\\?\\";
 const p_str STRING_POPUP_TITLE =          U"Perun2";

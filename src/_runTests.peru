@@ -1,5 +1,5 @@
-delete 'test/blackbox/perun2.exe';
-copy 'build/perun2.exe' to 'test/blackbox';
+
+force copy '../build/src/Release/*' to 'test/blackbox';
   
 inside 'test/blackbox' {
   if exists('perun2.exe') {

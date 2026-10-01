@@ -97,7 +97,7 @@ p_str Period::toString() const
 
    if (y != TNUM_ZERO || years != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += y;
+      ss += intToString(y);
       if (y == TNUM_ONE || y == TNUM_MINUS_ONE)
          ss += U" year";
       else
@@ -107,7 +107,7 @@ p_str Period::toString() const
 
    if (m != TNUM_ZERO || months != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += m;
+      ss += intToString(m);
       if (m == TNUM_ONE || m == TNUM_MINUS_ONE)
          ss += U" month";
       else
@@ -117,7 +117,7 @@ p_str Period::toString() const
 
    if (weeks != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += weeks;
+      ss += intToString(weeks);
       if (weeks == TNUM_ONE || weeks == TNUM_MINUS_ONE)
          ss += U" week";
       else
@@ -127,7 +127,7 @@ p_str Period::toString() const
 
    if (days != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += days;
+      ss += intToString(days);
       if (days == TNUM_ONE || days == TNUM_MINUS_ONE)
          ss += U" day";
       else
@@ -137,7 +137,7 @@ p_str Period::toString() const
 
    if (hours != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += hours;
+      ss += intToString(hours);
       if (hours == TNUM_ONE || hours == TNUM_MINUS_ONE)
          ss += U" hour";
       else
@@ -147,7 +147,7 @@ p_str Period::toString() const
 
    if (minutes != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += minutes;
+      ss += intToString(minutes);
       if (minutes == TNUM_ONE || minutes == TNUM_MINUS_ONE)
          ss += U" minute";
       else
@@ -157,7 +157,7 @@ p_str Period::toString() const
 
    if (seconds != TNUM_ZERO) {
       if (!first) ss += CHAR_SPACE;
-      ss += seconds;
+      ss += intToString(seconds);
       if (seconds == TNUM_ONE || seconds == TNUM_MINUS_ONE)
          ss += U" second";
       else

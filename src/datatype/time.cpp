@@ -89,13 +89,13 @@ p_str Time::toString() const
    p_str ss;
 
    if (type != tt_YearMonth) {
-      ss += day;
+      ss += intToString(day);
       ss += CHAR_SPACE;
    }
 
    ss += monthToString(month);
    ss += CHAR_SPACE;
-   ss += year;
+   ss += intToString(year);
 
    if (type == tt_DateShortClock || type == tt_DateClock) {
       ss += CHAR_COMMA;
@@ -1200,7 +1200,7 @@ inline void addTimeUnit(p_str& result, const p_tnum val)
       result += CHAR_0;
    }
    
-   result += val;
+   result += intToString(val);
 }
 
 inline p_bool isLeapYear(const p_tnum year)

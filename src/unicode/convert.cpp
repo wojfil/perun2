@@ -76,7 +76,7 @@ p_str utf16_to_utf32(const std::wstring& utf16)
     p_str result;
     result.reserve(utf16.size());
 
-    for (std::size_t i = 0; i < utf16.size(); ++i) {
+    for (p_size i = 0; i < utf16.size(); ++i) {
         p_char cp = static_cast<p_char>(utf16[i]);
 
         if (cp >= 0xD800 && cp <= 0xDBFF) {

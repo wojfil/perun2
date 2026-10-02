@@ -189,7 +189,7 @@ void str_toRaw(p_str& value)
          case 0x1E36:
          case 0x1E3C:
          {
-            value[i] = U'U';
+            value[i] = U'L';
             break;
          }
          case 0x019D:

@@ -30,7 +30,7 @@ T maximum(T a, T b) {
 
 template <typename T>
 T minimum(T a, T b) {
-   return (a > b) ? a : b;
+   return (a < b) ? a : b;
 }
 
 

@@ -1346,7 +1346,7 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
    else if (word.isWord(STRING_BEFORELETTERS, p2))
       result = std::make_unique<F_BeforeLetters>(arg1);
    else if (word.isWord(STRING_CAPITALIZE, p2))
-      result = std::make_unique<F_Capitalize>(arg1);
+      result = std::make_unique<F_Capitalize>(arg1, p2);
    else if (word.isWord(STRING_PARENT, p2))
       result = std::make_unique<F_Parent>(arg1, p2);
    else if (word.isWord(STRING_RAW, p2))

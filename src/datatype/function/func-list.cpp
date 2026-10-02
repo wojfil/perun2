@@ -29,13 +29,8 @@ p_list F_Characters::getValue()
       return p_list();
    }
 
-   const std::optional<p_list> graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
-
-   if (! graphemes.has_value()) {
-      return p_list();
-   }
-
-   return graphemes.value();
+   const p_list graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+   return graphemes;
 }
 
 
@@ -48,24 +43,20 @@ p_list F_Split::getValue()
    }
 
    const p_str v2 = arg2->getValue();
-   const std::optional<p_list> graphemes = toGraphemes(v1, *(perun2.graphemeIterator.get()));
-   const std::optional<p_list> graphemes2 = toGraphemes(v2, *(perun2.graphemeIterator.get()));
+   const p_list graphemes = toGraphemes(v1, *(perun2.graphemeIterator.get()));
+   const p_list graphemes2 = toGraphemes(v2, *(perun2.graphemeIterator.get()));
 
-   if (! graphemes.has_value() || ! graphemes2.has_value()) {
-      return p_list();
+   if (graphemes2.empty()) {
+      return graphemes;
    }
 
-   if (graphemes2.value().empty()) {
-      return graphemes.value();
-   }
-
-   if (graphemes2.value().size() == 1) {
-      const p_str& sep = graphemes2.value()[0];
+   if (graphemes2.size() == 1) {
+      const p_str& sep = graphemes2[0];
       
       p_str temp;
       p_list r;
 
-      for (const p_str& g : graphemes.value()) {
+      for (const p_str& g : graphemes) {
          if (g == sep) {
             r.emplace_back(temp);
 
@@ -82,18 +73,18 @@ p_list F_Split::getValue()
       return r;
    }
 
-   const p_list& sep = graphemes2.value();
+   const p_list& sep = graphemes2;
    p_str temp;
    p_list r;
 
-   for (size_t i = 0; i < graphemes.value().size(); i++) {
-      const p_str& g = graphemes.value()[i];
+   for (size_t i = 0; i < graphemes.size(); i++) {
+      const p_str& g = graphemes[i];
 
-      if (g == sep[0] && (i + sep.size()) <= graphemes.value().size()) {
+      if (g == sep[0] && (i + sep.size()) <= graphemes.size()) {
          p_bool fit = true;
 
          for (size_t j = 1; j < sep.size(); j++) {
-            if (graphemes.value()[i + j] != sep[j]) {
+            if (graphemes[i + j] != sep[j]) {
                fit = false;
                break;
             }

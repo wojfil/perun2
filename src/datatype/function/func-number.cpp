@@ -115,8 +115,8 @@ p_num F_Length::getValue()
       return p_num(static_cast<p_nint>(value.size()));
    }
 
-   std::optional<p_list> graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
-   return p_num(static_cast<p_nint>(graphemes.value().size()));
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   return p_num(static_cast<p_nint>(graphemes.size()));
 }
 
 

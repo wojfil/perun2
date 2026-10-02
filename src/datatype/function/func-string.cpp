@@ -680,9 +680,8 @@ p_str F_RandomChar::getValue()
       }
    }
 
-   std::optional<p_list> graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
-   
-   return graphemes.value()[math.randomInt(graphemes.value().size() - 1)];
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   return graphemes[math.randomInt(graphemes.size() - 1)];
 }
 
 
@@ -717,12 +716,12 @@ p_str F_Capitalize::getValue()
       return value;
    }
 
-   std::optional<p_list> graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
 
    p_bool prevLetter = false;
    p_str result;
 
-   for (const p_str& g : graphemes.value()) {
+   for (const p_str& g : graphemes) {
       const p_bool isLetter = isLetterGrapheme(g);
 
       if (isLetter) {

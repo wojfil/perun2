@@ -150,7 +150,7 @@ p_str unicode_to_utf32(const icu::UnicodeString& unicode)
 }
 
 
-std::optional<p_list> toGraphemes(const p_str& value, icu::BreakIterator& iterator)
+p_list toGraphemes(const p_str& value, icu::BreakIterator& iterator)
 {
     p_list result;
 

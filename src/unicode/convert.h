@@ -31,7 +31,7 @@ p_str toLowercase(const p_str& input);
 p_str toUppercase(const p_str& input);
 icu::UnicodeString utf32_to_unicode(const p_str& utf32);
 p_str unicode_to_utf32(const icu::UnicodeString& unicode);
-std::optional<p_list> toGraphemes(const p_str& value, icu::BreakIterator& iterator);
+p_list toGraphemes(const p_str& value, icu::BreakIterator& iterator);
 p_bool hasOnlyOneCharGraphemes(const p_str& value);
 p_bool isLetterGrapheme(const p_str& grapheme);
 

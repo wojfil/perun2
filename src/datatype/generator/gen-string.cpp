@@ -145,14 +145,10 @@ p_str CharAtIndex::getValue()
       n += v.size();
    }
 
-   const std::optional<p_list> graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+   const p_list graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
 
-   if (! graphemes.has_value()) {
-      return p_str();
-   }
-
-   return (n >= NINT_ZERO && n < static_cast<p_nint>(graphemes.value().size()))
-      ? graphemes.value()[static_cast<p_size>(n)]
+   return (n >= NINT_ZERO && n < static_cast<p_nint>(graphemes.size()))
+      ? graphemes[static_cast<p_size>(n)]
       : p_str();
 }
 

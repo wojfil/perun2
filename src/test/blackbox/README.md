@@ -14,7 +14,7 @@ If certain test requires it, use function *path()* or the constant value *SEPARA
 Another rule goes for case size of file names. Just use lowercase every time they are involved.
 If the output of a command is a collection of files, their order may vary between environments.
 They should be ordered just in case.
-Directory *res* contains test data.
+The directory *res* contains test data.
 If you want to introduce more files for tests, create a new subdirectory inside it (like *res/newdir*).
 File time attributes (creation time etc.) of files in directory *res* should not be trusted.
 Creation and modification time may refer to the repository clone time.

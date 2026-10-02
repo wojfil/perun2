@@ -3,7 +3,6 @@ force copy '../build/src/Release/*' to 'test/blackbox';
   
 inside 'test/blackbox' {
   if exists('perun2.exe') {
-    drop 'res\ccc\*';
     open 'run.py';
     if not success {
       error

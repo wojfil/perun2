@@ -169,7 +169,41 @@ std::optional<p_list> toGraphemes(const p_str& value, icu::BreakIterator& iterat
     }
 
     return result;
-};
+}
+
+
+p_bool hasOnlyOneCharGraphemes(const p_str& value)
+{
+    // this implementation is leaky and has false negatives
+    // but it does not matter - it must be fast so simple strings are quickly detected
+    // this function is used only for optimization detection
+    for (const p_char c : value) {
+        if (c <= 0x7F) {
+            continue;
+        }
+
+        if (c == 0x200D) {
+            return false;
+        }
+
+        if ((c >= 0x300 && c <= 0x36F) ||
+            (c >= 0x1AB0 && c <= 0x1AFF) ||
+            (c >= 0x1DC0 && c <= 0x1DFF) ||
+            (c >= 0x20D0 && c <= 0x20FF) ||
+            (c >= 0xFE20 && c <= 0xFE2F))
+        {
+            return false;
+        }
+
+        if ((c >= 0xFE00 && c <= 0xFE0F) ||
+            (c >= 0xE0100 && c <= 0xE01EF))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 
 }

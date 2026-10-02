@@ -17,6 +17,12 @@
 #include "func-generic.h"
 
 
+namespace perun2
+{
+struct Perun2;
+}
+
+
 namespace perun2::func
 {
 
@@ -287,20 +293,25 @@ struct F_RandomChar : Func_1<p_str>, Generator<p_str>
 {
 public:
    F_RandomChar(p_genptr<p_str>& a1, Perun2Process& p2)
-      : Func_1(a1), math(p2.math) { };
+      : Func_1(a1), math(p2.math), perun2(p2) { };
 
    p_str getValue() override;
 
 private:
    Math& math;
+   Perun2Process& perun2;
 };
 
 
 struct F_Capitalize : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Capitalize(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_Capitalize(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 

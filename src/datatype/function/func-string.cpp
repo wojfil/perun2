@@ -667,16 +667,22 @@ p_str F_BeforeLetters::getValue()
 p_str F_RandomChar::getValue()
 {
    const p_str value = arg1->getValue();
-
-   switch (value.size()) {
-      case 0:
-      case 1: {
-         return value;
-      }
-      default: {
-         return charToString(value[math.randomInt(value.size() - 1)]);
+   
+   if (hasOnlyOneCharGraphemes(value)) {
+      switch (value.size()) {
+         case 0:
+         case 1: {
+            return value;
+         }
+         default: {
+            return charToString(value[math.randomInt(value.size() - 1)]);
+         }
       }
    }
+
+   std::optional<p_list> graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   
+   return graphemes.value()[math.randomInt(graphemes.value().size() - 1)];
 }
 
 
@@ -688,26 +694,53 @@ p_str F_Capitalize::getValue()
       return value;
    }
 
-   p_bool prevLetter = false;
+   if (hasOnlyOneCharGraphemes(value)) {
+      p_bool prevLetter = false;
 
-   for (p_char& ch : value) {
-      const p_bool isLetter = char_isAlpha(ch);
+      for (p_char& ch : value) {
+         const p_bool isLetter = char_isAlpha(ch);
+
+         if (isLetter) {
+            if (prevLetter) {
+               char_toLower(ch);
+            }
+            else {
+               prevLetter = true;
+               char_toUpper(ch);
+            }
+         }
+         else {
+            prevLetter = false;
+         }
+      }
+
+      return value;
+   }
+
+   std::optional<p_list> graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
+   p_bool prevLetter = false;
+   p_str result;
+
+   for (const p_str& g : graphemes.value()) {
+      const p_bool isLetter = isLetterGrapheme(g);
 
       if (isLetter) {
          if (prevLetter) {
-            char_toLower(ch);
+            result += toLowercase(g);
          }
          else {
             prevLetter = true;
-            char_toUpper(ch);
+            result += toUppercase(g);
          }
       }
       else {
          prevLetter = false;
+         result += g;
       }
    }
 
-   return value;
+   return result;
 }
 
 

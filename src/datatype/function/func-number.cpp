@@ -109,7 +109,14 @@ p_num F_Floor::getValue()
 
 p_num F_Length::getValue()
 {
-   return p_num(static_cast<p_nint>(arg1->getValue().size()));
+   const p_str value = arg1->getValue();
+
+   if (hasOnlyOneCharGraphemes(value)) {
+      return p_num(static_cast<p_nint>(value.size()));
+   }
+
+   std::optional<p_list> graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   return p_num(static_cast<p_nint>(graphemes.value().size()));
 }
 
 

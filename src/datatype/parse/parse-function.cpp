@@ -507,7 +507,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
 
       p_genptr<p_str> arg1;
       if (parse::parse(p2, args[0], arg1)) {
-         result = std::make_unique<F_Length>(arg1);
+         result = std::make_unique<F_Length>(arg1, p2);
          return true;
       }
       else {

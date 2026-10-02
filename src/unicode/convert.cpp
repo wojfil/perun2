@@ -206,4 +206,15 @@ p_bool hasOnlyOneCharGraphemes(const p_str& value)
 }
 
 
+p_bool isLetterGrapheme(const p_str& grapheme)
+{
+    for (p_char c : grapheme) {
+        if (u_isalpha(c)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 }

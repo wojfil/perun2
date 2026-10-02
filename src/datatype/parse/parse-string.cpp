@@ -65,7 +65,7 @@ p_bool parseString(p_genptr<p_str>& result, const Tokens& tks, Perun2Process& p2
          p_genptr<p_str> str;
 
          if (makeVarRef(f, str, p2)) {
-            result = std::make_unique<gen::CharAtIndex>(str, num);
+            result = std::make_unique<gen::CharAtIndex>(str, num, p2);
             return true;
          }
          else {

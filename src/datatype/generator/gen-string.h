@@ -162,12 +162,13 @@ private:
 struct CharAtIndex : Generator<p_str>
 {
 public:
-   CharAtIndex (p_genptr<p_str>& val, p_genptr<p_num>& ind)
-      : value(std::move(val)), index(std::move(ind)) { };
+   CharAtIndex (p_genptr<p_str>& val, p_genptr<p_num>& ind, Perun2Process& p2)
+      : value(std::move(val)), index(std::move(ind)), perun2(p2) { };
 
    p_str getValue() override;
 
 private:
+   Perun2Process& perun2;
    p_genptr<p_str> value;
    p_genptr<p_num> index;
 };

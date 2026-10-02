@@ -20,24 +20,22 @@
 namespace perun2::func
 {
 
-inline p_list toChars(const p_str& value)
+
+p_list F_Characters::getValue()
 {
-   const std::optional<p_list> graphemes = toGraphemes(value);
+   const p_str v = arg1->getValue();
+
+   if (v.empty()) {
+      return p_list();
+   }
+
+   const std::optional<p_list> graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
 
    if (! graphemes.has_value()) {
       return p_list();
    }
 
    return graphemes.value();
-}
-
-
-p_list F_Characters::getValue()
-{
-   const p_str v = arg1->getValue();
-   return v.empty()
-      ? p_list()
-      : toChars(v);
 }
 
 
@@ -50,8 +48,8 @@ p_list F_Split::getValue()
    }
 
    const p_str v2 = arg2->getValue();
-   const std::optional<p_list> graphemes = toGraphemes(v1);
-   const std::optional<p_list> graphemes2 = toGraphemes(v2);
+   const std::optional<p_list> graphemes = toGraphemes(v1, *(perun2.graphemeIterator.get()));
+   const std::optional<p_list> graphemes2 = toGraphemes(v2, *(perun2.graphemeIterator.get()));
 
    if (! graphemes.has_value() || ! graphemes2.has_value()) {
       return p_list();

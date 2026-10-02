@@ -30,7 +30,7 @@ Logger::Logger(const Perun2Process& p2)
 
 void Logger::print(const p_str& value) const
 {
-   if (this->isMaxPerformance) {
+   if (this->isSilent || this->isMaxPerformance) {
       return;
    }
 
@@ -44,7 +44,7 @@ void Logger::print(const p_str& value) const
 
 void Logger::emptyLine() const
 {
-   if (this->isMaxPerformance) {
+   if (this->isSilent || this->isMaxPerformance) {
       return;
    }
    

@@ -21,6 +21,8 @@
 namespace perun2 
 {
 
+struct Perun2;
+
 p_str utf8_to_utf32(const std::string& utf8);
 std::string utf32_to_utf8(const p_str& utf32);
 std::wstring utf32_to_utf16(const p_str& utf32);
@@ -29,6 +31,6 @@ p_str toLowercase(const p_str& input);
 p_str toUppercase(const p_str& input);
 icu::UnicodeString utf32_to_unicode(const p_str& utf32);
 p_str unicode_to_utf32(const icu::UnicodeString& unicode);
-std::optional<p_list> toGraphemes(const p_str& value);
+std::optional<p_list> toGraphemes(const p_str& value, icu::BreakIterator& iterator);
 
 }

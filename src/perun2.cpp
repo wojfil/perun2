@@ -12,8 +12,6 @@
     along with Perun2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <vector>
-#include <cstdlib>
 #include "perun2.h"
 #include "exception.h"
 #include "command/com-parse.h"
@@ -24,6 +22,7 @@
 #include "os/os.h"
 #include "logger.h"
 #include "datatype/math.h"
+#include <unicode/brkiter.h>
 
 
 namespace perun2
@@ -42,18 +41,29 @@ Perun2Process::~Perun2Process() noexcept
 
 p_bool Perun2Process::run()
 {
+   this->executionType = ExecutionType::et_Run;
+   this->exitCode = EXITCODE_OK;
+
    if (! this->arguments.areGood()) {
       this->exitCode = EXITCODE_CLI_ERROR;
       return false;
+   }
+
+   if (! this->graphemeIterator) {
+      UErrorCode status = U_ZERO_ERROR;
+      this->graphemeIterator.reset(icu::BreakIterator::createCharacterInstance(icu::Locale::getRoot(), status));
+
+      if (U_FAILURE(status) || ! this->graphemeIterator) {
+         this->exitCode = EXITCODE_DLL_ERROR;
+         this->logger.log(MESSAGE_ICU_INITIALIZATION_FAILURE);
+         return false;
+      }
    }
 
    if (! os_directoryExists(this->arguments.getLocation())) {
       this->exitCode = EXITCODE_NO_LOCATION;
       return false;
    }
-
-   this->executionType = ExecutionType::et_Run;
-   this->exitCode = EXITCODE_OK;
 
    const p_bool result = this->preParse() 
        && this->parse() 
@@ -65,13 +75,24 @@ p_bool Perun2Process::run()
 
 p_bool Perun2Process::staticallyAnalyze()
 {
+   this->executionType = ExecutionType::et_StaticAnalysis;
+   this->exitCode = EXITCODE_OK;
+
    if (! this->arguments.areGood()) {
       this->exitCode = EXITCODE_CLI_ERROR;
       return false;
    }
+   
+   if (! this->graphemeIterator) {
+      UErrorCode status = U_ZERO_ERROR;
+      this->graphemeIterator.reset(icu::BreakIterator::createCharacterInstance(icu::Locale::getRoot(), status));
 
-   this->executionType = ExecutionType::et_StaticAnalysis;
-   this->exitCode = EXITCODE_OK;
+      if (U_FAILURE(status) || ! this->graphemeIterator) {
+         this->exitCode = EXITCODE_DLL_ERROR;
+         this->logger.log(MESSAGE_ICU_INITIALIZATION_FAILURE);
+         return false;
+      }
+   }
 
    if (this->preParse() 
        && this->parse() 

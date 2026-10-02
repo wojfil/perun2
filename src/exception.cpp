@@ -22,6 +22,8 @@
 namespace perun2
 {
 
+const p_str MESSAGE_ICU_INITIALIZATION_FAILURE =  U"DLL error: failed to initialize ICU BreakIterator.";
+
 SyntaxError::SyntaxError(const p_str& msg, const p_int li)
    : message(msg), line(li) { };
 

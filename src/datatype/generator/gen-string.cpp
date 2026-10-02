@@ -145,7 +145,7 @@ p_str CharAtIndex::getValue()
       n += v.size();
    }
 
-   const std::optional<p_list> graphemes = toGraphemes(v);
+   const std::optional<p_list> graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
 
    if (! graphemes.has_value()) {
       return p_str();

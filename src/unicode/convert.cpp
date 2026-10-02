@@ -150,7 +150,7 @@ p_str unicode_to_utf32(const icu::UnicodeString& unicode)
 }
 
 
-std::optional<p_list> toGraphemes(const p_str& value)
+std::optional<p_list> toGraphemes(const p_str& value, icu::BreakIterator& iterator)
 {
     p_list result;
 
@@ -159,27 +159,17 @@ std::optional<p_list> toGraphemes(const p_str& value)
         static_cast<int32_t>(value.size())
     );
 
-    UErrorCode status = U_ZERO_ERROR;
+    iterator.setText(ustr);
+    int32_t start = iterator.first();
 
-    std::unique_ptr<icu::BreakIterator> it(
-        icu::BreakIterator::createCharacterInstance(icu::Locale::getRoot(), status));
-
-    if (U_FAILURE(status)) {
-        return std::nullopt;
-    }
-
-    it->setText(ustr);
-
-    int32_t start = it->first();
-
-    for (int32_t end = it->next(); end != icu::BreakIterator::DONE; start = end, end = it->next()) {
+    for (int32_t end = iterator.next(); end != icu::BreakIterator::DONE; start = end, end = iterator.next())
+    {
         icu::UnicodeString cluster = ustr.tempSubStringBetween(start, end);
         result.emplace_back(unicode_to_utf32(cluster));
     }
 
     return result;
 };
-
 
 
 }

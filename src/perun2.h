@@ -27,6 +27,7 @@
 #include "context/ctx-main.h"
 #include "logger.h"
 #include "post-parse-data.h"
+#include <unicode/unistr.h>
 
 
 namespace perun2
@@ -44,6 +45,7 @@ p_constexpr int EXITCODE_RUNTIME_ERROR =  1;
 p_constexpr int EXITCODE_SYNTAX_ERROR =   2;
 p_constexpr int EXITCODE_CLI_ERROR =      3;
 p_constexpr int EXITCODE_NO_LOCATION =    4;
+p_constexpr int EXITCODE_DLL_ERROR =      5;
 
 
 enum State
@@ -97,6 +99,7 @@ public:
    Logger logger;
    PostParseData postParseData;
    comm::Python3Processes python3Processes;
+   std::unique_ptr<icu::BreakIterator> graphemeIterator;
 
 private:
    p_bool preParse();

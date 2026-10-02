@@ -20,6 +20,8 @@
 namespace perun2
 {
 
+extern const p_str MESSAGE_ICU_INITIALIZATION_FAILURE;
+
 class SyntaxError
 {
 public:

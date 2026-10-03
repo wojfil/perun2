@@ -1336,7 +1336,7 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
    else if (word.isWord(STRING_UPPER, p2))
       result = std::make_unique<F_Upper>(arg1);
    else if (word.isWord(STRING_REVERSE, p2))
-      result = std::make_unique<F_Reverse>(arg1);
+      result = std::make_unique<F_Reverse>(arg1, p2);
    else if (word.isWord(STRING_AFTERDIGITS, p2))
       result = std::make_unique<F_AfterDigits>(arg1, p2);
    else if (word.isWord(STRING_AFTERLETTERS, p2))

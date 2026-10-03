@@ -341,8 +341,20 @@ p_str F_Reverse::getValue()
       return value;
    }
 
-   std::reverse(value.begin(), value.end());
-   return value;
+   if (hasOnlyOneCharGraphemes(value)) { 
+      std::reverse(value.begin(), value.end());
+      return value;
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   p_str result;
+   result.reserve(value.size());
+
+   for (int64_t i = graphemes.size() - 1; i >= 0; i--) {
+      result += graphemes[i];
+   }
+
+   return result;
 }
 
 

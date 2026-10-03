@@ -1438,7 +1438,7 @@ static p_bool c_runContextless_simple(p_comptr& result, const Token& word, const
       return true;
    }
    else {
-      throw SyntaxError(str(U"last argument of the command \"",
+      throw SyntaxError(str(U"the last argument of the command \"",
          word.getOriginString(p2), U" with\" cannot be resolved to a string"), line);
    }
 
@@ -1470,7 +1470,7 @@ static p_bool c_runContextless_with(p_comptr& result, const Token& word, const T
 
    p_genptr<p_str> exec;
    if (!parse::parse(p2, left2, exec)) {
-      throw SyntaxError(str(U"second argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(U"the second argument of the command \"", word.getOriginString(p2),
          U" with with\" cannot be resolved to a string"), line);
    }
 
@@ -1492,7 +1492,7 @@ static p_bool c_runContextless_with(p_comptr& result, const Token& word, const T
                return true;
             }
             else {
-               throw SyntaxError(str(U"last argument of the command \"",
+               throw SyntaxError(str(U"the last argument of the command \"",
                   word.getOriginString(p2), U" with Perun2 with\" cannot be resolved to a list"), line);
             }
          }
@@ -1511,7 +1511,7 @@ static p_bool c_runContextless_with(p_comptr& result, const Token& word, const T
          return true;
       }
       else {
-         throw SyntaxError(str(U"last argument of the command \"",
+         throw SyntaxError(str(U"the last argument of the command \"",
             word.getOriginString(p2), U" with with\" cannot be resolved to a list"), line);
       }
    }
@@ -1536,7 +1536,7 @@ static p_bool c_runContextfull_simple(p_comptr& result, const Token& word, const
 
    p_genptr<p_str> exec;
    if (!parse::parse(p2, right, exec)) {
-      throw SyntaxError(str(U"last argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(U"the last argument of the command \"", word.getOriginString(p2),
          U" with\" cannot be resolved to a string"), line);
    }
 
@@ -1551,7 +1551,7 @@ static p_bool c_runContextfull_simple(p_comptr& result, const Token& word, const
             return true;
          }
 
-         throw SyntaxError(str(U"first argument of the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(U"the first argument of the command \"", word.getOriginString(p2),
             U" with Perun2\" cannot be resolved to a list"), line);
       }
    }
@@ -1561,7 +1561,7 @@ static p_bool c_runContextfull_simple(p_comptr& result, const Token& word, const
       return true;
    }
 
-   throw SyntaxError(str(U"first argument of the command \"", word.getOriginString(p2),
+   throw SyntaxError(str(U"the first argument of the command \"", word.getOriginString(p2),
       U" with\" cannot be resolved to a list"), line);
 }
 
@@ -1587,7 +1587,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 
    p_genptr<p_str> exec;
    if (!parse::parse(p2, left2, exec)) {
-      throw SyntaxError(str(U"second argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(U"second the command \"", word.getOriginString(p2),
          U" with with\" cannot be resolved to a string"), line);
    }
 
@@ -1604,7 +1604,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
                return true;
             }
 
-            throw SyntaxError(str(U"first argument of the command \"", word.getOriginString(p2),
+            throw SyntaxError(str(U"the first argument of the command \"", word.getOriginString(p2),
                U" with Perun2 with\" cannot be resolved to a list"), line);
          }
       }
@@ -1614,7 +1614,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
          return true;
       }
 
-      throw SyntaxError(str(U"first argument of the command \"", word.getOriginString(p2),
+      throw SyntaxError(str(U"the first argument of the command \"", word.getOriginString(p2),
          U" with with\" cannot be resolved to a list"), line);
    }
    else {
@@ -1622,7 +1622,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
 
       if (!parse::parse(p2, right2, lastList)) {
          p2.contexts.retreatFileContext();
-         throw SyntaxError(str(U"last argument of the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(U"the last argument of the command \"", word.getOriginString(p2),
             U" with with\" cannot be resolved to a list"), line);
       }
       else {
@@ -1637,7 +1637,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
                   return true;
                }
 
-               throw SyntaxError(str(U"first argument of the command \"", word.getOriginString(p2),
+               throw SyntaxError(str(U"the first argument of the command \"", word.getOriginString(p2),
                   U" with Perun2 with\" cannot be resolved to a list"), line);
             }
          }
@@ -1647,7 +1647,7 @@ static p_bool c_runContextfull_with(p_comptr& result, const Token& word, const T
             return true;
          }
 
-         throw SyntaxError(str(U"first argument of the command \"", word.getOriginString(p2),
+         throw SyntaxError(str(U"the first argument of the command \"", word.getOriginString(p2),
             U" with with\" cannot be resolved to a list"), line);
       }
    }

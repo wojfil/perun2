@@ -681,7 +681,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(U"first argument of the function \"", word.getOriginString(p2),
+      throw SyntaxError(str(U"the first argument of the function \"", word.getOriginString(p2),
          U"\" cannot be resolved to a time nor a number"), word.line);
    }
    else if (word.isWord(STRING_SHIFTWEEKDAY, p2)) {
@@ -705,7 +705,7 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
          return true;
       }
 
-      throw SyntaxError(str(U"first argument of the function \"", word.getOriginString(p2),
+      throw SyntaxError(str(U"the first argument of the function \"", word.getOriginString(p2),
          U"\" cannot be resolved to a time nor a number"), word.line);
    }
    else if (word.isWord(STRINGS_AGGRFUNC, p2)) {
@@ -1023,7 +1023,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
             values.push_back(std::make_unique<F_ConcatenateUnit>(list));
          }
          else {
-            throw SyntaxError(U"the ", str(ordinalNumber(i + 1), U" argument of the function \"",
+            throw SyntaxError(str(U"the ", ordinalNumber(i + 1), U" argument of the function \"",
                word.getOriginString(p2), U"\" cannot be resolved to any data type"), word.line);
          }
       }
@@ -1548,7 +1548,7 @@ void functionArgNumberException(const p_int argNumber, const Token& word, Perun2
 
 void functionArgException(const p_int argNumber, const p_str& typeName, const Token& word, Perun2Process& p2)
 {
-   throw SyntaxError(U"the ", str(ordinalNumber(argNumber), U" argument of the function \"",
+   throw SyntaxError(str(U"the ", ordinalNumber(argNumber), U" argument of the function \"",
       word.getOriginString(p2), U"\" cannot be resolved to a ", typeName), word.line);
 }
 

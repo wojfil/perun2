@@ -34,6 +34,7 @@ p_str unicode_to_utf32(const icu::UnicodeString& unicode);
 p_list toGraphemes(const p_str& value, icu::BreakIterator& iterator);
 p_bool hasOnlyOneCharGraphemes(const p_str& value);
 p_bool isLetterGrapheme(const p_str& grapheme);
+p_bool isDigitGrapheme(const p_str& grapheme);
 
 
 }

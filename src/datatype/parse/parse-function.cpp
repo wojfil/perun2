@@ -1338,13 +1338,13 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
    else if (word.isWord(STRING_REVERSE, p2))
       result = std::make_unique<F_Reverse>(arg1);
    else if (word.isWord(STRING_AFTERDIGITS, p2))
-      result = std::make_unique<F_AfterDigits>(arg1);
+      result = std::make_unique<F_AfterDigits>(arg1, p2);
    else if (word.isWord(STRING_AFTERLETTERS, p2))
-      result = std::make_unique<F_AfterLetters>(arg1);
+      result = std::make_unique<F_AfterLetters>(arg1, p2);
    else if (word.isWord(STRING_BEFOREDIGITS, p2))
-      result = std::make_unique<F_BeforeDigits>(arg1);
+      result = std::make_unique<F_BeforeDigits>(arg1, p2);
    else if (word.isWord(STRING_BEFORELETTERS, p2))
-      result = std::make_unique<F_BeforeLetters>(arg1);
+      result = std::make_unique<F_BeforeLetters>(arg1, p2);
    else if (word.isWord(STRING_CAPITALIZE, p2))
       result = std::make_unique<F_Capitalize>(arg1, p2);
    else if (word.isWord(STRING_PARENT, p2))

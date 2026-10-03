@@ -260,32 +260,52 @@ public:
 struct F_AfterDigits : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_AfterDigits(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_AfterDigits(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
+
    p_str getValue() override;
+   
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_AfterLetters : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_AfterLetters(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_AfterLetters(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
+
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_BeforeDigits : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_BeforeDigits(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_BeforeDigits(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
+
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_BeforeLetters : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_BeforeLetters(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_BeforeLetters(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
+
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 

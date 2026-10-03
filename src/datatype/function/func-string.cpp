@@ -591,44 +591,110 @@ p_str F_WeekDayNameFromTime::getValue()
 p_str F_AfterDigits::getValue()
 {
    const p_str value = arg1->getValue();
+
+   if (hasOnlyOneCharGraphemes(value)) {
+      p_bool after = false;
+
+      for (p_size i = 0; i < value.size(); i++) {
+         if (after) {
+            if (!char_isDigit(value[i])) {
+               return value.substr(i);
+            }
+         }
+         else {
+            if (char_isDigit(value[i])) {
+               after = true;
+            }
+         }
+      }
+
+      return p_str();
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   int64_t start = -1;
    p_bool after = false;
 
-   for (p_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < graphemes.size(); i++) {
       if (after) {
-         if (!char_isDigit(value[i])) {
-            return value.substr(i);
+         if (! isDigitGrapheme(graphemes[i])) {
+            start = static_cast<int64_t>(i);
+            break;
          }
       }
       else {
-         if (char_isDigit(value[i])) {
+         if (isDigitGrapheme(graphemes[i])) {
             after = true;
          }
       }
    }
 
-   return p_str();
+   if (start == -1) {
+      return p_str();
+   }
+
+   p_str result;
+
+   for (p_size i = static_cast<p_size>(start); i < graphemes.size(); i++) {
+      result += graphemes[i];
+   }
+
+   return result;
 }
 
 
 p_str F_AfterLetters::getValue()
 {
    const p_str value = arg1->getValue();
+
+   if (hasOnlyOneCharGraphemes(value)) {
+      p_bool after = false;
+
+      for (p_size i = 0; i < value.size(); i++) {
+         if (after) {
+            if (!char_isAlpha(value[i])) {
+               return value.substr(i);
+            }
+         }
+         else {
+            if (char_isAlpha(value[i])) {
+               after = true;
+            }
+         }
+      }
+
+      return p_str();
+   }
+   
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   int64_t start = -1;
    p_bool after = false;
 
-   for (p_size i = 0; i < value.size(); i++) {
+   for (p_size i = 0; i < graphemes.size(); i++) {
       if (after) {
-         if (!char_isAlpha(value[i])) {
-            return value.substr(i);
+         if (! isLetterGrapheme(graphemes[i])) {
+            start = static_cast<int64_t>(i);
+            break;
          }
       }
       else {
-         if (char_isAlpha(value[i])) {
+         if (isLetterGrapheme(graphemes[i])) {
             after = true;
          }
       }
    }
 
-   return p_str();
+   if (start == -1) {
+      return p_str();
+   }
+
+   p_str result;
+
+   for (p_size i = static_cast<p_size>(start); i < graphemes.size(); i++) {
+      result += graphemes[i];
+   }
+
+   return result;
 }
 
 
@@ -636,11 +702,34 @@ p_str F_BeforeDigits::getValue()
 {
    const p_str value = arg1->getValue();
 
+   if (hasOnlyOneCharGraphemes(value)) {
+      for (p_size i = 0; i < value.size(); i++) {
+         if (char_isDigit(value[i])) {
+            return i == 0
+               ? p_str()
+               : value.substr(0, i);
+         }
+      }
+
+      return p_str();
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
    for (p_size i = 0; i < value.size(); i++) {
-      if (char_isDigit(value[i])) {
-         return i == 0
-            ? p_str()
-            : value.substr(0, i);
+      if (isDigitGrapheme(graphemes[i])) {
+         if (i == 0) {
+            return p_str();
+         }
+
+         p_str result;
+         result.reserve(i);
+
+         for (p_size j = 0; j < i; j++) {
+            result += graphemes[j];
+         }
+
+         return result;
       }
    }
 
@@ -652,11 +741,34 @@ p_str F_BeforeLetters::getValue()
 {
    const p_str value = arg1->getValue();
 
+   if (hasOnlyOneCharGraphemes(value)) {
+      for (p_size i = 0; i < value.size(); i++) {
+         if (char_isAlpha(value[i])) {
+            return i == 0
+               ? p_str()
+               : value.substr(0, i);
+         }
+      }
+
+      return p_str();
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
    for (p_size i = 0; i < value.size(); i++) {
-      if (char_isAlpha(value[i])) {
-         return i == 0
-            ? p_str()
-            : value.substr(0, i);
+      if (isLetterGrapheme(graphemes[i])) {
+         if (i == 0) {
+            return p_str();
+         }
+
+         p_str result;
+         result.reserve(i);
+
+         for (p_size j = 0; j < i; j++) {
+            result += graphemes[j];
+         }
+
+         return result;
       }
    }
 
@@ -720,6 +832,7 @@ p_str F_Capitalize::getValue()
 
    p_bool prevLetter = false;
    p_str result;
+   result.reserve(graphemes.size() + 1);
 
    for (const p_str& g : graphemes) {
       const p_bool isLetter = isLetterGrapheme(g);
@@ -762,6 +875,7 @@ p_str F_Join::getValue()
 
          if (separator.empty()) {
             p_str ss;
+            ss.reserve(values.size());
 
             for (const p_str& val : values) {
                ss += val;
@@ -771,6 +885,7 @@ p_str F_Join::getValue()
          }
          else {
             p_str ss;
+            ss.reserve(values.size() * 2);
             ss += values[0];
 
             for (p_size i = 1; i < values.size(); i++) {

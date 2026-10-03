@@ -217,4 +217,16 @@ p_bool isLetterGrapheme(const p_str& grapheme)
     return false;
 }
 
+
+p_bool isDigitGrapheme(const p_str& grapheme)
+{
+    for (p_char c : grapheme) {
+        if (u_isdigit(c)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 }

@@ -27,6 +27,37 @@
 namespace perun2::func
 {
 
+
+static int64_t indexOfFirstAppearance(const p_list& base, const p_list& phrase) 
+{
+   if (phrase.size() > base.size()) {
+      return -1;
+   }
+
+   const p_size end = 1 + base.size() - phrase.size();
+
+   for (p_size i = 0; i < end; i++) {
+      p_bool matches = true;
+      
+      for (p_size j = 0; j < phrase.size(); j++) {
+         const p_str& v1 = base[j + i];
+         const p_str& v2 = phrase[j];
+
+         if (v1 != v2) {
+            matches = false;
+            break;
+         }
+      }
+
+      if (matches) {
+         return i;
+      }
+   }
+
+   return -1;
+}
+
+
 p_str F_After::getValue()
 {
    const p_str s1 = arg1->getValue();
@@ -38,24 +69,42 @@ p_str F_After::getValue()
    if (s2.empty()) {
       return s2;
    }
-
-   if (s2.size() == 1) {
-      for (p_size i = 0; i < s1.size(); i++) {
-         if (s1[i] == s2[0]) {
-            return i == s1.size() - 1
-               ? p_str()
-               : s1.substr(i + 1);
+   
+   if (hasOnlyOneCharGraphemes(s1) && hasOnlyOneCharGraphemes(s2)) {
+      if (s2.size() == 1) {
+         for (p_size i = 0; i < s1.size(); i++) {
+            if (s1[i] == s2[0]) {
+               return i == s1.size() - 1
+                  ? p_str()
+                  : s1.substr(i + 1);
+            }
          }
-      }
 
+         return p_str();
+      }
+      else {
+         auto pos = s1.find(s2);
+         return pos == p_str::npos
+            ? p_str()
+            : s1.substr(pos + s2.size());
+      }
+   }
+
+   const p_list graphemes1 = toGraphemes(s1, *(perun2.graphemeIterator.get()));
+   const p_list graphemes2 = toGraphemes(s2, *(perun2.graphemeIterator.get()));
+   const int64_t index = indexOfFirstAppearance(graphemes1, graphemes2);
+
+   if (index == -1) {
       return p_str();
    }
-   else {
-      auto pos = s1.find(s2);
-      return pos == p_str::npos
-         ? p_str()
-         : s1.substr(pos + s2.size());
+
+   p_str result;
+
+   for (p_size i = index + graphemes2.size(); i < graphemes1.size(); i++) {
+      result += graphemes1[i];
    }
+
+   return result;
 }
 
 
@@ -71,48 +120,80 @@ p_str F_Before::getValue()
       return s2;
    }
 
-   if (s2.size() == 1) {
-      for (p_size i = 0; i < s1.size(); i++) {
-         if (s1[i] == s2[0]) {
-            return i == 0
-               ? p_str()
-               : s1.substr(0, i);
+   if (hasOnlyOneCharGraphemes(s1) && hasOnlyOneCharGraphemes(s2)) {
+      if (s2.size() == 1) {
+         for (p_size i = 0; i < s1.size(); i++) {
+            if (s1[i] == s2[0]) {
+               return i == 0
+                  ? p_str()
+                  : s1.substr(0, i);
+            }
          }
-      }
 
+         return p_str();
+      }
+      else {
+         auto pos = s1.find(s2);
+         return pos == p_str::npos
+            ? p_str()
+            : s1.substr(0, pos);
+      }
+   }
+
+   const p_list graphemes1 = toGraphemes(s1, *(perun2.graphemeIterator.get()));
+   const p_list graphemes2 = toGraphemes(s2, *(perun2.graphemeIterator.get()));
+   const int64_t index = indexOfFirstAppearance(graphemes1, graphemes2);
+
+   if (index == -1) {
       return p_str();
    }
-   else {
-      auto pos = s1.find(s2);
-      return pos == p_str::npos
-         ? p_str()
-         : s1.substr(0, pos);
+
+   p_str result;
+
+   for (p_size i = 0; i < static_cast<p_size>(index); i++) {
+      result += graphemes1[i];
    }
+
+   return result;
 }
 
 
 p_str F_Digits::getValue()
 {
    const p_str s1 = arg1->getValue();
-   p_size len2 = 0;
-   p_size it = 0;
 
-   for (const p_char ch : s1) {
-      if (char_isDigit(ch)) {
-         len2++;
+   if (hasOnlyOneCharGraphemes(s1)) {
+      p_size len2 = 0;
+      p_size it = 0;
+
+      for (const p_char ch : s1) {
+         if (char_isDigit(ch)) {
+            len2++;
+         }
+      }
+
+      p_str s2(len2, CHAR_SPACE);
+
+      for (const p_char ch : s1) {
+         if (char_isDigit(ch)) {
+            s2[it] = ch;
+            it++;
+         }
+      }
+
+      return s2;
+   }
+
+   const p_list graphemes = toGraphemes(s1, *(perun2.graphemeIterator.get()));
+   p_str result;
+
+   for (const p_str& graph : graphemes) {
+      if (isDigitGrapheme(graph)) {
+         result += graph;
       }
    }
 
-   p_str s2(len2, CHAR_SPACE);
-
-   for (const p_char ch : s1) {
-      if (char_isDigit(ch)) {
-         s2[it] = ch;
-         it++;
-      }
-   }
-
-   return s2;
+   return result;
 }
 
 
@@ -142,24 +223,38 @@ p_str F_Fill::getValue()
 p_str F_Letters::getValue()
 {
    const p_str s1 = arg1->getValue();
-   p_size len2 = 0;
-   p_size it = 0;
 
-   for (const p_char ch : s1) {
-      if (char_isAlpha(ch)) {
-         len2++;
+   if (hasOnlyOneCharGraphemes(s1)) {
+      p_size len2 = 0;
+      p_size it = 0;
+
+      for (const p_char ch : s1) {
+         if (char_isAlpha(ch)) {
+            len2++;
+         }
+      }
+
+      p_str s2(len2, CHAR_SPACE);
+      for (const p_char ch : s1) {
+         if (char_isAlpha(ch)) {
+            s2[it] = ch;
+            it++;
+         }
+      }
+
+      return s2;
+   }
+
+   const p_list graphemes = toGraphemes(s1, *(perun2.graphemeIterator.get()));
+   p_str result;
+
+   for (const p_str& graph : graphemes) {
+      if (isLetterGrapheme(graph)) {
+         result += graph;
       }
    }
 
-   p_str s2(len2, CHAR_SPACE);
-   for (const p_char ch : s1) {
-      if (char_isAlpha(ch)) {
-         s2[it] = ch;
-         it++;
-      }
-   }
-
-   return s2;
+   return result;
 }
 
 
@@ -264,11 +359,27 @@ p_str F_Left::getValue()
    }
 
    const p_str value = arg1->getValue();
-   const p_nint length = static_cast<p_nint>(value.size());
 
-   return left >= length
-      ? value
-      : value.substr(0, left);
+   if (hasOnlyOneCharGraphemes(value)) { 
+      const p_nint length = static_cast<p_nint>(value.size());
+
+      return left >= length
+         ? value
+         : value.substr(0, left);
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
+   if (left >= static_cast<p_nint>(graphemes.size())) {
+      return value;
+   }
+
+   p_str result;
+   for (p_nint i = 0; i < left; i++) {
+      result += graphemes[static_cast<p_size>(i)];
+   }
+
+   return result;
 }
 
 
@@ -285,11 +396,27 @@ p_str F_Right::getValue()
    }
 
    const p_str value = arg1->getValue();
-   const p_nint length = static_cast<p_nint>(value.size());
 
-   return right >= length
-      ? value
-      : value.substr(length - right);
+   if (hasOnlyOneCharGraphemes(value)) {
+      const p_nint length = static_cast<p_nint>(value.size());
+
+      return right >= length
+         ? value
+         : value.substr(length - right);
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
+   if (right >= static_cast<p_nint>(graphemes.size())) {
+      return value;
+   }
+
+   p_str result;
+   for (p_nint i = 0; i < right; i++) {
+      result += graphemes[static_cast<p_size>(graphemes.size() - right + i)];
+   }
+
+   return result;
 }
 
 
@@ -436,6 +563,25 @@ p_str F_LastDef::getValue()
 }
 
 
+static p_bool containsAtIndex(const p_list& base, const p_list& phrase, const p_size index) 
+{
+   if ((phrase.size() + index) > base.size()) {
+      return false;
+   }
+
+   for (p_size i = 0; i < phrase.size(); i++) {
+      const p_str& v1 = base[index + i];
+      const p_str& v2 = phrase[i];
+
+      if (v1 != v2) {
+         return false;
+      }
+   }
+
+   return true;
+}
+
+
 p_str F_Replace::getValue()
 {
    p_str base = arg1->getValue();
@@ -446,13 +592,15 @@ p_str F_Replace::getValue()
    }
 
    const p_str v1 = arg2->getValue();
+
+   if (v1.empty()) {
+      return base;
+   }
+
    const p_str v2 = arg3->getValue();
 
-   switch (v1.size()) {
-      case 0: {
-         break;
-      }
-      case 1: {
+   if (hasOnlyOneCharGraphemes(base) && hasOnlyOneCharGraphemes(v1)) {
+      if (v1.size() == 1) {
          switch (v2.size()) {
             case 0: {
                base.erase(std::remove(base.begin(), base.end(), v1[0]), base.end());
@@ -482,31 +630,42 @@ p_str F_Replace::getValue()
                break;
             }
          }
-         break;
-      }
-      default: {
-         p_size i = 0;
 
-         switch (v2.size()) {
-            case 0: {
-               while ((i = base.find(v1)) != p_str::npos) {
-                  base.erase(i, v1.size());
-               }
-               break;
-            }
-            default: {
-               while ((i = base.find(v1, i)) != p_str::npos) {
-                  base.replace(i, v1.size(), v2);
-                  i += v2.size();
-               }
-               break;
-            }
+         return base;
+      }
+
+      p_size i = 0;
+
+      if (v2.empty()) {
+         while ((i = base.find(v1)) != p_str::npos) {
+            base.erase(i, v1.size());
          }
-         break;
+         return base;
+      }
+
+      while ((i = base.find(v1, i)) != p_str::npos) {
+         base.replace(i, v1.size(), v2);
+         i += v2.size();
+      }
+
+      return base;
+   }
+
+   const p_list baseGraphemes = toGraphemes(base, *(perun2.graphemeIterator.get()));
+   const p_list v1Graphemes = toGraphemes(v1, *(perun2.graphemeIterator.get()));
+   p_str result;
+
+   for (p_size i = 0; i < baseGraphemes.size(); i++) {
+      if (containsAtIndex(baseGraphemes, v1Graphemes, i)) {
+         result += v2;
+         i += (v1Graphemes.size() - 1);
+      }
+      else {
+         result += baseGraphemes[i];
       }
    }
 
-   return base;
+   return result;
 }
 
 

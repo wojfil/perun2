@@ -940,9 +940,9 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       if (word.isWord(STRING_REPEAT, p2))
          result = std::make_unique<F_Repeat>(str, num);
       else if (word.isWord(STRING_LEFT, p2))
-         result = std::make_unique<F_Left>(str, num);
+         result = std::make_unique<F_Left>(str, num, p2);
       else if (word.isWord(STRING_RIGHT, p2))
-         result = std::make_unique<F_Right>(str, num);
+         result = std::make_unique<F_Right>(str, num, p2);
       else if (word.isWord(STRING_FILL, p2))
          result = std::make_unique<F_Fill>(str, num);
 
@@ -968,7 +968,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          functionArgException(3, STRING_STRING, word, p2);
       }
 
-      result = std::make_unique<F_Replace>(str1, str2, str3);
+      result = std::make_unique<F_Replace>(str1, str2, str3, p2);
       return true;
    }
    else if (word.isWord(STRING_SUBSTRING, p2)) {
@@ -1309,9 +1309,9 @@ static p_bool stringTwoArgFunction(p_genptr<p_str>& result, const std::vector<To
    }
 
    if (word.isWord(STRING_AFTER, p2))
-      result = std::make_unique<F_After>(arg1, arg2);
+      result = std::make_unique<F_After>(arg1, arg2, p2);
    else if (word.isWord(STRING_BEFORE, p2))
-      result = std::make_unique<F_Before>(arg1, arg2);
+      result = std::make_unique<F_Before>(arg1, arg2, p2);
    else
       return false;
 
@@ -1326,9 +1326,9 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
    }
 
    if (word.isWord(STRING_DIGITS, p2))
-      result = std::make_unique<F_Digits>(arg1);
+      result = std::make_unique<F_Digits>(arg1, p2);
    else if (word.isWord(STRING_LETTERS, p2))
-      result = std::make_unique<F_Letters>(arg1);
+      result = std::make_unique<F_Letters>(arg1, p2);
    else if (word.isWord(STRING_LOWER, p2))
       result = std::make_unique<F_Lower>(arg1);
    else if (word.isWord(STRING_TRIM, p2))

@@ -29,24 +29,36 @@ namespace perun2::func
 struct F_After : Func_2<p_str, p_str>, Generator<p_str>
 {
 public:
-   F_After(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_After(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_Before : Func_2<p_str, p_str>, Generator<p_str>
 {
 public:
-   F_Before(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_Before(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_Digits : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Digits(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_Digits(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
@@ -61,8 +73,12 @@ public:
 struct F_Letters : Func_1<p_str>, Generator<p_str>
 {
 public:
-   F_Letters(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_Letters(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
    p_str getValue() override;
+   
+private:
+   Perun2Process& perun2;
 };
 
 
@@ -109,16 +125,24 @@ public:
 struct F_Left : Func_2<p_str, p_num>, Generator<p_str>
 {
 public:
-   F_Left(p_genptr<p_str>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_Left(p_genptr<p_str>& a1, p_genptr<p_num>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_Right : Func_2<p_str, p_num>, Generator<p_str>
 {
 public:
-   F_Right(p_genptr<p_str>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_Right(p_genptr<p_str>& a1, p_genptr<p_num>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
@@ -189,8 +213,12 @@ private:
 struct F_Replace : Func_3<p_str, p_str, p_str>, Generator<p_str>
 {
 public:
-   F_Replace(p_genptr<p_str>& a1, p_genptr<p_str>& a2, p_genptr<p_str>& a3) : Func_3(a1, a2, a3) { };
+   F_Replace(p_genptr<p_str>& a1, p_genptr<p_str>& a2, p_genptr<p_str>& a3, Perun2Process& p2) 
+      : Func_3(a1, a2, a3), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 

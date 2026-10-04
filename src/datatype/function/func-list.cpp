@@ -177,7 +177,6 @@ inline p_nint F_Numbers::fromChar(const p_char ch)
 p_nlist F_Numbers::getValue()
 {
    p_str value = arg1->getValue();
-   const p_size len = value.size();
 
    if (value.empty()) {
       return p_nlist();
@@ -207,7 +206,7 @@ p_nlist F_Numbers::getValue()
    p_bool prevDigit = false;
    p_size start = 0;
 
-   for (p_size i = 0; i < len; i++) {
+   for (p_size i = 0; i < value.size(); i++) {
       const p_bool isDigit = char_isDigit(value[i]);
       if (isDigit) {
          if (!prevDigit) {

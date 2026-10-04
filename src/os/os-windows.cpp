@@ -1397,29 +1397,60 @@ p_bool os_copy(const p_set& paths)
 
 p_bool os_select(const p_str& parent, const p_set& paths)
 {
-   std::wstring parent_utf16 = utf32_to_utf16(parent);
-
+   const std::wstring parent_utf16 = utf32_to_utf16(parent);
    LPITEMIDLIST folder = ILCreateFromPathW(parent_utf16.c_str());
-   std::vector<LPITEMIDLIST> v;
 
-   for (const p_str& path : paths) {
-      std::wstring path_utf16 = utf32_to_utf16(path);
-      v.emplace_back(ILCreateFromPathW(path_utf16.c_str()));
+   if (! folder) {
+      return false;
    }
 
-   HRESULT hr = SHOpenFolderAndSelectItems(
-      folder,
-      v.size(),
-      (LPCITEMIDLIST*)v.data(),
-      0
-   );
+   std::vector<LPITEMIDLIST> v;
+
+   try {
+      v.reserve(paths.size());
+
+      for (const p_str& path : paths) {
+         const std::wstring path_utf16 = utf32_to_utf16(path);
+         LPITEMIDLIST idl = ILCreateFromPathW(path_utf16.c_str());
+
+         if (! idl) {
+            for (LPITEMIDLIST item : v) {
+               ILFree(item);
+            }
+
+            ILFree(folder);
+            return false;
+         }
+
+         v.push_back(idl);
+      }
+   }
+   catch (...) {
+      for (LPITEMIDLIST idl : v) {
+         ILFree(idl);
+      }
+
+      ILFree(folder);
+      return false;
+   }
+
+   if (v.size() > static_cast<size_t>(UINT_MAX)) {
+      for (LPITEMIDLIST idl : v) {
+         ILFree(idl);
+      }
+
+      ILFree(folder);
+      return false;
+   }
+
+   const HRESULT hr = SHOpenFolderAndSelectItems(folder, static_cast<UINT>(v.size()),
+      (LPCITEMIDLIST*)v.data(), 0);
 
    for (LPITEMIDLIST idl : v) {
       ILFree(idl);
    }
 
    ILFree(folder);
-
    return SUCCEEDED(hr);
 }
 

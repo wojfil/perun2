@@ -988,7 +988,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       }
 
       if (len == 2) {
-         result = std::make_unique<F_Substring_2>(str, num);
+         result = std::make_unique<F_Substring_2>(str, num, p2);
          return true;
       }
 
@@ -997,7 +997,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
          functionArgException(3, STRING_NUMBER, word, p2);
       }
 
-      result = std::make_unique<F_Substring_3>(str, num, num2);
+      result = std::make_unique<F_Substring_3>(str, num, num2, p2);
       return true;
    }
    else if (word.isWord(STRING_CONCATENATE, p2)) {

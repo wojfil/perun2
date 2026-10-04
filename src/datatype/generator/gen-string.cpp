@@ -141,11 +141,21 @@ p_str CharAtIndex::getValue()
 
    p_nint n = num.toInt();
 
-   if (n < NINT_ZERO) {
-      n += v.size();
+   if (hasOnlyOneCharGraphemes(v)) {
+      if (n < NINT_ZERO) {
+         n += v.size();
+      }
+
+      return (n >= NINT_ZERO && n < static_cast<p_nint>(v.size()))
+         ? charToString(v[static_cast<p_size>(n)])
+         : p_str();
    }
 
    const p_list graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+
+   if (n < NINT_ZERO) {
+      n += graphemes.size();
+   }
 
    return (n >= NINT_ZERO && n < static_cast<p_nint>(graphemes.size()))
       ? graphemes[static_cast<p_size>(n)]

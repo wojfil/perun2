@@ -292,7 +292,6 @@ p_str F_Trim::getValue()
 
    if (left == graphemes.size()) {
       return p_str();
-      return;
    }
 
    p_int right;
@@ -483,19 +482,55 @@ p_str F_Substring_2::getValue()
       return value;
    }
 
-   const p_nint length = static_cast<p_nint>(value.size());
+   if (hasOnlyOneCharGraphemes(value)) {
+      const p_nint length = static_cast<p_nint>(value.size());
+
+      if (index < NINT_ZERO) {
+         index *= NINT_MINUS_ONE;
+
+         return index >= length
+            ? value
+            : value.substr(length - index);
+      }
+      else {
+         return index >= length
+            ? p_str()
+            : value.substr(index);
+      }
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   const p_nint length = static_cast<p_nint>(graphemes.size());
 
    if (index < NINT_ZERO) {
       index *= NINT_MINUS_ONE;
 
-      return index >= length
-         ? value
-         : value.substr(length - index);
+      if (index >= length) {
+         return value;
+      }
+
+      p_str result;
+      result.reserve(graphemes.size() - static_cast<p_size>(length - index));
+
+      for (p_size i = length - index; i < graphemes.size(); i++) {
+         result += graphemes[i];
+      }
+
+      return result;
    }
    else {
-      return index >= length
-         ? p_str()
-         : value.substr(index);
+      if (index >= length) {
+         return p_str();
+      }
+
+      p_str result;
+      result.reserve(graphemes.size() - static_cast<p_size>(index));
+
+      for (p_size i = index; i < graphemes.size(); i++) {
+         result += graphemes[i];
+      }
+
+      return result;
    }
 }
 
@@ -518,27 +553,28 @@ p_str F_Substring_3::getValue()
    if (index2 <= NINT_ZERO) {
       return p_str();
    }
-
+   
    const p_str value = arg1->getValue();
-   const p_nint length = static_cast<p_nint>(value.size());
 
-   if (index < NINT_ZERO) {
-      index *= NINT_MINUS_ONE;
+   if (hasOnlyOneCharGraphemes(value)) {
+      const p_nint length = static_cast<p_nint>(value.size());
 
-      if (index >= length) {
-         const p_nint lets = length - index + index2;
-         return lets <= NINT_ZERO
-            ? p_str()
-            : value.substr(0, lets);
-      }
-      else {
+      if (index < NINT_ZERO) {
+         index *= NINT_MINUS_ONE;
+
+         if (index >= length) {
+            const p_nint lets = length - index + index2;
+            return lets <= NINT_ZERO
+               ? p_str()
+               : value.substr(0, lets);
+         }
+
          const p_nint start = length - index;
          return start + index2 >= length
             ? value.substr(start)
             : value.substr(start, index2);
       }
-   }
-   else {
+
       if (index >= length) {
          return p_str();
       }
@@ -547,6 +583,81 @@ p_str F_Substring_3::getValue()
          ? value.substr(index)
          : value.substr(index, index2);
    }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+   const p_nint length = static_cast<p_nint>(graphemes.size());
+
+   if (index < NINT_ZERO) {
+      index *= NINT_MINUS_ONE;
+
+      if (index >= length) {
+         const p_nint lets = length - index + index2;
+
+         if (lets <= NINT_ZERO) {
+            return p_str();
+         }
+
+         p_str result;
+         result.reserve(lets);
+
+         for (size_t i = 0; i < lets; i++) {
+            result += graphemes[i];
+         }
+
+         return result;
+         //return value.substr(0, lets);
+      }
+
+      const p_nint start = length - index;
+
+      if (start + index2 >= length) {
+         p_str result;
+         result.reserve(graphemes.size() - start);
+
+         for (size_t i = start; i < graphemes.size(); i++) {
+            result += graphemes[i];
+         }
+
+         return result;
+         // return value.substr(start)
+      }
+
+      p_str result;
+      result.reserve(index2);
+
+      for (size_t i = start; i < (start + index2); i++) {
+         result += graphemes[i];
+      }
+
+      return result;
+      //return value.substr(start, index2);
+   }
+
+   if (index >= length) {
+      return p_str();
+   }
+
+   if (index + index2 >= length) {
+      p_str result;
+      result.reserve(graphemes.size() - index);
+
+      for (size_t i = index; i < graphemes.size(); i++) {
+         result += graphemes[i];
+      }
+
+      return result;
+      // return value.substr(index);
+   }
+
+   p_str result;
+   result.reserve(index2);
+
+   for (size_t i = index; i < (index + index2); i++) {
+      result += graphemes[i];
+   }
+
+   return result;
+   // return value.substr(index, index2);
 }
 
 

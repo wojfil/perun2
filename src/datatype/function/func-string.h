@@ -157,17 +157,24 @@ private:
 struct F_Substring_2 : Func_2<p_str, p_num>, Generator<p_str>
 {
 public:
-   F_Substring_2(p_genptr<p_str>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_Substring_2(p_genptr<p_str>& a1, p_genptr<p_num>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_Substring_3 : Func_3<p_str, p_num, p_num>, Generator<p_str>
 {
 public:
-   F_Substring_3(p_genptr<p_str>& a1, p_genptr<p_num>& a2, p_genptr<p_num>& a3)
-      : Func_3(a1, a2, a3) { };
+   F_Substring_3(p_genptr<p_str>& a1, p_genptr<p_num>& a2, p_genptr<p_num>& a3, Perun2Process& p2)
+      : Func_3(a1, a2, a3), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 

@@ -184,6 +184,11 @@ Arguments::Arguments(const p_list& args)
 
    const p_str cdLocation = os_currentPath();
 
+   if (cdLocation.empty()) {
+      cmd::error::noLocation();
+      return;
+   }
+
    if (hasCode) {
       this->code = value;
       if (d_has) {

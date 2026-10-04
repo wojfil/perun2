@@ -2409,28 +2409,47 @@ void os_getStackedData(const p_str& path, p_nint& index, p_str& basePath)
 
 p_str os_executablePath()
 {
-   wchar_t path[MAX_PATH];
-   DWORD length = GetModuleFileNameW(NULL, path, MAX_PATH);
+   std::vector<wchar_t> buffer(256);
 
-   if (length == 0) {
-      return p_str();
+   while (true) {
+      DWORD length = GetModuleFileNameW(nullptr, buffer.data(), static_cast<DWORD>(buffer.size()));
+
+      if (length == 0) {
+         return p_str();
+      }
+
+      if (length < buffer.size()) {
+         return utf16_to_utf32(std::wstring(buffer.data(), length));
+      }
+
+      buffer.resize(buffer.size() * 2);
    }
-
-   return utf16_to_utf32(std::wstring(path));
+   
+   return p_str();
 }
 
 p_str os_desktopPath()
 {
-   wchar_t path[MAX_PATH];
-   return SHGetSpecialFolderPathW(0, path, CSIDL_DESKTOP, FALSE)
-      ? utf16_to_utf32(std::wstring(path))
-      : p_str();
+   PWSTR path = nullptr;
+   const HRESULT hr = SHGetKnownFolderPath(FOLDERID_Desktop, 0, nullptr, &path);
+
+   if (FAILED(hr)) {
+      return p_str();
+   }
+
+   p_str result = utf16_to_utf32(std::wstring(path));
+   CoTaskMemFree(path);
+   return result;
 }
 
 p_list os_pendrives()
 {
    p_list result;
    DWORD drivesBitMask = GetLogicalDrives();
+
+   if (drivesBitMask == 0) {
+      return result;
+   }
 
    for (p_char drive = CHAR_A; drive <= CHAR_Z; drive++) {
       if (drivesBitMask & 1) {
@@ -2450,43 +2469,59 @@ p_list os_pendrives()
 
 p_str os_currentPath()
 {
-   wchar_t path[MAX_PATH];
-   GetCurrentDirectory(MAX_PATH, path);
-   return utf16_to_utf32(std::wstring(path));
+   std::vector<wchar_t> buffer(256);
+
+   while (true) {
+      if (buffer.size() > 0xFFFFFFFF) {
+         return p_str();
+      }
+
+      DWORD length = GetCurrentDirectoryW(
+         static_cast<DWORD>(buffer.size()),
+         buffer.data()
+      );
+
+      if (length == 0) {
+         return p_str();
+      }
+
+      if (length < buffer.size()) {
+         return utf16_to_utf32(std::wstring(buffer.data(), length));
+      }
+
+      buffer.resize(static_cast<size_t>(length) + 1);
+   }
+
+   return p_str();
 }
 
 p_str os_system32Path()
 {
-   wchar_t path[MAX_PATH];
-   return SHGetSpecialFolderPathW(0, path, CSIDL_SYSTEM, FALSE)
-      ? utf16_to_utf32(std::wstring(path))
-      : p_str();
+   PWSTR path = nullptr;
+   const HRESULT hr = SHGetKnownFolderPath(FOLDERID_System, 0, nullptr, &path);
+
+   if (FAILED(hr)) {
+      return p_str();
+   }
+
+   std::wstring result(path);
+   CoTaskMemFree(path);
+
+   return utf16_to_utf32(result);
 }
 
 p_str os_downloadsPath()
 {
-   HKEY hKey;
-   LONG result = RegOpenKeyExW(HKEY_CURRENT_USER, 
-      L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 
-      0, KEY_READ, &hKey);
+   PWSTR path = nullptr;
+   const HRESULT hr = SHGetKnownFolderPath(FOLDERID_Downloads, 0, nullptr, &path);
 
-   if (result != ERROR_SUCCESS) {
-      RegCloseKey(hKey);
-      return EMPTY_STRING;
+   if (FAILED(hr)) {
+      return p_str();
    }
 
-   wchar_t buffer[MAX_PATH];
-   DWORD bufferSize = sizeof(buffer);
-   result = RegQueryValueExW(hKey, L"{374DE290-123F-4565-9164-39C4925E467B}", nullptr, nullptr, 
-      reinterpret_cast<BYTE*>(buffer), &bufferSize);
-   RegCloseKey(hKey);
-
-   if (result == ERROR_SUCCESS) {
-      return utf16_to_utf32(buffer);
-   } 
-   else {
-      return EMPTY_STRING;
-   }
+   p_str result = utf16_to_utf32(std::wstring(path));
+   CoTaskMemFree(path);
+   return result;
 }
 
 std::optional<p_str> os_readStringFromCmd(const p_str& cmd)

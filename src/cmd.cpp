@@ -104,6 +104,12 @@ namespace error
       logger.print(U"Command-line error: the input file is missing.");
    }
 
+   void noLocation()
+   {
+      Logger logger;
+      logger.print(U"Command-line error: current working location could not be read.");
+   }
+
    void fileNotFound(const p_str& fileName)
    {
       Logger logger;

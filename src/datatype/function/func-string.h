@@ -65,8 +65,12 @@ private:
 struct F_Fill : Func_2<p_str, p_num>, Generator<p_str>
 {
 public:
-   F_Fill(p_genptr<p_str>& a1, p_genptr<p_num>& a2) : Func_2(a1, a2) { };
+   F_Fill(p_genptr<p_str>& a1, p_genptr<p_num>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_str getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 

@@ -944,7 +944,7 @@ p_bool stringFunction(p_genptr<p_str>& result, const Tokens& tks, Perun2Process&
       else if (word.isWord(STRING_RIGHT, p2))
          result = std::make_unique<F_Right>(str, num, p2);
       else if (word.isWord(STRING_FILL, p2))
-         result = std::make_unique<F_Fill>(str, num);
+         result = std::make_unique<F_Fill>(str, num, p2);
 
       return true;
    }

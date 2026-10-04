@@ -113,62 +113,60 @@ p_list F_Split::getValue()
 p_list F_Words::getValue()
 {
    p_str value = arg1->getValue();
-   const p_size len = value.size();
 
-   switch (len) {
-      case 0: {
-         return p_list();
-      }
-      case 1: {
-         return char_isAlpha(value[0]) ? p_list{value} : p_list();
-      }
-      case 2: {
-         if (char_isAlpha(value[0])) {
-            if (char_isAlpha(value[1])) {
-               return p_list{value};
-            }
-            else {
-               value.pop_back();
-               return p_list{value};
-            }
+   if (value.empty()) {
+      return p_list();
+   }
+
+   if (value.size() == 1) {
+      return char_isAlpha(value[0]) ? p_list{value} : p_list();
+   }
+
+   if (value.size() == 2) {
+      if (char_isAlpha(value[0])) {
+         if (char_isAlpha(value[1])) {
+            return p_list{value};
          }
          else {
-            if (char_isAlpha(value[1])) {
-               value.erase(value.begin());
-               return p_list{value};
-            }
-            else {
-               return p_list();
-            }
+            value.pop_back();
+            return p_list{value};
          }
       }
-      default: {
-         p_list words;
-         p_bool prevLetter = false;
-         p_size start = 0;
-
-         for (p_size i = 0; i < len; i++) {
-            const p_bool isLetter = char_isAlpha(value[i]);
-            if (isLetter) {
-               if (!prevLetter) {
-                  start = i;
-               }
-            }
-            else {
-               if (prevLetter) {
-                  words.emplace_back(value.substr(start, i - start));
-               }
-            }
-            prevLetter = isLetter;
+      else {
+         if (char_isAlpha(value[1])) {
+            value.erase(value.begin());
+            return p_list{value};
          }
-
-         if (prevLetter) {
-            words.emplace_back(value.substr(start));
+         else {
+            return p_list();
          }
-
-         return words;
       }
    }
+
+   p_list words;
+   p_bool prevLetter = false;
+   p_size start = 0;
+
+   for (p_size i = 0; i < value.size(); i++) {
+      const p_bool isLetter = char_isAlpha(value[i]);
+      if (isLetter) {
+         if (!prevLetter) {
+            start = i;
+         }
+      }
+      else {
+         if (prevLetter) {
+            words.emplace_back(value.substr(start, i - start));
+         }
+      }
+      prevLetter = isLetter;
+   }
+
+   if (prevLetter) {
+      words.emplace_back(value.substr(start));
+   }
+
+   return words;
 }
 
 inline p_nint F_Numbers::fromChar(const p_char ch)
@@ -181,63 +179,62 @@ p_nlist F_Numbers::getValue()
    p_str value = arg1->getValue();
    const p_size len = value.size();
 
-   switch (len) {
-      case 0: {
-         return p_nlist();
+   if (value.empty()) {
+      return p_nlist();
+   }
+
+   if (value.size() == 1) {
+      return char_isDigit(value[0])
+         ? p_nlist{fromChar(value[0])}
+         : p_nlist();
+   }
+
+   if (value.size() == 2) {
+      if (char_isDigit(value[0])) {
+         return p_nlist {char_isDigit(value[1])
+            ? (NINT_TEN * fromChar(value[0]) + fromChar(value[1]))
+            : fromChar(value[0])
+         };
       }
-      case 1: {
-         return char_isDigit(value[0])
-            ? p_nlist{fromChar(value[0])}
+      else {
+         return char_isDigit(value[1])
+            ? p_nlist{fromChar(value[1])}
             : p_nlist();
       }
-      case 2: {
-         if (char_isDigit(value[0])) {
-            return p_nlist {char_isDigit(value[1])
-               ? (NINT_TEN * fromChar(value[0]) + fromChar(value[1]))
-               : fromChar(value[0])
-            };
-         }
-         else {
-            return char_isDigit(value[1])
-               ? p_nlist{fromChar(value[1])}
-               : p_nlist();
+   }
+
+   p_nlist numbers;
+   p_bool prevDigit = false;
+   p_size start = 0;
+
+   for (p_size i = 0; i < len; i++) {
+      const p_bool isDigit = char_isDigit(value[i]);
+      if (isDigit) {
+         if (!prevDigit) {
+            start = i;
          }
       }
-      default: {
-         p_nlist numbers;
-         p_bool prevDigit = false;
-         p_size start = 0;
-
-         for (p_size i = 0; i < len; i++) {
-            const p_bool isDigit = char_isDigit(value[i]);
-            if (isDigit) {
-               if (!prevDigit) {
-                  start = i;
-               }
-            }
-            else {
-               if (prevDigit) {
-                  try {
-                     const p_nint ii = std::stoll(utf32_to_utf8(value.substr(start, i - start)));
-                     numbers.emplace_back(ii);
-                  }
-                  catch (...) { }
-               }
-            }
-            prevDigit = isDigit;
-         }
-
+      else {
          if (prevDigit) {
             try {
-               const p_nint ii = std::stoll(utf32_to_utf8(value.substr(start)));
+               const p_nint ii = std::stoll(utf32_to_utf8(value.substr(start, i - start)));
                numbers.emplace_back(ii);
             }
             catch (...) { }
          }
-
-         return numbers;
       }
+      prevDigit = isDigit;
    }
+
+   if (prevDigit) {
+      try {
+         const p_nint ii = std::stoll(utf32_to_utf8(value.substr(start)));
+         numbers.emplace_back(ii);
+      }
+      catch (...) { }
+   }
+
+   return numbers;
 }
 
 }

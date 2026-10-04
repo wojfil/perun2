@@ -122,48 +122,74 @@ p_list F_Words::getValue()
       return char_isAlpha(value[0]) ? p_list{value} : p_list();
    }
 
-   if (value.size() == 2) {
-      if (char_isAlpha(value[0])) {
-         if (char_isAlpha(value[1])) {
-            return p_list{value};
+   if (hasOnlyOneCharGraphemes(value)) {
+      if (value.size() == 2) {
+         if (char_isAlpha(value[0])) {
+            if (char_isAlpha(value[1])) {
+               return p_list{value};
+            }
+            else {
+               value.pop_back();
+               return p_list{value};
+            }
          }
          else {
-            value.pop_back();
-            return p_list{value};
+            if (char_isAlpha(value[1])) {
+               value.erase(value.begin());
+               return p_list{value};
+            }
+            else {
+               return p_list();
+            }
          }
       }
-      else {
-         if (char_isAlpha(value[1])) {
-            value.erase(value.begin());
-            return p_list{value};
+
+      p_list words;
+      p_bool prevLetter = false;
+      p_size start = 0;
+
+      for (p_size i = 0; i < value.size(); i++) {
+         const p_bool isLetter = char_isAlpha(value[i]);
+         if (isLetter) {
+            if (!prevLetter) {
+               start = i;
+            }
          }
          else {
-            return p_list();
+            if (prevLetter) {
+               words.emplace_back(value.substr(start, i - start));
+            }
          }
+         prevLetter = isLetter;
       }
+
+      if (prevLetter) {
+         words.emplace_back(value.substr(start));
+      }
+
+      return words;
    }
 
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
    p_list words;
-   p_bool prevLetter = false;
-   p_size start = 0;
+   p_str tempWord;
 
-   for (p_size i = 0; i < value.size(); i++) {
-      const p_bool isLetter = char_isAlpha(value[i]);
+   for (const p_str& graph : graphemes) {
+      const p_bool isLetter = isLetterGrapheme(graph);
+
       if (isLetter) {
-         if (!prevLetter) {
-            start = i;
-         }
+         tempWord += graph;
       }
       else {
-         if (prevLetter) {
-            words.emplace_back(value.substr(start, i - start));
+         if (! tempWord.empty()) {
+            words.emplace_back(tempWord);
+            tempWord.clear();
          }
       }
-      prevLetter = isLetter;
    }
 
-   if (prevLetter) {
-      words.emplace_back(value.substr(start));
+   if (! tempWord.empty()) {
+      words.emplace_back(tempWord);
    }
 
    return words;
@@ -186,20 +212,6 @@ p_nlist F_Numbers::getValue()
       return char_isDigit(value[0])
          ? p_nlist{fromChar(value[0])}
          : p_nlist();
-   }
-
-   if (value.size() == 2) {
-      if (char_isDigit(value[0])) {
-         return p_nlist {char_isDigit(value[1])
-            ? (NINT_TEN * fromChar(value[0]) + fromChar(value[1]))
-            : fromChar(value[0])
-         };
-      }
-      else {
-         return char_isDigit(value[1])
-            ? p_nlist{fromChar(value[1])}
-            : p_nlist();
-      }
    }
 
    p_nlist numbers;

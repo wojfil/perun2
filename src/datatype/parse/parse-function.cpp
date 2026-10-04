@@ -1603,7 +1603,7 @@ p_bool listFunction(p_genptr<p_list>& result, const Tokens& tks, Perun2Process& 
       if (word.isWord(STRING_CHARACTERS, p2))
          result = std::make_unique<F_Characters>(str, p2);
       else
-         result = std::make_unique<F_Words>(str);
+         result = std::make_unique<F_Words>(str, p2);
 
       return true;
    }

@@ -1462,9 +1462,12 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
    si.cb = sizeof(si);
    ZeroMemory(&p2.sideProcess.info, sizeof(p2.sideProcess.info));
 
-   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command.size() + 1);
-   wcscpy(cmd.get(), utf32_to_utf16(command).c_str());
-   cmd[command.size()] = CHAR_NULL;
+   const std::wstring command_utf16 = utf32_to_utf16(command);
+   const std::wstring location_utf16 = utf32_to_utf16(location);
+
+   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command_utf16.size() + 1);
+   wcscpy(cmd.get(), command_utf16.c_str());
+   cmd[command_utf16.size()] = CHAR_NULL;
 
    const BOOL creation = CreateProcessW(
       NULL,
@@ -1472,7 +1475,7 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
       NULL,NULL,FALSE,
       CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
       NULL,
-      location.empty() ? NULL : utf32_to_utf16(location).c_str(),
+      location.empty() ? NULL : location_utf16.c_str(),
       &si, &p2.sideProcess.info
    );
 
@@ -1484,13 +1487,13 @@ p_bool os_run(const p_str& command, const p_str& location, Perun2Process& p2)
 
    WaitForSingleObject(p2.sideProcess.info.hProcess, INFINITE);
    DWORD dwExitCode = 0;
-   ::GetExitCodeProcess(p2.sideProcess.info.hProcess, &dwExitCode);
+   const BOOL exitCodeOk = GetExitCodeProcess(p2.sideProcess.info.hProcess, &dwExitCode);
    
    CloseHandle(p2.sideProcess.info.hProcess);
    CloseHandle(p2.sideProcess.info.hThread);
 
    p2.sideProcess.running = false;
-   return p2.state == State::s_Running && dwExitCode == 0;
+   return p2.state == State::s_Running && exitCodeOk && dwExitCode == 0;
 }
 
 p_bool os_terminate(SideProcess& process)

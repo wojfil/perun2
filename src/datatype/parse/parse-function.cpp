@@ -699,11 +699,11 @@ p_bool numberFunction(p_genptr<p_num>& result, const Tokens& tks, Perun2Process&
 
       if (str2->isConstant()) {
          const p_str pattern = str2->getValue();
-         result = std::make_unique<F_ResemblanceConst>(str1, pattern);
+         result = std::make_unique<F_ResemblanceConst>(str1, pattern, p2);
          return true;
       }
 
-      result = std::make_unique<F_Resemblance>(str1, str2);
+      result = std::make_unique<F_Resemblance>(str1, str2, p2);
       return true;
    }
 

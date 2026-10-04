@@ -233,19 +233,23 @@ public:
 struct F_Resemblance : Func_2<p_str, p_str>, Generator<p_num>
 {
 public:
-   F_Resemblance(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_Resemblance(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2);
    p_num getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_ResemblanceConst : Func_1<p_str>, Generator<p_num>
 {
 public:
-   F_ResemblanceConst(p_genptr<p_str>& a1, const p_str& patt);
+   F_ResemblanceConst(p_genptr<p_str>& a1, const p_str& patt, Perun2Process& p2);
    p_num getValue() override;
 
 private:
-   p_str pattern;
+   p_list pattern;
+   Perun2Process& perun2;
 };
 
 

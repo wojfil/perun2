@@ -18,6 +18,12 @@
 #include "../generator.h"
 
 
+namespace perun2
+{
+   struct Perun2Process;
+}
+
+
 namespace perun2::gen
 {
 
@@ -32,13 +38,14 @@ p_constexpr p_ndouble RESEMBLANCE_RATIO =
 struct ResemblesConst : Generator<p_bool>
 {
 public:
-   ResemblesConst(p_genptr<p_str>& val, const p_str& pat);
+   ResemblesConst(p_genptr<p_str>& val, const p_str& pat, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    p_genptr<p_str> value;
-   p_str pattern;
-   const p_int mistakesAllowed;
+   p_list pattern;
+   p_int mistakesAllowed;
+   Perun2Process& perun2;
 };
 
 
@@ -46,12 +53,13 @@ private:
 struct Resembles : Generator<p_bool>
 {
 public:
-   Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat);
+   Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat, Perun2Process& p2);
    p_bool getValue() override;
 
 private:
    p_genptr<p_str> value;
    p_genptr<p_str> pattern;
+   Perun2Process& perun2;
 };
 
 
@@ -60,14 +68,14 @@ private:
 void prepareForResemblance(p_str& value);
 
 // the main Resemblance algorithm
-p_ndouble str_resemblance(const p_str& value, const p_str& pattern);
+p_ndouble str_resemblance(const p_list& value, const p_list& pattern);
 static p_int minOfThree(p_int a, p_int b, p_int c);
 
 // this implementation of Damerau-Levenshtein Distance calculates
 // minimum of the distances between str2 and any substring of str1 that starts at index 0
 // so, for str1='abcd', these substrings would be 'a', 'ab', 'abc' and 'abcd'
-static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str2);
+static p_int multiDamerauLevenshteinDistance(const p_list& str1, const p_list& str2);
 
-static p_int resemblanceMistakesAllowed(const p_str& pattern);
+static p_int resemblanceMistakesAllowed(const p_list& pattern);
 
 }

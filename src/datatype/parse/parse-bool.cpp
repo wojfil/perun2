@@ -759,22 +759,22 @@ static p_bool parseResembles(p_genptr<p_bool>& result, const Tokens& tks, Perun2
       }
 
       if (neg) {
-         p_genptr<p_bool> b = std::make_unique<gen::ResemblesConst>(value, cnst);
+         p_genptr<p_bool> b = std::make_unique<gen::ResemblesConst>(value, cnst, p2);
          result = std::make_unique<gen::Not>(b);
       }
       else {
-         result = std::make_unique<gen::ResemblesConst>(value, cnst);
+         result = std::make_unique<gen::ResemblesConst>(value, cnst, p2);
       }
 
       return true;
    }
 
    if (neg) {
-      p_genptr<p_bool> b = std::make_unique<gen::Resembles>(value, pattern);
+      p_genptr<p_bool> b = std::make_unique<gen::Resembles>(value, pattern, p2);
       result = std::make_unique<gen::Not>(b);
    }
    else {
-      result = std::make_unique<gen::Resembles>(value, pattern);
+      result = std::make_unique<gen::Resembles>(value, pattern, p2);
    }
 
    return true;

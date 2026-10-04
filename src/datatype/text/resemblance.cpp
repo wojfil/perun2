@@ -15,17 +15,22 @@
 #include "resemblance.h"
 #include "raw.h"
 #include "../../logger.h"
+#include "../../perun2.h"
 #include "../math.h"
+#include "../../unicode/convert.h"
 #include <limits>
 
 
 namespace perun2::gen
 {
 
-ResemblesConst::ResemblesConst(p_genptr<p_str>& val, const p_str& pat)
-   : value(std::move(val)), pattern(pat), mistakesAllowed(resemblanceMistakesAllowed(pat))
+ResemblesConst::ResemblesConst(p_genptr<p_str>& val, const p_str& pat, Perun2Process& p2)
+   : value(std::move(val)), perun2(p2)
 {
-   prepareForResemblance(this->pattern);
+   p_str prepared = pat;
+   prepareForResemblance(prepared);
+   pattern = toGraphemes(prepared, *(perun2.graphemeIterator.get()));
+   mistakesAllowed = resemblanceMistakesAllowed(pattern);
 };
 
 
@@ -38,11 +43,11 @@ p_bool ResemblesConst::getValue()
       return false;
    }
 
-   const p_int limit = 1 + static_cast<p_int>(v.size()) - static_cast<p_int>(pattern.size()) + mistakesAllowed;
+   const p_list v_graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+   const p_int limit = 1 + static_cast<p_int>(v_graphemes.size()) - static_cast<p_int>(pattern.size()) + mistakesAllowed;
 
-   for (p_int i = 0; i < limit; i++)
-   {
-      const p_str chunk = v.substr(i);
+   for (p_int i = 0; i < limit; i++) {
+      const p_list chunk(v_graphemes.begin() + i, v_graphemes.end());
       const p_int mistakes = multiDamerauLevenshteinDistance(chunk, pattern);
       if (mistakes <= mistakesAllowed) {
          return true;
@@ -53,8 +58,8 @@ p_bool ResemblesConst::getValue()
 };
 
 
-Resembles::Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat)
-   : value(std::move(val)), pattern(std::move(pat)) { };
+Resembles::Resembles(p_genptr<p_str>& val, p_genptr<p_str>& pat, Perun2Process& p2)
+   : value(std::move(val)), pattern(std::move(pat)), perun2(p2) { };
 
 
 p_bool Resembles::getValue()
@@ -73,13 +78,14 @@ p_bool Resembles::getValue()
       return false;
    }
 
-   const p_int mistakesAllowed = resemblanceMistakesAllowed(p);
+   const p_list v_graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+   const p_list p_graphemes = toGraphemes(p, *(perun2.graphemeIterator.get()));
+   const p_int mistakesAllowed = resemblanceMistakesAllowed(p_graphemes);
    const p_int limit = 1 + static_cast<p_int>(v.size()) - static_cast<p_int>(p.size()) + mistakesAllowed;
 
-   for (p_int i = 0; i < limit; i++)
-   {
-      const p_str chunk = v.substr(i);
-      const p_int mistakes = multiDamerauLevenshteinDistance(chunk, p);
+   for (p_int i = 0; i < limit; i++) {
+      const p_list chunk(v_graphemes.begin() + i, v_graphemes.end());
+      const p_int mistakes = multiDamerauLevenshteinDistance(chunk, p_graphemes);
       if (mistakes <= mistakesAllowed) {
          return true;
       }
@@ -96,7 +102,7 @@ void prepareForResemblance(p_str& value)
 }
 
 
-p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
+p_ndouble str_resemblance(const p_list& value, const p_list& pattern)
 {
    if (pattern.empty()) {
       return NDOUBLE_ONE;
@@ -108,9 +114,8 @@ p_ndouble str_resemblance(const p_str& value, const p_str& pattern)
 
    p_int minimum = MAX_P_INT;
 
-   for (p_size i = 0; i < value.size(); i++) 
-   {
-      const p_str chunk = value.substr(i);
+   for (p_size i = 0; i < value.size(); i++) {
+      const p_list chunk(value.begin() + i, value.end());
       const p_int next = multiDamerauLevenshteinDistance(chunk, pattern);
       if (next < minimum) {
          minimum = next;
@@ -127,10 +132,10 @@ static p_int minOfThree(p_int a, p_int b, p_int c)
 }
 
 
-static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str2)
+static p_int multiDamerauLevenshteinDistance(const p_list& str1, const p_list& str2)
 {
-   const p_size len1 = str1.length();
-   const p_size len2 = str2.length();
+   const p_size len1 = str1.size();
+   const p_size len2 = str2.size();
 
    std::vector<std::vector<p_int>> dp(len1 + 1, std::vector<p_int>(len2 + 1, 0));
 
@@ -169,7 +174,7 @@ static p_int multiDamerauLevenshteinDistance(const p_str& str1, const p_str& str
 }
 
 
-static p_int resemblanceMistakesAllowed(const p_str& pattern)
+static p_int resemblanceMistakesAllowed(const p_list& pattern)
 {
    return static_cast<p_int>(pattern.size()) / RESEMBLANCE_MISTAKES_ALLOWED;
 }

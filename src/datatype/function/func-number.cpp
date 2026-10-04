@@ -599,6 +599,8 @@ p_num F_ShiftWeekDay_Number::getValue()
    return result;
 }
 
+F_Resemblance::F_Resemblance(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2) 
+   : Func_2(a1, a2), perun2(p2) { };
 
 p_num F_Resemblance::getValue()
 {
@@ -608,14 +610,19 @@ p_num F_Resemblance::getValue()
    gen::prepareForResemblance(v);
    gen::prepareForResemblance(p);
 
-   return gen::str_resemblance(v, p);
+   const p_list v_graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+   const p_list p_graphemes = toGraphemes(p, *(perun2.graphemeIterator.get()));
+
+   return gen::str_resemblance(v_graphemes, p_graphemes);
 }
 
 
-F_ResemblanceConst::F_ResemblanceConst(p_genptr<p_str>& a1, const p_str& patt) 
-   : Func_1(a1), pattern(patt)
+F_ResemblanceConst::F_ResemblanceConst(p_genptr<p_str>& a1, const p_str& patt, Perun2Process& p2) 
+   : Func_1(a1), perun2(p2)
 { 
-   gen::prepareForResemblance(this->pattern);
+   p_str prepared = patt;
+   gen::prepareForResemblance(prepared);
+   this->pattern = toGraphemes(prepared, *(perun2.graphemeIterator.get()));
 };
 
 
@@ -623,7 +630,9 @@ p_num F_ResemblanceConst::getValue()
 {
    p_str v = this->arg1->getValue();
    gen::prepareForResemblance(v);
-   return gen::str_resemblance(v, this->pattern);
+   const p_list v_graphemes = toGraphemes(v, *(perun2.graphemeIterator.get()));
+
+   return gen::str_resemblance(v_graphemes, this->pattern);
 }
 
 

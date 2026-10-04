@@ -125,6 +125,7 @@ add_executable(perun2
   python3/shared-memory.cpp
 
   unicode/convert.cpp
+  unicode/regex.cpp
 )
 
 target_include_directories(perun2 PRIVATE

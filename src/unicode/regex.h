@@ -14,36 +14,34 @@
 
 #pragma once
 
-#include "../datatype.h"
-#include "../../unicode/regex.h"
+#include "../datatype/primitives.h"
+#include <unicode/regex.h>
+#include <unicode/unistr.h>
+#include <memory>
+#include <string>
 
 
-namespace perun2::gen
+namespace perun2 
 {
 
-
-struct Regexp : Generator<p_bool>
-{
-public:
-   Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat);
-   p_bool getValue() override;
-
-private:
-   p_genptr<p_str> value;
-   p_genptr<p_str> pattern;
-};
-
-
-struct RegexpConst : Generator<p_bool>
+struct UnicodeRegex 
 {
 public:
-   RegexpConst(p_genptr<p_str>& val, const p_str& pat);
-   p_bool getValue() override;
+   UnicodeRegex() = delete;
+   UnicodeRegex(const UnicodeRegex& other);
+   UnicodeRegex& operator=(const UnicodeRegex& other) = delete;
+   UnicodeRegex(const p_str& pattern);
+   ~UnicodeRegex();
+
+   bool isGood() const;
+   bool check(const p_str& value);
+
+   const p_str m_originText;
 
 private:
-   p_genptr<p_str> value;
-   UnicodeRegex pattern;
+   bool m_good = false;
+   icu::RegexPattern* m_pattern;
+   icu::RegexMatcher* m_matcher;
 };
-
 
 }

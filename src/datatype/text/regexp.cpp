@@ -25,18 +25,27 @@ Regexp::Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat)
 
 p_bool Regexp::getValue()
 {
-   std::wregex pattern(utf32_to_utf16(this->pattern->getValue()));
-   return std::regex_search(utf32_to_utf16(this->value->getValue()), pattern);
+   UnicodeRegex regex(this->pattern->getValue());
+
+   if (! regex.isGood()) {
+      return false;
+   }
+
+   return regex.check(this->value->getValue());
 }
 
 
 RegexpConst::RegexpConst(p_genptr<p_str>& val, const p_str& pat)
-   : value(std::move(val)), pattern(utf32_to_utf16(pat)) { };
+   : value(std::move(val)), pattern(pat) { };
 
 
 p_bool RegexpConst::getValue()
 {
-   return std::regex_search(utf32_to_utf16(this->value->getValue()), this->pattern);
+   if (! this->pattern.isGood()) {
+      return false;
+   }
+
+   return this->pattern.check(this->value->getValue());
 }
 
 

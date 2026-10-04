@@ -1329,30 +1329,69 @@ p_bool os_copy(const p_set& paths)
       paths_utf16.emplace_back(utf32_to_utf16(p));
    }
 
-   p_size totalSize = sizeof(DROPFILES) + sizeof(wchar_t);
+   SIZE_T totalSize = sizeof(DROPFILES) + sizeof(wchar_t);
 
-   for (const std::wstring& pu : paths_utf16) {
-      totalSize += sizeof(wchar_t) * (pu.size() + 1);
+   for (const std::wstring& path : paths_utf16) {
+      const SIZE_T pathSize = static_cast<SIZE_T>(path.size() + 1) * sizeof(wchar_t);
+
+      if (pathSize > SIZE_MAX - totalSize) {
+         return false;
+      }
+
+      totalSize += pathSize;
    }
 
-   HDROP hdrop   = static_cast<HDROP>(GlobalAlloc(GHND, totalSize));
+   HGLOBAL hdrop = GlobalAlloc(GHND, totalSize);
+
+   if (! hdrop) {
+      return false;
+   }
+
    DROPFILES* df = static_cast<DROPFILES*>(GlobalLock(hdrop));
-   df->pFiles    = sizeof(DROPFILES);
-   df->fWide     = true;
 
-   wchar_t* dstStart = (wchar_t*)(&df[1]);
-
-   for (const std::wstring& pu : paths_utf16) {
-      wcscpy(dstStart, pu.c_str());
-      dstStart = &dstStart[pu.size() + 1];
+   if (! df) {
+      GlobalFree(hdrop);
+      return false;
    }
+
+   df->pFiles = sizeof(DROPFILES);
+   df->fWide = TRUE;
+
+   wchar_t* dst = reinterpret_cast<wchar_t*>(df + 1);
+
+   for (const std::wstring& path : paths_utf16) {
+      const size_t length = path.size();
+
+      if (length != 0) {
+         memcpy(dst, path.data(), length * sizeof(wchar_t));
+      }
+
+      dst[length] = L'\0';
+      dst += length + 1;
+   }
+
+   *dst = L'\0';
 
    GlobalUnlock(hdrop);
-   OpenClipboard(NULL);
-   EmptyClipboard();
-   SetClipboardData(CF_HDROP, hdrop);
-   CloseClipboard();
 
+   if (! OpenClipboard(nullptr)) {
+      GlobalFree(hdrop);
+      return false;
+   }
+
+   if (! EmptyClipboard()) {
+      CloseClipboard();
+      GlobalFree(hdrop);
+      return false;
+   }
+
+   if (! SetClipboardData(CF_HDROP, hdrop)) {
+      GlobalFree(hdrop);
+      CloseClipboard();
+      return false;
+   }
+
+   CloseClipboard();
    return true;
 }
 

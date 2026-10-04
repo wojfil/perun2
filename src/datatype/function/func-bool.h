@@ -87,10 +87,13 @@ public:
 struct F_ContainsStr : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_ContainsStr(p_genptr<p_str>& a1, p_genptr<p_str>& a2)
-      : Func_2<p_str, p_str>(a1, a2) { };
+   F_ContainsStr(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2)
+      : Func_2<p_str, p_str>(a1, a2), perun2(p2) { };
 
    p_bool getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
@@ -139,16 +142,24 @@ p_bool isNumber(const p_str& value);
 struct F_StartsWith : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_StartsWith(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_StartsWith(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_bool getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
 struct F_EndsWith : Func_2<p_str, p_str>, Generator<p_bool>
 {
 public:
-   F_EndsWith(p_genptr<p_str>& a1, p_genptr<p_str>& a2) : Func_2(a1, a2) { };
+   F_EndsWith(p_genptr<p_str>& a1, p_genptr<p_str>& a2, Perun2Process& p2) 
+      : Func_2(a1, a2), perun2(p2) { };
    p_bool getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 
@@ -178,65 +189,6 @@ private:
 };
 
 
-struct F_StartsWithChar : Generator<p_bool>
-{
-public:
-   F_StartsWithChar(p_genptr<p_str>& val, const p_char ch)
-      : value(std::move(val)), character(ch) { };
-
-   p_bool getValue() override;
-
-private:
-   p_genptr<p_str> value;
-   const p_char character;
-};
-
-
-struct F_EndsWithChar : Generator<p_bool>
-{
-public:
-   F_EndsWithChar(p_genptr<p_str>& val, const p_char ch)
-      : value(std::move(val)), character(ch) { };
-
-   p_bool getValue() override;
-
-private:
-   p_genptr<p_str> value;
-   const p_char character;
-};
-
-
-struct F_StartsWithConst : Generator<p_bool>
-{
-public:
-   F_StartsWithConst(p_genptr<p_str>& val, const p_str& cnst)
-      : value(std::move(val)), constant(cnst), constantLength(cnst.size()) { };
-
-   p_bool getValue() override;
-
-private:
-   p_genptr<p_str> value;
-   const p_str constant;
-   const p_size constantLength;
-};
-
-
-struct F_EndsWithConst : Generator<p_bool>
-{
-public:
-   F_EndsWithConst(p_genptr<p_str>& val, const p_str& cnst)
-      : value(std::move(val)), constant(cnst), constantLength(cnst.size()) { };
-
-   p_bool getValue() override;
-
-private:
-   p_genptr<p_str> value;
-   const p_str constant;
-   const p_size constantLength;
-};
-
-
-
 struct F_FindText : Func_1<p_str>, Generator<p_bool>
 {
 public:
@@ -253,8 +205,12 @@ private:
 struct F_IsLetter : Func_1<p_str>, Generator<p_bool>
 {
 public:
-   F_IsLetter(p_genptr<p_str>& a1) : Func_1(a1) { };
+   F_IsLetter(p_genptr<p_str>& a1, Perun2Process& p2) 
+      : Func_1(a1), perun2(p2) { };
    p_bool getValue() override;
+
+private:
+   Perun2Process& perun2;
 };
 
 

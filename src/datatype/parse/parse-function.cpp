@@ -179,7 +179,7 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
       if (parse::parse(p2, args[0], str_)) {
          p_genptr<p_str> str2;
          if (parse::parse(p2, args[1], str2)) {
-            result = std::make_unique<F_ContainsStr>(str_, str2);
+            result = std::make_unique<F_ContainsStr>(str_, str2, p2);
             return true;
          }
          else {
@@ -275,52 +275,9 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      if (args[1].getLength() == 1) {
-         const Token& f = args[1].first();
-         switch (f.type) {
-            case Token::t_Quotation: {
-               const p_str os = f.getOriginString(p2);
-
-               switch (os.size()) {
-                  case 0: {
-                     result = std::make_unique<gen::Constant<p_bool>>(true);
-                     break;
-                  }
-                  case 1: {
-                     const p_char ch = os[0];
-                     result = std::make_unique<F_StartsWithChar>(str, ch);
-                     break;
-                  }
-                  default: {
-                     result = std::make_unique<F_StartsWithConst>(str, os);
-                     break;
-                  }
-               }
-
-               return true;
-            }
-            case Token::t_Number: {
-               const p_str conv = f.value.num.n.toString();
-               switch (conv.size()) {
-                  case 1: {
-                     const p_char ch = conv[0];
-                     result = std::make_unique<F_StartsWithChar>(str, ch);
-                     break;
-                  }
-                  default: {
-                     result = std::make_unique<F_StartsWithConst>(str, conv);
-                     break;
-                  }
-               }
-
-               return true;
-            }
-         }
-      }
-
       p_genptr<p_str> str2;
       if (parse::parse(p2, args[1], str2)) {
-         result = std::make_unique<F_StartsWith>(str, str2);
+         result = std::make_unique<F_StartsWith>(str, str2, p2);
          return true;
       }
       else {
@@ -337,55 +294,12 @@ p_bool boolFunction(p_genptr<p_bool>& result, const Tokens& tks, Perun2Process& 
          functionArgException(1, STRING_STRING, word, p2);
       }
 
-      if (args[1].getLength() == 1) {
-         const Token& f = args[1].first();
-         switch (f.type) {
-            case Token::t_Quotation: {
-               const p_str os = f.getOriginString(p2);
-
-               switch (os.size()) {
-                  case 0: {
-                     result = std::make_unique<gen::Constant<p_bool>>(true);
-                     break;
-                  }
-                  case 1: {
-                     const p_char ch = os[0];
-                     result = std::make_unique<F_EndsWithChar>(str, ch);
-                     break;
-                  }
-                  default: {
-                     result = std::make_unique<F_EndsWithConst>(str, os);
-                     break;
-                  }
-               }
-
-               return true;
-            }
-            case Token::t_Number: {
-               const p_str conv = f.value.num.n.toString();
-               switch (conv.size()) {
-                  case 1: {
-                     const p_char ch = conv[0];
-                     result = std::make_unique<F_EndsWithChar>(str, ch);
-                     break;
-                  }
-                  default: {
-                     result = std::make_unique<F_EndsWithConst>(str, conv);
-                     break;
-                  }
-               }
-
-               return true;
-            }
-         }
-      }
-
       p_genptr<p_str> str2;
       if (!parse::parse(p2, args[1], str2)) {
          functionArgException(2, STRING_STRING, word, p2);
       }
 
-      result = std::make_unique<F_EndsWith>(str, str2);
+      result = std::make_unique<F_EndsWith>(str, str2, p2);
       return true;
    }
    else if (word.isWord(STRING_FINDTEXT, p2)) {
@@ -476,7 +390,7 @@ p_bool simpleBoolFunction(p_genptr<p_bool>& result, const Tokens& tks, const Tok
    else if (word.isWord(STRING_ISNUMBER, p2))
       result = std::make_unique<F_IsNumber>(arg1);
    else if (word.isWord(STRING_ISLETTER, p2))
-      result = std::make_unique<F_IsLetter>(arg1);
+      result = std::make_unique<F_IsLetter>(arg1, p2);
    else if (word.isWord(STRING_ISDIGIT, p2))
       result = std::make_unique<F_IsDigit>(arg1);
    else if (word.isWord(STRING_ISBINARY, p2))

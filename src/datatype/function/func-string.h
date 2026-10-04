@@ -26,6 +26,8 @@ struct Perun2;
 namespace perun2::func
 {
 
+int64_t indexOfFirstAppearance(const p_list& base, const p_list& phrase);
+
 struct F_After : Func_2<p_str, p_str>, Generator<p_str>
 {
 public:

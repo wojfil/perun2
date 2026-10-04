@@ -13,6 +13,7 @@
 */
 
 #include "func-bool.h"
+#include "func-string.h"
 #include "../../os/os.h"
 #include "../../python3/python3-processes.h"
 
@@ -50,7 +51,14 @@ p_bool F_ContainsStr::getValue()
       return false;
    }
 
-   return base.find(phrase) != p_str::npos;
+   if (hasOnlyOneCharGraphemes(phrase) && hasOnlyOneCharGraphemes(base)) {
+      return base.find(phrase) != p_str::npos;
+   }
+
+   const p_list g1 = toGraphemes(base, *(perun2.graphemeIterator.get()));
+   const p_list g2 = toGraphemes(phrase, *(perun2.graphemeIterator.get()));
+
+   return indexOfFirstAppearance(g1, g2) != -1;
 }
 
 
@@ -170,15 +178,29 @@ p_bool F_StartsWith::getValue()
       return false;
    }
 
-   const p_size blen = base.size();
-   const p_size plen = phrase.size();
-
-   if (plen > blen) {
+   if (phrase.size() > base.size()) {
       return false;
    }
 
-   for (p_size i = 0; i < plen; i++) {
-      if (phrase[i] != base[i]) {
+   if (hasOnlyOneCharGraphemes(base) && hasOnlyOneCharGraphemes(phrase)) {
+      for (p_size i = 0; i < phrase.size(); i++) {
+         if (phrase[i] != base[i]) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   const p_list baseGraphemes = toGraphemes(base, *(perun2.graphemeIterator.get()));
+   const p_list phraseGraphemes = toGraphemes(phrase, *(perun2.graphemeIterator.get()));
+
+   if (phraseGraphemes.size() > baseGraphemes.size()) {
+      return false;
+   }
+
+   for (p_size i = 0; i < phraseGraphemes.size(); i++) {
+      if (phraseGraphemes[i] != baseGraphemes[i]) {
          return false;
       }
    }
@@ -199,15 +221,29 @@ p_bool F_EndsWith::getValue()
       return false;
    }
 
-   const p_size blen = base.size();
-   const p_size plen = phrase.size();
-
-   if (plen > blen) {
+   if (phrase.size() > base.size()) {
       return false;
    }
 
-   for (p_size i = 0; i < plen; i++) {
-      if (phrase[plen - 1 - i] != base[blen - 1 - i]) {
+   if (hasOnlyOneCharGraphemes(base) && hasOnlyOneCharGraphemes(phrase)) {
+      for (p_size i = 0; i < phrase.size(); i++) {
+         if (phrase[phrase.size() - 1 - i] != base[base.size() - 1 - i]) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   const p_list baseGraphemes = toGraphemes(base, *(perun2.graphemeIterator.get()));
+   const p_list phraseGraphemes = toGraphemes(phrase, *(perun2.graphemeIterator.get()));
+
+   if (phraseGraphemes.size() > baseGraphemes.size()) {
+      return false;
+   }
+
+   for (p_size i = 0; i < phraseGraphemes.size(); i++) {
+      if (phraseGraphemes[phraseGraphemes.size() - 1 - i] != baseGraphemes[baseGraphemes.size() - 1 - i]) {
          return false;
       }
    }
@@ -260,26 +296,6 @@ p_bool F_ExistInside::getValue()
 }
 
 
-p_bool F_StartsWithChar::getValue()
-{
-   const p_str v = value->getValue();
-
-   return v.empty()
-      ? false
-      : (v[0] == character);
-}
-
-
-p_bool F_EndsWithChar::getValue()
-{
-   const p_str v = value->getValue();
-
-   return v.empty()
-      ? false
-      : (v[v.size() - 1] == character);
-}
-
-
 p_bool F_FindText::getValue()
 {
    if (!this->context->v_exists->value || !this->context->v_isfile->value) {
@@ -295,42 +311,6 @@ p_bool F_FindText::getValue()
 }
 
 
-p_bool F_StartsWithConst::getValue()
-{
-   const p_str v = value->getValue();
-   const p_size len = v.size();
-   if (len < constantLength) {
-      return false;
-   }
-
-   for (p_size i = 0; i < constantLength; i++) {
-      if (v[i] != constant[i]) {
-         return false;
-      }
-   }
-
-   return true;
-}
-
-
-p_bool F_EndsWithConst::getValue()
-{
-   const p_str v = value->getValue();
-   const p_size len = v.size();
-   if (len < constantLength) {
-      return false;
-   }
-
-   for (p_size i = 0; i < constantLength; i++) {
-      if (v[len - constantLength + i] != constant[i]) {
-         return false;
-      }
-   }
-
-   return true;
-}
-
-
 p_bool F_IsLetter::getValue()
 {
    const p_str value = this->arg1->getValue();
@@ -338,8 +318,10 @@ p_bool F_IsLetter::getValue()
       return false;
    }
 
-   for (const p_char ch : value) {
-      if (!char_isAlpha(ch)) {
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
+   for (const p_str& graph : graphemes) {
+      if (! isLetterGrapheme(graph)) {
          return false;
       }
    }

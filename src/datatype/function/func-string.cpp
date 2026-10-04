@@ -28,7 +28,7 @@ namespace perun2::func
 {
 
 
-static int64_t indexOfFirstAppearance(const p_list& base, const p_list& phrase) 
+int64_t indexOfFirstAppearance(const p_list& base, const p_list& phrase) 
 {
    if (phrase.size() > base.size()) {
       return -1;

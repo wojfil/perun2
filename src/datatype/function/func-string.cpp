@@ -271,8 +271,45 @@ p_str F_Lower::getValue()
 p_str F_Trim::getValue()
 {
    p_str value = arg1->getValue();
-   str_trim(value);
-   return value;
+
+   if (value.empty()) {
+      return p_str();
+   }
+
+   if (hasOnlyOneCharGraphemes(value)) {
+      str_trim(value);
+      return value;
+   }
+
+   const p_list graphemes = toGraphemes(value, *(perun2.graphemeIterator.get()));
+
+   p_size left = 0;
+   for (; left < graphemes.size(); left++) {
+      if (! isWhitespaceGrapheme(graphemes[left])) {
+         break;
+      }
+   }
+
+   if (left == graphemes.size()) {
+      return p_str();
+      return;
+   }
+
+   p_int right;
+   for (right = static_cast<p_int>(graphemes.size() - 1); right >= 0; --right) {
+      if (! isWhitespaceGrapheme(graphemes[static_cast<p_size>(right)])) {
+         break;
+      }
+   }
+
+   p_str result;
+   result.reserve(right - left);
+
+   for (p_size i = left; i < right; i++) {
+      result += graphemes[i];
+   }
+
+   return result;
 }
 
 

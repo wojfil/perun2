@@ -1332,7 +1332,7 @@ static p_bool simpleStringFunction(p_genptr<p_str>& result, const Tokens& tks, c
    else if (word.isWord(STRING_LOWER, p2))
       result = std::make_unique<F_Lower>(arg1);
    else if (word.isWord(STRING_TRIM, p2))
-      result = std::make_unique<F_Trim>(arg1);
+      result = std::make_unique<F_Trim>(arg1, p2);
    else if (word.isWord(STRING_UPPER, p2))
       result = std::make_unique<F_Upper>(arg1);
    else if (word.isWord(STRING_REVERSE, p2))

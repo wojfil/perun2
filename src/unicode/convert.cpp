@@ -208,7 +208,7 @@ p_bool hasOnlyOneCharGraphemes(const p_str& value)
 
 p_bool isLetterGrapheme(const p_str& grapheme)
 {
-    for (p_char c : grapheme) {
+    for (const p_char c : grapheme) {
         if (u_isalpha(c)) {
             return true;
         }
@@ -220,7 +220,7 @@ p_bool isLetterGrapheme(const p_str& grapheme)
 
 p_bool isDigitGrapheme(const p_str& grapheme)
 {
-    for (p_char c : grapheme) {
+    for (const p_char c : grapheme) {
         if (u_isdigit(c)) {
             return true;
         }
@@ -228,5 +228,18 @@ p_bool isDigitGrapheme(const p_str& grapheme)
 
     return false;
 }
+
+
+p_bool isWhitespaceGrapheme(const p_str& grapheme)
+{
+    for (const p_char c : grapheme) {
+        if (! u_isUWhiteSpace(c)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 }

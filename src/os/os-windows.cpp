@@ -1499,9 +1499,11 @@ p_bool os_terminate(SideProcess& process)
 }
 
 p_bool os_popup(const p_str& text)
-{
-   return MessageBoxW(NULL, utf32_to_utf16(text).c_str(), 
-      utf32_to_utf16(STRING_POPUP_TITLE).c_str(), 
+{    
+   const std::wstring text_utf16 = utf32_to_utf16(text);
+   const std::wstring title_utf16 = utf32_to_utf16(STRING_POPUP_TITLE);
+
+   return MessageBoxW(NULL, text_utf16.c_str(), title_utf16.c_str(), 
       MB_OK | MB_ICONINFORMATION) == IDOK;
 }
 

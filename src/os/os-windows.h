@@ -30,13 +30,6 @@ p_constexpr p_char OS_SEPARATOR = CHAR_BACKSLASH;
 p_constexpr p_char OS_WRONG_SEPARATOR = CHAR_SLASH;
 
 
-// for Windows OS only
-// traditionally, it did not allow file paths to be longer than 260 characters
-// but newer APIs make it possible to avoid this restriction as below
-#define P_WINDOWS_PATH(path) (path.size() < MAX_PATH - 1) \
-   ? utf32_to_utf16(path).c_str() \
-   : utf32_to_utf16(str(STRING_WINDOWS_PATH_PREFIX, path)).c_str() \
-
 
 void os_init();
 void os_deinit();
@@ -189,6 +182,8 @@ inline uint64_t os_bigInteger(const uint32_t low, const uint32_t high);
 p_bool os_isBrowsePath(const std::wstring& path);
 inline p_tim os_convertToPerun2Time(const p_ftim* time);
 inline p_bool os_convertToFileTime(const p_tim& perunTime, p_ftim& result);
+
+std::wstring os_windowsPath(const p_str& path);
 
 
 }

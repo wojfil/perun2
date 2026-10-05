@@ -177,7 +177,6 @@ p_bool str_startsWith(const p_str& value, const p_str& phrase)
 
 const p_str ROMAN_VINCULUM_THOUSAND =     U"I" U"\u0305";
 
-const p_str STRING_WINDOWS_PATH_PREFIX =  U"\\\\?\\";
 const p_str STRING_POPUP_TITLE =          U"Perun2";
 const p_str STRING_GOOD =                 U"good";
 

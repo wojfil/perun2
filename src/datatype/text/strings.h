@@ -41,7 +41,6 @@ extern const p_str ROMAN_VINCULUM_THOUSAND;
 extern const p_list ROMAN_STRING_LITERALS;
 extern const p_list STRINGS_ASCII;
 
-extern const p_str STRING_WINDOWS_PATH_PREFIX;
 extern const p_str STRING_POPUP_TITLE;
 extern const p_str STRING_GOOD;
 

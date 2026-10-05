@@ -1346,7 +1346,7 @@ p_bool os_copy(const p_set& paths)
    wchar_t* dst = reinterpret_cast<wchar_t*>(df + 1);
 
    for (const std::wstring& path : paths_utf16) {
-      const size_t length = path.size();
+      const p_size length = path.size();
 
       if (length != 0) {
          memcpy(dst, path.data(), length * sizeof(wchar_t));
@@ -1420,7 +1420,7 @@ p_bool os_select(const p_str& parent, const p_set& paths)
       return false;
    }
 
-   if (v.size() > static_cast<size_t>(UINT_MAX)) {
+   if (v.size() > static_cast<p_size>(UINT_MAX)) {
       for (LPITEMIDLIST idl : v) {
          ILFree(idl);
       }
@@ -2547,7 +2547,7 @@ p_str os_currentPath()
          return utf16_to_utf32(std::wstring(buffer.data(), length));
       }
 
-      buffer.resize(static_cast<size_t>(length) + 1);
+      buffer.resize(static_cast<p_size>(length) + 1);
    }
 
    return p_str();
@@ -2637,7 +2637,7 @@ std::optional<p_str> os_registry_readPython3Path(const p_str& version, HKEY root
       return std::nullopt;
    }
 
-   const size_t length = valueSize / sizeof(wchar_t);
+   const p_size length = valueSize / sizeof(wchar_t);
 
    if (length > 0 && value[length - 1] == L'\0') {
       return utf16_to_utf32(std::wstring(value.data(), length - 1));
@@ -2814,7 +2814,7 @@ p_bool os_readFile(p_str& result, const p_str& path)
    char buffer[4096];
 
    while (true) {
-      const size_t bytesRead = fread(buffer, sizeof(char), sizeof(buffer), f);
+      const p_size bytesRead = fread(buffer, sizeof(char), sizeof(buffer), f);
 
       if (bytesRead > 0) {
          utf8.append(buffer, bytesRead);

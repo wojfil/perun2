@@ -939,20 +939,22 @@ void os_closeEntry(p_entry& entry)
 
 p_bool os_delete(const p_str& path)
 {
-   wchar_t wszFrom[MAX_PATH] = { 0 };
-   std::wstring path_utf16 = utf32_to_utf16(path);
+   const std::wstring path_utf16 = utf32_to_utf16(path);
+   std::vector<wchar_t> from(path_utf16.size() + 2, L'\0');
+   std::memcpy(from.data(), path_utf16.data(), path_utf16.size() * sizeof(wchar_t));
 
-   wcscpy(wszFrom, path_utf16.c_str());
-   CopyMemory(wszFrom + lstrlenW(wszFrom), "\0\0", 2);
-
-   SHFILEOPSTRUCTW sfo = {0};
+   SHFILEOPSTRUCTW sfo{};
    sfo.wFunc = FO_DELETE;
-   sfo.pFrom = wszFrom;
-   sfo.fFlags = FOF_ALLOWUNDO |
-     FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR |
-     FOF_WANTNUKEWARNING;
+   sfo.pFrom = from.data();
+   sfo.fFlags =
+      FOF_ALLOWUNDO |
+      FOF_SILENT |
+      FOF_NOCONFIRMATION |
+      FOF_NOERRORUI |
+      FOF_NOCONFIRMMKDIR |
+      FOF_WANTNUKEWARNING;
 
-   return SHFileOperationW(&sfo) == 0 && !sfo.fAnyOperationsAborted;
+   return SHFileOperationW(&sfo) == 0 && ! sfo.fAnyOperationsAborted;
 }
 
 p_bool os_drop(const p_str& path, Perun2Process& p2)
@@ -978,25 +980,13 @@ p_bool os_dropDirectory(const p_str& path, Perun2Process& p2)
 {
    p_entry hFind;
    p_fdata FindFileData;
-
-   wchar_t DirPath[MAX_PATH];
-   wchar_t FileName[MAX_PATH];
-
-   const std::wstring path_utf16 = utf32_to_utf16(path);
    const p_str firstPattern = str(path, U"\\*");
-   const p_str firstStart = str(path, U"\\");
 
-   wcscpy(DirPath, const_cast<wchar_t*>(utf32_to_utf16(firstPattern).c_str()));
-   wcscpy(FileName, const_cast<wchar_t*>(utf32_to_utf16(firstStart).c_str()));
-
-   if (!os_hasFirstFile(firstPattern, hFind, FindFileData)) {
+   if (! os_hasFirstFile(firstPattern, hFind, FindFileData)) {
       return false;
    }
 
-   wcscpy(DirPath, FileName);
-
-   p_bool bSearch = true;
-   while (bSearch) {
+   while (true) {
       if (os_hasNextFile(hFind, FindFileData)) {
          if (p2.isNotRunning()) {
             os_closeEntry(hFind);
@@ -1007,41 +997,51 @@ p_bool os_dropDirectory(const p_str& path, Perun2Process& p2)
             continue;
          }
 
-         wcscat(FileName,FindFileData.cFileName);
-         if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_dropDirectory(utf16_to_utf32(std::wstring(FileName)), p2)) {
+         const p_str fileName = utf16_to_utf32(FindFileData.cFileName);
+         const p_str currentPath = str(path, OS_SEPARATOR, fileName);
+
+         if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            if (!os_dropDirectory(currentPath, p2)) {
                os_closeEntry(hFind);
                return false;
             }
 
-            RemoveDirectoryW(FileName);
-            wcscpy(FileName,DirPath);
+            const std::wstring currentPathUtf16 = utf32_to_utf16(currentPath);
+
+            if (! RemoveDirectoryW(currentPathUtf16.c_str())) {
+               os_closeEntry(hFind);
+               return false;
+            }
          }
          else {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
-               os_unlock(utf16_to_utf32(std::wstring(FileName)));
+               if (!os_unlock(currentPath)) {
+                  os_closeEntry(hFind);
+                  return false;
+               }
             }
 
-            if (!DeleteFileW(FileName)) {
+            const std::wstring currentPathUtf16 = utf32_to_utf16(currentPath);
+
+            if (! DeleteFileW(currentPathUtf16.c_str())) {
                os_closeEntry(hFind);
                return false;
             }
-
-            wcscpy(FileName,DirPath);
          }
       }
       else {
-         if (GetLastError() == ERROR_NO_MORE_FILES)
-            bSearch = false;
-         else {
-            os_closeEntry(hFind);
-            return false;
+         if (GetLastError() == ERROR_NO_MORE_FILES) {
+            break;
          }
+
+         os_closeEntry(hFind);
+         return false;
       }
    }
-   os_closeEntry(hFind);
 
-   return RemoveDirectoryW(const_cast<wchar_t*>(P_WINDOWS_PATH(path))) != 0;
+   os_closeEntry(hFind);
+   const std::wstring pathUtf16 = utf32_to_utf16(path);
+   return RemoveDirectoryW(pathUtf16.c_str()) != 0;
 }
 
 p_bool os_hide(const p_str& path)
@@ -1053,7 +1053,7 @@ p_bool os_hide(const p_str& path)
    }
 
    if ((attr & FILE_ATTRIBUTE_HIDDEN) == 0) {
-      return SetFileAttributes(P_WINDOWS_PATH(path), attr | FILE_ATTRIBUTE_HIDDEN) != 0;
+      return SetFileAttributesW(P_WINDOWS_PATH(path), attr | FILE_ATTRIBUTE_HIDDEN) != 0;
    }
 
    return true;
@@ -1068,7 +1068,7 @@ p_bool os_lock(const p_str& path)
    }
 
    if ((attr & FILE_ATTRIBUTE_READONLY) == 0) {
-      return SetFileAttributes(P_WINDOWS_PATH(path), attr | FILE_ATTRIBUTE_READONLY) != 0;
+      return SetFileAttributesW(P_WINDOWS_PATH(path), attr | FILE_ATTRIBUTE_READONLY) != 0;
    }
 
    return true;
@@ -1077,36 +1077,37 @@ p_bool os_lock(const p_str& path)
 p_bool os_open(const p_str& path)
 {
    const p_str location = os_parent(path);
-   return (INT_PTR)ShellExecuteW(0, 0, P_WINDOWS_PATH(path), 0, P_WINDOWS_PATH(location) , SW_SHOW) > 32;
+   const std::wstring path_utf16 = utf32_to_utf16(path);
+   const std::wstring location_utf16 = utf32_to_utf16(location);
+
+   return reinterpret_cast<INT_PTR>(ShellExecuteW(nullptr, nullptr, path_utf16.c_str(),
+      nullptr, location_utf16.c_str(), SW_SHOW)) > 32;
 }
 
 p_bool os_openAsCommand(const p_str& command, const p_str& location)
 {
-   STARTUPINFO si;
-   PROCESS_INFORMATION pi;
-
-   ZeroMemory(&si, sizeof(si));
+   STARTUPINFO si{};
+   PROCESS_INFORMATION pi{};
    si.cb = sizeof(si);
-   ZeroMemory(&pi, sizeof(pi));
 
-   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command.size() + 1);
-   wcscpy(cmd.get(), utf32_to_utf16(command).c_str());
-   cmd[command.size()] = CHAR_NULL;
+   const std::wstring command_utf16 = utf32_to_utf16(command);
+   const std::wstring location_utf16 = utf32_to_utf16(location);
 
-   const BOOL creation = CreateProcessW (
-      NULL,
-      cmd.get(),
-      NULL, NULL, FALSE,
-      CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
-      NULL, 
-      utf32_to_utf16(location).c_str(),
-      &si, &pi
-   );
+   std::unique_ptr<wchar_t[]> cmd = std::make_unique<wchar_t[]>(command_utf16.size() + 1);
+   wcscpy(cmd.get(), command_utf16.c_str());
+
+   const BOOL creation = CreateProcessW(nullptr, cmd.get(), nullptr, nullptr, FALSE,
+      CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW, nullptr,
+      location_utf16.empty() ? nullptr : location_utf16.c_str(), &si, &pi);
+
+   if (! creation) {
+      return false;
+   }
 
    CloseHandle(pi.hProcess);
    CloseHandle(pi.hThread);
 
-   return creation != 0;
+   return true;
 }
 
 p_bool os_unhide(const p_str& path)
@@ -1118,7 +1119,7 @@ p_bool os_unhide(const p_str& path)
    }
 
    if ((attr & FILE_ATTRIBUTE_HIDDEN) == FILE_ATTRIBUTE_HIDDEN) {
-      return SetFileAttributes(P_WINDOWS_PATH(path), attr & ~FILE_ATTRIBUTE_HIDDEN) != 0;
+      return SetFileAttributesW(P_WINDOWS_PATH(path), attr & ~FILE_ATTRIBUTE_HIDDEN) != 0;
    }
 
    return true;
@@ -1133,7 +1134,7 @@ p_bool os_unlock(const p_str& path)
    }
 
    if ((attr & FILE_ATTRIBUTE_READONLY) == FILE_ATTRIBUTE_READONLY) {
-      return SetFileAttributes(P_WINDOWS_PATH(path), attr & ~FILE_ATTRIBUTE_READONLY) != 0;
+      return SetFileAttributesW(P_WINDOWS_PATH(path), attr & ~FILE_ATTRIBUTE_READONLY) != 0;
    }
 
    return true;
@@ -1154,7 +1155,7 @@ p_bool os_setTime(const p_str& path, const p_tim& creation,
       return false;
    }
 
-   p_entry handle = CreateFile(P_WINDOWS_PATH(path),
+   p_entry handle = CreateFileW(P_WINDOWS_PATH(path),
       FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE,
       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -1250,31 +1251,20 @@ p_bool os_copyToFile(const p_str& oldPath, const p_str& newPath)
 
 p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, Perun2Process& p2)
 {
-   if (!os_createDirectory(newPath)) {
+   if (! os_createDirectory(newPath)) {
       return false;
    }
-
-   const p_size length = oldPath.size() + 1;
 
    p_entry hFind;
    p_fdata FindFileData;
 
-   wchar_t DirPath[MAX_PATH];
-   wchar_t FileName[MAX_PATH];
-
    const p_str firstPattern = str(oldPath, U"\\*");
-   const p_str firstStart = str(oldPath, U"\\");
-   wcscpy(DirPath, const_cast<wchar_t*>(utf32_to_utf16(firstPattern).c_str()));
-   wcscpy(FileName, const_cast<wchar_t*>(utf32_to_utf16(firstStart).c_str()));
 
-   if (!os_hasFirstFile(firstPattern, hFind, FindFileData)) {
+   if (! os_hasFirstFile(firstPattern, hFind, FindFileData)) {
       return false;
    }
 
-   wcscpy(DirPath, FileName);
-
-   p_bool bSearch = true;
-   while (bSearch) {
+   while (true) {
       if (os_hasNextFile(hFind, FindFileData)) {
          if (p2.isNotRunning()) {
             os_closeEntry(hFind);
@@ -1285,34 +1275,30 @@ p_bool os_copyToDirectory(const p_str& oldPath, const p_str& newPath, Perun2Proc
             continue;
          }
 
-         wcscat(FileName, FindFileData.cFileName);
-         const p_str FileNameUtf32 = utf16_to_utf32(FileName);
-         const p_str np = str(newPath, OS_SEPARATOR, FileNameUtf32.substr(length));
+         const p_str fileName = utf16_to_utf32(FindFileData.cFileName);
+         const p_str sourcePath = str(oldPath, OS_SEPARATOR, fileName);
+         const p_str destinationPath = str(newPath, OS_SEPARATOR, fileName);
 
-         if ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            if (!os_copyToDirectory(FileNameUtf32, np, p2)) {
+         if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            if (! os_copyToDirectory(sourcePath, destinationPath,p2)) {
                os_closeEntry(hFind);
                return false;
             }
-
-            wcscpy(FileName, DirPath);
          }
          else {
-            if (!os_copyToFile(FileNameUtf32, np)) {
+            if (! os_copyToFile(sourcePath, destinationPath)) {
                os_closeEntry(hFind);
                return false;
             }
-
-            wcscpy(FileName, DirPath);
          }
       }
       else {
-         if (GetLastError() == ERROR_NO_MORE_FILES)
-            bSearch = false;
-         else {
-            os_closeEntry(hFind);
-            return false;
+         if (GetLastError() == ERROR_NO_MORE_FILES) {
+            break;
          }
+
+         os_closeEntry(hFind);
+         return false;
       }
    }
 
@@ -2551,10 +2537,7 @@ p_str os_currentPath()
          return p_str();
       }
 
-      DWORD length = GetCurrentDirectoryW(
-         static_cast<DWORD>(buffer.size()),
-         buffer.data()
-      );
+      DWORD length = GetCurrentDirectoryW(static_cast<DWORD>(buffer.size()), buffer.data());
 
       if (length == 0) {
          return p_str();
@@ -2581,7 +2564,6 @@ p_str os_system32Path()
 
    std::wstring result(path);
    CoTaskMemFree(path);
-
    return utf16_to_utf32(result);
 }
 
@@ -2601,82 +2583,110 @@ p_str os_downloadsPath()
 
 std::optional<p_str> os_readStringFromCmd(const p_str& cmd)
 {
-   std::array<wchar_t, 256> buffer;
-   p_str result;
-   FILE* pipe = _wpopen(utf32_to_utf16(cmd).c_str(), L"r");
-   
+   const std::wstring cmd_utf16 = utf32_to_utf16(cmd);
+   FILE* pipe = _wpopen(cmd_utf16.c_str(), L"r");
+
    if (! pipe) {
       return std::nullopt;
    }
 
-   if (fgetws(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
-      const std::wstring d = buffer.data();
-      result += utf16_to_utf32(d);
+   std::wstring output;
+   std::array<wchar_t, 4096> buffer{};
+
+   while (fgetws(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
+      output.append(buffer.data());
    }
 
-   _pclose(pipe);
-   return result.empty()
-      ? std::nullopt
-      : std::make_optional<p_str>(result);
+   const int closeResult = _pclose(pipe);
+
+   if (closeResult == -1 || output.empty()) {
+      return std::nullopt;
+   }
+
+   return utf16_to_utf32(output);
 }
 
 std::optional<p_str> os_registry_readPython3Path(const p_str& version, HKEY rootKey) 
 {
-   HKEY hKey;
    const p_str regPath = str(U"SOFTWARE\\Python\\PythonCore\\", version, U"\\InstallPath");
-   
-   LONG result = RegOpenKeyExW(rootKey, utf32_to_utf16(regPath).c_str(), 0, KEY_READ, &hKey);
-   if (result != ERROR_SUCCESS) {
+   const std::wstring regPath_utf16 = utf32_to_utf16(regPath);
+   HKEY hKey = nullptr;
+
+   const LONG openResult = RegOpenKeyExW(rootKey, regPath_utf16.c_str(), 0, KEY_READ, &hKey);
+
+   if (openResult != ERROR_SUCCESS) {
       return std::nullopt;
    }
 
-   wchar_t value[MAX_PATH];
-   DWORD valueSize = sizeof(value);
    DWORD type = 0;
+   DWORD valueSize = 0;
+   LONG result = RegQueryValueExW(hKey, L"ExecutablePath", nullptr, &type, nullptr, &valueSize);
 
-   result = RegQueryValueExW(hKey, L"ExecutablePath", nullptr, &type, (LPBYTE)value, &valueSize);
+   if (result != ERROR_SUCCESS || type != REG_SZ) {
+      RegCloseKey(hKey);
+      return std::nullopt;
+   }
+
+   std::vector<wchar_t> value((valueSize / sizeof(wchar_t)) + 1);
+   result = RegQueryValueExW(hKey, L"ExecutablePath", nullptr, &type, 
+      reinterpret_cast<LPBYTE>(value.data()), &valueSize);
+
    RegCloseKey(hKey);
 
-   if (result == ERROR_SUCCESS && type == REG_SZ) {
-      return utf16_to_utf32(std::wstring(value));
-   } 
-   else {
+   if (result != ERROR_SUCCESS || type != REG_SZ) {
       return std::nullopt;
    }
+
+   const size_t length = valueSize / sizeof(wchar_t);
+
+   if (length > 0 && value[length - 1] == L'\0') {
+      return utf16_to_utf32(std::wstring(value.data(), length - 1));
+   }
+
+   return utf16_to_utf32(std::wstring(value.data(), length));
 }
 
 std::vector<p_str> os_registry_getAllPython3s(HKEY rootKey)
 {
    std::vector<p_str> output;
-
    const std::wstring subKey = L"SOFTWARE\\Python\\PythonCore";
-   HKEY hKey;
-   
-   LONG result = RegOpenKeyExW(rootKey, subKey.c_str(), 0, KEY_READ, &hKey);
-   if (result != ERROR_SUCCESS) {
+   HKEY hKey = nullptr;
+
+   const LONG openResult = RegOpenKeyExW(rootKey, subKey.c_str(), 0, KEY_READ, &hKey);
+
+   if (openResult != ERROR_SUCCESS) {
       return output;
    }
 
+   std::vector<wchar_t> name(256);
    DWORD index = 0;
-   DWORD nameSize;
-   wchar_t name[MAX_PATH];
-   
+
    while (true) {
-      nameSize = sizeof(name) / sizeof(wchar_t);
-      result = RegEnumKeyExW(hKey, index, name, &nameSize, nullptr, nullptr, nullptr, nullptr);
-      
+      DWORD nameSize = static_cast<DWORD>(name.size());
+      const LONG result = RegEnumKeyExW(hKey, index, name.data(), 
+         &nameSize, nullptr, nullptr, nullptr, nullptr);
+
       if (result == ERROR_NO_MORE_ITEMS) {
          break;
       }
-      else if (result == ERROR_SUCCESS) {
-         const p_str nameAsString = utf16_to_utf32(name);
-         const std::optional<p_str> path = os_registry_readPython3Path(nameAsString, rootKey);
 
-         if (path.has_value() && os_fileExists(path.value())) {
-            p_str realPath = path.value();
-            str_toLower(realPath);
-            output.emplace_back(realPath);
-         }
+      if (result == ERROR_MORE_DATA) {
+         name.resize(name.size() * 2);
+         continue;
+      }
+
+      if (result != ERROR_SUCCESS) {
+         ++index;
+         continue;
+      }
+
+      const p_str nameAsString = utf16_to_utf32(std::wstring(name.data(), nameSize));
+      const std::optional<p_str> path = os_registry_readPython3Path(nameAsString, rootKey);
+
+      if (path.has_value() && os_fileExists(path.value())) {
+         p_str realPath = path.value();
+         str_toLower(realPath);
+         output.emplace_back(std::move(realPath));
       }
 
       ++index;
@@ -2789,41 +2799,59 @@ Python3State os_getPython3(p_str& cmdPath)
    return Python3State::P3_NotInstalled;
 }
 
-static p_size os_readFileSize(const std::wstring& wpath)
-{
-   struct _stat fileinfo;
-   _wstat(wpath.c_str(), &fileinfo);
-   return fileinfo.st_size;
-}
-
 p_bool os_readFile(p_str& result, const p_str& path)
 {
    const std::wstring wpath = utf32_to_utf16(path);
-   FILE* f = _wfopen(wpath.c_str(), L"rtS, ccs=UTF-8");
+
+   FILE* f = _wfopen(wpath.c_str(), L"rb");
 
    if (f == NULL) {
+      result.clear();
       return false;
    }
 
-   const p_size filesize = os_readFileSize(wpath);
+   std::string utf8;
+   char buffer[4096];
 
-   if (filesize > 0) {
-      std::wstring wresult;
-      wresult.resize(filesize);
-      p_size wchars_read = fread(&(wresult.front()), sizeof(wchar_t), filesize, f);
-      wresult.resize(wchars_read);
-      wresult.shrink_to_fit();
-      result = utf16_to_utf32(wresult);
+   while (true) {
+      const size_t bytesRead = fread(buffer, sizeof(char), sizeof(buffer), f);
+
+      if (bytesRead > 0) {
+         utf8.append(buffer, bytesRead);
+      }
+
+      if (bytesRead < sizeof(buffer)) {
+         if (ferror(f)) {
+            fclose(f);
+            result.clear();
+            return false;
+         }
+
+         break;
+      }
    }
 
    fclose(f);
+
+   result = utf8_to_utf32(utf8);
    return true;
 }
 
-void os_showWebsite(const p_str& url)
+p_bool os_showWebsite(const p_str& url)
 {
-   ShellExecuteW(NULL, utf32_to_utf16(STRING_OPEN).c_str(), 
-      utf32_to_utf16(url).c_str(), NULL, NULL, SW_SHOWNORMAL);
+   const std::wstring url_utf16 = utf32_to_utf16(url);
+   const std::wstring open_utf16 = utf32_to_utf16(STRING_OPEN);
+
+   const HINSTANCE result = ShellExecuteW(
+      nullptr,
+      open_utf16.c_str(),
+      url_utf16.c_str(),
+      nullptr,
+      nullptr,
+      SW_SHOWNORMAL
+   );
+
+   return reinterpret_cast<INT_PTR>(result) > 32;
 }
 
 p_bool os_findText(const p_str& path, const p_str& value)

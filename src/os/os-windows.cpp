@@ -1079,8 +1079,8 @@ p_bool os_lock(const p_str& path)
 p_bool os_open(const p_str& path)
 {
    const p_str location = os_parent(path);
-   const std::wstring path_utf16 = os_windowsPath(path);
-   const std::wstring location_utf16 = os_windowsPath(location);
+   const std::wstring path_utf16 = utf32_to_utf16(path);
+   const std::wstring location_utf16 = utf32_to_utf16(location);
 
    return reinterpret_cast<INT_PTR>(ShellExecuteW(nullptr, nullptr, path_utf16.c_str(),
       nullptr, location_utf16.c_str(), SW_SHOW)) > 32;

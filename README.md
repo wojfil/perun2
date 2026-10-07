@@ -25,12 +25,12 @@ However, you can help the development by suggesting new features.
 
 ## Build
 
-What is required? 
-Generally, you need CMake 3.10 and any version of GCC that fully supports at least C++17.
-For Windows OS, the *MinGW Makefiles* generator is used.
-Prepare all necessary dependencies from [external](external).
-Then, take the batch script *windows cpp17.bat* from [here](src/build) and run it.
-The file *perun2.exe* located there is the output.
+This project requires CMake 3.21+, Visual Studio 2022 with C++ support, and vcpkg. The project uses C++17 and its dependencies (icu and ffmpeg) are declared in vcpkg.json.
+
+Set the VCPKG_ROOT environment variable to your vcpkg installation, then run the provided build script:
+*.\scripts\all_win.bat*.
+The script configures the project for Visual Studio 2022, x64 and builds the Release configuration. 
+The resulting executable together with DLLs will appear in *.\build\src\Release*.
 
 ## Versions
 

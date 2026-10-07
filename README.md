@@ -25,12 +25,15 @@ However, you can help the development by suggesting new features.
 
 ## Build
 
-This project requires CMake 3.21+, Visual Studio 2022 with C++ support, and vcpkg. The project uses C++17 and its dependencies (icu and ffmpeg) are declared in vcpkg.json.
+This project requires CMake 3.21+, Visual Studio 2022 with C++ support, and vcpkg. The project uses C++17 and its dependencies (ICU and FFmpeg) are declared in *vcpkg.json*.
 
 Set the VCPKG_ROOT environment variable to your vcpkg installation, then run the provided build script:
 *.\scripts\all_win.bat*.
-The script configures the project for Visual Studio 2022, x64 and builds the Release configuration. 
+This script configures the project for Visual Studio 2022, x64 and builds the Release configuration. 
 The resulting executable together with DLLs will appear in *.\build\src\Release*.
+
+Final remark: the first compilation can take a very long time on Windows. 
+It compiles the whole FFmpeg locally and it can even take 1 hour on cheap computers.
 
 ## Versions
 

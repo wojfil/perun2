@@ -20,7 +20,7 @@ namespace perun2::metadata
 {
 
 p_constexpr p_char NAME[] =                U"Perun2";
-p_constexpr p_char VERSION[] =             U"0.8.10.2";
+p_constexpr p_char VERSION[] =             U"0.8.11";
 p_constexpr p_char EXTENSION[] =           U"peru";
 p_constexpr p_char WEBSITE_FRONT[] =       U"https://perun2.org";
 p_constexpr p_char WEBSITE_DOCS[] =        U"https://perun2.org/docs";

@@ -48,7 +48,7 @@ SyntaxError SyntaxError::asteriskIsNotWildcardInLikeOperator(const p_str& value,
    p_str proper = value;
    std::replace(proper.begin(), proper.end(), CHAR_ASTERISK, gen::WILDCARD_MULTIPLE_CHARS);
 
-   return SyntaxError(str(U"the asterisk in not a wildcard character of the Like operator. You should write \"", 
+   return SyntaxError(str(U"asterisk is not a wildcard character of the Like operator. You should write \"", 
       proper,  U"\" instead"), line);
 }
 

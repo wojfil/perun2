@@ -247,6 +247,17 @@ SyntaxError SyntaxError::operatorBetweenShouldBeFollowedByAnd(const p_str& value
    return SyntaxError(str(U"the operator \"", value, U"\" should be followed by a keyword \"and\""), line);
 }
 
+SyntaxError SyntaxError::regexpContainsAsterisk(const p_str& value, const p_int line)
+{
+   return SyntaxError(str(U"the string literal for the regexp pattern \"", value, 
+      U"\" contains an asterisk. You should replace apostrophes ' with backtick characters ` so this string is treated literally"), line);
+}
+
+SyntaxError SyntaxError::regexpIsNotCorrect(const p_str& value, const p_int line)
+{
+   return SyntaxError(str(U"the regexp pattern \"", value, U"\" is not correct"), line);
+}
+
 SyntaxError SyntaxError::rightSideOfOperatorIsEmpty(const p_str& operator_, const p_int line)
 {
    return SyntaxError(str(U"the right side of the operator \"", operator_, U"\" is empty"), line);
@@ -262,7 +273,7 @@ SyntaxError SyntaxError::supposedUnintentionalAsteriskPattern(const p_str& value
    return SyntaxError(str(U"the syntax of this expression is invalid. The value \"", 
       value, 
       U"\" is an Asterisk Pattern. "
-      U"If you want to treat it like a normal string, replace apostrophes \" with backtick characters `"), line);
+      U"If you want to treat it like a normal string, replace apostrophes ' with backtick characters `"), line);
 }
 
 SyntaxError SyntaxError::symbolNotFound(const p_char value, const p_int line)

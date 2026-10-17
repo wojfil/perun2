@@ -13,7 +13,6 @@
 */
 
 #include "regexp.h"
-#include "../../unicode/convert.h"
 
 
 namespace perun2::gen
@@ -25,27 +24,28 @@ Regexp::Regexp(p_genptr<p_str>& val, p_genptr<p_str>& pat)
 
 p_bool Regexp::getValue()
 {
-   UnicodeRegex regex(this->pattern->getValue());
+   const p_str newPattern = this->pattern->getValue();
 
-   if (! regex.isGood()) {
+   if (! lastRegex || newPattern != lastPattern) {
+      lastPattern = newPattern;
+      lastRegex = std::make_unique<UnicodeRegex>(newPattern);
+   }
+
+   if (! lastRegex->isGood()) {
       return false;
    }
 
-   return regex.check(this->value->getValue());
+   return lastRegex->check(this->value->getValue());
 }
 
 
-RegexpConst::RegexpConst(p_genptr<p_str>& val, const p_str& pat)
-   : value(std::move(val)), pattern(pat) { };
+RegexpConst::RegexpConst(p_genptr<p_str>& val, std::unique_ptr<UnicodeRegex>& pat)
+   : value(std::move(val)), pattern(std::move(pat)) { };
 
 
 p_bool RegexpConst::getValue()
 {
-   if (! this->pattern.isGood()) {
-      return false;
-   }
-
-   return this->pattern.check(this->value->getValue());
+   return this->pattern->check(this->value->getValue());
 }
 
 

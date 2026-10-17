@@ -812,6 +812,11 @@ static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pro
 
    p_genptr<p_str> pattern;
    if (! parse(p2, pair.second, pattern)) {
+      if (pair.second.getLength() == 1 && pair.second.first().type == Token::t_Pattern) {
+         const p_str pattern = pair.second.first().getOriginString(p2);
+         throw SyntaxError::regexpContainsAsterisk(pattern, pair.second.first().line);
+      }
+
       return false;
    }
 
@@ -823,12 +828,18 @@ static p_bool parseRegexp(p_genptr<p_bool>& result, const Tokens& tks, Perun2Pro
          return true;
       }
 
+      std::unique_ptr<UnicodeRegex> regex = std::make_unique<UnicodeRegex>(cnst);
+
+      if (! regex->isGood()) {
+         throw SyntaxError::regexpIsNotCorrect(cnst, pair.second.first().line);
+      }
+
       if (neg) {
-         p_genptr<p_bool> b = std::make_unique<gen::RegexpConst>(value, cnst);
+         p_genptr<p_bool> b = std::make_unique<gen::RegexpConst>(value, regex);
          result = std::make_unique<gen::Not>(b);
       }
       else {
-         result = std::make_unique<gen::RegexpConst>(value, cnst);
+         result = std::make_unique<gen::RegexpConst>(value, regex);
       }
 
       return true;

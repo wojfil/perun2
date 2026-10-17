@@ -16,6 +16,7 @@
 
 #include "../datatype.h"
 #include "../../unicode/regex.h"
+#include "../../unicode/convert.h"
 
 
 namespace perun2::gen
@@ -31,18 +32,20 @@ public:
 private:
    p_genptr<p_str> value;
    p_genptr<p_str> pattern;
+   p_str lastPattern;
+   std::unique_ptr<UnicodeRegex> lastRegex;
 };
 
 
 struct RegexpConst : Generator<p_bool>
 {
 public:
-   RegexpConst(p_genptr<p_str>& val, const p_str& pat);
+   RegexpConst(p_genptr<p_str>& val, std::unique_ptr<UnicodeRegex>& pat);
    p_bool getValue() override;
 
 private:
    p_genptr<p_str> value;
-   UnicodeRegex pattern;
+   std::unique_ptr<UnicodeRegex> pattern;
 };
 
 

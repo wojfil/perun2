@@ -34,7 +34,7 @@ p_str SyntaxError::getMessage() const
 
 SyntaxError SyntaxError::adjacentSymbols(const p_char value, const p_int line)
 {
-   return SyntaxError(str(U"adjacent ", intToString(value), U" symbols"), line);
+   return SyntaxError(str(U"adjacent ", charToString(value), U" symbols"), line);
 }
 
 SyntaxError SyntaxError::asteriskPatternCannotContainDotSegments(const p_str& value, const p_int line)
@@ -54,12 +54,12 @@ SyntaxError SyntaxError::asteriskIsNotWildcardInLikeOperator(const p_str& value,
 
 SyntaxError SyntaxError::bracketIsNotClosed(const p_char value, const p_int line)
 {
-   return SyntaxError(str(U"the bracket ", intToString(value), U" is not closed"), line);
+   return SyntaxError(str(U"the bracket ", charToString(value), U" is not closed"), line);
 }
 
 SyntaxError SyntaxError::bracketShouldBeClosedBeforeCurlyBracket(const p_char value, const p_int line)
 {
-   return SyntaxError(str(U"the bracket ", intToString(value),
+   return SyntaxError(str(U"the bracket ", charToString(value),
       U" should to be closed before the opening of the curly bracket {"), line);
 }
 
@@ -85,7 +85,7 @@ SyntaxError SyntaxError::expectedSemicolonBeforeKeyword(const p_str& value, cons
 
 SyntaxError SyntaxError::expressionCannotEndWith(const p_char value, const p_int line)
 {
-   return SyntaxError(str(U"an expression cannot end with the ", intToString(value), U" symbol"), line);
+   return SyntaxError(str(U"an expression cannot end with the ", charToString(value), U" symbol"), line);
 }
 
 SyntaxError SyntaxError::expressionCannotEndWithFilterKeyword(const p_str& value, const p_int line)
@@ -95,7 +95,7 @@ SyntaxError SyntaxError::expressionCannotEndWithFilterKeyword(const p_str& value
 
 SyntaxError SyntaxError::expressionCannotStartWith(const p_char value, const p_int line)
 {
-   return SyntaxError(str(U"an expression cannot start with the ", intToString(value), U" symbol"), line);
+   return SyntaxError(str(U"an expression cannot start with the ", charToString(value), U" symbol"), line);
 }
 
 SyntaxError SyntaxError::expressionCannotStartWithIncrementation(const p_int line)

@@ -259,13 +259,13 @@ p_int Tokens::getFilterKeywordId(Perun2Process& p2) const
    return -1;
 }
 
-std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
+std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2, const p_int start, const p_int end) const
 {
    std::vector<Tokens> result;
    BracketsInfo bi;
    p_int sublen = 0;
 
-   for (p_int i = this->start; i <= this->end; i++) {
+   for (p_int i = start; i <= end; i++) {
       const Token& t = this->listAt(i);
 
       if (t.isFilterKeyword() && bi.isBracketFree()) {
@@ -286,10 +286,8 @@ std::vector<Tokens> Tokens::splitByFiltherKeywords(Perun2Process& p2) const
    if (sublen == 0) {
       throw SyntaxError::expressionCannotEndWithFilterKeyword(last().getOriginString(p2), last().line);
    }
-   else {
-      result.emplace_back(*this, this->end - sublen, sublen + 1);
-   }
-
+   
+   result.emplace_back(*this, end - sublen, sublen + 1);
    return result;
 }
 

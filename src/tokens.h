@@ -93,7 +93,7 @@ public:
    std::vector<Tokens> splitBySymbol(const p_char symbol) const;
    p_int countSymbols(const p_char symbol) const;
    p_int getFilterKeywordId(Perun2Process& p2) const;
-   std::vector<Tokens> splitByFiltherKeywords(Perun2Process& p2) const;
+   std::vector<Tokens> splitByFiltherKeywords(Perun2Process& p2, const p_int start, const p_int end) const;
    std::tuple<Tokens, Tokens, Tokens> divideForTernary() const;
 
    void checkCommonExpressionExceptions(Perun2Process& p2) const;

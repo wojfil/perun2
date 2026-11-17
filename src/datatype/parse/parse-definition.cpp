@@ -243,8 +243,8 @@ static p_bool parseDefFilter(p_defptr& result, const Tokens& tks, Perun2Process&
    const p_int kw = firstKeywordId - tks.getStart() + 1;
    const p_int start = tks.getStart() + kw;
    const p_int length = tks.getLength() - kw;
-   const Tokens tks3(tks, start, length);
-   std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(p2);
+   const p_int end = start + length - 1;
+   std::vector<Tokens> filterTokens = tks.splitByFiltherKeywords(p2, start, end);
    const p_size flength = filterTokens.size();
 
    FileContext* contextPtr = base->getFileContext();

@@ -73,8 +73,8 @@ static p_bool parseListFilter(p_genptr<p_list>& result, const Tokens& tks, Perun
    const p_int kw = firstKeywordId - tks.getStart() + 1;
    const p_int start = tks.getStart() + kw;
    const p_int length = tks.getLength() - kw;
-   const Tokens tks3(tks, start, length);
-   std::vector<Tokens> filterTokens = tks3.splitByFiltherKeywords(p2);
+   const p_int end = start + length - 1;
+   std::vector<Tokens> filterTokens = tks.splitByFiltherKeywords(p2, start, end);
    const p_size flength = filterTokens.size();
 
    for (p_size i = 0; i < flength; i++) {
